@@ -18,4 +18,5 @@
     <sqlMap resource="ibatis/v20/relation.xml"/>
     <sqlMap resource="ibatis/v20/propertyLink.xml"/>
     <sqlMap resource="ibatis/v20/entityAssnsToEntity.xml"/>
+    <sqlMap resource="ibatis/v20/entityAssnQuals.xml"/>
 </sqlMapConfig>

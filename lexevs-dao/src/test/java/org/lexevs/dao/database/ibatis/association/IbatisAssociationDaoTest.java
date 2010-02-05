@@ -8,12 +8,14 @@ import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.commonTypes.Source;
+import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -66,6 +68,13 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		target.setIsInferred(false);
 		target.setIsActive(true);
 		
+		AssociationQualification qual = new AssociationQualification();
+		qual.setAssociationQualifier("qualName");
+		qual.setQualifierText(DaoUtility.createText("qual value"));
+		
+		target.addAssociationQualification(qual);
+		target.addUsageContext("usage Context");
+		
 		source.addTarget(target);
 		
 		Source owner = new Source();
@@ -113,6 +122,8 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		//check to make sure it inserted the EntryState -- this will
 		//throw an error if there is nothing in the EntryState table.
 		assertEquals(1, template.queryForObject("Select count(*) from entryState", Integer.class));
+		
+		assertEquals(2, template.queryForObject("Select count(*) from entityassnquals", Integer.class));
 	}
-
+	
 }
