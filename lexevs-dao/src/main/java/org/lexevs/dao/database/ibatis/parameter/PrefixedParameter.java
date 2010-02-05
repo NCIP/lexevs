@@ -1,8 +1,7 @@
 package org.lexevs.dao.database.ibatis.parameter;
 
-public class PrefixedParameter {
-	
-	private String prefix;
+public class PrefixedParameter extends PrefixedTableParameterBean{
+
 	private String param1;
 	
 	public PrefixedParameter(){
@@ -10,8 +9,7 @@ public class PrefixedParameter {
 	}
 	
 	public PrefixedParameter(String prefix, String param1) {
-		super();
-		this.prefix = prefix;
+		super(prefix);
 		this.param1 = param1;
 	}
 	public String getParam1() {
@@ -19,12 +17,5 @@ public class PrefixedParameter {
 	}
 	public void setParam1(String param1) {
 		this.param1 = param1;
-	}
-	
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
-	public String getPrefix() {
-		return prefix;
 	}
 }

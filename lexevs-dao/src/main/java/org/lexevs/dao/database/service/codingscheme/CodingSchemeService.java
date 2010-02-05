@@ -1,7 +1,7 @@
 package org.lexevs.dao.database.service.codingscheme;
 
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.concepts.Entity;
+import org.LexGrid.naming.URIMap;
 import org.LexGrid.versions.EntryState;
 
 public interface CodingSchemeService {
@@ -13,6 +13,11 @@ public interface CodingSchemeService {
 			String codingSchemeName, 
 			String codingSchemeVersion,
 			CodingScheme codingScheme);
+	
+	public void insertURIMap(
+			String codingSchemeName, 
+			String codingSchemeVersion,
+			URIMap uriMap);
 	
 	public void updateCodingSchemeEntryState( 
 			CodingScheme codingScheme,

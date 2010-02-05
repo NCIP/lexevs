@@ -5,6 +5,16 @@ public class IdableParameterBean extends PrefixedTableParameterBean {
 	private String id;
 	private String entryStateId;
 	
+	public IdableParameterBean() {
+		super();
+	}
+	
+	public IdableParameterBean(String prefix, String id, String entryStateId) {
+		super(prefix);
+		this.id = id;
+		this.entryStateId = entryStateId;
+	}
+	
 	public String getId() {
 		return id;
 	}

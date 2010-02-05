@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+	
+     <insert id="insertRelations" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertRelationsBean">
+		INSERT INTO $prefix$relation (
+			relationGuid,
+			codingSchemeGuid,
+			containerName,
+			isMapping,
+			sourceCodingScheme,
+			sourceCodingSchemeVersion,
+			targetCodingScheme,
+			targetCodingSchemeVersion,
+			description,
+			isActive,
+			owner,
+			status,
+			effectiveDate,
+			expirationDate,
+			entryStateGuid
+		) VALUES (
+			#id#, 
+			#codingSchemeId#,
+			#relations.containerName#, 
+			null, 
+			null, 
+			null, 
+			null, 
+			null, 
+			#relations.entityDescription.content#,
+			null,
+			null,
+			null,
+			null,
+			null,
+			#entryStateId#
+		)
+  </insert>
+    
+</sqlMap>

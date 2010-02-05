@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+	
+     <insert id="insertEntityAssnsToEntity" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationSourceBean">
+		INSERT INTO $prefix$entityAssnsToEntity (
+			entityAssnsGuid,
+			associationPredicateGuid,
+			sourceEntityCode,
+			sourceEntityCodeNamespace,
+			targetEntityCode,
+			targetEntityCodeNamespace,
+			associationInstanceId,
+			isDefining,
+			isInferred,
+			isActive,
+			owner,
+			status,
+			effectiveDate,
+			expirationDate,
+			entryStateGuid
+		) VALUES (
+			#id#, 
+			#associationPredicateId#,
+			#associationSource.sourceEntityCode#, 
+			#associationSource.sourceEntityCodeNamespace#, 
+			#associationTarget.targetEntityCode#, 
+			#associationTarget.targetEntityCodeNamespace#, 
+			#associationTarget.associationInstanceId#, 
+			#associationTarget.isDefining#, 
+			#associationTarget.isInferred#, 
+			#associationTarget.isActive#,
+			#associationTarget.owner.content#,
+			#associationTarget.status#,
+			#associationTarget.effectiveDate#,
+			#associationTarget.expirationDate#,
+			#entryStateId#
+		)
+  </insert>
+    
+</sqlMap>

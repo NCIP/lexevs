@@ -1,9 +1,10 @@
 package org.lexevs.dao.database.access.entity;
 
 import org.LexGrid.concepts.Entity;
+import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
 
-public interface EntityDao {
+public interface EntityDao extends LexGridSchemaVersionAwareDao {
 
 	public String insertEntity(String codingSchemeName, String version, Entity entity);
 	

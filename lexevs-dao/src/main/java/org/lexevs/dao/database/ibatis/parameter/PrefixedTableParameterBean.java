@@ -3,6 +3,15 @@ package org.lexevs.dao.database.ibatis.parameter;
 public class PrefixedTableParameterBean {
 
 	private String prefix;
+	
+	public PrefixedTableParameterBean() {
+		super();
+	}
+
+	public PrefixedTableParameterBean(String prefix) {
+		super();
+		this.prefix = prefix;
+	}
 
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
