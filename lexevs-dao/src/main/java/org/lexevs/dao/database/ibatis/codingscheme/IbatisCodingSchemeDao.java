@@ -102,8 +102,8 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 
 	
 	public String insertCodingScheme(CodingScheme codingScheme, String previousRevisionId) {
-		String codingSchemeId = UUID.randomUUID().toString();
-		String entryStateId = UUID.randomUUID().toString();
+		String codingSchemeId = this.createUniqueId();
+		String entryStateId = this.createUniqueId();
 		
 		
 		versionsDao.insertEntryState(
