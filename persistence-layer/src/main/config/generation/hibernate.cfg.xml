@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+		"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory name="SessionFactory"> 
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.password">lexgrid</property>
+        <property name="hibernate.connection.url">jdbc:mysql://bmidev4:3307/SMDTEST241</property>  
+        <property name="hibernate.connection.username">lexgrid</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+      	<property name="hibernate.show_sql">false</property>
+      	<property name="hibernate.format_sql">true</property>
+      	<property name="current_session_context_class">thread</property>
+      	<property name="hibernate.jdbc.batch_size">20</property>
+      	<property name="hibernate.jdbc.fetch_size">20</property> 
+      	<property name="hibernate.cache.use_second_level_cache">false</property>
+      	<property name="hibernate.jdbc.batch_versioned_data">true</property>
+    </session-factory>
+</hibernate-configuration>

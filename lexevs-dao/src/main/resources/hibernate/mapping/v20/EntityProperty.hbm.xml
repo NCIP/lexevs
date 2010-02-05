@@ -1,0 +1,46 @@
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>  
+    <class name="org.LexGrid.commonTypes.Property" table="PROPERTY" discriminator-value="property">
+    
+    
+        <id type="string" name="id" access="field" >
+            <column name="GUID" length="36" />
+            <generator class="uuid" />
+        </id>
+    
+    <discriminator column="propertyType"/>	
+	
+	<!-- Property -->
+    <property name="_propertyName" access="field" type="string" column="propertyName" />   
+    <property name="_propertyId" access="field" type="string" column="propertyId" />   
+    <property name="_language" update="false" access="field" column="language" />   	
+    <property name="_isActive" type="boolean" access="field" column="isActive" />
+
+	<component name="_value" class="org.LexGrid.commonTypes.Text" access="field">
+			<property name="_content" type="text" access="field" column="propertyValue" />
+	</component>
+		
+	 <!-- Subclasses -->
+	 <subclass name="org.LexGrid.concepts.Presentation" discriminator-value="presentation"
+	 	entity-name="org.LexGrid.concepts.Presentation$Entity">	
+      	  <property name="_isPreferred" type="boolean" access="field" column="isPreferred"/>
+      	  <property name="_degreeOfFidelity" type="string" access="field" column="degreeOfFidelity"/>
+      	  <property name="_matchIfNoContext" type="boolean" access="field" column="matchIfNoContext"/>
+      	  <property name="_representationalForm" type="string" access="field" column="representationalForm"/>
+      </subclass>
+         
+       <subclass name="org.LexGrid.concepts.Definition" discriminator-value="definition"
+       	entity-name="org.LexGrid.concepts.Definition$Entity">      	
+      	  <property name="_isPreferred" type="boolean" access="field" column="isPreferred"/>   
+      </subclass>
+       
+       <subclass name="org.LexGrid.concepts.Comment" discriminator-value="comment"
+       	entity-name="org.LexGrid.concepts.Comment$Entity"/>
+
+    </class>
+  
+</hibernate-mapping>
+

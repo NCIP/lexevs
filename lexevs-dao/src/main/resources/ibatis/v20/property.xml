@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+	
+     <insert id="insertProperty" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyBean">
+		INSERT INTO Property (
+			propertyGuid,
+			referenceGuid,
+			referenceType,
+			propertyId,
+			propertyType,
+			propertyName,
+			language,
+			format,
+			isPreferred,
+			matchIfNoContext,
+			degreeOfFidelity,
+			representationalForm,
+			propertyValue,
+			isActive,
+			owner,
+			status,
+			effectiveDate,
+			expirationDate,
+			entryStateGuid
+		) VALUES (
+			#id#, 
+			#entityId#,
+			#referenceType#, 
+			#property.propertyId#, 
+			#property.propertyType#,
+			#property.propertyName#,
+			#property.language#,
+			#property.value.dataType#,
+			
+			<isPropertyAvailable property="property.isPreferred">
+				#property.isPreferred#,
+			</isPropertyAvailable>
+			<isNotPropertyAvailable property="property.isPreferred">
+				null,
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable property="property.matchIfNoContext">
+				#property.matchIfNoContext#,
+			</isPropertyAvailable>
+			<isNotPropertyAvailable property="property.matchIfNoContext">
+				null,
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable property="property.degreeOfFidelity">
+				#property.degreeOfFidelity#,
+			</isPropertyAvailable>
+			<isNotPropertyAvailable property="property.degreeOfFidelity">
+				null,
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable property="property.representationalForm">
+				#property.representationalForm#,
+			</isPropertyAvailable>
+			<isNotPropertyAvailable property="property.representationalForm">
+				null,
+			</isNotPropertyAvailable>
+			
+			#property.value.content#,	
+			#property.isActive#,
+			#property.owner.content#,
+			#property.status#,
+			#property.effectiveDate#,
+			#property.expirationDate#,
+			#entryStateId#
+		)
+  </insert>
+    
+</sqlMap>

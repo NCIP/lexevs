@@ -1,0 +1,27 @@
+Low priority, but, at some point, it would be useful to be able to resolve urn:oid:1.3.6.1.4.1.2114.108.1.7.4 to a code that defines the meaning of "definition" from the LexGrid perspective.  A LexGrid terminology of LexGrid, as it were.
+
+
+
+--------------------------------------------------------------------------------
+From: Johnson, Thomas M. [mailto:Johnson.Thomas@mayo.edu] 
+Sent: Thursday, January 05, 2006 1:10 PM
+To: 'Solbrig, Harold R.'; 'Johnson, Thomas M.'; 'Sharma, Deepak K.'; Armbrust, Daniel C.; 'Hamm, Russell A.'; 'Buntrock, James D.'
+Subject: RE: Resolution of the URN's for "definition", "comment", "textual Pres entation" and others
+
+
+Sorry, need clarification of what you mean by getting LexGrid coding scheme into the hopper. -tom
+
+
+Folks,
+
+In the process of putting together the LexGrid documentation, it dawned on me that we have defined OIDs for (almost) all of the LexGrid classes and properties.  While we did this for LDAP compatibility, there is no reason that we can't use them as the official URN's of those items.  So, from this point forth we need to begin to incorporate:
+
+<supportedProperty urn="urn:oid:1.3.6.1.4.1.2114.108.1.7.4">definition</supportedProperty>
+<supportedProperty urn="urn:oid:1.3.6.1.4.1.2114.108.1.7.5">comment</supportedProperty>
+<supportedProperty urn="urn:oid:1.3.6.1.4.1.2114.108.1.7.6">instruction</supportedProperty>
+<supportedProperty urn="urn:oid:1.3.6.1.4.1.2114.108.1.7.7">textualPresentation</supportedProperty>
+<supportedAssociation urn="urn:oid:1.3.6.1.4.1.2114.108.1.8.1">hasSubtype</supportedAssociation>
+
+Whenever they are used in LexGrid XML.  In addition, we need to get a LexGrid "coding scheme" into the hopper so that these resources can actually be fetched.  This should tie in pretty closely with the caGRID / caDSR integration project.
+
+Harold

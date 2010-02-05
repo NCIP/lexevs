@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../../ea.css" rel=stylesheet>
+<title>Extensions::ExtensionRegistry</title>
+</head>
+<body>
+<TABLE class="HeaderTable" align="center" cellSpacing=0 cellPadding=0>
+  <TBODY >
+	<TR>
+		<TD colspan=2 WIDTH="100%" class="Header">interface: ExtensionRegistry</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="48%" class="HeaderDetails"></TD>
+		<TD WIDTH="48%" class="HeaderDetails"></TD>
+	</TR>
+	<TR>
+		<TD WIDTH="40%" class="HeaderDetails"></TD>
+		<TD WIDTH="60%" class="HeaderDetails"></TD>
+	</TR>
+	<TR><TD colspan="2" width="100%"><HR></TD></TR>
+	</TBODY>
+</TABLE> <table cellPadding=2 cellSpacing=2 width="100%">
+  <tbody>
+		<tr>
+			<td class=ObjectTitle>
+				public abstract  &lt;&lt;interface&gt;&gt; interface: ExtensionRegistry  
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table class=ObjectDetails cellPadding=2 cellSpacing=2 width="100%">
+				  <tbody>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Author:</td>
+							<td width="85%" class=ObjectDetailsValue></td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Project:</td>
+							<td width="85%" class=ObjectDetailsValue>Phase: 1.0; Status: Proposed; Version: 1.0; Complexity: 1</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Dates:</td>
+							<td width="85%" class=ObjectDetailsValue>Created: 8/28/2006 12:54:57 AM; Modified: 8/28/2006 12:54:57 AM;</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Flags:</td>
+							<td width="85%" class=ObjectDetailsValue> Active: false; IsRoot: false; IsLeaf: false;</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Extension Points:</td>
+							<td width="85%" class=ObjectDetailsValue></td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>UUID:</td>
+							<td width="85%" class=ObjectDetailsValue>{3455BA9F-D737-463a-8EED-0A76582C688A}</td>
+						</tr>
+						<tr>
+							<td colspan="2" width="100%" class=ObjectDetailsTopic>Allows registration and lookup of implementors for extensible pieces of the<br>LexBIG architecture.</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+</table><p><table cellPadding=0 cellSpacing=0 width="100%">
+  <tbody>
+		<tr>
+			<td width="10%" class="ObjectSubTitle">
+				Goto:
+			</td>
+			<td width="90%">
+				<a href=#Methods>Methods</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<P/><table cellPadding=0 cellSpacing=0 width="100%">
+  <tbody>
+		<tr>
+			<td width="10%" class="ObjectSubTitle">
+				Appears in:
+			</td>
+			<td width="90%">
+				<a href="EA97.htm">Extensions</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<P/><table cellPadding=0 cellSpacing=0 width="100%">
+  <tbody>
+		<tr>
+			<td class="ObjectSubTitle">
+				<a Name="Methods">ExtensionRegistry</a> Methods
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<TABLE align="center" BORDER=1 CELLSPACING=0 CELLPADDING=1 bordercolor="white" class="OperationTable">
+					<TR>
+						<TD WIDTH="40%" class="OperationTableHeading">Operation</TD>
+						<TD WIDTH="60%" class="OperationTableHeading">Details</TD>
+					</TR>
+					<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getExportExtension</B>(<br>&nbsp;&nbsp;&nbsp;String name):<a href="../EA3/EA3/EA70.htm">ExtensionDescription</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i></i><span style="margin-left: .7cm;"> </span></TD><TD></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Returns the description of a registered extension matching the given name.<br><br>@return A matching extension description; null if no match is found. If<br>not null, the description identifies a class of item implementing<br>org.LexGrid.LexBIG.Extensions.Export.Exporter and<br>providing a public parameterless constructor.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getExportExtensions</B>():<a href="../EA3/EA1/EA35.htm">ExtensionDescriptionList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i></i><span style="margin-left: .7cm;"> </span></TD><TD></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Returns a description of all registered extensions used to export<br>information loaded to a LexBIGService.<br><br>@return The list containing the description of extensions registered for<br>this category. Each description identifies a class of item implementing<br>org.LexGrid.LexBIG.Extensions.Export.Exporter and providing a<br>public parameterless constructor.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getFilterExtension</B>(<br>&nbsp;&nbsp;&nbsp;String name):<a href="../EA3/EA3/EA70.htm">ExtensionDescription</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i></i><span style="margin-left: .7cm;"> </span></TD><TD></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Returns the description of a registered extension matching the given name.<br><br>@return A matching extension description; null if no match is found. If<br>not null, the description identifies a class of item implementing<br>org.LexGrid.LexBIG.Extensions.Query.Filter and providing a<br>public parameterless constructor.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getFilterExtensions</B>():<a href="../EA3/EA1/EA35.htm">ExtensionDescriptionList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i></i><span style="margin-left: .7cm;"> </span></TD><TD></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Returns a description of all registered extensions used to provide<br>additional filtering of query results.<br><br>@return The list containing the description of extensions registered for<br>this category. Each description identifies a class of item implementing<br>org.LexGrid.LexBIG.Extensions.Query.Filter and providing a public<br>parameterless constructor.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getGenericExtension</B>(<br>&nbsp;&nbsp;&nbsp;String name):<a href="../EA3/EA3/EA70.htm">ExtensionDescription</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i></i><span style="margin-left: .7cm;"> </span></TD><TD></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Returns the description of a registered extension matching the given name.<br><br>@return A matching extension description; null if no match is found. If<br>not null, the description identifies a class of item implementing<br>org.LexGrid.LexBIG.Extensions.Generic.GenericExtension and<br>providing a public parameterless constructor.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getGenericExtensions</B>():<a href="../EA3/EA1/EA35.htm">ExtensionDescriptionList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i></i><span style="margin-left: .7cm;"> </span></TD><TD></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Returns a description of all registered extensions used to implement<br>application-specific behavior that is centrally accessible from a<br>LexBIGService.<br>&lt;p&gt;<br>Note that only generic extensions (base class GenericExtension) will<br>be listed here. All other classes are retrievable at the appropriate<br>interface point (filter, sort, etc).<br><br>@return The list containing the description of extensions registered for<br>this category. Each description identifies a class of item implementing<br>org.LexGrid.LexBIG.Extensions.Generic.GenericExtension and<br>providing a public parameterless constructor.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getIndexExtension</B>(<br>&nbsp;&nbsp;&nbsp;String name):<a href="../EA3/EA3/EA70.htm">ExtensionDescription</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i></i><span style="margin-left: .7cm;"> </span></TD><TD></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Returns the description of a registered extension matching the given name.<br><br>@return A matching extension description; null if no match is found. If<br>not null, the description identifies a class of item implementing<br>org.LexGrid.LexBIG.Extensions.Index.Index and providing a<br>public parameterless constructor.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getIndexExtensions</B>():<a href="../EA3/EA1/EA35.htm">ExtensionDescriptionList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i></i><span style="margin-left: .7cm;"> </span></TD><TD></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Returns a description of all registered extensions used to index<br>information that has been previously loaded to a LexBIGService.<br><br>@return The list containing the description of extensions registered for<br>this category. Each description identifies a class of item implementing<br>org.LexGrid.LexBIG.Extensions.Index.Index and providing a public<br>parameterless constructor.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getLoadExtension</B>(<br>&nbsp;&nbsp;&nbsp;String name):<a href="../EA3/EA3/EA70.htm">ExtensionDescription</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i></i><span style="margin-left: .7cm;"> </span></TD><TD></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Returns the description of a registered extension matching the given name.<br><br>@return A matching extension description; null if no match is found. If<br>not null, the description identifies a class of item implementing<br>org.LexGrid.LexBIG.Extensions.Load.Loader and providing a<br>public parameterless constructor.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getLoadExtensions</B>():<a href="../EA3/EA1/EA35.htm">ExtensionDescriptionList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i></i><span style="margin-left: .7cm;"> </span></TD><TD></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Returns a description of all registered extensions used to load<br>information for access by a LexBIGService.<br><br>@return The list containing the description of extensions registered for<br>this category. Each description identifies a class of item implementing<br>org.LexGrid.LexBIG.Extensions.Load.Loader and providing a public<br>parameterless constructor.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getSortExtension</B>(<br>&nbsp;&nbsp;&nbsp;String name):<a href="../EA3/EA3/EA77.htm">SortDescription</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i></i><span style="margin-left: .7cm;"> </span></TD><TD></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Returns the description of a registered extension matching the given name.<br><br>@return A matching extension description; null if no match is found. If<br>not null, the description identifies a class of item implementing<br>org.LexGrid.LexBIG.Extensions.Query.Sort and providing a public<br>parameterless constructor.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getSortExtensions</B>():<a href="../EA3/EA1/EA41.htm">SortDescriptionList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i></i><span style="margin-left: .7cm;"> </span></TD><TD></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Returns a description of all registered extensions used to provide<br>additional sorting of query results.<br><br>@return The list containing the description of extensions registered for<br>this category. Each description identifies a class of item implementing<br>org.LexGrid.LexBIG.Extensions.Query.Sort and providing a public<br>parameterless constructor.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>registerExportExtension</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA3/EA70.htm">ExtensionDescription</a> description):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Registers a class of extension used to export existing content from the<br>LexGrid repository.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>registerFilterExtension</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA3/EA70.htm">ExtensionDescription</a> description):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Registers a class of extension used to filter query content.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>registerGenericExtension</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA3/EA70.htm">ExtensionDescription</a> description):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Registers a class of extension used to implement application-specific<br>behavior that is centrally accessible from a LexBIGService.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>registerIndexExtension</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA3/EA70.htm">ExtensionDescription</a> description):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Registers a class of extension used to index information that has been<br>previously loaded to a LexBIGService.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>registerLoadExtension</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA3/EA70.htm">ExtensionDescription</a> description):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Registers a class of extension used to load information for access by a<br>LexBIGService.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>registerSortExtension</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA3/EA77.htm">SortDescription</a> description):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Registers a class of extension used to provide additional sorting of<br>query results.<br>&lt;p&gt;<br>&lt;b&gt;NOTE&lt;/b&gt;: Sort extensions can only be applied when resolving<br>standard node set representations.  Therefore the provided description<br>&lt;b&gt;&lt;i&gt;MUST&lt;/i&gt;&lt;/b&gt; be restricted only to a sort context of<br>SortContext.SET.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>unregisterExportExtension</B>(<br>&nbsp;&nbsp;&nbsp;String name):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Removes registration for the given named extension. Upon completion, the<br>extension will no longer be available for lookup from the LexBIG service.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>unregisterFilterExtension</B>(<br>&nbsp;&nbsp;&nbsp;String name):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Removes registration for the given named extension. Upon completion, the<br>extension will no longer be available for lookup from the LexBIG service.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>unregisterGenericExtension</B>(<br>&nbsp;&nbsp;&nbsp;String name):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Removes registration for the given named extension. Upon completion, the<br>extension will no longer be available for lookup from the LexBIG service.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>unregisterIndexExtension</B>(<br>&nbsp;&nbsp;&nbsp;String name):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Removes registration for the given named extension. Upon completion, the<br>extension will no longer be available for lookup from the LexBIG service.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>unregisterLoadExtension</B>(<br>&nbsp;&nbsp;&nbsp;String name):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Removes registration for the given named extension. Upon completion, the<br>extension will no longer be available for lookup from the LexBIG service.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>unregisterSortExtension</B>(<br>&nbsp;&nbsp;&nbsp;String name):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Removes registration for the given named extension. Upon completion, the<br>extension will no longer be available for lookup from the LexBIG service.</TD> </TR> </TABLE></TD>
+</TR>
+
+				</TABLE>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+</table>
+
+<TABLE class="FooterTable" align="center" cellSpacing=0 cellPadding=0>
+  <TBODY >
+	<TR><TD colspan="2" width="100%"><HR></TD></TR>
+	<TR>
+		<TD colspan=2 WIDTH="100%" class="Footer">interface: ExtensionRegistry</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="48%" class="FooterDetails"></TD>
+		<TD WIDTH="48%" class="FooterDetails"></TD>
+	</TR>
+	<TR>
+		<TD WIDTH="40%" class="FooterDetails"></TD>
+		<TD WIDTH="60%" class="FooterDetails"></TD>
+	</TR>
+	</TBODY>
+</TABLE> 
+</body>
+</html>

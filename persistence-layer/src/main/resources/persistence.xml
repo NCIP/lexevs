@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean class="org.LexGrid.persistence.spring.DialectSettingPostProcessor">
+		<property name="dialect">
+			<ref local="dialectFactory"/>
+		</property>
+	</bean>
+
+     <bean id="databaseUtility"
+		class="org.LexGrid.persistence.database.DefaultDatabaseUtility">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+		<property name="prefix" value="${prefix}"/>
+	</bean>
+	
+	  <bean id="dialectFactory"
+		class="org.LexGrid.persistence.database.DatabaseDialectFactory">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+	</bean>
+	
+	 <bean id="validationQueryFactory"
+		class="org.LexGrid.persistence.database.DatabaseValidationQueryFactory">
+			<property name="dbUrl" value="${jdbcUrl}"/>
+	</bean>
+
+   <bean id="lexEvsHibernateDaoImpl"
+		class="org.LexGrid.persistence.dao.hibernate.HibernateLexEvsDao">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
+	
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+		<property name="entityInterceptor" ref="prefixInterceptor"/>
+		
+		<property name="mappingLocations" value="classpath:mapping/**/*.hbm.xml"/>
+		
+		<property name="hibernateProperties">	
+			<props>
+				<prop key="connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</prop>
+	
+				<prop key="hibernate.jdbc.batch_size">100</prop>
+      			<prop key="hibernate.jdbc.fetch_size">100</prop> 
+      	
+      			<prop key="hibernate.cache.use_second_level_cache">false</prop>
+      			<prop key="hibernate.jdbc.batch_versioned_data">true</prop>
+	
+				<prop key="hibernate.show_sql">false</prop>
+      			<prop key="hibernate.format_sql">false</prop>
+      		
+				<prop key="cglib.use_reflection_optimizer">false</prop>
+				<prop key="jdbc.batch_versioned_data">true</prop>
+				<prop key="jdbc.use_streams_for_binary">true</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="prefixInterceptor" class="org.LexGrid.persistence.dao.hibernate.interceptors.PrefixInterceptor">
+		<property name="prefix" value="${prefix}"/>
+	</bean>
+	
+	<bean id="lexevsClassLoader"
+      class="org.LexGrid.LexBIG.Impl.helpers.MyClassLoader"
+      factory-method="instance"/>
+	
+	
+	<!-- 
+
+	<bean id="dataSource" class="org.LexGrid.persistence.connection.ClassLoaderSettingDbcpPoolingDataSource"
+		destroy-method="close">
+		<property name="classLoader" ref="lexevsClassLoader"/>
+		<property name="driverClassName">
+			<value>${driver}</value>
+		</property>
+		<property name="url">
+			<value>${jdbcUrl}</value>
+		</property>
+		<property name="username">
+			<value>${user}</value>
+		</property>
+		<property name="password">
+			<value>${password}</value>
+		</property>
+		<property name="initialSize">
+			<value>20</value>
+		</property>
+		<property name="maxActive">
+			<value>75</value>
+		</property>
+		<property name="maxIdle">
+			<value>2</value>
+		</property>
+	</bean>
+	-->
+
+	<!-- 
+	<bean id="delegateDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+        destroy-method="close">
+        <property name="driverClass" value="${driver}"/>
+        <property name="jdbcUrl" value="${jdbcUrl}"/>
+        <property name="user" value="${user}"/>
+        <property name="password" value="${password}"/>     
+
+      <property name="properties">
+            <props>
+                <prop key="c3p0.acquire_increment">1</prop>
+                <prop key="c3p0.idle_test_period">100</prop>
+                <prop key="c3p0.max_size">100</prop>
+                <prop key="c3p0.max_statements">0</prop>
+                <prop key="c3p0.min_size">50</prop>    
+                <prop key="c3p0.timeout">100</prop>
+            	<prop key="user">${user}</prop>
+                <prop key="password">${password}</prop> 
+            </props>
+        </property>
+    </bean>
+    -->
+   
+  
+  	<bean id="jdbcDriverClass" class="org.LexGrid.persistence.connection.JdbcDriverBootstrap">
+		<property name="driverClass" value="${driver}" />
+	</bean>
+
+	<bean id="unPooledDataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource" >
+		<property name="driverClass" ref="jdbcDriverClass" />
+		<property name="url" value="${jdbcUrl}" />
+		<property name="username" value="${user}"/>
+		<property name="password" value="${password}"/>
+	</bean>
+	
+	 <bean id="dsConnectionFactory" class="org.apache.commons.dbcp.DataSourceConnectionFactory">
+        <constructor-arg><ref bean="unPooledDataSource"/></constructor-arg>
+    </bean>
+	
+	 <bean id="pool" class="org.apache.commons.pool.impl.GenericObjectPool">
+		<property name="maxActive">
+			<value>150</value>
+		</property>
+		<property name="maxIdle">
+			<value>2</value>
+		</property>
+		<property name="testOnBorrow" value="true"/>
+    </bean>
+	
+	<bean id="poolableConnectionFactory" class="org.apache.commons.dbcp.PoolableConnectionFactory">
+        <constructor-arg index="0"><ref bean="dsConnectionFactory"/></constructor-arg>
+        <constructor-arg index="1"><ref bean="pool"/></constructor-arg>
+        <constructor-arg index="2"><null/></constructor-arg>
+        <constructor-arg index="3" ref="validationQueryFactory"/>
+        <constructor-arg index="4"><value>false</value></constructor-arg>
+        <constructor-arg index="5"><value>true</value></constructor-arg>
+    </bean>
+    
+    <bean id="dataSource" class="org.apache.commons.dbcp.PoolingDataSource" depends-on="poolableConnectionFactory">
+        <constructor-arg><ref bean="pool"/></constructor-arg>
+    </bean>
+
+	<bean id="lexEvsDao"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref local="transactionManager" />
+		</property>
+		<property name="target">
+			<ref local="lexEvsHibernateDaoImpl" />
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="lexEvsJdbcTemplate"
+		class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+	</bean>
+	
+</beans>

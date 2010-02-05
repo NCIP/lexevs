@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+
+	<resultMap id="sourceResult" class="org.LexGrid.commonTypes.Source">
+		<result property="content" column="attributeValue" />
+		<result property="subRef" column="subRef" />
+		<result property="role" column="role" />
+	</resultMap>
+	
+	
+	<select id="getSourceById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		SELECT 
+			attributeValue
+			subRef,
+			role
+		FROM 
+			$prefix$PropertyMultiAttrib
+		WHERE
+			propMultiAttribGuid = #param1#
+			
+	</select>
+
+	<insert id="insertPropertyMultiAttrib" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">
+		INSERT INTO PropertyMultiAttrib (
+			propMultiAttribGuid,
+			propertyGuid,
+			attributeType,
+			attributeId,
+			attributeValue,
+			subRef,
+			role
+		) VALUES (
+			#id#,
+			#propertyId#,
+			#attributeType#,
+			#attributeId#,
+			#attributeValue#,
+			#subRef#,
+			#role#
+		)
+	</insert>
+
+</sqlMap>

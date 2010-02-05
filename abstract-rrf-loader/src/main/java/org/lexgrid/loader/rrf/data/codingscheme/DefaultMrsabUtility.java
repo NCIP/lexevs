@@ -1,0 +1,77 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
+package org.lexgrid.loader.rrf.data.codingscheme;
+
+import java.util.List;
+
+import org.lexgrid.loader.rrf.model.Mrsab;
+
+/**
+ * The Class DefaultMrsabUtility.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
+public class DefaultMrsabUtility implements MrsabUtility {
+
+	/** The mrsab list. */
+	private List<Mrsab> mrsabList;
+
+	//SELECT SSN FROM MRSAB WHERE RSAB = ?");
+	/* (non-Javadoc)
+	 * @see org.lexgrid.loader.rrf.data.codingscheme.MrsabUtility#getCodingSchemeNameFromSab(java.lang.String)
+	 */
+	public String getCodingSchemeNameFromSab(String sab){
+		for(Mrsab mrsab : mrsabList){
+			if(mrsab.getRsab().equals(sab)){
+				return mrsab.getSsn();
+			}
+		}
+		throw new RuntimeException("Couldn't map SAB: '" + sab + "' to a CodingScheme.");
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.lexgrid.loader.rrf.data.codingscheme.MrsabUtility#getMrsabRowFromRsab(java.lang.String)
+	 */
+	public Mrsab getMrsabRowFromRsab(String rsab){
+		for(Mrsab mrsab : mrsabList){
+			if(mrsab.getRsab().equals(rsab)){
+				return mrsab;
+			}
+		}
+		throw new RuntimeException("Couldn't map RSAB: '" + rsab + "' to a CodingScheme.");
+	}
+
+	/**
+	 * Gets the mrsab list.
+	 * 
+	 * @return the mrsab list
+	 */
+	public List<Mrsab> getMrsabList() {
+		return mrsabList;
+	}
+
+	/**
+	 * Sets the mrsab list.
+	 * 
+	 * @param mrsabList the new mrsab list
+	 */
+	public void setMrsabList(List<Mrsab> mrsabList) {
+		this.mrsabList = mrsabList;
+	}
+}

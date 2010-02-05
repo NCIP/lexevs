@@ -1,0 +1,60 @@
+----------------------------------------------------------------------------------
+1. Software and Hardware requirements.
+----------------------------------------------------------------------------------
+
+	i) This extension requires LexEVS release 5.0 or above.
+ 	ii) Development system are required to install the Sun Java Development Kit (SDK) or Java Runtime Environment (JRE)
+ 		version 1.5.0_11 or above.
+ 	iii) Maven 2.1 or greater.
+ 	iiii) For software and hardware dependencies for the system hosting the LexEVS runtime, refer to https://cabig-kc.nci.nih.gov/Vocab/KC/index.php/LexEVS_5.0_Documentation.
+
+----------------------------------------------------------------------------------
+2. Instructions to build Loader Framework
+----------------------------------------------------------------------------------
+
+	i) To build artifacts 
+
+		- mvn clean package
+		
+	ii) To build LexEVS Extension Package
+	
+		- mvn clean package assembly:assembly
+	
+		- Required jars, scripts, and extra libraries are bundled into SpringBatchLoader-1.0-lexEvsPlugin.zip
+		
+	iii) Other Maven build goals can be executed as necessary, such as building source, creating javadocs, etc.
+
+----------------------------------------------------------------------------------
+3. Instructions to deploy Loader Framework extension into LexEVS environment.
+----------------------------------------------------------------------------------
+	  
+	i) Extract the contents of "SpringBatchLoader-1.0.zip" into the root of lexBIG installation (ex: C:/Program Files/LexGrid/LexBIG/5.0.1/)      
+		
+		- Binary archive file, SpringBatchLoader-1.0.jar will be extracted to /runtime folder.
+		
+		- Binary archive file, SpringBatchLoader-1.0-bootstrap.jar will be extracted to /runtime folder.
+			- This is the minimal amount of classes needed to start the extension. This is needed to allow the LexEVS custom class loader to load all classes.
+	
+		- All 3rd party dependencies will be extracted to /runtime/lib
+		
+		- In /resources/config/ of the target LexEVS installation, edit lbconfig.props to include the extray 3rd party lib directory:
+			Make sure the 'JAR_FILE_LOCATION' property matches below.
+			
+			# This path can be relative to the location of LG_BASE_PATH or absolute.
+			# You may put more than one folder here by seperating the folders with a ';'.
+			JAR_FILE_LOCATION=../../runtime;../../runtime/lib
+			
+----------------------------------------------------------------------------------
+4. Instructions to test deployed Loader Framework.
+----------------------------------------------------------------------------------
+
+	i) To run the automated tests, use the command 'mvn test'.
+		- Test results will be located in the '/target' directory.
+
+----------------------------------------------------------------------------------
+5. Launching Loader Framework.
+----------------------------------------------------------------------------------
+	
+	- Launch the UMLS Batch Loader as an extension :
+ 		i. Using Load Extension :
+ 			UmlsBatchLoader loader = (UmlsBatchLoader)LexBIGServiceImpl.defaultInstance().getServiceManager(null).getLoader("UmlsBatchLoader");

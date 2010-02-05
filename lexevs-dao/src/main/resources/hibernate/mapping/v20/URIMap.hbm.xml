@@ -1,0 +1,60 @@
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>  
+    <class name="org.LexGrid.naming.URIMap" table="MAPPING">
+    
+       <id type="string" name="id" access="field">
+            <column name="GUID" length="36" />
+            <generator class="uuid" />
+        </id>
+ 
+        <discriminator column="supportedAttributeTag"/>  
+        
+        <property name="_uri"  access="field" type="string" column="uri" />       
+        <property name="_localId"  access="field" type="string" column="id" />
+        <property name="_content" access="field" type="string" column="idValue" />
+      	
+    	<subclass name="org.LexGrid.naming.SupportedAssociation" discriminator-value="Association"/>	  
+    	<subclass name="org.LexGrid.naming.SupportedAssociationQualifier" discriminator-value="AssociationQualifier"/>	
+      
+      	<subclass name="org.LexGrid.naming.SupportedCodingScheme" discriminator-value="CodingScheme">
+      		<property name="_isImported" type="boolean" insert="false" update="false" access="field" column="val1"/>
+     	</subclass>
+      
+      	<subclass name="org.LexGrid.naming.SupportedContainerName" discriminator-value="ContainerName"/>
+       	<subclass name="org.LexGrid.naming.SupportedContext" discriminator-value="Context"/>
+       	<subclass name="org.LexGrid.naming.SupportedDataType" discriminator-value="DataType"/>
+        <subclass name="org.LexGrid.naming.SupportedDegreeOfFidelity" discriminator-value="DegreeOfFidelity"/>	
+        <subclass name="org.LexGrid.naming.SupportedEntityType" discriminator-value="EntityType"/>
+          
+        <subclass name="org.LexGrid.naming.SupportedHierarchy" discriminator-value="Hierarchy">	
+      	  <property name="_rootCode" access="field" column="rootcode"/>
+      	  <property name="_isForwardNavigable" type="boolean" access="field" column="isForwardNavigable"/>
+      	</subclass>
+       
+        <subclass name="org.LexGrid.naming.SupportedLanguage" discriminator-value="Language"/>	
+
+        <subclass name="org.LexGrid.naming.SupportedNamespace" discriminator-value="Namespace">
+        	<property name="_equivalentCodingScheme" access="field" column="equivalentCodingScheme"/>
+        </subclass>
+ 	
+        <subclass name="org.LexGrid.naming.SupportedProperty" discriminator-value="Property"/>	
+        <subclass name="org.LexGrid.naming.SupportedPropertyLink" discriminator-value="PropertyLink"/>	
+        <subclass name="org.LexGrid.naming.SupportedPropertyQualifier" discriminator-value="PropertyQualifier"/>	
+        <subclass name="org.LexGrid.naming.SupportedPropertyQualifierType" discriminator-value="PropertyQualifierType"/>
+        <subclass name="org.LexGrid.naming.SupportedPropertyType" discriminator-value="PropertyType"/>
+        <subclass name="org.LexGrid.naming.SupportedRepresentationalForm" discriminator-value="RepresentationalForm"/>	
+		<subclass name="org.LexGrid.naming.SupportedSortOrder" discriminator-value="SortOrder"/>
+         
+        <subclass name="org.LexGrid.naming.SupportedSource" discriminator-value="Source">
+      		<property name="_assemblyRule" access="field" column="assemblyRule"/>
+      	</subclass>
+         
+        <subclass name="org.LexGrid.naming.SupportedSourceRole" discriminator-value="SourceRole"/>
+        <subclass name="org.LexGrid.naming.SupportedStatus" discriminator-value="Status"/>
+      
+    </class>
+</hibernate-mapping>
+

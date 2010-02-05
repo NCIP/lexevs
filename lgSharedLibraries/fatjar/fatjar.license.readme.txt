@@ -1,0 +1,8 @@
+*****
+NOTE:
+*****
+While fatjar is licensed under the GPL, it is used only at build time
+and is not redistributed as part of installation materials (source or
+binary).  That being the case, it does not restrict licensing of Lex*
+products.  It is used as a convenience, but could be replaced by
+alternative function in the build script if necessary.

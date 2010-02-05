@@ -1,0 +1,8 @@
+#Wed Feb 04 22:13:58 CST 2009
+eclipse.preferences.version=1
+encoding//master.preferences/OWLLoadPreferences.xsd=UTF8
+encoding//master/Collections.xsd=UTF8
+encoding//master/Core.xsd=UTF8
+encoding//master/InterfaceElements.xsd=UTF8
+encoding//master/NCIHistory.xsd=UTF8
+instance/org.eclipse.core.net/org.eclipse.core.net.hasMigrated=true

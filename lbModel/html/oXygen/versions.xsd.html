@@ -1,0 +1,1662 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>LexBIG - versions.xsd</title>
+      <meta http-equiv="Content-Type" content="text/xml; charset=UTF-8"/>
+      <style type="text/css">
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* More-configurable styles */
+
+/******** General ********/
+         
+/* Document body */
+body {
+   color: Black;
+   background-color: White;
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+}
+                  
+/* Horizontal rules */
+hr {
+   color: black;
+}
+/* Document title */
+h1 {
+   font-size: 18pt;
+   letter-spacing: 2px;
+   border-bottom: 1px #ccc solid;
+   padding-top: 5px;
+   padding-bottom: 5px;
+}
+/* Main section headers */
+h2 {
+   font-size: 14pt;
+   letter-spacing: 1px;
+}
+/* Sub-section headers */
+h3, h3 a, h3 span {
+   font-size: 12pt;
+   font-weight: bold;
+   color: black;
+}
+/* Table displaying the properties of the schema components or the
+   schema document itself */
+table.properties th, table.properties th a {
+   color: black;
+   background-color: #F99; /* Pink */
+}
+table.properties td {
+   background-color: #eee; /* Gray */
+}
+
+img{
+ border: 0;
+}         
+
+/********* Documentation style *************/
+p.documentation {
+   color:black;
+   font-style:italic;
+         background-color: #EEEEFF;
+         border: 1px solid #DDDDFF;
+         padding-top: 1px;
+         margin-right: 30px;
+         margin-top: 1px;
+}
+
+         
+/******** Table of Contents Section ********/
+
+/* Controls for switching between printing and viewing modes */
+div#printerControls {
+   color: #963; /* Orange-brown */
+}
+/* Controls that can collapse or expand all XML Instance
+   Representation and Schema Component Representation boxes */
+div#globalControls {
+   border: 2px solid #999;
+}
+
+
+/******** Schema Document Properties Section ********/
+
+/* Table displaying the namespaces declared in the schema */
+table.namespaces th {
+   background-color: #ccc;
+}
+table.namespaces td {
+   background-color: #eee;
+}
+/* Target namespace of the schema */
+span.targetNS {
+   color: #06C;
+   font-weight: bold;
+}
+
+
+/******** Schema Components' Sections ********/
+
+/* Name of schema component */
+.name {
+   color: #F93; /* Orange */
+}
+
+/* Hierarchy table */
+table.hierarchy {
+   border: 2px solid #999; /* Gray */
+}
+
+/* XML Instance Representation table */
+div.sample div.contents {
+   border: 1px dashed black;
+}
+
+
+/* Schema Component Representation table */
+div.schemaComponent div.contents {
+   border: 2px black solid;
+}
+
+
+/******** Glossary Section ********/
+
+/* Glossary Terms */
+.glossaryTerm {
+   color: #036; /* Blue */
+}
+
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* Printer-version styles */
+
+@media print {
+
+/* Ensures that controls are hidden when printing */
+div#printerControls {
+   visibility: hidden;
+}
+div#globalControls {
+   visibility: hidden;
+}
+#legend {
+   display: none;
+}
+#legendTOC {
+   display: none;
+}
+#glossary {
+   display: none;
+}
+#glossaryTOC {
+   display: none;
+}
+
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* Base styles */
+
+/******** General ********/
+
+/* Unordered lists */
+ul {
+   margin-left: 1.5em;
+   margin-bottom: 0em;
+}
+/* Tables */
+table {
+   margin-top: 10px;
+   margin-bottom: 10px;
+   margin-left: 2px;
+   margin-right: 2px;
+}
+table th, table td {
+   font-size: 10pt;
+   vertical-align: top;
+   padding-top: 3px;
+   padding-bottom: 3px;
+   padding-left: 10px;
+   padding-right: 10px;
+}
+table th {
+   font-weight: bold;
+   text-align: left;
+}
+/* Table displaying the properties of the schema components or the
+   schema document itself */
+table.properties {
+   width: 90%;
+}
+table.properties th {
+   width: 30%;
+}
+/* Boxes that can make its content appear and disappear*/
+div.box {
+   margin: 1em;
+}
+   /* Box caption */
+div.box span.caption {
+   font-weight: bold;
+}
+   /* Button to open and close the box */
+div.box input.control {
+   width: 1.4em;
+   height: 1.4em;
+   text-align: center;
+   vertical-align: middle;
+   font-size: 11pt;
+}
+   /* Box contents */
+div.box div.contents {
+   margin-top: 3px;
+}
+
+
+/******** Table of Contents Section ********/
+
+/* Controls for switching between printing and viewing modes */
+div#printerControls {
+   white-space: nowrap;
+   font-weight: bold;
+   padding: 5px;
+   margin: 5px;
+}
+/* Controls that can collapse or expand all XML Instance
+   Representation and Schema Component Representation boxes */
+div#globalControls {
+   padding: 10px;
+   margin: 5px;
+}
+
+
+/******** Schema Document Properties Section ********/
+
+/* Table displaying the namespaces declared in the schema */
+table.namespaces th {
+}
+table.namespaces td {
+}
+/* Target namespace of the schema */
+span.targetNS {
+}
+
+
+/******** Schema Components' Sections ********/
+
+/* Name of schema component */
+.name {
+}
+
+/* Hierarchy table */
+table.hierarchy {
+   width: 90%;
+}
+table.hierarchy th {
+   font-weight: normal;
+   font-style: italic;
+   width: 20%;
+}
+table.hierarchy th, table.hierarchy td {
+   padding: 5px;
+}
+
+/* XML Instance Representation table */
+div.sample {
+   width: 90%;
+}
+div.sample div.contents {
+   padding: 5px;
+   font-family: Courier New, sans-serif;
+   font-size: 10pt;
+}
+   /* Normal elements and attributes */
+div.sample div.contents, div.sample div.contents a {
+   color: black;
+}
+   /* Group Headers */
+div.sample div.contents .group, div.sample div.contents .group a {
+   color: #999; /* Light gray */
+}
+   /* Type Information */
+div.sample div.contents .type, div.sample div.contents .type a {
+   color: #999; /* Light gray */
+}
+   /* Occurrence Information */
+div.sample div.contents .occurs, div.sample div.contents .occurs a {
+   color: #999; /* Light gray */
+}
+   /* Fixed values */
+div.sample div.contents .fixed {
+   color: #063; /* Green */
+   font-weight: bold;
+}
+   /* Simple type constraints */
+div.sample div.contents .constraint, div.sample div.contents .constraint a {
+   color: #999; /* Light gray */
+}
+   /* Elements and attributes inherited from base type */
+div.sample div.contents .inherited, div.sample div.contents .inherited a {
+   color: #666; /* Dark gray */
+}
+   /* Elements and attributes added to or changed from base type */
+div.sample div.contents .newFields {
+   font-weight: bold;
+}
+   /* Other type of information */
+div.sample div.contents .other, div.sample div.contents .other a {
+   color: #369; /* Blue */
+   font-style: italic;
+}
+   /* Link to open up window displaying documentation */
+div.sample div.contents a.documentation {
+   text-decoration: none;
+   padding-left: 3px;
+   padding-right: 3px;
+   padding-top: 0px;
+   padding-bottom: 0px;
+   font-weight: bold;
+   font-size: 11pt;
+   background-color: #FFD;
+   color: #069;
+}
+   /* Invert colors when hovering over link to open up window 
+      displaying documentation */
+div.sample div.contents a.documentation:hover {
+   color: #FFD;
+   background-color: #069;
+}
+
+/* Schema Component Representation table */
+div.schemaComponent {
+   width: 90%;
+}
+div.schemaComponent div.contents {
+   font-family: Courier New, sans-serif;
+   font-size: 10pt;
+   padding: 5px;
+}
+   /* Syntax characters */
+div.schemaComponent div.contents {
+   color: #00f; /* blue */
+}
+   /* Element and attribute tags */
+div.schemaComponent div.contents .scTag {
+   color: #933; /* maroon */
+}
+   /* Element and attribute content */
+div.schemaComponent div.contents .scContent, div.schemaComponent div.contents .scContent a {
+   color: black;
+   font-weight: bold;
+}
+   /* Comments */
+div.schemaComponent div.contents .comment {
+   color: #999; /* Light gray */
+}
+
+/******** Legend Section ********/
+
+div#legend table, div#legend div {
+   margin-bottom: 3px;
+}
+div#legend div.hint {
+   color: #999; /* Light gray */
+   width: 90%;
+   margin-left: 1em;
+   margin-bottom: 2em;
+}
+
+
+/******** Glossary Section ********/
+
+/* Glossary Terms */
+.glossaryTerm {
+   font-weight: bold;
+}
+
+/********* Details *************/
+.detailsToc {
+  color: #666; /* Light gray */
+}
+
+.details {
+  color: #666; /* Light gray */
+  text-decoration:none;
+}
+
+/******** Footer ********/
+
+.footer {
+   font-size: 8pt;
+}
+</style>
+      <script type="text/javascript">
+<!--
+          /* IDs of XML Instance Representation boxes */
+var xiBoxes = new Array('h-109482192_xibox', 'h-7847793_xibox', 'h-65755652_xibox', 'h-1991159083_xibox');
+/* IDs of diagram boxes */
+var diagramBoxes = new Array('h-109482192_diagram', 'h-7847793_diagram', 'h-65755652_diagram', 'h-1991159083_diagram');
+/* IDs of logical diagram boxes */
+var logicalDiagramBoxes = new Array('h-1991159083_logicalDiagram');
+/* IDs of Schema Component Representation boxes */
+var scBoxes = new Array('schema_scbox', 'h-109482192_scbox', 'h-7847793_scbox', 'h-65755652_scbox', 'h-1991159083_scbox');
+
+/**
+ * Can get the ID of the button controlling
+ * a collapseable box by concatenating
+ * this string onto the ID of the box itself.
+ */
+var B_SFIX = "_button";
+
+
+/**
+ * Returns an element in the current HTML document.
+ * 
+ * @param elementID Identifier of HTML element
+ * @return               HTML element object
+ */
+function getElementObject(elementID) {
+    var elemObj = null;
+    if (document.getElementById) {
+        elemObj = document.getElementById(elementID);
+    }
+    return elemObj;
+}             
+
+/**
+ * Closes a collapseable box.
+ * 
+ * @param boxObj       Collapseable box
+ * @param buttonObj Button controlling box
+ */
+function closeBox(boxObj, buttonObj) {
+  if (boxObj == null || buttonObj == null) {
+     // Box or button not found
+  } else {
+     // Change 'display' CSS property of box
+     boxObj.style.display="none";
+
+     // Change text of button 
+     if (boxObj.style.display=="none") {
+        buttonObj.value=" + ";
+     }
+  }
+}
+
+/**
+ * Opens a collapseable box.
+ * 
+ * @param boxObj       Collapseable box
+ * @param buttonObj Button controlling box
+ */
+function openBox(boxObj, buttonObj) {
+  if (boxObj == null || buttonObj == null) {
+     // Box or button not found
+  } else {
+     // Change 'display' CSS property of box
+     boxObj.style.display="block";
+
+     // Change text of button
+     if (boxObj.style.display=="block") {
+        buttonObj.value=" - ";
+     }
+  }
+}
+
+/**
+ * Sets the state of a collapseable box.
+ * 
+ * @param boxID Identifier of box
+ * @param open If true, box is "opened",
+ *             Otherwise, box is "closed".
+ */
+function setState(boxID, open) {
+  var boxObj = getElementObject(boxID);
+  var buttonObj = getElementObject(boxID+B_SFIX);
+  if (boxObj == null || buttonObj == null) {
+     // Box or button not found
+  } else if (open) {
+     openBox(boxObj, buttonObj);
+     // Make button visible
+     buttonObj.style.display="inline";
+  } else {
+     closeBox(boxObj, buttonObj);
+     // Make button visible
+     buttonObj.style.display="inline";
+  }
+}
+
+/**
+ * Switches the state of a collapseable box, e.g.
+ * if it's opened, it'll be closed, and vice versa.
+ * 
+ * @param boxID Identifier of box
+ */
+function switchState(boxID) {
+  var boxObj = getElementObject(boxID);
+  var buttonObj = getElementObject(boxID+B_SFIX);
+  if (boxObj == null || buttonObj == null) {
+     // Box or button not found
+  } else if (boxObj.style.display=="none") {
+     // Box is closed, so open it
+     openBox(boxObj, buttonObj);
+  } else if (boxObj.style.display=="block") {
+     // Box is opened, so close it
+     closeBox(boxObj, buttonObj);
+  }
+}
+
+/**
+ * Closes all boxes in a given list.
+ * 
+ * @param boxList Array of box IDs
+ */
+function collapseAll(boxList) {
+  var idx;
+  for (idx = 0; idx < boxList.length; idx++) {
+     var boxObj = getElementObject(boxList[idx]);
+     var buttonObj = getElementObject(boxList[idx]+B_SFIX);
+     closeBox(boxObj, buttonObj);
+  }
+}
+
+/**
+ * Open all boxes in a given list.
+ * 
+ * @param boxList Array of box IDs
+ */
+function expandAll(boxList) {
+  var idx;
+  for (idx = 0; idx < boxList.length; idx++) {
+     var boxObj = getElementObject(boxList[idx]);
+     var buttonObj = getElementObject(boxList[idx]+B_SFIX);
+     openBox(boxObj, buttonObj);
+  }
+}
+
+/**
+ * Makes all the control buttons of boxes appear.
+ * 
+ * @param boxList Array of box IDs
+ */
+function viewControlButtons(boxList) {
+    var idx;
+    for (idx = 0; idx < boxList.length; idx++) {
+        buttonObj = getElementObject(boxList[idx]+B_SFIX);
+        if (buttonObj != null) {
+            buttonObj.style.display = "inline";
+        }
+    }
+}
+
+/**
+ * Makes all the control buttons of boxes disappear.
+ * 
+ * @param boxList Array of box IDs
+ */
+function hideControlButtons(boxList) {
+    var idx;
+    for (idx = 0; idx < boxList.length; idx++) {
+        buttonObj = getElementObject(boxList[idx]+B_SFIX);
+        if (buttonObj != null) {
+            buttonObj.style.display = "none";
+        }
+    }
+}
+
+/**
+ * Sets the page for either printing mode
+ * or viewing mode. In printing mode, the page
+ * is made to be more readable when printing it out.
+ * In viewing mode, the page is more browsable.
+ *
+ * @param isPrinterVersion If true, display in
+ *                                 printing mode; otherwise, 
+ *                                 in viewing mode
+ */
+function displayMode(isPrinterVersion) {
+    var obj;
+    if (isPrinterVersion) {
+        // Hide global control buttons
+        obj = getElementObject("globalControls");
+        if (obj != null) {
+            obj.style.visibility = "hidden";
+        }
+        // Hide Legend
+        obj = getElementObject("legend");
+        if (obj != null) {
+            obj.style.display = "none";
+        }
+        obj = getElementObject("legendTOC");
+        if (obj != null) {
+            obj.style.display = "none";
+        }
+        // Hide Glossary
+        obj = getElementObject("glossary");
+        if (obj != null) {
+            obj.style.display = "none";
+        }
+        obj = getElementObject("glossaryTOC");
+        if (obj != null) {
+            obj.style.display = "none";
+        }
+
+        // Expand all diagrams
+        expandAll(diagramBoxes);
+        // Expand all logical diagrams
+        expandAll(logicalDiagramBoxes);        
+        // Expand all XML Instance Representation tables
+        expandAll(xiBoxes);
+        // Expand all Schema Component Representation tables
+        expandAll(scBoxes);
+
+        // Hide Control buttons
+        hideControlButtons(diagramBoxes);
+        hideControlButtons(logicalDiagramBoxes);
+        hideControlButtons(xiBoxes);
+        hideControlButtons(scBoxes);
+    } else {
+        // View global control buttons
+        obj = getElementObject("globalControls");
+        if (obj != null) {
+            obj.style.visibility = "visible";
+        }
+        // View Legend
+        obj = getElementObject("legend");
+        if (obj != null) {
+            obj.style.display = "block";
+        }
+        obj = getElementObject("legendTOC");
+        if (obj != null) {
+            obj.style.display = "block";
+        }
+        // View Glossary
+        obj = getElementObject("glossary");
+        if (obj != null) {
+            obj.style.display = "block";
+        }
+        obj = getElementObject("glossaryTOC");
+        if (obj != null) {
+            obj.style.display = "block";
+        }
+
+        // Expand all diagram boxes
+        expandAll(diagramBoxes);
+        // Collapse all logical diagram boxes.
+        collapseAll(logicalDiagramBoxes);
+        // Expand all XML Instance Representation tables
+        expandAll(xiBoxes);
+        // Collapse all Schema Component Representation tables
+        collapseAll(scBoxes);
+
+        // View Control buttons
+        viewControlButtons(diagramBoxes);
+        viewControlButtons(logicalDiagramBoxes);
+        viewControlButtons(xiBoxes);
+        viewControlButtons(scBoxes);
+    }
+}
+
+
+
+// -->
+</script>
+      <script type="text/javascript">
+<!--
+          
+         
+/**
+ * Counter of documentation windows
+ * Used to give each window a unique name
+ */
+var windowCount = 0;
+         
+/**
+ * Opens up a window displaying the documentation
+ * of a schema component in the XML Instance
+ * Representation table.
+ * 
+ * @param compDesc      Description of schema component 
+ * @param compName      Name of schema component 
+ * @param docTextArray Array containing the paragraphs 
+ *                           of the new document
+ */
+function viewDocumentation(compDesc, compName, docTextArray) {
+  var width = 400;
+  var height = 200;
+  var locX = 100;
+  var locY = 200;
+
+  /* Generate content */
+  var actualText = "<html>";
+  actualText += "<head><title>";
+  actualText += compDesc;
+  if (compName != '') {
+     actualText += ": " + compName;
+  }
+  actualText += "</title></head>";
+  actualText += "<body bgcolor=\"#FFFFEE\">";
+  // Title
+  actualText += "<p style=\"font-family: Arial, sans-serif; font-size: 12pt; font-weight: bold; letter-spacing:1px;\">";
+  actualText += compDesc;
+  if (compName != '') {
+     actualText += ": <span style=\"color:#006699\">" + compName + "</span>";
+  }
+  actualText += "</p>";
+  // Documentation
+  var idx;
+  for (idx = 0; idx < docTextArray.length; idx++) {
+     actualText += "<p style=\"font-family: Arial, sans-serif; font-size: 10pt;\">" + docTextArray[idx] + "</p>";
+  }
+  // Link to close window
+  actualText += "<a href=\"javascript:void(0)\" onclick=\"window.close();\" style=\"font-family: Arial, sans-serif; font-size: 8pt;\">Close</a>";
+  actualText += "</body></html>";
+
+  /* Display window */
+  windowCount++;
+  var docWindow = window.open("", "documentation"+windowCount, "toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable,alwaysRaised,dependent,titlebar=no,width="+width+",height="+height+",screenX="+locX+",left="+locX+",screenY="+locY+",top="+locY);
+  docWindow.document.write(actualText);
+}         
+      
+// -->
+</script>
+   </head>
+   <body>
+      <h1>
+         <a name="top">LexBIG</a>
+      </h1>
+      <div style="float: right;">
+         <div id="printerControls" style="display:none;">
+            <input type="checkbox" onclick="displayMode(this.checked)"/>Printer-friendly Version</div>
+         <script type="text/javascript">
+<!--
+          
+var pc = getElementObject("printerControls");
+if (pc != null) {
+   pc.style.display="block";
+}
+               
+// -->
+</script>
+         <div id="globalControls" style="display:none">
+            <strong>Logical Diagram:</strong>
+            <br/>
+            <span style="margin-left: 1em; white-space: nowrap">[ <a href="javascript:void(0)" onclick="expandAll(logicalDiagramBoxes)">Expand All</a> | <a href="javascript:void(0)" onclick="collapseAll(logicalDiagramBoxes)">Collapse All</a> ]</span>
+            <br/>
+            <br/>
+            <strong>XML Instance Representation:</strong>
+            <br/>
+            <span style="margin-left: 1em; white-space: nowrap">[ <a href="javascript:void(0)" onclick="expandAll(xiBoxes)">Expand All</a> | <a href="javascript:void(0)" onclick="collapseAll(xiBoxes)">Collapse All</a> ]</span>
+            <br/>
+            <br/>
+            <strong>Diagram:</strong>
+            <br/>
+            <span style="margin-left: 1em; white-space: nowrap">[ <a href="javascript:void(0)" onclick="expandAll(diagramBoxes)">Expand All</a> | <a href="javascript:void(0)" onclick="collapseAll(diagramBoxes)">Collapse All</a> ]</span>
+            <br/>
+            <br/>
+            <strong>Schema Component Representation:</strong>
+            <br/>
+            <span style="margin-left: 1em; white-space: nowrap">[ <a href="javascript:void(0)" onclick="expandAll(scBoxes)">Expand All</a> | <a href="javascript:void(0)" onclick="collapseAll(scBoxes)">Collapse All</a> ]</span>
+         </div>
+         <script type="text/javascript">
+<!--
+          
+var gc = getElementObject("globalControls");
+if (gc != null) {
+   gc.style.display="block";
+}
+               
+// -->
+</script>
+      </div>
+      <h2>Table of Contents</h2>
+      <ul>
+         <li>
+            <a href="#SchemaProperties">Schema Document Properties</a>
+         </li>
+         <li>
+            <a href="#SchemaDeclarations">Global Declarations</a>
+            <ul>
+               <li>
+                  <a href="#h-1991159083">Element: <strong>systemRelease</strong>
+                  </a>
+               </li>
+            </ul>
+         </li>
+         <li>
+            <a href="#SchemaDefinitions">Global Definitions</a>
+            <ul>
+               <li>
+                  <a href="#h-109482192">Complex Type: <strong>entityVersion</strong>
+                  </a>
+               </li>
+               <li>
+                  <a href="#h-7847793">Complex Type: <strong>history</strong>
+                  </a>
+               </li>
+               <li>
+                  <a href="#h-65755652">Complex Type: <strong>referenceSet</strong>
+                  </a>
+               </li>
+            </ul>
+         </li>
+      </ul>
+      <h4>Master schema documentation file: 
+            <a href="Collections.xsd.html">Collections.xsd.html</a>
+      </h4>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <h2>
+         <a name="SchemaProperties">Schema Document Properties</a>
+      </h2>
+      <table class="properties">
+         <tr>
+            <th>Target Namespace</th>
+            <td>
+               <span class="targetNS">http://LexGrid.org/schema/2006/01/LexGrid/versions</span>
+            </td>
+         </tr>
+         <tr>
+            <th>Element and Attribute Namespaces</th>
+            <td>
+               <ul>
+                  <li>Global element and attribute declarations belong to this schema's target namespace.</li>
+                  <li>By default, local element declarations belong to this schema's target namespace.</li>
+                  <li>By default, local attribute declarations have no namespace.</li>
+               </ul>
+            </td>
+         </tr>
+         <tr>
+            <th>Schema Composition</th>
+            <td>
+               <ul>
+                  <li>This schema imports schema(s) from the following namespace(s):<ul>
+                        <li>
+                           <em>http://LexGrid.org/schema/2006/01/LexGrid/builtins</em> (at <a title="Jump to schema documentation for 'builtins.xsd'."
+                              href="builtins.xsd.html">builtins.xsd</a>)</li>
+                        <li>
+                           <em>http://LexGrid.org/schema/2006/01/LexGrid/commonTypes</em> (at <a title="Jump to schema documentation for 'commonTypes.xsd'."
+                              href="commonTypes.xsd.html">commonTypes.xsd</a>)</li>
+                        <li>
+                           <em>http://LexGrid.org/schema/2006/01/LexGrid/naming</em> (at <a title="Jump to schema documentation for 'naming.xsd'." href="naming.xsd.html">naming.xsd</a>)</li>
+                     </ul>
+                  </li>
+               </ul>
+            </td>
+         </tr>
+      </table>
+      <h3>Declared Namespaces</h3>
+      <table class="namespaces">
+         <tr>
+            <th>Prefix</th>
+            <th>Namespace</th>
+         </tr>
+         <tr>
+            <td>
+               <a name="ns_">Default namespace</a>
+            </td>
+            <td>
+               <span class="targetNS">http://LexGrid.org/schema/2006/01/LexGrid/versions</span>
+            </td>
+         </tr>
+         <tr>
+            <td>
+               <a name="ns_xml">xml</a>
+            </td>
+            <td>http://www.w3.org/XML/1998/namespace</td>
+         </tr>
+         <tr>
+            <td>
+               <a name="ns_lgBuiltin">lgBuiltin</a>
+            </td>
+            <td>http://LexGrid.org/schema/2006/01/LexGrid/builtins</td>
+         </tr>
+         <tr>
+            <td>
+               <a name="ns_lgCommon">lgCommon</a>
+            </td>
+            <td>http://LexGrid.org/schema/2006/01/LexGrid/commonTypes</td>
+         </tr>
+         <tr>
+            <td>
+               <a name="ns_ldap">ldap</a>
+            </td>
+            <td>http://LexGrid.org/schema/2006/01/LexGrid/ldap</td>
+         </tr>
+         <tr>
+            <td>
+               <a name="ns_xs">xs</a>
+            </td>
+            <td>http://www.w3.org/2001/XMLSchema</td>
+         </tr>
+         <tr>
+            <td>
+               <a name="ns_lgNaming">lgNaming</a>
+            </td>
+            <td>http://LexGrid.org/schema/2006/01/LexGrid/naming</td>
+         </tr>
+      </table>
+      <div class="schemaComponent box">
+         <div>
+            <input type="button" id="schema_scbox_button" class="control"
+                   onclick="switchState('schema_scbox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Schema Component Representation</span>
+         </div>
+         <div id="schema_scbox" class="contents">
+            <div style="margin-left: 0em">&lt;<span class="scTag">xs:schema</span> 
+               <span class="scTag">targetNamespace</span>="<span class="scContent">http://LexGrid.org/schema/2006/01/LexGrid/versions</span>" <span class="scTag">elementFormDefault</span>="<span class="scContent">qualified</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:import</span> 
+                  <span class="scTag">namespace</span>="<span class="scContent">http://LexGrid.org/schema/2006/01/LexGrid/builtins</span>" <span class="scTag">schemaLocation</span>="<span class="scContent">builtins.xsd</span>"/&gt;</div>
+               <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:import</span> 
+                  <span class="scTag">namespace</span>="<span class="scContent">http://LexGrid.org/schema/2006/01/LexGrid/commonTypes</span>" <span class="scTag">schemaLocation</span>="<span class="scContent">commonTypes.xsd</span>"/&gt;</div>
+               <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:import</span> 
+                  <span class="scTag">namespace</span>="<span class="scContent">http://LexGrid.org/schema/2006/01/LexGrid/naming</span>" <span class="scTag">schemaLocation</span>="<span class="scContent">naming.xsd</span>"/&gt;</div>
+               <div class="scContent" style="margin-left: 1.5em">...</div>&lt;/<span class="scTag">xs:schema</span>&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('schema_scbox', false);
+// -->
+</script>
+      </div>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <h2>
+         <a name="SchemaDeclarations">Global Declarations</a>
+      </h2>
+      <h3>Element: <a name="h-1991159083" class="name">systemRelease</a>
+      </h3>
+      <table class="properties">
+         <tr>
+            <th>Name</th>
+            <td>systemRelease</td>
+         </tr>
+         <tr>
+            <th>Used by (from the same schema document)</th>
+            <td>Complex Type <b>
+                  <a href="#h-7847793">history</a>
+               </b>
+            </td>
+         </tr>
+         <tr>
+            <th>Type</th>
+            <td>Locally-defined complex type</td>
+         </tr>
+         <tr>
+            <th>Nillable</th>
+            <td>no</td>
+         </tr>
+         <tr>
+            <th>Abstract</th>
+            <td>no</td>
+         </tr>
+         <tr>
+            <th>Documentation</th>
+            <td>A snapshot of one or more coding schemes or value sets at a point in time.</td>
+         </tr>
+         <tr>
+            <th>Application Data</th>
+            <td>
+                                <code>&lt;<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt; <div style="margin-left: 1.5em">1.3.6.1.4.1.2114.108.1.7.25</div>&lt;/<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt;</code>
+                                <code>&lt;rdn&gt; <div style="margin-left: 1.5em">releaseId</div>&lt;/rdn&gt;</code>
+                        </td>
+         </tr>
+      </table>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-1991159083_logicalDiagram_button" class="control"
+                   onclick="switchState('h-1991159083_logicalDiagram'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Logical Diagram</span>
+         </div>
+         <div id="h-1991159083_logicalDiagram" class="contents">
+            <img usemap="#h517751687" src="schemaDiagrams/h517751687.png"/>
+            <!--
+            Map ref: file:/C:/work/build/workspace/lbModel/html/oXygen//schemaDiagrams/h517751687.map--><map name="h517751687">
+               <area shape="rect" alt="h1971178902" coords="472,265,805,341"
+                     href="versions.xsd.html#h1971178902"/>
+
+               <area shape="rect" alt="h-1374027852" coords="472,351,772,410"
+                     href="versions.xsd.html#h-1374027852"/>
+
+               <area shape="rect" alt="h-864090109" coords="472,420,772,479"
+                     href="versions.xsd.html#h-864090109"/>
+
+               <area shape="rect" alt="h-222211220" coords="472,489,772,548"
+                     href="versions.xsd.html#h-222211220"/>
+
+            </map>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-1991159083_logicalDiagram', false);
+// -->
+</script>
+      </div>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-1991159083_xibox_button" class="control"
+                   onclick="switchState('h-1991159083_xibox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">XML Instance Representation</span>
+         </div>
+         <div id="h-1991159083_xibox" class="contents">
+            <div style="margin-left: 0em">&lt;systemRelease<br/>
+               <span style="margin-left: 0.5em"> releaseId="<span class="type">
+                     <a href="#ns_lgNaming" title="Find out namespace of 'lgNaming' prefix">lgNaming</a>:<a title="Jump to &#34;URN&#34; type definition(located in external schema documentation)."
+                        href="naming.xsd.html#h-676013364"
+                        class="externalLink">URN</a>
+                  </span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'The globally unique name of a system release.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em"> releaseAgency="<span class="type">
+                     <a href="#ns_lgNaming" title="Find out namespace of 'lgNaming' prefix">lgNaming</a>:<a title="Jump to &#34;URN&#34; type definition(located in external schema documentation)."
+                        href="naming.xsd.html#h-676013364"
+                        class="externalLink">URN</a>
+                  </span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'Agency responsible for a release.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em"> releaseURN="<span class="type">
+                     <a href="#ns_lgNaming" title="Find out namespace of 'lgNaming' prefix">lgNaming</a>:<a title="Jump to &#34;URN&#34; type definition(located in external schema documentation)."
+                        href="naming.xsd.html#h-676013364"
+                        class="externalLink">URN</a>
+                  </span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'The URN of a system release.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em"> releaseDate="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsTimestamp&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h600702930"
+                        class="externalLink">tsTimestamp</a>
+                  </span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'The date time of a release.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em"> basedOnRelease="<span class="type">
+                     <a href="#ns_lgNaming" title="Find out namespace of 'lgNaming' prefix">lgNaming</a>:<a title="Jump to &#34;URN&#34; type definition(located in external schema documentation)."
+                        href="naming.xsd.html#h-676013364"
+                        class="externalLink">URN</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'Release to which this set of changes was applied to yield the containing release.'</p>"</span>&gt; <br/>
+               <div style="margin-left: 1.5em">&lt;entityDescription&gt; <span class="type">
+                     <a title="Jump to &#34;entityDescription&#34; type definition(located in external schema documentation)."
+                        href="commonTypes.xsd.html#h605612628"
+                        class="externalLink">entityDescription</a>
+                  </span> &lt;/entityDescription&gt; <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'A textual description of the entity in the default language'</p>
+               </div>
+               <div style="margin-left: 1.5em">&lt;releaseDefines&gt; <span class="type">
+                     <a title="Jump to &#34;referenceSet&#34; type definition." href="#h-65755652">referenceSet</a>
+                  </span> &lt;/releaseDefines&gt; <span class="occurs">[1]</span> 
+                  <p class="documentation">'The names, identifiers and versions of the code systems and value domains defined by this release.'</p>
+               </div>
+               <div style="margin-left: 1.5em">&lt;releaseContains&gt; <span class="type">
+                     <a title="Jump to &#34;referenceSet&#34; type definition." href="#h-65755652">referenceSet</a>
+                  </span> &lt;/releaseContains&gt; <span class="occurs">[1]</span> 
+                  <p class="documentation">'The names, identifiers and versions of the code systems copied into but not defined in this release.'</p>
+               </div>
+               <div style="margin-left: 1.5em">&lt;releaseReferences&gt; <span class="type">
+                     <a title="Jump to &#34;referenceSet&#34; type definition." href="#h-65755652">referenceSet</a>
+                  </span> &lt;/releaseReferences&gt; <span class="occurs">[1]</span> 
+                  <p class="documentation">'The names, identifiers and versions of the code systems and value domains referenced this release.'</p>
+               </div>&lt;/systemRelease&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-1991159083_xibox', true);
+// -->
+</script>
+      </div>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-1991159083_diagram_button" class="control"
+                   onclick="switchState('h-1991159083_diagram'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Diagram</span>
+         </div>
+         <div id="h-1991159083_diagram" class="contents">
+            <img usemap="#h1639386641" src="schemaDiagrams/h1639386641.png"/>
+            <!--
+            Map ref: file:/C:/work/build/workspace/lbModel/html/oXygen//schemaDiagrams/h1639386641.map--><map name="h1639386641">
+</map>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-1991159083_diagram', true);
+// -->
+</script>
+      </div>
+      <div class="schemaComponent box">
+         <div>
+            <input type="button" id="h-1991159083_scbox_button" class="control"
+                   onclick="switchState('h-1991159083_scbox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Schema Component Representation</span>
+         </div>
+         <div id="h-1991159083_scbox" class="contents">
+            <div style="margin-left: 0em">&lt;<span class="scTag">xs:element</span> 
+               <span class="scTag">name</span>="<span class="scContent">systemRelease</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:complexType</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:complexContent</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:extension</span> 
+                        <span class="scTag">base</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;describable&#34; type definition(located in external schema documentation)."
+                                 href="commonTypes.xsd.html#h215704495"
+                                 class="externalLink">describable</a>
+                           </span>
+                        </span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> 
+                              <span class="scTag">name</span>="<span class="scContent">releaseDefines</span>" <span class="scTag">type</span>="<span class="scContent">
+                                 <span class="type">
+                                    <a title="Jump to &#34;referenceSet&#34; type definition." href="#h-65755652">referenceSet</a>
+                                 </span>
+                              </span>"/&gt;</div>
+                           <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> 
+                              <span class="scTag">name</span>="<span class="scContent">releaseContains</span>" <span class="scTag">type</span>="<span class="scContent">
+                                 <span class="type">
+                                    <a title="Jump to &#34;referenceSet&#34; type definition." href="#h-65755652">referenceSet</a>
+                                 </span>
+                              </span>"/&gt;</div>
+                           <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> 
+                              <span class="scTag">name</span>="<span class="scContent">releaseReferences</span>" <span class="scTag">type</span>="<span class="scContent">
+                                 <span class="type">
+                                    <a title="Jump to &#34;referenceSet&#34; type definition." href="#h-65755652">referenceSet</a>
+                                 </span>
+                              </span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div>
+                        <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                           <span class="scTag">name</span>="<span class="scContent">releaseId</span>" <span class="scTag">type</span>="<span class="scContent">
+                              <span class="type">
+                                 <a href="#ns_lgNaming" title="Find out namespace of 'lgNaming' prefix">lgNaming</a>:<a title="Jump to &#34;URN&#34; type definition(located in external schema documentation)."
+                                    href="naming.xsd.html#h-676013364"
+                                    class="externalLink">URN</a>
+                              </span>
+                           </span>" <span class="scTag">use</span>="<span class="scContent">required</span>"/&gt;</div>
+                        <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                           <span class="scTag">name</span>="<span class="scContent">releaseAgency</span>" <span class="scTag">type</span>="<span class="scContent">
+                              <span class="type">
+                                 <a href="#ns_lgNaming" title="Find out namespace of 'lgNaming' prefix">lgNaming</a>:<a title="Jump to &#34;URN&#34; type definition(located in external schema documentation)."
+                                    href="naming.xsd.html#h-676013364"
+                                    class="externalLink">URN</a>
+                              </span>
+                           </span>" <span class="scTag">use</span>="<span class="scContent">required</span>"/&gt;</div>
+                        <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                           <span class="scTag">name</span>="<span class="scContent">releaseURN</span>" <span class="scTag">type</span>="<span class="scContent">
+                              <span class="type">
+                                 <a href="#ns_lgNaming" title="Find out namespace of 'lgNaming' prefix">lgNaming</a>:<a title="Jump to &#34;URN&#34; type definition(located in external schema documentation)."
+                                    href="naming.xsd.html#h-676013364"
+                                    class="externalLink">URN</a>
+                              </span>
+                           </span>" <span class="scTag">use</span>="<span class="scContent">required</span>"/&gt;</div>
+                        <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                           <span class="scTag">name</span>="<span class="scContent">releaseDate</span>" <span class="scTag">type</span>="<span class="scContent">
+                              <span class="type">
+                                 <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsTimestamp&#34; type definition(located in external schema documentation)."
+                                    href="builtins.xsd.html#h600702930"
+                                    class="externalLink">tsTimestamp</a>
+                              </span>
+                           </span>" <span class="scTag">use</span>="<span class="scContent">required</span>"/&gt;</div>
+                        <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                           <span class="scTag">name</span>="<span class="scContent">basedOnRelease</span>" <span class="scTag">type</span>="<span class="scContent">
+                              <span class="type">
+                                 <a href="#ns_lgNaming" title="Find out namespace of 'lgNaming' prefix">lgNaming</a>:<a title="Jump to &#34;URN&#34; type definition(located in external schema documentation)."
+                                    href="naming.xsd.html#h-676013364"
+                                    class="externalLink">URN</a>
+                              </span>
+                           </span>"/&gt;</div>&lt;/<span class="scTag">xs:extension</span>&gt;</div>&lt;/<span class="scTag">xs:complexContent</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>&lt;/<span class="scTag">xs:element</span>&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-1991159083_scbox', false);
+// -->
+</script>
+      </div>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <h2>
+         <a name="SchemaDefinitions">Global Definitions</a>
+      </h2>
+      <h3>Complex Type: <a name="h-109482192" class="name">entityVersion</a>
+      </h3>
+      <table class="hierarchy">
+         <tr>
+            <th>Super-types:</th>
+            <td>
+               <span class="type">
+                  <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;describable&#34; type definition(located in external schema documentation)."
+                     href="commonTypes.xsd.html#h215704495"
+                     class="externalLink">describable</a>
+               </span> &lt; <strong>entityVersion</strong> (by extension)</td>
+         </tr>
+         <tr>
+            <th>Sub-types:</th>
+            <td>None</td>
+         </tr>
+      </table>
+      <table class="properties">
+         <tr>
+            <th>Name</th>
+            <td>entityVersion</td>
+         </tr>
+         <tr>
+            <th>Abstract</th>
+            <td>no</td>
+         </tr>
+         <tr>
+            <th>Documentation</th>
+            <td>A static snapshot of the given entity.</td>
+         </tr>
+         <tr>
+            <th>Application Data</th>
+            <td>
+                                <code>&lt;<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt; <div style="margin-left: 1.5em">1.3.6.1.4.1.2114.108.1.7.21</div>&lt;/<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt;</code>
+                        </td>
+         </tr>
+      </table>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-109482192_xibox_button" class="control"
+                   onclick="switchState('h-109482192_xibox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">XML Instance Representation</span>
+         </div>
+         <div id="h-109482192_xibox" class="contents">
+            <div style="margin-left: 0em">&lt;...<br/>
+               <span style="margin-left: 0.5em" class="newFields"> isComplete="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'If true, this entity represents a complete copy of the particular release. If false, it only carries a delta.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> version="<span class="type">
+                     <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;version&#34; type definition(located in external schema documentation)."
+                        href="commonTypes.xsd.html#h-583173933"
+                        class="externalLink">version</a>
+                  </span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'The unique version identifier.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> versionOrder="<span class="type">
+                     <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;entryOrder&#34; type definition(located in external schema documentation)."
+                        href="commonTypes.xsd.html#h-1501502431"
+                        class="externalLink">entryOrder</a>
+                  </span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'The relative order of this version within the surrounding container.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> versionDate="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsTimestamp&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h600702930"
+                        class="externalLink">tsTimestamp</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'The end date for which this version is operative (considered commited).'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> effectiveDate="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsTimestamp&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h600702930"
+                        class="externalLink">tsTimestamp</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'The start date for which this version is operative (considered active).'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> releaseURN="<span class="type">
+                     <a href="#ns_lgNaming" title="Find out namespace of 'lgNaming' prefix">lgNaming</a>:<a title="Jump to &#34;URN&#34; type definition(located in external schema documentation)."
+                        href="naming.xsd.html#h-676013364"
+                        class="externalLink">URN</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'URN of the release from which this version is drawn.'</p>"</span>&gt; <br/>
+               <div style="margin-left: 1.5em" class="inherited">&lt;entityDescription&gt; <span class="type">
+                     <a title="Jump to &#34;entityDescription&#34; type definition(located in external schema documentation)."
+                        href="commonTypes.xsd.html#h605612628"
+                        class="externalLink">entityDescription</a>
+                  </span> &lt;/entityDescription&gt; <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'A textual description of the entity in the default language'</p>
+               </div>
+               <div style="margin-left: 1.5em" class="newFields">&lt;changeDocumentation&gt; <span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsCaseIgnoreDirectoryString&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h1307628056"
+                        class="externalLink">tsCaseIgnoreDirectoryString</a>
+                  </span> &lt;/changeDocumentation&gt; <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'User documentation about this particular change. Format is coding scheme specific.'</p>
+               </div>
+               <div style="margin-left: 1.5em" class="newFields">&lt;changeInstructions&gt; <span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsCaseIgnoreDirectoryString&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h1307628056"
+                        class="externalLink">tsCaseIgnoreDirectoryString</a>
+                  </span> &lt;/changeInstructions&gt; <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'Formal or semi-formal instructions on how to apply this change.'</p>
+               </div>&lt;/...&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-109482192_xibox', true);
+// -->
+</script>
+      </div>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-109482192_diagram_button" class="control"
+                   onclick="switchState('h-109482192_diagram'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Diagram</span>
+         </div>
+         <div id="h-109482192_diagram" class="contents">
+            <img usemap="#h-1910577450" src="schemaDiagrams/h-1910577450.png"/>
+            <!--
+            Map ref: file:/C:/work/build/workspace/lbModel/html/oXygen//schemaDiagrams/h-1910577450.map--><map name="h-1910577450">
+</map>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-109482192_diagram', true);
+// -->
+</script>
+      </div>
+      <div class="schemaComponent box">
+         <div>
+            <input type="button" id="h-109482192_scbox_button" class="control"
+                   onclick="switchState('h-109482192_scbox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Schema Component Representation</span>
+         </div>
+         <div id="h-109482192_scbox" class="contents">
+            <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> 
+               <span class="scTag">name</span>="<span class="scContent">entityVersion</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:complexContent</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:extension</span> 
+                     <span class="scTag">base</span>="<span class="scContent">
+                        <span class="type">
+                           <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;describable&#34; type definition(located in external schema documentation)."
+                              href="commonTypes.xsd.html#h215704495"
+                              class="externalLink">describable</a>
+                        </span>
+                     </span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> 
+                           <span class="scTag">name</span>="<span class="scContent">changeDocumentation</span>" <span class="scTag">type</span>="<span class="scContent">
+                              <span class="type">
+                                 <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsCaseIgnoreDirectoryString&#34; type definition(located in external schema documentation)."
+                                    href="builtins.xsd.html#h1307628056"
+                                    class="externalLink">tsCaseIgnoreDirectoryString</a>
+                              </span>
+                           </span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>"/&gt;</div>
+                        <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> 
+                           <span class="scTag">name</span>="<span class="scContent">changeInstructions</span>" <span class="scTag">type</span>="<span class="scContent">
+                              <span class="type">
+                                 <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsCaseIgnoreDirectoryString&#34; type definition(located in external schema documentation)."
+                                    href="builtins.xsd.html#h1307628056"
+                                    class="externalLink">tsCaseIgnoreDirectoryString</a>
+                              </span>
+                           </span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">isComplete</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h400474596"
+                                 class="externalLink">tsBoolean</a>
+                           </span>
+                        </span>" <span class="scTag">use</span>="<span class="scContent">required</span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">version</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;version&#34; type definition(located in external schema documentation)."
+                                 href="commonTypes.xsd.html#h-583173933"
+                                 class="externalLink">version</a>
+                           </span>
+                        </span>" <span class="scTag">use</span>="<span class="scContent">required</span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">versionOrder</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;entryOrder&#34; type definition(located in external schema documentation)."
+                                 href="commonTypes.xsd.html#h-1501502431"
+                                 class="externalLink">entryOrder</a>
+                           </span>
+                        </span>" <span class="scTag">use</span>="<span class="scContent">required</span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">versionDate</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsTimestamp&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h600702930"
+                                 class="externalLink">tsTimestamp</a>
+                           </span>
+                        </span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">effectiveDate</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsTimestamp&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h600702930"
+                                 class="externalLink">tsTimestamp</a>
+                           </span>
+                        </span>" <span class="scTag">use</span>="<span class="scContent">optional</span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">releaseURN</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgNaming" title="Find out namespace of 'lgNaming' prefix">lgNaming</a>:<a title="Jump to &#34;URN&#34; type definition(located in external schema documentation)."
+                                 href="naming.xsd.html#h-676013364"
+                                 class="externalLink">URN</a>
+                           </span>
+                        </span>"/&gt;</div>&lt;/<span class="scTag">xs:extension</span>&gt;</div>&lt;/<span class="scTag">xs:complexContent</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-109482192_scbox', false);
+// -->
+</script>
+      </div>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <h3>Complex Type: <a name="h-7847793" class="name">history</a>
+      </h3>
+      <table class="hierarchy">
+         <tr>
+            <th>Super-types:</th>
+            <td>None</td>
+         </tr>
+         <tr>
+            <th>Sub-types:</th>
+            <td>None</td>
+         </tr>
+      </table>
+      <table class="properties">
+         <tr>
+            <th>Name</th>
+            <td>history</td>
+         </tr>
+         <tr>
+            <th>Abstract</th>
+            <td>no</td>
+         </tr>
+         <tr>
+            <th>Documentation</th>
+            <td>A directory of system releases within a service.</td>
+         </tr>
+         <tr>
+            <th>Application Data</th>
+            <td>
+                                <code>&lt;<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt; <div style="margin-left: 1.5em">1.3.6.1.4.1.2114.108.1.7.82</div>&lt;/<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt;</code>
+                                <code>&lt;rdn&gt; <div style="margin-left: 1.5em">dc</div>&lt;/rdn&gt;</code>
+                        </td>
+         </tr>
+      </table>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-7847793_xibox_button" class="control"
+                   onclick="switchState('h-7847793_xibox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">XML Instance Representation</span>
+         </div>
+         <div id="h-7847793_xibox" class="contents">
+            <div style="margin-left: 0em">&lt;...<br/>
+               <span style="margin-left: 0.5em"> dc="<span class="fixed">history</span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'The context identifier for this directory.'</p>"</span>&gt; <br/>
+               <div style="margin-left: 1.5em">&lt;<a title="Jump to &#34;systemRelease&#34; element declaration." href="#h-1991159083">systemRelease</a>&gt; ... &lt;/<a title="Jump to &#34;systemRelease&#34; element declaration." href="#h-1991159083">systemRelease</a>&gt; <span class="occurs">[1..*]</span> 
+                  <p class="documentation">'List of individual releases.'</p>
+               </div>&lt;/...&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-7847793_xibox', true);
+// -->
+</script>
+      </div>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-7847793_diagram_button" class="control"
+                   onclick="switchState('h-7847793_diagram'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Diagram</span>
+         </div>
+         <div id="h-7847793_diagram" class="contents">
+            <img usemap="#h-485322729" src="schemaDiagrams/h-485322729.png"/>
+            <!--
+            Map ref: file:/C:/work/build/workspace/lbModel/html/oXygen//schemaDiagrams/h-485322729.map--><map name="h-485322729">
+               <area shape="rect" alt="h-1991159083" coords="202,0,345,44"
+                     href="versions.xsd.html#h-1991159083"/>
+
+               <area shape="rect" alt="h-853090396" coords="116,54,210,81"
+                     href="commonTypes.xsd.html#h-853090396"/>
+
+            </map>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-7847793_diagram', true);
+// -->
+</script>
+      </div>
+      <div class="schemaComponent box">
+         <div>
+            <input type="button" id="h-7847793_scbox_button" class="control"
+                   onclick="switchState('h-7847793_scbox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Schema Component Representation</span>
+         </div>
+         <div id="h-7847793_scbox" class="contents">
+            <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> 
+               <span class="scTag">name</span>="<span class="scContent">history</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> 
+                     <span class="scTag">ref</span>="<span class="scContent">
+                        <a title="Jump to &#34;systemRelease&#34; element declaration." href="#h-1991159083">systemRelease</a>
+                     </span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div>
+               <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                  <span class="scTag">name</span>="<span class="scContent">dc</span>" <span class="scTag">type</span>="<span class="scContent">
+                     <span class="type">
+                        <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;dc&#34; type definition(located in external schema documentation)."
+                           href="commonTypes.xsd.html#h-853090396"
+                           class="externalLink">dc</a>
+                     </span>
+                  </span>" <span class="scTag">fixed</span>="<span class="scContent">history</span>" <span class="scTag">use</span>="<span class="scContent">required</span>"/&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-7847793_scbox', false);
+// -->
+</script>
+      </div>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <h3>Complex Type: <a name="h-65755652" class="name">referenceSet</a>
+      </h3>
+      <table class="hierarchy">
+         <tr>
+            <th>Super-types:</th>
+            <td>None</td>
+         </tr>
+         <tr>
+            <th>Sub-types:</th>
+            <td>None</td>
+         </tr>
+      </table>
+      <table class="properties">
+         <tr>
+            <th>Name</th>
+            <td>referenceSet</td>
+         </tr>
+         <tr>
+            <th>Used by (from the same schema document)</th>
+            <td>Element <b>
+                  <a href="#h-1991159083">systemRelease</a>
+               </b>, Element <b>
+                  <a href="#h-1991159083">systemRelease</a>
+               </b>, Element <b>
+                  <a href="#h-1991159083">systemRelease</a>
+               </b>
+            </td>
+         </tr>
+         <tr>
+            <th>Abstract</th>
+            <td>no</td>
+         </tr>
+         <tr>
+            <th>Documentation</th>
+            <td>A list of coding scheme versions and / or value domain versions.</td>
+         </tr>
+      </table>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-65755652_xibox_button" class="control"
+                   onclick="switchState('h-65755652_xibox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">XML Instance Representation</span>
+         </div>
+         <div id="h-65755652_xibox" class="contents">
+            <div style="margin-left: 0em">&lt;...&gt; <br/>
+               <div style="margin-left: 1.5em">&lt;codingSchemeReference&gt; <span class="type">
+                     <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;versionReference&#34; type definition(located in external schema documentation)."
+                        href="commonTypes.xsd.html#h-1119935560"
+                        class="externalLink">versionReference</a>
+                  </span> &lt;/codingSchemeReference&gt; <span class="occurs">[0..*]</span>
+               </div>
+               <div style="margin-left: 1.5em">&lt;valueDomainReference&gt; <span class="type">
+                     <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;versionReference&#34; type definition(located in external schema documentation)."
+                        href="commonTypes.xsd.html#h-1119935560"
+                        class="externalLink">versionReference</a>
+                  </span> &lt;/valueDomainReference&gt; <span class="occurs">[0..*]</span>
+               </div>&lt;/...&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-65755652_xibox', true);
+// -->
+</script>
+      </div>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-65755652_diagram_button" class="control"
+                   onclick="switchState('h-65755652_diagram'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Diagram</span>
+         </div>
+         <div id="h-65755652_diagram" class="contents">
+            <img usemap="#h1262610570" src="schemaDiagrams/h1262610570.png"/>
+            <!--
+            Map ref: file:/C:/work/build/workspace/lbModel/html/oXygen//schemaDiagrams/h1262610570.map--><map name="h1262610570">
+               <area shape="rect" alt="h-1119935560" coords="236,0,432,44"
+                     href="commonTypes.xsd.html#h-1119935560"/>
+
+               <area shape="rect" alt="h-1119935560" coords="236,54,422,98"
+                     href="commonTypes.xsd.html#h-1119935560"/>
+
+            </map>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-65755652_diagram', true);
+// -->
+</script>
+      </div>
+      <div class="schemaComponent box">
+         <div>
+            <input type="button" id="h-65755652_scbox_button" class="control"
+                   onclick="switchState('h-65755652_scbox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Schema Component Representation</span>
+         </div>
+         <div id="h-65755652_scbox" class="contents">
+            <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> 
+               <span class="scTag">name</span>="<span class="scContent">referenceSet</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> 
+                     <span class="scTag">name</span>="<span class="scContent">codingSchemeReference</span>" <span class="scTag">type</span>="<span class="scContent">
+                        <span class="type">
+                           <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;versionReference&#34; type definition(located in external schema documentation)."
+                              href="commonTypes.xsd.html#h-1119935560"
+                              class="externalLink">versionReference</a>
+                        </span>
+                     </span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>"/&gt;</div>
+                  <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> 
+                     <span class="scTag">name</span>="<span class="scContent">valueDomainReference</span>" <span class="scTag">type</span>="<span class="scContent">
+                        <span class="type">
+                           <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;versionReference&#34; type definition(located in external schema documentation)."
+                              href="commonTypes.xsd.html#h-1119935560"
+                              class="externalLink">versionReference</a>
+                        </span>
+                     </span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-65755652_scbox', false);
+// -->
+</script>
+      </div>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <p class="footer">Generated by <a href="http://www.oxygenxml.com">&lt;oXygen/&gt; XML Editor</a> using a modified version of <a href="http://titanium.dstc.edu.au/xml/xs3p">xs3p</a> that adds schema diagrams and chunking support. Last modified: <script type="text/javascript">
+<!--
+          document.write(document.lastModified);
+// -->
+</script>
+      </p>
+   </body>
+</html>

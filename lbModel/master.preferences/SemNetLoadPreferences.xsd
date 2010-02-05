@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns:lbPreferencesSemNet="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/SemNetLoadPreferences" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:lbPreferences="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/LoadPreferences" targetNamespace="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/SemNetLoadPreferences" elementFormDefault="qualified">
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/LoadPreferences" schemaLocation="LoadPreferences.xsd"/>
+	<xs:element name="SemNetLoaderPreferences" type="lbPreferencesSemNet:SemNetLoaderPreferences">
+		<xs:annotation>
+			<xs:documentation>Represents source processing options recognized by the LexBIG UMLS Semantic Network loader.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="SemNetLoaderPreferences">
+		<xs:complexContent>
+			<xs:extension base="lbPreferences:LoaderPreferences">
+				<xs:sequence>
+					<xs:element name="InheritanceLevel" nillable="true" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							The load parameter controls which inherited relationships are loaded and navigable within
+							LexBIG.  When selecting the option not to load inherited relationships, all associations
+							are extracted from the source file SRSTR (stated relations).  When loading all inherited
+							relations, associations are extracted from the source file SRSTRE1 (classified relations).
+							At NCI's request we provided an additional option to load only stated relations for direct
+							subclass ('is_a') associations, but inherited relationships for all other associations.
+							This was intended to provide similar behavior to their provision of OWL sources.
+							Note that direct or stated relationships are always imported, regardless of the selected
+							option.
+							</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="0">
+									<xs:annotation>
+										<xs:documentation>Only load direct or stated relationships.</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+								<xs:enumeration value="1">
+									<xs:annotation>
+										<xs:documentation>Load all inherited relationships.</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+								<xs:enumeration value="2">
+									<xs:annotation>
+										<xs:documentation>Load all inherited relationships except is_a.</xs:documentation>
+									</xs:annotation>
+								</xs:enumeration>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

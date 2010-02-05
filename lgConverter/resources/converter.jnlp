@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- JNLP File for the LexGrid Converter -->
+<jnlp
+  spec="1.0+"
+  codebase="http://mir04.mayo.edu/LexGrid/downloads/Conversion%20Tools/LexGrid%20Converter/webstart/"
+  href="converter.jnlp">
+  <information>
+    <title>LexGrid Converter</title>
+    <vendor>Biomedical Informatics</vendor>
+    <homepage href="http://mir04.mayo.edu/LexGrid/index.php?page=convert"/>
+    <description>A Converter program for LexGrid formats</description>
+    <icon href="convert.gif"/>
+    <offline-allowed/>
+  </information>
+  <security>
+      <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.5+" max-heap-size="500m"/>
+	<jar href="lgConverter.jar"/>
+    <jar href="apache-commons.jar"/>
+    <jar href="eclipse-core.jar"/>
+    <jar href="eclipse-emf.jar"/>
+    <jar href="lgServicesIndex.jar"/>
+    <jar href="lucene.jar"/>
+    <jar href="otherJars.jar"/>
+    <jar href="protege.jar"/>
+    <jar href="sqlDrivers.jar"/>
+  </resources>
+  <resources os="Windows">
+    <nativelib href="swt-windowsNatives.jar"/> 
+    <jar href="swt-windows.jar"/>
+   </resources>
+  <resources os="Linux" arch="x86">
+    <nativelib href="swt-linuxNatives.jar"/> 
+    <jar href="swt-linux.jar"/>
+  </resources>
+    <resources os="Linux" arch="i386">
+    <nativelib href="swt-linuxNatives.jar"/> 
+    <jar href="swt-linux.jar"/>
+  </resources>
+    <resources os="Linux" arch="i686">
+    <nativelib href="swt-linuxNatives.jar"/> 
+    <jar href="swt-linux.jar"/>
+  </resources>
+  <resources os="Linux" arch="amd64">
+    <nativelib href="swt-linuxNatives_x86_64.jar"/> 
+    <jar href="swt-linux_x86_64.jar"/>
+  </resources>
+  <application-desc main-class="edu.mayo.informatics.lexgrid.convert.swt.Converter"/>
+</jnlp> 

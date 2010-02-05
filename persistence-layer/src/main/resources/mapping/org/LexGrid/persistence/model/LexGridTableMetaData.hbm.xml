@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 30, 2009 7:07:50 AM by Hibernate == Tools 3.2.0.CR1 -->
+<hibernate-mapping>
+    <class name="org.LexGrid.persistence.model.LexGridTableMetaData" table="@PREFIX@lexGridTableMetaData">
+        <composite-id name="id" class="org.LexGrid.persistence.model.LexGridTableMetaDataId">
+            <key-property name="version" type="string">
+                <column name="version" length="50" />
+            </key-property>
+            <key-property name="description" type="string">
+                <column name="description" />
+            </key-property>
+        </composite-id>
+    </class>
+</hibernate-mapping>

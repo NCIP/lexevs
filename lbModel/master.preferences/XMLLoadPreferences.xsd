@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:lbPreferencesXML="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/XMLLoadPreferences" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:lbPreferences="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/LoadPreferences" targetNamespace="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/XMLLoadPreferences" elementFormDefault="qualified">
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/LoadPreferences" schemaLocation="LoadPreferences.xsd"/>
+	<xs:element name="XMLLoaderPreferences" type="lbPreferencesXML:XMLLoaderPreferences">
+		<xs:annotation>
+			<xs:documentation>Represents source processing options recognized by the LexBIG XML loader.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="XMLLoaderPreferences">
+		<xs:complexContent>
+			<xs:extension base="lbPreferences:LoaderPreferences">
+				<xs:annotation>
+					<xs:documentation>Placeholder.  No unique preferences supported on XML load.</xs:documentation>
+				</xs:annotation>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

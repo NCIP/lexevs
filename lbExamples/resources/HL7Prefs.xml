@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HL7LoaderPreferences xmlns="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/HL7LoadPreferences"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/HL7LoadPreferences.xsd">
+ 
+ <XMLMetadataFilePath>c:/HL7_RIM/</XMLMetadataFilePath>
+
+</HL7LoaderPreferences>

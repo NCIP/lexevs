@@ -1,0 +1,525 @@
+<project name="lgConverter" default="all" basedir=".">
+	<description>
+		Buildfile for ldapSQLConverter
+	</description>
+
+	<!-- set global properties for this build -->
+	<property name="src.dir" 		location="src" />
+	<property name="depSrc.dir" 	location="depSrc" />
+	<property name="antBuild.dir" 	location="antBuild" />
+	<property name="webstart.dir" 	location="${antBuild.dir}/webstart" />
+	<property name="classes.dir" 	location="${antBuild.dir}/classes" />
+	<property name="dist.dir" 		location="${antBuild.dir}/lib" />
+	<property name="javadocs.dir" 	location="${antBuild.dir}/javadocs" />
+	<property name="extLib.dir" 	location="depLib" />
+	<property name="localLib.dir" 	location="${basedir}/lib"/>
+	<property name="bin.dir" 		location="bin" />
+
+	<!--Sets up the classpaths correctly, not meant to be called directly-->
+	<target name="init">
+		<tstamp/>
+		<echo>Copying required source from other projects</echo>
+		<mkdir dir="${depSrc.dir}"/>
+	
+		<antcall target="importSrc">
+			<param name="copySrcDir" value="../Indexer/"/>
+			<param name="copySrcPattern" value="src/**/*"/>
+			<param name="copyTarget" value="${depSrc.dir}/Indexer"/>
+		</antcall>
+
+		<antcall target="importSrc">
+			<param name="copySrcDir" value="../lgModel.emf/"/>
+			<param name="copySrcPattern" value="src*/**/*"/>
+			<param name="copyTarget" value="${depSrc.dir}/lgModel.emf"/>
+		</antcall>
+		
+		<antcall target="importSrc">
+			<param name="copySrcDir" value="../lgResourceReader/"/>
+			<param name="copySrcPattern" value="src/**/*"/>
+			<param name="copyTarget" value="${depSrc.dir}/lgResourceReader"/>
+		</antcall>
+		
+		<antcall target="importSrc">
+			<param name="copySrcDir" value="../lgRDFConverter/"/>
+			<param name="copySrcPattern" value="**/src/**/*"/>
+			<param name="copyTarget" value="${depSrc.dir}/lgRDFConverter"/>
+		</antcall>
+		
+		<antcall target="importSrc">
+			<param name="copySrcDir" value="../lgModel/"/>
+			<param name="copySrcPattern" value="CastorFull/src/**/*"/>
+			<param name="copyTarget" value="${depSrc.dir}/lgModelCastor"/>
+		</antcall>
+
+		<antcall target="importSrc">
+			<param name="copySrcDir" value="../lgUtil/"/>
+			<param name="copySrcPattern" value="src/**/*"/>
+			<param name="copyTarget" value="${depSrc.dir}/lgUtil"/>
+		</antcall>
+		
+		<echo>Copying required jar libraries to a local folder</echo>
+		<condition property="lgSharedLibraries.present">
+		    <available file="../lgSharedLibraries"></available>
+		</condition>
+		
+		<antcall target="copyJars"/>
+		
+		<echo>Constructing classpath</echo>
+		
+		<path id="classpath">
+			<fileset id="extraJars" dir="${extLib.dir}" >
+				<include name="crossdb/crossdb*.jar"/>
+				<include name="jdom/jdom*.jar"/>
+				<include name="ldapbp/ldapbp*.jar"/>
+				<include name="apache/log4j/log4j*.jar"/>
+				<include name="icu4j/icu4j*.jar"/>
+				<include name="apache/xerces/xercesImpl*.jar"/>
+				<include name="apache/xerces/xerces-xml-apis*.jar"/>
+				<include name="lvg/lvg2005.mod.jar"/>
+				<include name="castor/castor-1.0.2-xml.jar"/>
+				<include name="OpenRDF/openrdf-model*.jar"/>
+			</fileset>
+			<fileset id="extraJars2" dir="${localLib.dir}">
+				<include name="**/*.jar"/>
+			</fileset>
+			<fileset id="apache-commons" dir="${extLib.dir}">
+				<include name="apache/commons/commons-cli*.jar"/>
+				<include name="apache/commons/commons-codec*.jar"/>
+				<include name="apache/commons/commons-collections*.jar"/>
+				<include name="apache/commons/commons-logging*.jar"/>
+				<include name="apache/commons/commons-pool*.jar"/>
+				<include name="apache/commons/jakarta-regexp*.jar"/>
+				<include name="apache/commons/commons-lang*.jar"/>
+			</fileset>
+			<fileset id="lucene" dir="${extLib.dir}">
+				<include name="apache/lucene/lucene*.jar"/>
+			</fileset>
+			
+			<fileset id="protege" dir="${extLib.dir}">
+				<include name="protege/*.jar"/>
+				<include name="jcalendar/jcalendar*.jar"/>
+				<include name="jena/jena-2.4.jar"/>
+			</fileset>
+			<fileset id="sql-drivers" dir="${extLib.dir}">
+				<include name="data/BlankAccessDB.jar"/>
+				<include name="sqlDrivers/*.jar"/>
+			</fileset>
+			
+			<fileset id="eclipse-core" dir="${extLib.dir}">
+				<include name="eclipse/core/*.jar"/>
+			</fileset>
+			
+			<fileset id="eclipse-emf" dir="${extLib.dir}">
+				<include name="eclipse/emf/*.jar"/>
+			</fileset>
+			
+			<fileset dir="${extLib.dir}">
+				<include name="eclipse/swt/windows/swt.jar"/>
+			</fileset>
+		</path>
+		
+		<property name="temp" refid="classpath" />
+		<echo>Using classpath: ${temp}</echo>
+
+		<available file="keystore" type="file" property="keystore.exists" />
+		
+		<taskdef name="jsmoothgen"
+						     classname="net.charabia.jsmoothgen.ant.JSmoothGen"
+						     classpath="resources/JSmooth libraries/jsmoothgen-ant.jar"/>
+
+	</target>
+	
+	<target name="copyJars" if="lgSharedLibraries.present">
+		<mkdir dir="${extLib.dir}"/>
+		<copy todir="${extLib.dir}">
+			<fileset dir="../lgSharedLibraries" >
+				<include name="crossdb/crossdb*"/>
+				<include name="jdom/jdom*"/>
+				<include name="ldapbp/ldapbp*"/>
+				<include name="apache/log4j/log4j*"/>
+				<include name="apache/lucene/lucene*"/>
+				<include name="icu4j/icu4j*"/>
+				<include name="protege/*"/>
+				<include name="apache/xerces/xercesImpl*"/>
+				<include name="apache/xerces/xerces-xml-apis*"/>
+				<include name="jcalendar/jcalendar*"/>
+				<include name="jena/jena-2.4.jar"/>
+				<include name="lvg/lvg2005.mod.jar"/>
+				<include name="apache/commons/commons-cli*"/>
+				<include name="apache/commons/commons-codec*"/>
+				<include name="apache/commons/commons-collections*"/>
+				<include name="apache/commons/commons-logging*"/>
+				<include name="apache/commons/commons-pool*"/>
+				<include name="apache/commons/jakarta-regexp*"/>
+				<include name="apache/commons/commons-lang*"/>
+				<include name="data/BlankAccessDB.jar"/>
+				<include name="sqlDrivers/*"/>
+				<include name="eclipse/core/*"/>
+				<include name="eclipse/emf/*"/>
+				<include name="eclipse/swt/**/*"/>
+				<include name="castor/castor-1.0.2-xml.jar"/>
+				<include name="OpenRDF/openrdf-model*.jar"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="importSrc">
+		<!--need to create a unique property name each time this is called-->
+		<!-- basically a whole lot of work to make it only sync in the external src if it is available-->
+		<!-- because ant is stupid-->
+		<tstamp>
+		    <format property="MILLIS" pattern="m-s-S"/>
+		  </tstamp>
+		
+		<condition property="importSrc.present.${MILLIS}">
+		    <available file="${copySrcDir}"></available>
+		</condition>
+		
+		<antcall target="importSrc2" inheritall="true"/>
+	</target>
+	
+	<target name="importSrc2" if="importSrc.present.${MILLIS}">
+		<mkdir dir="${copyTarget}"/>
+		<sync todir="${copyTarget}">
+			<fileset dir="${copySrcDir}" includes="${copySrcPattern}"/>
+		</sync>
+	</target>
+	
+	<target name="clean" description="remove intermediate build files">
+		<delete dir="${classes.dir}" />
+	</target>
+
+	<target name="cleanAll" description="remove all generated files">
+		<delete dir="${antBuild.dir}" />
+		<delete dir="${bin.dir}" />
+	</target>
+
+	<target name="compile" depends="init" description="compile the source ">
+		<mkdir dir="${classes.dir}" />
+
+		<copy todir="${classes.dir}/">
+			<fileset dir="${src.dir}">
+				<include name="**/*.txt" />
+				<include name="**/*.obo" />
+				<include name="**/*.gif" />
+			</fileset>
+		</copy>
+		<!-- Compile the java code from ${src.dir} into ${classes.dir} -->
+		<javac target="1.5" source="1.5" debug="true" destdir="${classes.dir}">
+			<src path="${src.dir}"/>
+			<src path="${depSrc.dir}/Indexer/src"/>
+			<src path="${depSrc.dir}/lgModel.emf/src"/>
+			<src path="${depSrc.dir}/lgResourceReader/src"/>
+			<src path="${depSrc.dir}/lgRDFConverter/src"/>
+			<src path="${depSrc.dir}/lgRDFConverter/generated/src"/>
+			<src path="${depSrc.dir}/lgModelCastor/CastorFull/src"/>
+			<src path="${depSrc.dir}/lgUtil/src"/>
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="jarDepen" depends="compile" description="generate the jar file plus the dependancies">
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist.dir}" />
+		<!-- Put everything in ${classes} into .jar file -->
+		<jar jarfile="${dist.dir}/${ant.project.name}_and_deps.jar" basedir="${classes.dir}" duplicate="preserve">
+			<zipgroupfileset refid="extraJars"/>
+			<zipgroupfileset refid="extraJars2"/>
+			<zipgroupfileset refid="apache-commons"/>
+			<zipgroupfileset refid="sql-drivers"/>
+			<zipgroupfileset refid="lucene"/>
+			<zipgroupfileset refid="protege"/>
+			<zipgroupfileset refid="eclipse-core"/>
+			<zipgroupfileset refid="eclipse-emf"/>
+			<manifest>
+				<attribute name="Main-Class" value="edu.mayo.informatics.lexgrid.convert.swt.Converter" />
+				<attribute name="Build-Date" value="${DSTAMP} ${TSTAMP}"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="jar" depends="compile" description="generate the jar file">
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist.dir}" />
+		<!-- Put everything in ${classes} into .jar file -->
+		<jar jarfile="${dist.dir}/${ant.project.name}.jar" basedir="${classes.dir}" duplicate="preserve">
+			<manifest>
+				<attribute name="Main-Class" value="edu.mayo.informatics.lexgrid.convert.swt.Converter" />
+				<attribute name="Build-Date" value="${DSTAMP} ${TSTAMP}"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="webstart" depends="compile, jar" if="keystore.exists" description="Create a webstart folder">
+		<mkdir dir="${webstart.dir}" />
+		<copy file="${dist.dir}/${ant.project.name}.jar" todir="${webstart.dir}"/>
+
+		<copy todir="${webstart.dir}" flatten="true">
+			<fileset refid="extraJars2"/>
+		</copy>
+		
+		<jar jarfile="${webstart.dir}/otherJars.jar" duplicate="preserve">
+			<zipgroupfileset refid="extraJars"/>
+		</jar>
+		
+		<jar jarfile="${webstart.dir}/sqlDrivers.jar" duplicate="preserve">
+			<zipgroupfileset refid="sql-drivers"/>
+		</jar>
+		
+		<jar jarfile="${webstart.dir}/apache-commons.jar" duplicate="preserve">
+			<zipgroupfileset refid="apache-commons"/>
+		</jar>
+		
+		<jar jarfile="${webstart.dir}/eclipse-core.jar" duplicate="preserve">
+			<zipgroupfileset refid="eclipse-core"/>
+		</jar>
+		
+		<jar jarfile="${webstart.dir}/eclipse-emf.jar" duplicate="preserve">
+			<zipgroupfileset refid="eclipse-emf"/>
+		</jar>		
+		
+		<jar jarfile="${webstart.dir}/lucene.jar" duplicate="preserve">
+			<zipgroupfileset refid="lucene"/>
+		</jar>	
+		
+		<jar jarfile="${webstart.dir}/protege.jar" duplicate="preserve">
+			<zipgroupfileset refid="protege"/>
+		</jar>
+
+		<copy tofile="${webstart.dir}/swt-windows.jar" file="${extLib.dir}/eclipse/swt/windows/swt.jar" />
+		<copy tofile="${webstart.dir}/swt-linux.jar" file="${extLib.dir}/eclipse/swt/linux/swt.jar" />
+		<copy tofile="${webstart.dir}/swt-linux_x86_64.jar" file="${extLib.dir}/eclipse/swt/linux_x86_64/swt.jar" />
+		<copy tofile="${webstart.dir}/swt-OSX.jar" file="${extLib.dir}/eclipse/swt/OSX/swt.jar" />
+		<jar jarfile="${webstart.dir}/swt-windowsNatives.jar" basedir="${extLib.dir}/eclipse/swt/windows/" includes="*.dll" />
+		<jar jarfile="${webstart.dir}/swt-linuxNatives.jar" basedir="${extLib.dir}/eclipse/swt/linux/" includes="*.so*" />
+		<jar jarfile="${webstart.dir}/swt-linuxNatives_x86_64.jar" basedir="${extLib.dir}/eclipse/swt/linux_x86_64/" includes="*.so*" />
+		<jar jarfile="${webstart.dir}/swt-OSXNatives.jar" basedir="${extLib.dir}/eclipse/swt/OSX/" excludes="*.html" />
+
+		<signjar alias="keystore" keystore="keystore" storepass="keystore">
+			<fileset dir="${webstart.dir}">
+				<include name="**/*.jar" />
+			</fileset>
+		</signjar>
+
+		<copy file="resources/converter.jnlp" todir="${webstart.dir}" />
+		<copy file="${src.dir}/edu/mayo/informatics/lexgrid/convert/swt/icons/convert.gif" todir="${webstart.dir}" />
+	</target>
+
+
+	<target name="buildRunnableApp" description="Builds the Indexer App" >
+		
+		<mkdir dir="${bin.dir}/windows" />
+		<copy todir="${bin.dir}/windows/">
+			<fileset dir="${extLib.dir}/eclipse/swt/windows/">
+				<include name="**/*.dll"/>
+				<include name="**/*.jar"/>
+			</fileset>
+			<fileset dir="${dist.dir}">
+				<include name="${ant.project.name}_and_deps.jar"/>
+			</fileset>
+  		</copy>
+		
+		<jsmoothgen project="resources/JSmoothDeploy.jsmooth" 
+		      skeletonroot="resources/JSmooth libraries/skeletons"/>
+		
+		<echo file="${bin.dir}/windows/Converter.bat">
+java -Xmx1200M -Djava.library.path=. -cp ${ant.project.name}_and_deps.jar;swt.jar edu.mayo.informatics.lexgrid.convert.swt.Converter	
+		</echo>
+		
+		<fixcrlf srcdir="${bin.dir}/windows/" eol="crlf" includes="Converter.bat" />
+		
+		<zip destfile="${antBuild.dir}/Converter-Windows.zip">
+       		<fileset dir="${bin.dir}/windows/">
+				<include name="**/*"/>
+			</fileset>
+		</zip>
+		
+		
+		<mkdir dir="${bin.dir}/linux" />
+		<copy todir="${bin.dir}/linux/">
+			<fileset dir="${extLib.dir}/eclipse/swt/linux/">
+				<include name="**/*.so*"/>
+				<include name="**/*.jar"/>
+			</fileset>
+			<fileset dir="${dist.dir}">
+				<include name="${ant.project.name}_and_deps.jar"/>
+			</fileset>
+  		</copy>
+		
+		<echo file="${bin.dir}/linux/Converter.sh">
+java -Xmx1200M -Djava.library.path=. -cp ${ant.project.name}_and_deps.jar:swt.jar edu.mayo.informatics.lexgrid.convert.swt.Converter
+		</echo>
+		
+		<fixcrlf srcdir="${bin.dir}/linux/" eol="lf" includes="Converter.sh" />
+		
+		<zip destfile="${antBuild.dir}/Converter-Linux.zip">
+       		<fileset dir="${bin.dir}/linux/">
+				<include name="**/*"/>
+			</fileset>
+		</zip>
+		
+		<mkdir dir="${bin.dir}/OSX" />
+		<copy todir="${bin.dir}/OSX/">
+			<fileset dir="${extLib.dir}/eclipse/swt/OSX/">
+				<include name="**/*"/>
+				<exclude name="**/*.html"/>
+			</fileset>
+			<fileset dir="${dist.dir}">
+				<include name="${ant.project.name}_and_deps.jar"/>
+			</fileset>
+  		</copy>
+		
+		<echo file="${bin.dir}/OSX/Converter.command">
+java -Xmx1200M -Djava.library.path=. -cp ${ant.project.name}_and_deps.jar:swt.jar edu.mayo.informatics.lexgrid.convert.swt.Converter
+		</echo>
+		
+		<fixcrlf srcdir="${bin.dir}/OSX/" eol="lf" includes="Converter.command" />
+		
+		<zip destfile="${antBuild.dir}/Converter-OSX.zip">
+       		<fileset dir="${bin.dir}/OSX/">
+				<include name="**/*"/>
+			</fileset>
+		</zip>
+		
+		
+		<mkdir dir="${bin.dir}/linux_x86_64" />
+		<copy todir="${bin.dir}/linux_x86_64/">
+			<fileset dir="${extLib.dir}/eclipse/swt/linux_x86_64/">
+				<include name="**/*.so*"/>
+				<include name="**/*.jar"/>
+			</fileset>
+			<fileset dir="${dist.dir}">
+				<include name="${ant.project.name}_and_deps.jar"/>
+			</fileset>
+  		</copy>
+		
+		<echo file="${bin.dir}/linux_x86_64/Converter.sh">
+java -Xmx6000M -Djava.library.path=. -cp ${ant.project.name}_and_deps.jar:swt.jar edu.mayo.informatics.lexgrid.convert.swt.Converter
+		</echo>
+		
+		<fixcrlf srcdir="${bin.dir}/linux_x86_64/" eol="lf" includes="Converter.sh" />
+		
+		<zip destfile="${antBuild.dir}/Converter-Linux_x86_64.zip">
+       		<fileset dir="${bin.dir}/linux_x86_64/">
+				<include name="**/*"/>
+			</fileset>
+		</zip>
+	</target>
+	
+
+	<target name="zip" depends="jarDepen" description="Generate a zip file of this entire project">
+		<zip destfile="${antBuild.dir}/ConverterSource.zip">
+			<fileset dir="">
+				<exclude name="**/Converter.zip" />
+				<exclude name="keystore" />
+				<exclude name="**/classes/**/*" />
+				<exclude name="**/*.log" />
+				<exclude name="**/docs/fma/**/*" />
+				<exclude name="**/antBuild/**/*" />
+				<exclude name="**/bin/**/*" />
+				<include name="**/*" />
+			</fileset>
+		</zip>
+	</target>
+
+	<target name="javadocs" depends="init, compile" description="Generate the javadocs">
+		<mkdir dir="${javadocs.dir}" />
+		<!--Create the javadocs-->
+		<javadoc destdir="${javadocs.dir}" windowtitle="LexGrid Conversion Kit" Doctitle="LexGrid Conversion Kit" bottom="Copyright: (c) 2004-2006 Mayo Foundation. All rights reserved.">
+			<package name="edu.mayo.informatics.lexgrid.convert.directConversions" />
+			<package name="edu.mayo.informatics.lexgrid.convert.emfConversions" />
+			<package name="edu.mayo.informatics.lexgrid.convert.utility" />
+			<package name="cl" />
+			<classpath refid="classpath" />
+			<sourcepath location="${src.dir}" />
+			<sourcepath location="${depSrc.dir}/Indexer/src"/>
+			<sourcepath location="${depSrc.dir}/lgModel.emf/src"/>
+			<sourcepath location="${depSrc.dir}/lgResourceReader/src"/>
+			<sourcepath location="${depSrc.dir}/lgRDFConverter/src"/>
+			<sourcepath location="${depSrc.dir}/lgRDFConverter/generated/src"/>
+			<sourcepath location="${depSrc.dir}/lgModelCastor/CastorFull/src"/>
+			<sourcepath location="${depSrc.dir}/lgUtil/src"/>
+		</javadoc>
+	</target>
+	
+	<target name="ctsBuild" depends="cleanAll, init" description="Build a jar file with just the components needed by CTS">
+		<mkdir dir="${antBuild.dir}/ctsSrc"/>
+		<mkdir dir="${antBuild.dir}/ctsClasses"/>
+		
+		<copy todir="${antBuild.dir}/ctsSrc">
+			<fileset dir="${depSrc.dir}/Indexer/src/"/>
+		</copy>
+		
+		<copy todir="${antBuild.dir}/ctsSrc">
+			<fileset dir="${depSrc.dir}/lgUtil/src/"/>
+		</copy>
+		
+		<copy todir="${antBuild.dir}/ctsSrc">
+			<fileset dir="${depSrc.dir}/lgModel.emf/src/"/>
+		</copy>	
+		
+		<copy todir="${antBuild.dir}/ctsSrc">
+			<fileset dir="${src.dir}/">
+				<include name="**/formats/**" />
+				<exclude name="**/swt/*"/>
+				<exclude name="**/*SWT*"/>
+				<exclude name="**/NCIThesaurusHistoryFile.java"/>
+				<exclude name="**/RRFFiles.java"/>
+				<exclude name="**/ConversionLauncher.java"/>
+				<exclude name="**/CombinationOptions.java"/>
+				<include name="**/directConversions/SQLToSQLLite.java"/>
+				<include name="**/directConversions/SQLToLdap.java"/>
+				<include name="**/indexer/**" />
+				<include name="**/utility/**" />
+				<include name="**/emfInterfaces/**" />
+				<include name="**/exceptions/**" />
+				<include name="**/SQLReadWrite.java" />
+				<include name="**/XMLRead.java" />
+				<include name="**/LDAPReadWrite.java" />
+			</fileset>
+		</copy>	
+		
+		<path id="CTSClasspath">
+			<fileset dir="${extLib.dir}" >
+				<include name="apache/log4j/log4j*.jar"/>
+				<include name="apache/lucene/lucene*.jar"/>
+				<include name="eclipse/core/*.jar"/>
+				<include name="eclipse/emf/*.jar"/>
+				<include name="jdom/jdom*.jar"/>
+				<include name="lvg/lvg2005.mod.jar"/>
+				<include name="apache/commons/commons-codec*.jar"/>
+				<include name="apache/commons/commons-collections*.jar"/>
+				<include name="crossdb/crossdb*.jar"/>
+				<include name="apache/xerces/xercesImpl*.jar"/>
+				<include name="apache/xerces/xerces-xml-apis*.jar"/>
+				<include name="apache/commons/commons-pool*.jar"/>
+				<include name="ldapbp/ldapbp*.jar"/>
+				<include name="apache/commons/commons-lang*.jar"/>
+				<include name="apache/commons/jakarta-regexp*.jar"/>
+				<include name="data/BlankAccessDB.jar"/>
+			</fileset>
+		</path>
+		
+		
+		<javac target="1.3" source="1.3" debug="true" destdir="${antBuild.dir}/ctsClasses">
+			<src path="${antBuild.dir}/ctsSrc"/>
+			<classpath refid="CTSClasspath" />
+		</javac>
+		
+		<jar jarfile="${antBuild.dir}/${ant.project.name}-CTS.jar" basedir="${antBuild.dir}/ctsClasses" >
+			<manifest>
+				<attribute name="Build-Date" value="${DSTAMP} ${TSTAMP}"/>
+			</manifest>
+		</jar>
+		
+		<zip destfile="${antBuild.dir}/${ant.project.name}-CTS-src.zip">
+       		<fileset dir="${antBuild.dir}/ctsSrc">
+				<include name="**/*"/>
+			</fileset>
+		</zip>
+		<copy file="license.txt" tofile="${antBuild.dir}/${ant.project.name}-CTS-license.txt"/>
+	</target>
+
+	<target name="quickBuild" depends="cleanAll, init, jar, clean, javadocs" description="Just compile and provide a jar file" />
+	<target name="all" depends="cleanAll, init, jar, jarDepen, clean, buildRunnableApp, webstart, javadocs, zip" description="do everything for an external build" />
+</project>

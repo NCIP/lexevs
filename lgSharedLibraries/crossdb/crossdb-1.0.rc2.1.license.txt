@@ -1,0 +1,2 @@
+Provided under the Apache Software License (see http://sourceforge.net/projects/crossdb/).
+At time of release (June 12, 2003), the active Apache license was version 1.1 (see http://www.apache.org/licenses/LICENSE-1.1).

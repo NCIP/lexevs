@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HL7LoaderPreferences xmlns:basePreferences="http://LexGrid.org/LexBIG/LoadPreferences">
+
+<basePreferences:XMLMetadataFilePath>c:/your_path_here/</basePreferences:XMLMetadataFilePath>
+
+</HL7LoaderPreferences>

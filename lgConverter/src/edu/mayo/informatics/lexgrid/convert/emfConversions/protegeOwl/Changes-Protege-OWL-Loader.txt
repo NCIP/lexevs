@@ -1,0 +1,22 @@
+Author: Jyoti Pathak
+Last updated: 09/12/08
+
+The following changes/enhancements were made to the Protege OWL loader:
+
+1.) Added support for processing of OWL Datatype properties
+2.) Added support for processing of OWL individuals
+3.) Added support for handling different types of associations/properties: owl:AllDifferent, owl:complementOf, 
+owl:differentFrom, owl:disjointWith, owl:incompatibleWith, owl:maxCardinality, owl:minCardinality, and, owl:sameAs.
+4.) Added support for better handling of owl:imports - each codingScheme that is imported by the original
+codingScheme, is represented in accordance with the 2008 LexGrid model.
+5.) Made changes to how anonymous classes were handled: in the previous loader, a "new" LexGrid concept
+was created for every anonymous class present in the OWL ontology. In the current loader, a "new"
+LexGrid concept is created only when a new anonymous class is encountered while loading the ontology. That
+is, if a particular anonymous class has already been processed, the LexGrid concept corresponding
+to it is re-used.
+6.) Added support for assigning whether a particular association was asserted (isInferred flag is
+set to "false) in the original ontology, or inferred (isInferred = true) as a consequence of executing 
+a reasoner on the ontology.
+7.) Changes made by Pradip: Removed the database backend support for Protege since it has changed
+for the latest version of Protege. In future, we need to support the latest Protege for
+BioPortal. 

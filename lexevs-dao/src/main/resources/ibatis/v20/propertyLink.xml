@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+
+     
+     <insert id="insertPropertyLink" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyLinkBean">
+     	INSERT INTO $prefix$propertyLinks (
+     		propertyLinksGuid,
+     		sourcePropertyGuid,
+     		link,
+     		targetPropertyGuid
+     	) VALUES (
+     		#id#,
+     		(	SELECT 
+     				property.propertyId 
+     			FROM 
+     				$prefix$entity entity
+     			LEFT JOIN 
+     				$prefix$property property
+     			ON 
+     				entity.entityGuid =  property.referenceGuid
+     			WHERE 
+     				entity.entityGuid = #entityId#
+     			AND
+     				propertyId = #propertyLink.sourceProperty#
+     		),
+     		#propertyLink.propertyLink#,
+     		(	SELECT 
+     				property.propertyId 
+     			FROM 
+     				$prefix$entity entity
+     			LEFT JOIN 
+     				$prefix$property property
+     			ON 
+     				entity.entityGuid =  property.referenceGuid
+     			WHERE 
+     				entity.entityGuid = #entityId#
+     			AND
+     				propertyId = #propertyLink.targetProperty#
+     		)
+     	)
+     </insert>
+
+</sqlMap>

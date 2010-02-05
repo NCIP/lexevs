@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodingSchemeManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://LexGrid.org/schema/2009/01/LexOnt/CodingSchemeManifestList http://LexGrid.org/schema/2009/01/LexOnt/CodingSchemeManifestList.xsd"
+	xmlns:owldef="http://LexGrid.org/schema/2009/01/LexOnt/CodingSchemeManifestList"
+	xmlns="http://LexGrid.org/schema/2009/01/LexOnt/CodingSchemeManifestList"
+	id="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#">
+		<codingScheme>NCI Thesaurus CS Manifest</codingScheme>
+		<entityDescription>This is NCI Thesaurus Description from Manifest.</entityDescription>
+		<codingSchemeURI>urn:oid:2.16.840.1.113883.3.26.1.1</codingSchemeURI>
+		<defaultLanguage toOverride="false">en</defaultLanguage>
+		<representsVersion>manifestVersion</representsVersion>
+		<localName toAdd="false">NCILocalName</localName>
+		<source subRef="ontologies">NCIManifestSource</source>
+		<copyright>This is copyright for NCI Thesaurus</copyright>
+		<owldef:mappings xmlns="http://LexGrid.org/schema/2009/01/LexGrid/naming">
+			<supportedSource localId="MOODE" urn="http://www.co-ode.org/"/>
+			<supportedHierarchy localId="is_a" association="hasSubtype,hasSomethingElse" rootCode="@" isForwardNavigable="true"/>
+		</owldef:mappings>
+		<owldef:associationDefinitions />	
+</CodingSchemeManifest>
+

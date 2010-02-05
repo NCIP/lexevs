@@ -1,0 +1,2550 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>LexBIG - relations.xsd</title>
+      <meta http-equiv="Content-Type" content="text/xml; charset=UTF-8"/>
+      <style type="text/css">
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* More-configurable styles */
+
+/******** General ********/
+         
+/* Document body */
+body {
+   color: Black;
+   background-color: White;
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+}
+                  
+/* Horizontal rules */
+hr {
+   color: black;
+}
+/* Document title */
+h1 {
+   font-size: 18pt;
+   letter-spacing: 2px;
+   border-bottom: 1px #ccc solid;
+   padding-top: 5px;
+   padding-bottom: 5px;
+}
+/* Main section headers */
+h2 {
+   font-size: 14pt;
+   letter-spacing: 1px;
+}
+/* Sub-section headers */
+h3, h3 a, h3 span {
+   font-size: 12pt;
+   font-weight: bold;
+   color: black;
+}
+/* Table displaying the properties of the schema components or the
+   schema document itself */
+table.properties th, table.properties th a {
+   color: black;
+   background-color: #F99; /* Pink */
+}
+table.properties td {
+   background-color: #eee; /* Gray */
+}
+
+img{
+ border: 0;
+}         
+
+/********* Documentation style *************/
+p.documentation {
+   color:black;
+   font-style:italic;
+         background-color: #EEEEFF;
+         border: 1px solid #DDDDFF;
+         padding-top: 1px;
+         margin-right: 30px;
+         margin-top: 1px;
+}
+
+         
+/******** Table of Contents Section ********/
+
+/* Controls for switching between printing and viewing modes */
+div#printerControls {
+   color: #963; /* Orange-brown */
+}
+/* Controls that can collapse or expand all XML Instance
+   Representation and Schema Component Representation boxes */
+div#globalControls {
+   border: 2px solid #999;
+}
+
+
+/******** Schema Document Properties Section ********/
+
+/* Table displaying the namespaces declared in the schema */
+table.namespaces th {
+   background-color: #ccc;
+}
+table.namespaces td {
+   background-color: #eee;
+}
+/* Target namespace of the schema */
+span.targetNS {
+   color: #06C;
+   font-weight: bold;
+}
+
+
+/******** Schema Components' Sections ********/
+
+/* Name of schema component */
+.name {
+   color: #F93; /* Orange */
+}
+
+/* Hierarchy table */
+table.hierarchy {
+   border: 2px solid #999; /* Gray */
+}
+
+/* XML Instance Representation table */
+div.sample div.contents {
+   border: 1px dashed black;
+}
+
+
+/* Schema Component Representation table */
+div.schemaComponent div.contents {
+   border: 2px black solid;
+}
+
+
+/******** Glossary Section ********/
+
+/* Glossary Terms */
+.glossaryTerm {
+   color: #036; /* Blue */
+}
+
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* Printer-version styles */
+
+@media print {
+
+/* Ensures that controls are hidden when printing */
+div#printerControls {
+   visibility: hidden;
+}
+div#globalControls {
+   visibility: hidden;
+}
+#legend {
+   display: none;
+}
+#legendTOC {
+   display: none;
+}
+#glossary {
+   display: none;
+}
+#glossaryTOC {
+   display: none;
+}
+
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* Base styles */
+
+/******** General ********/
+
+/* Unordered lists */
+ul {
+   margin-left: 1.5em;
+   margin-bottom: 0em;
+}
+/* Tables */
+table {
+   margin-top: 10px;
+   margin-bottom: 10px;
+   margin-left: 2px;
+   margin-right: 2px;
+}
+table th, table td {
+   font-size: 10pt;
+   vertical-align: top;
+   padding-top: 3px;
+   padding-bottom: 3px;
+   padding-left: 10px;
+   padding-right: 10px;
+}
+table th {
+   font-weight: bold;
+   text-align: left;
+}
+/* Table displaying the properties of the schema components or the
+   schema document itself */
+table.properties {
+   width: 90%;
+}
+table.properties th {
+   width: 30%;
+}
+/* Boxes that can make its content appear and disappear*/
+div.box {
+   margin: 1em;
+}
+   /* Box caption */
+div.box span.caption {
+   font-weight: bold;
+}
+   /* Button to open and close the box */
+div.box input.control {
+   width: 1.4em;
+   height: 1.4em;
+   text-align: center;
+   vertical-align: middle;
+   font-size: 11pt;
+}
+   /* Box contents */
+div.box div.contents {
+   margin-top: 3px;
+}
+
+
+/******** Table of Contents Section ********/
+
+/* Controls for switching between printing and viewing modes */
+div#printerControls {
+   white-space: nowrap;
+   font-weight: bold;
+   padding: 5px;
+   margin: 5px;
+}
+/* Controls that can collapse or expand all XML Instance
+   Representation and Schema Component Representation boxes */
+div#globalControls {
+   padding: 10px;
+   margin: 5px;
+}
+
+
+/******** Schema Document Properties Section ********/
+
+/* Table displaying the namespaces declared in the schema */
+table.namespaces th {
+}
+table.namespaces td {
+}
+/* Target namespace of the schema */
+span.targetNS {
+}
+
+
+/******** Schema Components' Sections ********/
+
+/* Name of schema component */
+.name {
+}
+
+/* Hierarchy table */
+table.hierarchy {
+   width: 90%;
+}
+table.hierarchy th {
+   font-weight: normal;
+   font-style: italic;
+   width: 20%;
+}
+table.hierarchy th, table.hierarchy td {
+   padding: 5px;
+}
+
+/* XML Instance Representation table */
+div.sample {
+   width: 90%;
+}
+div.sample div.contents {
+   padding: 5px;
+   font-family: Courier New, sans-serif;
+   font-size: 10pt;
+}
+   /* Normal elements and attributes */
+div.sample div.contents, div.sample div.contents a {
+   color: black;
+}
+   /* Group Headers */
+div.sample div.contents .group, div.sample div.contents .group a {
+   color: #999; /* Light gray */
+}
+   /* Type Information */
+div.sample div.contents .type, div.sample div.contents .type a {
+   color: #999; /* Light gray */
+}
+   /* Occurrence Information */
+div.sample div.contents .occurs, div.sample div.contents .occurs a {
+   color: #999; /* Light gray */
+}
+   /* Fixed values */
+div.sample div.contents .fixed {
+   color: #063; /* Green */
+   font-weight: bold;
+}
+   /* Simple type constraints */
+div.sample div.contents .constraint, div.sample div.contents .constraint a {
+   color: #999; /* Light gray */
+}
+   /* Elements and attributes inherited from base type */
+div.sample div.contents .inherited, div.sample div.contents .inherited a {
+   color: #666; /* Dark gray */
+}
+   /* Elements and attributes added to or changed from base type */
+div.sample div.contents .newFields {
+   font-weight: bold;
+}
+   /* Other type of information */
+div.sample div.contents .other, div.sample div.contents .other a {
+   color: #369; /* Blue */
+   font-style: italic;
+}
+   /* Link to open up window displaying documentation */
+div.sample div.contents a.documentation {
+   text-decoration: none;
+   padding-left: 3px;
+   padding-right: 3px;
+   padding-top: 0px;
+   padding-bottom: 0px;
+   font-weight: bold;
+   font-size: 11pt;
+   background-color: #FFD;
+   color: #069;
+}
+   /* Invert colors when hovering over link to open up window 
+      displaying documentation */
+div.sample div.contents a.documentation:hover {
+   color: #FFD;
+   background-color: #069;
+}
+
+/* Schema Component Representation table */
+div.schemaComponent {
+   width: 90%;
+}
+div.schemaComponent div.contents {
+   font-family: Courier New, sans-serif;
+   font-size: 10pt;
+   padding: 5px;
+}
+   /* Syntax characters */
+div.schemaComponent div.contents {
+   color: #00f; /* blue */
+}
+   /* Element and attribute tags */
+div.schemaComponent div.contents .scTag {
+   color: #933; /* maroon */
+}
+   /* Element and attribute content */
+div.schemaComponent div.contents .scContent, div.schemaComponent div.contents .scContent a {
+   color: black;
+   font-weight: bold;
+}
+   /* Comments */
+div.schemaComponent div.contents .comment {
+   color: #999; /* Light gray */
+}
+
+/******** Legend Section ********/
+
+div#legend table, div#legend div {
+   margin-bottom: 3px;
+}
+div#legend div.hint {
+   color: #999; /* Light gray */
+   width: 90%;
+   margin-left: 1em;
+   margin-bottom: 2em;
+}
+
+
+/******** Glossary Section ********/
+
+/* Glossary Terms */
+.glossaryTerm {
+   font-weight: bold;
+}
+
+/********* Details *************/
+.detailsToc {
+  color: #666; /* Light gray */
+}
+
+.details {
+  color: #666; /* Light gray */
+  text-decoration:none;
+}
+
+/******** Footer ********/
+
+.footer {
+   font-size: 8pt;
+}
+</style>
+      <script type="text/javascript">
+<!--
+          /* IDs of XML Instance Representation boxes */
+var xiBoxes = new Array('h1866253052_xibox', 'h-176941944_xibox', 'h755714246_xibox', 'h1739128753_xibox', 'h121716534_xibox', 'h-1520516013_xibox', 'h-2079467793_xibox', 'h849933229_xibox', 'h-684945614_xibox');
+/* IDs of diagram boxes */
+var diagramBoxes = new Array('h1866253052_diagram', 'h-176941944_diagram', 'h755714246_diagram', 'h1739128753_diagram', 'h121716534_diagram', 'h-1520516013_diagram', 'h-2079467793_diagram', 'h849933229_diagram', 'h-684945614_diagram');
+/* IDs of logical diagram boxes */
+var logicalDiagramBoxes = new Array('h-176941944_logicalDiagram', 'h-2079467793_logicalDiagram');
+/* IDs of Schema Component Representation boxes */
+var scBoxes = new Array('schema_scbox', 'h1866253052_scbox', 'h-176941944_scbox', 'h755714246_scbox', 'h1739128753_scbox', 'h121716534_scbox', 'h-1520516013_scbox', 'h-2079467793_scbox', 'h849933229_scbox', 'h-684945614_scbox');
+
+/**
+ * Can get the ID of the button controlling
+ * a collapseable box by concatenating
+ * this string onto the ID of the box itself.
+ */
+var B_SFIX = "_button";
+
+
+/**
+ * Returns an element in the current HTML document.
+ * 
+ * @param elementID Identifier of HTML element
+ * @return               HTML element object
+ */
+function getElementObject(elementID) {
+    var elemObj = null;
+    if (document.getElementById) {
+        elemObj = document.getElementById(elementID);
+    }
+    return elemObj;
+}             
+
+/**
+ * Closes a collapseable box.
+ * 
+ * @param boxObj       Collapseable box
+ * @param buttonObj Button controlling box
+ */
+function closeBox(boxObj, buttonObj) {
+  if (boxObj == null || buttonObj == null) {
+     // Box or button not found
+  } else {
+     // Change 'display' CSS property of box
+     boxObj.style.display="none";
+
+     // Change text of button 
+     if (boxObj.style.display=="none") {
+        buttonObj.value=" + ";
+     }
+  }
+}
+
+/**
+ * Opens a collapseable box.
+ * 
+ * @param boxObj       Collapseable box
+ * @param buttonObj Button controlling box
+ */
+function openBox(boxObj, buttonObj) {
+  if (boxObj == null || buttonObj == null) {
+     // Box or button not found
+  } else {
+     // Change 'display' CSS property of box
+     boxObj.style.display="block";
+
+     // Change text of button
+     if (boxObj.style.display=="block") {
+        buttonObj.value=" - ";
+     }
+  }
+}
+
+/**
+ * Sets the state of a collapseable box.
+ * 
+ * @param boxID Identifier of box
+ * @param open If true, box is "opened",
+ *             Otherwise, box is "closed".
+ */
+function setState(boxID, open) {
+  var boxObj = getElementObject(boxID);
+  var buttonObj = getElementObject(boxID+B_SFIX);
+  if (boxObj == null || buttonObj == null) {
+     // Box or button not found
+  } else if (open) {
+     openBox(boxObj, buttonObj);
+     // Make button visible
+     buttonObj.style.display="inline";
+  } else {
+     closeBox(boxObj, buttonObj);
+     // Make button visible
+     buttonObj.style.display="inline";
+  }
+}
+
+/**
+ * Switches the state of a collapseable box, e.g.
+ * if it's opened, it'll be closed, and vice versa.
+ * 
+ * @param boxID Identifier of box
+ */
+function switchState(boxID) {
+  var boxObj = getElementObject(boxID);
+  var buttonObj = getElementObject(boxID+B_SFIX);
+  if (boxObj == null || buttonObj == null) {
+     // Box or button not found
+  } else if (boxObj.style.display=="none") {
+     // Box is closed, so open it
+     openBox(boxObj, buttonObj);
+  } else if (boxObj.style.display=="block") {
+     // Box is opened, so close it
+     closeBox(boxObj, buttonObj);
+  }
+}
+
+/**
+ * Closes all boxes in a given list.
+ * 
+ * @param boxList Array of box IDs
+ */
+function collapseAll(boxList) {
+  var idx;
+  for (idx = 0; idx < boxList.length; idx++) {
+     var boxObj = getElementObject(boxList[idx]);
+     var buttonObj = getElementObject(boxList[idx]+B_SFIX);
+     closeBox(boxObj, buttonObj);
+  }
+}
+
+/**
+ * Open all boxes in a given list.
+ * 
+ * @param boxList Array of box IDs
+ */
+function expandAll(boxList) {
+  var idx;
+  for (idx = 0; idx < boxList.length; idx++) {
+     var boxObj = getElementObject(boxList[idx]);
+     var buttonObj = getElementObject(boxList[idx]+B_SFIX);
+     openBox(boxObj, buttonObj);
+  }
+}
+
+/**
+ * Makes all the control buttons of boxes appear.
+ * 
+ * @param boxList Array of box IDs
+ */
+function viewControlButtons(boxList) {
+    var idx;
+    for (idx = 0; idx < boxList.length; idx++) {
+        buttonObj = getElementObject(boxList[idx]+B_SFIX);
+        if (buttonObj != null) {
+            buttonObj.style.display = "inline";
+        }
+    }
+}
+
+/**
+ * Makes all the control buttons of boxes disappear.
+ * 
+ * @param boxList Array of box IDs
+ */
+function hideControlButtons(boxList) {
+    var idx;
+    for (idx = 0; idx < boxList.length; idx++) {
+        buttonObj = getElementObject(boxList[idx]+B_SFIX);
+        if (buttonObj != null) {
+            buttonObj.style.display = "none";
+        }
+    }
+}
+
+/**
+ * Sets the page for either printing mode
+ * or viewing mode. In printing mode, the page
+ * is made to be more readable when printing it out.
+ * In viewing mode, the page is more browsable.
+ *
+ * @param isPrinterVersion If true, display in
+ *                                 printing mode; otherwise, 
+ *                                 in viewing mode
+ */
+function displayMode(isPrinterVersion) {
+    var obj;
+    if (isPrinterVersion) {
+        // Hide global control buttons
+        obj = getElementObject("globalControls");
+        if (obj != null) {
+            obj.style.visibility = "hidden";
+        }
+        // Hide Legend
+        obj = getElementObject("legend");
+        if (obj != null) {
+            obj.style.display = "none";
+        }
+        obj = getElementObject("legendTOC");
+        if (obj != null) {
+            obj.style.display = "none";
+        }
+        // Hide Glossary
+        obj = getElementObject("glossary");
+        if (obj != null) {
+            obj.style.display = "none";
+        }
+        obj = getElementObject("glossaryTOC");
+        if (obj != null) {
+            obj.style.display = "none";
+        }
+
+        // Expand all diagrams
+        expandAll(diagramBoxes);
+        // Expand all logical diagrams
+        expandAll(logicalDiagramBoxes);        
+        // Expand all XML Instance Representation tables
+        expandAll(xiBoxes);
+        // Expand all Schema Component Representation tables
+        expandAll(scBoxes);
+
+        // Hide Control buttons
+        hideControlButtons(diagramBoxes);
+        hideControlButtons(logicalDiagramBoxes);
+        hideControlButtons(xiBoxes);
+        hideControlButtons(scBoxes);
+    } else {
+        // View global control buttons
+        obj = getElementObject("globalControls");
+        if (obj != null) {
+            obj.style.visibility = "visible";
+        }
+        // View Legend
+        obj = getElementObject("legend");
+        if (obj != null) {
+            obj.style.display = "block";
+        }
+        obj = getElementObject("legendTOC");
+        if (obj != null) {
+            obj.style.display = "block";
+        }
+        // View Glossary
+        obj = getElementObject("glossary");
+        if (obj != null) {
+            obj.style.display = "block";
+        }
+        obj = getElementObject("glossaryTOC");
+        if (obj != null) {
+            obj.style.display = "block";
+        }
+
+        // Expand all diagram boxes
+        expandAll(diagramBoxes);
+        // Collapse all logical diagram boxes.
+        collapseAll(logicalDiagramBoxes);
+        // Expand all XML Instance Representation tables
+        expandAll(xiBoxes);
+        // Collapse all Schema Component Representation tables
+        collapseAll(scBoxes);
+
+        // View Control buttons
+        viewControlButtons(diagramBoxes);
+        viewControlButtons(logicalDiagramBoxes);
+        viewControlButtons(xiBoxes);
+        viewControlButtons(scBoxes);
+    }
+}
+
+
+
+// -->
+</script>
+      <script type="text/javascript">
+<!--
+          
+         
+/**
+ * Counter of documentation windows
+ * Used to give each window a unique name
+ */
+var windowCount = 0;
+         
+/**
+ * Opens up a window displaying the documentation
+ * of a schema component in the XML Instance
+ * Representation table.
+ * 
+ * @param compDesc      Description of schema component 
+ * @param compName      Name of schema component 
+ * @param docTextArray Array containing the paragraphs 
+ *                           of the new document
+ */
+function viewDocumentation(compDesc, compName, docTextArray) {
+  var width = 400;
+  var height = 200;
+  var locX = 100;
+  var locY = 200;
+
+  /* Generate content */
+  var actualText = "<html>";
+  actualText += "<head><title>";
+  actualText += compDesc;
+  if (compName != '') {
+     actualText += ": " + compName;
+  }
+  actualText += "</title></head>";
+  actualText += "<body bgcolor=\"#FFFFEE\">";
+  // Title
+  actualText += "<p style=\"font-family: Arial, sans-serif; font-size: 12pt; font-weight: bold; letter-spacing:1px;\">";
+  actualText += compDesc;
+  if (compName != '') {
+     actualText += ": <span style=\"color:#006699\">" + compName + "</span>";
+  }
+  actualText += "</p>";
+  // Documentation
+  var idx;
+  for (idx = 0; idx < docTextArray.length; idx++) {
+     actualText += "<p style=\"font-family: Arial, sans-serif; font-size: 10pt;\">" + docTextArray[idx] + "</p>";
+  }
+  // Link to close window
+  actualText += "<a href=\"javascript:void(0)\" onclick=\"window.close();\" style=\"font-family: Arial, sans-serif; font-size: 8pt;\">Close</a>";
+  actualText += "</body></html>";
+
+  /* Display window */
+  windowCount++;
+  var docWindow = window.open("", "documentation"+windowCount, "toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable,alwaysRaised,dependent,titlebar=no,width="+width+",height="+height+",screenX="+locX+",left="+locX+",screenY="+locY+",top="+locY);
+  docWindow.document.write(actualText);
+}         
+      
+// -->
+</script>
+   </head>
+   <body>
+      <h1>
+         <a name="top">LexBIG</a>
+      </h1>
+      <div style="float: right;">
+         <div id="printerControls" style="display:none;">
+            <input type="checkbox" onclick="displayMode(this.checked)"/>Printer-friendly Version</div>
+         <script type="text/javascript">
+<!--
+          
+var pc = getElementObject("printerControls");
+if (pc != null) {
+   pc.style.display="block";
+}
+               
+// -->
+</script>
+         <div id="globalControls" style="display:none">
+            <strong>Logical Diagram:</strong>
+            <br/>
+            <span style="margin-left: 1em; white-space: nowrap">[ <a href="javascript:void(0)" onclick="expandAll(logicalDiagramBoxes)">Expand All</a> | <a href="javascript:void(0)" onclick="collapseAll(logicalDiagramBoxes)">Collapse All</a> ]</span>
+            <br/>
+            <br/>
+            <strong>XML Instance Representation:</strong>
+            <br/>
+            <span style="margin-left: 1em; white-space: nowrap">[ <a href="javascript:void(0)" onclick="expandAll(xiBoxes)">Expand All</a> | <a href="javascript:void(0)" onclick="collapseAll(xiBoxes)">Collapse All</a> ]</span>
+            <br/>
+            <br/>
+            <strong>Diagram:</strong>
+            <br/>
+            <span style="margin-left: 1em; white-space: nowrap">[ <a href="javascript:void(0)" onclick="expandAll(diagramBoxes)">Expand All</a> | <a href="javascript:void(0)" onclick="collapseAll(diagramBoxes)">Collapse All</a> ]</span>
+            <br/>
+            <br/>
+            <strong>Schema Component Representation:</strong>
+            <br/>
+            <span style="margin-left: 1em; white-space: nowrap">[ <a href="javascript:void(0)" onclick="expandAll(scBoxes)">Expand All</a> | <a href="javascript:void(0)" onclick="collapseAll(scBoxes)">Collapse All</a> ]</span>
+         </div>
+         <script type="text/javascript">
+<!--
+          
+var gc = getElementObject("globalControls");
+if (gc != null) {
+   gc.style.display="block";
+}
+               
+// -->
+</script>
+      </div>
+      <h2>Table of Contents</h2>
+      <ul>
+         <li>
+            <a href="#SchemaProperties">Schema Document Properties</a>
+         </li>
+         <li>
+            <a href="#SchemaDeclarations">Global Declarations</a>
+            <ul>
+               <li>
+                  <a href="#h-176941944">Element: <strong>associationData</strong>
+                  </a>
+               </li>
+               <li>
+                  <a href="#h-2079467793">Element: <strong>associationTarget</strong>
+                  </a>
+               </li>
+            </ul>
+         </li>
+         <li>
+            <a href="#SchemaDefinitions">Global Definitions</a>
+            <ul>
+               <li>
+                  <a href="#h121716534">Complex Type: <strong>associatableElement</strong>
+                  </a>
+               </li>
+               <li>
+                  <a href="#h1866253052">Complex Type: <strong>association</strong>
+                  </a>
+               </li>
+               <li>
+                  <a href="#h755714246">Complex Type: <strong>associationData</strong>
+                  </a>
+               </li>
+               <li>
+                  <a href="#h1739128753">Complex Type: <strong>associationInstance</strong>
+                  </a>
+               </li>
+               <li>
+                  <a href="#h-1520516013">Complex Type: <strong>associationQualification</strong>
+                  </a>
+               </li>
+               <li>
+                  <a href="#h849933229">Complex Type: <strong>associationTarget</strong>
+                  </a>
+               </li>
+               <li>
+                  <a href="#h-684945614">Complex Type: <strong>relations</strong>
+                  </a>
+               </li>
+            </ul>
+         </li>
+      </ul>
+      <h4>Master schema documentation file: 
+            <a href="Collections.xsd.html">Collections.xsd.html</a>
+      </h4>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <h2>
+         <a name="SchemaProperties">Schema Document Properties</a>
+      </h2>
+      <table class="properties">
+         <tr>
+            <th>Target Namespace</th>
+            <td>
+               <span class="targetNS">http://LexGrid.org/schema/2006/01/LexGrid/relations</span>
+            </td>
+         </tr>
+         <tr>
+            <th>Element and Attribute Namespaces</th>
+            <td>
+               <ul>
+                  <li>Global element and attribute declarations belong to this schema's target namespace.</li>
+                  <li>By default, local element declarations belong to this schema's target namespace.</li>
+                  <li>By default, local attribute declarations have no namespace.</li>
+               </ul>
+            </td>
+         </tr>
+         <tr>
+            <th>Schema Composition</th>
+            <td>
+               <ul>
+                  <li>This schema imports schema(s) from the following namespace(s):<ul>
+                        <li>
+                           <em>http://LexGrid.org/schema/2006/01/LexGrid/builtins</em> (at <a title="Jump to schema documentation for 'builtins.xsd'."
+                              href="builtins.xsd.html">builtins.xsd</a>)</li>
+                        <li>
+                           <em>http://LexGrid.org/schema/2006/01/LexGrid/commonTypes</em> (at <a title="Jump to schema documentation for 'commonTypes.xsd'."
+                              href="commonTypes.xsd.html">commonTypes.xsd</a>)</li>
+                     </ul>
+                  </li>
+               </ul>
+            </td>
+         </tr>
+      </table>
+      <h3>Declared Namespaces</h3>
+      <table class="namespaces">
+         <tr>
+            <th>Prefix</th>
+            <th>Namespace</th>
+         </tr>
+         <tr>
+            <td>
+               <a name="ns_">Default namespace</a>
+            </td>
+            <td>
+               <span class="targetNS">http://LexGrid.org/schema/2006/01/LexGrid/relations</span>
+            </td>
+         </tr>
+         <tr>
+            <td>
+               <a name="ns_xml">xml</a>
+            </td>
+            <td>http://www.w3.org/XML/1998/namespace</td>
+         </tr>
+         <tr>
+            <td>
+               <a name="ns_lgBuiltin">lgBuiltin</a>
+            </td>
+            <td>http://LexGrid.org/schema/2006/01/LexGrid/builtins</td>
+         </tr>
+         <tr>
+            <td>
+               <a name="ns_lgCommon">lgCommon</a>
+            </td>
+            <td>http://LexGrid.org/schema/2006/01/LexGrid/commonTypes</td>
+         </tr>
+         <tr>
+            <td>
+               <a name="ns_ldap">ldap</a>
+            </td>
+            <td>http://LexGrid.org/schema/2006/01/LexGrid/ldap</td>
+         </tr>
+         <tr>
+            <td>
+               <a name="ns_xs">xs</a>
+            </td>
+            <td>http://www.w3.org/2001/XMLSchema</td>
+         </tr>
+      </table>
+      <div class="schemaComponent box">
+         <div>
+            <input type="button" id="schema_scbox_button" class="control"
+                   onclick="switchState('schema_scbox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Schema Component Representation</span>
+         </div>
+         <div id="schema_scbox" class="contents">
+            <div style="margin-left: 0em">&lt;<span class="scTag">xs:schema</span> 
+               <span class="scTag">targetNamespace</span>="<span class="scContent">http://LexGrid.org/schema/2006/01/LexGrid/relations</span>" <span class="scTag">elementFormDefault</span>="<span class="scContent">qualified</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:import</span> 
+                  <span class="scTag">namespace</span>="<span class="scContent">http://LexGrid.org/schema/2006/01/LexGrid/builtins</span>" <span class="scTag">schemaLocation</span>="<span class="scContent">builtins.xsd</span>"/&gt;</div>
+               <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:import</span> 
+                  <span class="scTag">namespace</span>="<span class="scContent">http://LexGrid.org/schema/2006/01/LexGrid/commonTypes</span>" <span class="scTag">schemaLocation</span>="<span class="scContent">commonTypes.xsd</span>"/&gt;</div>
+               <div class="scContent" style="margin-left: 1.5em">...</div>&lt;/<span class="scTag">xs:schema</span>&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('schema_scbox', false);
+// -->
+</script>
+      </div>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <h2>
+         <a name="SchemaDeclarations">Global Declarations</a>
+      </h2>
+      <h3>Element: <a name="h-176941944" class="name">associationData</a>
+      </h3>
+      <table class="properties">
+         <tr>
+            <th>Name</th>
+            <td>associationData</td>
+         </tr>
+         <tr>
+            <th>Type</th>
+            <td>
+               <span class="type">
+                  <a title="Jump to &#34;associationData&#34; type definition." href="#h755714246">associationData</a>
+               </span>
+            </td>
+         </tr>
+         <tr>
+            <th>Nillable</th>
+            <td>no</td>
+         </tr>
+         <tr>
+            <th>Abstract</th>
+            <td>no</td>
+         </tr>
+      </table>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-176941944_logicalDiagram_button" class="control"
+                   onclick="switchState('h-176941944_logicalDiagram'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Logical Diagram</span>
+         </div>
+         <div id="h-176941944_logicalDiagram" class="contents">
+            <img usemap="#h-943049410" src="schemaDiagrams/h-943049410.png"/>
+            <!--
+            Map ref: file:/C:/work/build/workspace/lbModel/html/oXygen//schemaDiagrams/h-943049410.map--><map name="h-943049410">
+               <area shape="rect" alt="h777130705" coords="475,212,778,288"
+                     href="relations.xsd.html#h777130705"/>
+
+            </map>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-176941944_logicalDiagram', false);
+// -->
+</script>
+      </div>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-176941944_xibox_button" class="control"
+                   onclick="switchState('h-176941944_xibox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">XML Instance Representation</span>
+         </div>
+         <div id="h-176941944_xibox" class="contents">
+            <div style="margin-left: 0em">&lt;associationData<br/>
+               <span style="margin-left: 0.5em"> firstRelease="<span class="type">
+                     <a href="commonTypes.xsd.html#ns_lgBuiltin"
+                        title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that entity was introduced in the current release'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em"> modifiedInRelease="<span class="type">
+                     <a href="commonTypes.xsd.html#ns_lgBuiltin"
+                        title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that entity isn\'t new but was modified since the last release.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em"> deprecated="<span class="type">
+                     <a href="commonTypes.xsd.html#ns_lgBuiltin"
+                        title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that this entity is scheduled to be retired or removed at some future release'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em"> id="<span class="type">
+                     <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;id&#34; type definition(located in external schema documentation)."
+                        href="commonTypes.xsd.html#h-853090240"
+                        class="externalLink">id</a>
+                  </span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'Identifier that uniqely names this entry within the context of the associationInstance.'</p>"</span>&gt; <br/>
+               <div style="margin-left: 1.5em">&lt;associationQualification&gt; <span class="type">
+                     <a title="Jump to &#34;associationQualification&#34; type definition."
+                        href="#h-1520516013">associationQualification</a>
+                  </span> &lt;/associationQualification&gt; <span class="occurs">[0..*]</span> 
+                  <p class="documentation">'A set of qualifers that server to modify or qualify this entry.'</p>
+               </div>
+               <div class="other" style="margin-left: 1.5em">Allow any elements from a namespace other than this schema's namespace (lax validation). <span class="occurs">[0..*]</span>
+               </div>&lt;/associationData&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-176941944_xibox', true);
+// -->
+</script>
+      </div>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-176941944_diagram_button" class="control"
+                   onclick="switchState('h-176941944_diagram'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Diagram</span>
+         </div>
+         <div id="h-176941944_diagram" class="contents">
+            <img usemap="#h-1161697676" src="schemaDiagrams/h-1161697676.png"/>
+            <!--
+            Map ref: file:/C:/work/build/workspace/lbModel/html/oXygen//schemaDiagrams/h-1161697676.map--><map name="h-1161697676">
+</map>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-176941944_diagram', true);
+// -->
+</script>
+      </div>
+      <div class="schemaComponent box">
+         <div>
+            <input type="button" id="h-176941944_scbox_button" class="control"
+                   onclick="switchState('h-176941944_scbox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Schema Component Representation</span>
+         </div>
+         <div id="h-176941944_scbox" class="contents">
+            <div style="margin-left: 0em">&lt;<span class="scTag">xs:element</span> 
+               <span class="scTag">name</span>="<span class="scContent">associationData</span>" <span class="scTag">type</span>="<span class="scContent">
+                  <span class="type">
+                     <a title="Jump to &#34;associationData&#34; type definition." href="#h755714246">associationData</a>
+                  </span>
+               </span>"/&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-176941944_scbox', false);
+// -->
+</script>
+      </div>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <h3>Element: <a name="h-2079467793" class="name">associationTarget</a>
+      </h3>
+      <table class="properties">
+         <tr>
+            <th>Name</th>
+            <td>associationTarget</td>
+         </tr>
+         <tr>
+            <th>Type</th>
+            <td>
+               <span class="type">
+                  <a title="Jump to &#34;associationTarget&#34; type definition." href="#h849933229">associationTarget</a>
+               </span>
+            </td>
+         </tr>
+         <tr>
+            <th>Nillable</th>
+            <td>no</td>
+         </tr>
+         <tr>
+            <th>Abstract</th>
+            <td>no</td>
+         </tr>
+      </table>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-2079467793_logicalDiagram_button" class="control"
+                   onclick="switchState('h-2079467793_logicalDiagram'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Logical Diagram</span>
+         </div>
+         <div id="h-2079467793_logicalDiagram" class="contents">
+            <img usemap="#h2115940005" src="schemaDiagrams/h2115940005.png"/>
+            <!--
+            Map ref: file:/C:/work/build/workspace/lbModel/html/oXygen//schemaDiagrams/h2115940005.map--><map name="h2115940005">
+               <area shape="rect" alt="h777130705" coords="389,265,692,341"
+                     href="relations.xsd.html#h777130705"/>
+
+            </map>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-2079467793_logicalDiagram', false);
+// -->
+</script>
+      </div>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-2079467793_xibox_button" class="control"
+                   onclick="switchState('h-2079467793_xibox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">XML Instance Representation</span>
+         </div>
+         <div id="h-2079467793_xibox" class="contents">
+            <div style="margin-left: 0em">&lt;associationTarget<br/>
+               <span style="margin-left: 0.5em"> firstRelease="<span class="type">
+                     <a href="commonTypes.xsd.html#ns_lgBuiltin"
+                        title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that entity was introduced in the current release'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em"> modifiedInRelease="<span class="type">
+                     <a href="commonTypes.xsd.html#ns_lgBuiltin"
+                        title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that entity isn\'t new but was modified since the last release.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em"> deprecated="<span class="type">
+                     <a href="commonTypes.xsd.html#ns_lgBuiltin"
+                        title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that this entity is scheduled to be retired or removed at some future release'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em"> targetCodingScheme="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;localId&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h-596371999"
+                        class="externalLink">localId</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'Coding scheme of the target concept. If present must be in supportedCodingSchemes. If absent, the coding scheme is the targetCodingScheme of the containing association.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em"> targetConcept="<span class="type">
+                     <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;conceptCode&#34; type definition(located in external schema documentation)."
+                        href="commonTypes.xsd.html#h2058358512"
+                        class="externalLink">conceptCode</a>
+                  </span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'Concept code from the target coding scheme.'</p>"</span>&gt; <br/>
+               <div style="margin-left: 1.5em">&lt;associationQualification&gt; <span class="type">
+                     <a title="Jump to &#34;associationQualification&#34; type definition."
+                        href="#h-1520516013">associationQualification</a>
+                  </span> &lt;/associationQualification&gt; <span class="occurs">[0..*]</span> 
+                  <p class="documentation">'A set of qualifers that server to modify or qualify this entry.'</p>
+               </div>&lt;/associationTarget&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-2079467793_xibox', true);
+// -->
+</script>
+      </div>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-2079467793_diagram_button" class="control"
+                   onclick="switchState('h-2079467793_diagram'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Diagram</span>
+         </div>
+         <div id="h-2079467793_diagram" class="contents">
+            <img usemap="#h-1846613413" src="schemaDiagrams/h-1846613413.png"/>
+            <!--
+            Map ref: file:/C:/work/build/workspace/lbModel/html/oXygen//schemaDiagrams/h-1846613413.map--><map name="h-1846613413">
+</map>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-2079467793_diagram', true);
+// -->
+</script>
+      </div>
+      <div class="schemaComponent box">
+         <div>
+            <input type="button" id="h-2079467793_scbox_button" class="control"
+                   onclick="switchState('h-2079467793_scbox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Schema Component Representation</span>
+         </div>
+         <div id="h-2079467793_scbox" class="contents">
+            <div style="margin-left: 0em">&lt;<span class="scTag">xs:element</span> 
+               <span class="scTag">name</span>="<span class="scContent">associationTarget</span>" <span class="scTag">type</span>="<span class="scContent">
+                  <span class="type">
+                     <a title="Jump to &#34;associationTarget&#34; type definition." href="#h849933229">associationTarget</a>
+                  </span>
+               </span>"/&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-2079467793_scbox', false);
+// -->
+</script>
+      </div>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <h2>
+         <a name="SchemaDefinitions">Global Definitions</a>
+      </h2>
+      <h3>Complex Type: <a name="h121716534" class="name">associatableElement</a>
+      </h3>
+      <table class="hierarchy">
+         <tr>
+            <th>Super-types:</th>
+            <td>
+               <span class="type">
+                  <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;versionable&#34; type definition(located in external schema documentation)."
+                     href="commonTypes.xsd.html#h-1651741523"
+                     class="externalLink">versionable</a>
+               </span> &lt; <strong>associatableElement</strong> (by extension)</td>
+         </tr>
+         <tr>
+            <th>Sub-types:</th>
+            <td>
+               <ul>
+                  <li>
+                     <span class="type">
+                        <a title="Jump to &#34;associationData&#34; type definition." href="#h755714246">associationData</a>
+                     </span> (by extension)</li>
+                  <li>
+                     <span class="type">
+                        <a title="Jump to &#34;associationTarget&#34; type definition." href="#h849933229">associationTarget</a>
+                     </span> (by extension)</li>
+               </ul>
+            </td>
+         </tr>
+      </table>
+      <table class="properties">
+         <tr>
+            <th>Name</th>
+            <td>associatableElement</td>
+         </tr>
+         <tr>
+            <th>Abstract</th>
+            <td>no</td>
+         </tr>
+         <tr>
+            <th>Documentation</th>
+            <td>The target of an association.</td>
+         </tr>
+         <tr>
+            <th>Application Data</th>
+            <td>
+                                <code>&lt;<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt; <div style="margin-left: 1.5em">1.3.6.1.4.1.2114.108.1.7.85</div>&lt;/<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt;</code>
+                        </td>
+         </tr>
+      </table>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h121716534_xibox_button" class="control"
+                   onclick="switchState('h121716534_xibox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">XML Instance Representation</span>
+         </div>
+         <div id="h121716534_xibox" class="contents">
+            <div style="margin-left: 0em">&lt;...<br/>
+               <span style="margin-left: 0.5em" class="inherited"> firstRelease="<span class="type">
+                     <a href="commonTypes.xsd.html#ns_lgBuiltin"
+                        title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that entity was introduced in the current release'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="inherited"> modifiedInRelease="<span class="type">
+                     <a href="commonTypes.xsd.html#ns_lgBuiltin"
+                        title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that entity isn\'t new but was modified since the last release.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="inherited"> deprecated="<span class="type">
+                     <a href="commonTypes.xsd.html#ns_lgBuiltin"
+                        title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that this entity is scheduled to be retired or removed at some future release'</p>"</span>&gt; <br/>
+               <div style="margin-left: 1.5em" class="newFields">&lt;associationQualification&gt; <span class="type">
+                     <a title="Jump to &#34;associationQualification&#34; type definition."
+                        href="#h-1520516013">associationQualification</a>
+                  </span> &lt;/associationQualification&gt; <span class="occurs">[0..*]</span> 
+                  <p class="documentation">'A set of qualifers that server to modify or qualify this entry.'</p>
+               </div>&lt;/...&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h121716534_xibox', true);
+// -->
+</script>
+      </div>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h121716534_diagram_button" class="control"
+                   onclick="switchState('h121716534_diagram'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Diagram</span>
+         </div>
+         <div id="h121716534_diagram" class="contents">
+            <img usemap="#h-2042870750" src="schemaDiagrams/h-2042870750.png"/>
+            <!--
+            Map ref: file:/C:/work/build/workspace/lbModel/html/oXygen//schemaDiagrams/h-2042870750.map--><map name="h-2042870750">
+</map>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h121716534_diagram', true);
+// -->
+</script>
+      </div>
+      <div class="schemaComponent box">
+         <div>
+            <input type="button" id="h121716534_scbox_button" class="control"
+                   onclick="switchState('h121716534_scbox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Schema Component Representation</span>
+         </div>
+         <div id="h121716534_scbox" class="contents">
+            <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> 
+               <span class="scTag">name</span>="<span class="scContent">associatableElement</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:complexContent</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:extension</span> 
+                     <span class="scTag">base</span>="<span class="scContent">
+                        <span class="type">
+                           <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;versionable&#34; type definition(located in external schema documentation)."
+                              href="commonTypes.xsd.html#h-1651741523"
+                              class="externalLink">versionable</a>
+                        </span>
+                     </span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> 
+                           <span class="scTag">name</span>="<span class="scContent">associationQualification</span>" <span class="scTag">type</span>="<span class="scContent">
+                              <span class="type">
+                                 <a title="Jump to &#34;associationQualification&#34; type definition."
+                                    href="#h-1520516013">associationQualification</a>
+                              </span>
+                           </span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div>&lt;/<span class="scTag">xs:extension</span>&gt;</div>&lt;/<span class="scTag">xs:complexContent</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h121716534_scbox', false);
+// -->
+</script>
+      </div>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <h3>Complex Type: <a name="h1866253052" class="name">association</a>
+      </h3>
+      <table class="hierarchy">
+         <tr>
+            <th>Super-types:</th>
+            <td>
+               <span class="type">
+                  <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;describable&#34; type definition(located in external schema documentation)."
+                     href="commonTypes.xsd.html#h215704495"
+                     class="externalLink">describable</a>
+               </span> &lt; <strong>association</strong> (by extension)</td>
+         </tr>
+         <tr>
+            <th>Sub-types:</th>
+            <td>None</td>
+         </tr>
+      </table>
+      <table class="properties">
+         <tr>
+            <th>Name</th>
+            <td>association</td>
+         </tr>
+         <tr>
+            <th>Used by (from the same schema document)</th>
+            <td>Complex Type <b>
+                  <a href="#h-684945614">relations</a>
+               </b>
+            </td>
+         </tr>
+         <tr>
+            <th>Abstract</th>
+            <td>no</td>
+         </tr>
+         <tr>
+            <th>Documentation</th>
+            <td>A binary relation between concept codes or concept codes and data.</td>
+         </tr>
+         <tr>
+            <th>Application Data</th>
+            <td>
+                                <code>&lt;<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt; <div style="margin-left: 1.5em">1.3.6.1.4.1.2114.108.1.7.12</div>&lt;/<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt;</code>
+                                <code>&lt;<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:rdn&gt; <div style="margin-left: 1.5em">association</div>&lt;/<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:rdn&gt;</code>
+                                <code>&lt;<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:objectClass&gt; <div style="margin-left: 1.5em">associationClass</div>&lt;/<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:objectClass&gt;</code>
+                        </td>
+         </tr>
+      </table>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h1866253052_xibox_button" class="control"
+                   onclick="switchState('h1866253052_xibox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">XML Instance Representation</span>
+         </div>
+         <div id="h1866253052_xibox" class="contents">
+            <div style="margin-left: 0em">&lt;...<br/>
+               <span style="margin-left: 0.5em" class="newFields"> association="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;localId&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h-596371999"
+                        class="externalLink">localId</a>
+                  </span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'The local name of the association. Must be in supportedAssociation.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> forwardName="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsCaseIgnoreIA5String&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h1081154920"
+                        class="externalLink">tsCaseIgnoreIA5String</a>
+                  </span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'How the association should be represented when reading from source to target.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> reverseName="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsCaseIgnoreIA5String&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h1081154920"
+                        class="externalLink">tsCaseIgnoreIA5String</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'How the association should be represented when reading from target to source.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> inverse="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;localId&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h-596371999"
+                        class="externalLink">localId</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'The local identifier of the inverse association.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> isNavigable="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'True means that the reverse direction of the associaton is \"navigable\", meaning that it is makes sense to represent the target to source side of the association.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> isTransitive="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'True means that association is transitive ( r(a,b), r(b,c) -&gt; r(a,c)). False means not transitive. If absent, transitivity is unknown or not applicable.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> isAntiTransitive="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'True means that the association is antiTransitive ( r(a,b),r(b,c) -&gt; not r(a,c)). False means not antitransitive. If absent, transitivity is unknown or not applicable.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> isSymmetric="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'True means that association is symmetric ( r(a,b) -&gt; r(b, a)). False means not symmetric. If absent, symmetricity is unknown or not applicable.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> isAntiSymmetric="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'True means that the association is antiSymmetric ( r(a,b) -&gt; not r(b,a)), false means not antitransitive. If absent, symmetricity is unknown or not applicable.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> isReflexive="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'True means that association is reflexive (for all a in domain, r(a,a). False means not reflexive. If absent, reflexivity is unknown or not applicable.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> isAntiReflexive="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that the association is antiReflexive ( for all a in domain, not r(a,a), false means not antiReflexive. If absent, reflexivity is unknown or not applicable.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> isFunctional="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that the association is injective(for all a in domain, there exists exactly one b in the range such that r(a,b).'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> isReverseFunctional="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that the association is surjective (for all b in range, there exists exactly one a in range such that r(a,b).'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> isTranslationAssociation="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that this association represents a \"translation\" or \"mapping\" between the containing code system and the target code system.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> targetCodingScheme="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;localId&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h-596371999"
+                        class="externalLink">localId</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'The default coding scheme for the target concepts if not otherwise specified. If omitted, the default target is the containing coding scheme. local name - must be in supportedCodeScheme.'</p>"</span>&gt; <br/>
+               <div style="margin-left: 1.5em" class="inherited">&lt;entityDescription&gt; <span class="type">
+                     <a title="Jump to &#34;entityDescription&#34; type definition(located in external schema documentation)."
+                        href="commonTypes.xsd.html#h605612628"
+                        class="externalLink">entityDescription</a>
+                  </span> &lt;/entityDescription&gt; <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'A textual description of the entity in the default language'</p>
+               </div>
+               <div style="margin-left: 1.5em" class="newFields">&lt;sourceConcept&gt; <span class="type">
+                     <a title="Jump to &#34;associationInstance&#34; type definition." href="#h1739128753">associationInstance</a>
+                  </span> &lt;/sourceConcept&gt; <span class="occurs">[0..*]</span> 
+                  <p class="documentation">'A list of association instances, each identified by the \"source\" or \"domain\" concept.'</p>
+               </div>&lt;/...&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h1866253052_xibox', true);
+// -->
+</script>
+      </div>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h1866253052_diagram_button" class="control"
+                   onclick="switchState('h1866253052_diagram'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Diagram</span>
+         </div>
+         <div id="h1866253052_diagram" class="contents">
+            <img usemap="#h-40519960" src="schemaDiagrams/h-40519960.png"/>
+            <!--
+            Map ref: file:/C:/work/build/workspace/lbModel/html/oXygen//schemaDiagrams/h-40519960.map--><map name="h-40519960">
+</map>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h1866253052_diagram', true);
+// -->
+</script>
+      </div>
+      <div class="schemaComponent box">
+         <div>
+            <input type="button" id="h1866253052_scbox_button" class="control"
+                   onclick="switchState('h1866253052_scbox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Schema Component Representation</span>
+         </div>
+         <div id="h1866253052_scbox" class="contents">
+            <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> 
+               <span class="scTag">name</span>="<span class="scContent">association</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:complexContent</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:extension</span> 
+                     <span class="scTag">base</span>="<span class="scContent">
+                        <span class="type">
+                           <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;describable&#34; type definition(located in external schema documentation)."
+                              href="commonTypes.xsd.html#h215704495"
+                              class="externalLink">describable</a>
+                        </span>
+                     </span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> 
+                           <span class="scTag">name</span>="<span class="scContent">sourceConcept</span>" <span class="scTag">type</span>="<span class="scContent">
+                              <span class="type">
+                                 <a title="Jump to &#34;associationInstance&#34; type definition." href="#h1739128753">associationInstance</a>
+                              </span>
+                           </span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">association</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;localId&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h-596371999"
+                                 class="externalLink">localId</a>
+                           </span>
+                        </span>" <span class="scTag">use</span>="<span class="scContent">required</span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">forwardName</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsCaseIgnoreIA5String&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h1081154920"
+                                 class="externalLink">tsCaseIgnoreIA5String</a>
+                           </span>
+                        </span>" <span class="scTag">use</span>="<span class="scContent">required</span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">reverseName</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsCaseIgnoreIA5String&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h1081154920"
+                                 class="externalLink">tsCaseIgnoreIA5String</a>
+                           </span>
+                        </span>" <span class="scTag">use</span>="<span class="scContent">optional</span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">inverse</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;localId&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h-596371999"
+                                 class="externalLink">localId</a>
+                           </span>
+                        </span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">isNavigable</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h400474596"
+                                 class="externalLink">tsBoolean</a>
+                           </span>
+                        </span>" <span class="scTag">default</span>="<span class="scContent">true</span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">isTransitive</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h400474596"
+                                 class="externalLink">tsBoolean</a>
+                           </span>
+                        </span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">isAntiTransitive</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h400474596"
+                                 class="externalLink">tsBoolean</a>
+                           </span>
+                        </span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">isSymmetric</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h400474596"
+                                 class="externalLink">tsBoolean</a>
+                           </span>
+                        </span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">isAntiSymmetric</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h400474596"
+                                 class="externalLink">tsBoolean</a>
+                           </span>
+                        </span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">isReflexive</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h400474596"
+                                 class="externalLink">tsBoolean</a>
+                           </span>
+                        </span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">isAntiReflexive</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h400474596"
+                                 class="externalLink">tsBoolean</a>
+                           </span>
+                        </span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">isFunctional</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h400474596"
+                                 class="externalLink">tsBoolean</a>
+                           </span>
+                        </span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">isReverseFunctional</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h400474596"
+                                 class="externalLink">tsBoolean</a>
+                           </span>
+                        </span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">isTranslationAssociation</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h400474596"
+                                 class="externalLink">tsBoolean</a>
+                           </span>
+                        </span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">targetCodingScheme</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;localId&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h-596371999"
+                                 class="externalLink">localId</a>
+                           </span>
+                        </span>"/&gt;</div>&lt;/<span class="scTag">xs:extension</span>&gt;</div>&lt;/<span class="scTag">xs:complexContent</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h1866253052_scbox', false);
+// -->
+</script>
+      </div>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <h3>Complex Type: <a name="h755714246" class="name">associationData</a>
+      </h3>
+      <table class="hierarchy">
+         <tr>
+            <th>Super-types:</th>
+            <td>
+               <span class="type">
+                  <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;versionable&#34; type definition(located in external schema documentation)."
+                     href="commonTypes.xsd.html#h-1651741523"
+                     class="externalLink">versionable</a>
+               </span> &lt; <span class="type">
+                  <a title="Jump to &#34;associatableElement&#34; type definition." href="#h121716534">associatableElement</a>
+               </span> (by extension) &lt; <strong>associationData</strong> (by extension)</td>
+         </tr>
+         <tr>
+            <th>Sub-types:</th>
+            <td>None</td>
+         </tr>
+      </table>
+      <table class="properties">
+         <tr>
+            <th>Name</th>
+            <td>associationData</td>
+         </tr>
+         <tr>
+            <th>Used by (from the same schema document)</th>
+            <td>Element <b>
+                  <a href="#h-176941944">associationData</a>
+               </b>, Complex Type <b>
+                  <a href="#h1739128753">associationInstance</a>
+               </b>
+            </td>
+         </tr>
+         <tr>
+            <th>Abstract</th>
+            <td>no</td>
+         </tr>
+         <tr>
+            <th>Documentation</th>
+            <td>An instance of a target or RHS data value of an association.</td>
+         </tr>
+         <tr>
+            <th>Application Data</th>
+            <td>
+                                <code>&lt;<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt; <div style="margin-left: 1.5em">1.3.6.1.4.1.2114.108.1.7.89</div>&lt;/<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt;</code>
+                                <code>&lt;<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:rdn&gt; <div style="margin-left: 1.5em">id</div>&lt;/<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:rdn&gt;</code>
+                        </td>
+         </tr>
+      </table>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h755714246_xibox_button" class="control"
+                   onclick="switchState('h755714246_xibox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">XML Instance Representation</span>
+         </div>
+         <div id="h755714246_xibox" class="contents">
+            <div style="margin-left: 0em">&lt;...<br/>
+               <span style="margin-left: 0.5em" class="inherited"> firstRelease="<span class="type">
+                     <a href="commonTypes.xsd.html#ns_lgBuiltin"
+                        title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that entity was introduced in the current release'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="inherited"> modifiedInRelease="<span class="type">
+                     <a href="commonTypes.xsd.html#ns_lgBuiltin"
+                        title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that entity isn\'t new but was modified since the last release.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="inherited"> deprecated="<span class="type">
+                     <a href="commonTypes.xsd.html#ns_lgBuiltin"
+                        title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that this entity is scheduled to be retired or removed at some future release'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> id="<span class="type">
+                     <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;id&#34; type definition(located in external schema documentation)."
+                        href="commonTypes.xsd.html#h-853090240"
+                        class="externalLink">id</a>
+                  </span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'Identifier that uniqely names this entry within the context of the associationInstance.'</p>"</span>&gt; <br/>
+               <div style="margin-left: 1.5em" class="inherited">&lt;associationQualification&gt; <span class="type">
+                     <a title="Jump to &#34;associationQualification&#34; type definition."
+                        href="#h-1520516013">associationQualification</a>
+                  </span> &lt;/associationQualification&gt; <span class="occurs">[0..*]</span> 
+                  <p class="documentation">'A set of qualifers that server to modify or qualify this entry.'</p>
+               </div>
+               <div class="other" style="margin-left: 1.5em">Allow any elements from a namespace other than this schema's namespace (lax validation). <span class="occurs">[0..*]</span>
+               </div>&lt;/...&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h755714246_xibox', true);
+// -->
+</script>
+      </div>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h755714246_diagram_button" class="control"
+                   onclick="switchState('h755714246_diagram'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Diagram</span>
+         </div>
+         <div id="h755714246_diagram" class="contents">
+            <img usemap="#h1179268530" src="schemaDiagrams/h1179268530.png"/>
+            <!--
+            Map ref: file:/C:/work/build/workspace/lbModel/html/oXygen//schemaDiagrams/h1179268530.map--><map name="h1179268530">
+</map>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h755714246_diagram', true);
+// -->
+</script>
+      </div>
+      <div class="schemaComponent box">
+         <div>
+            <input type="button" id="h755714246_scbox_button" class="control"
+                   onclick="switchState('h755714246_scbox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Schema Component Representation</span>
+         </div>
+         <div id="h755714246_scbox" class="contents">
+            <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> 
+               <span class="scTag">name</span>="<span class="scContent">associationData</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:complexContent</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:extension</span> 
+                     <span class="scTag">base</span>="<span class="scContent">
+                        <span class="type">
+                           <a title="Jump to &#34;associatableElement&#34; type definition." href="#h121716534">associatableElement</a>
+                        </span>
+                     </span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:any</span> 
+                           <span class="scTag">processContents</span>="<span class="scContent">lax</span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>" <span class="scTag">namespace</span>="<span class="scContent">##other</span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">id</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;id&#34; type definition(located in external schema documentation)."
+                                 href="commonTypes.xsd.html#h-853090240"
+                                 class="externalLink">id</a>
+                           </span>
+                        </span>" <span class="scTag">use</span>="<span class="scContent">required</span>"/&gt;</div>&lt;/<span class="scTag">xs:extension</span>&gt;</div>&lt;/<span class="scTag">xs:complexContent</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h755714246_scbox', false);
+// -->
+</script>
+      </div>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <h3>Complex Type: <a name="h1739128753" class="name">associationInstance</a>
+      </h3>
+      <table class="hierarchy">
+         <tr>
+            <th>Super-types:</th>
+            <td>None</td>
+         </tr>
+         <tr>
+            <th>Sub-types:</th>
+            <td>None</td>
+         </tr>
+      </table>
+      <table class="properties">
+         <tr>
+            <th>Name</th>
+            <td>associationInstance</td>
+         </tr>
+         <tr>
+            <th>Used by (from the same schema document)</th>
+            <td>Complex Type <b>
+                  <a href="#h1866253052">association</a>
+               </b>
+            </td>
+         </tr>
+         <tr>
+            <th>Abstract</th>
+            <td>no</td>
+         </tr>
+         <tr>
+            <th>Documentation</th>
+            <td>An instance of a 'source' or LHS of an association. An association instance references one or more 'targets' or RHS's.</td>
+         </tr>
+         <tr>
+            <th>Application Data</th>
+            <td>
+                                <code>&lt;<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt; <div style="margin-left: 1.5em">1.3.6.1.4.1.2114.108.1.7.13</div>&lt;/<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt;</code>
+                        </td>
+         </tr>
+      </table>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h1739128753_xibox_button" class="control"
+                   onclick="switchState('h1739128753_xibox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">XML Instance Representation</span>
+         </div>
+         <div id="h1739128753_xibox" class="contents">
+            <div style="margin-left: 0em">&lt;...<br/>
+               <span style="margin-left: 0.5em"> sourceCodingScheme="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;localId&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h-596371999"
+                        class="externalLink">localId</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'Local name of the coding scheme that the source is drawn from. If present, must be in supportedCodingScheme. If absent, the source coding scheme is the containing coding scheme.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em"> sourceConcept="<span class="type">
+                     <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;conceptCode&#34; type definition(located in external schema documentation)."
+                        href="commonTypes.xsd.html#h2058358512"
+                        class="externalLink">conceptCode</a>
+                  </span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'The source concept code.'</p>"</span>&gt; <br/>
+               <span class="group" style="margin-left: 1.5em">Start Choice <span class="occurs">[1]</span>
+               </span>
+               <br/>
+               <div style="margin-left: 3em">&lt;targetConcept&gt; <span class="type">
+                     <a title="Jump to &#34;associationTarget&#34; type definition." href="#h849933229">associationTarget</a>
+                  </span> &lt;/targetConcept&gt; <span class="occurs">[0..*]</span> 
+                  <p class="documentation">'An instance of a \'target\' or RHS concept of an association.'</p>
+               </div>
+               <div style="margin-left: 3em">&lt;targetDataValue&gt; <span class="type">
+                     <a title="Jump to &#34;associationData&#34; type definition." href="#h755714246">associationData</a>
+                  </span> &lt;/targetDataValue&gt; <span class="occurs">[0..*]</span> 
+                  <p class="documentation">'An instance of a \'target\' or RHS data element of an association.'</p>
+               </div>
+               <span class="group" style="margin-left: 1.5em">End Choice</span>
+               <br/>&lt;/...&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h1739128753_xibox', true);
+// -->
+</script>
+      </div>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h1739128753_diagram_button" class="control"
+                   onclick="switchState('h1739128753_diagram'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Diagram</span>
+         </div>
+         <div id="h1739128753_diagram" class="contents">
+            <img usemap="#h88176669" src="schemaDiagrams/h88176669.png"/>
+            <!--
+            Map ref: file:/C:/work/build/workspace/lbModel/html/oXygen//schemaDiagrams/h88176669.map--><map name="h88176669">
+               <area shape="rect" alt="h849933229" coords="263,0,396,44"
+                     href="relations.xsd.html#h849933229"/>
+
+               <area shape="rect" alt="h755714246" coords="263,54,407,98"
+                     href="relations.xsd.html#h755714246"/>
+
+               <area shape="rect" alt="h-596371999" coords="191,108,389,135"
+                     href="builtins.xsd.html#h-596371999"/>
+
+               <area shape="rect" alt="h2058358512" coords="191,145,349,172"
+                     href="commonTypes.xsd.html#h2058358512"/>
+
+            </map>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h1739128753_diagram', true);
+// -->
+</script>
+      </div>
+      <div class="schemaComponent box">
+         <div>
+            <input type="button" id="h1739128753_scbox_button" class="control"
+                   onclick="switchState('h1739128753_scbox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Schema Component Representation</span>
+         </div>
+         <div id="h1739128753_scbox" class="contents">
+            <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> 
+               <span class="scTag">name</span>="<span class="scContent">associationInstance</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:choice</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> 
+                     <span class="scTag">name</span>="<span class="scContent">targetConcept</span>" <span class="scTag">type</span>="<span class="scContent">
+                        <span class="type">
+                           <a title="Jump to &#34;associationTarget&#34; type definition." href="#h849933229">associationTarget</a>
+                        </span>
+                     </span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>"/&gt;</div>
+                  <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> 
+                     <span class="scTag">name</span>="<span class="scContent">targetDataValue</span>" <span class="scTag">type</span>="<span class="scContent">
+                        <span class="type">
+                           <a title="Jump to &#34;associationData&#34; type definition." href="#h755714246">associationData</a>
+                        </span>
+                     </span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>"/&gt;</div>&lt;/<span class="scTag">xs:choice</span>&gt;</div>
+               <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                  <span class="scTag">name</span>="<span class="scContent">sourceCodingScheme</span>" <span class="scTag">type</span>="<span class="scContent">
+                     <span class="type">
+                        <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;localId&#34; type definition(located in external schema documentation)."
+                           href="builtins.xsd.html#h-596371999"
+                           class="externalLink">localId</a>
+                     </span>
+                  </span>"/&gt;</div>
+               <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                  <span class="scTag">name</span>="<span class="scContent">sourceConcept</span>" <span class="scTag">type</span>="<span class="scContent">
+                     <span class="type">
+                        <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;conceptCode&#34; type definition(located in external schema documentation)."
+                           href="commonTypes.xsd.html#h2058358512"
+                           class="externalLink">conceptCode</a>
+                     </span>
+                  </span>" <span class="scTag">use</span>="<span class="scContent">required</span>"/&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h1739128753_scbox', false);
+// -->
+</script>
+      </div>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <h3>Complex Type: <a name="h-1520516013" class="name">associationQualification</a>
+      </h3>
+      <table class="hierarchy">
+         <tr>
+            <th>Super-types:</th>
+            <td>None</td>
+         </tr>
+         <tr>
+            <th>Sub-types:</th>
+            <td>None</td>
+         </tr>
+      </table>
+      <table class="properties">
+         <tr>
+            <th>Name</th>
+            <td>associationQualification</td>
+         </tr>
+         <tr>
+            <th>Used by (from the same schema document)</th>
+            <td>Complex Type <b>
+                  <a href="#h121716534">associatableElement</a>
+               </b>
+            </td>
+         </tr>
+         <tr>
+            <th>Abstract</th>
+            <td>no</td>
+         </tr>
+         <tr>
+            <th>Documentation</th>
+            <td>A modifier that further qualifies an association triple.</td>
+         </tr>
+         <tr>
+            <th>Application Data</th>
+            <td>
+                                <code>&lt;<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt; <div style="margin-left: 1.5em">1.3.6.1.4.1.2114.108.1.7.90</div>&lt;/<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt;</code>
+                                <code>&lt;<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:rdn&gt; <div style="margin-left: 1.5em">associationQualifier</div>&lt;/<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:rdn&gt;</code>
+                        </td>
+         </tr>
+      </table>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-1520516013_xibox_button" class="control"
+                   onclick="switchState('h-1520516013_xibox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">XML Instance Representation</span>
+         </div>
+         <div id="h-1520516013_xibox" class="contents">
+            <div style="margin-left: 0em">&lt;...<br/>
+               <span style="margin-left: 0.5em"> associationQualifier="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;localId&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h-596371999"
+                        class="externalLink">localId</a>
+                  </span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'The local name of a qualifier. Must be in supportedAssociationQualifier.'</p>"</span>&gt; <br/>
+               <span class="other" style="margin-left: 1.5em">&lt;!-- Mixed content --&gt;</span>
+               <br/>
+               <div class="other" style="margin-left: 1.5em">Allow any elements from a namespace other than this schema's namespace (lax validation). <span class="occurs">[0..*]</span>
+               </div>&lt;/...&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-1520516013_xibox', true);
+// -->
+</script>
+      </div>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-1520516013_diagram_button" class="control"
+                   onclick="switchState('h-1520516013_diagram'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Diagram</span>
+         </div>
+         <div id="h-1520516013_diagram" class="contents">
+            <img usemap="#h907825599" src="schemaDiagrams/h907825599.png"/>
+            <!--
+            Map ref: file:/C:/work/build/workspace/lbModel/html/oXygen//schemaDiagrams/h907825599.map--><map name="h907825599">
+               <area shape="rect" alt="h-596371999" coords="212,54,396,81"
+                     href="builtins.xsd.html#h-596371999"/>
+
+            </map>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-1520516013_diagram', true);
+// -->
+</script>
+      </div>
+      <div class="schemaComponent box">
+         <div>
+            <input type="button" id="h-1520516013_scbox_button" class="control"
+                   onclick="switchState('h-1520516013_scbox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Schema Component Representation</span>
+         </div>
+         <div id="h-1520516013_scbox" class="contents">
+            <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> 
+               <span class="scTag">name</span>="<span class="scContent">associationQualification</span>" <span class="scTag">mixed</span>="<span class="scContent">true</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:any</span> 
+                     <span class="scTag">processContents</span>="<span class="scContent">lax</span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>" <span class="scTag">namespace</span>="<span class="scContent">##other</span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div>
+               <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                  <span class="scTag">name</span>="<span class="scContent">associationQualifier</span>" <span class="scTag">type</span>="<span class="scContent">
+                     <span class="type">
+                        <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;localId&#34; type definition(located in external schema documentation)."
+                           href="builtins.xsd.html#h-596371999"
+                           class="externalLink">localId</a>
+                     </span>
+                  </span>" <span class="scTag">use</span>="<span class="scContent">required</span>"/&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-1520516013_scbox', false);
+// -->
+</script>
+      </div>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <h3>Complex Type: <a name="h849933229" class="name">associationTarget</a>
+      </h3>
+      <table class="hierarchy">
+         <tr>
+            <th>Super-types:</th>
+            <td>
+               <span class="type">
+                  <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;versionable&#34; type definition(located in external schema documentation)."
+                     href="commonTypes.xsd.html#h-1651741523"
+                     class="externalLink">versionable</a>
+               </span> &lt; <span class="type">
+                  <a title="Jump to &#34;associatableElement&#34; type definition." href="#h121716534">associatableElement</a>
+               </span> (by extension) &lt; <strong>associationTarget</strong> (by extension)</td>
+         </tr>
+         <tr>
+            <th>Sub-types:</th>
+            <td>None</td>
+         </tr>
+      </table>
+      <table class="properties">
+         <tr>
+            <th>Name</th>
+            <td>associationTarget</td>
+         </tr>
+         <tr>
+            <th>Used by (from the same schema document)</th>
+            <td>Complex Type <b>
+                  <a href="#h1739128753">associationInstance</a>
+               </b>, Element <b>
+                  <a href="#h-2079467793">associationTarget</a>
+               </b>
+            </td>
+         </tr>
+         <tr>
+            <th>Abstract</th>
+            <td>no</td>
+         </tr>
+         <tr>
+            <th>Documentation</th>
+            <td>An instance of a target or RHS concept of an association.</td>
+         </tr>
+         <tr>
+            <th>Application Data</th>
+            <td>
+                                <code>&lt;<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt; <div style="margin-left: 1.5em">1.3.6.1.4.1.2114.108.1.7.15</div>&lt;/<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt;</code>
+                                <code>&lt;<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:rdn&gt; <div style="margin-left: 1.5em">targetConcept</div>&lt;/<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:rdn&gt;</code>
+                        </td>
+         </tr>
+      </table>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h849933229_xibox_button" class="control"
+                   onclick="switchState('h849933229_xibox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">XML Instance Representation</span>
+         </div>
+         <div id="h849933229_xibox" class="contents">
+            <div style="margin-left: 0em">&lt;...<br/>
+               <span style="margin-left: 0.5em" class="inherited"> firstRelease="<span class="type">
+                     <a href="commonTypes.xsd.html#ns_lgBuiltin"
+                        title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that entity was introduced in the current release'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="inherited"> modifiedInRelease="<span class="type">
+                     <a href="commonTypes.xsd.html#ns_lgBuiltin"
+                        title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that entity isn\'t new but was modified since the last release.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="inherited"> deprecated="<span class="type">
+                     <a href="commonTypes.xsd.html#ns_lgBuiltin"
+                        title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that this entity is scheduled to be retired or removed at some future release'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> targetCodingScheme="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;localId&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h-596371999"
+                        class="externalLink">localId</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'Coding scheme of the target concept. If present must be in supportedCodingSchemes. If absent, the coding scheme is the targetCodingScheme of the containing association.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> targetConcept="<span class="type">
+                     <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;conceptCode&#34; type definition(located in external schema documentation)."
+                        href="commonTypes.xsd.html#h2058358512"
+                        class="externalLink">conceptCode</a>
+                  </span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'Concept code from the target coding scheme.'</p>"</span>&gt; <br/>
+               <div style="margin-left: 1.5em" class="inherited">&lt;associationQualification&gt; <span class="type">
+                     <a title="Jump to &#34;associationQualification&#34; type definition."
+                        href="#h-1520516013">associationQualification</a>
+                  </span> &lt;/associationQualification&gt; <span class="occurs">[0..*]</span> 
+                  <p class="documentation">'A set of qualifers that server to modify or qualify this entry.'</p>
+               </div>&lt;/...&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h849933229_xibox', true);
+// -->
+</script>
+      </div>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h849933229_diagram_button" class="control"
+                   onclick="switchState('h849933229_diagram'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Diagram</span>
+         </div>
+         <div id="h849933229_diagram" class="contents">
+            <img usemap="#h1554014745" src="schemaDiagrams/h1554014745.png"/>
+            <!--
+            Map ref: file:/C:/work/build/workspace/lbModel/html/oXygen//schemaDiagrams/h1554014745.map--><map name="h1554014745">
+</map>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h849933229_diagram', true);
+// -->
+</script>
+      </div>
+      <div class="schemaComponent box">
+         <div>
+            <input type="button" id="h849933229_scbox_button" class="control"
+                   onclick="switchState('h849933229_scbox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Schema Component Representation</span>
+         </div>
+         <div id="h849933229_scbox" class="contents">
+            <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> 
+               <span class="scTag">name</span>="<span class="scContent">associationTarget</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:complexContent</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:extension</span> 
+                     <span class="scTag">base</span>="<span class="scContent">
+                        <span class="type">
+                           <a title="Jump to &#34;associatableElement&#34; type definition." href="#h121716534">associatableElement</a>
+                        </span>
+                     </span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">targetCodingScheme</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;localId&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h-596371999"
+                                 class="externalLink">localId</a>
+                           </span>
+                        </span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">targetConcept</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;conceptCode&#34; type definition(located in external schema documentation)."
+                                 href="commonTypes.xsd.html#h2058358512"
+                                 class="externalLink">conceptCode</a>
+                           </span>
+                        </span>" <span class="scTag">use</span>="<span class="scContent">required</span>"/&gt;</div>&lt;/<span class="scTag">xs:extension</span>&gt;</div>&lt;/<span class="scTag">xs:complexContent</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h849933229_scbox', false);
+// -->
+</script>
+      </div>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <h3>Complex Type: <a name="h-684945614" class="name">relations</a>
+      </h3>
+      <table class="hierarchy">
+         <tr>
+            <th>Super-types:</th>
+            <td>
+               <span class="type">
+                  <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;describable&#34; type definition(located in external schema documentation)."
+                     href="commonTypes.xsd.html#h215704495"
+                     class="externalLink">describable</a>
+               </span> &lt; <strong>relations</strong> (by extension)</td>
+         </tr>
+         <tr>
+            <th>Sub-types:</th>
+            <td>None</td>
+         </tr>
+      </table>
+      <table class="properties">
+         <tr>
+            <th>Name</th>
+            <td>relations</td>
+         </tr>
+         <tr>
+            <th>Abstract</th>
+            <td>no</td>
+         </tr>
+         <tr>
+            <th>Documentation</th>
+            <td>A directory of relations across a set of concept codes drawn from one or more coding schemes.</td>
+         </tr>
+         <tr>
+            <th>Application Data</th>
+            <td>
+                                <code>&lt;<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt; <div style="margin-left: 1.5em">1.3.6.1.4.1.2114.108.1.7.10</div>&lt;/<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:oid&gt;</code>
+                                <code>&lt;<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:rdn&gt; <div style="margin-left: 1.5em">dc</div>&lt;/<a href="#ns_ldap" title="Find out namespace of 'ldap' prefix">ldap</a>:rdn&gt;</code>
+                        </td>
+         </tr>
+      </table>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-684945614_xibox_button" class="control"
+                   onclick="switchState('h-684945614_xibox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">XML Instance Representation</span>
+         </div>
+         <div id="h-684945614_xibox" class="contents">
+            <div style="margin-left: 0em">&lt;...<br/>
+               <span style="margin-left: 0.5em" class="newFields"> dc="<span class="type">
+                     <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;dc&#34; type definition(located in external schema documentation)."
+                        href="commonTypes.xsd.html#h-853090396"
+                        class="externalLink">dc</a>
+                  </span> 
+                  <span class="occurs">[1]</span> 
+                  <p class="documentation">'The context identifier for this directory.'</p>"</span>
+               <br/>
+               <span style="margin-left: 0.5em" class="newFields"> isNative="<span class="type">
+                     <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                        href="builtins.xsd.html#h400474596"
+                        class="externalLink">tsBoolean</a>
+                  </span> 
+                  <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'TRUE means that this set of associations were created by the codingScheme curators.'</p>"</span>&gt; <br/>
+               <div style="margin-left: 1.5em" class="inherited">&lt;entityDescription&gt; <span class="type">
+                     <a title="Jump to &#34;entityDescription&#34; type definition(located in external schema documentation)."
+                        href="commonTypes.xsd.html#h605612628"
+                        class="externalLink">entityDescription</a>
+                  </span> &lt;/entityDescription&gt; <span class="occurs">[0..1]</span> 
+                  <p class="documentation">'A textual description of the entity in the default language'</p>
+               </div>
+               <div style="margin-left: 1.5em" class="newFields">&lt;source&gt; <span class="type">
+                     <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;source&#34; type definition(located in external schema documentation)."
+                        href="commonTypes.xsd.html#h874455232"
+                        class="externalLink">source</a>
+                  </span> &lt;/source&gt; <span class="occurs">[0..*]</span> 
+                  <p class="documentation">'The source(s) of this collection of associations. Must be in supportedSource.'</p>
+               </div>
+               <div style="margin-left: 1.5em" class="newFields">&lt;association&gt; <span class="type">
+                     <a title="Jump to &#34;association&#34; type definition." href="#h1866253052">association</a>
+                  </span> &lt;/association&gt; <span class="occurs">[1..*]</span> 
+                  <p class="documentation">'The list of associations supported in this collection.','NOTE: the default for dc should be \"Relations\", but that forces the element to be optional which, in turn may leave us with only an implied dc value.'</p>
+               </div>&lt;/...&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-684945614_xibox', true);
+// -->
+</script>
+      </div>
+      <div class="sample box">
+         <div>
+            <input type="button" id="h-684945614_diagram_button" class="control"
+                   onclick="switchState('h-684945614_diagram'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Diagram</span>
+         </div>
+         <div id="h-684945614_diagram" class="contents">
+            <img usemap="#h871139870" src="schemaDiagrams/h871139870.png"/>
+            <!--
+            Map ref: file:/C:/work/build/workspace/lbModel/html/oXygen//schemaDiagrams/h871139870.map--><map name="h871139870">
+</map>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-684945614_diagram', true);
+// -->
+</script>
+      </div>
+      <div class="schemaComponent box">
+         <div>
+            <input type="button" id="h-684945614_scbox_button" class="control"
+                   onclick="switchState('h-684945614_scbox'); return false;"
+                   style="display: none"/> 
+            <span class="caption">Schema Component Representation</span>
+         </div>
+         <div id="h-684945614_scbox" class="contents">
+            <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> 
+               <span class="scTag">name</span>="<span class="scContent">relations</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:complexContent</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:extension</span> 
+                     <span class="scTag">base</span>="<span class="scContent">
+                        <span class="type">
+                           <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;describable&#34; type definition(located in external schema documentation)."
+                              href="commonTypes.xsd.html#h215704495"
+                              class="externalLink">describable</a>
+                        </span>
+                     </span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> 
+                           <span class="scTag">name</span>="<span class="scContent">source</span>" <span class="scTag">type</span>="<span class="scContent">
+                              <span class="type">
+                                 <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;source&#34; type definition(located in external schema documentation)."
+                                    href="commonTypes.xsd.html#h874455232"
+                                    class="externalLink">source</a>
+                              </span>
+                           </span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>"/&gt;</div>
+                        <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> 
+                           <span class="scTag">name</span>="<span class="scContent">association</span>" <span class="scTag">type</span>="<span class="scContent">
+                              <span class="type">
+                                 <a title="Jump to &#34;association&#34; type definition." href="#h1866253052">association</a>
+                              </span>
+                           </span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">dc</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgCommon" title="Find out namespace of 'lgCommon' prefix">lgCommon</a>:<a title="Jump to &#34;dc&#34; type definition(located in external schema documentation)."
+                                 href="commonTypes.xsd.html#h-853090396"
+                                 class="externalLink">dc</a>
+                           </span>
+                        </span>" <span class="scTag">use</span>="<span class="scContent">required</span>"/&gt;</div>
+                     <div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> 
+                        <span class="scTag">name</span>="<span class="scContent">isNative</span>" <span class="scTag">type</span>="<span class="scContent">
+                           <span class="type">
+                              <a href="#ns_lgBuiltin" title="Find out namespace of 'lgBuiltin' prefix">lgBuiltin</a>:<a title="Jump to &#34;tsBoolean&#34; type definition(located in external schema documentation)."
+                                 href="builtins.xsd.html#h400474596"
+                                 class="externalLink">tsBoolean</a>
+                           </span>
+                        </span>"/&gt;</div>&lt;/<span class="scTag">xs:extension</span>&gt;</div>&lt;/<span class="scTag">xs:complexContent</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+         </div>
+         <script type="text/javascript">
+<!--
+          setState('h-684945614_scbox', false);
+// -->
+</script>
+      </div>
+      <div style="text-align: right; clear: both;">
+         <a href="#top">top</a>
+      </div>
+      <hr/>
+      <p class="footer">Generated by <a href="http://www.oxygenxml.com">&lt;oXygen/&gt; XML Editor</a> using a modified version of <a href="http://titanium.dstc.edu.au/xml/xs3p">xs3p</a> that adds schema diagrams and chunking support. Last modified: <script type="text/javascript">
+<!--
+          document.write(document.lastModified);
+// -->
+</script>
+      </p>
+   </body>
+</html>

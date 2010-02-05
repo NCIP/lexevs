@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMapConfig
+   PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+   "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+ 	<settings enhancementEnabled="true" useStatementNamespaces="true"/>
+    <sqlMap resource="ibatis/v20/entity.xml"/>
+    <sqlMap resource="ibatis/v20/codingScheme.xml"/>
+    <sqlMap resource="ibatis/v20/entryState.xml"/>
+    <sqlMap resource="ibatis/v20/tableMetadata.xml"/>
+    <sqlMap resource="ibatis/v20/property.xml"/>
+    <sqlMap resource="ibatis/v20/propertyMultiAttrib.xml"/>
+    <sqlMap resource="ibatis/v20/codingSchemeMultiAttrib.xml"/>
+    <sqlMap resource="ibatis/v20/mapping.xml"/>
+    <sqlMap resource="ibatis/v20/entityType.xml"/>
+    <sqlMap resource="ibatis/v20/propertyLink.xml"/>
+</sqlMapConfig>

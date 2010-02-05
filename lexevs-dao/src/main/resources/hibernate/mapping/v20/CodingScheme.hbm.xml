@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 12, 2010 5:09:39 AM by Hibernate == Tools 3.2.0.CR1 -->
+<hibernate-mapping>
+    <class name="org.LexGrid.codingSchemes.CodingScheme" table="@PREFIX@CodingScheme">
+        <id type="string">
+            <column name="GUID" length="36" />
+            <generator class="uuid" />
+        </id>
+       
+
+        <property name="codingSchemeName" type="string">
+            <column name="CODINGSCHEMENAME" length="50" not-null="true" />
+        </property>
+          <property name="codingSchemeURI" type="string">
+            <column name="CODINGSCHEMEURI" length="50" not-null="true" />
+        </property>
+        
+           <property name="representsVersion" type="string">
+            <column name="REPRESENTSVERSION" length="50" not-null="true" />
+        </property>
+        
+        <bag name="_sourceList" access="field" cascade="all,delete-orphan">
+    		<key column="CSGUID" not-null="true"/>
+   		 <one-to-many class="org.LexGrid.commonTypes.Source"/>
+		</bag>
+		
+<!--		<component name="_entities" class="org.LexGrid.concepts.Entities" access="field">-->
+<!--			<bag name="_entityList" access="field" cascade="all,delete-orphan">-->
+<!--			<key column="CSGUID" not-null="true"/>-->
+<!--			 <one-to-many class="org.LexGrid.concepts.Entity"/>-->
+<!--			</bag>-->
+<!--		  </component>-->
+		  
+		  <component name="_mappings" class="org.LexGrid.naming.Mappings" access="field">
+			<bag name="_supportedSourceList" access="field" cascade="all,delete-orphan">
+			<key column="CSGUID" not-null="true"/>
+			 <one-to-many class="org.LexGrid.naming.SupportedSource"/>
+			</bag>
+		  </component>
+		  
+		  
+		<many-to-one name="entryState" class="org.LexGrid.versions.EntryState" cascade="all" unique="true" column="entrystateid"/>
+		
+		
+    </class>
+</hibernate-mapping>

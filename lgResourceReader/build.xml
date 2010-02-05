@@ -1,0 +1,72 @@
+<project name="lgResourceReader" default="all" basedir=".">
+	<description>
+		Buildfile for lgResourceReader Project
+	</description>
+
+	<!-- set global properties for this build -->
+	<property name="src.dir" location="src" />
+	<property name="antBuild.dir" location="antBuild" />
+	<property name="classes.dir" location="${antBuild.dir}/classes" />
+	<property name="dist.dir" location="${antBuild.dir}/lib" />
+	<property name="javadocs.dir" location="${antBuild.dir}/javadocs" />
+	<property name="bin.dir" location="bin" />
+	<property name="extLib.dir" location="." />
+	<property name="lgUtil.location" location="../lgUtil/" />
+	<property name="lgSharedLibraries" location="../lgSharedLibraries"/>
+
+	<!--Sets up the classpaths correctly, not meant to be called directly-->
+	<target name="init">
+		<ant antfile="${lgUtil.location}/build.xml" inheritAll="false" />
+		<echo>Constructing classpath</echo>
+		<path id="classpath">
+			<fileset dir="${lgSharedLibraries}">
+				<include name="apache/log4j/**/*.jar" />
+			</fileset>
+			<fileset dir="${lgUtil.location}">
+				<include name="antBuild/**/*.jar" />
+			</fileset>
+		</path>
+		<property name="temp" refid="classpath" />
+		<echo>Using classpath: ${temp}</echo>
+	</target>
+
+	<target name="clean" depends="init" description="clean up">
+		<!-- Delete the ${build.dir} and ${dist.dir} directory trees -->
+		<delete dir="${antBuild.dir}" />
+		<delete dir="${bin.dir}" />
+	</target>
+
+	<target name="compile" depends="init" description="compile the source ">
+		<mkdir dir="${classes.dir}" />
+		<mkdir dir="${classes.dir}/resources" />
+		<!-- Compile the java code from ${src.dir} into ${classes.dir} -->
+		<javac debug="true" srcdir="${src.dir}" destdir="${classes.dir}">
+			<classpath refid="classpath" />
+		</javac>
+		<!-- Copy the default obo files -->
+	    <copy todir="${classes.dir}">
+			<fileset dir="${src.dir}">
+				<include name="**/*.obo"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="jar" depends="compile" description="generate the jar file plus the dependancies">
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist.dir}" />
+		<!-- Put everything in ${classes} into .jar file -->
+		<jar jarfile="${dist.dir}/${ant.project.name}.jar" basedir="${classes.dir}" duplicate="preserve" />
+	</target>
+
+	<target name="javadocs" depends="init, compile" description="Generate the javadocs">
+		<mkdir dir="${javadocs.dir}" />
+		<!--Create the javadocs-->
+		<javadoc destdir="${javadocs.dir}" windowtitle="lgResourceReader" Doctitle="lgResourceReader" bottom="Copyright: (c) 2005-2006 Mayo Foundation. All rights reserved.">
+			<package name="*"/>
+			<classpath refid="classpath" />
+			<sourcepath location="${src.dir}" />
+		</javadoc>
+	</target>
+
+	<target name="all" depends="init, clean, jar, javadocs" description="Build All" />
+</project>

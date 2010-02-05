@@ -1,0 +1,64 @@
+*Terms and Conditions for Use of the UMLS Semantic Network*
+
+
+ *1.* *Introduction*
+
+The following Terms and Conditions apply for use of the UMLS Semantic
+Network. Using the UMLS Semantic Network indicates your acceptance of
+the following Terms and Conditions. These Terms and Conditions apply to
+all the UMLS Semantic Network files, independent of format and method of
+acquisition.
+ 
+ 
+*2. The UMLS Semantic Network*
+
+The Lister Hill National Center for Biomedical Communications, National
+Library of Medicine, National Institutes of Health, Department of Health
+and Human Services, has developed the UMLS Semantic Network as one of
+the three Unified Medical Language System Knowledge Sources. The UMLS
+inter-relates many vocabularies in the biomedical domain. The UMLS
+Semantic Network provides a consistent categorization of the concepts
+represented in the UMLS and provides an over-arching conceptual
+structure for those concepts.
+
+
+*3. Availability*
+
+The UMLS Semantic Network is available to all requesters, both within
+and outside the United States, at no charge.
+
+
+*4. Use of the UMLS Semantic Network*
+
+a. Redistributions of the UMLS Semantic Network in source or binary form
+must include this list of conditions in the documentation and/or other
+materials provided with the distribution.
+
+b. In any publication or distribution of all or any portion of the UMLS
+Semantic Network (1) you must attribute the source of the data as the
+UMLS Semantic Network with the release number and date; (2) you must
+state any modifications made to the UMLS Semantic Network along with a
+complete description of the modifications, which may be in the form of
+patch files.
+
+c. You shall not assert any proprietary rights to any portion of the
+UMLS Semantic Network, nor represent the UMLS Semantic Network or any
+part thereof to anyone as other than a United States Government product.
+
+d. The name of the U.S. Department of Health and Human Services,
+National Institutes of Health, National Library of Medicine, Lister Hill
+National Center for Biomedical Communications may not be used to endorse
+or promote products derived from the UMLS Semantic Network without
+specific prior written permission.
+
+e. Neither the United States Government, U.S. Department of Health and
+Human Services, National Institutes of Health, National Library of
+Medicine, Lister Hill National Center for Biomedical Communications, nor
+any of its agencies, contractors, subcontractors or employees of the
+United States Government make any warranties, expressed or implied, with
+respect to the UMLS Semantic Network, and, furthermore, assume no
+liability for any party's use, or the results of such use, of any part
+of the network.
+
+These terms and conditions are in effect as long as the user retains any
+part of the UMLS Semantic Network.

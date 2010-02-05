@@ -1,0 +1,23 @@
+lgResourceReader Changelog
+***********
+* ????
+***********
+* 8/17/07
+* Corrected OWL manifest code to use namespace/URL of ontology 
+* as id in manifest file.
+
+******************************
+* Release 2.1
+******************************
+* 07/25/07
+* Store the OBO dbxref information as subrefs within the LexGrid model  
+
+* 07/17/07 
+* Added OWL Manifest support for OWL files.
+  Please see more details at NCI GForge Wiki;
+  Goto: http://gforge.nci.nih.gov/
+  Select link "LexGrid Vocabulary Services for caBIG" Project from project list.
+  Select "Wiki" tab. 
+  Select "Administrator Tips, Tricks & Gotchas" link.
+  Select "Configuring manifest files" link. 
+  

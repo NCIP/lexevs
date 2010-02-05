@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 30, 2009 7:07:50 AM by Hibernate == Tools 3.2.0.CR1 -->
+<hibernate-mapping>
+    <class name="org.LexGrid.persistence.model.EntityPropertyLinks" table="@PREFIX@entityPropertyLinks">
+        <composite-id name="id" class="org.LexGrid.persistence.model.EntityPropertyLinksId">
+            <key-property name="codingSchemeName" type="string">
+                <column name="codingSchemeName" length="50" />
+            </key-property>
+            <key-property name="entityCodeNamespace" type="string">
+                <column name="entityCodeNamespace" length="50" />
+            </key-property>
+            <key-property name="entityCode" type="string">
+                <column name="entityCode" length="200" />
+            </key-property>
+            <key-property name="sourcePropertyId" type="string">
+                <column name="sourcePropertyId" length="50" />
+            </key-property>
+            <key-property name="link" type="string">
+                <column name="link" length="250" />
+            </key-property>
+            <key-property name="targetPropertyId" type="string">
+                <column name="targetPropertyId" length="50" />
+            </key-property>
+        </composite-id>
+    </class>
+</hibernate-mapping>

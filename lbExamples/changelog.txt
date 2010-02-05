@@ -1,0 +1,27 @@
+lbExamples changelog.
+**********
+01/21/08 *
+**********
+* Updated examples for new hierarchy support (GForge #7880).
+
+**********
+09/24/07 *
+**********
+* New example and scripts - ListSubsumptionMetaBySource.
+
+**********
+09/16/07 *
+**********
+* Remove RB, RN from subsumption examples (can be used for non-hierarchical
+* relationships).
+
+**********
+07/24/07 *
+**********
+* Added ListSubsumption example and supporting scripts (per GForge #7880).
+* Added MetaMatch example (per GForge #7008).
+
+**********
+04/03/07 *
+**********
+* Added new example FindRelatedNodesForTermAndAssoc.

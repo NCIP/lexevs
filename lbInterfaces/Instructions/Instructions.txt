@@ -1,0 +1,16 @@
+Building the lbInterfaces directory:
+
+1) Make sure that the lgModel.jar is up to date.
+   If it isn't build the LexGrid project from the lgModel
+   directory and copy Castor/lib/lgModel.jar to extLib
+2) Make sure that the lbModel.jar is up to date.
+   If it isn't build the LexBig project from the lbModel
+   directory and copy Castor/lib/lbModel.jar to extLib
+3) Remove everything from the current lbInterfaces source directory
+4) Open lbModel/EA/, pick the 'org' node and select generate code (see bitmap)
+5) from the lbInterfaces directory, run:
+	python tools\fixJava.py src
+		(This will twiddle all the sources)
+6) organize imports for the entire source tree
+7) run the ant file.  
+8) output is generated to \antBuild directory

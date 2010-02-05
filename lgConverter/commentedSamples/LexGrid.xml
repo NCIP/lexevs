@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    This file was created using LexGrid.  You can find out more about LexGrid at http://informatics.mayo.edu/
+-->
+<codingSchemes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:schemaLocation="http://LexGrid.org/schema/2005/01/LexGrid/codingSchemes http://LexGrid.org/schema/2005/01/LexGrid/codingSchemes.xsd" xmlns="http://LexGrid.org/schema/2005/01/LexGrid/codingSchemes" xmlns:lgBuiltin="http://LexGrid.org/schema/2005/01/LexGrid/builtins" xmlns:lgCommon="http://LexGrid.org/schema/2005/01/LexGrid/commonTypes" xmlns:lgCon="http://LexGrid.org/schema/2005/01/LexGrid/concepts" xmlns:lgCS="http://LexGrid.org/schema/2005/01/LexGrid/codingSchemes" xmlns:lgLDAP="http://LexGrid.org/schema/2005/01/LexGrid/ldap" xmlns:lgNaming="http://LexGrid.org/schema/2005/01/LexGrid/naming" xmlns:lgRel="http://LexGrid.org/schema/2005/01/LexGrid/relations" xmlns:lgService="http://LexGrid.org/schema/2005/01/LexGrid/service" xmlns:lgVD="http://LexGrid.org/schema/2005/01/LexGrid/valueDomains" xmlns:lgVer="http://LexGrid.org/schema/2005/01/LexGrid/versions" dc="CodingSchemes">
+  <codingScheme codingScheme="German Made Parts" defaultLanguage="ge" formalName="testing" isNative="false" registeredName="urn:iso:11.11.0.2" representsVersion="1.0">
+    <lgCommon:entityDescription>German Made Parts</lgCommon:entityDescription>
+    <localName>11.11.0.2</localName>
+    <localName>German Made Parts</localName>
+    <source>lexgrid.org</source>
+    <copyright></copyright>
+    <supportedLanguage>ge</supportedLanguage>
+    <supportedLanguage>en</supportedLanguage>
+    <supportedFormat>text/plain</supportedFormat>
+    <supportedProperty>textualPresentation</supportedProperty>
+    <supportedAssociation>hasSubtype</supportedAssociation>
+    <concepts dc="Concepts">
+      <lgCon:concept conceptCode="T0001" conceptStatus="kj" isActive="true">
+        <lgCommon:entityDescription>Tires</lgCommon:entityDescription>
+        <lgCon:presentation language="ge" property="textualPresentation" propertyId="t2" isPreferred="false">
+          <lgCon:text>Tires</lgCon:text>
+        </lgCon:presentation>
+      </lgCon:concept>
+      <lgCon:concept conceptCode="R0001" conceptStatus="56" isActive="false">
+        <lgCommon:entityDescription>Rims</lgCommon:entityDescription>
+        <lgCon:presentation language="ge" property="textualPresentation" propertyId="t2" isPreferred="false">
+          <lgCon:text>Rims</lgCon:text>
+        </lgCon:presentation>
+      </lgCon:concept>
+      <lgCon:concept conceptCode="E0001" conceptStatus="l;," isActive="true">
+        <lgCommon:entityDescription>Engine</lgCommon:entityDescription>
+        <lgCon:presentation language="ge" property="textualPresentation" propertyId="t2" isPreferred="false">
+          <lgCon:text>Engine</lgCon:text>
+        </lgCon:presentation>
+      </lgCon:concept>
+      <lgCon:concept conceptCode="P0001" conceptStatus="5" isActive="true">
+        <lgCommon:entityDescription>Piston</lgCommon:entityDescription>
+        <lgCon:presentation language="ge" property="textualPresentation" propertyId="t2" isPreferred="false">
+          <lgCon:text>Piston</lgCon:text>
+        </lgCon:presentation>
+      </lgCon:concept>
+    </concepts>
+    <relations dc="Relations">
+      <lgCommon:entityDescription>asd</lgCommon:entityDescription>
+      <lgRel:association association="hasSubtype" forwardName="hasSubtype" isNavigable="true" reverseName="isA" targetCodingScheme="German Made Parts">
+        <lgCommon:entityDescription>hasSubtype</lgCommon:entityDescription>
+        <lgRel:sourceConcept sourceCodingScheme="German Made Parts" sourceConcept="E0001">
+          <lgRel:targetConcept targetCodingScheme="German Made Parts" targetConcept="P0001"/>
+        </lgRel:sourceConcept>
+      </lgRel:association>
+    </relations>
+  </codingScheme>
+  <codingScheme approxNumConcepts="5" codingScheme="Automobiles" defaultLanguage="en" formalName="test2" isNative="true" registeredName="urn:iso:11.11.0.1" representsVersion="1.0">
+    <lgCommon:entityDescription>Automobiles</lgCommon:entityDescription>
+    <localName>SomeOtherValue</localName>
+    <localName>11.11.0.1</localName>
+    <localName>Automobiles</localName>
+    <source>lexgrid.org</source>
+    <copyright>Copyright by Mayo Clinic.</copyright>
+    <supportedLanguage urn="www.en.org/orsomething">en</supportedLanguage>
+    <supportedFormat>text/plain</supportedFormat>
+    <supportedFormat>test/html</supportedFormat>
+    <supportedProperty>textualPresentation</supportedProperty>
+    <supportedProperty>definition</supportedProperty>
+    <supportedCodingScheme urn="urn:iso:11.11.0.50">Expendable Parts</supportedCodingScheme>
+    <supportedCodingScheme urn="urn:iso:11.11.0.1">Automobiles</supportedCodingScheme>
+    <supportedCodingScheme urn="urn:iso:11.11.0.2">German Made Parts</supportedCodingScheme>
+    <supportedSource>11.11.0.1</supportedSource>
+    <supportedAssociation>hasSubtype</supportedAssociation>
+    <supportedAssociationQualifier urn="www.something.com">hasEngine</supportedAssociationQualifier>
+    <concepts dc="Concepts">
+      <lgCon:concept firstVersion="true" lastVersion="true" conceptCode="A0001" conceptStatus="asfd" isActive="true">
+        <lgCommon:entityDescription>Automobile</lgCommon:entityDescription>
+        <lgCon:presentation language="en" presentationFormat="text/plain" property="textualPresentation" propertyId="t1" isPreferred="true" matchIfNoContext="true">
+          <lgCon:source>A0001</lgCon:source>
+          <lgCon:text>Automobile</lgCon:text>
+        </lgCon:presentation>
+        <lgCon:definition language="en" presentationFormat="text/plain" property="definition" propertyId="p1" isPreferred="true">
+          <lgCon:source>A0001</lgCon:source>
+          <lgCon:text>An automobile</lgCon:text>
+        </lgCon:definition>
+      </lgCon:concept>
+      <lgCon:concept firstVersion="true" lastVersion="true" conceptCode="C0001" conceptStatus="asf" isActive="true">
+        <lgCommon:entityDescription>Car</lgCommon:entityDescription>
+        <lgCon:presentation language="en" property="textualPresentation" propertyId="c1" isPreferred="true" matchIfNoContext="true">
+          <lgCon:text>Car</lgCon:text>
+        </lgCon:presentation>
+      </lgCon:concept>
+      <lgCon:concept conceptCode="Anonymous-mobile" isActive="true" isAnonymous="true">
+        <lgCommon:entityDescription>isAnonymous=true</lgCommon:entityDescription>
+        <lgCon:presentation property="textualPresentation" propertyId="t2" isPreferred="true">
+          <lgCon:text>Anonymous-mobile</lgCon:text>
+        </lgCon:presentation>
+        <lgCon:presentation property="textualPresentation" propertyId="t1" isPreferred="false">
+          <lgCon:text>A concept for testing whether or not the isAnonymous flag is being heeded.</lgCon:text>
+        </lgCon:presentation>
+      </lgCon:concept>
+      <lgCon:concept conceptCode="73" conceptStatus="Retired" isActive="false">
+        <lgCommon:entityDescription>Oldsmobile</lgCommon:entityDescription>
+        <lgCon:presentation language="en" presentationFormat="text/plain" property="textualPresentation" propertyId="t1" isPreferred="true">
+          <lgCon:text>Oldsmobile</lgCon:text>
+        </lgCon:presentation>
+        <lgCon:presentation language="en" presentationFormat="text/plain" property="textualPresentation" propertyId="t2" isPreferred="false">
+          <lgCon:text>Olds</lgCon:text>
+        </lgCon:presentation>
+        <lgCon:presentation language="en" presentationFormat="text/plain" property="textualPresentation" propertyId="t3" isPreferred="false">
+          <lgCon:text>Oldsmobile Auto Manufacturing</lgCon:text>
+        </lgCon:presentation>
+      </lgCon:concept>
+      <lgCon:concept firstVersion="true" lastVersion="true" conceptCode="T0001" conceptStatus="65" isActive="true">
+        <lgCommon:entityDescription>Truck</lgCommon:entityDescription>
+        <lgCon:presentation language="en" property="textualPresentation" propertyId="t1" isPreferred="true" matchIfNoContext="true">
+          <lgCon:text>Truck</lgCon:text>
+        </lgCon:presentation>
+      </lgCon:concept>
+      <lgCon:concept firstVersion="true" lastVersion="true" conceptCode="@" conceptStatus="asdf" isActive="true" isAnonymous="true">
+        <lgCommon:entityDescription>Top level node for relationships</lgCommon:entityDescription>
+        <lgCon:presentation property="textualPresentation" propertyId="t1" isPreferred="true" matchIfNoContext="true">
+          <lgCon:source>German Made Parts</lgCon:source>
+          <lgCon:text>Top level node for relationships</lgCon:text>
+        </lgCon:presentation>
+      </lgCon:concept>
+      <lgCon:concept conceptCode="GM" isActive="true">
+        <lgCommon:entityDescription>General Motors</lgCommon:entityDescription>
+        <lgCon:presentation property="textualPresentation" propertyId="p1" isPreferred="true">
+          <lgCon:text>General Motors</lgCon:text>
+        </lgCon:presentation>
+        <lgCon:presentation property="textualPresentation" propertyId="p2" isPreferred="false">
+          <lgCon:text>GM</lgCon:text>
+        </lgCon:presentation>
+      </lgCon:concept>
+      <lgCon:concept conceptCode="Chevy" isActive="true">
+        <lgCommon:entityDescription>Chevrolet</lgCommon:entityDescription>
+        <lgCon:presentation property="textualPresentation" propertyId="p1" isPreferred="true">
+          <lgCon:text>Chevy</lgCon:text>
+        </lgCon:presentation>
+        <lgCon:presentation property="textualPresentation" propertyId="p2" isPreferred="false">
+          <lgCon:text>Chevrolet</lgCon:text>
+        </lgCon:presentation>
+      </lgCon:concept>
+      <lgCon:concept conceptCode="Ford" isActive="true">
+        <lgCommon:entityDescription>Ford Motor Company</lgCommon:entityDescription>
+        <lgCon:presentation property="textualPresentation" propertyId="p1" isPreferred="true">
+          <lgCon:text>Ford</lgCon:text>
+        </lgCon:presentation>
+        <lgCon:presentation property="textualPresentation" propertyId="p2" isPreferred="false">
+          <lgCon:text>Ford Motor Company</lgCon:text>
+        </lgCon:presentation>
+      </lgCon:concept>
+      <lgCon:concept conceptCode="005" isActive="true">
+        <lgCommon:entityDescription>Domestic Auto Makers</lgCommon:entityDescription>
+        <lgCon:presentation property="textualPresentation" propertyId="p1" isPreferred="true">
+          <lgCon:text>Domestic Auto Makers</lgCon:text>
+        </lgCon:presentation>
+        <lgCon:presentation property="textualPresentation" propertyId="p2" isPreferred="false">
+          <lgCon:text>American Car Companies</lgCon:text>
+        </lgCon:presentation>
+      </lgCon:concept>
+      <lgCon:concept conceptCode="Jaguar" isActive="true">
+        <lgCommon:entityDescription>Jaguar</lgCommon:entityDescription>
+        <lgCon:presentation property="textualPresentation" propertyId="p1" isPreferred="false">
+          <lgCon:text>Jaguar</lgCon:text>
+        </lgCon:presentation>
+      </lgCon:concept>
+    </concepts>
+    <relations dc="Relations" isNative="true">
+      <lgCommon:entityDescription>asD</lgCommon:entityDescription>
+      <lgRel:association association="hasSubtype" forwardName="hasSubtype" isAntiReflexive="true" isAntiSymmetric="true" isAntiTransitive="true" isFunctional="true" isNavigable="true" isReflexive="true" isReverseFunctional="true" isSymmetric="true" isTransitive="true" isTranslationAssociation="true" reverseName="isA" targetCodingScheme="Automobiles">
+        <lgCommon:entityDescription>hasSubtype</lgCommon:entityDescription>
+        <lgRel:sourceConcept sourceCodingScheme="Automobiles" sourceConcept="A0001">
+          <lgRel:targetConcept firstVersion="true" lastVersion="true" targetCodingScheme="Automobiles" targetConcept="C0001">
+            <lgRel:associationQualification associationQualifier="hasEngine" dataType="text/plain">
+              <lgRel:associationQualifierValue>true</lgRel:associationQualifierValue>
+            </lgRel:associationQualification>
+          </lgRel:targetConcept>
+          <lgRel:targetConcept firstVersion="true" lastVersion="true" targetCodingScheme="Automobiles" targetConcept="T0001"/>
+        </lgRel:sourceConcept>
+        <lgRel:sourceConcept sourceCodingScheme="Automobiles" sourceConcept="@">
+          <lgRel:targetConcept firstVersion="true" lastVersion="true" targetCodingScheme="Automobiles" targetConcept="A0001"/>
+          <lgRel:targetConcept targetCodingScheme="Automobiles" targetConcept="005"/>
+        </lgRel:sourceConcept>
+        <lgRel:sourceConcept sourceCodingScheme="Automobiles" sourceConcept="005">
+          <lgRel:targetConcept targetCodingScheme="Automobiles" targetConcept="GM"/>
+          <lgRel:targetConcept targetCodingScheme="Automobiles" targetConcept="Ford"/>
+        </lgRel:sourceConcept>
+        <lgRel:sourceConcept sourceCodingScheme="Automobiles" sourceConcept="GM">
+          <lgRel:targetConcept targetCodingScheme="Automobiles" targetConcept="Chevy"/>
+          <lgRel:targetConcept targetCodingScheme="Automobiles" targetConcept="73"/>
+        </lgRel:sourceConcept>
+        <lgRel:sourceConcept sourceCodingScheme="Automobiles" sourceConcept="Ford">
+          <lgRel:targetConcept targetCodingScheme="Automobiles" targetConcept="Jaguar">
+            <lgRel:associationQualification associationQualifier="since">
+              <lgRel:associationQualifierValue>1989</lgRel:associationQualifierValue>
+            </lgRel:associationQualification>
+          </lgRel:targetConcept>
+        </lgRel:sourceConcept>
+      </lgRel:association>
+      <lgRel:association association="uses" forwardName="uses" isNavigable="true" isTransitive="true" reverseName="usedBy">
+        <lgCommon:entityDescription>expendable things that Automobiles use</lgCommon:entityDescription>
+        <lgRel:sourceConcept sourceCodingScheme="Automobiles" sourceConcept="A0001">
+          <lgRel:targetConcept targetCodingScheme="Expendable Parts" targetConcept="Tires"/>
+          <lgRel:targetConcept targetCodingScheme="Expendable Parts" targetConcept="Batteries"/>
+          <lgRel:targetConcept targetCodingScheme="Expendable Parts" targetConcept="Brakes"/>
+        </lgRel:sourceConcept>
+      </lgRel:association>
+    </relations>
+  </codingScheme>
+</codingSchemes>

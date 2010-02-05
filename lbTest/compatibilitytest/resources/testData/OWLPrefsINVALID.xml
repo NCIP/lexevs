@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OWLLoaderPreferences xmlns:basePreferences="http://LexGrid.org/LexBIG/LoadPreferences">
+
+<MatchConceptCode>unique_identifier</MatchConceptCode>
+
+<PrioritizedPresentationNames>
+<name>Semantic_Type</name>
+<name>User_Defined_Presentation</name>
+</PrioritizedPresentationNames>
+
+<INVALID_ELEMENT>
+Test for junits
+</INVALID_ELEMENT>
+
+</OWLLoaderPreferences>

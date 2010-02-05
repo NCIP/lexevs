@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns:lbColl="http://LexGrid.org/schema/LexBIG/2009/01/Collections" xmlns:lbCore="http://LexGrid.org/schema/LexBIG/2009/01/Core" xmlns:lbIfe="http://LexGrid.org/schema/LexBIG/2009/01/InterfaceElements" xmlns:lgBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/builtins" xmlns:lgCS="http://LexGrid.org/schema/2009/01/LexGrid/codingSchemes" xmlns:lgCommon="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" xmlns:lgNCI="http://LexGrid.org/schema/2009/01/LexGrid/NCIChangeTypes" xmlns:lgVer="http://LexGrid.org/schema/2009/01/LexGrid/versions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://LexGrid.org/schema/LexBIG/2009/01/TerminologyServiceMetadata" targetNamespace="http://LexGrid.org/schema/LexBIG/2009/01/Collections" elementFormDefault="qualified">
+	<!-- ================================================= -->
+	<!-- Package: <<XSDschema>> Collections	   			   -->
+	<!-- ================================================= -->
+	<xs:annotation>
+		<xs:documentation>The collections schema contains named sets of things.  It doesn't really need to be displayed as a graphic, as it always follows the same pattern.  The only variation is the cardinatlity of the child.</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/InterfaceElements" schemaLocation="InterfaceElements.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/Core" schemaLocation="Core.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/builtins.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/codingSchemes" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/codingSchemes.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/versions" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/versions.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/NCIChangeTypes" schemaLocation="NCIHistory.xsd"/>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: CodingSchemeSummary						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="CodingSchemeSummaryList" type="lbColl:CodingSchemeSummaryList"/>
+	<xs:complexType name="CodingSchemeSummaryList">
+		<xs:sequence>
+			<xs:element ref="lbCore:CodingSchemeSummary" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: LocalNameList						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="LocalNameList" type="lbColl:LocalNameList"/>
+	<xs:complexType name="LocalNameList">
+		<xs:sequence>
+			<xs:element name="entry" type="lgBuiltin:tsLocalId" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: SupportedElementList					   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="SupportedElementList" type="lbColl:SupportedElementList"/>
+	<xs:complexType name="SupportedElementList">
+		<xs:sequence>
+			<xs:element ref="lbCore:SupportedElement" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: AssociationList							   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="AssociationList" type="lbColl:AssociationList"/>
+	<xs:complexType name="AssociationList">
+		<xs:sequence>
+			<xs:element ref="lbCore:Association" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: AssociatedConceptList					   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="AssociatedConceptList" type="lbColl:AssociatedConceptList"/>
+	<xs:complexType name="AssociatedConceptList">
+		<xs:sequence>
+			<xs:element ref="lbCore:AssociatedConcept" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: AssociatedDataList						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="AssociatedDataList" type="lbColl:AssociatedDataList"/>
+	<xs:complexType name="AssociatedDataList">
+		<xs:sequence>
+			<xs:element ref="lbCore:AssociatedData" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: ConceptCodes							   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="ConceptCodes" type="lbColl:ConceptCodes"/>
+	<xs:complexType name="ConceptCodes">
+		<xs:sequence>
+			<xs:element name="entry" type="lgCommon:entityCode" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: ResolvedConceptReferenceList			   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="ResolvedConceptReferenceList" type="lbColl:ResolvedConceptReferenceList"/>
+	<xs:complexType name="ResolvedConceptReferenceList">
+		<xs:sequence>
+			<xs:element ref="lbCore:ResolvedConceptReference" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="incomplete" type="xs:boolean" default="false">
+			<xs:annotation>
+				<xs:documentation>True means that the maxToReturn or some other limit resulted in the list being incomplete.  Default: false</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: CodingSchemeTagList						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="CodingSchemeTagList" type="lbColl:CodingSchemeTagList"/>
+	<xs:complexType name="CodingSchemeTagList">
+		<xs:sequence>
+			<xs:element name="tag" type="lbCore:CodingSchemeTag" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: CodingSchemeSummary						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="CodingSchemeRenderingList" type="lbColl:CodingSchemeRenderingList"/>
+	<xs:complexType name="CodingSchemeRenderingList">
+		<xs:sequence>
+			<xs:element ref="lbIfe:CodingSchemeRendering" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: SystemReleaseList						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="SystemReleaseList" type="lbColl:SystemReleaseList"/>
+	<xs:complexType name="SystemReleaseList">
+		<xs:sequence>
+			<xs:element ref="lgVer:systemRelease" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: CodingSchemeVersionList						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="CodingSchemeVersionList" type="lbColl:CodingSchemeVersionList"/>
+	<xs:complexType name="CodingSchemeVersionList">
+		<xs:sequence>
+			<xs:element name="entry" type="lgVer:codingSchemeVersion" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: ModuleDescriptionList					   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="ModuleDescriptionList" type="lbColl:ModuleDescriptionList"/>
+	<xs:complexType name="ModuleDescriptionList">
+		<xs:sequence>
+			<xs:element ref="lbIfe:ModuleDescription" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: ExtensionDescriptionList				   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="ExtensionDescriptionList" type="lbColl:ExtensionDescriptionList"/>
+	<xs:complexType name="ExtensionDescriptionList">
+		<xs:sequence>
+			<xs:element ref="lbIfe:ExtensionDescription" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: ConceptReferenceList					   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="ConceptReferenceList" type="lbColl:ConceptReferenceList"/>
+	<xs:complexType name="ConceptReferenceList">
+		<xs:sequence>
+			<xs:element ref="lbCore:ConceptReference" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: CodedNodeReferenceList					   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="CodedNodeReferenceList" type="lbColl:CodedNodeReferenceList"/>
+	<xs:complexType name="CodedNodeReferenceList">
+		<xs:sequence>
+			<xs:element ref="lbCore:CodedNodeReference" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: NameAndValueList						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="NameAndValueList" type="lbColl:NameAndValueList"/>
+	<xs:complexType name="NameAndValueList">
+		<xs:sequence>
+			<xs:element ref="lbCore:NameAndValue" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: NCIChangeEventList						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="NCIChangeEventList" type="lbColl:NCIChangeEventList"/>
+	<xs:complexType name="NCIChangeEventList">
+		<xs:sequence>
+			<xs:element name="entry" type="lgNCI:NCIChangeEvent" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: SortOptionList						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="SortOptionList" type="lbColl:SortOptionList"/>
+	<xs:complexType name="SortOptionList">
+		<xs:sequence>
+			<xs:element name="entry" type="lbIfe:SortOption" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: SortDescriptionsList						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="SortDescriptionList" type="lbColl:SortDescriptionList"/>
+	<xs:complexType name="SortDescriptionList">
+		<xs:sequence>
+			<xs:element ref="lbIfe:SortDescription" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: MetadataPropertyList						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="MetadataPropertyList" type="lbColl:MetadataPropertyList"/>
+	<xs:complexType name="MetadataPropertyList">
+		<xs:sequence>
+			<xs:element ref="lbCore:MetadataProperty" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: AbsoluteCodingSchemeVersionReferenceList		   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="AbsoluteCodingSchemeVersionReferenceList" type="lbColl:AbsoluteCodingSchemeVersionReferenceList"/>
+	<xs:complexType name="AbsoluteCodingSchemeVersionReferenceList">
+		<xs:sequence>
+			<xs:element ref="lbCore:AbsoluteCodingSchemeVersionReference" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

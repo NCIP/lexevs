@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OWLLoaderPreferences xmlns:basePreferences="http://LexGrid.org/LexBIG/LoadPreferences">
+
+<MatchConceptCode>currency</MatchConceptCode>
+
+<PrioritizedCommentNames>
+<name>units</name>
+</PrioritizedCommentNames>
+
+<PrioritizedDefinitionNames>
+<name>max</name>
+</PrioritizedDefinitionNames>
+
+<PrioritizedPresentationNames>
+<name>currency</name>
+</PrioritizedPresentationNames>
+
+</OWLLoaderPreferences>

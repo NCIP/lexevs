@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 30, 2009 7:07:50 AM by Hibernate == Tools 3.2.0.CR1 -->
+<hibernate-mapping>
+    <class name="org.LexGrid.persistence.model.EntityPropertyMultiAttrib" table="@PREFIX@entityPropertyMultiAttrib">
+        <composite-id name="id" class="org.LexGrid.persistence.model.EntityPropertyMultiAttribId">
+            <key-property name="codingSchemeName" type="string">
+                <column name="codingSchemeName" length="50" />
+            </key-property>
+            <key-property name="entityCodeNamespace" type="string">
+                <column name="entityCodeNamespace" length="50" />
+            </key-property>
+            <key-property name="entityCode" type="string">
+                <column name="entityCode" length="200" />
+            </key-property>
+            <key-property name="propertyId" type="string">
+                <column name="propertyId" length="50" />
+            </key-property>
+            <key-property name="typeName" type="string">
+                <column name="typeName" length="30" />
+            </key-property>
+            <key-property name="attributeValue" type="string">
+                <column name="attributeValue" length="250" />
+            </key-property>
+            <key-property name="val1" type="string">
+                <column name="val1" length="250" />
+            </key-property>
+        </composite-id>
+        <property name="qualifierType" type="string">
+            <column name="qualifierType" length="50" />
+        </property>
+        <property name="val2" type="string">
+            <column name="val2" length="250" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,1 @@
+BlankAccessDB.jar is a jar file which contains an empty Access Database, which is copied and used if necessary when someone wants to put data into an Access Database.  It also contains a class named "LocateAccessDB.class" to aid in discovering the location of the jar file containing the access DB.  The class itself does nothing.

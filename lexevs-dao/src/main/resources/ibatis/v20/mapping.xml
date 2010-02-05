@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+
+     <insert id="insertURIMap" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertURIMapBean">
+		INSERT INTO Mapping (
+			mappingGuid,
+			codingSchemeGuid,
+			supportedAttributeTag,
+			id,
+			uri,
+			idValue,
+			rootCode,
+			isForwardNavigable,
+			isImported,
+			equivalentCodingScheme,
+			assemblyRule,
+			conceptDomainCodingScheme
+		) VALUES (
+			#id#, 
+			#codingSchemeId#,
+			#supportedAttributeTag#, 
+			#uriMap.localId#, 
+			#uriMap.uri#,
+			#uriMap.content#
+			
+			<isPropertyAvailable prepend="," property="uriMap.rootCode">
+				#uriMap.rootCode#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="uriMap.rootCode">
+				null
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable prepend="," property="uriMap.isForwardNavigable">
+				#uriMap.isForwardNavigable#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="uriMap.isForwardNavigable">
+				null
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable prepend="," property="uriMap.isImported">
+				#uriMap.isImported#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="uriMap.isImported">
+				null
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable prepend="," property="uriMap.equivalentCodingScheme">
+				#uriMap.equivalentCodingScheme#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="uriMap.equivalentCodingScheme">
+				null
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable prepend="," property="uriMap.assemblyRule">
+				#uriMap.assemblyRule#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="uriMap.assemblyRule">
+				null
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable prepend="," property="uriMap.conceptDomainCodingScheme">
+				#uriMap.conceptDomainCodingScheme#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="uriMap.conceptDomainCodingScheme">
+				null
+			</isNotPropertyAvailable>
+		)
+  </insert>
+    
+</sqlMap>

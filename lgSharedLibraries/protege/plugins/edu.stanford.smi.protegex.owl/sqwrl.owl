@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:swrlb="http://www.w3.org/2003/11/swrlb#"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns="http://sqwrl.stanford.edu/ontologies/built-ins/3.4/sqwrl.owl#"
+  xml:base="http://sqwrl.stanford.edu/ontologies/built-ins/3.4/sqwrl.owl">
+  <owl:Ontology rdf:about=""/>
+  <swrl:Builtin rdf:ID="element"/>
+  <swrl:Builtin rdf:ID="makeSortedSet"/>
+  <swrl:Builtin rdf:ID="size"/>
+  <swrl:Builtin rdf:ID="empty"/>
+  <swrl:Builtin rdf:ID="count">
+    <swrlb:args rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >1</swrlb:args>
+  </swrl:Builtin>
+  <swrl:Builtin rdf:ID="min">
+    <swrlb:args rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >1</swrlb:args>
+  </swrl:Builtin>
+  <swrl:Builtin rdf:ID="selectDistinct"/>
+  <swrl:Builtin rdf:ID="max">
+    <swrlb:args rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >1</swrlb:args>
+  </swrl:Builtin>
+  <swrl:Builtin rdf:ID="first"/>
+  <swrl:Builtin rdf:ID="avg">
+    <swrlb:args rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >1</swrlb:args>
+  </swrl:Builtin>
+  <swrl:Builtin rdf:ID="columnNames">
+    <swrlb:minArgs rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >1</swrlb:minArgs>
+  </swrl:Builtin>
+  <swrl:Builtin rdf:ID="makeSet"/>
+  <swrl:Builtin rdf:ID="orderBy"/>
+  <swrl:Builtin rdf:ID="intersect"/>
+  <swrl:Builtin rdf:ID="sum">
+    <swrlb:args rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >1</swrlb:args>
+  </swrl:Builtin>
+  <swrl:Builtin rdf:ID="makeList"/>
+  <swrl:Builtin rdf:ID="last"/>
+  <swrl:Builtin rdf:ID="nth"/>
+  <swrl:Builtin rdf:ID="select">
+    <swrlb:minArgs rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+    >1</swrlb:minArgs>
+  </swrl:Builtin>
+  <swrl:Builtin rdf:ID="orderByDescending"/>
+  <swrl:Builtin rdf:ID="countDistinct"/>
+</rdf:RDF>
+
+<!-- Created with Protege (with OWL Plugin 3.4, Build 124)  http://protege.stanford.edu -->

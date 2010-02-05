@@ -1,0 +1,476 @@
+lbImpl changelog.
+* 07/09/08
+* A method was added to retrieve copyright information from the LexBIGService regardless
+  of the security settings for a given terminology. Implemented in response to Gforge item
+  #10885.
+  
+* 05/22/08
+* Added a resolvedConcept flag to the CodedNodeSet's resolve and resolveToList methods
+  to allow for results to be returned without having the referencedEntity of the
+  ResolvedConceptReference populated ie return a lightweight ResolvedConceptReference,
+  that doesn't need database access.
+  
+* 01/21/08
+* # 7880 Added Support for new supported hierarchy Coding Scheme metadata
+  with revised convenience methods for getting root nodes, getting child and 
+  parent nodes, and finding the path to root depending on the hierarchy.
+  
+* 12/27/2007
+* #10178 Connection pools are now closed in a timely
+  manner and running one load after another will now result in
+  no extra, or hanging connections to a database.
+
+* 12/14/07
+* Added parameter for using Protege database load to NCI OWL loader
+
+* 12/13/07
+* HL7 Loader prototype supported.  Loads from the HL7 RIM database as multiple
+  coding schemes.
+* 10/12/07
+* #8896, four convenience methods, getTopNodes, getEndNodes, getParentsOf, 
+  getChildrenOf, now have a NameAndValue qualifiers parameter.  This allows
+  a user to specify things like a specific source within the MetaThesaurus
+  as the only valid source for a query.
+
+* 09/26/07
+* #3651, NCI OWL loaders should now return an error when a CodeSystem is 
+  already loaded prior to doing the conversion.  The structure is implemented 
+  for other EMF loaders to do the same, but has not been fully implemented.
+
+* 09/24/07
+* Add convenience methods to return directional names for an association.
+
+* 09/12/07
+* Implemented #8441, modified parameters for resolveToList() in getTopNodes() 
+  and getEndNodes() to include properties for the top and end nodes.
+
+***********
+Release 2.1
+***********
+* 07/27/07 
+* Fixed #7895, the work around for Lucene's lack of serialization in a class
+  was implemented on a temporary basis.
+
+* 07/25/07
+* Added a new boolean field keepLastAssociationLevelUnresolved to the resolveAsList method of the 
+  CodedNodeGraph that could be used to help determine if a node has further children under it.
+  
+
+* 07/23/07
+* Cacore RMI changes:
+** Change clone methods in CodedNodeSetImpl and CodedNodeGraphImpl from 
+   protected to public to allow these methods to be proxied under cacore's RMI
+   interface.
+** Void methods in LexBIGServiceMetadataImpl now return this to insure changes
+   to object are properly remoted.  These changes are reflected in the interface
+   class in lbInterfaces.
+** CodeToReturn, CodeHolder, ResolvedConceptReferencesIteratorImpl and 
+   ConvenienceMethods classes now implement Serializable.  ConvenienceMethods
+   now has a no arg constructor that provides an immediate instantiation of a 
+   new LexBIGService object.  ResolvedConceptReferencesIteratorImpl has a new 
+   scroll() method that prevents a inifinite loop problem cause by use of the 
+   next, hasNext methods in client side RMI. This class also now has transient 
+   added to the thread data members to prevent serialization errors. (Reference
+   Bugs #'s 7910, 7912.
+** Added an annotation reference class LgClientSideSave and related annotations
+   to a number of classes in lbImpl.
+** Changed lbModel and lbPackager build.xml to force annotation of the Castor
+   generated classes.
+   
+* 06/24/07
+* Added Convenience Methods isForwardName and isReserveName to help determine directionality
+  of the directionalName within an association.
+* Added a restrictToDirectionalName method for CodedNodeGraph's.
+
+* 06/12/07
+* Fix 'off by 1' error preventing MRSAB entries that begin with '|' from
+  being detected and allowed on load.  This prevented certain SABs, such
+  as 'SRC', from being identified and loaded from RRF.
+
+* 05/31/07
+* Ensure ordering of patch jar in front of runtime in custom class loader.
+
+***********
+Release 2.0
+***********
+* 04/20/07
+* Fixed problem in Graph resolution which caused some resolved nodes
+  to drop the coding scheme version or tag.
+
+* 04/14/07
+* Introduce version UIDs and more consistent/uncached references to
+  common logger in support of serializability.
+
+* 04/11/07
+* Added a convenience method getAssociationForwardAndReverseNames to get the 
+  list of relations that are present in an ontology.
+  
+* 03/29/07
+* Added a new convenience method to LexBIGServiceConvenienceMethodsImpl.
+  getCodingSchemesWithSupportedAssociation(string relation)
+  to get relations across ontologies. Requirement #4 for May
+  2007 release. Appropriate test cases and changes to the 
+  corresponding interfaces have been made.
+
+* 03/19/07
+* Fix for bug in coded node graph queries (GHolder) when resolving nodes
+  participating in multiple associations, intersections, and unions; this
+  could result in incorrect graph representations such as top nodes being
+  dropped in some circumstances.
+
+****************************
+Release 2.0beta4 02/15/06  *
+****************************
+* Added support for query and resolution of multiple native relation containers if no
+  relations name is provided on instantiation of the CodedNodeGraph. 
+
+****************************
+Release 2.0beta3 ??/??/06  *
+****************************
+* Added more missing toString() methods.
+* Fix for to make deleting databases on postgres more reliable.
+* Fixed a bug where graphs were throwing an error if nodes were linked to another code 
+  system that didn't exist.
+* Fix to fix a potential threading problem if multiple threads try to resolve a query at 
+  the same time.
+* Fix for logging in the LexGrid XML validator that was not logging to the correct location.
+* Fixed a bug that would cause index metadata to disappear if multiple indexing processes were 
+  running at the same time (in seperate threads or seperate JVM's)
+* Reduced the amount of information that was being stored in the index - this cuts the index 
+  size down by approximately 50% - at the expense of ease of debugging.  There is a slight
+  performance increase as well indexing and searching large terminologies.
+
+****************************
+Release 2.0beta3 01/18/06  *
+****************************
+* NCI Metathesaurus loader changed as requested in LexBIG feature request #3983.  This changes how 
+  individual source concept codes are stored.  See the feature request for more details.
+* The NCI Owl loader was changed so that all of the provided property names (such as dDEFININITION, 
+  synonom, etc) are now preserved in the "propertyName" field.  Previously, the property name field
+  was reserved for "textualPresentation", "definitition", etc.
+* Modified the JUnit tests as necessary to cope with the above change.
+* Fixed a bug in how Property Qualifiers were being returned - the property qualifier id's and
+  property qualifier content were being reversed when the return object was populated.
+* Added a new NameAndValueList convenience method constructor.
+* Modified part of the JUnit test suite to supress the XML reader warnings about the 2005 xml formatted
+  file.
+* Fixed a bug that occurred if an index was missing, and you tried to run the rebuild index command
+  to rebuild the missing index.
+* Upped the maxClauseCount to 16000 to prevent errors when querying for .*cell.* in some obo 
+  terminologies.
+* Added a get(start, end) method to the ResolvedConceptReferencesIterator.  LexBIO feature 
+  request 323.
+* Corrected the behavior of hasNext() on the ResolvedConceptReferencesIterator when Filters 
+  are applied.
+* Fixed a bug where it was not creating the correct type of return CodedEntries when reading 
+  from a 2005 version database.
+* Fixed a bug that occurred if you asked for a graph of depth one - and you had two nodes that were
+  linked to each other with different relationships, it would return things to a depth of 2 instead
+  of one.
+* API updates:
+    Added a new parameter to all resolve methods that allows you to restrict the properties 
+      being returned by their type.
+
+****************************
+Release 2.0beta1 12/15/06  *
+****************************
+* Refixed to make it properly show as many root (or leaf) nodes as it finds if it hits a limit,
+  rather than returning none.
+* Fixed the clean up utility so it doesn't suggest removing the metadata index.
+* Added an (optional) API method logger - when enabled, this will print each public API method that
+  was called along with the given parameters.
+* Updates to SQL Connection failure handling code to make it more robust.  
+* Updated as required to move to the 2006 model.  
+* Added support for the match algorithm 'RegExp' when searching 'conceptCode' properties.
+* Added the missing 'RegExp' type to the MatchAlgorithms class
+* Fix for LexBIG bug number 3629 (problems with newer mysql drivers)
+* Fix for LexBIG bug number 3686 (problems with querying and viewing association qualifiers)
+* Fix for LexBIG bug number 3545 (toString issue)
+* Added FMA Loader.
+* Added generic OWL loader.
+* API updates:
+	Changed the way you specify active / inactive codes - removed from constructor, added a new
+		RestrictToStatus(...) method.
+	Changed the RestrictTo*Properties(...) methods - added another parameter that allows you to 
+		restrict based on the type of property, rather than the property name.
+	Changed the way that you do a status restriction - previously, it was a hack on the 
+		RestrictToMatchingProperties method - now it is done through the RestrictToStatus
+		method.
+* Fixed a bug where indexes weren't being properly reopened after a reindex operation took 
+  place.
+* Made a change to the RegExp query algorithm - previously, regular expressions were evaluated
+  against the tokenized, lowercased property value.  Now, they are evaluated against the untokenized
+  lower cased property value.  In practice, this change means that you should think of your regular 
+  expressions as being evaluated against the entire property value, rather than against individual
+  words inside the property value.
+* Regular expressions against "conceptCode" will now evaluate against the lower cased value of the 
+  concept code, rather than the case sensitive value of concept code.  This makes the Regular Expression
+  behavior the same for concept codes as it is for property values.  
+
+
+***************************
+Release 1.0.1 10/30/06    *
+***************************
+* Added more apis (load, remove, list) for the MetaData Search apis.
+* Fix to make it show as many root nodes as it finds if it hits a limit, rather than returning
+  none.
+* Added JUnit tests for the MetaData load/remove/search api.
+* Improvements to config.props file parser to improve error messages when encountering a missing
+  required variable.
+* Improvements to the documentation in the config.props file.
+
+***************************
+Release 1.0.1a 10/10/06   *
+***************************
+* Added a RegExp match algorithm.  Supports full regular expression queries.
+* Updates to make storage on MySQL case sensitive and to prevent Collation issues.
+* New signature for restrictToMatchingDesignations - now you can specify preferred, non-preferred
+  or all types of designations.  The old restrictToMatchingDesignations (which only has a 
+  true/false flag for preferred only) has been deprecated, and will be removed in the future.
+* Updates to help prevent running out of table identifiers in single DB Mode.  Previously, 
+  several problems were likely if you loaded more than 936 terminologies into an environment.
+  Now, you can load an infinite number of terminologies - but a max of 936 at one time.
+  MultiDB Mode does not have any limitation on the number of terminologies.
+
+***************************
+Release 1.0.0 10/05/06    *
+***************************
+* Fixed a bug (regression) that occurred if you provided a language restriction to a CodedNodeSet.
+  Regression test added to prevent future re-occurrence.
+* Implemented the Filter interfaces.
+* Started using the isIncomplete() method on the ResolvedConceptReferenceList as it should have been - 
+  this flag is set whenever a user or system limit removes potential results from the list being returned.
+* Added Snowball Stemming to the lucene indexes.  New match algorithm - "StemmedLuceneQuery".
+* Disabled the NormalizedLuceneQuery match algorithm.
+* Added a MetaData Search API - and implementation for OBO.  This will be expanded when we move to the 
+  2006 version of the model.
+
+***************************
+Release 1.0.0RC9 09/22/06 *
+***************************
+* Updated to use the new shared libraries project
+* Added the ability to have multiple jar file locations in the config file.
+* Converted applicable Sorts over to the new SortExtension API.
+* Implemented extension registry, used where applicable.
+* Added http:// URI support to the OBO loader.
+* fixed so exporters pay attention to overwrite flag.
+* Extensive internal graphing changes to allow for getting the leaf nodes of a terminology
+  (when they have been precalculated)
+* OBO leaf nodes are now calculated on multiple associations.
+* Bug fixes in dealing with coding scheme names passed into graph methods (wasn't honoring local
+  names previously)
+* Added a leaf node method to the convenience methods.
+* restrictToProperties with 'conceptCode' now supports the contains match algorithm
+* Indexing / Querying modifed so that ':' is no longer treated as a white space character while 
+  tokenizing content for search.
+* Loader updates to improve removal of temp resources during a load failure.  
+* Fixed the UMLS and MetaThesaurus loaders to read the version number from MRDOC instead of 
+  RELEASE_INFO
+* Changed jar file dependencies - more project dependencies now
+* JUnit test additions.
+
+
+***************************
+Release 1.0.0RC8 09/01/06 *
+***************************
+* Added missing version numbers to the AssociatedConcepts.
+* Updated the Lucene indexing documentation to account for property qualifiers, sources, and usageContexts.
+* Root node updates
+* Added in UMLS Converters
+* Updates for Tom's Model Changes.
+* Necessary updates to enable transfer tool.
+* Fixed a bug where it wasn't sorting the top level of a graph when requested.
+* Made it throw an exception if you request top nodes on an association that doesn't have top nodes
+  calculated.
+* Added new Convenience method for getting rendering details.
+* Added Export support for OBO and LexGrid XML.
+* Fixed a bug in the way that exceptions were being handled in the loaders.
+* Fixed a bug in the "contains" match algorithm (missing trailing wildcard)
+
+***************************
+Release 1.0.0RC7 08/18/06 *
+***************************
+* Fixed a bug that was causing it to not populate SupportedPropertyQualifiers.
+* Added default constructors for Apache Axis.
+* Convenience methods signature changes.
+* Fixed the WriteLockManager so it changes locations as appropriate when the registry location changes.
+* Added a numberRemaining method to the ResolvedConceptReferencesIterator.
+* Fixed a bug in getting the default relationship (on postgres) and an error that happened if isNavigable
+  isn't set.
+* The return type for resolveCodingScheme now returns the available list of relationships and associations
+  including forward and reverse names for each terminology.
+* Added support for searching property sources, usageContexts and qualifiers to the indexer, query portion.
+* Added API support for restricting to property sources, usageContexts, and qualifiers.
+* Updated the indexer to get rid of the phonetix libraries, replaced with apache commons codecs.
+* Updated so OBO loaders get the @ node generated.
+* Added code system version to the ResolvedConceptReference
+* Reworked some internal handling of the focus node in code graphs to correct obscure bugs.
+* Fixed a bug that was not allowing you to leave the coding scheme blank on a coded node graph focus node.
+* Fixed a bug that could have potentially erased code systems while loading another code system.
+* Changed the CodedNodeGraph toNodeSet method so it takes in a resolve depth, and a user max.
+* Made the graph implementations pay better attention to the system node limit.
+
+***************************
+Release 1.0.0RC6 07/20/06 *
+***************************
+* Made severe startup failures print information to System.out and System.err (instead of just System.err)
+* Minor fixes for resolving coded node sets created from graphs
+* minor tweaks to the Automobiles and German Made Parts sample terminolgies.
+* Changed the behavior if you try to restrict a CodedNodeGraph to an empty CodedNodeSet - previously
+  it through an exception if you did this.  Now, you will just get an empty CodedNodeGraph as a result.
+* Changed the System Variable 'PropFileLocation' to 'LG_CONFIG_FILE'.
+* Added an optional System Variable and a config.props option of 'LG_BASE_PATH'.  When provided
+  relative paths are resolved relative to this value.
+
+***************************
+Release 1.0.0RC5 06/27/06 *
+***************************
+* Fixed a possible null pointer in the registry (update tag method).
+* Fixed a bug where it wasn't populating entity descriptions if you resolved to an iterator.
+* Fixed a bug where asking for only the active codes (but not providing any other restrictions) caused
+  it to return inactive codes.
+* Fixed a bug where CodedNodeSet Iterators were not being cleaned up / ended properly.
+* Changed the way that paths are resolved from the config file - if you provide a relative path - 
+  now the path will be resolved relative to the location of the config.props file - rather than
+  relative to the location of the JVM launch point.
+* Added a config option to the config.prop file to specify the folder where extra jar files can 
+  be found (sql drivers, extensions, etc)
+* Fixed a CPU cycle wasting bug that appeared if you disabled any code systems.
+* new convenience method - isCodeRetired
+* 2 new history methods - getDescendants, getAncestors
+* API updates (detailed in the API) - includes - synchronized loading, bug fixes (TODO), sort directions.
+* Better error reporting if a -DPropFileLocation is provided (but not found)
+
+
+***************************
+Release 1.0.0RC4 06/02/06 *
+***************************
+* More tweaks for Oracle support.
+* Fixed calls in history to work on DB2.
+* Reworked the test suite to make it easy to test all of the supported server configurations.
+* various minor bug fixes that cropped up during JUnit testing (mainly with timely releasing of 
+  resources)
+* Finished fixing up internal tests for multiple DB runs.
+* General code cleanup (warnings, imports, etc)
+* Moved all of the tests from lbTests to this project.
+* Classloader changes to allow for dynamically setting the path of the jdbc drivers, and to prepare
+  for proper extensions support.
+* Upgraded Lucene to 2.0.
+
+***************************
+Release 1.0.0RC3 05/05/06 *
+***************************
+* Fixed a bug in codeToName and nameToCode (wasn't working with inactive codes)
+* Fixed parts 1 and 3 of bug #1032.
+* Implemented code to fix bug 841 (populate conceptReference in associations)
+* Implemented checking both directions for areCodesRelates on symmetric associations - bug 842
+* updates to allow other anything as a registered name, instead of just urn:oid's.
+* Implemented sorting of coded node graph - bug 843
+* Fixed additional bugs in coded node graph that occured when there were relationships to concepts that don't exist.
+* Added a CleanUp class to remove unused / orphaned indexes and databases.
+* Made the codeToName and nameToCode methods fall back onto preferred designation matching (if there is no
+  CONCEPT_NAME property)
+* Fixed remaining concurrency problems with multiple VMs - Bug #845
+* Added support for running in a single database (SINGLE_DB_MODE) - this uses prefixed SQL tables 
+  to differentiate terminologies (rather than multiple databases)
+* Fixed handling of naming for the nci history tables.
+
+
+***************************
+Release 1.0.0RC2 04/06/06 *
+***************************
+* Updates to fix / prevent issues when doing concurrent operations on a single terminology.
+
+* Improved debugging messages on startup with configuration reading failure.
+
+* Improved indexing performance.
+
+* Fix for bug 967
+
+* JUnit test fixes to fix file collisions on *nix OS.
+
+***************************
+Release 1.0.0RC1 03/31/06 *
+***************************
+* Converter changes to reduce memory usage on MetaThesaurus load.
+
+* Logging customization enhancements
+
+* Error messages can now be directed to e-mail address(es)
+
+* Fixed a threading issue (bug # 963)
+
+
+**************************
+Release 0.9.0b	03/24/06 *
+**************************
+* Logger tweaks - appends instead of clears now, rolls files over at a set size (not configurable yet
+  but will be)
+
+**************************
+Release 0.8.0b	03/17/06 *
+**************************
+* Fix for bug 813 (wrong size on returned property array in a concept)
+
+* Implemented future deactivation support
+
+* Fixed a bug in the coded node set iterator that would have held the JVM open if you 
+  tried to shutdown the JVM without closing all of your iterators.
+  
+* Added property qualifier support to the implementation (individual loaders still need to populate
+  the values into the db)
+  
+* Performance improvement on populating coded entries (removed a round trip to the SQL server)
+
+* Fixed bug in MetaThesaurus loaded that allowed the same code system to be loaded more than once.
+
+* Fixed a bug in the MetaThesaurus loader that was chopping the version string off at 10 chars instead of 50. 
+
+* Fixed bugs with timestamps in the registry file.  Activate wasn't clearing the deactivate time when it 
+  should and lastUpdated timestamps were not being set.
+  
+* Added another history method.
+
+* Bug fixes in coding scheme version tagging (correcting cache issues)
+
+
+**************************
+Release 0.7.0b	03/10/06 *
+**************************
+* Added version numbers to all jar files.
+
+* Updated Lucene to 1.9.1 final.
+
+* More general code clean up (removal of compiler warnings, etc).
+
+* NCI MetaThesaurus converter bug fixes (clashing property qualifier unique ids, missing 
+  registered names, incorrect loading of some relationships)
+  
+* Performance improvements on the MetaThesaurus load.
+  
+* Fixed bugs in SQL code where it was doing case sensitive compairisions where is shouldn't.
+
+* Modified the History API to better meet requirements.
+
+
+
+
+**************************
+Release 0.6.0b	03/03/06 *
+**************************
+* Fixed code to throw an exception when an invalid tag is passed in (previously, it fell through 
+  to the PRODUCTION version.
+   
+* Loader now issues an error message if a code system with an invalid registered name is loaded.
+  Activate method will refuse to activate a code system with an invalid registered name.  (invalid
+  names cause unexpected errors in the api)
+  
+* Metathesaurus loader now checks for the existance of all required files (and validates their formats) 
+  on the validate step.
+  
+* Bug fixes for running on Hypersonic
+
+* NCI Thesaurus History API is now fully implemented.
+
+* General code clean up (imports, compiler warnings, etc)
+  

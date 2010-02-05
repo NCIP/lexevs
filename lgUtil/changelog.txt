@@ -1,0 +1,94 @@
+lgUtil Changelog
+
+08/30/2007
+* GForge #8669: Allow concepts defined as synonyms to be left out of root node
+  calculation if any synonymous concept is not a root node (participating as
+  an intermediate node in the concept hierarchy). 
+
+Updated root node creation to allow concepts defined as
+  synonyms to be disregarded if related synonymous concepts
+  participates as an intermediate node in the hierarchy.
+
+12/11/2006
+* Changed the order of the columns in the codingScheme table - moved "firstRelease, modifiedInRelease, deprecated"
+  up in front of the two memo columns to get around an Access bug.  Still using version number 1.5
+
+11/22/2006
+* Created the new 1.5 LexGrid SQL table format.  Updated all SQL code for 1.5 (which supports the 2006 model)
+  and added backwards compatibility for older formats.
+
+* Merged in the necessary tables for the NCI history API.
+* Got rid of the old NCI history sql utility classes
+
+Format Changes Summary:
+codingScheme 					- new columns firstRelease, modifiedInRelease, deprecated
+
+codingSchemeMultiAttributes 	- new columns val1, val2
+								- renamed columns attributeName -> typeName
+								
+relationMultiAttrib 			- new columns val1, val2
+								- renamed columns attribName -> typeName
+
+conceptAssnsToData 				- new column modifiedInRelease
+				   				- renamed columns firstVersion -> firstRelease, lastVersion -> deprecated
+				   				- deleted column dataType
+
+codingSchemeSupportedAttribs 	- renamed supportedAttributeValue -> id
+								- new columns idValue, val1, val2
+
+concept 						- new column modifiedInRelease
+								- renamed columns firstVersion -> firstRelease, lastVersion -> deprecated
+
+conceptProperty 				- renamedColumn dataType -> propertyType  - changed the column order
+									(usage change as well - propertyType is not equivalent to dataType)
+
+conceptPropertyMultiAttrib 		- new columns val1, val2
+								- renamed columns attribName -> typeName
+
+conceptAssnsToConcept 			- new column modifiedInRelease
+					  			- renamedColumns firstVersion -> firstRelease, lastVersion -> deprecated
+
+conceptAssnsToCMultiAttrib 		- renamed to conceptAssnsToCQuals
+								- renamed columns attributeName -> qualifierName, attributeValue -> qualifierValue
+								- removed columns - dataType, assnQualiferValue
+
+conceptAssnsToDMultiAttrib 		- renamed to conceptAssnsToDQuals
+								- renamed columns attributeName -> qualifierName, attributeValue -> qualifierValue
+								- removed columns - dataType, assnQualiferValue
+
+Deleted Tables
+conceptMultiAttributes 			- no longer needed due to removal of modVersion
+conceptPropertyQuals 			- data merged into conceptPropertyMultiAttributes
+
+New Tables:
+codingSchemeProp
+codingSchemePropMultiAttrib
+systemRelease (this kind of existed before in the nci specific stuff) - Optional - not created by default
+systemReleaseRefs - Optional - not created by default
+codingSchemeVersions - Optional - not created by default
+nciThesaurusHistory - Optional - not cretaed by default, not part of the model.  Only serves the LexBIG NCI
+  						history API.
+
+
+No Changes:
+lexgridTableMetaData
+association
+relation
+conceptAssnsToConceptTr
+cocneptPropertyLinks
+
+	
+  
+  
+
+11/16/2006
+* Added override capability to LIKE replacements for CTS usage.
+* Improvements to error handling on removal of foreign keys from 
+  SQL lite tables.
+* Prevent "message.null" from being printed when log.warn("message") is being logged to the output
+
+11/10/2006
+* Improvements to SQL failure handling logic.
+
+11/01/2006
+* Additional code refactored into this project from several other projects.

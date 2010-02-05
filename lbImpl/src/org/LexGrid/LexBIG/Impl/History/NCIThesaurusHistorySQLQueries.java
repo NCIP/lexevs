@@ -1,0 +1,974 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
+package org.LexGrid.LexBIG.Impl.History;
+
+import java.net.URI;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeVersionList;
+import org.LexGrid.LexBIG.DataModel.Collections.NCIChangeEventList;
+import org.LexGrid.LexBIG.DataModel.Collections.SystemReleaseList;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.SystemReleaseDetail;
+import org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent;
+import org.LexGrid.LexBIG.DataModel.NCIHistory.types.ChangeType;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
+import org.LexGrid.LexBIG.Impl.dataAccess.SQLHistoryInterface;
+import org.LexGrid.LexBIG.Impl.internalExceptions.UnexpectedInternalError;
+import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
+import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
+import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.LexGrid.versions.CodingSchemeVersion;
+import org.LexGrid.versions.EntityVersion;
+import org.LexGrid.versions.SystemRelease;
+
+/**
+ * SQL queries necessary to implement the NCI history methods.
+ * 
+ * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
+ * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
+ * @author <A HREF="mailto:sharma.deepak2@mayo.edu">Deepak Sharma</A>
+ * @version subversion $Revision: $ checked in on $Date: $
+ */
+public class NCIThesaurusHistorySQLQueries {
+    public static final String NCIThesaurusURN = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
+
+    protected static LgLoggerIF getLogger() {
+        return LoggerFactory.getLogger();
+    }
+
+    public static SystemReleaseList getBaseLines(String urn, Date releasedAfter, Date releasedBefore)
+            throws UnexpectedInternalError {
+        SystemReleaseList result;
+        try {
+            PreparedStatement getBaseLines = null;
+            SQLHistoryInterface si = ResourceManager.instance().getSQLInterfaceForHistory(urn);
+            SQLTableConstants stc = si.getSQLTableUtilities().getSQLTableConstants();
+            result = new SystemReleaseList();
+
+            try {
+                StringBuffer query = new StringBuffer();
+                query.append("Select * from " + si.getTableName(SQLTableConstants.SYSTEM_RELEASE));
+
+                if (releasedAfter != null || releasedBefore != null) {
+                    query.append(" WHERE ");
+                }
+
+                if (releasedAfter != null) {
+                    query.append(SQLTableConstants.TBLCOL_RELEASEDATE + " >= ? ");
+                    if (releasedBefore != null) {
+                        query.append(" AND ");
+                    }
+                }
+
+                if (releasedBefore != null) {
+                    query.append(SQLTableConstants.TBLCOL_RELEASEDATE + " <= ?");
+                }
+                query.append(" ORDER BY " + SQLTableConstants.TBLCOL_RELEASEDATE + " ");
+
+                getBaseLines = si.checkOutPreparedStatement(query.toString());
+
+                int i = 1;
+                if (releasedAfter != null) {
+                    getBaseLines.setTimestamp(i++, new java.sql.Timestamp(releasedAfter.getTime()));
+                }
+                if (releasedBefore != null) {
+                    getBaseLines.setTimestamp(i++, new java.sql.Timestamp(releasedBefore.getTime()));
+                }
+
+                ResultSet results = getBaseLines.executeQuery();
+
+                while (results.next()) {
+                    result.addSystemRelease(makeSystemReleaseFromQuery(results, stc));
+                }
+
+                results.close();
+
+            } catch (Exception e) {
+                throw new UnexpectedInternalError("There was an unexpected internal error.", e);
+            } finally {
+                si.checkInPreparedStatement(getBaseLines);
+            }
+        } catch (LBParameterException e) {
+            throw new UnexpectedInternalError("Problem getting the sql interface for " + urn, e);
+        }
+
+        return result;
+    }
+
+    public static SystemRelease getEarliestBaseLine(String urn) throws UnexpectedInternalError {
+        SystemRelease result;
+        try {
+            PreparedStatement getBaseLines = null;
+            SQLHistoryInterface si = ResourceManager.instance().getSQLInterfaceForHistory(urn);
+            SQLTableConstants stc = si.getSQLTableUtilities().getSQLTableConstants();
+            result = null;
+
+            try {
+                StringBuffer query = new StringBuffer();
+                query.append("Select * from " + si.getTableName(SQLTableConstants.SYSTEM_RELEASE));
+                query.append(" ORDER BY " + SQLTableConstants.TBLCOL_RELEASEDATE + " ");
+
+                getBaseLines = si.checkOutPreparedStatement(query.toString());
+                getBaseLines.setMaxRows(1);
+
+                ResultSet results = getBaseLines.executeQuery();
+
+                if (results.next()) {
+                    result = makeSystemReleaseFromQuery(results, stc);
+                } else {
+                    throw new UnexpectedInternalError("The history table is empty");
+                }
+
+                results.close();
+
+            } catch (UnexpectedInternalError e) {
+                throw e;
+            } catch (Exception e) {
+                throw new UnexpectedInternalError("There was an unexpected internal error.", e);
+            } finally {
+                si.checkInPreparedStatement(getBaseLines);
+            }
+        } catch (LBParameterException e) {
+            throw new UnexpectedInternalError("Problem getting the sql interface for " + urn, e);
+        }
+
+        return result;
+    }
+
+    public static SystemRelease getLatestBaseLine(String urn) throws UnexpectedInternalError {
+        SystemRelease result;
+        try {
+            PreparedStatement getBaseLines = null;
+            SQLHistoryInterface si = ResourceManager.instance().getSQLInterfaceForHistory(urn);
+            SQLTableConstants stc = si.getSQLTableUtilities().getSQLTableConstants();
+            result = null;
+
+            try {
+                StringBuffer query = new StringBuffer();
+                query.append("Select * from " + si.getTableName(SQLTableConstants.SYSTEM_RELEASE));
+                query.append(" ORDER BY " + SQLTableConstants.TBLCOL_RELEASEDATE + " desc");
+
+                getBaseLines = si.checkOutPreparedStatement(query.toString());
+                getBaseLines.setMaxRows(1);
+
+                ResultSet results = getBaseLines.executeQuery();
+
+                if (results.next()) {
+                    result = makeSystemReleaseFromQuery(results, stc);
+                } else {
+                    throw new UnexpectedInternalError("The history table is empty");
+                }
+
+                results.close();
+
+            } catch (UnexpectedInternalError e) {
+                throw e;
+            } catch (Exception e) {
+                throw new UnexpectedInternalError("There was an unexpected internal error.", e);
+            } finally {
+                si.checkInPreparedStatement(getBaseLines);
+            }
+        } catch (LBParameterException e) {
+            throw new UnexpectedInternalError("Problem getting the sql interface for " + urn, e);
+        }
+
+        return result;
+    }
+
+    private static SystemRelease getSystemReleaseForVersion(String urn, URI releaseURN) throws UnexpectedInternalError {
+        SystemRelease result;
+        try {
+            PreparedStatement getBaseLines = null;
+            SQLHistoryInterface si = ResourceManager.instance().getSQLInterfaceForHistory(urn);
+            SQLTableConstants stc = si.getSQLTableUtilities().getSQLTableConstants();
+            result = null;
+
+            try {
+                StringBuffer query = new StringBuffer();
+                query.append("Select * from " + si.getTableName(SQLTableConstants.SYSTEM_RELEASE));
+                query.append(" WHERE " + stc.releaseURNOrreleaseURI + " = ?");
+
+                getBaseLines = si.checkOutPreparedStatement(query.toString());
+                getBaseLines.setMaxRows(1);
+                getBaseLines.setString(1, releaseURN.toString());
+
+                ResultSet results = getBaseLines.executeQuery();
+
+                if (results.next()) {
+                    result = makeSystemReleaseFromQuery(results, stc);
+                } else {
+                    throw new LBParameterException("No System Release could be found for ",
+                            SQLTableConstants.TBLCOL_RELEASEID, releaseURN.toString());
+                }
+
+                results.close();
+
+            } catch (LBParameterException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new UnexpectedInternalError("There was an unexpected internal error.", e);
+            } finally {
+                si.checkInPreparedStatement(getBaseLines);
+            }
+        } catch (LBParameterException e) {
+            throw new UnexpectedInternalError("Problem getting the sql interface for " + urn, e);
+        }
+
+        return result;
+    }
+
+    private static Date getDateForPreviousRelease(String urn, Date previousDate) throws UnexpectedInternalError {
+        try {
+            PreparedStatement getPrevious = null;
+            SQLHistoryInterface si = ResourceManager.instance().getSQLInterfaceForHistory(urn);
+
+            try {
+                StringBuffer query = new StringBuffer();
+                query.append("Select " + SQLTableConstants.TBLCOL_RELEASEDATE + " from "
+                        + si.getTableName(SQLTableConstants.SYSTEM_RELEASE));
+                query.append(" WHERE " + SQLTableConstants.TBLCOL_RELEASEDATE + " < ?");
+                query.append(" ORDER BY " + SQLTableConstants.TBLCOL_RELEASEDATE + " desc");
+
+                getPrevious = si.checkOutPreparedStatement(query.toString());
+                getPrevious.setMaxRows(1);
+                getPrevious.setTimestamp(1, new java.sql.Timestamp(previousDate.getTime()));
+
+                ResultSet results = getPrevious.executeQuery();
+
+                if (results.next()) {
+                    return new Date(results.getTimestamp(SQLTableConstants.TBLCOL_RELEASEDATE).getTime());
+                } else {
+                    return null;
+                }
+            } catch (Exception e) {
+                throw new UnexpectedInternalError("There was an unexpected internal error.", e);
+            } finally {
+                si.checkInPreparedStatement(getPrevious);
+            }
+        } catch (LBParameterException e) {
+            throw new UnexpectedInternalError("Problem getting the sql interface for " + urn, e);
+        }
+    }
+
+    private static String getReleaseURNForPreviousRelease(String urn, Date previousDate) throws UnexpectedInternalError {
+        try {
+            PreparedStatement getPrevious = null;
+            SQLHistoryInterface si = ResourceManager.instance().getSQLInterfaceForHistory(urn);
+            SQLTableConstants stc = si.getSQLTableUtilities().getSQLTableConstants();
+            try {
+                StringBuffer query = new StringBuffer();
+                query.append("Select " + stc.releaseURNOrreleaseURI + " from "
+                        + si.getTableName(SQLTableConstants.SYSTEM_RELEASE));
+                query.append(" WHERE " + SQLTableConstants.TBLCOL_RELEASEDATE + " < ?");
+                query.append(" ORDER BY " + SQLTableConstants.TBLCOL_RELEASEDATE + " desc");
+
+                getPrevious = si.checkOutPreparedStatement(query.toString());
+                getPrevious.setMaxRows(1);
+                getPrevious.setTimestamp(1, new java.sql.Timestamp(previousDate.getTime()));
+
+                ResultSet results = getPrevious.executeQuery();
+
+                if (results.next()) {
+                    return results.getString(stc.releaseURNOrreleaseURI);
+                } else {
+                    return null;
+                }
+            } catch (Exception e) {
+                throw new UnexpectedInternalError("There was an unexpected internal error.", e);
+            } finally {
+                si.checkInPreparedStatement(getPrevious);
+            }
+        } catch (LBParameterException e) {
+            throw new UnexpectedInternalError("Problem getting the sql interface for " + urn, e);
+        }
+    }
+
+    private static SystemRelease makeSystemReleaseFromQuery(ResultSet results, SQLTableConstants stc)
+            throws SQLException {
+        SystemRelease temp = new SystemRelease();
+
+        temp.setEntityDescription(Constructors.createEntityDescription(results
+                .getString(SQLTableConstants.TBLCOL_ENTITYDESCRIPTION)));
+        temp.setReleaseAgency(results.getString(SQLTableConstants.TBLCOL_RELEASEAGENCY));
+        temp.setReleaseDate(new Date(results.getTimestamp(SQLTableConstants.TBLCOL_RELEASEDATE).getTime()));
+        temp.setReleaseId(results.getString(SQLTableConstants.TBLCOL_RELEASEID));
+        temp.setReleaseURI(results.getString(stc.releaseURNOrreleaseURI));
+        temp.setBasedOnRelease(results.getString(SQLTableConstants.TBLCOL_BASEDONRELEASE));
+
+        // TODO [future at request] system release refs table should be used
+        // here -
+        // but not necessary right now, since NCI doesn't populate it.
+
+        return temp;
+    }
+
+    public static SystemReleaseDetail getSystemRelease(String urn, URI releaseURN) throws UnexpectedInternalError,
+            LBParameterException {
+        SystemReleaseDetail result = new SystemReleaseDetail();
+        PreparedStatement getDetail = null;
+        SQLHistoryInterface si = null;
+        SQLTableConstants stc = null;
+
+        try {
+            si = ResourceManager.instance().getSQLInterfaceForHistory(urn);
+            stc = si.getSQLTableUtilities().getSQLTableConstants();
+        } catch (LBParameterException e) {
+            throw new UnexpectedInternalError("Problem getting the sql interface for " + urn, e);
+        }
+
+        try {
+            String temp = releaseURN.toString();
+
+            if (temp.indexOf(NCIThesaurusURN + ":") == -1) {
+                throw new LBParameterException("Invalid parameter", stc.releaseURNOrreleaseURI, releaseURN.toString());
+            }
+
+            SystemRelease sr = getSystemReleaseForVersion(urn, releaseURN);
+
+            Date startDate = getDateForPreviousRelease(urn, sr.getReleaseDate());
+
+            StringBuffer query = new StringBuffer();
+            query.append("Select Distinct " + SQLTableConstants.TBLCOL_EDITDATE + " from "
+                    + si.getTableName(SQLTableConstants.NCI_THESAURUS_HISTORY));
+            query.append(" WHERE " + SQLTableConstants.TBLCOL_EDITDATE + " <= ?");
+            if (startDate != null) {
+                query.append(" AND " + SQLTableConstants.TBLCOL_EDITDATE + " >= ?");
+            }
+
+            query.append(" ORDER BY " + SQLTableConstants.TBLCOL_EDITDATE + "");
+
+            getDetail = si.checkOutPreparedStatement(query.toString());
+            getDetail.setTimestamp(1, new java.sql.Timestamp(sr.getReleaseDate().getTime()));
+            if (startDate != null) {
+                getDetail.setTimestamp(2, new java.sql.Timestamp(startDate.getTime()));
+            }
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy");
+
+            ResultSet results = getDetail.executeQuery();
+
+            while (results.next()) {
+                EntityVersion ev = new EntityVersion();
+                ev.setIsComplete(new Boolean(false));
+                ev.setEntityDescription(sr.getEntityDescription());
+                ev.setReleaseURN(sr.getReleaseURI());
+                Date editDate = new Date(results.getTimestamp(SQLTableConstants.TBLCOL_EDITDATE).getTime());
+                ev.setVersion(dateFormat.format(editDate).toUpperCase());
+                ev.setVersionDate(sr.getReleaseDate());
+
+                result.addEntityVersions(ev);
+            }
+        } catch (LBParameterException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedInternalError("There was an unexpected internal error.", e);
+        } finally {
+            si.checkInPreparedStatement(getDetail);
+        }
+
+        return result;
+    }
+
+    @SuppressWarnings("null")
+    public static NCIChangeEventList getEditActionList(String urn, ConceptReference conceptReference,
+            CodingSchemeVersion codingSchemeVersion) throws LBParameterException, UnexpectedInternalError {
+        NCIChangeEventList result = new NCIChangeEventList();
+        SQLHistoryInterface si = null;
+        SQLTableConstants stc_ = null;
+        PreparedStatement getChanges = null;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy");
+
+        if (codingSchemeVersion == null || codingSchemeVersion.getVersion() == null
+                || codingSchemeVersion.getVersion().length() == 0) {
+            throw new LBParameterException("The version parameter in the supplied codingSchemeVersion is missing");
+        }
+
+        Date date;
+        try {
+            date = dateFormat.parse(codingSchemeVersion.getVersion());
+        } catch (ParseException e) {
+            throw new LBParameterException("The version parameter in the supplied codingSchemeVersion was invalid",
+                    "version", codingSchemeVersion.getVersion());
+        }
+
+        boolean useConcept = false;
+        if (conceptReference != null && conceptReference.getConceptCode() != null
+                && conceptReference.getConceptCode().length() > 0)
+
+        {
+            useConcept = true;
+            validateCodingScheme(conceptReference);
+        }
+
+        try {
+            si = ResourceManager.instance().getSQLInterfaceForHistory(urn);
+            stc_ = si.getSQLTableUtilities().getSQLTableConstants();
+        } catch (LBParameterException e) {
+            throw new UnexpectedInternalError("Problem getting the sql interface for " + urn, e);
+        }
+
+        try {
+            StringBuffer query = new StringBuffer();
+            query.append("Select * from " + si.getTableName(SQLTableConstants.NCI_THESAURUS_HISTORY));
+            query.append(" WHERE " + SQLTableConstants.TBLCOL_EDITDATE + " = ?");
+
+            if (useConcept) {
+                query.append(" AND (" + stc_.entityCodeOrEntityId + " = ? OR " + SQLTableConstants.TBLCOL_REFERENCECODE
+                        + " = ?)");
+            }
+
+            getChanges = si.checkOutPreparedStatement(query.toString());
+
+            getChanges.setTimestamp(1, new java.sql.Timestamp(date.getTime()));
+            if (useConcept) {
+                getChanges.setString(2, conceptReference.getConceptCode());
+                getChanges.setString(3, conceptReference.getConceptCode());
+            }
+
+            ResultSet results = getChanges.executeQuery();
+            while (results.next()) {
+                NCIChangeEvent ce = new NCIChangeEvent();
+                ce.setConceptcode(results.getString(stc_.entityCodeOrEntityId));
+                ce.setConceptName(results.getString(SQLTableConstants.TBLCOL_CONCEPTNAME));
+                ce.setEditaction(getChangeType(results.getString(SQLTableConstants.TBLCOL_EDITACTION)));
+                ce.setEditDate(new java.util.Date(results.getTimestamp(SQLTableConstants.TBLCOL_EDITDATE).getTime()));
+                ce.setReferencecode(results.getString(SQLTableConstants.TBLCOL_REFERENCECODE));
+                ce.setReferencename(results.getString(SQLTableConstants.TBLCOL_REFERENCENAME));
+
+                result.addEntry(ce);
+            }
+        } catch (Exception e) {
+            throw new UnexpectedInternalError("There was an unexpected internal error.", e);
+        } finally {
+            si.checkInPreparedStatement(getChanges);
+        }
+
+        return result;
+    }
+
+    public static NCIChangeEventList getEditActionList(String urn, ConceptReference conceptReference, Date beginDate,
+            Date endDate) throws LBParameterException, UnexpectedInternalError {
+        NCIChangeEventList result = new NCIChangeEventList();
+        SQLHistoryInterface si = null;
+        SQLTableConstants stc_ = null;
+        PreparedStatement getChanges = null;
+
+        if (conceptReference == null || conceptReference.getConceptCode() == null
+                || conceptReference.getConceptCode().length() == 0)
+
+        {
+            throw new LBParameterException("The concept code parameter in the supplied conceptReference is missing");
+        }
+
+        validateCodingScheme(conceptReference);
+
+        try {
+            si = ResourceManager.instance().getSQLInterfaceForHistory(urn);
+            stc_ = si.getSQLTableUtilities().getSQLTableConstants();
+        } catch (LBParameterException e) {
+            throw new UnexpectedInternalError("Problem getting the sql interface for " + urn, e);
+        }
+
+        try {
+            StringBuffer query = new StringBuffer();
+            query.append("Select * from " + si.getTableName(SQLTableConstants.NCI_THESAURUS_HISTORY));
+            query.append(" WHERE (" + stc_.entityCodeOrEntityId + " = ? OR " + SQLTableConstants.TBLCOL_REFERENCECODE
+                    + " = ?)");
+
+            if (beginDate != null) {
+                query.append(" AND " + SQLTableConstants.TBLCOL_EDITDATE + " >= ?");
+            }
+
+            if (endDate != null) {
+                query.append(" AND " + SQLTableConstants.TBLCOL_EDITDATE + " <= ?");
+            }
+
+            getChanges = si.checkOutPreparedStatement(query.toString());
+
+            getChanges.setString(1, conceptReference.getConceptCode());
+            getChanges.setString(2, conceptReference.getConceptCode());
+            int i = 3;
+            if (beginDate != null) {
+                getChanges.setTimestamp(i++, new java.sql.Timestamp(beginDate.getTime()));
+            }
+            if (endDate != null) {
+                getChanges.setTimestamp(i++, new java.sql.Timestamp(endDate.getTime()));
+            }
+
+            ResultSet results = getChanges.executeQuery();
+            while (results.next()) {
+                NCIChangeEvent ce = new NCIChangeEvent();
+                ce.setConceptcode(results.getString(stc_.entityCodeOrEntityId));
+                ce.setConceptName(results.getString(SQLTableConstants.TBLCOL_CONCEPTNAME));
+                ce.setEditaction(getChangeType(results.getString(SQLTableConstants.TBLCOL_EDITACTION)));
+                ce.setEditDate(new java.util.Date(results.getTimestamp(SQLTableConstants.TBLCOL_EDITDATE).getTime()));
+                ce.setReferencecode(results.getString(SQLTableConstants.TBLCOL_REFERENCECODE));
+                ce.setReferencename(results.getString(SQLTableConstants.TBLCOL_REFERENCENAME));
+
+                result.addEntry(ce);
+            }
+        } catch (Exception e) {
+            throw new UnexpectedInternalError("There was an unexpected internal error.", e);
+        } finally {
+            si.checkInPreparedStatement(getChanges);
+        }
+
+        return result;
+    }
+
+    @SuppressWarnings("null")
+    public static NCIChangeEventList getEditActionList(String urn, ConceptReference conceptReference, URI releaseURN)
+            throws LBParameterException, UnexpectedInternalError {
+        NCIChangeEventList result = new NCIChangeEventList();
+        PreparedStatement getChanges = null;
+        SQLHistoryInterface si = null;
+        SQLTableConstants stc_ = null;
+
+        try {
+            si = ResourceManager.instance().getSQLInterfaceForHistory(urn);
+            stc_ = si.getSQLTableUtilities().getSQLTableConstants();
+        } catch (LBParameterException e) {
+            throw new UnexpectedInternalError("Problem getting the sql interface for " + urn, e);
+        }
+
+        try {
+            if (releaseURN == null) {
+                throw new LBParameterException("The " + stc_.registeredNameOrCSURI + " is required");
+            }
+            String temp = releaseURN.toString();
+
+            if (temp.indexOf(NCIThesaurusURN + ":") == -1) {
+                throw new LBParameterException("Invalid parameter", stc_.releaseURNOrreleaseURI, releaseURN.toString());
+            }
+
+            SystemRelease sr = getSystemReleaseForVersion(urn, releaseURN);
+            if (sr == null) {
+                throw new LBParameterException("Version information not available", stc_.releaseURNOrreleaseURI,
+                        releaseURN.toString());
+            }
+
+            boolean useConcept = false;
+            if (conceptReference != null && conceptReference.getConceptCode() != null
+                    && conceptReference.getConceptCode().length() > 0)
+
+            {
+                useConcept = true;
+                validateCodingScheme(conceptReference);
+            }
+
+            String lastURN = getReleaseURNForPreviousRelease(urn, sr.getReleaseDate());
+            SystemRelease lastRelease = null;
+            if (lastURN != null) {
+                lastRelease = getSystemReleaseForVersion(urn, new URI(lastURN));
+            }
+
+            StringBuffer query = new StringBuffer();
+            query.append("Select * from " + si.getTableName(SQLTableConstants.NCI_THESAURUS_HISTORY));
+            query.append(" WHERE " + SQLTableConstants.TBLCOL_EDITDATE + " <= ?");
+            if (lastRelease != null) {
+                query.append(" AND " + SQLTableConstants.TBLCOL_EDITDATE + " >= ?");
+            }
+            if (useConcept) {
+                query.append(" AND (" + stc_.entityCodeOrEntityId + " = ? OR " + SQLTableConstants.TBLCOL_REFERENCECODE
+                        + " = ?)");
+            }
+
+            getChanges = si.checkOutPreparedStatement(query.toString());
+            int i = 1;
+
+            getChanges.setTimestamp(i++, new java.sql.Timestamp(sr.getReleaseDate().getTime()));
+            if (lastRelease != null) {
+                getChanges.setTimestamp(i++, new java.sql.Timestamp(lastRelease.getReleaseDate().getTime()));
+            }
+            if (useConcept) {
+                getChanges.setString(i++, conceptReference.getConceptCode());
+                getChanges.setString(i++, conceptReference.getConceptCode());
+            }
+
+            ResultSet results = getChanges.executeQuery();
+            while (results.next()) {
+                NCIChangeEvent ce = new NCIChangeEvent();
+                ce.setConceptcode(results.getString(stc_.entityCodeOrEntityId));
+                ce.setConceptName(results.getString(SQLTableConstants.TBLCOL_CONCEPTNAME));
+                ce.setEditaction(getChangeType(results.getString(SQLTableConstants.TBLCOL_EDITACTION)));
+                ce.setEditDate(new java.util.Date(results.getTimestamp(SQLTableConstants.TBLCOL_EDITDATE).getTime()));
+                ce.setReferencecode(results.getString(SQLTableConstants.TBLCOL_REFERENCECODE));
+                ce.setReferencename(results.getString(SQLTableConstants.TBLCOL_REFERENCENAME));
+
+                result.addEntry(ce);
+            }
+
+        } catch (LBParameterException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedInternalError("There was an unexpected internal error.", e);
+        } finally {
+            si.checkInPreparedStatement(getChanges);
+        }
+
+        return result;
+    }
+
+    private static ChangeType getChangeType(String change) {
+        if (change.equals("create")) {
+            return ChangeType.CREATE;
+        } else if (change.equals("modify")) {
+            return ChangeType.MODIFY;
+        } else if (change.equals("merge")) {
+            return ChangeType.MERGE;
+        } else if (change.equals("retire")) {
+            return ChangeType.RETIRE;
+        } else if (change.equals("split")) {
+            return ChangeType.SPLIT;
+        } else {
+            getLogger().error(
+                    "The NCI Thesaurus history table has an invalid entry in the '"
+                            + SQLTableConstants.TBLCOL_EDITACTION + "' column: " + change);
+            return null;
+        }
+    }
+
+    /**
+     * If its not null, this makes sure that the coding scheme is set properly.
+     * 
+     * @param conceptReference
+     * @throws LBParameterException
+     */
+    private static void validateCodingScheme(ConceptReference conceptReference) throws LBParameterException {
+        if (conceptReference.getCodingSchemeName() != null && conceptReference.getCodingSchemeName().length() > 0) {
+            // if they provide a coding scheme, it must be the NCI Thesaurus...
+            String codeUrn;
+            try {
+                codeUrn = ResourceManager.instance().getURNForExternalCodingSchemeName(
+                        conceptReference.getCodingSchemeName());
+            } catch (LBParameterException e) {
+                // if we couldn't map it, it still may be ok if they provided
+                // the correct urn
+                codeUrn = conceptReference.getCodingSchemeName();
+            }
+            if (!codeUrn.equals(NCIThesaurusURN)) {
+                throw new LBParameterException("Unknown coding scheme - only coding schemes which map to "
+                        + NCIThesaurusURN + " are supported.", "codingScheme", conceptReference.getCodingSchemeName());
+            }
+        }
+    }
+
+    public static CodingSchemeVersion getConceptCreationVersion(String urn, ConceptReference conceptReference)
+            throws UnexpectedInternalError, LBParameterException {
+        CodingSchemeVersion result = new CodingSchemeVersion();
+        SQLHistoryInterface si = null;
+        SQLTableConstants stc_ = null;
+        PreparedStatement getCreationVersion = null;
+        PreparedStatement getReleaseInfo = null;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy");
+
+        if (conceptReference == null || conceptReference.getConceptCode() == null
+                || conceptReference.getConceptCode().length() == 0) {
+            throw new LBParameterException("The concept code parameter in the supplied conceptReference is missing");
+        }
+
+        // this throws the necessary exceptions
+        validateCodingScheme(conceptReference);
+
+        try {
+            si = ResourceManager.instance().getSQLInterfaceForHistory(urn);
+            stc_ = si.getSQLTableUtilities().getSQLTableConstants();
+        } catch (LBParameterException e) {
+            throw new UnexpectedInternalError("Problem getting the sql interface for " + urn, e);
+        }
+
+        try {
+            StringBuffer query = new StringBuffer();
+            query.append("Select " + SQLTableConstants.TBLCOL_EDITDATE + " from "
+                    + si.getTableName(SQLTableConstants.NCI_THESAURUS_HISTORY));
+            query.append(" WHERE " + stc_.entityCodeOrEntityId + " = ?");
+            query.append(" AND " + SQLTableConstants.TBLCOL_EDITACTION + " = ?");
+
+            getCreationVersion = si.checkOutPreparedStatement(query.toString());
+
+            getCreationVersion.setString(1, conceptReference.getConceptCode());
+            getCreationVersion.setString(2, "create");
+
+            Date createDate;
+            ResultSet results = getCreationVersion.executeQuery();
+            if (results.next()) {
+                result.setIsComplete(new Boolean(false));
+                createDate = new Date(results.getTimestamp(SQLTableConstants.TBLCOL_EDITDATE).getTime());
+                result.setVersion(dateFormat.format(createDate).toUpperCase());
+            } else {
+                throw new LBParameterException("No create date could be found for the concept.  Is it valid?",
+                        stc_.entityCodeOrEntityId, conceptReference.getConceptCode());
+            }
+
+            results.close();
+
+            // get some additional info from the release info table...
+
+            query = new StringBuffer();
+            query.append("Select " + stc_.releaseURNOrreleaseURI + ", " + SQLTableConstants.TBLCOL_RELEASEDATE + ", "
+                    + SQLTableConstants.TBLCOL_ENTITYDESCRIPTION + " from "
+                    + si.getTableName(SQLTableConstants.SYSTEM_RELEASE));
+            query.append(" WHERE " + SQLTableConstants.TBLCOL_RELEASEDATE + " >= ? ");
+            query.append(" ORDER BY " + SQLTableConstants.TBLCOL_RELEASEDATE + "");
+
+            getReleaseInfo = si.checkOutPreparedStatement(query.toString());
+            getReleaseInfo.setMaxRows(1);
+            getReleaseInfo.setTimestamp(1, new java.sql.Timestamp(createDate.getTime()));
+
+            results = getReleaseInfo.executeQuery();
+            if (results.next()) {
+                result.setReleaseURN(results.getString(stc_.releaseURNOrreleaseURI));
+                result.setEntityDescription(Constructors.createEntityDescription(results
+                        .getString(SQLTableConstants.TBLCOL_ENTITYDESCRIPTION)));
+                result.setVersionDate(new Date(results.getTimestamp(SQLTableConstants.TBLCOL_RELEASEDATE).getTime()));
+            }
+            results.close();
+
+        } catch (LBParameterException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedInternalError("There was an unexpected internal error.", e);
+        } finally {
+            si.checkInPreparedStatement(getCreationVersion);
+            si.checkInPreparedStatement(getReleaseInfo);
+        }
+
+        return result;
+    }
+
+    public static CodingSchemeVersionList getConceptChangeVersions(String urn, ConceptReference conceptReference,
+            Date beginDate, Date endDate) throws UnexpectedInternalError, LBParameterException {
+        CodingSchemeVersionList result = new CodingSchemeVersionList();
+        SQLHistoryInterface si = null;
+        SQLTableConstants stc_ = null;
+        PreparedStatement getVersion = null;
+        PreparedStatement getReleaseInfo = null;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy");
+
+        if (conceptReference == null || conceptReference.getConceptCode() == null
+                || conceptReference.getConceptCode().length() == 0) {
+            throw new LBParameterException("The concept code parameter in the supplied conceptReference is missing");
+        }
+
+        validateCodingScheme(conceptReference);
+
+        try {
+            si = ResourceManager.instance().getSQLInterfaceForHistory(urn);
+            stc_ = si.getSQLTableUtilities().getSQLTableConstants();
+        } catch (LBParameterException e) {
+            throw new UnexpectedInternalError("Problem getting the sql interface for " + urn, e);
+        }
+
+        try {
+            StringBuffer query = new StringBuffer();
+            query.append("Select " + SQLTableConstants.TBLCOL_EDITDATE + " from "
+                    + si.getTableName(SQLTableConstants.NCI_THESAURUS_HISTORY));
+            query.append(" WHERE " + stc_.entityCodeOrEntityId + " = ?");
+
+            if (beginDate != null) {
+                query.append(" AND " + SQLTableConstants.TBLCOL_EDITDATE + " >= ?");
+            }
+
+            if (endDate != null) {
+                query.append(" AND " + SQLTableConstants.TBLCOL_EDITDATE + " <= ?");
+            }
+
+            getVersion = si.checkOutPreparedStatement(query.toString());
+
+            query = new StringBuffer();
+            query.append("Select " + SQLTableConstants.TBLCOL_RELEASEID + ", " + SQLTableConstants.TBLCOL_RELEASEDATE
+                    + ", " + SQLTableConstants.TBLCOL_ENTITYDESCRIPTION + " from "
+                    + si.getTableName(SQLTableConstants.SYSTEM_RELEASE));
+            query.append(" WHERE " + SQLTableConstants.TBLCOL_RELEASEDATE + " >= ? ");
+            query.append(" ORDER BY " + SQLTableConstants.TBLCOL_RELEASEDATE + "");
+
+            getReleaseInfo = si.checkOutPreparedStatement(query.toString());
+            getReleaseInfo.setMaxRows(1);
+
+            getVersion.setString(1, conceptReference.getConceptCode());
+            int i = 2;
+            if (beginDate != null) {
+                getVersion.setTimestamp(i++, new java.sql.Timestamp(beginDate.getTime()));
+            }
+            if (endDate != null) {
+                getVersion.setTimestamp(i++, new java.sql.Timestamp(endDate.getTime()));
+            }
+
+            ResultSet results = getVersion.executeQuery();
+            while (results.next()) {
+                CodingSchemeVersion v = new CodingSchemeVersion();
+
+                v.setIsComplete(new Boolean(false));
+                Date createDate = new Date(results.getTimestamp(SQLTableConstants.TBLCOL_EDITDATE).getTime());
+                v.setVersion(dateFormat.format(createDate).toUpperCase());
+                // get some additional info from the release info table...
+
+                getReleaseInfo.setTimestamp(1, new java.sql.Timestamp(createDate.getTime()));
+
+                ResultSet innerResults = getReleaseInfo.executeQuery();
+                if (innerResults.next()) {
+                    v.setReleaseURN(NCIThesaurusURN + ":" + innerResults.getString(SQLTableConstants.TBLCOL_RELEASEID));
+                    v.setEntityDescription(Constructors.createEntityDescription(innerResults
+                            .getString(SQLTableConstants.TBLCOL_ENTITYDESCRIPTION)));
+                    v
+                            .setVersionDate(new Date(innerResults.getTimestamp(SQLTableConstants.TBLCOL_RELEASEDATE)
+                                    .getTime()));
+                }
+                innerResults.close();
+                result.addEntry(v);
+            }
+
+            results.close();
+
+        } catch (Exception e) {
+            throw new UnexpectedInternalError("There was an unexpected internal error.", e);
+        } finally {
+            si.checkInPreparedStatement(getVersion);
+            si.checkInPreparedStatement(getReleaseInfo);
+        }
+
+        return result;
+    }
+
+    public static NCIChangeEventList getDescendants(String urn, ConceptReference conceptReference)
+            throws LBParameterException, UnexpectedInternalError {
+        NCIChangeEventList result = new NCIChangeEventList();
+        SQLHistoryInterface si = null;
+        SQLTableConstants stc_ = null;
+        PreparedStatement getDescendants = null;
+
+        if (conceptReference != null && conceptReference.getConceptCode() != null
+                && conceptReference.getConceptCode().length() > 0)
+
+        {
+            validateCodingScheme(conceptReference);
+        } else {
+            throw new LBParameterException("The Concept Reference is required", "conceptReference");
+        }
+
+        try {
+            si = ResourceManager.instance().getSQLInterfaceForHistory(urn);
+            stc_ = si.getSQLTableUtilities().getSQLTableConstants();
+        } catch (LBParameterException e) {
+            throw new UnexpectedInternalError("Problem getting the sql interface for " + urn, e);
+        }
+
+        try {
+            StringBuffer query = new StringBuffer();
+            query.append("Select * from " + si.getTableName(SQLTableConstants.NCI_THESAURUS_HISTORY));
+            query.append(" WHERE " + stc_.entityCodeOrEntityId + " = ? ");
+            query.append(" AND (" + SQLTableConstants.TBLCOL_EDITACTION + " = ? OR "
+                    + SQLTableConstants.TBLCOL_EDITACTION + " = ?)");
+
+            getDescendants = si.checkOutPreparedStatement(query.toString());
+
+            getDescendants.setString(1, conceptReference.getConceptCode());
+            getDescendants.setString(2, "merge");
+            getDescendants.setString(3, "split");
+
+            ResultSet results = getDescendants.executeQuery();
+            while (results.next()) {
+                NCIChangeEvent ce = new NCIChangeEvent();
+                ce.setConceptcode(results.getString(stc_.entityCodeOrEntityId));
+                ce.setConceptName(results.getString(SQLTableConstants.TBLCOL_CONCEPTNAME));
+                ce.setEditaction(getChangeType(results.getString(SQLTableConstants.TBLCOL_EDITACTION)));
+                ce.setEditDate(new java.util.Date(results.getTimestamp(SQLTableConstants.TBLCOL_EDITDATE).getTime()));
+                ce.setReferencecode(results.getString(SQLTableConstants.TBLCOL_REFERENCECODE));
+                ce.setReferencename(results.getString(SQLTableConstants.TBLCOL_REFERENCENAME));
+
+                result.addEntry(ce);
+            }
+        } catch (Exception e) {
+            throw new UnexpectedInternalError("There was an unexpected internal error.", e);
+        } finally {
+            si.checkInPreparedStatement(getDescendants);
+        }
+
+        return result;
+    }
+
+    public static NCIChangeEventList getAncestors(String urn, ConceptReference conceptReference)
+            throws LBParameterException, UnexpectedInternalError {
+        NCIChangeEventList result = new NCIChangeEventList();
+        SQLHistoryInterface si = null;
+        SQLTableConstants stc_ = null;
+        PreparedStatement getDescendants = null;
+
+        if (conceptReference != null && conceptReference.getConceptCode() != null
+                && conceptReference.getConceptCode().length() > 0)
+
+        {
+            validateCodingScheme(conceptReference);
+        } else {
+            throw new LBParameterException("The Concept Reference is required", "conceptReference");
+        }
+
+        try {
+            si = ResourceManager.instance().getSQLInterfaceForHistory(urn);
+            stc_ = si.getSQLTableUtilities().getSQLTableConstants();
+        } catch (LBParameterException e) {
+            throw new UnexpectedInternalError("Problem getting the sql interface for " + urn, e);
+        }
+
+        try {
+            StringBuffer query = new StringBuffer();
+            query.append("Select * from " + si.getTableName(SQLTableConstants.NCI_THESAURUS_HISTORY));
+            query.append(" WHERE " + SQLTableConstants.TBLCOL_REFERENCECODE + " = ? ");
+            query.append(" AND (" + SQLTableConstants.TBLCOL_EDITACTION + " = ? OR "
+                    + SQLTableConstants.TBLCOL_EDITACTION + " = ?)");
+
+            getDescendants = si.checkOutPreparedStatement(query.toString());
+
+            getDescendants.setString(1, conceptReference.getConceptCode());
+            getDescendants.setString(2, "merge");
+            getDescendants.setString(3, "split");
+
+            ResultSet results = getDescendants.executeQuery();
+            while (results.next()) {
+                NCIChangeEvent ce = new NCIChangeEvent();
+                ce.setConceptcode(results.getString(stc_.entityCodeOrEntityId));
+                ce.setConceptName(results.getString(SQLTableConstants.TBLCOL_CONCEPTNAME));
+                ce.setEditaction(getChangeType(results.getString(SQLTableConstants.TBLCOL_EDITACTION)));
+                ce.setEditDate(new java.util.Date(results.getTimestamp(SQLTableConstants.TBLCOL_EDITDATE).getTime()));
+                ce.setReferencecode(results.getString(SQLTableConstants.TBLCOL_REFERENCECODE));
+                ce.setReferencename(results.getString(SQLTableConstants.TBLCOL_REFERENCENAME));
+
+                result.addEntry(ce);
+            }
+        } catch (Exception e) {
+            throw new UnexpectedInternalError("There was an unexpected internal error.", e);
+        } finally {
+            si.checkInPreparedStatement(getDescendants);
+        }
+
+        return result;
+    }
+
+}

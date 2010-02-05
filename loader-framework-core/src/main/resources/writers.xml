@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+		
+	<beans:import resource="repositories.xml"/> 
+	
+	<beans:bean class="org.springframework.batch.core.scope.StepScope"/>
+		
+	<beans:bean id="keyValueStagingWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+		<beans:property name="dataSource">
+			<beans:ref bean="dataSource"/>
+		</beans:property>
+		<beans:property name="sql" value="INSERT INTO ${prefix}stagingkeyvalue VALUES (?, ?)"/>
+		<beans:property name="itemPreparedStatementSetter">
+			<beans:bean class="org.lexgrid.loader.staging.fieldsetter.KeyValueFieldSetter"/>
+		</beans:property>
+	</beans:bean>
+			
+	<beans:bean id="entityPropertyLinkWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+		<beans:property name="dataSource">
+			<beans:ref bean="dataSource"/>
+		</beans:property>
+		<beans:property name="sql" value="INSERT INTO ${prefix}entityPropertyLinks VALUES (?, ?, ?, ?, ?, ?)"/>
+		<beans:property name="itemPreparedStatementSetter">
+			<beans:bean class="org.lexgrid.loader.fieldsetter.EntityPropertyLinksFieldSetter"/>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="entityTypeWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+		<beans:property name="dataSource">
+			<beans:ref bean="dataSource"/>
+		</beans:property>
+		<beans:property name="sql" value="INSERT INTO ${prefix}entityType VALUES (?, ?, ?, ?)"/>
+		<beans:property name="itemPreparedStatementSetter">
+			<beans:bean class="org.lexgrid.loader.fieldsetter.EntityTypeFieldSetter"/>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="entityWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+		<beans:property name="dataSource">
+			<beans:ref bean="dataSource"/>
+		</beans:property>
+		<beans:property name="sql" value="INSERT INTO ${prefix}entity VALUES (?, ?, ?, ?, ?, ?, ?, ?)"/>
+		<beans:property name="itemPreparedStatementSetter">
+			<beans:bean class="org.lexgrid.loader.fieldsetter.EntityFieldSetter"/>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="entityAssnsToEqualsWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+		<beans:property name="dataSource">
+			<beans:ref bean="dataSource"/>
+		</beans:property>
+		<beans:property name="sql" value="INSERT INTO ${prefix}entityAssnsToEQuals VALUES (?, ?, ?, ?)"/>
+		<beans:property name="itemPreparedStatementSetter">
+			<beans:bean class="org.lexgrid.loader.fieldsetter.EntityAssnsToEQualsFieldSetter"/>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="codingSchemeWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter" scope="step">
+		<beans:property name="dataSource">
+			<beans:ref bean="dataSource"/>
+		</beans:property>
+		<beans:property name="sql" value="INSERT INTO ${prefix}codingScheme VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"/>
+		<beans:property name="itemPreparedStatementSetter">
+			<beans:bean class="org.lexgrid.loader.fieldsetter.CodingSchemeFieldSetter"/>
+		</beans:property>
+	</beans:bean>
+	
+	
+	<beans:bean id="entityPropertyWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+		<beans:property name="dataSource">
+			<beans:ref bean="dataSource"/>
+		</beans:property>
+		<beans:property name="sql" value="INSERT INTO ${prefix}entityProperty VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"/>
+		<beans:property name="itemPreparedStatementSetter">
+			<beans:bean class="org.lexgrid.loader.fieldsetter.EntityPropertyFieldSetter"/>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="entityPropertyMultiAttribWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+		<beans:property name="dataSource">
+			<beans:ref bean="dataSource"/>
+		</beans:property>
+		<beans:property name="sql" value="INSERT INTO ${prefix}entityPropertyMultiAttrib VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"/>
+		<beans:property name="itemPreparedStatementSetter">
+			<beans:bean class="org.lexgrid.loader.fieldsetter.EntityPropertyMultiAttribFieldSetter"/>
+		</beans:property>
+	</beans:bean>
+		
+	<beans:bean id="entityAssnToEntityWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+		<beans:property name="dataSource">
+			<beans:ref bean="dataSource"/>
+		</beans:property>
+		<beans:property name="sql" value="INSERT INTO ${prefix}entityAssnsToEntity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"/>
+		<beans:property name="itemPreparedStatementSetter">
+			<beans:bean class="org.lexgrid.loader.fieldsetter.EntityAssnsToEntityFieldSetter"/>
+		</beans:property>
+	</beans:bean>		
+	
+	<beans:bean id="codingSchemeSupportedAttribWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+		<beans:property name="dataSource">
+			<beans:ref bean="dataSource"/>
+		</beans:property>
+		<beans:property name="sql" value="INSERT INTO ${prefix}codingSchemeSupportedAttrib VALUES (?, ?, ?, ?, ?, ?, ?)"/>
+		<beans:property name="itemPreparedStatementSetter">
+			<beans:bean class="org.lexgrid.loader.fieldsetter.CodingSchemeSupportedAttribFieldSetter"/>
+		</beans:property>
+	</beans:bean>	
+	
+	<beans:bean id="classifierCompositeItemListWriter" class="org.lexgrid.loader.writer.ListWriter">
+		<beans:property name="delegate">
+			<beans:ref bean="classifierCompositeItemWriter"/>
+		</beans:property>
+	</beans:bean>	
+	
+	<beans:bean id="classifierCompositeItemWriter" class="org.springframework.batch.item.support.ClassifierCompositeItemWriter">
+		<beans:property name="classifier">
+			<beans:bean class="org.lexgrid.loader.writer.classifier.WriterClassifier"/>
+		</beans:property>
+	</beans:bean>	
+	
+	<beans:bean id="genericlexEvsHibernateListWriter" class="org.lexgrid.loader.writer.GenericListWriter" scope="step">
+		<beans:property name="delegate">
+			<beans:ref bean="lexEvsHibernateWriter"/>
+		</beans:property>
+	</beans:bean>	
+	
+	<beans:bean id="lexEvsHibernateListWriter" class="org.lexgrid.loader.writer.ListWriter" scope="step">
+		<beans:property name="delegate">
+			<beans:ref bean="lexEvsHibernateWriter"/>
+		</beans:property>
+	</beans:bean>	
+	
+	<beans:bean id="lexEvsHibernateWriter" class="org.springframework.batch.item.database.HibernateItemWriter" scope="step">
+		<beans:property name="sessionFactory">
+			<beans:ref bean="sessionFactory"/>
+		</beans:property>
+	</beans:bean>	
+		
+	<beans:bean id="entityAssnsToEqualsListWriter" class="org.lexgrid.loader.writer.ListWriter">
+    	<beans:property name="delegate" ref="entityAssnsToEqualsWriter"/>
+	</beans:bean>
+	
+	<beans:bean id="entityTypeListWriter" class="org.lexgrid.loader.writer.ListWriter">
+    	<beans:property name="delegate" ref="entityTypeWriter"/>
+	</beans:bean>
+	
+	<beans:bean id="entityPropertyMultiAttribListWriter" class="org.lexgrid.loader.writer.ListWriter">
+    	<beans:property name="delegate" ref="entityPropertyMultiAttribWriter"/>
+	</beans:bean>
+	
+	<beans:bean id="entityPropertyListWriter" class="org.lexgrid.loader.writer.ListWriter" scope="step">
+    	<beans:property name="delegate" ref="entityPropertyWriter"/>
+	</beans:bean>
+
+	<beans:bean id="entityAssnsToEntityListWriter" class="org.lexgrid.loader.writer.ListWriter">
+    	<beans:property name="delegate" ref="entityAssnToEntityWriter"/>
+	</beans:bean>
+	
+	<beans:bean id="entityPropertyLinkListWriter" class="org.lexgrid.loader.writer.ListWriter">
+    	<beans:property name="delegate" ref="entityPropertyLinkWriter"/>
+	</beans:bean>
+		
+</beans:beans>

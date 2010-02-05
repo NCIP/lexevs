@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+
+
+	<select id="getDescription" resultClass="string" parameterClass="string">
+		SELECT
+			description
+		FROM
+			$prefix$lexGridTableMetadata
+     </select>
+     
+     <select id="getVersion" resultClass="string"  parameterClass="string">
+		SELECT
+			version
+		FROM
+			$prefix$lexGridTableMetadata
+     </select>
+     
+     <insert id="insertTableMetadata" parameterClass="org.lexevs.dao.database.ibatis.tablemetadata.parameter.InsertTableMetadataBean">
+     	INSERT INTO $prefix$lexgridtablemetadata (
+     		version,
+     		description
+     	) VALUES (
+     		#version#,
+     		#description#
+     	)
+     </insert>
+
+</sqlMap>

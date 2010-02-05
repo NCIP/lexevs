@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../../ea.css" rel=stylesheet>
+<title>LexBIGService::CodedNodeSet</title>
+</head>
+<body>
+<TABLE class="HeaderTable" align="center" cellSpacing=0 cellPadding=0>
+  <TBODY >
+	<TR>
+		<TD colspan=2 WIDTH="100%" class="Header">interface: CodedNodeSet</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="48%" class="HeaderDetails"></TD>
+		<TD WIDTH="48%" class="HeaderDetails"></TD>
+	</TR>
+	<TR>
+		<TD WIDTH="40%" class="HeaderDetails"></TD>
+		<TD WIDTH="60%" class="HeaderDetails"></TD>
+	</TR>
+	<TR><TD colspan="2" width="100%"><HR></TD></TR>
+	</TBODY>
+</TABLE> <table cellPadding=2 cellSpacing=2 width="100%">
+  <tbody>
+		<tr>
+			<td class=ObjectTitle>
+				public abstract  &lt;&lt;interface&gt;&gt; interface: CodedNodeSet  
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table class=ObjectDetails cellPadding=2 cellSpacing=2 width="100%">
+				  <tbody>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Author:</td>
+							<td width="85%" class=ObjectDetailsValue>solbrigcvs</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Project:</td>
+							<td width="85%" class=ObjectDetailsValue>Phase: 1.0; Status: Proposed; Version: 1.0; Complexity: 1</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Dates:</td>
+							<td width="85%" class=ObjectDetailsValue>Created: 8/14/2006 3:21:23 PM; Modified: 8/28/2006 10:58:59 PM;</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Flags:</td>
+							<td width="85%" class=ObjectDetailsValue> Active: false; IsRoot: false; IsLeaf: false;</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Extension Points:</td>
+							<td width="85%" class=ObjectDetailsValue></td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>UUID:</td>
+							<td width="85%" class=ObjectDetailsValue>{FC220D01-E11A-4e41-83A0-2010EE8D733D}</td>
+						</tr>
+						<tr>
+							<td colspan="2" width="100%" class=ObjectDetailsTopic>A coded node set represents a flat list of coded entries.</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+</table><p><table cellPadding=0 cellSpacing=0 width="100%">
+  <tbody>
+		<tr>
+			<td width="10%" class="ObjectSubTitle">
+				Goto:
+			</td>
+			<td width="90%">
+				<a href=#Methods>Methods</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<P/><table cellPadding=0 cellSpacing=0 width="100%">
+  <tbody>
+		<tr>
+			<td width="10%" class="ObjectSubTitle">
+				Appears in:
+			</td>
+			<td width="90%">
+				<a href="EA8.htm">LexBIGService</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<P/><table cellPadding=0 cellSpacing=0 width="100%">
+  <tbody>
+		<tr>
+			<td class="ObjectSubTitle">
+				<a Name="Methods">CodedNodeSet</a> Methods
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<TABLE align="center" BORDER=1 CELLSPACING=0 CELLPADDING=1 bordercolor="white" class="OperationTable">
+					<TR>
+						<TD WIDTH="40%" class="OperationTableHeading">Operation</TD>
+						<TD WIDTH="60%" class="OperationTableHeading">Details</TD>
+					</TR>
+					<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>difference</B>(<br>&nbsp;&nbsp;&nbsp;<a href="EA11.htm">CodedNodeSet</a> codesToRemove):<a href="EA11.htm">CodedNodeSet</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return a coded node set that represents the set of concepts in this coded<br>node set that are not included by the given set of codes.<br><br>@return A new CodedNodeSet containing the difference.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>intersect</B>(<br>&nbsp;&nbsp;&nbsp;<a href="EA11.htm">CodedNodeSet</a> codes):<a href="EA11.htm">CodedNodeSet</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return a coded node set that represents the set of concepts that this<br>node set and the provided node set have in common.<br><br>@return A new CodedNodeSet containing the intersection result.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>isCodeInSet</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA56.htm">ConceptReference</a> code):Boolean</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return true if the supplied concept reference is contained within the<br>represented list.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>resolve</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA42.htm">SortOptionList</a> sortOptions, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> restrictToProperties):<a href="../EA2/EA1/EA18.htm">ResolvedConceptReferencesIterator</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Resolve an iterator over concepts matching the given criteria.<br><br>@return An iterator over matching concepts.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>resolve</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA42.htm">SortOptionList</a> sortOptions, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> filterOptions, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> restrictToProperties):<a href="../EA2/EA1/EA18.htm">ResolvedConceptReferencesIterator</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Resolve an iterator over concepts matching the given criteria,<br>allowing for additional filters to be applied against the returned items.<br><br>@return An iterator over matching concepts.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>resolveToList</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA42.htm">SortOptionList</a> sortOptions, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> restrictToProperties, <br>&nbsp;&nbsp;&nbsp;int maxToReturn):<a href="../EA3/EA1/EA40.htm">ResolvedConceptReferenceList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Resolve the set to a list of concepts sorted by the supplied parameters,<br>resolving all of the properties named in the list.<br><br>@return A list of concept references, up to the maximum number specified.<br>Note that in the event that a maximum number 'n' is specified and<br>exactly 'n' items are resolved, there is currently no flag or<br>notification provided to indicate the requested list is fully<br>resolved.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>resolveToList</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA42.htm">SortOptionList</a> sortOptions, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> filterOptions, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> restrictToProperties, <br>&nbsp;&nbsp;&nbsp;int maxToReturn):<a href="../EA3/EA1/EA40.htm">ResolvedConceptReferenceList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Resolve the set to a list of concepts sorted by the supplied parameters,<br>resolving all of the properties named in the list, and allowing for<br>additional filters to be applied against the returned items.<br><br>@return A list of concept references, up to the maximum number specified.<br>Note that in the event that a maximum number 'n' is specified and<br>exactly 'n' items are resolved, there is currently no flag or<br>notification provided to indicate the requested list is fully<br>resolved.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>restrictToCodes</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA34.htm">ConceptReferenceList</a> codeList):<a href="EA11.htm">CodedNodeSet</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Restrict the set to the list of codes in the supplied conceptReference<br>list<br><br>@return A new CodedNodeSet containing the filtered result.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>restrictToMatchingDesignations</B>(<br>&nbsp;&nbsp;&nbsp;String matchText, <br>&nbsp;&nbsp;&nbsp;boolean preferredOnly, <br>&nbsp;&nbsp;&nbsp;String matchAlgorithm, <br>&nbsp;&nbsp;&nbsp;String language):<a href="EA11.htm">CodedNodeSet</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Restrict the list to the set of concepts that have designations that<br>match the supplied string, using the supplied matching algorithm and<br>language<br><br>@return A new CodedNodeSet containing the filtered result.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>restrictToMatchingProperties</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> propertyList, <br>&nbsp;&nbsp;&nbsp;String matchText, <br>&nbsp;&nbsp;&nbsp;String matchAlgorithm, <br>&nbsp;&nbsp;&nbsp;String language):<a href="EA11.htm">CodedNodeSet</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Remove all elements from the set that do not have one or more properties<br>that match the supplied property list and supplied text (using the named<br>matching algorithm and language).<br><br>@return A new CodedNodeSet containing the filtered result.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>restrictToMatchingProperties</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> propertyList, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> sourceList, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> contextList, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA38.htm">NameAndValueList</a> qualifierList, <br>&nbsp;&nbsp;&nbsp;String matchText, <br>&nbsp;&nbsp;&nbsp;String matchAlgorithm, <br>&nbsp;&nbsp;&nbsp;String language):<a href="EA11.htm">CodedNodeSet</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Remove all elements from the set that do not have one or more properties<br>that match the given criteria.<br><br>@return A new CodedNodeSet containing the filtered result.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>restrictToProperties</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> propertyList):<a href="EA11.htm">CodedNodeSet</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Remove all elements from the set that don't have one or more properties<br>that match the supplied property list.<br><br>@return A new CodedNodeSet containing the filtered result.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>restrictToProperties</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> propertyList, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> sourceList, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> contextList, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA38.htm">NameAndValueList</a> qualifierList):<a href="EA11.htm">CodedNodeSet</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Remove all elements from the set that don't have one or more properties<br>that match the given criteria.<br><br>@return A new CodedNodeSet containing the filtered result.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>union</B>(<br>&nbsp;&nbsp;&nbsp;<a href="EA11.htm">CodedNodeSet</a> codes):<a href="EA11.htm">CodedNodeSet</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return the set union of all of the codes in the containing or the<br>referenced set<br><br>@return A new CodedNodeSet containing the merged result.</TD> </TR> </TABLE></TD>
+</TR>
+
+				</TABLE>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+</table>
+
+<TABLE class="FooterTable" align="center" cellSpacing=0 cellPadding=0>
+  <TBODY >
+	<TR><TD colspan="2" width="100%"><HR></TD></TR>
+	<TR>
+		<TD colspan=2 WIDTH="100%" class="Footer">interface: CodedNodeSet</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="48%" class="FooterDetails"></TD>
+		<TD WIDTH="48%" class="FooterDetails"></TD>
+	</TR>
+	<TR>
+		<TD WIDTH="40%" class="FooterDetails"></TD>
+		<TD WIDTH="60%" class="FooterDetails"></TD>
+	</TR>
+	</TBODY>
+</TABLE> 
+</body>
+</html>

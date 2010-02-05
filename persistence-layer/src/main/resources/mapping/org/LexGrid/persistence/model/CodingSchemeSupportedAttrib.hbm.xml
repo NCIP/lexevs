@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 30, 2009 7:07:50 AM by Hibernate == Tools 3.2.0.CR1 -->
+<hibernate-mapping>
+    <class name="org.LexGrid.persistence.model.CodingSchemeSupportedAttrib" table="@PREFIX@codingSchemeSupportedAttrib">
+        <composite-id name="id" class="org.LexGrid.persistence.model.CodingSchemeSupportedAttribId">
+            <key-property name="codingSchemeName" type="string">
+                <column name="codingSchemeName" length="50" />
+            </key-property>
+            <key-property name="supportedAttributeTag" type="string">
+                <column name="supportedAttributeTag" length="30" />
+            </key-property>
+            <key-property name="id" type="string">
+                <column name="id" length="250" />
+            </key-property>
+            <key-property name="idValue" type="string">
+                <column name="idValue" length="250" />
+            </key-property>
+            <key-property name="val1" type="string">
+                <column name="val1" length="250" />
+            </key-property>
+        </composite-id>
+        <property name="uri" type="string">
+            <column name="uri" length="250" />
+        </property>
+        <property name="val2" type="string">
+            <column name="val2" length="250" />
+        </property>
+    </class>
+</hibernate-mapping>

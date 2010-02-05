@@ -1,0 +1,66 @@
+LexBIG Schema Changelog
+************************************
+* Changes committed on  02/11/2009 *
+* Schema Version        2009/01    *
+************************************
+* Adjusted namespace declarations and schema locations
+* to be consistent with LexGrid schema definitions.
+
+************************************
+* Changes committed on  02/04/2009 *
+* Schema Version        2009/01    *
+************************************
+* Update references for LexGrid 2009/01 model.
+*
+* Introduced entity-based collection and core
+* elements to accommodate instances and other
+* non-concept coded items.
+*
+* Dropped preliminary value domain elements,
+* in anticipation of API redefinition.
+*
+* Dropped TerminologyServiceMetadata.xsd in
+* anticipation of moving to the caBIG-endorsed
+* terminology metadata model.
+
+************************************
+* Changes committed on  07/23/2007 *
+* Schema Version        2006/01    *
+************************************
+* Changes to build.xml to write lgClientSideSafe
+  annotations to the entire collections package
+  
+************************************
+* Changes commited on   02/22/2007 *
+* Schema Version        2006/01    *
+************************************
+* Collections.xsd
+* Core.xsd
+* InferfaceElements.xsd
+* NCIHistory.xsd
+* TerminologyServiceMetadata.xsd
+*   1) Updated schema references to refer to the 2006 model.
+*   2) References to localName changed to localId.
+*
+* InterfaceElements.xsd
+*   1) Changed ExtensionDescription.extensionProvider a complextype lgCommon:source
+
+************************************
+* Changes committed on  6/22/2006  *
+* Schema Version        2005/01    *
+************************************
+* Collections.xsd
+*   1) Added SortOptionsList to accommodate ascending/descending choice.
+*   2) Added SortDescriptionList to accommodate restricted use based on context.
+*
+* Core.xsd
+*   1) Added enumerated LogLevel to LogEntry to provide more consistent
+*      handling and lookup of logged messages.
+*
+* InterfaceElements.xsd
+*   1) Added SortOption to accommodate ascending/descending choice.
+*   2) Added SortDescription and SortContext  to accommodate restricted use
+*      based on context.
+*   3) Added ProcessState, errorsLogged, warningsLogged to LoadStatus
+*      in support of additional monitoring of load process.
+*

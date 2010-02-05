@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+<!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+<!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+<!ENTITY owl2xml "http://www.w3.org/2006/12/owl2-xml#" >
+<!ENTITY ncicp "file:/c:/temp/ComplexProperties.xsd#" >
+<!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+<!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+<!ENTITY protege "http://protege.stanford.edu/plugins/owl/protege#" >
+<!ENTITY Thesaurus "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#" >
+]>
+
+
+<rdf:RDF xmlns="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#"
+  xml:base="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl"
+  xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+  xmlns:Thesaurus="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#"
+  xmlns:protege="http://protege.stanford.edu/plugins/owl/protege#"
+  xmlns:ncicp="ComplexProperties.xsd#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:owl="http://www.w3.org/2002/07/owl#">
+  <owl:Ontology rdf:about="">
+    <owl:versionInfo>05.09.comp.prop.bvt</owl:versionInfo>
+    <rdfs:comment
+      >NCI Thesaurus, a controlled vocabulary in support of
+      NCI administrative and scientific activities.
+      
+      Produced by the Enterprise Vocabulary System (EVS), a project 
+      by the NCI Center for Bioinformatics.  National Cancer Institute,
+      National Institutes of Health, Bethesda, MD 20892, U.S.A.</rdfs:comment>
+  </owl:Ontology>
+  
+  
+  
+  <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+  -->
+  
+  <owl:AnnotationProperty rdf:about="#P206"/>
+  <owl:AnnotationProperty rdf:about="#A7"/>
+  <owl:AnnotationProperty rdf:about="#P216"/>
+  <owl:AnnotationProperty rdf:about="#P351"/>
+  <owl:AnnotationProperty rdf:about="#P94"/>
+  <owl:AnnotationProperty rdf:about="#P320"/>
+  <owl:AnnotationProperty rdf:about="#P102"/>
+  <owl:AnnotationProperty rdf:about="#P181"/>
+  <owl:AnnotationProperty rdf:about="#P302"/>
+  <owl:AnnotationProperty rdf:about="#A2"/>
+  <owl:AnnotationProperty rdf:about="#P329"/>
+  <owl:AnnotationProperty rdf:about="#P104"/>
+  <owl:AnnotationProperty rdf:about="#P315"/>
+  <owl:AnnotationProperty rdf:about="#P325"/>
+  <owl:AnnotationProperty rdf:about="#P93"/>
+  <owl:AnnotationProperty rdf:about="#P322"/>
+  <owl:AnnotationProperty rdf:about="#P211"/>
+  <owl:AnnotationProperty rdf:about="#P303"/>
+  <owl:AnnotationProperty rdf:about="#P204"/>
+  <owl:AnnotationProperty rdf:about="#P108"/>
+  <owl:AnnotationProperty rdf:about="#P100"/>
+  <owl:AnnotationProperty rdf:about="#P201"/>
+  <owl:AnnotationProperty rdf:about="#P350"/>
+  <owl:AnnotationProperty rdf:about="#P96"/>
+  <owl:AnnotationProperty rdf:about="#A8"/>
+  <owl:AnnotationProperty rdf:about="#P90"/>
+  <owl:AnnotationProperty rdf:about="#P300"/>
+  <owl:AnnotationProperty rdf:about="#A5"/>
+  <owl:AnnotationProperty rdf:about="#P215"/>
+  <owl:AnnotationProperty rdf:about="#P209"/>
+  <owl:AnnotationProperty rdf:about="#P107"/>
+  <owl:AnnotationProperty rdf:about="#P360"/>
+  <owl:AnnotationProperty rdf:about="#A4"/>
+  <owl:AnnotationProperty rdf:about="#A3"/>
+  <owl:AnnotationProperty rdf:about="#P101"/>
+  <owl:AnnotationProperty rdf:about="#P357"/>
+  <owl:AnnotationProperty rdf:about="#P332"/>
+  <owl:AnnotationProperty rdf:about="#P331"/>
+  <owl:AnnotationProperty rdf:about="#A6"/>
+  <owl:AnnotationProperty rdf:about="#P359"/>
+  <owl:AnnotationProperty rdf:about="#P353"/>
+  <owl:AnnotationProperty rdf:about="#P210"/>
+  <owl:AnnotationProperty rdf:about="#P205"/>
+  <owl:AnnotationProperty rdf:about="#P355"/>
+  <owl:AnnotationProperty rdf:about="#P310"/>
+  <owl:AnnotationProperty rdf:about="#P97"/>
+  <owl:AnnotationProperty rdf:about="#A1"/>
+  <owl:AnnotationProperty rdf:about="#P171"/>
+  <owl:AnnotationProperty rdf:about="#P354"/>
+  <owl:AnnotationProperty rdf:about="#P333"/>
+  <owl:AnnotationProperty rdf:about="#P169"/>
+  <owl:AnnotationProperty rdf:about="#A9"/>
+  <owl:AnnotationProperty rdf:about="#P334"/>
+  <owl:AnnotationProperty rdf:about="#P319"/>
+  <owl:AnnotationProperty rdf:about="#NHC4"/>
+  <owl:AnnotationProperty rdf:about="#P321"/>
+  <owl:AnnotationProperty rdf:about="#P175"/>
+  <owl:AnnotationProperty rdf:about="#P92"/>
+  <owl:AnnotationProperty rdf:about="#P208"/>
+  <owl:AnnotationProperty rdf:about="#P167"/>
+  <owl:AnnotationProperty rdf:about="#P326"/>
+  <owl:AnnotationProperty rdf:about="#P352"/>
+  <owl:AnnotationProperty rdf:about="#P361"/>
+  <owl:AnnotationProperty rdf:about="#P317"/>
+  <owl:AnnotationProperty rdf:about="#P200"/>
+  <owl:AnnotationProperty rdf:about="#P203"/>
+  <owl:AnnotationProperty rdf:about="#P316"/>
+  <owl:AnnotationProperty rdf:about="#P301"/>
+  <owl:AnnotationProperty rdf:about="#P356"/>
+  <owl:AnnotationProperty rdf:about="#NHC0"/>
+  <owl:AnnotationProperty rdf:about="#P207"/>
+  <owl:AnnotationProperty rdf:about="#P358"/>
+  <owl:AnnotationProperty rdf:about="#P330"/>
+  <owl:AnnotationProperty rdf:about="#P170"/>
+  <owl:AnnotationProperty rdf:about="#P98"/>
+  <owl:AnnotationProperty rdf:about="#P106"/>
+  
+  
+  <owl:Class rdf:about="#C55944">
+    <rdfs:label >CTCAE Grade 2 Bone Marrow Cellularity</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#C55930"/>
+    <P325 rdf:parseType="Literal">
+      <ncicp:ComplexDefinition>
+        <ncicp:def-definition xml:lang="fr"><![CDATA[Modératély hypoçéllûlar or >25 - <=50% rédûçtion from normal çéllûlarity for agé]]></ncicp:def-definition>
+        <ncicp:def-source>CTCAE</ncicp:def-source>
+      </ncicp:ComplexDefinition>
+    </P325>
+    <P90 rdf:parseType="Literal">
+      <ncicp:ComplexTerm>
+        <ncicp:term-name xml:lang="es">CTCAE Gradé 2 Boñé Marrow Céllularity</ncicp:term-name>
+        <ncicp:term-group>PT</ncicp:term-group>
+        <ncicp:term-source>NCI</ncicp:term-source>
+      </ncicp:ComplexTerm>
+    </P90>
+    <P90 rdf:parseType="Literal">
+      <ncicp:ComplexTerm>
+        <ncicp:term-name xml:lang="es">Gradé 2 Boñé marrow céllularity</ncicp:term-name>
+        <ncicp:term-group>PT</ncicp:term-group>
+        <ncicp:term-source>CTCAE</ncicp:term-source>
+      </ncicp:ComplexTerm>
+    </P90>
+    <P208>CL324685</P208>
+    <P108>CTCAE Grade 2 Bone Marrow Cellularity</P108>
+    <P106>Finding</P106>
+  </owl:Class>
+  
+</rdf:RDF>
+
+<!-- Created with Protege (with OWL Plugin 2.1, Build 284)  http://protege.stanford.edu -->

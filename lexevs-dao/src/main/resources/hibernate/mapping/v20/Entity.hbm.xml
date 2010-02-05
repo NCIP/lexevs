@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 12, 2010 5:09:39 AM by Hibernate == Tools 3.2.0.CR1 -->
+<hibernate-mapping>
+    <class name="org.LexGrid.concepts.Entity" table="ENTITY" polymorphism="explicit">
+        <id type="string" name="id" access="field">
+            <column name="GUID" length="36" />
+            <generator class="uuid" />
+        </id>
+ 
+ 	   <property name="entityCode" type="string">
+            <column name="ENTITYCODE" length="200" not-null="true" />
+        </property>
+        <property name="entityCodeNamespace" type="string">
+            <column name="ENTITYCODENAMESPACE" length="50" not-null="true" />
+        </property>
+        <property name="isDefined" type="java.lang.Character">
+            <column name="ISDEFINED" length="1" />
+        </property>
+        <property name="isAnonymous" type="java.lang.Character">
+            <column name="ISANONYMOUS" length="1" />
+        </property>
+        <property name="isActive" type="boolean">
+            <column name="ISACTIVE" length="1" />
+        </property>
+        
+        <bag name="_entityTypeList" access="field" table="entrytype" lazy="true">
+            <key column="REFERENCEGUID" />
+                <element type="string" column="ENTRYTYPE" />
+        </bag>
+
+	<bag name="_presentationList" access="field" cascade="all">
+		<key column="REFERENCEGUID" not-null="true"/>
+		<one-to-many class="org.LexGrid.concepts.Presentation$Entity" />
+	</bag>
+        
+   <many-to-one name="entryState" class="org.LexGrid.versions.EntryState" cascade="all" unique="true" column="entrystateid"/>
+        
+    </class>
+</hibernate-mapping>

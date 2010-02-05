@@ -1,0 +1,26 @@
+<map xmlns='http://www.w3.org/1999/xhtml' name='h932648540'>
+ <area
+  shape='rect'
+  alt='h849933229'
+  coords='235,0,350,36'
+  href='relations.xsd.html#h849933229'/>
+
+ <area
+  shape='rect'
+  alt='h755714246'
+  coords='235,46,358,82'
+  href='relations.xsd.html#h755714246'/>
+
+ <area
+  shape='rect'
+  alt='h-1882691119'
+  coords='163,92,328,118'
+  href='builtins.xsd.html#h-1882691119'/>
+
+ <area
+  shape='rect'
+  alt='h2058358512'
+  coords='163,128,300,154'
+  href='commonTypes.xsd.html#h2058358512'/>
+
+</map>

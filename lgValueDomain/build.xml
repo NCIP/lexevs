@@ -1,0 +1,115 @@
+<project name="lgValueDomain" default="all" basedir=".">
+	<description>
+		Buildfile for lgValueDomainExtension
+	</description>
+	
+	<property name="admin.dir" location="admin" />
+	<property name="doc.dir" location="doc/javadoc/valueDomain"/>
+	<property name="src.dir" location="src" />
+	<property name="antBuild.dir" location="antBuild" />
+	<property name="classes.dir" location="${antBuild.dir}/classes" />
+	<property name="dist.dir" location="${basedir}/dist" />
+	<property name="test.dir" location="${basedir}/test" />
+	<property name="lbRuntime.dir" location="runtime" />
+
+	<!--Sets up the classpaths correctly, not meant to be called directly-->
+	<target name="init">
+		<echo>Constructing classpath</echo>
+		<path id="classpath">
+			<fileset dir="${lbRuntime.dir}" id="lbRuntime">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+
+	</target>
+
+	<target name="compile" depends="init" description="compile the source ">
+		<mkdir dir="${classes.dir}" />
+
+		<!--copy todir="${classes.dir}/">
+			<fileset dir="${src.dir}" />
+		</copy-->
+		<!-- Compile the java code from ${src.dir} into ${classes.dir} -->
+		<javac debug="true" srcdir="${src.dir}" destdir="${classes.dir}">
+			<classpath refid="classpath" />
+		</javac>
+
+		<!--copy todir="${classes.dir}" file="extension.xml" /-->
+	</target>
+
+	<target name="jar" depends="compile" description="generate the jar file">
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist.dir}" />
+		<!-- Put everything in ${classes} into .jar file -->
+		<jar jarfile="${dist.dir}/lgValueDomain.jar" basedir="${classes.dir}" duplicate="preserve">
+			<manifest>
+				<attribute name="Build-Date" value="${DSTAMP} ${TSTAMP}" />
+			</manifest>
+		</jar>
+
+		<delete dir="${antBuild.dir}" />
+	</target>
+
+	<target name="jar-source" depends="init" description="generate the jar with source">
+		<jar destfile="${dist.dir}/lgValueDomain-src.jar" basedir="${src.dir}"/>
+	</target>
+
+	<target name="clean" depends="init" description="clean up">
+		<!-- Clean up after the build so we just have the installer. -->
+		<delete dir="${classes.dir}" />
+		<delete>
+			<fileset dir="${dist.dir}">
+				<include name="lgValueDomain.jar" />
+				<include name="lgValueDomain-src.jar" />
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="cleanAll" depends="init" description="clean up">
+		<!-- Delete the ${build.dir} and ${dist.dir} directory trees -->
+		<delete dir="${antBuild.dir}" />
+		<delete dir="${doc.dir}" />
+		<delete>
+			<fileset dir="${dist.dir}">
+				<include name="**/*.jar" />
+				<include name="**/*.zip" />
+			</fileset>
+
+		</delete>
+	</target>
+	
+	<target name="docs" depends="init, compile" description="Generate the javadocs">
+			<mkdir dir="${doc.dir}"/>
+			<!--Create the javadocs-->
+			<javadoc destdir="${doc.dir}" windowtitle="LGValueDomain" additionalparam="-breakiterator">
+				<package name="*"/>
+				<classpath>
+				     <path refid="classpath"/>
+				     <pathelement location="${dist}/lgValueDomain.jar"/>
+				</classpath>
+
+				<sourcepath location="${src.dir}"/>
+			</javadoc>
+		</target>
+	
+	<target name="all" depends="cleanAll, init, compile, jar, jar-source, docs" description="do everything for an external build">
+		<ant antfile="${test.dir}/build.xml" target="all" inheritall="false"/>
+		
+		<zip destfile="${dist.dir}/valueDomainDeploy.zip">
+			<zipfileset dir="${basedir}/admin" includes="LoadValueDomain.bat" prefix="admin" filemode="777"/>
+			<zipfileset dir="${basedir}/admin" includes="LoadValueDomain.sh" prefix="admin" filemode="777"/>
+			<zipfileset dir="${basedir}/admin" includes="LoadPickList.bat" prefix="admin" filemode="777"/>
+			<zipfileset dir="${basedir}/admin" includes="LoadPickList.sh" prefix="admin" filemode="777"/>
+			<zipfileset dir="${dist.dir}" includes="lgValueDomain.jar" prefix="runtime"/>
+			<zipfileset dir="${dist.dir}" includes="lgValueDomain-src.jar" prefix="source"/>
+			<zipfileset dir="${dist.dir}" includes="lgValueDomain-test.jar" prefix="test"/>
+			<zipfileset dir="${test.dir}/extlib" prefix="test/valueDomain-extlib"/>
+			<zipfileset dir="${basedir}/resources/testData/valueDomain" prefix="test/resources/testData/valueDomain"/>
+			<zipfileset dir="${test.dir}" includes="valueDomain-GenerateReport.xml" prefix="test"/>
+			<zipfileset dir="${test.dir}" includes="valueDomain-TestRunner.bat" prefix="test" filemode="777"/>
+			<zipfileset dir="${test.dir}" includes="valueDomain-TestRunner.sh" prefix="test" filemode="777"/>
+			<zipfileset dir="${doc.dir}" prefix="doc/javadoc/valueDomain"/>
+			<zipfileset dir="${basedir}" includes="VD-readme.txt"/>
+		</zip>
+	</target>
+</project>

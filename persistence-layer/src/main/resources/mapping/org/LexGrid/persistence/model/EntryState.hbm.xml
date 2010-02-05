@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 30, 2009 7:07:50 AM by Hibernate == Tools 3.2.0.CR1 -->
+<hibernate-mapping>
+    <class name="org.LexGrid.persistence.model.EntryState" table="@PREFIX@entryState">
+        <id name="entryStateId" type="long">
+            <column name="entryStateId" />
+            <generator class="assigned" />
+        </id>
+        <property name="entryType" type="string">
+            <column name="entryType" length="50" not-null="true" />
+        </property>
+        <property name="owner" type="string">
+            <column name="owner" length="250" />
+        </property>
+        <property name="status" type="string">
+            <column name="status" length="50" />
+        </property>
+        <property name="effectiveDate" type="timestamp">
+            <column name="effectiveDate" length="19" />
+        </property>
+        <property name="expirationDate" type="timestamp">
+            <column name="expirationDate" length="19" />
+        </property>
+        <property name="revisionId" type="string">
+            <column name="revisionId" length="50" />
+        </property>
+        <property name="prevRevisionId" type="string">
+            <column name="prevRevisionId" length="50" />
+        </property>
+        <property name="changeType" type="string">
+            <column name="changeType" length="15" not-null="true" />
+        </property>
+        <property name="relativeOrder" type="long">
+            <column name="relativeOrder" not-null="true" />
+        </property>
+        <property name="prevEntryStateId" type="java.lang.Long">
+            <column name="prevEntryStateId" />
+        </property>
+    </class>
+</hibernate-mapping>

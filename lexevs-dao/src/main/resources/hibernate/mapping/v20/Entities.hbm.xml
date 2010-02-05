@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 12, 2010 5:09:39 AM by Hibernate == Tools 3.2.0.CR1 -->
+<hibernate-mapping>
+    <class name="org.LexGrid.concepts.Entities" table="CODINGSCHEME" >
+        <id type="string">
+            <column name="GUID" length="36" />
+            <generator class="uuid" />
+        </id>
+
+        <bag name="_entityList" access="field" cascade="all,delete-orphan">
+    		<key column="CSGUID" not-null="true"/>
+   		 <one-to-many class="org.LexGrid.concepts.Entity"/>
+		</bag>
+        
+    </class>
+</hibernate-mapping>

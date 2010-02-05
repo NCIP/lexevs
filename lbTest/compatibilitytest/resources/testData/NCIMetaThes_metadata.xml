@@ -1,0 +1,1424 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<codingSchemes>
+    <codingScheme codingScheme="AIR" formalName="AI/RHEUM, 1993"
+        registeredName="AI/RHEUM" defaultLanguage="en"
+        representsVersion="AIR93" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>AIR</localName>
+        <entityDescription>AI/RHEUM. Bethesda, (MD) : National Library of Medicine, Lister Hill Center, 1993.</entityDescription>
+        <copyright>May Cheh, Lister Hill National Center for Biomedical Communications, National Library of Medicine, Building 38A, Room 9E902, 8600 Rockville Pike, Bethesda, MD 20894; e-mail: cheh@nlm.nih.gov.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="CST" formalName="COSTART, 1995"
+        registeredName="COSTART" defaultLanguage="en"
+        representsVersion="CST95" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>CST</localName>
+        <entityDescription>Coding Symbols for Thesaurus of Adverse Reaction Terms (COSTART). 5th ed. Rockville (MD): U.S. Food and Drug Administration, Center for Drug Evaluation and Research, 1995.</entityDescription>
+        <copyright>National Technical Information Service. http://www.ntis.gov/fcpc/cpn5580.htm</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="DXP" formalName="DXplain, 1994"
+        registeredName="DXplain" defaultLanguage="en"
+        representsVersion="DXP94" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>DXP</localName>
+        <entityDescription>DXplain (An expert diagnosis program). Boston (MA): Massachusetts General Hospital, 1994.</entityDescription>
+        <copyright>G. Octo Barnett, M.D., Laboratory of Computer Science, Massachusetts General Hospital, 50 Staniford Street, 5th Floor, Boston, MA 02114; phone: (617) 726-3939; fax: (617) 726-8481; e-mail: Barnett.Octo@mgh.Harvard</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="LCH"
+        formalName="Library of Congress Subject Headings, 1990"
+        registeredName="Library of Congress Subject Headings"
+        defaultLanguage="en" representsVersion="LCH90" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>LCH</localName>
+        <entityDescription>Library of Congress Subject Headings. 12th ed. Washington (DC): Library of Congress, 1989.</entityDescription>
+        <copyright>http://www.lcweb.loc.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MCM"
+        formalName="McMaster University Epidemiology Terms, 1992"
+        registeredName="Glossary of Clinical Epidemiologic Terms"
+        defaultLanguage="en" representsVersion="MCM92" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MCM</localName>
+        <entityDescription>Glossary of Methodologic Terms for Clinical Epidemiologic Studies of Human Disorders. Canada: McMaster University, 1992.</entityDescription>
+        <copyright>R. Brian Haynes, M.D., Ph.D.; e-mail: bhaynes@mcmaster.ca; Clinical Epidemiology &amp; Biostatistics and Medicine, Faculty of Health Sciences, McMaster University, Room 2C10B, 1200 Main Street, West Hamilton Ontario, Canada L8N 3Z5; phone (905) 525-9140</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MIM"
+        formalName="Online Mendelian Inheritance in Man, 1993"
+        registeredName="Online Mendelian Inheritance in Man 1993"
+        defaultLanguage="en" representsVersion="MIM93" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MIM</localName>
+        <entityDescription>Online Mendelian Inheritance in Man (OMIM). Baltimore (MD): Johns Hopkins University, Center for Biotechnology Information, 1994.</entityDescription>
+        <copyright>Joanna Amberger, Johns Hopkins University; e-mail: joanna@ncbi.nlm.nih.gov; Leigh Penfield, OMIM, McKusick-Nathans Institute of Genetic Medicine, Johns Hopkins Hospital, Blalock 1007, 600 N. Wolfe St., Baltimore MD 21287-4922; phone 410-955-0313; fax 410-955-4999; email: techlicense@jhmi.edu.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="OMS" formalName="Omaha System, 1994"
+        registeredName="Omaha System" defaultLanguage="en"
+        representsVersion="OMS94" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>OMS</localName>
+        <entityDescription>Martin, Karen S., Scheet, Nancy J. The Omaha System: Applications for Community Health Nursing. Philadelphia (PA): W.B. Saunders, 1992 (with 1994 corrections).</entityDescription>
+        <copyright>Karen S. Martin, RN, MSN, FAAN 2115 South 130th Street Omaha, Nebraska 68144; fax: (402)333-2091</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="SNM" formalName="SNOMED-2, 2"
+        registeredName="SNOMED 1982" defaultLanguage="en"
+        representsVersion="SNM2" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>SNM</localName>
+        <entityDescription>Cote, Roger A., editor. Systematized Nomenclature of Medicine. 2nd ed. Skokie (IL): College of American Pathologists, 1979. SNOMED update, 1982. Skokie (IL): College of American Pathologists, 1982.</entityDescription>
+        <copyright>Jill Rosenthal/Naomi Siebert, College of American Pathologists, 325 Waukegan Road, Northfield, IL 60093-2750; fax: (847)832-8335; e-mail: jnrs@cap.org</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="SNMI"
+        formalName="SNOMED International, 1998"
+        registeredName="SNOMED Intl 1998" defaultLanguage="en"
+        representsVersion="SNMI98" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>SNMI</localName>
+        <entityDescription>Cote, Roger A., editor. Systematized Nomenclature of Human and Veterinary Medicine: SNOMED International. Northfield (IL): College of American Pathologists; Schaumburg (IL): American Veterinary Medical Association, Version 3.5, 1998.</entityDescription>
+        <copyright>Jill Rosenthal/Naomi Siebert, College of American Pathologists, 325 Waukegan Road, Northfield, IL 60093-2750; fax: (847)832-8335; e-mail: jnrs@cap.org</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="WHO"
+        formalName="WHO Adverse Reaction Terminology, 1997"
+        registeredName="WHO Adverse Reaction Terms" defaultLanguage="en"
+        representsVersion="WHO97" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>WHO</localName>
+        <entityDescription>WHO Adverse Drug Reaction Terminology (WHOART). Uppsala (Sweden): WHO Collaborating Centre for International Drug Monitoring, 1997.</entityDescription>
+        <copyright>WHO Collaborating Centre for International Drug Monitoring, Stora Target 3, S-753 20 Uppsala, Sweden; fax: +46-18-656080</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ULT" formalName="UltraSTAR, 1993"
+        registeredName="UltraSTAR" defaultLanguage="en"
+        representsVersion="ULT93" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ULT</localName>
+        <entityDescription>Bell, Douglas. Ultrasound Structured Attribute Reporting (UltraSTAR). Boston (MA): Brigham &amp; Womens Hospital, 1993.</entityDescription>
+        <copyright>Robert Greenes, M.D., Ph.D., Brigham &amp; Womens Hospital; Department of Radiology, 75 Francis Street, Boston MA 02115 e-mail: greenes@harvard.edu phone: (617) 732-6281</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="NIC"
+        formalName="Nursing Interventions Classification, 1999"
+        registeredName="Nursing Interventions Classification"
+        defaultLanguage="en" representsVersion="NIC99" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>NIC</localName>
+        <entityDescription>McCloskey, Joanne C., Bulechek, Gloria M., editors. NIC (Nursing Interventions Classification): Iowa Intervention Project. 2nd ed. St. Louis (MO): Mosby-Year Book, 1999.</entityDescription>
+        <copyright>Katherine Taylor Mosby-Year Book phone: (800)345-8738, ext. 7419 email: katherine.taylor@mosby.com</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="NEU"
+        formalName="Neuronames Brain Hierarchy, 1999"
+        registeredName="Neuronames Brain Hierarchy" defaultLanguage="en"
+        representsVersion="NEU99" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>NEU</localName>
+        <entityDescription>Bowden, Douglas M., Martin, Richard F., Dubach, Joev G. Neuronames Brain Hierarchy. Seattle (WA): University of Washington, Primate Information Center, 1999. http://rprcsgi.rprc.washington.edu/neuronames/</entityDescription>
+        <copyright>Douglas M. Bowden, M.D., Regional Primate Research Center, University of Washington, Box 357330, Seattle, WA 98195; e-mail: dmbowden@u.washington.edu</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICD10" formalName="ICD10, 1998"
+        registeredName="ICD-10" defaultLanguage="en"
+        representsVersion="ICD10_1998" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICD10</localName>
+        <entityDescription>International Statistical Classification of Diseases and Related Health Problems (ICD-10). 10th rev. Geneva (Switzerland): World Health Organization, 1998.</entityDescription>
+        <copyright>Office of Publications, World Health Organization, 1211 Geneva 27, Switzerland</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPC"
+        formalName="International Classification of Primary Care, 1993"
+        registeredName="ICPC 1993" defaultLanguage="en"
+        representsVersion="ICPC93" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPC</localName>
+        <entityDescription>The International Classification of Primary Care (ICPC). Denmark: World Organisation of Family Doctors, 1993.</entityDescription>
+        <copyright>Henk Lamberts; e-mail: H.Lamberts@AMC.UVA.NL or Inge Hofmans-Okkes; e-mail: I.m.okkes@amc.una.nl; University of Amsterdam</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="NOC"
+        formalName="Nursing Outcomes Classification, 1997"
+        registeredName="Nursing Outcomes Classification"
+        defaultLanguage="en" representsVersion="NOC97" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>NOC</localName>
+        <entityDescription>Johnson, Marion, Maas, Meridean, editors. Nursing Outcomes Classification (NOC): Iowa Outcomes Project. St. Louis (MO): Mosby-Year Book, 1997.</entityDescription>
+        <copyright>Katherine Taylor, Mosby-Year Book; phone: (800)345-8738, ext. 7419; email: katherine.taylor@mosby.com</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="QMR"
+        formalName="Quick Medical Reference (QMR), 1996"
+        registeredName="Quick Medical Reference" defaultLanguage="en"
+        representsVersion="QMR96" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>QMR</localName>
+        <entityDescription>Quick Medical Reference (QMR). San Bruno (CA): First DataBank, 1997.</entityDescription>
+        <copyright>Quick Medical Reference, First Databank, 1111 Bayhill Drive San Bruno, CA 94066</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="RCD"
+        formalName="Clinical Terms Version 3 (CTV3) (Read Codes), 1999"
+        registeredName="Read Codes" defaultLanguage="en"
+        representsVersion="RCD99" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>RCD</localName>
+        <entityDescription>Clinical Terms Version 3 (CTV3) (Read Codes) (Q199): National Health Service National Coding and Classification Centre; March, 1999.</entityDescription>
+        <copyright>NHS Information Authority Loughborough, Woodgate, Loughborough, Leicestershire LE11 2TG; fax: +44 (0) 1509 211611; e-mail: helpdesk3@nhsccc.exec.nhs.uk</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="PPAC"
+        formalName="Pharmacy Practice Activity Classification, 1998"
+        registeredName="Pharmacy Practice Activity Classification"
+        defaultLanguage="en" representsVersion="PPAC98" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>PPAC</localName>
+        <entityDescription>Pharmacy Practice Activity Classification (PPAC). Version 1. Washington (DC): American Pharmaceutical Association, 1998.</entityDescription>
+        <copyright>Scott Antall, American Pharmaceutical Association - Academy of Pharmaceutical Research and Science; email: ssa@mail.aphanet.org; Academy of Pharmaceutical Research and Science, 2215 Constitution Avenue NW, Washington DC 20037-2985</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="DSM3R" formalName="DSM-III-R, 1987"
+        registeredName="DSM-III-R" defaultLanguage="en"
+        representsVersion="DSM3R_1987" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>DSM3R</localName>
+        <entityDescription>Diagnostic and Statistical Manual of Mental Disorders (DSM-III-R). 3rd ed. rev. Washington (DC): American Psychiatric Association, 1987.</entityDescription>
+        <copyright>Customer Service, American Psychiatric Press Inc.,1400 K Street N.W., Washington DC 20005; e-mail: csdept@appi.org</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="DSM4" formalName="DSM-IV, 1994"
+        registeredName="DSM-IV" defaultLanguage="en"
+        representsVersion="DSM4_1994" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>DSM4</localName>
+        <entityDescription>Diagnostic and Statistical Manual of Mental Disorders (DSM-IV). 4th ed. Washington (DC): American Psychiatric Association, 1994.</entityDescription>
+        <copyright>Customer Service, American Psychiatric Press Inc., 1400 K Street N.W., Washington DC 20005; e-mail: csdept@appi.ord</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="AOD"
+        formalName="Alcohol and Other Drug Thesaurus, 2000"
+        registeredName="Alcohol and Other Drug Thesaurus"
+        defaultLanguage="en" representsVersion="AOD2000" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>AOD</localName>
+        <entityDescription>Alcohol and Other Drug Thesaurus: A Guide to Concepts and Terminology in Substance Abuse and Addiction. 3rd. ed. [4 Volumes.] Bethesda, MD: National Institute on Alcohol Abuse and Alcoholism (NIAAA) and Center for Substance Abuse Prevention (CSAP), 2000</entityDescription>
+        <copyright>Nancy Winstanley, NIAAA Library, c/o CSR Incorporated 2107 Wilson Blvd., Suite 1000, Arlington, VA 22201; phone: 703-741-7147; e-mail: nwinstanley@csrincorporated.com</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="BI"
+        formalName="Beth Israel Vocabulary, 1.0"
+        registeredName="Beth Israel Problem List" defaultLanguage="en"
+        representsVersion="BI98" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>BI</localName>
+        <entityDescription>Beth Israel OMR Clinical Problem List Vocabulary. Version 1.0. Boston (MA): Beth Israel Deaconess Medical Center, 1999. Contact: Howard Goldberg, MD.; http://clinquery.bidmc.harvard.edu.</entityDescription>
+        <copyright>Daniel Z. Sands, M.D., M.P.H., Clinical Systems Integration Architect, Center for Clinical Computing, Beth Israel Deaconess Medical Center, Harvard University, 330 Brookline Avenue, Boston, MA 02215; Phone: 617-667-1510; Fax: 810-592-0716; e-mail: dsands@bidmc.Harvard.edu</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="RCDAE"
+        formalName="Read thesaurus, American English Equivalents, 1999"
+        registeredName="Read Codes Am Engl" defaultLanguage="en"
+        representsVersion="RCDAE_1999" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>RCDAE</localName>
+        <entityDescription>American English equivalent of the Clinical Terms Version 3 (Q1, 1999), produced by NLM. Bethesda (MD): National Library of Medicine, UMLS project, 1999.</entityDescription>
+        <copyright></copyright>
+    </codingScheme>
+    <codingScheme codingScheme="RCDSA"
+        formalName="Read thesaurus Americanized Synthesized Terms, 1999"
+        registeredName="Read Codes Am Synth" defaultLanguage="en"
+        representsVersion="RCDSA_1999" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>RCDSA</localName>
+        <entityDescription>American English equivalent of synthesized terms from the Clinical Terms Version 3 (Q1, 1999), produced by NLM. Bethesda (MD): National Library of Medicine, UMLS project, 1999.</entityDescription>
+        <copyright>NHS Information Authority Loughborough, Woodgate, Loughborough, Leicestershire LE11 2TG; fax: +44 (0) 1509 211611; e-mail: helpdesk3@nhsccc.exec.nhs.uk</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="RCDSY"
+        formalName="Read thesaurus, Synthesized Terms, 1999"
+        registeredName="Read Codes Synth" defaultLanguage="en"
+        representsVersion="RCDSY_1999" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>RCDSY</localName>
+        <entityDescription>Synthesized Read terms (without initial bracketed letters) of the Clinical Terms Version 3 (Q1, 1999), produced by NLM. Bethesda (MD): National Library of Medicine, UMLS project, 1999.</entityDescription>
+        <copyright>NHS Information Authority Loughborough, Woodgate, Loughborough, Leicestershire LE11 2TG; fax: +44 (0) 1509 211611; e-mail: helpdesk3@nhsccc.exec.nhs.uk</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICD10AE"
+        formalName="ICD10, American English Equivalents, 1998"
+        registeredName="ICD-10 Am Engl" defaultLanguage="en"
+        representsVersion="ICD10AE_1998" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICD10AE</localName>
+        <entityDescription>International Statistical Classification of Diseases and Related Health Problems (ICD-10): Americanized Version. 10th rev. Geneva (Switzerland): World Health Organization, 1998.</entityDescription>
+        <copyright>Office of Publications, World Health Organization, 1211 Geneva 27, Switzerland</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MMX"
+        formalName="Micromedex DRUGDEX, 2001-08"
+        registeredName="Micromedex" defaultLanguage="en"
+        representsVersion="MMX01" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MMX</localName>
+        <entityDescription>Micromedex DRUGDEX, 2001. URL: http://www.micromedex.com/ Phone: 800-525-9083.</entityDescription>
+        <copyright>Micromedex, 6200 South Syracuse Way, Suite 300, Englewood CO 80111-4740; phone: (800) 525-9083; e-mail: info@mdx.com</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="DMDICD10"
+        formalName="German translation of ICD10, 1995"
+        registeredName="ICD-10 German" defaultLanguage="en"
+        representsVersion="DMDICD10_1995" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>DMDICD10</localName>
+        <entityDescription>Internationale Klassifikation der Krankheiten 10 [German translation of ICD10]. Germany: Deutsches Institut fuer Medizinische Dokumentation und Information, 1998.</entityDescription>
+        <copyright>Dr. Michael Schopen; e-mail: schopen@dimdi.de; Deutsches Institut fur Medizinische Dokumentation und Information (DIMDI), Postfach 420580, D-50899 Koln, Germany; phone: 49-221-472-4252; fax: 49-221-41-1429</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="DMDUMD"
+        formalName="German translation of UMDNS, 1996"
+        registeredName="Universal Medical Devices Nomenclature German"
+        defaultLanguage="en" representsVersion="DMDUMD_1996"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>DMDUMD</localName>
+        <entityDescription>Die Nomenklatur fuer Medizinprodukte UMDNS [German translation of UMDNS]. Germany: Deutsches Institut fuer Medizinische Dokumentation und Information, 1996.</entityDescription>
+        <copyright>Dr. Michael Schopen; Deutsches Institut fur Medizinische Dokumentation und Information (DIMDI), Postfach 420580, D-50899 Koln, Germany; tel: 49-221-472-4252; FAX: 49-221-41-1429; e-mail: helpdesk@dimdi.de; URL: www.dimdi.de</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPCDAN"
+        formalName="ICPC, Danish Translation, 1993"
+        registeredName="ICPC 1993 Danish" defaultLanguage="en"
+        representsVersion="ICPCDAN_1993" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPCDAN</localName>
+        <entityDescription>The International Classification of Primary Care (ICPC). Danish Translation. Denmark: World Organisation of Family Doctors, 1993.</entityDescription>
+        <copyright>Henk Lamberts; e-mail: H.Lamberts@AMC.UVA.NL or Inge Hofmans-Okkes; e-mail: I.m.okkes@amc.una.nl; University of Amsterdam</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPCDUT"
+        formalName="ICPC, Dutch Translation, 1993"
+        registeredName="ICPC 1993 Dutch" defaultLanguage="en"
+        representsVersion="ICPCDUT_1993" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPCDUT</localName>
+        <entityDescription>The International Classification of Primary Care (ICPC). Dutch Translation. Denmark: World Organisation of Family Doctors, 1993.</entityDescription>
+        <copyright>Henk Lamberts; e-mail: H.Lamberts@AMC.UVA.NL or Inge Hofmans-Okkes; e-mail: I.m.okkes@amc.una.nl; University of Amsterdam.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPCFIN"
+        formalName="ICPC, Finnish Translation, 1993"
+        registeredName="ICPC 1993 Finnish" defaultLanguage="en"
+        representsVersion="ICPCFIN_1993" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPCFIN</localName>
+        <entityDescription>The International Classification of Primary Care (ICPC). Finnish Translation. Denmark: World Organisation of Family Doctors, 1993.</entityDescription>
+        <copyright>Henk Lamberts; e-mail: H.Lamberts@AMC.UVA.NL or Inge Hofmans-Okkes; e-mail: I.m.okkes@amc.una.nl; University of Amsterdam.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPCFRE"
+        formalName="ICPC, French Translation, 1993"
+        registeredName="ICPC 1993 French" defaultLanguage="en"
+        representsVersion="ICPCFRE_1993" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPCFRE</localName>
+        <entityDescription>The International Classification of Primary Care (ICPC). French Translation. Denmark: World Organisation of Family Doctors, 1993.</entityDescription>
+        <copyright>Henk Lamberts; e-mail: H.Lamberts@AMC.UVA.NL or Inge Hofmans-Okkes; e-mail: I.m.okkes@amc.una.nl; University of Amsterdam.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPCGER"
+        formalName="ICPC, German Translation, 1993"
+        registeredName="ICPC 1993 German" defaultLanguage="en"
+        representsVersion="ICPCGER_1993" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPCGER</localName>
+        <entityDescription>The International Classification of Primary Care (ICPC). German Translation. Denmark: World Organisation of Family Doctors, 1993.</entityDescription>
+        <copyright>Henk Lamberts; e-mail: H.Lamberts@AMC.UVA.NL or Inge Hofmans-Okkes; e-mail: I.m.okkes@amc.una.nl; University of Amsterdam.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPCHUN"
+        formalName="ICPC, Hungarian Translation, 1993"
+        registeredName="ICPC 1993 Hungarian" defaultLanguage="en"
+        representsVersion="ICPCHUN_1993" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPCHUN</localName>
+        <entityDescription>The International Classification of Primary Care (ICPC). Hungarian Translation. Denmark: World Organisation of Family Doctors, 1993.</entityDescription>
+        <copyright>Henk Lamberts; e-mail: H.Lamberts@AMC.UVA.NL or Inge Hofmans-Okkes; e-mail: I.m.okkes@amc.una.nl; University of Amsterdam.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPCPOR"
+        formalName="ICPC, Portuguese Translation, 1993"
+        registeredName="ICPC 1993 Portuguese" defaultLanguage="en"
+        representsVersion="ICPCPOR_1993" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPCPOR</localName>
+        <entityDescription>The International Classification of Primary Care (ICPC). Portuguese Translation. Denmark: World Organisation of Family Doctors, 1993.</entityDescription>
+        <copyright>Henk Lamberts; e-mail: H.Lamberts@AMC.UVA.NL or Inge Hofmans-Okkes; e-mail: I.m.okkes@amc.una.nl; University of Amsterdam.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPCSPA"
+        formalName="ICPC, Spanish Translation, 1993"
+        registeredName="ICPC 1993 Spanish" defaultLanguage="en"
+        representsVersion="ICPCSPA_1993" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPCSPA</localName>
+        <entityDescription>The International Classification of Primary Care (ICPC). Spanish Translation. Denmark: World Organisation of Family Doctors, 1993.</entityDescription>
+        <copyright>Henk Lamberts; e-mail: H.Lamberts@AMC.UVA.NL or Inge Hofmans-Okkes; e-mail: I.m.okkes@amc.una.nl; University of Amsterdam.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPCSWE"
+        formalName="ICPC, Swedish Translation, 1993"
+        registeredName="ICPC 1993 Swedish" defaultLanguage="en"
+        representsVersion="ICPCSWE_1993" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPCSWE</localName>
+        <entityDescription>The International Classification of Primary Care (ICPC). Swedish Translation. Denmark: World Organisation of Family Doctors, 1993.</entityDescription>
+        <copyright>Henk Lamberts; e-mail: H.Lamberts@AMC.UVA.NL or Inge Hofmans-Okkes; e-mail: I.m.okkes@amc.una.nl; University of Amsterdam.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="WHOFRE"
+        formalName="WHOART, French Translation, 1997"
+        registeredName="WHO Adverse Reaction Terms French"
+        defaultLanguage="en" representsVersion="WHOFRE_1997"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>WHOFRE</localName>
+        <entityDescription>WHO Adverse Drug Reaction Terminology (WHOART). French Translation. Uppsala (Sweden): WHO Collaborating Centre for International Drug Monitoring, 1997.</entityDescription>
+        <copyright>WHO Collaborating Centre for International Drug Monitoring, Stora Target 3, S-753 20 Uppsala, Sweden; fax: +46-18-656080</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="WHOGER"
+        formalName="WHOART, German Translation, 1997"
+        registeredName="WHO Adverse Reaction Terms German"
+        defaultLanguage="en" representsVersion="WHOGER_1997"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>WHOGER</localName>
+        <entityDescription>WHO Adverse Drug Reaction Terminology (WHOART). German Translation. Uppsala (Sweden): WHO Collaborating Centre for International Drug Monitoring, 1997.</entityDescription>
+        <copyright>WHO Collaborating Centre for International Drug Monitoring, Stora Target 3, S-753 20 Uppsala, Sweden; fax: +46-18-656080</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="WHOPOR"
+        formalName="WHOART, Portuguese Translation, 1997"
+        registeredName="WHO Adverse Reaction Terms Portuguese"
+        defaultLanguage="en" representsVersion="WHOPOR_1997"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>WHOPOR</localName>
+        <entityDescription>WHO Adverse Drug Reaction Terminology (WHOART). Portuguese Translation. Uppsala (Sweden): WHO Collaborating Centre for International Drug Monitoring, 1997.</entityDescription>
+        <copyright>WHO Collaborating Centre for International Drug Monitoring, Stora Target 3, S-753 20 Uppsala, Sweden; fax: +46-18-656080</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="WHOSPA"
+        formalName="WHOART, Spanish Translation, 1997"
+        registeredName="WHO Adverse Reaction Terms Spanish"
+        defaultLanguage="en" representsVersion="WHOSPA_1997"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>WHOSPA</localName>
+        <entityDescription>WHO Adverse Drug Reaction Terminology (WHOART). Spanish Translation. Uppsala (Sweden): WHO Collaborating Centre for International Drug Monitoring, 1997.</entityDescription>
+        <copyright>WHO Collaborating Centre for International Drug Monitoring, Stora Target 3, S-753 20 Uppsala, Sweden; fax: +46-18-656080</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="CCPSS"
+        formalName="Canonical Clinical Problem Statement System, 1999"
+        registeredName="Clinical Problem Statements"
+        defaultLanguage="en" representsVersion="CCPSS99" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>CCPSS</localName>
+        <entityDescription>Canonical Clincial Problem Statement System, Version 1.0 June 23, 1999. Contact: sbrown@vumclib.mc.vanderbilt.edu</entityDescription>
+        <copyright>Steven Brown, M.D., Associate Professor, Biomedical Informatics, Room 442, Eskind Biomedical Library, Vanderbilt University Medical Center, 2209 Garland Ave Nashville TN 37232-8340; Office: (615) 321-6335; email: sbrown@vumclib.mc.vanderbilt.edu</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="RAM"
+        formalName="QMR clinically related terms from Randolph A. Miller, 1999"
+        registeredName="Clinical Concepts by R A Miller"
+        defaultLanguage="en" representsVersion="RAM99" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>RAM</localName>
+        <entityDescription>QMR clinically related terms from Randolf A. Miller, 1999.</entityDescription>
+        <copyright>Dr. Randolph A. Miller (email: randolph.a.miller@vanderbilt.edu), Chair, Dept. of Biomedical Informatics, Vanderbilt University, 436 Eskind Biomedical Library, 2209 Garland Ave., Nashville TN 37232-8340</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="JABL"
+        formalName="Online Congenital Multiple Anomaly/Mental Retardation Syndromes, 1999"
+        registeredName="Congenital Mental Retardation Syndromes"
+        defaultLanguage="en" representsVersion="JABL99" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>JABL</localName>
+        <entityDescription>Online Congenital Multiple Anomaly/Mental Retardation Syndromes, 1999.</entityDescription>
+        <copyright>Stanley Jablonski; National Library of Medicine, 8600 Rockville Pike, Bethesda MD 20894; email: stanley_jablonski@nlm.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPCBAQ"
+        formalName="ICPC, Basque Translation, 1993"
+        registeredName="ICPC 1993 Basque" defaultLanguage="en"
+        representsVersion="ICPCBAQ_1993" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPCBAQ</localName>
+        <entityDescription>The International Classification of Primary Care (ICPC). Basque Translation. Denmark: World Organisation of Family Doctors, 1993.</entityDescription>
+        <copyright>Henk Lamberts; e-mail: H.Lamberts@AMC.UVA.NL or Inge Hofmans-Okkes; e-mail: I.m.okkes@amc.una.nl; University of Amsterdam.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPCHEB"
+        formalName="ICPC, Hebrew Translation, 1993"
+        registeredName="ICPC 1993 Hebrew" defaultLanguage="en"
+        representsVersion="ICPCHEB_1993" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPCHEB</localName>
+        <entityDescription>The International Classification of Primary Care (ICPC). Hebrew Translation, Denmark: World Organisation of Family Doctors, 1993</entityDescription>
+        <copyright>Henk Lamberts; e-mail: H.Lamberts@AMC.UVA.NL or Inge Hofmans-Okkes; e-mail: I.m.okkes@amc.una.nl; University of Amsterdam.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="NCISEER"
+        formalName="NCI SEER ICD Neoplasm Code Mappings, 1999"
+        registeredName="NCI SEER ICD Mappings" defaultLanguage="en"
+        representsVersion="NCISEER_1999" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>NCISEER</localName>
+        <entityDescription>NCI Surveillance, Epidemiology, and End Results (SEER) conversions between ICD-9-CM and ICD-10 neoplasm codes. National Cancer Institute, Bethesda, MD. Release Date: June 1999. URL: http://www-seer.ims.nci.nih.gov/Admin/ConvProgs/ Phone: 301-496-8510.</entityDescription>
+        <copyright>National Cancer Institute Bethesda, MD; phone: 301-496-8510</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICD10AM"
+        formalName="International Statistical Classification of Diseases and Related Health Problems, 10th Revision, Australian Modification, January 2000 Release"
+        registeredName="ICD-10 Austral Mod" defaultLanguage="en"
+        representsVersion="ICD10AM_2000" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICD10AM</localName>
+        <entityDescription>International Statistical Classification of Diseases and Related Health Problems, 10th Revision, Australian Modification; 2nd Edition, published January 2000. Developed and Maintained by the National Centre for Classification in Health, University of Sydney, Faculty of Health Sciences. PO Box 170 Lidcombe, NSW, Australia 1825. Phone: +61 2 9351 9461. http://www.cchs.usy.edu.au/ncch/</entityDescription>
+        <copyright>National Centre for Classification in Health, University of Sydney, Faculty of Health Sciences; PO Box 170 Lidcombe, NSW, Australia 1825; Phone: +61 2 9351 9461</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICD10AMAE"
+        formalName="International Statistical Classification of Diseases and Related Health Problems, Australian Modification, Americanized English Equivalents, 2000"
+        registeredName="ICD-10 Austral Mod Am Engl" defaultLanguage="en"
+        representsVersion="ICD10AMAE_2000" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICD10AMAE</localName>
+        <entityDescription>International Statistical Classification of Diseases and Related Health Problems, Australian Modification (ICD-10-AM), Americanized English Equivalents, produced by NLM. Bethesda (MD): National Library of Medicine, UMLS project, 2000</entityDescription>
+        <copyright>National Centre for Classification in Health University of Sydney Faculty of Health Sciences PO Box 170 Lidcombe, NSW Australia 1825; phone: +61 2 9351 9461</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPC2P"
+        formalName="International Classification of Primary Care, Version 2-Plus, 2000"
+        registeredName="ICPC2P 1998 Plus Austral Mod"
+        defaultLanguage="en" representsVersion="ICPC2P_2000"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPC2P</localName>
+        <entityDescription>International Classification of Primary Care, Version 2-Plus, Australian Modification. January, 2000</entityDescription>
+        <copyright>HelenaB@genprac.wsahs.nsw.gov.au</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPCPAE"
+        formalName="International Classification of Primary Care, Version 2-Plus, Americanized English Equivalents, 2000"
+        registeredName="ICPC2E 1998 Plus Am Engl" defaultLanguage="en"
+        representsVersion="ICPCPAE_2000" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPCPAE</localName>
+        <entityDescription>International Classification of Primary Care, Version 2-Plus, Australian Modification. Americanized English Equivalents, January, 2000. Produced by NLM. Bethesda (MD): National Library of Medicine, UMLS project</entityDescription>
+        <copyright>HelenaB@genprac.wsahs.nsw.gov.au</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="CPTSP"
+        formalName="Physicians' Current Procedural Terminology, Spanish Translation, 2001"
+        registeredName="CPT Spanish" defaultLanguage="en"
+        representsVersion="CPT01SP" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>CPTSP</localName>
+        <entityDescription>Current Procedural Terminology (CPT), Spanish Translation. 4th ed. Chicago (IL): American Medical Association, 2000. http://www.ama-assn.org.</entityDescription>
+        <copyright>Dorith Brown, CPT Intellectual Property Services, American Medical Association, 515 N. State Street, Chicago IL 60610; Fax: (312) 464-5762</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="DDB"
+        formalName="Diseases Database, 2000"
+        registeredName="Diseases Database" defaultLanguage="en"
+        representsVersion="DDB00" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>DDB</localName>
+        <entityDescription>Diseases Database 2000. May, 2000. London (England): Medical Object Oriented Software Enterprises Ltd., 2000. Contact: Malcolm Duncan &lt;mhduncan@compuserve.com&gt;; http://www.diseasesdatabase.com/.</entityDescription>
+        <copyright>Malcolm H. Duncan, Medical Object Oriented Software Enterprises Ltd, Unit 36c Marryat Square, Fulham, London SW6 6UA, UK; Tel: 44 (0)20 7381 4220; Mobile: 07710 483088; email: mhduncan@compuserve.com; URL: http://www.diseasesdatabase.com/</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="HLREL"
+        formalName="ICPC2E-ICD10 relationships from Dr. Henk Lamberts, 1998"
+        registeredName="ICPC2E ICD10 Relationships" defaultLanguage="en"
+        representsVersion="HLREL_1998" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>HLREL</localName>
+        <entityDescription>ICPC2E-ICD10 relationships from Dr. Henk Lamberts (HLREL), 1998. University of Amsterdam. Contact: H.Lamberts@AMC.UVA.NL.</entityDescription>
+        <copyright>Henk Lamberts (HLREL), University of Amsterdam; email: H.Lamberts@AMC.UVA.NL.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHMST"
+        formalName="Metathesaurus Version of Minimal Standard Terminology Digestive Endoscopy, 2001"
+        registeredName="UMLS Minimal Standard Terms Intl"
+        defaultLanguage="en" representsVersion="MTHMST2001" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHMST</localName>
+        <entityDescription>Metathesaurus Version of Minimal Standard Terminology Digestive Endoscopy. Bethesda, MD: National Library of Medicine, 2001.</entityDescription>
+        <copyright>Jan Willis, National Library of Medicine, UMLS Support, 38A-4th fl, 8600 Rockville Pike, Bethesda, MD 20894; phone: 301 496-7715; e-mail: jwillis@nlm.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHMSTFRE"
+        formalName="Metathesaurus Version of Minimal Standard Terminology Digestive Endoscopy, French Translation, 2001"
+        registeredName="UMLS Minimal Standard Terms French"
+        defaultLanguage="en" representsVersion="MTHMSTFRE_2001"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHMSTFRE</localName>
+        <entityDescription>Metathesaurus Version of Minimal Standard Terminology Digestive Endoscopy, French Translation. Bethesda, MD: National Library of Medicine, 2001.</entityDescription>
+        <copyright>Jan Willis, National Library of Medicine, UMLS Support, 38A-4th fl, 8600 Rockville Pike, Bethesda MD 20894; phone: 301 496-7715; e-mail: jwillis@nlm.nih.gov. NOTE: Users must also obtain rights to use the parent source.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHMSTITA"
+        formalName="Metathesaurus Version of Minimal Standard Terminology Digestive Endoscopy, Italian Translation, 2001"
+        registeredName="UMLS Minimal Standard Terms Italian"
+        defaultLanguage="en" representsVersion="MTHMSTITA_2001"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHMSTITA</localName>
+        <entityDescription>Metathesaurus Version of Minimal Standard Terminology Digestive Endoscopy, Italian Translation. Bethesda, MD: National Library of Medicine, 2001.</entityDescription>
+        <copyright>Jan Willis, National Library of Medicine, UMLS Support, 38A-4th fl, 8600 Rockville Pike, Bethesda MD 20894; phone: 301-496-7715; e-mail: jwillis@nlm.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="COSTAR" formalName="COSTAR, 1989-1995"
+        registeredName="COSTAR" defaultLanguage="en"
+        representsVersion="COSTAR_89-95" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>COSTAR</localName>
+        <entityDescription>Computer-Stored Ambulatory Records (COSTAR). Boston (MA): Massachusetts General Hospital, 1989-1995.</entityDescription>
+        <copyright>G.Octo Barnett, M.D., Laboratory of Computer Science Massachusetts General Hospital, 50 Staniford Street, 5th Floor, Boston, MA 02114; phone: (617) 726-3939; fax: (617) 726-8481; e-mail: Barnett.Octo@mgh.harvard.edu</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="PCDS"
+        formalName="Patient Care Data Set, 1997"
+        registeredName="Patient Care Data Set" defaultLanguage="en"
+        representsVersion="PCDS97" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>PCDS</localName>
+        <entityDescription>Ozbolt, Judy Grace. Patient Data Care Set (PCDS), Version 4.0, 1998.Contact: judy.ozbolt@mcmail.vanderbilt.edu; Vanderbilt University School of Nursing; 400-C Godchaux Hall; Nashville, TN 37240-0008; Telephone 615-343-3291</entityDescription>
+        <copyright>Judy Ozbolt, Vanderbilt School of Nursing 400-C Godchaux Hall Nashville TN 37240-0008; phone: (615)343-3291; email: judy.ozbolt@mcmail.vanderbilt.edu</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPCITA"
+        formalName="ICPC, Italian Translation, 1993"
+        registeredName="ICPC 1993 Italian" defaultLanguage="en"
+        representsVersion="ICPCITA_1993" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPCITA</localName>
+        <entityDescription>The International Classification of Primary Care (ICPC). Italian Translation. Denmark: World Organisation of Family Doctors, 1993.</entityDescription>
+        <copyright>Henk Lamberts; e-mail: H.Lamberts@AMC.UVA.NL or Inge Hofmans-Okkes; e-mail: I.m.okkes@amc.una.nl; University of Amsterdam.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPCNOR"
+        formalName="ICPC, Norwegian Translation, 1993"
+        registeredName="ICPC 1993 Norwegian" defaultLanguage="en"
+        representsVersion="ICPCNOR_1993" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPCNOR</localName>
+        <entityDescription>The International Classification of Primary Care (ICPC). Norwegian Translation. Denmark: World Organisation of Family Doctors, 1993.</entityDescription>
+        <copyright>Henk Lamberts; e-mail: H.Lamberts@AMC.UVA.NL or Inge Hofmans-Okkes; e-mail: I.m.okkes@amc.una.nl; University of Amsterdam.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="HHC"
+        formalName="Home Health Care Classification, 2003"
+        registeredName="Home Health Care Classification"
+        defaultLanguage="en" representsVersion="HHC2003" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>HHC</localName>
+        <entityDescription>Saba, Virginia. Home Health Care Classification of Nursing Diagnoses and Interventions. Washington (DC): Georgetown University, 2003.</entityDescription>
+        <copyright>Virginia K. Saba, EdD, RN, FAAN, FACMI, LL, Distinguished Scholar, Adjunct, Georgetown University, Washington, DC; Professor, Adjunct, USUHS, Bethedsa, MD 2332 South Queen Street, Arlington VA 22202; Tel: 703-521-6132; Fax: 703-521-3866; e-mail: vsaba@worldnet.att.net</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MDDB"
+        formalName="Master Drug Data Base, 2003_03"
+        registeredName="Master Drug Data Base" defaultLanguage="en"
+        representsVersion="MDDB_2003_03" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MDDB</localName>
+        <entityDescription>Master Drug Data Base, 2003</entityDescription>
+        <copyright>Karen Eckert, RPh, Medi-Span, 8425 Woodfield Crossing Blvd., Suite 490, Indianapolis IN 46240; phone (800) 388-8884; fax (317) 735-5390; email: Keckert@drugfacts.com; ms-support@drugfacts.com; http://www.medi-span.com/products/product_mddb.asp</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="UWDA"
+        formalName="University of Washington Digital Anatomist, 1.7.3"
+        registeredName="Digital Anatomist" defaultLanguage="en"
+        representsVersion="UWDA173" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>UWDA</localName>
+        <entityDescription>University of Washington Digital Anatomist, (UWDA). Seattle (WA): University of Washinton, Version 1.7.3, March, 2003. Jose Mejino, M.D.; email: onard@biostr.washington.edu</entityDescription>
+        <copyright>Jose Mejino, M.D.; e-mail: onard@biostr.washington.edu; University of Washington Digital Anatomist Symbolic Knowledge Base, University of Washington Digital Anatomist Information System, Structural Informatics Group, Department of Biological Structure, University of Washington, Seattle WA 98195</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="CPM"
+        formalName="Medical Entities Dictionary, 2003"
+        registeredName="Medical Entities Dictionary"
+        defaultLanguage="en" representsVersion="CPM2003" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>CPM</localName>
+        <entityDescription>Medical Entities Dictionary (CPM), Columbia Presbyterian Medical Center Medical Entities Dictionary. New York (NY): Columbia Presbyterian Medical Center, 2003</entityDescription>
+        <copyright>James J Cimino M.D., Professor, Department of Medical Informatics, Columbia University, Vanderbilt Clinic VC-5, 622 W. 168th Street, New York NY 10032; phone: (212) 305-8127; fax: (212) 305-3302; e-mail: ciminoj@dbmi.columbia.edu</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="SPN"
+        formalName="Standard Product Nomenclature, 2003"
+        registeredName="Standard Product Nomenclature"
+        defaultLanguage="en" representsVersion="SPN2003" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>SPN</localName>
+        <entityDescription>Standard Product Nomenclature (SPN). Rockville, (MD); U.S. Food and Drug Administration, 2003</entityDescription>
+        <copyright>Stolber, Carey [Cstolber@ECRI.org]</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MSHSWE"
+        formalName="Swedish translations of the Medical Subject Headings, 2004"
+        registeredName="MeSH Swedish" defaultLanguage="en"
+        representsVersion="MSHSWE2004" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MSHSWE</localName>
+        <entityDescription>Swedish translation of Medical Subject Headings (MeSH), 2004. Stockholm: Karolinska Institutet, 2004.</entityDescription>
+        <copyright>Ylva Gavel, Library of Karolinska Institutet, Box 200, SE-171 77 Stockholm, Sweden; phone: +46 (0)8-524 84 000, fax: +46 (0)8-524 84 310; e-mail: Ylva.Gavel@kib.ki.se</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="NAN"
+        formalName="NANDA nursing diagnoses: definitions &amp; classification, 2004"
+        registeredName="Classification of Nursing Diagnoses"
+        defaultLanguage="en" representsVersion="NAN2004" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>NAN</localName>
+        <entityDescription>Sparks Ralph, Sheila, Craft-Rosenberg, Martha, Herdman, T. Heather, Lavin, Mary Ann, editors. NANDA nursing diagnoses: definitions and classification 2003-2004. Philadelphia: NANDA International, 2003.</entityDescription>
+        <copyright>Mary A. Lavin [lavinma@slu.edu]</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MMSL"
+        formalName="Multum MediSource Lexicon, 2004_03"
+        registeredName="Multum" defaultLanguage="en"
+        representsVersion="MMSL_2004_03" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MMSL</localName>
+        <entityDescription>Medisource Lexicon. Multum Information Services, Inc., Denver, CO. Release Date: March 1, 2004. URL: http://www.multum.com/ Phone: 888-633-4772 x1420.</entityDescription>
+        <copyright>Multum Information Services, 3200 Cherry Creek South Drive, Suite 300, Denver CO 80209</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPC2EENG"
+        formalName="International Classification of Primary Care 2nd Edition, Electronic, 2E, 200203"
+        registeredName="ICPC2E" defaultLanguage="en"
+        representsVersion="ICPC2EENG_200203" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPC2EENG</localName>
+        <entityDescription>International Classification of Primary Care / prepared by the Classification Committee of the World Organization of National Colleges, Academies and Academic Associations of General Practitioners/Family Physicians (WONCA), known more briefly as the World Organization of Family Doctors. 2nd ed. Henk Lamberts and Inge Hofmans-Okkes, 2002</entityDescription>
+        <copyright>Prof. Dr. H.Lamberts and Inge M. Okkes, PhD, Department of Family Practice, Division Clinical Methods &amp; Public Health, Academic Medical Center - University of Amsterdam, Meibergdreef 15 (Room J2-213), 1105 AZ Amsterdam, The Netherlands; Tel: 31 20 566 4711</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHICPC2EAE"
+        formalName="International Classification of Primary Care 2nd Edition, Electronic, 2E, American English Equivalents, 200203"
+        registeredName="ICPC2E Am Engl" defaultLanguage="en"
+        representsVersion="MTHICPC2EAE_200203" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHICPC2EAE</localName>
+        <entityDescription>Henk Lamberts and Inge Hofmans-Okkes. International Classification of Primary Care 2nd Edition, Electronic, 2E, American English Equivalents. Amsterdam: International Classification of Primary Care / prepared by the Classification Committee of the World Organization of National Colleges, Academies and Academic Associations of General Practitioners/Family Physicians (WONCA), known more briefly as the World Organization of Family Doctors, 2002</entityDescription>
+        <copyright>Prof. Dr. H.Lamberts and Inge M. Okkes, PhD, Department of Family Practice, Division Clinical Methods &amp; Public Health, Academic Medical Center/University of Amsterdam, Meibergdreef 15 (Room J2-213), 1105 AZ Amsterdam, The Netherlands; Tel: 31 20 566 4711</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPC2EDUT"
+        formalName="International Classification of Primary Care 2nd Edition, Electronic, 2E, Dutch Translation, 200203"
+        registeredName="ICPC2E, Dutch Translation" defaultLanguage="en"
+        representsVersion="ICPC2EDUT_200203" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPC2EDUT</localName>
+        <entityDescription>Hirs, W., H.W. Becker, C. van Boven, S.K. Oskam, I.M. Okkes, H. Lamberts. International Classification of Primary Care 2E: 2nd ed. electronic. Dutch Translation. Amsterdam: Department of General Practice, Academic Medical Center/University of Amsterdam, Dutch College of General Practitioners (NHG), March 2002</entityDescription>
+        <copyright>Prof. Dr. H.Lamberts and Inge M. Okkes, PhD, Department of Family Practice, Division Clinical Methods &amp; Public Health, Academic Medical Center/University of Amsterdam, Meibergdreef 15 (Room J2-213), 1105 AZ Amsterdam, The Netherlands; Tel: 31 20 566 4711</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICD10DUT"
+        formalName="ICD10, Dutch Translation, 200403"
+        registeredName="ICD10, Dutch Translation" defaultLanguage="en"
+        representsVersion="ICD10DUT_200403" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICD10DUT</localName>
+        <entityDescription>Hirs, W., H.W. Becker, C. van Boven, S.K. Oskam, I.M. Okkes, H. Lamberts. ICD-10, Dutch Translation, 200403. Amsterdam: Department of General Practice, Academic Medical Center/University of Amsterdam, Dutch College of General Practitioners (NHG), March 2004.</entityDescription>
+        <copyright>Inge M. Okkes, PhD, Department of Family Practice, Division Clinical Methods &amp; Public Health, Academic Medical Center/University of Amsterdam, Meibergdreef 15 (Room J2-213), 1105 AZ AMSTERDAM, The Netherlands; Tel: 31 20 566 4660; E-mail: i.m.okkes@amc.uva.nl</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="NDFRT"
+        formalName="National Drug File - Reference Terminology, 2004_01"
+        registeredName="National Drug File - Reference Terminology"
+        defaultLanguage="en" representsVersion="NDFRT_2004_01"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>NDFRT</localName>
+        <entityDescription>National Drug File - Reference Terminology, 2004_01. Washington, DC: U.S. Department of Veterans Affairs, Veterans Health Administration, January 2004.</entityDescription>
+        <copyright>Steven Brown; CPEP Office; 1310 24th Avenue S; Nashville, TN 37215; e-mail: Steven.Brown@msd.va.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MEDLINEPLUS"
+        formalName="MedlinePlus Health Topics_2004_08_14, 20040814"
+        registeredName="MedlinePlus" defaultLanguage="en"
+        representsVersion="MEDLINEPLUS_20040814" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MEDLINEPLUS</localName>
+        <entityDescription>MedlinePlus Health Topics. Bethesda (MD): National Library of Medicine, August 14, 2004.</entityDescription>
+        <copyright>Naomi Miller; e-mail: millern@mail.nlm.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="UMD"
+        formalName="UMDNS: product category thesaurus, 2005"
+        registeredName="Universal Medical Devices Nomenclature"
+        defaultLanguage="en" representsVersion="UMD2005" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>UMD</localName>
+        <entityDescription>Universal Medical Device Nomenclature System: Product Category Thesaurus. Plymouth Meeting (PA): ECRI, 2005.</entityDescription>
+        <copyright>Elizabeth Richardson (erichard@ecri.org), Director of Database and Nomenclature Systems, ECRI, 5200 Butler Pike, Plymouth Meeting, PA 19462-1298; Phone: (610) 825-6000</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="NCBI"
+        formalName="NCBI Taxonomy, 2004_09_30"
+        registeredName="NCBI Taxonomy" defaultLanguage="en"
+        representsVersion="NCBI2004_09_30" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>NCBI</localName>
+        <entityDescription>NCBI Taxonomy. Bethesda, MD: U.S. Department of Health and Human Services, National Institutes of Health, National Library of Medicine, National Center for Biotechnology Information, September 30, 2004. http://www.ncbi.nlm.nih.gov/Taxonomy/</entityDescription>
+        <copyright>http://www.ncbi.nlm.nih.gov/Taxonomy</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="CPT"
+        formalName="Physicians' Current Procedural Terminology, 2005"
+        registeredName="CPT" defaultLanguage="en"
+        representsVersion="CPT2005" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>CPT</localName>
+        <entityDescription>Current Procedural Terminology (CPT), 4th ed. Chicago (IL): American Medical Association, 2004. http://www.ama-assn.org</entityDescription>
+        <copyright>Dorith Brown, CPT Intellectual Property Services, American Medical Association, 515 N. State Street, Chicago, IL 60610; fax: (312)464-5762</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHCH"
+        formalName="Metathesaurus CPT Hierarchical Terms, 2005"
+        registeredName="UMLS Hierarchical Terms CPT"
+        defaultLanguage="en" representsVersion="MTHCH05" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHCH</localName>
+        <entityDescription>Metathesaurus Hierarchical CPT Terms (these terms were created by the NLM to provide contextual information for CPT). Bethesda (MD): National Library of Medicine, 2004</entityDescription>
+        <copyright>William T. Hole, M.D., Lister Hill Center, NLM; email: wth@nlm.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="HCPCS"
+        formalName="Healthcare Common Procedure Coding System, 2005"
+        registeredName="Healthcare Common Procedure Coding System"
+        defaultLanguage="en" representsVersion="HCPCS05" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>HCPCS</localName>
+        <entityDescription>Healthcare Common Procedure Coding System (HCPCS). Baltimore, MD: U.S. Centers for Medicare &amp; Medicaid Services, 2005.</entityDescription>
+        <copyright>Cynthia Hake, Centers for Medicare &amp; Medicaid Services (CMS) 7500 Security Blvd., Mailstop C5-09-16, Baltimore MD 21244; e-mail:CHake@cms.hhs.gov; phone: (410) 786-3404</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHHH"
+        formalName="Metathesaurus HCPCS Hierarchical Terms, 2005"
+        registeredName="UMLS Hierarchical Terms HCPCS"
+        defaultLanguage="en" representsVersion="MTHHH05" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHHH</localName>
+        <entityDescription>Metathesaurus Hierarchical HCPCS Terms. Bethesda (MD): National Library of Medicine, 2005</entityDescription>
+        <copyright>Jan Willis, U.S. National Library of Medicine, UMLS Support/MEDLARS Management Section, 8600 Rockville Pike, Bethesda MD 20894; email: jwillis@nlm.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="CDT"
+        formalName="Current Dental Terminology 2005 (CDT-5), 5"
+        registeredName="Current Dental Terminology" defaultLanguage="en"
+        representsVersion="CDT5" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>CDT</localName>
+        <entityDescription>Current Dental Terminology 2005 (CDT 2005). Chicago, IL: American Dental Association, 2005</entityDescription>
+        <copyright>Ann Pollack, American Dental Association, 211 East Chicago Ave., Chicago, IL 60611-2678; phone: (312)440-2500, ext. 2854 no@email.nil</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="HCDT"
+        formalName="HCPCS Version of Current Dental Terminology 2005 (CDT-5), 5"
+        registeredName="Current Dental Terminology in HCPCS"
+        defaultLanguage="en" representsVersion="HCDT5" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>HCDT</localName>
+        <entityDescription>HCPCS Version of Current Dental Terminology 2005 (CDT-2005). Baltimore, MD: U.S. Centers for Medicare &amp; Medicaid, 2005.</entityDescription>
+        <copyright>Ann Pollack, American Dental Association; phone: (312)440-2500, ext. 2854 no@email.nil</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="HCPT"
+        formalName="HCPCS Version of Current Procedural Terminology (CPT), 2005"
+        registeredName="CPT in HCPCS" defaultLanguage="en"
+        representsVersion="HCPT05" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>HCPT</localName>
+        <entityDescription>Version of Physicians' Current Procedural Terminology (CPT) included in the Healthcare Common Procedure Coding System (HCPCS), 2005.</entityDescription>
+        <copyright>Cynthia Hake, Centers for Medicare &amp; Medicaid Services (CMS) 7500 Security Blvd., Mailstop C5-09-16, Baltimore MD 21244; e-mail:CHake@cms.hhs.gov; phone: (410) 786-3404</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MDRDUT"
+        formalName="Medical Dictionary for Regulatory Activities Terminology (MedDRA), Dutch Edition, 7.1"
+        registeredName="MedDRA Dutch" defaultLanguage="en"
+        representsVersion="MDRDUT71" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MDRDUT</localName>
+        <entityDescription>Medical Dictionary for Regulatory Activities Terminology (MedDRA) Version 7.1, Dutch Edition. International conference on Harmonization of Technical Requirements for Registration of Pharmaceuticals for Human Use (ICH). Reston, VA: MedDRA MSSO, September 2004</entityDescription>
+        <copyright>Customer Operations Manager; MedDRA MSSO; 12011 Sunset Hills Rd. 8A16; Reston, VA 20910; Elizabeth d'Alelio@trw.com; phone: (703)345-8821; fax: (703)345-7791</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MDRFRE"
+        formalName="Medical Dictionary for Regulatory Activities Terminology (MedDRA), French Edition, 7.1"
+        registeredName="MedDRA French" defaultLanguage="en"
+        representsVersion="MDRFRE71" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MDRFRE</localName>
+        <entityDescription>Medical Dictionary for Regulatory Activities Terminology (MedDRA) Version 7.1, French Edition. International conference on Harmonization of Technical Requirements for Registration of Pharmaceuticals for Human Use (ICH). Reston, VA: MedDRA MSSO, September 2004.</entityDescription>
+        <copyright>Customer Operations Manager; MedDRA MSSO; 12011 Sunset Hills Rd. 8A16; Reston, VA 20910; Elizabeth.d'Alelio@trw.com; phone: (703)345-8821; fax: (703)345-7791</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MDRPOR"
+        formalName="Medical Dictionary for Regulatory Activities Terminology (MedDRA), Portuguese Edition, 7.1"
+        registeredName="MedDRA Portuguese" defaultLanguage="en"
+        representsVersion="MDRPOR71" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MDRPOR</localName>
+        <entityDescription>Medical Dictionary for Regulatory Activities Terminology (MedDRA) Version 7.1, Portuguese Edition. International conference on Harmonization of Technical Requirements for Registration of Pharmaceuticals for Human Use (ICH). Reston, VA: MedDRA MSSO, September 2004.</entityDescription>
+        <copyright>Customer Operations Manager; MedDRA MSSO; 12011 Sunset Hills Rd. 8A16; Reston, VA 20910; Elizabeth.d'Alelio@trw.com; phone: (703)345-8821; fax: (703)345-7791</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MDRSPA"
+        formalName="Medical Dictionary for Regulatory Activities Terminology (MedDRA), Spanish Edition, 7.1"
+        registeredName="MedDRA Spanish" defaultLanguage="en"
+        representsVersion="MDRSPA71" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MDRSPA</localName>
+        <entityDescription>Medical Dictionary for Regulatory Activities Terminology (MedDRA) Version 7.1, Spanish Edition. International conference on Harmonization of Technical Requirements for Registration of Pharmaceuticals for Human Use (ICH). Reston, VA: MedDRA MSSO, September 2004.</entityDescription>
+        <copyright>Elizabeth d'Alelio; Customer Operations Manager; MedDRA MSSO; 12011 Sunset Hills Rd. 8A16;Reston, VA 20910; Elizabeth.d'Alelio@trw.com; phone: (703)345-8821; fax: (703)345-7791</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHMDRSPA"
+        formalName="Metathesaurus Form of Medical Dictionary for Regulatory Activities Terminology (MedDRA), Spanish Edition, 7.1"
+        registeredName="MTH MedDRA Spanish" defaultLanguage="en"
+        representsVersion="MTHMDRSPA71" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHMDRSPA</localName>
+        <entityDescription>Methathesaurus Forms of Medical Dictionary for Regulatory Activities Terminology (MedDRA) Version 7.1, Spanish Edition. Bethesda, MD: National Library of Medicine, September 2004.</entityDescription>
+        <copyright>Jan Willis, National Library of Medicine, UMLS Support, 38A-Room 4S-2, 8600 Rockville Pike, Bethesda MD 20894; phone 301-496-7715; email: jwillis@nlm.nih.gov. NOTE: Users must also obtain the rights to use the parent source.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MSHFRE"
+        formalName="Thesaurus Biomedical Francais/Anglais [French translation of MeSH], 2005"
+        registeredName="MeSH French" defaultLanguage="en"
+        representsVersion="MSHFRE2005" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MSHFRE</localName>
+        <entityDescription>Thesaurus Biomedical Francais/Anglais [French translation of MeSH]. Paris (France): Institut National de la Sante et Recherche Medicale, 2005</entityDescription>
+        <copyright>Claudie Hasenfuss, Institut National de la Sante et Recherche Medicale; phone: 33-1-45-59-52-91; e-mail: hasenfus@vjf.inserm.fr; http://www.inserm.fr</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MSHGER"
+        formalName="German translation of the Medical Subject Headings, 2005"
+        registeredName="MeSH German" defaultLanguage="en"
+        representsVersion="MSHGER2005" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MSHGER</localName>
+        <entityDescription>German translation of Medical Subject Headings (MeSH), 2005. Cologne: Deutsches Institut fur Medizinische Dokumentation und Information, 2005.</entityDescription>
+        <copyright>Dr. Michael Schopen, Deutsches Institut fur Medizinische Dokumentation und Information; phone: 49-221-472-4325; e-mail: schopen@dimdi.de</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MSHITA"
+        formalName="Italian translation of Medical Subject Headings, 2005"
+        registeredName="MeSH Italian" defaultLanguage="en"
+        representsVersion="MSHITA2005" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MSHITA</localName>
+        <entityDescription>Italian translation of Medical Subject Headings (MeSH), 2005. Rome: Istituto Superiore di Sanita, Settore Documentazione, 2005.</entityDescription>
+        <copyright>Dr. Adriana Dracos, Viale Regina Elena, 229 00616 Rome Italy; phone:39-06-49902280; fax: 39-06-49387117; e-mail: dracos@iss.it</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MED" formalName="MEDLINE (2000-2005)"
+        registeredName="MEDLINE" defaultLanguage="en"
+        representsVersion="MED05" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MED</localName>
+        <entityDescription>MEDLINE Current Files (2000-2005). Bethesda (MD): National Library of Medicine. Contact: http://www.nlm.nih.gov.</entityDescription>
+        <copyright>National Library of Medicine. Bethesda, MD; http://www.nlm.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MBD" formalName="MEDLINE (1995-1999)"
+        registeredName="MEDLINE Backfile" defaultLanguage="en"
+        representsVersion="MBD05" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MBD</localName>
+        <entityDescription>MEDLINE Backfiles (1995-1999). Bethesda (MD): National Library of Medicine. Contact: http://www.nlm.nih.gov.</entityDescription>
+        <copyright>National Library of Medicine. Bethesda, MD; http://www.nlm.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MSHPOR"
+        formalName="Descritores em Ciencias da Saude (Portuguese translation of the Medical Subject Headings), 2005"
+        registeredName="MeSH Portuguese" defaultLanguage="en"
+        representsVersion="MSHPOR2005" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MSHPOR</localName>
+        <entityDescription>Descritores em Ciencias da Saude [Portuguese translation of Medical Subject Headings (MeSH)], 2004. Sao Paulo (Brazil): Latin American and Caribbean Center on Health Sciences Information. BIREME/PAHO/WHO, 2005.</entityDescription>
+        <copyright>Elenice de Castro; e-mail: elenice@brm.bireme.br</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MSHSPA"
+        formalName="Descritores en Ciencias de la Salud (Spanish translation of the Medical Subject Headings), 2005"
+        registeredName="MeSH Spanish" defaultLanguage="en"
+        representsVersion="MSHSPA2005" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MSHSPA</localName>
+        <entityDescription>Descriptores en Ciencias de la Salud [Spanish translation of Medical Subject Headings (MeSH)], 2004. Sao Paulo: Latin American and Caribbean Center on Health Sciences Information. BIREME/PAHO/WHO, 2005.</entityDescription>
+        <copyright>Elenice de Castro; e-mail: elenice@brm.bireme.br</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="PSY"
+        formalName="Thesaurus of Psychological Index Terms, 2004"
+        registeredName="Psychological Index Terms" defaultLanguage="en"
+        representsVersion="PSY2004" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>PSY</localName>
+        <entityDescription>American Psychological Association. Thesaurus of psychological index terms/Lisa A. Gallagher, ed., 10th ed., 30th anniversary, 1974-2004. Washington, DC: American Psychological Association, c2005.</entityDescription>
+        <copyright>Lisa A. Gallagher, American Psychological Association, 750 First Stree, NE, Washingtion, DC 20002-4242; phone: 202-336-5726; email" LGallagher@apa.org</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="NCI"
+        formalName="NCI Thesaurus, 2004_11_17"
+        registeredName="NCI Thesaurus" defaultLanguage="en"
+        representsVersion="NCI2004_11_17" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>NCI</localName>
+        <entityDescription>NCI Thesaurus. Bethesda (MD): National Cancer Institute, National Institutes of Health, November 2004. Contact: Sherri de Coronado, decorons@exchange.nih.gov, http://nci.nih.gov</entityDescription>
+        <copyright>Francis W. Hartel, PhD, Center for Bioinformatics, National Cancer Institute, 6116 Executive Blvd. Room 4019, Rockville MD 20892-8335; phone: 301-435-3869; email: hartel@mail.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="GO"
+        formalName="Gene Ontology, 2004_12_20"
+        registeredName="Gene Ontology" defaultLanguage="en"
+        representsVersion="GO2004_12_20" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>GO</localName>
+        <entityDescription>Gene Ontology. The Gene Ontology Consortium, March 2, 2004. Available from: http://www.geneontology.org/#cite_go.</entityDescription>
+        <copyright>http://www.geneontology.org/#cite_go; go@geneontology.org</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MSHDUT"
+        formalName="Nederlandse vertaling van Mesh (Dutch translation of MeSH), 2005"
+        registeredName="MeSH Dutch" defaultLanguage="en"
+        representsVersion="MSHDUT2005" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MSHDUT</localName>
+        <entityDescription>Nederlandse vertaling van MeSH [Dutch translation of MeSH), 2005. Amsterdam: Nederlands Tijdschrift voor Geneeskunde [Dutch Journal of Medicine], 2005.</entityDescription>
+        <copyright>A.J.P.M.Overbeke, overbeke@ntvg.nl, * 20 662 0150</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MSHFIN"
+        formalName="Finnish translations of the Medical Subject Headings, 2005"
+        registeredName="MeSH Finnish" defaultLanguage="en"
+        representsVersion="MSHFIN2005" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MSHFIN</localName>
+        <entityDescription>Finnish translations of Medical Subject Headings (MeSH), 2005. Helsinki: Finnish Medical Society Duodecim, 2005.</entityDescription>
+        <copyright>Peter Nyberg, MD; e-mail: peter.nyberg@sll.fimnet.fi</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MSHJPN"
+        formalName="JAMAS Japanese Medical Thesaurus (JJMT), 2005"
+        registeredName="MeSH Japanese" defaultLanguage="en"
+        representsVersion="MSHJPN2005" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MSHJPN</localName>
+        <entityDescription>JAMAS Japanese Medical Thesaurus (JJMT). Tokyo: Japan Medical Abstracts Society; Igaku-Chuo-Zasshi, 2005.</entityDescription>
+        <copyright>Tsuneki Shinohara, MD, President, Japan Medical Abstracts Society, 2-5-18, Tokaido-Higashi, Suginami, Tokyo 168-0072, Japan; e-mail: shinohara@jamas.gr.jp</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHMSHSPA"
+        formalName="Metathesaurus Form of Descritores en Ciencias de la Salud (Spanish translation of the Medical Subject Headings), 2005"
+        registeredName="MTH MeSH Spanish" defaultLanguage="en"
+        representsVersion="MTHMSHSPA2005" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHMSHSPA</localName>
+        <entityDescription>Descriptores en Ciencias de la Salud [Spanish translation of Medical Subject Headings (MeSH)], 2005. Sao Paulo: Latin American and Caribbean Center on Health Sciences Information. BIREME/PAHO/WHO, 2005.</entityDescription>
+        <copyright>Elenice de Castro; e-mail: elenice@brm.bireme.br</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MSHCZE"
+        formalName="Czech translation of the Medical Subject Headings, 2004"
+        registeredName="MeSH Czech" defaultLanguage="en"
+        representsVersion="MSHCZE2004" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MSHCZE</localName>
+        <entityDescription>Czech translation of Medical Subject Headings (MeSH) 2004. Prague: Dept. of Bibliography, National Library of Medicine, 2004</entityDescription>
+        <copyright>Marie Votipkova, Dept. of Bibliography, National Library of Medicine, Prague, Sokolska 54, Czech Republic; e-mail: votipkov@nlk.cz; URL: www.nlk.cz</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MSHRUS"
+        formalName="Russian Translation of MeSH, 2005"
+        registeredName="MeSH Russian" defaultLanguage="en"
+        representsVersion="MSHRUS2005" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MSHRUS</localName>
+        <entityDescription>Russian Translation of Medical Subject Headings (MeSH). Moscow: State Central Scientific Medical Library, 2005</entityDescription>
+        <copyright>Natalya Lomova, Head of Department State Central Scientific Medical Library, Nakhimovsky prospekt 49, Moscow, GSP 117418, Russia; e-mail:vld@vyugin.mccme.rssi.ru</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHICPC2ICD10AE"
+        formalName="ICPC2 - ICD10 Thesaurus, American English Equivalents, 0412"
+        registeredName="ICPC2-ICD10 Thesaurus, Am Engl"
+        defaultLanguage="en" representsVersion="MTHICPC2ICD10AE_0412"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHICPC2ICD10AE</localName>
+        <entityDescription>International Classification of Primary Care / prepared by the Classification Committee of the World Organization of National Colleges, Academies and Academic Associations of General Practitioners/Family Physicians (WONCA), known more briefly as the World Organization of Family Doctors. 2nd ed. Henk Lamberts and Inge Hofmans-Okkes, American English Equivalents, 2002</entityDescription>
+        <copyright>Prof. Dr. H. Lamberts and Inge M. Okkes, PhD, Department of Family Practice, Division of Clinical Methods &amp; Public Health, Academic Medical Center/University of Amsterdam, Meibergdreef 15 (Room J2-213), 1105 AZ Amsterdam, The Netherlands; Tel: 31 20 566 4711</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPC2ICD10ENG"
+        formalName="ICPC2 - ICD10 Thesaurus, 200412"
+        registeredName="ICPC2-ICD10 Thesaurus" defaultLanguage="en"
+        representsVersion="ICPC2ICD10ENG_200412" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPC2ICD10ENG</localName>
+        <entityDescription>International Classification of Primary Care / prepared by the Classification Committee of the World Organization of National Colleges, Academies and Academic Associations of General Practitioners/Family Physicians (WONCA), known more briefly as the World Organization of Family Doctors. 2nd ed. Henk Lamberts and Inge Hofmans-Okkes, 2002</entityDescription>
+        <copyright>Prof. Dr. H. Lamberts and Inge M. Okkes, PhD, Department of Family Practice, Division of Clinical Methods &amp; Public Health, Academic Medical Center/University of Amsterdam, Meibergdreef 15 (Room J2-213), 1105 AZ Amsterdam, The Netherlands; Tel: 31 20 566 4711</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHICPC2ICD107B"
+        formalName="ICPC2 - ICD10 Thesaurus, 7-bit Equivalents, 0412"
+        registeredName="ICPC2-ICD10 Thesaurus, 7-bit"
+        defaultLanguage="en" representsVersion="MTHICPC2ICD107B_0412"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHICPC2ICD107B</localName>
+        <entityDescription>International Classification of Primary Care / prepared by the Classification Committee of the World Organization of National Colleges, Academies and Academic Associations of General Practitioners/Family Physicians (WONCA), known more briefly as the World Organization of Family Doctors. 2nd ed. Henk Lamberts and Inge Hofmans-Okkes, 7-bit Equivalents, 2002</entityDescription>
+        <copyright>Prof. Dr. H. Lamberts and Inge M. Okkes, PhD, Department of Family Practice, Division of Clinical Methods &amp; Public Health, Academic Medical Center/University of Amsterdam, Meibergdreef 15 (Room J2-213), 1105 AZ Amsterdam, The Netherlands; Tel: 31 20 566 4711</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICPC2ICD10DUT"
+        formalName="ICPC2-ICD10 Thesaurus, Dutch Translation, 200412"
+        registeredName="ICPC2-ICD10ENG Thesaurus, Dutch Translation"
+        defaultLanguage="en" representsVersion="ICPC2ICD10DUT_200412"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICPC2ICD10DUT</localName>
+        <entityDescription>International Classification of Primary Care / prepared by the Classification Committee of the World Organization of National Colleges, Academies and Academic Associations of General Practitioners/Family Physicians (WONCA), known more briefly as the World Organization of Family Doctors. 2nd ed. Henk Lamberts and Inge Hofmans-Okkes, Dutch, 2002</entityDescription>
+        <copyright>Prof. Dr. H. Lamberts and Inge M. Okkes, PhD, Department of Family Practice, Division of Clinical Methods &amp; Public Health, Academic Medical Center - University of Amsterdam, Meibergdreef 15 (Room J2-213), 1105 AZ Amsterdam, The Netherlands; Tel: 31 20 566 4711</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ALT"
+        formalName="Alternative Billing Concepts, 2005"
+        registeredName="Alternative Billing Concepts"
+        defaultLanguage="en" representsVersion="ALT2005" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ALT</localName>
+        <entityDescription>Alternative Billing Concepts (Altlink). Version 2005, seventh edition. Contact: Alternative Link LLC; 1065 Main St., Bldg. C, Las Cruces, NM 88005; phone: (505) 527-0636; http://www.alternativelink.com; mail@alternativelink.com.</entityDescription>
+        <copyright>Alternative Link LLC, 6121 Indian School Road NE, Suite 131, Albuquerque, NM 87110; Phone: (505) 875-0001; Toll Free: (877)621-5465; Fax: (505) 875-0002; e-mail: ail@alternativelink.com</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MDR"
+        formalName="Medical Dictionary for Regulatory Activities Terminology (MedDRA), 8.0"
+        registeredName="MedDRA" defaultLanguage="en"
+        representsVersion="MDR80" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MDR</localName>
+        <entityDescription>MedDRA [electronic resource] : medical dictionary for regulatory activities terminology. Version 8.0. Reston, VA : Northrop Grumman, MedDRA MSSO, September 2004.</entityDescription>
+        <copyright>Elizabeth d'Alelio; Customer Operations Manager; MedDRA MSSO; 12011 Sunset Hills Rd. 8A16; Reston, VA 20910; Elizabeth.d'Alelio@trw.com; phone: (703)345-8821; fax: (703)345-7791</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MDRAE"
+        formalName="Medical Dictionary for Regulatory Activities Terminology (MedDRA), American English Equivalents, 8.0"
+        registeredName="MedDRA Am Engl" defaultLanguage="en"
+        representsVersion="MDRAE80" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MDRAE</localName>
+        <entityDescription>MedDRA : medical dictionary for regulatory activities terminology. American English Equivalents, Version 8.0. Bethesda, MD: U.S. National Library of Medicine, September 1, 2004.</entityDescription>
+        <copyright>Elizabeth d'Alelio; Customer Operations Manager; MedDRA MSSO; 12011 Sunset Hills Rd. 8A16; Reston, VA 20910; Elizabeth.d'Alelio@trw.com; phone: (703)345-8821; fax: (703)345-7791</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MDREA"
+        formalName="Medical Dictionary for Regulatory Activities Terminology (MedDRA), American English Equivalents with expanded abbreviations, 8.0"
+        registeredName="MedDRA Am Engl expanded" defaultLanguage="en"
+        representsVersion="MDREA80" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MDREA</localName>
+        <entityDescription>MedDRA : medical dictionary for regulatory activities terminology, american english equivalents with expanded Abbreviations. Version 8.0. Bethesda, MD: U.S. National Library of Medicine, September 1, 2004.</entityDescription>
+        <copyright>Elizabeth d'Alelio; Customer Operations Manager; MedDRA MSSO; 12011 Sunset Hills Rd. 8A16; Reston, VA 20910; Elizabeth.d'Alelio@trw.com; phone: (703)345-8821; fax: (703)345-7791</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MDREX"
+        formalName="Medical Dictionary for Regulatory Activities Terminology (MedDRA), with expanded abbreviations, 8.0"
+        registeredName="MedDRA expanded" defaultLanguage="en"
+        representsVersion="MDREX80" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MDREX</localName>
+        <entityDescription>MedDRA : medical dictionary for regulatory activities terminology, with expanded abbreviations. Version 8.0. Bethesda, MD: U.S. National Library of Medicine, September 1, 2004.</entityDescription>
+        <copyright>Elizabeth d'Alelio; Customer Operations Manager; MedDRA MSSO; 12011 Sunset Hills Rd. 8A16; Reston, VA 20910; Elizabeth.d'Alelio@trw.com; phone: (703)345-8821; fax: (703)345-7791</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="CSP" formalName="CRISP Thesaurus, 2005"
+        registeredName="CRISP Thesaurus" defaultLanguage="en"
+        representsVersion="CSP2005" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>CSP</localName>
+        <entityDescription>Computer Retrieval of Information on Scientific Projects (CRISP). Bethesda (MD): National Institutes of Health, Division of Research Grants, Research Documentation Section, 2005.</entityDescription>
+        <copyright>Dorrette Finch, Director, Division of Research Documentation, ORA, OER, National Institutes of Health, 6701 Rockledge Drive, Bethesda MD 20892-7983; email: dw33v@nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="HUGO"
+        formalName="HUGO Gene Nomenclature, 2005_04"
+        registeredName="HUGO, 2004" defaultLanguage="en"
+        representsVersion="HUGO_2005_04" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>HUGO</localName>
+        <entityDescription>HUGO Gene Nomenclature, HUGO Gene Nomenclature Committee, Department of Biology, University College London, Wolfson House, 4 Stephenson Way, London NW1 2HE, UK. Tel: 44-20-7679-5027 Fax: 44-20-7387-3496 e-mail: nome@galton.ucl.ac.uk</entityDescription>
+        <copyright>nome@galton.ucl.ac.uk</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHPDQ"
+        formalName="Metathesaurus Forms of Physician Data Query, 2005"
+        registeredName="MTHPDQ" defaultLanguage="en"
+        representsVersion="MTHPDQ2005" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHPDQ</localName>
+        <entityDescription>Methathesaurus Forms of Physician Data Query (PDQ), 2005. Bethesda (MD): National Cancer Institute.</entityDescription>
+        <copyright>Jan Willis, National Library of Medicine, UMLS Support, 38A-4th floor, 8600 Rockville Pike, Bethesda MD 20894; phone: 301-496-7715; email: jwillis@nlm.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="PDQ" formalName="Physician Data Query"
+        registeredName="Physician Data Query" defaultLanguage="en"
+        representsVersion="PDQ2005" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>PDQ</localName>
+        <entityDescription>PDQ. Bethesda (MD): National Cancer Institute, 2005.</entityDescription>
+        <copyright>Margaret Haber, NCI Building 6116 - 6116 Exec Blvd, Room 3124, Rockville, MD; telephone: 301-594-9185; Fax: 301-480-8105; Email: mhaber@mail.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHSCTSPA"
+        formalName="Metathesaurus forms of Spanish SNOMED Clinical Terms, 2005_04_30"
+        registeredName="Metathesaurus forms of Spanish SNOMED Clinical Terms"
+        defaultLanguage="en" representsVersion="MTHSCTSPA_2005_04_30"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHSCTSPA</localName>
+        <entityDescription>Metathesaurus forms of Spanish SNOMED Clinical Terms. Bethesda (MD): National Library of Medicine, April 30, 2005.</entityDescription>
+        <copyright></copyright>
+    </codingScheme>
+    <codingScheme codingScheme="SCTSPA"
+        formalName="SNOMED Clinical Terms, Spanish Language Edition, 2005_04_30"
+        registeredName="SNOMED Clinical Terms, Spanish Language Edition"
+        defaultLanguage="en" representsVersion="SCTSPA_2005_04_30"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>SCTSPA</localName>
+        <entityDescription>College of American Pathologists, SNOMED Clinical Terms, Spanish Language Edition, April 30, 2005. SNOMED International, 325 Waukegan Road, Northfield, IL 60093-2750. Phone: 800-323-4040 ext. 7700. Email: snomed@cap.org. URL: http://www.snomed.org</entityDescription>
+        <copyright></copyright>
+    </codingScheme>
+    <codingScheme codingScheme="CCS"
+        formalName="Clinical Classifications Software, 2005"
+        registeredName="Clinical Classifications Categories"
+        defaultLanguage="en" representsVersion="CCS2005" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>CCS</localName>
+        <entityDescription>Clinical Classifications Software (CCS). Agency for Healthcare Research and Quality (AHRQ), Rockville, MD. Release Date: April 2005. URL: http://www.hcup-us.ahrq.gov/toolssoftware/ccs/ccs.jsp Phone: 301-594-1364.</entityDescription>
+        <copyright>Anne Elixhauser, Ph.D., Senior Research Scientist, Agency for Healthcare Research and Quality, 540 Gaither Road, Rockville, MD 20850; phone: (301) 427-1411; fax: (301) 594-1430; phone: 1-800-358-9295; email: AElixhau@AHRQ.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="LNC" formalName="LOINC 2.15"
+        registeredName="LOINC" defaultLanguage="en"
+        representsVersion="LNC215" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>LNC</localName>
+        <entityDescription>Logical Observation Identifier Names and Codes (LOINC). Version 2.15. Indianapolis (IN): The Regenstrief Institute, June 6, 2005</entityDescription>
+        <copyright>kmercer@regenstrief.org</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="PNDS"
+        formalName="Perioperative Nursing Data Set, 2nd edition, 2002"
+        registeredName="PNDS" defaultLanguage="en"
+        representsVersion="PNDS2002" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>PNDS</localName>
+        <entityDescription>Perioperative nursing data set : the perioperative nursing vocabulary, 2nd Ed. edited by Suzanne C. Beyea. / AORN; Denver, Colo. : AORN, 2002</entityDescription>
+        <copyright>Susan Kleinbeck, info@aorn.org</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="HL7V2.5"
+        formalName="HL7 Vocabulary Version 2.5, 2003_08_30"
+        registeredName="HL7 Version 2.5" defaultLanguage="en"
+        representsVersion="HL7V2.5_2003_08_30" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>HL7V2.5</localName>
+        <entityDescription>Health Level Seven Vocabulary (HL7). Ann Arbor (MI): Health Level Seven, 1998-2002. Contact: Mark McDougall, Executive Director, Health Level Seven; 3300 Washtenaw Avenue, Suite 227, Ann Arbor, MI 48104-4250; Phone: (734)677-7777; Fax: (734)677-6622; Email: HQ@HL7.ORG ; Web site: www.HL7.ORG.</entityDescription>
+        <copyright>Health Level Seven, 3300 Washtenaw Avenue, Suite 227, Ann Arbor MI 48104-4250; phone: (734)677-7777; fax: (734)677-6622; e-mail: HQ@HL7.ORG</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHHL7V2.5"
+        formalName="HL7 Vocabulary Version 2.5, 7-bit equivalents, 2003_08"
+        registeredName="HL7 Version 2.5, 7-bit equivalents"
+        defaultLanguage="en" representsVersion="MTHHL7V2.5_2003_08"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHHL7V2.5</localName>
+        <entityDescription>HL7 Vocabulary Version 2.5, 7-bit equivalents created by the National Library of Medicine. Bethesda (MD): August 30, 2003</entityDescription>
+        <copyright>Jan Willis, National Library of Medicine, UMLS Support, 38A-4th floor, 8600 Rockville Pike, Bethesda MD 20894; phone: 301-496-7715; email: jwillis@nlm.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="HL7V3.0"
+        formalName="HL7 Vocabulary Version 3.0, 2004_12_09"
+        registeredName="HL7 Version 3.0" defaultLanguage="en"
+        representsVersion="HL7V3.0_2004_12_09" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>HL7V3.0</localName>
+        <entityDescription>Health Level Seven Vocabulary (HL7). Ann Arbor (MI): Health Level Seven, 1998-2002. Contact: Mark McDougall, Executive Director, Health Level Seven; 3300 Washtenaw Avenue, Suite 227, Ann Arbor, MI 48104-4250; Phone: (734)677-7777; Fax: (734)677-6622; Email: HQ@HL7.ORG ; Web site: www.HL7.ORG.</entityDescription>
+        <copyright>Health Level Seven, 3300 Washtenaw Avenue, Suite 227, Ann Arbor MI 48104-4250; phone: (734)677-7777; fax: (734)677-6622; e-mail: HQ@HL7.ORG</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHHL7V3.0"
+        formalName="HL7 Vocabulary Version 3.0, 7-bit equivalents, 2004_12"
+        registeredName="HL7 Version 3.0, 7-bit equivalents"
+        defaultLanguage="en" representsVersion="MTHHL7V3.0_2004_12"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHHL7V3.0</localName>
+        <entityDescription>HL7 Vocabulary Version 3.0, 7-bit equivalents created by the National Library of Medicine. Bethesda (MD): December 9, 2004.</entityDescription>
+        <copyright>Jan Willis, National Library of Medicine, UMLS Support, 38A-4th floor, 8600 Rockville Pike, Bethesda MD 20894; phone: 301-496-7715; email: jwillis@nlm.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="CTCAE"
+        formalName="Common Terminology Criteria for Adverse Events, 2003"
+        registeredName="Common Terminology Criteria for Adverse Events"
+        defaultLanguage="en" representsVersion="CTCAEV3" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>CTCAE</localName>
+        <entityDescription>Common Terminology Criteria for Adverse Events v3.0, Cancer Therapy Evaluation Program (CTEP), National Cancer Institute. Bethesda, MD: National Cancer Institute, Dec. 12, 2003.</entityDescription>
+        <copyright>M. Haber, National Cancer Institute, Building 6116, 6116 Exec Blvd, Room 3124, Rockville, MD; Phone: 301-594-9185; Fax: 301-480-8105; Email: mhaber@mail.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="NCI-CTCAE"
+        formalName="NCI modified Common Terminology Criteria for Adverse Events v3.0, 2003"
+        registeredName="NCI modified Common Terminology Criteria for Adverse Events"
+        defaultLanguage="en" representsVersion="NCI-CTCAEV3"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>NCI-CTCAE</localName>
+        <entityDescription>NCI modified Common Terminology Criteria for Adverse Events v3.0, Enterprise Vocabulary Service Project, National Cancer Institute. Bethesda, MD: National Cancer Institute, 2005.</entityDescription>
+        <copyright>M. Haber, National Cancer Institute, Building 6116, 6116 Exec Blvd, Room 3124, Rockville, MD; Phone: 301-594-9185; Fax: 301-480-8105; Email: mhaber@mail.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICD9CM" formalName="ICD-9-CM, 2006"
+        registeredName="ICD-9-CM" defaultLanguage="en"
+        representsVersion="ICD9CM_2006" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICD9CM</localName>
+        <entityDescription>ICD-9-CM [computer file]: international classification of diseases, ninth revision, clinical modification. Baltimore, MD: U.S. Department of Health and Human Services, Centers for Medicare &amp; Medicaid Services, effective October 1, 2005.</entityDescription>
+        <copyright>Contact for Diseases: Donna Pickett, National Center for Health Statistics; e-mail: dfp4@cdc.gov; Contact for Procedures: Patricia Brooks, Health Care Financing Administration; e-mail: pbrooks@hcfa.gov;</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHICD9"
+        formalName="Metathesaurus additional entry terms for ICD-9-CM, 2006"
+        registeredName="UMLS ICD-9-CM Terms" defaultLanguage="en"
+        representsVersion="MTHICD9_2006" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHICD9</localName>
+        <entityDescription>Metathesaurus additional entry terms for ICD-9-CM [computer file]: international classification of diseases, ninth revision, clinical modification. Bethesda, MD: U.S. Dept. of Health and Human Services, Public Health Service, National Institutes of Health, National Library of Medicine, September 2005.</entityDescription>
+        <copyright>National Library of Medicine, UMLS project</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MDRGER"
+        formalName="Medical Dictionary for Regulatory Activities Terminology (MedDRA), German Edition, 8.0"
+        registeredName="MedDRA German" defaultLanguage="en"
+        representsVersion="MDRGER80" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MDRGER</localName>
+        <entityDescription>Medical Dictionary for Regulatory Activities Terminology (MedDRA) Version 8.0, German Edition. International conference on Harmonization of Technical Requirements for Registration of Pharmaceuticals for Human Use (ICH). Reston, VA: MedDRA MSSO, August 2005.</entityDescription>
+        <copyright>Kathryn Studeman Customer Operations, MedDRA MSSO, 12011 Sunset Hills Rd., VAR1/7B34/MSSO, Reston, VA 20190-3285; phone: 703-345-8175; fax: 703-345-7791; Email: kathryn.studeman@ngc.com</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="SNOMEDCT"
+        formalName="SNOMED Clinical Terms, 2005_07_31"
+        registeredName="SNOMED Clinical Terms" defaultLanguage="en"
+        representsVersion="SNOMEDCT_2005_07_31" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>SNOMEDCT</localName>
+        <entityDescription>College of American Pathologists, SNOMED Clinical Terms. SNOMED International, 325 Waukegan Road, Northfield, IL 60093-2750. Phone: 800-323-4040 ext. 7700. Email: snomed@cap.org. Release Date: July 31, 2005. URL: http://www.snomed.org</entityDescription>
+        <copyright></copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHSCT"
+        formalName="Metathesaurus forms of SNOMED Clinical Terms, 2005_07_31"
+        registeredName="Metathesaurus forms of SNOMED Clinical Terms"
+        defaultLanguage="en" representsVersion="MTHSCT_2005_07_31"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHSCT</localName>
+        <entityDescription>Metathesaurus forms of SNOMED Clinical Terms. Bethesda (MD): National Library of Medicine, July 31, 2005.</entityDescription>
+        <copyright></copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MSH"
+        formalName="Medical Subject Headings, 2006_2005_08_01"
+        registeredName="MeSH" defaultLanguage="en"
+        representsVersion="MSH2006_2005_08_01" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MSH</localName>
+        <entityDescription>Medical Subject Headings (MeSH). Bethesda (MD): National Library of Medicine, 2006</entityDescription>
+        <copyright>Stuart Nelson, M.D., Head, MeSH Section; e-mail: nelson@nlm.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="VANDF"
+        formalName="Veterans Health Administration National Drug File, 2005_03_23, 2005_03_23"
+        registeredName="National Drug File" defaultLanguage="en"
+        representsVersion="VANDF_2005_03_23" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>VANDF</localName>
+        <entityDescription>U.S. Department of Veterns Affairs, Veterans Health Administration National Drug File. Department of Veterans Affairs, Washington, DC. URL: http://www.vapbm.org/PBM/natform.htm</entityDescription>
+        <copyright>U.S. Department of Veterans Affairs, Veterans Health Administration, Washington DC; Steven Brown, CPEP office 1310 24th Avenue South, Nashville TN 37215; email: Steven.Brown@med.va.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="NDDF"
+        formalName="National Drug Data File Plus Source Vocabulary, May 2005, 2005_05_18, 2005_05_18"
+        registeredName="National Drug Data File" defaultLanguage="en"
+        representsVersion="NDDF_2005_05_18" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>NDDF</localName>
+        <entityDescription>National Drug Data File Plus Source Vocabulary 2005. San Bruno, CA: First DataBank, May 18, 2005.</entityDescription>
+        <copyright>First DataBank Customer Support, 1111 Bayhill Drive, San Bruno, CA 94066; phone: 800-633-3453; e-mail: cs@firstdatabank.com</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="USPMG"
+        formalName="USP Model Guidelines, 2004"
+        registeredName="USP Model Guidelines" defaultLanguage="en"
+        representsVersion="USPMG_2004" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>USPMG</localName>
+        <entityDescription>United States Pharmacopeia (USP). Medicare Prescription Drug Benefit Model Guidelines: Drug Categories and Classes in Part D, 2004. http://www.usp.org/pdf/EN/mmg/comprehensiveDrugListing2004-12-31.pdf</entityDescription>
+        <copyright>http://www.usp.org/healthcareInfo/mmg/finalGuidelines.html</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTHFDA"
+        formalName="Metathesaurus FDA National Drug Code Directory, 2005_03_31, 2005_03_31"
+        registeredName="FDA National Drug Code Directory"
+        defaultLanguage="en" representsVersion="MTHFDA_2005_03_31"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTHFDA</localName>
+        <entityDescription>Metathesaurus Forms of FDA National Drug Code Directory, 2005_03_31. Bethesda, MD: National Library of Medicine, 2005.</entityDescription>
+        <copyright>Jan Willis, National Library of Medicine, UMLS Support, 38A-4th fl, 8600 Rockville Pike, Bethesda MD 20894; phone: 301-496-7715; e-mail: jwillis@nlm.nih.gov. NOTE: Users must also obtain rights to use the parent source.</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="RXNORM"
+        formalName="RXNORM Project, META2005AC Full Update 2005_09_14, 2005AC"
+        registeredName="RxNorm work done by the National Library of Medicine"
+        defaultLanguage="en" representsVersion="RXNORM_2005AC"
+        isNative="0" approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>RXNORM</localName>
+        <entityDescription>RxNorm work done by NLM. National Library of Medicine (NLM). Bethesda (MD): National Library of Medicine, META2005AC Full Update 2005_09_14</entityDescription>
+        <copyright>Stuart Nelson, M.D., Head, MeSH Section; e-mail: nelson@nlm.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MTH" formalName="UMLS Metathesaurus"
+        registeredName="Metathesaurus Names" defaultLanguage="en"
+        representsVersion="MTH" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MTH</localName>
+        <entityDescription>UMLS Metathesaurus. Bethesda, MD: National Library of Medicine.</entityDescription>
+        <copyright>Jan Willis, National Library of Medicine, UMLS Support, 38A-4th floor, 8600 Rockville Pike, Bethesda MD 20894; phone: 301-496-7715; e-mail: jwillis@nlm.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="SRC"
+        formalName="Metathesaurus Source Terminology Names"
+        registeredName="Metathesaurus Source Terminologies"
+        defaultLanguage="en" representsVersion="SRC" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>SRC</localName>
+        <entityDescription>UMLS Metathesaurus Source Terminologies. Bethesda, MD: National Library of Medicine.</entityDescription>
+        <copyright>Jan Willis, National Library of Medicine, UMLS Support, 38A-4th fl, 8600 Rockville Pike, Bethesda MD 20894; phone: 301 496-7715; e-mail: jwillis@nlm.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MSH"
+        formalName="Medical Subject Headings, 2005_2005_01_17"
+        registeredName="MeSH" defaultLanguage="en"
+        representsVersion="MSH2005_2005_01_17" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MSH</localName>
+        <entityDescription>Medical Subject Headings (MeSH). Bethesda (MD): National Library of Medicine, 2005</entityDescription>
+        <copyright>Stuart Nelson, M.D., Head, MeSH Section; e-mail: nelson@nlm.nih.gov</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="ICD9CM" formalName="ICD-9-CM, 2005"
+        registeredName="ICD-9-CM" defaultLanguage="en"
+        representsVersion="ICD9CM_2005" isNative="0"
+        approxNumConcepts="0" firstRelease="MISSING"
+        modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>ICD9CM</localName>
+        <entityDescription>ICD-9-CM [computer file]: international classification of diseases, ninth revision, clinical modification. Version 22. Baltimore, MD: U.S. Department of Health and Human Services, Centers for Medicare &amp; Medicaid Services, effective October 1, 2004.</entityDescription>
+        <copyright>Contact for Diseases: Donna Pickett, National Center for Health Statistics; e-mail: dfp4@cdc.gov; Contact for Procedures: Patricia Brooks, Health Care Financing Administration; e-mail: pbrooks@hcfa.gov;</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="MDR"
+        formalName="Medical Dictionary for Regulatory Activities Terminology (MedDRA), 6.0"
+        registeredName="MedDRA" defaultLanguage="en"
+        representsVersion="MDR60" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>MDR</localName>
+        <entityDescription>Medical Dictionary for Regulatory Activities Terminology (MedDRA) Version 6.0, March, 2003. International Conference on Harmonization of Technical Requirements for Registration of Pharmaceuticals for Human Use (ICH). http://meddramsso.com</entityDescription>
+        <copyright>Elizabeth d'Alelio; Customer Operations Manager; MedDRA MSSO; 12011 Sunset Hills Rd. 8A16; Reston, VA 20910; Elizabeth.d'Alelio@trw.com; phone: (703)345-8821; fax: (703)345-7791</copyright>
+    </codingScheme>
+    <codingScheme codingScheme="NLM-MED"
+        formalName="National Library of Medicine Medline Data"
+        registeredName="Medline Data" defaultLanguage="en"
+        representsVersion="NLM-MED" isNative="0" approxNumConcepts="0"
+        firstRelease="MISSING" modifiedInRelease="MISSING" deprecated="MISSING">
+        <localName>NLM-MED</localName>
+        <entityDescription>National Library of Medicine (NLM) Medline Data. Bethesda (MD): National Library of Medicine. Contact: http://www.nlm.nih.gov.</entityDescription>
+        <copyright></copyright>
+    </codingScheme>
+</codingSchemes>

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 30, 2009 7:07:50 AM by Hibernate == Tools 3.2.0.CR1 -->
+<hibernate-mapping>
+    <class name="org.LexGrid.persistence.model.CodingScheme" table="@PREFIX@codingScheme">
+        <id name="codingSchemeName" type="string">
+            <column name="codingSchemeName" length="50" />
+            <generator class="assigned" />
+        </id>
+        <property name="codingSchemeUri" type="string">
+            <column name="codingSchemeURI" length="250" not-null="true" unique="true" />
+        </property>
+        <property name="representsVersion" type="string">
+            <column name="representsVersion" length="50" not-null="true" />
+        </property>
+        <property name="formalName" type="string">
+            <column name="formalName" length="250" />
+        </property>
+        <property name="defaultLanguage" type="string">
+            <column name="defaultLanguage" length="32" />
+        </property>
+        <property name="approxNumConcepts" type="java.lang.Long">
+            <column name="approxNumConcepts" />
+        </property>
+        <property name="isActive" type="java.lang.Boolean">
+            <column name="isActive" />
+        </property>
+        <property name="entryStateId" type="java.lang.Long">
+            <column name="entryStateId" />
+        </property>
+        <property name="releaseUri" type="string">
+            <column name="releaseURI" length="250" />
+        </property>
+        <property name="entityDescription" type="string">
+            <column name="entityDescription" length="65535" />
+        </property>
+        <property name="copyright" type="string">
+            <column name="copyright" length="65535" />
+        </property>
+    </class>
+</hibernate-mapping>

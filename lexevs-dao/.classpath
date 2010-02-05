@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/test/resources"/>
+	<classpathentry kind="src" output="target/classes" path="src/main/resources"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lgModel"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Indexer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbModel"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

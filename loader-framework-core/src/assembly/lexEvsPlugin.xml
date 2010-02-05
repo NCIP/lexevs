@@ -1,0 +1,37 @@
+<assembly>
+  <id>lexEvsPlugin</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  
+  
+   <dependencySets>
+    <dependencySet>
+       <unpack>false</unpack>
+       <outputDirectory>runtime/lib</outputDirectory>
+       <scope>runtime</scope>
+       <useProjectArtifact>false</useProjectArtifact>
+     <!--  <useTransitiveDependencies>false</useTransitiveDependencies> -->
+    </dependencySet>
+  </dependencySets>
+  
+ 
+  <fileSets> 
+    <fileSet>
+      <directory>${basedir}/src/extension/scripts</directory>
+       <outputDirectory>admin</outputDirectory>
+      <includes>
+       <include>*</include>
+       </includes>
+    </fileSet>
+    
+    <fileSet>
+      <directory>${basedir}/target</directory>
+       <outputDirectory>runtime</outputDirectory>
+      <includes>
+       <include>*.jar</include>
+       </includes>
+    </fileSet> 
+  </fileSets>
+</assembly>

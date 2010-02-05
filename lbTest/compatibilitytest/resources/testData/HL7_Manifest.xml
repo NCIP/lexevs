@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodingSchemeManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://LexGrid.org/schema/2008/01/LexOnt/CodingSchemeManifest http://LexGrid.org/schema/2008/01/LexOnt/CodingSchemeManifest.xsd"
+	xmlns:owldef="http://LexGrid.org/schema/2008/01/LexOnt/CodingSchemeManifest"
+	xmlns="http://LexGrid.org/schema/2008/01/LexOnt/CodingSchemeManifest" id="http://ncicb.nci.nih.gov/xml/owl/EVS/HL7.owl#">
+		<codingScheme toOverride="true">HL7</codingScheme>
+		<entityDescription toOverride="true">2008 version of Pizza ontology</entityDescription>
+		<formalName toOverride="true">Pizza Vocabulary</formalName>
+		<registeredName toOverride="false">urn:oid:2.16.840.1.113883.6.10:Pizza.com</registeredName>
+		<defaultLanguage toOverride="true">ka</defaultLanguage>
+		<representsVersion>2008</representsVersion>
+
+		<!--	compares content
+				content	->	attributeValue
+		-->
+		<localName toAdd="true">Pizza Hut</localName>
+		<localName toAdd="true">Papa Jones</localName>
+		<localName toAdd="true">Pizza Hut</localName>
+		<localName toAdd="true">Dominos</localName>
+		<localName >pizza.owl</localName>
+
+		<!--	compares content
+				content	->	attributeValue
+				role	->	val1
+				subRef	->	val2
+		-->
+		<source localId="Pizza Hut" subRef="Pepper" role="Small" toUpdate="true">Pizza Hut</source>
+		<source localId="Pizza Hut" subRef="Pepper" role="Small" toUpdate="true">Pizza Hut</source>
+		<source localId="Dominos" subRef="Mushroom" role="Cheese" toUpdate="true">Dominos</source>
+		<source localId="Pizza Hut" subRef="Crust" role="Medium" toUpdate="true">Pizza Hut</source>
+		<source localId="Pizza Hut" subRef="Tomatos" role="Large" toUpdate="true">Pizza Hut</source>
+		<source localId="pizza.owl" subRef="Onions" role="Small">pizza.owl</source>
+
+		<copyright toOverride="true">Pizza, 2008</copyright>
+
+		<owldef:mappings dc="mappings" toUpdate="true" xmlns="http://LexGrid.org/schema/2008/01/LexGrid/codingSchemes">
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<supportedLanguage localId="ka" urn="urn:oid:1.3.6.1.4.1.2114.108.1.6.56:Kannada"/>
+			<supportedLanguage localId="hi"/>
+			<supportedLanguage localId="KA" urn="urn:oid:1.3.6:KANNADA"/>
+			<supportedLanguage localId="en" urn="www.en.org/orsomething">ennnnn</supportedLanguage>
+			
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<supportedFormat localId="text_plain" urn="urn:oid:1.3.6.1.4.1.2114.108.1.6.57:text_plain" />
+			<supportedFormat localId="text_plain1" />
+			<supportedFormat localId="TEXT_PLAIN" urn="urn:oid:1.3.6:TEXT_PLAIN" />
+			<supportedFormat localId="test/html">test/htmlllllll</supportedFormat>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<supportedProperty localId="property1" urn="urn:oid:1.3.6.1.4.1.2114.108.1.6.59:property1"/>
+			<supportedProperty localId="property2" />
+			<supportedProperty localId="PROPERTY1" urn="urn:oid:1.3.6:PROPERTY1"/>
+			<supportedProperty localId="primitive" urn="primitive"/>
+			
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+					isImported	->	val1	(required)	
+			-->
+			<supportedCodingScheme localId="cs1" urn="cs1" isImported="true">content</supportedCodingScheme>
+			<supportedCodingScheme localId="cs2" urn="cs2" isImported="false"/>
+			<supportedCodingScheme localId="pizza.owl" urn="urn:oid:11.11.0.1" isImported="true">pizza.owl</supportedCodingScheme>	
+			<supportedCodingScheme localId="Expendable Pizza" urn="urn:oid:11.11.0.50" isImported="true">Expendable Pizza</supportedCodingScheme>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+					AgentRole	->	val1
+					AssemblyRule	->	val2
+			-->
+			<supportedSource localId="source1" urn="urn:oid:1.3.6.1.4.1.2114.108.1.6.85:source1" AgentRole="AgentRole" AssemblyRule="AssemblyRule">content</supportedSource>
+			<supportedSource localId="source2" />
+			<supportedSource localId="SOURCE1" urn="urn:oid:1.3.6:source1"/>
+			<supportedSource localId="rdf" urn="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<supportedAssociation localId="Role_Has_Range" urn="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Role_Has_Range"/>
+			<supportedAssociation localId="Role_Has_Range1" urn="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Role_Has_Range1">supportedAssociation</supportedAssociation>
+			<supportedAssociation localId="Role_Has_Range" urn="Thesaurus.owl#Role_Has_Range">content</supportedAssociation>
+			<supportedAssociation localId="hasSubtype" urn="urn:oid:1.3.6">hasSubtype11111</supportedAssociation>
+			<supportedAssociation localId="isToppingOf" urn="http://www.co-ode.org/ontologies/pizza/pizza.owl#isToppingOf"/>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<supportedContext localId="Context1" urn="urn:oid:1.3.6.1.4.1.2114.108.1.6.58:Context1"/>
+			<supportedContext localId="Context2" urn="urn:oid:1.3.6.1.4.1.2114.108.1.6.58:Context2">supportedContext</supportedContext>
+			<supportedContext localId="Context1" urn="urn:oid:1.3.6"/>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<supportedAssociationQualifier localId="AssociationQualifier" urn="urn:oid:1.3.6.1.4.1.2114.108.1.6.61:AssociationQualifier"/>
+			<supportedAssociationQualifier localId="" urn="urn:oid:1.3.6.1.4.1.2114.108.1.6.61:Context2">supportedAssociationQualifier</supportedAssociationQualifier>
+			<supportedAssociationQualifier localId="hasEngine" urn="www.something.com">hasEngine</supportedAssociationQualifier>
+			<supportedAssociationQualifier localId="owl:allValuesFrom" urn="http://www.w3.org/2002/07/owl#owl:allValuesFrom"/>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<supportedConceptStatus localId="ConceptStatus" urn="urn:oid:1.3.6.1.4.1.2114.108.1.6.96:ConceptStatus"/>
+			<supportedConceptStatus localId="ConceptStatus1"/>
+			<supportedConceptStatus localId="cONCEPTsTATUS" urn="urn:oid:1.3.6.1.4.1.2114.108.1.6.96:cONCEPTsTATUS"/>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<supportedRepresentationalForm localId="RepresentationForm" urn="urn:oid:2.16.840.1.113883.6.10:RepresentationForm">supportedRepresentationalForm </supportedRepresentationalForm>
+			<supportedRepresentationalForm localId="RepresentationForm1" />
+			<supportedRepresentationalForm localId="RepresentationForm"></supportedRepresentationalForm>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<supportedPropertylink localId="Propertylink" urn="urn:oid:2.16.840.1.113883.6.10:Propertylink"/>
+			<supportedPropertylink localId="Propertylink" >supportedPropertylink</supportedPropertylink>
+			<supportedPropertylink localId="Propertylink1" urn="urn:oid:2.16.840.1.113883.6.10:Propertylink">supportedPropertylin1k</supportedPropertylink>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<supportedDegreeOfFidelity localId="DegreeOfFidelity" urn="urn:oid:2.16.840.1.113883.6.10:DegreeOfFidelity"/>
+			<supportedDegreeOfFidelity localId="DegreeOfFidelity" >supportedDegreeOfFidelity</supportedDegreeOfFidelity>
+			<supportedDegreeOfFidelity localId="DegreeOfFidelity2" urn="urn:oid:2.16.840.1.113883.6.10:DegreeOfFidelity">supportedDegreeOfFidelity2</supportedDegreeOfFidelity>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<supportedPropertyQualifier localId="PropertyQualifier" urn="urn:oid:2.16.840.1.113883.6.10:PropertyQualifier">supportedPropertyQualifier</supportedPropertyQualifier>
+			<supportedPropertyQualifier localId="PropertyQualifier" />
+			<supportedPropertyQualifier localId="PropertyQualifier1"/>
+
+			<!--	compares localId, rootCode and associationIds
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+					associationIds	->		(required)
+					rootCode	->			(required)
+					isForwardNavigable	->	(required)
+			-->
+			<supportedHierarchy localId="is_a" associationIds="hasSubtype" rootCode="@" isForwardNavigable="true">supportedHierarchy </supportedHierarchy>
+			<supportedHierarchy localId="was_a" associationIds="hasSubtype,forSubType" rootCode="@" isForwardNavigable="true"/>
+			<supportedHierarchy localId="IS_a" associationIds="hasSubtype,wasSubType,forSubType" rootCode="@" isForwardNavigable="true"/>
+			<supportedHierarchy localId="IS_a" associationIds="hasSubtype,forSubType,wasSubType" rootCode="@" isForwardNavigable="true"/>
+			<supportedHierarchy localId="was_a" associationIds="hasSubtype,forSubType" rootCode="@@" isForwardNavigable="true">supportedHierarchy </supportedHierarchy>
+			<supportedHierarchy localId="was_a" associationIds="hasSubtype,forSubType" rootCode="@" isForwardNavigable="false"/>
+			<supportedHierarchy localId="was_a" associationIds="hasSubtype,forSubType,toSubType" rootCode="@" isForwardNavigable="false"/>
+			<supportedHierarchy localId="was_a" associationIds="hasSubtype,forSubType" rootCode="@" isForwardNavigable="false"/>
+			<supportedHierarchy localId="was_a" associationIds="hasSubtype,forSubType" rootCode="@" isForwardNavigable="true"/>
+		</owldef:mappings>
+		<owldef:associationDefinitions >
+		</owldef:associationDefinitions>
+</CodingSchemeManifest>

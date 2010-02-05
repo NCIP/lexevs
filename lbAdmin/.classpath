@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="/lgSharedLibraries/apache/commons/commons-cli-1.0.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lbImpl"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lgModel.emf"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbModel"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lgModel"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lgConverter"/>
+	<classpathentry kind="lib" path="/lbModel/lib/lbModel.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

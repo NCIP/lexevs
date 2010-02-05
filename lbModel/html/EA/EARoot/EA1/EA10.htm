@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../../ea.css" rel=stylesheet>
+<title>LexBIGService::CodedNodeGraph</title>
+</head>
+<body>
+<TABLE class="HeaderTable" align="center" cellSpacing=0 cellPadding=0>
+  <TBODY >
+	<TR>
+		<TD colspan=2 WIDTH="100%" class="Header">interface: CodedNodeGraph</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="48%" class="HeaderDetails"></TD>
+		<TD WIDTH="48%" class="HeaderDetails"></TD>
+	</TR>
+	<TR>
+		<TD WIDTH="40%" class="HeaderDetails"></TD>
+		<TD WIDTH="60%" class="HeaderDetails"></TD>
+	</TR>
+	<TR><TD colspan="2" width="100%"><HR></TD></TR>
+	</TBODY>
+</TABLE> <table cellPadding=2 cellSpacing=2 width="100%">
+  <tbody>
+		<tr>
+			<td class=ObjectTitle>
+				public abstract  &lt;&lt;interface&gt;&gt; interface: CodedNodeGraph  
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table class=ObjectDetails cellPadding=2 cellSpacing=2 width="100%">
+				  <tbody>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Author:</td>
+							<td width="85%" class=ObjectDetailsValue>solbrigcvs</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Project:</td>
+							<td width="85%" class=ObjectDetailsValue>Phase: 1.0; Status: Proposed; Version: 1.0; Complexity: 1</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Dates:</td>
+							<td width="85%" class=ObjectDetailsValue>Created: 8/14/2006 3:21:23 PM; Modified: 8/28/2006 10:58:59 PM;</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Flags:</td>
+							<td width="85%" class=ObjectDetailsValue> Active: false; IsRoot: false; IsLeaf: false;</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Extension Points:</td>
+							<td width="85%" class=ObjectDetailsValue></td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>UUID:</td>
+							<td width="85%" class=ObjectDetailsValue>{B2AB491C-06B8-4007-9D7B-DFFA0E3CA505}</td>
+						</tr>
+						<tr>
+							<td colspan="2" width="100%" class=ObjectDetailsTopic>A virtual graph where the edges represent associations and the nodes<br>represent concept codes. A CodedNodeGraph describes a graph that can be<br>combined with other graphs, queried or resolved into an actual graph<br>rendering.</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+</table><p><table cellPadding=0 cellSpacing=0 width="100%">
+  <tbody>
+		<tr>
+			<td width="10%" class="ObjectSubTitle">
+				Goto:
+			</td>
+			<td width="90%">
+				<a href=#Methods>Methods</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<P/><table cellPadding=0 cellSpacing=0 width="100%">
+  <tbody>
+		<tr>
+			<td width="10%" class="ObjectSubTitle">
+				Appears in:
+			</td>
+			<td width="90%">
+				<a href="EA8.htm">LexBIGService</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<P/><table cellPadding=0 cellSpacing=0 width="100%">
+  <tbody>
+		<tr>
+			<td class="ObjectSubTitle">
+				<a Name="Methods">CodedNodeGraph</a> Methods
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<TABLE align="center" BORDER=1 CELLSPACING=0 CELLPADDING=1 bordercolor="white" class="OperationTable">
+					<TR>
+						<TD WIDTH="40%" class="OperationTableHeading">Operation</TD>
+						<TD WIDTH="60%" class="OperationTableHeading">Details</TD>
+					</TR>
+					<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>areCodesRelated</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA61.htm">NameAndValue</a> association, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA56.htm">ConceptReference</a> sourceCode, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA56.htm">ConceptReference</a> targetCode, <br>&nbsp;&nbsp;&nbsp;boolean directOnly):Boolean</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Determine whether there is an directed edge (or transitive closure of an<br>edge) from the source code to the target code in this graph. The last<br>parameter determines whether only direct associations are considered or<br>whether the transitive closure of the edge is used.<br><br>@return True if a directed edge exists; otherwise False.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>intersect</B>(<br>&nbsp;&nbsp;&nbsp;<a href="EA10.htm">CodedNodeGraph</a> graph):<a href="EA10.htm">CodedNodeGraph</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return the set of concepts and associations that are present in both<br>graphs.<br><br>@return A new CodedNodeGraph containing the intersection result.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>isCodeInGraph</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA56.htm">ConceptReference</a> code):Boolean</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Determine whether the supplied concept code is in the graph.<br><br>@return True if the concept is present; otherwise False.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>listCodeRelationships</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA56.htm">ConceptReference</a> sourceCode, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA56.htm">ConceptReference</a> targetCode, <br>&nbsp;&nbsp;&nbsp;boolean directOnly):<a href="../EA3/EA1/EA34.htm">ConceptReferenceList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return a list of all of the associations in the graph that have the<br>supplied source and target concepts or, if directOnly is false, all<br>associations whose transitive closure has the supplied associations.<br><br>@return The list of concept references for matching associations.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>resolveAsList</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA56.htm">ConceptReference</a> graphFocus, <br>&nbsp;&nbsp;&nbsp;boolean resolveForward, <br>&nbsp;&nbsp;&nbsp;boolean resolveBackward, <br>&nbsp;&nbsp;&nbsp;int resolveCodedEntryDepth, <br>&nbsp;&nbsp;&nbsp;int resolveAssociationDepth, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> restrictToProperties, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA42.htm">SortOptionList</a> sortOptions, <br>&nbsp;&nbsp;&nbsp;int maxToReturn):<a href="../EA3/EA1/EA40.htm">ResolvedConceptReferenceList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Resolve all of the coded nodes in the list, sorting by the supplied<br>property (if any), resolving the supplied properties, resolving coded<br>entries to the supplied depth and resolving associations to the supplied<br>depth.<br><br>@return  A list of concept references, up to the maximum<br>number specified.  Note that in the event that a maximum<br>number 'n' is specified and exactly 'n' items are returned,<br>there is currently no flag or notification provided to<br>indicate whether all available items were returned.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>resolveAsList</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA56.htm">ConceptReference</a> graphFocus, <br>&nbsp;&nbsp;&nbsp;boolean resolveForward, <br>&nbsp;&nbsp;&nbsp;boolean resolveBackward, <br>&nbsp;&nbsp;&nbsp;int resolveCodedEntryDepth, <br>&nbsp;&nbsp;&nbsp;int resolveAssociationDepth, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> restrictToProperties, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA42.htm">SortOptionList</a> sortOptions, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA36.htm">LocalNameList</a> filterOptions, <br>&nbsp;&nbsp;&nbsp;int maxToReturn):<a href="../EA3/EA1/EA40.htm">ResolvedConceptReferenceList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Resolve all of the coded nodes in the list, sorting by the supplied<br>property (if any), resolving the supplied properties, resolving coded<br>entries to the supplied depthm resolving associations to the supplied<br>depth, and allowing for additional filters to be applied against<br>the returned items.<br><br>@return  A list of concept references, up to the maximum<br>number specified.  Note that in the event that a maximum<br>number 'n' is specified and exactly 'n' items are returned,<br>there is currently no flag or notification provided to<br>indicate whether all available items were returned.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>restrictToAssociations</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA38.htm">NameAndValueList</a> association, <br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA1/EA38.htm">NameAndValueList</a> associationQualifiers):<a href="EA10.htm">CodedNodeGraph</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Restrict the graph to the nodes that participate as a source or target of<br>the named association and, if supplied, the named association qualifiers.<br><br>@return A new CodedNodeGraph containing the filtered result.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>restrictToCodes</B>(<br>&nbsp;&nbsp;&nbsp;<a href="EA11.htm">CodedNodeSet</a> codes):<a href="EA10.htm">CodedNodeGraph</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return a graph that contains only the codes that are present in the<br>supplied list, and all edges that still have a source and target code<br>remaining.<br><br>@return A new CodedNodeGraph containing the filtered result.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>restrictToCodeSystem</B>(<br>&nbsp;&nbsp;&nbsp;String codingScheme):<a href="EA10.htm">CodedNodeGraph</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Restrict the graph to concept codes (source and target) that originate<br>from the supplied code system. Note: edges defined by other code systems<br>will still be resolved if associated with both source and target nodes<br>for the restricted code system.<br><br>@return A new CodedNodeGraph containing the filtered result.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>restrictToSourceCodes</B>(<br>&nbsp;&nbsp;&nbsp;<a href="EA11.htm">CodedNodeSet</a> codes):<a href="EA10.htm">CodedNodeGraph</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Restrict the graph to associations that have one of the codes in the<br>supplied list as source codes.<br><br>@return A new CodedNodeGraph containing the filtered result.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>restrictToSourceCodeSystem</B>(<br>&nbsp;&nbsp;&nbsp;String codingScheme):<a href="EA10.htm">CodedNodeGraph</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Restrict the graph to edges that have concepts derived from the supplied<br>code system as a source.<br><br>@return A new CodedNodeGraph containing the filtered result.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>restrictToTargetCodes</B>(<br>&nbsp;&nbsp;&nbsp;<a href="EA11.htm">CodedNodeSet</a> codes):<a href="EA10.htm">CodedNodeGraph</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Restrict the graph to associations that have one of the codes in the<br>supplied list as target codes.<br><br>@return A new CodedNodeGraph containing the filtered result.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>restrictToTargetCodeSystem</B>(<br>&nbsp;&nbsp;&nbsp;String codingScheme):<a href="EA10.htm">CodedNodeGraph</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Restrict the graph to edges that have concepts derived from the supplied<br>code system as a target.<br><br>@return A new CodedNodeGraph containing the filtered result.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>toNodeList</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA56.htm">ConceptReference</a> graphFocus, <br>&nbsp;&nbsp;&nbsp;boolean resolveForward, <br>&nbsp;&nbsp;&nbsp;boolean resolveBackward, <br>&nbsp;&nbsp;&nbsp;int resolveAssociationDepth, <br>&nbsp;&nbsp;&nbsp;int maxToReturn):<a href="EA11.htm">CodedNodeSet</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Transform the graph into a simple of list of concept codes, removing all<br>association information.<br><br>@return  A set with matching items, up to the maximum<br>number specified.  Note that in the event that a maximum<br>number 'n' is specified and exactly 'n' items are returned,<br>there is currently no flag or notification provided to<br>indicate whether all available items were returned.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>union</B>(<br>&nbsp;&nbsp;&nbsp;<a href="EA10.htm">CodedNodeGraph</a> graph):<a href="EA10.htm">CodedNodeGraph</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException,LBParameterException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return the union of the two graphs. Union, in this context, means that<br>the resulting graph contains the unique set of coded entries (String<br>independent) that are present in one or both of the graphs, and the<br>unique combination of edges (associations) present in one or both of the<br>graphs.<br><br>@return A new CodedNodeGraph containing the merged result.</TD> </TR> </TABLE></TD>
+</TR>
+
+				</TABLE>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+</table>
+
+<TABLE class="FooterTable" align="center" cellSpacing=0 cellPadding=0>
+  <TBODY >
+	<TR><TD colspan="2" width="100%"><HR></TD></TR>
+	<TR>
+		<TD colspan=2 WIDTH="100%" class="Footer">interface: CodedNodeGraph</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="48%" class="FooterDetails"></TD>
+		<TD WIDTH="48%" class="FooterDetails"></TD>
+	</TR>
+	<TR>
+		<TD WIDTH="40%" class="FooterDetails"></TD>
+		<TD WIDTH="60%" class="FooterDetails"></TD>
+	</TR>
+	</TBODY>
+</TABLE> 
+</body>
+</html>

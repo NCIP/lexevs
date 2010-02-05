@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodingSchemeManifest xmlns="http://LexGrid.org/schema/2008/01/LexOnt/CodingSchemeManifest"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://LexGrid.org/schema/2008/01/LexOnt/CodingSchemeManifest file:/C:/lexbig_workspace/lgModel/master/manifest/CodingSchemeManifest.xsd"
+	xmlns:manifest="http://LexGrid.org/schema/2008/01/LexOnt/CodingSchemeManifest"
+	id="http://www.co-ode.org/ontologies/amino-acid/2006/05/18/amino-acid.owl#">	
+		<codingScheme>amino</codingScheme>
+		<entityDescription>This is AminoAcide Description from Manifest.</entityDescription>
+		<formalName toOverride="false">Amino Acid Ontology</formalName>
+	              <registeredName>AminoAcidRegisteredNameFromManifest</registeredName>
+		<defaultLanguage>en</defaultLanguage>
+		<representsVersion>2005/10/11</representsVersion>
+		<localName>myLocalName</localName>
+		<source subRef="ontologies">MySource</source>
+		<copyright>This is copyright</copyright>
+	              <manifest:mappings dc="mappings"  xmlns="http://LexGrid.org/schema/2008/01/LexGrid/codingSchemes">
+	               	<supportedLanguage localId="en" urn="urn:oid:2.16.840.1.113883.6.84:en"/>
+	               	<supportedFormat  localId="text_plain" urn="urn:oid:2.16.840.1.113883.6.10:text_plain"/>
+	               	<supportedSource localId="COODE" urn="http://www.co-ode.org/"/>
+	               </manifest:mappings>
+		<associationDefinitions />
+</CodingSchemeManifest>
+

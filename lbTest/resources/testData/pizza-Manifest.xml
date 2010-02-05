@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodingSchemeManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://LexGrid.org/schema/2009/01/LexOnt/CodingSchemeManifest http://LexGrid.org/schema/2009/01/LexOnt/CodingSchemeManifest.xsd"
+	xmlns:lgNaming="http://LexGrid.org/schema/2009/01/LexGrid/naming" 	
+	xmlns="http://LexGrid.org/schema/2009/01/LexOnt/CodingSchemeManifest" 
+	id="http://ncicb.nci.nih.gov/xml/owl/EVS/HL7.owl#">
+		<codingScheme toOverride="true">HL7</codingScheme>
+		<entityDescription toOverride="true">2008 version of Pizza ontology</entityDescription>
+		<formalName toOverride="true">Pizza Vocabulary</formalName>
+		<codingSchemeURI toOverride="false">urn:oid:2.16.840.1.113883.6.10:Pizza.com</codingSchemeURI>
+		<defaultLanguage toOverride="true">ka</defaultLanguage>
+		<representsVersion>2008</representsVersion>
+
+		<!--	compares content
+				content	->	attributeValue
+		-->
+		<localName toAdd="true">Pizza Hut</localName>
+		<localName toAdd="true">Papa Jones</localName>
+		<localName toAdd="true">Pizza Hut</localName>
+		<localName toAdd="true">Dominos</localName>
+		<localName >pizza.owl</localName>
+
+		<!--	compares content
+				content	->	attributeValue
+				role	->	val1
+				subRef	->	val2
+		-->
+		<source subRef="Pepper" role="Small" toUpdate="true">Pizza Hut</source>
+		<source subRef="Pepper" role="Small" toUpdate="true">Pizza Hut</source>
+		<source subRef="Mushroom" role="Cheese" toUpdate="true">Dominos</source>
+		<source subRef="Crust" role="Medium" toUpdate="true">Pizza Hut</source>
+		<source subRef="Tomatos" role="Large" toUpdate="true">Pizza Hut</source>
+		<source subRef="Onions" role="Small">pizza.owl</source>
+
+		<copyright toOverride="true">Pizza, 2008</copyright>
+
+		<mappings toUpdate="true">
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<lgNaming:supportedAssociation localId="Role_Has_Range" uri="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Role_Has_Range"/>
+			<lgNaming:supportedAssociation localId="Role_Has_Range1" uri="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Role_Has_Range1">supportedAssociation</lgNaming:supportedAssociation>
+			<lgNaming:supportedAssociation localId="Role_Has_Range" uri="Thesaurus.owl#Role_Has_Range">content</lgNaming:supportedAssociation>
+			<lgNaming:supportedAssociation localId="hasSubtype" uri="urn:oid:1.3.6">hasSubtype11111</lgNaming:supportedAssociation>
+			<lgNaming:supportedAssociation localId="isToppingOf" uri="http://www.co-ode.org/ontologies/pizza/pizza.owl#isToppingOf"/>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<lgNaming:supportedAssociationQualifier localId="AssociationQualifier" uri="urn:oid:1.3.6.1.4.1.2114.108.1.6.61:AssociationQualifier"/>
+			<lgNaming:supportedAssociationQualifier localId="aa" uri="urn:oid:1.3.6.1.4.1.2114.108.1.6.61:Context2">supportedAssociationQualifier</lgNaming:supportedAssociationQualifier>
+			<lgNaming:supportedAssociationQualifier localId="hasEngine" uri="www.something.com">hasEngine</lgNaming:supportedAssociationQualifier>
+			<lgNaming:supportedAssociationQualifier localId="owl:allValuesFrom" uri="http://www.w3.org/2002/07/owl#owl:allValuesFrom"/>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+					isImported	->	val1	(required)	
+			-->
+			<lgNaming:supportedCodingScheme localId="cs1" uri="cs1" isImported="true">content</lgNaming:supportedCodingScheme>
+			<lgNaming:supportedCodingScheme localId="cs2" uri="cs2" isImported="false"/>
+			<lgNaming:supportedCodingScheme localId="pizza.owl" uri="urn:oid:11.11.0.1" isImported="true">pizza.owl</lgNaming:supportedCodingScheme>	
+			<lgNaming:supportedCodingScheme localId="ExpendablePizza" uri="urn:oid:11.11.0.50" isImported="true">Expendable Pizza</lgNaming:supportedCodingScheme>
+
+			
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<lgNaming:supportedContext localId="Context1" uri="urn:oid:1.3.6.1.4.1.2114.108.1.6.58:Context1"/>
+			<lgNaming:supportedContext localId="Context2" uri="urn:oid:1.3.6.1.4.1.2114.108.1.6.58:Context2">supportedContext</lgNaming:supportedContext>
+			<lgNaming:supportedContext localId="Context1" uri="urn:oid:1.3.6"/>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<lgNaming:supportedDataType localId="text_plain" uri="urn:oid:1.3.6.1.4.1.2114.108.1.6.57:text_plain" />
+			<lgNaming:supportedDataType localId="text_plain1" />
+			<lgNaming:supportedDataType localId="TEXT_PLAIN" uri="urn:oid:1.3.6:TEXT_PLAIN" />
+			<lgNaming:supportedDataType localId="testhtml">test/htmlllllll</lgNaming:supportedDataType>
+			
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->			
+			<lgNaming:supportedDegreeOfFidelity localId="DegreeOfFidelity" uri="urn:oid:2.16.840.1.113883.6.10:DegreeOfFidelity"/>
+			<lgNaming:supportedDegreeOfFidelity localId="DegreeOfFidelity" >supportedDegreeOfFidelity</lgNaming:supportedDegreeOfFidelity>
+			<lgNaming:supportedDegreeOfFidelity localId="DegreeOfFidelity2" uri="urn:oid:2.16.840.1.113883.6.10:DegreeOfFidelity">supportedDegreeOfFidelity2</lgNaming:supportedDegreeOfFidelity>
+
+			<!--	compares localId, rootCode and associationIds
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+					associationIds	->		(required)
+					rootCode	->			(required)
+					isForwardNavigable	->	(required)
+			-->
+			<lgNaming:supportedHierarchy localId="is_a" associationNames="hasSubtype" rootCode="@" isForwardNavigable="true">supportedHierarchy </lgNaming:supportedHierarchy>
+			<lgNaming:supportedHierarchy localId="was_a" associationNames="hasSubtype,forSubType" rootCode="@" isForwardNavigable="true"/>
+			<lgNaming:supportedHierarchy localId="IS_a" associationNames="hasSubtype,wasSubType,forSubType" rootCode="@" isForwardNavigable="true"/>
+			<lgNaming:supportedHierarchy localId="IS_a" associationNames="hasSubtype,forSubType,wasSubType" rootCode="@" isForwardNavigable="true"/>
+			<lgNaming:supportedHierarchy localId="was_a" associationNames="hasSubtype,forSubType" rootCode="@@" isForwardNavigable="true">supportedHierarchy </lgNaming:supportedHierarchy>
+			<lgNaming:supportedHierarchy localId="was_a" associationNames="hasSubtype,forSubType" rootCode="@" isForwardNavigable="false"/>
+			<lgNaming:supportedHierarchy localId="was_a" associationNames="hasSubtype,forSubType,toSubType" rootCode="@" isForwardNavigable="false"/>
+			<lgNaming:supportedHierarchy localId="was_a" associationNames="hasSubtype,forSubType" rootCode="@" isForwardNavigable="false"/>
+			<lgNaming:supportedHierarchy localId="was_a" associationNames="hasSubtype,forSubType" rootCode="@" isForwardNavigable="true"/>
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<lgNaming:supportedLanguage localId="ka" uri="urn:oid:1.3.6.1.4.1.2114.108.1.6.56:Kannada"/>
+			<lgNaming:supportedLanguage localId="hi"/>
+			<lgNaming:supportedLanguage localId="KA" uri="urn:oid:1.3.6:KANNADA"/>
+			<lgNaming:supportedLanguage localId="en" uri="www.en.org/orsomething">ennnnn</lgNaming:supportedLanguage>
+			
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<lgNaming:supportedProperty localId="property1" uri="urn:oid:1.3.6.1.4.1.2114.108.1.6.59:property1"/>
+			<lgNaming:supportedProperty localId="property2" />
+			<lgNaming:supportedProperty localId="PROPERTY1" uri="urn:oid:1.3.6:PROPERTY1"/>
+			<lgNaming:supportedProperty localId="primitive" uri="primitive"/>
+			
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<lgNaming:supportedPropertyLink localId="Propertylink" uri="urn:oid:2.16.840.1.113883.6.10:Propertylink"/>
+			<lgNaming:supportedPropertyLink localId="Propertylink" >supportedPropertylink</lgNaming:supportedPropertyLink>
+			<lgNaming:supportedPropertyLink localId="Propertylink1" uri="urn:oid:2.16.840.1.113883.6.10:Propertylink">supportedPropertylin1k</lgNaming:supportedPropertyLink>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<lgNaming:supportedPropertyQualifier localId="PropertyQualifier" uri="urn:oid:2.16.840.1.113883.6.10:PropertyQualifier">supportedPropertyQualifier</lgNaming:supportedPropertyQualifier>
+			<lgNaming:supportedPropertyQualifier localId="PropertyQualifier" />
+			<lgNaming:supportedPropertyQualifier localId="PropertyQualifier1"/>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<lgNaming:supportedRepresentationalForm localId="RepresentationForm" uri="urn:oid:2.16.840.1.113883.6.10:RepresentationForm">supportedRepresentationalForm </lgNaming:supportedRepresentationalForm>
+			<lgNaming:supportedRepresentationalForm localId="RepresentationForm1" />
+			<lgNaming:supportedRepresentationalForm localId="RepresentationForm"></lgNaming:supportedRepresentationalForm>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+					AgentRole	->	val1
+					AssemblyRule	->	val2
+			-->
+			<lgNaming:supportedSource localId="source1" uri="urn:oid:1.3.6.1.4.1.2114.108.1.6.85:source1" assemblyRule="AssemblyRule">content</lgNaming:supportedSource>
+			<lgNaming:supportedSource localId="source2" />
+			<lgNaming:supportedSource localId="SOURCE1" uri="urn:oid:1.3.6:source1"/>
+			<lgNaming:supportedSource localId="rdf" uri="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+
+			<!--	compares localId 
+					localId		->	id		(required)
+					urn			->	urn
+					content		->	idValue
+			-->
+			<lgNaming:supportedStatus localId="ConceptStatus" uri="urn:oid:1.3.6.1.4.1.2114.108.1.6.96:ConceptStatus"/>
+			<lgNaming:supportedStatus localId="ConceptStatus1"/>
+			<lgNaming:supportedStatus localId="cONCEPTsTATUS" uri="urn:oid:1.3.6.1.4.1.2114.108.1.6.96:cONCEPTsTATUS"/>
+
+			
+		</mappings>
+		<associationDefinitions >
+		</associationDefinitions>
+</CodingSchemeManifest>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+
+	<beans:import resource="rrfReaders.xml"/>
+	<beans:import resource="baseLoader.xml"/>
+	
+	<beans:bean class="org.springframework.batch.core.scope.StepScope" />
+	
+	<beans:bean id="mrsabFactory" class="org.lexgrid.loader.reader.FactoryBeanReader">
+		<beans:property name="delegate"> 
+			<beans:ref bean="mrsabReader"/> 
+		</beans:property> 
+	</beans:bean>
+	
+	<beans:bean id="relationForwardNameFactory" class="org.lexgrid.loader.reader.decorator.ProcessingListDecorator">
+		<beans:constructor-arg>
+			<beans:bean class="org.lexgrid.loader.reader.FactoryBeanReader">
+				<beans:property name="delegate"> 
+					<beans:ref bean="skippingMrdocReader"/> 
+				</beans:property> 
+			</beans:bean>
+		</beans:constructor-arg>
+		<beans:property name="processor"> 
+			<beans:bean class="org.lexgrid.loader.rrf.processor.MrdocRelationNameProcessor"/> 
+		</beans:property> 
+	</beans:bean>
+
+	<beans:bean id="mrsabUtility" class="org.lexgrid.loader.rrf.data.codingscheme.DefaultMrsabUtility">
+		<beans:property name="mrsabList"> 
+			<beans:ref local="mrsabFactory"/> 
+		</beans:property> 
+	</beans:bean>
+
+    <beans:bean id="isoMap"
+      class="edu.mayo.informatics.lexgrid.convert.directConversions.UmlsCommon.UMLSBaseCode"
+      factory-method="getIsoMap"/>
+		  
+		<beans:bean id="hibernateRrfPostProcessingDao" class="org.lexgrid.loader.rrf.dao.HibernateRrfPostProcessingDao" abstract="true">
+			<beans:property name="sessionFactory">
+				<beans:ref bean="sessionFactory" />
+			</beans:property>			
+		</beans:bean>  
+		
+		<beans:bean id="mrrankFactoryBean" class="org.lexgrid.loader.reader.FactoryBeanReader">
+			<beans:property name="delegate"> 
+					<beans:ref bean="mrrankReader"/> 
+			</beans:property> 
+		</beans:bean>
+		
+		<beans:bean id="mrrankUtility" class="org.lexgrid.loader.rrf.data.property.DefaultMrrankUtility">
+			<beans:property name="mrrankList"> 
+					<beans:ref bean="mrrankFactoryBean"/> 
+			</beans:property> 
+		</beans:bean>
+		
+		<beans:bean id="mrrankPropertyQualUtility" class="org.lexgrid.loader.rrf.data.property.PropertyQualifierMrrankUtility">
+			<beans:property name="mrrankList"> 
+					<beans:ref bean="mrrankFactoryBean"/> 
+			</beans:property> 
+		</beans:bean>
+		
+		<beans:bean id="mrsatUtility" class="org.lexgrid.loader.rrf.data.property.DefaultMrsatUtility">
+			<beans:property name="mrsatMap"> 
+					<beans:ref bean="mrsatUsageFactoryBean"/> 
+			</beans:property> 
+		</beans:bean>
+		
+		<beans:bean id="mrsatUsageFactoryBean" class="org.lexgrid.loader.rrf.factory.MrsatUsageFactory"/>
+				
+		<beans:bean id="propertyComparator" class="org.lexgrid.loader.rrf.data.property.MrconsoPropertyComparator">
+			<beans:property name="mrrankUtility"> 
+				<beans:ref bean="mrrankUtility"/> 
+			</beans:property> 
+		</beans:bean>
+		
+		<beans:bean id="mrconsoStagingDao" class="org.lexgrid.loader.rrf.staging.JdbcMrconsoStagingDao">
+		<beans:property name="dataSource">
+			<beans:ref bean="dataSource"/>
+		</beans:property>
+		<beans:property name="mrsabUtility">
+			<beans:ref bean="mrsabUtility"/>
+		</beans:property>
+		<beans:property name="prefix" value="${prefix}"/>
+		</beans:bean>
+	
+	<beans:bean id="associationProcessor" 
+		class="org.lexgrid.loader.rrf.processor.MrdocAssociationProcessor"
+		abstract="true">
+		<beans:property name="supportedAttributeTemplate">
+			<beans:ref bean="cachingSupportedAttribuiteTemplate"/>
+		</beans:property>	
+	</beans:bean>
+	
+	<beans:bean id="mrconsoWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+		<beans:property name="dataSource">
+			<beans:ref bean="dataSource"/>
+		</beans:property>
+		<beans:property name="sql" value="INSERT INTO ${prefix}mrconsoStaging VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"/>
+		<beans:property name="itemPreparedStatementSetter">
+			<beans:bean class="org.lexgrid.loader.rrf.fieldsetter.MrconsoFieldSetter"/>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="stagingTablePopulatorStepFactory" class="org.lexgrid.loader.rrf.staging.populatorstep.PopulatorStepFactory">
+		<beans:property name="databaseType" ref="databaseTypeFactory" />
+		<beans:property name="populatorSteps">
+			<beans:map>
+				<beans:entry key="HSQL">
+					<beans:ref bean="loadStagingInsertsTable"/>
+				</beans:entry>
+				<beans:entry key="MYSQL">
+					<beans:ref bean="loadStagingLoadDataInfileTable"/>
+				</beans:entry>
+				<beans:entry key="ORACLE">
+					<beans:ref bean="loadStagingInsertsTable"/>
+				</beans:entry>
+				<beans:entry key="POSTGRES">
+					<beans:ref bean="loadStagingInsertsTable"/>
+				</beans:entry>
+				<beans:entry key="DB2">
+					<beans:ref bean="loadStagingInsertsTable"/>
+				</beans:entry>
+			</beans:map>
+		</beans:property>
+	
+	</beans:bean>
+	
+	
+
+  <!-- This block is for EhCaching the MrconsoDao, taken out because EhCache seems to cause deadlocking
+  	   in multithreaded mode.
+  	   
+  	<beans:bean id="methodCacheInterceptor"
+		class="org.lexgrid.loader.rrf.staging.cache.interceptor.MrconsoStagingCacheInterceptor">
+		<beans:property name="cache">
+			<beans:ref local="methodCache" />
+		</beans:property>
+	</beans:bean>
+  	   
+	<beans:bean id="methodCachePointCut"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<beans:property name="advice">
+			<beans:ref local="methodCacheInterceptor" />
+		</beans:property>
+		<beans:property name="mappedName" value="getCode" />
+	</beans:bean>
+
+  	<beans:bean id="cacheManager"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<beans:property name="configLocation">
+			<beans:value>
+				classpath:cache/umls/staging/mrconsoStaging.xml
+			</beans:value>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="methodCache"
+		class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<beans:property name="cacheManager">
+			<beans:ref local="cacheManager" />
+		</beans:property>
+		<beans:property name="cacheName">
+			<beans:value>mrconsoStagingCache</beans:value>
+		</beans:property>
+	</beans:bean>
+  
+	<beans:bean id="cachedMrconsoStagingDao"
+		class="org.springframework.aop.framework.ProxyFactoryBean">
+		<beans:property name="target">
+			<beans:ref bean="mrconsoStagingDao" />
+		</beans:property>
+		<beans:property name="interceptorNames">
+			<beans:list>
+				<beans:value>methodCacheInterceptor</beans:value>
+			</beans:list>
+		</beans:property>
+		<beans:property name="proxyInterfaces" value="org.lexgrid.loader.rrf.staging.MrconsoStagingDao"/>
+	</beans:bean>
+	-->
+
+	<step id="loadStagingInsertsTable">
+		<tasklet>
+			<listeners>
+				<listener ref="stepCompletionListener" />
+			</listeners>
+			<chunk reader="mrconsoReader" writer="mrconsoWriter"
+				commit-interval="50">
+			</chunk>
+		</tasklet>
+	</step>
+	
+	<step id="loadStagingLoadDataInfileTable">
+		<tasklet ref="loadDataInfileTasklet"/>
+	</step>
+	
+	<beans:bean id="loadDataInfileTasklet"
+		class="org.lexgrid.loader.rrf.staging.tasklet.LoadInfileMrconsoStagingTablePopulator">
+		<beans:property name="rrfDir" value="${rrfDir}" />
+		<beans:property name="rrfFile" value="MRCONSO.RRF" />
+		<beans:property name="tableName" value="${prefix}mrconsoStaging" />
+		<beans:property name="dataSource">
+			<beans:ref bean="dataSource"/>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="mrconsoStagingCreateScriptFactory"
+		class="org.lexgrid.loader.setup.ScriptFactory">
+		<beans:property name="scriptType" value="create"/>
+		<beans:property name="databaseType" ref="databaseTypeFactory"/>
+		<beans:property name="creationScriptPrefix" value="sql/staging/mrconsoStaging-schema-"/>
+	</beans:bean>
+	
+	 
+</beans:beans>

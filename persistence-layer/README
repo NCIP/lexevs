@@ -1,0 +1,46 @@
+----------------------------------------------------------------------------------
+1. Software and Hardware requirements.
+----------------------------------------------------------------------------------
+
+	i) This extension requires LexEVS release 5.0 or above.
+	
+ 	ii) Development system are required to install the Sun Java Development Kit (SDK) or Java Runtime Environment (JRE)
+ 		version 1.5.0_11 or above.
+ 		
+ 	iii) Maven 2.1 or greater.
+ 	
+ 	iiii) For software and hardware dependencies for the system hosting the LexEVS runtime, refer to https://cabig-kc.nci.nih.gov/Vocab/KC/index.php/LexEVS_5.0_Documentation.
+
+----------------------------------------------------------------------------------
+2. Instructions to build Persistence Layer
+----------------------------------------------------------------------------------
+
+	i) To build artifacts 
+
+		- mvn clean package
+		
+	ii) Other Maven build goals can be executed as necessary, such as building source, creating javadocs, etc.
+
+----------------------------------------------------------------------------------
+3. Instructions to generate LexEVS Hibernate Java Beans and Mappings.
+----------------------------------------------------------------------------------
+	  
+	i) Hibernate Generated Beans and Mapping files are included - but can be regenerated at any time.
+		
+		- Edit the Hibernate Generation Configuration file
+			- in /src/main/config/generation, edit the file 'hibernate.cfg.xml'. The database configuration given must
+			  contain a LexEVS 5.0 table set (populated or not).
+			- Make sure the database that is pointed to does NOT contain table prefixes (i.e. it was loaded in Single Database Mode).
+		
+		- Execute the Maven command "mvn hibernate3:hbm2hbmxml hibernate3:hbm2java"
+		
+		- Java Beans will be place in the /src/main/java/org/LexGrid/persistence/model package
+		
+		- Hibernate mapping files will be placed in /src/main/resources/mapping.
+	
+----------------------------------------------------------------------------------
+4. Instructions to test Persistence Layer.
+----------------------------------------------------------------------------------
+
+	i) To run the automated tests, use the command 'mvn test'.
+		- Test results will be located in the '/target' directory.

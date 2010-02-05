@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <meta>
+        <filters directoryPatterns="" filePatterns=""
+            positiveFilePatterns=""/>
+    </meta>
+    <projectTree name="oxygen_project.xpr">
+        <file name="../master/Collections.xsd"/>
+        <file name="../master/Core.xsd"/>
+        <file name="../master/InterfaceElements.xsd"/>
+        <file name="../master/NCIHistory.xsd"/>
+        <file name="../master/TerminologyServiceMetadata.xsd"/>
+    </projectTree>
+</project>

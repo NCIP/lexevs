@@ -1,0 +1,18 @@
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+    <info organisation="lexevs" module="loader-framework-core"/>
+     <configurations>
+  		<conf name="compile" description="Build Time dependencies"/>
+  		<conf name="test" description="Test Time dependencies"/>
+  		<conf name="runtime" description="Run Time dependencies"/>
+	</configurations>
+	<publications>
+		<artifact name="loader-framework-core" type="jar" ext="jar" />
+		<artifact name="loader-framework-core" type="source" ext="jar"
+			 m:classifier="sources" />
+		<artifact name="loader-framework-core" type="test" ext="jar"
+			 m:classifier="test" />
+	</publications>
+    <dependencies>
+    	<dependency org="lexevs" name="persistence-layer" rev="1.0-SNAPSHOT" />
+    </dependencies>
+</ivy-module>

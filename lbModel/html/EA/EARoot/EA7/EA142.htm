@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../../ea.css" rel=stylesheet>
+<title>History::HistoryService</title>
+</head>
+<body>
+<TABLE class="HeaderTable" align="center" cellSpacing=0 cellPadding=0>
+  <TBODY >
+	<TR>
+		<TD colspan=2 WIDTH="100%" class="Header">interface: HistoryService</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="48%" class="HeaderDetails"></TD>
+		<TD WIDTH="48%" class="HeaderDetails"></TD>
+	</TR>
+	<TR>
+		<TD WIDTH="40%" class="HeaderDetails"></TD>
+		<TD WIDTH="60%" class="HeaderDetails"></TD>
+	</TR>
+	<TR><TD colspan="2" width="100%"><HR></TD></TR>
+	</TBODY>
+</TABLE> <table cellPadding=2 cellSpacing=2 width="100%">
+  <tbody>
+		<tr>
+			<td class=ObjectTitle>
+				public abstract  &lt;&lt;interface&gt;&gt; interface: HistoryService  
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table class=ObjectDetails cellPadding=2 cellSpacing=2 width="100%">
+				  <tbody>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Author:</td>
+							<td width="85%" class=ObjectDetailsValue>solbrigcvs</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Project:</td>
+							<td width="85%" class=ObjectDetailsValue>Phase: 1.0; Status: Proposed; Version: 1.0; Complexity: 1</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Dates:</td>
+							<td width="85%" class=ObjectDetailsValue>Created: 8/14/2006 9:20:21 AM; Modified: 8/14/2006 9:20:21 AM;</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Flags:</td>
+							<td width="85%" class=ObjectDetailsValue> Active: false; IsRoot: false; IsLeaf: false;</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Extension Points:</td>
+							<td width="85%" class=ObjectDetailsValue></td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>UUID:</td>
+							<td width="85%" class=ObjectDetailsValue>{C4F71C6F-4FD3-4160-9E86-B71E966E13B4}</td>
+						</tr>
+						<tr>
+							<td colspan="2" width="100%" class=ObjectDetailsTopic>The history service returns information about the change history of a coding<br>scheme.<br><br>@created 09-Feb-2006 10:45:53 PM<br></td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+</table><p><table cellPadding=0 cellSpacing=0 width="100%">
+  <tbody>
+		<tr>
+			<td width="10%" class="ObjectSubTitle">
+				Goto:
+			</td>
+			<td width="90%">
+				<a href=#Methods>Methods</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<P/><table cellPadding=0 cellSpacing=0 width="100%">
+  <tbody>
+		<tr>
+			<td width="10%" class="ObjectSubTitle">
+				Appears in:
+			</td>
+			<td width="90%">
+				<a href="EA140.htm">History</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<P/><table cellPadding=0 cellSpacing=0 width="100%">
+  <tbody>
+		<tr>
+			<td class="ObjectSubTitle">
+				<a Name="Methods">HistoryService</a> Methods
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<TABLE align="center" BORDER=1 CELLSPACING=0 CELLPADDING=1 bordercolor="white" class="OperationTable">
+					<TR>
+						<TD WIDTH="40%" class="OperationTableHeading">Operation</TD>
+						<TD WIDTH="60%" class="OperationTableHeading">Details</TD>
+					</TR>
+					<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>public</i><BR><B>getAncestors</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA56.htm">ConceptReference</a> conceptReference):<a href="../EA3/EA1/EA39.htm">NCIChangeEventList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException,LBInvocationException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return the list of change events identifying the immediate ancestors<br>of the given concept reference.<br><br>@return NCIChangeEventList</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>public</i><BR><B>getBaselines</B>(<br>&nbsp;&nbsp;&nbsp;Date releasedAfter, <br>&nbsp;&nbsp;&nbsp;Date releasedBefore):<a href="../EA3/EA1/EA44.htm">SystemReleaseList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException,LBInvocationException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return a list of baselines supported by this service that were released<br>on or after the first supplied date and were released on or before the<br>second date. Returned baselines are arranged in sequential order, from<br>earliest to latest.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>public</i><BR><B>getConceptChangeVersions</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA56.htm">ConceptReference</a> conceptReference, <br>&nbsp;&nbsp;&nbsp;Date beginDate, <br>&nbsp;&nbsp;&nbsp;Date endDate):<a href="../EA3/EA1/EA32.htm">CodingSchemeVersionList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException,LBInvocationException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return a list of all of the coding scheme versions in which the supplied<br>concept changed between the two supplied times (inclusive).</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>public</i><BR><B>getConceptCreationVersion</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA56.htm">ConceptReference</a> conceptReference):CodingSchemeVersion</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException,LBInvocationException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return the coding scheme version in which the supplied concept was<br>created.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>public</i><BR><B>getDescendants</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA56.htm">ConceptReference</a> conceptReference):<a href="../EA3/EA1/EA39.htm">NCIChangeEventList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException,LBInvocationException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return the list of change events identifying the immediate descendants<br>of the given concept reference.<br><br>@return NCIChangeEventList</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>public</i><BR><B>getEarliestBaseline</B>():SystemRelease</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return the earliest baseline version in the list.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>public</i><BR><B>getEditActionList</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA56.htm">ConceptReference</a> conceptReference, <br>&nbsp;&nbsp;&nbsp;CodingSchemeVersion codingSchemeVersion):<a href="../EA3/EA1/EA39.htm">NCIChangeEventList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException,LBInvocationException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return the list of available NCI-defined change events for the given<br>concept and coding scheme version.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>public</i><BR><B>getEditActionList</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA56.htm">ConceptReference</a> conceptReference, <br>&nbsp;&nbsp;&nbsp;Date beginDate, <br>&nbsp;&nbsp;&nbsp;Date endDate):<a href="../EA3/EA1/EA39.htm">NCIChangeEventList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException,LBInvocationException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return the list of available NCI-defined change events for the given<br>concept and date range.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>public</i><BR><B>getEditActionList</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA56.htm">ConceptReference</a> conceptReference, <br>&nbsp;&nbsp;&nbsp;URI releaseURN):<a href="../EA3/EA1/EA39.htm">NCIChangeEventList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException,LBInvocationException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return the list of NCI-defined change events for the given concept and<br>release; empty if not applicable.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>public</i><BR><B>getLatestBaseline</B>():SystemRelease</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Get the latest baseline in the list.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>public</i><BR><B>getSystemRelease</B>(<br>&nbsp;&nbsp;&nbsp;URI releaseURN):<a href="../EA3/EA3/EA79.htm">SystemReleaseDetail</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBParameterException,LBInvocationException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return detailed information about the particular system release.</TD> </TR> </TABLE></TD>
+</TR>
+
+				</TABLE>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+</table>
+
+<TABLE class="FooterTable" align="center" cellSpacing=0 cellPadding=0>
+  <TBODY >
+	<TR><TD colspan="2" width="100%"><HR></TD></TR>
+	<TR>
+		<TD colspan=2 WIDTH="100%" class="Footer">interface: HistoryService</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="48%" class="FooterDetails"></TD>
+		<TD WIDTH="48%" class="FooterDetails"></TD>
+	</TR>
+	<TR>
+		<TD WIDTH="40%" class="FooterDetails"></TD>
+		<TD WIDTH="60%" class="FooterDetails"></TD>
+	</TR>
+	</TBODY>
+</TABLE> 
+</body>
+</html>

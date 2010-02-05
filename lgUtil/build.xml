@@ -1,0 +1,51 @@
+<project name="lgUtil" default="all" basedir=".">
+	<description>
+		Buildfile for lgUtility.
+	</description>
+	<!-- set global properties for this build -->
+	<property name="src"   		location="src"/>
+	<property name="antBuild" 	location="antBuild"/>
+	<property name="classes" 	location="${antBuild}/classes"/>
+	<property name="dist"  		location="${antBuild}/lib"/>
+	<property name="lgSharedLibraries" location="../lgSharedLibraries"/>
+
+	<!--Sets up the classpath-->
+	<target name="init">
+		<tstamp/>
+		<echo>Constructing classpath</echo>
+		<path id="classpath">
+			<fileset dir="${lgSharedLibraries}" id="libs">
+				<include name="data/BlankAccessDB.jar"/>
+				<include name="apache/commons/commons-collections*.jar"/>
+				<include name="apache/commons/commons-pool*.jar"/>
+				<include name="apache/log4j/log4j*.jar"/>
+				<include name="eclipse/swt/windows/swt.jar"/>
+			</fileset>
+		</path>
+	</target>
+
+	<target name="clean" depends="init" description="clean up" >
+		<!-- Delete the ${build} and ${dist} directory trees -->
+		<delete dir="${antBuild}"/>
+	</target>
+
+	<target name="compile" depends="init" description="compile the source ">
+		<mkdir dir="${classes}"/>
+		<!-- Compile the java code from ${src} into ${classes} -->
+		<javac source="1.3" target="1.3" debug="true" srcdir="${src}" destdir="${classes}">
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+
+	<target name="jar" depends="init, compile" description="generate the jar file" >
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist}"/>
+		<!-- Put everything in ${build} into .jar file -->
+		<jar jarfile="${dist}/${ant.project.name}.jar" basedir="${classes}">
+			<manifest>
+				<attribute name="Build-Date" value="${DSTAMP} ${TSTAMP}"/>
+			</manifest>
+		</jar>
+	</target>
+	<target name="all" depends="init, clean, compile, jar" description="Full Build"/>
+</project>

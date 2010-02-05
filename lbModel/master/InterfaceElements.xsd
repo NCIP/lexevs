@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns:lbColl="http://LexGrid.org/schema/LexBIG/2009/01/Collections" xmlns:lbCore="http://LexGrid.org/schema/LexBIG/2009/01/Core" xmlns:lbIfe="http://LexGrid.org/schema/LexBIG/2009/01/InterfaceElements" xmlns:lgBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/builtins" xmlns:lgCommon="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" xmlns:lgNaming="http://LexGrid.org/schema/2009/01/LexGrid/naming" xmlns:lgCon="http://LexGrid.org/schema/2009/01/LexGrid/concepts" xmlns:lgVer="http://LexGrid.org/schema/2009/01/LexGrid/versions" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://LexGrid.org/schema/LexBIG/2009/01/InterfaceElements" elementFormDefault="qualified">
+	<!-- ================================================= -->
+	<!-- Package: <<XSDschema>> InterfaceElements		   -->
+	<!-- ================================================= -->
+	<xs:annotation>
+		<xs:documentation>XML fragments that are used as parameters to and from interfaces</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/Core" schemaLocation="Core.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/Collections" schemaLocation="Collections.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/builtins.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/concepts" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/concepts.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/naming" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/naming.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/versions" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/versions.xsd"/>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: ProcessState						   			-->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:simpleType name="ProcessState">
+		<xs:restriction base="xs:string">
+			<xs:annotation>
+				<xs:documentation>An enumeration of possible reported values for process state.</xs:documentation>
+			</xs:annotation>
+			<xs:enumeration value="canceled">
+				<xs:annotation>
+					<xs:documentation>The operation was ended by request.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="completed">
+				<xs:annotation>
+					<xs:documentation>The operation ran to completion.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="failed">
+				<xs:annotation>
+					<xs:documentation>The operation was abnormally terminated.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="pending">
+				<xs:annotation>
+					<xs:documentation>The operation is a candidate for processing but has not started.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="processing">
+				<xs:annotation>
+					<xs:documentation>The operation is in progress.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="unknown">
+				<xs:annotation>
+					<xs:documentation>No status is available.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: ProcessStatus						   			-->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="ProcessStatus" type="lbIfe:ProcessStatus"/>
+	<xs:complexType name="ProcessStatus">
+		<xs:annotation>
+			<xs:documentation>Reports the state of LexBIG runtime operations.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="startTime" type="lgBuiltin:tsTimestamp">
+			<xs:annotation>
+				<xs:documentation>Time that the operation started; missing if not yet started.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="endTime" type="lgBuiltin:tsTimestamp">
+			<xs:annotation>
+				<xs:documentation>The time that the load completed; missing if the operation is still underway.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="state" type="lbIfe:ProcessState" default="unknown">
+			<xs:annotation>
+				<xs:documentation>State of the operation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="message" type="lgBuiltin:tsCaseIgnoreIA5String">
+			<xs:annotation>
+				<xs:documentation>Optional status message to convey additional information about the current state of the operation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="errorsLogged" type="lgBuiltin:tsBoolean" default="false">
+			<xs:annotation>
+				<xs:documentation>If true, error messages have been written to the associated log; default is false.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="warningsLogged" type="lgBuiltin:tsBoolean" default="false">
+			<xs:annotation>
+				<xs:documentation>If true, warning messages have been written to the associated log; default is false.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: LoadStatus						   			-->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="LoadStatus" type="lbIfe:LoadStatus"/>
+	<xs:complexType name="LoadStatus">
+		<xs:annotation>
+			<xs:documentation>Reports the state of LexBIG load operations.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="lbIfe:ProcessStatus">
+				<xs:sequence>
+					<xs:element name="loadSource" type="xs:anyURI">
+						<xs:annotation>
+							<xs:documentation>Indicates the source of the information being loaded; missing if no load is in progress.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="numConceptsLoaded" type="xs:int">
+					<xs:annotation>
+						<xs:documentation>Number of concepts that have been processed.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="numRelationsLoaded" type="xs:int">
+					<xs:annotation>
+						<xs:documentation>Number of relations that have been processed.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: ExportStatus						   			-->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="ExportStatus" type="lbIfe:ExportStatus"/>
+	<xs:complexType name="ExportStatus">
+		<xs:annotation>
+			<xs:documentation>Reports the state of LexBIG export operations.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="lbIfe:ProcessStatus">
+				<xs:sequence>
+					<xs:element name="destination" type="xs:anyURI">
+						<xs:annotation>
+							<xs:documentation>Indicates the destination of the information being exported; missing if no export is in progress.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: CodingSchemeRendering       			   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="CodingSchemeRendering" type="lbIfe:CodingSchemeRendering"/>
+	<xs:complexType name="CodingSchemeRendering">
+		<xs:annotation>
+			<xs:documentation>Information about a coding scheme as it appears in a particular service.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="codingSchemeSummary" type="lbCore:CodingSchemeSummary">
+				<xs:annotation>
+					<xs:documentation>Summary of the coding scheme content as rendered by the service.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="renderingDetail" type="lbIfe:RenderingDetail">
+				<xs:annotation>
+					<xs:documentation>Service specific information about the coding scheme rendering</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="serviceHandle" type="lbCore:ReferenceLink">
+				<xs:annotation>
+					<xs:documentation>The URL of a service the represents this coding scheme.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="referenceLink" type="lbCore:ReferenceLink" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The URL that represents the coding scheme itself within the service.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: RenderingDetail						   	   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="RenderingDetail" type="lbIfe:RenderingDetail"/>
+	<xs:complexType name="RenderingDetail">
+		<xs:annotation>
+			<xs:documentation>The details of how a coding scheme is rendered in a given service.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="versionTags" type="lbColl:CodingSchemeTagList">
+				<xs:annotation>
+					<xs:documentation>The version metatags associated with this coding scheme in this service.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="lastUpdateTime" type="lgBuiltin:tsTimestamp">
+			<xs:annotation>
+				<xs:documentation>Timestamp when this coding scheme was last updated within the context of the containing service</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="versionStatus" type="lbCore:CodingSchemeVersionStatus">
+			<xs:annotation>
+				<xs:documentation>Status of the coding scheme version within the service (pending, active, inactive). Note that a pending deactivation is
+					identified by the presence of a deactivate date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="deactivateDate" type="lgBuiltin:tsTimestamp">
+			<xs:annotation>
+				<xs:documentation>If present, this is that date that this coding scheme is scheduled to be deactivated (versionStatus = 'pending' or
+					versionStatus='active') or was actually inactivated (versionStatus='inactive')</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: SystemReleaseDetail				   		   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="SystemReleaseDetail" type="lbIfe:SystemReleaseDetail"/>
+	<xs:complexType name="SystemReleaseDetail">
+		<xs:annotation>
+			<xs:documentation>The combination of a system release and all of the entityVersions that accompanied that release.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="entityVersions" type="lgVer:entityVersion" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>The set of applicable entity versions associated with this release</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: ModuleDescription					   		   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="ModuleDescription" type="lbIfe:ModuleDescription"/>
+	<xs:complexType name="ModuleDescription">
+		<xs:annotation>
+			<xs:documentation>Describes a LexBIG integrated software module.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="description" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>A description of the module function, etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The module name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="version" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The module version identifier.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: ExtensionDescription						  -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="ExtensionDescription" type="lbIfe:ExtensionDescription"/>
+	<xs:complexType name="ExtensionDescription">
+		<xs:annotation>
+			<xs:documentation>Describes an add-on module registered to the LexBIG environment.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="lbIfe:ModuleDescription">
+				<xs:sequence>
+					<xs:element name="extensionClass" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>The Java class name of the extension.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="extensionBaseClass" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>The Java base class of the extension.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="extensionProvider" type="lgCommon:source">
+						<xs:annotation>
+							<xs:documentation>The extension provider</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: SortDescription						  -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="SortDescription" type="lbIfe:SortDescription"/>
+	<xs:complexType name="SortDescription">
+		<xs:annotation>
+			<xs:documentation>A description of of a LexBIG extension module.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="lbIfe:ExtensionDescription">
+				<xs:sequence>
+					<xs:element name="restrictToContext" type="lbIfe:SortContext" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Indicates the context in which the sort algorithm can be applied. If unspecified, all contexts are assumed to be
+								valid.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: SortContext						   	-->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:simpleType name="SortContext">
+		<xs:annotation>
+			<xs:documentation>Describes a LexBIG sort module.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="graph">
+				<xs:annotation>
+					<xs:documentation>This sort is valid to be applied to resolved node graph representations.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="set">
+				<xs:annotation>
+					<xs:documentation>This sort is valid to be applied when resolving standard node set representations.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="setListPreResolve">
+				<xs:annotation>
+					<xs:documentation>This sort is valid to be applied before the node set has been resolved to a list.
+									  All sorting is done BEFORE the results are resolved and returned, and takes into
+									  account ALL matching results, including those not included in the returned List.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="setListPostResolve">
+				<xs:annotation>
+					<xs:documentation>This sort is valid to be applied after the node set has been resolved to a list.
+									  All sorting is done AFTER the results are resolved and returned, and takes into
+									  account ONLY those matching results in the List to be returned.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="setIteration">
+				<xs:annotation>
+					<xs:documentation>This sort is valid to be applied when resolving node sets using iterators.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: SortOption						   	   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="SortOption" type="lbIfe:SortOption"/>
+	<xs:complexType name="SortOption">
+		<xs:annotation>
+			<xs:documentation>Represents a pairing of sort algorithm and order.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="extensionName" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The name of the extension defining the sort algorithm (from the sort extension description).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ascending" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>Indicates whether the sort algorithm should be applied in ascending or descending order.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

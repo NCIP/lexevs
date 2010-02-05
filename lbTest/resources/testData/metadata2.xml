@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<met:ontology_description xmlns:met="http://server.stanford.ncbo.org/metadata">
+    <met:concise_name>animalhist</met:concise_name>
+    <met:display_label>Animal natural history and life history</met:display_label>
+    <met:supported_language>English</met:supported_language>
+    <met:description>An ontology for animal life history and natural history characteristics suitable for populations and higher taxonomic entities.</met:description>
+    <met:authority>
+        <met:idspace local_name="ADW" xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <met:about>
+            <met:homepage>http://www.animaldiversity.org</met:homepage>
+            <met:documentation>http://animaldiversity.ummz.umich.edu/site/about/technology/index.html</met:documentation>
+            <met:contact email="adw_geeks@umich.edu" emailType="">Animal Diversity Web technical staff</met:contact>
+        </met:about>
+    </met:authority>
+    <met:core_format>
+        <met:format>PROTEGE</met:format>
+    </met:core_format>
+    <met:version_info is_current="true">
+        <met:version>1.1</met:version>
+        <met:status>retired</met:status>
+        <met:download_info>
+            <met:download_format>PROTEGE</met:download_format>
+            <met:download_url>http://animaldiversity.ummz.umich.edu/site/about/technology/ADW_ontology_protege.zip/view.html</met:download_url>
+        </met:download_info>
+    </met:version_info>
+    <met:foundry is_foundry="false">
+        <met:open>false</met:open>
+        <met:language>false</met:language>
+        <met:idspace>false</met:idspace>
+        <met:versioned>false</met:versioned>
+        <met:content>false</met:content>
+        <met:definitions>false</met:definitions>
+        <met:relations>false</met:relations>
+        <met:documented>false</met:documented>
+        <met:users>false</met:users>
+    </met:foundry>
+</met:ontology_description>

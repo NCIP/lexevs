@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="../../ea.css" rel=stylesheet>
+<title>LexBIGService::LexBIGServiceManager</title>
+</head>
+<body>
+<TABLE class="HeaderTable" align="center" cellSpacing=0 cellPadding=0>
+  <TBODY >
+	<TR>
+		<TD colspan=2 WIDTH="100%" class="Header">interface: LexBIGServiceManager</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="48%" class="HeaderDetails"></TD>
+		<TD WIDTH="48%" class="HeaderDetails"></TD>
+	</TR>
+	<TR>
+		<TD WIDTH="40%" class="HeaderDetails"></TD>
+		<TD WIDTH="60%" class="HeaderDetails"></TD>
+	</TR>
+	<TR><TD colspan="2" width="100%"><HR></TD></TR>
+	</TBODY>
+</TABLE> <table cellPadding=2 cellSpacing=2 width="100%">
+  <tbody>
+		<tr>
+			<td class=ObjectTitle>
+				public abstract  &lt;&lt;interface&gt;&gt; interface: LexBIGServiceManager  
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table class=ObjectDetails cellPadding=2 cellSpacing=2 width="100%">
+				  <tbody>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Author:</td>
+							<td width="85%" class=ObjectDetailsValue>solbrigcvs</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Project:</td>
+							<td width="85%" class=ObjectDetailsValue>Phase: 1.0; Status: Proposed; Version: 1.0; Complexity: 1</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Dates:</td>
+							<td width="85%" class=ObjectDetailsValue>Created: 8/14/2006 3:21:24 PM; Modified: 8/28/2006 12:55:01 AM;</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Flags:</td>
+							<td width="85%" class=ObjectDetailsValue> Active: false; IsRoot: false; IsLeaf: false;</td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>Extension Points:</td>
+							<td width="85%" class=ObjectDetailsValue></td>
+						</tr>
+						<tr>
+							<td width="15%" class=ObjectDetailsTopic>UUID:</td>
+							<td width="85%" class=ObjectDetailsValue>{D95E4BCE-B2F0-4e82-A055-CB50B944277A}</td>
+						</tr>
+						<tr>
+							<td colspan="2" width="100%" class=ObjectDetailsTopic>The service manager provides a single write and update access point for all<br>of a service's content.<br><br>The service manager allows new coding schemes to be validated and loaded,<br>existing coding schemes to be retired and removed and the status of various<br>coding schemes to be updated and changed.</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+</table><p><table cellPadding=0 cellSpacing=0 width="100%">
+  <tbody>
+		<tr>
+			<td width="10%" class="ObjectSubTitle">
+				Goto:
+			</td>
+			<td width="90%">
+				<a href=#Methods>Methods</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<P/><table cellPadding=0 cellSpacing=0 width="100%">
+  <tbody>
+		<tr>
+			<td width="10%" class="ObjectSubTitle">
+				Appears in:
+			</td>
+			<td width="90%">
+				<a href="EA8.htm">LexBIGService</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<P/><table cellPadding=0 cellSpacing=0 width="100%">
+  <tbody>
+		<tr>
+			<td class="ObjectSubTitle">
+				<a Name="Methods">LexBIGServiceManager</a> Methods
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<TABLE align="center" BORDER=1 CELLSPACING=0 CELLPADDING=1 bordercolor="white" class="OperationTable">
+					<TR>
+						<TD WIDTH="40%" class="OperationTableHeading">Operation</TD>
+						<TD WIDTH="60%" class="OperationTableHeading">Details</TD>
+					</TR>
+					<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>activateCodingSchemeVersion</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA47.htm">AbsoluteCodingSchemeVersionReference</a> codingSchemeVersion):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Activate an inactive coding scheme version.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>addRootRelationNodes</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA47.htm">AbsoluteCodingSchemeVersionReference</a> codingSchemeVersion, <br>&nbsp;&nbsp;&nbsp;String relationContext, <br>&nbsp;&nbsp;&nbsp;String relationName):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Builds associations from the special top ('@') node to existing<br>top level nodes for a given relation.  This method works to<br>establish '@' as the root of a tree structure for the relation.<br>&lt;p&gt;<br>The underlying implementation will determine the set of all nodes<br>that do not have a parent, where 'parent' is defined as a<br>target node in the reverse direction of the given relationship.<br>These nodes will comprise the first 'branch' of the tree under<br>the '@' node.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>deactivateCodingSchemeVersion</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA47.htm">AbsoluteCodingSchemeVersionReference</a> codingSchemeVersion, <br>&nbsp;&nbsp;&nbsp;Date deactivateDate):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Mark a coding scheme as inactive.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getExporter</B>(<br>&nbsp;&nbsp;&nbsp;String name):<a href="../EA5/EA1/EA109.htm">Exporter</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return an instance of the named export extension.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getExportExtensions</B>():<a href="../EA3/EA1/EA35.htm">ExtensionDescriptionList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i></i><span style="margin-left: .7cm;"> </span></TD><TD></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Returns a description of all registered extensions used to export<br>information loaded to a LexBIGService.<br><br>@return The list containing the description of extensions registered for<br>this category. Each description identifies a class of item implementing<br>org.LexGrid.LexBIG.Extensions.Export.Exporter and providing a<br>public parameterless constructor.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getExtensionRegistry</B>():<a href="../EA5/EA100.htm">ExtensionRegistry</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i></i><span style="margin-left: .7cm;"> </span></TD><TD></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Returns the object used to manage all externally registered extensions<br>to this service.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getIndex</B>(<br>&nbsp;&nbsp;&nbsp;String name):<a href="../EA5/EA3/EA119.htm">Index</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return an instance of the named index extension.<br>&lt;p&gt;<br>Note that the service may build required or default indices during load<br>operations. Because these indices are required and automatically<br>generated, they are not considered to be extensions and are therefore not<br>reported through this method.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getIndexExtensions</B>():<a href="../EA3/EA1/EA35.htm">ExtensionDescriptionList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBInvocationException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return a list of registered index extensions supported by this service;<br>empty if none are defined.<br>&lt;p&gt;<br>Note that the service may build required or default indices during load<br>operations. Because these indices are required and automatically<br>generated, they are not considered to be extensions and are therefore not<br>reported through this method.<br><br>@return The list containing the description of extensions registered for<br>this category. Each description identifies a class of item implementing<br>org.LexGrid.LexBIG.Extensions.Index.Index and providing a public<br>parameterless constructor.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getLoader</B>(<br>&nbsp;&nbsp;&nbsp;String name):<a href="../EA5/EA4/EA124.htm">Loader</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Return an instance of the named loader extension.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>getLoadExtensions</B>():<a href="../EA3/EA1/EA35.htm">ExtensionDescriptionList</a></TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i></i><span style="margin-left: .7cm;"> </span></TD><TD></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Returns a description of all registered extensions used to load<br>information for access by a LexBIGService.<br><br>@return The list containing the description of extensions registered for<br>this category. Each description identifies a class of item implementing<br>org.LexGrid.LexBIG.Extensions.Load.Loader and providing a public<br>parameterless constructor.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>removeCodingSchemeVersion</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA47.htm">AbsoluteCodingSchemeVersionReference</a> codingSchemeVersion):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Remove a pending or inactive coding scheme from the service.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>removeHistoryService</B>(<br>&nbsp;&nbsp;&nbsp;String codingScheme):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Remove pending or inactive coding scheme history information.</TD> </TR> </TABLE></TD>
+</TR>
+<TR>
+	<TD WIDTH="40%" class="OperationTableRow"><i>package</i><BR><B>setVersionTag</B>(<br>&nbsp;&nbsp;&nbsp;<a href="../EA3/EA2/EA47.htm">AbsoluteCodingSchemeVersionReference</a> codingSchemeVersion, <br>&nbsp;&nbsp;&nbsp;String tag):void</TD>
+	<TD WIDTH="60%" class="OperationTableRow"><i>Sequential  </i><TABLE> <TR> <TD valign = "top"><i>Tags:</i><span style="margin-left: .7cm;"> </span></TD><TD>throws=LBException<br></TD> </TR> </TABLE><TABLE> <TR> <TD valign="top"><i>Notes: </i><span style="margin-left: .4cm;"> </span></TD><TD>Assign a symbolic tag to a specified coding scheme version.</TD> </TR> </TABLE></TD>
+</TR>
+
+				</TABLE>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+</table>
+
+<TABLE class="FooterTable" align="center" cellSpacing=0 cellPadding=0>
+  <TBODY >
+	<TR><TD colspan="2" width="100%"><HR></TD></TR>
+	<TR>
+		<TD colspan=2 WIDTH="100%" class="Footer">interface: LexBIGServiceManager</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="48%" class="FooterDetails"></TD>
+		<TD WIDTH="48%" class="FooterDetails"></TD>
+	</TR>
+	<TR>
+		<TD WIDTH="40%" class="FooterDetails"></TD>
+		<TD WIDTH="60%" class="FooterDetails"></TD>
+	</TR>
+	</TBODY>
+</TABLE> 
+</body>
+</html>

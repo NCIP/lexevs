@@ -1,0 +1,17 @@
+# Clears an optional named index associated with the specified coding scheme.
+# Note that built-in indices required by the LexBIG runtime cannot be removed.
+#
+# Options
+#   -u,--urn <urn> URN uniquely identifying the code system.
+#   -v,--version <id> Version identifier.
+#   -i,--index <name> Name of the index extension to clear.
+#   -f,--force Force clear (no confirmation).
+# 
+# Note: If the URN and version values are unspecified, a
+# list of available coding schemes will be presented for
+# user selection.
+#
+#  Example: RemoveIndex -i "myindex"
+#  Example: RemoveIndex -u "urn:oid:2.16.840.1.113883.3.26.1.1" -v "05.09e" -i "myindex"
+#
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.RemoveIndex $@

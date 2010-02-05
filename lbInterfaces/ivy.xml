@@ -1,0 +1,20 @@
+<ivy-module version="2.0">
+    <info organisation="lexevs" module="lbInterfaces"/>
+     <configurations>
+  		<conf name="compile" description="Build Time dependencies"/>
+  		<conf name="test" description="Test Time dependencies"/>
+  		<conf name="runtime" description="Run Time dependencies"/>
+  		<conf name="sources" description="Source code"/>
+	</configurations>
+	
+	<publications>
+	    <artifact name="lbInterfaces" type="jar"/>
+		<artifact name="lbInterfaces-sources" type="jar" conf="sources" ext="jar"/>
+	</publications>
+    <dependencies>
+    	<dependency org="lexevs" name="lgModel" rev="1.0-SNAPSHOT"/>
+    	<dependency org="lexevs" name="lbModel" rev="1.0-SNAPSHOT"/>
+   		<dependency org="org.apache.lucene" name="lucene-core" rev="2.4.0"/> 	
+    	<dependency org="org.springframework.batch" name="spring-batch-core" rev="2.0.1.RELEASE" />
+    </dependencies>
+</ivy-module>

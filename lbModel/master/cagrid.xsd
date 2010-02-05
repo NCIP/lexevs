@@ -1,0 +1,392 @@
+<?xml version="1.0"?>
+<xs:schema targetNamespace="http://LexGrid.org/schema/LexBIG/2009/01/caGrid" xmlns:grid="http://LexGrid.org/schema/LexBIG/2009/01/caGrid" xmlns:enums="http://LexGrid.org/schema/LexBIG/2009/01/enums" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:lbColl="http://LexGrid.org/schema/LexBIG/2009/01/Collections" xmlns:lbCore="http://LexGrid.org/schema/LexBIG/2009/01/Core" elementFormDefault="qualified">
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/Core" schemaLocation="Core.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/Collections" schemaLocation="Collections.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/enums" schemaLocation="enums.xsd"/>
+	<xs:element name="PropertyIdentification" type="grid:PropertyIdentification"/>
+	<xs:complexType name="PropertyIdentification">
+		<xs:annotation>
+			<xs:documentation>Property identification class</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Concept Property Name</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ConceptIdentification" type="grid:ConceptIdentification"/>
+	<xs:complexType name="ConceptIdentification">
+		<xs:annotation>
+			<xs:documentation>Unique identifier for a concept within a coding scheme.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="code" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Text representation of a concept code</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="LanguageIdentification" type="grid:LanguageIdentification"/>
+	<xs:complexType name="LanguageIdentification">
+		<xs:annotation>
+			<xs:documentation>Language Identification class</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="identifier" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Coding Scheme language identifier.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="HierarchyIdentification" type="grid:HierarchyIdentification"/>
+	<xs:complexType name="HierarchyIdentification">
+		<xs:annotation>
+			<xs:documentation>Wrapper class for an Identifier string for coding scheme hierarchies.  </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="identifier" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Identifier of a Hierarchy in a coding scheme.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="DirectionalAssociationIdentification" type="grid:DirectionalAssociationIdentification"/>
+	<xs:complexType name="DirectionalAssociationIdentification">
+		<xs:annotation>
+			<xs:documentation>Class associating an association name with a direction</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="grid:AssociationIdentification">
+				<xs:sequence>
+					<xs:element name="isForward" type="xs:boolean">
+						<xs:annotation>
+							<xs:documentation>Direction Indication associated with an association name.  If true this is a forward name.  If false, this is a reverse name.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Direction" type="grid:Direction"/>
+	<xs:complexType name="Direction">
+		<xs:annotation>
+			<xs:documentation>Direction indicating class implementation</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="isForward" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>Indication of traversal direction of a graph edge</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Status" type="grid:Status"/>
+	<xs:complexType name="Status">
+		<xs:annotation>
+			<xs:documentation>Implementation of a concept status parameter.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="value" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Indicates zero or more concept status values to match the concept status value against.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CodeExistence" type="grid:CodeExistence"/>
+	<xs:complexType name="CodeExistence">
+		<xs:annotation>
+			<xs:documentation>Code existence determining class</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="isPresent" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>flag indicator for presence of concept reference in a set</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="MatchCriteria" type="grid:MatchCriteria"/>
+	<xs:complexType name="MatchCriteria">
+		<xs:annotation>
+			<xs:documentation>Matching Criteria implementation for text</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="text" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Text used to match against particular match algorithms.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="TestDirectEdgeOnly" type="grid:TestDirectEdgeOnly"/>
+	<xs:complexType name="TestDirectEdgeOnly">
+		<xs:sequence>
+			<xs:element name="flag" type="xs:boolean"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CodeRelationship" type="grid:CodeRelationship"/>
+	<xs:complexType name="CodeRelationship">
+		<xs:annotation>
+			<xs:documentation>Code Relationship implementation</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="isCodeRelated" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>flag indicating a concept code is releated to another.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CodingSchemeCopyRight" type="grid:CodingSchemeCopyRight"/>
+	<xs:complexType name="CodingSchemeCopyRight">
+		<xs:sequence>
+			<xs:element name="copyrightTextOrURL" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>A string indicating a URL to a copyright or containing the complete text of a copyright.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CodingSchemeIdentification" type="grid:CodingSchemeIdentification"/>
+	<xs:complexType name="CodingSchemeIdentification">
+		<xs:annotation>
+			<xs:documentation>Implementation of a coding scheme identification.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The name of a coding scheme. Usually descriptive or a mnemonic.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="RelationContainerIdentification" type="grid:RelationContainerIdentification"/>
+	<xs:complexType name="RelationContainerIdentification">
+		<xs:annotation>
+			<xs:documentation>Relation Container Identifying class</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="contextName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The name of the relations container to reference when generating the graph.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ResolveConcepts" type="grid:ResolveConcepts"/>
+	<xs:complexType name="ResolveConcepts">
+		<xs:sequence>
+			<xs:element name="flag" type="xs:boolean"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="AssociationIdentification" type="grid:AssociationIdentification"/>
+	<xs:complexType name="AssociationIdentification">
+		<xs:annotation>
+			<xs:documentation>Association name implementation class</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="relationshipName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Name of a coding scheme relationship</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="AssociationReverseName" type="grid:AssociationReverseName"/>
+	<xs:complexType name="AssociationReverseName">
+		<xs:annotation>
+			<xs:documentation>The reverse name for the identified association.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="value" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>reverse name of an Association</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CodeState" type="grid:CodeState"/>
+	<xs:complexType name="CodeState">
+		<xs:annotation>
+			<xs:documentation>Code state implementation</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="isActive" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>Indicator of concept code retirement if true.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="SetResolutionPolicy" type="grid:SetResolutionPolicy"/>
+	<xs:complexType name="SetResolutionPolicy">
+		<xs:annotation>
+			<xs:documentation>Coded node set resolution policy.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="maximumToReturn" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>Maximum number of coded concept entries to return.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="resolveConcepts" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>True to fill in all information of the concept in the referencedEntry within ResolvedConceptReference.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sortOptions" type="lbColl:SortOptionList" minOccurs="0"/>
+			<xs:element name="filterOptions" type="lbColl:LocalNameList" minOccurs="0"/>
+			<xs:element name="propertyNames" type="lbColl:LocalNameList" minOccurs="0"/>
+			<xs:element name="propertyTypes" type="enums:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="NodeListPolicy" type="grid:NodeListPolicy"/>
+	<xs:complexType name="NodeListPolicy">
+		<xs:annotation>
+			<xs:documentation>Policy to resolve a node list from a coded node graph.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="maximumToReturn" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>Maximum number of entries to return; a value less than 1 indicates to return unlimited entries.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="resolveAssociationDepth" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>Number of hops to resolve associations. 0 means leave all associations unresolved, 1 means immediate neighbors, etc. -1 means follow the entire closure of the graph.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="resolveBackward" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>True means render all reverse associations</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="resolveForward" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation> True means include all "forward" (source->target) associations.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="graphFocus" type="lbCore:ConceptReference" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="GraphResolutionPolicy" type="grid:GraphResolutionPolicy"/>
+	<xs:complexType name="GraphResolutionPolicy">
+		<xs:annotation>
+			<xs:documentation>Class setting policy to resolve a CodedNodeGraph</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="graphFocus" type="lbCore:ConceptReference" minOccurs="0"/>
+			<xs:element name="propertyTypes" type="enums:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="filterOptions" type="lbColl:LocalNameList" minOccurs="0"/>
+			<xs:element name="propertyNames" type="lbColl:LocalNameList" minOccurs="0"/>
+			<xs:element name="sortOptions" type="lbColl:SortOptionList" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="keeptLastAssociationUnresolved" use="required" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>Keep the last hop while resolving associations to the resolveAssociationDepth unresolved. This is useful while drawing trees of an ontology and we need a quick way to tell if the tree can be expanded further</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="maximumToReturn" use="required" type="xs:int">
+			<xs:annotation>
+				<xs:documentation>Maximum number of entries to return; a value less than 1
+Maximum number of entries to return; a value less than 1 indicates to return unlimited entries (to the limit specified in the runtime configuration file).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="resolveAssociationDepth" use="required" type="xs:int">
+			<xs:annotation>
+				<xs:documentation> Number of hops to resolve associations. 0 means leave all associations unresolved, 1 means immediate neighbors, etc. -1 means follow the entire closure of the graph.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="resolveBackwards" use="required" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>True means resolve the target to source associations</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="resolveCodedEntryDepth" use="required" type="xs:int">
+			<xs:annotation>
+				<xs:documentation> Depth in the graph to resolve coded entries. - 1 means don't resolve anything - just return the concept references, 0 means resolve just the root nodes, 1 means resolve 1 deep, etc.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="resolveForward" use="required" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>True means resolve from the source to the target direction.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="RelationshipPolicy" type="grid:RelationshipPolicy"/>
+	<xs:complexType name="RelationshipPolicy">
+		<xs:annotation>
+			<xs:documentation>Relation Policy</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="targetConcept" type="lbCore:ConceptReference" minOccurs="0"/>
+			<xs:element name="sourceConcept" type="lbCore:ConceptReference" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="RelationshipDistanceBasedPolicy" type="grid:RelationshipDistanceBasedPolicy"/>
+	<xs:complexType name="RelationshipDistanceBasedPolicy">
+		<xs:annotation>
+			<xs:documentation>Distance Relationship class</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="grid:RelationshipPolicy">
+				<xs:sequence>
+					<xs:element name="distance" type="xs:int">
+						<xs:annotation>
+							<xs:documentation>Number of edges source and target codes must have in between. Must be positive and greater than zero</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="RelationshipTypeBasedPolicy" type="grid:RelationshipTypeBasedPolicy"/>
+	<xs:complexType name="RelationshipTypeBasedPolicy">
+		<xs:annotation>
+			<xs:documentation>Type Relation Policy</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="grid:RelationshipPolicy">
+				<xs:sequence>
+					<xs:element name="directOnly" type="xs:boolean">
+						<xs:annotation>
+							<xs:documentation>True means only direct associations are tested </xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="HierarchyResolutionPolicy" type="grid:HierarchyResolutionPolicy"/>
+	<xs:complexType name="HierarchyResolutionPolicy">
+		<xs:annotation>
+			<xs:documentation>Policy for resolving a list of Associations from a given Hierarchy</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="resolveConcepts" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>True to fill in all information for concepts identified as part of the returned association; false to return only basic references</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="associationQualifiers" type="lbColl:NameAndValueList" minOccurs="0"/>
+			<xs:element name="conceptCode" type="grid:ConceptIdentification" minOccurs="0"/>
+			<xs:element name="hierarchyId" type="grid:HierarchyIdentification" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ExtensionIdentification" type="grid:ExtensionIdentification"/>
+	<xs:complexType name="ExtensionIdentification">
+		<xs:sequence>
+			<xs:element name="LexBIGExtensionName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Name of a class that extends functionality.  This name serves as an identifier to the api to call through to the service layer for a particular extension class.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

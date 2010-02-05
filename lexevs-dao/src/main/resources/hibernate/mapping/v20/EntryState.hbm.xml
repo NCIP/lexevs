@@ -1,0 +1,28 @@
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>  
+    
+    <class name="org.LexGrid.versions.EntryState" table="entryState" lazy="false">
+  
+   	   <id column="entrystateid" type="string">
+         <generator class="uuid"/>
+   	   </id>
+		
+<!--		<property name="containingRevision" type="string" column="entrystateid"/>-->
+		
+		<property name="_relativeOrder" type="long" access="field" column="relativeOrder"/>
+    	
+    	<property name="changeType" column="changeType" not-null="true">
+    	 	<type name="org.hibernate.type.EnumType">
+      			<param name="enumClass">org.LexGrid.versions.types.ChangeType</param>
+      			<param name="type">12</param>
+   			</type>
+    	</property>
+    	  
+    </class>
+    
+</hibernate-mapping>
+
+

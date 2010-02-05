@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 30, 2009 7:07:50 AM by Hibernate == Tools 3.2.0.CR1 -->
+<hibernate-mapping>
+    <class name="org.LexGrid.persistence.model.Association" table="@PREFIX@association">
+        <composite-id name="id" class="org.LexGrid.persistence.model.AssociationId">
+            <key-property name="codingSchemeName" type="string">
+                <column name="codingSchemeName" length="50" />
+            </key-property>
+            <key-property name="containerName" type="string">
+                <column name="containerName" length="50" />
+            </key-property>
+            <key-property name="entityCodeNamespace" type="string">
+                <column name="entityCodeNamespace" length="50" />
+            </key-property>
+            <key-property name="entityCode" type="string">
+                <column name="entityCode" length="200" />
+            </key-property>
+        </composite-id>
+        <property name="associationName" type="string">
+            <column name="associationName" length="100" not-null="true" />
+        </property>
+        <property name="forwardName" type="string">
+            <column name="forwardName" length="100" not-null="true" />
+        </property>
+        <property name="reverseName" type="string">
+            <column name="reverseName" length="100" />
+        </property>
+        <property name="inverseId" type="string">
+            <column name="inverseId" length="100" />
+        </property>
+        <property name="isNavigable" type="java.lang.Boolean">
+            <column name="isNavigable" />
+        </property>
+        <property name="isTransitive" type="java.lang.Boolean">
+            <column name="isTransitive" />
+        </property>
+        <property name="isAntiTransitive" type="java.lang.Boolean">
+            <column name="isAntiTransitive" />
+        </property>
+        <property name="isSymmetric" type="java.lang.Boolean">
+            <column name="isSymmetric" />
+        </property>
+        <property name="isAntiSymmetric" type="java.lang.Boolean">
+            <column name="isAntiSymmetric" />
+        </property>
+        <property name="isReflexive" type="java.lang.Boolean">
+            <column name="isReflexive" />
+        </property>
+        <property name="isAntiReflexive" type="java.lang.Boolean">
+            <column name="isAntiReflexive" />
+        </property>
+        <property name="isFunctional" type="java.lang.Boolean">
+            <column name="isFunctional" />
+        </property>
+        <property name="isReverseFunctional" type="java.lang.Boolean">
+            <column name="isReverseFunctional" />
+        </property>
+        <property name="entityDescription" type="string">
+            <column name="entityDescription" length="65535" />
+        </property>
+    </class>
+</hibernate-mapping>

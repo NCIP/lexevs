@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 12, 2010 5:09:39 AM by Hibernate == Tools 3.2.0.CR1 -->
+<hibernate-mapping>
+    <class name="org.LexGrid.concepts.Concept" table="ENTRYTYPE" where="ENTRYTYPE = 'concept' " polymorphism="explicit">
+        <id type="string">
+            <column name="REFERENCEGUID" length="36" />
+            <generator class="uuid" />
+        </id>
+        
+          
+        <bag name="_entityTypeList" access="field" cascade="all" >
+            <key column="REFERENCEGUID" />
+                <element type="string" formula="'concept'" />
+        </bag>
+      
+      <join table="ENTITY">
+        	<key column="GUID"/>
+
+        <property name="entityCode" type="string">
+            <column name="ENTITYCODE" length="200" not-null="true" />
+        </property>
+        <property name="entityCodeNamespace" type="string" >
+            <column name="ENTITYCODENAMESPACE" length="50" not-null="true" />
+        </property>
+        <property name="isDefined" type="java.lang.Character">
+            <column name="ISDEFINED" length="1" />
+        </property>
+        <property name="isAnonymous" type="java.lang.Character">
+            <column name="ISANONYMOUS" length="1" />
+        </property>
+        <property name="isActive" type="boolean">
+            <column name="ISACTIVE" length="1" />
+        </property>
+       
+    
+        </join>
+        
+       
+        
+  
+        
+    </class>
+</hibernate-mapping>

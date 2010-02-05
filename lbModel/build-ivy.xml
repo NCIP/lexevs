@@ -1,0 +1,206 @@
+<project name="LexBIG Model" default="all" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+	<description>
+		Buildfile for the Castor Rendering of the LexBIG data model
+	</description>
+
+	<ivy:settings file="../lbPackager/ivysettings.xml"/>
+	<property file="build.properties"/>
+	
+	<!-- set global properties for this build -->
+	<property name="generated" 	location="Castor/src"/>
+	<property name="dist"		location="dist"/>
+	<property name="util.lib"   location="util.lib"/>
+	<property name="classes"	location="Castor/classes"/>
+	<property name="docs"  		location="Castor/JavaDocs"/>
+	<property name="core"       location="Castor/src/org/LexGrid/LexBIG/DataModel/Core"/>
+	<property name="annotate"   location="Castor/src/org/LexGrid/LexBIG/DataModel/Collections"/>
+	<property name="annotations"   location="annotations/src"/>
+	<property name="loaderXSDs"		location="master.preferences"/>
+	<property name="lib.dir" value="lib"/>
+
+	<!-- bda related properties -->
+	<property name="bda.build.dir" location="../../lexevs_bda/lbPackager"/>
+	<property file="bda.properties" location="${bda.build.dir}"/>
+	<property name="lgSharedLibs.dir" location="../lgSharedLibraries"/>	
+	<property name="lgModel.project.dir" location="../lgModel"/>
+
+	
+	<target name="init">
+		<path id="classpath">
+			<fileset dir="${lib.dir}">
+				<include name="*.jar"/>
+			</fileset>			
+		</path>
+	</target>
+
+	<target name="clean"  description="clean up" >
+		<!-- Delete the ${generated} and ${docs} directory trees -->
+		<delete dir="${dist}"/>
+		<delete dir="${docs}"/>
+		<delete dir="${generated}"/>
+		<delete dir="${classes}"/>
+	</target>
+	
+	<target name="genCastorFromXSD" depends="init" description="generate the Castor representation of the schema">
+		<echo>Generate Castor Java</echo>
+		<delete dir="${generated}"/>
+		<mkdir dir="${generated}"/>
+		<antcall target="genCastorJava">
+   			<param name="xsdFile" value="Core"/>
+  		</antcall>
+  		<antcall target="genCastorJava">
+   			<param name="xsdFile" value="Collections"/>
+  		</antcall>
+  		<antcall target="genCastorJava">
+   			<param name="xsdFile" value="InterfaceElements"/>
+  		</antcall>
+  		<antcall target="genCastorJava">
+   			<param name="xsdFile" value="NCIHistory"/>
+  		</antcall>
+		<antcall target="genCastorJava">
+			<param name="xsdFile" value="enums"/>
+		</antcall>
+		<antcall target="genCastorJava">
+		   	<param name="xsdFile" value="cagrid"/>
+		</antcall>
+		<antcall target="genLoaderPreferencesCastorJava">
+			<param name="xsdFile" value="LoadPreferences"/>
+		</antcall>
+		<antcall target="genLoaderPreferencesCastorJava">
+			<param name="xsdFile" value="HL7LoadPreferences"/>
+		</antcall>
+		<antcall target="genLoaderPreferencesCastorJava">
+			<param name="xsdFile" value="MetaLoadPreferences"/>
+		</antcall>
+		<antcall target="genLoaderPreferencesCastorJava">
+			<param name="xsdFile" value="OBOLoadPreferences"/>
+		</antcall>
+		<antcall target="genLoaderPreferencesCastorJava">
+		   	<param name="xsdFile" value="OWLLoadPreferences"/>
+		</antcall>
+		<antcall target="genLoaderPreferencesCastorJava">
+			<param name="xsdFile" value="SemNetLoadPreferences"/>
+		</antcall>
+		<antcall target="genLoaderPreferencesCastorJava">
+			<param name="xsdFile" value="UMLSLoadPreferences"/>
+		</antcall>
+		<antcall target="genLoaderPreferencesCastorJava">
+			<param name="xsdFile" value="XMLLoadPreferences"/>
+		</antcall>
+  	</target>
+  	
+	<target name="genLoaderPreferencesCastorJava" depends="init">
+		<echo>Generating Castor Java from Schema ${xsdFile}</echo>
+		
+		<java classname="org.exolab.castor.builder.SourceGenerator" fork="true">
+			<classpath refid="classpath"/>
+			<!--arg line="-f"/-->
+			<arg line="-i '${loaderXSDs}/${xsdFile}.xsd'"/>
+			<arg line="-package org.LexGrid.LexBIG.Preferences.loader.${xsdFile}"/>
+			<arg line="-dest '${generated}'"/>
+			<arg line="-nomarshall"/>
+			<!--<arg line="-nodesc"/>-->
+			<arg line="-types j2"/>
+			<arg line="-verbose"/>
+		</java>
+	</target>
+	
+	<target name="genCastorJava" depends="init">
+		<echo>Generating Castor Java from Schema ${xsdFile}</echo>
+		
+		<java classname="org.exolab.castor.builder.SourceGenerator" fork="true">
+			<classpath refid="classpath"/>
+			<!--arg line="-f"/-->
+			<arg line="-i master/${xsdFile}.xsd"/>
+			<arg line="-package org.LexGrid.LexBIG.DataModel.${xsdFile}"/>
+			<arg line="-dest '${generated}'"/>
+			<arg line="-nomarshall"/>
+			<!--<arg line="-nodesc"/>-->
+			<arg line="-types j2"/>
+			<arg line="-verbose"/>
+		</java>
+	</target>
+
+	<target name="compile" depends="genCastorFromXSD, annotate.class" description="compile the source ">
+		<mkdir dir="${classes}"/>
+		<javac source="1.5" target="1.5" srcdir="${generated}" destdir="${classes}" debug="yes">
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+
+	<target name="jar" depends="init, compile, copyXSDs" description="generate the jar file" >
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist}"/> 
+			
+		<!-- Put everything in ${build} into .jar file -->
+		<jar jarfile="${dist}/lbModel.jar" basedir="${classes}"/>
+		<jar jarfile="${dist}/lbModel-sources.jar" basedir="${generated}"/>
+	</target>
+	
+	<target name="copyXSDs" depends="init, compile" description="Copies Loader Preferences XSDs to jar." >
+		<!-- Copy the Loader XSDS -->
+		<copy todir="${classes}/PreferencesLoaderXSDS">
+			<fileset dir="${loaderXSDs}"/>
+		</copy>  
+	</target>
+
+	<target name="docs" depends="jar" description="Generate the javadocs">
+		<mkdir dir="${docs}"/>
+		<!--Create the javadocs-->
+		<javadoc destdir="${docs}" windowtitle="LexBIG" additionalparam="-breakiterator">
+			<package name="*"/>
+			<classpath>
+			      <path refid="classpath"/>
+			      <pathelement location="${dist}/lbModel.jar"/>
+			</classpath>
+
+			<sourcepath location="${generated}"/>
+		</javadoc>
+		<jar jarfile="${dist}/lbModel-javadoc.jar" basedir="${docs}"/>
+	</target>
+
+	<target name="annotate.class" description="annotate for remote classes" >
+		<replace dir="${annotate}" token="package org.LexGrid.LexBIG.DataModel.Collections;">
+			<replacevalue><![CDATA[package org.LexGrid.LexBIG.DataModel.Collections; 
+import org.LexGrid.annotations.LgClientSideSafe;]]></replacevalue>
+		</replace>
+		<replace dir="${annotate}" token="public class">
+			<include name="*.java*"/>
+			<replacevalue><![CDATA[@LgClientSideSafe 
+public class]]></replacevalue>
+		</replace>
+	</target>
+	
+	<target name="genModelAndAnnotate" depends="genCastorFromXSD, core.aliases, annotate.class" description="generate Castor model and annotate" >			
+	</target>	
+
+	<!-- Used to preserve backward compatibility between older
+	     ConceptReference/ResolvedConceptReference and new
+	     CodedNodeReference/ResolvedCodedNodeReference classes -->
+	<target name="core.aliases" description="override select methods on core items to behave as aliases" >
+		<replace dir="${core}" token="this._conceptCode;">
+			<replacevalue>this.getCode();</replacevalue>
+		</replace>
+		<replace dir="${core}" token="this._conceptCode = conceptCode;">
+			<replacevalue>this.setCode(conceptCode);</replacevalue>
+		</replace>
+		<replace dir="${core}" token="this._referencedEntry;">
+			<replacevalue>this.getEntity() instanceof org.LexGrid.concepts.Concept ? (org.LexGrid.concepts.Concept) this.getEntity() : null;</replacevalue>
+		</replace>
+		<replace dir="${core}" token="this._referencedEntry = referencedEntry;">
+			<replacevalue>this.setEntity(referencedEntry);</replacevalue>
+		</replace>
+	</target>
+	
+	<target name="resolve" depends="init" description="--> retrieve dependencies with ivy">
+		<ivy:retrieve />
+    </target>
+	
+	<target name="publish">
+		<ivy:publish resolver="ncicb-chain" pubrevision="${build.version}" overwrite="true">
+	  	 <artifacts pattern="${dist}/[artifact].[ext]" />
+		</ivy:publish>
+	</target>
+	
+	<target name="all" depends="init, clean, resolve, genCastorFromXSD, core.aliases, annotate.class, compile, jar, docs, publish" description="all - init, clean, genCastorXML, compile, jar, docs"/>
+</project>

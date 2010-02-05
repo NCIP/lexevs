@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<import resource="classpath:lexevsDao.xml" />
+	
+<!--	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">-->
+<!--    	<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>-->
+<!--    	<property name="url" value="jdbc:oracle:thin:@bmidev:1521:LEXGRID"/>-->
+<!--    	<property name="username" value="satya"/>-->
+<!--    	<property name="password" value="satya"/>-->
+<!--    </bean>-->
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">
+    	<property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+    	<property name="url" value="jdbc:hsqldb:mem:."/>
+    	<property name="username" value="sa"/>
+    	<property name="password" value=""/>
+    </bean>
+    
+<!--    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">-->
+<!--    	<property name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
+<!--    	<property name="url" value="jdbc:mysql://localhost/dbunit"/>-->
+<!--    	<property name="username" value="root"/>-->
+<!--    	<property name="password" value="root"/>-->
+<!--    </bean>-->
+	
+	<bean id="compass" class="org.compass.spring.LocalCompassBean">
+		<property name="classMappings">
+			<list>
+<!--				<value>org.lexevs.dao.index.model.compass.v20.IndexedEntity</value>-->
+				<value>org.lexevs.dao.index.model.compass.v20.IndexedProperty</value>
+			</list>
+		</property>
+		<property name="compassSettings">
+			<props>
+				<prop key="compass.engine.connection">ram://test-compass</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="lexGridSchemaVersionFactory" class="org.lexevs.dao.test.StaticDbVersionFactory">
+		<property name="version" value="2.0"/>
+	</bean>
+</beans>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UMLSLoaderPreferences xmlns:basePreferences="http://LexGrid.org/LexBIG/LoadPreferences">
+
+<basePreferences:XMLMetadataFilePath>c:/workspaceGE/lbImpl/resources/testData</basePreferences:XMLMetadataFilePath>
+
+</UMLSLoaderPreferences>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<met:ontology_description xmlns:met="http://server.stanford.ncbo.org/metadata">
+    <met:concise_name>adult_mouse_anatomy</met:concise_name>
+    <met:display_label>Mouse adult gross anatomy</met:display_label>
+    <met:supported_language>English</met:supported_language>
+    <met:description>A structured controlled vocabulary of the adult anatomy of the mouse (Mus).</met:description>
+    <met:authority>
+        <met:idspace local_name="MA" xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <met:about>
+            <met:homepage>http://www.informatics.jax.org/searches/AMA_form.shtml</met:homepage>
+            <met:contact email="anatomy@informatics.jax.org" emailType="">Anatomy at JAX</met:contact>
+        </met:about>
+    </met:authority>
+    <met:core_format>
+        <met:format>OBO-TEXT</met:format>
+    </met:core_format>
+    <met:version_info is_current="true">
+        <met:version>1.177</met:version>
+        <met:status>production</met:status>
+        <met:download_info>
+            <met:download_format>OBO-TEXT</met:download_format>
+            <met:download_url>http://localhost/files/4074/adult_mouse_anatomy.obo</met:download_url>
+        </met:download_info>
+        <met:version_releaseDate>2006-09-11-07:00</met:version_releaseDate>
+    </met:version_info>
+    <met:foundry is_foundry="false">
+        <met:open>false</met:open>
+        <met:language>false</met:language>
+        <met:idspace>false</met:idspace>
+        <met:versioned>false</met:versioned>
+        <met:content>false</met:content>
+        <met:definitions>false</met:definitions>
+        <met:relations>false</met:relations>
+        <met:documented>false</met:documented>
+        <met:users>false</met:users>
+    </met:foundry>
+</met:ontology_description>

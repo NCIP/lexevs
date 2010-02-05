@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+
+	<typeAlias alias="codingScheme" type="org.LexGrid.codingSchemes.CodingScheme" />
+
+	<resultMap id="codingSchemeResult" class="codingScheme">
+		<result property="codingSchemeName" column="codingSchemeName" />
+		<result property="codingSchemeURI" column="codingSchemeUri" />
+		<result property="representsVersion" column="representsVersion" />
+		<result property="formalName" column="formalName" />
+		<result property="defaultLanguage" column="defaultLanguage" />
+		<result property="approxNumConcepts" column="approxNumConcepts" />
+		<result property="entityDescription.content" column="description" />
+		<result property="copyright.content" column="copyright" />
+		<result property="isActive" column="isActive" />
+		<result property="entryState" resultMap="entryStateResult" />
+	</resultMap>
+
+	<select id="getCodingSchemeByNameAndVersion" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="codingSchemeResult">
+		SELECT
+			codingSchemeGuid,
+			codingSchemeName,
+			codingSchemeUri,
+			representsVersion,
+			formalName,
+			defaultLanguage,
+			approxNumConcepts,
+			description,
+			copyright,
+			isActive,
+			owner,
+			status,
+			effectiveDate,
+			expirationDate,
+			es.changeType,
+			es.relativeOrder,
+			es.revisionGuid,
+			es.prevRevisionGuid,
+			rev.revisionGuid
+		FROM
+			$prefix$codingScheme cs
+			
+		LEFT JOIN
+			$prefix$entryState es
+		ON
+			cs.entryStateGuid = es.entryStateGuid
+			
+		LEFT JOIN
+			$prefix$revision as rev
+		ON
+			es.revisionGuid = rev.revisionGuid
+			
+		WHERE
+			cs.codingSchemeName = #param1#
+		AND
+			cs.representsVersion = #param2#
+     </select>
+     
+     <select id="getCodingSchemeIdByNameAndVersion" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
+		SELECT
+			codingSchemeGuid
+		FROM
+			$prefix$codingScheme
+		WHERE
+			codingSchemeName = #param1#
+		AND
+			representsVersion = #param2#
+     </select>
+     
+     <select id="getEntryStateId" parameterClass="map" resultClass="string">
+		SELECT
+			entryStateId
+		FROM
+			codingScheme
+		WHERE
+			codingSchemeName = #codingSchemeName#
+		AND
+			representsVersion = #representsVersion#
+		AND
+			isCurrentRelease = #isCurrentRelease#
+     </select>
+   
+	<update id="updateCodingScheme" parameterClass="map">
+		UPDATE codingScheme
+
+		SET 
+			<isNotNull property="codingScheme.codingSchemeName">
+				codingSchemeName = #codingScheme.codingSchemeName#
+			</isNotNull>
+			<isNotNull prepend="," property="codingScheme.representsVersion">
+				representsVersion = #codingScheme.representsVersion#
+			</isNotNull>
+			<isNotNull prepend="," property="codingScheme.approxNumConcepts">
+				approxNumConcepts = #codingScheme.approxNumConcepts#
+			</isNotNull>
+		WHERE 
+			codingSchemeName = #codingSchemeName#
+		AND
+			representsVersion = #representsVersion#
+		AND
+			isCurrentRelease = #isCurrentRelease#
+ 	</update>
+
+	<insert id="insertCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertCodingSchemeBean">
+		INSERT INTO $prefix$codingScheme (
+			codingSchemeGuid,
+			codingSchemeName,
+			codingSchemeUri,
+			representsVersion,
+			formalName,
+			defaultLanguage,
+			approxNumConcepts,
+			description,
+			copyright,
+			isActive,
+			owner,
+			status,
+			effectiveDate,
+			expirationDate,
+			entryStateGuid
+		) VALUES (
+			#id#, 
+			#codingScheme.codingSchemeName#, 
+			#codingScheme.codingSchemeURI#, 
+			#codingScheme.representsVersion#,
+			#codingScheme.formalName#,
+			#codingScheme.defaultLanguage#,
+			#codingScheme.approxNumConcepts#,
+			#codingScheme.entityDescription.content#,
+			#codingScheme.copyright.content#,
+			#codingScheme.isActive#,
+			#codingScheme.owner.content#,
+			#codingScheme.status#,
+			#codingScheme.effectiveDate#,
+			#codingScheme.expirationDate#,
+			#entryStateId#
+		)
+  </insert>
+     
+    
+</sqlMap>

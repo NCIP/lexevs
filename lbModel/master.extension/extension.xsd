@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:lbExtension="http://LexGrid.org/schema/LexBIG/2009/01/extensions/extension" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:lgBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/builtins" targetNamespace="http://LexGrid.org/schema/LexBIG/2009/01/extensions/extension" attributeFormDefault="unqualified" elementFormDefault="qualified">
+    <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/builtins.xsd"/>
+    <xs:element name="extensions" type="lbExtension:extensions"/>
+    <xs:complexType name="extensions">
+    <xs:annotation>
+        <xs:documentation>LexEVS extension registraion: All LexEVS extensions added as an plugin should include an extension.xml file derived from this schema in the jar and 
+            dropped in runtime folder so that LexBigServices can register the extension and make it available at rumtime.
+        </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+        <xs:element name="extension" type="lbExtension:extension" minOccurs="1" maxOccurs="unbounded"/>        
+    </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="extension">        
+        <xs:complexContent>
+            <xs:restriction base="xs:anyType">
+                <xs:sequence>
+                    <xs:element name="description" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation> Description of this extension.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="provider" type="xs:string" minOccurs="1" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>Extension provider name.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="baseClass" type="lgBuiltin:tsCaseSensitiveDirectoryString" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>Base class for this extension.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="class" type="lgBuiltin:tsCaseSensitiveDirectoryString" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>Class of an extension</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="implements" nillable="false" minOccurs="1" maxOccurs="1">
+                        <xs:simpleType>
+                            <xs:restriction base="lgBuiltin:tsCaseSensitiveDirectoryString">
+                                <xs:enumeration value="ExportExtension">
+                                    <xs:annotation>
+                                        <xs:documentation>Implements Exporter extension.</xs:documentation>
+                                    </xs:annotation>
+                                </xs:enumeration>
+                                 <xs:enumeration value="GenericExtension">
+                                    <xs:annotation>
+                                        <xs:documentation>Implements GenericExtension.</xs:documentation>
+                                    </xs:annotation>
+                                </xs:enumeration>
+                                <xs:enumeration value="LoadExtension">
+                                    <xs:annotation>
+                                        <xs:documentation>Implements Loader extension.</xs:documentation>
+                                    </xs:annotation>
+                                </xs:enumeration>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="name" type="lgBuiltin:tsCaseSensitiveDirectoryString" use="required">
+                    <xs:annotation>
+                        <xs:documentation>Name of an extension.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>                
+            </xs:restriction>            
+        </xs:complexContent>
+    </xs:complexType>
+</xs:schema>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:lbPreferencesOWL="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:lbPreferences="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/LoadPreferences" targetNamespace="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences" elementFormDefault="qualified">
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/LoadPreferences" schemaLocation="LoadPreferences.xsd"/>
+	<xs:element name="OWLLoaderPreferences" type="lbPreferencesOWL:OWLLoaderPreferences">
+		<xs:annotation>
+			<xs:documentation>Represents source processing options recognized by the LexBIG OWL loader.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="OWLLoaderPreferences">
+		<xs:complexContent>
+			<xs:extension base="lbPreferences:LoaderPreferences">
+				<xs:sequence>
+					<xs:element name="PropnamePrimitive" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							Entities can be assigned a property that indicates whether or not it is
+							considered primitive (having no equivalent classes).  This preference controls
+							the name of the property that is created; the property value will indicate
+							true or false.  If not specified, the name 'primitive' is assumed.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PropnameType" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							Anonymous OWL classes of type OWLNAryLogicalClass can be assigned
+							properties that indicate the nature or type of component logical operations.
+							This preference controls the name of the property that is created; the
+							property value will indicate the logical operation (e.g. owl:oneOf).  If not
+							specified, the name 'type' is assumed.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MatchConceptCode" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							This preference allows for entity codes to be derived from a specific RDF
+							property.  The provided string is interpreted as a regular expression to be
+							compared against properties assigned to each processed class.  If a
+							property name matches the regular expression, the property value
+							is assigned as the entity code.  If not specified no default match is
+							assumed, and the entity code is derived from the RDF resource name.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MatchConceptStatus" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							This preference allows for entity status to be derived from a specific RDF
+							property.  The provided string is interpreted as a regular expression to be
+							compared against properties assigned to each processed class.  If a
+							property name matches the regular expression, the property value
+							is assigned as the entity status.  If not specified, the regular expression
+							of ('concept_status') is assumed, and if not matched no status string
+							is assigned (the isActive boolean flag will still be set based on
+							deprecation).
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MatchNoopNamespaces" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							This preference allows for classes to be selectively ignored on import to LexGrid.
+							The provided string is interpreted as a regular expression to be compared
+							against class namespace.  If matched, a counterpart entity is not created in the
+							LexGrid coding scheme.  If not provided, the expression '(:|@_:|protege:|xsp:).*'
+							is assumed.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MatchRootName" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							This preference allows for custom declaration of root concepts for hierarchical
+							relationships.  The provided string is interpreted as a regular expression to be
+							compared against the resource name for each class.  If matched, the node is
+							designated as a root in the supported hierarchy metadata.  If not specified,
+							root nodes are identified by having a superclass of owl:thing.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MatchXMLRepformNames" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							If processing of complex properties is enabled (see ProcessComplexProps
+							preference), this preference allows for identification of representational form
+							names contained by XML fragments embedded within rdf property text.
+							The provided string is interpreted as a regular expression and compared
+							against the XML tags in each fragment.  If not specified, the default
+							expression '(term-group)' is assumed.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MatchXMLSourceNames" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							If processing of complex properties is enabled (see ProcessComplexProps
+							preference), this preference allows for identification of source names contained
+							by XML fragments embedded within rdf property text.  The provided string is
+							interpreted as a regular expression and compared against the XML tags in
+							each fragment.  If not specified, the default expression '(term-source|def-source)'
+							is assumed.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MatchXMLTextNames" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							If processing of complex properties is enabled (see ProcessComplexProps
+							preference), this preference allows for identification of descriptive text contained
+							by XML fragments embedded within rdf property text.  The provided string is
+							interpreted as a regular expression and compared against the XML tags in
+							each fragment.  If not specified, the default expression '(term-name|def-definition|go-term)'
+							is assumed.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="IsDBXrefSource" type="xs:boolean" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							If processing of complex properties is enabled (see ProcessComplexProps
+							preference) and source, this preference allows for identification of ISBN cross
+							reference information in xml element text.  If not specified, the default
+							of 'false' is assumed.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="IsDBXrefRepform" type="xs:boolean" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							If processing of complex properties is enabled (see ProcessComplexProps
+							preference) and source, this preference allows for identification of representational
+							form cross reference information in xml element text.  If not specified, the default
+							of 'false' is assumed.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ProcessComplexProps" type="xs:boolean" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							Indicates whether rdf property text will be evaluated to detect and process
+							embedded XML.  This is a master switch controlling whether the MatchXML*
+							and isDBXRef* preferences are acknowledged.  The default is false.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="StrictOWLImplementation" type="xs:boolean" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							Controls the relationship between restrictions of anonymous classes and parent concepts.
+							If true, restrictions for anonymous classes are not connected to the parent concepts.
+							The default is false.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CreateConceptForObjectProp" type="xs:boolean" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							Controls whether concept entities are created for object properties defined in
+							the OWL source.  The default is false.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DatatypePropSwitch" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							Controls how data type properties are converted to components of the LexGrid
+							model.  If 'association' is specified, each data type property is recorded in LexGrid as
+							an entity-to-entity relationship.  If 'conceptProperty' is specified, traditional
+							LexGrid properties are created and assigned directly to new entities .  If 'both'
+							is specified, both entity relationships and standard LexGrid entity properties
+							are generated.  The default is 'both'.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PrioritizedCommentNames" nillable="true" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="name" type="xs:string" nillable="true" minOccurs="0" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:documentation>
+										Indicates a list of rdf property names to be attributed special semantic
+										significance as comments in the LexGrid model.  If not specified, the default
+										of 'DesignNote, Editor_Note, Citation, and VA_Workflow_Comment' is
+										assumed.  If not matched, only generic properties are created.
+										</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="PrioritizedDefinitionNames" nillable="true" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="name" type="xs:string" nillable="true" minOccurs="0" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:documentation>
+										Indicates a list of rdf property names to be attributed special semantic
+										significance as definitions in the LexGrid model.  If not specified, the default
+										of 'DEFINITION", dDEFINITION, LONG_DEFINITION, ALT_DEFINITION, 
+										ALT_LONG_DEFINITION, and MeSH_Definition' is assumed.
+										</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="PrioritizedPresentationNames" nillable="true" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="name" type="xs:string" nillable="true" minOccurs="0" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:documentation>
+										Indicates a list of rdf property names to be attributed special semantic
+										significance as definitions in the LexGrid model.  If not specified, the default
+										of 'NCI_Preferred_Term, Preferred_Name, Display_Name, Search_Name,
+										FULL_SYN, Synonym, VA_Print_Name, VA_National_Formulary_Name,
+										VA_Abbreviation, VA_Dose_Form_Print_Name, VA_Trade_Name,
+										MeSH_Name, NDFRT_Name, RxNorm_Name' is assumed.
+										</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

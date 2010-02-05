@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<xs:schema targetNamespace="http://LexGrid.org/schema/LexBIG/2009/01/enums" xmlns:enums="http://LexGrid.org/schema/LexBIG/2009/01/enums" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="PropertyType" type="enums:PropertyType"/>
+	<xs:complexType name="PropertyType">
+		<xs:annotation>
+			<xs:documentation>Options for filtering for pre-determined property types.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="propertyTypeOption" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Option from a set type of properties.  Values can only be: COMMENT, DEFINITION, INSTRUCTION, PRESENTATION, GENERIC</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ActiveOption" type="enums:ActiveOption"/>
+	<xs:complexType name="ActiveOption">
+		<xs:annotation>
+			<xs:documentation>pre-determined options for filtering active, inative or leaving filter neutral.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="activeOptionName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Options describing the status of a concept.  Values must include:  ACTIVE_ONLY, INACTIVE_ONLY, ALL</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="SearchDesignationOption" type="enums:SearchDesignationOption"/>
+	<xs:complexType name="SearchDesignationOption">
+		<xs:annotation>
+			<xs:documentation>Options for filtering for pre-determined search designations.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="searchDesignationOptionName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Option to limit search to preferred or general designations of a concept.  Values limited to PREFERRED_ONLY, NON_PREFERRED_ONLY, ALL</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="HierarchyPathResolveOption" type="enums:HierarchyPathResolveOption"/>
+	<xs:complexType name="HierarchyPathResolveOption">
+		<xs:annotation>
+			<xs:documentation>Implementation of a path to root resolve option</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="pathToRootResovleOption" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>resolve option for a hiearchy path to root.  Use limited to the following options: ALL, ONE, ONE_PER_HIERARCHY, ONE_PER_ROOT </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

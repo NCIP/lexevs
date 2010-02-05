@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 12, 2010 5:09:39 AM by Hibernate == Tools 3.2.0.CR1 -->
+<hibernate-mapping>
+    <class name="org.LexGrid.commonTypes.Source" table="CSMULTIATTRIB" discriminator-value="source">
+    
+        <id type="string">
+            <column name="GUID" length="36" />
+            <generator class="uuid" />
+        </id>
+        
+        <discriminator column="ATTRIBUTETYPE"/>
+       
+        <property name="subRef" type="string">
+            <column name="SUBREF" length="50" not-null="true" />
+        </property>
+         <property name="role" type="string">
+            <column name="ROLE" length="50" not-null="true" />
+        </property>
+         <property name="content" type="string">
+            <column name="ATTRIBUTEVALUE" length="50" not-null="true" />
+        </property>
+       
+    </class>
+</hibernate-mapping>

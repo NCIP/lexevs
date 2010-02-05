@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<systemRelease xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/versions http://LexGrid.org/schema/2009/01/LexGrid/versions.xsd"
+    xmlns="http://LexGrid.org/schema/2009/01/LexGrid/versions"
+    xmlns:lgVer="http://LexGrid.org/schema/2009/01/LexGrid/versions"
+    xmlns:lgCommon="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes"
+    xmlns:data="data"
+    xmlns:lgVD="http://LexGrid.org/schema/2009/01/LexGrid/valueDomains"
+    xmlns:lgNaming="http://LexGrid.org/schema/2009/01/LexGrid/naming"
+    releaseURI="http://testRelease/04"
+    releaseDate="2008-11-07T14:55:51.615-06:00">
+    <lgCommon:entityDescription>Sample value domains</lgCommon:entityDescription>
+    <pickLists>
+        <lgVD:mappings>
+            <lgNaming:supportedAssociation localId="is_a" uri="urn:lsid:bioontology.org:fungal_anatomy:is_a">is_a</lgNaming:supportedAssociation>
+            <lgNaming:supportedAssociation localId="hasSubtype" uri="urn:oid:1.3.6.1.4.1.2114.108.1.8.1">hasSubtype</lgNaming:supportedAssociation>
+            <lgNaming:supportedAssociation localId="uses" uri="urn:oid:11.11.0.1">uses</lgNaming:supportedAssociation>
+            <lgNaming:supportedAssociationQualifier localId="hasEngine" uri="www.something.com">hasEngine</lgNaming:supportedAssociationQualifier>
+            <lgNaming:supportedCodingScheme localId="Automobiles" uri="urn:oid:11.11.0.1">Automobiles</lgNaming:supportedCodingScheme>
+            <lgNaming:supportedCodingScheme localId="fungal_anatomy" uri="urn:lsid:bioontology.org:fungal_anatomy">fungal_anatomy</lgNaming:supportedCodingScheme>
+            <lgNaming:supportedCodingScheme localId="ExpendableParts" uri="urn:oid:11.11.0.50">Expendable Parts</lgNaming:supportedCodingScheme>
+            <lgNaming:supportedCodingScheme localId="GermanMadeParts" uri="urn:oid:11.11.0.2">German Made Parts</lgNaming:supportedCodingScheme>      
+            <lgNaming:supportedDataType localId="testhtml">test/html</lgNaming:supportedDataType>
+            <lgNaming:supportedDataType localId="textplain">text/plain</lgNaming:supportedDataType>    
+            <lgNaming:supportedHierarchy localId="is_a" associationNames="hasSubtype" isForwardNavigable="true" rootCode="@">hasSubtype</lgNaming:supportedHierarchy>    
+            <lgNaming:supportedLanguage localId="en" uri="www.en.org/orsomething">en</lgNaming:supportedLanguage>
+            <lgNaming:supportedNamespace localId="Automobiles" uri="urn:oid:11.11.0.1" equivalentCodingScheme="Automobiles">Automobiles</lgNaming:supportedNamespace>
+            <lgNaming:supportedNamespace localId="ExpendableParts" uri="urn:oid:11.11.0.50" equivalentCodingScheme="ExpendableParts">Expendable Parts</lgNaming:supportedNamespace>
+            <lgNaming:supportedNamespace localId="GermanMadePartsNamespace" uri="urn:oid:11.11.0.2" equivalentCodingScheme="GermanMadeParts">German Made Parts</lgNaming:supportedNamespace>
+            <lgNaming:supportedProperty localId="definition">definition</lgNaming:supportedProperty>
+            <lgNaming:supportedProperty localId="textualPresentation">textualPresentation</lgNaming:supportedProperty>
+            <lgNaming:supportedSource localId="lexgrid.org">lexgrid.org</lgNaming:supportedSource>
+            <lgNaming:supportedSource localId="_111101">11.11.0.1</lgNaming:supportedSource>
+        </lgVD:mappings>
+        <lgVD:pickListDefinition pickListId="SRITEST:AUTO:DomesticAutoMakers" representsValueDomain="SRITEST:AUTO:DomesticAutoMakers" isActive="true" defaultEntityCodeNamespace="Automobiles" defaultLanguage="en" completeDomain="false">
+            <lgCommon:owner>Owner for Domestic Auto Makers</lgCommon:owner>
+            <lgCommon:entityDescription>DomesticAutoMakers</lgCommon:entityDescription>
+            <lgVD:mappings>
+                <lgNaming:supportedCodingScheme localId="Automobiles" uri="urn:oid:11.11.0.1">Automobiles</lgNaming:supportedCodingScheme>
+                <lgNaming:supportedDataType localId="texthtml">text/html</lgNaming:supportedDataType>
+                <lgNaming:supportedDataType localId="textplain">text/plain</lgNaming:supportedDataType> 
+                <lgNaming:supportedLanguage localId="en" uri="www.en.org/orsomething">en</lgNaming:supportedLanguage>
+                <lgNaming:supportedNamespace localId="Automobiles" uri="urn:oid:11.11.0.1" equivalentCodingScheme="Automobiles">Automobiles</lgNaming:supportedNamespace>
+                <lgNaming:supportedProperty localId="definition">definition</lgNaming:supportedProperty>
+                <lgNaming:supportedProperty localId="textualPresentation">textualPresentation</lgNaming:supportedProperty>
+                <lgNaming:supportedSource  assemblyRule="rule1" uri="http://informatics.mayo.edu" localId="lexgrid.org">lexgrid.org</lgNaming:supportedSource>
+                <lgNaming:supportedSource localId="_111101">11.11.0.1</lgNaming:supportedSource>
+            </lgVD:mappings>
+            <lgVD:pickListEntryNode pickListEntryId="PL005p1" isActive="true">
+                <lgCommon:owner>Owner for PL005p1</lgCommon:owner>
+                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                <lgVD:inclusionEntry entityCode="005" entityCodeNamespace="Automobiles" propertyId="p1">
+                    <lgVD:pickText>Domestic Auto Makers</lgVD:pickText>
+                    <lgVD:pickContext>Domestic Auto Makers</lgVD:pickContext>
+                    <lgVD:pickContext>Cars</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="definition">
+                        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                        <lgCommon:value dataType="textplain">Definition for Domestic Auto Makers</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="PL005p2" isActive="true">
+                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                <lgVD:inclusionEntry entityCode="005" entityCodeNamespace="Automobiles" propertyId="p2">
+                    <lgVD:pickText>American Car Companies</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="definition">
+                        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                        <lgCommon:value dataType="textplain">Definition for Amerocan Auto Makers</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="PLFordp1" isActive="true">
+                <lgCommon:owner>Owner for PLFordp1</lgCommon:owner>
+                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                <lgVD:inclusionEntry entityCode="Ford" entityCodeNamespace="Automobiles" propertyId="p1">
+                    <lgVD:pickText>Ford</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
+                        <lgCommon:owner role="role" subRef="subref">Ford</lgCommon:owner>
+                        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                        <lgCommon:source subRef="subref1" role="role1">Ford</lgCommon:source>
+                        <lgCommon:value dataType="textplain">Property for Ford</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="PLGMp1" isActive="true">
+                <lgCommon:owner>Owner for PLGMp1</lgCommon:owner>
+                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                <lgVD:inclusionEntry entityCode="GM" entityCodeNamespace="Automobiles" propertyId="p1">
+                    <lgVD:pickText>General Motors</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
+                        <lgCommon:owner role="role" subRef="subref">General Motors</lgCommon:owner>
+                        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                        <lgCommon:source subRef="subref1" role="role1">General Motors</lgCommon:source>
+                        <lgCommon:value dataType="textplain">Property for General Motors</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="PLGMp2" isActive="true">
+                <lgCommon:owner>Owner for PLGMp2</lgCommon:owner>
+                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                <lgVD:inclusionEntry entityCode="GM" entityCodeNamespace="Automobiles" propertyId="p2">
+                    <lgVD:pickText>GM</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
+                        <lgCommon:owner role="role" subRef="subref">GM</lgCommon:owner>
+                        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                        <lgCommon:source subRef="subref1" role="role1">GM</lgCommon:source>
+                        <lgCommon:value dataType="textplain">Property for GM</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="PLJaguarp1" isActive="true">
+                <lgCommon:owner>Owner for PLJaguarp1</lgCommon:owner>
+                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                <lgVD:inclusionEntry entityCode="Jaguar" entityCodeNamespace="Automobiles" propertyId="p1">
+                    <lgVD:pickText>Jaguar</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
+                        <lgCommon:owner role="role" subRef="subref">Jaguar</lgCommon:owner>
+                        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                        <lgCommon:source subRef="subref1" role="role1">Jaguar</lgCommon:source>
+                        <lgCommon:value dataType="textplain">Property for Jaguar</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="PLChevroletp1" isActive="true">
+                <lgCommon:owner>Owner for PLChevroletp1</lgCommon:owner>
+                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                <lgVD:inclusionEntry entityCode="Chevy" entityCodeNamespace="Automobiles" propertyId="p1">
+                    <lgVD:pickText>Chevrolet</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
+                        <lgCommon:owner role="role" subRef="subref">Chevrolet</lgCommon:owner>
+                        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                        <lgCommon:source subRef="subref1" role="role1">Chevrolet</lgCommon:source>
+                        <lgCommon:value dataType="textplain">Property for Chevrolet</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="PLOldsmobilep1" isActive="true">
+                <lgCommon:owner>Owner for PLOldsmobilep1</lgCommon:owner>
+                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                <lgVD:inclusionEntry entityCode="73" entityCodeNamespace="Automobiles" propertyId="p1">
+                    <lgVD:pickText>Oldsmobile</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
+                        <lgCommon:owner role="role" subRef="subref">Oldsmobile</lgCommon:owner>
+                        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                        <lgCommon:source subRef="subref1" role="role1">Oldsmobile</lgCommon:source>
+                        <lgCommon:value dataType="textplain">Property for Oldsmobile</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+        </lgVD:pickListDefinition>
+        <lgVD:pickListDefinition pickListId="SRITEST:AUTO:AllDomesticButGM" representsValueDomain="SRITEST:AUTO:AllDomesticButGM" completeDomain="false" defaultLanguage="en" isActive="true" defaultEntityCodeNamespace="Automobiles" defaultSortOrder="1" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z" status="active">
+            <lgCommon:owner>Owner for All Domestic But GM</lgCommon:owner>
+            <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW"/>
+            <lgCommon:entityDescription>My first test</lgCommon:entityDescription>
+            <lgVD:pickListEntryNode pickListEntryId="PL005p1" isActive="true">
+                <lgCommon:owner>Owner for PL005p1</lgCommon:owner>
+                <lgVD:inclusionEntry entityCode="005" entityCodeNamespace="Automobiles" propertyId="p1">
+                    <lgVD:pickText>Domestic Auto Makers</lgVD:pickText>
+                    <lgVD:pickContext>Domestic Auto Makers</lgVD:pickContext>
+                    <lgVD:pickContext>Cars</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="definition">
+                        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                        <lgCommon:value dataType="textplain">Definition for Domestic Auto Makers</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="PL005p2" isActive="true">
+                <lgCommon:owner>Owner for PL005p2</lgCommon:owner>
+                <lgVD:inclusionEntry entityCode="005" entityCodeNamespace="Automobiles" propertyId="p2">
+                    <lgVD:pickText>American Car Companies</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="definition">
+                        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                        <lgCommon:value dataType="textplain">Definition for Amerocan Auto Makers</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="PLFordp1" isActive="true">
+                <lgCommon:owner>Owner for PLFordp1</lgCommon:owner>
+                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                <lgVD:inclusionEntry entityCode="Ford" entityCodeNamespace="Automobiles" propertyId="p1">
+                    <lgVD:pickText>Ford</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
+                        <lgCommon:owner role="role" subRef="subref">Ford</lgCommon:owner>
+                        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                        <lgCommon:source subRef="subref1" role="role1">Ford</lgCommon:source>
+                        <lgCommon:value dataType="textplain">Property for Ford</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+           <lgVD:pickListEntryNode pickListEntryId="PLJaguarp1" isActive="true">
+               <lgCommon:owner>Owner for PLJaguarp1</lgCommon:owner>
+                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                <lgVD:inclusionEntry entityCode="Jaguar" entityCodeNamespace="Automobiles" propertyId="p1">
+                    <lgVD:pickText>Jaguar</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
+                        <lgCommon:owner role="role" subRef="subref">Jaguar</lgCommon:owner>
+                        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                        <lgCommon:source subRef="subref1" role="role1">Jaguar</lgCommon:source>
+                        <lgCommon:value dataType="textplain">Property for Jaguar</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+        </lgVD:pickListDefinition>
+        <lgVD:pickListDefinition pickListId="SRITEST:AUTO:DomasticLeafOnly" representsValueDomain="SRITEST:AUTO:DomasticLeafOnly" completeDomain="true" defaultEntityCodeNamespace="Automobiles" defaultLanguage="en" isActive="true">
+            <lgCommon:entityDescription>Leaf Only Nodes of Domastic AutoMakers</lgCommon:entityDescription>
+        </lgVD:pickListDefinition>
+        <lgVD:pickListDefinition pickListId="SRITEST:FA:MSOntologyLeafOnly" representsValueDomain="SRITEST:FA:MicrobialStructureOntologyLeafOnly" isActive="true" completeDomain="true">
+            <lgCommon:entityDescription>Leaf Only nodes ofMicrobial Structure Ontology</lgCommon:entityDescription>
+        </lgVD:pickListDefinition>
+        <lgVD:pickListDefinition pickListId="SRITEST:FA:MSOntologyAndHyphaInMycelium" representsValueDomain="SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium" completeDomain="true" defaultEntityCodeNamespace="fungal_anatomy" defaultLanguage="en" defaultSortOrder="Assending" isActive="true" status="active">
+            <lgCommon:owner>Owner for FA:MicrobialStructureOntologyAndHyphaInMycelium</lgCommon:owner>
+        </lgVD:pickListDefinition>
+        <lgVD:pickListDefinition pickListId="SRITEST:FA:hyphaLeafOnly" representsValueDomain="SRITEST:FA:hyphaLeafOnly" isActive="true" completeDomain="true">
+            <lgCommon:entityDescription>Leaf Only nodes of hypha</lgCommon:entityDescription>
+        </lgVD:pickListDefinition>
+        <lgVD:pickListDefinition pickListId="SRITEST:FA:MicrobialStructureOntology" representsValueDomain="SRITEST:FA:MicrobialStructureOntology" completeDomain="false" defaultEntityCodeNamespace="fungal_anatomy" defaultLanguage="en" defaultSortOrder="Assending" isActive="true" status="active">
+            <lgCommon:owner>Owner for FA:MicrobialStructireOntology</lgCommon:owner>
+            <lgCommon:entityDescription>Microbial Structure Ontology with out ... </lgCommon:entityDescription>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0000001:p1">
+                <lgVD:inclusionEntry entityCode="FAO:0000001" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p1">
+                    <lgVD:pickText>microbial structure ontology</lgVD:pickText>
+                    <lgVD:pickContext>microbial structure ontology</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0000001:p2">
+                <lgVD:inclusionEntry entityCode="FAO:0000001" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p2">
+                    <lgVD:pickText>fungal structure ontology</lgVD:pickText>
+                    <lgVD:pickContext>fungal structure ontology</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0001001:p1">
+                <lgVD:inclusionEntry entityCode="FAO:0001001" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p1">
+                    <lgVD:pickText>hypha</lgVD:pickText>
+                    <lgVD:pickContext>hypha</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0000005:p1">
+                <lgVD:inclusionEntry entityCode="FAO:0000005" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p1">
+                    <lgVD:pickText>obsolete</lgVD:pickText>
+                    <lgVD:pickContext>obsolete</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0000018:p1">
+                <lgVD:inclusionEntry entityCode="FAO:0000018" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p1">
+                    <lgVD:pickText>unicellular structure</lgVD:pickText>
+                    <lgVD:pickContext>unicellular structure</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0000032:p1">
+                <lgVD:inclusionEntry entityCode="FAO:0000032" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p1">
+                    <lgVD:pickText>vegetative cell</lgVD:pickText>
+                    <lgVD:pickContext>vegetative cell</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0000032:p3">
+                <lgVD:inclusionEntry entityCode="FAO:0000032" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p3">
+                    <lgVD:pickText>yeast-form</lgVD:pickText>
+                    <lgVD:pickContext>yeast-form</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0000019:p1">
+                <lgVD:inclusionEntry entityCode="FAO:0000019" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p1">
+                    <lgVD:pickText>spore</lgVD:pickText>
+                    <lgVD:pickContext>spore</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0001022:p1">
+                <lgVD:inclusionEntry entityCode="FAO:0001022" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p1">
+                    <lgVD:pickText>mating cell</lgVD:pickText>
+                    <lgVD:pickContext>mating cell</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+            <lgVD:defaultPickContext>Microbial Structure</lgVD:defaultPickContext>
+            <lgVD:defaultPickContext>Fungal Anatomy</lgVD:defaultPickContext>            
+        </lgVD:pickListDefinition>
+        <lgVD:pickListDefinition pickListId="SRITEST:FA:MicrobialStructureOntologyMinusMCell" representsValueDomain="SRITEST:FA:MicrobialStructureOntology" completeDomain="false" defaultEntityCodeNamespace="fungal_anatomy" defaultLanguage="en" defaultSortOrder="Assending" isActive="true" status="active">
+            <lgCommon:owner role="aRole" subRef="aSubRef">Owner for FA:MicrobialStructureOntologyMinusMCell</lgCommon:owner>
+            <lgCommon:entityDescription>Microbial Structure Ontology  with out Mating cell</lgCommon:entityDescription>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0000001:p1">
+                <lgVD:inclusionEntry entityCode="FAO:0000001" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p1">
+                    <lgVD:pickText>microbial structure ontology</lgVD:pickText>
+                    <lgVD:pickContext>microbial structure ontology</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0000001:p2">
+                <lgVD:inclusionEntry entityCode="FAO:0000001" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p2">
+                    <lgVD:pickText>fungal structure ontology</lgVD:pickText>
+                    <lgVD:pickContext>fungal structure ontology</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0001001:p1">
+                <lgVD:inclusionEntry entityCode="FAO:0001001" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p1">
+                    <lgVD:pickText>hypha</lgVD:pickText>
+                    <lgVD:pickContext>hypha</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0000005:p1">
+                <lgVD:inclusionEntry entityCode="FAO:0000005" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p1">
+                    <lgVD:pickText>obsolete</lgVD:pickText>
+                    <lgVD:pickContext>obsolete</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0000018:p1">
+                <lgVD:inclusionEntry entityCode="FAO:0000018" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p1">
+                    <lgVD:pickText>unicellular structure</lgVD:pickText>
+                    <lgVD:pickContext>unicellular structure</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0000032:p1">
+                <lgVD:inclusionEntry entityCode="FAO:0000032" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p1">
+                    <lgVD:pickText>vegetative cell</lgVD:pickText>
+                    <lgVD:pickContext>vegetative cell</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0000032:p3">
+                <lgVD:inclusionEntry entityCode="FAO:0000032" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p3">
+                    <lgVD:pickText>yeast-form</lgVD:pickText>
+                    <lgVD:pickContext>yeast-form</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="FAO:0000019:p1">
+                <lgVD:inclusionEntry entityCode="FAO:0000019" entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p1">
+                    <lgVD:pickText>spore</lgVD:pickText>
+                    <lgVD:pickContext>spore</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+            </lgVD:pickListEntryNode>
+           <lgVD:pickListEntryNode pickListEntryId="FAO:0001022:p1">
+                <lgVD:exclusionEntry entityCode="FAO:0001022"/>
+            </lgVD:pickListEntryNode>
+            <lgVD:defaultPickContext>Microbial Structure</lgVD:defaultPickContext>
+            <lgVD:defaultPickContext>Fungal Anatomy</lgVD:defaultPickContext>            
+        </lgVD:pickListDefinition>
+    </pickLists>
+</systemRelease>

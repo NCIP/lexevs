@@ -1,0 +1,32 @@
+Change log and licensing log for lgShared Libraries:
+
+* This is not exclusively a change log, it exists to track changes
+* in license files, jar updates and also to explain the presence or lack of
+* licenses for certain jars, license versions and differences in licences from
+* version to version.. (Scott Bauer)
+
+
+4.23.2007
+
+Saxpath/Jaxen:
+
+License included for saxpath-1.5.jar.  Essentially copied from the jaxen license
+text. It was recently integrated into the jaxen project and appears to be
+covered by that same license as a result.
+
+Jena:
+
+All jars but the antlr and icu4j jars are licensed under the apache license.  Tom
+modified the jena and arq licenses to reflect some language stated on the jena
+web page.  Antlr has it's own license and icu4j is licensed by IBM.  
+
+Castor:
+
+Just a note on usage here.  Castor-1.0.2 ships with LexB** distros in the
+runtime jar and the extLib.  Castor-1.0.5 is used to build lbModel but does not 
+ship with either.
+
+
+
+
+

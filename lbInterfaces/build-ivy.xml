@@ -1,0 +1,85 @@
+<project name="LexBIG Service Interfaces" default="all" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+	<description>
+		Buildfile for the LexBIG Runtime API programming interfaces
+	</description>
+
+	<ivy:settings file="../lbPackager/ivysettings.xml"/>
+	<property file="build.properties"/>
+		
+	<!-- set global properties for this build -->
+	<property name="antBuild.dir"   location="antBuild"/>
+	<property name="dist.dir"		location="dist"/>
+	<property name="classes.dir"	location="${antBuild.dir}/classes"/>
+	<property name="extlib.dir" 	location="extlib"/>
+	<property name="docs.dir"  		location="${antBuild.dir}/JavaDocs"/>
+	<property name="src.dir"  		location="src"/>
+	<property name="custom.dir"		location="customSource"/>
+	<property name="lib.dir" value="lib"/>
+
+	<target name="init">
+		<path id="classpath">
+			<fileset dir="${lib.dir}">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${extlib.dir}">
+				<include name="*.jar"/>
+			</fileset>
+		</path>
+	</target>
+
+
+	<target name="clean" depends="init" description="clean up" >
+		<delete dir="${antBuild.dir}"/>
+		<delete dir="${dist}"/>
+		
+		<!-- Remove datamodel directories and files that might have been -->
+		<!-- exported by EA (LexGrid and LexBIG flavors).  These will be -->
+		<!-- built into other jar files. -->
+		<delete dir="${src.dir}/org.LexGrid.LexBIG.DataModel"/>
+		<delete dir="${src.dir}/org.LexGrid.builtins"/>
+		<delete dir="${src.dir}/org.LexGrid.codingSchemes"/>
+		<delete dir="${src.dir}/org.LexGrid.commonTypes"/>
+		<delete dir="${src.dir}/org.LexGrid.concepts"/>
+		<delete dir="${src.dir}/org.LexGrid.naming"/>
+		<delete dir="${src.dir}/org.LexGrid.relations"/>
+		<delete dir="${src.dir}/org.LexGrid.service"/>
+		<delete dir="${src.dir}/org.LexGrid.valueDomains"/>
+		<delete dir="${src.dir}/org.LexGrid.versions"/>
+	</target>
+	
+	<target name="compile" depends="init" description="compile the source ">
+		<mkdir dir="${classes.dir}"/>
+		<javac  source="1.5" target="1.5" srcdir="${custom.dir}" destdir="${classes.dir}" debug="yes"/>
+		<javac source="1.5" target="1.5" srcdir="${src.dir}" destdir="${classes.dir}" debug="yes">
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+
+	<target name="jar" depends="init, compile" description="generate the jar file" >
+		<mkdir dir="${dist.dir}"/>
+		<jar jarfile="${dist.dir}/lbInterfaces.jar" basedir="${classes.dir}"/>
+		<jar jarfile="${dist.dir}/lbInterfaces-sources.jar" basedir="${src.dir}"/>
+	</target>
+
+	<target name="resolve" depends="init" description="--> retrieve dependencies with ivy">
+		<ivy:retrieve />
+    </target>
+	
+	<target name="publish">
+		<ivy:publish resolver="ncicb-chain" pubrevision="${build.version}" overwrite="true">
+	  	 <artifacts pattern="${dist.dir}/[artifact].[ext]" />
+		</ivy:publish>
+	</target>
+
+	<target name="docs" depends="init, compile" description="Generate the javadocs">
+		<mkdir dir="${docs.dir}"/>
+		<!--Create the javadocs-->
+		<javadoc destdir="${docs.dir}" windowtitle="LexBIG Interfaces" additionalparam="-breakiterator">
+			<package name="*"/>
+			<classpath refid="classpath"/>
+			<sourcepath location="${src.dir}"/>
+		</javadoc>
+	</target>
+
+	<target name="all" depends="init, clean, resolve, compile, jar, docs, publish" description="all - init, clean, compile, jar, docs, publish"/>
+</project>

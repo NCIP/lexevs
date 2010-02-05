@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+
+	<typeAlias alias="entity" type="org.LexGrid.concepts.Entity" />
+
+	<resultMap id="entityResult" class="entity">
+		<result property="entityCode" column="entityCode" />
+		<result property="entityCodeNamespace" column="entityCodeNamespace" />
+	</resultMap>
+
+	<select id="getEntityByCodeAndNamespace" parameterClass="map" resultMap="entityResult">
+		SELECT
+			entityCode,
+			entityCodeNamespace
+		FROM
+			entity
+		WHERE
+			entityCode = #entityCode#
+		AND
+			entityCodeNamespace = #entityCodeNamespace#
+     </select>
+     
+     <insert id="insertEntity" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertEntityBean">
+		INSERT INTO entity (
+			entityGuid,
+			codingSchemeGuid,
+			entityCode,
+			entityCodeNamespace,
+			isDefined,
+			isAnonymous,
+			isActive,
+			description,
+			owner,
+			status,
+			effectiveDate,
+			expirationDate,
+			entryStateGuid
+		) VALUES (
+			#id#, 
+			#codingSchemeId#,
+			#entity.entityCode#, 
+			#entity.entityCodeNamespace#, 
+			#entity.isDefined#,
+			#entity.isAnonymous#,
+			#entity.isActive#,
+			#entity.entityDescription.content#,
+			#entity.owner.content#,
+			#entity.status#,
+			#entity.effectiveDate#,
+			#entity.expirationDate#,
+			#entryStateId#
+		)
+  </insert>
+    
+</sqlMap>

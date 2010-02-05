@@ -1,0 +1,11 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+        <hibernate-configuration>
+          <session-factory>
+          	 <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
+            <mapping class="org.lexevs.dao.registry.model.Registry"/>
+            <mapping class="org.lexevs.dao.registry.model.CodingSchemeEntry"/>
+          </session-factory>
+        </hibernate-configuration>

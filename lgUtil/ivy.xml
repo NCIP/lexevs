@@ -1,0 +1,11 @@
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+    <info organisation="lexevs" module="lgUtil"/>
+
+	<dependencies>
+    	<dependency org="commons-collections" name="commons-collections" rev="3.2.1"/>
+    	<dependency org="commons-pool" name="commons-pool" rev="1.4" />
+    	<dependency org="commons-lang" name="commons-lang" rev="2.4"/>
+    	<dependency org="log4j" name="log4j" rev="1.2.8"/>  
+    	<dependency org="swt" name="swt-win32" rev="2.1.0"/>  
+    </dependencies>
+</ivy-module>

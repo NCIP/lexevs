@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+
+	<resultMap id="entryStateResult" class="org.LexGrid.versions.EntryState">
+		<result property="containingRevision" column="revisionGuid" />
+		<result property="relativeOrder" column="relativeOrder" />
+		<result property="changeType" column="changeType" />
+		<result property="prevRevision" column="prevRevisionGuid" />
+	</resultMap>
+
+	<select id="getEntryStateById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="entryStateResult">
+		SELECT
+			changeType,
+			relativeOrder,
+			revisionGuid,
+			prevRevisionGuid
+		FROM
+			$prefix$entryState
+		WHERE
+			entryStateGuid = #param1#
+		
+     </select>
+
+	<update id="updateEntryStateById" parameterClass="map">
+		UPDATE entryState
+		SET 
+			changeType = #entryState.changeType#
+		where
+			entryStateId = #id#
+ 	</update>
+ 	
+ 	<insert id="insertEntryState" parameterClass="org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean">
+		INSERT INTO $prefix$entryState (
+			entryStateGuid,
+			entryGuid,
+			entryType,
+			changeType,
+			relativeOrder,
+			revisionGuid,
+			prevRevisionGuid,
+			prevEntryStateGuid
+			)
+		VALUES (
+			#entryStateId#,
+			#entryId#,
+			#entryType#,
+			#entryState.changeType#,
+			#entryState.relativeOrder#,
+			#entryState.containingRevision#,
+			#entryState.prevRevision#,
+			#previousEntryStateId#
+			)
+ 	</insert>
+ 
+    
+</sqlMap>

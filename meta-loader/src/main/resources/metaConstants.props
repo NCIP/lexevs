@@ -1,0 +1,11 @@
+CodingSchemeName = NCI MetaThesaurus
+FormalName = NCI MetaThesaurus
+DefaultLanguage = ENG
+Copyright =   Some material in the NCI Metathesaurus is from copyrighted sources of the respective copyright claimants.
+              All sources appearing in the NCI Metathesaurus are licensed or authorized for NCI use
+              \n 
+              Users of the NCI Metathesaurus are responsible for compliance with the terms of these licenses
+              and with any copyright restrictions and are referred to NCI Center of Bioinformatics for license terms
+              and to the copyright notices appearing in the original sources,
+              all of which are obtainable online by reference at http\://ncimeta.nci.nih.gov/.
+EntityDescription = NCI Metathesaurus loaded from RRF files. 

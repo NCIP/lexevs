@@ -1,0 +1,662 @@
+Dan,
+
+Frequently the association information is sufficient or already available in the coding scheme.  Note that everything will work hunky-dory without it as well - the defaults (isTransitive - don't know, isNavigable - true, forwardName = associationName, reverseName = either association name or computational mangling thereof - I've got several, so, while it might be useful to do the work, life goes on just fine without it.  This *is* however, why the loader API takes two inputs - the source itself and the metadata.
+
+Further responses below 
+
+-----Original Message-----
+From: Armbrust, Daniel C. 
+Sent: Friday, January 13, 2006 12:09 PM
+To: Solbrig, Harold R.
+Cc: Johnson, Thomas M.
+Subject: RE: ........
+
+
+Some followup questions....
+
+
+We need to manually name/setup all associations, for every code system that we load - this means that the UMLS / NCI MetaThesaurus loader needs work.  It behaves similar to this now, but not completely correctly.
+
+And I'm still a bit fuzzy on some of the details for naming associations when we load things.
+
+For example, the UMLS and/or the NCI Metathesaurus has these relationships:
+
+has_focus : focus_of
+
+They happen to be inverses of each other.  (Does this mean that it is navigable - or is there more to determining if something is navigable?)
+
+---> While I need to go back and look at what the UMLS has actually done, my recollection is that they have not only pre-determined that has_focus is navigable, but they have graciously(?) precomputed the inverse of it.  Is this the case?
+
+
+
+Now, when we load this, do we do this:
+
+associationName: hasFocus  forwardName: has_focus  reverseName: focus_of
+or this:
+associationName: has_focus  forwardName: has_focus  reverseName: focus_of
+or this:
+associationName: has_focus  forwardName: hasFocus  reverseName: focusOf
+
+-----> The second choice, assuming that you are loading the x has_focus y branch
+
+
+Or some other combination?
+
+In either case, when they ask what associations are available, we are only going to return the associationNames - so it will be either hasFocus or has_focus.
+
+-----> We're going to return the associationName - has_focus.  
+
+========================
+
+What if they want to know about focus_of?  We haven't said that it is available, and if we are making up the forward and reverse names, they can't match to those. 
+
+-----> We don't make up the names unless (a) they aren't there to begin with, which is the typical case or (b) they are hopelessly ambiguous (e.g. part and reverse_part).
+
+
+ You can't compute that has_focus or hasFocus is the inverse of focus_of (I tried, but the UMLS didn't use any consistent rules when they wrote the forward/reverse association names).  And, if hasFocus is not navigable, you can't generate a graph for the association hasFocus, and look at it from the bottom up, because we won't fill in the target of sections.
+
+-----------> To the best of my knowledge, NCI Thesaurus and, perhaps, SNOMED-CT are the only things in the UMLS that might even have the possibility of being non-navigable.  Has_focus should be navigable.  If focus_of is in there and, for one reason or another, we don't recognize that it is the inverse of has_focus, things are still peachy - redundant, but peachy.
+
+So, it seems like it becomes impossible to get the relationships for focus_of - unless it is defined as navigable, and you know that has_focus is the inverse of focus_of.
+-------> It should be defined as navigable, which renders the has_focus set of associations redundant.  It would be nice to recognize this but, if the NLM folks don't provide this bit of information, there isn't a lot we can do.  I don't think that we should try to comput it...
+
+  
+
+And now, to resummarize the answers to the graph questions - if I understand you correctly:
+
+If a focus node is not present in the nodes to graph, the top nodes of the graph will be all nodes that are not reachable by any other node.  We work down from each of these nodes (sourceOf) and as we are going down, the sub nodes will link back up  (targetOf) iff the association is navigable.  Nothing can go up from the top nodes.  All nodes specified by the restrictions will be returned.
+-----> And those top nodes could (and, for performance reasons probably should) be pre-computed as children of "@"
+
+
+If a focus node is present in the group of nodes to graph, the top node of the graph will be the focus node.  I work down from this node (sourceOf) and link back up (targetOf) from each subnode iff the association is navigable.  From the top node, I link up (targetOf) iff the association is navigable.  Note that if the association is not navigable, this has the potential to not create a link to some of the nodes that should have been included in the graph - according to the restriction(s).  
+-------> With one additional caveat.  Once a node is repeated anywhere in the graph, subsequent traversal stops.  This is will allow A hasSubtype sourceOf B hasSubtype targetOf A, but will stop things from going on
+
+Are both of those summaries correct?
+--------> Yes
+
+
+(So just how many more of these questions do I have to ask before I should start fretting about being fired, like Russ?)
+--------> You've got me worried.  First you loan me "Office Space", saying that you hadn't understood it until you went to work for Mayo...  I keep trying to decide where I fit in ;-)
+--------> Seriously, however, I'm concerned that you don't think that we're approaching this problem correctly.  I value your opinion highly and, if we're not doing this right, I'd like to know what you think we need to change.  Let me know if the answers above make sense - I'm not trying to make extra work.  The navigable thingie is something introduced by NCI for a very special case and can effectively be ignored everywhere else.  Everything else is bi-directional...
+
+
+:)
+
+Thanks, 
+
+Dan
+
+*********************************** 
+ Daniel C. Armbrust
+ Biomedical Informatics  
+ Information Services 
+ Mayo Clinic Rochester 
+ Harwick 8-36 
+ (507) 538-1549 
+ daniel.armbrust@mayo.edu
+***********************************
+-----Original Message-----
+From: Solbrig, Harold R. 
+Sent: Friday, January 13, 2006 9:19 AM
+To: Armbrust, Daniel C.
+Subject: RE: ........
+
+Dan,
+
+Inline.
+
+-----Original Message-----
+From: Armbrust, Daniel C. 
+Sent: Thursday, January 12, 2006 4:58 PM
+To: Solbrig, Harold R.
+Subject: ........
+
+I'm still sitting here trying to figure out how to turn query results into the graph object.  And there are still things that I just don't get... Every time I think I am making some progress, I get to another point where my head wants to explode.
+
+I'm still unsure about the entire area surrounding how we deal with forward vs backward lookups, how the associations are going to be named in the database with forward / backward lookups, is navigable, and how the entire mess corresponds to when we do or don’t set the sourceOf and targetOf buckets.
+
+You may want to read all of the questions before pondering any of the answers, they are all related to the same confused issue in my head... And some of the following questions may be invalidated by the answers to previous questions....
+
+
+When we load a code system with the following associations:
+
+
+hasPart
+partOf
+
+Do we put them into the database with everything being under an association named "hasPart" (reverse name partOf)?  I'm assuming yes.
+What if the code system only specifies hasPart?  Do we invent partOf?
+
+>>>> Unfortunately, it depends on how hasPart (or part of) is defined in the code system.  Case 1:
+
+A "simple" system.  A hasPart (B,C,D)  C hasPart (E,F):  we analyze in advance and decide that hasPart is transitive and navigable. We invent *both* the forward (hasPart) and reverse(partOf) names.
+
+Case 2:
+
+The code system authors use some sort of DL formalism.   For the sake of example, lets assume that they've named it poorly - 'part'  We analyze in advance (this always has to happen).  They've asserted that it is transitive and haven't asserted an inverse relationship.  We put it in as not navigable and invent the forward name (hasPart)
+
+
+When they ask the service what associations are available, what do we respond with?  hasPart, or partOf and hasPart?
+
+Case 1: hasPart   case 2: part   -> we always use their association name (or some reasonable mangling thereof if they are really weird (e.g. has//:part might map to has_part just to keep us sane).  We never respond with more available associations than they assert.  The fwd and reverse names are just for display:  source <fwd name> target  and  target <rev name> source. 
+
+
+If we have 
+
+1 -> 2
+2 -> 3
+
+And they want to know what would be above 2 in a tree view, what do they ask for?  A graph focused on 2, restricted to hasPart, and look in the targetOf section, or a graph focused on 2, restricted to partOf, and look in the sourceOf section?  Where does the navigable stuff come into play?
+
+A graph focused on 2.  I don't remember - does the tree view only go down?  If so, targetOf.  If not, both.  Navigable stuff - we never generate targetOf entries for isNavigable false associations.
+
+
+If we build the above graph, would we have:
+
+1
+..hasPart
+..sourceOf
+....2
+......hasPart
+......sourceOf
+........3
+..........hasPart
+..........targetOf
+............2
+......targetOf
+........1
+
+Or would we have?
+
+1
+..hasPart
+..sourceOf
+....2
+......hasPart
+......sourceOf
+........3
+
+The above graph had a focus of 2.  While there may be issues, I'd think that option 1 would be the most useful if isNavigable is true.  Option 2 is the only answer if isNavigable is false.
+
+
+Or does it depend on isNavigable?
+Yes
+
+
+Another related question - if no focus node is present in the graph, I assume the top level of the graph is all of the concepts that no other concept points to, and work down from each of those.
+
+Actually, we could force the presence of an '@' node, which would make life easier, but same result.
+
+However, if the focus node is '2' in the above 1, 2, 3 graph, how do I render?
+
+2
+..hasPart
+..sourceOf
+....3
+....hasPart
+....targetOf
+.......2
+..hasPart
+..targetOf
+....1
+....hasPart
+....sourceOf
+......2
+	
+
+Start at 2, and go down.  But then what about 1?  Does it go in as a target of 2?  What hasPart isn't navigable?  You said this in the word doc:
+"As a result, non-navigable associations only work from source to target.  This means that we never render the targetOf section on a non-navigable association.  As an example, given the above associations"
+
+isNavigable false
+2
+..hasPart
+..sourceOf
+
+
+It will be interesting to compare what we get from this to what NCI is currently rendering. Frank Hartel was fairly adamant about the above behavior.  They may end up deciding that a lot more associations are navigable in the end...
+
+
+Just to clarify, one change in the doucument I sent you.  If you can't get to a node from the focus node (e.g. Focus is 1 and (@->2)...(@->n)  just throw 2..n away.)
+
+
+
+
+
+Do we just drop the 1 from the graph all together?
+
+
+Thanks, 
+
+Dan
+
+*********************************** 
+ Daniel C. Armbrust
+ Biomedical Informatics  
+ Information Services 
+ Mayo Clinic Rochester 
+ Harwick 8-36 
+ (507) 538-1549 
+ daniel.armbrust@mayo.edu
+***********************************
+
+
+
+**************
+
+Dan,
+
+Inline.
+
+-----Original Message-----
+From: Armbrust, Daniel C. 
+Sent: Thursday, January 12, 2006 4:58 PM
+To: Solbrig, Harold R.
+Subject: ........
+
+I'm still sitting here trying to figure out how to turn query results into the graph object.  And there are still things that I just don't get... Every time I think I am making some progress, I get to another point where my head wants to explode.
+
+I'm still unsure about the entire area surrounding how we deal with forward vs backward lookups, how the associations are going to be named in the database with forward / backward lookups, is navigable, and how the entire mess corresponds to when we do or don’t set the sourceOf and targetOf buckets.
+
+You may want to read all of the questions before pondering any of the answers, they are all related to the same confused issue in my head... And some of the following questions may be invalidated by the answers to previous questions....
+
+
+When we load a code system with the following associations:
+
+
+hasPart
+partOf
+
+Do we put them into the database with everything being under an association named "hasPart" (reverse name partOf)?  I'm assuming yes.
+What if the code system only specifies hasPart?  Do we invent partOf?
+
+>>>> Unfortunately, it depends on how hasPart (or part of) is defined in the code system.  Case 1:
+
+A "simple" system.  A hasPart (B,C,D)  C hasPart (E,F):  we analyze in advance and decide that hasPart is transitive and navigable. We invent *both* the forward (hasPart) and reverse(partOf) names.
+
+Case 2:
+
+The code system authors use some sort of DL formalism.   For the sake of example, lets assume that they've named it poorly - 'part'  We analyze in advance (this always has to happen).  They've asserted that it is transitive and haven't asserted an inverse relationship.  We put it in as not navigable and invent the forward name (hasPart)
+
+
+When they ask the service what associations are available, what do we respond with?  hasPart, or partOf and hasPart?
+
+Case 1: hasPart   case 2: part   -> we always use their association name (or some reasonable mangling thereof if they are really weird (e.g. has//:part might map to has_part just to keep us sane).  We never respond with more available associations than they assert.  The fwd and reverse names are just for display:  source <fwd name> target  and  target <rev name> source. 
+
+
+If we have 
+
+1 -> 2
+2 -> 3
+
+And they want to know what would be above 2 in a tree view, what do they ask for?  A graph focused on 2, restricted to hasPart, and look in the targetOf section, or a graph focused on 2, restricted to partOf, and look in the sourceOf section?  Where does the navigable stuff come into play?
+
+A graph focused on 2.  I don't remember - does the tree view only go down?  If so, targetOf.  If not, both.  Navigable stuff - we never generate targetOf entries for isNavigable false associations.
+
+
+If we build the above graph, would we have:
+
+1
+..hasPart
+..sourceOf
+....2
+......hasPart
+......sourceOf
+........3
+..........hasPart
+..........targetOf
+............2
+......targetOf
+........1
+
+Or would we have?
+
+1
+..hasPart
+..sourceOf
+....2
+......hasPart
+......sourceOf
+........3
+
+The above graph had a focus of 2.  While there may be issues, I'd think that option 1 would be the most useful if isNavigable is true.  Option 2 is the only answer if isNavigable is false.
+
+
+Or does it depend on isNavigable?
+Yes
+
+
+Another related question - if no focus node is present in the graph, I assume the top level of the graph is all of the concepts that no other concept points to, and work down from each of those.
+
+Actually, we could force the presence of an '@' node, which would make life easier, but same result.
+
+However, if the focus node is '2' in the above 1, 2, 3 graph, how do I render?
+
+2
+..hasPart
+..sourceOf
+....3
+....hasPart
+....targetOf
+.......2
+..hasPart
+..targetOf
+....1
+....hasPart
+....sourceOf
+......2
+	
+
+Start at 2, and go down.  But then what about 1?  Does it go in as a target of 2?  What hasPart isn't navigable?  You said this in the word doc:
+"As a result, non-navigable associations only work from source to target.  This means that we never render the targetOf section on a non-navigable association.  As an example, given the above associations"
+
+isNavigable false
+2
+..hasPart
+..sourceOf
+
+
+It will be interesting to compare what we get from this to what NCI is currently rendering. Frank Hartel was fairly adamant about the above behavior.  They may end up deciding that a lot more associations are navigable in the end...
+
+
+Just to clarify, one change in the doucument I sent you.  If you can't get to a node from the focus node (e.g. Focus is 1 and (@->2)...(@->n)  just throw 2..n away.)
+
+
+
+
+
+Do we just drop the 1 from the graph all together?
+
+
+Thanks, 
+
+Dan
+
+*********************************** 
+ Daniel C. Armbrust
+ Biomedical Informatics  
+ Information Services 
+ Mayo Clinic Rochester 
+ Harwick 8-36 
+ (507) 538-1549 
+ daniel.armbrust@mayo.edu
+***********************************
+
+
+
+****************
+
+Restrictions should be commutative :
+
+A.restrict(x).restrict(y) == A.restrict(y).restrict(x)
+
+
+Unions are Commutative and associative:
+
+A.union(B) = B.union(A)
+(A.union(B)).union(C) = A.union(C.union(B))
+
+
+Restriction is distributive over union
+
+A.union(B).restrict(x) == A.restrict(x).union.B.restrict(x)
+
+
+Intersection is Communitative and associative:
+
+A.intersect(B) = B.intersect(A)
+(A.union(B)).union(C) = A.union(C.union(B))
+
+Restriction is distributive over intersection
+A.intersect(B).restrict(x) = A.restrict(x).intersect(B.restrict(x))
+
+Intersection is distributive over union
+A.union(B).intersect(C) = (A.intersect(C)).union(B.intersect(C))
+
+But union is NOT distributive over intersection...
+
+I'm sure that there is an official name for this set - some sort of group, field or the like.  I haven't really thought about identities - the empty set is the identity for union, but others aren't as obvious - I suppose that topThing kind of suffices for intersect restrict, but I'm not sure it matters unless we *really* want to get heavy into optimization.
+
+
+
+Probably more properties could be found if useful.  In particular, we need to factor the "focus" node into here...
+
+
+
+-----Original Message-----
+From: Armbrust, Daniel C. 
+Sent: Tuesday, January 10, 2006 11:23 AM
+To: Solbrig, Harold R.
+Cc: Johnson, Thomas M.
+Subject: CodedNodeGraph question... Tired of these yet?
+
+In the CodedNodeSet implementation, I did the following optimization:
+
+Quasi-Api speak....
+
+Restrict(a)
+Restrict(b)
+Union(zz)
+Restrict(c)
+
+
+Gets turned into:
+
+Restrict(a)
+Restrict(b)
+Restrict(c)
+Union(zz.Restrict(c))
+
+
+And the result is the same as if I had not rearranged it.  
+
+At the time, I convinced myself that I could not do this for difference or intersect, but now I'm having trouble coming up with an example that shows where it would go wrong...
+
+As I'm looking at the CodedNodeGraph, I'm wondering if I can do that same rearrangement on both the union and intersect operations, without affecting the results?  Or can I only reorder restrictions above a union?
+
+
+*********************************** 
+ Daniel C. Armbrust
+ Biomedical Informatics  
+ Information Services 
+ Mayo Clinic Rochester 
+ Harwick 8-36 
+ (507) 538-1549 
+ daniel.armbrust@mayo.edu
+***********************************
+
+
+***************8 
+
+-----Original Message-----
+From: Armbrust, Daniel C. 
+Sent: Tuesday, January 10, 2006 9:53 AM
+To: Solbrig, Harold R.
+Subject: CodedNodeGraph question:
+
+Given these relationships:
+
+A hasSubtype B
+B references C
+C hasSubtype D
+
+
+
+If they ask listCodeRelationships(A, D, true), what do we return?
+	{}
+
+If 'references' is instead 'hasATypeOf', is the answer different?
+
+	(assuming that you meant hasSubtype then..}
+	No, the answer is still {}
+
+	listCodeRelationships(A,D,false) would return:
+		{} on references
+		{hasSubtype} on hasSubtype
+
+Note that r(A,B), s(B,C), r(C,D) *doesn't* give you a direct path from A to D even if both r and s are transitive.  Transitivity isn't distributive (or whatever that property would be called)
+
+Logically, it seems that the answers would be different...
+
+
+
+
+
+
+*********************************** 
+ Daniel C. Armbrust
+ Biomedical Informatics  
+ Information Services 
+ Mayo Clinic Rochester 
+ Harwick 8-36 
+ (507) 538-1549 
+ daniel.armbrust@mayo.edu
+***********************************
+
+
+
+
+************
+
+
+
+Sorry - cryptic as usual.  The problem w/ symmetric associations in the CTS browser is that if you've got a focus (A) and 5 nodes (s,A,B)..(s,A,F), they render twice, but with the same name, which is really confusing.  Look at the attached bitmap[snap.bmp], where "RT" and "SNX" are both symmetric associations...
+
+While I'm thinking of it - I think that you were correct about "focus" - it should be something stronger than how I described it.  In particular, it should eliminate all relationships that are unreachable from the focus node.  This still leaves us with the transitivity issue - especially as "reachable" has nothing to do with transitivity - if A causes B and B smellsLike C, setting A to the focus keeps B and C as well.  I'm thinking that we might want to make a quick excursion into the RDF triple store software - they face the same problem, so, perhaps they've solved it for us????
+
+-----Original Message-----
+From: Armbrust, Daniel C. 
+Sent: Friday, January 06, 2006 10:53 AM
+To: Solbrig, Harold R.
+Subject: Association question
+
+
+I'm not following this bit of the word document:
+
+Note: Symmetric associations are *always* navigable
+Note: Need to do something w/ the symmetry issue (see the weird issue in the CTS browser.  Only one direction of a symmetric association should be rendered, although all source/targets have to be evaled:
+
+(s, A,B)
+(s, C,A)
+          - should render as A s B and A s C, but NOT targetOf C s A
+
+
+Can you explain further?
+
+Thanks, 
+
+Dan
+
+
+*********************************** 
+ Daniel C. Armbrust
+ Biomedical Informatics  
+ Information Services 
+ Mayo Clinic Rochester 
+ Harwick 8-36 
+ (507) 538-1549 
+ daniel.armbrust@mayo.edu
+***********************************
+
+
+
+
+
+
+*****************
+
+
+
+
+Right on all three.  
+
+_____________________________________________ 
+From: 	Armbrust, Daniel C.  
+Sent:	Tuesday, January 03, 2006 10:00 AM
+To:	Solbrig, Harold R.
+Cc:	Johnson, Thomas M.
+Subject:	RE: A very wordy response and a not-so-wordy response
+
+Follow up questions:
+
+Each of these seems to be missing a result, or I'm really missing something....
+
+
+
+3.1.1 restrictToCodes
+This operation produces a coded node graph consisting of all tuples in the graph where the source code, target code, or both codes are in the supplied set of codes.  Example:
+
+(hasSubtype, @, A)
+(hasSubtype, @, B)
+(hasSubtype, A, C)
+(hasSubtype, B, C)
+(hasSubtype, C, D)
+(hasPart, A, D)
+
+RestrictToCodes({A,D}) yields:
+(hasSubtype, @, A)
+(hasSubtype, C, D)
+(hasPart, A, D)
+
+
+MISSING (hasSubtype, A, C)?
+
+3.1.2 restrictToSourceCodes
+This operation produces a coded node graph consisting of all tuples in the graph where the source code are in the supplied set of codes
+
+Example:
+(hasSubtype, @, A)
+(hasSubtype, @, B)
+(hasSubtype, A, C)
+(hasSubtype, B, C)
+(hasSubtype, C, D)
+(hasPart, A, D)
+
+RestrictToSourceCodes({A,D}) yields:
+(hasPart, A, D)
+
+MISSING (hasSubtype, A, C)?
+
+
+3.1.3 restrictToTargetCodes
+This operation produces a coded node graph consisting of all tuples in the graph where the  target code is in the supplied set of codes.  Example:
+
+(hasSubtype, @, A)
+(hasSubtype, @, B)
+(hasSubtype, A, C)
+(hasSubtype, B, C)
+(hasSubtype, C, D)
+(hasPart, A, D)
+
+RestrictToTargetCodes({A,D}) yields:
+(hasSubtype, @, A)
+(hasSubtype, C, D)
+
+MISSING (hasPart, A, D)?
+
+That’s all (so far).
+
+Dan
+
+*********************************** 
+ Daniel C. Armbrust
+ Biomedical Informatics  
+ Information Services 
+ Mayo Clinic Rochester 
+ Harwick 8-36 
+ (507) 538-1549 
+ daniel.armbrust@mayo.edu
+***********************************
+
+
+_____________________________________________ 
+From: 	Solbrig, Harold R.  
+Sent:	Monday, January 02, 2006 2:06 PM
+To:	Armbrust, Daniel C.
+Cc:	Johnson, Thomas M.
+Subject:	A very wordy response and a not-so-wordy response
+
+Dan,
+
+The attached document kind of covers my thought process and proposed solutions.  Transitive and navigable associations turn out to present a bit of a problem.  Also, the question about matchAlgorithms was answered on the WIKI.  Take a look at this and see whether it makes enough sense to proceed or whether further clarification is needed.
+
+Harold << File: CodedNodeGraph.doc >> 

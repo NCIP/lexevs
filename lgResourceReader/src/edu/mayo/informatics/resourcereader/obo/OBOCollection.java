@@ -1,0 +1,67 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
+package edu.mayo.informatics.resourcereader.obo;
+
+import java.util.Collection;
+
+import org.LexGrid.messaging.CachingMessageDirectorIF;
+
+import edu.mayo.informatics.resourcereader.core.IF.ResourceCollection;
+import edu.mayo.informatics.resourcereader.core.IF.ResourceEntity;
+import edu.mayo.informatics.resourcereader.core.IF.ResourceException;
+import edu.mayo.informatics.resourcereader.obo.exceptions.OBOMethodNotImplementedException;
+
+/**
+ * A OBO implementation of a ResourceCollection
+ * 
+ * @author <A HREF="mailto:sharma.deepak2@mayo.edu">Deepak Sharma</A>
+ * @version subversion $Revision: $ checked in on $Date: $
+ */
+public class OBOCollection extends OBO implements ResourceCollection {
+    public OBOCollection(CachingMessageDirectorIF rLogger) {
+        super(rLogger);
+    }
+
+    public void init() {
+    }
+
+    public void addMember(ResourceEntity entity) throws ResourceException {
+        throw new OBOMethodNotImplementedException("addMember");
+    }
+
+    public ResourceEntity getMemberById(String id) throws ResourceException {
+        throw new OBOMethodNotImplementedException("getMemberById");
+    }
+
+    public ResourceEntity getMemberByName(String name) throws ResourceException {
+        throw new OBOMethodNotImplementedException("getMemberByName");
+    }
+
+    public ResourceEntity getMemberByProperty(Object obj) throws ResourceException {
+        throw new OBOMethodNotImplementedException("getMemberByProperty");
+    }
+
+    public Collection getAllMembers() throws ResourceException {
+        throw new OBOMethodNotImplementedException("getAllMembers");
+    }
+
+    public long getMembersCount() {
+        return 0;
+    }
+}

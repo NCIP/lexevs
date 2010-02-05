@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodingSchemeManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://LexGrid.org/schema/2008/01/LexOnt/CodingSchemeManifest http://LexGrid.org/schema/2008/01/LexOnt/CodingSchemeManifest.xsd"
+	xmlns:owldef="http://LexGrid.org/schema/2008/01/LexOnt/CodingSchemeManifest"
+	xmlns="http://LexGrid.org/schema/2008/01/LexOnt/CodingSchemeManifest" id="http://www.bioontology.org/01/fungal_anatomy.obo#">
+		<codingScheme toOverride="true">My Fungal Anatomy</codingScheme>
+		<formalName toOverride="true">Fungal Anatomy</formalName>
+		<registeredName toOverride="true">http://www.bioontology.org/01/fungal_anatomy.obo#</registeredName>
+		<defaultLanguage toOverride="true">en</defaultLanguage>
+		<representsVersion toOverride="true">01</representsVersion>
+
+
+		<owldef:mappings dc="mappings" toUpdate="true" xmlns="http://LexGrid.org/schema/2008/01/LexGrid/codingSchemes">
+		</owldef:mappings>
+		<owldef:associationDefinitions >
+		</owldef:associationDefinitions>
+</CodingSchemeManifest>

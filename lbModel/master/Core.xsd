@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema xmlns:lbCore="http://LexGrid.org/schema/LexBIG/2009/01/Core" xmlns:lbColl="http://LexGrid.org/schema/LexBIG/2009/01/Collections" xmlns:lgBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/builtins" xmlns:lgCommon="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" xmlns:lgNaming="http://LexGrid.org/schema/2009/01/LexGrid/naming" xmlns:lgCon="http://LexGrid.org/schema/2009/01/LexGrid/concepts" xmlns:lgValueDomains="http://LexGrid.org/schema/2009/01/LexGrid/valueDomains" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://LexGrid.org/schema/LexBIG/2009/01/Core" elementFormDefault="qualified">
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/Collections" schemaLocation="Collections.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/builtins.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/concepts" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/concepts.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/naming" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/naming.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/valueDomains" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/valueDomains.xsd"/>
+	<!-- ================================================= -->
+	<!-- Package: <<XSDschema>> Core	   				   -->
+	<!-- ================================================= -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: CodingSchemeSummary						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="CodingSchemeSummary" type="lbCore:CodingSchemeSummary"/>
+	<xs:complexType name="CodingSchemeSummary">
+		<xs:annotation>
+			<xs:documentation>Abbreviated list of information about a coding
+			scheme.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="formalName" type="lgBuiltin:tsCaseIgnoreIA5String">
+				<xs:annotation>
+					<xs:documentation>The official name of the coding scheme</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="codingSchemeDescription" type="lgCommon:entityDescription" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>A short description of the coding scheme
+					contents.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="codingSchemeURI" type="lgCommon:URI">
+			<xs:annotation>
+				<xs:documentation>The official URI of the coding scheme</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="representsVersion" type="lgCommon:version">
+			<xs:annotation>
+				<xs:documentation>The version of the coding scheme that this entry represents, if
+					applicable and known. Note that that is the combination of the codingSchemeURN
+					*and* the version that uniquely represents a coding scheme in the
+				system.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="localName" type="lgBuiltin:tsLocalId">
+			<xs:annotation>
+				<xs:documentation>The short, locally unique name for the coding
+				scheme.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: ServiceURL								   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:simpleType name="ServiceURL">
+		<xs:annotation>
+			<xs:documentation>The URL of a service in the Globus environment, this will be the
+			GSH.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="lbCore:GSH"/>
+	</xs:simpleType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: CodingSchemeURNorName					   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:simpleType name="CodingSchemeURNorName">
+		<xs:annotation>
+			<xs:documentation>Either a local name or the URN of a coding scheme. These two are
+				differentiated syntactically - if the entity includes a colon (:) or a hash "#" it
+				is assumed to be a URN. Otherwise it is assumed to be a local
+			name.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: CodedNodeReference						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="CodedNodeReference" type="lbCore:CodedNodeReference"/>
+	<xs:complexType name="CodedNodeReference">
+		<xs:annotation>
+			<xs:documentation>A reference to an entity in the coding scheme by code,
+			optionally qualified by namespace and type.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="entityType" type="lgCommon:entityType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Local identifiers of the types(s) defining the
+				referenced entity (e.g. 'concept', 'instance').</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="codingSchemeName" type="lbCore:CodingSchemeURNorName">
+			<xs:annotation>
+				<xs:documentation>The name of the coding scheme containing the
+				entity</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="code" type="lgCommon:entityCode">
+			<xs:annotation>
+				<xs:documentation>The code uniquely identifying the entity within the
+				coding scheme.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="codeNamespace" type="lgCommon:namespaceName">
+			<xs:annotation>
+				<xs:documentation>Local identifier of the code namespace. If omitted,
+				namespace is implied from the URI of the coding scheme.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: ConceptReference						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="ConceptReference" type="lbCore:ConceptReference"/>
+	<xs:complexType name="ConceptReference">
+		<xs:annotation>
+			<xs:documentation>A reference to a concept code.  Maintained for
+			backward compatibility, but no longer enhanced in favor of the more
+			flexible CodedNodeReference.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="lbCore:CodedNodeReference">
+				<xs:sequence>
+					<xs:element name="conceptCode" type="lgCommon:entityCode" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Uniquely identifies the concept within the coding scheme.
+							Alias for CodedNodeReference:code.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: ResolvedCodedNodeReference				   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="ResolvedCodedNodeReference" type="lbCore:ResolvedCodedNodeReference"/>
+	<xs:complexType name="ResolvedCodedNodeReference">
+		<xs:annotation>
+			<xs:documentation>Resolved information for an entity identified by coding scheme
+			and code.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="lbCore:ConceptReference">
+				<xs:sequence>
+					<xs:element name="entityDescription" type="lgCommon:entityDescription" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Primary text describing the referenced entity.
+							Always resolved, if present.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="entity" type="lgCon:entity" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The referenced entity, optionally resolved.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="sourceOf" type="lbColl:AssociationList" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The list of associations for which the referenced
+							code acts as the source (lhs, parent, ..) for.  If this element is absent,
+							no information is available about the target nodes.  If the element is
+							present, but 0 length, the code does not appear as the source of
+							any associations (in the context of the containing graph).
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="targetOf" type="lbColl:AssociationList" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The list of associations for which the referenced
+							code acts as the target (rhs, child..) for.  If this element is absent,
+							no information is available about the source nodes.  If the element is
+							present, but 0 length, the CodedNode doesn't appear as the target of
+							any associations (in the context of the containing graph).
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="codingSchemeURI" type="lgBuiltin:tsURI">
+					<xs:annotation>
+						<xs:documentation>The URI of the associated coding scheme, if
+						known.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="codingSchemeVersion" type="lgCommon:version">
+					<xs:annotation>
+						<xs:documentation>The version of the associated coding scheme,
+						if known.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: ResolvedConceptReference				   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="ResolvedConceptReference" type="lbCore:ResolvedConceptReference"/>
+	<xs:complexType name="ResolvedConceptReference">
+		<xs:annotation>
+			<xs:documentation>Resolved information for a concept.  Maintained for
+			backward compatibility, but no longer enhanced in favor of the more
+			flexible ResolvedCodedNodeReference.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="lbCore:ResolvedCodedNodeReference">
+				<xs:sequence>
+					<xs:element name="referencedEntry" type="lgCon:concept" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The resolved concept, if present.
+							Alias for ResolvedCodedNodeReference:entity</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: SupportedElement						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="SupportedElement" type="lbCore:SupportedElement"/>
+	<xs:complexType name="SupportedElement">
+		<xs:annotation>
+			<xs:documentation>An association code, language, data type, source, etc. that is
+				represented by a coded node list or node graph. It consists of an optional URN and a
+				name that is used locally to represent that URN. If the URN is absent, the name has
+				local meaning and nothing can be assumed outside of the context of the node list or
+				graph.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="isComplete" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>True means that the local reference is considered "complete". The
+					exact interpretation of this depends upon the element type - if it is the
+					localName of a code system, then complete means that all codes form the
+					particular version are present. If it is a matching algorithm, complete means
+					that all of the codes in the list have been indexed by the algorithm,
+				etc.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: AssociatedConcept						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="AssociatedConcept" type="lbCore:AssociatedConcept"/>
+	<xs:complexType name="AssociatedConcept">
+		<xs:annotation>
+			<xs:documentation>A concept reference that is the source or target of an
+			association.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="lbCore:ResolvedConceptReference">
+				<xs:sequence>
+					<xs:element name="associationQualifiers" type="lbColl:NameAndValueList" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Codes that qualify the complete association.
+								Qualifiers may include "computed", degrees of certainty,
+							etc.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="isNavigable" type="xs:boolean">
+					<xs:annotation>
+						<xs:documentation>True means that the association with
+							this concept has been explicitly asserted and can be used for
+							inferences. False means that the association was asserted in the other
+							direction and cannot be used. Default: true</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: Association								   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="Association" type="lbCore:Association"/>
+	<xs:complexType name="Association">
+		<xs:annotation>
+			<xs:documentation>The representation of a particular association as it appears in a
+				CodedNode</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="associationReference" type="lbCore:ConceptReference" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The concept reference that defines the
+					association</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="associatedConcepts" type="lbColl:AssociatedConceptList" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The list of concepts that occur as the source or target of
+						this association</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="associatedData" type="lbColl:AssociatedDataList" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The list of data elements that occur as the source or target
+						of this association.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="associationName" type="lgBuiltin:tsLocalId">
+			<xs:annotation>
+				<xs:documentation>The local name of the association</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="directionalName" type="lgBuiltin:tsCaseIgnoreIA5String">
+			<xs:annotation>
+				<xs:documentation>The name assigned to the association so that it can be read
+					correctly going from the containing concept to the contained concept.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: CodingSchemeVersionOrTag				   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="CodingSchemeVersionOrTag" type="lbCore:CodingSchemeVersionOrTag"/>
+	<xs:complexType name="CodingSchemeVersionOrTag">
+		<xs:annotation>
+			<xs:documentation>A named coding scheme version or a virtual tag (e.g. latest,
+				production, etc). Note that the tagged form of identifier is only applicable in the
+				context of a given service, as one service may identify the scheme as "production"
+				and another as "staging".</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="version" type="lgCommon:version">
+				<xs:annotation>
+					<xs:documentation>The specific version of the coding scheme.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tag" type="lbCore:CodingSchemeTag">
+				<xs:annotation>
+					<xs:documentation>The specific tag for the coding scheme</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: AssociatedData							   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="AssociatedData" type="lbCore:AssociatedData"/>
+	<xs:complexType name="AssociatedData" mixed="true">
+		<xs:annotation>
+			<xs:documentation>A "dataProperty" - data that is the target of an
+			association.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:any minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="dataType" type="lgBuiltin:tsLocalId">
+			<xs:annotation>
+				<xs:documentation>The data type of the property. The data itself is the
+				value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="id" type="lgCommon:URI">
+			<xs:annotation>
+				<xs:documentation>An identifier that makes this chunk of data unique within an
+					association.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: GSH										   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:simpleType name="GSH">
+		<xs:restriction base="xs:anyURI"/>
+	</xs:simpleType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: AbsoluteCodingSchemeVersionReference	   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="AbsoluteCodingSchemeVersionReference" type="lbCore:AbsoluteCodingSchemeVersionReference"/>
+	<xs:complexType name="AbsoluteCodingSchemeVersionReference">
+		<xs:annotation>
+			<xs:documentation>An absolute reference to a coding scheme. This form of reference is
+				service independent, as it doesn't depend on local coding schemes names or virtual
+				tags. </xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="codingSchemeURN" type="lgBuiltin:tsURI">
+			<xs:annotation>
+				<xs:documentation>The URN of the referenced coding scheme.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="codingSchemeVersion" type="lgCommon:version"/>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: LogLevel								   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:simpleType name="LogLevel">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="debug">
+				<xs:annotation>
+					<xs:documentation>The entry represents a debug message.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="info">
+				<xs:annotation>
+					<xs:documentation>The entry represents an informational
+					message.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="warn">
+				<xs:annotation>
+					<xs:documentation>The entry represents a warning message.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="error">
+				<xs:annotation>
+					<xs:documentation>The entry represents a processing error.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="fatal">
+				<xs:annotation>
+					<xs:documentation>The entry represents an unrecoverable
+					error.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: LogEntry								   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="LogEntry" type="lbCore:LogEntry"/>
+	<xs:complexType name="LogEntry">
+		<xs:sequence>
+			<xs:element name="processUID" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Unique identifier of the process that generated the log
+					entry.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="programName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Name of program that generated the log
+					entry</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="message" type="lgBuiltin:tsCaseIgnoreIA5String">
+				<xs:annotation>
+					<xs:documentation>Text of message</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="associatedURL" type="xs:anyURI">
+			<xs:annotation>
+				<xs:documentation>The URL associated with the log entry. Used for retrieving
+					particular types of logs.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="entryTime" type="lgBuiltin:tsTimestamp">
+			<xs:annotation>
+				<xs:documentation>The time that the entry was made. Time is local to originator
+					location.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="entryLevel" type="lbCore:LogLevel">
+			<xs:annotation>
+				<xs:documentation>Level (error, warn, info, ...)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="messageNumber" type="xs:int">
+			<xs:annotation>
+				<xs:documentation>Number that uniquely identifies the message within the error
+					system.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: CodingSchemeVersionStatus				   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:simpleType name="CodingSchemeVersionStatus">
+		<xs:annotation>
+			<xs:documentation>This class provides a series of set values for the version status of a given coding scheme.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="pending"/>
+			<xs:enumeration value="active"/>
+			<xs:enumeration value="inactive"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: CodingSchemeTag							   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:simpleType name="CodingSchemeTag">
+		<xs:annotation>
+			<xs:documentation>A user-defined tag that can symbolically identify the status of a
+				given version of a coding scheme within a service. Typical values might include
+				"staging", "development", "producation", etc.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: ReferenceLink							   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="ReferenceLink" type="lbCore:ReferenceLink"/>
+	<xs:complexType name="ReferenceLink">
+		<xs:annotation>
+			<xs:documentation>Any reference to another document element. Used by the REST
+				architecture to embed links.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="href" type="xs:anyURI">
+					<xs:annotation>
+						<xs:documentation>The actual link</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: NameAndValue							   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="NameAndValue" type="lbCore:NameAndValue"/>
+	<xs:complexType name="NameAndValue">
+		<xs:annotation>
+			<xs:documentation>A simple name/value pair. </xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" type="lgBuiltin:tsLocalId">
+					<xs:annotation>
+						<xs:documentation>A local name or other identifier</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: MetadataReference				   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="MetadataProperty" type="lbCore:MetadataProperty"/>
+	<xs:complexType name="MetadataProperty">
+		<xs:annotation>
+			<xs:documentation>Reference to a property name and value stored in the coding scheme metadata.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="context" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Defines 0 or more named contexts for the property .</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="lgBuiltin:tsLocalId">
+			<xs:annotation>
+				<xs:documentation>The metadata property name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="value" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>The metadata property value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="codingSchemeURI" type="lgBuiltin:tsURI">
+			<xs:annotation>
+				<xs:documentation>The registered URI of the associated coding scheme.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="codingSchemeVersion" type="lgCommon:version">
+			<xs:annotation>
+				<xs:documentation>The version of the associated coding scheme.  Note that that is the combination of the codingSchemeURN *and* the version that uniquely represents a coding scheme in the system.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

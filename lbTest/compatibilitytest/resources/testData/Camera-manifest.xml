@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodingSchemeManifest xmlns="http://LexGrid.org/schema/2008/01/LexOnt/CodingSchemeManifest"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://LexGrid.org/schema/2008/01/LexOnt/CodingSchemeManifest file:/C:/lexbig_workspace/lgModel/master/manifest/CodingSchemeManifest.xsd"
+	xmlns:manifest="http://LexGrid.org/schema/2008/01/LexOnt/CodingSchemeManifest"
+	id="http://www.co-ode.org/ontologies/amino-acid/2006/05/18/amino-acid.owl#">	
+		<codingScheme>Camera</codingScheme>
+		<entityDescription>This is Camera Description from Manifest.</entityDescription>
+		<formalName toOverride="True">CameraManifest From a Coding Scheme</formalName>
+	    <registeredName>CameraRegisteredName</registeredName>
+		<defaultLanguage>en</defaultLanguage>
+		<representsVersion>CameraV1</representsVersion>
+		<localName toOverride="True">Camera</localName>
+		<copyright>This is copyright</copyright>
+	              <manifest:mappings dc="mappings"  xmlns="http://LexGrid.org/schema/2008/01/LexGrid/codingSchemes">        	
+	               </manifest:mappings>
+		<associationDefinitions />
+</CodingSchemeManifest>
+

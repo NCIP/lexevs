@@ -1,0 +1,701 @@
+lgConverter Changelog
+
+* 07/14/08
+* Complex properties tag handling was adjusted to allow handling of 
+* the legacy and new complex properties proposal.  Preferences were also
+* adjusted to allow user to select specific property designation over 
+* default generic property qualifier designation.  Gforge item #8672.
+*
+* 07/10/08
+* Fixed the OBO loader to add source information for synonyms. Gforge item #14767
+*
+* 05/10/08 
+* Added manifest support to the Protege OWL loader
+*
+* 05/05/08
+* Added support to UMLS loader to provide support for MedDRA classifier
+* and association qualifier called SMQ.  Incidentally provides association
+* qualifier support for any other UMLS Terminology that should implement
+* association qualifiers in this manner.
+*
+* 02/15/08
+* Changes to the UMLS loaders (both UMLS and MetaThesaurus UMLS) to
+* load the metadata for Supported Hierarchies. (Gforge #7880)
+
+* 01/22/08
+* GForge #10220. Changes to account for circular associations in the 
+* Metathesaurus Load. Circular associations are now considered Property 
+* Links, not associations.
+
+* 01/21/08
+* Changes to NCI Owl loader to insure loading of the new metadata 
+* elements contained in the SupportedHierarchy class. 
+* Addresses Gforge #7880
+* 
+* 01/22/08
+* Enabled MRHIER relationship processing on the Metathesaurus Loader.
+
+* 01/15/08
+* Changes for optimized processing of MRHIER file when loading RRF
+* sources.  If processing MRHIER, we only care about entries
+* relevant to the specified MRHIER processing option.  Many entries
+* in this file we do not require since they can be derived from
+* MRREL.  MRHIER typically is much larger since it pre-computes
+* the entire hierarchy, so we want to conserve time and space by
+* loading only those entries that require special handling.
+
+* 12/14/07
+* Added parameter for using Protege database load to NCI OWL loader
+
+* 10/08/07
+* Add option for recalculation of root nodes to NCI Meta load.
+
+* 10/2/07
+* Updated copyright information for NCI Metathesaurus based on information
+* provided by NCI at http://ncimeta.nci.nih.gov. 
+
+* 09/26/07
+* #3651, NCI OWL loaders should now return an error when a CodeSystem is 
+  already loaded prior to doing the conversion.  The structure is implemented 
+  for other EMF loaders to do the same, but has not been fully implemented.
+
+* 9/21/07
+* Additional changes for hierarchical processing and support to query
+* hierarchical relationship by association qualifier (e.g. metathesaurus
+* source).
+
+* 9/14/07
+* Handle cases where 'PAR' and 'CHD' are not used as the UMLS relation
+* name ('REL' field) but 'isa' or 'inverse_isa' are still defined as the
+* source relation name ('RELA' field).  As an example MeSH maps 'isa'
+* and 'inverse_isa' against relation narrower (RN) and relation broader (RB).
+* In addition, RELA names are now interpreted as hierarchical on a
+* case-by-case basis (e.g. 'part_of' may be mapped against 'PAR' in one
+* source but not another).
+*
+* Optionally load MRHIER file to intermediate database based on load option
+* specified for contextual link processing (improves performance by
+* bypassing MRHIER when not referenced).
+*
+* Misc fixes for UMLS load:
+* Fix null pointer exception mapping CUI to code.
+* Interpret blank DIR field in MRREL as 'N' instead of 'Y' by default,
+* based on review of Meta distribution.
+
+* 9/11/07
+* GForge #8669: Reintroduce coding scheme qualification on root node check,
+* allowing multiple coding schemes per root code.  Also handle null
+* relationsContainerName (match any relations name).  Finally, add support
+* to detect and build root nodes and transitivity based on hierarchical
+* relations (e.g. PAR, CHD) in addition to hasSubtype during load of
+* NCI Meta. 
+
+* 9/10/07
+* Add support for loading relations in the text loader.
+ 
+* 9/6/7
+* Fixed a few minor issues that made it difficult to load OWL files other
+* than the NCI Meta Thesaurus with the NCI OWL loader.
+
+* 9/6/07
+* GForge #8669: Updated root node creation for UMLS sources to recognize
+* the SRC/RHT assignments in MRCONSO in order to identify the UMLS-assigned
+* top node(s) for hierarchical relations.
+
+* 8/17/07
+* Corrected OWL manifest code to use namespace/URL of ontology 
+* as id in manifest file.
+* Corrected NCIOWL loader issue related to ignoring manifest entries. 
+
+* 8/23/07
+* Enable case-insensitive check for top node names on NCI2EMF to
+* support loading VA-NDFRT through manifest support.
+
+* 8/24/07
+* GForge #8669: Accommodate additional subsumption scenarios on import of
+* umls relations (i.e. MedDRA root nodes were not built because PAR/CHD
+* definition differed from ontologies such as ICD9).  Also allow concepts
+* defined as synonyms to be left out of root node calculation if any
+* synonymous concept is not a root node (participating as an intermediate
+* node in the concept hierarchy).
+
+***********
+Release 2.1
+***********
+* 8/2/07
+* Corrected RadLex Loader code to show concept name as entity description as default value.
+
+* 07/27/07
+* Change the LexGrid to OBO converter to add Typedef's to the output obo file.
+
+* 05/31/07
+* Change date format registered to metadata xml to prevent invalid characters
+  from being written in internationalized versions of Windows OS.
+* Change NCI Thesaurus formal name to not include underscore, per NCI request.
+
+* 06/12/07
+* GForge #7024.  For semantic net load, a single local name is set to the same
+  name as the coding scheme to satisfy cardinality described under the LexGrid
+  model.
+
+* 6/29/07
+* Resolved #7402, issues surrounding the STYPE of properties loaded from CTv3
+
+* 07/17/07 
+* Added OWL Manifest support for OWL files.
+* Please see more details at NCI GForge Wiki;
+* Goto: http://gforge.nci.nih.gov/
+* Select link "LexGrid Vocabulary Services for caBIG" Project from project list.
+* Select "Wiki" tab. 
+* Select "Administrator Tips, Tricks & Gotchas" link.
+* Select "Configuring manifest files" link. 
+
+* 07/24/07
+* Provide more consistent navigation of subsumptive relations (GForge #7880)
+* while preserving general compatibility.  Added automatic build of root
+* relation on UMLS load for "UMLS_Relations" container, based on common
+* common navigable associations such as CHD (has child) and RB (relation
+* broader).  
+
+***********
+Release 2.0
+***********
+* Improve NCI Thes loader to improve handing of role groups as anonymous
+  concepts with defined associations to equivalent classes and component
+  elements. 
+
+******************************
+* 03/19/07 *
+******************************
+* NCI Thesaurus not registering 'textualPresentation' as supported property.
+* Fix for character encoding problem when passing xml stream from generic OWL
+  load to the EMF loader.
+* Fix to allow resolution of all branches on FMA load.
+
+
+******************************
+* Release 3.1.1	    01/23/07 *
+******************************
+* Fixed a problem generating SQL indexes with newer MySQL drivers.
+* Added a field to the lucene index - 'conceptCodeLC' - this is the lower cased copy of the
+  concept code, indexed, not stored or tokenized.
+* Added propertyType field to the Lucene index.   
+* Changed the MetaThesaurus loader - source codes are now stored as qualifiers on individual 
+  presentations, rather than properties on concepts.  LexBig feature request #3983
+* Modified the NCI Owl loader to maintain the provided property names, rather than overriding 
+  with our "fixed" names - textualPresentation, definition, etc.  
+* Corrections to the SQL->LDAP and SQL->SQLLite converters - bugs were introduced by the 2006 model
+  change.
+* Added a warning and a hard coded value for code system version if one is not read from the 
+  UMLS RRF file.
+* Fixed a bug in how files are being read out of a jar file using a classloader that occurred 
+  when running inside of JBoss.
+* Updates that make it work with 2006 version of the model.  
+  
+
+******************************
+* Release 3.1.0	    11/06/06 *
+* This release is compatible *
+* with LexBIG 1.0.1          *
+******************************
+* Upgraded to 2.0 of Lucene.
+* Made the indexer stop storing concept codes in the index twice.
+* Remove PropertyLinks for synonyms in the OBO Loader
+* Eliminate duplicate Source information in OBO Terms
+* Add supportedProperties information for the OBO Loads
+* Fix parsing of relationship targets for the OBO loader
+* Added table prefixes to the index names.
+* Fixed jar files for 1.4 JDK compliance
+* Removed phonetix libraries, replaced with apache commons for metaphone encoding.
+* Changed the MetaThesaurus loader, as requested from NCI (mostly relationship loading updates)
+* Changed the UMLS loader, relationship loading tweaks - updates for 2006AB.  Better handling of duplicates
+  now.  
+* Changed the Indexer so that it can now (optionally) index property sources, usageContexts, and qualifiers.
+* SQL loader now indexes the property sources, usageContexts, and qualifiers automatically.
+* Made the addRootRelation node method automatically figure out the native relation name.
+* Made the addRootRelation node method work for associations other than hasSubtype.
+* Updates for the UMLS converter to allow integration into LexBIO.
+* Tweaked the root node relation generator so that it doesn't generate relations if a provided association name
+  is unused in the loaded data.
+* Added a project dependency to the LexGridResourceReader project. That project currently handles reading
+  of OBO 1.2 format files.
+* Modified the OBOReadWrite class under emfConversions to use the new OBO 1.2 loader.
+* Added a package edu.mayo.informatics.lexgrid.convert.emfConversions.obo1_2 to support obo 1.2 emf conversion   
+* Added a Semantic Net Converter
+* Added an option for use by exporters
+* Updates to the way that the build root nodes function works on SQL when dealing with multiple associations.
+* Indexer no longer treats ':' as a white space character.
+* Updates to the multi-assosiation root/tail generator - now uses a special association name.
+* Fixed the UMLS and Metathesaurus loaders to read the release version number from the MRDOC file instead
+  of the RELEASE_INFO file.
+* Added the Snowball Stemming package to the lucene indexer.
+* Added a SNODENT converter.
+* Changed the way that we build tables on MySQL - we now set the charset and the collation on each table as 
+  it is built.  The new collation is a case-sensitive collation - so MySQL will now be case sensitive.
+  Also, booleans on MySQL were changed to a tinyint(1) type, with 0 being false, and 1 being true.
+* Updates to build file to compensate for changes in internal source code arrangement.  
+  
+
+******************************
+Release 3.0.2	    05/31/06 *
+******************************
+* Added a sample RELEASE_INFO.RRF file to the commented samples folder.
+* Fixed a bug in creating foreign keys on old tables.
+* Changed the indexer to not strip urn:oid from the registered names.
+* Added two new localNames to the MetaThesaurus loader.
+* Fix to the drop database method to make it work with cached hsqldb databases.
+* Added support for prefixed table names.
+* Made the RRF loader return a list of tables that it loaded.
+* Clean up of missing preparedStatement and resultset close commands.
+* Split off the NCIHistory file constants.
+* More tweaks for Oracle support.
+* Added code to the generic SQL modifier to support dynamically changing requests for a varchar column
+  that is bigger than a particular database supports into a different type of column that holds bigger data
+  (such as a clob on oracle).
+* Fixed a bug in the SQL Indexer that was holding connections open longer than it should, causing problems
+  on postgres.
+* Fixed a bug in the RRF Text Files -> Sql converter on DB2.
+* Fixed a bug in loading SQL UMLS / MEta -> Lexgrid on DB2.
+* Fixed a bug in UMLS -> SQL that was reporting duplicate relationships as errors on hypersonic.
+
+******************************
+Release 3.0.1	    04/13/06 *
+******************************
+* Fixed a bug in the EMF readers where it was failing to read older SQL formats.
+
+
+**************************
+Release 3.0	    04/11/06 *
+**************************
+* Made changes to table structure to accomodate Oracles serious(ly annoying) limitations.
+* Table name changes are forward and backward compatible now.
+* Added support for Oracle.
+* Added suport for amd64 on linux.
+* Made it force unlock on the lucene indexes in case a previous load stalled and left the 
+  lock files behind.
+* Removed unnecessary code (was commented out before).
+* Updated LSI / MirUtility to clean up properties config references.
+* Modifed the conversion launcher to return the list of terminologies that were converted.
+* Added utility method for creating a new database.
+* Made the conversion utility return the coding scheme names that were converted.
+* Changed the format of the Index metadata files that are written.
+* Added code to "unroll" the concept to concept table for transitive associations.
+* Added the NCI History loader
+* Updated all EMF libraries
+* Added RRF to SQL loader
+* Upgraded to 1.9.1 of Lucene.
+* Added support for property qualifiers to the SQL tables.
+* Changed the SQL indexer to use a single sql statement for the real data.
+* Changed the conceptStatus field to 50 characters (from 10)
+* Changed Indexer parameters for better performance
+* Changed indexer to only use one index, due to a bug in lucene (540) in merging multiple indexes.
+* Fixed a bug that was allowing some anonymous concepts to get indexed.
+
+
+NCI OWO Conversion
+* Coding Scheme name changed to "NCI_Thesaurus" from "NCIThesaurus".
+* The order in which entitiy description value for a concept is extracted is changed.
+  Now it is first taken from rdfs:label, if not there then taken from display_name,
+  if not then taken from browserText or name of concept.
+* isNavigable is set to true for hasSubtype association.
+* "NCI Thesaurus" and NCI URN "2.16.840.1.113883.3.26.1.1" added as additional local names to the coding scheme.
+* Correct URNs are set for Comment, Definition, Textual Representation, Instruction properties.
+* Correct URN set for hasSubtype relation.
+* "NCI_Thesaurus" has been added as supported coding scheme.
+* "some" and "all" are added as supported association qualifiers.
+* Changed Protege OWL API call which was performance bottleneck. Conversion is taking
+  only 3% of the previous time. (Earlier it taking somewhere between 4 to 8 Hours, Now
+  it is taking somewhere between 9 Minutes to 15 minutes).
+* Added NCI_NAME Property for each rdfs:ID value.
+* top thing "@" node has all valid and correct number of children.
+* Relations Names appear in supportedAssociations even if they are not used by concepts. 
+* All concept ID which ends in "_Role", "_role", "_Association" or "_association"
+  will have corresponding supportedAssociation entries (with the "_Role", "_role", 
+  "_Association" or "_association" removed.
+* Added local name of coding scheme to 40010. Resolved problem with duplication of 
+  SupportedAssociations.
+* NC_NAME changed to CONCEPT_NAME.
+* 'Primitive' Property value introduction, OWLDatatypeProperty & OWLObjectProperty 
+  values properly converted into supportedAssociations and SupportedDataTypes and, 
+  other minor changes to handle associations, properties, datatypes etc. (Changes
+  made according to the Harold's Suggestions).
+* Association Instances are created for 'Role_Has_Domain' and 'Role_Has_Range' association 
+  types. 
+* OLD_XXX type of properties are removed from ignore-list. 
+* Source List has been updated to minimize missed source urns.
+* If the OWL API fail to read the versionInfo then a workaround (read it directly from 
+  the file using plain java method) has been introduced. the versionInfo value will be 
+  read from "owl:versionInfo" tag. The tag MUST end with </owl:versionInfo> to be able 
+  to get the correct value.  The versionInfo tag value is search within first 2000 
+  lines of file. Similar mechanism has been added for Entity Description coming from
+  "rdf:comment".
+  
+UMLS / MetaThesaurus conversion
+* Fixed several errors in the way that the relationships were being loaded.
+* fixes to the URN map.
+* 
+
+**************************
+Release 2.2	    12/13/05 *
+**************************
+* Fixed a bug where XML output was always being written to C:\temp.
+
+* Updated the EMF code to the latest and greatest version.
+
+* Changed the License to the new LexGrid EPL License.
+
+* Merged the LexGrid Indexer application into the converter.
+*** Indexer changes from previous version:
+	* Added code boundries (almost empty documents that mark where the ordered list of documents changes from 
+	  one concept code to another [to be used by lexBIG])
+  
+	* Added an untokenized, lower-cased, unstored copy of the propertyValue to the index, to allow queries such
+  	  as non-case-sensitive exact match, and non-case-sensitive starts with.
+
+
+* NCIOWL conversion: 
+   -- Removed depricated calls while populating Coding Scheme:Version, Entity Description.
+   -- Synonym, Image_Link, and properties starting with "OLD_" are ignored/not processed.
+   -- Fixed load of versionInfo, EntityDescription values from Header. Default values are assigned in case
+      of error (while reading header either because of owl:imports, or anything else)
+   -- Removed duplication of Textual Presentation creation, when FULL_SYN property has identical text
+      as Preferred Name and FULL_SYN has representational Form as "PT" (Preferred Term).
+   -- Coding Scheme Copyright information (Terms of Use) is read from a text file, copied at
+      "edu\mayo\informatics\lexgrid\convert\emfConversions\nciOwl\NCIThesaurusTermsofUse.txt".
+   -- Removed some depricated calls.
+
+* OBO transform
+   -- Relationships and Abbreviations are being read from files inside jar.
+   -- Definition References (Soruces) are being loading appropriately using their abbreviations.
+   -- Associations have been correctly created using the details specified in relationships.obo file.
+   -- Removed some depricated calls.
+   -- Removed Duplicate Supported sources in the coding scheme (source name is case insensitve now).
+
+
+**************************
+Release 2.1	    11/18/05 *
+**************************
+* The SQL table format has undergone the following changes to correspond to the 2005/01 LexGrid Schema:
+	association table - two new columns - 'inverse' and 'isNavigable'
+						'reverseName' is no longer required - is optional.
+	new table - 'conceptPropertyLinks' - is for recording property/property links within a code system (
+				e.g. acronymFor, abbreviationOf, spellingVariantOf)
+				
+* The XML and SQL EMF converters now support these new schema changes.  The LDAP converters do not yet 
+  support them (because our ldap schema itself has not yet been updated)
+  
+* Removed Tie-ins to SWT for converter when run from the command line, or when run from the LexGrid convert 
+  API.  Can now run the conversions without having SWT present on the classpath.
+  
+* Added LgXML -> SQL converter function to the command line runners.
+
+* Fixed other broken command line converters.
+
+* Added a drop LexGrid tables feature.
+
+* Fixed a few other GUI bugs that cropped up.
+
+* Added the ability to register a terminology with the LexGrid Services Index
+
+* Added some data to the SQL database in commented samples.
+
+
+**************************
+Release 2.0	    11/07/05 *
+**************************
+* Complete rewrite of GUI into SWT.  Converters unchanged.
+* New GUI allows for more conversion combinations (for example - OBO -> LexGrid SQL)
+* Can now Add or Remove constraints from a SQL or SQL Lite database without doing any conversion.
+* Can now remove terminologies from a SQL, SQLLite or LDAP server.
+* Executeable launcher has been added.
+
+**************************
+Release 1.9.7	10/12/05 *
+**************************
+* Increased the column size for forwardName and reverseName in the association table.
+* Added the NCI Owl importer
+* Tweaked the webstart mechanism to reduce the number of jars that have to be downloaded
+  every time something changes.
+* Changed the generated index column orders on the SQL tables - gives huge performance gains
+  on HyperSonicSQL - small gains on other PostgreSQL.  Hopefully no negative impact on other DBs.
+
+**************************
+Release 1.9.6.1	10/03/05 *
+**************************
+* Fixed the UMLS and NCI converters to support reading from DB's other than MySQL.
+* Fixed the LexGrid create table statements to not throw errors when tables already exist on Linux DB2
+
+**************************
+Release 1.9.6	9/30/05  *
+**************************
+* Added {false} and {LIKE} overrides to the generic sql modifier.
+* Added DB2 support - bugfixes for DB2 issues
+* Set it to use the WrappedConnections for all SQL connections.
+* Enabled debug viewing of all sql queries (turn on root level debugger)
+* New version of lgCommonsManagedObject code to fix a bug that occurs when debugging queries.
+* SQL->SQLLite made it allow null or blank as a coding scheme name - converts all in this case.
+* Made it automatically create an MS Access Database if one does not exist at the location specified.
+* Added an implementation of the standard LexGrid conversion interface.
+* Upped the column size for registeredName.
+*** SQL FORMAT CHANGE ***
+* The SQL table format changed at this version - renamed a columns that were too long for DB2 - 
+  and added a table to hold a sql table version number.
+
+**************************
+Release 1.9.5	9/02/05  *
+**************************
+* Added a missing property attribute to the tables on the nci metathesaurus converter.
+
+* Added HyperSonic SQL Support - Fixed code as necessary to make it work.
+
+* Added a SQL -> SQL converter.
+
+* Fixed several EMF / Sql / MySQL related bugs.
+
+* Fixed the UMLS loader for RXNORM / MTH related relationship bugs.
+
+**************************
+Release 1.9.4	8/05/05  *
+**************************
+* Updated for UMLS 2005AB
+
+* Fixed a bug in ldap -> SQLLite that was mashing the supported language and its URN together.
+
+* New version of postgres drivers
+
+* Updated EMF code, direct code - to properly page through results when the source database is PostgreSQL.
+
+* Fixed a bug in dealing with coding schemes that use case senstivity to differentiate concept codes 
+in the UMLS -> SQL loader.
+
+* Added a new RRF loader - this one is for the NCI MetaThesaurus - is sets things up using CUI's as the 
+concept codes.  Moved all common RRF code into a new class.
+
+* Reworked all of the relationship handling code in the RRF loaders.
+
+* Updated the SAB map with the new things from 2005AB.
+
+* Changed the SQL table construction so that it doesn't create an index on conceptProperty table propertyValue
+column on Postgres, since it wasn't used, and it created problems with long entries.
+
+* Updated the ISO OID mapping files.
+
+* Added relations count sanity check in the UMLS relationship mapper code.
+
+* Changed to a bigger SQL batch size, and now using a multiple of the batch size for relationship processing
+in the RRF types of conversions.
+
+* Changed the format of the SQL coding scheme table - made firstVersion and lastVersion booleans, like they 
+should be, instead of varchars.
+
+* fixed "localname" vs "localName" bugs.
+
+**************************
+Release 1.9.3	6/23/05  *
+**************************
+* Force format B option was no longer working on text importers - got broken in a code refactoring.
+Fixed again.
+
+* Fixed a bug in the xml -> sql importer that was making it miss the default target coding scheme
+in relationships.
+
+* Changed a couple of property name strings in the UMLS -> SQL importer
+
+* Fixed missing supportedProperty attributes in UMLS -> SQL importer
+
+* Consolodated and repaired the SQL Boolean handling (would have been wrong with postgres, when going 
+SQL -> SQLLite or SQL -> LDAP)
+
+* Fixed a bug in the SNOMED Default language selection that I created when I changed to presentation 
+sorting mechanism.
+
+* Fixed a bug in the EMF code that would have caused it to mis-read booleans from postgres and access.
+
+* Fixed a bug where code systems like Loinc had a number of concepts that didn't have codes (they were set to 
+'NOCODE')
+
+
+**************************
+Release 1.9.2	5/24/05  *
+**************************
+** Added semantic types to the UMLS -> LexGrid SQL converter
+
+** Reworked the way that concept presentations are loaded from the UMLS - new method of choosing
+the correct presentation to mark as "preferred".
+
+** Fixed a bug where it was pulling the wrong language for snomed concepts from the UMLS
+
+** Fixed a bug in the lexgrid sql writing code where it wasn't generating unique keys for relation 
+attributes
+
+** Fixed the code to properly handle UTF-8 characters (all SQL reads and writes)
+
+** Added the ability to not fail on a duplicate relationship when loading XML -> SQL.
+
+** Fixed a bug in creating the top node "@"
+
+**************************
+Release 1.9.1	4/26/05  *
+**************************
+** Modified the indexes on the SQL tables.
+
+
+**************************
+Release 1.9	4/25/05      *
+**************************
+** Added a new column (urn) to the codingSchemeSupportedAttributes table in sqlLite
+
+** Fixed an error in how (external) codingScheme names and IDs were being loaded in the relations tables
+   in the UMLS converter
+   
+** Added some additional indexes to the SQL and SQLLite table definitions
+
+** added code to compute the "@" node for a coding scheme, put it in the UMLS loader
+
+** Fixed a bug in the ldap -> sql loader where it was mishandling URN's.
+
+**************************
+Release 1.8	4/13/05      *
+**************************
+** Centralized the page size setting locations, set it up so the gui can override the defaults.
+
+** new version of the EMF ldap code that fixes bugs with entityDescriptions and supportedXXXX types of things.
+
+** Made the Text -> SQLLite converter take in coding scheme information on the first line.
+
+** Gave the Text -> SQLLite converter the ability to read a format A file as format B.
+
+** Numerous small bug fixes in Text -> SQLLite
+
+** Added Text -> SQL converter
+
+** Added proper javadocs
+
+**************************
+Release 1.7	3/18/05      *
+**************************
+** Modified the LexGridLite format - removed the foreign keys on target concepts in associations.
+   Added a missing constraint between codingScheme and codingSchemeAssociations
+
+** More cleanup for LexGrid database naming consistancy.
+
+** Fixed two bugs in the text -> sqlLite converter that caused it to choke on blank lines, or lines missing 
+   (required) information
+   
+** Fixed a bug in the SQL -> LDAP and SQL -> SQLLite converters that was making it fail with databases other
+   than mysql.
+   
+** Fixed a bug in SQL -> LDAP where it was not setting all of the required "objectClass" attributes
+   on textual presentations.
+   
+** Added "REFINABILITY" to the skip list for UMLS -> SQL conversion.
+
+** Added a proper SAB -> ISO map for the UMLS -> SQL conversion
+
+** Fixed a bug in SQL -> LDAP where it wasn't handling firstVersion and last Version correctly.
+
+** Fixed a but in SQL -> SQLLite where it wasn't handling booleans correctly.
+
+** Added new converters - LgXML -> LDAP, LgXML -> SQL, LDAP -> LgXML, SQL -> LgXML
+
+** reorganized the tabs
+
+**************************
+Release 1.6	2/09/05      *
+**************************
+** Text -> SQLLite
+New converter
+
+** LDAP -> SQLLite 
+Fixed issues with booleans on MSAccess
+Centralized all insert statements
+
+** SQL -> SQLLite
+Fixed issues with booleans on MSAccess
+Centralized all insert statements
+
+**************************
+Release 1.5	1/28/05      *
+**************************
+** SQL -> LDAP 
+Fixed up some of the error handling to make it pass over already entered concepts.
+
+Changed "presentation" to "textualPresentation"
+
+** UMLS -> SQL
+Changed the property type "presentation" to "textualPresentation"
+
+** SQLLite -> LDAP
+Fixed it so it handles creating the root ldap node if it doesn't exist.
+
+** LDAP -> SQL
+New conversion.  Added all require EMF stuff to support.
+
+** Other
+Made some minor tweaks (fixes) to the SQL database format (and sample)
+
+Consolodated some of the SQL queries for reuse - modified the ant build script to create a seperate jar 
+file with these.
+
+Fixed a bug with removing constraints on the SQL tables.
+
+Added a log viewer to the GUI.
+
+Fixed some problems with error dialogs coming up behind the application.
+
+
+
+**************************
+Release 1.4	1/19/05  *
+**************************
+** SQL -> Sql Lite
+Fixed the paging code, so that it uses LIMIT if you are running against mysql.
+
+** LDAP -> SQL Lite
+Improved the association handling, so it will try to tranfer them all - instead of just the ones
+that start with dc=Relations
+
+**************************
+Release 1.3	1/18/05  *
+**************************
+** Ldap -> SQL Lite
+Synced up a couple of minor things in the provided LexGrid_Lite access database with what the 
+implementation creates.
+
+Changed the default page size in the LexGrid -> SQLLite converter.
+
+** UMLS -> SQL
+Changed the way concepts and their attributes are loaded for SNOMEDCT - they had the languages put in 
+in a way that I didn't realize.  
+
+Added more representationalForm values - these were being lost.
+
+** SQL -> LDAP
+Made it use limit statements instead of paged results to get big data from mysql.
+Added a little bit more error handling ability.
+Made it not try to add blank properties (these caused an error)
+
+**************************
+Release 1.2	12/23/04 *
+**************************
+Added a lot of new converters - refactored a lot of code for better reuse.
+First version of the UMLS->SQL converter.
+First version of SQL->LDAP converter.
+First version of SQLLite->SQL converter.
+First public release.
+
+
+
+**************************
+Release 1.1.2	7/19/04  *
+**************************
+* Added support for MS SQLServer.
+
+
+
+**************************
+Release 1.1.1	6/17/04  *
+**************************
+* Initial build of the converter that can go both directions.  Has support for mysql, postgres, access
+and DB2.
+

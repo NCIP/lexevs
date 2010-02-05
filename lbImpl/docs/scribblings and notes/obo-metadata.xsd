@@ -1,0 +1,492 @@
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://server.stanford.ncbo.org/metadata"
+	targetNamespace="http://server.stanford.ncbo.org/metadata" elementFormDefault="qualified">
+	<xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/03/xml.xsd"/>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ontology_descriptions							   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="ontology_descriptions">
+		<xs:annotation>
+			<xs:documentation>A collection of ontology descriptions.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="1" maxOccurs="unbounded" ref="ontology_description"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ontology_description 							   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="ontology_description">
+		<xs:annotation>
+			<xs:documentation>A description of the contents, source, etc. of an ontology</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="concise_name"/>
+				<xs:element ref="display_label" minOccurs="0"/>
+				<xs:element ref="default_language" minOccurs="0"/>
+				<xs:element ref="supported_language" minOccurs="1" maxOccurs="unbounded"/>
+				<xs:element ref="rights" minOccurs="0"/>
+				<xs:element ref="description"/>
+				<xs:element name="authority" type="authority" minOccurs="1" maxOccurs="unbounded"/>
+				<xs:element name="core_format" type="format_description"/>
+				<xs:element ref="download_url" minOccurs="0"/>
+				<xs:element name="about" type="about" minOccurs="0"/>
+				<xs:element name="version_info" type="version_infoType" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="dependency" type="ontology_reference" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="foundry" type="foundry_reference" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- download_url									   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="download_url" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>
+				If a submitter maintains the primary copy of the ontology
+				outside obo, they must provide an exact URL path to the file, which
+				must conform to core_format. This is a pointer to the "live"
+				ontology, which may be changing daily or hourly! To point at a stable
+				release, see version_info, below.
+				
+				If the submitter maintains the copy inside OBO, then the path can
+				be local to the main OBO root.
+				
+				If the submitter is uploading an ontology release, then this can
+				be left blank, as it is not applicable (a path is assigned automatically)
+			</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- download_infoType									   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:complexType name="download_infoType">
+		<xs:annotation>
+			<xs:documentation>
+				cbio will provide downloading in a variety of formats as part of its service
+				see http://www.fruitfly.org/~cjm/obo-download for a prototype.
+				we also want to give people the option of hosting their own download areas.
+				for example, certain groups may wish to provide custom mappings to OWL
+				(for example, there are a number of different ways of mapping the FMA to OWL
+				 and this probably goes for other ontologies)
+				
+				 zero-or-more download_infos may be attached to a version.
+				 Download_url MUST point to a STABLE file containing the ontology in 
+				 the same format as specified in the download_format field
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="download_format" type="formatType"/>
+			<xs:element ref="download_url"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- versionType									   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:simpleType name="versionType">
+		<xs:annotation>
+			<xs:documentation>
+				Version of the ontology.
+				no two versions of an ontology can have the same value for this field.
+				Q: Do we want to break down the version field? For example, into
+				major and minor version, plus tag?
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- version_tagType								   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:simpleType name="version_tagType">
+		<xs:annotation>
+			<xs:documentation>
+				Submitters can attach a short name to a version. This is common
+				practice in software releases, but not in ontologies. However, we
+				want to offer it nontheless. Example tags might be "production", "staging", etc.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- version_notesType									   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:complexType name="version_notesType">
+		<xs:annotation>
+			<xs:documentation>
+				Sometimes it can be useful to attach a short description or even
+				an abstract to a release. this can be stored locally (in the string)
+				or externally (in the URL) or both. If a URL is specified this
+				must be a stable link to version-specific notes
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:restriction base="urlReference"/>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- version_statusType								   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:simpleType name="version_statusType">
+		<xs:annotation>
+			<xs:documentation>
+				The status of a particular version of an ontology
+				TBD: should probably be replaced by an enumeration
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- version_infoType								   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:complexType name="version_infoType">
+		<xs:annotation>
+			<xs:documentation>
+				The data below is per-version. The submitter will still have to provide
+				information here when submitting the initial version.
+				one-or-more version_infos can be attached to any one ontology. 
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="version" type="versionType"/>
+			<xs:element name="version_tag" type="version_tagType" minOccurs="0"/>
+			<xs:element name="version_notes" type="version_notesType" minOccurs="0"/>
+			<xs:element name="status" type="version_statusType" minOccurs="0"/>
+			<xs:element name="download_info" type="download_infoType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="version_releaseDate" type="xs:date"/>
+		</xs:sequence>
+		<xs:attribute name="is_current" use="required" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>
+						This should be filled in automatically. Only one version can
+						be current at any one time
+					</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: concise_name							   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="concise_name" type="concise_nameType" />
+	<xs:complexType name="concise_nameType">
+		<xs:annotation>
+			<xs:documentation>
+				A short and unique name for the ontology. An example would be
+				"zebrafish_anatomy". It is strongly encouraged to keep this the
+				same as the ontology filename (with suffix stripped). If the ontology
+				is maintained in obo format, then this must match the obo "namespace" tag
+				used throughout the file
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+					<xs:extension base="xs:string"/>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: display_label							   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="display_label" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>
+				This is how the ontology submitter would like the ontology name to
+				appear to people browsing OBO. It should not be too lengthy 
+				(256 chars maximum, users encouraged to use less). It can contain
+				spaces, unicode characters, etc. It should be unique to avoid confusion.
+				
+				this field is optional - software should use 'concise_name' as the display
+				label if display label is not explicitly provided
+			</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: default_language						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="default_language" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>
+				The default (or only) language used in the ontology.  Most, but not all, ontologies will
+				have a dafault language.  If omitted, the ontology is considered multilingual.
+			</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Class: supported_language						   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="supported_language" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>
+				A language that is at least partially supported in the supplied ontology.
+			</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- idspace_short							   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:simpleType name="idspace_short">
+		<xs:annotation>
+			<xs:documentation>idspace_short
+				this is a short identifier space that uniquely identifies this authority
+				within OBO. Examples: GO, CL, MA, OBO_REL, ChEBI
+
+				An additional constraint for OBO format 
+				is that all terms/classes in this ontology must
+				use this prefix for all the IDs they control.
+
+				Note that in RDF/OWL, it is the long form (see below) that is required
+				by the RDF/OWL language specification. However, ontologies maintained in OWL
+				MUST still provide this short form of the ID space.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="local_name_reference"/>
+	</xs:simpleType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- Element: idspace_uri							   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:simpleType name="idspace_uri">
+		<xs:annotation>
+			<xs:documentation>
+				This is the long form of the ID space, above. It must be a valid URI.
+				It has the exact same semantics as an XML namespace.
+				as such it will be globally unique
+				
+				Ontology submitters are not required to specify this (they may not
+				have knowledge of URIs and XML namespaces).
+				if not specified will default to the default OBO URN which will probably be
+				urn:lsid:bioontology.org:&lt;IDSPACE_SHORT&gt;
+				for example, OBO-Cell would be
+					urn:lsid:bioontology.org:CL
+				This means that a CL term such as CL:0000001 would have the URI
+					urn:lsid:bioontology.org:CL:0000001
+					(although CL may choose to provide a non-default idspace_uri)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:anyURI"/>
+	</xs:simpleType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- idspaceType									   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:complexType name="idspaceType">
+		<xs:annotation>
+			<xs:documentation>The combination of the idspace short name and URI</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="idspace_uri">
+				<xs:attribute name="idspace" type="idspace_short"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- local_name										   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:simpleType name="local_name_reference">
+		<xs:annotation>
+			<xs:documentation>
+				A locally unique identifier that defines a language, authority, source, etc. within a given namespace.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NCName"/>
+	</xs:simpleType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- local_name_definition							   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:complexType name="local_name_definition">
+		<xs:annotation>
+			<xs:documentation>A local name and an associated description or URI that defines the name in a given
+				context. If the URI isn't supplied, the local name is declared but not defined.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:anyURI">
+				<xs:attribute name="local_name" type="local_name_reference"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- urlReference									   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:complexType name="urlReference">
+		<xs:annotation>
+			<xs:documentation>The combination of a URL and an optional anchor</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="url" type="xs:anyURI"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- contactInformation								   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:complexType name="contactType">
+		<xs:annotation>
+			<xs:documentation>
+				A contact must be provided, with a valid email (which may be a mail list)
+				should we have something to protect people from spam harvesters here?   
+				multiple contacts of different types may be listed (is this overkill?)
+				e.g. discussion list, questions, help
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="email" type="xs:string"/>
+				<xs:attribute name="emailType" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- publication									   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:simpleType name="publicationType">
+		<xs:annotation>
+			<xs:documentation>
+				This type currently allows all of the types in the Dublin Core Elements or Terms class.  For guidelines on creating publication references, see: <a href="http://dublincore.org/documents/dc-citation-guidelines/">Dublin Core Bibliographic Citation Guidelines</a>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	
+	
+	<xs:element name="rights" type="rightsType" />
+	<xs:complexType name="rightsType">
+		<xs:annotation>
+			<xs:documentation>
+			Rights
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+					<xs:extension base="xs:string"/>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:element name="description" type="descriptionType" />
+	<xs:complexType name="descriptionType">
+		<xs:annotation>
+			<xs:documentation>
+				Description of ontology
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+					<xs:extension base="xs:string"/>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- about										  	 -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:complexType name="about">
+		<xs:annotation>
+			<xs:documentation>these fields describe how to find out more about the ontology</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="homepage" type="urlReference" minOccurs="0"/>
+			<xs:element name="documentation" type="urlReference" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>if blank, assumed to be available directly on homepage</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contact" type="contactType" minOccurs="1" maxOccurs="unbounded"/>
+			<xs:element name="publication" type="publicationType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- authority										   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:complexType name="authority">
+		<xs:annotation>
+			<xs:documentation>
+				Each ontology is "owned" by an authority. Typically there is a 1-1
+				relationship between an authority and an ontology, but this is not
+				always the case. GO consists of 3 ontologies, EVOC consists of 6 or 7.
+				However, an ontology cannot be shared between authorities. There is always
+				a single authority for any ontology
+				
+				Authority (in the sense we use it here) always corresponds to an ID space.
+				only that authority can assign IDs in this ID space
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="idspace" type="local_name_definition"/>
+			<xs:element name="about" type="about"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- format											   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:element name="format" type="formatType" />
+	<xs:complexType name="formatType">
+		<xs:simpleContent>
+					<xs:extension base="enumList">
+					
+					</xs:extension>
+		
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="enumList">
+		<xs:restriction base="xs:string">
+		      <xs:enumeration value="OBO-TEXT"/>
+		      <xs:enumeration value="OWL-FULL"/>
+		      <xs:enumeration value="OWL-LITE"/>
+		      <xs:enumeration value="PROTEGE"/>
+		      <xs:enumeration value="OWL-DL"/>
+		      <xs:enumeration value="RDF"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- format_description								   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:complexType name="format_description">
+		<xs:annotation>
+			<xs:documentation>Format and version of a resource</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="format"/>
+			<xs:element name="format_version" type="xs:string" minOccurs="0"/>
+			<xs:element name="format_notes" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- ontology_reference								   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:complexType name="ontology_reference">
+		<xs:annotation>
+			<xs:documentation>Reference to a idspace URI, name and optional version</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="reference_idspace" type="local_name_definition"/>
+			<xs:element name="version" type="versionType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- foundry_refernce								   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<xs:complexType name="foundry_reference">
+		<xs:annotation>
+			<xs:documentation>
+				Defines if the ontology adheres to OBO foundry questions
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="open" type="xs:boolean"/>
+			<xs:element name="language" type="xs:boolean"/>
+			<xs:element name="idspace" type="xs:boolean"/>
+			<xs:element name="versioned" type="xs:boolean"/>
+			<xs:element name="content" type="xs:boolean"/>
+			<xs:element name="definitions" type="xs:boolean"/>
+			<xs:element name="relations" type="xs:boolean"/>
+			<xs:element name="documented" type="xs:boolean"/>
+			<xs:element name="users" type="xs:boolean"/>
+		</xs:sequence>
+		<xs:attribute name="is_foundry" use="required" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>
+					if all the questions are answered tru it is true else it is false
+					</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

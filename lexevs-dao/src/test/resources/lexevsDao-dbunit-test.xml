@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<import resource="classpath:lexevsDao-test.xml" />
+	
+	<bean id="lexGridSchemaCheckFactory"
+		class="java.lang.Boolean">
+		<constructor-arg value="true"/>
+	</bean>
+	
+	<bean id="defaultPrefixResolver" class="org.lexevs.dao.test.StaticPrefixResolver">
+		<property name="prefix" value=""/>
+	</bean>
+
+</beans>

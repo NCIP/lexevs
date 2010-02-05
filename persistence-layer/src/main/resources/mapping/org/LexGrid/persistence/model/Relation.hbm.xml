@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 30, 2009 7:07:50 AM by Hibernate == Tools 3.2.0.CR1 -->
+<hibernate-mapping>
+    <class name="org.LexGrid.persistence.model.Relation" table="@PREFIX@relation">
+        <composite-id name="id" class="org.LexGrid.persistence.model.RelationId">
+            <key-property name="codingSchemeName" type="string">
+                <column name="codingSchemeName" length="50" />
+            </key-property>
+            <key-property name="containerName" type="string">
+                <column name="containerName" length="50" />
+            </key-property>
+        </composite-id>
+        <property name="isNative" type="java.lang.Boolean">
+            <column name="isNative" />
+        </property>
+        <property name="entityDescription" type="string">
+            <column name="entityDescription" length="65535" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:lbPreferences="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/LoadPreferences" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/LoadPreferences" elementFormDefault="qualified">
+	<xs:element name="LoaderPreferences" type="lbPreferences:LoaderPreferences">
+		<xs:annotation>
+			<xs:documentation>Represents source processing options recognized by all loaders.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="LoaderPreferences">
+		<xs:sequence>
+			<xs:element name="XMLMetadataFilePath" type="xs:string" minOccurs="0" nillable="true">
+				<xs:annotation>
+					<xs:documentation>
+					Any xml document can be assigned as metadata to a newly loaded coding scheme.
+					The xml document is broken down into individual tags and values, which are then searchable
+					through the LexBIG Service Metadata interface.  This parameter indicates the path of
+					xml metadata assigned during the current load operation.  For most loaders, the given path
+					serves strictly as an option to input user-specified data.  For some loaders, such as the
+					HL7 loader and NCI Metathesaurus loader, metadata is automatically generated and
+					assigned to the coding scheme.  In these cases, the generated xml will be output to the
+					given file, overwriting any existing content .
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

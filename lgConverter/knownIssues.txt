@@ -1,0 +1,58 @@
+**************************
+UMLS->SQL Converter		 *
+**************************
+
+You must choose the "versionless source identifiers" when you use Memamorphosys to extract your RRF data.
+If you use the versioned source identifiers, this tool will fail.
+
+***
+
+The converter will not properly handle coding systems that rely on CaSe SeNsItIvItY to differentiate
+codes from each other if you are loading into a non-case-sensitive database (Access, etc)
+When it encounters what it thinks is a duplicate, it will simply skip the duplicate - and it will warn
+you about it.
+The wrong relations may get loaded for these codes as well.
+
+Know coding systems that this affects (from the UMLS):
+NIC
+RCD
+RCDAE
+RCDSA
+RCDSY
+
+We currently don't intend to change this - we feel that it is not a good idea to use case sensitivity to 
+differentiate your concept codes.
+
+If you have a code system that requires case sensitivity, you can use PostgreSQL as your DB.  PostgreSQL is
+case sensitive, and you should not encounter any problems with the above code systems.  HypersonicSQL is also
+case senstive, and MySQL can be case sensitive if used with the proper collations.
+
+
+***
+
+MTH generates a tremendous amount of relationships (millions) because they are specified at the CUI level, 
+while LexGrid specifies them at the relationship level.  It will take a long time to convert.
+
+*** 
+
+
+********************************
+Database specific issues - DB2 *
+********************************
+
+There seems to be something wrong with the DB2 database drivers that we have tested with - they don't handle
+very large result sets properly.  The driver is supposed to pull down rows as necessary, and garbage collect 
+the old ones.  Currently, it is not garbage collecting - so you will run out of memory when you try to read
+a very large terminology.  If you know how to make DB2 properly stream large result sets, please let us know!
+
+
+**********************************
+Database specific issues - MySQL *
+**********************************
+
+If you are trying to create LexGrid tables on MySQL - we set the table char set to latin_1 and set the collation to 
+latin1_bin.  We can't use UTF8, because MySQL limits unique sizes to 1024 bytes - but when you switch to utf8, it uses 
+3 bytes per character - for a max of 341.  Many of our keys are longer than this.
+
+http://bugs.mysql.com/bug.php?id=4541
+
