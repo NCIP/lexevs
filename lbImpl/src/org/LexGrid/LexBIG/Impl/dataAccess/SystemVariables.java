@@ -74,6 +74,9 @@ public class SystemVariables {
     private String autoLoadDBUsername_;
     private String autoLoadDBPassword_;
     private String relativePathStart_;
+    
+    private boolean singleTableMode = true;
+    private static String SINGLE_TABLE_MODE_PROP = "SINGLE_TABLE_MODE";
 
     private String configFileLocation_;
     
@@ -222,6 +225,9 @@ public class SystemVariables {
             String tempOverrideSingleDb = getNullableProperty(props, OVERRIDE_SINGLE_DB_PROP);
              
             overrideSingleDbMode = getNullableBoolean(tempOverrideSingleDb, false);
+            
+            singleTableMode = getNullableBoolean(
+                    getNullableProperty(props, SINGLE_TABLE_MODE_PROP), true);
             
             autoLoadDBPrefix_ = getProperty(props, "DB_PREFIX");
 
@@ -501,6 +507,10 @@ public class SystemVariables {
      */
     public int getMaxResultSize() {
         return this.maxResultSize_;
+    }
+    
+    public boolean isSingleTableMode(){
+        return this.singleTableMode;
     }
 
     @Deprecated
