@@ -10,11 +10,13 @@ import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.junit.Assert;
 import org.lexevs.dao.database.access.association.AssociationDao;
+import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationSourceBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertRelationsBean;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 
@@ -25,14 +27,24 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private static String INSERT_RELATIONS_SQL = "insertRelations";
 	private static String INSERT_ENTITY_ASSNS_TO_ENTITY_SQL = "insertEntityAssnsToEntity";
 	private static String INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL = "insertAssociationQualificationOrUsageContext";
+	private static String GET_ASSOCIATION_INSTANCE_KEY_SQL = "getAccociationInstanceKey";
 	
-	private VersionsDao versionsDao;	
+	private VersionsDao versionsDao;
+	private CodingSchemeDao codingSchemeDao;
 
 	public String getAssociationPredicateId(String codingSchemeId,
 			String relationContainerName, String associationPredicateName) {
 		return null;
 	}
 	
+	public void insertRelations(String codingSchemeName, String version,
+			Relations relations) {
+		String codingSchemeId = codingSchemeDao.getCodingSchemeId(codingSchemeName, version);
+		this.insertRelations(
+				codingSchemeId, 
+				relations);
+	}
+
 	public String insertRelations(String codingSchemeId,
 			Relations relations) {
 		String relationsId = this.createUniqueId();
@@ -109,6 +121,35 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		}
 	}
 	
+
+	public void insertAssociationQualifier(String codingSchemeId,
+			String associationInstanceId, AssociationQualification qualifier) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		String associationTargetId = this.getKeyForAssociationInstanceId(codingSchemeId, associationInstanceId);
+		
+		String qualId = this.createUniqueId();
+		
+		InsertAssociationQualificationOrUsageContextBean contextBean = new InsertAssociationQualificationOrUsageContextBean();
+		contextBean.setAssociationTargetId(associationTargetId);
+		contextBean.setId(qualId);
+		contextBean.setPrefix(prefix);
+		contextBean.setQualifierName(qualifier.getAssociationQualifier());
+		contextBean.setQualifierValue(qualifier.getQualifierText().getContent());
+		
+		this.getSqlMapClientTemplate().insert(
+				INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, 
+				contextBean);
+	}
+	
+	protected String getKeyForAssociationInstanceId(String codingSchemeId, String associationInstanceId){
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		return (String) this.getSqlMapClientTemplate().queryForObject(
+				
+				GET_ASSOCIATION_INSTANCE_KEY_SQL, 
+				new PrefixedParameterTuple(prefix, codingSchemeId, associationInstanceId));
+	}
+	
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
 		return DaoUtility.createList(supportedDatebaseVersion, LexGridSchemaVersion.class);
@@ -121,6 +162,16 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public VersionsDao getVersionsDao() {
 		return versionsDao;
 	}
+
+	public void setCodingSchemeDao(CodingSchemeDao codingSchemeDao) {
+		this.codingSchemeDao = codingSchemeDao;
+	}
+
+	public CodingSchemeDao getCodingSchemeDao() {
+		return codingSchemeDao;
+	}
+
+	
 
 
 }

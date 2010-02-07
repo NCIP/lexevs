@@ -88,6 +88,7 @@
 	<bean id="ibatisAssociationDao"
 		class="org.lexevs.dao.database.ibatis.association.IbatisAssociationDao" parent="abstractIbatisDao">
 		<property name="versionsDao" ref="ibatisVersionsDao"/>
+		<property name="codingSchemeDao" ref="ibatisCodingSchemeDao"/>
 	</bean>
     
     <bean id="ibatisVersionsDao"

@@ -26,6 +26,69 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 	private IbatisAssociationDao ibatisAssociationDao;
 	
 	@Test
+	public void testGetKeyForAssociationInstanceId() throws SQLException{
+
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+				"values ('rel-guid', 'cs-guid', 'c-name')");
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid) values " +
+				"('ap-guid', 'rel-guid')");
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code'," +
+				" 't-ns'," +
+				" 'ai-id', null, null, null, null, null, ' ', ' ', null)");
+		
+		String key = ibatisAssociationDao.getKeyForAssociationInstanceId("cs-guid", "ai-id");
+		assertEquals("eae-guid", key);
+	}
+	
+	@Test
+	public void testInsertAssociationQualifier() throws SQLException{
+		AssociationQualification qual = new AssociationQualification();
+		qual.setAssociationQualifier("qualName");
+		qual.setQualifierText(DaoUtility.createText("qual text"));
+		
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+				"values ('rel-guid', 'cs-guid', 'c-name')");
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid) values " +
+				"('ap-guid', 'rel-guid')");
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code'," +
+				" 't-ns'," +
+				" 'ai-id', null, null, null, null, null, ' ', ' ', null)");
+		
+		ibatisAssociationDao.insertAssociationQualifier("cs-guid", "ai-id", qual);
+		
+		template.queryForObject("Select * from entityassnquals", new RowMapper(){
+
+			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
+				
+				assertNotNull(rs.getString(1));
+				assertEquals(rs.getString(2), "eae-guid");
+				assertEquals(rs.getString(3), "qualName");
+				assertEquals(rs.getString(4), "qual text");
+
+				return true;
+			}
+		});
+	}
+	
+	@Test
 	public void testInsertRelations() throws SQLException{
 		
 		Relations relations = new Relations();

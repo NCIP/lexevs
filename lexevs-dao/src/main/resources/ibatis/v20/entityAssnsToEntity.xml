@@ -2,6 +2,31 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap>
+
+	<select id="getAccociationInstanceKey" resultClass="string">
+		SELECT
+			eae.entityAssnsGuid
+		FROM 
+			$prefix$entityAssnsToEntity eae
+		JOIN
+			$prefix$associationPredicate ap
+		ON 
+			eae.associationPredicateGuid =
+			ap.associationPredicateGuid
+		JOIN
+			$prefix$relation rel
+		ON
+			ap.relationGuid =
+			rel.relationGuid
+		WHERE
+			rel.codingSchemeGuid = 
+			#param1#
+		AND
+			eae.associationInstanceId = 
+			#param2#
+			
+	
+	</select>
 	
      <insert id="insertEntityAssnsToEntity" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationSourceBean">
 		INSERT INTO $prefix$entityAssnsToEntity (
