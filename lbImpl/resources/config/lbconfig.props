@@ -160,6 +160,10 @@ DB_DRIVER=com.mysql.jdbc.Driver
 DB_USER=lexgrid
 DB_PASSWORD=lexgrid
 
+#Password encryption can be enabled by setting 'DB_PASSWORD_ENCRYPTED' to true (case insensitive). 
+#Note that, any value other than 'true' is considered false.
+DB_PASSWORD_ENCRYPTED=
+
 ############# Lucene Configuration
 # The number of boolean 'clauses' Lucene will attempt to create for wildcard
 # or Regular Expression queries. For very general queries on large ontologies,

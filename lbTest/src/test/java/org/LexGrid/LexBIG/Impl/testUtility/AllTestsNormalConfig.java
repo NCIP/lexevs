@@ -54,6 +54,7 @@ import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethodsGraphVersion17Tes
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethodsGraphVersionTests;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethodsTest;
 import org.LexGrid.LexBIG.Impl.dataAccess.TestLoaderPreferences;
+import org.LexGrid.LexBIG.Impl.dataAccess.TestPasswordEncryption;
 import org.LexGrid.LexBIG.Impl.featureRequests.AddNamespaceToIndex;
 import org.LexGrid.LexBIG.Impl.featureRequests.ChangeConfigFileName;
 import org.LexGrid.LexBIG.Impl.featureRequests.GForge17019;
@@ -346,6 +347,7 @@ public class AllTestsNormalConfig {
         functionalTests.addTestSuite(TestLoaderPreferences.class);
         functionalTests.addTestSuite(TestOWLLoaderPreferences.class);
         functionalTests.addTestSuite(TestSameCodeDifferentNamespace.class);
+        functionalTests.addTestSuite(TestPasswordEncryption.class);
 
         mainSuite.addTest(functionalTests);
 

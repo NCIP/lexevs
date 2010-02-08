@@ -28,6 +28,7 @@ import java.util.StringTokenizer;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.helpers.SQLConnectionInfo;
 import org.LexGrid.LexBIG.Impl.logging.Logger;
+import org.LexGrid.LexBIG.Utility.CryptoUtility;
 import org.LexGrid.util.config.PropertiesUtility;
 
 /**
@@ -242,6 +243,10 @@ public class SystemVariables {
             autoLoadDBUsername_ = getProperty(props, "DB_USER");
             autoLoadDBPassword_ = getProperty(props, "DB_PASSWORD");
 
+            String pwdEncrypted = getProperty(props, "DB_PASSWORD_ENCRYPTED");
+            if( pwdEncrypted != null && pwdEncrypted.equalsIgnoreCase("true"))
+                autoLoadDBPassword_ = CryptoUtility.decrypt(autoLoadDBPassword_);
+            
             File temp = new File(autoLoadIndexLocation_);
             if (!temp.exists()) {
                 temp.mkdir();

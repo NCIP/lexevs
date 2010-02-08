@@ -32,3 +32,22 @@ Release 2.1
 
 * 06/10/07
 * Add missing -cp command keyword to LoadRadLex.bat script.
+
+***********
+Release 6.0
+***********
+02/08/10
+1) Database password encryption added.
+
+	Following are the steps to be followed by the admin for the database password encryption. 
+
+	* Run PasswordEncryptor.sh or PasswordEncryptor.bat (pass password text as a parameter) from lbAdmin to generate the encrypted password.
+		- Ex: PasswordEncryption -p <db_password>
+		- Generated encrypted password will be stored in a file @ admin/password.txt
+
+	* Copy the encrypted password from password.txt and paste it in lbConfig.props file ( DB_PASSWORD=<Encrypted_Password> )
+
+	* Set the new lbConfig parameter DB_PASSWORD_ENCRYPTED=true (value case insensitive) .
+		- Note : any value other than 'true' (or no value) for DB_PASSWORD_ENCRYPTED is considered as 'false'.
+
+	* When password encryption is off, use the password directly with out encryption.
