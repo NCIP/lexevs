@@ -14,15 +14,43 @@ INSERT INTO @PREFIX@lexGridTableMetaData (
 CREATE TABLE @PREFIX@registry
 (
 	id INTEGER NOT NULL,
-	lastUsedDBIdentifer VARCHAR(50) NOT NULL,
+	lastUpdateTime TIMESTAMP,
+	lastUsedDbIdentifer VARCHAR(50) NOT NULL,
 	lastUsedHistoryIdentifer VARCHAR(250)
 ) 
 ;
 
-INSERT INTO @PREFIX@registry (
-	id, lastUsedDBIdentifer, 
-	lastUsedHistoryIdentifer)
-	VALUES (0,'000','000')
+INSERT INTO @PREFIX@registry 
+(
+	id, 
+	lastUpdateTime,
+	lastUsedDbIdentifer, 
+	lastUsedHistoryIdentifer
+)
+	VALUES (0, CURTIME(), 'aaa','aaa')
+;
+
+CREATE TABLE @PREFIX@codingschemeentry
+(
+	id VARCHAR(50) NOT NULL,
+	uri VARCHAR(50) NOT NULL,
+	prefix VARCHAR(50),
+	status VARCHAR(50),
+	tag VARCHAR(50),
+	version VARCHAR(50) NOT NULL,
+	deactivateDate TIMESTAMP,
+	lastUpdateDate TIMESTAMP
+) 
+;
+
+CREATE TABLE @PREFIX@historyentry
+(
+	id VARCHAR(50) NOT NULL,
+	uri VARCHAR(50) NOT NULL,
+	prefix VARCHAR(50),
+	version VARCHAR(50) NOT NULL,
+	lastUpdateDate TIMESTAMP
+) 
 ;
 
 

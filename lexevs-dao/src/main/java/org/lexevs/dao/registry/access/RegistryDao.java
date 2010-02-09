@@ -1,21 +1,25 @@
 package org.lexevs.dao.registry.access;
 
 import java.util.Calendar;
+import java.util.Date;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.lexevs.dao.registry.model.CodingSchemeEntry;
 
 public interface RegistryDao {
 
-	public void updateLastUpdateTime(Calendar lastUpdateTime);
+	public CodingSchemeEntry getCodingSchemeEntryForUriAndVersion(String uri, String version);
 	
-	public Calendar getLastUpdateTime();
+	public void updateLastUpdateTime(Date lastUpdateTime);
 	
-	public CodingSchemeEntry getCodingSchemeEntry(AbsoluteCodingSchemeVersionReference entry);
+	public String getLastUsedDbIdentifier();
+	
+	public String getLastUsedHistoryIdentifier();
+	
+	public Date getLastUpdateTime();
 	
 	public void insertCodingSchemeEntry(CodingSchemeEntry entry);
 	
-	public void removeCodingSchemeEntry(AbsoluteCodingSchemeVersionReference entry);
+	public void removeCodingSchemeEntry(String uri, String version);
 	
-	public void updateTag(AbsoluteCodingSchemeVersionReference entry, String newTag);
+	public void updateTag(String uri, String version, String newTag);
 }

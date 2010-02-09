@@ -19,13 +19,17 @@ import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
+@TransactionConfiguration
 public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 	
 	@Resource
 	private IbatisAssociationDao ibatisAssociationDao;
 	
 	@Test
+	@Transactional
 	public void testGetKeyForAssociationInstanceId() throws SQLException{
 
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
@@ -50,6 +54,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
+	@Transactional
 	public void testInsertAssociationQualifier() throws SQLException{
 		AssociationQualification qual = new AssociationQualification();
 		qual.setAssociationQualifier("qualName");
@@ -89,6 +94,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
+	@Transactional
 	public void testInsertRelations() throws SQLException{
 		
 		Relations relations = new Relations();
@@ -115,6 +121,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 	}
 
 	@Test
+	@Transactional
 	public void testInsertAssociationSource() throws SQLException {
 		final Timestamp effectiveDate = new Timestamp(1l);
 		final Timestamp expirationDate = new Timestamp(2l);

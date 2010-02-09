@@ -1,6 +1,7 @@
 package org.lexevs.dao.registry.hibernate;
 
-import java.util.Calendar;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -13,34 +14,20 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 	
 	private static final int REGISTRY_ID = 0;
 
-	public void updateLastUpdateTime(Calendar lastUpdateTime) {
+	public void updateLastUpdateTime(Date lastUpdateTime) {
 		Registry registry = getRegistryEntry();
-		registry.setLastUpdateTime(lastUpdateTime);
+		registry.setLastUpdateTime(new Timestamp(lastUpdateTime.getTime()));
 		this.getHibernateTemplate().update(registry);
 		
 	}
 	
-	public Calendar getLastUpdateTime() {
+	public Date getLastUpdateTime() {
 		Registry registry = getRegistryEntry();
 		return registry.getLastUpdateTime();
 	}
 	
 	protected Registry getRegistryEntry(){
-		Registry registry = (Registry)this.getHibernateTemplate().get(Registry.class, REGISTRY_ID);
-		if(registry == null){
-			Registry newRegistry = buildDefaultRegistry();
-			this.getHibernateTemplate().save(newRegistry);
-			return newRegistry;
-		} else {
-			return registry;
-		}
-	}
-	
-	protected Registry buildDefaultRegistry(){
-		Registry registry = new Registry();
-		registry.setLastUpdateTime(Calendar.getInstance());
-		registry.setId(0);
-		return registry;
+		return (Registry)this.getHibernateTemplate().get(Registry.class, REGISTRY_ID);
 	}
 
 	public void removeCodingSchemeEntry(
@@ -49,31 +36,43 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		
 	}
 
-	public void updateTag(AbsoluteCodingSchemeVersionReference entry,
+	public void updateTag(String uri, String version,
 			String newTag) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	public String getLastUsedDbIdentifier() {
+		return this.getRegistryEntry().getLastUsedDbIdentifer();
+	}
+
+	public String getLastUsedHistoryIdentifier() {
+		return this.getRegistryEntry().getLastUsedHistoryIdentifer();
+	}
+
+	public void removeCodingSchemeEntry(String uri, String version) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public void insertCodingSchemeEntry(CodingSchemeEntry entry) {
-		Registry registry = this.getRegistryEntry();
-		System.out.println(registry.getCodingSchemeEntry().size());
-		registry.getCodingSchemeEntry().add(entry);
-		this.getHibernateTemplate().save(registry);
+		this.getHibernateTemplate().save(entry);
 	}
 	
-	public CodingSchemeEntry getCodingSchemeEntry(AbsoluteCodingSchemeVersionReference codingScheme){
+	public CodingSchemeEntry getCodingSchemeEntryForUriAndVersion(String uri, String version){
 		CodingSchemeEntry entry = new CodingSchemeEntry();
-		entry.setUrn(codingScheme.getCodingSchemeURN());
-		entry.setVersion(codingScheme.getCodingSchemeVersion());
+		entry.setUri(uri);
+		entry.setVersion(version);
 		List<CodingSchemeEntry> entries = this.getHibernateTemplate().findByExample(entry);
 		if(entries == null || entries.size() == 0){
-			throw new RuntimeException("No entry for: " + codingScheme.getCodingSchemeURN()
-					+ " - version " + codingScheme.getCodingSchemeVersion());
+			throw new RuntimeException("No entry for: " + uri
+					+ " - version " + version);
 		} else if(entries.size() > 1){
-			throw new RuntimeException("More than one entry for: " + codingScheme.getCodingSchemeURN()
-					+ " - version " + codingScheme.getCodingSchemeVersion());
+			throw new RuntimeException("More than one entry for: " + uri
+					+ " - version " + version);
 		} 
 		return entries.get(0);
 	}
+
+
 }

@@ -24,14 +24,13 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-@TransactionConfiguration(transactionManager="transactionManager", defaultRollback=false)
-@Transactional
 public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 
 	@Resource
 	private IbatisCodingSchemeDao ibatisCodingSchemeDao;
 	
 	@Test
+	@Transactional
 	public void testInsertCodingScheme() throws SQLException{
 		CodingScheme cs = new CodingScheme();
 		
@@ -121,6 +120,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
+	@Transactional
 	public void testInsertURIMap() throws SQLException{
 		SupportedCodingScheme cs = new SupportedCodingScheme();
 		cs.setContent("supported cs");
@@ -150,6 +150,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
+	@Transactional
 	public void testInsertCodingSchemeSource() throws SQLException{
 		
 		Source source = new Source();
@@ -178,6 +179,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
+	@Transactional
 	public void testInsertCodingSchemeLocalName() throws SQLException{
 		
 		final String localName = "LocalName";
@@ -201,6 +203,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
+	@Transactional
 	public void testGetCodingSchemeEntryState() throws SQLException{
 		
 		CodingScheme cs = new CodingScheme();
@@ -226,6 +229,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
+	@Transactional
 	public void testInsertMappings() throws SQLException{
 		
 		CodingScheme cs = new CodingScheme();
@@ -267,6 +271,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
+	@Transactional
 	public void testGetCodingSchemeLocalName() throws SQLException{
 		
 		CodingScheme cs = new CodingScheme();
@@ -290,6 +295,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
+	@Transactional
 	public void testGetCodingSchemeMultipleLocalNames() throws SQLException{
 		
 		CodingScheme cs = new CodingScheme();
@@ -315,6 +321,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
+	@Transactional
 	public void testGetCodingSchemeSource() throws SQLException{
 		
 		CodingScheme cs = new CodingScheme();
@@ -340,6 +347,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
+	@Transactional
 	public void testGetCodingSchemeByNameAndVersion() throws SQLException{
 		
 		CodingScheme cs = new CodingScheme();

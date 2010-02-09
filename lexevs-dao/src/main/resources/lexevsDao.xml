@@ -163,8 +163,8 @@
      	<property name="systemVariables" ref="systemVariablesFactory"/>
      </bean>
     
-    <bean id="dbPrefix" parent="abstractVariableFactory">
-    	<property name="variableName" value="AutoLoadDBPrefix"/>
+    <bean id="dbPrefix" class="org.lexevs.dao.database.prefix.PrefixFactory">
+    	<property name="prefixResolver" ref="defaultPrefixResolver"/>
     </bean>
     
     <bean id="dbUrl" parent="abstractVariableFactory">
@@ -228,7 +228,6 @@
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
 		<property name="registryCreateScript" ref="lexevsRegistrySchemaCreateScriptFactory"/> 
 		<property name="databaseUtility" ref="defaultDatabaseUtility"/> 
-		<property name="prefixResolver" ref="defaultPrefixResolver"/> 
 	</bean>
 	
 	<bean id="lexevsRegistrySchemaCreateScriptFactory"
@@ -249,6 +248,31 @@
 		<property name="systemVariables" ref="systemVariablesFactory"/> 
 	</bean>
 	
-<!--	<tx:annotation-driven transaction-manager="transactionManager"/>-->
+	<bean id="hibernateRegistryDao" class="org.lexevs.dao.registry.hibernate.HibernateRegistryDao">
+		<property name="sessionFactory" ref="registrySessionFactory"/>
+	</bean>
+	
+	<bean id="registrySessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+		<property name="entityInterceptor" ref="prefixInterceptor"/>
+		<property name="configLocations" value="classpath:hibernate/registry/hibernate.cfg.xml"/>
+		<property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>	
+	</bean>
+	
+	<bean id="prefixInterceptor" class="org.LexGrid.persistence.dao.hibernate.interceptors.PrefixInterceptor">
+		<property name="prefix" ref="dbPrefix"/>
+	</bean>
+
+<!--	<bean id="hibernateTransactionManager"-->
+<!--		class="org.springframework.orm.hibernate3.HibernateTransactionManager">-->
+<!--		<property name="sessionFactory">-->
+<!--			<ref local="registrySessionFactory" />-->
+<!--		</property>-->
+<!--	</bean>-->
+	
+	
+	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager"/>
 	
 </beans>

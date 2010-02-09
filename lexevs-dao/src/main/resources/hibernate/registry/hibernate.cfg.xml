@@ -4,8 +4,9 @@
 
         <hibernate-configuration>
           <session-factory>
-          	 <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
+<!--          	 <property name="hibernate.hbm2ddl.auto">update</property>-->
             <mapping class="org.lexevs.dao.registry.model.Registry"/>
             <mapping class="org.lexevs.dao.registry.model.CodingSchemeEntry"/>
+            <mapping class="org.lexevs.dao.registry.model.HistoryEntry"/>
           </session-factory>
         </hibernate-configuration>

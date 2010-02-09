@@ -1,39 +1,35 @@
 package org.lexevs.dao.registry.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cascade;
+import org.lexevs.dao.database.constants.DatabaseConstants;
 
 @Entity
-@Table(name="registry")
+@Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "registry")
 public class Registry implements Serializable {
 
 	private static final long serialVersionUID = 2383440967007176901L;
 
 	@Id
+	@Column(name="id")
 	private int id = 0;
 	
-	private Calendar lastUpdateTime;
+	@Column(name="lastUpdateTime")
+	private Timestamp lastUpdateTime;
 	
-	@OneToMany
-	@Cascade(value = org.hibernate.annotations.CascadeType.ALL)
-	public Set<CodingSchemeEntry> codingSchemeEntry;
-
-	public Set<CodingSchemeEntry> getCodingSchemeEntry() {
-		return codingSchemeEntry;
-	}
-
-	public void setCodingSchemeEntry(Set<CodingSchemeEntry> codingSchemeEntry) {
-		this.codingSchemeEntry = codingSchemeEntry;
-	}
-
+	@Column(name="lastUsedDbIdentifer")
+	private String lastUsedDbIdentifer;
+	
+	@Column(name="lastUsedHistoryIdentifer")
+	private String lastUsedHistoryIdentifer;
+	
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -42,11 +38,29 @@ public class Registry implements Serializable {
 		return id;
 	}
 
-	public void setLastUpdateTime(Calendar lastUpdateTime) {
+
+	public String getLastUsedDbIdentifer() {
+		return lastUsedDbIdentifer;
+	}
+
+	public void setLastUsedDbIdentifer(String lastUsedDbIdentifer) {
+		this.lastUsedDbIdentifer = lastUsedDbIdentifer;
+	}
+
+	public String getLastUsedHistoryIdentifer() {
+		return lastUsedHistoryIdentifer;
+	}
+
+	public void setLastUsedHistoryIdentifer(String lastUsedHistoryIdentifer) {
+		this.lastUsedHistoryIdentifer = lastUsedHistoryIdentifer;
+	}
+
+	public void setLastUpdateTime(Timestamp lastUpdateTime) {
 		this.lastUpdateTime = lastUpdateTime;
 	}
 
-	public Calendar getLastUpdateTime() {
+	public Timestamp getLastUpdateTime() {
 		return lastUpdateTime;
 	}
+	
 }

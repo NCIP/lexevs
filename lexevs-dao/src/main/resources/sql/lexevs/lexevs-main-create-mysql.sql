@@ -2,7 +2,7 @@ SET FOREIGN_KEY_CHECKS=0;
 
 
 
-CREATE TABLE associationEntity
+CREATE TABLE @PREFIX@associationEntity
 (
 	associationEntityGuid VARCHAR(36) NOT NULL,
 	entityGuid VARCHAR(36) NOT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE associationEntity
 ;
 
 
-CREATE TABLE associationPredicate
+CREATE TABLE @PREFIX@associationPredicate
 (
 	associationPredicateGuid VARCHAR(36) NOT NULL,
 	relationGuid VARCHAR(36) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE associationPredicate
 ;
 
 
-CREATE TABLE codingScheme
+CREATE TABLE @PREFIX@codingScheme
 (
 	codingSchemeGuid VARCHAR(36) NOT NULL,
 	codingSchemeName VARCHAR(50) NOT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE codingScheme
 ;
 
 
-CREATE TABLE csMultiAttrib
+CREATE TABLE @PREFIX@csMultiAttrib
 (
 	csMultiAttribGuid VARCHAR(36) NOT NULL,
 	codingSchemeGuid VARCHAR(36) NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE csMultiAttrib
 ;
 
 
-CREATE TABLE entity
+CREATE TABLE @PREFIX@entity
 (
 	entityGuid VARCHAR(36) NOT NULL,
 	codingSchemeGuid VARCHAR(36) NOT NULL,
@@ -85,7 +85,7 @@ CREATE TABLE entity
 ;
 
 
-CREATE TABLE entityAssnQuals
+CREATE TABLE @PREFIX@entityAssnQuals
 (
 	entityAssnQualsGuid VARCHAR(36) NOT NULL,
 	referenceGuid VARCHAR(36) NOT NULL,
@@ -97,7 +97,7 @@ CREATE TABLE entityAssnQuals
 ;
 
 
-CREATE TABLE entityAssnsToData
+CREATE TABLE @PREFIX@entityAssnsToData
 (
 	entityAssnsDataGuid VARCHAR(36) NOT NULL,
 	associationPredicateGuid VARCHAR(36) NOT NULL,
@@ -118,7 +118,7 @@ CREATE TABLE entityAssnsToData
 ;
 
 
-CREATE TABLE entityAssnsToEntity
+CREATE TABLE @PREFIX@entityAssnsToEntity
 (
 	entityAssnsGuid VARCHAR(36) NOT NULL,
 	associationPredicateGuid VARCHAR(36) NOT NULL,
@@ -140,7 +140,7 @@ CREATE TABLE entityAssnsToEntity
 ;
 
 
-CREATE TABLE entityAssnsToEntityTr
+CREATE TABLE @PREFIX@entityAssnsToEntityTr
 (
 	entityAssnsTrGuid VARCHAR(36) NOT NULL,
 	associationPredicateGuid VARCHAR(36) NOT NULL,
@@ -153,7 +153,7 @@ CREATE TABLE entityAssnsToEntityTr
 ;
 
 
-CREATE TABLE entityType
+CREATE TABLE @PREFIX@entityType
 (
 	entityGuid VARCHAR(36) NOT NULL,
 	entityType VARCHAR(50) NOT NULL
@@ -161,7 +161,7 @@ CREATE TABLE entityType
 ;
 
 
-CREATE TABLE entryState
+CREATE TABLE @PREFIX@entryState
 (
 	entryStateGuid VARCHAR(36) NOT NULL,
 	entryGuid VARCHAR(36) NOT NULL,
@@ -176,15 +176,7 @@ CREATE TABLE entryState
 ;
 
 
-CREATE TABLE lexGridTableMetaData
-(
-	version VARCHAR(50) NOT NULL,
-	description VARCHAR(255)
-) 
-;
-
-
-CREATE TABLE mapping
+CREATE TABLE @PREFIX@mapping
 (
 	mappingGuid VARCHAR(36) NOT NULL,
 	codingSchemeGuid VARCHAR(36) NOT NULL,
@@ -203,7 +195,7 @@ CREATE TABLE mapping
 ;
 
 
-CREATE TABLE property
+CREATE TABLE @PREFIX@property
 (
 	propertyGuid VARCHAR(36) NOT NULL,
 	referenceGuid VARCHAR(36) NOT NULL,
@@ -229,7 +221,7 @@ CREATE TABLE property
 ;
 
 
-CREATE TABLE propertyLinks
+CREATE TABLE @PREFIX@propertyLinks
 (
 	propertyLinksGuid VARCHAR(36) NOT NULL,
 	sourcePropertyGuid VARCHAR(36) NOT NULL,
@@ -240,7 +232,7 @@ CREATE TABLE propertyLinks
 ;
 
 
-CREATE TABLE propertyMultiAttrib
+CREATE TABLE @PREFIX@propertyMultiAttrib
 (
 	propMultiAttribGuid VARCHAR(36) NOT NULL,
 	propertyGuid VARCHAR(36) NOT NULL,
@@ -255,7 +247,7 @@ CREATE TABLE propertyMultiAttrib
 ;
 
 
-CREATE TABLE relation
+CREATE TABLE @PREFIX@relation
 (
 	relationGuid VARCHAR(36) NOT NULL,
 	codingSchemeGuid VARCHAR(36) NOT NULL,
@@ -277,7 +269,7 @@ CREATE TABLE relation
 ;
 
 
-CREATE TABLE revision
+CREATE TABLE @PREFIX@revision
 (
 	revisionGuid VARCHAR(36) NOT NULL,
 	releaseGuid VARCHAR(36),
@@ -293,7 +285,7 @@ CREATE TABLE revision
 ;
 
 
-CREATE TABLE systemRelease
+CREATE TABLE @PREFIX@systemRelease
 (
 	releaseGuid VARCHAR(36) NOT NULL,
 	releaseURI VARCHAR(250) NOT NULL,
@@ -306,11 +298,5 @@ CREATE TABLE systemRelease
 ) 
 ;
 
-CREATE TABLE revisionTableMetaData
-(
-	version VARCHAR(50) NOT NULL,
-	description VARCHAR(255)
-) 
-;
 
 SET FOREIGN_KEY_CHECKS=1;

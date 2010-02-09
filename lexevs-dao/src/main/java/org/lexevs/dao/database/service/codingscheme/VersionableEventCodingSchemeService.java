@@ -13,7 +13,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 
 	private EntityService entityService;
 	
-
+	@Transactional
 	public CodingScheme getCodingSchemeById(String codingSchemeId) {
 		return getDaoManager().getCodingSchemeDao().getCodingSchemeById(codingSchemeId);
 	}
@@ -33,6 +33,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		}
 	}
 	
+	@Transactional
 	public void insertURIMap(
 			String codingSchemeName, 
 			String codingSchemeVersion,
@@ -40,12 +41,14 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		getDaoManager().getCodingSchemeDao().getCodingSchemeId(codingSchemeName, codingSchemeVersion);
 	}
 	
+	@Transactional
 	public void insertURIMap(
 			String codingSchemeId, 
 			URIMap uriMap){
 		getDaoManager().getCodingSchemeDao().insertURIMap(codingSchemeId, uriMap);
 	}
 
+	@Transactional
 	public void updateCodingScheme(
 			String codingSchemeName,
 			String codingSchemeVersion,
@@ -54,6 +57,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		
 	}
 
+	@Transactional
 	public void updateCodingSchemeEntryState(CodingScheme codingScheme,
 			EntryState entryState) {
 		// TODO Auto-generated method stub

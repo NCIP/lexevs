@@ -20,6 +20,7 @@ package org.lexevs.dao.database.hibernate.prefix;
 
 import org.apache.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
+import org.lexevs.dao.database.constants.DatabaseConstants;
 
 /**
  * Hibernate Interceptor used to modify the SQL query sent to the database.
@@ -30,7 +31,9 @@ import org.hibernate.EmptyInterceptor;
  */
 public class PrefixInterceptor extends EmptyInterceptor {  
 
-	public static String PREFIX_PLACEHOLDER = "@PREFIX@";
+	private static final long serialVersionUID = 1940273682945001115L;
+
+	public static String PREFIX_PLACEHOLDER = DatabaseConstants.PREFIX_PLACEHOLDER;
 	
 	/** The log. */
 	private static Logger log = Logger.getLogger(PrefixInterceptor.class.getName());

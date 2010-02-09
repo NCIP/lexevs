@@ -1,83 +1,51 @@
 package org.lexevs.dao.registry.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.lexevs.dao.database.constants.DatabaseConstants;
+
 @Entity
-@Table(name="codingschemeentry")
-public class CodingSchemeEntry {
+@Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "codingschemeentry")
+public class CodingSchemeEntry extends AbstractRegistryEntry {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public Long id;
+	@Column(name="id")
+	@GeneratedValue(generator="system-uuid")
+ 	@GenericGenerator(name="system-uuid", strategy = "uuid")
+	public String id;
 	
-	private String urn;
+	@Column(name="status")
+	private String status;
 	
-	private String version;
+	@Column(name="tag")
+	private String tag;
 
+	public String getStatus() {
+		return status;
+	}
 
-	public Long getId() {
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+	
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getUrn() {
-		return urn;
-	}
-
-	public void setUrn(String urn) {
-		this.urn = urn;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((urn == null) ? 0 : urn.hashCode());
-		result = prime * result + ((version == null) ? 0 : version.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		CodingSchemeEntry other = (CodingSchemeEntry) obj;
-		if (urn == null) {
-			if (other.urn != null) {
-				return false;
-			}
-		} else if (!urn.equals(other.urn)) {
-			return false;
-		}
-		if (version == null) {
-			if (other.version != null) {
-				return false;
-			}
-		} else if (!version.equals(other.version)) {
-			return false;
-		}
-		return true;
 	}
 }

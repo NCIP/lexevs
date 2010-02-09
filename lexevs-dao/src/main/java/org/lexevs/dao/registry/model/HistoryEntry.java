@@ -1,34 +1,29 @@
 package org.lexevs.dao.registry.model;
 
-import java.util.UUID;
-
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Entity;
+import org.lexevs.dao.database.constants.DatabaseConstants;
+
 
 @Entity
-@Table(name="@PREFIX@historyentry")
-public class HistoryEntry {
+@Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "historyentry")
+public class HistoryEntry extends AbstractRegistryEntry {
 
-	public UUID id;
+	@Id
+	@Column(name="id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	public Long id;
 	
-	private String urn;
-
-	public UUID getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
-
-	public String getUrn() {
-		return urn;
-	}
-
-	public void setUrn(String urn) {
-		this.urn = urn;
-	}
-	
-	
 }
