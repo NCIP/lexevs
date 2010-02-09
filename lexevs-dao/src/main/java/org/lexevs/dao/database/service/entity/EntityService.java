@@ -1,5 +1,7 @@
 package org.lexevs.dao.database.service.entity;
 
+import java.util.List;
+
 import org.LexGrid.concepts.Entity;
 
 public interface EntityService {
@@ -15,7 +17,7 @@ public interface EntityService {
 	
 	public void insertEntity(
 			String codingSchemeId, 
-			Entity[] entities);
+			List<? extends Entity> entities);
 	
 	public void updateEntity(
 			String codingSchemeName, 

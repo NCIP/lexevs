@@ -4,7 +4,7 @@
 <sqlMap>
 
      <insert id="insertURIMap" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertURIMapBean">
-		INSERT INTO Mapping (
+		INSERT INTO $prefix$mapping (
 			mappingGuid,
 			codingSchemeGuid,
 			supportedAttributeTag,

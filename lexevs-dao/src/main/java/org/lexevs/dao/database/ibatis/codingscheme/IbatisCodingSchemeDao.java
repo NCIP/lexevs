@@ -33,6 +33,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	private static String SUPPORTED_ATTRIB_GETTER_PREFIX = "_supported";
 	private static String INSERT_CODING_SCHEME_SQL = "insertCodingScheme";
 	private static String GET_CODING_SCHEME_BY_NAME_AND_VERSION_SQL = "getCodingSchemeByNameAndVersion";
+	private static String GET_CODING_SCHEME_BY_ID_SQL = "getCodingSchemeById";
 	private static String GET_CODING_SCHEME_ID_BY_NAME_AND_VERSION_SQL = "getCodingSchemeIdByNameAndVersion";
 	private static String GET_CODING_SCHEME_SOURCE_LIST_SQL = "getSourceListByCodingSchemeId";
 	private static String GET_CODING_SCHEME_LOCALNAME_LIST_SQL = "getLocalNameListByCodingSchemeId";
@@ -43,6 +44,13 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	
 	private VersionsDao versionsDao;
 	private EntityDao entityDao;
+	
+	public CodingScheme getCodingSchemeById(String codingSchemeId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		return
+			(CodingScheme) this.getSqlMapClientTemplate().queryForObject(
+				GET_CODING_SCHEME_BY_ID_SQL, new PrefixedParameter(prefix, codingSchemeId));
+	}
 
 	@SuppressWarnings("unchecked")
 	public CodingScheme getCodingSchemeByNameAndVersion(String codingSchemeName, String representsVersion){
@@ -289,6 +297,8 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	public EntityDao getEntityDao() {
 		return entityDao;
 	}
+
+
 
 
 

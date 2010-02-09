@@ -24,7 +24,7 @@ public class DaoFactory<T extends LexGridSchemaVersionAwareDao> implements Facto
 
 	@SuppressWarnings("unchecked")
 	public Class getObjectType() {
-		return daoToReturn.getClass();
+		return LexGridSchemaVersionAwareDao.class;
 	}
 
 	public boolean isSingleton() {

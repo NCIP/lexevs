@@ -17,6 +17,45 @@
 		<result property="isActive" column="isActive" />
 		<result property="entryState" resultMap="entryStateResult" />
 	</resultMap>
+	
+	<select id="getCodingSchemeById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="codingSchemeResult">
+		SELECT
+			codingSchemeGuid,
+			codingSchemeName,
+			codingSchemeUri,
+			representsVersion,
+			formalName,
+			defaultLanguage,
+			approxNumConcepts,
+			description,
+			copyright,
+			isActive,
+			owner,
+			status,
+			effectiveDate,
+			expirationDate,
+			es.changeType,
+			es.relativeOrder,
+			es.revisionGuid,
+			es.prevRevisionGuid,
+			rev.revisionGuid
+		FROM
+			$prefix$codingScheme cs
+			
+		LEFT JOIN
+			$prefix$entryState es
+		ON
+			cs.entryStateGuid = es.entryStateGuid
+			
+		LEFT JOIN
+			$prefix$revision as rev
+		ON
+			es.revisionGuid = rev.revisionGuid
+
+		WHERE
+			cs.codingSchemeGuid = #param1#
+
+     </select>
 
 	<select id="getCodingSchemeByNameAndVersion" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="codingSchemeResult">
 		SELECT
@@ -51,7 +90,7 @@
 			$prefix$revision as rev
 		ON
 			es.revisionGuid = rev.revisionGuid
-			
+
 		WHERE
 			cs.codingSchemeName = #param1#
 		AND

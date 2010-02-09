@@ -1,13 +1,9 @@
 package org.lexevs.dao.database.service.entity;
 
-import org.LexGrid.codingSchemes.CodingScheme;
+import java.util.List;
+
 import org.LexGrid.concepts.Entity;
-import org.LexGrid.naming.URIMap;
-import org.LexGrid.versions.EntryState;
-import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
-import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.springframework.transaction.annotation.Transactional;
 
 public class VersionableEventEntityService extends AbstractDatabaseService implements EntityService {
 
@@ -24,7 +20,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		String entityId = this.getDaoManager().getEntityDao().insertEntity(codingSchemeId, entity);
 	}
 
-	public void insertEntity(String codingSchemeId, Entity[] entities) {
+	public void insertEntity(String codingSchemeId, List<? extends Entity> entities) {
 		// TODO Auto-generated method stub
 		
 	}

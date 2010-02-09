@@ -35,7 +35,7 @@ public class ScriptFactory implements InitializingBean, FactoryBean{
 	 * 
 	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
 	 */
-	protected enum ScriptType {
+	public enum ScriptType {
 		create, /** The create. */
 		drop    /** The drop. */
 		};

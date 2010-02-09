@@ -9,6 +9,8 @@ import org.LexGrid.naming.URIMap;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
 public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
+	
+	public CodingScheme getCodingSchemeById(String codingSchemeId);
 
 	public String insertCodingScheme(CodingScheme cs);
 	
@@ -39,6 +41,5 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	public void insertURIMap(String codingSchemeId, List<URIMap> supportedProperty);
 
 	public void insertURIMap(String codingSchemeId, URIMap supportedProperty);
-	
-	
+
 }

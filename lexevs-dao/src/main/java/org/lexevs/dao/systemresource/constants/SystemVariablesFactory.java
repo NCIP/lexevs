@@ -11,11 +11,14 @@ public class SystemVariablesFactory implements InitializingBean, FactoryBean {
 	private SystemVariables systemVariables;
 	
 	public void afterPropertiesSet() throws Exception {
-		ClassPathResource configFile = new ClassPathResource("lbconfig.props");
+		ClassPathResource configFile = new ClassPathResource(SystemVariables.CONFIG_FILE_NAME);
 		if(configFile.exists()){
 			System.setProperty("LG_CONFIG_FILE", configFile.getFile().getAbsolutePath());
+			systemVariables = ResourceManager.instance().getSystemVariables();
+		} else {
+			systemVariables = ResourceManager.instance().getSystemVariables();
+			System.setProperty("LG_CONFIG_FILE", systemVariables.getConfigFileLocation());
 		}
-		systemVariables = ResourceManager.instance().getSystemVariables();
 	}
 
 	public Object getObject() throws Exception {

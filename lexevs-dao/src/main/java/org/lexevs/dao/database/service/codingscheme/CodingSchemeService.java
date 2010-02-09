@@ -19,8 +19,13 @@ public interface CodingSchemeService {
 			String codingSchemeVersion,
 			URIMap uriMap);
 	
+	public void insertURIMap(
+			String codingSchemeId, 
+			URIMap uriMap);
+	
 	public void updateCodingSchemeEntryState( 
 			CodingScheme codingScheme,
 			EntryState entryState);
 
+	public CodingScheme getCodingSchemeById(String codingSchemeId);
 }

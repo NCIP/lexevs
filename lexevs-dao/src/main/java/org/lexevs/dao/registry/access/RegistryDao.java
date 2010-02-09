@@ -1,4 +1,4 @@
-package org.lexevs.dao.registry.repository;
+package org.lexevs.dao.registry.access;
 
 import java.util.Calendar;
 

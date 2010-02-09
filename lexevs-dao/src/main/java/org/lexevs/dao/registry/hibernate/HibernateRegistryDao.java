@@ -4,11 +4,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.lexevs.dao.registry.access.RegistryDao;
 import org.lexevs.dao.registry.model.CodingSchemeEntry;
 import org.lexevs.dao.registry.model.Registry;
-import org.lexevs.dao.registry.repository.RegistryDao;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springframework.transaction.annotation.Transactional;
 
 public class HibernateRegistryDao extends HibernateDaoSupport implements RegistryDao {
 	

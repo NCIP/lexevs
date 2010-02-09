@@ -31,7 +31,7 @@
 <!--	-->
 	 <bean id="validationQueryFactory"
 		class="org.lexevs.dao.database.utility.DatabaseValidationQueryFactory">
-			<property name="dbUrl" value="${jdbcUrl}"/>
+			<property name="dbUrl" ref="dbUrl"/>
 	</bean>
 
 <!--	<bean id="historyTableReplicatingListener" class="org.lexevs.dao.database.service.listener.HistoryTableReplicatingListener">-->
@@ -131,7 +131,7 @@
 	</bean>
 
   	<bean id="jdbcDriverClass" class="org.lexevs.dao.database.utility.JdbcDriverBootstrap">
-		<property name="driverClass" value="${driver}" />
+		<property name="driverClass" value="${DB_DRIVER}" />
 	</bean>
 
 	<bean id="lexEvsJdbcTemplate"
@@ -148,13 +148,39 @@
 
 	<bean id="unPooledDataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource" >
 		<!-- <property name="driverClass" ref="jdbcDriverClass" /> -->
-		<property name="url" value="${jdbcUrl}" />
-		<property name="username" value="${user}"/>
-		<property name="password" value="${password}"/>
+		<property name="url" value="dbUrl" />
+		<property name="username" ref="dbUser"/>
+		<property name="password" ref="dbPassword"/>
 	</bean>
 	
 	 <bean id="dsConnectionFactory" class="org.apache.commons.dbcp.DataSourceConnectionFactory">
         <constructor-arg><ref bean="unPooledDataSource"/></constructor-arg>
+    </bean>
+    
+     <bean id="abstractVariableFactory" 
+     	class="org.lexevs.dao.systemresource.constants.IndividualVariableFactory"
+     	abstract="true">
+     	<property name="systemVariables" ref="systemVariablesFactory"/>
+     </bean>
+    
+    <bean id="dbPrefix" parent="abstractVariableFactory">
+    	<property name="variableName" value="AutoLoadDBPrefix"/>
+    </bean>
+    
+    <bean id="dbUrl" parent="abstractVariableFactory">
+    	<property name="variableName" value="AutoLoadDBURL"/>
+    </bean>
+    
+    <bean id="dbPassword" parent="abstractVariableFactory">
+    	<property name="variableName" value="AutoLoadDBPassword"/>
+    </bean>
+    
+    <bean id="dbUser" parent="abstractVariableFactory">
+    	<property name="variableName" value="AutoLoadDBUsername"/>
+    </bean>
+    
+    <bean id="dbDriver" parent="abstractVariableFactory">
+    	<property name="variableName" value="AutoLoadDBDriver"/>
     </bean>
 	
 	 <bean id="pool" class="org.apache.commons.pool.impl.GenericObjectPool">

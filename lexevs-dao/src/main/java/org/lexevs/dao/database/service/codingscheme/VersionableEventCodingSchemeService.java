@@ -1,5 +1,7 @@
 package org.lexevs.dao.database.service.codingscheme;
 
+import java.util.Arrays;
+
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.versions.EntryState;
@@ -10,6 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class VersionableEventCodingSchemeService extends AbstractDatabaseService implements CodingSchemeService {
 
 	private EntityService entityService;
+	
+
+	public CodingScheme getCodingSchemeById(String codingSchemeId) {
+		return getDaoManager().getCodingSchemeDao().getCodingSchemeById(codingSchemeId);
+	}
 	
 	@Transactional
 	public void insertCodingScheme(CodingScheme scheme) {
@@ -22,7 +29,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		
 		if(scheme.getEntities() != null){
 		entityService.
-			insertEntity(codingSchemeId, scheme.getEntities().getEntity());
+			insertEntity(codingSchemeId, Arrays.asList(scheme.getEntities().getEntity()));
 		}
 	}
 	
@@ -60,5 +67,6 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	public EntityService getEntityService() {
 		return entityService;
 	}
+
 
 }
