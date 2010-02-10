@@ -41,6 +41,10 @@ public class PrefixInterceptor extends EmptyInterceptor {
 	/** The prefix. */
 	private String prefix;
 	
+	public PrefixInterceptor(){
+		super();
+	}
+	
 	public PrefixInterceptor(String prefix){
 		this.prefix = prefix;
 	}
