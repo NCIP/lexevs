@@ -103,6 +103,7 @@ MAX_RESULT_SIZE=10000
 # NOTE: Multi Database mode has be DEPRECATED. New content may not
 # be loaded in Multi Database Mode. Existing content loaded in
 # Multi Database Mode may still be accessed.
+SINGLE_TABLE_MODE=true
 
 # This variable _should_ contain the database name.
 #
@@ -165,7 +166,7 @@ DB_PASSWORD=lexgrid
 #Password encryption can be enabled by setting 'DB_PASSWORD_ENCRYPTED' to true (case insensitive). 
 #Note that, any value other than 'true' is considered false.
 
-#DB_PASSWORD_ENCRYPTED=
+DB_PASSWORD_ENCRYPTED=fakse
 
 ############# History Database Schema
 
@@ -233,8 +234,6 @@ SMTP_SERVER=yourserver.edu
 # This can be a single address or comma-separated list.
 # NOTE: Only applicable if EMAIL_ERRORS is set to 'true'.
 EMAIL_TO=yourAddress@.edu
-
-DB_PASSWORD_ENCRYPTED=false
 
 ##############################################################################
 # All of the following variables are for non-API compliant and unsupported
