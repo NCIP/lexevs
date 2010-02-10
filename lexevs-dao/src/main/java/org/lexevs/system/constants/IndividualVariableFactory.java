@@ -1,6 +1,5 @@
-package org.lexevs.dao.systemresource.constants;
+package org.lexevs.system.constants;
 
-import org.LexGrid.LexBIG.Impl.dataAccess.SystemVariables;
 import org.springframework.beans.factory.FactoryBean;
 
 public class IndividualVariableFactory implements FactoryBean {

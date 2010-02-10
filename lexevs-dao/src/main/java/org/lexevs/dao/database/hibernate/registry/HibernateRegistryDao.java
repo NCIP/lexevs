@@ -1,13 +1,13 @@
-package org.lexevs.dao.registry.hibernate;
+package org.lexevs.dao.database.hibernate.registry;
 
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.lexevs.dao.registry.access.RegistryDao;
-import org.lexevs.dao.registry.model.CodingSchemeEntry;
-import org.lexevs.dao.registry.model.Registry;
+import org.lexevs.dao.database.access.registry.RegistryDao;
+import org.lexevs.registry.model.CodingSchemeEntry;
+import org.lexevs.registry.model.Registry;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 public class HibernateRegistryDao extends HibernateDaoSupport implements RegistryDao {

@@ -1,6 +1,5 @@
 package org.lexevs.dao.database.utility;
 
-import org.LexGrid.LexBIG.Impl.helpers.MyClassLoader;
 import org.springframework.beans.factory.FactoryBean;
 
 public class JdbcDriverBootstrap implements FactoryBean{
@@ -16,7 +15,8 @@ public class JdbcDriverBootstrap implements FactoryBean{
 	}
 
 	public Object getObject() throws Exception {
-		return Class.forName(driverClass, true, MyClassLoader.instance());
+		return null;
+		//return Class.forName(driverClass, true, MyClassLoader.instance());
 	}
 
 	public Class getObjectType() {

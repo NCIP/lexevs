@@ -18,9 +18,9 @@
  */
 package org.lexevs.dao.database.operation;
 
-import org.LexGrid.LexBIG.Impl.helpers.SQLConnectionInfo;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
+import org.lexevs.dao.database.connection.SQLConnectionInfo;
 
 /**
  * The Interface PersistenceConnectionManager.

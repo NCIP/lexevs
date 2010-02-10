@@ -1,9 +1,8 @@
-package org.lexevs.dao.registry.access;
+package org.lexevs.dao.database.access.registry;
 
-import java.util.Calendar;
 import java.util.Date;
 
-import org.lexevs.dao.registry.model.CodingSchemeEntry;
+import org.lexevs.registry.model.CodingSchemeEntry;
 
 public interface RegistryDao {
 

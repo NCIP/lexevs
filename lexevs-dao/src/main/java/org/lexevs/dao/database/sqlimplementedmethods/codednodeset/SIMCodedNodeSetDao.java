@@ -3,7 +3,6 @@ package org.lexevs.dao.database.sqlimplementedmethods.codednodeset;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
@@ -20,7 +19,8 @@ public class SIMCodedNodeSetDao extends AbstractBaseDao implements CodedNodeSetD
 			String code, String namespace, LocalNameList restrictToProperties,
 			PropertyType[] restrictToPropertyTypes) {
 		try {
-			return SQLImplementedMethods.buildCodedEntry(codingSchemeName, version, code, namespace, restrictToProperties, restrictToPropertyTypes);
+			return null;
+			//return SQLImplementedMethods.buildCodedEntry(codingSchemeName, version, code, namespace, restrictToProperties, restrictToPropertyTypes);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -29,7 +29,8 @@ public class SIMCodedNodeSetDao extends AbstractBaseDao implements CodedNodeSetD
 	public CodingScheme getCodingScheme(String codingSchemeName,
 			String versionString) {
 		try {
-			return SQLImplementedMethods.buildCodingScheme(codingSchemeName, versionString);
+			return null;
+			//return SQLImplementedMethods.buildCodingScheme(codingSchemeName, versionString);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} 
@@ -38,7 +39,8 @@ public class SIMCodedNodeSetDao extends AbstractBaseDao implements CodedNodeSetD
 	public String getCodingSchemeCopyright(String codingSchemeName,
 			String tagOrVersion) {
 		try {
-			return SQLImplementedMethods.getCodingSchemeCopyright(codingSchemeName, tagOrVersion);
+			return null;
+			//return SQLImplementedMethods.getCodingSchemeCopyright(codingSchemeName, tagOrVersion);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -47,5 +49,16 @@ public class SIMCodedNodeSetDao extends AbstractBaseDao implements CodedNodeSetD
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
 		return DaoUtility.createList(supportedDatebaseVersion, LexGridSchemaVersion.class);
+	}
+
+	public Entity buildCodedEntry(
+			String codingSchemeName,
+			String version,
+			String code,
+			String namespace,
+			LocalNameList restrictToProperties,
+			org.lexevs.dao.database.access.property.PropertyDao.PropertyType[] restrictToPropertyTypes) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

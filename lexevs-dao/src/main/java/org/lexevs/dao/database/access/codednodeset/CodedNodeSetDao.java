@@ -1,10 +1,10 @@
 package org.lexevs.dao.database.access.codednodeset;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
+import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 
 public interface CodedNodeSetDao extends LexGridSchemaVersionAwareDao {
 	

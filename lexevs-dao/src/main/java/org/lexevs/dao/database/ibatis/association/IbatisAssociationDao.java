@@ -2,7 +2,7 @@ package org.lexevs.dao.database.ibatis.association;
 
 import java.util.List;
 
-import org.LexGrid.relations.Association;
+import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
@@ -62,8 +62,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		return relationsId;
 	}
 
-	public String insertAssociation(String codingScheme, String version,
-			Association association) {
+	public String insertAssociationPredicate(String codingScheme, String version,
+			AssociationPredicate associationPredicate) {
 		// TODO Auto-generated method stub
 		return null;
 	}

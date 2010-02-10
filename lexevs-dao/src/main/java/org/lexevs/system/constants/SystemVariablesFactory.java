@@ -1,7 +1,6 @@
-package org.lexevs.dao.systemresource.constants;
+package org.lexevs.system.constants;
 
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.LexGrid.LexBIG.Impl.dataAccess.SystemVariables;
+import org.lexevs.system.ResourceManager;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.ClassPathResource;

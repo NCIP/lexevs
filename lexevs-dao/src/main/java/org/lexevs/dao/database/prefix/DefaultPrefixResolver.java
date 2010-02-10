@@ -1,6 +1,6 @@
 package org.lexevs.dao.database.prefix;
 
-import org.LexGrid.LexBIG.Impl.dataAccess.SystemVariables;
+import org.lexevs.system.constants.SystemVariables;
 
 public class DefaultPrefixResolver implements PrefixResolver {
 

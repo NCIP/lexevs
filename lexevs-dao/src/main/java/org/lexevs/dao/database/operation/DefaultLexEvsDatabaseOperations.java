@@ -22,13 +22,12 @@ import java.sql.Connection;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.LexGrid.LexBIG.Impl.dataAccess.SystemVariables;
-import org.LexGrid.LexBIG.Impl.helpers.SQLConnectionInfo;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
+import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.utility.DatabaseUtility;
+import org.lexevs.system.ResourceManager;
 import org.springframework.core.io.Resource;
 
 // TODO: Auto-generated Javadoc

@@ -1,6 +1,6 @@
 package org.lexevs.dao.database.access.association;
 
-import org.LexGrid.relations.Association;
+import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.Relations;
@@ -11,7 +11,7 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	public String insertRelations(String codingSchemeId,
 			Relations relations);
 
-	public String insertAssociation(String codingScheme, String version, Association association);
+	public String insertAssociationPredicate(String codingScheme, String version, AssociationPredicate associationPredicate);
 	
 	public void insertAssociationQualifier(
 			String codingSchemeId, 

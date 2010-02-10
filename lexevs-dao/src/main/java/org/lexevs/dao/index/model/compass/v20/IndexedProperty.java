@@ -3,7 +3,6 @@ package org.lexevs.dao.index.model.compass.v20;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.compass.annotations.Reverse;
 import org.compass.annotations.Searchable;
 import org.compass.annotations.SearchableId;
@@ -13,7 +12,7 @@ import org.compass.annotations.SearchableProperty;
 import org.lexevs.dao.index.model.IndexableResource;
 
 @Searchable
-public class IndexedProperty implements IndexableResource<CodeToReturn>{
+public class IndexedProperty implements IndexableResource<Object>{
 	
 	public static String ALIAS = "IndexedProperty";
 	
@@ -61,13 +60,17 @@ public class IndexedProperty implements IndexableResource<CodeToReturn>{
 	
 	private float score;
 	
-	public CodeToReturn getResultValue() {
+
+	public Object getResultValue() {
+		return null;
+		/*
 		CodeToReturn codeToReturn = new CodeToReturn();
 		codeToReturn.setCode(this.getEntityCode());
 		codeToReturn.setEntityDescription(this.getEntityDescription());
 		codeToReturn.setNamespace(this.getEntityCodeNamespace());
 		
 		return codeToReturn;
+		*/
 	}
 
 	public String getId() {
