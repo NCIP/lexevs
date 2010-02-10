@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 
 import javax.annotation.Resource;
 
-import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
@@ -99,7 +99,10 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		
 		Relations relations = new Relations();
 		relations.setContainerName("container name");
-		relations.setEntityDescription(Constructors.createEntityDescription("a description"));
+		
+		EntityDescription ed = new EntityDescription();
+		ed.setContent("a description");
+		relations.setEntityDescription(ed);
 	
 		
 		ibatisAssociationDao.insertRelations("cs-guid", relations);
@@ -147,9 +150,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		
 		source.addTarget(target);
 		
-		Source owner = new Source();
-		owner.setContent("source owner");
-		target.setOwner(owner);
+		target.setOwner("source owner");
 		
 		target.setStatus("testing");
 		

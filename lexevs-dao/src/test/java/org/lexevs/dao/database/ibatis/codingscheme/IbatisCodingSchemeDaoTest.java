@@ -54,9 +54,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		
 		cs.setIsActive(false);
 		
-		Source owner = new Source();
-		owner.setContent("cs owner");
-		cs.setOwner(owner);
+		cs.setOwner("cs owner");
 		
 		cs.setStatus("testing");
 		

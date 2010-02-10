@@ -1,4 +1,4 @@
-package org.lexevs.dao.registry.hibernate;
+package org.lexevs.dao.database.hibernate.registry;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,10 +6,9 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
-import org.junit.Ignore;
 import org.junit.Test;
-import org.lexevs.dao.registry.model.CodingSchemeEntry;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
+import org.lexevs.registry.model.CodingSchemeEntry;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.transaction.TransactionConfiguration;

@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
@@ -51,9 +51,7 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		property.setDegreeOfFidelity("DOF");
 		property.setRepresentationalForm("repForm");
 		
-		Source owner = new Source();
-		owner.setContent("property owner");
-		property.setOwner(owner);
+		property.setOwner("property owner");
 		
 		property.setStatus("testing");
 		Text text = new Text();
@@ -132,9 +130,7 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		property.setLanguage("lang");
 		property.setIsActive(true);
 		
-		Source owner = new Source();
-		owner.setContent("property owner");
-		property.setOwner(owner);
+		property.setOwner("property owner");
 		
 		property.setStatus("testing");
 		Text text = new Text();
@@ -290,7 +286,10 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		entity.setIsDefined(true);
 		entity.setIsAnonymous(true);
 		entity.setIsActive(false);
-		entity.setEntityDescription(Constructors.createEntityDescription("a description"));
+		
+		EntityDescription ed = new EntityDescription();
+		ed.setContent("a description");
+		entity.setEntityDescription(ed);
 		entity.addEntityType("type");
 		
 		String entityId = ibatisEntityDao.insertEntity("cs-id", entity);

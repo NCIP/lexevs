@@ -4,8 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
@@ -35,12 +34,14 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		entity.setIsDefined(true);
 		entity.setIsAnonymous(true);
 		entity.setIsActive(false);
-		entity.setEntityDescription(Constructors.createEntityDescription("a description"));
+		
+		EntityDescription ed = new EntityDescription();
+		ed.setContent("a description");
+		entity.setEntityDescription(ed);
 		entity.addEntityType("type");
 		
-		Source owner = new Source();
-		owner.setContent("entity owner");
-		entity.setOwner(owner);
+
+		entity.setOwner("entity owner");
 		
 		entity.setStatus("testing");
 		
