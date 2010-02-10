@@ -6,9 +6,10 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.junit.Test;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
-import org.lexevs.registry.model.CodingSchemeEntry;
+import org.lexevs.registry.model.RegistryEntry;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -44,9 +45,9 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 	@Test
 	@Transactional
 	public void testInsertCodingSchemeEntry(){
-		CodingSchemeEntry entry = new CodingSchemeEntry();
+		RegistryEntry entry = new RegistryEntry();
 		entry.setPrefix("prefix");
-		entry.setStatus("status");
+		entry.setStatus(CodingSchemeVersionStatus.ACTIVE);
 		entry.setTag("tag");
 		entry.setUri("uri");
 		entry.setVersion("version");
@@ -76,9 +77,9 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 	@Test
 	@Transactional
 	public void testGetCodingSchemeEntry(){
-		CodingSchemeEntry entry = new CodingSchemeEntry();
+		RegistryEntry entry = new RegistryEntry();
 		entry.setPrefix("prefix");
-		entry.setStatus("status");
+		entry.setStatus(CodingSchemeVersionStatus.ACTIVE);
 		entry.setTag("tag");
 		entry.setUri("uri");
 		entry.setVersion("version");
@@ -87,7 +88,7 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 		
 		hibernateRegistryDao.getHibernateTemplate().flush();
 		
-		CodingSchemeEntry foundEntry = hibernateRegistryDao.getCodingSchemeEntryForUriAndVersion("uri", "version");
+		RegistryEntry foundEntry = hibernateRegistryDao.getCodingSchemeEntryForUriAndVersion("uri", "version");
 		
 		assertNotNull(foundEntry);
 	}
@@ -95,9 +96,9 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 	@Test
 	@Transactional
 	public void testChangeTag(){
-		CodingSchemeEntry entry = new CodingSchemeEntry();
+		RegistryEntry entry = new RegistryEntry();
 		entry.setPrefix("prefix");
-		entry.setStatus("status");
+		entry.setStatus(CodingSchemeVersionStatus.ACTIVE);
 		entry.setTag("tag");
 		entry.setUri("uri");
 		entry.setVersion("version");

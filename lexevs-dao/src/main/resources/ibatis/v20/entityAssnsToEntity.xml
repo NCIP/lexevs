@@ -56,7 +56,7 @@
 			#associationTarget.isDefining#, 
 			#associationTarget.isInferred#, 
 			#associationTarget.isActive#,
-			#associationTarget.owner.content#,
+			#associationTarget.owner#,
 			#associationTarget.status#,
 			#associationTarget.effectiveDate#,
 			#associationTarget.expirationDate#,

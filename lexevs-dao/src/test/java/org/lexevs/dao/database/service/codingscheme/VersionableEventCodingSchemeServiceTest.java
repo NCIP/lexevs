@@ -4,9 +4,9 @@ import javax.annotation.Resource;
 
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.junit.Test;
-import org.lexevs.dao.test.LexEvsDaoTestBase;
+import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 
-public class VersionableEventCodingSchemeServiceTest extends LexEvsDaoTestBase {
+public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBase {
 
 	@Resource
 	private VersionableEventCodingSchemeService service;

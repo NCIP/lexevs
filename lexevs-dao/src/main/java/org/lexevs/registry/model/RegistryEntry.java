@@ -6,12 +6,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.hibernate.annotations.GenericGenerator;
 import org.lexevs.dao.database.constants.DatabaseConstants;
 
 @Entity
 @Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "codingschemeentry")
-public class CodingSchemeEntry extends AbstractRegistryEntry {
+public class RegistryEntry extends AbstractRegistryEntry {
 	
 	@Id
 	@Column(name="id")
@@ -20,16 +21,16 @@ public class CodingSchemeEntry extends AbstractRegistryEntry {
 	public String id;
 	
 	@Column(name="status")
-	private String status;
+	private CodingSchemeVersionStatus status;
 	
 	@Column(name="tag")
 	private String tag;
 
-	public String getStatus() {
+	public CodingSchemeVersionStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(CodingSchemeVersionStatus status) {
 		this.status = status;
 	}
 

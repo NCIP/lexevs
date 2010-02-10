@@ -170,7 +170,7 @@
 			#codingScheme.entityDescription.content#,
 			#codingScheme.copyright.content#,
 			#codingScheme.isActive#,
-			#codingScheme.owner.content#,
+			#codingScheme.owner#,
 			#codingScheme.status#,
 			#codingScheme.effectiveDate#,
 			#codingScheme.expirationDate#,

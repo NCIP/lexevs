@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.lexevs.dao.database.access.registry.RegistryDao;
-import org.lexevs.registry.model.CodingSchemeEntry;
 import org.lexevs.registry.model.Registry;
+import org.lexevs.registry.model.RegistryEntry;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 public class HibernateRegistryDao extends HibernateDaoSupport implements RegistryDao {
@@ -55,15 +55,15 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		
 	}
 
-	public void insertCodingSchemeEntry(CodingSchemeEntry entry) {
+	public void insertCodingSchemeEntry(RegistryEntry entry) {
 		this.getHibernateTemplate().save(entry);
 	}
 	
-	public CodingSchemeEntry getCodingSchemeEntryForUriAndVersion(String uri, String version){
-		CodingSchemeEntry entry = new CodingSchemeEntry();
+	public RegistryEntry getCodingSchemeEntryForUriAndVersion(String uri, String version){
+		RegistryEntry entry = new RegistryEntry();
 		entry.setUri(uri);
 		entry.setVersion(version);
-		List<CodingSchemeEntry> entries = this.getHibernateTemplate().findByExample(entry);
+		List<RegistryEntry> entries = this.getHibernateTemplate().findByExample(entry);
 		if(entries == null || entries.size() == 0){
 			throw new RuntimeException("No entry for: " + uri
 					+ " - version " + version);
@@ -72,6 +72,12 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 					+ " - version " + version);
 		} 
 		return entries.get(0);
+	}
+
+
+	public void updateRegistryEntry(RegistryEntry entry) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

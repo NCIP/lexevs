@@ -158,7 +158,7 @@
     </bean>
     
      <bean id="abstractVariableFactory" 
-     	class="org.lexevs.dao.systemresource.constants.IndividualVariableFactory"
+     	class="org.lexevs.system.constants.IndividualVariableFactory"
      	abstract="true">
      	<property name="systemVariables" ref="systemVariablesFactory"/>
      </bean>
@@ -210,7 +210,7 @@
    		<property name="dataSource" ref="dataSource"/>  
 	</bean>
 	
-	 <bean id="systemVariablesFactory" class="org.lexevs.dao.systemresource.constants.SystemVariablesFactory"/>
+	 <bean id="systemVariablesFactory" class="org.lexevs.system.constants.SystemVariablesFactory"/>
 	
 	<bean id="lexGridSchemaCheckFactory"
 		class="org.lexevs.dao.database.setup.schemacheck.LexGridSchemaCheckFactory">
@@ -222,7 +222,7 @@
 		<property name="dataSource" ref="dataSource"/> 
 	</bean>
 	
-	<bean id="lexEvsSchemaInstallationSetup" class="org.lexevs.dao.registry.setup.LexEvsSchemaInstallationSetup">
+	<bean id="lexEvsSchemaInstallationSetup" class="org.lexevs.registry.setup.LexEvsSchemaInstallationSetup">
 		<property name="lexGridSchemaInstalled" ref="lexGridSchemaCheckFactory"/>
 		<property name="systemVariables" ref="systemVariablesFactory"/> 
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
@@ -248,7 +248,7 @@
 		<property name="systemVariables" ref="systemVariablesFactory"/> 
 	</bean>
 	
-	<bean id="hibernateRegistryDao" class="org.lexevs.dao.registry.hibernate.HibernateRegistryDao">
+	<bean id="hibernateRegistryDao" class="org.lexevs.dao.database.hibernate.registry.HibernateRegistryDao">
 		<property name="sessionFactory" ref="registrySessionFactory"/>
 	</bean>
 	
@@ -261,7 +261,7 @@
 		<property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>	
 	</bean>
 	
-	<bean id="prefixInterceptor" class="org.LexGrid.persistence.dao.hibernate.interceptors.PrefixInterceptor">
+	<bean id="prefixInterceptor" class="org.lexevs.dao.database.hibernate.prefix.PrefixInterceptor">
 		<property name="prefix" ref="dbPrefix"/>
 	</bean>
 
@@ -272,6 +272,7 @@
 <!--		</property>-->
 <!--	</bean>-->
 	
+	<bean id="registryXmlToDatabaseTransfer" class="org.lexevs.registry.xmlToDatabase.RegistryXmlToDatabaseTransfer"/>
 	
 	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager"/>
 	

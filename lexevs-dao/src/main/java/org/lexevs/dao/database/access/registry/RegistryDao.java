@@ -2,11 +2,11 @@ package org.lexevs.dao.database.access.registry;
 
 import java.util.Date;
 
-import org.lexevs.registry.model.CodingSchemeEntry;
+import org.lexevs.registry.model.RegistryEntry;
 
 public interface RegistryDao {
 
-	public CodingSchemeEntry getCodingSchemeEntryForUriAndVersion(String uri, String version);
+	public RegistryEntry getCodingSchemeEntryForUriAndVersion(String uri, String version);
 	
 	public void updateLastUpdateTime(Date lastUpdateTime);
 	
@@ -16,7 +16,9 @@ public interface RegistryDao {
 	
 	public Date getLastUpdateTime();
 	
-	public void insertCodingSchemeEntry(CodingSchemeEntry entry);
+	public void updateRegistryEntry(RegistryEntry entry);
+	
+	public void insertCodingSchemeEntry(RegistryEntry entry);
 	
 	public void removeCodingSchemeEntry(String uri, String version);
 	

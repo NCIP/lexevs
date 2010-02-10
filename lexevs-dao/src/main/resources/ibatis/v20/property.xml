@@ -64,7 +64,7 @@
 			
 			#property.value.content#,	
 			#property.isActive#,
-			#property.owner.content#,
+			#property.owner#,
 			#property.status#,
 			#property.effectiveDate#,
 			#property.expirationDate#,

@@ -46,7 +46,7 @@
 			#entity.isAnonymous#,
 			#entity.isActive#,
 			#entity.entityDescription.content#,
-			#entity.owner.content#,
+			#entity.owner#,
 			#entity.status#,
 			#entity.effectiveDate#,
 			#entity.expirationDate#,

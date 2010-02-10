@@ -32,22 +32,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import org.LexGrid.LexBIG.DataModel.Collections.SortDescriptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortDescription;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.SortContext;
-import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
-import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
-import org.LexGrid.util.sql.sqlReconnect.WrappedConnection;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.search.BooleanQuery;
@@ -62,9 +54,10 @@ import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.logging.Logger;
 import org.lexevs.registry.WriteLockManager;
 import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.service.XmlRegistry;
 import org.lexevs.registry.service.Registry.DBEntry;
 import org.lexevs.registry.service.Registry.HistoryEntry;
-import org.lexevs.registry.service.Registry.KnownTags;
+import org.lexevs.registry.service.XmlRegistry.KnownTags;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
 
@@ -267,7 +260,7 @@ public class ResourceManager {
         supportedCodingSchemeToInternalMap_ = new Hashtable<String, String>();
 
         // populate the registry
-        registry_ = new Registry(systemVars_.getAutoLoadRegistryPath());
+        registry_ = new XmlRegistry(systemVars_.getAutoLoadRegistryPath());
 
         // connect to the histories
         readHistories();
