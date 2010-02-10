@@ -1198,41 +1198,19 @@ public class ObjectToString {
     //////////////////////////////
     // LexGrid Relations package
     //////////////////////////////
-    protected static void append(StringBuffer buff, String indent, org.LexGrid.relations.Association o) {
+    protected static void append(StringBuffer buff, String indent, org.LexGrid.relations.AssociationEntity o) {
         append(buff, indent, (Entity) o);
-        if (StringUtils.isNotBlank(o.getAssociationName()))
-            buff.append(getBreakAndIndent())
-                .append("Association Name: ").append(o.getAssociationName());
         if (StringUtils.isNotBlank(o.getForwardName()))
             buff.append(getBreakAndIndent())
                 .append("Forward Name: ").append(o.getForwardName());
         if (StringUtils.isNotBlank(o.getReverseName()))
             buff.append(getBreakAndIndent())
                 .append("Reverse Name: ").append(o.getReverseName());
-        if (StringUtils.isNotBlank(o.getInverse()))
-            buff.append(getBreakAndIndent())
-                .append("Inverse: ").append(o.getInverse());
-        if (o.getSourceCount() > 0)
-            buff.append(getBreakAndIndent())
-                .append("Source Count: ").append(o.getSourceCount());
         buff.append(getBreakAndIndent())
             .append("isNavigable: ").append(toString(o.getIsNavigable()))
             .append(getBreakAndIndent())
-            .append("isReflexive: ").append(toString(o.getIsReflexive()))
-            .append(getBreakAndIndent())
-            .append("isAntiReflexive: ").append(toString(o.getIsAntiReflexive()))
-            .append(getBreakAndIndent())
-            .append("isSymmetric: ").append(toString(o.getIsSymmetric()))
-            .append(getBreakAndIndent())
-            .append("isAntiSymmetric: ").append(toString(o.getIsAntiSymmetric()))
-            .append(getBreakAndIndent())
             .append("isTransitive: ").append(toString(o.getIsTransitive()))
-            .append(getBreakAndIndent())
-            .append("isAntiTransitive: ").append(toString(o.getIsAntiTransitive()))
-            .append(getBreakAndIndent())
-            .append("isFunctional: ").append(toString(o.getIsFunctional()))
-            .append(getBreakAndIndent())
-            .append("isReverseFunctional: ").append(toString(o.getIsReverseFunctional()));
+            .append(getBreakAndIndent());
     }
     
     protected static void append(StringBuffer buff, String indent, AssociatableElement o) {
@@ -1288,19 +1266,10 @@ public class ObjectToString {
         buff.append(indent).append(getType(o))
             .append(getBreakAndIndent())
             .append("Container Name: ").append(o.getContainerName())
-            .append(getBreakAndIndent())
-            .append("Is Native: ").append(o.getIsNative());
+            .append(getBreakAndIndent());
         if (o.getEntityDescription() != null)
             buff.append(lineBreak)
                 .append(toString(o.getEntityDescription(), indent + sp4));
-        if (o.getSourceCount() > 0)
-            buff.append(getBreakAndIndent())
-                .append("Sources: ").append(lineBreak)
-                .append(toString(o.getSource(), indent + sp8));
-        if (o.getAssociationCount() > 0)
-            buff.append(getBreakAndIndent())
-                .append("Associations: ").append(lineBreak)
-                .append(toString(o.getAssociation(), indent + sp8));
     }
     
     /////////////////////////////
