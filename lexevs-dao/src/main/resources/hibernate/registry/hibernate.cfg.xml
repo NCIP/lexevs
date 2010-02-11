@@ -6,6 +6,5 @@
           <session-factory>
             <mapping class="org.lexevs.registry.model.Registry"/>
             <mapping class="org.lexevs.registry.model.RegistryEntry"/>
-            <mapping class="org.lexevs.registry.model.HistoryEntry"/>
           </session-factory>
         </hibernate-configuration>

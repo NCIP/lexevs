@@ -5,9 +5,10 @@ import java.util.List;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.concepts.PropertyLink;
+import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 
-public interface PropertyDao {
+public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 	
 	public enum PropertyType {CODINGSCHEME,VALUEDOMAIN,ENTITY}
 

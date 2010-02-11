@@ -49,14 +49,14 @@
     	<property name="tableMetadataDao" ref="ibatisTableMetadataDao"/>
     </bean>
     
-    <bean id="codingSchemeDaoFactory" class="org.lexevs.dao.database.access.factory.DaoFactory">
-    	<property name="versionableDaos">
-   			<list>
-   		 		<ref bean="ibatisCodingSchemeDao"/>
-   		 	</list>
-   		 </property>
-   		 <property name="lexGridSchemaVersion" ref="lexGridSchemaVersionFactory"/>
-    </bean>
+<!--    <bean id="codingSchemeDaoFactory" class="org.lexevs.dao.database.access.factory.DaoFactory">-->
+<!--    	<property name="versionableDaos">-->
+<!--   			<list>-->
+<!--   		 		<ref bean="ibatisCodingSchemeDao"/>-->
+<!--   		 	</list>-->
+<!--   		 </property>-->
+<!--   		 <property name="lexGridSchemaVersion" ref="lexGridSchemaVersionFactory"/>-->
+<!--    </bean>-->
     
     <bean id="abstractIbatisDao" abstract="true">
     	<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"/>
@@ -84,7 +84,12 @@
 	</bean>
 	
 	<bean id="daoManager" class="org.lexevs.dao.database.access.DaoManager">
-		<property name="codingSchemeDao" ref="codingSchemeDaoFactory"/>
+		<property name="codingSchemeDaos">
+			<list>
+				<ref bean="ibatisCodingSchemeDao"/>
+			</list>
+		</property>
+		<property name="registryDao" ref="hibernateRegistryDao"/>
 	</bean>
 	
 	 <bean id="ibatisEntityDao"

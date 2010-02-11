@@ -14,8 +14,10 @@ public class AbstractDatabaseService extends DatabaseServiceEventSupport {
 		daoCallback.execute(daoManager);
 	}
 
-	protected String getCodingSchemeId(String codingSchemeName, String codingSchemeVersion){
-		return daoManager.getCodingSchemeDao().getCodingSchemeId(codingSchemeName, codingSchemeVersion);
+	protected String getCodingSchemeId(String codingSchemeUri, String codingSchemeVersion){
+		return daoManager.
+			getCodingSchemeDao(codingSchemeUri, codingSchemeVersion).
+				getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
 	}
 	
 	public DaoManager getDaoManager() {

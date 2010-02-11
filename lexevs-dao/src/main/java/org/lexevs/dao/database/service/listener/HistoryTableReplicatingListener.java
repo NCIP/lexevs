@@ -13,8 +13,8 @@ public class HistoryTableReplicatingListener extends DefaultServiceEventListener
 	public boolean onCodingSchemeUpdate(CodingSchemeUpdateEvent event) {
 		EntryState es = new EntryState();
 		es.setChangeType(ChangeType.MODIFY);
-		daoManager.getVersionsDao().updateEntryState(event.getEntryStateId(), es);
-		daoManager.getCodingSchemeDao().insertHistoryCodingScheme(event.getOriginalCodingScheme());
+		//daoManager.getVersionsDao().updateEntryState(event.getEntryStateId(), es);
+		//daoManager.getCodingSchemeDao().insertHistoryCodingScheme(event.getOriginalCodingScheme());
 		return true;
 	}
 

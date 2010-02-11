@@ -61,8 +61,8 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 	
 	public RegistryEntry getCodingSchemeEntryForUriAndVersion(String uri, String version){
 		RegistryEntry entry = new RegistryEntry();
-		entry.setUri(uri);
-		entry.setVersion(version);
+		entry.setResourceUri(uri);
+		entry.setResourceVersion(version);
 		List<RegistryEntry> entries = this.getHibernateTemplate().findByExample(entry);
 		if(entries == null || entries.size() == 0){
 			throw new RuntimeException("No entry for: " + uri

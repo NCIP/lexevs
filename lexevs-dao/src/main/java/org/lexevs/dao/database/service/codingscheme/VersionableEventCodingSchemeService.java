@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.versions.EntryState;
+import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,46 +15,36 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	private EntityService entityService;
 	
 	@Transactional
-	public CodingScheme getCodingSchemeById(String codingSchemeId) {
-		return getDaoManager().getCodingSchemeDao().getCodingSchemeById(codingSchemeId);
-	}
-	
-	@Transactional
-	public String getCodingSchemeId(String codingSchemeUri,
-			String codingSchemeVersion) {
-		return this.getDaoManager().getCodingSchemeDao().getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
-	}
-
-	
-	@Transactional
 	public void insertCodingScheme(CodingScheme scheme) {
 		this.fireCodingSchemeInsertEvent(scheme);
-		String codingSchemeId = this.getCodingSchemeId(scheme.getCodingSchemeURI(), scheme.getRepresentsVersion());
+		String codingSchemeId = this.getCodingSchemeId(
+				scheme.getCodingSchemeURI(), scheme.getRepresentsVersion());
 		
 		if(scheme.getMappings() != null){
-			getDaoManager().getCodingSchemeDao().insertMappings(codingSchemeId, scheme.getMappings());
+			getDaoManager().getCodingSchemeDao(
+					scheme.getCodingSchemeURI(), scheme.getRepresentsVersion()).
+					insertMappings(codingSchemeId, scheme.getMappings());
 		}
 
 		if(scheme.getEntities() != null){
-			this.getDaoManager().getEntityDao().insertBatchEntities(codingSchemeId, 
+			this.getDaoManager().getEntityDao(
+					scheme.getCodingSchemeURI(), scheme.getRepresentsVersion()).insertBatchEntities(codingSchemeId, 
 					Arrays.asList(scheme.getEntities().getEntity()));
 		}
 	}
 	
 	@Transactional
 	public void insertURIMap(
-			String codingSchemeName, 
+			String codingSchemeUri, 
 			String codingSchemeVersion,
 			URIMap uriMap){
-		getDaoManager().getCodingSchemeDao().getCodingSchemeId(codingSchemeName, codingSchemeVersion);
+		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, codingSchemeVersion);
+		String codingSchemeId = codingSchemeDao.
+			getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+		getDaoManager().getCodingSchemeDao(codingSchemeUri, codingSchemeVersion).
+			insertURIMap(codingSchemeId, uriMap);
 	}
 	
-	@Transactional
-	public void insertURIMap(
-			String codingSchemeId, 
-			URIMap uriMap){
-		getDaoManager().getCodingSchemeDao().insertURIMap(codingSchemeId, uriMap);
-	}
 
 	@Transactional
 	public void updateCodingScheme(

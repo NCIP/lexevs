@@ -1,8 +1,9 @@
 package org.lexevs.dao.database.access.versions;
 
 import org.LexGrid.versions.EntryState;
+import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
-public interface VersionsDao {
+public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 	
 	public EntryState getEntryStateById(String codingSchemeName, String codingSchemeVersion, String entryStateId);
 

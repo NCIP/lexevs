@@ -1,49 +1,111 @@
 package org.lexevs.dao.database.access;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import junit.framework.Assert;
+
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
+import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
+import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
+import org.lexevs.registry.model.RegistryEntry;
 
 public class DaoManager {
 
-	private CodingSchemeDao codingSchemeDao;
+	private List<CodingSchemeDao> codingSchemeDaos;
 	
-	private EntityDao EntityDao;
+	private List<EntityDao> entityDaos;
 	
-	private PropertyDao propertyDao;
+	private List<PropertyDao> propertyDaos;
 	
-	private VersionsDao versionsDao;
+	private List<VersionsDao> versionsDaos;
 	
-	public void setCodingSchemeDao(CodingSchemeDao codingSchemeDao) {
-		this.codingSchemeDao = codingSchemeDao;
+	private RegistryDao registryDao;
+	
+	public VersionsDao getVersionsDao(String codingSchemeUri, String version){
+		return this.doGetDao(codingSchemeUri, version, this.getVersionsDaos());
+	}
+	
+	public EntityDao getEntityDao(String codingSchemeUri, String version){
+		return this.doGetDao(codingSchemeUri, version, this.getEntityDaos());
+	}
+	
+	public CodingSchemeDao getCodingSchemeDao(String codingSchemeUri, String version){
+		return this.doGetDao(codingSchemeUri, version, this.getCodingSchemeDaos());
+	}
+	
+	public PropertyDao getPropertyDao(String codingSchemeUri, String version){
+		return this.doGetDao(codingSchemeUri, version, this.getPropertyDaos());
+	}
+	
+	protected <T extends LexGridSchemaVersionAwareDao> T doGetDao(String codingSchemeUri, String version, List<T> daos){
+		return getCorrectDaoForSchemaVersion(daos, 
+				getLexGridSchemaVersion(codingSchemeUri, version));
+	}
+	
+	protected LexGridSchemaVersion getLexGridSchemaVersion(String uri, String version){
+		RegistryEntry entry = registryDao.getCodingSchemeEntryForUriAndVersion(uri, version);
+		return LexGridSchemaVersion.parseStringToVersion(entry.getDbSchemaVersion());
+	}
+	
+	protected <T extends LexGridSchemaVersionAwareDao> T getCorrectDaoForSchemaVersion(List<T> possibleDaos, LexGridSchemaVersion schemaVersion) {
+		List<T> foundDaos = new ArrayList<T>();
+		
+		for(T dao : possibleDaos){
+			if(dao.supportsLgSchemaVersion(schemaVersion)){
+				foundDaos.add(dao);
+			}
+		}
+		
+		Assert.assertTrue("No matching DAO for Database Version: " +
+				schemaVersion, foundDaos.size() > 0);	
+		
+		Assert.assertTrue("More than one matching DAO for: " +
+				foundDaos.get(0).getClass().getName(), foundDaos.size() < 2);
+		
+		return foundDaos.get(0);
 	}
 
-	public CodingSchemeDao getCodingSchemeDao() {
-		return codingSchemeDao;
+	public List<CodingSchemeDao> getCodingSchemeDaos() {
+		return codingSchemeDaos;
 	}
 
-	public void setVersionsDao(VersionsDao versionsDao) {
-		this.versionsDao = versionsDao;
+	public void setCodingSchemeDaos(List<CodingSchemeDao> codingSchemeDaos) {
+		this.codingSchemeDaos = codingSchemeDaos;
 	}
 
-	public VersionsDao getVersionsDao() {
-		return versionsDao;
+	public List<EntityDao> getEntityDaos() {
+		return entityDaos;
 	}
 
-	public void setEntityDao(EntityDao entityDao) {
-		EntityDao = entityDao;
+	public void setEntityDaos(List<EntityDao> entityDaos) {
+		this.entityDaos = entityDaos;
 	}
 
-	public EntityDao getEntityDao() {
-		return EntityDao;
+	public List<PropertyDao> getPropertyDaos() {
+		return propertyDaos;
 	}
 
-	public void setPropertyDao(PropertyDao propertyDao) {
-		this.propertyDao = propertyDao;
+	public void setPropertyDaos(List<PropertyDao> propertyDaos) {
+		this.propertyDaos = propertyDaos;
 	}
 
-	public PropertyDao getPropertyDao() {
-		return propertyDao;
+	public List<VersionsDao> getVersionsDaos() {
+		return versionsDaos;
+	}
+
+	public void setVersionsDaos(List<VersionsDao> versionsDaos) {
+		this.versionsDaos = versionsDaos;
+	}
+
+	public RegistryDao getRegistryDao() {
+		return registryDao;
+	}
+
+	public void setRegistryDao(RegistryDao registryDao) {
+		this.registryDao = registryDao;
 	}
 }

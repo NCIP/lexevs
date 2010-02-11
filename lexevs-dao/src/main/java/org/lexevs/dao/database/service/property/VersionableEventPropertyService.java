@@ -13,15 +13,15 @@ public class VersionableEventPropertyService extends AbstractDatabaseService imp
 
 	@Transactional
 	public void insertBatchEntityProperties(
-			String codingSchemeName, 
+			String codingSchemeUri, 
 			String version,
 			String entityCode,
 			String entityCodeNamespace,
 			List<Property> items) {
-		String codingSchemeId = this.getCodingSchemeId(codingSchemeName, version);
-		String entityId = this.getDaoManager().getEntityDao().getEntityId(codingSchemeId, entityCode, entityCodeNamespace);
+		String codingSchemeId = this.getCodingSchemeId(codingSchemeUri, version);
+		String entityId = this.getDaoManager().getEntityDao(codingSchemeUri, version).getEntityId(codingSchemeId, entityCode, entityCodeNamespace);
 		
-		this.getDaoManager().getPropertyDao().
+		this.getDaoManager().getPropertyDao(codingSchemeUri, version).
 		insertBatchProperties(codingSchemeId, PropertyType.ENTITY, 
 				this.propertyListToBatchInsertList(entityId, items));
 	}

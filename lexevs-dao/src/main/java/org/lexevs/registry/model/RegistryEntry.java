@@ -1,20 +1,19 @@
 package org.lexevs.registry.model;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.hibernate.annotations.GenericGenerator;
 import org.lexevs.dao.database.constants.DatabaseConstants;
 
 @Entity
-@Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "codingschemeentry")
-public class RegistryEntry extends AbstractRegistryEntry {
+@Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "registryentry")
+public class RegistryEntry {
 	
 	@Id
 	@Column(name="id")
@@ -22,6 +21,34 @@ public class RegistryEntry extends AbstractRegistryEntry {
  	@GenericGenerator(name="system-uuid", strategy = "uuid")
 	public String id;
 	
+	private Timestamp activationDate;
+	
+	private String baseRevision;
+	
+	private String dbName;
+	
+	private String dbSchemaDescription;
+	
+	private String dbSchemaVersion;
+	
+	private String dbUrl;
+	
+	private Timestamp deactivationDate;
+	
+	private String fixedAtRevision;
+	
+	private boolean isLocked;
+	
+	private Timestamp lastUpdateDate;
+	
+	private String prefix;
+	
+	private String resourceType;
+	
+	private String resourceVersion;
+	
+	private String resourceUri;
+
 	@Column(name="status")
 	private String status;
 	
@@ -50,5 +77,117 @@ public class RegistryEntry extends AbstractRegistryEntry {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public Timestamp getActivationDate() {
+		return activationDate;
+	}
+
+	public void setActivationDate(Timestamp activationDate) {
+		this.activationDate = activationDate;
+	}
+
+	public String getDbName() {
+		return dbName;
+	}
+
+	public void setDbName(String dbName) {
+		this.dbName = dbName;
+	}
+
+	public String getDbSchemaDescription() {
+		return dbSchemaDescription;
+	}
+
+	public void setDbSchemaDescription(String dbSchemaDescription) {
+		this.dbSchemaDescription = dbSchemaDescription;
+	}
+
+	public String getDbUrl() {
+		return dbUrl;
+	}
+
+	public void setDbUrl(String dbUrl) {
+		this.dbUrl = dbUrl;
+	}
+
+	public Timestamp getDeactivationDate() {
+		return deactivationDate;
+	}
+
+	public void setDeactivationDate(Timestamp deactivationDate) {
+		this.deactivationDate = deactivationDate;
+	}
+
+	public String getFixedAtRevision() {
+		return fixedAtRevision;
+	}
+
+	public void setFixedAtRevision(String fixedAtRevision) {
+		this.fixedAtRevision = fixedAtRevision;
+	}
+
+	public boolean isLocked() {
+		return isLocked;
+	}
+
+	public void setLocked(boolean isLocked) {
+		this.isLocked = isLocked;
+	}
+
+	public Timestamp getLastUpdateDate() {
+		return lastUpdateDate;
+	}
+
+	public void setLastUpdateDate(Timestamp lastUpdateDate) {
+		this.lastUpdateDate = lastUpdateDate;
+	}
+
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public String getResourceType() {
+		return resourceType;
+	}
+
+	public void setResourceType(String resourceType) {
+		this.resourceType = resourceType;
+	}
+
+	public String getResourceUri() {
+		return resourceUri;
+	}
+
+	public void setResourceUri(String resourceUri) {
+		this.resourceUri = resourceUri;
+	}
+
+	public void setDbSchemaVersion(String dbSchemaVersion) {
+		this.dbSchemaVersion = dbSchemaVersion;
+	}
+
+	public String getDbSchemaVersion() {
+		return dbSchemaVersion;
+	}
+
+	public void setResourceVersion(String resourceVersion) {
+		this.resourceVersion = resourceVersion;
+	}
+
+	public String getResourceVersion() {
+		return resourceVersion;
+	}
+
+	public void setBaseRevision(String baseRevision) {
+		this.baseRevision = baseRevision;
+	}
+
+	public String getBaseRevision() {
+		return baseRevision;
 	}
 }
