@@ -1200,6 +1200,9 @@ public class ObjectToString {
     //////////////////////////////
     protected static void append(StringBuffer buff, String indent, org.LexGrid.relations.AssociationEntity o) {
         append(buff, indent, (Entity) o);
+        if (StringUtils.isNotBlank(o.getEntityCode()))
+            buff.append(getBreakAndIndent())
+                .append("Association Entity Code: ").append(o.getEntityCode());
         if (StringUtils.isNotBlank(o.getForwardName()))
             buff.append(getBreakAndIndent())
                 .append("Forward Name: ").append(o.getForwardName());
@@ -1209,8 +1212,7 @@ public class ObjectToString {
         buff.append(getBreakAndIndent())
             .append("isNavigable: ").append(toString(o.getIsNavigable()))
             .append(getBreakAndIndent())
-            .append("isTransitive: ").append(toString(o.getIsTransitive()))
-            .append(getBreakAndIndent());
+            .append("isTransitive: ").append(toString(o.getIsTransitive()));
     }
     
     protected static void append(StringBuffer buff, String indent, AssociatableElement o) {
@@ -1266,10 +1268,23 @@ public class ObjectToString {
         buff.append(indent).append(getType(o))
             .append(getBreakAndIndent())
             .append("Container Name: ").append(o.getContainerName())
-            .append(getBreakAndIndent());
+            .append(getBreakAndIndent())
+            .append("Is Mapping: ").append(o.getIsMapping());
         if (o.getEntityDescription() != null)
             buff.append(lineBreak)
                 .append(toString(o.getEntityDescription(), indent + sp4));
+        if (o.getSourceCodingScheme() != null)
+            buff.append(lineBreak)
+                .append("Source Coding Scheme: ").append(toString(o.getSourceCodingScheme(), indent + sp4));
+        if (o.getSourceCodingSchemeVersion() != null)
+            buff.append(lineBreak)
+                .append("Source Coding Scheme Version: ").append(toString(o.getSourceCodingSchemeVersion(), indent + sp4));
+        if (o.getTargetCodingScheme() != null)
+            buff.append(lineBreak)
+                .append("Target Coding Scheme: ").append(toString(o.getTargetCodingScheme(), indent + sp4));
+        if (o.getTargetCodingSchemeVersion() != null)
+            buff.append(lineBreak)
+                .append("Target Coding Scheme Version: ").append(toString(o.getTargetCodingSchemeVersion(), indent + sp4));
     }
     
     /////////////////////////////
