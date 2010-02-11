@@ -5,6 +5,7 @@ import java.util.List;
 import org.lexevs.dao.database.key.Java5UUIDKeyGenerator;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
+import org.lexevs.dao.database.utility.CodingSchemeIdMapper;
 
 public abstract class AbstractBaseDao implements LexGridSchemaVersionAwareDao{
 
@@ -32,5 +33,5 @@ public abstract class AbstractBaseDao implements LexGridSchemaVersionAwareDao{
 
 	public PrefixResolver getPrefixResolver() {
 		return prefixResolver;
-	}	
+	}
 }

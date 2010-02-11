@@ -1,5 +1,6 @@
 package org.lexevs.dao.database.ibatis.property;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.LexGrid.commonTypes.Property;
@@ -8,15 +9,22 @@ import org.LexGrid.commonTypes.Source;
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.dao.database.access.property.PropertyDao;
-import org.lexevs.dao.database.access.versions.VersionsDao;
+import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 import org.lexevs.dao.database.constants.classifier.property.PropertyTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
+import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
+import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
+import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyBean;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyLinkBean;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean;
+import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.batch.classify.Classifier;
+import org.springframework.orm.ibatis.SqlMapClientCallback;
+
+import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao {
 	
@@ -30,23 +38,53 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	public static String INSERT_PROPERTY_USAGECONTEXT_SQL = "insertPropertyMultiAttrib";
 	public static String INSERT_PROPERTYLINK_SQL = "insertPropertyLink";
 	
-	private VersionsDao versionsDao;
+	private IbatisVersionsDao ibatisVersionsDao;
 
-	public void insertProperty(String codingSchemeName, String version,
-			String entityCode, String entityCodeNamespace, PropertyType type, Property property) {
+	public void insertBatchProperties(final String codingSchemeId, final PropertyType type,
+			final List<PropertyBatchInsertItem> batch) {
+		
+		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+
+			public Object doInSqlMapClient(SqlMapExecutor executor)
+					throws SQLException {
+				IbatisBatchInserter inserter = new SqlMapExecutorBatchInserter(executor);
+				
+				inserter.startBatch();
+				
+				for(PropertyBatchInsertItem item : batch){
+					insertProperty(codingSchemeId,
+							item.getParentId(),
+							type,
+							item.getProperty(),  inserter);
+				}
+				
+				inserter.executeBatch();
+				
+				return null; 
+			}	
+		});
 		
 	}
+
+	
+
 	
 	public String insertProperty(String codingSchemeId,
 			String entityCodeId, PropertyType type, Property property) {
+		return this.insertProperty(
+				codingSchemeId, entityCodeId, type, property, this.getNonBatchTemplateInserter());	
+	}
+	
+	public String insertProperty(String codingSchemeId,
+			String entityCodeId, PropertyType type, Property property, IbatisInserter inserter) {
 		String propertyId = this.createUniqueId();
 		String entryStateId = this.createUniqueId();
 		
-		this.versionsDao.insertEntryState(
-				codingSchemeId,
-				entryStateId, propertyId, "Property", null, property.getEntryState());
+		this.ibatisVersionsDao.insertEntryState(
+				this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+				entryStateId, propertyId, "Property", null, property.getEntryState(), inserter);
 		
-		this.getSqlMapClientTemplate().insert(INSERT_PROPERTY_SQL,
+		inserter.insert(INSERT_PROPERTY_SQL,
 				buildInsertPropertyBean(
 						entityCodeId,
 						propertyId,
@@ -60,13 +98,13 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	}
 
 	public String insertProperty(String codingSchemeName, String version,
-			String entityCodeId, PropertyType type, Property property) {
+			String parentId, PropertyType type, Property property) {
 		String propertyId = this.createUniqueId();
 		String entryStateId = this.createUniqueId();
 		
 		this.getSqlMapClientTemplate().insert(INSERT_PROPERTY_SQL,
 				buildInsertPropertyBean(
-						entityCodeId,
+						parentId,
 						propertyId,
 						entryStateId,
 						type,
@@ -75,9 +113,11 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		
 		return propertyId;
 	}
-	public void updateProperty(String codingSchemeName, String version,
-			String entityCode, String entityCodeNamespace, String propertyId,
-			PropertyType type, Property property) {
+	
+
+
+	public void updateProperty(String codingSchemeName, String parentId,
+			String propertyId, PropertyType type, Property property) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -187,14 +227,6 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		return DaoUtility.createList(supportedDatebaseVersion, LexGridSchemaVersion.class);
 	}
 
-	public void setVersionsDao(VersionsDao versionsDao) {
-		this.versionsDao = versionsDao;
-	}
-
-	public VersionsDao getVersionsDao() {
-		return versionsDao;
-	}
-
 	public void setPropertyTypeClassifier(Classifier<PropertyType,String> propertyTypeClassifier) {
 		this.propertyTypeClassifier = propertyTypeClassifier;
 	}
@@ -203,7 +235,13 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		return propertyTypeClassifier;
 	}
 
-	
+
+	public IbatisVersionsDao getIbatisVersionsDao() {
+		return ibatisVersionsDao;
+	}
 
 
+	public void setIbatisVersionsDao(IbatisVersionsDao ibatisVersionsDao) {
+		this.ibatisVersionsDao = ibatisVersionsDao;
+	}
 }

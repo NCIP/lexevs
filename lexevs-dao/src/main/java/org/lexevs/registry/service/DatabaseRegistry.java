@@ -24,7 +24,7 @@ public class DatabaseRegistry implements Registry {
 				codingScheme.getCodingSchemeURN(), 
 				codingScheme.getCodingSchemeVersion());
 		
-		entry.setStatus(CodingSchemeVersionStatus.ACTIVE);
+		entry.setStatus(CodingSchemeVersionStatus.ACTIVE.toString());
 		
 		registryDao.updateRegistryEntry(entry);
 	}

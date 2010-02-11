@@ -1,12 +1,11 @@
 package org.lexevs.dao.database.ibatis.versions;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.LexGrid.versions.EntryState;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
+import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
@@ -26,19 +25,15 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	}
 	
 	public void updateEntryState(String id, EntryState entryState) {
-		Map<String,Object> paramMap = new HashMap<String,Object>();
-		paramMap.put("entryStateId", id);
-		paramMap.put("entryState", entryState);
 		
-		this.getSqlMapClientTemplate().update("updateEntryStateById", paramMap);
 		
 	}
 	
-	public void insertEntryState(String codingSchemeId, String entryStateId,
+	public void insertEntryState(String prefix, String entryStateId,
 			String entryId, String entryType, String previousEntryStateId,
-			EntryState entryState) {
+			EntryState entryState, IbatisInserter ibatisInserter){
 		buildInsertEntryStateBean(
-				this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+				prefix,
 				entryStateId, 
 				entryId,
 				entryType,
@@ -49,14 +44,30 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 			return;
 		}
 		
-		this.getSqlMapClientTemplate().update(INSERT_ENTRY_STATE_SQL, 
+		ibatisInserter.insert(INSERT_ENTRY_STATE_SQL, 
 				buildInsertEntryStateBean(
-						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+						prefix,
 						entryStateId, 
 						entryId,
 						entryType,
 						previousEntryStateId,
 						entryState));	
+		
+	}
+	
+	
+	
+	public void insertEntryState(String codingSchemeId, String entryStateId,
+			String entryId, String entryType, String previousEntryStateId,
+			EntryState entryState) {
+		this.insertEntryState(
+				this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId), 
+				entryStateId, 
+				entryId, 
+				entryType, 
+				previousEntryStateId, 
+				entryState, 
+				this.getNonBatchTemplateInserter());
 	}
 	
 	public void insertEntryState(
@@ -68,18 +79,14 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 			String previousEntryStateId,
 			EntryState entryState) {
 		
-		if(entryState == null){
-			return;
-		}
-
-		this.getSqlMapClientTemplate().update(INSERT_ENTRY_STATE_SQL, 
-				buildInsertEntryStateBean(
-						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeName, codingSchemeVersion),
-						entryStateId, 
-						entryId,
-						entryType,
-						previousEntryStateId,
-						entryState));
+		this.insertEntryState(
+				this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeName, codingSchemeVersion), 
+				entryStateId, 
+				entryId, 
+				entryType, 
+				previousEntryStateId, 
+				entryState, 
+				this.getNonBatchTemplateInserter());
 	}
 
 	protected InsertEntryStateBean buildInsertEntryStateBean(

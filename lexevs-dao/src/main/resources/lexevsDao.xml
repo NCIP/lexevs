@@ -45,7 +45,7 @@
     </bean>    
     
     <bean id="lexGridSchemaVersionFactory" class="org.lexevs.dao.database.schemaversion.LexGridSchemaVersionFactory"
-    	depends-on="registrySchemaSetup">
+    	depends-on="lexEvsSchemaInstallationSetup">
     	<property name="tableMetadataDao" ref="ibatisTableMetadataDao"/>
     </bean>
     
@@ -63,12 +63,19 @@
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
     </bean>
     
+<!--   <bean id="codingSchemeUriVersionToUUID" class="org.lexevs.dao.database.utility.CodingSchemeUriVersionToUUID">-->
+<!--   		<property name="codingSchemeDao" ref="codingSchemeDaoFactory"/>-->
+<!--   </bean>-->
+   
     <bean id="ibatisTableMetadataDao"
-		class="org.lexevs.dao.database.ibatis.tablemetadata.IbatisTableMetadataDao" parent="abstractIbatisDao"/>
+		class="org.lexevs.dao.database.ibatis.tablemetadata.IbatisTableMetadataDao">
+		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"/>
+		<property name="prefixResolver" ref="defaultPrefixResolver"/>
+	</bean>
 	
 	<bean id="ibatisPropertyeDao"
 		class="org.lexevs.dao.database.ibatis.property.IbatisPropertyDao" parent="abstractIbatisDao">
-		<property name="versionsDao" ref="ibatisVersionsDao"/>
+		<property name="ibatisVersionsDao" ref="ibatisVersionsDao"/>
 	</bean>
     
     <bean id="ibatisCodingSchemeDao"
@@ -82,7 +89,7 @@
 	
 	 <bean id="ibatisEntityDao"
 		class="org.lexevs.dao.database.ibatis.entity.IbatisEntityDao" parent="abstractIbatisDao">
-		<property name="versionsDao" ref="ibatisVersionsDao"/>
+		<property name="ibatisVersionsDao" ref="ibatisVersionsDao"/>
 	</bean>
 	
 	<bean id="ibatisAssociationDao"
@@ -92,7 +99,8 @@
 	</bean>
     
     <bean id="ibatisVersionsDao"
-		class="org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao" parent="abstractIbatisDao"/>
+		class="org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao" parent="abstractIbatisDao">
+	</bean>
 		
 	<bean id="databaseServiceManager" class="org.lexevs.dao.database.service.DatabaseServiceManager">
 		<property name="codingSchemeService" ref="codingSchemeService"/>

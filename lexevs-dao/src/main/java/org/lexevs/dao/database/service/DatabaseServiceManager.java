@@ -1,8 +1,10 @@
 package org.lexevs.dao.database.service;
 
+import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.property.PropertyService;
+import org.springframework.transaction.annotation.Transactional;
 
 public class DatabaseServiceManager {
 	
@@ -36,3 +38,5 @@ public class DatabaseServiceManager {
 		this.propertyService = propertyService;
 	}
 }
+
+

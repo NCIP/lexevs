@@ -2,6 +2,8 @@ package org.lexevs.registry.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -21,16 +23,16 @@ public class RegistryEntry extends AbstractRegistryEntry {
 	public String id;
 	
 	@Column(name="status")
-	private CodingSchemeVersionStatus status;
+	private String status;
 	
 	@Column(name="tag")
 	private String tag;
 
-	public CodingSchemeVersionStatus getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(CodingSchemeVersionStatus status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 

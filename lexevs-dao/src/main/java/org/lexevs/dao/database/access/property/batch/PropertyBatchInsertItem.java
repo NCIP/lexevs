@@ -1,28 +1,30 @@
-package org.lexevs.dao.database.service.property.batch;
+package org.lexevs.dao.database.access.property.batch;
 
 import org.LexGrid.commonTypes.Property;
 
 public class PropertyBatchInsertItem {
 
-	private String entityId;
+	private String parentId;
 	private Property property;
 	
 	public PropertyBatchInsertItem(){
 		super();
 	}
 	
-	public PropertyBatchInsertItem(String entityId, Property property) {
+	public PropertyBatchInsertItem(String parentId, Property property) {
 		super();
-		this.entityId = entityId;
+		this.parentId = parentId;
 		this.property = property;
 	}
-	
-	public String getEntityId() {
-		return entityId;
+
+	public String getParentId() {
+		return parentId;
 	}
-	public void setEntityId(String entityId) {
-		this.entityId = entityId;
+
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
 	}
+
 	public Property getProperty() {
 		return property;
 	}

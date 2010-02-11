@@ -47,7 +47,7 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 	public void testInsertCodingSchemeEntry(){
 		RegistryEntry entry = new RegistryEntry();
 		entry.setPrefix("prefix");
-		entry.setStatus(CodingSchemeVersionStatus.ACTIVE);
+		entry.setStatus(CodingSchemeVersionStatus.ACTIVE.toString());
 		entry.setTag("tag");
 		entry.setUri("uri");
 		entry.setVersion("version");
@@ -65,7 +65,7 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 				assertNotNull(rs.getString(1));
 				assertEquals(rs.getString(2), "uri");
 				assertEquals(rs.getString(3), "prefix");
-				assertEquals(rs.getString(4), "status");
+				assertEquals(rs.getString(4), CodingSchemeVersionStatus.ACTIVE.toString());
 				assertEquals(rs.getString(5), "tag");
 				assertEquals(rs.getString(6), "version");
 
@@ -79,7 +79,7 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 	public void testGetCodingSchemeEntry(){
 		RegistryEntry entry = new RegistryEntry();
 		entry.setPrefix("prefix");
-		entry.setStatus(CodingSchemeVersionStatus.ACTIVE);
+		entry.setStatus(CodingSchemeVersionStatus.ACTIVE.toString());
 		entry.setTag("tag");
 		entry.setUri("uri");
 		entry.setVersion("version");
@@ -98,7 +98,7 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 	public void testChangeTag(){
 		RegistryEntry entry = new RegistryEntry();
 		entry.setPrefix("prefix");
-		entry.setStatus(CodingSchemeVersionStatus.ACTIVE);
+		entry.setStatus(CodingSchemeVersionStatus.ACTIVE.toString());
 		entry.setTag("tag");
 		entry.setUri("uri");
 		entry.setVersion("version");

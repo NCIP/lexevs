@@ -16,8 +16,14 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		this.getDaoManager().getEntityDao().insertEntity(codingSchemeId, entity);
 	}
 
-	public void insertEntity(String codingSchemeId, Entity entity) {
-		String entityId = this.getDaoManager().getEntityDao().insertEntity(codingSchemeId, entity);
+	public void insertBatchEntities(String codingSchemeName, String version,
+			List<? extends Entity> entities) {
+		String codingSchemeId = this.getDaoManager().
+		getCodingSchemeDao().
+		getCodingSchemeId(codingSchemeName, version);
+		
+		this.getDaoManager().getEntityDao().insertBatchEntities(codingSchemeId, entities);
+		
 	}
 
 	public void insertEntity(String codingSchemeId, List<? extends Entity> entities) {
@@ -30,6 +36,8 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		// TODO Auto-generated method stub
 		
 	}
+
+
 	
 	
 }

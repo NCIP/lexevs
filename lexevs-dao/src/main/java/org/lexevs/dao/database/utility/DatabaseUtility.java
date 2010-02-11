@@ -38,6 +38,8 @@ public interface DatabaseUtility {
 	
 	public void truncateTable(String tableName) throws Exception;
 	
+	public boolean doesTableExist(String tableName);
+	
 	/**
 	 * Execute script.
 	 * 

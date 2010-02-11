@@ -1,27 +1,23 @@
 package org.lexevs.dao.database.access.property;
 
+import java.util.List;
+
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.concepts.PropertyLink;
+import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 
 public interface PropertyDao {
 	
 	public enum PropertyType {CODINGSCHEME,VALUEDOMAIN,ENTITY}
 
-	public void insertProperty(
-			String codingSchemeName, 
-			String version, 
-			String entityCode,
-			String entityCodeNamespace,
-			PropertyType type,
-			Property property);
-	
 	public String insertProperty(
 			String codingSchemeName, 
 			String version, 
-			String entityCodeId,
+			String parentId,
 			PropertyType type,
 			Property property);
+	
 	
 	public void insertPropertyQualifier(
 			String codingSchemeName, 
@@ -31,9 +27,14 @@ public interface PropertyDao {
 	
 	public String insertProperty(
 			String codingSchemeId, 
-			String entityCodeId,
+			String parentId,
 			PropertyType type,
 			Property property);
+	
+	public void insertBatchProperties(
+			String codingSchemeId, 
+			PropertyType type,
+			List<PropertyBatchInsertItem> batch);
 	
 	public void insertPropertyLink(
 			String codingSchemeId, 
@@ -43,9 +44,7 @@ public interface PropertyDao {
 	
 	public void updateProperty(
 			String codingSchemeName, 
-			String version, 
-			String entityCode,
-			String entityCodeNamespace,
+			String parentId,
 			String propertyId,
 			PropertyType type,
 			Property property);

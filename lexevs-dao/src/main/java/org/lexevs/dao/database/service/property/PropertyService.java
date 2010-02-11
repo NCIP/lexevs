@@ -3,26 +3,26 @@ package org.lexevs.dao.database.service.property;
 import java.util.List;
 
 import org.LexGrid.commonTypes.Property;
-import org.lexevs.dao.database.service.property.batch.PropertyBatchInsertItem;
+import org.lexevs.dao.database.service.DatabaseService;
 
-public interface PropertyService {
+public interface PropertyService extends DatabaseService {
 	
-	public void insertProperty(
+	public void insertEntityProperty(
 			String codingSchemeName, 
 			String version, 
 			String entityCode,
 			String entityCodeNamespace,
 			Property property);
 	
-	public void insertProperty(
-			String entityCodeId,
-			Property property);
-	
-	public void insertProperty(String codingSchemeId, 
-			List<PropertyBatchInsertItem> items);
+	public void insertBatchEntityProperties(
+			String codingSchemeName, 
+			String version, 
+			String entityCode,
+			String entityCodeNamespace,
+			List<Property> batch);
 
 	
-	public void updateProperty(
+	public void updateEntityProperty(
 			String codingSchemeName, 
 			String version, 
 			String entityCode,

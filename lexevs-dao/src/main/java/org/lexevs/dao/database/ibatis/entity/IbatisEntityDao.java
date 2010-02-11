@@ -4,23 +4,27 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.dao.database.access.entity.EntityDao;
-import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
+import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
+import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
+import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
 import org.lexevs.dao.database.ibatis.entity.parameter.InsertEntityBean;
 import org.lexevs.dao.database.ibatis.entity.parameter.InsertEntityTypeBean;
+import org.lexevs.dao.database.ibatis.property.IbatisPropertyDao;
+import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
-import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
 
-public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
+public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, InitializingBean {
 	
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
@@ -32,8 +36,16 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	public static String ENTITY = "entity";
 	public static String ENTITY_ID_PARAM = "entityId";
 	
-	private VersionsDao versionsDao;
+	private IbatisVersionsDao ibatisVersionsDao;
+	public IbatisPropertyDao getIbatisPropertyDao() {
+		return ibatisPropertyDao;
+	}
 
+	public void setIbatisPropertyDao(IbatisPropertyDao ibatisPropertyDao) {
+		this.ibatisPropertyDao = ibatisPropertyDao;
+	}
+
+	private IbatisPropertyDao ibatisPropertyDao;
 
 	public Entity getEntity(String entityCode, String entityCodeNamespace){
 		Map<String,String> paramMap = new HashMap<String,String>();
@@ -62,18 +74,22 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	}
 	
 	public String insertEntity(String codingSchemeId, Entity entity) {
+		return this.insertEntity(codingSchemeId, entity, this.getNonBatchTemplateInserter());
+	}
+	
+	public String insertEntity(String codingSchemeId, Entity entity, IbatisInserter inserter) {
 		String entityId = this.createUniqueId();
 		String entryStateId = this.createUniqueId();
-		this.versionsDao.insertEntryState(
+		this.ibatisVersionsDao.insertEntryState(
 				codingSchemeId,
 				entryStateId, entityId, "Entity", null, entity.getEntryState());
 		
-		this.getSqlMapClientTemplate().insert(INSERT_ENTITY_SQL, 
+		inserter.insert(INSERT_ENTITY_SQL, 
 				buildInsertEntityParamaterBean(codingSchemeId, entityId, entryStateId, entity));
-		
+
 		for(String entityType : entity.getEntityType()){
-		this.getSqlMapClientTemplate().insert(INSERT_ENTITY_TYPE_SQL, 
-				new InsertEntityTypeBean(entityId, entityType));
+			inserter.insert(INSERT_ENTITY_TYPE_SQL, 
+					new InsertEntityTypeBean(entityId, entityType));
 		}
 
 		return entityId;
@@ -90,27 +106,32 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void insertEntity(final String codingSchemeId, final List<Entity> entities) {
+	public void insertBatchEntities(final String codingSchemeId, final List<? extends Entity> entities) {
 
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
 
 			public Object doInSqlMapClient(SqlMapExecutor executor)
 					throws SQLException {
+				IbatisBatchInserter batchInserter = new SqlMapExecutorBatchInserter(executor);
 				
-				executor.startBatch();
+				batchInserter.startBatch();
+				
 				for(Entity entity : entities){
-					String entityId = createUniqueId();
-					String entryStateId = createUniqueId();
-					versionsDao.insertEntryState(
-							codingSchemeId,
-							entryStateId, entityId, "Entity", null, entity.getEntryState());
-					executor.insert(INSERT_ENTITY_SQL, buildInsertEntityParamaterBean(codingSchemeId, entryStateId, entryStateId, entity));
-					
+					insertEntity(codingSchemeId, entity, batchInserter);
 				}
-				 executor.executeBatch();
-				 return null;
+				
+				batchInserter.executeBatch();
+				
+				return null;
 			}
 		});
+	}
+	
+
+	public String getEntityId(String codingSchemeId, String entityCode,
+			String entityCodeNamespace) {
+		return null;
+		
 	}
 	
 	protected InsertEntityBean buildInsertEntityParamaterBean(String codingSchemeId, String entityId, String entryStateId, Entity entity){
@@ -132,11 +153,12 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		return DaoUtility.createList(supportedDatebaseVersion, LexGridSchemaVersion.class);
 	}
 
-	public void setVersionsDao(VersionsDao versionsDao) {
-		this.versionsDao = versionsDao;
+	public void setIbatisVersionsDao(IbatisVersionsDao ibatisVersionsDao) {
+		this.ibatisVersionsDao = ibatisVersionsDao;
 	}
 
-	public VersionsDao getVersionsDao() {
-		return versionsDao;
+	public IbatisVersionsDao getIbatisVersionsDao() {
+		return ibatisVersionsDao;
 	}
+
 }
