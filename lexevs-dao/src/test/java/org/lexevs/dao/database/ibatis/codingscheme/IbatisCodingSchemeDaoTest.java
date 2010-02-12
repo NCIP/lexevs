@@ -130,7 +130,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
-		template.queryForObject("Select * from Mapping", new RowMapper(){
+		template.queryForObject("Select * from csSupportedAttrib", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				

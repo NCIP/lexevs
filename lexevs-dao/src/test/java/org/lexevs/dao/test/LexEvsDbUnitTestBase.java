@@ -22,8 +22,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations={"/lexevsDao-dbunit-test.xml"})
 public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 
-	private static final String CREATE_MAIN_SCRIPT = "sql/lexevs/lexevs-main-create-hsqldb.sql";
-	private static final String CREATE_REGISTSRY_SCRIPT = "sql/lexevs/lexevs-registry-create-hsqldb.sql";
+	private static final String CREATE_COMMON_SCRIPT = "sql/lexevs/common-create-hsqldb.sql";
+	private static final String CREATE_CODINGSCHEME_SCRIPT = "sql/lexevs/codingscheme-create-hsqldb.sql";
 	
 	@Resource
 	protected DataSource dataSource;
@@ -41,8 +41,8 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	
 	@Before
 	public void setUp() throws Exception {
-		databaseUtility.executeScript(new ClassPathResource(CREATE_MAIN_SCRIPT), prefixResolver.resolvePrefix());
-		databaseUtility.executeScript(new ClassPathResource(CREATE_REGISTSRY_SCRIPT), prefixResolver.resolvePrefix());
+		databaseUtility.executeScript(new ClassPathResource(CREATE_COMMON_SCRIPT), prefixResolver.resolvePrefix());
+		databaseUtility.executeScript(new ClassPathResource(CREATE_CODINGSCHEME_SCRIPT), prefixResolver.resolvePrefix());
 	}
 	
 	@After

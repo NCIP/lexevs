@@ -4,8 +4,8 @@
 <sqlMap>
 
      <insert id="insertURIMap" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertURIMapBean">
-		INSERT INTO $prefix$mapping (
-			mappingGuid,
+		INSERT INTO $prefix$csSupportedAttrib (
+			csSuppAttribGuid,
 			codingSchemeGuid,
 			supportedAttributeTag,
 			id,
@@ -15,8 +15,7 @@
 			isForwardNavigable,
 			isImported,
 			equivalentCodingScheme,
-			assemblyRule,
-			conceptDomainCodingScheme
+			assemblyRule
 		) VALUES (
 			#id#, 
 			#codingSchemeId#,
@@ -63,9 +62,6 @@
 			<isPropertyAvailable prepend="," property="uriMap.conceptDomainCodingScheme">
 				#uriMap.conceptDomainCodingScheme#
 			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="uriMap.conceptDomainCodingScheme">
-				null
-			</isNotPropertyAvailable>
 		)
   </insert>
     

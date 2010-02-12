@@ -12,13 +12,13 @@ import org.hibernate.annotations.GenericGenerator;
 import org.lexevs.dao.database.constants.DatabaseConstants;
 
 @Entity
-@Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "registryentry")
+@Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "registry")
 public class RegistryEntry {
 	
 	@Id
-	@Column(name="id")
 	@GeneratedValue(generator="system-uuid")
  	@GenericGenerator(name="system-uuid", strategy = "uuid")
+ 	@Column(name="registryGuid")
 	public String id;
 	
 	private Timestamp activationDate;
@@ -31,7 +31,7 @@ public class RegistryEntry {
 	
 	private String dbSchemaVersion;
 	
-	private String dbUrl;
+	private String dbUri;
 	
 	private Timestamp deactivationDate;
 	
@@ -103,12 +103,12 @@ public class RegistryEntry {
 		this.dbSchemaDescription = dbSchemaDescription;
 	}
 
-	public String getDbUrl() {
-		return dbUrl;
+	public String getDbUri() {
+		return dbUri;
 	}
 
-	public void setDbUrl(String dbUrl) {
-		this.dbUrl = dbUrl;
+	public void setDbUrl(String dbUri) {
+		this.dbUri = dbUri;
 	}
 
 	public Timestamp getDeactivationDate() {

@@ -12,13 +12,12 @@ import javax.persistence.Table;
 import org.lexevs.dao.database.constants.DatabaseConstants;
 
 @Entity
-@Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "registry")
+@Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "registryMetadata")
 public class Registry implements Serializable {
 
 	private static final long serialVersionUID = 2383440967007176901L;
 
 	@Id
-	@Column(name="id")
 	private int id = 0;
 	
 	@Column(name="lastUpdateTime")

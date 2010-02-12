@@ -75,7 +75,7 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
-		template.queryForObject("Select * from registryentry", new RowMapper(){
+		template.queryForObject("Select * from registry", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				
