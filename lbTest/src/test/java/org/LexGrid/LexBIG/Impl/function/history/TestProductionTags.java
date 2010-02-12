@@ -31,7 +31,6 @@ import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.function.TestUtil;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridLoaderImpl;
@@ -44,6 +43,7 @@ import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.lexevs.system.ResourceManager;
 
 public class TestProductionTags extends LexBIGServiceTestCase {
     final static String testID = "T1_HIS_01";

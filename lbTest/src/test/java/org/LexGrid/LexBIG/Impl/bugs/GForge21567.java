@@ -21,8 +21,8 @@ package org.LexGrid.LexBIG.Impl.bugs;
 import net.sourceforge.groboutils.junit.v1.MultiThreadedTestRunner;
 import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
+import org.lexevs.system.ResourceManager;
 
 public class GForge21567 extends LexBIGServiceTestCase {
     final static String testID = "GForge21567";

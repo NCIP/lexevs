@@ -20,6 +20,9 @@ package org.LexGrid.LexBIG.Impl.dataAccess;
 
 import java.lang.reflect.Field;
 
+import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.system.ResourceManager;
+
 /**
  * The Class SQLImplementedMethodsGraphVersion17Tests.
  * 

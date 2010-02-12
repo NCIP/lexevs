@@ -23,10 +23,12 @@ import java.util.Date;
 import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
-import org.LexGrid.LexBIG.Impl.dataAccess.Registry.DBEntry;
-import org.LexGrid.LexBIG.Impl.dataAccess.Registry.HistoryEntry;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.util.sql.DBUtility;
+import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.service.Registry.DBEntry;
+import org.lexevs.registry.service.Registry.HistoryEntry;
+import org.lexevs.system.ResourceManager;
 
 /**
  * JUnit test cases for the registry system.

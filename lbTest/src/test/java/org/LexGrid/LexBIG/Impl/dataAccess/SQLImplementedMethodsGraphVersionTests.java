@@ -30,6 +30,8 @@ import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.function.codednodegraph.BaseCodedNodeGraphTest;
 import org.LexGrid.LexBIG.Impl.helpers.graph.GHolder;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.system.ResourceManager;
 
 /**
  * The Class SQLImplementedMethodsGraphVersionTests.

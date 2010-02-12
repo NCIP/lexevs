@@ -25,9 +25,9 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption;
 import org.LexGrid.LexBIG.Extensions.Query.Sort;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
+import org.lexevs.system.ResourceManager;
 
 /**
  * The Class ResultComparatorTest.

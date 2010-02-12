@@ -23,9 +23,9 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparator;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.lexevs.system.ResourceManager;
 
 /**
  * JUnit Tests for the CodeToReturn sorter.

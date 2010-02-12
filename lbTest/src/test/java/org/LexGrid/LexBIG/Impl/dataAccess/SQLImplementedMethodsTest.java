@@ -26,13 +26,14 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.interfaces.Operation;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
-import org.LexGrid.LexBIG.Impl.internalExceptions.MissingResourceException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.easymock.classextension.EasyMock;
+import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.exceptions.MissingResourceException;
 
 /**
  * The Class SQLImplementedMethodsTest.

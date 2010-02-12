@@ -2,10 +2,12 @@ package org.LexGrid.LexBIG.Impl.dataAccess;
 
 import java.sql.Connection;
 
-import org.LexGrid.LexBIG.Utility.CryptoUtility;
-import org.LexGrid.util.sql.DBUtility;
-
 import junit.framework.TestCase;
+
+import org.LexGrid.util.sql.DBUtility;
+import org.lexevs.system.ResourceManager;
+import org.lexevs.system.constants.SystemVariables;
+import org.lexevs.system.utility.CryptoUtility;
 
 public class TestPasswordEncryption extends TestCase {
 

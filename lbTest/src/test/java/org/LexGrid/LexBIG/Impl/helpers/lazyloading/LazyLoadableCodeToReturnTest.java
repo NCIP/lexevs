@@ -26,13 +26,13 @@ import java.io.Reader;
 
 import junit.framework.TestCase;
 
-import org.LexGrid.LexBIG.Impl.internalExceptions.MissingResourceException;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.AbstractField;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
+import org.lexevs.exceptions.MissingResourceException;
 
 /**
  * The Class LazyLoadableCodeToReturnTest.

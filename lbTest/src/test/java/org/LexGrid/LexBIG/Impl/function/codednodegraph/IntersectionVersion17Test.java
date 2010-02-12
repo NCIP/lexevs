@@ -22,11 +22,11 @@ import java.lang.reflect.Field;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLInterface;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.system.ResourceManager;
 
 /**
  * The Class IntersectionVersion17Test.

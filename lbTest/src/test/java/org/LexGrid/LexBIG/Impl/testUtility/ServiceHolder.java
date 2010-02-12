@@ -25,10 +25,10 @@ import java.util.UUID;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.LexGrid.LexBIG.Impl.dataAccess.SystemVariables;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.util.config.PropertiesUtility;
+import org.lexevs.system.ResourceManager;
+import org.lexevs.system.constants.SystemVariables;
 
 /**
  * Singleton class for getting a LexBIGService for the JUnit test cases.

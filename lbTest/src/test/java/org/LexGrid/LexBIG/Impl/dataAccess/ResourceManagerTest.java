@@ -20,6 +20,7 @@ package org.LexGrid.LexBIG.Impl.dataAccess;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.SortContext;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
+import org.lexevs.system.ResourceManager;
 
 /**
  * The Class ResourceManagerTest.
@@ -44,19 +45,5 @@ public class ResourceManagerTest extends LexBIGServiceTestCase {
      */
     public void setUp(){
         resourceManager = ResourceManager.instance();
-    }
-    
-    /**
-     * Test is sort algorithm valid true.
-     */
-    public void testIsSortAlgorithmValidTrue(){
-        assertTrue(resourceManager.isSortAlgorithmValid("codeSystem", SortContext.SET));
-    }
-    
-    /**
-     * Test is sort algorithm valid false.
-     */
-    public void testIsSortAlgorithmValidFalse(){
-        assertFalse(resourceManager.isSortAlgorithmValid("codeSystem", SortContext.GRAPH));
     }
 }

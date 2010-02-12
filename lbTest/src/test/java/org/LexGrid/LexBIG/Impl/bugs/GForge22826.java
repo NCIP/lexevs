@@ -6,6 +6,7 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
+import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -15,7 +16,6 @@ import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Source;
-import org.LexGrid.relations.Association;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
@@ -30,7 +30,8 @@ public class GForge22826 extends TestCase {
         try {
             CodingScheme resolvedCodingScheme = ServiceHolder.instance().getLexBIGService().resolveCodingScheme("Automobiles", tagOrVersion);
             Relations[] relations = resolvedCodingScheme.getRelations();
-            
+           
+            /* TODO fix this test
             for (int i = 0; i < relations.length; i++) {
                 Association[] associations = relations[i].getAssociation();
                 
@@ -64,8 +65,9 @@ public class GForge22826 extends TestCase {
                         return;
                     }
                 }
+                
             }
-            
+            */
             fail();
         } catch (LBInvocationException e) {
             // TODO Auto-generated catch block

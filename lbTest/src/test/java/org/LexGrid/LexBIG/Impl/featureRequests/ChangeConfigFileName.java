@@ -19,11 +19,11 @@
 package org.LexGrid.LexBIG.Impl.featureRequests;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.LexGrid.LexBIG.Impl.dataAccess.SystemVariables;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.lexevs.system.ResourceManager;
+import org.lexevs.system.constants.SystemVariables;
 /**
  * This class should be used as a place to write JUnit tests which demonstrate a Feature Request.
  * 

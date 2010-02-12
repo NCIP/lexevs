@@ -20,8 +20,8 @@ package org.LexGrid.LexBIG.Impl.function.codednodegraph;
 
 import java.lang.reflect.Field;
 
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLInterface;
+import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.system.ResourceManager;
 
 /**
  * The Class SortGraphVersion17Test.

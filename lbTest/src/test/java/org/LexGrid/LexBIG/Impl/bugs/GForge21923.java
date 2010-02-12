@@ -20,10 +20,10 @@ package org.LexGrid.LexBIG.Impl.bugs;
 
 import java.lang.reflect.Method;
 
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLInterface;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
+import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.system.ResourceManager;
 
 /**
  * This class should be used as a place to write JUnit tests which show a bug,

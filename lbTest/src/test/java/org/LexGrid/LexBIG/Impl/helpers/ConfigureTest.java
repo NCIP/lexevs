@@ -22,8 +22,8 @@ import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.dataAccess.CleanUpUtility;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
+import org.lexevs.system.ResourceManager;
 
 /**
  * this test reconfigured us to single db mode. Call this before rerunning the

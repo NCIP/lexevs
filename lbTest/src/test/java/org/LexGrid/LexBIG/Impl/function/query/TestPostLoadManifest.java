@@ -25,7 +25,6 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
@@ -47,6 +46,7 @@ import org.LexGrid.naming.SupportedPropertyQualifier;
 import org.LexGrid.naming.SupportedRepresentationalForm;
 import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.naming.SupportedStatus;
+import org.lexevs.system.ResourceManager;
 
 public class TestPostLoadManifest extends LexBIGServiceTestCase {
 
