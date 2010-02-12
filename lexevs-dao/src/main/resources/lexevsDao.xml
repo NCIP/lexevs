@@ -285,7 +285,7 @@
 <!--		</property>-->
 <!--	</bean>-->
 	
-	<bean id="registryXmlToDatabaseTransfer" class="org.lexevs.registry.xmlToDatabase.RegistryXmlToDatabaseTransfer"/>
+	<bean id="registryXmlToDatabaseTransfer" class="org.lexevs.registry.xmltransfer.RegistryXmlToDatabaseTransfer"/>
 	
 	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager"/>
 	
