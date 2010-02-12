@@ -92,4 +92,8 @@ public class UmlsPropertyResolver extends AbstractBasicPropertyResolver<Mrconso>
 	public String getRepresentationalForm(Mrconso item) {
 		return item.getTty();
 	}
+
+	public String getEntityCodeNamespace(Mrconso item) {
+		return null;
+	}
 }

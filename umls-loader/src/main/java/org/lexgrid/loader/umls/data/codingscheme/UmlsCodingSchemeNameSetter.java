@@ -18,7 +18,7 @@
  */
 package org.lexgrid.loader.umls.data.codingscheme;
 
-import org.lexgrid.loader.data.codingScheme.CodingSchemeNameSetter;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.rrf.data.codingscheme.MrsabUtility;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -27,7 +27,7 @@ import org.springframework.beans.factory.InitializingBean;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class UmlsCodingSchemeNameSetter implements CodingSchemeNameSetter, InitializingBean {
+public class UmlsCodingSchemeNameSetter implements CodingSchemeIdSetter, InitializingBean {
 
 	/** The mrsab utility. */
 	private MrsabUtility mrsabUtility;
@@ -39,7 +39,7 @@ public class UmlsCodingSchemeNameSetter implements CodingSchemeNameSetter, Initi
 	private String codingSchemeName;
 	
 	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.data.codingScheme.CodingSchemeNameSetter#getCodingSchemeName()
+	 * @see org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter#getCodingSchemeName()
 	 */
 	public String getCodingSchemeName() {
 		return codingSchemeName;

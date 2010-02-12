@@ -2,7 +2,7 @@ package org.lexgrid.loader.umls.processor;
 
 import org.LexGrid.persistence.model.EntityAssnsToEntity;
 import org.lexgrid.loader.data.association.EntityAssnsToEntityReproducibleKeyResolver;
-import org.lexgrid.loader.data.association.MultiAttribKeyResolver;
+import org.lexgrid.loader.data.association.AssociationInstanceIdResolver;
 import org.lexgrid.loader.processor.support.EntityCodeAndCodingSchemeResolver;
 import org.lexgrid.loader.processor.support.RelationContainerResolver;
 import org.lexgrid.loader.rrf.model.Mrrel;
@@ -12,7 +12,7 @@ import org.lexgrid.loader.wrappers.CodeCodingSchemePair;
 public class UmlsEntityAssnsToEntityProcessor extends GroupRrfEntityAssnsToEntityProcessor{
 
 	/** The key resolver. */
-	private MultiAttribKeyResolver<EntityAssnsToEntity> keyResolver = new EntityAssnsToEntityReproducibleKeyResolver();
+	private AssociationInstanceIdResolver<EntityAssnsToEntity> keyResolver = new EntityAssnsToEntityReproducibleKeyResolver();
 
 	/** The source entity code and coding scheme resolver. */
 	private EntityCodeAndCodingSchemeResolver<Mrrel> sourceEntityCodeAndCodingSchemeResolver;
@@ -45,8 +45,8 @@ public class UmlsEntityAssnsToEntityProcessor extends GroupRrfEntityAssnsToEntit
 	 */
 	protected EntityAssnsToEntity buildEntityAssnsToEntity(CodeCodingSchemePair sourceCode, CodeCodingSchemePair targetCode, String container, String relation, String rui){
 		EntityAssnsToEntity relAssoc = new EntityAssnsToEntity();
-		relAssoc.setCodingSchemeName(getCodingSchemeNameSetter().getCodingSchemeName());
-		relAssoc.setEntityCodeNamespace(getCodingSchemeNameSetter().getCodingSchemeName());
+		relAssoc.setCodingSchemeName(getCodingSchemeIdSetter().getCodingSchemeId());
+		relAssoc.setEntityCodeNamespace(getCodingSchemeIdSetter().getCodingSchemeId());
 		relAssoc.setContainerName(container);
 		relAssoc.setEntityCode(relation);
 		relAssoc.setSourceEntityCode(sourceCode.getCode());
@@ -125,7 +125,7 @@ public class UmlsEntityAssnsToEntityProcessor extends GroupRrfEntityAssnsToEntit
 	 * 
 	 * @return the key resolver
 	 */
-	public MultiAttribKeyResolver<EntityAssnsToEntity> getKeyResolver() {
+	public AssociationInstanceIdResolver<EntityAssnsToEntity> getKeyResolver() {
 		return keyResolver;
 	}
 
@@ -135,7 +135,7 @@ public class UmlsEntityAssnsToEntityProcessor extends GroupRrfEntityAssnsToEntit
 	 * @param keyResolver the new key resolver
 	 */
 	public void setKeyResolver(
-			MultiAttribKeyResolver<EntityAssnsToEntity> keyResolver) {
+			AssociationInstanceIdResolver<EntityAssnsToEntity> keyResolver) {
 		this.keyResolver = keyResolver;
 	}
 }

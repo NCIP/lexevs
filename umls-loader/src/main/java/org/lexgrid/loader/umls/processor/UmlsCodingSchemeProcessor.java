@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.LexGrid.persistence.model.CodingScheme;
 import org.lexgrid.loader.dao.SupportedAttributeSupport;
-import org.lexgrid.loader.data.codingScheme.CodingSchemeNameSetter;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.rrf.model.Mrsab;
 import org.springframework.batch.item.ItemProcessor;
 
@@ -37,7 +37,7 @@ public class UmlsCodingSchemeProcessor extends SupportedAttributeSupport impleme
 	private Map<String,String> isoMap;
 	
 	/** The coding scheme name setter. */
-	private CodingSchemeNameSetter codingSchemeNameSetter;
+	private CodingSchemeIdSetter codingSchemeIdSetter;
 	
 	/** The sab. */
 	private String sab;
@@ -51,7 +51,7 @@ public class UmlsCodingSchemeProcessor extends SupportedAttributeSupport impleme
 	public CodingScheme process(Mrsab mrsab) throws Exception {
 		if(processRow(mrsab)){
 			CodingScheme cs = new CodingScheme();
-			cs.setCodingSchemeName(codingSchemeNameSetter.getCodingSchemeName());
+			cs.setCodingSchemeName(codingSchemeIdSetter.getCodingSchemeId());
 			cs.setCodingSchemeUri(isoMap.get(sab));
 			cs.setFormalName(mrsab.getSon());
 			cs.setDefaultLanguage(mrsab.getLat());
@@ -60,8 +60,8 @@ public class UmlsCodingSchemeProcessor extends SupportedAttributeSupport impleme
 			cs.setCopyright(mrsab.getScc());
 			cs.setIsActive(true);
 
-			getSupportedAttributeTemplate().addSupportedCodingScheme(cs.getCodingSchemeName(), 
-					cs.getCodingSchemeName(), cs.getCodingSchemeUri(), cs.getFormalName(), false);
+			getSupportedAttributeTemplate().addSupportedCodingScheme(cs.getCodingSchemeId(), 
+					cs.getCodingSchemeId(), cs.getCodingSchemeUri(), cs.getFormalName(), false);
 
 			return cs;
 		} else {
@@ -108,18 +108,18 @@ public class UmlsCodingSchemeProcessor extends SupportedAttributeSupport impleme
 	 * 
 	 * @return the coding scheme name setter
 	 */
-	public CodingSchemeNameSetter getCodingSchemeNameSetter() {
-		return codingSchemeNameSetter;
+	public CodingSchemeIdSetter getCodingSchemeNameSetter() {
+		return codingSchemeIdSetter;
 	}
 
 	/**
 	 * Sets the coding scheme name setter.
 	 * 
-	 * @param codingSchemeNameSetter the new coding scheme name setter
+	 * @param codingSchemeIdSetter the new coding scheme name setter
 	 */
 	public void setCodingSchemeNameSetter(
-			CodingSchemeNameSetter codingSchemeNameSetter) {
-		this.codingSchemeNameSetter = codingSchemeNameSetter;
+			CodingSchemeIdSetter codingSchemeIdSetter) {
+		this.codingSchemeIdSetter = codingSchemeIdSetter;
 	}
 
 	/**

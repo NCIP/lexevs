@@ -26,7 +26,7 @@ import org.LexGrid.persistence.dao.LexEvsDao;
 import org.LexGrid.persistence.model.CodingScheme;
 import org.LexGrid.persistence.model.CodingSchemeMultiAttrib;
 import org.LexGrid.persistence.model.CodingSchemeMultiAttribId;
-import org.lexgrid.loader.data.codingScheme.CodingSchemeNameSetter;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.hardcodedvalues.AbstractIntrospectiveHardcodedValues;
 
 /**
@@ -44,21 +44,21 @@ public class UmlsIntrospectiveHardcodedValues extends AbstractIntrospectiveHardc
 		List<Object> hardcodedValues = new ArrayList<Object>();
 		
 		LexEvsDao lexEvsDao = this.getLexEvsDao();
-		CodingSchemeNameSetter codingSchemeNameSetter = this.getCodingSchemeNameSetter();
+		CodingSchemeIdSetter codingSchemeIdSetter = this.getCodingSchemeNameSetter();
 		
-		String codingSchemeName = this.getCodingSchemeNameSetter().getCodingSchemeName();
+		String codingSchemeName = this.getCodingSchemeNameSetter().getCodingSchemeId();
 		
 		getSupportedAttributeTemplate().addSupportedNamespace(codingSchemeName, codingSchemeName, null, codingSchemeName, codingSchemeName);	
 		
 		CodingScheme codingScheme;
 		try {
-			codingScheme = lexEvsDao.findById(CodingScheme.class, codingSchemeNameSetter.getCodingSchemeName());
+			codingScheme = lexEvsDao.findById(CodingScheme.class, codingSchemeIdSetter.getCodingSchemeId());
 		} catch (Exception e) {
 			throw new RuntimeException("Coding not get the Coding Scheme info to load Hard Coded Values.", e);
 		}
 		
 		CodingSchemeMultiAttrib localName1 = buildLocalNameCodingSchemeMultiAttrib("localName");
-		localName1.getId().setAttributeValue(codingSchemeNameSetter.getCodingSchemeName());
+		localName1.getId().setAttributeValue(codingSchemeIdSetter.getCodingSchemeId());
 		hardcodedValues.add(localName1);
 		
 		CodingSchemeMultiAttrib localName2 = buildLocalNameCodingSchemeMultiAttrib("localName");
@@ -84,7 +84,7 @@ public class UmlsIntrospectiveHardcodedValues extends AbstractIntrospectiveHardc
 	 */
 	private CodingSchemeMultiAttrib buildLocalNameCodingSchemeMultiAttrib(String type){
 		CodingSchemeMultiAttrib multiAttri = new CodingSchemeMultiAttrib(new CodingSchemeMultiAttribId());
-		multiAttri.getId().setCodingSchemeName(getCodingSchemeNameSetter().getCodingSchemeName());
+		multiAttri.getId().setCodingSchemeName(getCodingSchemeNameSetter().getCodingSchemeId());
 		multiAttri.getId().setTypeName(type);
 		return multiAttri;
 	}
