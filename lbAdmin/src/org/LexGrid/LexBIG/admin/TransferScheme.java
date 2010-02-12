@@ -26,9 +26,6 @@ import java.io.InputStreamReader;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.dataAccess.ExportUtility;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLInterface;
-import org.LexGrid.LexBIG.Impl.dataAccess.SystemVariables;
 import org.LexGrid.annotations.LgAdminFunction;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.cli.BasicParser;
@@ -36,6 +33,9 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.system.ResourceManager;
+import org.lexevs.system.constants.SystemVariables;
 
 /**
  * Assists in transfering a terminology from one server to another.

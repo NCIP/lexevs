@@ -35,11 +35,11 @@ import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Export.Exporter;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.LexGrid.LexBIG.Impl.logging.Logger;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.lexevs.logging.Logger;
+import org.lexevs.system.ResourceManager;
 
 /**
  * Common utility functions required by admin tasks.

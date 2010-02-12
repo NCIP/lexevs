@@ -21,7 +21,6 @@ package org.LexGrid.LexBIG.admin;
 import java.util.Enumeration;
 
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.ObjectToString;
@@ -30,6 +29,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.lexevs.system.ResourceManager;
 
 /**
  * List registered extensions to the LexBIG runtime.
