@@ -35,7 +35,6 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -61,6 +60,7 @@ import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
 import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.lexevs.system.ResourceManager;
 import org.lexgrid.valuedomain.dto.ResolvedValueDomainCodedNodeSet;
 
 import edu.mayo.informatics.lexgrid.convert.utility.Constants;

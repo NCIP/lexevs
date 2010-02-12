@@ -21,12 +21,12 @@ package org.lexgrid.valuedomain.admin;
 import java.net.URI;
 
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.annotations.LgAdminFunction;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.lexevs.system.ResourceManager;
 import org.lexgrid.valuedomain.LexEVSValueDomainServices;
 import org.lexgrid.valuedomain.impl.LexEVSValueDomainServicesImpl;
 
