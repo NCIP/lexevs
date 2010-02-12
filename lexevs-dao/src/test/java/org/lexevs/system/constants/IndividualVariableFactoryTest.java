@@ -1,4 +1,4 @@
-package org.lexevs.dao.system.constants;
+package org.lexevs.system.constants;
 
 import javax.annotation.Resource;
 
