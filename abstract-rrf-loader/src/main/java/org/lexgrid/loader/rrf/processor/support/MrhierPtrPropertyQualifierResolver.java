@@ -18,8 +18,7 @@
  */
 package org.lexgrid.loader.rrf.processor.support;
 
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.lexgrid.loader.processor.support.AbstractBasicMultiAttribResolver;
+import org.lexgrid.loader.processor.support.AbstractPropertyQualifierResolver;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 import org.lexgrid.loader.rrf.model.Mrhier;
 
@@ -28,33 +27,13 @@ import org.lexgrid.loader.rrf.model.Mrhier;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MrhierPtrMultiAttribResolver extends AbstractBasicMultiAttribResolver<Mrhier>{
+public class MrhierPtrPropertyQualifierResolver extends AbstractPropertyQualifierResolver<Mrhier>{
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getAttributeValue(java.lang.Object)
-	 */
-	public String getAttributeValue(Mrhier item) {
+	public String getQualifierName() {
 		return RrfLoaderConstants.PTR_QUALIFIER;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getTypeName()
-	 */
-	public String getTypeName() {
-		return SQLTableConstants.TBLCOLVAL_QUALIFIER;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal1(java.lang.Object)
-	 */
-	public String getVal1(Mrhier item) {
+	public String getQualifierValue(Mrhier item) {
 		return item.getPtr();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal2(java.lang.Object)
-	 */
-	public String getVal2(Mrhier item) {
-		return null;
 	}
 }

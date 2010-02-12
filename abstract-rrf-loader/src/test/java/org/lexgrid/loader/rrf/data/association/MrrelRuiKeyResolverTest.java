@@ -18,11 +18,12 @@
  */
 package org.lexgrid.loader.rrf.data.association;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.lexgrid.loader.rrf.model.Mrrel;
-
-import static org.junit.Assert.*;
 
 /**
  * The Class MrrelRuiKeyResolverTest.
@@ -32,14 +33,14 @@ import static org.junit.Assert.*;
 public class MrrelRuiKeyResolverTest {
 
 	/** The resolver. */
-	private MrrelRuiKeyResolver resolver;
+	private MrrelRuiAssociationInstanceIdResolver resolver;
 	
 	/**
 	 * Sets the up.
 	 */
 	@Before
 	public void setUp() {
-		resolver = new MrrelRuiKeyResolver();
+		resolver = new MrrelRuiAssociationInstanceIdResolver();
 	}
 	
 	/**
@@ -58,6 +59,6 @@ public class MrrelRuiKeyResolverTest {
 		Mrrel mrrel = new Mrrel();
 		mrrel.setRui("testRui");
 		
-		assertTrue(resolver.resolveMultiAttributesKey(mrrel).equals("testRui"));
+		assertTrue(resolver.resolveAssociationInstanceId(mrrel).equals("testRui"));
 	}
 }

@@ -18,15 +18,14 @@
  */
 package org.lexgrid.loader.rrf.processor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-
-import org.LexGrid.persistence.model.EntityAssnsToEntity;
 import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.lexgrid.loader.data.association.RandomUuidKeyResolver;
 import org.lexgrid.loader.processor.EntityAssnToEQualsProcessor;
 import org.lexgrid.loader.rrf.model.Mrrel;
 

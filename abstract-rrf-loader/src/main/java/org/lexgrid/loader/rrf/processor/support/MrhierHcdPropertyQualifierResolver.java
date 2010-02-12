@@ -16,34 +16,25 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.lexgrid.loader.rrf.dao;
+package org.lexgrid.loader.rrf.processor.support;
 
-import java.util.List;
-
-import org.LexGrid.persistence.dao.LexEvsDao;
+import org.lexgrid.loader.processor.support.AbstractPropertyQualifierResolver;
+import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
+import org.lexgrid.loader.rrf.model.Mrhier;
 
 /**
- * The Interface RrfPostProcessingDao.
+ * The Class MrdefAuiMultiAttribResolver.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface RrfPostProcessingDao extends LexEvsDao {
+public class MrhierHcdPropertyQualifierResolver extends AbstractPropertyQualifierResolver<Mrhier>{
 
-	/**
-	 * Does relation exist in entity assn to entity.
-	 * 
-	 * @param relation the relation
-	 * 
-	 * @return true, if successful
-	 */
-	public boolean doesRelationExistInEntityAssnToEntity(String relation);
-	
-	/**
-	 * Gets the relation containers.
-	 * 
-	 * @param relation the relation
-	 * 
-	 * @return the relation containers
-	 */
-	public List<String> getRelationContainers(String relation);
+
+	public String getQualifierName() {
+		return RrfLoaderConstants.HCD_QUALIFIER;
+	}
+
+	public String getQualifierValue(Mrhier item) {
+		return item.getHcd() + ":" + item.getPtr();
+	}
 }

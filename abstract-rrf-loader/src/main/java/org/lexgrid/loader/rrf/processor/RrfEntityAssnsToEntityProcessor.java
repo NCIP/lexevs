@@ -18,82 +18,39 @@
  */
 package org.lexgrid.loader.rrf.processor;
 
-import java.util.List;
-
-import org.LexGrid.persistence.dao.LexEvsDao;
-import org.LexGrid.persistence.model.EntityAssnsToEntity;
-import org.LexGrid.persistence.model.EntityAssnsToEquals;
-import org.lexgrid.loader.data.association.NoopKeyResolver;
-import org.lexgrid.loader.processor.CodingSchemeNameAwareProcessor;
-import org.lexgrid.loader.processor.EntityAssnToEQualsProcessor;
+import org.LexGrid.relations.AssociationSource;
+import org.lexgrid.loader.database.key.AssociationPredicateKeyResolver;
+import org.lexgrid.loader.processor.CodingSchemeIdAwareProcessor;
 import org.lexgrid.loader.rrf.model.Mrrel;
+import org.lexgrid.loader.wrappers.ParentIdHolder;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.util.Assert;
 
 /**
  * The Class RelAndRelaEntityAssnsToEntityProcessor.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class RrfEntityAssnsToEntityProcessor extends CodingSchemeNameAwareProcessor implements InitializingBean, ItemProcessor<Mrrel, EntityAssnsToEntity> {
+public abstract class RrfEntityAssnsToEntityProcessor extends CodingSchemeIdAwareProcessor implements ItemProcessor<Mrrel, ParentIdHolder<AssociationSource>> {
 	
-	private List<EntityAssnToEQualsProcessor<Mrrel>> qualifierProcessors;
-	
-	private LexEvsDao lexEvsDao;
+	private AssociationPredicateKeyResolver associationPredicateKeyResolver;
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.item.ItemProcessor#process(java.lang.Object)
 	 */
-	public EntityAssnsToEntity process(Mrrel item) throws Exception {
-		EntityAssnsToEntity relation = buildEntityAssnsToEntity(item);
-		
-		if(qualifierProcessors != null){
-			for(EntityAssnToEQualsProcessor<Mrrel> processor : qualifierProcessors){
-				EntityAssnsToEquals qual = processor.process(item);
-				
-				//This is allowed to be null -- don't try to insert it then.
-				if(qual != null) {
-					qual.getId().setMultiAttributesKey(relation.getMultiAttributesKey());
-					lexEvsDao.insert(qual);
-				}
-			}
-		}
-		
-		return relation;
-	}
-		
-	public void afterPropertiesSet() throws Exception {
-		if(qualifierProcessors != null) {
-			for(EntityAssnToEQualsProcessor<?> qualProcessor : qualifierProcessors) {
-				Assert.isNull(qualProcessor.getKeyResolver(), 
-						"Do not individually set the Qualifier Processor Key Resolvers. " +
-				"The RrfEntityAssnsToEntity Processor will set the MultiAttribute Keys.");
-				qualProcessor.setKeyResolver(new NoopKeyResolver());
-			}
-		}
+	public ParentIdHolder<AssociationSource> process(Mrrel item) throws Exception {
+		AssociationSource relation = buildEntityAssociationSource(item);
+	
+		return new ParentIdHolder<AssociationSource>(
+				this.getCodingSchemeIdSetter(),
+				this.associationPredicateKeyResolver.resolveKey(
+							this.getCodingSchemeIdSetter().getCodingSchemeId(), getRelation(item)), 
+							relation);
 	}
 
-	protected abstract EntityAssnsToEntity buildEntityAssnsToEntity(Mrrel item) throws Exception;
+
+	protected abstract AssociationSource buildEntityAssociationSource(Mrrel item) throws Exception;
 	
 	protected String getRelation(Mrrel item){
 		return item.getRel();
 	}
-
-	public List<EntityAssnToEQualsProcessor<Mrrel>> getQualifierProcessors() {
-		return qualifierProcessors;
-	}
-
-	public void setQualifierProcessors(
-			List<EntityAssnToEQualsProcessor<Mrrel>> qualifierProcessors) {
-		this.qualifierProcessors = qualifierProcessors;
-	}
-
-	public LexEvsDao getLexEvsDao() {
-		return lexEvsDao;
-	}
-
-	public void setLexEvsDao(LexEvsDao lexEvsDao) {
-		this.lexEvsDao = lexEvsDao;
-	}	
 }

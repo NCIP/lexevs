@@ -18,8 +18,7 @@
  */
 package org.lexgrid.loader.rrf.processor.support;
 
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.lexgrid.loader.processor.support.AbstractBasicMultiAttribResolver;
+import org.lexgrid.loader.processor.support.AbstractPropertyQualifierResolver;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 import org.lexgrid.loader.rrf.model.Mrconso;
 
@@ -28,34 +27,14 @@ import org.lexgrid.loader.rrf.model.Mrconso;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MrconsoLuiMultiAttribResolver extends AbstractBasicMultiAttribResolver<Mrconso>{
+public class MrconsoSuiPropertyQualifierResolver extends AbstractPropertyQualifierResolver<Mrconso>{
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getAttributeValue(java.lang.Object)
-	 */
-	public String getAttributeValue(Mrconso item) {
-		return RrfLoaderConstants.LUI_QUALIFIER;
+	public String getQualifierName() {
+		return RrfLoaderConstants.SUI_QUALIFIER;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getTypeName()
-	 */
-	public String getTypeName() {
-		return SQLTableConstants.TBLCOLVAL_QUALIFIER;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal1(java.lang.Object)
-	 */
-	public String getVal1(Mrconso item) {
-		return item.getLui();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal2(java.lang.Object)
-	 */
-	public String getVal2(Mrconso item) {
-		return null;
+	public String getQualifierValue(Mrconso item) {
+		return item.getSui();
 	}
 
 }

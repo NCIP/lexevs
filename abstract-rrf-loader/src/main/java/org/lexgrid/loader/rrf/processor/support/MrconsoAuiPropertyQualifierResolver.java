@@ -16,22 +16,25 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.lexgrid.loader.rrf.data.association;
+package org.lexgrid.loader.rrf.processor.support;
 
-import org.lexgrid.loader.data.association.MultiAttribKeyResolver;
-import org.lexgrid.loader.rrf.model.Mrrel;
+import org.lexgrid.loader.processor.support.AbstractPropertyQualifierResolver;
+import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
+import org.lexgrid.loader.rrf.model.Mrconso;
 
 /**
- * The Class MrrelRuiKeyResolver.
+ * The Class MrconsoAuiMultiAttribResolver.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MrrelRuiKeyResolver implements MultiAttribKeyResolver<Mrrel> {
-	
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.data.association.MultiAttribKeyResolver#resolveMultiAttributesKey(java.lang.Object)
-	 */
-	public String resolveMultiAttributesKey(Mrrel key) {
-		return key.getRui();
+public class MrconsoAuiPropertyQualifierResolver extends AbstractPropertyQualifierResolver<Mrconso>{
+
+	public String getQualifierName() {
+		return RrfLoaderConstants.AUI_QUALIFIER;
 	}
+
+	public String getQualifierValue(Mrconso item) {
+		return item.getAui();
+	}
+
 }

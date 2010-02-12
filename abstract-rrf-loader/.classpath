@@ -16,5 +16,6 @@
 	<classpathentry kind="lib" path="/lgSharedLibraries/ehcache/ehcache-1.6.0-rc1.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-test-2.5.6.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/junit/junit-4.4.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

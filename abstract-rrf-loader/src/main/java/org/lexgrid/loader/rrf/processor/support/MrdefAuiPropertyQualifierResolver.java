@@ -18,43 +18,23 @@
  */
 package org.lexgrid.loader.rrf.processor.support;
 
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.lexgrid.loader.processor.support.AbstractBasicMultiAttribResolver;
+import org.lexgrid.loader.processor.support.AbstractPropertyQualifierResolver;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 import org.lexgrid.loader.rrf.model.Mrdef;
 
 /**
- * The Class MrdefCvfMultiAttribResolver.
+ * The Class MrdefAuiMultiAttribResolver.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MrdefCvfMultiAttribResolver extends AbstractBasicMultiAttribResolver<Mrdef>{
+public class MrdefAuiPropertyQualifierResolver extends AbstractPropertyQualifierResolver<Mrdef>{
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getAttributeValue(java.lang.Object)
-	 */
-	public String getAttributeValue(Mrdef item) {
-		return RrfLoaderConstants.CVF_QUALIFIER;
+	public String getQualifierName() {
+		return RrfLoaderConstants.AUI_QUALIFIER;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getTypeName()
-	 */
-	public String getTypeName() {
-		return SQLTableConstants.TBLCOLVAL_QUALIFIER;
+	public String getQualifierValue(Mrdef item) {
+		return item.getAui();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal1(java.lang.Object)
-	 */
-	public String getVal1(Mrdef item) {
-		return item.getCvf();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal2(java.lang.Object)
-	 */
-	public String getVal2(Mrdef item) {
-		return null;
-	}
 }

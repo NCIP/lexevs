@@ -18,7 +18,7 @@
  */
 package org.lexgrid.loader.rrf.processor.support;
 
-import org.LexGrid.persistence.model.EntityProperty;
+import org.LexGrid.commonTypes.Property;
 import org.lexgrid.loader.processor.support.EntityDescriptionResolver;
 
 /**
@@ -26,12 +26,12 @@ import org.lexgrid.loader.processor.support.EntityDescriptionResolver;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class EntityPropertyEntityDescriptionResolver implements EntityDescriptionResolver<EntityProperty>{
+public class EntityPropertyEntityDescriptionResolver implements EntityDescriptionResolver<Property>{
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.EntityDescriptionResolver#getEntityDescription(java.lang.Object)
 	 */
-	public String getEntityDescription(EntityProperty item) {
-		return item.getPropertyValue();
+	public String getEntityDescription(Property item) {
+		return item.getValue().getContent();
 	}
 }

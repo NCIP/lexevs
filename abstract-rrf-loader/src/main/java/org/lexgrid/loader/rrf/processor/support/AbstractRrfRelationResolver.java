@@ -18,7 +18,7 @@
  */
 package org.lexgrid.loader.rrf.processor.support;
 
-import org.lexgrid.loader.data.codingScheme.CodingSchemeNameSetter;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.processor.support.EntityNamespaceResolver;
 import org.lexgrid.loader.processor.support.RelationResolver;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants.RrfRelationType;
@@ -32,7 +32,7 @@ import org.lexgrid.loader.rrf.model.Mrrel;
 public abstract class AbstractRrfRelationResolver implements RelationResolver<Mrrel> {
 
 	/** The coding scheme name setter. */
-	private CodingSchemeNameSetter codingSchemeNameSetter;
+	private CodingSchemeIdSetter codingSchemeIdSetter;
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.RelationResolver#getContainerName()
@@ -67,21 +67,21 @@ public abstract class AbstractRrfRelationResolver implements RelationResolver<Mr
 	 * @see org.lexgrid.loader.processor.support.RelationResolver#getRelationNamespace(java.lang.Object)
 	 */
 	public String getRelationNamespace(Mrrel item) {
-		return codingSchemeNameSetter.getCodingSchemeName();
+		return codingSchemeIdSetter.getCodingSchemeId();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.RelationResolver#getSourceNamespace(java.lang.Object)
 	 */
 	public String getSourceNamespace(Mrrel item) {
-		return codingSchemeNameSetter.getCodingSchemeName();
+		return codingSchemeIdSetter.getCodingSchemeId();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.RelationResolver#getTargetNamespace(java.lang.Object)
 	 */
 	public String getTargetNamespace(Mrrel item) {
-		return codingSchemeNameSetter.getCodingSchemeName();
+		return codingSchemeIdSetter.getCodingSchemeId();
 	}
 
 	/**
@@ -89,17 +89,17 @@ public abstract class AbstractRrfRelationResolver implements RelationResolver<Mr
 	 * 
 	 * @return the coding scheme name setter
 	 */
-	public CodingSchemeNameSetter getCodingSchemeNameSetter() {
-		return codingSchemeNameSetter;
+	public CodingSchemeIdSetter getCodingSchemeNameSetter() {
+		return codingSchemeIdSetter;
 	}
 
 	/**
 	 * Sets the coding scheme name setter.
 	 * 
-	 * @param codingSchemeNameSetter the new coding scheme name setter
+	 * @param codingSchemeIdSetter the new coding scheme name setter
 	 */
 	public void setCodingSchemeNameSetter(
-			CodingSchemeNameSetter codingSchemeNameSetter) {
-		this.codingSchemeNameSetter = codingSchemeNameSetter;
+			CodingSchemeIdSetter codingSchemeIdSetter) {
+		this.codingSchemeIdSetter = codingSchemeIdSetter;
 	}
 }

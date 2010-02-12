@@ -16,23 +16,22 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.lexgrid.loader.rrf.processor.support;
+package org.lexgrid.loader.rrf.data.association;
 
-import org.LexGrid.persistence.model.EntityProperty;
-import org.lexgrid.loader.processor.support.EntityCodeResolver;
+import org.lexgrid.loader.data.association.AssociationInstanceIdResolver;
+import org.lexgrid.loader.rrf.model.Mrrel;
 
 /**
- * The Class EntityPropertyEntityCodeResolver.
+ * The Class MrrelRuiKeyResolver.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class EntityPropertyEntityCodeResolver implements EntityCodeResolver<EntityProperty>{
-
+public class MrrelRuiAssociationInstanceIdResolver implements AssociationInstanceIdResolver<Mrrel> {
+	
 	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.EntityCodeResolver#getEntityCode(java.lang.Object)
+	 * @see org.lexgrid.loader.data.association.AssociationInstanceIdResolver#resolveMultiAttributesKey(java.lang.Object)
 	 */
-	public String getEntityCode(EntityProperty item) {
-		return item.getId().getEntityCode();
+	public String resolveAssociationInstanceId(Mrrel key) {
+		return key.getRui();
 	}
-
 }

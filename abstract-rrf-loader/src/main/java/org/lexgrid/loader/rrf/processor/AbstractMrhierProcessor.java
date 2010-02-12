@@ -29,7 +29,7 @@ import org.LexGrid.persistence.model.EntityAssnsToEqualsId;
 import org.LexGrid.persistence.model.EntityPropertyMultiAttrib;
 import org.LexGrid.persistence.model.EntityPropertyMultiAttribId;
 import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
-import org.lexgrid.loader.processor.CodingSchemeNameAwareProcessor;
+import org.lexgrid.loader.processor.CodingSchemeIdAwareProcessor;
 import org.lexgrid.loader.processor.support.MinimalMultiAttribResolver;
 import org.lexgrid.loader.processor.support.QualifierResolver;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
@@ -45,7 +45,7 @@ import org.springframework.beans.factory.InitializingBean;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractMrhierProcessor extends CodingSchemeNameAwareProcessor implements InitializingBean, ItemProcessor<Mrhier,List<Object>> {
+public abstract class AbstractMrhierProcessor extends CodingSchemeIdAwareProcessor implements InitializingBean, ItemProcessor<Mrhier,List<Object>> {
 
 	/** The lex evs dao. */
 	private LexEvsDao lexEvsDao;
@@ -63,10 +63,10 @@ public abstract class AbstractMrhierProcessor extends CodingSchemeNameAwareProce
 	public void afterPropertiesSet() throws Exception {
 		if(supportedAttributeTemplate != null){
 			supportedAttributeTemplate.addSupportedPropertyQualifier(
-					this.getCodingSchemeNameSetter().getCodingSchemeName(),
+					this.getCodingSchemeIdSetter().getCodingSchemeId(),
 					RrfLoaderConstants.HCD_QUALIFIER, null, RrfLoaderConstants.HCD_QUALIFIER);
 			supportedAttributeTemplate.addSupportedAssociationQualifier(
-					this.getCodingSchemeNameSetter().getCodingSchemeName(),
+					this.getCodingSchemeIdSetter().getCodingSchemeId(),
 					RrfLoaderConstants.HCD_QUALIFIER, null, RrfLoaderConstants.HCD_QUALIFIER);
 		}
 	}
@@ -203,7 +203,7 @@ public abstract class AbstractMrhierProcessor extends CodingSchemeNameAwareProce
 	protected EntityAssnsToEquals buildEntityAssnsToEquals(Mrhier mrhier, EntityAssnsToEntity assoc){
 		EntityAssnsToEquals qual = new EntityAssnsToEquals();
 		EntityAssnsToEqualsId qualId = new EntityAssnsToEqualsId();
-		qualId.setCodingSchemeName(getCodingSchemeNameSetter().getCodingSchemeName());
+		qualId.setCodingSchemeName(getCodingSchemeIdSetter().getCodingSchemeId());
 		qualId.setMultiAttributesKey(assoc.getMultiAttributesKey());
 		qualId.setQualifierName(qualifierResolver.getQualifierName());
 		qualId.setQualifierValue(qualifierResolver.getQualifierValue(mrhier));
@@ -233,7 +233,7 @@ public abstract class AbstractMrhierProcessor extends CodingSchemeNameAwareProce
 	 */
 	protected EntityAssnsToEntity buildEntityAssnsToEntity(String sourceCode, String targetCode){
 		EntityAssnsToEntity assoc = new EntityAssnsToEntity();
-		assoc.setCodingSchemeName(getCodingSchemeNameSetter().getCodingSchemeName());
+		assoc.setCodingSchemeName(getCodingSchemeIdSetter().getCodingSchemeId());
 		assoc.setSourceEntityCode(sourceCode);
 		assoc.setTargetEntityCode(targetCode);
 		return assoc;		
@@ -247,9 +247,9 @@ public abstract class AbstractMrhierProcessor extends CodingSchemeNameAwareProce
 				EntityPropertyMultiAttrib qual = new EntityPropertyMultiAttrib();
 				EntityPropertyMultiAttribId qualId = new EntityPropertyMultiAttribId();
 
-				qualId.setCodingSchemeName(getCodingSchemeNameSetter().getCodingSchemeName());
+				qualId.setCodingSchemeName(getCodingSchemeIdSetter().getCodingSchemeId());
 				qualId.setEntityCode(sourceCode);
-				qualId.setEntityCodeNamespace(getCodingSchemeNameSetter().getCodingSchemeName());
+				qualId.setEntityCodeNamespace(getCodingSchemeIdSetter().getCodingSchemeId());
 				qualId.setTypeName(resolver.getTypeName());
 				qualId.setPropertyId(propertyId);
 				qualId.setVal1(resolver.getVal1(mrhier));

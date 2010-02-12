@@ -18,7 +18,7 @@
  */
 package org.lexgrid.loader.rrf.processor.support;
 
-import org.lexgrid.loader.data.codingScheme.CodingSchemeNameSetter;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.processor.support.RelationResolver;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants.RrfRelationType;
 import org.lexgrid.loader.rrf.model.Mrrel;

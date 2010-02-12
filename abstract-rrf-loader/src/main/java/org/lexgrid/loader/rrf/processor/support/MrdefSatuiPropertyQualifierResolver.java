@@ -18,8 +18,7 @@
  */
 package org.lexgrid.loader.rrf.processor.support;
 
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.lexgrid.loader.processor.support.AbstractBasicMultiAttribResolver;
+import org.lexgrid.loader.processor.support.AbstractPropertyQualifierResolver;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 import org.lexgrid.loader.rrf.model.Mrdef;
 
@@ -28,34 +27,14 @@ import org.lexgrid.loader.rrf.model.Mrdef;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MrdefSatuiMultiAttribResolver extends AbstractBasicMultiAttribResolver<Mrdef>{
+public class MrdefSatuiPropertyQualifierResolver extends AbstractPropertyQualifierResolver<Mrdef>{
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getAttributeValue(java.lang.Object)
-	 */
-	public String getAttributeValue(Mrdef item) {
+	public String getQualifierName() {
 		return RrfLoaderConstants.SATUI_QUALIFIER;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getTypeName()
-	 */
-	public String getTypeName() {
-		return SQLTableConstants.TBLCOLVAL_QUALIFIER;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal1(java.lang.Object)
-	 */
-	public String getVal1(Mrdef item) {
+	public String getQualifierValue(Mrdef item) {
 		return item.getSatui();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal2(java.lang.Object)
-	 */
-	public String getVal2(Mrdef item) {
-		return null;
 	}
 
 }

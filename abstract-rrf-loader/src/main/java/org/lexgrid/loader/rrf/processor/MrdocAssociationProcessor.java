@@ -21,13 +21,13 @@ package org.lexgrid.loader.rrf.processor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.persistence.model.Association;
-import org.LexGrid.persistence.model.AssociationId;
+import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.relations.AssociationEntity;
 import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
-import org.lexgrid.loader.processor.CodingSchemeNameAwareProcessor;
+import org.lexgrid.loader.processor.CodingSchemeIdAwareProcessor;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
-import org.lexgrid.loader.rrf.dao.RrfPostProcessingDao;
 import org.lexgrid.loader.rrf.model.Mrdoc;
+import org.lexgrid.loader.wrappers.CodingSchemeIdHolder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.util.Assert;
 
@@ -36,10 +36,10 @@ import org.springframework.util.Assert;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MrdocAssociationProcessor extends CodingSchemeNameAwareProcessor implements ItemProcessor<List<Mrdoc>,List<Association>> {
+public class MrdocAssociationProcessor extends CodingSchemeIdAwareProcessor implements ItemProcessor<List<Mrdoc>,List<CodingSchemeIdHolder<AssociationEntity>>> {
 
 	/** The rrf post processing dao. */
-	private RrfPostProcessingDao rrfPostProcessingDao;
+	//private RrfPostProcessingDao rrfPostProcessingDao;
 	
 	/** The supported attribute template. */
 	private SupportedAttributeTemplate supportedAttributeTemplate;
@@ -47,24 +47,28 @@ public class MrdocAssociationProcessor extends CodingSchemeNameAwareProcessor im
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.item.ItemProcessor#process(java.lang.Object)
 	 */
-	public List<Association> process(List<Mrdoc> items) throws Exception {
-		List<Association> returnList = new ArrayList<Association>();
+	public List<CodingSchemeIdHolder<AssociationEntity>> process(List<Mrdoc> items) throws Exception {
+		List<CodingSchemeIdHolder<AssociationEntity>> returnList = new ArrayList<CodingSchemeIdHolder<AssociationEntity>>();
 	
 		String relationName = getRelationName(items);
 		String reverseName = getReverseName(items);
 		String expandedName = getExpandedName(items);
 		
-		boolean isRelationLoaded = rrfPostProcessingDao.doesRelationExistInEntityAssnToEntity(relationName);
-		if(isRelationLoaded){
-			List<String> containerNames = rrfPostProcessingDao.getRelationContainers(relationName);
-			for(String containerName : containerNames){
-			supportedAttributeTemplate.addSupportedAssociation(getCodingSchemeNameSetter().getCodingSchemeName(), 
+		//boolean isRelationLoaded = rrfPostProcessingDao.doesRelationExistInEntityAssnToEntity(relationName);
+	//	if(isRelationLoaded){
+			
+			supportedAttributeTemplate.addSupportedAssociation(
+					getCodingSchemeIdSetter().getCodingSchemeUri(), 
+					getCodingSchemeIdSetter().getCodingSchemeVersion(), 
 					relationName, 
 					relationName, 
 					expandedName);
-			returnList.add(buildAssociation(containerName, relationName, reverseName, expandedName));
-			}
-		} 
+			returnList.add(
+					new CodingSchemeIdHolder<AssociationEntity>(
+							this.getCodingSchemeIdSetter(), 
+							buildAssociationEntity(relationName, reverseName, expandedName)));
+
+	//	} 
 		return returnList;
 	}
 	
@@ -78,21 +82,14 @@ public class MrdocAssociationProcessor extends CodingSchemeNameAwareProcessor im
 	 * 
 	 * @return the association
 	 */
-	protected Association buildAssociation(String containerName, String relationName, String reverseName, String expandedName){
-		Association assoc = new Association();
-		AssociationId assocId = new AssociationId();
-		assoc.setAssociationName(relationName);
+	protected AssociationEntity buildAssociationEntity(String relationName, String reverseName, String expandedName){
+		AssociationEntity assoc = new AssociationEntity();
 		assoc.setForwardName(relationName);
-		assoc.setInverseId(reverseName);
 		assoc.setReverseName(reverseName);
 		assoc.setIsTransitive(isTransitive(relationName));
 		assoc.setIsNavigable(true);
-		assoc.setEntityDescription(expandedName);
-		assocId.setContainerName(containerName);
-		assocId.setEntityCode(relationName);
-		assocId.setCodingSchemeName(getCodingSchemeNameSetter().getCodingSchemeName());
-		assocId.setEntityCodeNamespace(getCodingSchemeNameSetter().getCodingSchemeName());
-		assoc.setId(assocId);	
+		assoc.setEntityDescription(Constructors.createEntityDescription(expandedName));
+		assoc.setEntityCode(relationName);
 		return assoc;
 	}
 	
@@ -149,24 +146,6 @@ public class MrdocAssociationProcessor extends CodingSchemeNameAwareProcessor im
 	private String getRelationName(List<Mrdoc> items){
 		Assert.notEmpty(items);
 		return items.get(0).getValue();
-	}
-
-	/**
-	 * Gets the rrf post processing dao.
-	 * 
-	 * @return the rrf post processing dao
-	 */
-	public RrfPostProcessingDao getRrfPostProcessingDao() {
-		return rrfPostProcessingDao;
-	}
-
-	/**
-	 * Sets the rrf post processing dao.
-	 * 
-	 * @param rrfPostProcessingDao the new rrf post processing dao
-	 */
-	public void setRrfPostProcessingDao(RrfPostProcessingDao rrfPostProcessingDao) {
-		this.rrfPostProcessingDao = rrfPostProcessingDao;
 	}
 
 	/**

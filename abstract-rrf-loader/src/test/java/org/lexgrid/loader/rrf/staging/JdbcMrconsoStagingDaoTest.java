@@ -26,22 +26,21 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
-import org.LexGrid.LexBIG.Impl.helpers.SQLConnectionInfo;
-import org.LexGrid.persistence.database.DatabaseUtility;
-import org.LexGrid.persistence.properties.PropertiesFactory;
-import org.LexGrid.persistence.spring.DynamicPropertyApplicationContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.dao.database.spring.DynamicPropertyApplicationContext;
+import org.lexevs.dao.database.utility.DatabaseUtility;
 import org.lexgrid.loader.logging.StatusTrackingLogger;
+import org.lexgrid.loader.properties.impl.PropertiesFactory;
 import org.lexgrid.loader.rrf.staging.model.CodeSabPair;
 import org.lexgrid.loader.staging.DefaultStagingManager;
+import org.lexgrid.loader.test.util.LoaderTestUtils;
 import org.lexgrid.loader.wrappers.CodeCodingSchemePair;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import test.util.LoaderTestUtils;
 
 /**
  * The Class JdbcMrconsoStagingDaoTest.
