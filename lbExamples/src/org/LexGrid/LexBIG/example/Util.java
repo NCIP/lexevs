@@ -21,10 +21,10 @@ package org.LexGrid.LexBIG.example;
 import java.io.PrintWriter;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.LexGrid.LexBIG.Impl.logging.Logger;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.lexevs.logging.Logger;
+import org.lexevs.system.ResourceManager;
 
 /**
  * Utility functions to support the examples.
