@@ -34,6 +34,7 @@ public interface PropertyResolver<T> {
 	 */
 	public String getEntityCode(T item);
 	
+	public String getEntityCodeNamespace(T item);
 	/**
 	 * Gets the id.
 	 * 

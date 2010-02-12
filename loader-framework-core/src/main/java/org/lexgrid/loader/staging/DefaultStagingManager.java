@@ -21,9 +21,7 @@ package org.lexgrid.loader.staging;
 import java.util.Map;
 import java.util.Set;
 
-import org.LexGrid.persistence.database.DatabaseUtility;
-import org.apache.log4j.Logger;
-import org.lexgrid.loader.logging.LoggerFactory;
+import org.lexevs.dao.database.utility.DatabaseUtility;
 import org.lexgrid.loader.logging.LoggingBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;

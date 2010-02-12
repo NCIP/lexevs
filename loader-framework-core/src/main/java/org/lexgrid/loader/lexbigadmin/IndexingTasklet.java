@@ -45,7 +45,7 @@ public class IndexingTasklet extends AbstractLexEvsUtilityTasklet implements Tas
 		} else {
 			getLogger().info("Starting Lucene Indexing.");
 			
-			getConnectionManager().index(getCodingSchemeNameSetter().getCodingSchemeName(),
+			getConnectionManager().index(getCodingSchemeIdSetter().getCodingSchemeId(),
 					getCurrentCodingSchemeUri(), 
 					getCurrentCodingSchemeVersion());		
 		}

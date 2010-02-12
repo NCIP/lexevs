@@ -18,26 +18,26 @@
  */
 package org.lexgrid.loader.processor;
 
-import java.util.List;
-
-import org.LexGrid.persistence.model.EntityAssnsToEquals;
-import org.LexGrid.persistence.model.EntityAssnsToEqualsId;
+import org.LexGrid.relations.AssociationQualification;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
-import org.lexgrid.loader.data.association.MultiAttribKeyResolver;
-import org.springframework.batch.item.ItemProcessor;
-import org.lexgrid.loader.data.codingScheme.CodingSchemeNameSetter;
+import org.lexgrid.loader.data.association.AssociationInstanceIdResolver;
+import org.lexgrid.loader.database.key.AssociationInstanceKeyResolver;
 import org.lexgrid.loader.processor.support.QualifierResolver;
+import org.lexgrid.loader.wrappers.ParentIdHolder;
 
 /**
  * The Class EntityAssnToEQualsProcessor.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class EntityAssnToEQualsProcessor<I> extends AbstractSupportedAttributeRegisteringProcessor<I, EntityAssnsToEquals> {
+public class EntityAssnToEQualsProcessor<I> extends AbstractSupportedAttributeRegisteringProcessor<I, ParentIdHolder<AssociationQualification>> {
 
 	/** The key resolver. */
-	private MultiAttribKeyResolver<I> keyResolver;
+	private AssociationInstanceIdResolver<I> associationInstanceIdResolver;
+	
+	private AssociationInstanceKeyResolver associationInstanceKeyResolver;
 	
 	/** The qualifier resolver. */
 	private QualifierResolver<I> qualifierResolver;
@@ -47,49 +47,52 @@ public class EntityAssnToEQualsProcessor<I> extends AbstractSupportedAttributeRe
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.item.ItemProcessor#process(java.lang.Object)
 	 */
-	public EntityAssnsToEquals doProcess(I item) throws Exception {
+	public ParentIdHolder<AssociationQualification> doProcess(I item) throws Exception {
 		String qualifierValue = qualifierResolver.getQualifierValue(item);
 		if(StringUtils.isEmpty(qualifierValue) && skipNullValueQualifiers) {
 			return null;
 		}
-		EntityAssnsToEquals qual = new EntityAssnsToEquals();
-		EntityAssnsToEqualsId qualId = new EntityAssnsToEqualsId();
+		AssociationQualification qual = new AssociationQualification();
 		
-		qualId.setCodingSchemeName(getCodingSchemeNameSetter().getCodingSchemeName());
-		qualId.setQualifierName(qualifierResolver.getQualifierName());
-		qualId.setQualifierValue(qualifierValue);
-		qualId.setMultiAttributesKey(keyResolver.resolveMultiAttributesKey(item));
+		qual.setAssociationQualifier(qualifierResolver.getQualifierName());
+		qual.setQualifierText(DaoUtility.createText(qualifierValue));
+
+		String associationInstanceId = associationInstanceIdResolver.resolveAssociationInstanceId(item);
+		return new ParentIdHolder<AssociationQualification>(
+				this.getCodingSchemeIdSetter(),
+				associationInstanceKeyResolver.
+					resolveKey(this.getCodingSchemeIdSetter().getCodingSchemeId(), associationInstanceId), 
+					qual);
+	}
+
+	@Override
+	protected void registerSupportedAttributes(SupportedAttributeTemplate s,
+			ParentIdHolder<AssociationQualification> item) {
+		this.getSupportedAttributeTemplate().addSupportedAssociationQualifier(
+				super.getCodingSchemeIdSetter().getCodingSchemeUri(), 
+				super.getCodingSchemeIdSetter().getCodingSchemeVersion(),
+				item.getItem().getAssociationQualifier(),
+				null, 
+				null);	
 		
-		qual.setId(qualId);
-		return qual;	
 	}
 	
-	@Override
-	protected void registerSupportedAttributes(SupportedAttributeTemplate supportedAttributeTemplate,
-			EntityAssnsToEquals item) {
-			supportedAttributeTemplate.addSupportedAssociationQualifier(
-					super.getCodingSchemeNameSetter().getCodingSchemeName(), 
-					item.getId().getQualifierName(), 
-					null, 
-					item.getId().getQualifierName());	
+	public AssociationInstanceIdResolver<I> getAssociationInstanceIdResolver() {
+		return associationInstanceIdResolver;
 	}
 
-	/**
-	 * Gets the key resolver.
-	 * 
-	 * @return the key resolver
-	 */
-	public MultiAttribKeyResolver<I> getKeyResolver() {
-		return keyResolver;
+	public void setAssociationInstanceIdResolver(
+			AssociationInstanceIdResolver<I> associationInstanceIdResolver) {
+		this.associationInstanceIdResolver = associationInstanceIdResolver;
 	}
 
-	/**
-	 * Sets the key resolver.
-	 * 
-	 * @param keyResolver the new key resolver
-	 */
-	public void setKeyResolver(MultiAttribKeyResolver<I> keyResolver) {
-		this.keyResolver = keyResolver;
+	public AssociationInstanceKeyResolver getAssociationInstanceKeyResolver() {
+		return associationInstanceKeyResolver;
+	}
+
+	public void setAssociationInstanceKeyResolver(
+			AssociationInstanceKeyResolver associationInstanceKeyResolver) {
+		this.associationInstanceKeyResolver = associationInstanceKeyResolver;
 	}
 
 	/**

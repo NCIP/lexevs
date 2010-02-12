@@ -18,12 +18,11 @@
  */
 package org.lexgrid.loader.dao.template;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.LexGrid.persistence.dao.LexEvsDao;
-import org.LexGrid.persistence.model.CodingSchemeSupportedAttrib;
-import org.LexGrid.persistence.model.CodingSchemeSupportedAttribId;
+import org.LexGrid.naming.URIMap;
+import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 
 /**
  * The Class CachingSupportedAttribuiteTemplate.
@@ -31,12 +30,12 @@ import org.LexGrid.persistence.model.CodingSchemeSupportedAttribId;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttributeTemplate{
+	
+	private CodingSchemeService codingSchemeService;
 
 	/** The attribute cache. */
-	private List<CodingSchemeSupportedAttribId> attributeCache = new ArrayList<CodingSchemeSupportedAttribId>();
-	
-	/** The lex evs dao. */
-	private LexEvsDao lexEvsDao;
+	private Map<String,URIMap> attributeCache = new HashMap<String,URIMap>();
+
 	
 	/** The max cache size. */
 	private int maxCacheSize = 100;
@@ -45,43 +44,23 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 	 * @see org.lexgrid.loader.dao.template.AbstractSupportedAttributeTemplate#insert(org.LexGrid.persistence.model.CodingSchemeSupportedAttrib)
 	 */
 	@Override
-	protected synchronized void insert(CodingSchemeSupportedAttrib attrib){
-		CodingSchemeSupportedAttribId id = attrib.getId();
-		if(!attributeCache.contains(id)){
-			try {
-				lexEvsDao.insert(attrib);
-			} catch (Exception e) {
-				this.getLogger().info("Same Supported Attribute inserted twice -- skipping.");
-			}
-			attributeCache.add(id);
-		}
-		if(attributeCache.size() >= maxCacheSize){
-			getLogger().info("Dumping CodingSchemeSupportedAttrib cache.");
-			attributeCache.clear();
+	protected synchronized void insert(String codingSchemeName, String codingSchemeVersion, URIMap map){
+		String key = this.buildCacheKey(map);
+		if(! attributeCache.containsKey(key)){
+			codingSchemeService.insertURIMap(codingSchemeName, codingSchemeVersion, map);
+			attributeCache.put(key, map);
 		}
 	}
 	
-	/**
-	 * Gets the cache.
-	 * 
-	 * @return the cache
-	 */
-	protected synchronized List<CodingSchemeSupportedAttribId> getCache(){
-		return attributeCache;
+	protected String buildCacheKey(URIMap map){
+		return map.getClass().getName() +
+			map.getContent() +
+			map.getLocalId() +
+			map.getUri();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.dao.template.AbstractSupportedAttributeTemplate#getLexEvsDao()
-	 */
-	public LexEvsDao getLexEvsDao() {
-		return lexEvsDao;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.dao.template.AbstractSupportedAttributeTemplate#setLexEvsDao(org.LexGrid.persistence.dao.LexEvsDao)
-	 */
-	public void setLexEvsDao(LexEvsDao lexEvsDao) {
-		this.lexEvsDao = lexEvsDao;
+	protected Map<String,URIMap> getAttributeCache(){
+		return this.attributeCache;
 	}
 
 	/**
@@ -101,4 +80,14 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 	public void setMaxCacheSize(int maxCacheSize) {
 		this.maxCacheSize = maxCacheSize;
 	}
+
+	public CodingSchemeService getCodingSchemeService() {
+		return codingSchemeService;
+	}
+
+	public void setCodingSchemeService(CodingSchemeService codingSchemeService) {
+		this.codingSchemeService = codingSchemeService;
+	}
+	
+	
 }

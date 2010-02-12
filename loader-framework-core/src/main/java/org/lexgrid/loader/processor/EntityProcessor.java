@@ -18,8 +18,8 @@
  */
 package org.lexgrid.loader.processor;
 
-import org.LexGrid.persistence.model.Entity;
-import org.LexGrid.persistence.model.EntityId;
+import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.concepts.Entity;
 import org.lexgrid.loader.processor.support.EntityResolver;
 import org.springframework.batch.item.ItemProcessor;
 
@@ -28,7 +28,7 @@ import org.springframework.batch.item.ItemProcessor;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class EntityProcessor<I> extends CodingSchemeNameAwareProcessor implements ItemProcessor<I,Entity>{
+public class EntityProcessor<I> extends CodingSchemeIdAwareProcessor implements ItemProcessor<I,Entity>{
 
 	/** The entity resolver. */
 	private EntityResolver<I> entityResolver;
@@ -38,14 +38,10 @@ public class EntityProcessor<I> extends CodingSchemeNameAwareProcessor implement
 	 */
 	public Entity process(I item) throws Exception {
 		Entity entity = new Entity();
-		EntityId entityId = new EntityId();
 		
-		entityId.setCodingSchemeName(getCodingSchemeNameSetter().getCodingSchemeName());
-		entityId.setEntityCodeNamespace(entityResolver.getEntityCodeNamespace(item));
-		entityId.setEntityCode(entityResolver.getEntityCode(item));	
-		entity.setId(entityId);
-		
-		entity.setEntityDescription(entityResolver.getEntityDescription(item));
+		entity.setEntityCodeNamespace(entityResolver.getEntityCodeNamespace(item));
+		entity.setEntityCode(entityResolver.getEntityCode(item));		
+		entity.setEntityDescription(Constructors.createEntityDescription(entityResolver.getEntityDescription(item)));
 		entity.setIsActive(entityResolver.getIsActive(item));
 		entity.setIsAnonymous(entityResolver.getIsAnonymous(item));
 		entity.setIsDefined(entityResolver.getIsDefined(item));

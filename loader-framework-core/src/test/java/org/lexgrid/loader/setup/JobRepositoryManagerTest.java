@@ -18,11 +18,14 @@
  */
 package org.lexgrid.loader.setup;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
-import org.LexGrid.persistence.constants.PersistenceLayerConstants;
-import org.LexGrid.persistence.database.DatabaseUtility;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.junit.Test;
+import org.lexevs.dao.database.type.DatabaseType;
+import org.lexevs.dao.database.utility.DatabaseUtility;
+import org.lexgrid.loader.logging.SpringBatchMessageDirector;
+import org.lexgrid.loader.test.LoaderFrameworkCoreTestBase;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -31,7 +34,7 @@ import org.springframework.core.io.Resource;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class JobRepositoryManagerTest {
+public class JobRepositoryManagerTest extends LoaderFrameworkCoreTestBase{
 
 	/**
 	 * Test insert oracle prefix.
@@ -42,11 +45,14 @@ public class JobRepositoryManagerTest {
 	public void testInsertOraclePrefix() throws Exception {
 		
 		JobRepositoryManager manager = new JobRepositoryManager();
-		manager.setRetry(false);
+		
 		manager.setCreateScript(new ClassPathResource("schema-oracle10g.sql"));
 		
 		TestDatabaseUtility dbutil = new TestDatabaseUtility();
 		manager.setDatabaseUtility(dbutil);
+		
+		manager.setLogger(new SpringBatchMessageDirector("test", new LoadStatus()));
+		manager.setDatabaseType(DatabaseType.ORACLE);
 		manager.afterPropertiesSet();
 		
 		assertFalse(dbutil.script.contains(" BATCH"));
@@ -61,11 +67,13 @@ public class JobRepositoryManagerTest {
 	public void testInsertMysqlPrefix() throws Exception {
 		
 		JobRepositoryManager manager = new JobRepositoryManager();
-		manager.setRetry(false);
 		manager.setCreateScript(new ClassPathResource("schema-mysql.sql"));
 		
 		TestDatabaseUtility dbutil = new TestDatabaseUtility();
 		manager.setDatabaseUtility(dbutil);
+		
+		manager.setLogger(new SpringBatchMessageDirector("test", new LoadStatus()));
+		manager.setDatabaseType(DatabaseType.MYSQL);
 		manager.afterPropertiesSet();
 		
 		assertFalse(dbutil.script.contains(" BATCH"));
@@ -80,11 +88,14 @@ public class JobRepositoryManagerTest {
 	public void testInsertHsqldbPrefix() throws Exception {
 		
 		JobRepositoryManager manager = new JobRepositoryManager();
-		manager.setRetry(false);
 		manager.setCreateScript(new ClassPathResource("schema-hsqldb.sql"));
 		
 		TestDatabaseUtility dbutil = new TestDatabaseUtility();
 		manager.setDatabaseUtility(dbutil);
+		
+		manager.setLogger(new SpringBatchMessageDirector("test", new LoadStatus()));
+		manager.setDatabaseType(DatabaseType.HSQL);
+		
 		manager.afterPropertiesSet();
 		
 		assertFalse(dbutil.script.contains(" BATCH"));
@@ -99,11 +110,15 @@ public class JobRepositoryManagerTest {
 	public void testInsertDb2Prefix() throws Exception {
 		
 		JobRepositoryManager manager = new JobRepositoryManager();
-		manager.setRetry(false);
+
 		manager.setCreateScript(new ClassPathResource("schema-db2.sql"));
 		
 		TestDatabaseUtility dbutil = new TestDatabaseUtility();
 		manager.setDatabaseUtility(dbutil);
+		
+		manager.setLogger(new SpringBatchMessageDirector("test", new LoadStatus()));
+		manager.setDatabaseType(DatabaseType.DB2);
+		
 		manager.afterPropertiesSet();
 		
 		assertFalse(dbutil.script.contains(" BATCH"));
@@ -118,11 +133,14 @@ public class JobRepositoryManagerTest {
 	public void testInsertPostgresPrefix() throws Exception {
 		
 		JobRepositoryManager manager = new JobRepositoryManager();
-		manager.setRetry(false);
 		manager.setCreateScript(new ClassPathResource("schema-postgresql.sql"));
 		
 		TestDatabaseUtility dbutil = new TestDatabaseUtility();
 		manager.setDatabaseUtility(dbutil);
+		
+		manager.setLogger(new SpringBatchMessageDirector("test", new LoadStatus()));
+		manager.setDatabaseType(DatabaseType.POSTGRES);
+		
 		manager.afterPropertiesSet();
 		
 		assertFalse(dbutil.script.contains(" BATCH"));
@@ -165,6 +183,23 @@ public class JobRepositoryManagerTest {
 		public void truncateTable(String tableName) throws Exception {
 			// TODO Auto-generated method stub
 			
+		}
+
+		public void executeScript(Resource creationScript, String prefix)
+				throws Exception {
+			//
+			
+		}
+
+		public void executeScript(String creationScript, String prefix)
+				throws Exception {
+			script = creationScript;
+			
+		}
+
+		public boolean doesTableExist(String tableName) {
+			// TODO Auto-generated method stub
+			return false;
 		}
 		
 	}

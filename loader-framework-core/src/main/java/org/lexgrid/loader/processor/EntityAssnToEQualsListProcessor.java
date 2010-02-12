@@ -21,22 +21,26 @@ package org.lexgrid.loader.processor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.persistence.model.EntityAssnsToEquals;
-import org.LexGrid.persistence.model.EntityAssnsToEqualsId;
+import org.LexGrid.relations.AssociationQualification;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
-import org.lexgrid.loader.data.association.MultiAttribKeyResolver;
+import org.lexgrid.loader.data.association.AssociationInstanceIdResolver;
+import org.lexgrid.loader.database.key.AssociationInstanceKeyResolver;
 import org.lexgrid.loader.processor.support.OptionalQualifierResolver;
 import org.lexgrid.loader.processor.support.QualifierResolver;
+import org.lexgrid.loader.wrappers.ParentIdHolder;
 
 /**
  * The Class EntityAssnToEQualsListProcessor.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class EntityAssnToEQualsListProcessor<I> extends AbstractSupportedAttributeRegisteringProcessor<I, List<EntityAssnsToEquals>> {
+public class EntityAssnToEQualsListProcessor<I> extends AbstractSupportedAttributeRegisteringProcessor<I, List<ParentIdHolder<AssociationQualification>>> {
 
 	/** The key resolver. */
-	private MultiAttribKeyResolver<I> keyResolver;
+	private AssociationInstanceIdResolver<I> associationInstanceIdResolver;
+	
+	private AssociationInstanceKeyResolver associationInstanceKeyResolver;
 	
 	/** The qualifier resolver. */
 	private List<OptionalQualifierResolver<I>> optionalQualifierResolver;
@@ -44,9 +48,9 @@ public class EntityAssnToEQualsListProcessor<I> extends AbstractSupportedAttribu
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.item.ItemProcessor#process(java.lang.Object)
 	 */
-	public List<EntityAssnsToEquals> doProcess(I item) throws Exception {
-		List<EntityAssnsToEquals> returnlist = 
-			new ArrayList<EntityAssnsToEquals>();
+	public List<ParentIdHolder<AssociationQualification>> doProcess(I item) throws Exception {
+		List<ParentIdHolder<AssociationQualification>> returnlist = 
+			new ArrayList<ParentIdHolder<AssociationQualification>>();
 
 		for(OptionalQualifierResolver<I> qualifierResolver : optionalQualifierResolver){
 			if(qualifierResolver.toProcess(item)){
@@ -59,46 +63,39 @@ public class EntityAssnToEQualsListProcessor<I> extends AbstractSupportedAttribu
 
 	@Override
 	protected void registerSupportedAttributes(SupportedAttributeTemplate supportedAttributeTemplate,
-			List<EntityAssnsToEquals> items) {
-		for(EntityAssnsToEquals qual : items){
+			List<ParentIdHolder<AssociationQualification>> items) {
+		for(ParentIdHolder<AssociationQualification> qual : items){
 			supportedAttributeTemplate.addSupportedAssociationQualifier(
-					super.getCodingSchemeNameSetter().getCodingSchemeName(), 
-					qual.getId().getQualifierName(), 
+					super.getCodingSchemeIdSetter().getCodingSchemeUri(), 
+					super.getCodingSchemeIdSetter().getCodingSchemeVersion(),
+					qual.getItem().getAssociationQualifier(),
 					null, 
-					qual.getId().getQualifierName());
+					qual.getItem().getAssociationQualifier());
 		}		
 	}
 
-	protected EntityAssnsToEquals buildEntityAssnsToEquals(I item, QualifierResolver<I> qualifierResolver){
-		EntityAssnsToEquals qual = new EntityAssnsToEquals();
-		EntityAssnsToEqualsId qualId = new EntityAssnsToEqualsId();
-
-		qualId.setCodingSchemeName(getCodingSchemeNameSetter().getCodingSchemeName());
-		qualId.setQualifierName(qualifierResolver.getQualifierName());
-		qualId.setQualifierValue(qualifierResolver.getQualifierValue(item));
-		qualId.setMultiAttributesKey(keyResolver.resolveMultiAttributesKey(item));
-
-		qual.setId(qualId);
+	protected ParentIdHolder<AssociationQualification> buildEntityAssnsToEquals(I item, QualifierResolver<I> qualifierResolver){
+		AssociationQualification qual = new AssociationQualification();
 		
-		return qual;
+		qual.setAssociationQualifier(qualifierResolver.getQualifierName());
+		qual.setQualifierText(DaoUtility.createText(qualifierResolver.getQualifierValue(item)));
+
+		String associationInstanceId = associationInstanceIdResolver.resolveAssociationInstanceId(item);
+		return new ParentIdHolder<AssociationQualification>(
+				this.getCodingSchemeIdSetter(),
+				associationInstanceKeyResolver.
+					resolveKey(this.getCodingSchemeIdSetter().getCodingSchemeId(), associationInstanceId), 
+					qual);
 	}
 
-	/**
-	 * Gets the key resolver.
-	 * 
-	 * @return the key resolver
-	 */
-	public MultiAttribKeyResolver<I> getKeyResolver() {
-		return keyResolver;
+
+	public AssociationInstanceIdResolver<I> getAssociationInstanceIdResolver() {
+		return associationInstanceIdResolver;
 	}
 
-	/**
-	 * Sets the key resolver.
-	 * 
-	 * @param keyResolver the new key resolver
-	 */
-	public void setKeyResolver(MultiAttribKeyResolver<I> keyResolver) {
-		this.keyResolver = keyResolver;
+	public void setAssociationInstanceIdResolver(
+			AssociationInstanceIdResolver<I> associationInstanceIdResolver) {
+		this.associationInstanceIdResolver = associationInstanceIdResolver;
 	}
 
 	public List<OptionalQualifierResolver<I>> getOptionalQualifierResolver() {

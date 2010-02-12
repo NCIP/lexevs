@@ -44,7 +44,6 @@
   	<beans:bean id="jobRepository"
 		class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean">
 		<beans:property name="dataSource" ref="dataSource"/> 
-		<beans:property name="tablePrefix" value="${prefix}"/> 
 		<beans:property name="transactionManager" ref="noOptransactionManager"/>
 		<beans:property name="incrementerFactory" ref="incrementerFactory"/>
 	</beans:bean>
@@ -63,19 +62,14 @@
 		</beans:property>
 	</beans:bean>
 	
-	<beans:bean id="databaseTypeFactory"
-		class="org.lexgrid.loader.database.DatabaseTypeFactory">
-		<beans:property name="dataSource" ref="dataSource"/>
-	</beans:bean>
-	
 	<beans:bean id="jobRepositoryCreationScriptFactory"
-		class="org.lexgrid.loader.setup.ScriptFactory">
+		class="org.lexevs.dao.database.setup.script.ScriptFactory">
 		<beans:property name="scriptType" value="create"/>
 		<beans:property name="databaseType" ref="databaseTypeFactory"/>
 	</beans:bean>
 	
 	<beans:bean id="jobRepositoryDropScriptFactory"
-		class="org.lexgrid.loader.setup.ScriptFactory">
+		class="org.lexevs.dao.database.setup.script.ScriptFactory">
 		<beans:property name="scriptType" value="drop"/>
 		<beans:property name="databaseType" ref="databaseTypeFactory"/>
 	</beans:bean>
@@ -83,18 +77,18 @@
 	<beans:bean id="jobRepositoryManager" parent="loggingBean"
 		class="org.lexgrid.loader.setup.JobRepositoryManager">
 		<beans:property name="databaseUtility">
-			<beans:ref bean="databaseUtility"/>
+			<beans:ref bean="defaultDatabaseUtility"/>
 		</beans:property>
-		<beans:property name="retry" value="${retry}"/>
 		<beans:property name="createScript" ref="jobRepositoryCreationScriptFactory"/>
 		<beans:property name="dropScript" ref="jobRepositoryDropScriptFactory"/>	
 		<beans:property name="databaseType" ref="databaseTypeFactory"/>
+		<beans:property name="prefix" ref="dbPrefix"/> 
 	</beans:bean>
 	
 	<beans:bean id="stagingManager" parent="loggingBean"
 		class="org.lexgrid.loader.staging.DefaultStagingManager" abstract="true">
 		<beans:property name="databaseUtility">
-			<beans:ref bean="databaseUtility"/>
+			<beans:ref bean="defaultDatabaseUtility"/>
 		</beans:property>
 		<beans:property name="retry" value="${retry}"/>
 	</beans:bean>
@@ -167,8 +161,8 @@
 	
 	<beans:bean id="cachingSupportedAttribuiteTemplate" parent="loggingBean"
 	class="org.lexgrid.loader.dao.template.CachingSupportedAttribuiteTemplate">
-		<beans:property name="lexEvsDao">
-			<beans:ref bean="lexEvsDao" />
+		<beans:property name="codingSchemeService">
+			<beans:ref bean="codingSchemeService" />
 		</beans:property>
 		<beans:property name="maxCacheSize" value="1000"/>
 	</beans:bean>		

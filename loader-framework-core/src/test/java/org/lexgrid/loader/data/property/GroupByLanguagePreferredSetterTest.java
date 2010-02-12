@@ -18,16 +18,15 @@
  */
 package org.lexgrid.loader.data.property;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.persistence.model.EntityProperty;
-import org.LexGrid.persistence.model.EntityPropertyId;
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.concepts.Presentation;
 import org.junit.Test;
 import org.lexgrid.loader.data.DataUtils;
-import org.lexgrid.loader.data.property.GroupByLanguagePreferredSetter;
 
 /**
  * The Class GroupByLanguagePreferredSetterTest.
@@ -44,28 +43,24 @@ public class GroupByLanguagePreferredSetterTest {
 	 */
 	@Test
 	public void testSetPreferred() throws Exception {
-		EntityProperty prop1 = new EntityProperty();
-		EntityPropertyId propId1 = new EntityPropertyId();		
-		propId1.setCodingSchemeName("test");
-		propId1.setEntityCode("test");
-		propId1.setEntityCodeNamespace("test");
-		propId1.setPropertyId("test");	
+		Presentation prop1 = new Presentation();
 		prop1.setLanguage("en");
-		prop1.setId(propId1);
 		prop1.setPropertyType("test");
 		prop1.setPropertyName("test");
-		prop1.setPropertyValue("test");
 		prop1.setIsPreferred(false);
+
 		
-		EntityProperty prop2 = DataUtils.deepCloneEntityProperty(prop1);
+		Presentation prop2 = DataUtils.deepCloneProperty(prop1);
 		
-		EntityProperty prop3 = DataUtils.deepCloneEntityProperty(prop1);
+		Presentation prop3 = DataUtils.deepCloneProperty(prop1);
 		prop3.setLanguage("FR");
 		
-		EntityProperty prop4 = DataUtils.deepCloneEntityProperty(prop1);
+		Presentation prop4 = DataUtils.deepCloneProperty(prop1);
 		prop4.setLanguage("SP");
 		
-		List<EntityProperty> props = new ArrayList<EntityProperty>();
+		
+		
+		List<Presentation> props = new ArrayList<Presentation>();
 		
 		props.add(prop1);
 		props.add(prop2);

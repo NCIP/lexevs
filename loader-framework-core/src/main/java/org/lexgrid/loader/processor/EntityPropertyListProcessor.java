@@ -20,66 +20,48 @@ package org.lexgrid.loader.processor;
 
 import java.util.List;
 
-import org.LexGrid.persistence.model.EntityProperty;
+import org.LexGrid.commonTypes.Property;
 import org.lexgrid.loader.data.property.ListIdSetter;
 import org.lexgrid.loader.data.property.PreferredSetter;
+import org.lexgrid.loader.wrappers.ParentIdHolder;
 
 /**
  * The Class EntityPropertyListProcessor.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class EntityPropertyListProcessor<I> extends SortingListProcessor <I,EntityProperty>{
+public class EntityPropertyListProcessor<I> extends SortingListProcessor <I,ParentIdHolder<Property>>{
 
 	/** The list id setter. */
-	private ListIdSetter<EntityProperty> listIdSetter;
+	private ListIdSetter<ParentIdHolder<Property>> listIdSetter;
 	
 	/** The preferred setter. */
-	private PreferredSetter<EntityProperty> preferredSetter;
+	private PreferredSetter<ParentIdHolder<Property>> preferredSetter;
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.SortingListProcessor#afterProcessing(java.util.List)
 	 */
 	@Override
-	protected List<EntityProperty> afterProcessing(List<EntityProperty> items) {
+	protected List<ParentIdHolder<Property>> afterProcessing(List<ParentIdHolder<Property>> items) {
 		listIdSetter.addIds(items);
 		preferredSetter.setPreferred(items);
 		return items;
 	}
 
-	/**
-	 * Gets the list id setter.
-	 * 
-	 * @return the list id setter
-	 */
-	public ListIdSetter<EntityProperty> getListIdSetter() {
+	public ListIdSetter<ParentIdHolder<Property>> getListIdSetter() {
 		return listIdSetter;
 	}
 
-	/**
-	 * Sets the list id setter.
-	 * 
-	 * @param listIdSetter the new list id setter
-	 */
-	public void setListIdSetter(ListIdSetter<EntityProperty> listIdSetter) {
+	public void setListIdSetter(ListIdSetter<ParentIdHolder<Property>> listIdSetter) {
 		this.listIdSetter = listIdSetter;
 	}
 
-	/**
-	 * Gets the preferred setter.
-	 * 
-	 * @return the preferred setter
-	 */
-	public PreferredSetter<EntityProperty> getPreferredSetter() {
+	public PreferredSetter<ParentIdHolder<Property>> getPreferredSetter() {
 		return preferredSetter;
 	}
 
-	/**
-	 * Sets the preferred setter.
-	 * 
-	 * @param preferredSetter the new preferred setter
-	 */
-	public void setPreferredSetter(PreferredSetter<EntityProperty> preferredSetter) {
+	public void setPreferredSetter(
+			PreferredSetter<ParentIdHolder<Property>> preferredSetter) {
 		this.preferredSetter = preferredSetter;
 	}
 }

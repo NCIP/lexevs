@@ -20,12 +20,26 @@ package org.lexgrid.loader.dao.template;
 
 import java.util.List;
 
-import org.LexGrid.persistence.dao.LexEvsDao;
-import org.LexGrid.persistence.model.CodingSchemeSupportedAttrib;
-import org.LexGrid.persistence.model.CodingSchemeSupportedAttribId;
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.LexGrid.naming.SupportedAssociation;
+import org.LexGrid.naming.SupportedAssociationQualifier;
+import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedContainerName;
+import org.LexGrid.naming.SupportedContext;
+import org.LexGrid.naming.SupportedDataType;
+import org.LexGrid.naming.SupportedDegreeOfFidelity;
+import org.LexGrid.naming.SupportedEntityType;
+import org.LexGrid.naming.SupportedHierarchy;
+import org.LexGrid.naming.SupportedLanguage;
+import org.LexGrid.naming.SupportedNamespace;
+import org.LexGrid.naming.SupportedProperty;
+import org.LexGrid.naming.SupportedPropertyQualifier;
+import org.LexGrid.naming.SupportedPropertyType;
+import org.LexGrid.naming.SupportedRepresentationalForm;
+import org.LexGrid.naming.SupportedSortOrder;
+import org.LexGrid.naming.SupportedSource;
+import org.LexGrid.naming.SupportedSourceRole;
+import org.LexGrid.naming.SupportedStatus;
+import org.LexGrid.naming.URIMap;
 import org.lexgrid.loader.logging.LoggingBean;
 
 /**
@@ -35,209 +49,240 @@ import org.lexgrid.loader.logging.LoggingBean;
  */
 public abstract class AbstractSupportedAttributeTemplate extends LoggingBean implements SupportedAttributeTemplate{
 	
-	/** The lex evs dao. */
-	private LexEvsDao lexEvsDao;
-	
 	private int idValueMaxSize = 200;
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedAssociation(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedAssociation(String codingSchemeName, String localId, String uri,
+	public void addSupportedAssociation(String codingSchemeName, String codingSchemeVersion, String localId, String uri,
 			String content) {	
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_ASSOCIATION, 
-				localId, uri, content, null, null));	
+		SupportedAssociation sa = new SupportedAssociation();
+		sa.setContent(content);
+		sa.setLocalId(localId);
+		sa.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, sa);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedAssociationQualifier(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedAssociationQualifier(String codingSchemeName, String localId, String uri,
+	public void addSupportedAssociationQualifier(String codingSchemeName, String codingSchemeVersion, String localId, String uri,
 			String content) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_ASSOCIATIONQUALIFIER, 
-				localId, uri, content, null, null));		
+		SupportedAssociationQualifier saq = new SupportedAssociationQualifier();
+		saq.setContent(content);
+		saq.setLocalId(localId);
+		saq.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, saq);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedCodingScheme(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)
 	 */
-	public void addSupportedCodingScheme(String codingSchemeName, String localId, String uri,
+	public void addSupportedCodingScheme(String codingSchemeName, String codingSchemeVersion, String localId, String uri,
 			String content, boolean isImported) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_CODINGSCHEME, 
-				localId, uri, content, Boolean.toString(isImported), null));	
+		SupportedCodingScheme scs = new SupportedCodingScheme();
+		scs.setContent(content);
+		scs.setIsImported(isImported);
+		scs.setLocalId(localId);
+		scs.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, scs);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedContainerName(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedContainerName(String codingSchemeName, String localId, String uri,
+	public void addSupportedContainerName(String codingSchemeName, String codingSchemeVersion, String localId, String uri,
 			String content) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTAINERNAME, 
-				localId, uri, content, null, null));		
+		SupportedContainerName scn = new SupportedContainerName();
+		scn.setContent(content);
+		scn.setLocalId(localId);
+		scn.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, scn);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedContext(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedContext(String codingSchemeName, String localId, String uri, String content) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT, 
-				localId, uri, content, null, null));	
+	public void addSupportedContext(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content) {
+		SupportedContext sc = new SupportedContext();
+		sc.setContent(content);
+		sc.setLocalId(localId);
+		sc.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, sc);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedDataType(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedDataType(String codingSchemeName, String localId, String uri,
+	public void addSupportedDataType(String codingSchemeName, String codingSchemeVersion, String localId, String uri,
 			String content) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_DATATYPE, 
-				localId, uri, content, null, null));	
+		SupportedDataType sdt = new SupportedDataType();
+		sdt.setContent(content);
+		sdt.setLocalId(localId);
+		sdt.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, sdt);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedDegreeOfFidelity(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedDegreeOfFidelity(String codingSchemeName, String localId, String uri,
+	public void addSupportedDegreeOfFidelity(String codingSchemeName, String codingSchemeVersion, String localId, String uri,
 			String content) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_DEGREEOFFIDELITY, 
-				localId, uri, content, null, null));	
+		SupportedDegreeOfFidelity sdf = new SupportedDegreeOfFidelity();
+		sdf.setContent(content);
+		sdf.setLocalId(localId);
+		sdf.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, sdf);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedEntityType(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedEntityType(String codingSchemeName, String localId, String uri,
+	public void addSupportedEntityType(String codingSchemeName, String codingSchemeVersion, String localId, String uri,
 			String content) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_ENTITYTYPE, 
-				localId, uri, content, null, null));	
+		SupportedEntityType set = new SupportedEntityType();
+		set.setContent(content);
+		set.setLocalId(localId);
+		set.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, set);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedHierarchy(java.lang.String, java.lang.String, java.lang.String, java.util.List, boolean, java.lang.String)
 	 */
-	public void addSupportedHierarchy(String codingSchemeName, String localId, String uri,
+	public void addSupportedHierarchy(String codingSchemeName, String codingSchemeVersion, String localId, String uri,
 			List<String> associationNames,
 			boolean isForwardNavigable, String rootCode) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_HIERARCHY, 
-				localId, uri, listToCSV(associationNames), rootCode, Boolean.toString(isForwardNavigable)));	
+		SupportedHierarchy sh = new SupportedHierarchy();
+		for(String name : associationNames){
+			sh.addAssociationNames(name);
+		}
+		sh.setIsForwardNavigable(isForwardNavigable);
+		sh.setLocalId(localId);
+		sh.setRootCode(rootCode);
+		sh.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, sh);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedLanguage(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedLanguage(String codingSchemeName, String localId, String uri,
+	public void addSupportedLanguage(String codingSchemeName, String codingSchemeVersion, String localId, String uri,
 			String content) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_LANGUAGE, 
-				localId, uri, content, null, null));	
+		SupportedLanguage sl = new SupportedLanguage();
+		sl.setContent(content);
+		sl.setLocalId(localId);
+		sl.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, sl);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedNamespace(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedNamespace(String codingSchemeName, String localId, String uri,
+	public void addSupportedNamespace(String codingSchemeName, String codingSchemeVersion, String localId, String uri,
 			String content, String equivalentCodingScheme) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_NAMESPACE, 
-				localId, uri, content, equivalentCodingScheme, null));	
+		SupportedNamespace sn = new SupportedNamespace();
+		sn.setContent(content);
+		sn.setEquivalentCodingScheme(equivalentCodingScheme);
+		sn.setLocalId(localId);
+		sn.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, sn);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedProperty(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedProperty(String codingSchemeName, String localId, String uri,
+	public void addSupportedProperty(String codingSchemeName, String codingSchemeVersion, String localId, String uri,
 			String content) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_PROPERTY, 
-				localId, uri, content, null, null));	
+		SupportedProperty sp = new SupportedProperty();
+		sp.setLocalId(localId);
+		sp.setContent(content);
+		sp.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, sp);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedPropertyQualifier(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedPropertyQualifier(String codingSchemeName, String localId, String uri,
+	public void addSupportedPropertyQualifier(String codingSchemeName, String codingSchemeVersion, String localId, String uri,
 			String content) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_PROPERTYQUALIFIER, 
-				localId, uri, content, null, null));	
+		SupportedPropertyQualifier spq = new SupportedPropertyQualifier();
+		spq.setContent(content);
+		spq.setLocalId(localId);
+		spq.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, spq);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedPropertyType(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedPropertyType(String codingSchemeName, String localId, String uri,
+	public void addSupportedPropertyType(String codingSchemeName, String codingSchemeVersion, String localId, String uri,
 			String content) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_PROPERTYTYPE, 
-				localId, uri, content, null, null));	
+		SupportedPropertyType spt = new SupportedPropertyType();
+		spt.setContent(content);
+		spt.setLocalId(localId);
+		spt.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, spt);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedRepresentationalForm(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedRepresentationalForm(String codingSchemeName, String localId, String uri,
+	public void addSupportedRepresentationalForm(String codingSchemeName, String codingSchemeVersion, String localId, String uri,
 			String content) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_REPRESENTATIONALFORM,
-				localId, uri, content, null, null));	
+		SupportedRepresentationalForm srf = new SupportedRepresentationalForm();
+		srf.setContent(content);
+		srf.setLocalId(localId);
+		srf.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, srf);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedSortOrder(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedSortOrder(String codingSchemeName, String localId, String uri,
+	public void addSupportedSortOrder(String codingSchemeName, String codingSchemeVersion, String localId, String uri,
 			String content) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_SORTORDER, 
-				localId, uri, content, null, null));	
+		SupportedSortOrder sso = new SupportedSortOrder();
+		sso.setContent(content);
+		sso.setLocalId(localId);
+		sso.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, sso);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedSource(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedSource(String codingSchemeName, String localId, String uri, String content,
+	public void addSupportedSource(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content,
 			String assemblyRule) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_SOURCE, 
-				localId, uri, content, assemblyRule, null));	
+		SupportedSource ss = new SupportedSource();
+		ss.setAssemblyRule(assemblyRule);
+		ss.setContent(content);
+		ss.setLocalId(localId);
+		ss.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, ss);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedSourceRole(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedSourceRole(String codingSchemeName, String localId, String uri,
+	public void addSupportedSourceRole(String codingSchemeName, String codingSchemeVersion, String localId, String uri,
 			String content) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_ROLEGROUP, 
-				localId, uri, content, null, null));	
+		SupportedSourceRole ssr = new SupportedSourceRole();
+		ssr.setContent(content);
+		ssr.setLocalId(localId);
+		ssr.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, ssr);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.SupportedAttributeTemplate#addSupportedStatus(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addSupportedStatus(String codingSchemeName, String localId, String uri, String content) {
-		insert(buildCodingSchemeSupportedAttrib(codingSchemeName, SQLTableConstants.TBLCOLVAL_SUPPTAG_STATUS, 
-				localId, uri, content, null, null));	
-	}
-	
-	 /**
- 	 * Builds the coding scheme supported attrib.
- 	 * 
- 	 * @param codingSchemeName the coding scheme name
- 	 * @param supportedAttribute the supported attribute
- 	 * @param localId the local id
- 	 * @param uri the uri
- 	 * @param content the content
- 	 * @param val1 the val1
- 	 * @param val2 the val2
- 	 * 
- 	 * @return the coding scheme supported attrib
- 	 */
- 	private CodingSchemeSupportedAttrib buildCodingSchemeSupportedAttrib(
-			 String codingSchemeName, String supportedAttribute, String localId, String uri,
-			 String content, String val1, String val2) {
-		CodingSchemeSupportedAttrib attrib = new CodingSchemeSupportedAttrib();
-		CodingSchemeSupportedAttribId attribId = new CodingSchemeSupportedAttribId();
-		attribId.setCodingSchemeName(codingSchemeName);
-		attribId.setId(localId);
-		attribId.setIdValue(truncateIfNecessary(
-				changeNullToBlankString(content), idValueMaxSize));
-		attribId.setSupportedAttributeTag(supportedAttribute);
-		attribId.setVal1(changeNullToBlankString(val1));
-		attrib.setVal2(val2);
-		attrib.setUri(uri);
-		attrib.setId(attribId);
-		return attrib;
+	public void addSupportedStatus(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content) {
+		SupportedStatus ss = new SupportedStatus();
+		ss.setContent(content);
+		ss.setLocalId(localId);
+		ss.setUri(uri);
+		this.insert(codingSchemeName, codingSchemeVersion, ss);
 	}
 	
 	/**
@@ -245,7 +290,7 @@ public abstract class AbstractSupportedAttributeTemplate extends LoggingBean imp
 	 * 
 	 * @param attrib the attrib
 	 */
-	protected abstract void insert(CodingSchemeSupportedAttrib attrib);
+	protected abstract void insert(String codingSchemeName, String codingSchemeVersion, URIMap attrib);
 
 	/**
 	 * Change null to blank string.
@@ -288,24 +333,6 @@ public abstract class AbstractSupportedAttributeTemplate extends LoggingBean imp
 			}
 		}
 		return returnString;
-	}
-
-	/**
-	 * Gets the lex evs dao.
-	 * 
-	 * @return the lex evs dao
-	 */
-	public LexEvsDao getLexEvsDao() {
-		return lexEvsDao;
-	}
-
-	/**
-	 * Sets the lex evs dao.
-	 * 
-	 * @param lexEvsDao the new lex evs dao
-	 */
-	public void setLexEvsDao(LexEvsDao lexEvsDao) {
-		this.lexEvsDao = lexEvsDao;
 	}
 
 	public int getIdValueMaxSize() {

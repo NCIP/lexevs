@@ -18,63 +18,67 @@
  */
 package org.lexgrid.loader.processor;
 
-import org.LexGrid.persistence.model.EntityProperty;
-import org.LexGrid.persistence.model.EntityPropertyId;
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Text;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
+import org.lexgrid.loader.database.key.EntityKeyResolver;
 import org.lexgrid.loader.processor.support.PropertyResolver;
+import org.lexgrid.loader.wrappers.ParentIdHolder;
 
 /**
  * The Class EntityPropertyProcessor.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class EntityPropertyProcessor<I> extends AbstractSupportedAttributeRegisteringProcessor<I, EntityProperty>{
+public class EntityPropertyProcessor<I> extends AbstractSupportedAttributeRegisteringProcessor<I, ParentIdHolder<Property>>{
 	
 	/** The property resolver. */
 	private PropertyResolver<I> propertyResolver;
 	
+	private EntityKeyResolver entityKeyResolver;
+	
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.item.ItemProcessor#process(java.lang.Object)
 	 */
-	public EntityProperty doProcess(I item) throws Exception {
-		EntityPropertyId propId = new EntityPropertyId();
-		EntityProperty prop = new EntityProperty();
+	public ParentIdHolder<Property> doProcess(I item) throws Exception {
 		
-		propId.setCodingSchemeName(getCodingSchemeNameSetter().getCodingSchemeName());
-		propId.setEntityCodeNamespace(getCodingSchemeNameSetter().getCodingSchemeName());
-		propId.setEntityCode(propertyResolver.getEntityCode(item));	
-		propId.setPropertyId(propertyResolver.getId(item));
-		prop.setId(propId);
+		Property prop = new Property();
 		
-		prop.setDegreeOfFidelity(propertyResolver.getDegreeOfFidelity(item));
-		prop.setFormat(propertyResolver.getFormat(item));
+		String parentKey = entityKeyResolver.
+			resolveKey(super.getCodingSchemeIdSetter().getCodingSchemeId(), 
+								propertyResolver.getEntityCode(item), 
+								this.getPropertyResolver().getEntityCodeNamespace(item));	
+		
+		prop.setPropertyId(propertyResolver.getId(item));
+	
+		Text text = DaoUtility.createText(
+				propertyResolver.getPropertyValue(item), 
+				propertyResolver.getFormat(item));
+		
+		prop.setValue(text);
 		prop.setIsActive(propertyResolver.getIsActive(item));
 		prop.setLanguage(propertyResolver.getLanguage(item));
-		prop.setMatchIfNoContext(propertyResolver.getMatchIfNoContext(item));
 		prop.setPropertyName(propertyResolver.getPropertyName(item));
 		prop.setPropertyType(propertyResolver.getPropertyType(item));
-		prop.setPropertyValue(propertyResolver.getPropertyValue(item));
-		prop.setRepresentationalForm(propertyResolver.getRepresentationalForm(item));
-		
-		//Set isPreferred to FALSE by default -- it is subClass Processor's
-		//responsibility to set this as appropriate.
-		prop.setIsPreferred(false);
-			
-		return prop;
+	
+		return new ParentIdHolder<Property>(
+				this.getCodingSchemeIdSetter(),
+				parentKey, prop);
 	}
 	
-	protected void registerSupportedAttributes(SupportedAttributeTemplate supportedAttributeTemplate, EntityProperty item){
-		supportedAttributeTemplate.addSupportedProperty(getCodingSchemeNameSetter().getCodingSchemeName(), item.getPropertyName(), null, null);
+	protected void registerSupportedAttributes(SupportedAttributeTemplate supportedAttributeTemplate, ParentIdHolder<Property> item){
+		supportedAttributeTemplate.addSupportedProperty(
+				super.getCodingSchemeIdSetter().getCodingSchemeUri(), 
+				super.getCodingSchemeIdSetter().getCodingSchemeVersion(),
+				item.getItem().getPropertyName(), null, null);
 		
-		String repForm = item.getRepresentationalForm();
-
-		if(repForm != null){
-			supportedAttributeTemplate.addSupportedRepresentationalForm(getCodingSchemeNameSetter().getCodingSchemeName(), repForm, null, null);
-		}
-
-		String language = item.getLanguage();
+		String language = item.getItem().getLanguage();
 		if(language != null){
-			supportedAttributeTemplate.addSupportedLanguage(getCodingSchemeNameSetter().getCodingSchemeName(), language, null, null);
+			supportedAttributeTemplate.addSupportedLanguage(
+					super.getCodingSchemeIdSetter().getCodingSchemeUri(), 
+					super.getCodingSchemeIdSetter().getCodingSchemeVersion(),
+					language, null, null);
 		}
 	}
 

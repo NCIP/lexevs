@@ -18,8 +18,8 @@
  */
 package org.lexgrid.loader.lexbigadmin;
 
-import org.LexGrid.persistence.database.DatabaseUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.lexevs.dao.database.utility.DatabaseUtility;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -66,7 +66,7 @@ public class TransitivityBuildingTasklet extends AbstractLexEvsUtilityTasklet im
 			}
 		}
 			getConnectionManager().computeTransitiveTable(
-					getCodingSchemeNameSetter().getCodingSchemeName(), 
+					getCodingSchemeIdSetter().getCodingSchemeId(), 
 					getCurrentCodingSchemeUri(),
 					getCurrentCodingSchemeVersion());
 	

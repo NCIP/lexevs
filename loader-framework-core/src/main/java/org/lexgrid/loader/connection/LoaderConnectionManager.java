@@ -19,15 +19,15 @@
 package org.lexgrid.loader.connection;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Impl.helpers.SQLConnectionInfo;
-import org.LexGrid.persistence.connection.PersistenceConnectionManager;
+import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 
 /**
  * The Interface LoaderConnectionManager.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface LoaderConnectionManager extends PersistenceConnectionManager {
+public interface LoaderConnectionManager extends LexEvsDatabaseOperations {
 
 	/**
 	 * Compute transitive table.

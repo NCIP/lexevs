@@ -20,8 +20,9 @@ package org.lexgrid.loader.processor.decorator;
 
 import java.util.List;
 
-import org.LexGrid.persistence.model.EntityProperty;
+import org.LexGrid.commonTypes.Property;
 import org.lexgrid.loader.data.property.ListIdSetter;
+import org.lexgrid.loader.wrappers.ParentIdHolder;
 import org.springframework.batch.item.ItemProcessor;
 
 /**
@@ -29,51 +30,48 @@ import org.springframework.batch.item.ItemProcessor;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class EntityPropertyListIdAddingDecorator<I> implements ItemProcessor<List<I>, List<EntityProperty>> {
+public class EntityPropertyListIdAddingDecorator<I> implements ItemProcessor<List<I>, List<ParentIdHolder<Property>>> {
 
 	
 	/** The list id setter. */
-	private ListIdSetter<EntityProperty> listIdSetter;
+	private ListIdSetter<ParentIdHolder<Property>> listIdSetter;
 	
 	/** The decorated processor. */
-	private ItemProcessor<List<I>, List<EntityProperty>> decoratedProcessor;
+	private ItemProcessor<List<I>, List<ParentIdHolder<Property>>> decoratedProcessor;
 	
 	/**
 	 * Instantiates a new entity property list id adding decorator.
 	 * 
 	 * @param decoratedProcessor the decorated processor
 	 */
-	public EntityPropertyListIdAddingDecorator(ItemProcessor<List<I>, List<EntityProperty>> decoratedProcessor){
+	public EntityPropertyListIdAddingDecorator(ItemProcessor<List<I>, List<ParentIdHolder<Property>>> decoratedProcessor){
 		this.decoratedProcessor = decoratedProcessor;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.item.ItemProcessor#process(java.lang.Object)
 	 */
-	public List<EntityProperty> process(List<I> items)
+	public List<ParentIdHolder<Property>> process(List<I> items)
 			throws Exception {
-		List<EntityProperty> processedItems = decoratedProcessor.process(items);
+		List<ParentIdHolder<Property>> processedItems = decoratedProcessor.process(items);
 		listIdSetter.addIds(processedItems);
 		return processedItems;
 	}
 
-	/**
-	 * Gets the list id setter.
-	 * 
-	 * @return the list id setter
-	 */
-	public ListIdSetter<EntityProperty> getListIdSetter() {
+	public ListIdSetter<ParentIdHolder<Property>> getListIdSetter() {
 		return listIdSetter;
 	}
 
-	/**
-	 * Sets the list id setter.
-	 * 
-	 * @param listIdSetter the new list id setter
-	 */
-	public void setListIdSetter(ListIdSetter<EntityProperty> listIdSetter) {
+	public void setListIdSetter(ListIdSetter<ParentIdHolder<Property>> listIdSetter) {
 		this.listIdSetter = listIdSetter;
-	}	
-	
-	
+	}
+
+	public ItemProcessor<List<I>, List<ParentIdHolder<Property>>> getDecoratedProcessor() {
+		return decoratedProcessor;
+	}
+
+	public void setDecoratedProcessor(
+			ItemProcessor<List<I>, List<ParentIdHolder<Property>>> decoratedProcessor) {
+		this.decoratedProcessor = decoratedProcessor;
+	}
 }

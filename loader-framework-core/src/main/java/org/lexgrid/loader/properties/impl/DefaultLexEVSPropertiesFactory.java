@@ -20,8 +20,7 @@ package org.lexgrid.loader.properties.impl;
 
 import java.util.Properties;
 
-import org.LexGrid.LexBIG.Impl.helpers.SQLConnectionInfo;
-import org.LexGrid.persistence.properties.PropertiesFactory;
+import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexgrid.loader.connection.LoaderConnectionManager;
 import org.lexgrid.loader.connection.impl.LexEVSConnectionManager;
 import org.lexgrid.loader.properties.ConnectionPropertiesFactory;

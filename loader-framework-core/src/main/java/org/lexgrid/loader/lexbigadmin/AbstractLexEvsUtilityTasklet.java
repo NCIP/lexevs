@@ -18,11 +18,11 @@
  */
 package org.lexgrid.loader.lexbigadmin;
 
-import org.LexGrid.persistence.dao.LexEvsDao;
-import org.LexGrid.persistence.model.CodingScheme;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexgrid.loader.connection.LoaderConnectionManager;
 import org.lexgrid.loader.connection.impl.LexEVSConnectionManager;
-import org.lexgrid.loader.data.codingScheme.CodingSchemeNameSetter;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.logging.LoggingBean;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -39,11 +39,10 @@ public abstract class AbstractLexEvsUtilityTasklet extends LoggingBean implement
 	/** The connection manager. */
 	private LoaderConnectionManager connectionManager = new LexEVSConnectionManager();
 	
-	/** The lex evs dao. */
-	private LexEvsDao lexEvsDao;
+	private CodingSchemeService codingSchemeService;
 	
 	/** The coding scheme name setter. */
-	private CodingSchemeNameSetter codingSchemeNameSetter;
+	private CodingSchemeIdSetter codingSchemeIdSetter;
 	
 	public RepeatStatus execute(StepContribution contribution,
 			ChunkContext chunkContext) throws Exception {
@@ -60,7 +59,7 @@ public abstract class AbstractLexEvsUtilityTasklet extends LoggingBean implement
 	 * @throws Exception the exception
 	 */
 	protected String getCurrentCodingSchemeUri() throws Exception {	
-		return getCurrentCodingScheme().getCodingSchemeUri();
+		return getCurrentCodingScheme().getCodingSchemeURI();
 	}
 	
 	/**
@@ -83,9 +82,11 @@ public abstract class AbstractLexEvsUtilityTasklet extends LoggingBean implement
 	 * @throws Exception the exception
 	 */
 	protected CodingScheme getCurrentCodingScheme() throws Exception {
-		return lexEvsDao.findById(CodingScheme.class, codingSchemeNameSetter.getCodingSchemeName());
+		return codingSchemeService.getCodingSchemeByUriAndVersion(
+				this.getCodingSchemeIdSetter().getCodingSchemeUri(), 
+				this.getCodingSchemeIdSetter().getCodingSchemeVersion());
 	}
-
+	
 	public LoaderConnectionManager getConnectionManager() {
 		return connectionManager;
 	}
@@ -94,20 +95,12 @@ public abstract class AbstractLexEvsUtilityTasklet extends LoggingBean implement
 		this.connectionManager = connectionManager;
 	}
 
-	public LexEvsDao getLexEvsDao() {
-		return lexEvsDao;
+	public CodingSchemeIdSetter getCodingSchemeIdSetter() {
+		return codingSchemeIdSetter;
 	}
 
-	public void setLexEvsDao(LexEvsDao lexEvsDao) {
-		this.lexEvsDao = lexEvsDao;
-	}
-
-	public CodingSchemeNameSetter getCodingSchemeNameSetter() {
-		return codingSchemeNameSetter;
-	}
-
-	public void setCodingSchemeNameSetter(
-			CodingSchemeNameSetter codingSchemeNameSetter) {
-		this.codingSchemeNameSetter = codingSchemeNameSetter;
+	public void setCodingSchemeIdSetter(
+			CodingSchemeIdSetter codingSchemeIdSetter) {
+		this.codingSchemeIdSetter = codingSchemeIdSetter;
 	}	
 }

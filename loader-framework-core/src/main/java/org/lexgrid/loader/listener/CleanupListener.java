@@ -21,14 +21,14 @@ package org.lexgrid.loader.listener;
 import java.util.Date;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
-import org.LexGrid.persistence.dao.LexEvsDao;
-import org.LexGrid.persistence.model.CodingScheme;
-import org.LexGrid.persistence.properties.PropertiesFactory;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexgrid.loader.connection.LoaderConnectionManager;
 import org.lexgrid.loader.connection.impl.LexEVSConnectionManager;
 import org.lexgrid.loader.constants.LoaderConstants;
-import org.lexgrid.loader.data.codingScheme.CodingSchemeNameSetter;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.logging.LoggingBean;
+import org.lexgrid.loader.properties.impl.PropertiesFactory;
 import org.lexgrid.loader.setup.JobRepositoryManager;
 import org.lexgrid.loader.staging.StagingManager;
 import org.springframework.batch.core.ExitStatus;
@@ -51,17 +51,16 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 	/** The connection manager. */
 	private LoaderConnectionManager connectionManager = new LexEVSConnectionManager();
 	
-	/** The lex evs dao. */
-	private LexEvsDao lexEvsDao;
-	
 	/** The coding scheme name setter. */
-	private CodingSchemeNameSetter codingSchemeNameSetter;
+	private CodingSchemeIdSetter codingSchemeIdSetter;
 	
 	/** The staging manager. */
 	private StagingManager stagingManager;
 	
 	/** The job repository manager. */
 	private JobRepositoryManager jobRepositoryManager;
+	
+	private CodingSchemeService codingSchemeService;
 	
 	private String prefix;
 	
@@ -105,6 +104,11 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 	private String getParameterFromJobExecution(String parameter, JobExecution jobExecution){
 		return jobExecution.getJobInstance().getJobParameters().getString(parameter);
 	}
+	
+
+	public void beforeJob(JobExecution arg0) {
+		//no-op -- handle this logging elsewhere	
+	}
 
 	/**
 	 * Gets the staging manager.
@@ -132,7 +136,7 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 	 * @throws Exception the exception
 	 */
 	protected String getCurrentCodingSchemeUri() throws Exception {	
-		return getCurrentCodingScheme().getCodingSchemeUri();
+		return getCurrentCodingScheme().getCodingSchemeURI();
 	}
 	
 	/**
@@ -154,7 +158,9 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 	 * @throws Exception the exception
 	 */
 	protected CodingScheme getCurrentCodingScheme() throws Exception {
-		return lexEvsDao.findById(CodingScheme.class, codingSchemeNameSetter.getCodingSchemeName());
+		return codingSchemeService.getCodingSchemeByUriAndVersion(
+				this.getCodingSchemeIdSetter().getCodingSchemeUri(), 
+				this.getCodingSchemeIdSetter().getCodingSchemeVersion());
 	}
 
 	/**
@@ -174,42 +180,24 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 	public void setConnectionManager(LoaderConnectionManager connectionManager) {
 		this.connectionManager = connectionManager;
 	}
-
-	/**
-	 * Gets the lex evs dao.
-	 * 
-	 * @return the lex evs dao
-	 */
-	public LexEvsDao getLexEvsDao() {
-		return lexEvsDao;
-	}
-
-	/**
-	 * Sets the lex evs dao.
-	 * 
-	 * @param lexEvsDao the new lex evs dao
-	 */
-	public void setLexEvsDao(LexEvsDao lexEvsDao) {
-		this.lexEvsDao = lexEvsDao;
-	}
 	
 	/**
 	 * Gets the coding scheme name setter.
 	 * 
 	 * @return the coding scheme name setter
 	 */
-	public CodingSchemeNameSetter getCodingSchemeNameSetter() {
-		return codingSchemeNameSetter;
+	public CodingSchemeIdSetter getCodingSchemeNameSetter() {
+		return codingSchemeIdSetter;
 	}
 
 	/**
 	 * Sets the coding scheme name setter.
 	 * 
-	 * @param codingSchemeNameSetter the new coding scheme name setter
+	 * @param codingSchemeIdSetter the new coding scheme name setter
 	 */
 	public void setCodingSchemeNameSetter(
-			CodingSchemeNameSetter codingSchemeNameSetter) {
-		this.codingSchemeNameSetter = codingSchemeNameSetter;
+			CodingSchemeIdSetter codingSchemeIdSetter) {
+		this.codingSchemeIdSetter = codingSchemeIdSetter;
 	}
 
 	/**
@@ -246,7 +234,19 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 		this.database = database;
 	}
 
-	public void beforeJob(JobExecution arg0) {
-		//no-op -- handle this logging elsewhere	
+	public CodingSchemeIdSetter getCodingSchemeIdSetter() {
+		return codingSchemeIdSetter;
+	}
+
+	public void setCodingSchemeIdSetter(CodingSchemeIdSetter codingSchemeIdSetter) {
+		this.codingSchemeIdSetter = codingSchemeIdSetter;
+	}
+
+	public CodingSchemeService getCodingSchemeService() {
+		return codingSchemeService;
+	}
+
+	public void setCodingSchemeService(CodingSchemeService codingSchemeService) {
+		this.codingSchemeService = codingSchemeService;
 	}	
 }

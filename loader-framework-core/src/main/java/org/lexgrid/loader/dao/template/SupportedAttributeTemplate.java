@@ -37,7 +37,7 @@ public interface SupportedAttributeTemplate {
 	 * @param uri the uri
 	 * @param content the content
 	 */
-	public void addSupportedAssociation(String codingSchemeName, String localId, String uri, String content);
+	public void addSupportedAssociation(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content);
 	
 	/**
 	 * Adds the supported association qualifier.
@@ -47,7 +47,7 @@ public interface SupportedAttributeTemplate {
 	 * @param uri the uri
 	 * @param content the content
 	 */
-	public void addSupportedAssociationQualifier(String codingSchemeName, String localId, String uri, String content);
+	public void addSupportedAssociationQualifier(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content);
 	
 	/**
 	 * Adds the supported coding scheme.
@@ -58,7 +58,7 @@ public interface SupportedAttributeTemplate {
 	 * @param content the content
 	 * @param isImported the is imported
 	 */
-	public void addSupportedCodingScheme(String codingSchemeName, String localId, String uri, String content, boolean isImported);
+	public void addSupportedCodingScheme(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content, boolean isImported);
 	
 	/**
 	 * Adds the supported container name.
@@ -68,7 +68,7 @@ public interface SupportedAttributeTemplate {
 	 * @param uri the uri
 	 * @param content the content
 	 */
-	public void addSupportedContainerName(String codingSchemeName, String localId, String uri, String content);
+	public void addSupportedContainerName(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content);
 	
 	/**
 	 * Adds the supported context.
@@ -78,7 +78,7 @@ public interface SupportedAttributeTemplate {
 	 * @param uri the uri
 	 * @param content the content
 	 */
-	public void addSupportedContext(String codingSchemeName, String localId, String uri, String content);
+	public void addSupportedContext(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content);
 	
 	/**
 	 * Adds the supported data type.
@@ -88,7 +88,7 @@ public interface SupportedAttributeTemplate {
 	 * @param uri the uri
 	 * @param content the content
 	 */
-	public void addSupportedDataType(String codingSchemeName, String localId, String uri, String content);
+	public void addSupportedDataType(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content);
 	
 	/**
 	 * Adds the supported degree of fidelity.
@@ -98,7 +98,7 @@ public interface SupportedAttributeTemplate {
 	 * @param uri the uri
 	 * @param content the content
 	 */
-	public void addSupportedDegreeOfFidelity(String codingSchemeName, String localId, String uri, String content);
+	public void addSupportedDegreeOfFidelity(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content);
 	
 	/**
 	 * Adds the supported entity type.
@@ -108,7 +108,7 @@ public interface SupportedAttributeTemplate {
 	 * @param uri the uri
 	 * @param content the content
 	 */
-	public void addSupportedEntityType(String codingSchemeName, String localId, String uri, String content);
+	public void addSupportedEntityType(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content);
 	
 	/**
 	 * Adds the supported hierarchy.
@@ -120,7 +120,7 @@ public interface SupportedAttributeTemplate {
 	 * @param isForwardNavigable the is forward navigable
 	 * @param rootCode the root code
 	 */
-	public void addSupportedHierarchy(String codingSchemeName, String localId, String uri, List<String> associationNames, boolean isForwardNavigable, String rootCode);
+	public void addSupportedHierarchy(String codingSchemeName, String codingSchemeVersion, String localId, String uri, List<String> associationNames, boolean isForwardNavigable, String rootCode);
 	
 	/**
 	 * Adds the supported language.
@@ -130,7 +130,7 @@ public interface SupportedAttributeTemplate {
 	 * @param uri the uri
 	 * @param content the content
 	 */
-	public void addSupportedLanguage(String codingSchemeName, String localId, String uri, String content);
+	public void addSupportedLanguage(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content);
 	
 	/**
 	 * Adds the supported namespace.
@@ -141,7 +141,7 @@ public interface SupportedAttributeTemplate {
 	 * @param content the content
 	 * @param equivalentCodingScheme the equivalent coding scheme
 	 */
-	public void addSupportedNamespace(String codingSchemeName, String localId, String uri, String content, String equivalentCodingScheme);
+	public void addSupportedNamespace(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content, String equivalentCodingScheme);
 	
 	/**
 	 * Adds the supported property.
@@ -151,7 +151,7 @@ public interface SupportedAttributeTemplate {
 	 * @param uri the uri
 	 * @param content the content
 	 */
-	public void addSupportedProperty(String codingSchemeName, String localId, String uri, String content);
+	public void addSupportedProperty(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content);
 	
 	/**
 	 * Adds the supported property qualifier.
@@ -161,7 +161,7 @@ public interface SupportedAttributeTemplate {
 	 * @param uri the uri
 	 * @param content the content
 	 */
-	public void addSupportedPropertyQualifier(String codingSchemeName, String localId, String uri, String content);
+	public void addSupportedPropertyQualifier(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content);
 	
 	/**
 	 * Adds the supported property type.
@@ -171,7 +171,7 @@ public interface SupportedAttributeTemplate {
 	 * @param uri the uri
 	 * @param content the content
 	 */
-	public void addSupportedPropertyType(String codingSchemeName, String localId, String uri, String content);
+	public void addSupportedPropertyType(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content);
 	
 	/**
 	 * Adds the supported representational form.
@@ -181,7 +181,7 @@ public interface SupportedAttributeTemplate {
 	 * @param uri the uri
 	 * @param content the content
 	 */
-	public void addSupportedRepresentationalForm(String codingSchemeName, String localId, String uri, String content);
+	public void addSupportedRepresentationalForm(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content);
 	
 	/**
 	 * Adds the supported sort order.
@@ -191,7 +191,7 @@ public interface SupportedAttributeTemplate {
 	 * @param uri the uri
 	 * @param content the content
 	 */
-	public void addSupportedSortOrder(String codingSchemeName, String localId, String uri, String content);
+	public void addSupportedSortOrder(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content);
 	
 	/**
 	 * Adds the supported source.
@@ -202,7 +202,7 @@ public interface SupportedAttributeTemplate {
 	 * @param content the content
 	 * @param assemblyRule the assembly rule
 	 */
-	public void addSupportedSource(String codingSchemeName, String localId, String uri, String content, String assemblyRule);
+	public void addSupportedSource(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content, String assemblyRule);
 	
 	/**
 	 * Adds the supported source role.
@@ -212,7 +212,7 @@ public interface SupportedAttributeTemplate {
 	 * @param uri the uri
 	 * @param content the content
 	 */
-	public void addSupportedSourceRole(String codingSchemeName, String localId, String uri, String content);
+	public void addSupportedSourceRole(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content);
 	
 	/**
 	 * Adds the supported status.
@@ -222,5 +222,5 @@ public interface SupportedAttributeTemplate {
 	 * @param uri the uri
 	 * @param content the content
 	 */
-	public void addSupportedStatus(String codingSchemeName, String localId, String uri, String content);
+	public void addSupportedStatus(String codingSchemeName, String codingSchemeVersion, String localId, String uri, String content);
 }

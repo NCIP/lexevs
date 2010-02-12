@@ -25,17 +25,17 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Index.IndexLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.dataAccess.CleanUpUtility;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.LexGrid.LexBIG.Impl.dataAccess.SystemVariables;
-import org.LexGrid.LexBIG.Impl.helpers.SQLConnectionInfo;
-import org.LexGrid.LexBIG.Impl.internalExceptions.UnexpectedInternalError;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.LexGrid.messaging.impl.CommandLineMessageDirector;
-import org.LexGrid.persistence.connection.LexEvsPersistenceConnectionManager;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
+import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.dao.database.operation.DefaultLexEvsDatabaseOperations;
+import org.lexevs.exceptions.UnexpectedInternalError;
+import org.lexevs.system.ResourceManager;
+import org.lexevs.system.constants.SystemVariables;
 import org.lexgrid.loader.connection.LoaderConnectionManager;
 
 import edu.mayo.informatics.lexgrid.convert.indexer.SQLIndexer;
@@ -46,7 +46,7 @@ import edu.mayo.informatics.lexgrid.convert.utility.Constants;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LexEVSConnectionManager extends LexEvsPersistenceConnectionManager implements LoaderConnectionManager  {
+public class LexEVSConnectionManager extends DefaultLexEvsDatabaseOperations implements LoaderConnectionManager  {
 	
 	private LgMessageDirectorIF messageDirector;
 	

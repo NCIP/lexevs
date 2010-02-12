@@ -18,10 +18,6 @@
  */
 package org.lexgrid.loader.logging;
 
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 
 /**
  * A factory for creating Logger objects.

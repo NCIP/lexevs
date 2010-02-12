@@ -18,11 +18,12 @@
  */
 package org.lexgrid.loader.setup;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.lexgrid.loader.setup.ScriptFactory.ScriptType;
-import org.springframework.batch.support.DatabaseType;
+import org.lexevs.dao.database.setup.script.ScriptFactory;
+import org.lexevs.dao.database.setup.script.ScriptFactory.ScriptType;
+import org.lexevs.dao.database.type.DatabaseType;
 import org.springframework.core.io.Resource;
 
 /**

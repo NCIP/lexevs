@@ -26,7 +26,7 @@ import org.springframework.batch.item.ItemProcessor;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractSupportedAttributeRegisteringProcessor<I,O> extends CodingSchemeNameAwareProcessor implements ItemProcessor<I,O>{
+public abstract class AbstractSupportedAttributeRegisteringProcessor<I,O> extends CodingSchemeIdAwareProcessor implements ItemProcessor<I,O>{
 
 	/** The supported attribute template. */
 	private SupportedAttributeTemplate supportedAttributeTemplate;

@@ -18,11 +18,9 @@
  */
 package org.lexgrid.loader.hardcodedvalues;
 
-import java.util.List;
-
-import org.LexGrid.persistence.dao.LexEvsDao;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexgrid.loader.dao.SupportedAttributeSupport;
-import org.lexgrid.loader.data.codingScheme.CodingSchemeNameSetter;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -36,10 +34,9 @@ import org.springframework.batch.repeat.RepeatStatus;
 public abstract class AbstractIntrospectiveHardcodedValues extends SupportedAttributeSupport implements Tasklet {
 
 	/** The coding scheme name setter. */
-	private CodingSchemeNameSetter codingSchemeNameSetter;
+	private CodingSchemeIdSetter codingSchemeIdSetter;
 	
-	/** The lex evs dao. */
-	private LexEvsDao lexEvsDao;
+	private DatabaseServiceManager databaseServiceManager;
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.core.step.tasklet.Tasklet#execute(org.springframework.batch.core.StepContribution, org.springframework.batch.core.scope.context.ChunkContext)
@@ -47,9 +44,7 @@ public abstract class AbstractIntrospectiveHardcodedValues extends SupportedAttr
 	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1)
 			throws Exception {
 		
-		for(Object obj : loadObjects()){
-			lexEvsDao.insert(obj);
-		}
+		this.loadObjects();
 		return RepeatStatus.FINISHED;
 	}
 	
@@ -58,42 +53,40 @@ public abstract class AbstractIntrospectiveHardcodedValues extends SupportedAttr
 	 * 
 	 * @return the list< object>
 	 */
-	public abstract List<Object> loadObjects();
+	public abstract void loadObjects();
 	
 	/**
 	 * Gets the coding scheme name setter.
 	 * 
 	 * @return the coding scheme name setter
 	 */
-	public CodingSchemeNameSetter getCodingSchemeNameSetter() {
-		return codingSchemeNameSetter;
+	public CodingSchemeIdSetter getCodingSchemeNameSetter() {
+		return codingSchemeIdSetter;
 	}
 
 	/**
 	 * Sets the coding scheme name setter.
 	 * 
-	 * @param codingSchemeNameSetter the new coding scheme name setter
+	 * @param codingSchemeIdSetter the new coding scheme name setter
 	 */
 	public void setCodingSchemeNameSetter(
-			CodingSchemeNameSetter codingSchemeNameSetter) {
-		this.codingSchemeNameSetter = codingSchemeNameSetter;
+			CodingSchemeIdSetter codingSchemeIdSetter) {
+		this.codingSchemeIdSetter = codingSchemeIdSetter;
 	}
 
-	/**
-	 * Gets the lex evs dao.
-	 * 
-	 * @return the lex evs dao
-	 */
-	public LexEvsDao getLexEvsDao() {
-		return lexEvsDao;
+	public CodingSchemeIdSetter getCodingSchemeIdSetter() {
+		return codingSchemeIdSetter;
 	}
 
-	/**
-	 * Sets the lex evs dao.
-	 * 
-	 * @param lexEvsDao the new lex evs dao
-	 */
-	public void setLexEvsDao(LexEvsDao lexEvsDao) {
-		this.lexEvsDao = lexEvsDao;
+	public void setCodingSchemeIdSetter(CodingSchemeIdSetter codingSchemeIdSetter) {
+		this.codingSchemeIdSetter = codingSchemeIdSetter;
+	}
+
+	public void setDatabaseServiceManager(DatabaseServiceManager databaseServiceManager) {
+		this.databaseServiceManager = databaseServiceManager;
+	}
+
+	public DatabaseServiceManager getDatabaseServiceManager() {
+		return databaseServiceManager;
 	}
 }

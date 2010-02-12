@@ -1,16 +1,19 @@
 package org.lexgrid.loader.processor.support;
 
-import org.LexGrid.persistence.model.EntityAssnsToEntity;
-import org.lexgrid.loader.data.DataUtils;
-import org.lexgrid.loader.data.association.RandomUuidKeyResolver;
+import junit.framework.Assert;
 
-public abstract class AbstractRootNodeResolver implements RootNodeResolver<EntityAssnsToEntity>{
+import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.AssociationTarget;
+import org.lexgrid.loader.wrappers.ParentIdHolder;
+
+public abstract class AbstractRootNodeResolver implements RootNodeResolver<ParentIdHolder<AssociationSource>>{
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.RootNodeResolver#isRootNode(java.lang.Object)
 	 */
-	public boolean isRootNode(EntityAssnsToEntity item) {
-		String relation = item.getEntityCode();
+	public boolean isRootNode(ParentIdHolder<AssociationSource> item) {
+		//TODO: FIX THIS
+		String relation = null;
 		
 		return isHierarchicalRelation(relation) &&
 			(pointsToRoot(item) || pointsToTail(item));
@@ -19,25 +22,24 @@ public abstract class AbstractRootNodeResolver implements RootNodeResolver<Entit
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.item.ItemProcessor#process(java.lang.Object)
 	 */
-	public EntityAssnsToEntity process(EntityAssnsToEntity item)
+	public ParentIdHolder<AssociationSource> process(ParentIdHolder<AssociationSource> item)
 			throws Exception {
-		EntityAssnsToEntity copy = DataUtils.deepCloneEntityAssnsToEntity(item);
+		Assert.assertEquals("Only one (1) AssocationSource and one (1) AssociationTarget may be processed at a time." , 
+				item.getItem().getTargetCount() == 1);
+		
+		AssociationSource source = new AssociationSource();
+		AssociationTarget target = new AssociationTarget();
 		
 		if(pointsToTail(item)){
-			copy.setTargetEntityCode("@@");
+			target.setTargetEntityCode("@@");
 		}
 		if(pointsToRoot(item)){
-			copy.setSourceEntityCode("@");
+			source.setSourceEntityCode("@");
 		}
-
-		String codingScheme = copy.getCodingSchemeName();
-		copy.setSourceEntityCodeNamespace(codingScheme);
-		copy.setTargetEntityCodeNamespace(codingScheme);
 		
-		//set the multiattributeskey to a random uuid
-		copy.setMultiAttributesKey(RandomUuidKeyResolver.getRandomUuidKey());
+		source.addTarget(target);
 		
-		return copy;
+		return new ParentIdHolder<AssociationSource>(item.getCodingSchemeIdSetter(),item.getParentId(), source);
 	}
 	
 	/**
@@ -47,8 +49,8 @@ public abstract class AbstractRootNodeResolver implements RootNodeResolver<Entit
 	 * 
 	 * @return true, if successful
 	 */
-	protected boolean pointsToRoot(EntityAssnsToEntity item){
-		String sourceCode = item.getSourceEntityCode();
+	protected boolean pointsToRoot(ParentIdHolder<AssociationSource> item){
+		String sourceCode = item.getItem().getSourceEntityCode();
 		return isSourceRootNode(sourceCode);
 	}
 	
@@ -59,8 +61,9 @@ public abstract class AbstractRootNodeResolver implements RootNodeResolver<Entit
 	 * 
 	 * @return true, if successful
 	 */
-	protected boolean pointsToTail(EntityAssnsToEntity item){
-		String targetCode = item.getTargetEntityCode();
+	protected boolean pointsToTail(ParentIdHolder<AssociationSource> item){
+		//TODO: Fix this
+		String targetCode = null;
 		return isSourceRootNode(targetCode);	
 	}
 	

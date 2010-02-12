@@ -18,10 +18,13 @@
  */
 package org.lexgrid.loader.processor;
 
-import org.LexGrid.persistence.model.EntityAssnsToEntity;
+import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.AssociationTarget;
 import org.apache.commons.lang.StringUtils;
-import org.lexgrid.loader.data.association.MultiAttribKeyResolver;
+import org.lexgrid.loader.data.association.AssociationInstanceIdResolver;
+import org.lexgrid.loader.database.key.AssociationPredicateKeyResolver;
 import org.lexgrid.loader.processor.support.RelationResolver;
+import org.lexgrid.loader.wrappers.ParentIdHolder;
 import org.springframework.batch.item.ItemProcessor;
 
 /**
@@ -29,39 +32,48 @@ import org.springframework.batch.item.ItemProcessor;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class EntityAssnsToEntityProcessor<I> extends CodingSchemeNameAwareProcessor implements ItemProcessor<I,EntityAssnsToEntity> {
+public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcessor implements ItemProcessor<I,ParentIdHolder<AssociationSource>> {
 	
 	/** The relation resolver. */
 	private RelationResolver<I> relationResolver;
 	
 	/** The key resolver. */
-	private MultiAttribKeyResolver<I> keyResolver;
+	private AssociationInstanceIdResolver<I> associationInstanceIdResolver;
+	
+	private AssociationPredicateKeyResolver associationPredicateKeyResolver;
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.item.ItemProcessor#process(java.lang.Object)
 	 */
-	public EntityAssnsToEntity process(I item) throws Exception {
+	public ParentIdHolder<AssociationSource> process(I item) throws Exception {
 		String rel = relationResolver.getRelation(item);
 		if(StringUtils.isEmpty(rel)){
 			return null;
 		}
+			
+		AssociationSource source = new AssociationSource();
+		AssociationTarget target = new AssociationTarget();
 		
-		EntityAssnsToEntity relAssoc = new EntityAssnsToEntity();
-		relAssoc.setCodingSchemeName(getCodingSchemeNameSetter().getCodingSchemeName());
-		relAssoc.setEntityCodeNamespace(relationResolver.getRelationNamespace(item));
-		relAssoc.setContainerName(relationResolver.getContainerName());
-		relAssoc.setEntityCode(relationResolver.getRelation(item));
-		relAssoc.setSourceEntityCode(relationResolver.getSource(item));
-		relAssoc.setSourceEntityCodeNamespace(relationResolver.getSourceNamespace(item));
-		relAssoc.setTargetEntityCode(relationResolver.getTarget(item));
-		relAssoc.setTargetEntityCodeNamespace(relationResolver.getTargetNamespace(item));
+		source.setSourceEntityCode(relationResolver.getSource(item));
+		source.setSourceEntityCodeNamespace(relationResolver.getSourceNamespace(item));
 		
-		relAssoc.setIsActive(true);
-		relAssoc.setIsDefining(true);
-		relAssoc.setIsInferred(false);
-		relAssoc.setMultiAttributesKey(keyResolver.resolveMultiAttributesKey(item));
+		target.setTargetEntityCode(relationResolver.getTarget(item));
+		target.setTargetEntityCodeNamespace(relationResolver.getTargetNamespace(item));
+		target.setAssociationInstanceId(associationInstanceIdResolver.resolveAssociationInstanceId(item));		
 		
-		return relAssoc;	
+		target.setIsActive(true);
+		target.setIsDefining(true);
+		
+		source.addTarget(target);
+
+		String associationPredicateKey = associationPredicateKeyResolver.resolveKey(
+				this.getCodingSchemeIdSetter().getCodingSchemeId(), 
+				relationResolver.getRelation(item));
+		
+		return new ParentIdHolder<AssociationSource>(
+				this.getCodingSchemeIdSetter(),
+				associationPredicateKey, 
+				source);	
 	}
 
 	/**
@@ -82,21 +94,21 @@ public class EntityAssnsToEntityProcessor<I> extends CodingSchemeNameAwareProces
 		this.relationResolver = relationResolver;
 	}
 
-	/**
-	 * Gets the key resolver.
-	 * 
-	 * @return the key resolver
-	 */
-	public MultiAttribKeyResolver<I> getKeyResolver() {
-		return keyResolver;
+	public AssociationInstanceIdResolver<I> getAssociationInstanceIdResolver() {
+		return associationInstanceIdResolver;
 	}
 
-	/**
-	 * Sets the key resolver.
-	 * 
-	 * @param keyResolver the new key resolver
-	 */
-	public void setKeyResolver(MultiAttribKeyResolver<I> keyResolver) {
-		this.keyResolver = keyResolver;
-	}	
+	public void setAssociationInstanceIdResolver(
+			AssociationInstanceIdResolver<I> associationInstanceIdResolver) {
+		this.associationInstanceIdResolver = associationInstanceIdResolver;
+	}
+
+	public AssociationPredicateKeyResolver getAssociationPredicateKeyResolver() {
+		return associationPredicateKeyResolver;
+	}
+
+	public void setAssociationPredicateKeyResolver(
+			AssociationPredicateKeyResolver associationPredicateKeyResolver) {
+		this.associationPredicateKeyResolver = associationPredicateKeyResolver;
+	}
 }

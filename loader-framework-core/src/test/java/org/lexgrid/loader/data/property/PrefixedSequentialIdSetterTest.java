@@ -23,8 +23,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.persistence.model.EntityProperty;
-import org.LexGrid.persistence.model.EntityPropertyId;
+import org.LexGrid.commonTypes.Property;
 import org.junit.Test;
 import org.lexgrid.loader.data.DataUtils;
 
@@ -42,28 +41,21 @@ public class PrefixedSequentialIdSetterTest {
 	 */
 	@Test
 	public void testAddIds() throws Exception {
-		EntityProperty prop1 = new EntityProperty();
-		EntityPropertyId propId1 = new EntityPropertyId();		
-		propId1.setCodingSchemeName("test");
-		propId1.setEntityCode("test");
-		propId1.setEntityCodeNamespace("test");
-		propId1.setPropertyId("test");	
+		Property prop1 = new Property();
 		prop1.setLanguage("en");
-		prop1.setId(propId1);
 		prop1.setPropertyType("test");
 		prop1.setPropertyName("test");
-		prop1.setPropertyValue("test");
-		prop1.setIsPreferred(false);
+
 		
-		EntityProperty prop2 = DataUtils.deepCloneEntityProperty(prop1);
+		Property prop2 = DataUtils.deepCloneProperty(prop1);
 		
-		EntityProperty prop3 = DataUtils.deepCloneEntityProperty(prop1);
+		Property prop3 = DataUtils.deepCloneProperty(prop1);
 		prop3.setLanguage("FR");
 		
-		EntityProperty prop4 = DataUtils.deepCloneEntityProperty(prop1);
+		Property prop4 = DataUtils.deepCloneProperty(prop1);
 		prop4.setLanguage("SP");
 		
-		List<EntityProperty> props = new ArrayList<EntityProperty>();
+		List<Property> props = new ArrayList<Property>();
 		
 		props.add(prop1);
 		props.add(prop2);
@@ -74,9 +66,9 @@ public class PrefixedSequentialIdSetterTest {
 		idSetter.setPrefix("TEST_PREFIX");
 		idSetter.addIds(props);
 		
-		assertTrue(props.get(0).getId().getPropertyId().equals("TEST_PREFIX-1"));
-		assertTrue(props.get(1).getId().getPropertyId().equals("TEST_PREFIX-2"));
-		assertTrue(props.get(2).getId().getPropertyId().equals("TEST_PREFIX-3"));
-		assertTrue(props.get(3).getId().getPropertyId().equals("TEST_PREFIX-4"));		
+		assertTrue(props.get(0).getPropertyId().equals("TEST_PREFIX-1"));
+		assertTrue(props.get(1).getPropertyId().equals("TEST_PREFIX-2"));
+		assertTrue(props.get(2).getPropertyId().equals("TEST_PREFIX-3"));
+		assertTrue(props.get(3).getPropertyId().equals("TEST_PREFIX-4"));		
 	}
 }

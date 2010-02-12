@@ -21,7 +21,8 @@ package org.lexgrid.loader.processor.support.validator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.persistence.model.EntityAssnsToEntity;
+import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.AssociationTarget;
 import org.springframework.batch.item.validator.ValidationException;
 import org.springframework.batch.item.validator.Validator;
 
@@ -30,7 +31,7 @@ import org.springframework.batch.item.validator.Validator;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class NamespaceSizeValidator implements Validator<EntityAssnsToEntity> {
+public class NamespaceSizeValidator implements Validator<AssociationSource> {
 	
 	/** The max namespace length. */
 	private int maxNamespaceLength = 50;
@@ -38,7 +39,7 @@ public class NamespaceSizeValidator implements Validator<EntityAssnsToEntity> {
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.item.validator.Validator#validate(java.lang.Object)
 	 */
-	public void validate(EntityAssnsToEntity item) throws ValidationException {
+	public void validate(AssociationSource item) throws ValidationException {
 		//If for some reason the processor gives us null -- consider that validated.
 		if(item == null){
 			return;
@@ -47,10 +48,11 @@ public class NamespaceSizeValidator implements Validator<EntityAssnsToEntity> {
 		List<String> toValidate = new ArrayList<String>();
 		
 		String sourceNamespace = item.getSourceEntityCodeNamespace();
-		String targetNamespace = item.getTargetEntityCodeNamespace();
-
 		toValidate.add(sourceNamespace);
-		toValidate.add(targetNamespace);
+		
+		for(AssociationTarget target : item.getTarget()){
+			toValidate.add(target.getTargetEntityCodeNamespace());
+		}
 		
 		for(String namespace : toValidate){
 			if(namespace.length() >= 50){

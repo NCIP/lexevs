@@ -18,13 +18,11 @@
  */
 package org.lexgrid.loader.setup;
 
-import org.LexGrid.persistence.constants.PersistenceLayerConstants;
-import org.LexGrid.persistence.database.DatabaseUtility;
-import org.LexGrid.persistence.database.DefaultDatabaseUtility;
-import org.apache.log4j.Logger;
-import org.lexgrid.loader.logging.LoggerFactory;
+import org.lexevs.dao.database.constants.DatabaseConstants;
+import org.lexevs.dao.database.type.DatabaseType;
+import org.lexevs.dao.database.utility.DatabaseUtility;
+import org.lexevs.dao.database.utility.DefaultDatabaseUtility;
 import org.lexgrid.loader.logging.LoggingBean;
-import org.springframework.batch.support.DatabaseType;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
@@ -39,9 +37,6 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	/** The database utility. */
 	private DatabaseUtility databaseUtility;
 	
-	/** The retry. */
-	private boolean retry;
-	
 	/** The create script. */
 	private Resource createScript;
 	
@@ -51,6 +46,8 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	private boolean dropOnClose = false;
 	
 	private DatabaseType databaseType;
+	
+	private String prefix;
 	
 	//Not needed now... just in case a subclass might...
 	/** The tables. */
@@ -76,12 +73,12 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
 	public void afterPropertiesSet() throws Exception {
-		if(!retry){
+		if(! doJobRepositoryTablesExist()){
 			getLogger().info("Creating Job Repository.");
 			String script = DefaultDatabaseUtility.convertResourceToString(createScript);
-			databaseUtility.executeScript(insertPrefixVariable(script));
+			databaseUtility.executeScript(insertPrefixVariable(script), prefix);
 		} else {
-			getLogger().info("Not Creating Job Repository for restart.");
+			getLogger().info("Not Creating Job Repository.");
 		}
 	}
 	
@@ -93,12 +90,29 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	 * @return the string
 	 */
 	protected String insertPrefixVariable(String script){
-		script = script.replaceAll("BATCH_", PersistenceLayerConstants.PREFIX_PLACEHOLDER);
+		script = script.replaceAll("BATCH_", DatabaseConstants.PREFIX_PLACEHOLDER);
 		if(! databaseType.equals(DatabaseType.DB2)){
-			script = script.replaceAll("constraint ", "constraint " + PersistenceLayerConstants.PREFIX_PLACEHOLDER);
+			script = script.replaceAll("constraint ", "constraint " + DatabaseConstants.PREFIX_PLACEHOLDER);
 		}
 		
 		return script;
+	}
+	
+
+	/**
+	 * Insert prefix variable.
+	 * 
+	 * @param script the script
+	 * 
+	 * @return the string
+	 */
+	protected boolean doJobRepositoryTablesExist(){
+		try {
+			this.getDatabaseUtility().executeScript("SELECT * FROM " + prefix + "JOB_INSTANCE");
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -139,25 +153,6 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	 */
 	public void setDatabaseUtility(DatabaseUtility databaseUtility) {
 		this.databaseUtility = databaseUtility;
-	}
-
-
-	/**
-	 * Checks if is retry.
-	 * 
-	 * @return true, if is retry
-	 */
-	public boolean isRetry() {
-		return retry;
-	}
-
-	/**
-	 * Sets the retry.
-	 * 
-	 * @param retry the new retry
-	 */
-	public void setRetry(boolean retry) {
-		this.retry = retry;
 	}
 
 	/**
@@ -210,5 +205,13 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 
 	public void setDatabaseType(DatabaseType databaseType) {
 		this.databaseType = databaseType;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public String getPrefix() {
+		return prefix;
 	}
 }

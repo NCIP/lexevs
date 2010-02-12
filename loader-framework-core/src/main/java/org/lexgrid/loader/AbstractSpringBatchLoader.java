@@ -26,13 +26,13 @@ import java.util.Properties;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.helpers.MyClassLoader;
-import org.LexGrid.LexBIG.Impl.helpers.SQLConnectionInfo;
 import org.LexGrid.LexBIG.Impl.loaders.BaseLoader;
-import org.LexGrid.persistence.properties.PropertiesFactory;
-import org.LexGrid.persistence.spring.DynamicPropertyApplicationContext;
+import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.dao.database.spring.DynamicPropertyApplicationContext;
+import org.lexevs.system.ResourceManager;
 import org.lexgrid.loader.logging.SpringBatchMessageDirector;
+import org.lexgrid.loader.properties.impl.PropertiesFactory;
 import org.lexgrid.loader.setup.JobRepositoryManager;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.ExitStatus;
@@ -49,6 +49,8 @@ import org.springframework.batch.core.launch.JobLauncher;
  */
 public abstract class AbstractSpringBatchLoader extends BaseLoader implements Loader {
 
+	private static final long serialVersionUID = -4179393859521278360L;
+	
 	private JobExecution jobExecution;
 	private SpringBatchMessageDirector springBatchMessageDirector;
 	private SQLConnectionInfo sqlConnectionInfo;

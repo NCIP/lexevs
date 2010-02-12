@@ -18,12 +18,13 @@
  */
 package org.lexgrid.loader.data;
 
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 
-import org.LexGrid.persistence.model.EntityAssnsToEntity;
-import org.LexGrid.persistence.model.EntityProperty;
-import org.LexGrid.persistence.model.EntityPropertyId;
+import org.LexGrid.commonTypes.Property;
 import org.apache.commons.lang.StringUtils;
+import org.exolab.castor.xml.Unmarshaller;
 
 /**
  * The Class DataUtils.
@@ -32,71 +33,18 @@ import org.apache.commons.lang.StringUtils;
  */
 public class DataUtils {
 
-	/**
-	 * Deep clone entity property.
-	 * 
-	 * @param prop the prop
-	 * 
-	 * @return the entity property
-	 * 
-	 * @throws Exception the exception
-	 */
-	public static EntityProperty deepCloneEntityProperty(EntityProperty prop) throws Exception {
-		EntityProperty newProp = new EntityProperty();
-		EntityPropertyId newPropId = new EntityPropertyId();
+	public static <T extends Property> T deepCloneProperty(T property) throws Exception {
+		StringWriter writer = new StringWriter();
+		property.marshal(writer);
+		writer.flush();
 		
-		newProp.setDegreeOfFidelity(deepCopy(prop.getDegreeOfFidelity()));
-		newProp.setEntryStateId(deepCopy(prop.getEntryStateId()));
-		newProp.setFormat(deepCopy(prop.getFormat()));
-		newProp.setIsActive(deepCopy(prop.getIsActive()));
-		newProp.setIsPreferred(deepCopy(prop.getIsPreferred()));
-		newProp.setLanguage(deepCopy(prop.getLanguage()));
-		newProp.setMatchIfNoContext(deepCopy(prop.getMatchIfNoContext()));
-		newProp.setPropertyName(deepCopy(prop.getPropertyName()));
-		newProp.setPropertyType(deepCopy(prop.getPropertyType()));
-		newProp.setPropertyValue(deepCopy(prop.getPropertyValue()));
-		newProp.setRepresentationalForm(deepCopy(prop.getRepresentationalForm()));
+		String stringProp = writer.toString();
 		
-		newPropId.setCodingSchemeName(deepCopy(prop.getId().getCodingSchemeName()));
-		newPropId.setEntityCode(deepCopy(prop.getId().getEntityCode()));
-		newPropId.setEntityCodeNamespace(deepCopy(prop.getId().getEntityCodeNamespace()));
-		newPropId.setPropertyId(deepCopy(prop.getId().getPropertyId()));
+		StringReader reader = new StringReader(stringProp);
 		
-		newProp.setId(newPropId);	
-		
-		return newProp;
+		return  (T) Unmarshaller.unmarshal(property.getClass(), reader);
 	}
-	
-	
-	/**
-	 * Deep clone entity assns to entity.
-	 * 
-	 * @param assoc the assoc
-	 * 
-	 * @return the entity assns to entity
-	 * 
-	 * @throws Exception the exception
-	 */
-	public static EntityAssnsToEntity deepCloneEntityAssnsToEntity(EntityAssnsToEntity assoc) throws Exception {
-		EntityAssnsToEntity newAssoc = new EntityAssnsToEntity();
-		
-		newAssoc.setIsActive(deepCopy(assoc.getIsActive()));
-		newAssoc.setIsDefining(deepCopy(assoc.getIsDefining()));
-		newAssoc.setIsInferred(deepCopy(assoc.getIsInferred()));
-		newAssoc.setMultiAttributesKey(deepCopy(assoc.getMultiAttributesKey()));	
-		
-		newAssoc.setCodingSchemeName(deepCopy(assoc.getCodingSchemeName()));
-		newAssoc.setEntityCode(deepCopy(assoc.getEntityCode()));
-		newAssoc.setEntityCodeNamespace(deepCopy(assoc.getEntityCodeNamespace()));
-		newAssoc.setContainerName(deepCopy(assoc.getContainerName()));
-		newAssoc.setSourceEntityCode(deepCopy(assoc.getSourceEntityCode()));
-		newAssoc.setSourceEntityCodeNamespace(deepCopy(assoc.getSourceEntityCodeNamespace()));
-		newAssoc.setTargetEntityCode(deepCopy(assoc.getTargetEntityCode()));
-		newAssoc.setTargetEntityCodeNamespace(deepCopy(assoc.getTargetEntityCodeNamespace()));
-		
-		return newAssoc;
-	}
-	
+
 	
 	/**
 	 * Makes a deep copy of an Object -- assumes the Object to be copied has a Constructor
