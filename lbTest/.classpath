@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/test/java"/>
-	<classpathentry kind="src" path="compatibilitytest/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
@@ -11,7 +10,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lgModel.emf"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/loader-framework-core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/meta-loader"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/persistence-layer"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/umls-loader"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/abstract-rrf-loader"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgValueDomain"/>
