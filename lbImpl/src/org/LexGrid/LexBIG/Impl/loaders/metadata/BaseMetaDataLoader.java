@@ -21,10 +21,10 @@ package org.LexGrid.LexBIG.Impl.loaders.metadata;
 import java.util.ArrayList;
 
 import org.LexGrid.LexBIG.Impl.dataAccess.MetaDataIndex;
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.apache.commons.codec.language.DoubleMetaphone;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
 
 import edu.mayo.informatics.indexer.api.IndexerService;
 import edu.mayo.informatics.indexer.api.generators.DocumentFromStringsGenerator;

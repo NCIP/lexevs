@@ -36,10 +36,10 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.HL7_Loader;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
 
 import edu.mayo.informatics.lexgrid.convert.emfConversions.hl7.HL72EMFConstants;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;

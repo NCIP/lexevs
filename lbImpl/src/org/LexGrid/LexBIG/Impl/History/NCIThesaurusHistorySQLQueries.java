@@ -34,16 +34,16 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.SystemReleaseDetail;
 import org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent;
 import org.LexGrid.LexBIG.DataModel.NCIHistory.types.ChangeType;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLHistoryInterface;
-import org.LexGrid.LexBIG.Impl.internalExceptions.UnexpectedInternalError;
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.CodingSchemeVersion;
 import org.LexGrid.versions.EntityVersion;
 import org.LexGrid.versions.SystemRelease;
+import org.lexevs.dao.database.connection.SQLHistoryInterface;
+import org.lexevs.exceptions.UnexpectedInternalError;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
+import org.lexevs.system.ResourceManager;
 
 /**
  * SQL queries necessary to implement the NCI history methods.

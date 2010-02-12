@@ -32,15 +32,15 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.UMLSHistoryLoader;
 import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLInterfaceBase;
-import org.LexGrid.LexBIG.Impl.dataAccess.SystemVariables;
-import org.LexGrid.LexBIG.Impl.dataAccess.Registry.HistoryEntry;
-import org.LexGrid.LexBIG.Impl.helpers.SQLConnectionInfo;
 import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
+import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.dao.database.connection.SQLInterfaceBase;
+import org.lexevs.registry.service.Registry.HistoryEntry;
+import org.lexevs.system.ResourceManager;
+import org.lexevs.system.constants.SystemVariables;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.UMLSHistoryFileToSQL;
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
@@ -212,12 +212,12 @@ private static final long serialVersionUID = 1L;
                         if (sv.getAutoLoadSingleDBMode()) {
                             Connection connection = DBUtility.connectToDatabase(sv.getAutoLoadDBURL(), sv
                                     .getAutoLoadDBDriver(), sv.getAutoLoadDBUsername(), sv.getAutoLoadDBPassword());
-                            SQLTableUtilities stu = new SQLTableUtilities(connection, oldEntry.getPrefix());
+                            SQLTableUtilities stu = new SQLTableUtilities(connection, oldEntry.prefix);
                             stu.dropTables();
                             connection.close();
                         } else {
                             DBUtility.dropDatabase(sv.getAutoLoadDBURL(), sv.getAutoLoadDBDriver(), oldEntry
-                                    .getdbName(), sv.getAutoLoadDBUsername(), sv.getAutoLoadDBPassword());
+                                    .dbName, sv.getAutoLoadDBUsername(), sv.getAutoLoadDBPassword());
                         }
                     }
 

@@ -19,8 +19,8 @@
 package org.LexGrid.LexBIG.Impl.helpers.graph;
 
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.lexevs.system.ResourceManager;
 
 /**
  * AssociationInfo object to assist in building the graph. The information in

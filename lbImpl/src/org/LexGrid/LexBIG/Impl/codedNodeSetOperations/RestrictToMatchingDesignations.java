@@ -25,10 +25,10 @@ import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Operation;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
-import org.LexGrid.LexBIG.Impl.internalExceptions.InternalException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.apache.lucene.search.Query;
+import org.lexevs.exceptions.InternalException;
 
 /**
  * Holder for the RestrictToMatchingDesignations operation.

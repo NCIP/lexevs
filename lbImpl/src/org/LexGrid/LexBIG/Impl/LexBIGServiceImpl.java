@@ -34,27 +34,63 @@ import org.LexGrid.LexBIG.DataModel.Core.ReferenceLink;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.RenderingDetail;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortDescription;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.SortContext;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
+import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
+import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.LexBIGServiceConvenienceMethodsImpl;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.ContainsSearch;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.DoubleMetaphoneSearch;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.ExactMatchSearch;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.LeadingAndTrailingWildcardSearch;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.LiteralContainsSearch;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.LiteralSearch;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.LiteralSubStringSearch;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.LuceneSearch;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.NonLeadingWildcardLiteralSubStringSearch;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.PhraseSearch;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.RegExpSearch;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.SpellingErrorTolerantSubStringSearch;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.StartsWithSearch;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.StemmedSearch;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.SubStringSearch;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.WeightedDoubleMetaphoneSearch;
+import org.LexGrid.LexBIG.Impl.Extensions.Sort.CodePostSort;
+import org.LexGrid.LexBIG.Impl.Extensions.Sort.CodeSort;
+import org.LexGrid.LexBIG.Impl.Extensions.Sort.CodeSystemSort;
+import org.LexGrid.LexBIG.Impl.Extensions.Sort.ConceptStatusSort;
+import org.LexGrid.LexBIG.Impl.Extensions.Sort.EntityDescriptionSort;
+import org.LexGrid.LexBIG.Impl.Extensions.Sort.MatchToQuerySort;
+import org.LexGrid.LexBIG.Impl.Extensions.Sort.NumberOfChildrenSort;
+import org.LexGrid.LexBIG.Impl.Extensions.Sort.isActiveSort;
 import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistorySQLQueries;
 import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistoryServiceImpl;
 import org.LexGrid.LexBIG.Impl.History.UMLSHistoryServiceImpl;
-import org.LexGrid.LexBIG.Impl.dataAccess.Registry;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLInterface;
+import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
+import org.LexGrid.LexBIG.Impl.exporters.OBOExport;
 import org.LexGrid.LexBIG.Impl.helpers.MyClassLoader;
-import org.LexGrid.LexBIG.Impl.internalExceptions.InternalException;
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
+import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.IndexLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.LexGridLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.MetaDataLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.NCIHistoryLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.NCIMetaThesaurusLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.OBOLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.RadLexProtegeFramesLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.TextLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.UMLSHistoryLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.UMLSLoaderImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -65,6 +101,12 @@ import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.exceptions.InternalException;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
+import org.lexevs.registry.service.Registry;
+import org.lexevs.system.ResourceManager;
 
 /**
  * Implementation of the LexBIGService Interface.
@@ -100,7 +142,8 @@ public class LexBIGServiceImpl implements LexBIGService {
         if (lexbigService_ == null)
             try {
                 lexbigService_ = new LexBIGServiceImpl();
-            } catch (LBInvocationException e) {
+                lexbigService_.registerExtensions();
+            } catch (LBException e) {
                 LoggerFactory.getLogger().error("Error initializing service", e);
             }
         return lexbigService_;
@@ -380,9 +423,9 @@ public class LexBIGServiceImpl implements LexBIGService {
             LBInvocationException {
         getLogger().logMethod(new Object[] { credentials });
         try {
-            return ResourceManager.instance().getLexBIGServiceManager(credentials);
-        } catch (LBParameterException e) {
-            throw e;
+            //TODO: Implement some sort of Security
+            // Also, inject the LexBIGServiceManager here, with Spring or ServiceLocator or otherwise.
+            return new LexBIGServiceManagerImpl();
         } catch (Exception e) {
             String id = getLogger().error("There was an unexpected error", e);
             throw new LBInvocationException("There was an unexpected error", id);
@@ -447,7 +490,28 @@ public class LexBIGServiceImpl implements LexBIGService {
     @LgClientSideSafe
     public SortDescriptionList getSortAlgorithms(SortContext context) {
         getLogger().logMethod(new Object[] { context });
-        return ResourceManager.instance().getSortAlgorithms(context);
+        
+        SortDescriptionList result = new SortDescriptionList();
+
+        // Get the sort extensions.
+
+        SortDescriptionList sdl = ExtensionRegistryImpl.instance().getSortExtensions();
+        for (int i = 0; i < sdl.getSortDescriptionCount(); i++) {
+            SortDescription cur = sdl.getSortDescription(i);
+            if (context == null) {
+                result.addSortDescription(cur);
+            } else {
+                SortContext[] temp = cur.getRestrictToContext();
+                for (int j = 0; j < temp.length; j++) {
+                    if (temp[j].getType() == context.getType()) {
+                        result.addSortDescription(cur);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 
     @LgClientSideSafe
@@ -468,7 +532,7 @@ public class LexBIGServiceImpl implements LexBIGService {
             throw new LBInvocationException("Unexpected error getting generic extension for " + name, id);
         }
     }
-
+    
     @LgClientSideSafe
     public ExtensionDescriptionList getGenericExtensions() {
         getLogger().logMethod(new Object[] {});
@@ -497,6 +561,83 @@ public class LexBIGServiceImpl implements LexBIGService {
     public LexBIGServiceMetadata getServiceMetadata() throws LBException {
         getLogger().logMethod(new Object[] {});
         return new LexBIGServiceMetadataImpl();
+    }
+    
+    private void registerExtensions() throws LBParameterException, LBException {
+        // sort extensions
+        new EntityDescriptionSort().register();
+        new ConceptStatusSort().register();
+        new isActiveSort().register();
+        new CodeSystemSort().register();
+        new CodeSort().register();
+        new CodePostSort().register();
+        new MatchToQuerySort().register();
+        new NumberOfChildrenSort().register();
+        
+        //search extensions;
+        new ContainsSearch().register();
+        new DoubleMetaphoneSearch().register();
+        new WeightedDoubleMetaphoneSearch().register();
+        new ExactMatchSearch().register();
+        new LuceneSearch().register();
+        new RegExpSearch().register();
+        new StartsWithSearch().register();
+        new StemmedSearch().register();
+        new PhraseSearch().register();
+        new SubStringSearch().register();
+        new LeadingAndTrailingWildcardSearch().register();
+        new SpellingErrorTolerantSubStringSearch().register();
+        new LiteralSearch().register();
+        new LiteralContainsSearch().register();
+        new LiteralSubStringSearch().register();
+        new NonLeadingWildcardLiteralSubStringSearch().register();
+        
+        // load extensions
+        TextLoaderImpl.register();
+        UMLSLoaderImpl.register();
+        IndexLoaderImpl.register();
+        NCIMetaThesaurusLoaderImpl.register();
+        NCIHistoryLoaderImpl.register();
+        UMLSHistoryLoaderImpl.register();
+        LexGridLoaderImpl.register();
+        OWLLoaderImpl.register();
+        OBOLoaderImpl.register();
+        MetaDataLoaderImpl.register();
+        RadLexProtegeFramesLoaderImpl.register();
+        HL7LoaderImpl.register();
+        
+        //Meta Batch Loader Extension
+        ExtensionDescription meta = new ExtensionDescription();
+        meta.setExtensionBaseClass(MetaBatchLoader.class.getName());
+        meta.setExtensionClass("org.lexgrid.loader.meta.MetaBatchLoaderImpl");
+        meta.setDescription(MetaBatchLoader.DESCRIPTION);
+        meta.setName(MetaBatchLoader.NAME);
+        meta.setVersion(MetaBatchLoader.VERSION);
+        try {
+            ExtensionRegistryImpl.instance().registerLoadExtension(meta);
+        } catch (Exception e) {
+            getLogger().warn(meta.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
+        }
+        
+        //Umls Batch Loader Extension
+        ExtensionDescription umls = new ExtensionDescription();
+        umls.setExtensionBaseClass(UmlsBatchLoader.class.getName());
+        umls.setExtensionClass("org.lexgrid.loader.umls.UmlsBatchLoaderImpl");
+        umls.setDescription(UmlsBatchLoader.DESCRIPTION);
+        umls.setName(UmlsBatchLoader.NAME);
+        umls.setVersion(UmlsBatchLoader.VERSION);
+        try {
+            ExtensionRegistryImpl.instance().registerLoadExtension(umls);
+        } catch (Exception e) {
+            getLogger().warn(umls.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
+        }
+
+        // export extensions
+        LexGridExport.register();
+        OBOExport.register();
+
+        // Generic Extensions
+        LexBIGServiceConvenienceMethodsImpl.register();
     }
 
 }

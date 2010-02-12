@@ -26,9 +26,9 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
 import org.LexGrid.LexBIG.DataModel.Core.types.LogLevel;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ProcessStatus;
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.LexGrid.messaging.LgMessageDirectorIF;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
 
 /**
  * A message director to redirect messages as necessary for LexBig.

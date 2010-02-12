@@ -26,8 +26,8 @@ import org.LexGrid.LexBIG.Extensions.Query.Search;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.dataAccess.IndexQueryParserFactory;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.apache.lucene.queryParser.QueryParser;
+import org.lexevs.system.ResourceManager;
 import org.springframework.util.StringUtils;
 
 import edu.mayo.informatics.indexer.api.generators.QueryGenerator;
@@ -53,7 +53,7 @@ public abstract class AbstractSearch extends AbstractExtendable implements Searc
      */
     protected AbstractSearch(){
         super();
-        IndexQueryParserFactory queryParserFactory = ResourceManager.instance().getQueryParser();
+        IndexQueryParserFactory queryParserFactory = IndexQueryParserFactory.getInstance();
         this.queryParser = queryParserFactory.getQueryProcessor();
         this.extraWhitespaceCharaters = queryParserFactory.getExtraWhitespaceCharaters();
     }

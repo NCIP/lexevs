@@ -26,12 +26,12 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
-import org.LexGrid.LexBIG.Impl.internalExceptions.InternalException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.concepts.Entity;
+import org.lexevs.exceptions.InternalException;
+import org.lexevs.system.ResourceManager;
 
 /**
  * The Class DefaultCodeToReturnResolver.

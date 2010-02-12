@@ -21,8 +21,6 @@ package org.LexGrid.LexBIG.Impl.dataAccess;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.codec.language.DoubleMetaphone;
 import org.apache.lucene.analysis.KeywordAnalyzer;
@@ -30,6 +28,9 @@ import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
+import org.lexevs.system.ResourceManager;
 
 import edu.mayo.informatics.indexer.api.generators.QueryGenerator;
 import edu.mayo.informatics.indexer.lucene.analyzers.EncoderAnalyzer;
@@ -51,11 +52,20 @@ import edu.mayo.informatics.lexgrid.convert.utility.Constants;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class IndexQueryParserFactory {
+    private static IndexQueryParserFactory instance;
+    
     private QueryParser parser_;
     private Set extraWhiteSpaceChars_;
 
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
+    }
+    
+    public static synchronized IndexQueryParserFactory getInstance(){
+        if(instance == null){
+            instance = new IndexQueryParserFactory();
+        }
+        return instance;
     }
 
     protected IndexQueryParserFactory() {

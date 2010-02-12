@@ -34,9 +34,9 @@ import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Extensions.Query.Search;
 import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.Impl.helpers.MyClassLoader;
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
 
 /**
  * Implementation of the LexGrid Extension Registry.

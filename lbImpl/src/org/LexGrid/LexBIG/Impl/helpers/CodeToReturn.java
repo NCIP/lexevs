@@ -21,8 +21,8 @@ package org.LexGrid.LexBIG.Impl.helpers;
 import java.io.Serializable;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.lexevs.system.ResourceManager;
 
 /**
  * Class to hold the details for a code match.

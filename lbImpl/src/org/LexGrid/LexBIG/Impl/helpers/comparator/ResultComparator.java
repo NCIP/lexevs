@@ -28,9 +28,9 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
 
 /**
  * The Class ResultComparator.

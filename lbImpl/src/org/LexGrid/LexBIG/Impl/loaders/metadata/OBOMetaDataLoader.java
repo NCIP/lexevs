@@ -29,12 +29,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
 
 /**
  * MetaData Loader for OBO MetaData XML Files.

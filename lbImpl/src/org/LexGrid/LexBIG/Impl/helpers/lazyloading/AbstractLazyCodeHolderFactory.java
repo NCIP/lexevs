@@ -24,15 +24,10 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.dataAccess.IndexInterface;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.helpers.AdditiveCodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
-import org.LexGrid.LexBIG.Impl.internalExceptions.MissingResourceException;
-import org.LexGrid.LexBIG.Impl.internalExceptions.UnexpectedInternalError;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
@@ -40,6 +35,10 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.lexevs.dao.index.connection.IndexInterface;
+import org.lexevs.exceptions.MissingResourceException;
+import org.lexevs.logging.LoggerFactory;
+import org.lexevs.system.ResourceManager;
 
 import edu.mayo.informatics.indexer.api.SearchServiceInterface;
 import edu.mayo.informatics.indexer.api.exceptions.IndexSearchException;
@@ -143,9 +142,6 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
         } catch (MissingResourceException e) {
            String logId = LoggerFactory.getLogger().error("Problem building the CodeHolder: ", e);
            throw new LBInvocationException(e.getLocalizedMessage(), logId);
-        } catch (UnexpectedInternalError e) {
-            String logId = LoggerFactory.getLogger().error("Problem building the CodeHolder: ", e);
-            throw new LBInvocationException(e.getLocalizedMessage(), logId);
         } catch (InternalIndexerErrorException e) {
             String logId = LoggerFactory.getLogger().error("Problem building the CodeHolder: ", e);
             throw new LBInvocationException(e.getLocalizedMessage(), logId);

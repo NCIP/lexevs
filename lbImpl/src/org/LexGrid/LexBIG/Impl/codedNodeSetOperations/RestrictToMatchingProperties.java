@@ -31,10 +31,8 @@ import org.LexGrid.LexBIG.Extensions.Query.Search;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Operation;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
+import org.LexGrid.LexBIG.Impl.dataAccess.IndexQueryParserFactory;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLInterface;
-import org.LexGrid.LexBIG.Impl.internalExceptions.InternalException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -44,6 +42,9 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.exceptions.InternalException;
+import org.lexevs.system.ResourceManager;
 
 import edu.mayo.informatics.indexer.lucene.query.SerializableRegexQuery;
 
@@ -131,7 +132,7 @@ public class RestrictToMatchingProperties extends RestrictToProperties implement
                             queryTerms_.add(new Term(conceptCodeLCField, new StringBuffer().append("\\b*").append(
                                     Pattern.quote(matchText.toLowerCase())).append(".*").toString()));
                         } else if (matchAlgorithm.equalsIgnoreCase("LuceneQuery")) {
-                            temp = ResourceManager.instance().getQueryParser().parseQueryForField(
+                            temp = IndexQueryParserFactory.getInstance().parseQueryForField(
                                     conceptCodeTokenizedField, matchText);
                         } else if (matchAlgorithm.equalsIgnoreCase("RegExp")) {
                             queryTerms_.add(new Term(conceptCodeLCField, matchText.toLowerCase()));

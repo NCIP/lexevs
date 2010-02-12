@@ -28,11 +28,11 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExportStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLInterface;
-import org.LexGrid.LexBIG.Impl.internalExceptions.MissingResourceException;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
 import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
+import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.exceptions.MissingResourceException;
+import org.lexevs.system.ResourceManager;
 
 import edu.mayo.informatics.lexgrid.convert.formats.ConversionLauncher;
 import edu.mayo.informatics.lexgrid.convert.formats.OptionHolder;

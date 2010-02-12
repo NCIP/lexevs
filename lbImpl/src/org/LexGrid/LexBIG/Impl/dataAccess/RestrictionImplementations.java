@@ -40,10 +40,6 @@ import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.ScoredBitSet;
 import org.LexGrid.LexBIG.Impl.helpers.ScoredQueryFilter;
-import org.LexGrid.LexBIG.Impl.internalExceptions.MissingResourceException;
-import org.LexGrid.LexBIG.Impl.internalExceptions.UnexpectedInternalError;
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
@@ -58,6 +54,12 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryFilter;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.lexevs.dao.index.connection.IndexInterface;
+import org.lexevs.exceptions.MissingResourceException;
+import org.lexevs.exceptions.UnexpectedInternalError;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
+import org.lexevs.system.ResourceManager;
 
 import edu.mayo.informatics.indexer.lucene.LuceneIndexReader;
 import edu.mayo.informatics.lexgrid.convert.indexer.LuceneLoaderCode;
@@ -182,8 +184,6 @@ public class RestrictionImplementations {
                 }
             }
             return results;
-        } catch (MissingResourceException e) {
-            throw e;
         } catch (Exception e) {
             throw new UnexpectedInternalError("There was an unexpected internal error.", e);
         }
@@ -403,8 +403,6 @@ public class RestrictionImplementations {
 
             return masterQuery;
 
-        } catch (MissingResourceException e) {
-            throw e;
         } catch (UnexpectedInternalError e) {
             throw e;
         } catch (LBParameterException e) {
@@ -700,8 +698,6 @@ public class RestrictionImplementations {
 
             return queryResult;
 
-        } catch (MissingResourceException e) {
-            throw e;
         } catch (UnexpectedInternalError e) {
             throw e;
         } catch (LBParameterException e) {

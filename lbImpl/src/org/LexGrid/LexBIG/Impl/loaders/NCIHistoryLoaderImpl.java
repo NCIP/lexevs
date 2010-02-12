@@ -31,15 +31,15 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.NCIHistoryLoader;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLInterfaceBase;
-import org.LexGrid.LexBIG.Impl.dataAccess.SystemVariables;
-import org.LexGrid.LexBIG.Impl.dataAccess.Registry.HistoryEntry;
-import org.LexGrid.LexBIG.Impl.helpers.SQLConnectionInfo;
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
+import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.dao.database.connection.SQLInterfaceBase;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
+import org.lexevs.registry.service.Registry.HistoryEntry;
+import org.lexevs.system.ResourceManager;
+import org.lexevs.system.constants.SystemVariables;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.NCIThesaurusHistoryFileToSQL;
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
@@ -210,12 +210,12 @@ public class NCIHistoryLoaderImpl extends BaseLoader implements NCIHistoryLoader
                         if (sv.getAutoLoadSingleDBMode()) {
                             Connection connection = DBUtility.connectToDatabase(sv.getAutoLoadDBURL(), sv
                                     .getAutoLoadDBDriver(), sv.getAutoLoadDBUsername(), sv.getAutoLoadDBPassword());
-                            SQLTableUtilities stu = new SQLTableUtilities(connection, oldEntry.getPrefix());
+                            SQLTableUtilities stu = new SQLTableUtilities(connection, oldEntry.prefix);
                             stu.dropTables();
                             connection.close();
                         } else {
                             DBUtility.dropDatabase(sv.getAutoLoadDBURL(), sv.getAutoLoadDBDriver(), oldEntry
-                                    .getdbName(), sv.getAutoLoadDBUsername(), sv.getAutoLoadDBPassword());
+                                    .dbName, sv.getAutoLoadDBUsername(), sv.getAutoLoadDBPassword());
                         }
                     }
 

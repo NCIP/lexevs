@@ -18,9 +18,9 @@
  */
 package org.LexGrid.LexBIG.Impl.helpers;
 
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
 import org.xml.sax.SAXParseException;
 
 /**

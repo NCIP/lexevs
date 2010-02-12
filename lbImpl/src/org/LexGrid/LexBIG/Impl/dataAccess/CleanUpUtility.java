@@ -25,12 +25,14 @@ import java.util.HashSet;
 
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.dataAccess.Registry.DBEntry;
-import org.LexGrid.LexBIG.Impl.dataAccess.Registry.HistoryEntry;
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
+import org.lexevs.registry.service.Registry.DBEntry;
+import org.lexevs.registry.service.Registry.HistoryEntry;
+import org.lexevs.system.ResourceManager;
+import org.lexevs.system.constants.SystemVariables;
 
 import edu.mayo.informatics.indexer.api.IndexerService;
 

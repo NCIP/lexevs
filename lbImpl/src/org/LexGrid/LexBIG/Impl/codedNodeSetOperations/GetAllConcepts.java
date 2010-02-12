@@ -22,8 +22,8 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Operation;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.lexevs.system.ResourceManager;
 
 /**
  * Holder for the GetAllConcepts operation.

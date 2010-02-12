@@ -18,6 +18,9 @@
  */
 package org.LexGrid.LexBIG.Impl.dataAccess;
 
+import org.lexevs.system.ResourceManager;
+import org.lexevs.system.constants.SystemVariables;
+
 import edu.mayo.informatics.indexer.api.IndexerService;
 import edu.mayo.informatics.indexer.api.exceptions.IndexNotFoundException;
 import edu.mayo.informatics.indexer.api.exceptions.InternalIndexerErrorException;

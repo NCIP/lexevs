@@ -31,6 +31,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortDescription;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.SortContext;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -52,7 +53,6 @@ import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Union;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Operation;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.SetOperation;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.dataAccess.RestrictionImplementations;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
@@ -61,9 +61,6 @@ import org.LexGrid.LexBIG.Impl.helpers.ResolvedConceptReferencesIteratorImpl;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparator;
 import org.LexGrid.LexBIG.Impl.helpers.lazyloading.CodeHolderFactory;
 import org.LexGrid.LexBIG.Impl.helpers.lazyloading.NonProxyCodeHolderFactory;
-import org.LexGrid.LexBIG.Impl.internalExceptions.InternalException;
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
@@ -77,6 +74,10 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.lexevs.exceptions.InternalException;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
+import org.lexevs.system.ResourceManager;
 
 /**
  * Implementation of the CodedNodeSet Interface.
@@ -566,7 +567,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
         for (SortOption sortOption : sortOptionList.getEntry()) {
             String algorithm = sortOption.getExtensionName();
-            if (ResourceManager.instance().isSortAlgorithmValid(algorithm, sortContext)) {
+            if (isSortAlgorithmValid(algorithm, sortContext)) {
                 if(comparator.validateSortOptionForClass(sortOption, clazz)){
                     comparator.addSortOption(sortOption);
                     comparator.setSortClazz(clazz);
@@ -651,7 +652,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             if (sortByProperty != null && sortByProperty.getEntryCount() > 0) {
                 for (int i = 0; i < sortByProperty.getEntryCount(); i++) {
                     String entry = sortByProperty.getEntry(i).getExtensionName();
-                    if (!ResourceManager.instance().isSortAlgorithmValid(entry, SortContext.SETITERATION)) {
+                    if (!isSortAlgorithmValid(entry, SortContext.SETITERATION)) {
                         throw new LBParameterException(
                                 "The provided sort algorithm is invalid.  Please call LexBIGService.getSortAlgorithms to see the valid algorithms.  Sort algorithm choices are restricted to 'matchToQuery', 'code', and 'codeSystem' when you ask for an iterator.",
                                 "sortByProperty", entry);
@@ -879,6 +880,26 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             return temp;
         } else {
             return null;
+        }
+    }
+    
+    protected boolean isSortAlgorithmValid(String algorithm, SortContext context) {
+        if (ExtensionRegistryImpl.instance().getSortExtension(algorithm) != null) {
+            if (context != null) {
+                SortDescription sd  = ExtensionRegistryImpl.instance().getSortExtension(algorithm);
+
+                SortContext[] temp = sd.getRestrictToContext();
+                for (int i = 0; i < temp.length; i++) {
+                    if (temp[i].getType() == context.getType()) {
+                        return true;
+                    }
+                }
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
         }
     }
 

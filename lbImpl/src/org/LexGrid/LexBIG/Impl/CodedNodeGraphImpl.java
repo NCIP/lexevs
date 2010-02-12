@@ -47,17 +47,16 @@ import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.RestrictToTargetCodes;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.Union;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.interfaces.Operation;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.interfaces.Restriction;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.Impl.helpers.graph.GHolder;
-import org.LexGrid.LexBIG.Impl.internalExceptions.MissingResourceException;
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
+import org.lexevs.system.ResourceManager;
 
 /**
  * This class implements the CodedNodeGraph interface.

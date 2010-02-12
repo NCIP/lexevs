@@ -28,9 +28,9 @@ import java.util.Vector;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparator;
-import org.LexGrid.LexBIG.Impl.internalExceptions.MissingResourceException;
-import org.LexGrid.LexBIG.Impl.internalExceptions.UnexpectedInternalError;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.lexevs.exceptions.MissingResourceException;
+import org.lexevs.exceptions.UnexpectedInternalError;
 
 /**
  * A concept code in my graph - helps me build the graph I need to return.

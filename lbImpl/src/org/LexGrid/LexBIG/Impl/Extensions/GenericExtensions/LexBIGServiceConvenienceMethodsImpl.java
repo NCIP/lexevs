@@ -54,14 +54,8 @@ import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.RestrictToAssociations;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.RestrictToSourceCodes;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.RestrictToTargetCodes;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.interfaces.Operation;
-import org.LexGrid.LexBIG.Impl.dataAccess.IndexInterface;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLInterface;
 import org.LexGrid.LexBIG.Impl.helpers.CountConceptReference;
-import org.LexGrid.LexBIG.Impl.internalExceptions.MissingResourceException;
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -77,10 +71,17 @@ import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedHierarchy;
+import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.Relations;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.dao.index.connection.IndexInterface;
+import org.lexevs.exceptions.MissingResourceException;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
+import org.lexevs.system.ResourceManager;
 
 import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
 import edu.mayo.informatics.lexgrid.convert.indexer.SQLEntityIndexer;
@@ -317,17 +318,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             String associationName) throws LBException {
         getLogger().logMethod(new Object[] { codingScheme, versionOrTag, associationName });
         
-        CodingScheme cs = getCodingScheme(codingScheme, versionOrTag);
-        for(Relations relation : cs.getRelations()){
-            for(org.LexGrid.relations.Association association : relation.getAssociation()){
-                if(association.getAssociationName().equals(associationName)){
-                    return association.getEntityCode();
-                }
-            }
-        }
-        throw new LBParameterException("Did not find an Association matching the provided Association Name.",
-              "associationName",
-              associationName);
+       throw new RuntimeException("Implement these for 6.0");
     }
 
     @LgClientSideSafe
@@ -335,17 +326,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             String entityCode) throws LBException {
         getLogger().logMethod(new Object[] { codingScheme, versionOrTag, entityCode });
         
-        CodingScheme cs = getCodingScheme(codingScheme, versionOrTag);
-        for(Relations relation : cs.getRelations()){
-            for(org.LexGrid.relations.Association association : relation.getAssociation()){
-                if(association.getEntityCode().equals(entityCode)){
-                    return association.getAssociationName();
-                }
-            }
-        }
-        throw new LBParameterException("Did not find an Association matching the provided Association Code.",
-              "entityCode",
-              entityCode);
+        throw new RuntimeException("Implement these for 6.0");
     }
 
     @LgClientSideSafe
@@ -353,83 +334,28 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             CodingSchemeVersionOrTag versionOrTag) throws LBException {
         getLogger().logMethod(new Object[] { associationName, codingScheme, versionOrTag });
 
-        CodingScheme cs = getCodingScheme(codingScheme, versionOrTag);
-        Relations[] relations = cs.getRelations();
-        for (int i = 0; i < relations.length; i++) {
-            org.LexGrid.relations.Association[] associations = relations[i].getAssociation();
-            for (int j = 0; j < associations.length; j++) {
-                if (associations[j].getEntityCode() != null
-                        && associations[j].getEntityCode().equalsIgnoreCase(associationName))
-                    return associations[j].getForwardName();
-            }
-        }
-        return null;
+        throw new RuntimeException("Implement these for 6.0");
     }
 
     @LgClientSideSafe
     public String[] getAssociationForwardNames(String codingScheme, CodingSchemeVersionOrTag versionOrTag)
             throws LBException {
-        ArrayList<String> association_names = new ArrayList<String>();
 
-        getLogger().logMethod(new Object[] { codingScheme, versionOrTag });
-
-        CodingScheme cs = getCodingScheme(codingScheme, versionOrTag);
-        Relations[] relations = cs.getRelations();
-        for (int i = 0; i < relations.length; i++) {
-            org.LexGrid.relations.Association[] associations = relations[i].getAssociation();
-            for (int j = 0; j < associations.length; j++) {
-                if (associations[j].getEntityCode() != null
-                        && associations[j].getEntityCode().equalsIgnoreCase("-multi-assn-@-root-"))
-                    continue;
-                if (associations[j].getForwardName() != null && associations[j].getForwardName().trim().length() != 0) {
-                    association_names.add(associations[j].getForwardName());
-                }
-            }
-
-        }
-        return (String[]) association_names.toArray(new String[0]);
+        throw new RuntimeException("Implement these for 6.0");
     }
 
     @LgClientSideSafe
     public String getAssociationReverseName(String associationName, String codingScheme,
             CodingSchemeVersionOrTag versionOrTag) throws LBException {
-        getLogger().logMethod(new Object[] { associationName, codingScheme, versionOrTag });
-
-        CodingScheme cs = getCodingScheme(codingScheme, versionOrTag);
-        Relations[] relations = cs.getRelations();
-        for (int i = 0; i < relations.length; i++) {
-            org.LexGrid.relations.Association[] associations = relations[i].getAssociation();
-            for (int j = 0; j < associations.length; j++) {
-                if (associations[j].getEntityCode() != null
-                        && associations[j].getEntityCode().equalsIgnoreCase(associationName))
-                    return associations[j].getReverseName();
-            }
-        }
-        return null;
+        
+        throw new RuntimeException("Implement these for 6.0");
     }
 
     @LgClientSideSafe
     public String[] getAssociationReverseNames(String codingScheme, CodingSchemeVersionOrTag versionOrTag)
             throws LBException {
-        ArrayList<String> association_names = new ArrayList<String>();
-
-        getLogger().logMethod(new Object[] { codingScheme, versionOrTag });
-
-        CodingScheme cs = getCodingScheme(codingScheme, versionOrTag);
-        Relations[] relations = cs.getRelations();
-        for (int i = 0; i < relations.length; i++) {
-            org.LexGrid.relations.Association[] associations = relations[i].getAssociation();
-            for (int j = 0; j < associations.length; j++) {
-                if (associations[j].getEntityCode() != null
-                        && associations[j].getEntityCode().equalsIgnoreCase("-multi-assn-@-root-"))
-                    continue;
-                if (associations[j].getReverseName() != null && associations[j].getReverseName().trim().length() != 0) {
-                    association_names.add(associations[j].getReverseName());
-                }
-            }
-
-        }
-        return (String[]) association_names.toArray(new String[0]);
+        
+        throw new RuntimeException("Implement these for 6.0");
     }
 
     @LgClientSideSafe

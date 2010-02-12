@@ -32,13 +32,13 @@ import org.LexGrid.LexBIG.Extensions.Export.Exporter;
 import org.LexGrid.LexBIG.Extensions.Index.Index;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.helpers.MyClassLoader;
 import org.LexGrid.LexBIG.Impl.loaders.metadata.BaseMetaDataLoader;
-import org.LexGrid.LexBIG.Impl.logging.LgLoggerIF;
-import org.LexGrid.LexBIG.Impl.logging.LoggerFactory;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.annotations.LgAdminFunction;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
+import org.lexevs.system.ResourceManager;
 
 /**
  * This class implements the LexBigServiceManager.

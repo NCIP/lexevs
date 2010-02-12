@@ -35,6 +35,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
@@ -61,9 +62,6 @@ import org.LexGrid.LexBIG.Impl.helpers.GraphQuestionQuery;
 import org.LexGrid.LexBIG.Impl.helpers.KnownConceptReference;
 import org.LexGrid.LexBIG.Impl.helpers.graph.GAssociationInfo;
 import org.LexGrid.LexBIG.Impl.helpers.graph.GHolder;
-import org.LexGrid.LexBIG.Impl.internalExceptions.MissingResourceException;
-import org.LexGrid.LexBIG.Impl.internalExceptions.UnexpectedInternalError;
-import org.LexGrid.LexBIG.Impl.logging.Logger;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
@@ -103,13 +101,17 @@ import org.LexGrid.naming.SupportedSortOrder;
 import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.naming.SupportedSourceRole;
 import org.LexGrid.naming.SupportedStatus;
-import org.LexGrid.relations.Association;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.exceptions.MissingResourceException;
+import org.lexevs.exceptions.UnexpectedInternalError;
+import org.lexevs.logging.Logger;
+import org.lexevs.system.ResourceManager;
 
 /**
  * SQL Queries necessary for LexBIG operations.
@@ -235,9 +237,7 @@ public class SQLImplementedMethods {
                         concept.setEntryState(es);
 
                         if (owner != null) {
-                            Source src = new Source();
-                            src.setContent(owner);
-                            concept.setOwner(src);
+                            concept.setOwner(owner);
                         }
                         concept.setStatus(status);
                         concept.setEffectiveDate(effectiveDate);
@@ -528,10 +528,8 @@ public class SQLImplementedMethods {
                                 newProperty.setEntryState(es);
                             }
 
-                            if (owner != null) {
-                                Source src = new Source();
-                                src.setContent(owner);
-                                newProperty.setOwner(src);
+                            if (owner != null) {                             
+                                newProperty.setOwner(owner);
                             }
 
                             if (status != null)
@@ -1035,7 +1033,6 @@ public class SQLImplementedMethods {
                     // list, and create a new one.
                     if (currentRelation == null || !currentRelation.getContainerName().equals(relName)) {
                         if (currentRelation != null) {
-                            currentRelation.setSource(sources.toArray(new Source[sources.size()]));
                             // I'll get the associations later. Hold less sql
                             // connections open that way.
                             relations.add(currentRelation);
@@ -1046,15 +1043,12 @@ public class SQLImplementedMethods {
 
                         currentRelation.setContainerName(relName);
                         currentRelation.setEntityDescription(Constructors.createEntityDescription(results
-                                .getString(SQLTableConstants.TBLCOL_ENTITYDESCRIPTION)));
-                        currentRelation.setIsNative(DBUtility.getBooleanFromResultSet(results,
-                                SQLTableConstants.TBLCOL_ISNATIVE));
+                                .getString(SQLTableConstants.TBLCOL_ENTITYDESCRIPTION))); 
                     }
                 }
 
                 // add the last one (if present)
                 if (currentRelation != null) {
-                    currentRelation.setSource(sources.toArray(new Source[sources.size()]));
                     // I'll get the associations later. Hold less sql
                     // connections open that way.
                     relations.add(currentRelation);
@@ -1063,6 +1057,8 @@ public class SQLImplementedMethods {
                 si.checkInPreparedStatement(getRelations);
 
                 // populate the associations.
+                // TODO: Fix this for the new model
+                /*
                 getAssociations = si.modifyAndCheckOutPreparedStatement("Select * " + " from "
                         + si.getTableName(SQLTableConstants.ASSOCIATION) + " where " + cdSchName + " = ? and "
                         + relDcName + " = ?");
@@ -1153,7 +1149,7 @@ public class SQLImplementedMethods {
                     }
                     results.close();
                 }
-
+                 */
                 si.checkInPreparedStatement(getAssociations);
             } finally {
                 si.checkInPreparedStatement(getCodingSchemeDetails);
@@ -1164,6 +1160,7 @@ public class SQLImplementedMethods {
                 if( isEntryStateIdInAssociationTable(si) )
                     si.checkInPreparedStatement(getEntryState);
             }
+       
 
             Mappings mappings = new Mappings();
 

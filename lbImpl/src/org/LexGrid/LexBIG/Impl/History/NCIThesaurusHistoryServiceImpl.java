@@ -29,10 +29,10 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.SystemReleaseDetail;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.History.HistoryService;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.LexGrid.LexBIG.Impl.internalExceptions.UnexpectedInternalError;
 import org.LexGrid.versions.CodingSchemeVersion;
 import org.LexGrid.versions.SystemRelease;
+import org.lexevs.exceptions.UnexpectedInternalError;
+import org.lexevs.system.ResourceManager;
 
 /**
  * The implementation of the history service against the custom NCI Thesaurus

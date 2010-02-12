@@ -42,21 +42,21 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.Impl.helpers.AdditiveCodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.KnownConceptReference;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparator;
-import org.LexGrid.LexBIG.Impl.internalExceptions.MissingResourceException;
-import org.LexGrid.LexBIG.Impl.internalExceptions.UnexpectedInternalError;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.concepts.Entity;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.exceptions.MissingResourceException;
+import org.lexevs.exceptions.UnexpectedInternalError;
+import org.lexevs.system.ResourceManager;
 
 /**
  * Class to help me get from the SQL database to the graph object.

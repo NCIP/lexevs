@@ -29,9 +29,9 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Export.OBO_Exporter;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
-import org.LexGrid.LexBIG.Impl.internalExceptions.MissingResourceException;
-import org.LexGrid.LexBIG.Impl.logging.Logger;
+import org.lexevs.exceptions.MissingResourceException;
+import org.lexevs.logging.Logger;
+import org.lexevs.system.ResourceManager;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;

@@ -18,13 +18,13 @@
  */
 package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
-import org.LexGrid.LexBIG.Impl.internalExceptions.MissingResourceException;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.ScoreDoc;
+import org.lexevs.exceptions.MissingResourceException;
+import org.lexevs.system.ResourceManager;
 
 /**
  * The Class LazyLoadableCodeToReturn.
