@@ -1,4 +1,4 @@
-package org.lexevs.registry.xmlToDatabase;
+package org.lexevs.registry.xmltransfer;
 
 import java.io.File;
 
@@ -7,9 +7,12 @@ import org.lexevs.registry.service.XmlRegistry;
 import org.lexevs.registry.service.Registry.DBEntry;
 import org.lexevs.registry.service.Registry.HistoryEntry;
 import org.lexevs.system.ResourceManager;
+import org.lexevs.system.constants.SystemVariables;
 import org.springframework.beans.factory.InitializingBean;
 
 public class RegistryXmlToDatabaseTransfer implements InitializingBean {
+	
+	private SystemVariables systemVariables;
 
 	public void afterPropertiesSet() throws Exception {
 		Registry datbaseRegistry = ResourceManager.instance().getRegistry();
@@ -41,7 +44,21 @@ public class RegistryXmlToDatabaseTransfer implements InitializingBean {
 							dbEntry.prefix);
 				}	
 			}
-		}
-		
+		}	
 	}
+	
+	protected boolean doesRegistryXmlFileExist(){
+		File registry = new File(systemVariables.getAutoLoadRegistryPath());
+		return registry.exists();
+	}
+
+	public SystemVariables getSystemVariables() {
+		return systemVariables;
+	}
+
+	public void setSystemVariables(SystemVariables systemVariables) {
+		this.systemVariables = systemVariables;
+	}
+	
+	
 }
