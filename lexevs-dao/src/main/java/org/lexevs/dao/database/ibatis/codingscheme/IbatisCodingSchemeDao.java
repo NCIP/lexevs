@@ -32,9 +32,9 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 
 	private static String SUPPORTED_ATTRIB_GETTER_PREFIX = "_supported";
 	private static String INSERT_CODING_SCHEME_SQL = "insertCodingScheme";
-	private static String GET_CODING_SCHEME_BY_NAME_AND_VERSION_SQL = "getCodingSchemeByNameAndVersion";
 	private static String GET_CODING_SCHEME_BY_ID_SQL = "getCodingSchemeById";
 	private static String GET_CODING_SCHEME_ID_BY_NAME_AND_VERSION_SQL = "getCodingSchemeIdByNameAndVersion";
+	private static String GET_CODING_SCHEME_ID_BY_URI_AND_VERSION_SQL = "getCodingSchemeIdByNameAndVersion";
 	private static String GET_CODING_SCHEME_SOURCE_LIST_SQL = "getSourceListByCodingSchemeId";
 	private static String GET_CODING_SCHEME_LOCALNAME_LIST_SQL = "getLocalNameListByCodingSchemeId";
 	private static String INSERT_CODING_SCHEME_MULTIATTRIB_SQL = "insertCodingSchemeMultiAttrib";
@@ -47,20 +47,10 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	
 	public CodingScheme getCodingSchemeById(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		return
-			(CodingScheme) this.getSqlMapClientTemplate().queryForObject(
-				GET_CODING_SCHEME_BY_ID_SQL, new PrefixedParameter(prefix, codingSchemeId));
-	}
-
-	@SuppressWarnings("unchecked")
-	public CodingScheme getCodingSchemeByNameAndVersion(String codingSchemeName, String representsVersion){
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeName, representsVersion);
-
-		String codingSchemeId = this.getCodingSchemeId(codingSchemeName, representsVersion);
 		
 		CodingScheme scheme = 
 			(CodingScheme) this.getSqlMapClientTemplate().queryForObject(
-				GET_CODING_SCHEME_BY_NAME_AND_VERSION_SQL, new PrefixedParameterTuple(prefix, codingSchemeName, representsVersion));
+				GET_CODING_SCHEME_BY_ID_SQL, new PrefixedParameter(prefix, codingSchemeId));
 	
 		List<Source> sourceList = this.getSqlMapClientTemplate().queryForList(
 					GET_CODING_SCHEME_SOURCE_LIST_SQL, new PrefixedParameter(prefix, codingSchemeId));
@@ -77,6 +67,20 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		}
 		
 		return scheme;
+
+	}
+	
+	public CodingScheme getCodingSchemeByUriAndVersion(String codingSchemeUri,
+			String version) {
+		String codingSchemeId = this.getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
+		return this.getCodingSchemeById(codingSchemeId);
+	}
+
+
+	@SuppressWarnings("unchecked")
+	public CodingScheme getCodingSchemeByNameAndVersion(String codingSchemeName, String representsVersion){
+		String codingSchemeId = this.getCodingSchemeIdByNameAndVersion(codingSchemeName, representsVersion);
+		return this.getCodingSchemeById(codingSchemeId);
 		
 	}
 
@@ -142,10 +146,16 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		throw new UnsupportedOperationException();
 	}
 
-	public String getCodingSchemeId(String codingSchemeName, String version) {
+	public String getCodingSchemeIdByNameAndVersion(String codingSchemeName, String version) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeName, version);
 		return (String) this.getSqlMapClientTemplate().queryForObject(GET_CODING_SCHEME_ID_BY_NAME_AND_VERSION_SQL,
 				new PrefixedParameterTuple(prefix, codingSchemeName, version));
+	}
+	
+	public String getCodingSchemeIdByUriAndVersion(String codingSchemeUri, String version) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version);
+		return (String) this.getSqlMapClientTemplate().queryForObject(GET_CODING_SCHEME_ID_BY_URI_AND_VERSION_SQL,
+				new PrefixedParameterTuple(prefix, codingSchemeUri, version));
 	}
 
 	public String getEntryStateId(String codingSchemeName, String version) {
@@ -170,7 +180,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	
 	public void insertURIMap(String codingSchemeName,
 			String codingSchemeVersion, URIMap uriMap) {
-		String codingSchemeId = this.getCodingSchemeId(codingSchemeName, codingSchemeVersion);
+		String codingSchemeId = this.getCodingSchemeIdByNameAndVersion(codingSchemeName, codingSchemeVersion);
 		this.insertURIMap(codingSchemeId, uriMap);
 	}
 
@@ -210,7 +220,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	
 	public void insertMappings(String codingSchemeName,
 			String codingSchemeVersion, Mappings mappings) {
-		String codingSchemeId = this.getCodingSchemeId(codingSchemeName, codingSchemeVersion);
+		String codingSchemeId = this.getCodingSchemeIdByNameAndVersion(codingSchemeName, codingSchemeVersion);
 		this.insertMappings(codingSchemeId, mappings);
 	}
 	
@@ -297,9 +307,4 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	public EntityDao getEntityDao() {
 		return entityDao;
 	}
-
-
-
-
-
 }

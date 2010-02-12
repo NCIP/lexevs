@@ -7,6 +7,9 @@ import org.lexevs.dao.database.service.DatabaseService;
 
 public interface CodingSchemeService extends DatabaseService {
 
+	public CodingScheme getCodingSchemeByUriAndVersion(
+			String uri, String version);
+	
 	public void insertCodingScheme(
 			CodingScheme scheme);
 	

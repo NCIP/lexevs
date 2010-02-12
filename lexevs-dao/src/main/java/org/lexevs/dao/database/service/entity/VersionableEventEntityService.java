@@ -11,7 +11,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 			Entity entity) {
 		String codingSchemeId = this.getDaoManager().
 			getCodingSchemeDao(codingSchemeUri, version).
-			getCodingSchemeId(codingSchemeUri, version);
+			getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
 		
 		this.getDaoManager().
 			getEntityDao(codingSchemeUri, version).
@@ -22,7 +22,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 			List<? extends Entity> entities) {
 		String codingSchemeId = this.getDaoManager().
 		getCodingSchemeDao(codingSchemeUri, version).
-		getCodingSchemeId(codingSchemeUri, version);
+		getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
 		
 		this.getDaoManager().getEntityDao(codingSchemeUri, version).
 			insertBatchEntities(codingSchemeId, entities);

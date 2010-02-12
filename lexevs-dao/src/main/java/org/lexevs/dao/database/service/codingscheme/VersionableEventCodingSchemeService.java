@@ -15,6 +15,13 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	private EntityService entityService;
 	
 	@Transactional
+	public CodingScheme getCodingSchemeByUriAndVersion(String uri,
+			String version) {
+		return this.getDaoManager().getCodingSchemeDao(uri, version).
+			getCodingSchemeByUriAndVersion(uri, version);
+	}
+	
+	@Transactional
 	public void insertCodingScheme(CodingScheme scheme) {
 		this.fireCodingSchemeInsertEvent(scheme);
 		String codingSchemeId = this.getCodingSchemeId(
@@ -40,7 +47,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			URIMap uriMap){
 		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, codingSchemeVersion);
 		String codingSchemeId = codingSchemeDao.
-			getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+			getCodingSchemeIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
 		getDaoManager().getCodingSchemeDao(codingSchemeUri, codingSchemeVersion).
 			insertURIMap(codingSchemeId, uriMap);
 	}

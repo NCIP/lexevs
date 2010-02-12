@@ -37,9 +37,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		return null;
 	}
 	
-	public void insertRelations(String codingSchemeName, String version,
+	public void insertRelations(String codingSchemeUri, String version,
 			Relations relations) {
-		String codingSchemeId = codingSchemeDao.getCodingSchemeId(codingSchemeName, version);
+		String codingSchemeId = codingSchemeDao.getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
 		this.insertRelations(
 				codingSchemeId, 
 				relations);

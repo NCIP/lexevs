@@ -17,7 +17,7 @@ public class AbstractDatabaseService extends DatabaseServiceEventSupport {
 	protected String getCodingSchemeId(String codingSchemeUri, String codingSchemeVersion){
 		return daoManager.
 			getCodingSchemeDao(codingSchemeUri, codingSchemeVersion).
-				getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+			getCodingSchemeIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
 	}
 	
 	public DaoManager getDaoManager() {

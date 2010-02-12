@@ -18,11 +18,15 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	
 	public CodingScheme getCodingSchemeByNameAndVersion(String codingSchemeName, String version);
 	
+	public CodingScheme getCodingSchemeByUriAndVersion(String codingSchemeUri, String version);
+	
 	public CodingScheme getCodingSchemeByRevision(String codingSchemeName, String version, String revisionId);
 	
 	public void updateCodingScheme(String codingSchemeName, String version, CodingScheme codingScheme);
 	
-	public String getCodingSchemeId(String codingSchemeName, String version);
+	public String getCodingSchemeIdByNameAndVersion(String codingSchemeName, String version);
+	
+	public String getCodingSchemeIdByUriAndVersion(String codingSchemeUri, String version);
 	
 	public String getEntryStateId(String codingSchemeName, String version);
 	

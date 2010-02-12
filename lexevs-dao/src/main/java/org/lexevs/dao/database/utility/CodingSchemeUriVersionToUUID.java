@@ -10,7 +10,7 @@ public class CodingSchemeUriVersionToUUID implements CodingSchemeIdMapper {
 	 * @see org.lexevs.dao.database.utility.CodingSchemeIdMapper#mapCodingSchemeUriAndVersionToUUID(java.lang.String, java.lang.String)
 	 */
 	public String mapCodingSchemeUriAndVersionToUUID(String codingSchemeUri, String codingSchemeVersion){
-		return codingSchemeDao.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+		return codingSchemeDao.getCodingSchemeIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
 	}
 
 	public CodingSchemeDao getCodingSchemeDao() {
