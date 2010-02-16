@@ -21,7 +21,12 @@ package org.lexgrid.loader.setup;
 import static org.junit.Assert.assertFalse;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
+import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
+import org.easymock.EasyMock;
 import org.junit.Test;
+import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.dao.database.utility.DatabaseUtility;
 import org.lexgrid.loader.logging.SpringBatchMessageDirector;
@@ -44,12 +49,16 @@ public class JobRepositoryManagerTest extends LoaderFrameworkCoreTestBase{
 	@Test
 	public void testInsertOraclePrefix() throws Exception {
 		
+		LexEvsDatabaseOperations dbOps = EasyMock.createMock(LexEvsDatabaseOperations.class);
+		EasyMock.expect(dbOps.getDatabaseUtilities()).andReturn(new TestDatabaseUtility()).anyTimes();
+		EasyMock.replay(dbOps);
+		
 		JobRepositoryManager manager = new JobRepositoryManager();
 		
 		manager.setCreateScript(new ClassPathResource("schema-oracle10g.sql"));
 		
 		TestDatabaseUtility dbutil = new TestDatabaseUtility();
-		manager.setDatabaseUtility(dbutil);
+		manager.setLexEvsDatabaseOperations(dbOps);
 		
 		manager.setLogger(new SpringBatchMessageDirector("test", new LoadStatus()));
 		manager.setDatabaseType(DatabaseType.ORACLE);
@@ -65,12 +74,16 @@ public class JobRepositoryManagerTest extends LoaderFrameworkCoreTestBase{
 	 */
 	@Test
 	public void testInsertMysqlPrefix() throws Exception {
+		LexEvsDatabaseOperations dbOps = EasyMock.createMock(LexEvsDatabaseOperations.class);
+		EasyMock.expect(dbOps.getDatabaseUtilities()).andReturn(new TestDatabaseUtility()).anyTimes();
+		EasyMock.replay(dbOps);
+		
 		
 		JobRepositoryManager manager = new JobRepositoryManager();
 		manager.setCreateScript(new ClassPathResource("schema-mysql.sql"));
 		
 		TestDatabaseUtility dbutil = new TestDatabaseUtility();
-		manager.setDatabaseUtility(dbutil);
+		manager.setLexEvsDatabaseOperations(dbOps);
 		
 		manager.setLogger(new SpringBatchMessageDirector("test", new LoadStatus()));
 		manager.setDatabaseType(DatabaseType.MYSQL);
@@ -86,12 +99,15 @@ public class JobRepositoryManagerTest extends LoaderFrameworkCoreTestBase{
 	 */
 	@Test
 	public void testInsertHsqldbPrefix() throws Exception {
+		LexEvsDatabaseOperations dbOps = EasyMock.createMock(LexEvsDatabaseOperations.class);
+		EasyMock.expect(dbOps.getDatabaseUtilities()).andReturn(new TestDatabaseUtility()).anyTimes();
+		EasyMock.replay(dbOps);
 		
 		JobRepositoryManager manager = new JobRepositoryManager();
 		manager.setCreateScript(new ClassPathResource("schema-hsqldb.sql"));
 		
 		TestDatabaseUtility dbutil = new TestDatabaseUtility();
-		manager.setDatabaseUtility(dbutil);
+		manager.setLexEvsDatabaseOperations(dbOps);
 		
 		manager.setLogger(new SpringBatchMessageDirector("test", new LoadStatus()));
 		manager.setDatabaseType(DatabaseType.HSQL);
@@ -108,13 +124,16 @@ public class JobRepositoryManagerTest extends LoaderFrameworkCoreTestBase{
 	 */
 	@Test
 	public void testInsertDb2Prefix() throws Exception {
+		LexEvsDatabaseOperations dbOps = EasyMock.createMock(LexEvsDatabaseOperations.class);
+		EasyMock.expect(dbOps.getDatabaseUtilities()).andReturn(new TestDatabaseUtility()).anyTimes();
+		EasyMock.replay(dbOps);
 		
 		JobRepositoryManager manager = new JobRepositoryManager();
 
 		manager.setCreateScript(new ClassPathResource("schema-db2.sql"));
 		
 		TestDatabaseUtility dbutil = new TestDatabaseUtility();
-		manager.setDatabaseUtility(dbutil);
+		manager.setLexEvsDatabaseOperations(dbOps);
 		
 		manager.setLogger(new SpringBatchMessageDirector("test", new LoadStatus()));
 		manager.setDatabaseType(DatabaseType.DB2);
@@ -131,12 +150,15 @@ public class JobRepositoryManagerTest extends LoaderFrameworkCoreTestBase{
 	 */
 	@Test
 	public void testInsertPostgresPrefix() throws Exception {
+		LexEvsDatabaseOperations dbOps = EasyMock.createMock(LexEvsDatabaseOperations.class);
+		EasyMock.expect(dbOps.getDatabaseUtilities()).andReturn(new TestDatabaseUtility()).anyTimes();
+		EasyMock.replay(dbOps);
 		
 		JobRepositoryManager manager = new JobRepositoryManager();
 		manager.setCreateScript(new ClassPathResource("schema-postgresql.sql"));
 		
 		TestDatabaseUtility dbutil = new TestDatabaseUtility();
-		manager.setDatabaseUtility(dbutil);
+		manager.setLexEvsDatabaseOperations(dbOps);
 		
 		manager.setLogger(new SpringBatchMessageDirector("test", new LoadStatus()));
 		manager.setDatabaseType(DatabaseType.POSTGRES);
@@ -145,6 +167,8 @@ public class JobRepositoryManagerTest extends LoaderFrameworkCoreTestBase{
 		
 		assertFalse(dbutil.script.contains(" BATCH"));
 	}
+	
+	
 	
 	/**
 	 * The Class TestDatabaseUtility.

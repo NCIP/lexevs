@@ -26,11 +26,11 @@ import java.util.Properties;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
-import org.LexGrid.LexBIG.Impl.helpers.MyClassLoader;
 import org.LexGrid.LexBIG.Impl.loaders.BaseLoader;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.spring.DynamicPropertyApplicationContext;
 import org.lexevs.system.ResourceManager;
+import org.lexevs.system.utility.MyClassLoader;
 import org.lexgrid.loader.logging.SpringBatchMessageDirector;
 import org.lexgrid.loader.properties.impl.PropertiesFactory;
 import org.lexgrid.loader.setup.JobRepositoryManager;
@@ -57,7 +57,7 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 	
 	protected AbstractSpringBatchLoader(){
 	  //use LexEVS class loader.
-      Thread.currentThread().setContextClassLoader(MyClassLoader.instance()); 
+      Thread.currentThread().setContextClassLoader(ResourceManager.instance().getClassLoader()); 
 	}
 	
 	/**
@@ -82,7 +82,7 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 			PropertiesFactory.buildSQLConnectinInfoFromProperties(connectionProperties);
 
 		DynamicPropertyApplicationContext ctx = new DynamicPropertyApplicationContext(jobConfigFile, connectionProperties);
-		ctx.setClassLoader(MyClassLoader.instance());
+		ctx.setClassLoader(ResourceManager.instance().getClassLoader());
 		
 		//Register a shutdown hook to make sure beans get disposed.
 		ctx.registerShutdownHook();

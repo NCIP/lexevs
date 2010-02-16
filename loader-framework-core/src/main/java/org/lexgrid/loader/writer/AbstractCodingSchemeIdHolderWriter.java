@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.wrappers.CodingSchemeIdHolder;
 import org.springframework.batch.item.ItemWriter;
 

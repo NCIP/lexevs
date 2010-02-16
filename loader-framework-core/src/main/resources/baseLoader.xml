@@ -65,30 +65,30 @@
 	<beans:bean id="jobRepositoryCreationScriptFactory"
 		class="org.lexevs.dao.database.setup.script.ScriptFactory">
 		<beans:property name="scriptType" value="create"/>
-		<beans:property name="databaseType" ref="databaseTypeFactory"/>
+		<beans:property name="databaseType" ref="databaseType"/>
 	</beans:bean>
 	
 	<beans:bean id="jobRepositoryDropScriptFactory"
 		class="org.lexevs.dao.database.setup.script.ScriptFactory">
 		<beans:property name="scriptType" value="drop"/>
-		<beans:property name="databaseType" ref="databaseTypeFactory"/>
+		<beans:property name="databaseType" ref="databaseType"/>
 	</beans:bean>
 		
 	<beans:bean id="jobRepositoryManager" parent="loggingBean"
 		class="org.lexgrid.loader.setup.JobRepositoryManager">
-		<beans:property name="databaseUtility">
-			<beans:ref bean="defaultDatabaseUtility"/>
+		<beans:property name="lexEvsDatabaseOperations">
+			<beans:ref bean="lexEvsDatabaseOperations"/>
 		</beans:property>
 		<beans:property name="createScript" ref="jobRepositoryCreationScriptFactory"/>
 		<beans:property name="dropScript" ref="jobRepositoryDropScriptFactory"/>	
-		<beans:property name="databaseType" ref="databaseTypeFactory"/>
-		<beans:property name="prefix" ref="dbPrefix"/> 
+		<beans:property name="databaseType" ref="databaseType"/>
+		<beans:property name="prefixResolver" ref="defaultPrefixResolver"/> 
 	</beans:bean>
 	
 	<beans:bean id="stagingManager" parent="loggingBean"
 		class="org.lexgrid.loader.staging.DefaultStagingManager" abstract="true">
-		<beans:property name="databaseUtility">
-			<beans:ref bean="defaultDatabaseUtility"/>
+		<beans:property name="lexEvsDatabaseOperations">
+			<beans:ref bean="lexEvsDatabaseOperations"/>
 		</beans:property>
 		<beans:property name="retry" value="${retry}"/>
 	</beans:bean>

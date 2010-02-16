@@ -21,7 +21,7 @@ package org.lexgrid.loader.staging;
 import java.util.Map;
 import java.util.Set;
 
-import org.lexevs.dao.database.utility.DatabaseUtility;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexgrid.loader.logging.LoggingBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
@@ -37,7 +37,7 @@ public class DefaultStagingManager extends LoggingBean implements StagingManager
 	private Map<String,Resource> registeredStagingDatabases;
 	
 	/** The database utility. */
-	private DatabaseUtility databaseUtility;
+	private LexEvsDatabaseOperations lexEvsDatabaseOperations;
 	
 	/** The retry. */
 	private boolean retry;
@@ -81,7 +81,7 @@ public class DefaultStagingManager extends LoggingBean implements StagingManager
 	 * @throws Exception the exception
 	 */
 	protected void createStagingDatabase(Resource creationScriptPath) throws Exception {
-		databaseUtility.executeScript(creationScriptPath);	
+		lexEvsDatabaseOperations.getDatabaseUtilities().executeScript(creationScriptPath);	
 	}
 
 	/* (non-Javadoc)
@@ -91,7 +91,7 @@ public class DefaultStagingManager extends LoggingBean implements StagingManager
 		Set<String> databases = registeredStagingDatabases.keySet();
 		
 		for(String db : databases){
-			databaseUtility.dropDatabase(db);
+			lexEvsDatabaseOperations.getDatabaseUtilities().dropDatabase(db);
 			registeredStagingDatabases.remove(db);
 		}		
 	}
@@ -100,7 +100,7 @@ public class DefaultStagingManager extends LoggingBean implements StagingManager
 	 * @see org.lexgrid.loader.staging.StagingManager#dropStagingDatabase(java.lang.String)
 	 */
 	public void dropStagingDatabase(String databaseName) throws Exception {
-		databaseUtility.dropDatabase(databaseName);
+		lexEvsDatabaseOperations.getDatabaseUtilities().dropDatabase(databaseName);
 		registeredStagingDatabases.remove(databaseName);
 	}
 	
@@ -114,22 +114,15 @@ public class DefaultStagingManager extends LoggingBean implements StagingManager
 		this.registeredStagingDatabases = registeredStagingDatabases;
 	}
 
-	/**
-	 * Gets the database utility.
-	 * 
-	 * @return the database utility
-	 */
-	public DatabaseUtility getDatabaseUtility() {
-		return databaseUtility;
+
+
+	public LexEvsDatabaseOperations getLexEvsDatabaseOperations() {
+		return lexEvsDatabaseOperations;
 	}
 
-	/**
-	 * Sets the database utility.
-	 * 
-	 * @param databaseUtility the new database utility
-	 */
-	public void setDatabaseUtility(DatabaseUtility databaseUtility) {
-		this.databaseUtility = databaseUtility;
+	public void setLexEvsDatabaseOperations(
+			LexEvsDatabaseOperations lexEvsDatabaseOperations) {
+		this.lexEvsDatabaseOperations = lexEvsDatabaseOperations;
 	}
 
 	/**

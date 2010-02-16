@@ -3,31 +3,18 @@
 
 <beans>
 
+	<bean id="testLbConfigPropsSettingBean"
+		class="org.lexevs.dao.test.SystemVariableSettingBean"/>
+		
 	<import resource="baseLoader.xml"/>
-	
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">
-    	<property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
-    	<property name="url" value="jdbc:hsqldb:mem:."/>
-    	<property name="username" value="sa"/>
-    	<property name="password" value=""/>
-    </bean>
-
-<!--    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">-->
-<!--    	<property name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
-<!--    	<property name="url" value="jdbc:mysql://localhost/dbunit"/>-->
-<!--    	<property name="username" value="root"/>-->
-<!--    	<property name="password" value="root"/>-->
-<!--    </bean>-->
-    
-    <bean id="lexGridSchemaVersionFactory" class="org.lexevs.dao.test.StaticDbVersionFactory">
-		<property name="version" value="2.0"/>
-	</bean>
 	
 	<bean id="testPropertyPlaceholderConfigurer" 
 	class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location" value="test.config"/>
 		<property name="ignoreResourceNotFound" value="true"/>
 	</bean>
+	
+	
 	
 
 </beans>

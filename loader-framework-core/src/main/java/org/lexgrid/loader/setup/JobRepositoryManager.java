@@ -19,8 +19,9 @@
 package org.lexgrid.loader.setup;
 
 import org.lexevs.dao.database.constants.DatabaseConstants;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
+import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.type.DatabaseType;
-import org.lexevs.dao.database.utility.DatabaseUtility;
 import org.lexevs.dao.database.utility.DefaultDatabaseUtility;
 import org.lexgrid.loader.logging.LoggingBean;
 import org.springframework.beans.factory.DisposableBean;
@@ -35,7 +36,7 @@ import org.springframework.core.io.Resource;
 public class JobRepositoryManager extends LoggingBean implements InitializingBean, DisposableBean {
 
 	/** The database utility. */
-	private DatabaseUtility databaseUtility;
+	private LexEvsDatabaseOperations lexEvsDatabaseOperations;
 	
 	/** The create script. */
 	private Resource createScript;
@@ -47,7 +48,7 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	
 	private DatabaseType databaseType;
 	
-	private String prefix;
+	private PrefixResolver prefixResolver;
 	
 	//Not needed now... just in case a subclass might...
 	/** The tables. */
@@ -76,7 +77,7 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 		if(! doJobRepositoryTablesExist()){
 			getLogger().info("Creating Job Repository.");
 			String script = DefaultDatabaseUtility.convertResourceToString(createScript);
-			databaseUtility.executeScript(insertPrefixVariable(script), prefix);
+			lexEvsDatabaseOperations.getDatabaseUtilities().executeScript(insertPrefixVariable(script), prefixResolver.resolvePrefix());
 		} else {
 			getLogger().info("Not Creating Job Repository.");
 		}
@@ -108,7 +109,7 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	 */
 	protected boolean doJobRepositoryTablesExist(){
 		try {
-			this.getDatabaseUtility().executeScript("SELECT * FROM " + prefix + "JOB_INSTANCE");
+			lexEvsDatabaseOperations.getDatabaseUtilities().executeScript("SELECT * FROM " + prefixResolver.resolvePrefix() + "JOB_INSTANCE");
 		} catch (Exception e) {
 			return false;
 		}
@@ -122,7 +123,7 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	 */
 	public void dropJobRepositoryDatabases() throws Exception {
 		String script = DefaultDatabaseUtility.convertResourceToString(dropScript);
-		databaseUtility.executeScript(insertPrefixVariable(script));
+		lexEvsDatabaseOperations.getDatabaseUtilities().executeScript(insertPrefixVariable(script));
 	}
 	
 	public void dropJobRepositoryDatabasesOnClose() throws Exception {
@@ -135,26 +136,7 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 			dropJobRepositoryDatabases();
 		}	
 	}
-
-	/**
-	 * Gets the database utility.
-	 * 
-	 * @return the database utility
-	 */
-	public DatabaseUtility getDatabaseUtility() {
-		return databaseUtility;
-	}
-
-
-	/**
-	 * Sets the database utility.
-	 * 
-	 * @param databaseUtility the new database utility
-	 */
-	public void setDatabaseUtility(DatabaseUtility databaseUtility) {
-		this.databaseUtility = databaseUtility;
-	}
-
+	
 	/**
 	 * Gets the creates the script.
 	 * 
@@ -207,11 +189,24 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 		this.databaseType = databaseType;
 	}
 
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
+	
+
+	public PrefixResolver getPrefixResolver() {
+		return prefixResolver;
 	}
 
-	public String getPrefix() {
-		return prefix;
+	public void setPrefixResolver(PrefixResolver prefixResolver) {
+		this.prefixResolver = prefixResolver;
 	}
+
+	public LexEvsDatabaseOperations getLexEvsDatabaseOperations() {
+		return lexEvsDatabaseOperations;
+	}
+
+	public void setLexEvsDatabaseOperations(
+			LexEvsDatabaseOperations lexEvsDatabaseOperations) {
+		this.lexEvsDatabaseOperations = lexEvsDatabaseOperations;
+	}
+	
+	
 }
