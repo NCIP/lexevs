@@ -289,7 +289,7 @@
 	</bean>
 	
 	<bean id="lexEvsServiceLocator" class="org.lexevs.locator.LexEvsServiceLocator">
-	
+		<property name="resourceManager" ref="resourceManager"/>
 	</bean>
 	
 </beans>
