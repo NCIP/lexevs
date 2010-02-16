@@ -21,6 +21,7 @@ package org.lexevs.dao.database.operation;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.dao.database.utility.DatabaseUtility;
 
 /**
  * The Interface PersistenceConnectionManager.
@@ -79,6 +80,8 @@ public interface LexEvsDatabaseOperations {
 	public SQLTableConstants getSQLTableConstants(String codingScheme, String version);
 	
 	public SQLTableUtilities getSQLTableUtilities(String codingScheme, String version);
+	
+	public DatabaseUtility getDatabaseUtilities();
 }
 
 

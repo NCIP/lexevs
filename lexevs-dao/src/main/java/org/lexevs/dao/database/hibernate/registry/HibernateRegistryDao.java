@@ -8,6 +8,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.registry.model.Registry;
 import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry.ResourceType;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 public class HibernateRegistryDao extends HibernateDaoSupport implements RegistryDao {
@@ -30,7 +31,7 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		return (Registry)this.getHibernateTemplate().get(Registry.class, REGISTRY_ID);
 	}
 
-	public void removeCodingSchemeEntry(
+	public void removeRegistryEntry(
 			AbsoluteCodingSchemeVersionReference entry) {
 		// TODO Auto-generated method stub
 		
@@ -38,8 +39,10 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 
 	public void updateTag(String uri, String version,
 			String newTag) {
-		// TODO Auto-generated method stub
+		RegistryEntry entry = this.getRegistryEntryForUriAndVersion(uri, version);
+		entry.setTag(newTag);
 		
+		this.getHibernateTemplate().update(entry);
 	}
 
 	public String getLastUsedDbIdentifier() {
@@ -50,16 +53,16 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		return this.getRegistryEntry().getLastUsedHistoryIdentifer();
 	}
 
-	public void removeCodingSchemeEntry(String uri, String version) {
+	public void removeRegistryEntry(String uri, String version) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void insertCodingSchemeEntry(RegistryEntry entry) {
+	public void insertRegistryEntry(RegistryEntry entry) {
 		this.getHibernateTemplate().save(entry);
 	}
 	
-	public RegistryEntry getCodingSchemeEntryForUriAndVersion(String uri, String version){
+	public RegistryEntry getRegistryEntryForUriAndVersion(String uri, String version){
 		RegistryEntry entry = new RegistryEntry();
 		entry.setResourceUri(uri);
 		entry.setResourceVersion(version);
@@ -80,5 +83,14 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		
 	}
 
+	public void updateLastUsedDbIdentifier(String databaseIdentifier) {
+		Registry registry = this.getRegistryEntry();
+		registry.setLastUsedDbIdentifer(databaseIdentifier);
+		this.getHibernateTemplate().update(registry);	
+	}
 
+	public List<RegistryEntry> getAllRegistryEntriesOfType(ResourceType type) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

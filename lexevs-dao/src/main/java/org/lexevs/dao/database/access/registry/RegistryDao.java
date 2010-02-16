@@ -1,16 +1,22 @@
 package org.lexevs.dao.database.access.registry;
 
 import java.util.Date;
+import java.util.List;
 
 import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry.ResourceType;
 
 public interface RegistryDao {
+	
+	public List<RegistryEntry> getAllRegistryEntriesOfType(ResourceType type);
 
-	public RegistryEntry getCodingSchemeEntryForUriAndVersion(String uri, String version);
+	public RegistryEntry getRegistryEntryForUriAndVersion(String uri, String version);
 	
 	public void updateLastUpdateTime(Date lastUpdateTime);
 	
 	public String getLastUsedDbIdentifier();
+	
+	public void updateLastUsedDbIdentifier(String databaseIdentifier);
 	
 	public String getLastUsedHistoryIdentifier();
 	
@@ -18,9 +24,9 @@ public interface RegistryDao {
 	
 	public void updateRegistryEntry(RegistryEntry entry);
 	
-	public void insertCodingSchemeEntry(RegistryEntry entry);
+	public void insertRegistryEntry(RegistryEntry entry);
 	
-	public void removeCodingSchemeEntry(String uri, String version);
+	public void removeRegistryEntry(String uri, String version);
 	
 	public void updateTag(String uri, String version, String newTag);
 }

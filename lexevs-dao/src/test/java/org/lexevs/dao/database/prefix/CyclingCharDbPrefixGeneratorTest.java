@@ -100,16 +100,12 @@ public class CyclingCharDbPrefixGeneratorTest {
 	
 	@Test
 	public void testGetPrefixWithCycle(){
-		
-	
-		PrefixResolver resolver = createMock(PrefixResolver.class);
-		expect(resolver.resolvePrefix()).andReturn("$$").anyTimes();
-		replay(resolver);
+
 		
 		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
 		
 		generator.setPrefixLengthLimit(4);
-		generator.setPrefixResolver(resolver);
+		generator.setPrefix("$$");
 		
 		
 		DatabaseUtility dbUtil = createMock(DatabaseUtility.class);
@@ -137,7 +133,7 @@ public class CyclingCharDbPrefixGeneratorTest {
 		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
 		
 		generator.setPrefixLengthLimit(4);
-		generator.setPrefixResolver(resolver);
+		generator.setPrefix("$$");
 		
 		DatabaseUtility dbUtil = createMock(DatabaseUtility.class);
 		expect(dbUtil.doesTableExist((String)EasyMock.anyObject())).andReturn(true).anyTimes();

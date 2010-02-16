@@ -1,4 +1,4 @@
-CREATE TABLE registry ( 
+CREATE TABLE @PREFIX@registry ( 
 	registryGuid varchar(36) NOT NULL,
 	resourceURI varchar(250),
 	resourceVersion varchar(50),
@@ -19,7 +19,7 @@ CREATE TABLE registry (
 )
 ;
 
-CREATE TABLE registryMetaData ( 
+CREATE TABLE @PREFIX@registryMetaData ( 
 	id char(1),
 	lastUpdateTime timestamp,
 	lastUsedDBIdentifer varchar(4),
@@ -28,7 +28,7 @@ CREATE TABLE registryMetaData (
 ;
 
 
-CREATE TABLE revision ( 
+CREATE TABLE @PREFIX@revision ( 
 	revisionGuid varchar(36) NOT NULL,
 	releaseGuid varchar(36),
 	revisionId varchar(50) NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE revision (
 )
 ;
 
-CREATE TABLE systemRelease ( 
+CREATE TABLE @PREFIX@systemRelease ( 
 	releaseGuid varchar(36) NOT NULL,
 	releaseURI varchar(250) NOT NULL,
 	releaseId varchar(50),
@@ -52,18 +52,18 @@ CREATE TABLE systemRelease (
 )
 ;
 
-ALTER TABLE registryMetadata ADD CONSTRAINT PK_registryMetadata 
+ALTER TABLE @PREFIX@registryMetadata ADD CONSTRAINT PK_registryMetadata 
 	PRIMARY KEY (id)
 ;
 
-INSERT INTO registryMetadata VALUES ('0', CURTIME(), 'aaa', 'aaa');
+INSERT INTO @PREFIX@registryMetadata VALUES ('0', CURTIME(), 'aaa', 'aaa');
 
-ALTER TABLE registry ADD CONSTRAINT PK_registry 
+ALTER TABLE @PREFIX@registry ADD CONSTRAINT PK_registry 
 	PRIMARY KEY (registryGuid)
 ;
 
 
 
-ALTER TABLE registry
+ALTER TABLE @PREFIX@registry
 	ADD CONSTRAINT UQ_registry UNIQUE (resourceURI, resourceVersion, resourceType)
 ;

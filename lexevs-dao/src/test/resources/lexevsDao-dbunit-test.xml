@@ -3,15 +3,9 @@
 
 <beans>
 
+	<bean id="testLbConfigPropsSettingBean"
+		class="org.lexevs.dao.test.SystemVariableSettingBean"/>
+	
 	<import resource="classpath:lexevsDao-test.xml" />
 	
-	<bean id="lexGridSchemaCheckFactory"
-		class="java.lang.Boolean">
-		<constructor-arg value="true"/>
-	</bean>
-	
-	<bean id="defaultPrefixResolver" class="org.lexevs.dao.test.StaticPrefixResolver">
-		<property name="prefix" value=""/>
-	</bean>
-
 </beans>

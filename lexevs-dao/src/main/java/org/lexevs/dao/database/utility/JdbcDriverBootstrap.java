@@ -5,6 +5,8 @@ import org.springframework.beans.factory.FactoryBean;
 public class JdbcDriverBootstrap implements FactoryBean{
 
 	private String driverClass;
+	
+	private ClassLoader classLoader;
 
 	public String getDriverClass() {
 		return driverClass;
@@ -15,8 +17,7 @@ public class JdbcDriverBootstrap implements FactoryBean{
 	}
 
 	public Object getObject() throws Exception {
-		return null;
-		//return Class.forName(driverClass, true, MyClassLoader.instance());
+		return Class.forName(driverClass, true, classLoader);
 	}
 
 	public Class getObjectType() {
@@ -25,5 +26,13 @@ public class JdbcDriverBootstrap implements FactoryBean{
 
 	public boolean isSingleton() {
 		return true;
+	}
+
+	public void setClassLoader(ClassLoader classLoader) {
+		this.classLoader = classLoader;
+	}
+
+	public ClassLoader getClassLoader() {
+		return classLoader;
 	}
 }

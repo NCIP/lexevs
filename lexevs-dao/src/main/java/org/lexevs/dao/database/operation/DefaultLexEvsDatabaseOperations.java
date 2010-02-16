@@ -71,10 +71,9 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	 * @return the connection info
 	 */
 	protected SQLConnectionInfo getConnectionInfo(String codingScheme, String version){
-		ResourceManager rm = ResourceManager.instance();
 		AbsoluteCodingSchemeVersionReference acvr = 
 			this.buildAbsoluteCodingSchemeVersionReference(codingScheme, version);
-		return rm.getRegistry().getSQLConnectionInfoForCodeSystem(acvr);
+		return ResourceManager.instance().getRegistry().getSQLConnectionInfoForCodeSystem(acvr);
 	}
 
 	/**
@@ -142,9 +141,8 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	 * @see org.LexGrid.persistence.connection.PersistenceConnectionManager#getNewConnectionInfoForLoad()
 	 */
 	public SQLConnectionInfo getNewConnectionInfoForLoad(boolean indexTables){
-		ResourceManager rm = ResourceManager.instance();
 		try {			
-			SQLConnectionInfo connection = rm.getSQLConnectionInfoForLoad();
+			SQLConnectionInfo connection = ResourceManager.instance().getSQLConnectionInfoForLoad();
 			//this.createTables(connection, indexTables);
 			return connection;
 		} catch (LBInvocationException e) {
@@ -218,4 +216,10 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	public Resource getLexevsSchemaCreateScript() {
 		return lexevsSchemaCreateScript;
 	}
+
+	public DatabaseUtility getDatabaseUtilities() {
+		return this.databaseUtility;
+	}
+	
+	
 }

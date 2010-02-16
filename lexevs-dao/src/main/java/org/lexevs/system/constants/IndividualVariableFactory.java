@@ -2,16 +2,16 @@ package org.lexevs.system.constants;
 
 import org.springframework.beans.factory.FactoryBean;
 
-public class IndividualVariableFactory implements FactoryBean {
+public class IndividualVariableFactory<T> implements FactoryBean {
 
-	private SystemVariables systemVariables; 
+	private T bean; 
 	
 	private String variableName;
 	
 	public Object getObject() throws Exception {
 		return 
-			SystemVariables.class.
-				getMethod("get"+variableName, null).invoke(systemVariables, null);
+			bean.getClass().
+				getMethod("get"+variableName, null).invoke(bean, null);
 	}
 
 	public Class getObjectType() {
@@ -22,19 +22,19 @@ public class IndividualVariableFactory implements FactoryBean {
 		return true;
 	}
 
-	public void setSystemVariables(SystemVariables systemVariables) {
-		this.systemVariables = systemVariables;
+	public T getBean() {
+		return bean;
 	}
 
-	public SystemVariables getSystemVariables() {
-		return systemVariables;
-	}
-
-	public void setVariableName(String variableName) {
-		this.variableName = variableName;
+	public void setBean(T bean) {
+		this.bean = bean;
 	}
 
 	public String getVariableName() {
 		return variableName;
+	}
+
+	public void setVariableName(String variableName) {
+		this.variableName = variableName;
 	}
 }

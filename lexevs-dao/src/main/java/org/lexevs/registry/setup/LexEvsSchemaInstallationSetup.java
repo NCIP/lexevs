@@ -11,7 +11,6 @@ public class LexEvsSchemaInstallationSetup  implements InitializingBean {
 	private SystemVariables systemVariables;
 	private Resource registryCreateScript;
 	private DatabaseUtility databaseUtility;
-	private LexEvsDatabaseOperations lexEvsDatabaseOperations;
 	
 	private boolean isLexGridSchemaInstalled;
 
@@ -20,9 +19,6 @@ public class LexEvsSchemaInstallationSetup  implements InitializingBean {
 		if(!isLexGridSchemaInstalled){
 				this.getDatabaseUtility().executeScript(
 						registryCreateScript, prefix);
-				if(this.systemVariables.isSingleTableMode()){
-					lexEvsDatabaseOperations.createTables(prefix);
-				}
 		}	
 	}
 
@@ -48,15 +44,6 @@ public class LexEvsSchemaInstallationSetup  implements InitializingBean {
 
 	public void setDatabaseUtility(DatabaseUtility databaseUtility) {
 		this.databaseUtility = databaseUtility;
-	}
-
-	public LexEvsDatabaseOperations getLexEvsDatabaseOperations() {
-		return lexEvsDatabaseOperations;
-	}
-
-	public void setLexEvsDatabaseOperations(
-			LexEvsDatabaseOperations lexEvsDatabaseOperations) {
-		this.lexEvsDatabaseOperations = lexEvsDatabaseOperations;
 	}
 
 	public Resource getRegistryCreateScript() {

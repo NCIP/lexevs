@@ -9,7 +9,7 @@ CREATE TABLE associationEntity (
 )
 ;
 
-CREATE TABLE associationPredicate ( 
+CREATE TABLE @PREFIX@associationPredicate ( 
 	associationPredicateGuid varchar(36) NOT NULL,
 	relationGuid varchar(36) NOT NULL,
 	associationEntityGuid varchar(36),
@@ -17,7 +17,7 @@ CREATE TABLE associationPredicate (
 )
 ;
 
-CREATE TABLE codingScheme ( 
+CREATE TABLE @PREFIX@codingScheme ( 
 	codingSchemeGuid varchar(36) NOT NULL,
 	codingSchemeName varchar(50) NOT NULL,
 	codingSchemeURI varchar(250) NOT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE codingScheme (
 )
 ;
 
-CREATE TABLE csMultiAttrib ( 
+CREATE TABLE @PREFIX@csMultiAttrib ( 
 	csMultiAttribGuid varchar(36) NOT NULL,
 	codingSchemeGuid varchar(36) NOT NULL,
 	attributeType varchar(30) NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE csMultiAttrib (
 )
 ;
 
-CREATE TABLE csSupportedAttrib ( 
+CREATE TABLE @PREFIX@csSupportedAttrib ( 
 	csSuppAttribGuid varchar(36) NOT NULL,
 	codingSchemeGuid varchar(36) NOT NULL,
 	supportedAttributeTag varchar(30) NOT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE csSupportedAttrib (
 )
 ;
 
-CREATE TABLE entity ( 
+CREATE TABLE @PREFIX@entity ( 
 	entityGuid varchar(36) NOT NULL,
 	codingSchemeGuid varchar(36) NOT NULL,
 	entityCode varchar(200) NOT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE entity (
 )
 ;
 
-CREATE TABLE entityAssnQuals ( 
+CREATE TABLE @PREFIX@entityAssnQuals ( 
 	entityAssnQualsGuid varchar(36) NOT NULL,
 	referenceGuid varchar(36) NOT NULL,
 	qualifierName varchar(50) NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE entityAssnQuals (
 )
 ;
 
-CREATE TABLE entityAssnsToData ( 
+CREATE TABLE @PREFIX@entityAssnsToData ( 
 	entityAssnsDataGuid varchar(36) NOT NULL,
 	associationPredicateGuid varchar(36) NOT NULL,
 	sourceEntityCode varchar(200) NOT NULL,
@@ -107,7 +107,7 @@ CREATE TABLE entityAssnsToData (
 )
 ;
 
-CREATE TABLE entityAssnsToEntity ( 
+CREATE TABLE @PREFIX@entityAssnsToEntity ( 
 	entityAssnsGuid varchar(36) NOT NULL,
 	associationPredicateGuid varchar(36) NOT NULL,
 	sourceEntityCode varchar(200) NOT NULL,
@@ -126,7 +126,7 @@ CREATE TABLE entityAssnsToEntity (
 )
 ;
 
-CREATE TABLE entityAssnsToEntityTr ( 
+CREATE TABLE @PREFIX@entityAssnsToEntityTr ( 
 	entityAssnsTrGuid varchar(36) NOT NULL,
 	associationPredicateGuid varchar(36) NOT NULL,
 	sourceEntityCode varchar(200) NOT NULL,
@@ -136,13 +136,13 @@ CREATE TABLE entityAssnsToEntityTr (
 )
 ;
 
-CREATE TABLE entityType ( 
+CREATE TABLE @PREFIX@entityType ( 
 	entityGuid varchar(36) NOT NULL,
 	entityType varchar(50) NOT NULL
 )
 ;
 
-CREATE TABLE entryState ( 
+CREATE TABLE @PREFIX@entryState ( 
 	entryStateGuid varchar(36) NOT NULL,
 	entryGuid varchar(36) NOT NULL,
 	entryType varchar(50) NOT NULL,
@@ -155,7 +155,7 @@ CREATE TABLE entryState (
 ;
 
 
-CREATE TABLE property ( 
+CREATE TABLE @PREFIX@property ( 
 	propertyGuid varchar(36) NOT NULL,
 	referenceGuid varchar(36) NOT NULL,
 	referenceType varchar(50) NOT NULL,
@@ -165,7 +165,7 @@ CREATE TABLE property (
 	language varchar(32),
 	format varchar(50),
 	isPreferred char(1),
-	matchIfNoConvarchar char(1),
+	matchIfNoContext char(1),
 	degreeOfFidelity varchar(50),
 	representationalForm varchar(50),
 	propertyValue varchar NOT NULL,
@@ -178,7 +178,7 @@ CREATE TABLE property (
 )
 ;
 
-CREATE TABLE propertyLinks ( 
+CREATE TABLE @PREFIX@propertyLinks ( 
 	propertyLinksGuid varchar(36) NOT NULL,
 	sourcePropertyGuid varchar(36) NOT NULL,
 	link varchar(250) NOT NULL,
@@ -186,7 +186,7 @@ CREATE TABLE propertyLinks (
 )
 ;
 
-CREATE TABLE propertyMultiAttrib ( 
+CREATE TABLE @PREFIX@propertyMultiAttrib ( 
 	propMultiAttribGuid varchar(36) NOT NULL,
 	propertyGuid varchar(36) NOT NULL,
 	attributeType varchar(30) NOT NULL,
@@ -198,7 +198,7 @@ CREATE TABLE propertyMultiAttrib (
 )
 ;
 
-CREATE TABLE relation ( 
+CREATE TABLE @PREFIX@relation ( 
 	relationGuid varchar(36) NOT NULL,
 	codingSchemeGuid varchar(36) NOT NULL,
 	containerName varchar(50) NOT NULL,
@@ -217,94 +217,94 @@ CREATE TABLE relation (
 )
 ;
 
-ALTER TABLE associationPredicate
+ALTER TABLE @PREFIX@associationPredicate
 	ADD CONSTRAINT UQ_association UNIQUE (relationGuid, associationName)
 ;
-ALTER TABLE codingScheme
+ALTER TABLE @PREFIX@codingScheme
 	ADD CONSTRAINT UQ_URIVersionPair UNIQUE (codingSchemeURI, representsVersion)
 ;
 CREATE INDEX idx_csURI
-ON codingScheme (codingSchemeURI)
+ON @PREFIX@codingScheme (codingSchemeURI)
 ;
 CREATE INDEX idx_csURIVersion
-ON codingScheme (codingSchemeURI, representsVersion)
+ON @PREFIX@codingScheme (codingSchemeURI, representsVersion)
 ;
 CREATE INDEX idx_csName
-ON codingScheme (codingSchemeName)
+ON @PREFIX@codingScheme (codingSchemeName)
 ;
 CREATE INDEX idx_csNameVersion
-ON codingScheme (codingSchemeName, representsVersion)
+ON @PREFIX@codingScheme (codingSchemeName, representsVersion)
 ;
 
 CREATE INDEX idx_csMultiAttrib
-ON csMultiAttrib (codingSchemeGuid, attributeType)
+ON @PREFIX@csMultiAttrib (codingSchemeGuid, attributeType)
 ;
-ALTER TABLE csSupportedAttrib
+ALTER TABLE @PREFIX@csSupportedAttrib
 	ADD CONSTRAINT UQ_mapping UNIQUE (codingSchemeGuid, supportedAttributeTag, id)
 ;
-ALTER TABLE entity
+ALTER TABLE @PREFIX@entity
 	ADD CONSTRAINT UQ_entity UNIQUE (codingSchemeGuid, entityCode, entityCodeNamespace)
 ;
 CREATE INDEX idx_entity
-ON entity (codingSchemeGuid, entityCode)
+ON @PREFIX@entity (codingSchemeGuid, entityCode)
 ;
 CREATE INDEX idx_entityNS
-ON entity (codingSchemeGuid, entityCode, entityCodeNamespace)
+ON @PREFIX@entity (codingSchemeGuid, entityCode, entityCodeNamespace)
 ;
-ALTER TABLE entityAssnQuals
+ALTER TABLE @PREFIX@entityAssnQuals
 	ADD CONSTRAINT UQ_entityAssnQuals UNIQUE (referenceGuid, qualifierName, qualifierValue)
 ;
-ALTER TABLE entityAssnsToData
+ALTER TABLE @PREFIX@entityAssnsToData
 	ADD CONSTRAINT UQ_entAsToData_source UNIQUE (sourceEntityCode, sourceEntityCodeNamespace)
 ;
 CREATE INDEX idx_entAsToData_source
-ON entityAssnsToData (associationPredicateGuid, sourceEntityCode)
+ON @PREFIX@entityAssnsToData (associationPredicateGuid, sourceEntityCode)
 ;
 CREATE INDEX idx_entAsToEnt_source
-ON entityAssnsToEntity (associationPredicateGuid, sourceEntityCode)
+ON @PREFIX@entityAssnsToEntity (associationPredicateGuid, sourceEntityCode)
 ;
 CREATE INDEX idx_entAsToEnt_sourceNS
-ON entityAssnsToEntity (associationPredicateGuid, sourceEntityCode, sourceEntityCodeNamespace)
+ON @PREFIX@entityAssnsToEntity (associationPredicateGuid, sourceEntityCode, sourceEntityCodeNamespace)
 ;
 CREATE INDEX idx_entAsToEnt_target
-ON entityAssnsToEntity (associationPredicateGuid, targetEntityCode)
+ON @PREFIX@entityAssnsToEntity (associationPredicateGuid, targetEntityCode)
 ;
 CREATE INDEX idx_entAsToEnt_targetNS
-ON entityAssnsToEntity (associationPredicateGuid, targetEntityCode, targetEntityCodeNamespace)
+ON @PREFIX@entityAssnsToEntity (associationPredicateGuid, targetEntityCode, targetEntityCodeNamespace)
 ;
-ALTER TABLE entityAssnsToEntityTr
+ALTER TABLE @PREFIX@entityAssnsToEntityTr
 	ADD CONSTRAINT UQ_sourceTargetCombo UNIQUE (sourceEntityCode, sourceEntityCodeNamespace, targetEntityCode, targetEntityCodeNamespace)
 ;
 CREATE INDEX idx_entAsToEntTr_source
-ON entityAssnsToEntityTr (associationPredicateGuid, sourceEntityCode, sourceEntityCodeNamespace)
+ON @PREFIX@entityAssnsToEntityTr (associationPredicateGuid, sourceEntityCode, sourceEntityCodeNamespace)
 ;
 CREATE INDEX idx_entAsToEntTr_target
-ON entityAssnsToEntityTr (associationPredicateGuid, targetEntityCode, targetEntityCodeNamespace)
+ON @PREFIX@entityAssnsToEntityTr (associationPredicateGuid, targetEntityCode, targetEntityCodeNamespace)
 ;
-ALTER TABLE property
+ALTER TABLE @PREFIX@property
 	ADD CONSTRAINT UQ_property UNIQUE (referenceGuid, propertyName, propertyId)
 ;
 CREATE INDEX idx_referenceGuid
-ON property (referenceGuid)
+ON @PREFIX@property (referenceGuid)
 ;
-ALTER TABLE propertyLinks
+ALTER TABLE @PREFIX@propertyLinks
 	ADD CONSTRAINT UQ_propLinks UNIQUE (sourcePropertyGuid, link, targetPropertyGuid)
 ;
 CREATE INDEX idx_sourcePropertyGuid
-ON propertyLinks (sourcePropertyGuid)
+ON @PREFIX@propertyLinks (sourcePropertyGuid)
 ;
 CREATE INDEX idx_targetPropertyGuid
-ON propertyLinks (targetPropertyGuid)
+ON @PREFIX@propertyLinks (targetPropertyGuid)
 ;
 CREATE INDEX idx_propertyMultiAttrib
-ON propertyMultiAttrib (propertyGuid)
+ON @PREFIX@propertyMultiAttrib (propertyGuid)
 ;
-ALTER TABLE propertyMultiAttrib
+ALTER TABLE @PREFIX@propertyMultiAttrib
 	ADD CONSTRAINT UQ_propertyMultiAttrib UNIQUE (propertyGuid, attributeType, attributeId)
 ;
-ALTER TABLE relation
+ALTER TABLE @PREFIX@relation
 	ADD CONSTRAINT UQ_relation_codingSchemeGuid UNIQUE (codingSchemeGuid)
 ;
-ALTER TABLE relation
+ALTER TABLE @PREFIX@relation
 	ADD CONSTRAINT UQ_relation_containerName UNIQUE (containerName)
 ;

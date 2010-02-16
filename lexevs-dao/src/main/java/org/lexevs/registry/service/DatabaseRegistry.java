@@ -9,6 +9,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.dao.database.prefix.NextDatabasePrefixGenerator;
 import org.lexevs.exceptions.InternalException;
 import org.lexevs.registry.model.RegistryEntry;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class DatabaseRegistry implements Registry {
 	
 	private RegistryDao registryDao;
+	
+	private NextDatabasePrefixGenerator nextDatabasePrefixGenerator;
 
 	@Transactional
 	public void activate(AbsoluteCodingSchemeVersionReference codingScheme)
 			throws LBInvocationException, LBParameterException {
-		RegistryEntry entry = registryDao.getCodingSchemeEntryForUriAndVersion(
+		RegistryEntry entry = registryDao.getRegistryEntryForUriAndVersion(
 				codingScheme.getCodingSchemeURN(), 
 				codingScheme.getCodingSchemeVersion());
 		
@@ -49,30 +52,33 @@ public class DatabaseRegistry implements Registry {
 	}
 
 	public DBEntry[] getDBEntries() {
-		// TODO Auto-generated method stub
-		return null;
+		return new DBEntry[0];
 	}
 
+	@Transactional
 	public Date getDeactivateDate(String codingSchemeURN, String version) {
-		// TODO Auto-generated method stub
-		return null;
+		return registryDao.getRegistryEntryForUriAndVersion(codingSchemeURN, version).getDeactivationDate();
 	}
 
+	@Transactional
 	public DBEntry getEntry(String codingSchemeURN, String version)
 			throws LBParameterException {
-		// TODO Auto-generated method stub
-		return null;
+		return RegistryEntry.toDbEntry(
+				registryDao.getRegistryEntryForUriAndVersion(codingSchemeURN, version));
 	}
 
-	public DBEntry getEntry(AbsoluteCodingSchemeVersionReference codingScheme)
+	@Transactional
+	public DBEntry getEntry(AbsoluteCodingSchemeVersionReference ref)
 			throws LBParameterException {
-		// TODO Auto-generated method stub
-		return null;
+		RegistryEntry entry = this.registryDao.
+			getRegistryEntryForUriAndVersion(ref.getCodingSchemeURN(), 
+					ref.getCodingSchemeVersion());
+		
+		return RegistryEntry.toDbEntry(entry);
 	}
 
 	public HistoryEntry[] getHistoryEntries() {
-		// TODO Auto-generated method stub
-		return null;
+		return new HistoryEntry[0];
 	}
 
 	public HistoryEntry getHistoryEntry(String urn) throws LBParameterException {
@@ -80,9 +86,9 @@ public class DatabaseRegistry implements Registry {
 		return null;
 	}
 
+	@Transactional
 	public Date getLastUpdateDate(String codingSchemeURN, String version) {
-		// TODO Auto-generated method stub
-		return null;
+		return registryDao.getRegistryEntryForUriAndVersion(codingSchemeURN, version).getLastUpdateDate();
 	}
 
 	@Transactional
@@ -90,8 +96,13 @@ public class DatabaseRegistry implements Registry {
 		return this.registryDao.getLastUpdateTime();
 	}
 
+	@Transactional
 	public String getNextDBIdentifier() throws LBInvocationException {
-		return this.registryDao.getLastUsedDbIdentifier();
+		String currentDbIdentifier = registryDao.getLastUsedDbIdentifier();
+		String nextDbIdentifier = nextDatabasePrefixGenerator.generateNextDatabasePrefix(currentDbIdentifier);
+		registryDao.updateLastUsedDbIdentifier(nextDbIdentifier);
+		
+		return nextDbIdentifier;
 	}
 
 	public String getNextHistoryIdentifier() throws LBInvocationException {
@@ -190,4 +201,12 @@ public class DatabaseRegistry implements Registry {
 		return registryDao;
 	}
 
+	public NextDatabasePrefixGenerator getNextDatabasePrefixGenerator() {
+		return nextDatabasePrefixGenerator;
+	}
+
+	public void setNextDatabasePrefixGenerator(
+			NextDatabasePrefixGenerator nextDatabasePrefixGenerator) {
+		this.nextDatabasePrefixGenerator = nextDatabasePrefixGenerator;
+	}
 }

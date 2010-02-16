@@ -12,6 +12,8 @@ import org.lexevs.exceptions.InternalException;
 
 public interface Registry {
 	
+	public enum ResourceType {CODING_SCHEME, VALUE_DOMAIN, PICKLIST, NCI_HISTORY}
+	
 	public File getRegistryFile();
 
 	public CodingSchemeVersionStatus getStatus(String codingSchemeURN,

@@ -32,11 +32,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.sql.DataSource;
+
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
@@ -47,6 +48,7 @@ import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.connection.SQLHistoryInterface;
 import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.dao.database.connection.SQLInterfaceBase;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.index.connection.IndexInterface;
 import org.lexevs.exceptions.InitializationException;
 import org.lexevs.exceptions.MissingResourceException;
@@ -54,7 +56,6 @@ import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.logging.Logger;
 import org.lexevs.registry.WriteLockManager;
 import org.lexevs.registry.service.Registry;
-import org.lexevs.registry.service.XmlRegistry;
 import org.lexevs.registry.service.Registry.DBEntry;
 import org.lexevs.registry.service.Registry.HistoryEntry;
 import org.lexevs.registry.service.XmlRegistry.KnownTags;
@@ -71,15 +72,18 @@ import org.lexevs.system.model.LocalCodingScheme;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class ResourceManager {
+	private LexEvsDatabaseOperations lexEvsDatabaseOperations;
+	 
+	private ClassLoader classLoader;
     private static ResourceManager resourceManager_;
-    private static SystemVariables systemVars_;
+    private SystemVariables systemVars_;
     private Registry registry_;
 
-    private static Logger logger_;
+    private Logger logger_;
 
     public static final String codingSchemeVersionSeparator_ = "[:]";
 
-    private LexBIGServiceManager lbsm_;
+    private DataSource dataSource;
 
     // This maps internal coding scheme names / version to the serverId that
     // contains them.
@@ -125,62 +129,15 @@ public class ResourceManager {
     // This thread handles future deactivations
     private Thread deactivatorThread_;
     private FutureDeactivatorThread fdt_;
+    
+    private static ResourceManagerFactory resourceManagerFactory = new DefaultResourceManagerFactory();
 
     // Properties object that I was launched with (need to keep incase reinit is
     // called)
     private static Properties props_;
 
-    public static ResourceManager instance() {
-        return preInit(null);
-    }
-
-    /*
-     * This method is called if a startup completely fails, so that you can get
-     * more debugging info.
-     */
-    public static void dumpLogQueue() {
-        System.err.println("ResourceManager - calling dump log queue.");
-        System.out.println("ResourceManager - calling dump log queue.");
-        if (logger_ != null) {
-            logger_.sysErrLogQueue();
-        }
-    }
-
-    /*
-     * This starts things that should only happen once, even if someone calls
-     * reinit. logger, custom class loader, etc.
-     */
-    private static ResourceManager preInit(Properties props) {
-        if (resourceManager_ == null) {
-            try {
-                // start up the logging system
-                logger_ = new Logger();
-                resourceManager_ = new ResourceManager(props);
-                logger_.finishLogConfig(systemVars_);
-
-                resourceManager_.init();
-
-            } catch (Exception e) {
-                // I can't throw the InitializationException here, because it
-                // depends on this class
-                // being built properly.
-                try {
-                    logger_
-                            .fatal(
-                                    "Unexpected Error while initializing the ResourceManager - returning null, which will break something else...",
-                                    e);
-                } catch (RuntimeException e1) {
-                    System.out
-                            .println("Unexpected Error while initializing the ResourceManager - returning null, which will break something else..."
-                                    + e);
-                    System.err
-                            .println("Unexpected Error while initializing the ResourceManager - returning null, which will break something else..."
-                                    + e);
-                }
-                resourceManager_ = null;
-            }
-        }
-        return resourceManager_;
+    public static synchronized ResourceManager instance() {
+        return resourceManagerFactory.getResourceManager();
     }
 
     /**
@@ -200,8 +157,8 @@ public class ResourceManager {
                 props = props_;
             }
 
-            preInit(props);
-            ResourceManager newRM = new ResourceManager(props == null ? null : props);
+            //preInit(props);
+            ResourceManager newRM = null;//new ResourceManager(props == null ? null : props);
             newRM.init();
 
             // stop the deactivator thread in the old resource manager
@@ -221,29 +178,15 @@ public class ResourceManager {
             // depends on this class
             // being built properly.
 
-            logger_
-                    .fatal("Unexpected Error while re-initilizing the ResourceManager.  Configuration was not reread",
-                            e);
+           // logger_
+           //         .fatal("Unexpected Error while re-initilizing the ResourceManager.  Configuration was not reread",
+           //                 e);
 
         }
 
     }
 
-    /*
-     * Properties is optional - if not provided, looks for default file and
-     * loads.
-     */
-    private ResourceManager(Properties props) throws Exception {
-
-        if (props != null) {
-            systemVars_ = new SystemVariables(logger_, props);
-        } else {
-            systemVars_ = new SystemVariables(logger_);
-        }
-        props_ = props;
-    }
-
-    private void init() throws Exception {
+    public void init() throws Exception {
         cache_ = Collections.synchronizedMap(new LRUMap(systemVars_.getCacheSize()));  
         
         // This increases the ability of Lucene to do queries against
@@ -260,7 +203,7 @@ public class ResourceManager {
         supportedCodingSchemeToInternalMap_ = new Hashtable<String, String>();
 
         // populate the registry
-        registry_ = new XmlRegistry(systemVars_.getAutoLoadRegistryPath());
+        //registry_ = new XmlRegistry(systemVars_.getAutoLoadRegistryPath());
 
         // connect to the histories
         readHistories();
@@ -1219,8 +1162,50 @@ public class ResourceManager {
             }
         }
     }
+    
+   
  
     private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbName){
         return StringUtils.remove(url, dbName);
     }
+
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
+	public DataSource getDataSource() {
+		return dataSource;
+	}
+
+	public SystemVariables getSystemVars_() {
+		return systemVars_;
+	}
+
+	public void setSystemVariables(SystemVariables systemVars) {
+		systemVars_ = systemVars;
+	}
+
+	public void setLogger(Logger logger) {
+		logger_ = logger;
+	}
+
+	public void setRegistry(Registry registry) {
+		this.registry_ = registry;
+	}
+
+	public void setLexEvsDatabaseOperations(LexEvsDatabaseOperations lexEvsDatabaseOperations) {
+		this.lexEvsDatabaseOperations = lexEvsDatabaseOperations;
+	}
+
+	public LexEvsDatabaseOperations getLexEvsDatabaseOperations() {
+		return lexEvsDatabaseOperations;
+	}
+
+	public void setClassLoader(ClassLoader classLoader) {
+		this.classLoader = classLoader;
+	}
+
+	public ClassLoader getClassLoader() {
+		return classLoader;
+	}
 }

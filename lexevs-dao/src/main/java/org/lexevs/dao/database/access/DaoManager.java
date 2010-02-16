@@ -47,7 +47,7 @@ public class DaoManager {
 	}
 	
 	protected LexGridSchemaVersion getLexGridSchemaVersion(String uri, String version){
-		RegistryEntry entry = registryDao.getCodingSchemeEntryForUriAndVersion(uri, version);
+		RegistryEntry entry = registryDao.getRegistryEntryForUriAndVersion(uri, version);
 		return LexGridSchemaVersion.parseStringToVersion(entry.getDbSchemaVersion());
 	}
 	

@@ -22,7 +22,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		entry.setResourceUri("uri");
 		entry.setResourceVersion("v1");
 		entry.setDbSchemaVersion("2.0");
-		registryDao.insertCodingSchemeEntry(entry);
+		registryDao.insertRegistryEntry(entry);
 		
 		CodingScheme scheme = new CodingScheme();
 		scheme.setApproxNumConcepts(111l);
@@ -39,7 +39,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		entry.setResourceUri("uri");
 		entry.setResourceVersion("v1");
 		entry.setDbSchemaVersion("2.0");
-		registryDao.insertCodingSchemeEntry(entry);
+		registryDao.insertRegistryEntry(entry);
 		
 		CodingScheme scheme = new CodingScheme();
 		scheme.setApproxNumConcepts(111l);

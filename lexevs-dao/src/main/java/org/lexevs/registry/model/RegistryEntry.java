@@ -4,12 +4,16 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.lexevs.dao.database.constants.DatabaseConstants;
+import org.lexevs.registry.service.Registry.DBEntry;
+import org.lexevs.registry.service.Registry.ResourceType;
 
 @Entity
 @Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "registry")
@@ -43,16 +47,15 @@ public class RegistryEntry {
 	
 	private String prefix;
 	
-	private String resourceType;
+	@Enumerated(EnumType.STRING)
+	private ResourceType resourceType;
 	
 	private String resourceVersion;
 	
 	private String resourceUri;
 
-	@Column(name="status")
 	private String status;
 	
-	@Column(name="tag")
 	private String tag;
 
 	public String getStatus() {
@@ -107,7 +110,7 @@ public class RegistryEntry {
 		return dbUri;
 	}
 
-	public void setDbUrl(String dbUri) {
+	public void setDbUri(String dbUri) {
 		this.dbUri = dbUri;
 	}
 
@@ -151,11 +154,11 @@ public class RegistryEntry {
 		this.prefix = prefix;
 	}
 
-	public String getResourceType() {
+	public ResourceType getResourceType() {
 		return resourceType;
 	}
 
-	public void setResourceType(String resourceType) {
+	public void setResourceType(ResourceType resourceType) {
 		this.resourceType = resourceType;
 	}
 
@@ -189,5 +192,27 @@ public class RegistryEntry {
 
 	public String getBaseRevision() {
 		return baseRevision;
+	}
+	
+	public static DBEntry toDbEntry(RegistryEntry registryEntry){
+		DBEntry dbEntry = new DBEntry();
+		dbEntry.dbName = registryEntry.getDbName();
+		dbEntry.dbURL = registryEntry.getDbUri();
+		
+		if(registryEntry.getDeactivationDate() != null){
+			dbEntry.deactiveDate = registryEntry.getDeactivationDate().getTime();
+		}
+		
+		if(registryEntry.getLastUpdateDate() != null){
+			dbEntry.lastUpdateDate = registryEntry.getLastUpdateDate().getTime();
+		}
+		
+		dbEntry.prefix = registryEntry.getPrefix();
+		dbEntry.tag = registryEntry.getTag();
+		dbEntry.urn = registryEntry.getResourceUri();
+		dbEntry.version = registryEntry.getResourceVersion();
+		dbEntry.status = registryEntry.getStatus();
+		
+		return dbEntry;
 	}
 }

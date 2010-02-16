@@ -1,7 +1,5 @@
 package org.lexevs.dao.test;
 
-import static org.junit.Assert.assertNotNull;
-
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
@@ -11,8 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.prefix.PrefixResolver;
-import org.lexevs.dao.database.utility.DatabaseUtility;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
@@ -32,7 +30,7 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	protected PrefixResolver prefixResolver;
 	
 	@Resource
-	protected DatabaseUtility databaseUtility;
+	protected LexEvsDatabaseOperations lexEvsDatabaseOperations;
 	
 	@Test
 	public void testConfig(){
@@ -41,14 +39,15 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	
 	@Before
 	public void setUp() throws Exception {
-		databaseUtility.executeScript(new ClassPathResource(CREATE_COMMON_SCRIPT), prefixResolver.resolvePrefix());
-		databaseUtility.executeScript(new ClassPathResource(CREATE_CODINGSCHEME_SCRIPT), prefixResolver.resolvePrefix());
+		new SimpleJdbcTemplate(dataSource).getJdbcOperations().execute("DROP SCHEMA PUBLIC CASCADE");
+		lexEvsDatabaseOperations.getDatabaseUtilities().executeScript(new ClassPathResource(CREATE_COMMON_SCRIPT), prefixResolver.resolvePrefix());
+		lexEvsDatabaseOperations.getDatabaseUtilities().executeScript(new ClassPathResource(CREATE_CODINGSCHEME_SCRIPT), prefixResolver.resolvePrefix());
 	}
 	
 	@After
 	public void tearDown() throws Exception {
 		super.tearDown();
-		new SimpleJdbcTemplate(dataSource).getJdbcOperations().execute("SHUTDOWN");
+		//new SimpleJdbcTemplate(dataSource).getJdbcOperations().execute("SHUTDOWN");
 	}
 	
 	@Override
