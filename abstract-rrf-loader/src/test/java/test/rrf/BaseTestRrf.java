@@ -19,13 +19,12 @@
 package test.rrf;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-
-import test.util.LoaderTestUtils;
+import org.lexevs.system.ResourceManager;
+import org.lexgrid.loader.test.util.LoaderTestUtils;
 
 /**
  * The Class BaseTestRrf.

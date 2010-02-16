@@ -45,11 +45,11 @@
       class="edu.mayo.informatics.lexgrid.convert.directConversions.UmlsCommon.UMLSBaseCode"
       factory-method="getIsoMap"/>
 		  
-		<beans:bean id="hibernateRrfPostProcessingDao" class="org.lexgrid.loader.rrf.dao.HibernateRrfPostProcessingDao" abstract="true">
-			<beans:property name="sessionFactory">
-				<beans:ref bean="sessionFactory" />
-			</beans:property>			
-		</beans:bean>  
+<!--		<beans:bean id="hibernateRrfPostProcessingDao" class="org.lexgrid.loader.rrf.dao.HibernateRrfPostProcessingDao" abstract="true">-->
+<!--			<beans:property name="sessionFactory">-->
+<!--				<beans:ref bean="sessionFactory" />-->
+<!--			</beans:property>			-->
+<!--		</beans:bean>  -->
 		
 		<beans:bean id="mrrankFactoryBean" class="org.lexgrid.loader.reader.FactoryBeanReader">
 			<beans:property name="delegate"> 
@@ -214,7 +214,7 @@
 	</beans:bean>
 	
 	<beans:bean id="mrconsoStagingCreateScriptFactory"
-		class="org.lexgrid.loader.setup.ScriptFactory">
+		class="org.lexevs.dao.database.setup.script.ScriptFactory">
 		<beans:property name="scriptType" value="create"/>
 		<beans:property name="databaseType" ref="databaseTypeFactory"/>
 		<beans:property name="creationScriptPrefix" value="sql/staging/mrconsoStaging-schema-"/>
