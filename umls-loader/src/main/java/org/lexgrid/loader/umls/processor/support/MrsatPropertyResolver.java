@@ -117,4 +117,9 @@ public class MrsatPropertyResolver extends AbstractBasicPropertyResolver<Mrsat>{
 	public void setMrsatUtility(MrsatUtility mrsatUtility) {
 		this.mrsatUtility = mrsatUtility;
 	}
+
+	public String getEntityCodeNamespace(Mrsat item) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

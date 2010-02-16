@@ -87,4 +87,19 @@ public class UmlsCodingSchemeNameSetter implements CodingSchemeIdSetter, Initial
 	public void setSab(String sab) {
 		this.sab = sab;
 	}
+
+	public String getCodingSchemeId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getCodingSchemeUri() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getCodingSchemeVersion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

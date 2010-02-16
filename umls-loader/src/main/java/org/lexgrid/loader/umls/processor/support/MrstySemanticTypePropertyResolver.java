@@ -92,4 +92,9 @@ public class MrstySemanticTypePropertyResolver extends AbstractBasicPropertyReso
 	public String getRepresentationalForm(Mrsty item) {
 		return null;
 	}
+
+	public String getEntityCodeNamespace(Mrsty item) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

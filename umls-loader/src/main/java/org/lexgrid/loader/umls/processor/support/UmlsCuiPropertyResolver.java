@@ -92,6 +92,11 @@ public class UmlsCuiPropertyResolver extends AbstractBasicPropertyResolver<Mrcon
 	public String getRepresentationalForm(Mrconso item) {
 		return item.getTty();
 	}
+
+	public String getEntityCodeNamespace(Mrconso item) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 

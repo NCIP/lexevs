@@ -20,7 +20,9 @@ package org.lexgrid.loader.umls.processor;
 
 import java.util.Map;
 
-import org.LexGrid.persistence.model.CodingScheme;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.EntityDescription;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexgrid.loader.dao.SupportedAttributeSupport;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.rrf.model.Mrsab;
@@ -52,16 +54,19 @@ public class UmlsCodingSchemeProcessor extends SupportedAttributeSupport impleme
 		if(processRow(mrsab)){
 			CodingScheme cs = new CodingScheme();
 			cs.setCodingSchemeName(codingSchemeIdSetter.getCodingSchemeId());
-			cs.setCodingSchemeUri(isoMap.get(sab));
+			cs.setCodingSchemeURI(isoMap.get(sab));
 			cs.setFormalName(mrsab.getSon());
 			cs.setDefaultLanguage(mrsab.getLat());
 			cs.setRepresentsVersion(mrsab.getSver());
-			cs.setEntityDescription(mrsab.getScit());
-			cs.setCopyright(mrsab.getScc());
+			
+			EntityDescription ed = new EntityDescription();
+			ed.setContent(mrsab.getScit());
+			cs.setEntityDescription(ed);
+			cs.setCopyright(DaoUtility.createText(mrsab.getScc()));
 			cs.setIsActive(true);
 
-			getSupportedAttributeTemplate().addSupportedCodingScheme(cs.getCodingSchemeId(), 
-					cs.getCodingSchemeId(), cs.getCodingSchemeUri(), cs.getFormalName(), false);
+			getSupportedAttributeTemplate().addSupportedCodingScheme(cs.getCodingSchemeName(), cs.getRepresentsVersion(),
+					cs.getCodingSchemeName(), cs.getCodingSchemeURI(), cs.getFormalName(), false);
 
 			return cs;
 		} else {

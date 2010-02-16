@@ -22,12 +22,11 @@ import java.io.File;
 import java.net.URI;
 import java.util.Properties;
 
-import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.persistence.spring.DynamicPropertyApplicationContext;
+import org.lexevs.dao.database.spring.DynamicPropertyApplicationContext;
+import org.lexevs.system.ResourceManager;
 import org.lexgrid.loader.AbstractSpringBatchLoader;
 import org.lexgrid.loader.properties.ConnectionPropertiesFactory;
 import org.lexgrid.loader.properties.impl.DefaultLexEVSPropertiesFactory;
@@ -96,9 +95,11 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 	}
 
     public static void main(String[] args) throws Exception { 
-    	UmlsBatchLoader ubl = (UmlsBatchLoader) LexBIGServiceImpl.defaultInstance().getServiceManager(null).getLoader(
-					"UmlsBatchLoader");
-		 ubl.loadUmls(new File("/home/LargeStorage/ontologies/rrf/snomed-ct/2009AA").toURI(), "SNOMEDCT");
+    	System.setProperty("LG_CONFIG_FILE", "src/test/resources/lbconfig.props");
+
+    	UmlsBatchLoader ubl = new UmlsBatchLoaderImpl();
+		 //ubl.loadUmls(new File("/home/LargeStorage/ontologies/rrf/snomed-ct/2009AA").toURI(), "SNOMEDCT");
 		// mbl.loadMeta("/home/LargeStorage/ontologies/rrf/LNC/LNC226");
+    	ubl.loadUmls(new File("src/test/resources/data/sample-air").toURI(), "AIR");
 	 }
 }

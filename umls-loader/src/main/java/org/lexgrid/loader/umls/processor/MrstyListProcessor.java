@@ -21,19 +21,21 @@ package org.lexgrid.loader.umls.processor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.persistence.model.EntityProperty;
 import org.lexgrid.loader.data.DataUtils;
 import org.lexgrid.loader.data.property.ParameterizedListIdSetter;
 import org.lexgrid.loader.processor.AbstractParameterPassingDoubleListProcessor;
 import org.lexgrid.loader.rrf.model.Mrsty;
 import org.lexgrid.loader.rrf.staging.MrconsoStagingDao;
+import org.lexgrid.loader.wrappers.ParentIdHolder;
 
 /**
  * The Class MrstyListProcessor.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MrstyListProcessor extends AbstractParameterPassingDoubleListProcessor<Mrsty, EntityProperty>{	
+public class MrstyListProcessor extends AbstractParameterPassingDoubleListProcessor<Mrsty, ParentIdHolder<Property>>{	
 	
 	/** The mrconso staging dao. */
 	private MrconsoStagingDao mrconsoStagingDao;
@@ -57,14 +59,14 @@ public class MrstyListProcessor extends AbstractParameterPassingDoubleListProces
 	 * @see org.lexgrid.loader.processor.AbstractParameterPassingListProcessor#afterProcessing(java.util.List, java.util.List)
 	 */
 	@Override
-	protected List<EntityProperty> afterProcessing(List<EntityProperty> processedItems, List<Mrsty> originalItems){
-		List<EntityProperty> buffer = new ArrayList<EntityProperty>();
+	protected List<ParentIdHolder<Property>> afterProcessing(List<ParentIdHolder<Property>> processedItems, List<Mrsty> originalItems){
+		List<ParentIdHolder<Property>> buffer = new ArrayList<ParentIdHolder<Property>>();
 
 		List<String> codes = mrconsoStagingDao.getCodes(getGroupCui(originalItems), sab);
 
 		for(String code : codes){
-			for(EntityProperty prop : processedItems){
-				EntityProperty clonedProp = null;
+			for(ParentIdHolder<Property> prop : processedItems){
+				ParentIdHolder<Property> clonedProp = null;
 				try {
 					clonedProp = DataUtils.deepCloneEntityProperty(prop);
 				} catch (Exception e) {

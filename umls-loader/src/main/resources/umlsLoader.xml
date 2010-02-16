@@ -318,30 +318,30 @@
 	<beans:bean id="cleanupListener" parent="abstractCleanupListener"
 	class="org.lexgrid.loader.listener.CleanupListener">
 		<beans:property name="stagingManager" ref="umlsStagingManager"/>
-		<beans:property name="codingSchemeNameSetter" ref="umlsCodingSchemeNameSetter"/>
+		<beans:property name="codingSchemeNameSetter" ref="umlsCodingSchemeIdSetter"/>
 	</beans:bean>
 
 	<beans:bean id="umlsAssociationProcessor"
 		parent="associationProcessor">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="umlsCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
-		<beans:property name="rrfPostProcessingDao">
-			<beans:ref bean="postProcessingDao" />
-		</beans:property>
+<!--		<beans:property name="rrfPostProcessingDao">-->
+<!--			<beans:ref bean="postProcessingDao" />-->
+<!--		</beans:property>-->
 	</beans:bean>
 
-	<beans:bean id="postProcessingDao"
-		parent="hibernateRrfPostProcessingDao">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref bean="umlsCodingSchemeNameSetter" />
-		</beans:property>
-	</beans:bean>
+<!--	<beans:bean id="postProcessingDao"-->
+<!--		parent="hibernateRrfPostProcessingDao">-->
+<!--		<beans:property name="codingSchemeNameSetter">-->
+<!--			<beans:ref bean="umlsCodingSchemeIdSetter" />-->
+<!--		</beans:property>-->
+<!--	</beans:bean>-->
 
 	<beans:bean id="umlsCodingSchemeNameSettingProcessor"
 		abstract="true">
 		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="umlsCodingSchemeNameSetter" />
+			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="lexEvsDao">
 			<beans:ref bean="lexEvsDao" />
@@ -356,7 +356,7 @@
 			 <beans:ref bean="umlsEntityAssocToEntityProcessor"/>
 		</beans:constructor-arg>
 		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="umlsCodingSchemeNameSetter" />
+			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="supportedAttributeTemplate">
 			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
@@ -370,65 +370,65 @@
 	</beans:bean>
 -->
 	
-	<beans:bean id="umlsRootNodeAddingEntityAssocToEntityProcessor" 
-		class="org.lexgrid.loader.processor.decorator.ListEntityAssnToEntityRootNodeAddingDecorator">
-				<beans:constructor-arg>
-					 <beans:ref bean="umlsEntityAssocToEntityProcessor"/>
-				</beans:constructor-arg>
-				<beans:property name="supportedAttributeTemplate">
-					<beans:ref bean="cachingSupportedAttribuiteTemplate" />
-				</beans:property>	
-				<beans:property name="replaceRelation" value="true"/>
-				<beans:property name="rootNodeResolver">
-					<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsRootNodeResolver">
-						<beans:property name="sab" value="${sab}"/>
-						<beans:property name="mrconsoStagingDao" ref="mrconsoStagingDao"/>
-					</beans:bean>
-				</beans:property>
-	</beans:bean>
+<!--	<beans:bean id="umlsRootNodeAddingEntityAssocToEntityProcessor" -->
+<!--		class="org.lexgrid.loader.processor.decorator.ListEntityAssnToEntityRootNodeAddingDecorator">-->
+<!--				<beans:constructor-arg>-->
+<!--					 <beans:ref bean="umlsEntityAssocToEntityProcessor"/>-->
+<!--				</beans:constructor-arg>-->
+<!--				<beans:property name="supportedAttributeTemplate">-->
+<!--					<beans:ref bean="cachingSupportedAttribuiteTemplate" />-->
+<!--				</beans:property>	-->
+<!--				<beans:property name="replaceRelation" value="true"/>-->
+<!--				<beans:property name="rootNodeResolver">-->
+<!--					<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsRootNodeResolver">-->
+<!--						<beans:property name="sab" value="${sab}"/>-->
+<!--						<beans:property name="mrconsoStagingDao" ref="mrconsoStagingDao"/>-->
+<!--					</beans:bean>-->
+<!--				</beans:property>-->
+<!--	</beans:bean>-->
 
-	<beans:bean id="umlsEntityAssocToEntityProcessor" class="org.lexgrid.loader.processor.decorator.PostProcessorValidatingDecorator">
-			<beans:constructor-arg>
-				<beans:bean	class="org.lexgrid.loader.umls.processor.UmlsEntityAssnsToEntityProcessor">		
-					<beans:property name="sourceEntityCodeAndCodingSchemeResolver">
-						<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsSourceEntityCodeAndCodingSchemeResolver">
-							<beans:property name="mrconsoStagingDao">
-								<beans:ref bean="mrconsoStagingDao"/>
-							</beans:property>
-						</beans:bean>
-					</beans:property>
-					<beans:property name="targetEntityCodeAndCodingSchemeResolver">
-						<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsTargetEntityCodeAndCodingSchemeResolver">
-							<beans:property name="mrconsoStagingDao">
-								<beans:ref bean="mrconsoStagingDao"/>
-							</beans:property>
-						</beans:bean>
-					</beans:property>	
-					<beans:property name="containerResolver">
-						<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsRelationContainerResolver"/>
-					</beans:property>
-					<beans:property name="codingSchemeNameSetter">
-						<beans:ref local="umlsCodingSchemeNameSetter" />
-					</beans:property>
-					<beans:property name="lexEvsDao">
-						<beans:ref bean="lexEvsDao" />
-					</beans:property>
-					<beans:property name="qualifierProcessors">
-						<beans:list>
-							<beans:ref bean="umlsRelaQualifierProcessor" />
-						</beans:list>
-					</beans:property>
-					</beans:bean>
-			</beans:constructor-arg>
-			
-			<beans:property name="validator">
-				<beans:bean class="org.lexgrid.loader.processor.support.validator.ListValidatorAdapter">
-					<beans:constructor-arg>
-						<beans:bean class="org.lexgrid.loader.processor.support.validator.NamespaceSizeValidator" />
-					</beans:constructor-arg>
-				</beans:bean>
-			</beans:property>
-	</beans:bean>
+<!--	<beans:bean id="umlsEntityAssocToEntityProcessor" class="org.lexgrid.loader.processor.decorator.PostProcessorValidatingDecorator">-->
+<!--			<beans:constructor-arg>-->
+<!--				<beans:bean	class="org.lexgrid.loader.umls.processor.UmlsEntityAssnsToEntityProcessor">		-->
+<!--					<beans:property name="sourceEntityCodeAndCodingSchemeResolver">-->
+<!--						<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsSourceEntityCodeAndCodingSchemeResolver">-->
+<!--							<beans:property name="mrconsoStagingDao">-->
+<!--								<beans:ref bean="mrconsoStagingDao"/>-->
+<!--							</beans:property>-->
+<!--						</beans:bean>-->
+<!--					</beans:property>-->
+<!--					<beans:property name="targetEntityCodeAndCodingSchemeResolver">-->
+<!--						<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsTargetEntityCodeAndCodingSchemeResolver">-->
+<!--							<beans:property name="mrconsoStagingDao">-->
+<!--								<beans:ref bean="mrconsoStagingDao"/>-->
+<!--							</beans:property>-->
+<!--						</beans:bean>-->
+<!--					</beans:property>	-->
+<!--					<beans:property name="containerResolver">-->
+<!--						<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsRelationContainerResolver"/>-->
+<!--					</beans:property>-->
+<!--					<beans:property name="codingSchemeIdSetter">-->
+<!--						<beans:ref local="umlsCodingSchemeIdSetter" />-->
+<!--					</beans:property>-->
+<!--					<beans:property name="lexEvsDao">-->
+<!--						<beans:ref bean="lexEvsDao" />-->
+<!--					</beans:property>-->
+<!--					<beans:property name="qualifierProcessors">-->
+<!--						<beans:list>-->
+<!--							<beans:ref bean="umlsRelaQualifierProcessor" />-->
+<!--						</beans:list>-->
+<!--					</beans:property>-->
+<!--					</beans:bean>-->
+<!--			</beans:constructor-arg>-->
+<!--			-->
+<!--			<beans:property name="validator">-->
+<!--				<beans:bean class="org.lexgrid.loader.processor.support.validator.ListValidatorAdapter">-->
+<!--					<beans:constructor-arg>-->
+<!--						<beans:bean class="org.lexgrid.loader.processor.support.validator.NamespaceSizeValidator" />-->
+<!--					</beans:constructor-arg>-->
+<!--				</beans:bean>-->
+<!--			</beans:property>-->
+<!--	</beans:bean>-->
 
 	<beans:bean id="entityPropertyPropertyComparator"
 		class="org.lexgrid.loader.umls.data.property.EntityPropertyPropertyComparator">
@@ -440,8 +440,8 @@
 
 	<beans:bean id="mrhierAssocAndPropQualProcessor"
 		class="org.lexgrid.loader.umls.processor.MrhierAssocAndPropQualProcessor">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="umlsCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="lexEvsDao">
 			<beans:ref bean="lexEvsDao" />
@@ -457,7 +457,7 @@
 			<beans:bean
 				class="org.lexgrid.loader.umls.hardcodedvalues.UmlsHardcodedValuesFactory" parent="abstractHardcodedValuesFactory">
 				<beans:property name="codingSchemeNameSetter">
-					<beans:ref local="umlsCodingSchemeNameSetter" />
+					<beans:ref local="umlsCodingSchemeIdSetter" />
 				</beans:property>
 			</beans:bean>
 		</beans:property>
@@ -498,7 +498,7 @@
 		class="org.lexgrid.loader.umls.processor.UmlsCodingSchemeProcessor"
 		scope="step">
 		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="umlsCodingSchemeNameSetter" />
+			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="sab" value="${sab}"/>
 		<beans:property name="isoMap">
@@ -539,32 +539,32 @@
 		</beans:property>
 	</beans:bean>
 
-	<beans:bean id="entityTypeAddingEntityProcessor"
-		class="org.lexgrid.loader.processor.ClassifierCompositeProcessor">
-		<beans:property name="processorList">
-			<beans:list>
-			    <beans:ref bean="umlsEntityListProcessor" />
-			    <beans:ref bean="umlsPresentationPropertyListProcessor" />
-			    <beans:bean class="org.lexgrid.loader.processor.decorator.ListToSingleItemProcessorDecorator">
-			    	<beans:constructor-arg>
-			    		<beans:bean class="org.lexgrid.loader.processor.SettableEntityTypeProcessor">
-			    			<beans:property name="entityCodeResolver">
-			    				<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsMrconsoEntityCodeResolver"/>
-			    			</beans:property>
-			    			<beans:property name="codingSchemeNameSetter">
-			    				<beans:ref bean="umlsCodingSchemeNameSetter"/>
-			    			</beans:property>
-			    		</beans:bean>
-			    	</beans:constructor-arg>
-			    </beans:bean>	
-			</beans:list>
-		</beans:property>
-	</beans:bean>
+<!--	<beans:bean id="entityTypeAddingEntityProcessor"-->
+<!--		class="org.lexgrid.loader.processor.ClassifierCompositeProcessor">-->
+<!--		<beans:property name="processorList">-->
+<!--			<beans:list>-->
+<!--			    <beans:ref bean="umlsEntityListProcessor" />-->
+<!--			    <beans:ref bean="umlsPresentationPropertyListProcessor" />-->
+<!--			    <beans:bean class="org.lexgrid.loader.processor.decorator.ListToSingleItemProcessorDecorator">-->
+<!--			    	<beans:constructor-arg>-->
+<!--			    		<beans:bean class="org.lexgrid.loader.processor.SettableEntityTypeProcessor">-->
+<!--			    			<beans:property name="entityCodeResolver">-->
+<!--			    				<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsMrconsoEntityCodeResolver"/>-->
+<!--			    			</beans:property>-->
+<!--			    			<beans:property name="codingSchemeNameSetter">-->
+<!--			    				<beans:ref bean="umlsCodingSchemeIdSetter"/>-->
+<!--			    			</beans:property>-->
+<!--			    		</beans:bean>-->
+<!--			    	</beans:constructor-arg>-->
+<!--			    </beans:bean>	-->
+<!--			</beans:list>-->
+<!--		</beans:property>-->
+<!--	</beans:bean>-->
 
 	<beans:bean id="umlsEntityProcessor"
 		class="org.lexgrid.loader.processor.EntityProcessor">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="umlsCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="entityResolver">
 			<beans:ref bean="umlsEntityResolver" />
@@ -849,7 +849,7 @@
 		</beans:property>
 	</beans:bean>
 
-	<beans:bean id="umlsCodingSchemeNameSetter"
+	<beans:bean id="umlsCodingSchemeIdSetter"
 		class="org.lexgrid.loader.umls.data.codingscheme.UmlsCodingSchemeNameSetter">
 		<beans:property name="mrsabUtility">
 			<beans:ref bean="mrsabUtility" />
@@ -860,7 +860,7 @@
 	<beans:bean id="umlsEntityNamespaceResolver"
 		class="org.lexgrid.loader.processor.support.SameAsCodingSchemeNameEntityNamespaceResolver">
 		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="umlsCodingSchemeNameSetter" />
+			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
 
@@ -872,7 +872,7 @@
 				class="org.lexgrid.loader.umls.processor.support.AuiBasedRelationResolver">
 				<beans:property name="rrfrelationType" value="REL" />
 				<beans:property name="codingSchemeNameSetter">
-					<beans:ref local="umlsCodingSchemeNameSetter" />
+					<beans:ref local="umlsCodingSchemeIdSetter" />
 				</beans:property>
 			</beans:bean>
 		</beans:property>
@@ -889,7 +889,7 @@
 				class="org.lexgrid.loader.umls.processor.support.AuiBasedRelationResolver">
 				<beans:property name="rrfrelationType" value="RELA" />
 				<beans:property name="codingSchemeNameSetter">
-					<beans:ref local="umlsCodingSchemeNameSetter" />
+					<beans:ref local="umlsCodingSchemeIdSetter" />
 				</beans:property>
 			</beans:bean>
 		</beans:property>
@@ -902,38 +902,38 @@
 
 	<beans:bean id="registeringTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.RegisteringTasklet">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="umlsCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
 
 	<beans:bean id="indexingTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.IndexingTasklet">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="umlsCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
 	
 	<beans:bean id="transitivityBuildingTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.TransitivityBuildingTasklet">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="umlsCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
 	
 	<beans:bean id="introspectiveHardcodedValuesTasklet" parent="abstractIntrospectiveHardcodedValues"
 		class="org.lexgrid.loader.umls.hardcodedvalues.UmlsIntrospectiveHardcodedValues">
-		<beans:property name="lexEvsDao">
-			<beans:ref bean="lexEvsDao" />
-		</beans:property>
+<!--		<beans:property name="lexEvsDao">-->
+<!--			<beans:ref bean="lexEvsDao" />-->
+<!--		</beans:property>-->
 		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="umlsCodingSchemeNameSetter" />
+			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
 	
 	<beans:bean id="umlsDefaultPropertyProcessor" abstract="true">
 		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="umlsCodingSchemeNameSetter" />
+			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="supportedAttributeTemplate">
 			<beans:ref bean="cachingSupportedAttribuiteTemplate" />

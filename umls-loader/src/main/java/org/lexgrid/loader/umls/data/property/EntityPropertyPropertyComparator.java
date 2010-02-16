@@ -20,17 +20,15 @@ package org.lexgrid.loader.umls.data.property;
 
 import java.util.Comparator;
 
-import org.LexGrid.persistence.model.EntityProperty;
+import org.LexGrid.concepts.Presentation;
 import org.lexgrid.loader.rrf.data.property.MrrankUtility;
-import org.lexgrid.loader.rrf.model.Mrconso;
-import org.lexgrid.loader.umls.data.codingscheme.CodingSchemeSabNameSetter;
 
 /**
- * The Class EntityPropertyPropertyComparator.
+ * The Class PresentationPropertyComparator.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class EntityPropertyPropertyComparator implements Comparator<EntityProperty>{
+public class EntityPropertyPropertyComparator implements Comparator<Presentation>{
 
 	/** The mrrank utility. */
 	private MrrankUtility mrrankUtility;
@@ -42,18 +40,18 @@ public class EntityPropertyPropertyComparator implements Comparator<EntityProper
 	private String sab;
 	
 	/** The language comparator. */
-	Comparator<EntityProperty> languageComparator = new LanguageComparator();
+	Comparator<Presentation> languageComparator = new LanguageComparator();
 	
 	/** The is pref comparator. */
-	Comparator<EntityProperty> isPrefComparator = new IsPrefComparator();
+	Comparator<Presentation> isPrefComparator = new IsPrefComparator();
 	
 	/** The mrrank comparator. */
-	Comparator<EntityProperty> mrrankComparator = new MrrankComparator();
+	Comparator<Presentation> mrrankComparator = new MrrankComparator();
 	
 	/* (non-Javadoc)
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 	 */
-	public int compare(EntityProperty o1, EntityProperty o2) {
+	public int compare(Presentation o1, Presentation o2) {
 		int mrrankCompare = mrrankComparator.compare(o1, o2);
 		if(mrrankCompare != 0){
 			return mrrankCompare;
@@ -79,7 +77,7 @@ public class EntityPropertyPropertyComparator implements Comparator<EntityProper
 	 * 
 	 * @return true, if is default language
 	 */
-	private boolean isDefaultLanguage(EntityProperty o){
+	private boolean isDefaultLanguage(Presentation o){
 		return o.getLanguage().equals(defaultLanguage);
 	}	
 	
@@ -91,7 +89,7 @@ public class EntityPropertyPropertyComparator implements Comparator<EntityProper
 	 * 
 	 * @return true, if successful
 	 */
-	private boolean areSameLanguage(EntityProperty o1, EntityProperty o2){
+	private boolean areSameLanguage(Presentation o1, Presentation o2){
 		if(o1.getLanguage().equals(o2.getLanguage())){
 			return true;
 		}
@@ -103,12 +101,12 @@ public class EntityPropertyPropertyComparator implements Comparator<EntityProper
 	 * 
 	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
 	 */
-	private class LanguageComparator implements Comparator<EntityProperty> {
+	private class LanguageComparator implements Comparator<Presentation> {
 		
 		/* (non-Javadoc)
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
-		public int compare(EntityProperty o1, EntityProperty o2) {
+		public int compare(Presentation o1, Presentation o2) {
 			if(areSameLanguage(o1, o2)){
 				return 0;
 			}
@@ -127,12 +125,12 @@ public class EntityPropertyPropertyComparator implements Comparator<EntityProper
 	 * 
 	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
 	 */
-	private class IsPrefComparator implements Comparator<EntityProperty> {
+	private class IsPrefComparator implements Comparator<Presentation> {
 		
 		/* (non-Javadoc)
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
-		public int compare(EntityProperty o1, EntityProperty o2) {
+		public int compare(Presentation o1, Presentation o2) {
 			if(o1.getIsPreferred() == o1.getIsPreferred()){
 				return 0;
 			}
@@ -151,12 +149,12 @@ public class EntityPropertyPropertyComparator implements Comparator<EntityProper
 	 * 
 	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
 	 */
-	private class MrrankComparator implements Comparator<EntityProperty> {
+	private class MrrankComparator implements Comparator<Presentation> {
 		
 		/* (non-Javadoc)
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
-		public int compare(EntityProperty o1, EntityProperty o2) {
+		public int compare(Presentation o1, Presentation o2) {
 			//There doesn't have to be a Mrrank.
 			if(mrrankUtility == null){
 				return 0;

@@ -36,12 +36,12 @@ public class MrhierAssocAndPropQualProcessor extends AbstractMrhierProcessor {
 	private MrconsoStagingDao mrconsoStagingDao;
 
 	@Override
-	protected String getInitalPathElementCode(Mrhier mrhier) {
+	public String getInitalPathElementCode(Mrhier mrhier) {
 		return mrconsoStagingDao.getCodeFromAui(mrhier.getAui());
 	}
 
 	@Override
-	protected List<String> getPathToRoot(String pathToRoot) {
+	public List<String> getPathToRoot(String pathToRoot) {
 		List<String> returnPtr = new ArrayList<String>();
 
 		for(String aui : this.getPathToRootAuis(pathToRoot)) {
@@ -51,7 +51,7 @@ public class MrhierAssocAndPropQualProcessor extends AbstractMrhierProcessor {
 	}
 
 	@Override
-	protected String getPropertyId(Mrhier mrhier, int pos) {
+	public String getPropertyId(Mrhier mrhier, int pos) {
 		return this.getAuiFromPos(mrhier, pos);
 	}
 

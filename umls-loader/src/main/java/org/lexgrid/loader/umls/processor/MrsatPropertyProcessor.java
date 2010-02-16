@@ -18,9 +18,10 @@
  */
 package org.lexgrid.loader.umls.processor;
 
-import org.LexGrid.persistence.model.EntityProperty;
+import org.LexGrid.commonTypes.Property;
 import org.lexgrid.loader.processor.EntityPropertyProcessor;
 import org.lexgrid.loader.rrf.model.Mrsat;
+import org.lexgrid.loader.wrappers.ParentIdHolder;
 
 /**
  * The Class MrsatPropertyProcessor.
@@ -43,9 +44,9 @@ public class MrsatPropertyProcessor extends EntityPropertyProcessor<Mrsat>{
 	 * @throws Exception the exception
 	 */
 	@Override
-	public EntityProperty doProcess(Mrsat item) throws Exception {
-		EntityProperty prop = super.doProcess(item);
-		prop.setIsPreferred(false);
+	public ParentIdHolder<Property> doProcess(Mrsat item) throws Exception {
+		ParentIdHolder<Property> prop = super.doProcess(item);
+		
 		return prop;
 	}
 }
