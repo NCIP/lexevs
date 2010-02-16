@@ -54,17 +54,6 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 		
 		return (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_CODE_AND_NAMESPACE_SQL, paramMap);
 	}
-	
-	public String insertEntity(String codingSchemeName, String version,
-			Entity entity){
-		
-		Map<String,Object> paramMap = new HashMap<String,Object>();
-		paramMap.put("codingSchemeName", codingSchemeName);
-		paramMap.put("codingSchemeVersion", version);
-		String codingSchemeId = (String) this.getSqlMapClientTemplate().queryForObject("getCodingSchemeId", paramMap);
-		
-		return this.insertEntity(codingSchemeId, entity);
-	}
 
 
 	public void updateEntity(String codingSchemeName, String version,

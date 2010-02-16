@@ -8,12 +8,12 @@ import org.lexevs.dao.database.service.DatabaseService;
 public interface EntityService extends DatabaseService {
 	
 	public void insertEntity(
-			String codingSchemeName, 
+			String codingSchemeUri, 
 			String version, 
 			Entity entity);
 
 	public void insertBatchEntities(
-			String codingSchemeName, 
+			String codingSchemeUri, 
 			String version,
 			List<? extends Entity> entities);
 	

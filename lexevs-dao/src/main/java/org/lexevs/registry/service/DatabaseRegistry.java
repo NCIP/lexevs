@@ -2,6 +2,7 @@ package org.lexevs.registry.service;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
@@ -10,6 +11,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.prefix.NextDatabasePrefixGenerator;
+import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.exceptions.InternalException;
 import org.lexevs.registry.model.RegistryEntry;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,23 +34,26 @@ public class DatabaseRegistry implements Registry {
 		registryDao.updateRegistryEntry(entry);
 	}
 
-	public HistoryEntry addNewHistory(String urn, String dbURL, String dbName,
-			String tablePrefix) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void addNewItem(String urn, String version, String status,
-			String dbURL, String tag, String dbName, String tablePrefix)
+	@Transactional
+	public void addNewItem(RegistryEntry entry)
 			throws Exception {
-		// TODO Auto-generated method stub
+		
+		registryDao.insertRegistryEntry(entry);
 		
 	}
 
-	public void deactivate(DBEntry entry) throws LBInvocationException,
+	public void deactivate(RegistryEntry entry) throws LBInvocationException,
 			LBParameterException {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public List<RegistryEntry> getAllRegistryEntries() {
+		return registryDao.getAllRegistryEntries();
+	}
+	
+	public List<RegistryEntry> getAllRegistryEntriesOfType(ResourceType type) {
+		return registryDao.getAllRegistryEntriesOfType(type);
 	}
 
 	public DBEntry[] getDBEntries() {
@@ -61,24 +66,24 @@ public class DatabaseRegistry implements Registry {
 	}
 
 	@Transactional
-	public DBEntry getEntry(String codingSchemeURN, String version)
+	public RegistryEntry getEntry(String codingSchemeURN, String version)
 			throws LBParameterException {
-		return RegistryEntry.toDbEntry(
-				registryDao.getRegistryEntryForUriAndVersion(codingSchemeURN, version));
+		return 
+				registryDao.getRegistryEntryForUriAndVersion(codingSchemeURN, version);
 	}
 
 	@Transactional
-	public DBEntry getEntry(AbsoluteCodingSchemeVersionReference ref)
+	public RegistryEntry getEntry(AbsoluteCodingSchemeVersionReference ref)
 			throws LBParameterException {
 		RegistryEntry entry = this.registryDao.
 			getRegistryEntryForUriAndVersion(ref.getCodingSchemeURN(), 
 					ref.getCodingSchemeVersion());
 		
-		return RegistryEntry.toDbEntry(entry);
+		return entry;
 	}
 
-	public HistoryEntry[] getHistoryEntries() {
-		return new HistoryEntry[0];
+	public List<RegistryEntry> getHistoryEntries() {
+		return this.registryDao.getAllRegistryEntriesOfType(ResourceType.NCI_HISTORY);
 	}
 
 	public HistoryEntry getHistoryEntry(String urn) throws LBParameterException {
@@ -166,9 +171,10 @@ public class DatabaseRegistry implements Registry {
 		
 	}
 
-	public void setStatusPending(DBEntry entry) throws LBInvocationException,
+	@Transactional
+	public void setStatusPending(RegistryEntry entry) throws LBInvocationException,
 			LBParameterException {
-		// TODO Auto-generated method stub
+		//this.registryDao.
 		
 	}
 
@@ -192,6 +198,15 @@ public class DatabaseRegistry implements Registry {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Transactional
+	public LexGridSchemaVersion getSupportedLexGridSchemaVersion(
+			AbsoluteCodingSchemeVersionReference ref)
+			throws LBInvocationException {
+		return LexGridSchemaVersion.parseStringToVersion(
+				this.getRegistryDao().
+				getRegistryEntryForUriAndVersion(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion()).getDbSchemaVersion());
+	}
 
 	public void setRegistryDao(RegistryDao registryDao) {
 		this.registryDao = registryDao;
@@ -209,4 +224,6 @@ public class DatabaseRegistry implements Registry {
 			NextDatabasePrefixGenerator nextDatabasePrefixGenerator) {
 		this.nextDatabasePrefixGenerator = nextDatabasePrefixGenerator;
 	}
+
+	
 }

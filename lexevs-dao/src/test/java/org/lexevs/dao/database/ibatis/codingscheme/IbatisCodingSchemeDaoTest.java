@@ -365,4 +365,48 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		
 		assertNotNull(returnedCs);
 	}
+	
+	@Test
+	@Transactional
+	public void testGetCodingSchemeIdByUriAndVersion() throws SQLException{
+		
+		CodingScheme cs = new CodingScheme();
+		
+		cs.setCodingSchemeName("csName");
+		cs.setCodingSchemeURI("uri");
+		cs.setRepresentsVersion("1.2");
+		cs.setFormalName("csFormalName");
+		cs.setDefaultLanguage("lang");
+		cs.setApproxNumConcepts(22l);
+		
+		cs.addLocalName("localName");
+		
+		ibatisCodingSchemeDao.insertCodingScheme(cs);
+		
+		String id = ibatisCodingSchemeDao.getCodingSchemeIdByUriAndVersion("uri", "1.2");
+		
+		assertNotNull(id);
+	}
+	
+	@Test
+	@Transactional
+	public void testGetCodingSchemeIdByNameAndVersion() throws SQLException{
+		
+		CodingScheme cs = new CodingScheme();
+		
+		cs.setCodingSchemeName("csName");
+		cs.setCodingSchemeURI("uri");
+		cs.setRepresentsVersion("1.2");
+		cs.setFormalName("csFormalName");
+		cs.setDefaultLanguage("lang");
+		cs.setApproxNumConcepts(22l);
+		
+		cs.addLocalName("localName");
+		
+		ibatisCodingSchemeDao.insertCodingScheme(cs);
+		
+		String id = ibatisCodingSchemeDao.getCodingSchemeIdByNameAndVersion("csName", "1.2");
+		
+		assertNotNull(id);
+	}
 }

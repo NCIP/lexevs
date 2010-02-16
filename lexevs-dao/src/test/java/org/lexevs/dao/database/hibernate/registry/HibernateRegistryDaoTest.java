@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.junit.Test;
-import org.lexevs.dao.test.LexEvsResourceTestBase;
+import org.lexevs.dao.test.LexEvsDaoTestBase;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,7 +22,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 @TransactionConfiguration
-public class HibernateRegistryDaoTest extends LexEvsResourceTestBase {
+public class HibernateRegistryDaoTest extends LexEvsDaoTestBase {
 
 	@Resource
 	private HibernateRegistryDao hibernateRegistryDao;
@@ -137,7 +137,7 @@ public class HibernateRegistryDaoTest extends LexEvsResourceTestBase {
 		entry.setPrefix("prefix");
 		entry.setStatus(CodingSchemeVersionStatus.ACTIVE.toString());
 		entry.setTag("tag");
-		entry.setResourceUri("uri");
+		entry.setResourceUri("uri2");
 		entry.setResourceVersion("version");
 		entry.setResourceType(ResourceType.CODING_SCHEME);
 
@@ -145,12 +145,12 @@ public class HibernateRegistryDaoTest extends LexEvsResourceTestBase {
 		
 		hibernateRegistryDao.getHibernateTemplate().flush();
 		
-		hibernateRegistryDao.updateTag("uri", "version", "new tag");
+		hibernateRegistryDao.updateTag("uri2", "version", "new tag");
 		
 		hibernateRegistryDao.getHibernateTemplate().flush();
 		
-		RegistryEntry foundEntry = hibernateRegistryDao.getRegistryEntryForUriAndVersion("uri", "version");
+		RegistryEntry foundEntry = hibernateRegistryDao.getRegistryEntryForUriAndVersion("uri2", "version");
 		
-		assertEquals(foundEntry.getTag(), "new tag");
+		assertEquals("new tag", foundEntry.getTag());
 	}
 }

@@ -34,7 +34,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	private static String INSERT_CODING_SCHEME_SQL = "insertCodingScheme";
 	private static String GET_CODING_SCHEME_BY_ID_SQL = "getCodingSchemeById";
 	private static String GET_CODING_SCHEME_ID_BY_NAME_AND_VERSION_SQL = "getCodingSchemeIdByNameAndVersion";
-	private static String GET_CODING_SCHEME_ID_BY_URI_AND_VERSION_SQL = "getCodingSchemeIdByNameAndVersion";
+	private static String GET_CODING_SCHEME_ID_BY_URI_AND_VERSION_SQL = "getCodingSchemeIdByUriAndVersion";
 	private static String GET_CODING_SCHEME_SOURCE_LIST_SQL = "getSourceListByCodingSchemeId";
 	private static String GET_CODING_SCHEME_LOCALNAME_LIST_SQL = "getLocalNameListByCodingSchemeId";
 	private static String INSERT_CODING_SCHEME_MULTIATTRIB_SQL = "insertCodingSchemeMultiAttrib";

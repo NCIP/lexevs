@@ -9,6 +9,8 @@ import org.lexevs.registry.service.Registry.ResourceType;
 public interface RegistryDao {
 	
 	public List<RegistryEntry> getAllRegistryEntriesOfType(ResourceType type);
+	
+	public List<RegistryEntry> getAllRegistryEntries();
 
 	public RegistryEntry getRegistryEntryForUriAndVersion(String uri, String version);
 	

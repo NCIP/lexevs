@@ -30,6 +30,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.constants.SystemVariables;
 
@@ -400,8 +401,8 @@ public class Logger implements LgLoggerIF {
 
     public void logMethod(Object[] params) {
         try {
-            if (ResourceManager.instance().getSystemVariables().isAPILoggingEnabled()
-                    || ResourceManager.instance().getSystemVariables().isDebugEnabled()) {
+            if (LexEvsServiceLocator.getInstance().getResourceManager().getSystemVariables().isAPILoggingEnabled()
+                    || LexEvsServiceLocator.getInstance().getResourceManager().getSystemVariables().isDebugEnabled()) {
                 StringBuffer temp = new StringBuffer();
                 if (params != null && params.length > 0) {
                     for (int i = 0; i < params.length; i++) {

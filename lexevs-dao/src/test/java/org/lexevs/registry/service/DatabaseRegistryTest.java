@@ -1,18 +1,15 @@
 package org.lexevs.registry.service;
 
-import static org.junit.Assert.assertEquals;
-
 import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.junit.Test;
-import org.lexevs.dao.test.LexEvsResourceTestBase;
+import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.model.RegistryEntry;
-import org.lexevs.registry.service.Registry.DBEntry;
 
 
-public class DatabaseRegistryTest extends LexEvsResourceTestBase {
+public class DatabaseRegistryTest extends LexEvsDbUnitTestBase {
 	
 	@Resource
 	DatabaseRegistry databaseRegistry;
@@ -39,9 +36,9 @@ public class DatabaseRegistryTest extends LexEvsResourceTestBase {
 		
 		databaseRegistry.activate(ref);
 		
-		DBEntry updatedEntry = databaseRegistry.getEntry(ref);
+		RegistryEntry updatedEntry = databaseRegistry.getEntry(ref);
 		
-		assertEquals(CodingSchemeVersionStatus.ACTIVE.toString(), updatedEntry.status);
+		assertEquals(CodingSchemeVersionStatus.ACTIVE.toString(), updatedEntry.getStatus());
 		
 	}
 

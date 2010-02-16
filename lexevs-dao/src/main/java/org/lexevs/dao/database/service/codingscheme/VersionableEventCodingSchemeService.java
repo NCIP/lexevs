@@ -24,8 +24,11 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	@Transactional
 	public void insertCodingScheme(CodingScheme scheme) {
 		this.fireCodingSchemeInsertEvent(scheme);
-		String codingSchemeId = this.getCodingSchemeId(
-				scheme.getCodingSchemeURI(), scheme.getRepresentsVersion());
+		
+		CodingSchemeDao codingSchemeDao = 
+			this.getDaoManager().getCodingSchemeDao(scheme.getCodingSchemeURI(), scheme.getRepresentsVersion());
+		
+		String codingSchemeId = codingSchemeDao.insertCodingScheme(scheme);
 		
 		if(scheme.getMappings() != null){
 			getDaoManager().getCodingSchemeDao(

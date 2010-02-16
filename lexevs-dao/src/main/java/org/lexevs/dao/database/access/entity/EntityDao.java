@@ -8,8 +8,6 @@ import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
 
 public interface EntityDao extends LexGridSchemaVersionAwareDao {
-
-	public String insertEntity(String codingSchemeName, String version, Entity entity);
 	
 	public void insertBatchEntities(String codingSchemeId, List<? extends Entity> entities);
 	

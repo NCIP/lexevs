@@ -21,6 +21,7 @@ package org.lexevs.dao.database.hibernate.prefix;
 import org.apache.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
 import org.lexevs.dao.database.constants.DatabaseConstants;
+import org.lexevs.dao.database.prefix.PrefixResolver;
 
 /**
  * Hibernate Interceptor used to modify the SQL query sent to the database.
@@ -39,41 +40,32 @@ public class PrefixInterceptor extends EmptyInterceptor {
 	private static Logger log = Logger.getLogger(PrefixInterceptor.class.getName());
 	
 	/** The prefix. */
-	private String prefix;
+	private PrefixResolver prefixResolver;
 	
 	public PrefixInterceptor(){
 		super();
 	}
 	
-	public PrefixInterceptor(String prefix){
-		this.prefix = prefix;
+	public PrefixInterceptor(PrefixResolver prefixResolver){
+		this.prefixResolver = prefixResolver;
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.hibernate.EmptyInterceptor#onPrepareStatement(java.lang.String)
 	 */
 	public String onPrepareStatement(String sql) { 	
-		log.debug("Adjusting table names to prefix: " + prefix);
-		sql = sql.replaceAll(PREFIX_PLACEHOLDER, prefix);
+		log.debug("Adjusting table names to prefix: " + prefixResolver.resolvePrefix());
+		sql = sql.replaceAll(PREFIX_PLACEHOLDER, prefixResolver.resolvePrefix());
 	
 		return sql;			
 	}
 
-	/**
-	 * Gets the prefix.
-	 * 
-	 * @return the prefix
-	 */
-	public String getPrefix() {
-		return prefix;
+
+	public void setPrefixResolver(PrefixResolver prefixResolver) {
+		this.prefixResolver = prefixResolver;
 	}
 
-	/**
-	 * Sets the prefix.
-	 * 
-	 * @param prefix the new prefix
-	 */
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
+	public PrefixResolver getPrefixResolver() {
+		return prefixResolver;
 	}
 }  

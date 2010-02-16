@@ -108,6 +108,17 @@
 			representsVersion = #param2#
      </select>
      
+     <select id="getCodingSchemeIdByUriAndVersion" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
+		SELECT
+			codingSchemeGuid
+		FROM
+			$prefix$codingScheme
+		WHERE
+			codingSchemeUri = #param1#
+		AND
+			representsVersion = #param2#
+     </select>
+     
      <select id="getEntryStateId" parameterClass="map" resultClass="string">
 		SELECT
 			entryStateId

@@ -81,7 +81,7 @@ public interface LexEvsDatabaseOperations {
 	
 	public SQLTableUtilities getSQLTableUtilities(String codingScheme, String version);
 	
-	public DatabaseUtility getDatabaseUtilities();
+	public DatabaseUtility getDatabaseUtility();
 }
 
 

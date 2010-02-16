@@ -39,15 +39,16 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	
 	@Before
 	public void setUp() throws Exception {
+
 		new SimpleJdbcTemplate(dataSource).getJdbcOperations().execute("DROP SCHEMA PUBLIC CASCADE");
-		lexEvsDatabaseOperations.getDatabaseUtilities().executeScript(new ClassPathResource(CREATE_COMMON_SCRIPT), prefixResolver.resolvePrefix());
-		lexEvsDatabaseOperations.getDatabaseUtilities().executeScript(new ClassPathResource(CREATE_CODINGSCHEME_SCRIPT), prefixResolver.resolvePrefix());
+		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_COMMON_SCRIPT), prefixResolver.resolvePrefix());
+		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_CODINGSCHEME_SCRIPT), prefixResolver.resolvePrefix());
 	}
 	
 	@After
 	public void tearDown() throws Exception {
 		super.tearDown();
-		//new SimpleJdbcTemplate(dataSource).getJdbcOperations().execute("SHUTDOWN");
+		new SimpleJdbcTemplate(dataSource).getJdbcOperations().execute("SHUTDOWN");
 	}
 	
 	@Override

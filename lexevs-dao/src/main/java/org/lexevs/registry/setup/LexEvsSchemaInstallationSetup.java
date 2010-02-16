@@ -1,7 +1,7 @@
 package org.lexevs.registry.setup;
 
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
-import org.lexevs.dao.database.utility.DatabaseUtility;
+import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.system.constants.SystemVariables;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
@@ -9,16 +9,20 @@ import org.springframework.core.io.Resource;
 public class LexEvsSchemaInstallationSetup  implements InitializingBean {
 	
 	private SystemVariables systemVariables;
+	private PrefixResolver prefixResolver;
 	private Resource registryCreateScript;
-	private DatabaseUtility databaseUtility;
+	private LexEvsDatabaseOperations lexEvsDatabaseOperations;
 	
 	private boolean isLexGridSchemaInstalled;
 
 	public void afterPropertiesSet() throws Exception {
-		String prefix = this.getSystemVariables().getAutoLoadDBPrefix();
+		String prefix = prefixResolver.resolvePrefix();
 		if(!isLexGridSchemaInstalled){
-				this.getDatabaseUtility().executeScript(
+				this.getLexEvsDatabaseOperations().getDatabaseUtility().executeScript(
 						registryCreateScript, prefix);
+				if(this.systemVariables.isSingleTableMode()){
+					lexEvsDatabaseOperations.createTables(prefix);
+				}
 		}	
 	}
 
@@ -38,12 +42,13 @@ public class LexEvsSchemaInstallationSetup  implements InitializingBean {
 		this.systemVariables = systemVariables;
 	}
 
-	public DatabaseUtility getDatabaseUtility() {
-		return databaseUtility;
+	public LexEvsDatabaseOperations getLexEvsDatabaseOperations() {
+		return lexEvsDatabaseOperations;
 	}
 
-	public void setDatabaseUtility(DatabaseUtility databaseUtility) {
-		this.databaseUtility = databaseUtility;
+	public void setLexEvsDatabaseOperations(
+			LexEvsDatabaseOperations lexEvsDatabaseOperations) {
+		this.lexEvsDatabaseOperations = lexEvsDatabaseOperations;
 	}
 
 	public Resource getRegistryCreateScript() {
@@ -52,5 +57,13 @@ public class LexEvsSchemaInstallationSetup  implements InitializingBean {
 
 	public void setRegistryCreateScript(Resource registryCreateScript) {
 		this.registryCreateScript = registryCreateScript;
+	}
+
+	public void setPrefixResolver(PrefixResolver prefixResolver) {
+		this.prefixResolver = prefixResolver;
+	}
+
+	public PrefixResolver getPrefixResolver() {
+		return prefixResolver;
 	}
 }

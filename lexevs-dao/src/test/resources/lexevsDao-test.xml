@@ -12,12 +12,12 @@
 <!--    	<property name="password" value="satya"/>-->
 <!--    </bean>-->
 
-<!--    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">-->
-<!--    	<property name="driverClassName" value="org.hsqldb.jdbcDriver"/>-->
-<!--    	<property name="url" value="jdbc:hsqldb:mem:."/>-->
-<!--    	<property name="username" value="sa"/>-->
-<!--    	<property name="password" value=""/>-->
-<!--    </bean>-->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">
+    	<property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+    	<property name="url" value="jdbc:hsqldb:mem:."/>
+    	<property name="username" value="sa"/>
+    	<property name="password" value=""/>
+    </bean>
     
 <!--    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">-->
 <!--    	<property name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
@@ -42,5 +42,9 @@
 	
 	<bean id="lexGridSchemaVersionFactory" class="org.lexevs.dao.test.StaticDbVersionFactory">
 		<property name="version" value="2.0"/>
+	</bean>
+	
+	<bean id="defaultPrefixResolver" class="org.lexevs.dao.test.StaticPrefixResolver">
+		<property name="prefix" value=""/>
 	</bean>
 </beans>

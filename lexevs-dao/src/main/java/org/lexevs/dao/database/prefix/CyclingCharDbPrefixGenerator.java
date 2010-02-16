@@ -13,7 +13,7 @@ public class CyclingCharDbPrefixGenerator implements InitializingBean, NextDatab
 	
 	private String testDatabaseName = "lexGridTableMetaData";
 	
-	private String prefix;
+	private PrefixResolver prefixResolver;
 	
 	public static char[] ALPHABET = new char[]{
 		'A','B','C','D','E','F',
@@ -59,7 +59,7 @@ public class CyclingCharDbPrefixGenerator implements InitializingBean, NextDatab
 	}
 	
 	protected char[] findNextInCycle(char[] chars){
-		if(this.databaseUtility.doesTableExist(prefix + new String(chars).toLowerCase() + this.testDatabaseName)){
+		if(this.databaseUtility.doesTableExist(prefixResolver.resolvePrefix() + new String(chars).toLowerCase() + this.testDatabaseName)){
 			return findNextInCycle(incrementByOne(chars));
 		} else {
 			return chars;
@@ -118,13 +118,11 @@ public class CyclingCharDbPrefixGenerator implements InitializingBean, NextDatab
 		this.testDatabaseName = testDatabaseName;
 	}
 
-	public String getPrefix() {
-		return prefix;
+	public PrefixResolver getPrefixResolver() {
+		return prefixResolver;
 	}
 
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
+	public void setPrefixResolver(PrefixResolver prefixResolver) {
+		this.prefixResolver = prefixResolver;
 	}
-
-	
 }

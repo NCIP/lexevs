@@ -18,7 +18,6 @@
  */
 package org.lexevs.logging;
 
-import org.lexevs.system.ResourceManager;
 
 
 /**
@@ -28,13 +27,7 @@ import org.lexevs.system.ResourceManager;
  */
 public class LoggerFactory {
 
-    private static boolean lightweight = false;
-
     private static LgLoggerIF logger;
-
-    public static void setLightweight(boolean lightweight) {
-        LoggerFactory.lightweight = lightweight;
-    }
 
     /**
      * Returns a lightweight logger if lightweight is true, otherwise returns
@@ -44,13 +37,10 @@ public class LoggerFactory {
      */
     public static LgLoggerIF getLogger() {
 
-        if (lightweight) {
             if (logger == null) {
-                logger = new SimpleLogger();
+                logger = new Logger();
             }
-            return logger;
-        } else {
-            return ResourceManager.instance().getLogger();
-        }
+            
+            return logger;    
     }
 }

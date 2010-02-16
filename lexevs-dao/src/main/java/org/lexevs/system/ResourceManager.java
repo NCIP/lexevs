@@ -29,6 +29,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -49,15 +50,17 @@ import org.lexevs.dao.database.connection.SQLHistoryInterface;
 import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.dao.database.connection.SQLInterfaceBase;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
+import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.dao.index.connection.IndexInterface;
 import org.lexevs.exceptions.InitializationException;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.logging.Logger;
 import org.lexevs.registry.WriteLockManager;
+import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.DBEntry;
-import org.lexevs.registry.service.Registry.HistoryEntry;
+import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.registry.service.XmlRegistry.KnownTags;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
@@ -73,6 +76,8 @@ import org.lexevs.system.model.LocalCodingScheme;
  */
 public class ResourceManager {
 	private LexEvsDatabaseOperations lexEvsDatabaseOperations;
+	
+	private DatabaseType databaseType;
 	 
 	private ClassLoader classLoader;
     private static ResourceManager resourceManager_;
@@ -129,16 +134,10 @@ public class ResourceManager {
     // This thread handles future deactivations
     private Thread deactivatorThread_;
     private FutureDeactivatorThread fdt_;
-    
-    private static ResourceManagerFactory resourceManagerFactory = new DefaultResourceManagerFactory();
-
+   
     // Properties object that I was launched with (need to keep incase reinit is
     // called)
     private static Properties props_;
-
-    public static synchronized ResourceManager instance() {
-        return resourceManagerFactory.getResourceManager();
-    }
 
     /**
      * This method is used by the lock manager thread, if another thread changed
@@ -212,15 +211,9 @@ public class ResourceManager {
         // systems.
         // initialize the SQL connections to each server.
 
-        DBEntry[] entries = registry_.getDBEntries();
-        for (int i = 0; i < entries.length; i++) {
-            SQLConnectionInfo temp = new SQLConnectionInfo();
-            temp.driver = systemVars_.getAutoLoadDBDriver();
-            temp.password = systemVars_.getAutoLoadDBPassword();
-            temp.server = entries[i].dbURL;
-            temp.prefix = entries[i].prefix;
-            temp.username = systemVars_.getAutoLoadDBUsername();
-            readTerminologiesFromServer(temp);
+        List<RegistryEntry> entries = registry_.getAllRegistryEntries();
+        for (RegistryEntry entry : entries) {
+            readTerminologiesFromServer(entry);
         }
 
         logger_.debug("Reading available terminologies from SQL servers.");
@@ -231,7 +224,8 @@ public class ResourceManager {
         Enumeration<SQLConnectionInfo> e = servers.elements();
         while (e.hasMoreElements()) {
             SQLConnectionInfo server = e.nextElement();
-            readTerminologiesFromServer(server);
+            //TODO:
+            //readTerminologiesFromServer(server);
         }
 
         logger_.debug("Reading available terminologies from the lucene index locations");
@@ -284,13 +278,16 @@ public class ResourceManager {
     public void readHistories() {
         Hashtable<String, SQLHistoryInterface> temp = new Hashtable<String, SQLHistoryInterface>();
         logger_.debug("Initializing available history services");
-        HistoryEntry[] histories = registry_.getHistoryEntries();
-        for (int i = 0; i < histories.length; i++) {
+        List<RegistryEntry> histories = registry_.getAllRegistryEntriesOfType(ResourceType.NCI_HISTORY);
+        
+        for (int i = 0; i < histories.size(); i++) {
             try {
 
-                temp.put(histories[i].urn, new SQLHistoryInterface(getSQLInterfaceBase(systemVars_
-                        .getAutoLoadDBUsername(), systemVars_.getAutoLoadDBPassword(), histories[i].dbURL, systemVars_
-                        .getAutoLoadDBDriver()), histories[i].prefix));
+                temp.put(histories.get(i).getResourceUri(), new SQLHistoryInterface(getSQLInterfaceBase(systemVars_
+                        .getAutoLoadDBUsername(), systemVars_.getAutoLoadDBPassword(), 
+                        histories.get(i).getDbUri(), systemVars_
+                        .getAutoLoadDBDriver()), 
+                        histories.get(i).getPrefix()));
             } catch (InitializationException e) {
                 logger_.error("Skipping an invalid History configuration due to previous errors.", e);
             }
@@ -325,12 +322,14 @@ public class ResourceManager {
         codingSchemeLocalNamesToInternalNameMap_.put(alias, temp);
     }
 
-    public AbsoluteCodingSchemeVersionReference[] readTerminologiesFromServer(SQLConnectionInfo server) {
+    public AbsoluteCodingSchemeVersionReference[] readTerminologiesFromServer(RegistryEntry entry) {
         PreparedStatement getCodingSchemes = null;
         PreparedStatement getLocalNames = null;
         PreparedStatement getSupportedCodingSchemes = null;
         LocalCodingScheme lcs = null;
-
+        
+        return null;
+/*
         ArrayList<AbsoluteCodingSchemeVersionReference> foundSchemes = new ArrayList<AbsoluteCodingSchemeVersionReference>();
 
         try {
@@ -446,6 +445,7 @@ public class ResourceManager {
         }
 
         return foundSchemes.toArray(new AbsoluteCodingSchemeVersionReference[foundSchemes.size()]);
+        */
     }
 
     public SystemVariables getSystemVariables() {
@@ -466,13 +466,13 @@ public class ResourceManager {
      */
     public SQLConnectionInfo getSQLConnectionInfoForLoad() throws LBInvocationException {
         try {
-            String id = ResourceManager.instance().getRegistry().getNextDBIdentifier();
+            String id = getRegistry().getNextDBIdentifier();
 
             String server = systemVars_.getAutoLoadDBURL();
 
-            boolean singleDBMode = ResourceManager.instance().getSystemVariables().getAutoLoadSingleDBMode();
+            boolean singleDBMode = getSystemVariables().getAutoLoadSingleDBMode();
 
-            if(!singleDBMode && !ResourceManager.instance().getSystemVariables().getOverrideSingleDbMode()){
+            if(!singleDBMode && !getSystemVariables().getOverrideSingleDbMode()){
                 String errorMessage = "Multi-database Mode has been Deprecated." +
                         " Existing content loaded in Multi-database Mode may still be accessed, " +
                 "but any new content must be loaded in Single-database Mode.";
@@ -514,7 +514,7 @@ public class ResourceManager {
                         throw new LBInvocationException("Unable to find a blank prefix to use to create tables", errId);
                     } else {
                         // not blank.. need to get a new location.
-                        id = ResourceManager.instance().getRegistry().getNextDBIdentifier();
+                        id = getRegistry().getNextDBIdentifier();
                     }
                 }
             }
@@ -543,10 +543,10 @@ public class ResourceManager {
      */
     public SQLConnectionInfo getSQLConnectionInfoForHistoryLoad() throws LBInvocationException {
         try {
-            String id = ResourceManager.instance().getRegistry().getNextHistoryIdentifier();
+            String id = getRegistry().getNextHistoryIdentifier();
 
             String server = systemVars_.getAutoLoadDBURL();
-            boolean singleDBMode = ResourceManager.instance().getSystemVariables().getAutoLoadSingleDBMode();
+            boolean singleDBMode = getSystemVariables().getAutoLoadSingleDBMode();
 
             String dbName = "";
             String prefix = "";
@@ -580,7 +580,7 @@ public class ResourceManager {
                         throw new LBInvocationException("Unable to find a blank prefix to use to create tables", errId);
                     } else {
                         // not blank.. need to get a new location.
-                        id = ResourceManager.instance().getRegistry().getNextHistoryIdentifier();
+                        id = getRegistry().getNextHistoryIdentifier();
                     }
                 }
 
@@ -882,7 +882,7 @@ public class ResourceManager {
                 codingSchemeToServerMap_.remove(lcsKey);
                 codingSchemeToIndexMap_.remove(lcsKey);
 
-                boolean singleDBMode = ResourceManager.instance().getSystemVariables().getAutoLoadSingleDBMode();
+                boolean singleDBMode = getSystemVariables().getAutoLoadSingleDBMode();
 
                 // close down the sql statements, remove it from them server
                 // map.
@@ -904,14 +904,14 @@ public class ResourceManager {
                     sqlServerBaseInterfaces_.remove(connectionKey);
                 }
 
-                String dbName = registry_.getEntry(codingSchemeReference).dbName;
+                String dbName = registry_.getEntry(codingSchemeReference).getDbName();
                 
                 //This is for backwards compatiblity. Since multi-db mode is now deprecated,
                 //this enables us to still drop a database that has been previously loaded.
                 //We detect a multi-db load by detecting if the 'dbName' is not blank in the
                 //registry. We then reconstruct the jdbc url from the registry.
                 if (!singleDBMode || StringUtils.isNotBlank(dbName)){   
-                    String url = registry_.getEntry(codingSchemeReference).dbURL;
+                    String url = registry_.getEntry(codingSchemeReference).getDbUri();
                     url = this.constructJdbcUrlForDeprecatedMultiDbMode(url, dbName);
                     DBUtility.dropDatabase(url, systemVars_.getAutoLoadDBDriver(), dbName,
                             systemVars_.getAutoLoadDBUsername(), systemVars_.getAutoLoadDBPassword());
@@ -998,7 +998,7 @@ public class ResourceManager {
             // remove it from the map.
             historySqlServerInterfaces_.remove(urn);
 
-            boolean singleDBMode = ResourceManager.instance().getSystemVariables().getAutoLoadSingleDBMode();
+            boolean singleDBMode = getSystemVariables().getAutoLoadSingleDBMode();
 
             // drop the tables if we are in single db mode.
             if (singleDBMode) {
@@ -1040,7 +1040,7 @@ public class ResourceManager {
     public void deactivate(AbsoluteCodingSchemeVersionReference codingScheme, Date date) throws LBInvocationException,
             LBParameterException {
         Registry r = getRegistry();
-        DBEntry entry = r.getEntry(codingScheme);
+        RegistryEntry entry = r.getEntry(codingScheme);
         if (entry == null) {
             throw new LBParameterException("The specified coding scheme is not registered");
         }
@@ -1057,7 +1057,7 @@ public class ResourceManager {
     public void setPendingStatus(AbsoluteCodingSchemeVersionReference codingScheme) throws LBInvocationException,
             LBParameterException {
         Registry r = getRegistry();
-        DBEntry entry = r.getEntry(codingScheme);
+        RegistryEntry entry = r.getEntry(codingScheme);
         if (entry == null) {
             throw new LBParameterException("The specified coding scheme is not registered");
         }
@@ -1107,24 +1107,24 @@ public class ResourceManager {
                     long timeOfNextClosestDeactivation = 0;
                     // see if anything needs to be deactivated.
 
-                    DBEntry[] entries = getRegistry().getDBEntries();
-                    for (int i = 0; i < entries.length; i++) {
-                        if (entries[i].deactiveDate > 0 && entries[i].deactiveDate <= currentTime
-                                && entries[i].status.equals(CodingSchemeVersionStatus.ACTIVE.toString())) {
+                    List<RegistryEntry> entries = getRegistry().getAllRegistryEntries();
+                    for (RegistryEntry entry : entries) {
+                        if (entry.getDeactivationDate().getTime() > 0 && entry.getDeactivationDate().getTime() <= currentTime
+                                && entry.getStatus().equals(CodingSchemeVersionStatus.ACTIVE.toString())) {
                             getLogger().info(
-                                    "Deactivating coding scheme (according to schedule) " + entries[i].urn + " : "
-                                            + entries[i].version);
-                            getRegistry().deactivate(entries[i]);
+                                    "Deactivating coding scheme (according to schedule) " + entry.getResourceUri()+ " : "
+                                            + entry.getResourceVersion());
+                            getRegistry().deactivate(entry);
                         }
                         // if it is marked for deactivation, and its active, and
                         // its deactivation time is
                         // sooner than the next deactivation time, set the time.
-                        else if (entries[i].deactiveDate > 0
-                                && entries[i].status.equals(CodingSchemeVersionStatus.ACTIVE.toString())
-                                && (entries[i].deactiveDate < timeOfNextClosestDeactivation || timeOfNextClosestDeactivation == 0))
+                        else if (entry.getDeactivationDate().getTime() > 0
+                                && entry.getStatus().equals(CodingSchemeVersionStatus.ACTIVE.toString())
+                                && (entry.getDeactivationDate().getTime() < timeOfNextClosestDeactivation || timeOfNextClosestDeactivation == 0))
 
                         {
-                            timeOfNextClosestDeactivation = entries[i].deactiveDate;
+                            timeOfNextClosestDeactivation = entry.getDeactivationDate().getTime();
                         }
                     }
 
@@ -1207,5 +1207,13 @@ public class ResourceManager {
 
 	public ClassLoader getClassLoader() {
 		return classLoader;
+	}
+
+	public void setDatabaseType(DatabaseType databaseType) {
+		this.databaseType = databaseType;
+	}
+
+	public DatabaseType getDatabaseType() {
+		return databaseType;
 	}
 }

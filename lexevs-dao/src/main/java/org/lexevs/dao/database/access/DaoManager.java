@@ -5,13 +5,14 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
-import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
-import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.system.ResourceManager;
 
 public class DaoManager {
 
@@ -23,7 +24,7 @@ public class DaoManager {
 	
 	private List<VersionsDao> versionsDaos;
 	
-	private RegistryDao registryDao;
+	private ResourceManager resourceManager;
 	
 	public VersionsDao getVersionsDao(String codingSchemeUri, String version){
 		return this.doGetDao(codingSchemeUri, version, this.getVersionsDaos());
@@ -47,8 +48,15 @@ public class DaoManager {
 	}
 	
 	protected LexGridSchemaVersion getLexGridSchemaVersion(String uri, String version){
-		RegistryEntry entry = registryDao.getRegistryEntryForUriAndVersion(uri, version);
-		return LexGridSchemaVersion.parseStringToVersion(entry.getDbSchemaVersion());
+		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+		ref.setCodingSchemeURN(uri);
+		ref.setCodingSchemeVersion(version);
+		
+		try {
+			return resourceManager.getRegistry().getSupportedLexGridSchemaVersion(ref);
+		} catch (LBInvocationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	protected <T extends LexGridSchemaVersionAwareDao> T getCorrectDaoForSchemaVersion(List<T> possibleDaos, LexGridSchemaVersion schemaVersion) {
@@ -101,11 +109,12 @@ public class DaoManager {
 		this.versionsDaos = versionsDaos;
 	}
 
-	public RegistryDao getRegistryDao() {
-		return registryDao;
+	public ResourceManager getResourceManager() {
+		return resourceManager;
 	}
 
-	public void setRegistryDao(RegistryDao registryDao) {
-		this.registryDao = registryDao;
+	public void setResourceManager(ResourceManager resourceManager) {
+		this.resourceManager = resourceManager;
 	}
+
 }

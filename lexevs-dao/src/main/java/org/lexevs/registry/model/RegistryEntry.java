@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.lexevs.dao.database.constants.DatabaseConstants;
 import org.lexevs.registry.service.Registry.DBEntry;
+import org.lexevs.registry.service.Registry.HistoryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
 
 @Entity
@@ -214,5 +215,31 @@ public class RegistryEntry {
 		dbEntry.status = registryEntry.getStatus();
 		
 		return dbEntry;
+	}
+	
+	public static RegistryEntry toRegistryEntry(DBEntry dbEntry){
+		RegistryEntry entry = new RegistryEntry();
+		entry.setDbName(dbEntry.dbName);
+		entry.setDbUri(dbEntry.dbURL);
+		entry.setDeactivationDate(new Timestamp(dbEntry.deactiveDate));
+		entry.setLastUpdateDate(new Timestamp(dbEntry.lastUpdateDate));
+		entry.setPrefix(dbEntry.prefix);
+		entry.setStatus(dbEntry.status);
+		entry.setTag(dbEntry.tag);
+		entry.setResourceUri(dbEntry.urn);
+		entry.setResourceVersion(dbEntry.version);
+		
+		return entry;
+	}
+	
+	public static RegistryEntry toRegistryEntry(HistoryEntry historyEntry){
+		RegistryEntry entry = new RegistryEntry();
+		entry.setDbName(historyEntry.dbName);
+		entry.setDbUri(historyEntry.dbURL);
+		entry.setLastUpdateDate(new Timestamp(historyEntry.lastUpdateDate));
+		entry.setPrefix(historyEntry.prefix);
+		entry.setResourceUri(historyEntry.urn);
+		
+		return entry;
 	}
 }

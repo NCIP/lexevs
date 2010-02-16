@@ -28,7 +28,6 @@ public class CompassEntityDaoTest extends LexEvsDaoTestBase {
 	
 
 	@Test
-	@Ignore
 	public void searchForEntity(){
 
 		Entity entity = new Entity();

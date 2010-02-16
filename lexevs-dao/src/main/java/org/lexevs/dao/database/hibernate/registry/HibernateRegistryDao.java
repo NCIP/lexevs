@@ -90,7 +90,12 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 	}
 
 	public List<RegistryEntry> getAllRegistryEntriesOfType(ResourceType type) {
-		// TODO Auto-generated method stub
-		return null;
+		RegistryEntry entry = new RegistryEntry();
+		entry.setResourceType(type);
+		return this.getHibernateTemplate().findByExample(entry);
+	}
+	
+	public List<RegistryEntry> getAllRegistryEntries() {
+		return this.getHibernateTemplate().findByExample(new RegistryEntry());
 	}
 }

@@ -40,6 +40,8 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	
 	private DatabaseUtility databaseUtility;
 	private Resource lexevsSchemaCreateScript;
+	private ResourceManager resourceManager;
+	
 	
 	/* (non-Javadoc)
 	 * @see org.LexGrid.persistence.connection.PersistenceConnectionManager#getExistingConnectionInfo(java.lang.String, java.lang.String)
@@ -73,7 +75,7 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	protected SQLConnectionInfo getConnectionInfo(String codingScheme, String version){
 		AbsoluteCodingSchemeVersionReference acvr = 
 			this.buildAbsoluteCodingSchemeVersionReference(codingScheme, version);
-		return ResourceManager.instance().getRegistry().getSQLConnectionInfoForCodeSystem(acvr);
+		return resourceManager.getRegistry().getSQLConnectionInfoForCodeSystem(acvr);
 	}
 
 	/**
@@ -142,7 +144,7 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	 */
 	public SQLConnectionInfo getNewConnectionInfoForLoad(boolean indexTables){
 		try {			
-			SQLConnectionInfo connection = ResourceManager.instance().getSQLConnectionInfoForLoad();
+			SQLConnectionInfo connection = resourceManager.getSQLConnectionInfoForLoad();
 			//this.createTables(connection, indexTables);
 			return connection;
 		} catch (LBInvocationException e) {
@@ -201,14 +203,7 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		}
 	}
 
-	public void setDatabaseUtility(DatabaseUtility databaseUtility) {
-		this.databaseUtility = databaseUtility;
-	}
-
-	public DatabaseUtility getDatabaseUtility() {
-		return databaseUtility;
-	}
-
+	
 	public void setLexevsSchemaCreateScript(Resource lexevsSchemaCreateScript) {
 		this.lexevsSchemaCreateScript = lexevsSchemaCreateScript;
 	}
@@ -217,9 +212,21 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		return lexevsSchemaCreateScript;
 	}
 
-	public DatabaseUtility getDatabaseUtilities() {
-		return this.databaseUtility;
+
+	public void setResourceManager(ResourceManager resourceManager) {
+		this.resourceManager = resourceManager;
 	}
-	
+
+	public ResourceManager getResourceManager() {
+		return resourceManager;
+	}
+
+	public DatabaseUtility getDatabaseUtility() {
+		return databaseUtility;
+	}
+
+	public void setDatabaseUtility(DatabaseUtility databaseUtility) {
+		this.databaseUtility = databaseUtility;
+	}
 	
 }

@@ -31,6 +31,7 @@ import org.LexGrid.managedobj.jdbc.JDBCConnectionPoolPolicy;
 import org.LexGrid.util.sql.GenericSQLModifier;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.apache.commons.pool.impl.GenericObjectPool;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.ResourceManager;
@@ -72,7 +73,7 @@ public class SQLInterfaceBase extends JDBCBaseService {
 
             // Connection pool parameters
             JDBCConnectionPoolPolicy pol = getConnectionPoolPolicy();
-            pol.maxActive = ResourceManager.instance().getSystemVariables().getMaxConnectionsPerDB();
+            pol.maxActive = LexEvsServiceLocator.getInstance().getResourceManager().getSystemVariables().getMaxConnectionsPerDB();
             pol.maxIdle = -1;
             pol.maxWait = -1;
             pol.minEvictableIdleTimeMillis = -1;

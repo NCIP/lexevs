@@ -2,13 +2,16 @@ package org.lexevs.registry.service;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.exceptions.InternalException;
+import org.lexevs.registry.model.RegistryEntry;
 
 public interface Registry {
 	
@@ -35,10 +38,10 @@ public interface Registry {
 
 	public Date getLastUpdateDate(String codingSchemeURN, String version);
 
-	public void deactivate(DBEntry entry) throws LBInvocationException,
+	public void deactivate(RegistryEntry entry) throws LBInvocationException,
 			LBParameterException;
 
-	public void setStatusPending(DBEntry entry) throws LBInvocationException,
+	public void setStatusPending(RegistryEntry entry) throws LBInvocationException,
 			LBParameterException;
 
 	public void activate(AbsoluteCodingSchemeVersionReference codingScheme)
@@ -51,25 +54,20 @@ public interface Registry {
 			AbsoluteCodingSchemeVersionReference codingScheme, String newVersion)
 			throws LBInvocationException, LBParameterException;
 
-	public DBEntry getEntry(String codingSchemeURN, String version)
+	public RegistryEntry getEntry(String codingSchemeURN, String version)
 			throws LBParameterException;
 
-	public DBEntry getEntry(AbsoluteCodingSchemeVersionReference codingScheme)
+	public RegistryEntry getEntry(AbsoluteCodingSchemeVersionReference codingScheme)
 			throws LBParameterException;
 
-	public void addNewItem(String urn, String version, String status,
-			String dbURL, String tag, String dbName, String tablePrefix)
+	public void addNewItem(RegistryEntry entry)
 			throws Exception;
-
-
-	public HistoryEntry addNewHistory(String urn, String dbURL, String dbName,
-			String tablePrefix) throws Exception;
 
 	public String getVersionForTag(String urn, String tag);
 
-	public DBEntry[] getDBEntries();
-
-	public HistoryEntry[] getHistoryEntries();
+	public List<RegistryEntry> getAllRegistryEntries();
+	
+	public List<RegistryEntry> getAllRegistryEntriesOfType(ResourceType type);
 
 	public Date getLastUpdateTime();
 
@@ -85,6 +83,8 @@ public interface Registry {
 	public String getNextDBIdentifier() throws LBInvocationException;
 
 	public String getNextHistoryIdentifier() throws LBInvocationException;
+	
+	public LexGridSchemaVersion getSupportedLexGridSchemaVersion(AbsoluteCodingSchemeVersionReference ref) throws LBInvocationException;
 
 	public void updateURNVersion(
 			AbsoluteCodingSchemeVersionReference oldURNVerison,

@@ -6,6 +6,14 @@ public class StaticPrefixResolver implements PrefixResolver {
 
 	private String prefix = "";
 	
+	public StaticPrefixResolver(){
+		super();
+	}
+	
+	public StaticPrefixResolver(String prefix){
+		this.prefix = prefix;
+	}
+	
 	public String resolvePrefix() {
 		return prefix;
 	}

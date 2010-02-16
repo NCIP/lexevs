@@ -2,6 +2,7 @@ package org.lexevs.registry.xmltransfer;
 
 import java.io.File;
 
+import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.XmlRegistry;
 import org.lexevs.registry.service.Registry.DBEntry;
@@ -13,35 +14,23 @@ import org.springframework.beans.factory.InitializingBean;
 public class RegistryXmlToDatabaseTransfer implements InitializingBean {
 	
 	private SystemVariables systemVariables;
+	private Registry registry;
 
 	public void afterPropertiesSet() throws Exception {
-		Registry datbaseRegistry = ResourceManager.instance().getRegistry();
 	
-		File registryXml = new File(ResourceManager.instance().getSystemVariables().getAutoLoadRegistryPath());
+		File registryXml = new File(systemVariables.getAutoLoadRegistryPath());
 		
 		if(registryXml.exists()){
-			int dbEntries = ResourceManager.instance().getRegistry().getDBEntries().length;
-			int historyEntries = ResourceManager.instance().getRegistry().getHistoryEntries().length;
+			int dbEntries = registry.getAllRegistryEntries().size();
 			
-			if(dbEntries == 0 && historyEntries == 0){
+			if(dbEntries == 0){
 				XmlRegistry xmlRegistry = new XmlRegistry(registryXml.getAbsolutePath());
 				for(DBEntry dbEntry : xmlRegistry.getDBEntries()){
-					datbaseRegistry.addNewItem(
-							dbEntry.urn, 
-							dbEntry.version, 
-							dbEntry.status, 
-							dbEntry.dbURL, 
-							dbEntry.tag, 
-							dbEntry.dbName, 
-							dbEntry.prefix);
+					registry.addNewItem(RegistryEntry.toRegistryEntry(dbEntry));
 				}	
 				
 				for(HistoryEntry dbEntry : xmlRegistry.getHistoryEntries()){
-					datbaseRegistry.addNewHistory(
-							dbEntry.urn, 
-							dbEntry.dbURL, 
-							dbEntry.dbName, 
-							dbEntry.prefix);
+					registry.addNewItem(RegistryEntry.toRegistryEntry(dbEntry));
 				}	
 			}
 		}	
@@ -58,6 +47,14 @@ public class RegistryXmlToDatabaseTransfer implements InitializingBean {
 
 	public void setSystemVariables(SystemVariables systemVariables) {
 		this.systemVariables = systemVariables;
+	}
+
+	public void setRegistry(Registry registry) {
+		this.registry = registry;
+	}
+
+	public Registry getRegistry() {
+		return registry;
 	}
 	
 	
