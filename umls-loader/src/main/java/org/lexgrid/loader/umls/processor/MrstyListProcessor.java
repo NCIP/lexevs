@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.commonTypes.Property;
-import org.LexGrid.persistence.model.EntityProperty;
 import org.lexgrid.loader.data.DataUtils;
 import org.lexgrid.loader.data.property.ParameterizedListIdSetter;
 import org.lexgrid.loader.processor.AbstractParameterPassingDoubleListProcessor;
@@ -44,7 +43,7 @@ public class MrstyListProcessor extends AbstractParameterPassingDoubleListProces
 	private String sab;
 	
 	/** The parameterizedlist id setter. */
-	private ParameterizedListIdSetter<EntityProperty> parameterizedlistIdSetter;
+	private ParameterizedListIdSetter<Property> parameterizedlistIdSetter;
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.AbstractParameterPassingListProcessor#beforeProcessing(java.util.List)
@@ -66,17 +65,17 @@ public class MrstyListProcessor extends AbstractParameterPassingDoubleListProces
 
 		for(String code : codes){
 			for(ParentIdHolder<Property> prop : processedItems){
-				ParentIdHolder<Property> clonedProp = null;
+				Property clonedProp = null;
 				try {
-					clonedProp = DataUtils.deepCloneEntityProperty(prop);
+					prop.setItem(DataUtils.deepCloneProperty(prop.getItem()));
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
-				clonedProp.getId().setEntityCode(code);
-				buffer.add(clonedProp);
+				
+				buffer.add(prop);
 			}
 		}
-		parameterizedlistIdSetter.addIds(buffer, getGroupCui(originalItems));
+		//parameterizedlistIdSetter.addIds(buffer, getGroupCui(originalItems));
 		return buffer;
 	}
 	
@@ -127,24 +126,5 @@ public class MrstyListProcessor extends AbstractParameterPassingDoubleListProces
 	 */
 	public void setSab(String sab) {
 		this.sab = sab;
-	}
-
-	/**
-	 * Gets the parameterizedlist id setter.
-	 * 
-	 * @return the parameterizedlist id setter
-	 */
-	public ParameterizedListIdSetter<EntityProperty> getParameterizedlistIdSetter() {
-		return parameterizedlistIdSetter;
-	}
-
-	/**
-	 * Sets the parameterizedlist id setter.
-	 * 
-	 * @param parameterizedlistIdSetter the new parameterizedlist id setter
-	 */
-	public void setParameterizedlistIdSetter(
-			ParameterizedListIdSetter<EntityProperty> parameterizedlistIdSetter) {
-		this.parameterizedlistIdSetter = parameterizedlistIdSetter;
 	}
 }

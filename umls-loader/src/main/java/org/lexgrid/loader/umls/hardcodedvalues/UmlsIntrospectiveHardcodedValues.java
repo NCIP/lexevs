@@ -19,14 +19,8 @@
 package org.lexgrid.loader.umls.hardcodedvalues;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.LexGrid.persistence.dao.LexEvsDao;
-import org.LexGrid.persistence.model.CodingScheme;
-import org.LexGrid.persistence.model.CodingSchemeMultiAttrib;
-import org.LexGrid.persistence.model.CodingSchemeMultiAttribId;
-import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.hardcodedvalues.AbstractIntrospectiveHardcodedValues;
 
 /**
@@ -40,7 +34,8 @@ public class UmlsIntrospectiveHardcodedValues extends AbstractIntrospectiveHardc
 	 * @see org.lexgrid.loader.hardcodedvalues.AbstractIntrospectiveHardcodedValues#loadObjects()
 	 */
 	@Override
-	public List<Object> loadObjects() {
+	public void loadObjects() {
+		/*
 		List<Object> hardcodedValues = new ArrayList<Object>();
 		
 		LexEvsDao lexEvsDao = this.getLexEvsDao();
@@ -69,24 +64,7 @@ public class UmlsIntrospectiveHardcodedValues extends AbstractIntrospectiveHardc
 		source.getId().setAttributeValue("UMLS - " + codingScheme.getRepresentsVersion());
 		hardcodedValues.add(source);	
 		
-		
-		
-		return hardcodedValues;	
-	}
-	
-
-	/**
-	 * Builds the local name coding scheme multi attrib.
-	 * 
-	 * @param type the type
-	 * 
-	 * @return the coding scheme multi attrib
-	 */
-	private CodingSchemeMultiAttrib buildLocalNameCodingSchemeMultiAttrib(String type){
-		CodingSchemeMultiAttrib multiAttri = new CodingSchemeMultiAttrib(new CodingSchemeMultiAttribId());
-		multiAttri.getId().setCodingSchemeName(getCodingSchemeNameSetter().getCodingSchemeId());
-		multiAttri.getId().setTypeName(type);
-		return multiAttri;
+		*/
 	}
 
 }

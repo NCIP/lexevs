@@ -50,7 +50,7 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 	 * @see org.lexgrid.loader.umls.UmlsBatchLoader#loadUmls(java.lang.String, java.lang.String)
 	 */
 	public void loadUmls(URI rrfDir, String sab) throws Exception {
-		Properties connectionProps = connectionPropertiesFactory.getPropertiesForNewLoad(true);	
+		Properties connectionProps = connectionPropertiesFactory.getPropertiesForNewLoad();	
 		connectionProps.put("sab", sab);
 		connectionProps.put("rrfDir", rrfDir.toString());
 		connectionProps.put("retry", "false");

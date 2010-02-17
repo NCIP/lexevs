@@ -18,18 +18,11 @@
  */
 package org.lexgrid.loader.umls.hardcodedvalues;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.persistence.dao.LexEvsDao;
-import org.LexGrid.persistence.model.CodingScheme;
-import org.LexGrid.persistence.model.CodingSchemeMultiAttrib;
-import org.LexGrid.persistence.model.CodingSchemeMultiAttribId;
-import org.LexGrid.persistence.model.Relation;
-import org.LexGrid.persistence.model.RelationId;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.hardcodedvalues.AbstractHardcodedValuesFactory;
-import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
-import org.lexgrid.loader.umls.constants.UmlsConstants;
 
 /**
  * A factory for creating UmlsHardcodedValues objects.
@@ -44,7 +37,8 @@ public class UmlsHardcodedValuesFactory extends AbstractHardcodedValuesFactory {
 	 */
 	@Override
 	public List buildList(List hardcodedValues) {
-		
+		 
+		/*
 		Relation relation = new Relation();
 		RelationId relationId = new RelationId();
 		relationId.setCodingSchemeName(codingSchemeIdSetter.getCodingSchemeId());
@@ -55,6 +49,8 @@ public class UmlsHardcodedValuesFactory extends AbstractHardcodedValuesFactory {
 		hardcodedValues.add(relation);		
 		
 		return hardcodedValues;	
+		*/
+		return new ArrayList();
 	}
 	
 

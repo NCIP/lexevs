@@ -89,13 +89,11 @@ public class UmlsCodingSchemeNameSetter implements CodingSchemeIdSetter, Initial
 	}
 
 	public String getCodingSchemeId() {
-		// TODO Auto-generated method stub
-		return null;
+		return codingSchemeName;
 	}
 
 	public String getCodingSchemeUri() {
-		// TODO Auto-generated method stub
-		return null;
+		return codingSchemeName;
 	}
 
 	public String getCodingSchemeVersion() {
