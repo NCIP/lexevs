@@ -30,8 +30,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.spring.DynamicPropertyApplicationContext;
-import org.lexevs.dao.database.utility.DatabaseUtility;
 import org.lexgrid.loader.logging.StatusTrackingLogger;
 import org.lexgrid.loader.properties.impl.PropertiesFactory;
 import org.lexgrid.loader.rrf.staging.model.CodeSabPair;
@@ -87,8 +87,9 @@ public class JdbcMrconsoStagingDaoTest {
 		props.put("sab", "LNC");
 		props.put("rrfDir", RRF_DIRECTORY);
 		props.put("retry", "false");
+		props.put("prefix", "");
 		
-		ctx = new DynamicPropertyApplicationContext("rrfBaseLoader.xml", props);
+		ctx = new DynamicPropertyApplicationContext("abstractRrfLoaderTest.xml", props);
 			
 		template  = (JdbcTemplate)ctx.getBean("lexEvsJdbcTemplate");
 	
@@ -99,12 +100,13 @@ public class JdbcMrconsoStagingDaoTest {
 		//methodCacheInterceptor = (MrconsoStagingCacheInterceptor)ctx.getBean("methodCacheInterceptor");
 	
 		DefaultStagingManager stagingManager = new DefaultStagingManager();
-		stagingManager.setDatabaseUtility((DatabaseUtility)ctx.getBean("databaseUtility"));
+		stagingManager.setLexEvsDatabaseOperations((LexEvsDatabaseOperations)ctx.getBean("defaultLexEvsDatabaseOperations"));
 		
 		Map<String,Resource> stagingDbs = new HashMap<String,Resource>();
 		
 		stagingDbs.put("mrconsoStaging", (Resource)ctx.getBean("mrconsoStagingCreateScriptFactory"));
 		stagingManager.setRegisteredStagingDatabases(stagingDbs);
+		stagingManager.setPrefix("");
 		
 		stagingManager.setLogger(new StatusTrackingLogger(){
 

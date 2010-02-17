@@ -20,8 +20,8 @@ package org.lexgrid.loader.rrf.staging.populatorstep;
 
 import java.util.Map;
 
+import org.lexevs.dao.database.type.DatabaseType;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.support.DatabaseType;
 import org.springframework.beans.factory.FactoryBean;
 
 /**
