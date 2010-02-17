@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans:beans xmlns="http://www.springframework.org/schema/batch"
-	xmlns:beans="http://www.springframework.org/schema/beans"
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:batch="http://www.springframework.org/schema/batch"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:p="http://www.springframework.org/schema/p"
@@ -11,6 +11,30 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
 	
-	<beans:import resource="lexevsDao.xml"/>
+<!--	<beans:import resource="lexevsDao.xml"/>-->
+
+	<bean id="databaseServiceManager" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+  		 <property name="targetObject" ref="serviceLocator"/>
+   		 <property name="targetMethod" value="getDatabaseServiceManager"/>
+ 	</bean>
+
+	<bean id="defaultLexEvsDatabaseOperations" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+  		 <property name="targetObject" ref="serviceLocator"/>
+   		 <property name="targetMethod" value="getLexEvsDatabaseOperations"/>
+ 	</bean>
+ 	
+ 	<bean id="dataSource" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+  		 <property name="targetObject" ref="defaultLexEvsDatabaseOperations"/>
+   		 <property name="targetMethod" value="getDataSource"/>
+ 	</bean>
+ 	
+ 	<bean id="databaseTypeFactory" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+  		 <property name="targetObject" ref="defaultLexEvsDatabaseOperations"/>
+   		 <property name="targetMethod" value="getDatabaseType"/>
+ 	</bean>
+
+
+ 	<bean id="serviceLocator" class="org.lexevs.locator.LexEvsServiceLocator" factory-method="getInstance"/>
+
 	
-</beans:beans>
+</beans>

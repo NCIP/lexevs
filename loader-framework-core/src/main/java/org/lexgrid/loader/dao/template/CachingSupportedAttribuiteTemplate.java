@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.LexGrid.naming.URIMap;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 
 /**
@@ -31,7 +32,7 @@ import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
  */
 public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttributeTemplate{
 	
-	private CodingSchemeService codingSchemeService;
+	private DatabaseServiceManager databaseServiceManager;
 
 	/** The attribute cache. */
 	private Map<String,URIMap> attributeCache = new HashMap<String,URIMap>();
@@ -46,10 +47,13 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 	@Override
 	protected synchronized void insert(String codingSchemeName, String codingSchemeVersion, URIMap map){
 		String key = this.buildCacheKey(map);
+		/*
 		if(! attributeCache.containsKey(key)){
-			codingSchemeService.insertURIMap(codingSchemeName, codingSchemeVersion, map);
+			this.getDatabaseServiceManager().getCodingSchemeService().
+				insertURIMap(codingSchemeName, codingSchemeVersion, map);
 			attributeCache.put(key, map);
 		}
+		*/
 	}
 	
 	protected String buildCacheKey(URIMap map){
@@ -81,12 +85,12 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 		this.maxCacheSize = maxCacheSize;
 	}
 
-	public CodingSchemeService getCodingSchemeService() {
-		return codingSchemeService;
+	public void setDatabaseServiceManager(DatabaseServiceManager databaseServiceManager) {
+		this.databaseServiceManager = databaseServiceManager;
 	}
 
-	public void setCodingSchemeService(CodingSchemeService codingSchemeService) {
-		this.codingSchemeService = codingSchemeService;
+	public DatabaseServiceManager getDatabaseServiceManager() {
+		return databaseServiceManager;
 	}
 	
 	

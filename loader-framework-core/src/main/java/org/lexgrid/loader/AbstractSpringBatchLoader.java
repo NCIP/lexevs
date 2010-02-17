@@ -56,8 +56,7 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 	private SQLConnectionInfo sqlConnectionInfo;
 	
 	protected AbstractSpringBatchLoader(){
-	  //use LexEVS class loader.
-      Thread.currentThread().setContextClassLoader(ResourceManager.instance().getClassLoader()); 
+		super();
 	}
 	
 	/**
@@ -76,13 +75,13 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 	 * @throws Exception the exception
 	 */
 	protected void launchJob(Properties connectionProperties, String jobConfigFile, String jobName) throws Exception {
-	 	super.setInUse();
+		super.setInUse();
 		
 		sqlConnectionInfo = 
 			PropertiesFactory.buildSQLConnectinInfoFromProperties(connectionProperties);
 
 		DynamicPropertyApplicationContext ctx = new DynamicPropertyApplicationContext(jobConfigFile, connectionProperties);
-		ctx.setClassLoader(ResourceManager.instance().getClassLoader());
+		ctx.setClassLoader(MyClassLoader.instance());
 		
 		//Register a shutdown hook to make sure beans get disposed.
 		ctx.registerShutdownHook();

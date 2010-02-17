@@ -19,9 +19,9 @@
 package org.lexgrid.loader.lexbigadmin;
 
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
-import org.lexgrid.loader.connection.LoaderConnectionManager;
-import org.lexgrid.loader.connection.impl.LexEVSConnectionManager;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.logging.LoggingBean;
 import org.springframework.batch.core.StepContribution;
@@ -37,7 +37,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 public abstract class AbstractLexEvsUtilityTasklet extends LoggingBean implements Tasklet {
 
 	/** The connection manager. */
-	private LoaderConnectionManager connectionManager = new LexEVSConnectionManager();
+	private LexEvsDatabaseOperations connectionManager = LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations();
 	
 	private CodingSchemeService codingSchemeService;
 	
@@ -86,14 +86,6 @@ public abstract class AbstractLexEvsUtilityTasklet extends LoggingBean implement
 				this.getCodingSchemeIdSetter().getCodingSchemeUri(), 
 				this.getCodingSchemeIdSetter().getCodingSchemeVersion());
 	}
-	
-	public LoaderConnectionManager getConnectionManager() {
-		return connectionManager;
-	}
-
-	public void setConnectionManager(LoaderConnectionManager connectionManager) {
-		this.connectionManager = connectionManager;
-	}
 
 	public CodingSchemeIdSetter getCodingSchemeIdSetter() {
 		return codingSchemeIdSetter;
@@ -102,5 +94,13 @@ public abstract class AbstractLexEvsUtilityTasklet extends LoggingBean implement
 	public void setCodingSchemeIdSetter(
 			CodingSchemeIdSetter codingSchemeIdSetter) {
 		this.codingSchemeIdSetter = codingSchemeIdSetter;
+	}
+
+	public void setConnectionManager(LexEvsDatabaseOperations connectionManager) {
+		this.connectionManager = connectionManager;
+	}
+
+	public LexEvsDatabaseOperations getConnectionManager() {
+		return connectionManager;
 	}	
 }

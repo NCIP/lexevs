@@ -21,8 +21,8 @@ package org.lexgrid.loader.properties.impl;
 import java.util.Properties;
 
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
-import org.lexgrid.loader.connection.LoaderConnectionManager;
-import org.lexgrid.loader.connection.impl.LexEVSConnectionManager;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.loader.properties.ConnectionPropertiesFactory;
 
 /**
@@ -31,14 +31,14 @@ import org.lexgrid.loader.properties.ConnectionPropertiesFactory;
 public class DefaultLexEVSPropertiesFactory extends PropertiesFactory implements ConnectionPropertiesFactory {
 	
 	/** The connection manager. */
-	private LoaderConnectionManager connectionManager = new LexEVSConnectionManager();
+	private LexEvsDatabaseOperations connectionManager = LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations();
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.properties.ConnectionPropertiesFactory#getPropertiesForNewLoad()
 	 */
-	public Properties getPropertiesForNewLoad(boolean indexTables) {		
+	public Properties getPropertiesForNewLoad() {		
 		SQLConnectionInfo connection = 
-			connectionManager.getNewConnectionInfoForLoad(indexTables);
+			connectionManager.getNewConnectionInfoForLoad();
 		return getProperties(connection);		
 	}
 		
@@ -50,22 +50,5 @@ public class DefaultLexEVSPropertiesFactory extends PropertiesFactory implements
 			connectionManager.getExistingConnectionInfo(codingScheme, version);
 		return getProperties(connection);
 	}
-		
-	/**
-	 * Gets the connection manager.
-	 * 
-	 * @return the connection manager
-	 */
-	public LoaderConnectionManager getConnectionManager() {
-		return connectionManager;
-	}
 
-	/**
-	 * Sets the connection manager.
-	 * 
-	 * @param connectionManager the new connection manager
-	 */
-	public void setConnectionManager(LoaderConnectionManager connectionManager) {
-		this.connectionManager = connectionManager;
-	}
 }

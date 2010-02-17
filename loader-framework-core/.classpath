@@ -22,5 +22,7 @@
 	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-2.5.6.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/castor/castor-1.2.jar"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/apache/xerces/xerces-xml-apis-2.8.0.jar"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/apache/xerces/xercesImpl-2.8.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

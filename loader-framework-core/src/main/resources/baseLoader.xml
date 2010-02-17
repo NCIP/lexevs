@@ -46,12 +46,13 @@
 		<beans:property name="dataSource" ref="dataSource"/> 
 		<beans:property name="transactionManager" ref="noOptransactionManager"/>
 		<beans:property name="incrementerFactory" ref="incrementerFactory"/>
+		<beans:property name="tablePrefix" value=""/>
 	</beans:bean>
 	
 	<beans:bean id="abstractCleanupListener" parent="loggingBean" abstract="true"
 	class="org.lexgrid.loader.listener.CleanupListener">
-		<beans:property name="lexEvsDao" ref="lexEvsDao"/>
-		<beans:property name="connectionManager" ref="lexEVSConnectionManager" />
+<!--		<beans:property name="lexEvsDao" ref="lexEvsDao"/>-->
+<!--		<beans:property name="connectionManager" ref="defaultLexEvsDatabaseOperations" />-->
 		<beans:property name="jobRepositoryManager" ref="jobRepositoryManager"/>
 	</beans:bean>
 	
@@ -86,8 +87,8 @@
 	
 	<beans:bean id="stagingManager" parent="loggingBean"
 		class="org.lexgrid.loader.staging.DefaultStagingManager" abstract="true">
-		<beans:property name="lexevsdatabaseoperations">
-			<beans:ref bean="defaultLexevsdatabaseoperations"/>
+		<beans:property name="lexEvsDatabaseOperations">
+			<beans:ref bean="defaultLexEvsDatabaseOperations"/>
 		</beans:property>
 		<beans:property name="retry" value="${retry}"/>
 		<beans:property name="prefix" value="${prefix}"/>
@@ -130,30 +131,26 @@
 		<beans:property name="logger" ref="logger" />
 	</beans:bean>
 	
-	<beans:bean id="jdbcTransactionManager"
+	<beans:bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<beans:property name="dataSource" ref="dataSource" />
 	</beans:bean>	
 	
 	<beans:bean id="abstractLexEvsUtilityTasklet" parent="loggingBean" abstract="true"
 		class="org.lexgrid.loader.lexbigadmin.AbstractLexEvsUtilityTasklet">
-		<beans:property name="lexEvsDao" ref="lexEvsDao" />
-		<beans:property name="connectionManager" ref="lexEVSConnectionManager" />
+<!--		<beans:property name="lexEvsDao" ref="lexEvsDao" />-->
+		<beans:property name="connectionManager" ref="defaultLexEvsDatabaseOperations" />
 	</beans:bean>	
-	
-	<beans:bean id="lexEVSConnectionManager"
-		class="org.lexgrid.loader.connection.impl.LexEVSConnectionManager">
-		<beans:property name="messageDirector" ref="logger" />
-	</beans:bean>	
+
 		<beans:bean id="abstractHardcodedValuesFactory"
 				class="org.lexgrid.loader.hardcodedvalues.AbstractHardcodedValuesFactory" abstract="true">	
 		</beans:bean>
 			
 		<beans:bean id="abstractIntrospectiveHardcodedValues"
 				class="org.lexgrid.loader.hardcodedvalues.AbstractIntrospectiveHardcodedValues" abstract="true">
-				<beans:property name="lexEvsDao">
-					<beans:ref bean="lexEvsDao" />
-				</beans:property>	
+<!--				<beans:property name="lexEvsDao">-->
+<!--					<beans:ref bean="lexEvsDao" />-->
+<!--				</beans:property>	-->
 				<beans:property name="supportedAttributeTemplate">
 					<beans:ref bean="cachingSupportedAttribuiteTemplate" />
 				</beans:property>	
@@ -161,8 +158,8 @@
 	
 	<beans:bean id="cachingSupportedAttribuiteTemplate" parent="loggingBean"
 	class="org.lexgrid.loader.dao.template.CachingSupportedAttribuiteTemplate">
-		<beans:property name="codingSchemeService">
-			<beans:ref bean="codingSchemeService" />
+		<beans:property name="databaseServiceManager">
+			<beans:ref bean="databaseServiceManager" />
 		</beans:property>
 		<beans:property name="maxCacheSize" value="1000"/>
 	</beans:bean>		

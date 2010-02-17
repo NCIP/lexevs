@@ -66,14 +66,17 @@ public class MetadataLoadingTasklet extends AbstractLexEvsUtilityTasklet impleme
 				getCurrentCodingSchemeUri(), 
 				getCurrentCodingSchemeVersion());
 		
-		MetaData_Loader metadataLoader =
-			getConnectionManager().getLexEvsLoader(loaderName, loaderClass);
+		//TODO:
+		//MetaData_Loader metadataLoader =
+		//	getConnectionManager().getLexEvsLoader(loaderName, loaderClass);
 		
 		//we know this URI is always going to be a file, so to make
 		//it easier for our loader down the line we'll convert this
 		//URI to a pure File URI, and eliminate any Authority errors.
 		URI inputUri = inputResource.getFile().toURI();
 		
+		//TODO:
+		/*
 		metadataLoader.loadAuxiliaryData(
 				inputUri, 
 				Constructors.createAbsoluteCodingSchemeVersionReference(
@@ -81,6 +84,7 @@ public class MetadataLoadingTasklet extends AbstractLexEvsUtilityTasklet impleme
 						getCurrentCodingSchemeVersion()), 
 						overwrite, 
 						stopOnErrors, async);
+						*/
 		
 		if(deleteXmlAfterLoad){
 			FileUtils.forceDelete(this.inputResource.getFile());

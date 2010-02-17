@@ -57,6 +57,7 @@ public class RegisteringTasklet extends AbstractLexEvsUtilityTasklet implements 
 		String url = (String)chunkContext.getStepContext().getJobParameters().get("jdbcUrl");
 		String database = (String)chunkContext.getStepContext().getJobParameters().get("database");		
 		
+		/*TODO:
 		getConnectionManager().register(getCurrentCodingSchemeUri(),
 				getCurrentCodingSchemeVersion(),
 				CodingSchemeVersionStatus.PENDING.toString(), 
@@ -64,7 +65,7 @@ public class RegisteringTasklet extends AbstractLexEvsUtilityTasklet implements 
 				null, 
 				database, 
 				prefix);
-
+		 */
 		return RepeatStatus.FINISHED;
 	}
 

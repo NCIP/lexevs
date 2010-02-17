@@ -153,15 +153,15 @@ public class LoaderTestUtils {
 	 */
 	public static void shutdownnHsqldb() {	
 		try {
-			String url = ResourceManager.instance().getSystemVariables().getAutoLoadDBURL();
-			Class.forName("org.hsqldb.jdbcDriver");
-			Connection con = DriverManager.getConnection(url, "sa", "");
-			String sql = "SHUTDOWN";
-			Statement stmt = con.createStatement();
-			stmt.executeUpdate(sql);
-			stmt.close();
+			//String url = ResourceManager.instance().getSystemVariables().getAutoLoadDBURL();
+			//Class.forName("org.hsqldb.jdbcDriver");
+			//Connection con = DriverManager.getConnection(url, "sa", "");
+			//String sql = "SHUTDOWN";
+			//Statement stmt = con.createStatement();
+			//stmt.executeUpdate(sql);
+			//stmt.close();
 		} catch (Exception e) {
-			log.warning("Could not close HSQL Database -- already closed.");
+			log.warning("Could not close HSQL Database -- already closed. " + e.getMessage());
 		}
 	}	
 	

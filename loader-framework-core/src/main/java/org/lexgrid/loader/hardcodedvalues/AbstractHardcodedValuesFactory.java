@@ -21,7 +21,6 @@ package org.lexgrid.loader.hardcodedvalues;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lexgrid.loader.dao.SupportedAttributeSupport;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 

@@ -30,7 +30,7 @@ public interface ConnectionPropertiesFactory {
 	 * 
 	 * @return the properties for new load
 	 */
-	public Properties getPropertiesForNewLoad(boolean indexTables);
+	public Properties getPropertiesForNewLoad();
 	
 	/**
 	 * Gets the properties for existing load.

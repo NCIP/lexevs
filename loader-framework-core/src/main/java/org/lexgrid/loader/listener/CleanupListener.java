@@ -22,9 +22,9 @@ import java.util.Date;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
-import org.lexgrid.loader.connection.LoaderConnectionManager;
-import org.lexgrid.loader.connection.impl.LexEVSConnectionManager;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.loader.constants.LoaderConstants;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.logging.LoggingBean;
@@ -49,7 +49,7 @@ import org.springframework.batch.core.JobExecutionListener;
 public class CleanupListener extends LoggingBean implements JobExecutionListener {
 
 	/** The connection manager. */
-	private LoaderConnectionManager connectionManager = new LexEVSConnectionManager();
+	private LexEvsDatabaseOperations connectionManager = LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations();
 	
 	/** The coding scheme name setter. */
 	private CodingSchemeIdSetter codingSchemeIdSetter;
@@ -75,8 +75,9 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 			getLogger().info("Job completed, dropping tables");
 			try {
 				stagingManager.dropAllStagingDatabases();
-				connectionManager.deactivate(getCurrentCodingSchemeUri(), getCurrentCodingSchemeVersion());
-				connectionManager.initLoadedScheme(getCurrentCodingSchemeUri(), getCurrentCodingSchemeVersion());
+				//TODO:
+				//connectionManager.deactivate(getCurrentCodingSchemeUri(), getCurrentCodingSchemeVersion());
+				//connectionManager.initLoadedScheme(getCurrentCodingSchemeUri(), getCurrentCodingSchemeVersion());
 			
 				super.getLogger().getProcessStatus().setState(ProcessState.COMPLETED);
 			} catch (Exception e) {
@@ -163,24 +164,6 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 				this.getCodingSchemeIdSetter().getCodingSchemeVersion());
 	}
 
-	/**
-	 * Gets the connection manager.
-	 * 
-	 * @return the connection manager
-	 */
-	public LoaderConnectionManager getConnectionManager() {
-		return connectionManager;
-	}
-
-	/**
-	 * Sets the connection manager.
-	 * 
-	 * @param connectionManager the new connection manager
-	 */
-	public void setConnectionManager(LoaderConnectionManager connectionManager) {
-		this.connectionManager = connectionManager;
-	}
-	
 	/**
 	 * Gets the coding scheme name setter.
 	 * 

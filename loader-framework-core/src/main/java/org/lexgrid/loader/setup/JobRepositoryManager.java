@@ -122,7 +122,7 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	 */
 	public void dropJobRepositoryDatabases() throws Exception {
 		String script = DefaultDatabaseUtility.convertResourceToString(dropScript);
-		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(insertPrefixVariable(script));
+		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(insertPrefixVariable(script), this.getLexEvsDatabaseOperations().getPrefixResolver().resolvePrefix());
 	}
 	
 	public void dropJobRepositoryDatabasesOnClose() throws Exception {
