@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="lib" path="/lgSharedLibraries/apache/xerces/xerces-xml-apis-2.8.0.jar"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/apache/xerces/xercesImpl-2.8.0.jar"/>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry kind="src" output="target/classes" path="src/main/resources"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
