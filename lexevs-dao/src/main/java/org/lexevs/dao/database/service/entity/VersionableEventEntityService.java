@@ -39,6 +39,14 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		
 	}
 
+	@Transactional
+	public Entity getEntity(String codingSchemeUri, String version,
+			String entityCode, String entityCodeNamespace) {
+		return null;
+		//return this.getDaoManager().
+		//	getEntityDao(codingSchemeUri, version).g
+	}
+
 
 	
 	
