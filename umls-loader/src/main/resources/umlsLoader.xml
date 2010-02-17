@@ -18,290 +18,95 @@
 	<beans:bean id="noopWriter" class="org.lexgrid.loader.writer.NoopWriter" />
 	
 	<beans:bean id="mrdocRelationNameProcessor" class="org.lexgrid.loader.rrf.processor.MrdocRelationNameProcessor" />
-	
+
 	<job id="umlsJob" restartable="true">
 		<listeners>
 			<listener ref="jobSetupListener" />
 			<listener ref="cleanupListener" />
 		</listeners>
 
-	<step id="loadCodingScheme" next="registerCodingScheme">
-					<tasklet>
-						<listeners>
-							<listener ref="stepCompletionListener" />
-						</listeners>
-						<chunk reader="umlsCodingSchemeReader"
-							processor="umlsCodingSchemeProcessor" writer="codingSchemeWriter"
-							commit-interval="1">
-						</chunk>
-					</tasklet>
-				</step>
-			
-				<step id="registerCodingScheme">
-					<tasklet ref="registeringTasklet" />
-					<fail on="FAILED" exit-code="NON-RECOVERABLE" />
-					<next on="*" to="loadUmls" />	
-				</step>
-	
-		<split id="loadUmls">
+		<step id="loadCodingScheme">
+			<tasklet>
+				<listeners>
+					<listener ref="stepCompletionListener" />
+				</listeners>
+				<chunk reader="umlsCodingSchemeReader" processor="umlsCodingSchemeProcessor"
+					writer="codingSchemeWriter" commit-interval="1">
+				</chunk>
+			</tasklet>
+		</step>
 
-			<flow>
-				<step id="populateStagingTable" next="loadHardcodedValues" parent="stagingTablePopulatorStepFactory"/>
-
-				<step id="loadHardcodedValues" next="loadIntrospectiveHardcodedValues">
-					<tasklet>
-						<listeners>
-							<listener ref="stepCompletionListener" />
-						</listeners>
-						<chunk reader="hardcodedValuesReader"
-							writer="lexEvsHibernateWriter" commit-interval="100">
-						</chunk>
-					</tasklet>
-				</step>
-				
-				<step id="loadIntrospectiveHardcodedValues">
-					<tasklet ref="introspectiveHardcodedValuesTasklet" />
-				</step>		
-			</flow>
-
-			<flow>
-				<split id="loadContent" task-executor="taskExecutor">
-
-					<flow>
-					
-					<split id="loadEntitiesAndPropertiesAndIndex">
-						<flow>
-					
-						<split id="loadEntitiesAndProperties"
-							task-executor="taskExecutor">
-
-							<flow>
-								<step id="umlsLoadDefinitions">
-									<tasklet>
-										<listeners>
-											<listener
-												ref="stepCompletionListener" />
-										</listeners>
-										<chunk
-											reader="umlsMrdefSkippingReader"
-											processor="umlsDefinitionPropertyProcessor"
-											writer="entityPropertyWriter" commit-interval="100"
-											skip-limit="50">
-											<streams>
-												<stream
-													ref="mrdefReader" />
-											</streams>
-											<skippable-exception-classes>
-												org.springframework.batch.item.file.FlatFileParseException
-											</skippable-exception-classes>
-										</chunk>
-									</tasklet>
-								</step>
-							</flow>
-
-							<flow>
-								<step id="umlsLoadEntity">
-									<tasklet>
-										<listeners>
-											<listener
-												ref="stepCompletionListener" />
-										</listeners>
-										<chunk
-											reader="mrconsoStagedReader"
-											processor="entityTypeAddingEntityProcessor"
-											writer="classifierCompositeItemListWriter"
-											commit-interval="100">
-										</chunk>
-									</tasklet>
-								</step>
-							</flow>
-
-							<flow>
-								<step id="umlsloadUmlsCuiProperties">
-									<tasklet>
-										<listeners>
-											<listener
-												ref="stepCompletionListener" />
-										</listeners>
-										<chunk
-											reader="mrconsoStagedReader"
-											processor="umlsCuiPropertyListProcessor"
-											writer="entityPropertyListWriter" commit-interval="100">
-										</chunk>
-									</tasklet>
-								</step>
-							</flow>
-							
-							<flow>
-								<step
-									id="umlsloadUmlsMrsatProperties">
-									<tasklet>
-										<listeners>
-											<listener
-												ref="stepCompletionListener" />
-										</listeners>
-										<chunk
-											reader="umlsMrsatSkippingReader"
-											processor="umlsMrsatPropertyProcessor"
-											writer="entityPropertyWriter" commit-interval="100">
-											<streams>
-												<stream
-													ref="mrsatReader" />
-											</streams>
-										</chunk>
-									</tasklet>
-								</step>
-							</flow>
-							
-								<flow>
-								<step id="umlsloadUmlsMrstyProperties">
-									<tasklet>
-										<listeners>
-											<listener
-												ref="stepCompletionListener" />
-										</listeners>
-										<chunk
-											reader="umlsMrstyGroupReader"
-											processor="umlsMrstyListProcessor"
-											writer="entityPropertyListWriter" commit-interval="100">
-											<streams>
-												<stream
-													ref="mrstyReader" />
-											</streams>
-										</chunk>
-									</tasklet>
-								</step>
-							</flow>
-
-						</split>
-						</flow>
-						
-						<flow>
-						<step id="index">
-							<tasklet ref="indexingTasklet" />
-						</step>
-						</flow>
-						</split>
-
-					</flow>
-
-					<flow>
-							<step id="umlsLoadEntityToEntityAssociations" next="processMrHierAssociationAndPropQuals"
-							parent="umlsLoadAssocsPartioned">
-							<!-- 
-								<tasklet>
-									<listeners>
-										<listener
-											ref="stepCompletionListener" />
-									</listeners>
-									<chunk reader="umlsForwardRelationNameMrrelSkippingReader"
-										processor="umlsRootNodeAddingEntityAssocToEntityProcessor"
-										writer="lexEvsHibernateListWriter" commit-interval="1">
-										<streams>
-											<stream ref="mrrelReader" />
-										</streams>
-									</chunk>
-								</tasklet>
-								-->
-							</step>
-
-							<step id="processMrHierAssociationAndPropQuals" next="processAssociations">
-									<tasklet>
-										<listeners>
-											<listener ref="stepCompletionListener" />
-										</listeners>
-									<chunk reader="umlsSkippingMrhierReader"
-										processor="mrhierAssocAndPropQualProcessor"
-										writer="classifierCompositeItemListWriter" 
-										skip-limit="5000" commit-interval="10">
-										<streams>
-											<stream ref="mrhierReader" />
-										</streams>
-										<skippable-exception-classes>
-											org.springframework.dao.DataIntegrityViolationException
-										</skippable-exception-classes>
-									</chunk>
-								</tasklet>
-							</step>
-
-							<step id="processAssociations" next="buildTransitivityTable">
-								<tasklet>
-									<listeners>
-										<listener
-											ref="stepCompletionListener" />
-									</listeners>
-									<chunk reader="mrdocAssociationGroupReader"
-										processor="umlsAssociationProcessor"
-										writer="lexEvsHibernateListWriter" commit-interval="10">
-										<streams>
-											<stream ref="mrdocReader" />
-										</streams>
-									</chunk>
-								</tasklet>
-							</step>
-							
-							<step id="buildTransitivityTable">
-								<tasklet ref="transitivityBuildingTasklet" />
-							</step>
-
-						</flow>
-
-				</split>
-
-			</flow>
-		</split>
+<!--		<step id="registerCodingScheme">-->
+<!--			<tasklet ref="registeringTasklet" />-->
+<!--			<fail on="FAILED" exit-code="NON-RECOVERABLE" />-->
+<!--			<next on="*" to="populateStagingTable" />-->
+<!--		</step>-->
+<!---->
+<!--		<step id="populateStagingTable" next="umlsLoadEntity"-->
+<!--			parent="stagingTablePopulatorStepFactory" />-->
+<!---->
+<!--		<step id="umlsLoadEntity">-->
+<!--			<tasklet>-->
+<!--				<listeners>-->
+<!--					<listener ref="stepCompletionListener" />-->
+<!--				</listeners>-->
+<!--				<chunk reader="mrconsoStagedReader" processor="umlsEntityProcessor"-->
+<!--					writer="entityWriter" commit-interval="100">-->
+<!--				</chunk>-->
+<!--			</tasklet>-->
+<!--		</step>-->
 
 	</job>
 	
 	<!-- Partitioning -->
 	
 	<!-- Relation Processing Below -->
-	<beans:bean id="umlsLoadAssocsPartioned"
-		class="org.springframework.batch.core.partition.support.PartitionStep">
-		<beans:property name="partitionHandler"
-			ref="umlsLoadAssocsPartitionHandler" />
-		<beans:property name="stepExecutionSplitter"
-			ref="umlsLoadAssocsExecutionSplitter" />
-		<beans:property name="stepExecutionListeners"
-			ref="stepCompletionListener"/>
-		<beans:property name="jobRepository" ref="jobRepository" />
-	</beans:bean>
-
-	<beans:bean id="umlsLoadAssocsExecutionSplitter"
-		class="org.springframework.batch.core.partition.support.SimpleStepExecutionSplitter">
-		<beans:constructor-arg index="0" ref="jobRepository" />
-		<beans:constructor-arg index="1"
-			ref="umlsPartitionedLoadAssociations" />
-		<beans:constructor-arg index="2">
-			<beans:bean class="org.lexgrid.loader.rrf.partition.RrfFilePartitioner" />
-		</beans:constructor-arg>
-	</beans:bean>
-
-	<beans:bean id="umlsLoadAssocsPartitionHandler"
-		class="org.springframework.batch.core.partition.support.TaskExecutorPartitionHandler">
-		<beans:property name="taskExecutor" ref="taskExecutor" />
-		<beans:property name="step"
-			ref="umlsPartitionedLoadAssociations" />
-		<beans:property name="gridSize" value="10" />
-	</beans:bean>
-
-	<step id="umlsPartitionedLoadAssociations">
-		<tasklet>
-			<listeners>
-				<listener ref="stepCompletionListener" />
-			</listeners>
-			<chunk reader="umlsMrrelPartitionedGroupReader" processor="umlsRootNodeAddingEntityAssocToEntityProcessor"
-				writer="entityAssnsToEntityListWriter" 
-				skip-limit="500" commit-interval="10">
-				<streams>
-					<stream ref="mrrelReader" />
-				</streams>
-				<skippable-exception-classes>
-					org.springframework.dao.DataIntegrityViolationException
-				</skippable-exception-classes>
-			</chunk>
-		</tasklet>
-	</step>
+<!--	<beans:bean id="umlsLoadAssocsPartioned"-->
+<!--		class="org.springframework.batch.core.partition.support.PartitionStep">-->
+<!--		<beans:property name="partitionHandler"-->
+<!--			ref="umlsLoadAssocsPartitionHandler" />-->
+<!--		<beans:property name="stepExecutionSplitter"-->
+<!--			ref="umlsLoadAssocsExecutionSplitter" />-->
+<!--		<beans:property name="stepExecutionListeners"-->
+<!--			ref="stepCompletionListener"/>-->
+<!--		<beans:property name="jobRepository" ref="jobRepository" />-->
+<!--	</beans:bean>-->
+<!---->
+<!--	<beans:bean id="umlsLoadAssocsExecutionSplitter"-->
+<!--		class="org.springframework.batch.core.partition.support.SimpleStepExecutionSplitter">-->
+<!--		<beans:constructor-arg index="0" ref="jobRepository" />-->
+<!--		<beans:constructor-arg index="1"-->
+<!--			ref="umlsPartitionedLoadAssociations" />-->
+<!--		<beans:constructor-arg index="2">-->
+<!--			<beans:bean class="org.lexgrid.loader.rrf.partition.RrfFilePartitioner" />-->
+<!--		</beans:constructor-arg>-->
+<!--	</beans:bean>-->
+<!---->
+<!--	<beans:bean id="umlsLoadAssocsPartitionHandler"-->
+<!--		class="org.springframework.batch.core.partition.support.TaskExecutorPartitionHandler">-->
+<!--		<beans:property name="taskExecutor" ref="taskExecutor" />-->
+<!--		<beans:property name="step"-->
+<!--			ref="umlsPartitionedLoadAssociations" />-->
+<!--		<beans:property name="gridSize" value="10" />-->
+<!--	</beans:bean>-->
+<!---->
+<!--	<step id="umlsPartitionedLoadAssociations">-->
+<!--		<tasklet>-->
+<!--			<listeners>-->
+<!--				<listener ref="stepCompletionListener" />-->
+<!--			</listeners>-->
+<!--			<chunk reader="umlsMrrelPartitionedGroupReader" processor="umlsRootNodeAddingEntityAssocToEntityProcessor"-->
+<!--				writer="entityAssnsToEntityListWriter" -->
+<!--				skip-limit="500" commit-interval="10">-->
+<!--				<streams>-->
+<!--					<stream ref="mrrelReader" />-->
+<!--				</streams>-->
+<!--				<skippable-exception-classes>-->
+<!--					org.springframework.dao.DataIntegrityViolationException-->
+<!--				</skippable-exception-classes>-->
+<!--			</chunk>-->
+<!--		</tasklet>-->
+<!--	</step>-->
 	
 	<!-- End Partitioning -->
 
@@ -318,7 +123,7 @@
 	<beans:bean id="cleanupListener" parent="abstractCleanupListener"
 	class="org.lexgrid.loader.listener.CleanupListener">
 		<beans:property name="stagingManager" ref="umlsStagingManager"/>
-		<beans:property name="codingSchemeNameSetter" ref="umlsCodingSchemeIdSetter"/>
+		<beans:property name="codingSchemeIdSetter" ref="umlsCodingSchemeIdSetter"/>
 	</beans:bean>
 
 	<beans:bean id="umlsAssociationProcessor"
@@ -333,19 +138,19 @@
 
 <!--	<beans:bean id="postProcessingDao"-->
 <!--		parent="hibernateRrfPostProcessingDao">-->
-<!--		<beans:property name="codingSchemeNameSetter">-->
+<!--		<beans:property name="codingSchemeIdSetter">-->
 <!--			<beans:ref bean="umlsCodingSchemeIdSetter" />-->
 <!--		</beans:property>-->
 <!--	</beans:bean>-->
 
 	<beans:bean id="umlsCodingSchemeNameSettingProcessor"
 		abstract="true">
-		<beans:property name="codingSchemeNameSetter">
+		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
-		<beans:property name="lexEvsDao">
-			<beans:ref bean="lexEvsDao" />
-		</beans:property>
+<!--		<beans:property name="lexEvsDao">-->
+<!--			<beans:ref bean="lexEvsDao" />-->
+<!--		</beans:property>-->
 	</beans:bean>
 
 
@@ -355,7 +160,7 @@
 		<beans:constructor-arg>
 			 <beans:ref bean="umlsEntityAssocToEntityProcessor"/>
 		</beans:constructor-arg>
-		<beans:property name="codingSchemeNameSetter">
+		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="supportedAttributeTemplate">
@@ -438,18 +243,18 @@
 		<beans:property name="sab" value="${sab}"/>
 	</beans:bean>
 
-	<beans:bean id="mrhierAssocAndPropQualProcessor"
-		class="org.lexgrid.loader.umls.processor.MrhierAssocAndPropQualProcessor">
-		<beans:property name="codingSchemeIdSetter">
-			<beans:ref local="umlsCodingSchemeIdSetter" />
-		</beans:property>
-		<beans:property name="lexEvsDao">
-			<beans:ref bean="lexEvsDao" />
-		</beans:property>
-		<beans:property name="mrconsoStagingDao">
-			<beans:ref bean="mrconsoStagingDao" />
-		</beans:property>
-	</beans:bean>
+<!--	<beans:bean id="mrhierAssocAndPropQualProcessor"-->
+<!--		class="org.lexgrid.loader.umls.processor.MrhierAssocAndPropQualProcessor">-->
+<!--		<beans:property name="codingSchemeIdSetter">-->
+<!--			<beans:ref local="umlsCodingSchemeIdSetter" />-->
+<!--		</beans:property>-->
+<!--		<beans:property name="lexEvsDao">-->
+<!--			<beans:ref bean="lexEvsDao" />-->
+<!--		</beans:property>-->
+<!--		<beans:property name="mrconsoStagingDao">-->
+<!--			<beans:ref bean="mrconsoStagingDao" />-->
+<!--		</beans:property>-->
+<!--	</beans:bean>-->
 
 	<beans:bean id="hardcodedValuesReader"
 		class="org.lexgrid.loader.reader.ListReader">
@@ -551,7 +356,7 @@
 <!--			    			<beans:property name="entityCodeResolver">-->
 <!--			    				<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsMrconsoEntityCodeResolver"/>-->
 <!--			    			</beans:property>-->
-<!--			    			<beans:property name="codingSchemeNameSetter">-->
+<!--			    			<beans:property name="codingSchemeIdSetter">-->
 <!--			    				<beans:ref bean="umlsCodingSchemeIdSetter"/>-->
 <!--			    			</beans:property>-->
 <!--			    		</beans:bean>-->
@@ -593,12 +398,12 @@
 		<beans:property name="mrconsoStagingDao">
 			<beans:ref bean="mrconsoStagingDao" />
 		</beans:property>
-		<beans:property name="parameterizedlistIdSetter">
-			<beans:bean
-				class="org.lexgrid.loader.data.property.ParameterizedSequentialIdSetter">
-				<beans:property name="prefix" value="MSTY"/>
-			</beans:bean>
-		</beans:property>
+<!--		<beans:property name="parameterizedlistIdSetter">-->
+<!--			<beans:bean-->
+<!--				class="org.lexgrid.loader.data.property.ParameterizedSequentialIdSetter">-->
+<!--				<beans:property name="prefix" value="MSTY"/>-->
+<!--			</beans:bean>-->
+<!--		</beans:property>-->
 		<beans:property name="sab" value="${sab}"/>	
 		<beans:property name="delegate"
 			ref="umlsMrstyCombiningProcessor" />
@@ -871,7 +676,7 @@
 			<beans:bean
 				class="org.lexgrid.loader.umls.processor.support.AuiBasedRelationResolver">
 				<beans:property name="rrfrelationType" value="REL" />
-				<beans:property name="codingSchemeNameSetter">
+				<beans:property name="codingSchemeIdSetter">
 					<beans:ref local="umlsCodingSchemeIdSetter" />
 				</beans:property>
 			</beans:bean>
@@ -888,7 +693,7 @@
 			<beans:bean
 				class="org.lexgrid.loader.umls.processor.support.AuiBasedRelationResolver">
 				<beans:property name="rrfrelationType" value="RELA" />
-				<beans:property name="codingSchemeNameSetter">
+				<beans:property name="codingSchemeIdSetter">
 					<beans:ref local="umlsCodingSchemeIdSetter" />
 				</beans:property>
 			</beans:bean>
@@ -926,13 +731,13 @@
 <!--		<beans:property name="lexEvsDao">-->
 <!--			<beans:ref bean="lexEvsDao" />-->
 <!--		</beans:property>-->
-		<beans:property name="codingSchemeNameSetter">
+		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
 	
 	<beans:bean id="umlsDefaultPropertyProcessor" abstract="true">
-		<beans:property name="codingSchemeNameSetter">
+		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="supportedAttributeTemplate">
