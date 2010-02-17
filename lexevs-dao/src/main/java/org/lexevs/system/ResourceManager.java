@@ -76,7 +76,6 @@ import org.lexevs.system.model.LocalCodingScheme;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class ResourceManager {
-	private LexEvsDatabaseOperations lexEvsDatabaseOperations;
 	
 	private DatabaseType databaseType;
 	 
@@ -140,6 +139,7 @@ public class ResourceManager {
     // called)
     private static Properties props_;
     
+    @Deprecated
     public static ResourceManager instance(){
     	return LexEvsServiceLocator.getInstance().getResourceManager();
     }
@@ -210,16 +210,17 @@ public class ResourceManager {
         //registry_ = new XmlRegistry(systemVars_.getAutoLoadRegistryPath());
 
         // connect to the histories
-        readHistories();
+        //TODO:
+        //readHistories();
 
         // go through all of the sql servers and read all of the available code
         // systems.
         // initialize the SQL connections to each server.
 
-        List<RegistryEntry> entries = registry_.getAllRegistryEntries();
-        for (RegistryEntry entry : entries) {
-            readTerminologiesFromServer(entry);
-        }
+        //List<RegistryEntry> entries = registry_.getAllRegistryEntries();
+        //for (RegistryEntry entry : entries) {
+        //    readTerminologiesFromServer(entry);
+        //}
 
         logger_.debug("Reading available terminologies from SQL servers.");
 
@@ -325,6 +326,10 @@ public class ResourceManager {
         }
         temp.put(lcs.version, lcs.codingSchemeName);
         codingSchemeLocalNamesToInternalNameMap_.put(alias, temp);
+    }
+    
+    public AbsoluteCodingSchemeVersionReference[] readTerminologiesFromServer(SQLConnectionInfo info) {
+    	return null;
     }
 
     public AbsoluteCodingSchemeVersionReference[] readTerminologiesFromServer(RegistryEntry entry) {
@@ -469,67 +474,24 @@ public class ResourceManager {
      * Get the connection information to use for loading a new db. This creates
      * a new database.
      */
+    @Deprecated
     public SQLConnectionInfo getSQLConnectionInfoForLoad() throws LBInvocationException {
         try {
-            String id = getRegistry().getNextDBIdentifier();
+        	
+            boolean singleDbMode = getSystemVariables().isSingleTableMode();
 
-            String server = systemVars_.getAutoLoadDBURL();
-
-            boolean singleDBMode = getSystemVariables().getAutoLoadSingleDBMode();
-
-            if(!singleDBMode && !getSystemVariables().getOverrideSingleDbMode()){
-                String errorMessage = "Multi-database Mode has been Deprecated." +
-                        " Existing content loaded in Multi-database Mode may still be accessed, " +
-                "but any new content must be loaded in Single-database Mode.";
-                
-                String logId = getLogger().error(errorMessage);              
-                throw new LBInvocationException(errorMessage, logId);     
-            }
-            
-            String dbName = "";
             String prefix = "";
-            if (!singleDBMode) {
-                dbName = systemVars_.getAutoLoadDBPrefix() + id;
-                if (server.indexOf("Microsoft Access Driver") != -1) {
-                    dbName += ".mdb";
-                }
-
-                DBUtility.createDatabase(server, systemVars_.getAutoLoadDBDriver(), dbName, systemVars_
-                        .getAutoLoadDBUsername(), systemVars_.getAutoLoadDBPassword(), true);
-            } else {
-                dbName = "";
-                // loop until we find a blank prefix -
-                int i = 0;
-                while (true) {
-                    i++;
-                    prefix = systemVars_.getAutoLoadDBPrefix() + id + "_";
-
-                    // Need to check and see if this table naming scheme is
-                    // already in use.
-                    boolean dbLocationIsBlank = !SQLTableUtilities.doTablesExist(server, systemVars_
-                            .getAutoLoadDBDriver(), systemVars_.getAutoLoadDBUsername(), systemVars_
-                            .getAutoLoadDBPassword(), prefix);
-
-                    if (dbLocationIsBlank) {
-                        break;
-                    } else if (i > 100) {
-                        // 100 picked out of the blue as a stop point so we
-                        // can't loop infinitely.
-                        String errId = getLogger().error("Unable to find a blank prefix to use to create tables");
-                        throw new LBInvocationException("Unable to find a blank prefix to use to create tables", errId);
-                    } else {
-                        // not blank.. need to get a new location.
-                        id = getRegistry().getNextDBIdentifier();
-                    }
-                }
+            if(! singleDbMode){
+            	prefix = this.getRegistry().getNextDBIdentifier();
+            	LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().createTables(prefix);
             }
 
             SQLConnectionInfo sci = new SQLConnectionInfo();
-            sci.dbName = dbName;
             sci.prefix = prefix;
+            sci.server = systemVars_.getAutoLoadDBURL();
+            sci.dbName = systemVars_.getAutoLoadDBURL();
             sci.driver = systemVars_.getAutoLoadDBDriver();
             sci.password = systemVars_.getAutoLoadDBPassword();
-            sci.server = server + dbName + systemVars_.getAutoLoadDBParameters();
             sci.username = systemVars_.getAutoLoadDBUsername();
 
             return sci;
@@ -1196,14 +1158,6 @@ public class ResourceManager {
 
 	public void setRegistry(Registry registry) {
 		this.registry_ = registry;
-	}
-
-	public void setLexEvsDatabaseOperations(LexEvsDatabaseOperations lexEvsDatabaseOperations) {
-		this.lexEvsDatabaseOperations = lexEvsDatabaseOperations;
-	}
-
-	public LexEvsDatabaseOperations getLexEvsDatabaseOperations() {
-		return lexEvsDatabaseOperations;
 	}
 
 	public void setClassLoader(ClassLoader classLoader) {

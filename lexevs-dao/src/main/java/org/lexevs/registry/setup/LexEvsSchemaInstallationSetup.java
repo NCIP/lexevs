@@ -16,6 +16,7 @@ public class LexEvsSchemaInstallationSetup  implements InitializingBean {
 	private boolean isLexGridSchemaInstalled;
 
 	public void afterPropertiesSet() throws Exception {
+		System.out.println("setting up...");
 		String prefix = prefixResolver.resolvePrefix();
 		if(!isLexGridSchemaInstalled){
 				this.getLexEvsDatabaseOperations().getDatabaseUtility().executeScript(

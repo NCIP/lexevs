@@ -20,12 +20,16 @@ package org.lexevs.dao.database.operation;
 
 import java.sql.Connection;
 
+import javax.sql.DataSource;
+
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.dao.database.prefix.PrefixResolver;
+import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.dao.database.utility.DatabaseUtility;
 import org.lexevs.system.ResourceManager;
 import org.springframework.core.io.Resource;
@@ -41,6 +45,10 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	private DatabaseUtility databaseUtility;
 	private Resource lexevsSchemaCreateScript;
 	private ResourceManager resourceManager;
+	
+	private PrefixResolver prefixResolver;
+	private DataSource dataSource;
+	private DatabaseType databaseType;
 	
 	
 	/* (non-Javadoc)
@@ -142,10 +150,9 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	/* (non-Javadoc)
 	 * @see org.LexGrid.persistence.connection.PersistenceConnectionManager#getNewConnectionInfoForLoad()
 	 */
-	public SQLConnectionInfo getNewConnectionInfoForLoad(boolean indexTables){
+	public SQLConnectionInfo getNewConnectionInfoForLoad(){
 		try {			
 			SQLConnectionInfo connection = resourceManager.getSQLConnectionInfoForLoad();
-			//this.createTables(connection, indexTables);
 			return connection;
 		} catch (LBInvocationException e) {
 			throw new RuntimeException(e);
@@ -228,5 +235,56 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	public void setDatabaseUtility(DatabaseUtility databaseUtility) {
 		this.databaseUtility = databaseUtility;
 	}
-	
+
+	public PrefixResolver getPrefixResolver() {
+		return prefixResolver;
+	}
+
+	public void setPrefixResolver(PrefixResolver prefixResolver) {
+		this.prefixResolver = prefixResolver;
+	}
+
+	public DataSource getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
+	public DatabaseType getDatabaseType() {
+		return databaseType;
+	}
+
+	public void setDatabaseType(DatabaseType databaseType) {
+		this.databaseType = databaseType;
+	}
+
+	public void cleanupFailedLoad(String dbName, String prefix)
+			throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void computeTransitiveTable(String codingSchemeName,
+			String codingSchemeUri, String version) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void index(String codingSchemeName, SQLConnectionInfo connectionInfo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void index(String codingSchemeName, String codingSchemeUri,
+			String version) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void reIndex(String codingSchemeUri, String version) {
+		// TODO Auto-generated method stub
+		
+	}
 }

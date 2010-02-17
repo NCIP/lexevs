@@ -18,9 +18,13 @@
  */
 package org.lexevs.dao.database.operation;
 
+import javax.sql.DataSource;
+
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.dao.database.prefix.PrefixResolver;
+import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.dao.database.utility.DatabaseUtility;
 
 /**
@@ -35,7 +39,7 @@ public interface LexEvsDatabaseOperations {
 	 * 
 	 * @return the new connection info for load
 	 */
-	public SQLConnectionInfo getNewConnectionInfoForLoad(boolean indexTables);
+	public SQLConnectionInfo getNewConnectionInfoForLoad();
 	
 	/**
 	 * Gets the existing connection info.
@@ -82,6 +86,22 @@ public interface LexEvsDatabaseOperations {
 	public SQLTableUtilities getSQLTableUtilities(String codingScheme, String version);
 	
 	public DatabaseUtility getDatabaseUtility();
+	
+	public DataSource getDataSource();
+	
+	public PrefixResolver getPrefixResolver();
+	
+	public DatabaseType getDatabaseType();
+	
+	public void computeTransitiveTable(String codingSchemeName, String codingSchemeUri, String version);
+	
+	public void index(String codingSchemeName, SQLConnectionInfo connectionInfo);
+
+	public void index(String codingSchemeName, String codingSchemeUri, String version);
+		
+	public void cleanupFailedLoad(String dbName, String prefix) throws Exception;
+	
+	public void reIndex(String codingSchemeUri, String version);
 }
 
 

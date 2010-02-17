@@ -216,6 +216,10 @@
     <bean id="defaultLexEvsDatabaseOperations" class="org.lexevs.dao.database.operation.DefaultLexEvsDatabaseOperations">
    	 	<property name="databaseUtility" ref="defaultDatabaseUtility" />
    		<property name="lexevsSchemaCreateScript" ref="lexevsSchemaCreateScriptFactory"/>
+   		<property name="prefixResolver" ref="defaultPrefixResolver"/>
+   		<property name="resourceManager" ref="resourceManager"/>
+   		<property name="dataSource" ref="dataSource"/>
+   		<property name="databaseType" ref="databaseTypeFactory"/>
    	 </bean>
    	 
    	<bean id="lexevsSchemaCreateScriptFactory"
@@ -290,6 +294,8 @@
 	
 	<bean id="lexEvsServiceLocator" class="org.lexevs.locator.LexEvsServiceLocator">
 		<property name="resourceManager" ref="resourceManager"/>
+		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
+		<property name="databaseServiceManager" ref="databaseServiceManager"/>
 	</bean>
 	
 </beans>

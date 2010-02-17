@@ -1,5 +1,6 @@
 package org.lexevs.locator;
 
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.system.ResourceManager;
@@ -14,9 +15,10 @@ public class LexEvsServiceLocator {
 	private static String BEAN_NAME = "lexEvsServiceLocator";
 	private static String CONTEXT_FILE = "lexevsDao.xml";
 
-	private DatabaseServiceManager serviceManager;
+	private DatabaseServiceManager databaseServiceManager;
 	private ResourceManager resourceManager;
 	private Registry registry;
+	private LexEvsDatabaseOperations lexEvsDatabaseOperations;
 	
 	public static synchronized LexEvsServiceLocator getInstance(){
 		if(serviceLocator == null){
@@ -25,12 +27,7 @@ public class LexEvsServiceLocator {
 		return serviceLocator;
 	}
 	
-	public DatabaseServiceManager getServiceManager() {
-		return serviceManager;
-	}
-	public void setServiceManager(DatabaseServiceManager serviceManager) {
-		this.serviceManager = serviceManager;
-	}
+	
 	public ResourceManager getResourceManager() {
 		return resourceManager;
 	}
@@ -43,10 +40,30 @@ public class LexEvsServiceLocator {
 	public void setRegistry(Registry registry) {
 		this.registry = registry;
 	}
+
+	public void setLexEvsDatabaseOperations(LexEvsDatabaseOperations lexEvsDatabaseOperations) {
+		this.lexEvsDatabaseOperations = lexEvsDatabaseOperations;
+	}
+
+	public LexEvsDatabaseOperations getLexEvsDatabaseOperations() {
+		return lexEvsDatabaseOperations;
+	}
+
 	
+	public void setDatabaseServiceManager(DatabaseServiceManager databaseServiceManager) {
+		this.databaseServiceManager = databaseServiceManager;
+	}
+
+
+	public DatabaseServiceManager getDatabaseServiceManager() {
+		return databaseServiceManager;
+	}
+
 	public void setApplicationContext(ApplicationContext applicationContext)
-	throws BeansException {
+		throws BeansException {
 
 		serviceLocator = (LexEvsServiceLocator) applicationContext.getBean(BEAN_NAME);	
 	}
+
+
 }

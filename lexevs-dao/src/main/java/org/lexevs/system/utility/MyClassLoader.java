@@ -37,9 +37,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.commonTypes.Source;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.Logger;
-import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.constants.SystemVariables;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -306,6 +306,11 @@ public class MyClassLoader extends URLClassLoader {
             }
             */
         }
+    }
+    
+    @Deprecated
+    public static MyClassLoader instance(){
+    	return (MyClassLoader) LexEvsServiceLocator.getInstance().getResourceManager().getClassLoader();
     }
     
     @LgClientSideSafe

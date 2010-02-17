@@ -15,6 +15,8 @@ import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.system.ResourceManager;
 
 public class DaoManager {
+	
+	public static LexGridSchemaVersion CURRENT_VERSION = LexGridSchemaVersion.parseStringToVersion("2.0");
 
 	private List<CodingSchemeDao> codingSchemeDaos;
 	
@@ -36,6 +38,10 @@ public class DaoManager {
 	
 	public CodingSchemeDao getCodingSchemeDao(String codingSchemeUri, String version){
 		return this.doGetDao(codingSchemeUri, version, this.getCodingSchemeDaos());
+	}
+	
+	public CodingSchemeDao getCurrentCodingSchemeDao(){
+		return this.getCorrectDaoForSchemaVersion(this.codingSchemeDaos, CURRENT_VERSION);
 	}
 	
 	public PropertyDao getPropertyDao(String codingSchemeUri, String version){
