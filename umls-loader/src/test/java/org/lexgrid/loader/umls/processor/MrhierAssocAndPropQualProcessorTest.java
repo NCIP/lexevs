@@ -29,19 +29,13 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import org.LexGrid.persistence.dao.LexEvsDao;
-import org.LexGrid.persistence.model.EntityAssnsToEntity;
-import org.LexGrid.persistence.model.EntityAssnsToEquals;
-import org.LexGrid.persistence.model.EntityPropertyMultiAttrib;
 import org.easymock.LogicalOperator;
 import org.junit.Before;
 import org.junit.Test;
-import org.lexgrid.loader.processor.support.MinimalMultiAttribResolver;
 import org.lexgrid.loader.processor.support.QualifierResolver;
 import org.lexgrid.loader.rrf.model.Mrhier;
 import org.lexgrid.loader.rrf.staging.MrconsoStagingDao;
-
-import test.util.SupportHelpers;
+import org.lexgrid.loader.test.util.SupportHelpers;
 
 /**
  * The Class MrhierAssocAndPropQualProcessorTest.

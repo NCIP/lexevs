@@ -18,7 +18,8 @@
  */
 package org.lexgrid.loader.umls.integration.dataload;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
@@ -26,8 +27,8 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
+import org.lexgrid.loader.test.util.DataTestUtils;
 
-import test.util.DataTestUtils;
 import util.integration.LoadUmlsForIntegration;
 
 /**

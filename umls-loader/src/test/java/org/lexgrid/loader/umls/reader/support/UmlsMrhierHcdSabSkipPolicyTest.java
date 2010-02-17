@@ -18,9 +18,11 @@
  */
 package org.lexgrid.loader.umls.reader.support;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.lexgrid.loader.rrf.model.Mrhier;
-import static org.junit.Assert.*;
 
 /**
  * The Class UmlsMrhierHcdSabSkipPolicyTest.

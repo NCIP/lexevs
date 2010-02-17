@@ -18,11 +18,12 @@
  */
 package org.lexgrid.loader.umls.data.property;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.LexGrid.persistence.model.EntityProperty;
-import org.LexGrid.persistence.model.EntityPropertyId;
+import org.LexGrid.concepts.Presentation;
 import org.junit.Test;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexgrid.loader.rrf.data.property.MrrankUtility;
 import org.lexgrid.loader.rrf.model.Mrrank;
 
@@ -41,31 +42,18 @@ public class EntityPropertyPropertyComparatorTest {
 		
 		EntityPropertyPropertyComparator comparator = new EntityPropertyPropertyComparator();
 		
-		EntityProperty prop1 = new EntityProperty();
-		EntityPropertyId propId1 = new EntityPropertyId();		
-		propId1.setCodingSchemeName("test");
-		propId1.setEntityCode("test");
-		propId1.setEntityCodeNamespace("test");
-		propId1.setPropertyId("test");	
+		Presentation prop1 = new Presentation();	
+
 		prop1.setLanguage("ENG");
-		prop1.setId(propId1);
 		prop1.setPropertyType("test");
 		prop1.setPropertyName("test");
-		prop1.setPropertyValue("test");
-		prop1.setIsPreferred(false);
+		prop1.setValue(DaoUtility.createText("test"));
 		
-		EntityProperty prop2 = new EntityProperty();
-		EntityPropertyId propId2 = new EntityPropertyId();		
-		propId2.setCodingSchemeName("test");
-		propId2.setEntityCode("test");
-		propId2.setEntityCodeNamespace("test");
-		propId2.setPropertyId("test");	
+		Presentation prop2 = new Presentation();		
 		prop2.setLanguage("ENG");
-		prop2.setId(propId1);
 		prop2.setPropertyType("test");
 		prop2.setPropertyName("test");
-		prop2.setPropertyValue("test");
-		prop2.setIsPreferred(false);
+		prop2.setValue(DaoUtility.createText("test"));
 		
 		
 		
@@ -80,30 +68,17 @@ public class EntityPropertyPropertyComparatorTest {
 		
 		EntityPropertyPropertyComparator comparator = new EntityPropertyPropertyComparator();
 		
-		EntityProperty prop1 = new EntityProperty();
-		EntityPropertyId propId1 = new EntityPropertyId();		
-		propId1.setCodingSchemeName("test");
-		propId1.setEntityCode("test");
-		propId1.setEntityCodeNamespace("test");
-		propId1.setPropertyId("test");	
+		Presentation prop1 = new Presentation();	
 		prop1.setLanguage("ENG");
-		prop1.setId(propId1);
 		prop1.setPropertyType("test");
 		prop1.setPropertyName("test");
-		prop1.setPropertyValue("test");
+
 		prop1.setIsPreferred(false);
 		
-		EntityProperty prop2 = new EntityProperty();
-		EntityPropertyId propId2 = new EntityPropertyId();		
-		propId2.setCodingSchemeName("test");
-		propId2.setEntityCode("test");
-		propId2.setEntityCodeNamespace("test");
-		propId2.setPropertyId("test");	
+		Presentation prop2 = new Presentation();	
 		prop2.setLanguage("FR");
-		prop2.setId(propId1);
 		prop2.setPropertyType("test");
 		prop2.setPropertyName("test");
-		prop2.setPropertyValue("test");
 		prop2.setIsPreferred(false);
 		
 	
@@ -118,38 +93,24 @@ public class EntityPropertyPropertyComparatorTest {
 		
 		EntityPropertyPropertyComparator comparator = new EntityPropertyPropertyComparator();
 		
-		EntityProperty prop1 = new EntityProperty();
-		EntityPropertyId propId1 = new EntityPropertyId();		
-		propId1.setCodingSchemeName("test");
-		propId1.setEntityCode("test");
-		propId1.setEntityCodeNamespace("test");
-		propId1.setPropertyId("test");	
+		Presentation prop1 = new Presentation();	
 		prop1.setLanguage("ENG");
-		prop1.setId(propId1);
 		prop1.setRepresentationalForm("SSN");
 		prop1.setPropertyType("test");
 		prop1.setPropertyName("test");
-		prop1.setPropertyValue("test");
 		prop1.setIsPreferred(false);
 		
-		EntityProperty prop2 = new EntityProperty();
-		EntityPropertyId propId2 = new EntityPropertyId();		
-		propId2.setCodingSchemeName("test");
-		propId2.setEntityCode("test");
-		propId2.setEntityCodeNamespace("test");
-		propId2.setPropertyId("test");	
+		Presentation prop2 = new Presentation();
 		prop2.setLanguage("ENG");
-		prop2.setId(propId1);
 		prop2.setRepresentationalForm("VSY");
 		prop2.setPropertyType("test");
 		prop2.setPropertyName("test");
-		prop2.setPropertyValue("test");
 		prop2.setIsPreferred(false);
 			
 		comparator.setMrrankUtility(new MrrankTestUtility());
 		comparator.setSab("SRC");
 	
-		assertTrue(comparator.compare(prop1, prop2) == 1);
+		assertEquals(1, comparator.compare(prop1, prop2));
 	}
 	
 	/**
