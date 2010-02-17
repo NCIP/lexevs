@@ -62,7 +62,7 @@ LG_BASE_PATH=
 #
 # This path can be relative to the location of LG_BASE_PATH or absolute.
 # You may put more than one folder here by seperating the folders with a ';'.
-JAR_FILE_LOCATION=../../runtime
+JAR_FILE_LOCATION=../../../lgSharedLibraries;../../extLib
 
 # The location of the file that will store information about
 # all loaded terminologies.  
@@ -87,62 +87,39 @@ ITERATOR_IDLE_TIME=5
 
 # Max number of results that can be returned at once by
 # any query operation.  This corresponds to the maximum size
-# of the lists that are returned by Resolve calls.  This includes
-# resolveToList Methods in both CodedNodeGraph and CodedNodeSet
-# classes.
+# of the lists that are returned by Resolve calls.
 #
 # NOTE: This does not affect the total number of results
 # that can be returned by an iterator, just the size that
 # can be returned per 'next' call.
-MAX_RESULT_SIZE=1000
-
-
+MAX_RESULT_SIZE=10000
 
 
 ############# Database Configuration
 
-
-# When SINGLE_DB_MODE is set to false, a new database will be created 
-# for each loaded terminology.  When SINGLE_DB_MODE is set to true, 
-# a new set of tables (with a unique prefix) will be created for 
-# each loaded terminology.  All terminologies will be held inside 
-# the same physical database.
-#
-# NOTE: This value should typically not be changed once content has
-# been loaded.  If a change is required, it is recommended that all
-# coding schemes be removed and the resource registry (xml file in
-# the same directory as this config) be deleted prior to the change.
-SINGLE_DB_MODE=false
-
-# This is the address of the database server that will be used
+# The DB_URL holds the address of the database server that will be used
 # when you load a new terminology through the LexBIG API.  
-#
 ######  READ THE NEXT LINES CAREFULLY!  ######
-# If you have set 'SINGLE_DB_MODE' to 'true', then this variable 
-# _should_ contain the database name.
-#
-# If you have set 'SINGLE_DB_MODE' to 'false', then this variable 
-# _should NOT_ contain the database name. Instead, it should end 
-# at the end of the server address plus whatever character seperates 
-# the server name from the database name. 
+# NOTE: Multi Database mode has be DEPRECATED. New content may not
+# be loaded in Multi Database Mode. Existing content loaded in
+# Multi Database Mode may still be accessed.
+SINGLE_TABLE_MODE=true
+
+# This variable _should_ contain the database name.
 #
 # NOTE: Changes to the URL will only affect newly loaded content.
 # The URL's for content that is already loaded are stored in the 
 # registry.xml file.
 
-# Examples for 'SINGLE_DB_MODE=false'
-DB_URL=jdbc:mysql://bmidev4:3307/
-#DB_URL=jdbc:postgresql://bmidev/
-#DB_URL=jdbc:hsqldb:file:src/test/tmp/
-#DB_URL=jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=C:/temp/
-
-# Examples for 'SINGLE_DB_MODE=true'
-#DB_URL=jdbc:mysql://bmidev/LexGrid
+# Examples for DB_URL'
+DB_URL=jdbc:mysql://localhost/sb
+#DB_URL=jdbc:mysql://bmidev4:3307/sb
 #DB_URL=jdbc:postgresql://bmidev/LexGrid
-#DB_URL=jdbc:hsqldb:file:C:/temp/LexGrid
+#DB_URL=jdbc:hsqldb:mem:test
 #DB_URL=jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=C:/temp/LexBIG.mdb
+#DB_URL=jdbc:oracle:thin:@localhost:1521:LEXGRID
 
-# The prefix to use on created tables or database names.  
+# The DB_PREFIX holds the prefix to use on created tables or database names.  
 # If 'SINGLE_DB_MODE=true', this prefix will be used on the created tables.
 # If 'SINGLE_DB_MODE=false', this prefix will be used on the created databases.
 #
@@ -157,7 +134,7 @@ DB_URL=jdbc:mysql://bmidev4:3307/
 # Recommended characters are alphanumeric (a-z, 0-9) and
 # underscore '_'.
 # NOTE: This variable should typically not be changed after content has been loaded.
-DB_PREFIX=ST
+DB_PREFIX=
 
 # Optional parameters to append to the end of the database
 # connection string.  Access to some database environments
@@ -168,10 +145,12 @@ DB_PARAM=
 
 # The database driver.
 # NOTE: This should typically not be changed after content has been loaded.
-DB_DRIVER=org.gjt.mm.mysql.Driver
+#DB_DRIVER=org.gjt.mm.mysql.Driver
+DB_DRIVER=com.mysql.jdbc.Driver
 #DB_DRIVER=org.postgresql.Driver
 #DB_DRIVER=org.hsqldb.jdbcDriver
 #DB_DRIVER=sun.jdbc.odbc.JdbcOdbcDriver
+#DB_DRIVER=oracle.jdbc.driver.OracleDriver
 
 # The database username and password.
 #
@@ -179,8 +158,30 @@ DB_DRIVER=org.gjt.mm.mysql.Driver
 # PERMISSION TO CREATE AND REMOVE DATABASES in the database environment.
 # If SINGLE_DB_MODE is set to true, the specified account MUST HAVE permission
 # to create and remove tables, indexes, and foreign keys in the database environment.
-DB_USER=lexgrid
-DB_PASSWORD=lexgrid
+DB_USER=root
+DB_PASSWORD=root
+
+############# Password encryption
+
+#Password encryption can be enabled by setting 'DB_PASSWORD_ENCRYPTED' to true (case insensitive). 
+#Note that, any value other than 'true' is considered false.
+
+DB_PASSWORD_ENCRYPTED=fakse
+
+############# History Database Schema
+
+# History tables are created optionally on the specified database schema. 
+# If left blank, history tables gets created along with the base tables.
+# This functionality is enabled ONLY when SINGLE_DB_MODE=true
+
+#HISTORY_DB_SCHEMA=
+
+############# Lucene Configuration
+# The number of boolean 'clauses' Lucene will attempt to create for wildcard
+# or Regular Expression queries. For very general queries on large ontologies,
+# this will need to be set high.
+
+LUCENE_MAX_CLAUSE_COUNT=40000
 
 ############# Logging Configuration
 
@@ -191,6 +192,10 @@ LOG_FILE_LOCATION=../../logs
 #API Call Logging - enabling API call logging will cause every method call to be printed
 #to the log file.
 API_LOG_ENABLED=false
+
+#SQL Logging - enabling SQL logging will cause every sql statement executed to be printed
+#to the log file.
+SQL_LOG_ENABLED=false
 
 # Enabling Debug will cause much more information to be
 # written to the log files, but will impact runtime performance.
@@ -229,3 +234,66 @@ SMTP_SERVER=yourserver.edu
 # This can be a single address or comma-separated list.
 # NOTE: Only applicable if EMAIL_ERRORS is set to 'true'.
 EMAIL_TO=yourAddress@.edu
+
+##############################################################################
+# All of the following variables are for non-API compliant and unsupported
+# features, and should be commented out unless you know what they do.
+##############################################################################
+##############################################################################
+# SQL Configuration section - one group of 5 entries per SQL server to be used
+# by this service. Increment the number for each unique server.
+# Numbers need not be in order - but max number must be less than 20.
+##############################################################################
+
+#SQL_1_NAME=Postgresql
+#SQL_1_URL=jdbc:postgresql://mir04/LexGrid
+#SQL_1_DRIVER=org.postgresql.Driver
+#SQL_1_USERNAME=mirpub
+#SQL_1_PASSWORD=mirpub
+
+#SQL_4_NAME=MySQL
+#SQL_4_URL=jdbc:mysql://bmidev/LexGrid2
+#SQL_4_DRIVER=org.gjt.mm.mysql.Driver
+#SQL_4_USERNAME=lexgrid
+#SQL_4_PASSWORD=lexgrid
+
+#SQL_5_NAME=MySQL
+#SQL_5_URL=jdbc:mysql://bmidev/LexGrid3
+#SQL_5_DRIVER=org.gjt.mm.mysql.Driver
+#SQL_5_USERNAME=lexgrid
+#SQL_5_PASSWORD=lexgrid
+
+#SQL_2_NAME=Postgresql
+#SQL_2_URL=jdbc:postgresql://mir04/LexGrid2
+#SQL_2_DRIVER=org.postgresql.Driver
+#SQL_2_USERNAME=mirpub
+#SQL_2_PASSWORD=mirpub
+
+#SQL_3_NAME=MySQL
+#SQL_3_URL=jdbc:mysql://localhost/LexGrid
+#SQL_3_DRIVER=org.gjt.mm.mysql.Driver
+#SQL_3_USERNAME=lexgrid
+#SQL_3_PASSWORD=lexgrid
+
+#SQL_6_NAME=MySQL
+#SQL_6_URL=jdbc:mysql:///LexGrid
+#SQL_6_DRIVER=org.gjt.mm.mysql.Driver
+#SQL_6_USERNAME=root
+#SQL_6_PASSWORD=
+#SQL_6_DB_PARAM=?socketFactory=com.mysql.jdbc.NamedPipeSocketFactory
+
+##############################################################################
+# Lucene Index section - one entry per Index Location to be used by this
+# service.  Increment the number for each index.
+# Numbers need not be in order - but max number must be less than 20.
+##############################################################################
+
+#INDEX_1_LOCATION=C:\\Eclipse Projects\\default-workspace\\lbImpl\\resources\\lbIndex\\metathesaurus index
+#INDEX_2_LOCATION=C:\\temp\\LexGrid2 Indexes\\
+#INDEX_4_LOCATION=C:\\temp\\LexGrid3 Indexes\\
+#INDEX_3_LOCATION=X:\\invalid
+
+
+
+
+
