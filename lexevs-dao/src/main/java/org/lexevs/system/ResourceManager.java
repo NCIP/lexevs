@@ -55,6 +55,7 @@ import org.lexevs.dao.index.connection.IndexInterface;
 import org.lexevs.exceptions.InitializationException;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.exceptions.UnexpectedInternalError;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.Logger;
 import org.lexevs.registry.WriteLockManager;
 import org.lexevs.registry.model.RegistryEntry;
@@ -138,6 +139,10 @@ public class ResourceManager {
     // Properties object that I was launched with (need to keep incase reinit is
     // called)
     private static Properties props_;
+    
+    public static ResourceManager instance(){
+    	return LexEvsServiceLocator.getInstance().getResourceManager();
+    }
 
     /**
      * This method is used by the lock manager thread, if another thread changed
