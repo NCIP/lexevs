@@ -20,7 +20,7 @@ import test.rrf.BaseTestRrf;
 
 public class LoadUmlsForIntegration {
 	public static String RRF_DIRECTORY = "src/test/resources/data/sample-air";
-	public static String CONFIG_FILE = "src/test/resources/config/configSingleDb.props";
+	public static String CONFIG_FILE = "src/test/resources/config/lbconfig.props";
 	
 	public static String UMLS_URN = "urn:oid:2.16.840.1.113883.6.110";
 	public static String UMLS_VERSION = "1993.bvt";
