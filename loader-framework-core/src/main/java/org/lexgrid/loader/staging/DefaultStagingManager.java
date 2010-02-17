@@ -81,7 +81,7 @@ public class DefaultStagingManager extends LoggingBean implements StagingManager
 	 * @throws Exception the exception
 	 */
 	protected void createStagingDatabase(Resource creationScriptPath) throws Exception {
-		lexEvsDatabaseOperations.getDatabaseUtilities().executeScript(creationScriptPath);	
+		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(creationScriptPath);	
 	}
 
 	/* (non-Javadoc)
@@ -91,7 +91,7 @@ public class DefaultStagingManager extends LoggingBean implements StagingManager
 		Set<String> databases = registeredStagingDatabases.keySet();
 		
 		for(String db : databases){
-			lexEvsDatabaseOperations.getDatabaseUtilities().dropDatabase(db);
+			lexEvsDatabaseOperations.getDatabaseUtility().dropDatabase(db);
 			registeredStagingDatabases.remove(db);
 		}		
 	}
@@ -100,7 +100,7 @@ public class DefaultStagingManager extends LoggingBean implements StagingManager
 	 * @see org.lexgrid.loader.staging.StagingManager#dropStagingDatabase(java.lang.String)
 	 */
 	public void dropStagingDatabase(String databaseName) throws Exception {
-		lexEvsDatabaseOperations.getDatabaseUtilities().dropDatabase(databaseName);
+		lexEvsDatabaseOperations.getDatabaseUtility().dropDatabase(databaseName);
 		registeredStagingDatabases.remove(databaseName);
 	}
 	

@@ -7,6 +7,8 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.database.service.entity.EntityService;
+import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.system.ResourceManager;
 import org.lexgrid.loader.test.LoaderFrameworkCoreTestBase;
 import org.lexgrid.loader.test.util.SupportHelpers.TestCodingSchemeNameSetter;
@@ -19,18 +21,23 @@ public class EntityWriterTest extends LoaderFrameworkCoreTestBase {
 	private EntityWriter entityWriter;
 	
 	@Autowired
+	private CodingSchemeService codingSchemeService;
+	
+	@Autowired
 	private ResourceManager resourceManager;
 	
 	@Autowired
-	private CodingSchemeService codingSchemeService;
+	private EntityService entityService;
 	
 	@Test
 	public void testEntity() throws Exception{
 		TestCodingSchemeNameSetter test = new TestCodingSchemeNameSetter();
 		
-		resourceManager.getLexEvsDatabaseOperations().createTables("");
-		resourceManager.getRegistry().addNewItem(test.getCodingSchemeUri(), test.getCodingSchemeVersion(), "active", "url", null, null, null);
-		
+		RegistryEntry entry = new RegistryEntry();
+		entry.setResourceUri(test.getCodingSchemeUri());
+		entry.setResourceVersion(test.getCodingSchemeVersion());
+		entry.setDbSchemaVersion("2.0");
+		resourceManager.getRegistry().addNewItem(entry);
 		
 		CodingScheme cs = new CodingScheme();
 		cs.setCodingSchemeName(test.getCodingSchemeUri());
@@ -48,10 +55,11 @@ public class EntityWriterTest extends LoaderFrameworkCoreTestBase {
 		
 		holder.setItem(e);
 		
-		
 		List<CodingSchemeIdHolder<Entity>> list = new ArrayList<CodingSchemeIdHolder<Entity>>();
 		list.add(holder);
 		
 		entityWriter.write(list);
+		
+		
 	}
 }

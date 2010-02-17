@@ -50,7 +50,7 @@ public class JobRepositoryManagerTest extends LoaderFrameworkCoreTestBase{
 	public void testInsertOraclePrefix() throws Exception {
 		
 		LexEvsDatabaseOperations dbOps = EasyMock.createMock(LexEvsDatabaseOperations.class);
-		EasyMock.expect(dbOps.getDatabaseUtilities()).andReturn(new TestDatabaseUtility()).anyTimes();
+		EasyMock.expect(dbOps.getDatabaseUtility()).andReturn(new TestDatabaseUtility()).anyTimes();
 		EasyMock.replay(dbOps);
 		
 		JobRepositoryManager manager = new JobRepositoryManager();
@@ -75,7 +75,7 @@ public class JobRepositoryManagerTest extends LoaderFrameworkCoreTestBase{
 	@Test
 	public void testInsertMysqlPrefix() throws Exception {
 		LexEvsDatabaseOperations dbOps = EasyMock.createMock(LexEvsDatabaseOperations.class);
-		EasyMock.expect(dbOps.getDatabaseUtilities()).andReturn(new TestDatabaseUtility()).anyTimes();
+		EasyMock.expect(dbOps.getDatabaseUtility()).andReturn(new TestDatabaseUtility()).anyTimes();
 		EasyMock.replay(dbOps);
 		
 		
@@ -100,7 +100,7 @@ public class JobRepositoryManagerTest extends LoaderFrameworkCoreTestBase{
 	@Test
 	public void testInsertHsqldbPrefix() throws Exception {
 		LexEvsDatabaseOperations dbOps = EasyMock.createMock(LexEvsDatabaseOperations.class);
-		EasyMock.expect(dbOps.getDatabaseUtilities()).andReturn(new TestDatabaseUtility()).anyTimes();
+		EasyMock.expect(dbOps.getDatabaseUtility()).andReturn(new TestDatabaseUtility()).anyTimes();
 		EasyMock.replay(dbOps);
 		
 		JobRepositoryManager manager = new JobRepositoryManager();
@@ -125,7 +125,7 @@ public class JobRepositoryManagerTest extends LoaderFrameworkCoreTestBase{
 	@Test
 	public void testInsertDb2Prefix() throws Exception {
 		LexEvsDatabaseOperations dbOps = EasyMock.createMock(LexEvsDatabaseOperations.class);
-		EasyMock.expect(dbOps.getDatabaseUtilities()).andReturn(new TestDatabaseUtility()).anyTimes();
+		EasyMock.expect(dbOps.getDatabaseUtility()).andReturn(new TestDatabaseUtility()).anyTimes();
 		EasyMock.replay(dbOps);
 		
 		JobRepositoryManager manager = new JobRepositoryManager();
@@ -151,7 +151,7 @@ public class JobRepositoryManagerTest extends LoaderFrameworkCoreTestBase{
 	@Test
 	public void testInsertPostgresPrefix() throws Exception {
 		LexEvsDatabaseOperations dbOps = EasyMock.createMock(LexEvsDatabaseOperations.class);
-		EasyMock.expect(dbOps.getDatabaseUtilities()).andReturn(new TestDatabaseUtility()).anyTimes();
+		EasyMock.expect(dbOps.getDatabaseUtility()).andReturn(new TestDatabaseUtility()).anyTimes();
 		EasyMock.replay(dbOps);
 		
 		JobRepositoryManager manager = new JobRepositoryManager();

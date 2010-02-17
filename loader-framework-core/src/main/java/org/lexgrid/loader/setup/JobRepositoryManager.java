@@ -77,7 +77,7 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 		if(! doJobRepositoryTablesExist()){
 			getLogger().info("Creating Job Repository.");
 			String script = DefaultDatabaseUtility.convertResourceToString(createScript);
-			lexEvsDatabaseOperations.getDatabaseUtilities().executeScript(insertPrefixVariable(script), prefixResolver.resolvePrefix());
+			lexEvsDatabaseOperations.getDatabaseUtility().executeScript(insertPrefixVariable(script), prefixResolver.resolvePrefix());
 		} else {
 			getLogger().info("Not Creating Job Repository.");
 		}
@@ -109,7 +109,7 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	 */
 	protected boolean doJobRepositoryTablesExist(){
 		try {
-			lexEvsDatabaseOperations.getDatabaseUtilities().executeScript("SELECT * FROM " + prefixResolver.resolvePrefix() + "JOB_INSTANCE");
+			lexEvsDatabaseOperations.getDatabaseUtility().executeScript("SELECT * FROM " + prefixResolver.resolvePrefix() + "JOB_INSTANCE");
 		} catch (Exception e) {
 			return false;
 		}
@@ -123,7 +123,7 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	 */
 	public void dropJobRepositoryDatabases() throws Exception {
 		String script = DefaultDatabaseUtility.convertResourceToString(dropScript);
-		lexEvsDatabaseOperations.getDatabaseUtilities().executeScript(insertPrefixVariable(script));
+		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(insertPrefixVariable(script));
 	}
 	
 	public void dropJobRepositoryDatabasesOnClose() throws Exception {
