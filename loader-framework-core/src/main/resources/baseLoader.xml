@@ -82,7 +82,6 @@
 		<beans:property name="createScript" ref="jobRepositoryCreationScriptFactory"/>
 		<beans:property name="dropScript" ref="jobRepositoryDropScriptFactory"/>	
 		<beans:property name="databaseType" ref="databaseTypeFactory"/>
-		<beans:property name="prefixResolver" ref="defaultPrefixResolver"/> 
 	</beans:bean>
 	
 	<beans:bean id="stagingManager" parent="loggingBean"
@@ -91,6 +90,7 @@
 			<beans:ref bean="defaultLexevsdatabaseoperations"/>
 		</beans:property>
 		<beans:property name="retry" value="${retry}"/>
+		<beans:property name="prefix" value="${prefix}"/>
 	</beans:bean>
 		
 	<beans:bean id="simpleJob" class="org.springframework.batch.core.job.SimpleJob" abstract="true">

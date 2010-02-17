@@ -34,6 +34,7 @@ import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.operation.DefaultLexEvsDatabaseOperations;
 import org.lexevs.exceptions.UnexpectedInternalError;
+import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexgrid.loader.connection.LoaderConnectionManager;
@@ -134,17 +135,16 @@ public class LexEVSConnectionManager extends DefaultLexEvsDatabaseOperations imp
 	 */
 	public void register(String uri, String version, String status, String serverUrl, String tag, String dbName, String prefix) throws Exception {
 		ResourceManager rm = ResourceManager.instance();
-		rm.getRegistry().addNewItem(uri, 
-				version, 
-				status, 
-				serverUrl, 
-				tag,
-				dbName, 
-				prefix);
-		SQLConnectionInfo connectionInfo = 
-			this.getConnectionInfo(uri, version);
+		RegistryEntry entry = new RegistryEntry();
+		entry.setResourceUri(uri);
+		entry.setResourceVersion(version);
+		entry.setStatus(status);
+		entry.setDbUri(serverUrl);
+		entry.setTag(tag);
+		entry.setDbName(dbName);
+		entry.setPrefix(prefix);
+		rm.getRegistry().addNewItem(entry);
 		
-		rm.readTerminologiesFromServer(connectionInfo);
 	}
 	
 	/**
@@ -209,7 +209,8 @@ public class LexEVSConnectionManager extends DefaultLexEvsDatabaseOperations imp
 	 * @param connectionInfo the connection info
 	 */
 	protected void refreshResourceManager(SQLConnectionInfo connectionInfo){
-		ResourceManager.instance().readTerminologiesFromServer(connectionInfo);
+		//TODO:
+		//ResourceManager.instance().readTerminologiesFromServer(connectionInfo);
 	}
 	
 	/**

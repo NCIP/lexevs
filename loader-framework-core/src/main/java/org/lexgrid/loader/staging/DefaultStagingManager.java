@@ -42,6 +42,8 @@ public class DefaultStagingManager extends LoggingBean implements StagingManager
 	/** The retry. */
 	private boolean retry;
 	
+	private String prefix;
+	
 	/**
 	 * Gets the registered staging databases.
 	 * 
@@ -81,7 +83,7 @@ public class DefaultStagingManager extends LoggingBean implements StagingManager
 	 * @throws Exception the exception
 	 */
 	protected void createStagingDatabase(Resource creationScriptPath) throws Exception {
-		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(creationScriptPath);	
+		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(creationScriptPath, prefix);	
 	}
 
 	/* (non-Javadoc)
@@ -141,5 +143,13 @@ public class DefaultStagingManager extends LoggingBean implements StagingManager
 	 */
 	public void setRetry(boolean retry) {
 		this.retry = retry;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public String getPrefix() {
+		return prefix;
 	}
 }

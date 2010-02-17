@@ -48,8 +48,6 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	
 	private DatabaseType databaseType;
 	
-	private PrefixResolver prefixResolver;
-	
 	//Not needed now... just in case a subclass might...
 	/** The tables. */
 	protected String[] tables = {
@@ -77,7 +75,8 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 		if(! doJobRepositoryTablesExist()){
 			getLogger().info("Creating Job Repository.");
 			String script = DefaultDatabaseUtility.convertResourceToString(createScript);
-			lexEvsDatabaseOperations.getDatabaseUtility().executeScript(insertPrefixVariable(script), prefixResolver.resolvePrefix());
+			lexEvsDatabaseOperations.getDatabaseUtility().executeScript(insertPrefixVariable(script), 
+					lexEvsDatabaseOperations.getPrefixResolver().resolvePrefix());
 		} else {
 			getLogger().info("Not Creating Job Repository.");
 		}
@@ -109,7 +108,7 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	 */
 	protected boolean doJobRepositoryTablesExist(){
 		try {
-			lexEvsDatabaseOperations.getDatabaseUtility().executeScript("SELECT * FROM " + prefixResolver.resolvePrefix() + "JOB_INSTANCE");
+			lexEvsDatabaseOperations.getDatabaseUtility().executeScript("SELECT * FROM " + this.getLexEvsDatabaseOperations().getPrefixResolver().resolvePrefix() + "JOB_INSTANCE");
 		} catch (Exception e) {
 			return false;
 		}
@@ -187,16 +186,6 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 
 	public void setDatabaseType(DatabaseType databaseType) {
 		this.databaseType = databaseType;
-	}
-
-	
-
-	public PrefixResolver getPrefixResolver() {
-		return prefixResolver;
-	}
-
-	public void setPrefixResolver(PrefixResolver prefixResolver) {
-		this.prefixResolver = prefixResolver;
 	}
 
 	public LexEvsDatabaseOperations getLexEvsDatabaseOperations() {
