@@ -51,7 +51,7 @@
 				<ref bean="ibatisEntityDao"/>
 			</list>
 		</property>
-		<property name="resourceManager" ref="resourceManager"/>
+		<property name="registry" ref="databaseRegistry"/>
 	</bean>
 	
 	 <bean id="ibatisEntityDao"
@@ -215,19 +215,27 @@
     
     <bean id="defaultLexEvsDatabaseOperations" class="org.lexevs.dao.database.operation.DefaultLexEvsDatabaseOperations">
    	 	<property name="databaseUtility" ref="defaultDatabaseUtility" />
-   		<property name="lexevsSchemaCreateScript" ref="lexevsSchemaCreateScriptFactory"/>
+   		<property name="lexevsCommonSchemaCreateScript" ref="lexevsCommonSchemaCreateScript"/>
+   		<property name="lexevsCodingSchemeSchemaCreateScript" ref="lexevsCodingSchemeSchemaCreateScript"/>
    		<property name="prefixResolver" ref="defaultPrefixResolver"/>
-   		<property name="resourceManager" ref="resourceManager"/>
    		<property name="dataSource" ref="dataSource"/>
    		<property name="databaseType" ref="databaseTypeFactory"/>
    	 </bean>
    	 
-   	<bean id="lexevsSchemaCreateScriptFactory"
+   	<bean id="lexevsCodingSchemeSchemaCreateScript"
 		class="org.lexevs.dao.database.setup.script.ScriptFactory">
 		<property name="scriptType" value="create"/>
 		<property name="databaseType" ref="databaseTypeFactory"/>
 		<property name="creationScriptPrefix" value="sql/lexevs/codingscheme-create-"/>
 	</bean>
+	
+	<bean id="lexevsCommonSchemaCreateScript"
+		class="org.lexevs.dao.database.setup.script.ScriptFactory">
+		<property name="scriptType" value="create"/>
+		<property name="databaseType" ref="databaseTypeFactory"/>
+		<property name="creationScriptPrefix" value="sql/lexevs/common-create-"/>
+	</bean>
+	
 	
 	<bean id="registrySessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
 		<property name="dataSource">
@@ -255,15 +263,13 @@
 	<bean id="resourceManager" class="org.lexevs.system.ResourceManager" init-method="init" depends-on="lexEvsSchemaInstallationSetup">
 		<property name="systemVariables" ref="systemVariables"/>
 		<property name="logger" ref="loggerFactory"/>
-		<property name="registry" ref="databaseRegistry"/>
 	</bean>
 	
-	<bean id="lexEvsSchemaInstallationSetup" class="org.lexevs.registry.setup.LexEvsSchemaInstallationSetup">
+	<bean id="lexEvsSchemaInstallationSetup" class="org.lexevs.registry.setup.LexEvsSchemaInstallationSetup"
+		parent="loggingBean">
 		<property name="lexGridSchemaInstalled" ref="lexGridSchemaCheckFactory"/>
 		<property name="systemVariables" ref="systemVariables"/> 
-		<property name="registryCreateScript" ref="lexevsRegistrySchemaCreateScriptFactory"/> 
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
-		<property name="prefixResolver" ref="defaultPrefixResolver"/>
 	</bean>
 	
     <bean id="defaultDatabaseUtility"
@@ -271,22 +277,14 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 	
-	<bean id="lexevsRegistrySchemaCreateScriptFactory"
-		class="org.lexevs.dao.database.setup.script.ScriptFactory">
-		<property name="scriptType" value="create"/>
-		<property name="databaseType" ref="databaseTypeFactory"/>
-		<property name="creationScriptPrefix" value="sql/lexevs/common-create-"/>
-	</bean>
-	
-
 	<bean id="lexGridSchemaCheckFactory"
 		class="org.lexevs.dao.database.setup.schemacheck.LexGridSchemaCheckFactory">
 		<property name="dataSource" ref="dataSource"/>  
 		<property name="databaseType" ref="databaseTypeFactory"/>  
+		<property name="prefixResolver" ref="defaultPrefixResolver"/>
 	</bean>
 	
 	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager"/>
-
 	
 	<bean id="databaseTypeFactory" class="org.lexevs.dao.database.type.DatabaseTypeFactory">
 		<property name="dataSource" ref="dataSource"/> 
@@ -296,6 +294,10 @@
 		<property name="resourceManager" ref="resourceManager"/>
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
 		<property name="databaseServiceManager" ref="databaseServiceManager"/>
+	</bean>
+	
+	<bean id="loggingBean" class="org.lexevs.logging.LoggingBean" abstract="true">
+		<property name="logger" ref="loggerFactory"/>
 	</bean>
 	
 </beans>

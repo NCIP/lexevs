@@ -59,7 +59,7 @@ public class CyclingCharDbPrefixGenerator implements InitializingBean, NextDatab
 	}
 	
 	protected char[] findNextInCycle(char[] chars){
-		if(this.databaseUtility.doesTableExist(prefixResolver.resolvePrefix() + new String(chars).toLowerCase() + this.testDatabaseName)){
+		if(this.databaseUtility.doesTableExist(prefixResolver.resolveDefaultPrefix() + new String(chars).toLowerCase() + this.testDatabaseName)){
 			return findNextInCycle(incrementByOne(chars));
 		} else {
 			return chars;

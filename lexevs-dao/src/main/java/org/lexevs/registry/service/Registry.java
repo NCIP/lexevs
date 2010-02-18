@@ -8,14 +8,13 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
-import org.lexevs.exceptions.InternalException;
 import org.lexevs.registry.model.RegistryEntry;
 
 public interface Registry {
 	
 	public enum ResourceType {CODING_SCHEME, VALUE_DOMAIN, PICKLIST, NCI_HISTORY}
+	public enum KnownTags {PRODUCTION};
 	
 	public File getRegistryFile();
 
@@ -23,11 +22,6 @@ public interface Registry {
 			String version);
 
 	public boolean isActive(String codingSchemeURN, String version);
-
-	public SQLConnectionInfo getSQLConnectionInfoForCodeSystem(
-			AbsoluteCodingSchemeVersionReference codingSchemeVersion);
-
-	public SQLConnectionInfo[] getSQLConnectionInfoForHistory(String urn);
 
 	public String getTag(String codingSchemeURN, String version);
 
@@ -54,7 +48,7 @@ public interface Registry {
 			AbsoluteCodingSchemeVersionReference codingScheme, String newVersion)
 			throws LBInvocationException, LBParameterException;
 
-	public RegistryEntry getEntry(String codingSchemeURN, String version)
+	public RegistryEntry getEntry(String uri)
 			throws LBParameterException;
 
 	public RegistryEntry getEntry(AbsoluteCodingSchemeVersionReference codingScheme)
@@ -71,14 +65,9 @@ public interface Registry {
 
 	public Date getLastUpdateTime();
 
-	public void remove(AbsoluteCodingSchemeVersionReference codingSchemeVersion)
-			throws InternalException, LBInvocationException,
-			LBParameterException;
-
-	public HistoryEntry getHistoryEntry(String urn) throws LBParameterException;
-
-	public void removeHistoryEntry(String urn) throws InternalException,
-			LBInvocationException, LBParameterException;
+	public void removeCodingScheme(AbsoluteCodingSchemeVersionReference codingSchemeVersion);
+	
+	public void removeRegistryEntry(String uri);
 
 	public String getNextDBIdentifier() throws LBInvocationException;
 
@@ -91,7 +80,8 @@ public interface Registry {
 			AbsoluteCodingSchemeVersionReference newURNVerison)
 			throws LBInvocationException, LBParameterException;
 	
-
+/*
+	@Deprecated
     public class DBEntry {
     	public String urn;
         public String version;
@@ -104,6 +94,7 @@ public interface Registry {
         public long deactiveDate;
     }
     
+	@Deprecated
     public class HistoryEntry {
         public String urn;
         public String dbURL;
@@ -111,4 +102,5 @@ public interface Registry {
         public String dbName;
         public long lastUpdateDate;
     }
+    */
 }

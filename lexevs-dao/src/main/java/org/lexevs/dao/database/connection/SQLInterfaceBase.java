@@ -73,7 +73,7 @@ public class SQLInterfaceBase extends JDBCBaseService {
 
             // Connection pool parameters
             JDBCConnectionPoolPolicy pol = getConnectionPoolPolicy();
-            pol.maxActive = LexEvsServiceLocator.getInstance().getResourceManager().getSystemVariables().getMaxConnectionsPerDB();
+            pol.maxActive = 5;
             pol.maxIdle = -1;
             pol.maxWait = -1;
             pol.minEvictableIdleTimeMillis = -1;

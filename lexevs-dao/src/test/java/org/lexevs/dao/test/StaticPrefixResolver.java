@@ -14,7 +14,7 @@ public class StaticPrefixResolver implements PrefixResolver {
 		this.prefix = prefix;
 	}
 	
-	public String resolvePrefix() {
+	public String resolveDefaultPrefix() {
 		return prefix;
 	}
 

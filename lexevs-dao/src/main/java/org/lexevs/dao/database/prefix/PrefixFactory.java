@@ -7,7 +7,7 @@ public class PrefixFactory implements FactoryBean {
 	private PrefixResolver prefixResolver;
 	
 	public Object getObject() throws Exception {
-		return prefixResolver.resolvePrefix();
+		return prefixResolver.resolveDefaultPrefix();
 	}
 
 	public Class getObjectType() {

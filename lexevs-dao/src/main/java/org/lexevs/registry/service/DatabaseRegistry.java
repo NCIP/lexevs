@@ -56,9 +56,6 @@ public class DatabaseRegistry implements Registry {
 		return registryDao.getAllRegistryEntriesOfType(type);
 	}
 
-	public DBEntry[] getDBEntries() {
-		return new DBEntry[0];
-	}
 
 	@Transactional
 	public Date getDeactivateDate(String codingSchemeURN, String version) {
@@ -66,10 +63,10 @@ public class DatabaseRegistry implements Registry {
 	}
 
 	@Transactional
-	public RegistryEntry getEntry(String codingSchemeURN, String version)
+	public RegistryEntry getEntry(String uri)
 			throws LBParameterException {
 		return 
-				registryDao.getRegistryEntryForUriAndVersion(codingSchemeURN, version);
+				registryDao.getRegistryEntryForUri(uri);
 	}
 
 	@Transactional
@@ -84,11 +81,6 @@ public class DatabaseRegistry implements Registry {
 
 	public List<RegistryEntry> getHistoryEntries() {
 		return this.registryDao.getAllRegistryEntriesOfType(ResourceType.NCI_HISTORY);
-	}
-
-	public HistoryEntry getHistoryEntry(String urn) throws LBParameterException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Transactional
@@ -152,15 +144,7 @@ public class DatabaseRegistry implements Registry {
 		return false;
 	}
 
-	public void remove(AbsoluteCodingSchemeVersionReference codingSchemeVersion)
-			throws InternalException, LBInvocationException,
-			LBParameterException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void removeHistoryEntry(String urn) throws InternalException,
-			LBInvocationException, LBParameterException {
+	public void removeCodingScheme(AbsoluteCodingSchemeVersionReference codingSchemeVersion){
 		// TODO Auto-generated method stub
 		
 	}
@@ -208,6 +192,11 @@ public class DatabaseRegistry implements Registry {
 				getRegistryEntryForUriAndVersion(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion()).getDbSchemaVersion());
 	}
 
+
+	public void removeRegistryEntry(String uri) {
+		// TODO Auto-generated method stub
+		
+	}
 	public void setRegistryDao(RegistryDao registryDao) {
 		this.registryDao = registryDao;
 	}
@@ -224,6 +213,5 @@ public class DatabaseRegistry implements Registry {
 			NextDatabasePrefixGenerator nextDatabasePrefixGenerator) {
 		this.nextDatabasePrefixGenerator = nextDatabasePrefixGenerator;
 	}
-
 	
 }

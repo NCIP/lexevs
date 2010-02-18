@@ -12,6 +12,7 @@ import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
+import org.lexevs.registry.service.Registry;
 import org.lexevs.system.ResourceManager;
 
 public class DaoManager {
@@ -26,7 +27,7 @@ public class DaoManager {
 	
 	private List<VersionsDao> versionsDaos;
 	
-	private ResourceManager resourceManager;
+	private Registry registry;
 	
 	public VersionsDao getVersionsDao(String codingSchemeUri, String version){
 		return this.doGetDao(codingSchemeUri, version, this.getVersionsDaos());
@@ -59,7 +60,7 @@ public class DaoManager {
 		ref.setCodingSchemeVersion(version);
 		
 		try {
-			return resourceManager.getRegistry().getSupportedLexGridSchemaVersion(ref);
+			return registry.getSupportedLexGridSchemaVersion(ref);
 		} catch (LBInvocationException e) {
 			throw new RuntimeException(e);
 		}
@@ -115,12 +116,11 @@ public class DaoManager {
 		this.versionsDaos = versionsDaos;
 	}
 
-	public ResourceManager getResourceManager() {
-		return resourceManager;
+	public Registry getRegistry() {
+		return registry;
 	}
 
-	public void setResourceManager(ResourceManager resourceManager) {
-		this.resourceManager = resourceManager;
+	public void setRegistry(Registry registry) {
+		this.registry = registry;
 	}
-
 }

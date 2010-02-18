@@ -2,20 +2,22 @@ package org.lexevs.dao.database.setup.schemacheck;
 
 import javax.sql.DataSource;
 
+import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public abstract class AbstractLesGridSchemaCheck implements LexGridSchemaCheck {
 	
 	private DataSource dataSource;
 	
-	private String prefix;
+	private PrefixResolver prefixResolver;
 	
 	public AbstractLesGridSchemaCheck(){
 		super();
 	}
 	
-	public AbstractLesGridSchemaCheck(DataSource dataSource){
+	public AbstractLesGridSchemaCheck(DataSource dataSource, PrefixResolver prefixResolver){
 		this.dataSource = dataSource;
+		this.prefixResolver = prefixResolver;
 	}
 
 	public void setDataSource(DataSource dataSource) {
@@ -26,8 +28,9 @@ public abstract class AbstractLesGridSchemaCheck implements LexGridSchemaCheck {
 		return dataSource;
 	}
 
-	public boolean isLgSchemaInstalled() {
+	public boolean isCommonLexGridSchemaInstalled() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
 		return checkResult(template,
 				getDbCheckSql());
 	}
@@ -35,11 +38,11 @@ public abstract class AbstractLesGridSchemaCheck implements LexGridSchemaCheck {
 	protected abstract String getDbCheckSql();
 	protected abstract boolean checkResult(JdbcTemplate template, String sql);
 
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
+	public PrefixResolver getPrefixResolver() {
+		return prefixResolver;
 	}
 
-	public String getPrefix() {
-		return prefix;
+	public void setPrefixResolver(PrefixResolver prefixResolver) {
+		this.prefixResolver = prefixResolver;
 	}
 }

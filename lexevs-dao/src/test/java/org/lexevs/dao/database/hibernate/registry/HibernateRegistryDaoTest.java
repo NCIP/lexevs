@@ -41,14 +41,14 @@ public class HibernateRegistryDaoTest extends LexEvsDaoTestBase {
 	@Transactional
 	public void testDetLastUsedDbIdentifier(){
 		String dbId = hibernateRegistryDao.getLastUsedDbIdentifier();
-		assertEquals("aaa", dbId);
+		assertEquals("aaaa", dbId);
 	}
 	
 	@Test
 	@Transactional
 	public void testDetLastUsedHistoryIdentifier(){
 		String historyId = hibernateRegistryDao.getLastUsedHistoryIdentifier();
-		assertEquals("aaa", historyId);
+		assertEquals("aaaa", historyId);
 	}
 	
 	@Test

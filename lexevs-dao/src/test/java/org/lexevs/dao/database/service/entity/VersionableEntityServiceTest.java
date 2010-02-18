@@ -9,7 +9,6 @@ import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
-import org.lexevs.system.ResourceManager;
 
 public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 
@@ -20,7 +19,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 	private CodingSchemeService codingSchemeservice;
 	
 	@Resource
-	private ResourceManager resourceManager;
+	private Registry registry;
 	
 	@Test
 	public void insertEntity() throws Exception{
@@ -28,7 +27,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		entry.setResourceUri("uri");
 		entry.setResourceVersion("v1");
 		entry.setDbSchemaVersion("2.0");
-		Registry registry = resourceManager.getRegistry();
+
 		registry.addNewItem(entry);
 
 
@@ -56,7 +55,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		entry.setResourceUri("uri");
 		entry.setResourceVersion("v1");
 		entry.setDbSchemaVersion("2.0");
-		resourceManager.getRegistry().addNewItem(entry);
+		registry.addNewItem(entry);
 		
 		CodingScheme scheme = new CodingScheme();
 		scheme.setApproxNumConcepts(111l);

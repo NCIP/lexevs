@@ -20,8 +20,6 @@ package org.lexevs.dao.database.operation;
 
 import javax.sql.DataSource;
 
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.type.DatabaseType;
@@ -34,57 +32,18 @@ import org.lexevs.dao.database.utility.DatabaseUtility;
  */
 public interface LexEvsDatabaseOperations {
 
-	/**
-	 * Gets the new connection info for load.
-	 * 
-	 * @return the new connection info for load
-	 */
-	public SQLConnectionInfo getNewConnectionInfoForLoad();
+	public void createCommonTables();
 	
-	/**
-	 * Gets the existing connection info.
-	 * 
-	 * @param codingScheme the coding scheme
-	 * @param version the version
-	 * 
-	 * @return the existing connection info
-	 */
-	public SQLConnectionInfo getExistingConnectionInfo(String codingScheme, String version);
+	public void createCodingSchemeTables();
+	
+	public void createCodingSchemeTables(String prefix);
+	
+	public void dropCommonTables();
+	
+	public void dropTables(String codingSchemeUri, String version);
+	
+	public boolean isCodingSchemeLoaded(String codingSchemeUri, String version);
 
-	/**
-	 * Creates the tables.
-	 * 
-	 * @param connectionInfo the connection info
-	 */
-	public void createTables(SQLConnectionInfo connectionInfo, String prefix);
-	
-	public void createTables(String prefix);
-	
-	/**
-	 * Drop tables.
-	 * 
-	 * @param connectionInfo the connection info
-	 */
-	public void dropTables(SQLConnectionInfo connectionInfo);
-	
-	/**
-	 * Checks if is coding scheme loaded.
-	 * 
-	 * @param codingScheme the coding scheme
-	 * @param version the version
-	 * 
-	 * @return true, if is coding scheme loaded
-	 */
-	public boolean isCodingSchemeLoaded(String codingScheme, String version);
-	
-	public void indexTables(SQLConnectionInfo connectionInfo);
-	
-	public void indexTables(String codingScheme, String version);
-	
-	public SQLTableConstants getSQLTableConstants(String codingScheme, String version);
-	
-	public SQLTableUtilities getSQLTableUtilities(String codingScheme, String version);
-	
 	public DatabaseUtility getDatabaseUtility();
 	
 	public DataSource getDataSource();
@@ -95,8 +54,6 @@ public interface LexEvsDatabaseOperations {
 	
 	public void computeTransitiveTable(String codingSchemeName, String codingSchemeUri, String version);
 	
-	public void index(String codingSchemeName, SQLConnectionInfo connectionInfo);
-
 	public void index(String codingSchemeName, String codingSchemeUri, String version);
 		
 	public void cleanupFailedLoad(String dbName, String prefix) throws Exception;

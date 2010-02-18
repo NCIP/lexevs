@@ -48,6 +48,9 @@ public class Logger implements LgLoggerIF {
 
     private int logMessageId_ = 1;
     private ArrayList<MessageHolder> messageQueue_;
+    
+    private boolean isAPILoggingEnabled = false;
+    private boolean isDebugEnabled = false;
 
     public Logger() {
         Appender simpleAppender = new ConsoleAppender(new PatternLayout("%c %p - %d - %m%n"));
@@ -400,6 +403,7 @@ public class Logger implements LgLoggerIF {
     }
 
     public void logMethod(Object[] params) {
+
         try {
             if (LexEvsServiceLocator.getInstance().getResourceManager().getSystemVariables().isAPILoggingEnabled()
                     || LexEvsServiceLocator.getInstance().getResourceManager().getSystemVariables().isDebugEnabled()) {
@@ -422,6 +426,7 @@ public class Logger implements LgLoggerIF {
         } catch (RuntimeException e) {
             error("There was a problem logging a method call", e);
         }
+   
     }
 
     public void loadLogError(String message, Throwable e) {
@@ -477,4 +482,19 @@ public class Logger implements LgLoggerIF {
         throw new Exception(sourceException);
     }
 
+	public boolean isAPILoggingEnabled() {
+		return isAPILoggingEnabled;
+	}
+
+	public void setAPILoggingEnabled(boolean isAPILoggingEnabled) {
+		this.isAPILoggingEnabled = isAPILoggingEnabled;
+	}
+
+	public boolean isDebugEnabled() {
+		return isDebugEnabled;
+	}
+
+	public void setDebugEnabled(boolean isDebugEnabled) {
+		this.isDebugEnabled = isDebugEnabled;
+	}
 }

@@ -130,7 +130,7 @@ public class CyclingCharDbPrefixGeneratorTest {
 	public void testNoMorePrefixes(){
 		
 		PrefixResolver resolver = createMock(PrefixResolver.class);
-		expect(resolver.resolvePrefix()).andReturn("$$").anyTimes();
+		expect(resolver.resolveDefaultPrefix()).andReturn("$$").anyTimes();
 		replay(resolver);
 		
 		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();

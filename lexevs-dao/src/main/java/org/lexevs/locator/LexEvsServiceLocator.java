@@ -4,6 +4,7 @@ import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.system.ResourceManager;
+import org.lexevs.system.service.SystemResourceService;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -19,6 +20,7 @@ public class LexEvsServiceLocator {
 	private ResourceManager resourceManager;
 	private Registry registry;
 	private LexEvsDatabaseOperations lexEvsDatabaseOperations;
+	private SystemResourceService systemResourceService;
 	
 	public static synchronized LexEvsServiceLocator getInstance(){
 		if(serviceLocator == null){
@@ -28,6 +30,8 @@ public class LexEvsServiceLocator {
 	}
 	
 	
+	
+	@Deprecated
 	public ResourceManager getResourceManager() {
 		return resourceManager;
 	}
@@ -54,16 +58,22 @@ public class LexEvsServiceLocator {
 		this.databaseServiceManager = databaseServiceManager;
 	}
 
-
 	public DatabaseServiceManager getDatabaseServiceManager() {
 		return databaseServiceManager;
 	}
+
+	public void setSystemResourceService(SystemResourceService systemResourceService) {
+		this.systemResourceService = systemResourceService;
+	}
+
+	public SystemResourceService getSystemResourceService() {
+		return systemResourceService;
+	}
+
 
 	public void setApplicationContext(ApplicationContext applicationContext)
 		throws BeansException {
 
 		serviceLocator = (LexEvsServiceLocator) applicationContext.getBean(BEAN_NAME);	
 	}
-
-
 }

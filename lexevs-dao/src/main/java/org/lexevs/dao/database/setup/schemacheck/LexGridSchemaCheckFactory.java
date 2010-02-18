@@ -2,6 +2,7 @@ package org.lexevs.dao.database.setup.schemacheck;
 
 import javax.sql.DataSource;
 
+import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.type.DatabaseType;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -13,6 +14,7 @@ public class LexGridSchemaCheckFactory implements FactoryBean, InitializingBean 
 	
 	private boolean isSchemaLoaded;
 	private DataSource dataSource;
+	private PrefixResolver prefixResolver;
 	
 	public Object getObject() throws Exception {
 		return isSchemaLoaded;
@@ -21,16 +23,16 @@ public class LexGridSchemaCheckFactory implements FactoryBean, InitializingBean 
 	public void afterPropertiesSet() throws Exception {
 		LexGridSchemaCheck schemaCheck = null;
 		if(databaseType.equals(DatabaseType.HSQL)){
-			schemaCheck = new CountBasedLexGridSchemaCheck(dataSource);
+			schemaCheck = new CountBasedLexGridSchemaCheck(dataSource, prefixResolver);
 		}
 		
 		if(databaseType.equals(DatabaseType.MYSQL)){
-			schemaCheck = new CountBasedLexGridSchemaCheck(dataSource);
+			schemaCheck = new CountBasedLexGridSchemaCheck(dataSource, prefixResolver);
 		}
 		
 		Assert.notNull(schemaCheck);
 		
-		isSchemaLoaded = schemaCheck.isLgSchemaInstalled();
+		isSchemaLoaded = schemaCheck.isCommonLexGridSchemaInstalled();
 	}
 
 	public Class getObjectType() {
@@ -55,5 +57,13 @@ public class LexGridSchemaCheckFactory implements FactoryBean, InitializingBean 
 
 	public DataSource getDataSource() {
 		return dataSource;
+	}
+
+	public void setPrefixResolver(PrefixResolver prefixResolver) {
+		this.prefixResolver = prefixResolver;
+	}
+
+	public PrefixResolver getPrefixResolver() {
+		return prefixResolver;
 	}
 }

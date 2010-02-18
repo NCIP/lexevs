@@ -6,17 +6,17 @@ public class DefaultPrefixResolver implements PrefixResolver {
 
 	private SystemVariables systemVariables;
 	
-	public String resolvePrefix() {
+	public String resolveDefaultPrefix() {
 		return systemVariables.getAutoLoadDBPrefix();
 	}
 
 	public String resolvePrefixForCodingScheme(String codingSchemeName,
 			String version) {
-		return resolvePrefix();
+		return resolveDefaultPrefix();
 	}
 
 	public String resolvePrefixForCodingScheme(String codingSchemeId) {
-		return resolvePrefix();
+		return resolveDefaultPrefix();
 	}
 	
 	public SystemVariables getSystemVariables() {

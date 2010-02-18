@@ -2,7 +2,7 @@ SET FOREIGN_KEY_CHECKS=0;
 
 
 
-CREATE TABLE associationEntity
+CREATE TABLE @PREFIX@associationEntity
 (
 	associationEntityGuid VARCHAR(36) NOT NULL,
 	entityGuid VARCHAR(36) NOT NULL,
@@ -14,10 +14,11 @@ CREATE TABLE associationEntity
 	PRIMARY KEY (associationEntityGuid),
 	KEY (entityGuid)
 ) 
+TYPE=INNODB
 ;
 
 
-CREATE TABLE associationPredicate
+CREATE TABLE @PREFIX@associationPredicate
 (
 	associationPredicateGuid VARCHAR(36) NOT NULL,
 	relationGuid VARCHAR(36) NOT NULL,
@@ -28,6 +29,7 @@ CREATE TABLE associationPredicate
 	KEY (associationEntityGuid),
 	KEY (relationGuid)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -57,6 +59,7 @@ CREATE TABLE @PREFIX@codingScheme
 	INDEX idx_csName (codingSchemeName ASC),
 	INDEX idx_csNameVersion (codingSchemeName ASC, representsVersion ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -74,6 +77,7 @@ CREATE TABLE @PREFIX@csMultiAttrib
 	KEY (codingSchemeGuid),
 	INDEX idx_csMultiAttrib (codingSchemeGuid ASC, attributeType ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -94,6 +98,7 @@ CREATE TABLE @PREFIX@csSupportedAttrib
 	UNIQUE UQ_mapping(codingSchemeGuid, supportedAttributeTag, id),
 	KEY (codingSchemeGuid)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -118,6 +123,7 @@ CREATE TABLE @PREFIX@entity
 	INDEX idx_entity (codingSchemeGuid ASC, entityCode ASC),
 	INDEX idx_entityNS (codingSchemeGuid ASC, entityCode ASC, entityCodeNamespace ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -131,6 +137,7 @@ CREATE TABLE @PREFIX@entityAssnQuals
 	PRIMARY KEY (entityAssnQualsGuid),
 	UNIQUE UQ_entityAssnQuals(referenceGuid, qualifierName, qualifierValue)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -155,6 +162,7 @@ CREATE TABLE @PREFIX@entityAssnsToData
 	KEY (associationPredicateGuid),
 	INDEX idx_entAsToData_source (associationPredicateGuid ASC, sourceEntityCode ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -182,6 +190,7 @@ CREATE TABLE @PREFIX@entityAssnsToEntity
 	INDEX idx_entAsToEnt_target (associationPredicateGuid ASC, targetEntityCode ASC),
 	INDEX idx_entAsToEnt_targetNS (associationPredicateGuid ASC, targetEntityCode ASC, targetEntityCodeNamespace ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -199,6 +208,7 @@ CREATE TABLE @PREFIX@entityAssnsToEntityTr
 	INDEX idx_entAsToEntTr_source (associationPredicateGuid ASC, sourceEntityCode ASC, sourceEntityCodeNamespace ASC),
 	INDEX idx_entAsToEntTr_target (associationPredicateGuid ASC, targetEntityCode ASC, targetEntityCodeNamespace ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -208,6 +218,7 @@ CREATE TABLE @PREFIX@entityType
 	entityType VARCHAR(50) NOT NULL,
 	KEY (entityGuid)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -225,17 +236,9 @@ CREATE TABLE @PREFIX@entryState
 	KEY (prevEntryStateGuid),
 	KEY (revisionGuid),
 	KEY (prevRevisionGuid)
-) 
+)
+TYPE=INNODB
 ;
-
-
-CREATE TABLE @PREFIX@lexGridTableMetaData
-(
-	version VARCHAR(50) NOT NULL,
-	description VARCHAR(255)
-) 
-;
-
 
 CREATE TABLE @PREFIX@property
 (
@@ -262,6 +265,7 @@ CREATE TABLE @PREFIX@property
 	UNIQUE UQ_property(referenceGuid, propertyName, propertyId),
 	INDEX idx_referenceGuid (referenceGuid ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -276,6 +280,7 @@ CREATE TABLE @PREFIX@propertyLinks
 	INDEX idx_sourcePropertyGuid (sourcePropertyGuid ASC),
 	INDEX idx_targetPropertyGuid (targetPropertyGuid ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -293,6 +298,7 @@ CREATE TABLE @PREFIX@propertyMultiAttrib
 	UNIQUE UQ_propertyMultiAttrib(propertyGuid, attributeType, attributeId),
 	INDEX idx_propertyMultiAttrib (propertyGuid ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -318,129 +324,94 @@ CREATE TABLE @PREFIX@relation
 	UNIQUE UQ_relation_containerName(containerName),
 	KEY (codingSchemeGuid)
 ) 
+TYPE=INNODB
 ;
-
-
-CREATE TABLE @PREFIX@revision
-(
-	revisionGuid VARCHAR(36) NOT NULL,
-	releaseGuid VARCHAR(36),
-	revisionId VARCHAR(50) NOT NULL,
-	changeAgent VARCHAR(50),
-	revisionDate DATETIME,
-	revAppliedDate DATETIME NOT NULL,
-	editOrder DECIMAL(18),
-	changeInstructions TEXT,
-	description TEXT,
-	PRIMARY KEY (revisionGuid),
-	KEY (releaseGuid)
-) 
-;
-
-
-CREATE TABLE @PREFIX@systemRelease
-(
-	releaseGuid VARCHAR(36) NOT NULL,
-	releaseURI VARCHAR(250) NOT NULL,
-	releaseId VARCHAR(50),
-	releaseDate DATETIME NOT NULL,
-	basedOnRelease VARCHAR(250),
-	releaseAgency VARCHAR(250),
-	description TEXT,
-	PRIMARY KEY (releaseGuid)
-) 
-;
-
-
 
 SET FOREIGN_KEY_CHECKS=1;
 
 
 ALTER TABLE @PREFIX@associationEntity ADD CONSTRAINT FK_associationEntity_entity 
-	FOREIGN KEY (entityGuid) REFERENCES entity (entityGuid)
+	FOREIGN KEY (entityGuid) REFERENCES @PREFIX@entity (entityGuid)
 	ON DELETE CASCADE
 ;
 
 ALTER TABLE @PREFIX@associationPredicate ADD CONSTRAINT FK_associationPr_associationEn 
-	FOREIGN KEY (associationEntityGuid) REFERENCES associationEntity (associationEntityGuid)
+	FOREIGN KEY (associationEntityGuid) REFERENCES @PREFIX@associationEntity (associationEntityGuid)
 ;
 
 ALTER TABLE @PREFIX@associationPredicate ADD CONSTRAINT FK_associationPredica_relation 
-	FOREIGN KEY (relationGuid) REFERENCES relation (relationGuid)
+	FOREIGN KEY (relationGuid) REFERENCES @PREFIX@relation (relationGuid)
 	ON DELETE CASCADE
 ;
 
 ALTER TABLE @PREFIX@codingScheme ADD CONSTRAINT FK_cs_releaseGuid 
-	FOREIGN KEY (releaseGuid) REFERENCES systemRelease (releaseGuid)
+	FOREIGN KEY (releaseGuid) REFERENCES @PREFIX@systemRelease (releaseGuid)
 ;
 
 ALTER TABLE @PREFIX@csMultiAttrib ADD CONSTRAINT FK_csMulti_csGuid 
-	FOREIGN KEY (codingSchemeGuid) REFERENCES codingScheme (codingSchemeGuid)
+	FOREIGN KEY (codingSchemeGuid) REFERENCES @PREFIX@codingScheme (codingSchemeGuid)
 	ON DELETE CASCADE
 ;
 
 ALTER TABLE @PREFIX@csSupportedAttrib ADD CONSTRAINT FK_map_csGuid 
-	FOREIGN KEY (codingSchemeGuid) REFERENCES codingScheme (codingSchemeGuid)
+	FOREIGN KEY (codingSchemeGuid) REFERENCES @PREFIX@codingScheme (codingSchemeGuid)
 	ON DELETE CASCADE
 ;
 
 ALTER TABLE @PREFIX@entity ADD CONSTRAINT FK_ent_csGuid 
-	FOREIGN KEY (codingSchemeGuid) REFERENCES codingScheme (codingSchemeGuid)
+	FOREIGN KEY (codingSchemeGuid) REFERENCES @PREFIX@codingScheme (codingSchemeGuid)
 	ON DELETE CASCADE
 ;
 
 ALTER TABLE @PREFIX@entityAssnsToData ADD CONSTRAINT FK_entAsToData_assnGuid 
-	FOREIGN KEY (associationPredicateGuid) REFERENCES associationPredicate (associationPredicateGuid)
+	FOREIGN KEY (associationPredicateGuid) REFERENCES @PREFIX@associationPredicate (associationPredicateGuid)
 	ON DELETE CASCADE
 ;
 
 ALTER TABLE @PREFIX@entityAssnsToEntity ADD CONSTRAINT FK_entAsToEnt_assnGuid 
-	FOREIGN KEY (associationPredicateGuid) REFERENCES associationPredicate (associationPredicateGuid)
+	FOREIGN KEY (associationPredicateGuid) REFERENCES @PREFIX@associationPredicate (associationPredicateGuid)
 	ON DELETE CASCADE
 ;
 
 ALTER TABLE @PREFIX@entityAssnsToEntityTr ADD CONSTRAINT FK_entAsToEntTr_assnGuid 
-	FOREIGN KEY (associationPredicateGuid) REFERENCES associationPredicate (associationPredicateGuid)
+	FOREIGN KEY (associationPredicateGuid) REFERENCES @PREFIX@associationPredicate (associationPredicateGuid)
 	ON DELETE CASCADE
 ;
 
 ALTER TABLE @PREFIX@entityType ADD CONSTRAINT FK_eType_entityGuid 
-	FOREIGN KEY (entityGuid) REFERENCES entity (entityGuid)
+	FOREIGN KEY (entityGuid) REFERENCES @PREFIX@entity (entityGuid)
 	ON DELETE CASCADE
 ;
 
 ALTER TABLE @PREFIX@entryState ADD CONSTRAINT FK_es_prevEntryStateGuid 
-	FOREIGN KEY (prevEntryStateGuid) REFERENCES entryState (entryStateGuid)
+	FOREIGN KEY (prevEntryStateGuid) REFERENCES @PREFIX@entryState (entryStateGuid)
 ;
 
 ALTER TABLE @PREFIX@entryState ADD CONSTRAINT FK_es_revisionGuid 
-	FOREIGN KEY (revisionGuid) REFERENCES revision (revisionGuid)
+	FOREIGN KEY (revisionGuid) REFERENCES @PREFIX@revision (revisionGuid)
 ;
 
 ALTER TABLE @PREFIX@entryState ADD CONSTRAINT FK_es_prevRevisionGuid 
-	FOREIGN KEY (prevRevisionGuid) REFERENCES revision (revisionGuid)
+	FOREIGN KEY (prevRevisionGuid) REFERENCES @PREFIX@revision (revisionGuid)
 ;
 
 ALTER TABLE @PREFIX@propertyLinks ADD CONSTRAINT FK_pLinks_sPropGuid 
-	FOREIGN KEY (sourcePropertyGuid) REFERENCES property (propertyGuid)
+	FOREIGN KEY (sourcePropertyGuid) REFERENCES @PREFIX@property (propertyGuid)
 	ON DELETE CASCADE
 ;
 
 ALTER TABLE @PREFIX@propertyLinks ADD CONSTRAINT FK_pLinks_tPropGuid 
-	FOREIGN KEY (targetPropertyGuid) REFERENCES property (propertyGuid)
+	FOREIGN KEY (targetPropertyGuid) REFERENCES @PREFIX@property (propertyGuid)
 	ON DELETE CASCADE
 ;
 
 ALTER TABLE @PREFIX@propertyMultiAttrib ADD CONSTRAINT FK_pma_propertyGuid 
-	FOREIGN KEY (propertyGuid) REFERENCES property (propertyGuid)
+	FOREIGN KEY (propertyGuid) REFERENCES @PREFIX@property (propertyGuid)
 	ON DELETE CASCADE
 ;
 
 ALTER TABLE @PREFIX@relation ADD CONSTRAINT FK_relation_codingScheme 
-	FOREIGN KEY (codingSchemeGuid) REFERENCES codingScheme (codingSchemeGuid)
+	FOREIGN KEY (codingSchemeGuid) REFERENCES @PREFIX@codingScheme (codingSchemeGuid)
 	ON DELETE CASCADE
 ;
 
-ALTER TABLE @PREFIX@revision ADD CONSTRAINT FK_rev_releaseGuid 
-	FOREIGN KEY (releaseGuid) REFERENCES systemRelease (releaseGuid)
-;

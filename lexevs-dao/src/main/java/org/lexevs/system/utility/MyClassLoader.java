@@ -27,6 +27,9 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -70,6 +73,9 @@ public class MyClassLoader extends URLClassLoader {
     
     private DocumentBuilderFactory docfactory_ = null;
     private Logger logger;
+    
+    private Map<String,List<ExtensionDescription>> extensionDescriptions = 
+    	new HashMap<String,List<ExtensionDescription>>();
     
     private LgLoggerIF getLogger() {
         return logger;
@@ -292,25 +298,21 @@ public class MyClassLoader extends URLClassLoader {
         getLogger().debug("Registering extension : '" + ed.getName() + "'");
         if (extImplements != null)
         {
-        	/*
-            try {                            
-                if (extImplements.equals("ExportExtension"))
-                   // ExtensionRegistryImpl.instance().registerExportExtension(ed);
-                else if (extImplements.equals("GenericExtension"))
-                   // ExtensionRegistryImpl.instance().registerGenericExtension(ed);
-                else if (extImplements.equals("LoadExtension"))
-                   // ExtensionRegistryImpl.instance().registerLoadExtension(ed);
-            } catch (LBParameterException e1) {
-                getLogger().error("problem registering extension : '" + ed.getName() + "' : " + e1.getMessage());
-                // do nothing
-            }
-            */
+        	 if(! this.extensionDescriptions.containsKey(extImplements)){
+        		 this.extensionDescriptions.put(extImplements, new ArrayList<ExtensionDescription>());
+        	 }
+        	 
+        	 this.extensionDescriptions.get(extImplements).add(ed);
         }
+    }
+    
+    public Map<String,List<ExtensionDescription>> getExtensionDescriptions(){
+    	return this.extensionDescriptions;
     }
     
     @Deprecated
     public static MyClassLoader instance(){
-    	return (MyClassLoader) LexEvsServiceLocator.getInstance().getResourceManager().getClassLoader();
+    	return (MyClassLoader) LexEvsServiceLocator.getInstance().getSystemResourceService().getClassLoader();
     }
     
     @LgClientSideSafe

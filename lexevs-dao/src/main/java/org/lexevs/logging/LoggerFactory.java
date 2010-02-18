@@ -18,6 +18,8 @@
  */
 package org.lexevs.logging;
 
+import org.lexevs.system.constants.SystemVariables;
+
 
 
 /**
@@ -31,14 +33,16 @@ public class LoggerFactory {
 
     /**
      * Returns a lightweight logger if lightweight is true, otherwise returns
-     * the ResourceManager's logger.
+     * the SystemResourceService's logger.
      * 
      * @return
      */
     public static LgLoggerIF getLogger() {
 
             if (logger == null) {
-                logger = new Logger();
+            	Logger loggerInstance = new Logger();
+            	loggerInstance.setDebugEnabled(SystemVariables.isDebugEnabled());
+                logger = loggerInstance;
             }
             
             return logger;    

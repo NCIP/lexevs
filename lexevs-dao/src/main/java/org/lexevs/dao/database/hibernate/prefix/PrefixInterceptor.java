@@ -54,8 +54,8 @@ public class PrefixInterceptor extends EmptyInterceptor {
 	 * @see org.hibernate.EmptyInterceptor#onPrepareStatement(java.lang.String)
 	 */
 	public String onPrepareStatement(String sql) { 	
-		log.debug("Adjusting table names to prefix: " + prefixResolver.resolvePrefix());
-		sql = sql.replaceAll(PREFIX_PLACEHOLDER, prefixResolver.resolvePrefix());
+		log.debug("Adjusting table names to prefix: " + prefixResolver.resolveDefaultPrefix());
+		sql = sql.replaceAll(PREFIX_PLACEHOLDER, prefixResolver.resolveDefaultPrefix());
 	
 		return sql;			
 	}

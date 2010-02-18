@@ -56,8 +56,6 @@ public class SystemVariables {
     private boolean isAPILoggingEnabled = false;
     private boolean isSQLLoggingEnabled = false;
 
-
-
     private int maxConnectionsPerDB_;
 
     private int cacheSize_;
@@ -241,7 +239,7 @@ public class SystemVariables {
             autoLoadDBUsername_ = getProperty(props, "DB_USER");
             autoLoadDBPassword_ = getProperty(props, "DB_PASSWORD");
 
-            String pwdEncrypted = getProperty(props, "DB_PASSWORD_ENCRYPTED");
+            String pwdEncrypted = getNullableProperty(props, "DB_PASSWORD_ENCRYPTED");
             if( pwdEncrypted != null && pwdEncrypted.equalsIgnoreCase("true"))
                 autoLoadDBPassword_ = CryptoUtility.decrypt(autoLoadDBPassword_);
             
@@ -277,8 +275,10 @@ public class SystemVariables {
                 isDebugEnabled_ = realDebugEnableValue_;
             }
             logger.info("Logging debug messages" + (isDebugEnabled_ == true ? " left on." : " turned off."));
+            logger.setDebugEnabled(isDebugEnabled_);
             
             isAPILoggingEnabled = new Boolean(getProperty(props, "API_LOG_ENABLED")).booleanValue();
+            logger.setAPILoggingEnabled(isAPILoggingEnabled);
             
             String val= props.getProperty("SQL_LOG_ENABLED"); 
             if (val != null) {

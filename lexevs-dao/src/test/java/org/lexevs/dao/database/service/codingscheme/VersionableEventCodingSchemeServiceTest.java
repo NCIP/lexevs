@@ -6,7 +6,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.junit.Test;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.model.RegistryEntry;
-import org.lexevs.system.ResourceManager;
+import org.lexevs.registry.service.Registry;
 
 public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBase {
 
@@ -14,7 +14,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 	private VersionableEventCodingSchemeService service;
 	
 	@Resource
-	private ResourceManager resourceManager;
+	private Registry registry;
 	
 	@Test
 	public void insertCodingScheme() throws Exception{
@@ -22,7 +22,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		entry.setResourceUri("uri");
 		entry.setResourceVersion("v1");
 		entry.setDbSchemaVersion("2.0");
-		resourceManager.getRegistry().addNewItem(entry);
+		registry.addNewItem(entry);
 		
 		CodingScheme scheme = new CodingScheme();
 		scheme.setApproxNumConcepts(111l);
@@ -39,7 +39,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		entry.setResourceUri("uri");
 		entry.setResourceVersion("v1");
 		entry.setDbSchemaVersion("2.0");
-		resourceManager.getRegistry().addNewItem(entry);
+		registry.addNewItem(entry);
 		
 		CodingScheme scheme = new CodingScheme();
 		scheme.setApproxNumConcepts(111l);

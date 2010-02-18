@@ -43,191 +43,104 @@ import org.springframework.core.io.Resource;
 public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations{
 	
 	private DatabaseUtility databaseUtility;
-	private Resource lexevsSchemaCreateScript;
-	private ResourceManager resourceManager;
+	private Resource lexevsCommonSchemaCreateScript;
+	private Resource lexevsCodingSchemeSchemaCreateScript;
 	
 	private PrefixResolver prefixResolver;
 	private DataSource dataSource;
 	private DatabaseType databaseType;
-	
-	
-	/* (non-Javadoc)
-	 * @see org.LexGrid.persistence.connection.PersistenceConnectionManager#getExistingConnectionInfo(java.lang.String, java.lang.String)
-	 */
-	public SQLConnectionInfo getExistingConnectionInfo(String codingScheme,
-			String version) {
-		return this.getConnectionInfo(codingScheme, version);
-	}
 
 	/* (non-Javadoc)
 	 * @see org.LexGrid.persistence.connection.PersistenceConnectionManager#isCodingSchemeLoaded(java.lang.String, java.lang.String)
 	 */
 	public boolean isCodingSchemeLoaded(String codingScheme, String version) {
-		SQLConnectionInfo connection = 
-			this.getConnectionInfo(codingScheme, version);
-		if(connection == null){
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	/**
-	 * Gets the connection info.
-	 * 
-	 * @param codingScheme the coding scheme
-	 * @param version the version
-	 * 
-	 * @return the connection info
-	 */
-	protected SQLConnectionInfo getConnectionInfo(String codingScheme, String version){
-		AbsoluteCodingSchemeVersionReference acvr = 
-			this.buildAbsoluteCodingSchemeVersionReference(codingScheme, version);
-		return resourceManager.getRegistry().getSQLConnectionInfoForCodeSystem(acvr);
-	}
-
-	/**
-	 * Builds the absolute coding scheme version reference.
-	 * 
-	 * @param codingScheme the coding scheme
-	 * @param version the version
-	 * 
-	 * @return the absolute coding scheme version reference
-	 */
-	private AbsoluteCodingSchemeVersionReference 
-	buildAbsoluteCodingSchemeVersionReference(String codingScheme, String version){
-		AbsoluteCodingSchemeVersionReference acvr = 
-			new AbsoluteCodingSchemeVersionReference();
-		acvr.setCodingSchemeURN(codingScheme);
-		acvr.setCodingSchemeVersion(version);
-		return acvr;
+		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.LexGrid.persistence.connection.PersistenceConnectionManager#createTables(org.LexGrid.LexBIG.Impl.helpers.SQLConnectionInfo)
-	 */
-	public void createTables(SQLConnectionInfo connectionInfo, String prefix){
-		try {	
-			SQLTableUtilities utils = createSQLTableUtilities(connectionInfo);
-			//utils.createDefaultTables(createIndexes);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	public void createTables(String prefix) {
+	public void createCommonTables() {
 		try {
-			databaseUtility.executeScript(lexevsSchemaCreateScript, prefix);
+			databaseUtility.executeScript(lexevsCommonSchemaCreateScript, this.prefixResolver.resolveDefaultPrefix());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}	
 	}
 	
-	public void indexTables(String codingScheme, String version){
-		indexTables(this.getConnectionInfo(codingScheme, version));
-	}
-
-	public void indexTables(SQLConnectionInfo connectionInfo){
-		try {	
-			SQLTableUtilities utils = createSQLTableUtilities(connectionInfo);
-			utils.createDefaultTableIndexes();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	/* (non-Javadoc)
-	 * @see org.LexGrid.persistence.connection.PersistenceConnectionManager#dropTables(org.LexGrid.LexBIG.Impl.helpers.SQLConnectionInfo)
-	 */
-	public void dropTables(SQLConnectionInfo connectionInfo){
-		try {	
-			SQLTableUtilities utils = createSQLTableUtilities(connectionInfo);
-			utils.dropTables();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.LexGrid.persistence.connection.PersistenceConnectionManager#getNewConnectionInfoForLoad()
-	 */
-	public SQLConnectionInfo getNewConnectionInfoForLoad(){
-		try {			
-			SQLConnectionInfo connection = resourceManager.getSQLConnectionInfoForLoad();
-			return connection;
-		} catch (LBInvocationException e) {
-			throw new RuntimeException(e);
-		}		
-	}
-
-	/**
-	 * Creates the sql table utilities.
-	 * 
-	 * @param connectionInfo the connection info
-	 * 
-	 * @return the sQL table utilities
-	 */
-	protected SQLTableUtilities createSQLTableUtilities(SQLConnectionInfo connectionInfo){
+	public void createCodingSchemeTables() {
 		try {
-			Connection connection = createDatabaseConnection(connectionInfo);
-			SQLTableUtilities utils = new SQLTableUtilities(connection, connectionInfo.prefix);
-			return utils;
+			databaseUtility.executeScript(lexevsCodingSchemeSchemaCreateScript, this.prefixResolver.resolveDefaultPrefix());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}
+		}	
 	}
 	
-	public SQLTableUtilities getSQLTableUtilities(String codingScheme, String version){
-		return createSQLTableUtilities(getConnectionInfo(codingScheme, version));
-	}
-	
-	public SQLTableConstants getSQLTableConstants(String codingScheme, String version){
-		SQLConnectionInfo sqlConn = this.getConnectionInfo(codingScheme, version);
+	public void createCodingSchemeTables(String prefix) {
 		try {
-			return 
-				new SQLTableUtilities(createDatabaseConnection(sqlConn), sqlConn.prefix)
-				.getSQLTableConstants();
+			databaseUtility.executeScript(lexevsCodingSchemeSchemaCreateScript, getCombinedPrefix(prefix));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}
+		}	
+	}
+
+	public void cleanupFailedLoad(String dbName, String prefix)
+			throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void computeTransitiveTable(String codingSchemeName,
+			String codingSchemeUri, String version) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void index(String codingSchemeName, SQLConnectionInfo connectionInfo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void index(String codingSchemeName, String codingSchemeUri,
+			String version) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void reIndex(String codingSchemeUri, String version) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void dropTables(String codingSchemeUri, String version) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void dropCommonTables() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected String getCombinedPrefix(String codingSchemePrefix){
+		return prefixResolver.resolveDefaultPrefix() + codingSchemePrefix;
 	}
 	
-	/**
-	 * Creates the database connection.
-	 * 
-	 * @param connectionInfo the connection info
-	 * 
-	 * @return the connection
-	 */
-	private Connection createDatabaseConnection(SQLConnectionInfo connectionInfo){
-		try {
-			Connection connection = DBUtility.connectToDatabase(connectionInfo.server, 
-					connectionInfo.driver, 
-					connectionInfo.username, 
-					connectionInfo.password);
-			return connection;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+	public Resource getLexevsCommonSchemaCreateScript() {
+		return lexevsCommonSchemaCreateScript;
 	}
 
+	public void setLexevsCommonSchemaCreateScript(
+			Resource lexevsCommonSchemaCreateScript) {
+		this.lexevsCommonSchemaCreateScript = lexevsCommonSchemaCreateScript;
+	}
+
+	public Resource getLexevsCodingSchemeSchemaCreateScript() {
+		return lexevsCodingSchemeSchemaCreateScript;
+	}
+
+	public void setLexevsCodingSchemeSchemaCreateScript(
+			Resource lexevsCodingSchemeSchemaCreateScript) {
+		this.lexevsCodingSchemeSchemaCreateScript = lexevsCodingSchemeSchemaCreateScript;
+	}
 	
-	public void setLexevsSchemaCreateScript(Resource lexevsSchemaCreateScript) {
-		this.lexevsSchemaCreateScript = lexevsSchemaCreateScript;
-	}
-
-	public Resource getLexevsSchemaCreateScript() {
-		return lexevsSchemaCreateScript;
-	}
-
-
-	public void setResourceManager(ResourceManager resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	public ResourceManager getResourceManager() {
-		return resourceManager;
-	}
-
 	public DatabaseUtility getDatabaseUtility() {
 		return databaseUtility;
 	}
@@ -258,33 +171,5 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 
 	public void setDatabaseType(DatabaseType databaseType) {
 		this.databaseType = databaseType;
-	}
-
-	public void cleanupFailedLoad(String dbName, String prefix)
-			throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void computeTransitiveTable(String codingSchemeName,
-			String codingSchemeUri, String version) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void index(String codingSchemeName, SQLConnectionInfo connectionInfo) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void index(String codingSchemeName, String codingSchemeUri,
-			String version) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void reIndex(String codingSchemeUri, String version) {
-		// TODO Auto-generated method stub
-		
 	}
 }

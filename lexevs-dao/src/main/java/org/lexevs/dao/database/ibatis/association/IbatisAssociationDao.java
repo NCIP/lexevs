@@ -55,7 +55,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setId(relationsId);
 		bean.setCodingSchemeId(codingSchemeId);
 		bean.setRelations(relations);
-		bean.setPrefix(this.getPrefixResolver().resolvePrefix());
+		bean.setPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 		
 		this.getSqlMapClientTemplate().insert(INSERT_RELATIONS_SQL, bean);
 		

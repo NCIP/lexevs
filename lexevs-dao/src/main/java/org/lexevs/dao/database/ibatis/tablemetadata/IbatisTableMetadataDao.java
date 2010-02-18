@@ -11,7 +11,7 @@ public class IbatisTableMetadataDao extends SqlMapClientDaoSupport implements Ta
 	
 	public String insertVersionAndDescription(String version, String description) {
 		InsertTableMetadataBean bean = new InsertTableMetadataBean();
-		bean.setPrefix(prefixResolver.resolvePrefix());
+		bean.setPrefix(prefixResolver.resolveDefaultPrefix());
 		bean.setDescription(description);
 		bean.setVersion(version);
 		
@@ -20,12 +20,12 @@ public class IbatisTableMetadataDao extends SqlMapClientDaoSupport implements Ta
 	
 	public String getDescription() {
 		return (String) this.getSqlMapClientTemplate().queryForObject("getDescription",
-				prefixResolver.resolvePrefix());
+				prefixResolver.resolveDefaultPrefix());
 	}
 
 	public String getVersion() {
 		return (String) this.getSqlMapClientTemplate().queryForObject("getVersion",
-				prefixResolver.resolvePrefix());
+				prefixResolver.resolveDefaultPrefix());
 	}
 
 	public void setPrefixResolver(PrefixResolver prefixResolver) {
