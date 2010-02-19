@@ -43,7 +43,7 @@ public abstract class RrfEntityAssnsToEntityProcessor extends CodingSchemeIdAwar
 		return new ParentIdHolder<AssociationSource>(
 				this.getCodingSchemeIdSetter(),
 				this.associationPredicateKeyResolver.resolveKey(
-							this.getCodingSchemeIdSetter().getCodingSchemeId(), getRelation(item)), 
+							this.getCodingSchemeIdSetter().getCodingSchemeName(), getRelation(item)), 
 							relation);
 	}
 

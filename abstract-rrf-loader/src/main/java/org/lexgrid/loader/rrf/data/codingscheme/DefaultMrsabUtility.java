@@ -31,18 +31,17 @@ public class DefaultMrsabUtility implements MrsabUtility {
 
 	/** The mrsab list. */
 	private List<Mrsab> mrsabList;
+	
+	public String getCodingSchemeVersionFromSab(String sab){
+		return getMrsabRowFromRsab(sab).getSver();
+	}
 
 	//SELECT SSN FROM MRSAB WHERE RSAB = ?");
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.rrf.data.codingscheme.MrsabUtility#getCodingSchemeNameFromSab(java.lang.String)
 	 */
 	public String getCodingSchemeNameFromSab(String sab){
-		for(Mrsab mrsab : mrsabList){
-			if(mrsab.getRsab().equals(sab)){
-				return mrsab.getSsn();
-			}
-		}
-		throw new RuntimeException("Couldn't map SAB: '" + sab + "' to a CodingScheme.");
+		return getMrsabRowFromRsab(sab).getSsn();
 	}
 	
 	/* (non-Javadoc)

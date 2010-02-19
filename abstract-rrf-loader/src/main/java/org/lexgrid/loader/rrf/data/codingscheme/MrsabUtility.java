@@ -34,7 +34,7 @@ public interface MrsabUtility {
 	 * 
 	 * @return the coding scheme name from sab
 	 */
-	public String getCodingSchemeNameFromSab(String codingSchemeName);
+	public String getCodingSchemeNameFromSab(String sab);
 	
 	/**
 	 * Gets the mrsab row from rsab.
@@ -44,4 +44,7 @@ public interface MrsabUtility {
 	 * @return the mrsab row from rsab
 	 */
 	public Mrsab getMrsabRowFromRsab(String rsab);
+	
+	
+	public String getCodingSchemeVersionFromSab(String sab);
 }

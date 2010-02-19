@@ -63,10 +63,10 @@ public abstract class AbstractMrhierProcessor extends CodingSchemeIdAwareProcess
 	public void afterPropertiesSet() throws Exception {
 		if(supportedAttributeTemplate != null){
 			supportedAttributeTemplate.addSupportedPropertyQualifier(
-					this.getCodingSchemeIdSetter().getCodingSchemeId(),
+					this.getCodingSchemeIdSetter().getCodingSchemeName(),
 					RrfLoaderConstants.HCD_QUALIFIER, null, RrfLoaderConstants.HCD_QUALIFIER);
 			supportedAttributeTemplate.addSupportedAssociationQualifier(
-					this.getCodingSchemeIdSetter().getCodingSchemeId(),
+					this.getCodingSchemeIdSetter().getCodingSchemeName(),
 					RrfLoaderConstants.HCD_QUALIFIER, null, RrfLoaderConstants.HCD_QUALIFIER);
 		}
 	}
@@ -203,7 +203,7 @@ public abstract class AbstractMrhierProcessor extends CodingSchemeIdAwareProcess
 	protected EntityAssnsToEquals buildEntityAssnsToEquals(Mrhier mrhier, EntityAssnsToEntity assoc){
 		EntityAssnsToEquals qual = new EntityAssnsToEquals();
 		EntityAssnsToEqualsId qualId = new EntityAssnsToEqualsId();
-		qualId.setCodingSchemeName(getCodingSchemeIdSetter().getCodingSchemeId());
+		qualId.setCodingSchemeName(getCodingSchemeIdSetter().getCodingSchemeName());
 		qualId.setMultiAttributesKey(assoc.getMultiAttributesKey());
 		qualId.setQualifierName(qualifierResolver.getQualifierName());
 		qualId.setQualifierValue(qualifierResolver.getQualifierValue(mrhier));
@@ -233,7 +233,7 @@ public abstract class AbstractMrhierProcessor extends CodingSchemeIdAwareProcess
 	 */
 	protected EntityAssnsToEntity buildEntityAssnsToEntity(String sourceCode, String targetCode){
 		EntityAssnsToEntity assoc = new EntityAssnsToEntity();
-		assoc.setCodingSchemeName(getCodingSchemeIdSetter().getCodingSchemeId());
+		assoc.setCodingSchemeName(getCodingSchemeIdSetter().getCodingSchemeName());
 		assoc.setSourceEntityCode(sourceCode);
 		assoc.setTargetEntityCode(targetCode);
 		return assoc;		
@@ -247,9 +247,9 @@ public abstract class AbstractMrhierProcessor extends CodingSchemeIdAwareProcess
 				EntityPropertyMultiAttrib qual = new EntityPropertyMultiAttrib();
 				EntityPropertyMultiAttribId qualId = new EntityPropertyMultiAttribId();
 
-				qualId.setCodingSchemeName(getCodingSchemeIdSetter().getCodingSchemeId());
+				qualId.setCodingSchemeName(getCodingSchemeIdSetter().getCodingSchemeName());
 				qualId.setEntityCode(sourceCode);
-				qualId.setEntityCodeNamespace(getCodingSchemeIdSetter().getCodingSchemeId());
+				qualId.setEntityCodeNamespace(getCodingSchemeIdSetter().getCodingSchemeName());
 				qualId.setTypeName(resolver.getTypeName());
 				qualId.setPropertyId(propertyId);
 				qualId.setVal1(resolver.getVal1(mrhier));

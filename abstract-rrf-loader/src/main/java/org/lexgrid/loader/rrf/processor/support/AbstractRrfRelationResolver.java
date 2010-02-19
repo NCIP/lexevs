@@ -67,21 +67,21 @@ public abstract class AbstractRrfRelationResolver implements RelationResolver<Mr
 	 * @see org.lexgrid.loader.processor.support.RelationResolver#getRelationNamespace(java.lang.Object)
 	 */
 	public String getRelationNamespace(Mrrel item) {
-		return codingSchemeIdSetter.getCodingSchemeId();
+		return codingSchemeIdSetter.getCodingSchemeName();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.RelationResolver#getSourceNamespace(java.lang.Object)
 	 */
 	public String getSourceNamespace(Mrrel item) {
-		return codingSchemeIdSetter.getCodingSchemeId();
+		return codingSchemeIdSetter.getCodingSchemeName();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.RelationResolver#getTargetNamespace(java.lang.Object)
 	 */
 	public String getTargetNamespace(Mrrel item) {
-		return codingSchemeIdSetter.getCodingSchemeId();
+		return codingSchemeIdSetter.getCodingSchemeName();
 	}
 
 	/**
