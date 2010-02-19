@@ -1174,9 +1174,9 @@
 		<beans:property name="supportedAttributeTemplate">
 			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
 		</beans:property>
-		<beans:property name="lexEvsDao">
-			<beans:ref bean="lexEvsDao" />
-		</beans:property>
+<!--		<beans:property name="lexEvsDao">-->
+<!--			<beans:ref bean="lexEvsDao" />-->
+<!--		</beans:property>-->
 	</beans:bean>
 
 	<beans:bean id="registeringTasklet" parent="abstractLexEvsUtilityTasklet"

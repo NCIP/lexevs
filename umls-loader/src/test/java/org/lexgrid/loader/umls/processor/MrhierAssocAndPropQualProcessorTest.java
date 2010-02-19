@@ -141,7 +141,7 @@ public class MrhierAssocAndPropQualProcessorTest {
 		
 		processor.setMrconsoStagingDao(stagingDao);
 		
-		processor.setCodingSchemeIdSetter(new SupportHelpers.TestCodingSchemeNameSetter());	
+		processor.setCodingSchemeIdSetter(new SupportHelpers.TestCodingSchemeIdSetter());	
 			
 		mrhier = new Mrhier();
 		mrhier.setPtr("aui1.aui2.aui3");
@@ -307,7 +307,7 @@ public class MrhierAssocAndPropQualProcessorTest {
 	 */
 	private EntityAssnsToEntity buildEntityAssnsToEntity(String sourceCode, String targetCode){
 		EntityAssnsToEntity assoc = new EntityAssnsToEntity();
-		assoc.setCodingSchemeName(new SupportHelpers.TestCodingSchemeNameSetter().getCodingSchemeId());
+		assoc.setCodingSchemeName(new SupportHelpers.TestCodingSchemeIdSetter().getCodingSchemeName());
 		assoc.setSourceEntityCode(sourceCode);
 		assoc.setTargetEntityCode(targetCode);
 		return assoc;		

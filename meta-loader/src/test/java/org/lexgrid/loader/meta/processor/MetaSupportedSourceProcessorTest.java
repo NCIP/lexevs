@@ -29,7 +29,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.easymock.EasyMock.*;
 import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
-import org.lexgrid.loader.data.codingScheme.CodingSchemeNameSetter;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 
 import test.util.SupportHelpers;
 
@@ -49,7 +49,7 @@ public class MetaSupportedSourceProcessorTest {
 	@Before
 	public void setUp() {
 		processor = new MetaSupportedSourceProcessor();
-		processor.setCodingSchemeNameSetter(new SupportHelpers.TestCodingSchemeNameSetter());
+		processor.setCodingSchemeIdSetter(new TestCodingSchemeIdSetter.TestCodingSchemeNameSetter());
 		Map<String,String> isoMap = new HashMap<String,String>();
 		isoMap.put("testCs", "1.2.3.4.5");
 		processor.setIsoMap(isoMap);
@@ -68,7 +68,7 @@ public class MetaSupportedSourceProcessorTest {
 	 */
 	@Test
 	public void testAddSupportedSource() {
-		CodingSchemeNameSetter setter = new SupportHelpers.TestCodingSchemeNameSetter();
+		CodingSchemeIdSetter setter = new TestCodingSchemeIdSetter.TestCodingSchemeNameSetter();
 		SupportedAttributeTemplate template = createMock(SupportedAttributeTemplate.class);
 		
 		template.addSupportedSource(setter.getCodingSchemeName(), 

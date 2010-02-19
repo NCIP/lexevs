@@ -21,7 +21,7 @@ package org.lexgrid.loader.meta.processor.support;
 
 import org.LexGrid.persistence.model.EntityPropertyMultiAttrib;
 import org.LexGrid.persistence.model.EntityPropertyMultiAttribId;
-import org.lexgrid.loader.processor.CodingSchemeNameAwareProcessor;
+import org.lexgrid.loader.processor.CodingSchemeIdAwareProcessor;
 import org.lexgrid.loader.processor.support.MultiAttribResolver;
 import org.lexgrid.loader.rrf.model.Mrsat;
 
@@ -29,7 +29,7 @@ import org.lexgrid.loader.rrf.model.Mrsat;
  * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
  * @param <I>
  */
-public class MetaMrSatMultiAttributeResolver<I>  extends CodingSchemeNameAwareProcessor {
+public class MetaMrSatMultiAttributeResolver<I>  extends CodingSchemeIdAwareProcessor {
 
 	/**
 	 * @param resolver
@@ -40,8 +40,8 @@ public class MetaMrSatMultiAttributeResolver<I>  extends CodingSchemeNameAwarePr
 	public EntityPropertyMultiAttrib getEntitPropMultiAttrib(MultiAttribResolver<Mrsat> resolver, Mrsat item) {
 		EntityPropertyMultiAttrib propertyQualifier = new EntityPropertyMultiAttrib();
 		EntityPropertyMultiAttribId qualifierId = new EntityPropertyMultiAttribId();
-		qualifierId.setCodingSchemeName(getCodingSchemeNameSetter().getCodingSchemeName());
-		qualifierId.setEntityCodeNamespace(getCodingSchemeNameSetter().getCodingSchemeName());
+		qualifierId.setCodingSchemeName(getCodingSchemeIdSetter().getCodingSchemeName());
+		qualifierId.setEntityCodeNamespace(getCodingSchemeIdSetter().getCodingSchemeName());
 		qualifierId.setEntityCode(resolver.getEntityCode(item));	
 		qualifierId.setTypeName(resolver.getTypeName());
 		qualifierId.setPropertyId(resolver.getId(item));

@@ -112,10 +112,10 @@ SINGLE_TABLE_MODE=true
 # registry.xml file.
 
 # Examples for DB_URL'
-DB_URL=jdbc:mysql://localhost/sb
+#DB_URL=jdbc:mysql://localhost/sb
 #DB_URL=jdbc:mysql://bmidev4:3307/sb
 #DB_URL=jdbc:postgresql://bmidev/LexGrid
-#DB_URL=jdbc:hsqldb:mem:test
+DB_URL=jdbc:hsqldb:mem:test
 #DB_URL=jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=C:/temp/LexBIG.mdb
 #DB_URL=jdbc:oracle:thin:@localhost:1521:LEXGRID
 
@@ -146,9 +146,9 @@ DB_PARAM=
 # The database driver.
 # NOTE: This should typically not be changed after content has been loaded.
 #DB_DRIVER=org.gjt.mm.mysql.Driver
-DB_DRIVER=com.mysql.jdbc.Driver
+#DB_DRIVER=com.mysql.jdbc.Driver
 #DB_DRIVER=org.postgresql.Driver
-#DB_DRIVER=org.hsqldb.jdbcDriver
+DB_DRIVER=org.hsqldb.jdbcDriver
 #DB_DRIVER=sun.jdbc.odbc.JdbcOdbcDriver
 #DB_DRIVER=oracle.jdbc.driver.OracleDriver
 
@@ -158,8 +158,8 @@ DB_DRIVER=com.mysql.jdbc.Driver
 # PERMISSION TO CREATE AND REMOVE DATABASES in the database environment.
 # If SINGLE_DB_MODE is set to true, the specified account MUST HAVE permission
 # to create and remove tables, indexes, and foreign keys in the database environment.
-DB_USER=root
-DB_PASSWORD=root
+DB_USER=sa
+DB_PASSWORD=
 
 ############# Password encryption
 

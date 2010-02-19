@@ -45,8 +45,8 @@ public class UmlsEntityAssnsToEntityProcessor extends GroupRrfEntityAssnsToEntit
 	 */
 	protected EntityAssnsToEntity buildEntityAssnsToEntity(CodeCodingSchemePair sourceCode, CodeCodingSchemePair targetCode, String container, String relation, String rui){
 		EntityAssnsToEntity relAssoc = new EntityAssnsToEntity();
-		relAssoc.setCodingSchemeName(getCodingSchemeIdSetter().getCodingSchemeId());
-		relAssoc.setEntityCodeNamespace(getCodingSchemeIdSetter().getCodingSchemeId());
+		relAssoc.setCodingSchemeName(getCodingSchemeIdSetter().getCodingSchemeName());
+		relAssoc.setEntityCodeNamespace(getCodingSchemeIdSetter().getCodingSchemeName());
 		relAssoc.setContainerName(container);
 		relAssoc.setEntityCode(relation);
 		relAssoc.setSourceEntityCode(sourceCode.getCode());

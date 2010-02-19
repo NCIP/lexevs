@@ -27,7 +27,7 @@ import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
 import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
 import org.lexgrid.loader.meta.processor.support.MetaMrSatMultiAttributeResolver;
-import org.lexgrid.loader.processor.CodingSchemeNameAwareProcessor;
+import org.lexgrid.loader.processor.CodingSchemeIdAwareProcessor;
 import org.lexgrid.loader.processor.support.MultiAttribResolver;
 import org.lexgrid.loader.rrf.model.Mrsat;
 import org.springframework.batch.item.ItemProcessor;
@@ -35,7 +35,7 @@ import org.springframework.batch.item.ItemProcessor;
 /**
  * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
  */
-public class MetaMrsattoMultiAttributeListProcessor extends CodingSchemeNameAwareProcessor implements
+public class MetaMrsattoMultiAttributeListProcessor extends CodingSchemeIdAwareProcessor implements
 		ItemProcessor<Mrsat, List<EntityPropertyMultiAttrib>> {
 
 	/** Resolver for the source element from MRSAT */
@@ -167,14 +167,14 @@ public class MetaMrsattoMultiAttributeListProcessor extends CodingSchemeNameAwar
 		for(EntityPropertyMultiAttrib pq : propertyQualifiers){
 			if(pq.getId().getTypeName().equals(SQLTableConstants.TBLCOLVAL_SOURCE)){
 				supportedAttributeTemplate.addSupportedSource(
-						this.getCodingSchemeNameSetter().getCodingSchemeName(), 
+						this.getCodingSchemeIdSetter().getCodingSchemeName(), 
 						pq.getId().getAttributeValue(), 
 						isoMap.get(pq.getId().getAttributeValue()),
 						pq.getId().getAttributeValue(),
 						null);
 			} else {
 				supportedAttributeTemplate.addSupportedPropertyQualifier(
-						this.getCodingSchemeNameSetter().getCodingSchemeName(), 
+						this.getCodingSchemeIdSetter().getCodingSchemeName(), 
 						pq.getId().getAttributeValue(), 
 						null, 
 						pq.getId().getAttributeValue());

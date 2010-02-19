@@ -302,13 +302,11 @@
 	<beans:bean id="umlsCodingSchemeProcessor"
 		class="org.lexgrid.loader.umls.processor.UmlsCodingSchemeProcessor"
 		scope="step">
-		<beans:property name="codingSchemeNameSetter">
+		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="sab" value="${sab}"/>
-		<beans:property name="isoMap">
-			<beans:ref bean="isoMap" />
-		</beans:property>
+		
 		<beans:property name="supportedAttributeTemplate">
 			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
 		</beans:property>
@@ -655,16 +653,19 @@
 	</beans:bean>
 
 	<beans:bean id="umlsCodingSchemeIdSetter"
-		class="org.lexgrid.loader.umls.data.codingscheme.UmlsCodingSchemeNameSetter">
+		class="org.lexgrid.loader.umls.data.codingscheme.UmlsCodingSchemeIdSetter">
 		<beans:property name="mrsabUtility">
 			<beans:ref bean="mrsabUtility" />
 		</beans:property>
 		<beans:property name="sab" value="${sab}" />
+		<beans:property name="isoMap">
+			<beans:ref bean="isoMap" />
+		</beans:property>
 	</beans:bean>
 
 	<beans:bean id="umlsEntityNamespaceResolver"
 		class="org.lexgrid.loader.processor.support.SameAsCodingSchemeNameEntityNamespaceResolver">
-		<beans:property name="codingSchemeNameSetter">
+		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>

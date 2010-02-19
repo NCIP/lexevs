@@ -18,19 +18,24 @@
  */
 package org.lexgrid.loader.umls.data.codingscheme;
 
+import java.util.Map;
+
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.rrf.data.codingscheme.MrsabUtility;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
- * The Class UmlsCodingSchemeNameSetter.
+ * The Class UmlsCodingSchemeIdSetter.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class UmlsCodingSchemeNameSetter implements CodingSchemeIdSetter, InitializingBean {
+public class UmlsCodingSchemeIdSetter implements CodingSchemeIdSetter, InitializingBean {
 
 	/** The mrsab utility. */
 	private MrsabUtility mrsabUtility;
+	
+	/** The iso map. */
+	private Map<String,String> isoMap;
 	
 	/** The sab. */
 	private String sab;
@@ -38,18 +43,30 @@ public class UmlsCodingSchemeNameSetter implements CodingSchemeIdSetter, Initial
 	/** The coding scheme name. */
 	private String codingSchemeName;
 	
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter#getCodingSchemeName()
-	 */
-	public String getCodingSchemeName() {
-		return codingSchemeName;
-	}
+	private String codingSchemeUri;
+	
+	private String codingSchemeVersion;
+	
 
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
 	public void afterPropertiesSet() throws Exception {
 		codingSchemeName = mrsabUtility.getCodingSchemeNameFromSab(sab);
+		codingSchemeUri = isoMap.get(sab);
+		codingSchemeVersion = mrsabUtility.getCodingSchemeVersionFromSab(sab);
+	}
+
+	public String getCodingSchemeName() {
+		return codingSchemeName;
+	}
+
+	public String getCodingSchemeUri() {
+		return codingSchemeUri;
+	}
+
+	public String getCodingSchemeVersion() {
+		return codingSchemeVersion;
 	}
 
 	/**
@@ -88,16 +105,12 @@ public class UmlsCodingSchemeNameSetter implements CodingSchemeIdSetter, Initial
 		this.sab = sab;
 	}
 
-	public String getCodingSchemeId() {
-		return codingSchemeName;
+	public Map<String, String> getIsoMap() {
+		return isoMap;
 	}
 
-	public String getCodingSchemeUri() {
-		return codingSchemeName;
+	public void setIsoMap(Map<String, String> isoMap) {
+		this.isoMap = isoMap;
 	}
-
-	public String getCodingSchemeVersion() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 }

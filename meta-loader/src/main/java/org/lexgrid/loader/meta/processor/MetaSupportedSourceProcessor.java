@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.LexGrid.persistence.model.EntityPropertyMultiAttrib;
 import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
-import org.lexgrid.loader.processor.EntityPropertyMultiAttribProcessor;
+import org.lexgrid.loader.processor.EntityPropertyQualifierProcessor;
 import org.lexgrid.loader.rrf.model.Mrconso;
 
 /**
@@ -30,7 +30,7 @@ import org.lexgrid.loader.rrf.model.Mrconso;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MetaSupportedSourceProcessor extends EntityPropertyMultiAttribProcessor<Mrconso> {
+public class MetaSupportedSourceProcessor extends EntityPropertyQualifierProcessor<Mrconso> {
 
 	/** The iso map. */
 	private Map<String,String> isoMap;
@@ -40,7 +40,7 @@ public class MetaSupportedSourceProcessor extends EntityPropertyMultiAttribProce
 			SupportedAttributeTemplate template,
 			EntityPropertyMultiAttrib source) {
 		template.addSupportedSource(
-				this.getCodingSchemeNameSetter().getCodingSchemeName(), 
+				this.getCodingSchemeIdSetter().getCodingSchemeName(), 
 				source.getId().getAttributeValue(), 
 				isoMap.get(source.getId().getAttributeValue()), 
 				null, 

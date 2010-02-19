@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.LexGrid.persistence.model.Relation;
 import org.LexGrid.persistence.model.RelationId;
-import org.lexgrid.loader.data.codingScheme.CodingSchemeNameSetter;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.hardcodedvalues.AbstractIntrospectiveHardcodedValues;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 
@@ -33,7 +33,7 @@ import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 public class MetaHardcodedValuesTasklet extends AbstractIntrospectiveHardcodedValues {
 
 	/** The coding scheme name setter. */
-	private CodingSchemeNameSetter codingSchemeNameSetter;
+	private CodingSchemeIdSetter codingSchemeIdSetter;
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.hardcodedvalues.AbstractHardcodedValuesFactory#buildList(java.util.List)
@@ -44,7 +44,7 @@ public class MetaHardcodedValuesTasklet extends AbstractIntrospectiveHardcodedVa
 		
 		Relation relation = new Relation();
 		RelationId relationId = new RelationId();
-		relationId.setCodingSchemeName(codingSchemeNameSetter.getCodingSchemeName());
+		relationId.setCodingSchemeName(codingSchemeIdSetter.getCodingSchemeName());
 		relationId.setContainerName(RrfLoaderConstants.UMLS_RELATIONS_NAME);
 		relation.setEntityDescription(RrfLoaderConstants.UMLS_RELATIONS_ENTITY_DESCRIPTION);
 		relation.setIsNative(true);
@@ -52,11 +52,11 @@ public class MetaHardcodedValuesTasklet extends AbstractIntrospectiveHardcodedVa
 		hardcodedValues.add(relation);
 		
 		this.getSupportedAttributeTemplate()
-			.addSupportedNamespace(codingSchemeNameSetter.getCodingSchemeName(), 
-					codingSchemeNameSetter.getCodingSchemeName(), 
+			.addSupportedNamespace(codingSchemeIdSetter.getCodingSchemeName(), 
+					codingSchemeIdSetter.getCodingSchemeName(), 
 					null, 
-					codingSchemeNameSetter.getCodingSchemeName(), 
-					codingSchemeNameSetter.getCodingSchemeName());
+					codingSchemeIdSetter.getCodingSchemeName(), 
+					codingSchemeIdSetter.getCodingSchemeName());
 		
 		return hardcodedValues;	
 	}
@@ -66,17 +66,17 @@ public class MetaHardcodedValuesTasklet extends AbstractIntrospectiveHardcodedVa
 	 * 
 	 * @return the coding scheme name setter
 	 */
-	public CodingSchemeNameSetter getCodingSchemeNameSetter() {
-		return codingSchemeNameSetter;
+	public CodingSchemeIdSetter getCodingSchemeNameSetter() {
+		return codingSchemeIdSetter;
 	}
 
 	/**
 	 * Sets the coding scheme name setter.
 	 * 
-	 * @param codingSchemeNameSetter the new coding scheme name setter
+	 * @param codingSchemeIdSetter the new coding scheme name setter
 	 */
 	public void setCodingSchemeNameSetter(
-			CodingSchemeNameSetter codingSchemeNameSetter) {
-		this.codingSchemeNameSetter = codingSchemeNameSetter;
+			CodingSchemeIdSetter codingSchemeIdSetter) {
+		this.codingSchemeIdSetter = codingSchemeIdSetter;
 	}
 }

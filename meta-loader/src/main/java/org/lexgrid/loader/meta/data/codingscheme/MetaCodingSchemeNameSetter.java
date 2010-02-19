@@ -19,7 +19,7 @@
 package org.lexgrid.loader.meta.data.codingscheme;
 
 import java.util.Properties;
-import org.lexgrid.loader.data.codingScheme.CodingSchemeNameSetter;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 
 import org.lexgrid.loader.constants.LoaderConstants;
 
@@ -28,13 +28,13 @@ import org.lexgrid.loader.constants.LoaderConstants;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MetaCodingSchemeNameSetter implements CodingSchemeNameSetter {
+public class MetaCodingSchemeNameSetter implements CodingSchemeIdSetter {
 
 	/** The coding scheme properties. */
 	private Properties codingSchemeProperties;
 	
 	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.data.codingScheme.CodingSchemeNameSetter#getCodingSchemeName()
+	 * @see org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter#getCodingSchemeName()
 	 */
 	public String getCodingSchemeName() {
 		return codingSchemeProperties.getProperty(LoaderConstants.CODING_SCHEME_NAME_PROPERTY);

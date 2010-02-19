@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 import org.LexGrid.persistence.model.EntityAssnsToEntity;
 import org.junit.Before;
 import org.junit.Test;
-import org.lexgrid.loader.data.codingScheme.CodingSchemeNameSetter;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.rrf.model.Mrrel;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class EntityAssnsToEntityTestIT extends BeanTestBase {
 	/** The meta coding scheme name setter. */
 	@Autowired
 	@Qualifier("metaCodingSchemeNameSetter")
-	private CodingSchemeNameSetter metaCodingSchemeNameSetter;
+	private CodingSchemeIdSetter metaCodingSchemeNameSetter;
 	
 	/** The mrrel. */
 	private Mrrel mrrel;

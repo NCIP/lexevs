@@ -35,9 +35,6 @@ import org.springframework.batch.item.ItemProcessor;
  */
 public class UmlsCodingSchemeProcessor extends SupportedAttributeSupport implements ItemProcessor<Mrsab,CodingScheme>{
 	
-	/** The iso map. */
-	private Map<String,String> isoMap;
-	
 	/** The coding scheme name setter. */
 	private CodingSchemeIdSetter codingSchemeIdSetter;
 	
@@ -53,11 +50,11 @@ public class UmlsCodingSchemeProcessor extends SupportedAttributeSupport impleme
 	public CodingScheme process(Mrsab mrsab) throws Exception {
 		if(processRow(mrsab)){
 			CodingScheme cs = new CodingScheme();
-			cs.setCodingSchemeName(codingSchemeIdSetter.getCodingSchemeId());
-			cs.setCodingSchemeURI(isoMap.get(sab));
+			cs.setCodingSchemeName(codingSchemeIdSetter.getCodingSchemeName());
+			cs.setCodingSchemeURI(codingSchemeIdSetter.getCodingSchemeUri());
 			cs.setFormalName(mrsab.getSon());
 			cs.setDefaultLanguage(mrsab.getLat());
-			cs.setRepresentsVersion(mrsab.getSver());
+			cs.setRepresentsVersion(codingSchemeIdSetter.getCodingSchemeVersion());
 			
 			EntityDescription ed = new EntityDescription();
 			ed.setContent(mrsab.getScit());
@@ -91,29 +88,11 @@ public class UmlsCodingSchemeProcessor extends SupportedAttributeSupport impleme
 	}
 
 	/**
-	 * Gets the iso map.
-	 * 
-	 * @return the iso map
-	 */
-	public Map<String, String> getIsoMap() {
-		return isoMap;
-	}
-
-	/**
-	 * Sets the iso map.
-	 * 
-	 * @param isoMap the iso map
-	 */
-	public void setIsoMap(Map<String, String> isoMap) {
-		this.isoMap = isoMap;
-	}
-
-	/**
 	 * Gets the coding scheme name setter.
 	 * 
 	 * @return the coding scheme name setter
 	 */
-	public CodingSchemeIdSetter getCodingSchemeNameSetter() {
+	public CodingSchemeIdSetter getCodingSchemeIdSetter() {
 		return codingSchemeIdSetter;
 	}
 
@@ -122,7 +101,7 @@ public class UmlsCodingSchemeProcessor extends SupportedAttributeSupport impleme
 	 * 
 	 * @param codingSchemeIdSetter the new coding scheme name setter
 	 */
-	public void setCodingSchemeNameSetter(
+	public void setCodingSchemeIdSetter(
 			CodingSchemeIdSetter codingSchemeIdSetter) {
 		this.codingSchemeIdSetter = codingSchemeIdSetter;
 	}
