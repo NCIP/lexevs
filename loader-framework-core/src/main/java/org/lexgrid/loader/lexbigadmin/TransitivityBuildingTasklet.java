@@ -66,7 +66,7 @@ public class TransitivityBuildingTasklet extends AbstractLexEvsUtilityTasklet im
 			}
 		}
 			getConnectionManager().computeTransitiveTable(
-					getCodingSchemeIdSetter().getCodingSchemeId(), 
+					getCodingSchemeIdSetter().getCodingSchemeName(), 
 					getCurrentCodingSchemeUri(),
 					getCurrentCodingSchemeVersion());
 	

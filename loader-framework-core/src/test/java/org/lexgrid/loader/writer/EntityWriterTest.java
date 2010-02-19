@@ -11,7 +11,7 @@ import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.system.ResourceManager;
 import org.lexgrid.loader.test.LoaderFrameworkCoreTestBase;
-import org.lexgrid.loader.test.util.SupportHelpers.TestCodingSchemeNameSetter;
+import org.lexgrid.loader.test.util.SupportHelpers.TestCodingSchemeIdSetter;
 import org.lexgrid.loader.wrappers.CodingSchemeIdHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,7 +31,7 @@ public class EntityWriterTest extends LoaderFrameworkCoreTestBase {
 	
 	@Test
 	public void testEntity() throws Exception{
-		TestCodingSchemeNameSetter test = new TestCodingSchemeNameSetter();
+		TestCodingSchemeIdSetter test = new TestCodingSchemeIdSetter();
 		
 		RegistryEntry entry = new RegistryEntry();
 		entry.setResourceUri(test.getCodingSchemeUri());
@@ -47,7 +47,7 @@ public class EntityWriterTest extends LoaderFrameworkCoreTestBase {
 		codingSchemeService.insertCodingScheme(cs);
 		
 		CodingSchemeIdHolder<Entity> holder = new CodingSchemeIdHolder<Entity>();
-		holder.setCodingSchemeIdSetter(new TestCodingSchemeNameSetter());
+		holder.setCodingSchemeIdSetter(new TestCodingSchemeIdSetter());
 		
 		Entity e = new Entity();
 		e.setEntityCode("code");

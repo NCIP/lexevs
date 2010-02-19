@@ -165,25 +165,6 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 	}
 
 	/**
-	 * Gets the coding scheme name setter.
-	 * 
-	 * @return the coding scheme name setter
-	 */
-	public CodingSchemeIdSetter getCodingSchemeNameSetter() {
-		return codingSchemeIdSetter;
-	}
-
-	/**
-	 * Sets the coding scheme name setter.
-	 * 
-	 * @param codingSchemeIdSetter the new coding scheme name setter
-	 */
-	public void setCodingSchemeNameSetter(
-			CodingSchemeIdSetter codingSchemeIdSetter) {
-		this.codingSchemeIdSetter = codingSchemeIdSetter;
-	}
-
-	/**
 	 * Gets the job repository manager.
 	 * 
 	 * @return the job repository manager

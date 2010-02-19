@@ -25,7 +25,7 @@ import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class SameAsCodingSchemeNameEntityNamespaceResolver implements EntityNamespaceResolver {
+public class SameAsCodingSchemeNameEntityNamespaceResolver implements EntityNamespaceResolver<Object> {
 	
 	/** The coding scheme name setter. */
 	private CodingSchemeIdSetter codingSchemeIdSetter;
@@ -34,25 +34,14 @@ public class SameAsCodingSchemeNameEntityNamespaceResolver implements EntityName
 	 * @see org.lexgrid.loader.processor.support.EntityNamespaceResolver#getEntityNamespace(java.lang.Object)
 	 */
 	public String getEntityNamespace(Object item) {
-		return codingSchemeIdSetter.getCodingSchemeId();
+		return codingSchemeIdSetter.getCodingSchemeName();
 	}
 
-	/**
-	 * Gets the coding scheme name setter.
-	 * 
-	 * @return the coding scheme name setter
-	 */
-	public CodingSchemeIdSetter getCodingSchemeNameSetter() {
+	public CodingSchemeIdSetter getCodingSchemeIdSetter() {
 		return codingSchemeIdSetter;
 	}
 
-	/**
-	 * Sets the coding scheme name setter.
-	 * 
-	 * @param codingSchemeIdSetter the new coding scheme name setter
-	 */
-	public void setCodingSchemeNameSetter(
-			CodingSchemeIdSetter codingSchemeIdSetter) {
+	public void setCodingSchemeIdSetter(CodingSchemeIdSetter codingSchemeIdSetter) {
 		this.codingSchemeIdSetter = codingSchemeIdSetter;
-	}	
+	}
 }

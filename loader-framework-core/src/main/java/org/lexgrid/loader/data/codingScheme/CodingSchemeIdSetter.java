@@ -30,7 +30,7 @@ public interface CodingSchemeIdSetter {
 	 * 
 	 * @return the coding scheme name
 	 */
-	public String getCodingSchemeId();
+	public String getCodingSchemeName();
 	
 	public String getCodingSchemeUri();
 	

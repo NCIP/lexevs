@@ -5,9 +5,9 @@ import org.lexgrid.loader.processor.support.RelationContainerResolver;
 
 public class SupportHelpers {
 
-	public static class TestCodingSchemeNameSetter 
+	public static class TestCodingSchemeIdSetter 
 	implements CodingSchemeIdSetter {
-		public String getCodingSchemeId() {
+		public String getCodingSchemeName() {
 			return "testCodingSchemeName";
 		}
 

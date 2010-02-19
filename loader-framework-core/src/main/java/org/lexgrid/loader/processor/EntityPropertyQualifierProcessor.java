@@ -46,7 +46,7 @@ public class EntityPropertyQualifierProcessor<I> extends AbstractSupportedAttrib
 		
 		String parentId = 
 			entityPropertyKeyResolver.
-				resolveKey(this.getCodingSchemeIdSetter().getCodingSchemeId(), 
+				resolveKey(this.getCodingSchemeIdSetter().getCodingSchemeName(), 
 						propertyResolver.getEntityCode(item), 
 						propertyResolver.getEntityCodeNamespace(item), 
 						propertyResolver.getId(item));

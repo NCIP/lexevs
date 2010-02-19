@@ -168,7 +168,7 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 	public AbsoluteCodingSchemeVersionReference[]  getCodingSchemeReferences(){
 		//TODO:
 		return null;
-		//return ResourceManager.instance().readTerminologiesFromServer(sqlConnectionInfo);
+		//return SystemResourceService.instance().readTerminologiesFromServer(sqlConnectionInfo);
 	}
 
 	public JobExecution getJobExecution() {

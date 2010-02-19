@@ -24,7 +24,7 @@ public abstract class AbstractParentIdHolderWriter<T> extends AbstractDatabaseSe
 		Map<String,List<ParentIdHolder<T>>> returnMap = new HashMap<String,List<ParentIdHolder<T>>>();
 
 		for(ParentIdHolder<T> holder : list){
-			String csId = holder.getCodingSchemeIdSetter().getCodingSchemeId();
+			String csId = holder.getCodingSchemeIdSetter().getCodingSchemeName();
 			if(! returnMap.containsKey(csId)){
 				returnMap.put(csId, new ArrayList<ParentIdHolder<T>>());
 			}

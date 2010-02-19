@@ -153,7 +153,7 @@ public class LoaderTestUtils {
 	 */
 	public static void shutdownnHsqldb() {	
 		try {
-			//String url = ResourceManager.instance().getSystemVariables().getAutoLoadDBURL();
+			//String url = SystemResourceService.instance().getSystemVariables().getAutoLoadDBURL();
 			//Class.forName("org.hsqldb.jdbcDriver");
 			//Connection con = DriverManager.getConnection(url, "sa", "");
 			//String sql = "SHUTDOWN";

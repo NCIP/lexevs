@@ -61,7 +61,7 @@ public class EntityAssnToEQualsProcessor<I> extends AbstractSupportedAttributeRe
 		return new ParentIdHolder<AssociationQualification>(
 				this.getCodingSchemeIdSetter(),
 				associationInstanceKeyResolver.
-					resolveKey(this.getCodingSchemeIdSetter().getCodingSchemeId(), associationInstanceId), 
+					resolveKey(this.getCodingSchemeIdSetter().getCodingSchemeName(), associationInstanceId), 
 					qual);
 	}
 

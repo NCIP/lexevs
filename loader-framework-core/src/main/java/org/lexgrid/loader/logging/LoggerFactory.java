@@ -35,8 +35,8 @@ public class LoggerFactory {
 	
 	/*
 	public static Logger getLoadLogger(){
-		//Make sure the ResourceManager has been initialized.
-		ResourceManager.instance();
+		//Make sure the SystemResourceService has been initialized.
+		SystemResourceService.instance();
 		Logger loadLogger = LogManager.getLogger(loadLoggerName);
 		return loadLogger;
 	}

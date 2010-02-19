@@ -62,7 +62,7 @@ public class MetadataLoadingTasklet extends AbstractLexEvsUtilityTasklet impleme
 	public RepeatStatus doExecute(StepContribution contribution,
 			ChunkContext chunkContext) throws Exception {
 		getLogger().info("Loading Metadata.");
-		getConnectionManager().index(getCodingSchemeIdSetter().getCodingSchemeId(),
+		getConnectionManager().index(getCodingSchemeIdSetter().getCodingSchemeName(),
 				getCurrentCodingSchemeUri(), 
 				getCurrentCodingSchemeVersion());
 		
