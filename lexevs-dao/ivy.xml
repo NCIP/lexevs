@@ -17,6 +17,10 @@
 		<dependency org="org.easymock" name="easymockclassextension" rev="2.4"/> 
 		<dependency org="asm" name="asm" rev="3.2"/>
 		<dependency org="cglib" name="cglib" rev="2.2" />
+		<dependency org="aspectj" name="aspectjrt" rev="1.5.0"/>
+		<dependency org="aspectj" name="aspectjweaver" rev="1.5.0"/>
+		<dependency org="org.springframework" name="spring-aspects" rev="2.5.6"/>
+		<dependency org="org.springframework" name="spring-aop" rev="2.5.6"/>
 		<dependency org="org.springframework" name="spring" rev="2.5.6"/>
 		<dependency org="org.springframework" name="spring-test"
 			rev="2.5.6" />

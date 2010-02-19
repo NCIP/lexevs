@@ -99,16 +99,14 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		return this.getHibernateTemplate().findByExample(new RegistryEntry());
 	}
 
-	public RegistryEntry getRegistryEntryForUri(String uri) {
+	public List<RegistryEntry> getRegistryEntriesForUri(String uri) {
 		RegistryEntry entry = new RegistryEntry();
 		entry.setResourceUri(uri);
 
 		List<RegistryEntry> entries = this.getHibernateTemplate().findByExample(entry);
 		if(entries == null || entries.size() == 0){
 			throw new RuntimeException("No entry for: " + uri);
-		} else if(entries.size() > 1){
-			throw new RuntimeException("More than one entry for: " + uri);
-		} 
-		return entries.get(0);
+		}
+		return entries;
 	}
 }

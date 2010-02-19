@@ -352,6 +352,8 @@ public class SystemVariables {
             
             if( autoLoadSingleDBMode )
                 historyDBSchema_ = props.getProperty("HISTORY_DB_SCHEMA");
+            
+            logger.finishLogConfig(this);
 
         } catch (Exception e) {
             logger.fatal("There was a problem reading the properties", e);

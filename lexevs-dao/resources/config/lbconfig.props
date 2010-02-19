@@ -112,7 +112,7 @@ SINGLE_TABLE_MODE=true
 # registry.xml file.
 
 # Examples for DB_URL'
-DB_URL=jdbc:mysql://bmidev3:3307/junit
+DB_URL=jdbc:mysql://bmidev4:3307/60
 #DB_URL=jdbc:mysql://bmidev4:3307/sb
 #DB_URL=jdbc:postgresql://bmidev/LexGrid
 #DB_URL=jdbc:hsqldb:file:C:/temp/LexGrid

@@ -48,7 +48,7 @@ public interface Registry {
 			AbsoluteCodingSchemeVersionReference codingScheme, String newVersion)
 			throws LBInvocationException, LBParameterException;
 
-	public RegistryEntry getEntry(String uri)
+	public List<RegistryEntry> getEntriesForUri(String uri)
 			throws LBParameterException;
 
 	public RegistryEntry getEntry(AbsoluteCodingSchemeVersionReference codingScheme)

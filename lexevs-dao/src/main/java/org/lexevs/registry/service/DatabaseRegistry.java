@@ -63,10 +63,10 @@ public class DatabaseRegistry implements Registry {
 	}
 
 	@Transactional
-	public RegistryEntry getEntry(String uri)
+	public List<RegistryEntry> getEntriesForUri(String uri)
 			throws LBParameterException {
 		return 
-				registryDao.getRegistryEntryForUri(uri);
+				registryDao.getRegistryEntriesForUri(uri);
 	}
 
 	@Transactional

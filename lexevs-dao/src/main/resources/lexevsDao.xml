@@ -265,6 +265,14 @@
 		<property name="logger" ref="loggerFactory"/>
 	</bean>
 	
+	<bean id="delegatingResourceManagingService" class="org.lexevs.system.service.DelegatingResourceManagingService">
+		<property name="prefixResolver" ref="defaultPrefixResolver"/>
+		<property name="systemVariables" ref="systemVariables"/> 
+		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
+		<property name="registry" ref="databaseRegistry"/>
+		<property name="myClassLoader" ref="myClassLoader"/>
+	</bean>
+	
 	<bean id="lexEvsSchemaInstallationSetup" class="org.lexevs.registry.setup.LexEvsSchemaInstallationSetup"
 		parent="loggingBean">
 		<property name="lexGridSchemaInstalled" ref="lexGridSchemaCheckFactory"/>
@@ -297,6 +305,13 @@
 	</bean>
 	
 	<bean id="loggingBean" class="org.lexevs.logging.LoggingBean" abstract="true">
+		<property name="logger" ref="loggerFactory"/>
+	</bean>
+	
+	<aop:aspectj-autoproxy/>
+	
+	<bean id="methodCachingProxyAspect" 
+		class="org.lexevs.cache.MethodCachingProxy">
 		<property name="logger" ref="loggerFactory"/>
 	</bean>
 	

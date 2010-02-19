@@ -14,7 +14,7 @@ public interface RegistryDao {
 
 	public RegistryEntry getRegistryEntryForUriAndVersion(String uri, String version);
 	
-	public RegistryEntry getRegistryEntryForUri(String uri);
+	public List<RegistryEntry> getRegistryEntriesForUri(String uri);
 	
 	public void updateLastUpdateTime(Date lastUpdateTime);
 	

@@ -316,6 +316,7 @@ public class MyClassLoader extends URLClassLoader {
     }
     
     @LgClientSideSafe
+    @Deprecated
     public static MyClassLoader instance(SystemVariables systemVariables, Logger logger) {
         if (myClassLoader_ == null) {
             myClassLoader_ = new MyClassLoader(systemVariables, logger);
