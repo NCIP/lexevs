@@ -27,7 +27,7 @@ import java.util.List;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class SortingListProcessor<I,O> extends AbstractListProcessor<I,O> {
+public class SortingListProcessor<I,O> extends AbstractParameterPassingListProcessor<I,O> {
 
 	/** The property comparator. */
 	private Comparator<I> propertyComparator;
@@ -41,13 +41,11 @@ public class SortingListProcessor<I,O> extends AbstractListProcessor<I,O> {
 		return items;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.AbstractListProcessor#afterProcessing(java.util.List)
-	 */
 	@Override
-	protected List<O> afterProcessing(List<O> items) {
-		return items;
-	}
+	protected List<O> afterProcessing(List<O> processedItems,
+			List<I> originalItems) {
+		return processedItems;
+	}	
 
 	/**
 	 * Gets the property comparator.
@@ -65,5 +63,5 @@ public class SortingListProcessor<I,O> extends AbstractListProcessor<I,O> {
 	 */
 	public void setPropertyComparator(Comparator<I> propertyComparator) {
 		this.propertyComparator = propertyComparator;
-	}	
+	}
 }

@@ -23,6 +23,11 @@
    		 <property name="targetMethod" value="getLexEvsDatabaseOperations"/>
  	</bean>
  	
+ 	<bean id="registry" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+  		 <property name="targetObject" ref="serviceLocator"/>
+   		 <property name="targetMethod" value="getRegistry"/>
+ 	</bean>
+ 	
  	<bean id="dataSource" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
   		 <property name="targetObject" ref="defaultLexEvsDatabaseOperations"/>
    		 <property name="targetMethod" value="getDataSource"/>
@@ -31,6 +36,16 @@
  	<bean id="databaseTypeFactory" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
   		 <property name="targetObject" ref="defaultLexEvsDatabaseOperations"/>
    		 <property name="targetMethod" value="getDatabaseType"/>
+ 	</bean>
+ 	
+ 	<bean id="prefixResolver" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+  		 <property name="targetObject" ref="defaultLexEvsDatabaseOperations"/>
+   		 <property name="targetMethod" value="getPrefixResolver"/>
+ 	</bean>
+ 	
+ 	<bean id="prefix" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+  		 <property name="targetObject" ref="prefixResolver"/>
+   		 <property name="targetMethod" value="resolveDefaultPrefix"/>
  	</bean>
 
 

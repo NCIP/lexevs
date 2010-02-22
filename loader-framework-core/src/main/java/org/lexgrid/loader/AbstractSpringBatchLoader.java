@@ -53,7 +53,6 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 	
 	private JobExecution jobExecution;
 	private SpringBatchMessageDirector springBatchMessageDirector;
-	private SQLConnectionInfo sqlConnectionInfo;
 	
 	protected AbstractSpringBatchLoader(){
 		super();
@@ -76,9 +75,6 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 	 */
 	protected void launchJob(Properties connectionProperties, String jobConfigFile, String jobName) throws Exception {
 		super.setInUse();
-		
-		sqlConnectionInfo = 
-			PropertiesFactory.buildSQLConnectinInfoFromProperties(connectionProperties);
 
 		DynamicPropertyApplicationContext ctx = new DynamicPropertyApplicationContext(jobConfigFile, connectionProperties);
 		ctx.setClassLoader(MyClassLoader.instance());
@@ -137,11 +133,11 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 	protected JobParameters buildJobParameters(Properties props){	
 		JobParametersBuilder builder = new JobParametersBuilder();
 		builder.addString(PropertiesFactory.PREFIX, props.getProperty(PropertiesFactory.PREFIX));
-		builder.addString(PropertiesFactory.DATABASE, props.getProperty(PropertiesFactory.DATABASE));
-		builder.addString(PropertiesFactory.URL, props.getProperty(PropertiesFactory.URL));
-		builder.addString(PropertiesFactory.DRIVER, props.getProperty(PropertiesFactory.DRIVER));
-		builder.addString(PropertiesFactory.USERNAME, props.getProperty(PropertiesFactory.USERNAME));
-		builder.addString(PropertiesFactory.PASSWORD, props.getProperty(PropertiesFactory.PASSWORD));
+		//builder.addString(PropertiesFactory.DATABASE, props.getProperty(PropertiesFactory.DATABASE));
+		//builder.addString(PropertiesFactory.URL, props.getProperty(PropertiesFactory.URL));
+		//builder.addString(PropertiesFactory.DRIVER, props.getProperty(PropertiesFactory.DRIVER));
+		//builder.addString(PropertiesFactory.USERNAME, props.getProperty(PropertiesFactory.USERNAME));
+		//builder.addString(PropertiesFactory.PASSWORD, props.getProperty(PropertiesFactory.PASSWORD));
 		
 		return builder.toJobParameters();	
 	}

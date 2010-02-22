@@ -52,25 +52,9 @@ public class PropertiesFactory {
 	 * 
 	 * @return the properties
 	 */
-	public Properties getProperties(SQLConnectionInfo connection){
+	public Properties getProperties(String prefix){
 		Properties props = new Properties();
-		props.setProperty(PREFIX, connection.prefix);
-		props.setProperty(URL, connection.server);
-		props.setProperty(DATABASE, connection.dbName);
-		props.setProperty(DRIVER, connection.driver);
-		props.setProperty(USERNAME, connection.username);
-		props.setProperty(PASSWORD, connection.password);
+		props.setProperty(PREFIX, prefix);
 		return props;		
-	}
-	
-	public static SQLConnectionInfo buildSQLConnectinInfoFromProperties(Properties props){
-		SQLConnectionInfo connectionInfo = new SQLConnectionInfo();
-		connectionInfo.prefix = props.getProperty(PREFIX);
-		connectionInfo.server = props.getProperty(URL);
-		connectionInfo.dbName = props.getProperty(DATABASE);
-		connectionInfo.driver = props.getProperty(DRIVER);
-		connectionInfo.username = props.getProperty(USERNAME);
-		connectionInfo.password = props.getProperty(PASSWORD);
-		return connectionInfo;
 	}
 }

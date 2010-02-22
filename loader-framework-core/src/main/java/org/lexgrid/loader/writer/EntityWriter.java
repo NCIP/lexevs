@@ -9,6 +9,6 @@ public class EntityWriter extends AbstractCodingSchemeIdHolderWriter<Entity>{
 	@Override
 	public void doWrite(CodingSchemeUriVersionPair codingSchemeId, List<Entity> items) {
 		this.getDatabaseServiceManager().
-			getEntityService().insertEntity(codingSchemeId.getUri(), codingSchemeId.getVersion(), items.get(0));
+			getEntityService().insertBatchEntities(codingSchemeId.getUri(), codingSchemeId.getVersion(), items);
 	}
 }

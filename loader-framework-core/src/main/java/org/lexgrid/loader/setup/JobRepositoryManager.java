@@ -20,7 +20,6 @@ package org.lexgrid.loader.setup;
 
 import org.lexevs.dao.database.constants.DatabaseConstants;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
-import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.dao.database.utility.DefaultDatabaseUtility;
 import org.lexgrid.loader.logging.LoggingBean;

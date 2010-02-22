@@ -20,7 +20,7 @@ package org.lexgrid.loader.lexbigadmin;
 
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
-import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.logging.LoggingBean;
@@ -39,7 +39,7 @@ public abstract class AbstractLexEvsUtilityTasklet extends LoggingBean implement
 	/** The connection manager. */
 	private LexEvsDatabaseOperations connectionManager = LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations();
 	
-	private CodingSchemeService codingSchemeService;
+	private DatabaseServiceManager databaseServiceManager;
 	
 	/** The coding scheme name setter. */
 	private CodingSchemeIdSetter codingSchemeIdSetter;
@@ -82,7 +82,7 @@ public abstract class AbstractLexEvsUtilityTasklet extends LoggingBean implement
 	 * @throws Exception the exception
 	 */
 	protected CodingScheme getCurrentCodingScheme() throws Exception {
-		return codingSchemeService.getCodingSchemeByUriAndVersion(
+		return this.getDatabaseServiceManager().getCodingSchemeService().getCodingSchemeByUriAndVersion(
 				this.getCodingSchemeIdSetter().getCodingSchemeUri(), 
 				this.getCodingSchemeIdSetter().getCodingSchemeVersion());
 	}
@@ -102,5 +102,13 @@ public abstract class AbstractLexEvsUtilityTasklet extends LoggingBean implement
 
 	public LexEvsDatabaseOperations getConnectionManager() {
 		return connectionManager;
+	}
+
+	public void setDatabaseServiceManager(DatabaseServiceManager databaseServiceManager) {
+		this.databaseServiceManager = databaseServiceManager;
+	}
+
+	public DatabaseServiceManager getDatabaseServiceManager() {
+		return databaseServiceManager;
 	}	
 }

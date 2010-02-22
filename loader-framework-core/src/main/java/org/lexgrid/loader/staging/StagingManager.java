@@ -24,6 +24,8 @@ package org.lexgrid.loader.staging;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface StagingManager {
+	
+	public static String STAGING_TABLES_PREFIX = "stg";
 
 	/**
 	 * Initialize staging support.

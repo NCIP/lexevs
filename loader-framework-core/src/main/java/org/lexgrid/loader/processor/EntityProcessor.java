@@ -21,6 +21,7 @@ package org.lexgrid.loader.processor;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.concepts.Entity;
 import org.lexgrid.loader.processor.support.EntityResolver;
+import org.lexgrid.loader.wrappers.CodingSchemeIdHolder;
 import org.springframework.batch.item.ItemProcessor;
 
 /**
@@ -28,7 +29,7 @@ import org.springframework.batch.item.ItemProcessor;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class EntityProcessor<I> extends CodingSchemeIdAwareProcessor implements ItemProcessor<I,Entity>{
+public class EntityProcessor<I> extends CodingSchemeIdAwareProcessor implements ItemProcessor<I,CodingSchemeIdHolder<Entity>>{
 
 	/** The entity resolver. */
 	private EntityResolver<I> entityResolver;
@@ -36,7 +37,8 @@ public class EntityProcessor<I> extends CodingSchemeIdAwareProcessor implements 
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.item.ItemProcessor#process(java.lang.Object)
 	 */
-	public Entity process(I item) throws Exception {
+	public CodingSchemeIdHolder<Entity> process(I item) throws Exception {
+		CodingSchemeIdHolder<Entity> holder = new CodingSchemeIdHolder<Entity>();
 		Entity entity = new Entity();
 		
 		entity.setEntityCodeNamespace(entityResolver.getEntityCodeNamespace(item));
@@ -45,8 +47,12 @@ public class EntityProcessor<I> extends CodingSchemeIdAwareProcessor implements 
 		entity.setIsActive(entityResolver.getIsActive(item));
 		entity.setIsAnonymous(entityResolver.getIsAnonymous(item));
 		entity.setIsDefined(entityResolver.getIsDefined(item));
+		entity.setEntityType(entityResolver.getEntityTypes(item));
 		
-		return entity;
+		holder.setItem(entity);
+		holder.setCodingSchemeIdSetter(this.getCodingSchemeIdSetter());
+		
+		return holder;
 	}
 
 	/**

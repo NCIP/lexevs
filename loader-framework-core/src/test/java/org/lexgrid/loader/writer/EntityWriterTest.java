@@ -8,8 +8,8 @@ import org.LexGrid.concepts.Entity;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.entity.EntityService;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
-import org.lexevs.system.ResourceManager;
 import org.lexgrid.loader.test.LoaderFrameworkCoreTestBase;
 import org.lexgrid.loader.test.util.SupportHelpers.TestCodingSchemeIdSetter;
 import org.lexgrid.loader.wrappers.CodingSchemeIdHolder;
@@ -24,7 +24,7 @@ public class EntityWriterTest extends LoaderFrameworkCoreTestBase {
 	private CodingSchemeService codingSchemeService;
 	
 	@Autowired
-	private ResourceManager resourceManager;
+	private LexEvsServiceLocator lexEvsServiceLocator;
 	
 	@Autowired
 	private EntityService entityService;
@@ -37,7 +37,7 @@ public class EntityWriterTest extends LoaderFrameworkCoreTestBase {
 		entry.setResourceUri(test.getCodingSchemeUri());
 		entry.setResourceVersion(test.getCodingSchemeVersion());
 		entry.setDbSchemaVersion("2.0");
-		resourceManager.getRegistry().addNewItem(entry);
+		lexEvsServiceLocator.getRegistry().addNewItem(entry);
 		
 		CodingScheme cs = new CodingScheme();
 		cs.setCodingSchemeName(test.getCodingSchemeUri());

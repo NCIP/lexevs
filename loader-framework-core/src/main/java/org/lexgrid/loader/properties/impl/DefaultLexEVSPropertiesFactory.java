@@ -20,9 +20,9 @@ package org.lexgrid.loader.properties.impl;
 
 import java.util.Properties;
 
-import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.loader.properties.ConnectionPropertiesFactory;
 
 /**
@@ -31,24 +31,25 @@ import org.lexgrid.loader.properties.ConnectionPropertiesFactory;
 public class DefaultLexEVSPropertiesFactory extends PropertiesFactory implements ConnectionPropertiesFactory {
 	
 	/** The connection manager. */
-	private LexEvsDatabaseOperations connectionManager = LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations();
+	private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+	
+	private LexEvsDatabaseOperations lexEvsDatabaseOperations = LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations();
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.properties.ConnectionPropertiesFactory#getPropertiesForNewLoad()
 	 */
-	public Properties getPropertiesForNewLoad() {		
-		SQLConnectionInfo connection = 
-			connectionManager.getNewConnectionInfoForLoad();
-		return getProperties(connection);		
+	public Properties getPropertiesForNewLoad() {	
+		String prefix = lexEvsDatabaseOperations.getPrefixResolver().getNextCodingSchemePrefix();
+		return getProperties(prefix);		
 	}
 		
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.properties.ConnectionPropertiesFactory#getPropertiesForExistingLoad(java.lang.String, java.lang.String)
 	 */
-	public Properties getPropertiesForExistingLoad(String codingScheme, String version) {		
-		SQLConnectionInfo connection = 
-			connectionManager.getExistingConnectionInfo(codingScheme, version);
-		return getProperties(connection);
+	public Properties getPropertiesForExistingLoad(String codingSchemeUri, String version) {		
+		String prefix = 
+			lexEvsDatabaseOperations.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version);
+		return getProperties(prefix);
 	}
 
 }

@@ -78,4 +78,6 @@ public interface EntityResolver<I> {
 	 * @return the checks if is defined
 	 */
 	public boolean getIsDefined(I item);
+	
+	public String[] getEntityTypes(I item);
 }

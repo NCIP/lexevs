@@ -18,8 +18,9 @@
  */
 package org.lexgrid.loader.lexbigadmin;
 
-import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.ResourceManager;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -33,6 +34,8 @@ import org.springframework.batch.repeat.RepeatStatus;
  */
 public class RegisteringTasklet extends AbstractLexEvsUtilityTasklet implements Tasklet {
 	
+	private Registry registry;
+	
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.core.step.tasklet.Tasklet#execute(org.springframework.batch.core.StepContribution, org.springframework.batch.core.scope.context.ChunkContext)
 	 */
@@ -41,7 +44,7 @@ public class RegisteringTasklet extends AbstractLexEvsUtilityTasklet implements 
 		boolean alreadyLoaded = true;
 		try {
 			ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(getCurrentCodingSchemeUri(), getCurrentCodingSchemeVersion());
-		} catch (LBParameterException e) {
+		} catch (Exception e) {
 			// this is a good thing, means that is hasn't been loaded.
 			alreadyLoaded = false;
 		}
@@ -57,16 +60,26 @@ public class RegisteringTasklet extends AbstractLexEvsUtilityTasklet implements 
 		String url = (String)chunkContext.getStepContext().getJobParameters().get("jdbcUrl");
 		String database = (String)chunkContext.getStepContext().getJobParameters().get("database");		
 		
-		/*TODO:
-		getConnectionManager().register(getCurrentCodingSchemeUri(),
-				getCurrentCodingSchemeVersion(),
-				CodingSchemeVersionStatus.PENDING.toString(), 
-				url, 
-				null, 
-				database, 
-				prefix);
-		 */
+
+		RegistryEntry entry = new RegistryEntry();
+		entry.setDbSchemaVersion("2.0");
+		entry.setResourceType(ResourceType.CODING_SCHEME);
+		entry.setResourceUri(this.getCurrentCodingSchemeUri());
+		entry.setResourceVersion(this.getCurrentCodingSchemeVersion());
+		
+		registry.addNewItem(entry);
+	
 		return RepeatStatus.FINISHED;
+	}
+
+	@Override
+	protected String getCurrentCodingSchemeUri() throws Exception {
+		return this.getCodingSchemeIdSetter().getCodingSchemeUri();
+	}
+
+	@Override
+	protected String getCurrentCodingSchemeVersion() throws Exception {
+		return this.getCodingSchemeIdSetter().getCodingSchemeVersion();
 	}
 
 	@Override
@@ -74,5 +87,13 @@ public class RegisteringTasklet extends AbstractLexEvsUtilityTasklet implements 
 	protected RepeatStatus doExecute(StepContribution contribution,
 			ChunkContext chunkContext) throws Exception {
 		return null;
+	}
+
+	public Registry getRegistry() {
+		return registry;
+	}
+
+	public void setRegistry(Registry registry) {
+		this.registry = registry;
 	}
 }

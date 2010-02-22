@@ -1,6 +1,6 @@
 package org.lexgrid.loader.writer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -8,8 +8,9 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
-import org.lexevs.system.ResourceManager;
+import org.lexevs.registry.service.DatabaseRegistry;
 import org.lexgrid.loader.test.LoaderFrameworkCoreTestBase;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,7 +20,7 @@ public class CodingSchemeWriterTest extends LoaderFrameworkCoreTestBase {
 	private CodingSchemeWriter codingSchemeWriter;
 	
 	@Autowired
-	private ResourceManager resourceManager;
+	private LexEvsServiceLocator lexEvsServiceLocator;
 	
 	@Autowired
 	private CodingSchemeService codingSchemeService;
@@ -30,7 +31,7 @@ public class CodingSchemeWriterTest extends LoaderFrameworkCoreTestBase {
 		entry.setResourceUri("csUri");
 		entry.setResourceVersion("v1");
 		entry.setDbSchemaVersion("2.0");
-		resourceManager.getRegistry().addNewItem(entry);
+		lexEvsServiceLocator.getRegistry().addNewItem(entry);
 		
 		CodingScheme cs = new CodingScheme();
 		cs.setCodingSchemeName("csName");

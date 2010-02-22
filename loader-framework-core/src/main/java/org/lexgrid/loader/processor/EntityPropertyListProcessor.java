@@ -42,7 +42,7 @@ public class EntityPropertyListProcessor<I> extends SortingListProcessor <I,Pare
 	 * @see org.lexgrid.loader.processor.SortingListProcessor#afterProcessing(java.util.List)
 	 */
 	@Override
-	protected List<ParentIdHolder<Property>> afterProcessing(List<ParentIdHolder<Property>> items) {
+	protected List<ParentIdHolder<Property>> afterProcessing(List<ParentIdHolder<Property>> items, List<I> originalItems) {
 		listIdSetter.addIds(items);
 		preferredSetter.setPreferred(items);
 		return items;

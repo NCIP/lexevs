@@ -46,7 +46,7 @@
 		<beans:property name="dataSource" ref="dataSource"/> 
 		<beans:property name="transactionManager" ref="noOptransactionManager"/>
 		<beans:property name="incrementerFactory" ref="incrementerFactory"/>
-		<beans:property name="tablePrefix" value=""/>
+		<beans:property name="tablePrefix" ref="prefix"/>
 	</beans:bean>
 	
 	<beans:bean id="abstractCleanupListener" parent="loggingBean" abstract="true"
@@ -138,7 +138,7 @@
 	
 	<beans:bean id="abstractLexEvsUtilityTasklet" parent="loggingBean" abstract="true"
 		class="org.lexgrid.loader.lexbigadmin.AbstractLexEvsUtilityTasklet">
-<!--		<beans:property name="lexEvsDao" ref="lexEvsDao" />-->
+		<beans:property name="databaseServiceManager" ref="databaseServiceManager" />
 		<beans:property name="connectionManager" ref="defaultLexEvsDatabaseOperations" />
 	</beans:bean>	
 
