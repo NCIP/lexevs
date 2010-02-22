@@ -360,7 +360,7 @@ public class SystemResourceServiceTest extends LexEvsDbUnitTestBase {
 		long time = System.currentTimeMillis() - start;
 		
 		assertTrue(found);
-		assertTrue("Actual time: " + time, time < 1l);
+		assertTrue("Actual time: " + time, time < 20l);
 	}
 
 }

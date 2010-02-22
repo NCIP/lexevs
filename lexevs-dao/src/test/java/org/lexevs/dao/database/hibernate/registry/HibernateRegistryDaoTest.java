@@ -9,6 +9,8 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.model.RegistryEntry;
@@ -27,26 +29,6 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 	@Resource
 	private DataSource dataSource;
 	
-	@Test
-	@Transactional
-	public void testGetLastUpdateTime(){
-		Date updateTime = hibernateRegistryDao.getLastUpdateTime();
-		assertNotNull(updateTime);
-	}
-	
-	@Test
-	@Transactional
-	public void testDetLastUsedDbIdentifier(){
-		String dbId = hibernateRegistryDao.getLastUsedDbIdentifier();
-		assertEquals("aaaa", dbId);
-	}
-	
-	@Test
-	@Transactional
-	public void testDetLastUsedHistoryIdentifier(){
-		String historyId = hibernateRegistryDao.getLastUsedHistoryIdentifier();
-		assertEquals("aaaa", historyId);
-	}
 	
 	@Test
 	@Transactional
@@ -109,7 +91,7 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 	
 	@Test
 	@Transactional
-	public void testGetCodingSchemeEntry(){
+	public void testGetCodingSchemeEntry() throws LBParameterException{
 		RegistryEntry entry = new RegistryEntry();
 		entry.setPrefix("prefix");
 		entry.setStatus(CodingSchemeVersionStatus.ACTIVE.toString());
@@ -129,7 +111,7 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 	
 	@Test
 	@Transactional
-	public void testChangeTag(){
+	public void testChangeTag() throws LBParameterException{
 		RegistryEntry entry = new RegistryEntry();
 		entry.setPrefix("prefix");
 		entry.setStatus(CodingSchemeVersionStatus.ACTIVE.toString());

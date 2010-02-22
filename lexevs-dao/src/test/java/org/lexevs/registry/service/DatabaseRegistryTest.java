@@ -15,11 +15,6 @@ public class DatabaseRegistryTest extends LexEvsDbUnitTestBase {
 	DatabaseRegistry databaseRegistry;
 	
 	@Test
-	public void testGetNextDBIdentifier() throws Exception{
-		assertEquals("baaa", databaseRegistry.getNextDBIdentifier());
-	}
-	
-	@Test
 	public void testActivate() throws Exception{
 		
 		
