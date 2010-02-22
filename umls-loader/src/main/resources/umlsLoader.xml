@@ -25,7 +25,9 @@
 			<listener ref="cleanupListener" />
 		</listeners>
 
-		<step id="loadCodingScheme">
+		<step id="populateStagingTable" next="loadCodingScheme" parent="stagingTablePopulatorStepFactory"/>
+
+		<step id="loadCodingScheme" next="registerCodingScheme">
 			<tasklet>
 				<listeners>
 					<listener ref="stepCompletionListener" />
@@ -34,6 +36,12 @@
 					writer="codingSchemeWriter" commit-interval="1">
 				</chunk>
 			</tasklet>
+		</step>
+		
+		<step id="registerCodingScheme">
+					<tasklet ref="registeringTasklet" />
+					<fail on="FAILED" exit-code="NON-RECOVERABLE" />
+					<next on="*" to="umlsLoadEntity" />	
 		</step>
 
 <!--		<step id="registerCodingScheme">-->
@@ -45,16 +53,16 @@
 <!--		<step id="populateStagingTable" next="umlsLoadEntity"-->
 <!--			parent="stagingTablePopulatorStepFactory" />-->
 <!---->
-<!--		<step id="umlsLoadEntity">-->
-<!--			<tasklet>-->
-<!--				<listeners>-->
-<!--					<listener ref="stepCompletionListener" />-->
-<!--				</listeners>-->
-<!--				<chunk reader="mrconsoStagedReader" processor="umlsEntityProcessor"-->
-<!--					writer="entityWriter" commit-interval="100">-->
-<!--				</chunk>-->
-<!--			</tasklet>-->
-<!--		</step>-->
+		<step id="umlsLoadEntity">
+			<tasklet>
+				<listeners>
+					<listener ref="stepCompletionListener" />
+				</listeners>
+				<chunk reader="mrconsoStagedReader" processor="umlsEntityListProcessor"
+					writer="entityWriter" commit-interval="1">
+				</chunk>
+			</tasklet>
+		</step>
 
 	</job>
 	
@@ -329,7 +337,8 @@
 
 
 	<beans:bean id="umlsEntityListProcessor"
-		class="org.lexgrid.loader.processor.HighestRankingListProcessor">
+		class="org.lexgrid.loader.rrf.processor.MrconsoGroupEntityProcessor">
+		<beans:property name="propertyResolver" ref="umlsPresentationPropertyResolver"/>
 		<beans:property name="sortingListProcessor">
 			<beans:bean
 				class="org.lexgrid.loader.processor.SortingListProcessor">
@@ -708,6 +717,7 @@
 
 	<beans:bean id="registeringTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.RegisteringTasklet">
+		<beans:property name="registry" ref="registry"/>
 		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
@@ -785,5 +795,5 @@
 			<beans:ref bean="umlsMrrelSkippingReader" />
 		</beans:property>
 	</beans:bean>
-	
+
 </beans:beans>

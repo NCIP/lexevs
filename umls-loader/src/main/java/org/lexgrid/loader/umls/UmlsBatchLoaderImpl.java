@@ -23,7 +23,6 @@ import java.net.URI;
 import java.util.Properties;
 
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.lexevs.dao.database.spring.DynamicPropertyApplicationContext;
 import org.lexevs.system.ResourceManager;

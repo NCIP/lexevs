@@ -18,6 +18,7 @@
  */
 package org.lexgrid.loader.umls.processor.support;
 
+import org.LexGrid.commonTypes.types.EntityTypes;
 import org.lexgrid.loader.processor.support.AbstractBasicEntityResolver;
 import org.lexgrid.loader.rrf.model.Mrconso;
 
@@ -47,5 +48,9 @@ public class UmlsMrconsoEntityResolver extends AbstractBasicEntityResolver<Mrcon
 	 */
 	public boolean getIsDefined(Mrconso item) {
 		return true;
+	}
+
+	public String[] getEntityTypes(Mrconso item) {
+		return new String[]{EntityTypes.CONCEPT.toString()};
 	}
 }
