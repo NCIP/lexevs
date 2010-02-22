@@ -29,7 +29,6 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		
 		this.getDaoManager().getEntityDao(codingSchemeUri, version).
 			insertBatchEntities(codingSchemeId, entities);
-		
 	}
 
 	@Transactional

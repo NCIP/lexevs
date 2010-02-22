@@ -15,7 +15,7 @@
 			entityCode,
 			entityCodeNamespace
 		FROM
-			entity
+			$prefix$entity
 		WHERE
 			entityCode = #entityCode#
 		AND
@@ -23,7 +23,7 @@
      </select>
      
      <insert id="insertEntity" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertEntityBean">
-		INSERT INTO entity (
+		INSERT INTO $prefix$entity (
 			entityGuid,
 			codingSchemeGuid,
 			entityCode,

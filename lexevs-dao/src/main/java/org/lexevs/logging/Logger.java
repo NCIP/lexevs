@@ -106,7 +106,6 @@ public class Logger implements LgLoggerIF {
     }
 
     public void finishLogConfig(SystemVariables vars) {
-    	System.out.println("Finised config called by : " + vars.toString());
         // These operations cannot be done until the system variables are read,
         // but the logger
         // cant be used until the system variables are read... chicken and egg

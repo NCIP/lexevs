@@ -1,6 +1,7 @@
 package org.lexevs.dao.database.ibatis.entity;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,12 +10,14 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.dao.database.access.entity.EntityDao;
+import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
+import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
 import org.lexevs.dao.database.ibatis.entity.parameter.InsertEntityBean;
-import org.lexevs.dao.database.ibatis.entity.parameter.InsertEntityTypeBean;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.property.IbatisPropertyDao;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
@@ -37,13 +40,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	public static String ENTITY_ID_PARAM = "entityId";
 	
 	private IbatisVersionsDao ibatisVersionsDao;
-	public IbatisPropertyDao getIbatisPropertyDao() {
-		return ibatisPropertyDao;
-	}
 
-	public void setIbatisPropertyDao(IbatisPropertyDao ibatisPropertyDao) {
-		this.ibatisPropertyDao = ibatisPropertyDao;
-	}
 
 	private IbatisPropertyDao ibatisPropertyDao;
 
@@ -67,6 +64,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	}
 	
 	public String insertEntity(String codingSchemeId, Entity entity, IbatisInserter inserter) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
 		String entityId = this.createUniqueId();
 		String entryStateId = this.createUniqueId();
 		this.ibatisVersionsDao.insertEntryState(
@@ -74,11 +73,13 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 				entryStateId, entityId, "Entity", null, entity.getEntryState());
 		
 		inserter.insert(INSERT_ENTITY_SQL, 
-				buildInsertEntityParamaterBean(codingSchemeId, entityId, entryStateId, entity));
+				buildInsertEntityParamaterBean(
+						prefix,
+						codingSchemeId, entityId, entryStateId, entity));
 
 		for(String entityType : entity.getEntityType()){
 			inserter.insert(INSERT_ENTITY_TYPE_SQL, 
-					new InsertEntityTypeBean(entityId, entityType));
+					new PrefixedParameterTuple(prefix, entityId, entityType));
 		}
 
 		return entityId;
@@ -89,7 +90,9 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 		String entryStateId = this.createUniqueId();
 		
 		this.getSqlMapClientTemplate().insert(INSERT_ENTITY_SQL, 
-				buildInsertEntityParamaterBean(codingSchemeId, entryStateId, entryStateId, entity));
+				buildInsertEntityParamaterBean(
+						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+						codingSchemeId, entryStateId, entryStateId, entity));
 
 		return entityId;
 	}
@@ -106,11 +109,22 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 				batchInserter.startBatch();
 				
 				for(Entity entity : entities){
-					insertEntity(codingSchemeId, entity, batchInserter);
+					String id = insertEntity(codingSchemeId, entity, batchInserter);
+					
+					List<PropertyBatchInsertItem> props = new ArrayList<PropertyBatchInsertItem>();
+					
+					for(Property prop : entity.getAllProperties()){
+						PropertyBatchInsertItem item = new PropertyBatchInsertItem();
+						item.setParentId(id);
+						item.setProperty(prop);
+						props.add(item);
+					}
+					
+					ibatisPropertyDao.insertBatchProperties(codingSchemeId, PropertyType.ENTITY, props);
 				}
 				
 				batchInserter.executeBatch();
-				
+
 				return null;
 			}
 		});
@@ -123,8 +137,9 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 		
 	}
 	
-	protected InsertEntityBean buildInsertEntityParamaterBean(String codingSchemeId, String entityId, String entryStateId, Entity entity){
+	protected InsertEntityBean buildInsertEntityParamaterBean(String prefix, String codingSchemeId, String entityId, String entryStateId, Entity entity){
 		InsertEntityBean bean = new InsertEntityBean();
+		bean.setPrefix(prefix);
 		bean.setCodingSchemeId(codingSchemeId);
 		bean.setId(entityId);
 		bean.setEntryStateId(entryStateId);
@@ -149,5 +164,12 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	public IbatisVersionsDao getIbatisVersionsDao() {
 		return ibatisVersionsDao;
 	}
+	
+	public IbatisPropertyDao getIbatisPropertyDao() {
+		return ibatisPropertyDao;
+	}
 
+	public void setIbatisPropertyDao(IbatisPropertyDao ibatisPropertyDao) {
+		this.ibatisPropertyDao = ibatisPropertyDao;
+	}
 }

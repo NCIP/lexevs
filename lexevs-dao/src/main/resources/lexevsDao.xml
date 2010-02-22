@@ -32,7 +32,7 @@
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
 	</bean>
 	
-	<bean id="ibatisPropertyeDao"
+	<bean id="ibatisPropertyDao"
 		class="org.lexevs.dao.database.ibatis.property.IbatisPropertyDao" parent="abstractIbatisDao">
 		<property name="ibatisVersionsDao" ref="ibatisVersionsDao"/>
 	</bean>
@@ -59,6 +59,7 @@
 	 <bean id="ibatisEntityDao"
 		class="org.lexevs.dao.database.ibatis.entity.IbatisEntityDao" parent="abstractIbatisDao">
 		<property name="ibatisVersionsDao" ref="ibatisVersionsDao"/>
+		<property name="ibatisPropertyDao" ref="ibatisPropertyDao"/>
 	</bean>
 	
 	<bean id="ibatisAssociationDao"
@@ -131,6 +132,7 @@
 	
 	<bean id="defaultPrefixResolver" class="org.lexevs.dao.database.prefix.DefaultPrefixResolver">
 		<property name="systemVariables" ref="systemVariables"/> 
+		<property name="registry" ref="databaseRegistry"/> 
 	</bean>
 	
 	<bean id="hibernateRegistryDao" class="org.lexevs.dao.database.hibernate.registry.HibernateRegistryDao">
@@ -280,6 +282,7 @@
 		<property name="lexGridSchemaInstalled" ref="lexGridSchemaCheckFactory"/>
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
+		<property name="registryDao" ref="hibernateRegistryDao"/>
 	</bean>
 	
     <bean id="defaultDatabaseUtility"
@@ -304,6 +307,8 @@
 		<property name="resourceManager" ref="resourceManager"/>
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
 		<property name="databaseServiceManager" ref="databaseServiceManager"/>
+		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
+		<property name="registry" ref="databaseRegistry"/>
 	</bean>
 	
 	<bean id="loggingBean" class="org.lexevs.logging.LoggingBean" abstract="true">

@@ -5,29 +5,35 @@ import java.util.Date;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.registry.model.Registry;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.util.Assert;
 
 public class HibernateRegistryDao extends HibernateDaoSupport implements RegistryDao {
 	
 	private static final int REGISTRY_ID = 0;
+	
+	private String defaultHistoryPrefix = "aaaa";
+	private String defaultCodingSchemePrefix = "aaaa";
+	
 
 	public void updateLastUpdateTime(Date lastUpdateTime) {
-		Registry registry = getRegistryEntry();
+		Registry registry = getRegistryMetadataEntry();
 		registry.setLastUpdateTime(new Timestamp(lastUpdateTime.getTime()));
 		this.getHibernateTemplate().update(registry);
 		
 	}
 	
 	public Date getLastUpdateTime() {
-		Registry registry = getRegistryEntry();
+		Registry registry = getRegistryMetadataEntry();
 		return registry.getLastUpdateTime();
 	}
 	
-	protected Registry getRegistryEntry(){
+	protected Registry getRegistryMetadataEntry(){
 		return (Registry)this.getHibernateTemplate().get(Registry.class, REGISTRY_ID);
 	}
 
@@ -38,7 +44,7 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 	}
 
 	public void updateTag(String uri, String version,
-			String newTag) {
+			String newTag) throws LBParameterException {
 		RegistryEntry entry = this.getRegistryEntryForUriAndVersion(uri, version);
 		entry.setTag(newTag);
 		
@@ -46,11 +52,11 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 	}
 
 	public String getLastUsedDbIdentifier() {
-		return this.getRegistryEntry().getLastUsedDbIdentifer();
+		return this.getRegistryMetadataEntry().getLastUsedDbIdentifer();
 	}
 
 	public String getLastUsedHistoryIdentifier() {
-		return this.getRegistryEntry().getLastUsedHistoryIdentifer();
+		return this.getRegistryMetadataEntry().getLastUsedHistoryIdentifer();
 	}
 
 	public void removeRegistryEntry(String uri, String version) {
@@ -62,16 +68,16 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		this.getHibernateTemplate().save(entry);
 	}
 	
-	public RegistryEntry getRegistryEntryForUriAndVersion(String uri, String version){
+	public RegistryEntry getRegistryEntryForUriAndVersion(String uri, String version) throws LBParameterException {
 		RegistryEntry entry = new RegistryEntry();
 		entry.setResourceUri(uri);
 		entry.setResourceVersion(version);
 		List<RegistryEntry> entries = this.getHibernateTemplate().findByExample(entry);
 		if(entries == null || entries.size() == 0){
-			throw new RuntimeException("No entry for: " + uri
+			throw new LBParameterException("No entry for: " + uri
 					+ " - version " + version);
 		} else if(entries.size() > 1){
-			throw new RuntimeException("More than one entry for: " + uri
+			throw new LBParameterException("More than one entry for: " + uri
 					+ " - version " + version);
 		} 
 		return entries.get(0);
@@ -84,7 +90,7 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 	}
 
 	public void updateLastUsedDbIdentifier(String databaseIdentifier) {
-		Registry registry = this.getRegistryEntry();
+		Registry registry = this.getRegistryMetadataEntry();
 		registry.setLastUsedDbIdentifer(databaseIdentifier);
 		this.getHibernateTemplate().update(registry);	
 	}
@@ -108,5 +114,35 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 			throw new RuntimeException("No entry for: " + uri);
 		}
 		return entries;
+	}
+
+	public void initRegistryMetadata() {
+		Assert.isNull(this.getRegistryMetadataEntry(), "Registry Metadata has already been initialized.");
+
+		Registry metadata = new Registry();
+		metadata.setId(REGISTRY_ID);
+		metadata.setLastUsedDbIdentifer(this.getDefaultCodingSchemePrefix());
+		metadata.setLastUsedHistoryIdentifer(this.getDefaultHistoryPrefix());
+		
+		Date now = new Date(); 
+		metadata.setLastUpdateTime(new Timestamp(now.getTime()));
+		
+		this.getHibernateTemplate().save(metadata);
+	}
+
+	public String getDefaultHistoryPrefix() {
+		return defaultHistoryPrefix;
+	}
+
+	public void setDefaultHistoryPrefix(String defaultHistoryPrefix) {
+		this.defaultHistoryPrefix = defaultHistoryPrefix;
+	}
+
+	public String getDefaultCodingSchemePrefix() {
+		return defaultCodingSchemePrefix;
+	}
+
+	public void setDefaultCodingSchemePrefix(String defaultCodingSchemePrefix) {
+		this.defaultCodingSchemePrefix = defaultCodingSchemePrefix;
 	}
 }

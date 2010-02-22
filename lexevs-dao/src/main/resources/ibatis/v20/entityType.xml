@@ -4,13 +4,13 @@
 <sqlMap>
 
      
-     <insert id="insertEntityType" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertEntityTypeBean">
-     	INSERT INTO entityType (
+     <insert id="insertEntityType" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+     	INSERT INTO $prefix$entityType (
      		entityGuid,
      		entityType
      	) VALUES (
-     		#id#,
-     		#entityType#
+     		#param1#,
+     		#param2#
      	)
      </insert>
 

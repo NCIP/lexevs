@@ -56,8 +56,6 @@ ALTER TABLE @PREFIX@registryMetadata ADD CONSTRAINT PK_registryMetadata
 	PRIMARY KEY (id)
 ;
 
-INSERT INTO @PREFIX@registryMetadata VALUES ('0', CURTIME(), 'aaaa', 'aaaa');
-
 ALTER TABLE @PREFIX@registry ADD CONSTRAINT PK_registry 
 	PRIMARY KEY (registryGuid)
 ;

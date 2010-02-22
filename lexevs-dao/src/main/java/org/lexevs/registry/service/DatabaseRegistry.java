@@ -58,7 +58,7 @@ public class DatabaseRegistry implements Registry {
 
 
 	@Transactional
-	public Date getDeactivateDate(String codingSchemeURN, String version) {
+	public Date getDeactivateDate(String codingSchemeURN, String version) throws LBParameterException {
 		return registryDao.getRegistryEntryForUriAndVersion(codingSchemeURN, version).getDeactivationDate();
 	}
 
@@ -84,7 +84,7 @@ public class DatabaseRegistry implements Registry {
 	}
 
 	@Transactional
-	public Date getLastUpdateDate(String codingSchemeURN, String version) {
+	public Date getLastUpdateDate(String codingSchemeURN, String version) throws LBParameterException {
 		return registryDao.getRegistryEntryForUriAndVersion(codingSchemeURN, version).getLastUpdateDate();
 	}
 
@@ -187,9 +187,13 @@ public class DatabaseRegistry implements Registry {
 	public LexGridSchemaVersion getSupportedLexGridSchemaVersion(
 			AbsoluteCodingSchemeVersionReference ref)
 			throws LBInvocationException {
-		return LexGridSchemaVersion.parseStringToVersion(
-				this.getRegistryDao().
-				getRegistryEntryForUriAndVersion(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion()).getDbSchemaVersion());
+		try {
+			return LexGridSchemaVersion.parseStringToVersion(
+					this.getRegistryDao().
+					getRegistryEntryForUriAndVersion(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion()).getDbSchemaVersion());
+		} catch (LBParameterException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 

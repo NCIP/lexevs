@@ -25,12 +25,12 @@ public interface Registry {
 
 	public String getTag(String codingSchemeURN, String version);
 
-	public Date getDeactivateDate(String codingSchemeURN, String version);
+	public Date getDeactivateDate(String codingSchemeURN, String version) throws LBParameterException;
 
 	public void setDeactivateDate(AbsoluteCodingSchemeVersionReference acsvr,
 			Date date) throws LBParameterException, LBInvocationException;
 
-	public Date getLastUpdateDate(String codingSchemeURN, String version);
+	public Date getLastUpdateDate(String codingSchemeURN, String version) throws LBParameterException;
 
 	public void deactivate(RegistryEntry entry) throws LBInvocationException,
 			LBParameterException;

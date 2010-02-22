@@ -1,6 +1,7 @@
 package org.lexevs.system.service;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.system.utility.MyClassLoader;
 
 public interface SystemResourceService {

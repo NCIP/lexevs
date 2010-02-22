@@ -4,7 +4,7 @@
 <sqlMap>
 	
      <insert id="insertProperty" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyBean">
-		INSERT INTO Property (
+		INSERT INTO $prefix$property (
 			propertyGuid,
 			referenceGuid,
 			referenceType,

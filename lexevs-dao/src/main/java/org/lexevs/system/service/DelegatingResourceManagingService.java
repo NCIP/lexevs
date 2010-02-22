@@ -11,6 +11,7 @@ import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
+import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
@@ -72,6 +73,15 @@ public class DelegatingResourceManagingService extends LoggingBean implements Sy
 			this.getLogger().info("In multi-table mode -- creating a new set of tables.");
 			prefix = prefixResolver.getNextCodingSchemePrefix();
 		}
+
+		/*
+		SQLConnectionInfo info = new SQLConnectionInfo();
+		info.prefix = prefix;
+		info.driver = this.systemVariables.getAutoLoadDBDriver();
+		info.password = this.systemVariables.getAutoLoadDBPassword();
+		info.server = this.systemVariables.getAutoLoadDBURL();
+		info.username = this.systemVariables.getAutoLoadDBUsername();
+		*/
 		return prefix;
 	}
 	

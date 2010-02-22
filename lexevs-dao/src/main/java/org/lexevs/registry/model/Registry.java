@@ -2,7 +2,6 @@ package org.lexevs.registry.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Calendar;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +11,7 @@ import javax.persistence.Table;
 import org.lexevs.dao.database.constants.DatabaseConstants;
 
 @Entity
-@Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "registryMetadata")
+@Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "registryMetaData")
 public class Registry implements Serializable {
 
 	private static final long serialVersionUID = 2383440967007176901L;
