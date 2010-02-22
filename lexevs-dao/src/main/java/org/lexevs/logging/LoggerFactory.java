@@ -37,7 +37,7 @@ public class LoggerFactory {
      * 
      * @return
      */
-    public static LgLoggerIF getLogger() {
+    public static synchronized LgLoggerIF getLogger() {
 
             if (logger == null) {
             	Logger loggerInstance = new Logger();

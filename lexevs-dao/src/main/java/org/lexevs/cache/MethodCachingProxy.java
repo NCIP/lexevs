@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sf.ehcache.Cache;
+
 import org.apache.commons.collections.map.LRUMap;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -12,6 +14,7 @@ import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.logging.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotationUtils;
+
 
 @Aspect
 public class MethodCachingProxy implements InitializingBean {
@@ -32,7 +35,7 @@ public class MethodCachingProxy implements InitializingBean {
 	public Object clearCache(ProceedingJoinPoint pjp) throws Throwable {
 		logger.debug("Clearing cache.");
 		Cacheable cacheableAnnotation = AnnotationUtils.findAnnotation(pjp.getThis().getClass(), Cacheable.class);
-		Map<String,Object> cache = this.getCacheFromName(cacheableAnnotation.cacheName());
+		Map<String,Object> cache = this.getCacheFromName(cacheableAnnotation.cacheName(), cacheableAnnotation.cacheSize());
 		cache.clear();
 		return pjp.proceed();
 	}
@@ -43,8 +46,11 @@ public class MethodCachingProxy implements InitializingBean {
 		String key = this.getKeyFromMethod(pjp.getThis().getClass().getName(),
 					pjp.getSignature().getName(),
 					pjp.getArgs());
+		
 		Cacheable cacheableAnnotation = AnnotationUtils.findAnnotation(pjp.getThis().getClass(), Cacheable.class);
-		Map<String,Object> cache = this.getCacheFromName(cacheableAnnotation.cacheName());
+		Map<String,Object> cache = this.getCacheFromName(
+				cacheableAnnotation.cacheName(),
+				cacheableAnnotation.cacheSize());
 		
 		if(cache.containsKey(key)){
 			logger.warn("Cache hit on: " + key);
@@ -58,7 +64,7 @@ public class MethodCachingProxy implements InitializingBean {
 		return result;
 	}
 	
-	public Map<String,Object> getCacheFromName(String name){
+	public Map<String,Object> getCacheFromName(String name, int cacheSize){
 		if(!caches.containsKey(name)){
 			caches.put(name, Collections.synchronizedMap(new LRUMap(cacheSize)));
 		}

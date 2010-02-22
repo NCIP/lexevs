@@ -8,7 +8,9 @@ import org.lexevs.cache.annotation.ClearCache;
 public class TestCacheBean {
 	
 	@CacheMethod
-	public String getValue(String arg1, String arg2){
+	public String getValue(
+			String arg1, 
+			String arg2){
 		return arg1 + arg2;
 	}
 	

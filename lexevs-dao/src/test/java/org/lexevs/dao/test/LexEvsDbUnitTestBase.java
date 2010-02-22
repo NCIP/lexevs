@@ -17,7 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/lexevsDao-dbunit-test.xml"})
+@ContextConfiguration(locations={"/lexevsDao-test.xml"})
 public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 
 	private static final String CREATE_COMMON_SCRIPT = "sql/lexevs/common-create-hsqldb.sql";

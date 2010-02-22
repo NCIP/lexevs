@@ -10,6 +10,9 @@ import org.LexGrid.commonTypes.Source;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.lexevs.cache.annotation.CacheMethod;
+import org.lexevs.cache.annotation.Cacheable;
+import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
@@ -26,6 +29,7 @@ import org.springframework.orm.ibatis.SqlMapClientCallback;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
 
+@Cacheable(cacheName = "IbatisCodingSchemeDao")
 public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSchemeDao {
 	
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
@@ -45,6 +49,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	private VersionsDao versionsDao;
 	private EntityDao entityDao;
 	
+	@CacheMethod
 	public CodingScheme getCodingSchemeById(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
@@ -84,6 +89,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		
 	}
 
+	@ClearCache
 	public void deleteCodingScheme(CodingScheme codingScheme) {
 		throw new UnsupportedOperationException();	
 	}

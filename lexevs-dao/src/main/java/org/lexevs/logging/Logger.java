@@ -106,6 +106,7 @@ public class Logger implements LgLoggerIF {
     }
 
     public void finishLogConfig(SystemVariables vars) {
+    	System.out.println("Finised config called by : " + vars.toString());
         // These operations cannot be done until the system variables are read,
         // but the logger
         // cant be used until the system variables are read... chicken and egg
@@ -237,6 +238,9 @@ public class Logger implements LgLoggerIF {
         // .getLogger("managedobj.service.jdbc.sqlReconnect.WrappedConnection");
         // sqlStatements2.setLevel(level);
 
+        if(messageQueue_ == null){
+        	return;
+        }
         for (int i = 0; i < messageQueue_.size(); i++) {
             MessageHolder temp = messageQueue_.get(i);
             if (temp.type.equals("debug")) {

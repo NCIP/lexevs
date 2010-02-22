@@ -1,8 +1,5 @@
 package org.lexevs.dao.database.hibernate.registry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -13,7 +10,7 @@ import javax.sql.DataSource;
 
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.junit.Test;
-import org.lexevs.dao.test.LexEvsDaoTestBase;
+import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,7 +19,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 @TransactionConfiguration
-public class HibernateRegistryDaoTest extends LexEvsDaoTestBase {
+public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 
 	@Resource
 	private HibernateRegistryDao hibernateRegistryDao;

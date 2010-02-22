@@ -1,5 +1,6 @@
 package org.lexevs.cache;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -63,7 +64,7 @@ public class MethodCachingProxyTest extends LexEvsDaoTestBase {
 		
 		assertEquals("onetwo", testCacheBean.getValueNotCachable("one", "two"));
 		
-		assertEquals(0, testCacheProxy.getCaches().get("testCache").size());
+		assertNull(testCacheProxy.getCaches().get("testCache"));
 	}
 	
 	@Test
