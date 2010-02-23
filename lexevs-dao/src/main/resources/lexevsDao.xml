@@ -53,6 +53,11 @@
 				<ref bean="ibatisEntityDao"/>
 			</list>
 		</property>
+		<property name="associationDaos">
+			<list>
+				<ref bean="ibatisAssociationDao"/>
+			</list>
+		</property>
 		<property name="registry" ref="databaseRegistry"/>
 	</bean>
 	
@@ -64,7 +69,7 @@
 	
 	<bean id="ibatisAssociationDao"
 		class="org.lexevs.dao.database.ibatis.association.IbatisAssociationDao" parent="abstractIbatisDao">
-		<property name="versionsDao" ref="ibatisVersionsDao"/>
+		<property name="ibatisVersionsDao" ref="ibatisVersionsDao"/>
 		<property name="codingSchemeDao" ref="ibatisCodingSchemeDao"/>
 	</bean>
     
@@ -76,6 +81,7 @@
 		<property name="codingSchemeService" ref="codingSchemeService"/>
 		<property name="propertyService" ref="propertyService"/>
 		<property name="entityService" ref="entityService"/>
+		<property name="associationService" ref="associationService"/>
 	</bean>
 	
 	<bean id="abstractService" abstract="true">
@@ -94,6 +100,10 @@
 		
 	<bean id="entityService" 
 		class="org.lexevs.dao.database.service.entity.VersionableEventEntityService"
+		parent="abstractService"/>
+		
+	<bean id="associationService" 
+		class="org.lexevs.dao.database.service.association.VersionableEventAssociationService"
 		parent="abstractService"/>
 
 	<bean id="compass" class="org.compass.spring.LocalCompassBean">

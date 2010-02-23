@@ -7,13 +7,13 @@ import junit.framework.Assert;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.registry.service.Registry;
-import org.lexevs.system.ResourceManager;
 
 public class DaoManager {
 	
@@ -24,6 +24,8 @@ public class DaoManager {
 	private List<EntityDao> entityDaos;
 	
 	private List<PropertyDao> propertyDaos;
+	
+	private List<AssociationDao> associationDaos;
 	
 	private List<VersionsDao> versionsDaos;
 	
@@ -47,6 +49,10 @@ public class DaoManager {
 	
 	public PropertyDao getPropertyDao(String codingSchemeUri, String version){
 		return this.doGetDao(codingSchemeUri, version, this.getPropertyDaos());
+	}
+	
+	public AssociationDao getAssociationDao(String codingSchemeUri, String version){
+		return this.doGetDao(codingSchemeUri, version, this.getAssociationDaos());
 	}
 	
 	protected <T extends LexGridSchemaVersionAwareDao> T doGetDao(String codingSchemeUri, String version, List<T> daos){
@@ -122,5 +128,13 @@ public class DaoManager {
 
 	public void setRegistry(Registry registry) {
 		this.registry = registry;
+	}
+
+	public void setAssociationDaos(List<AssociationDao> associationDaos) {
+		this.associationDaos = associationDaos;
+	}
+
+	public List<AssociationDao> getAssociationDaos() {
+		return associationDaos;
 	}
 }

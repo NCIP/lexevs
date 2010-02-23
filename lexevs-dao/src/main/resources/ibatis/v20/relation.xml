@@ -38,5 +38,46 @@
 			#entryStateId#
 		)
   </insert>
+  
+   <insert id="insertAssociationPredicate" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationPredicateBean">
+   		INSERT INTO $prefix$associationPredicate (
+   			associationPredicateGuid,
+   			relationGuid,
+   			associationEntityGuid,
+   			associationName
+   		) VALUES (
+   			#id#,
+   			#relationId#,
+   			null,
+   			#associationPredicate.associationName#
+   		)
+   </insert>
+   
+   <select id="getAssociationPredicateKey" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
+   		SELECT
+   			associationPredicateGuid
+   		FROM
+   			$prefix$associationPredicate
+		WHERE
+			relationGuid = 
+			#param1#
+		AND
+			associationName = 
+			#param2#
+   			
+   </select>
+   
+    <select id="getRelationsKey" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
+   		SELECT
+   			relationGuid
+   		FROM
+   			$prefix$relation
+		WHERE
+			codingSchemeGuid = 
+			#param1#
+		AND
+			containerName = 
+			#param2#		
+   </select>
     
 </sqlMap>

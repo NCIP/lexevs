@@ -4,9 +4,9 @@ import org.lexevs.dao.database.access.DaoManager;
 
 public interface DatabaseService {
 
-	public void executeInDaoLayer(DaoCallback daoCallback);
+	public <T> T executeInDaoLayer(DaoCallback<T> daoCallback);
 	
-	public interface DaoCallback {
-		public Object execute(DaoManager daoManager);
+	public interface DaoCallback<T> {
+		public T execute(DaoManager daoManager);
 	}
 }

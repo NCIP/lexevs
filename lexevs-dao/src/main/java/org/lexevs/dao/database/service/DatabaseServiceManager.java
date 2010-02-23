@@ -1,5 +1,6 @@
 package org.lexevs.dao.database.service;
 
+import org.lexevs.dao.database.service.association.AssociationService;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.property.PropertyService;
@@ -11,6 +12,8 @@ public class DatabaseServiceManager {
 	private EntityService entityService;
 	
 	private PropertyService propertyService;
+	
+	private AssociationService associationService;
 
 	public void setCodingSchemeService(CodingSchemeService codingSchemeService) {
 		this.codingSchemeService = codingSchemeService;
@@ -34,6 +37,14 @@ public class DatabaseServiceManager {
 
 	public void setPropertyService(PropertyService propertyService) {
 		this.propertyService = propertyService;
+	}
+
+	public void setAssociationService(AssociationService associationService) {
+		this.associationService = associationService;
+	}
+
+	public AssociationService getAssociationService() {
+		return associationService;
 	}
 }
 

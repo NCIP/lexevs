@@ -10,8 +10,8 @@ public class AbstractDatabaseService extends DatabaseServiceEventSupport {
 	private DaoManager daoManager;
 	
 	@Transactional
-	public void executeInDaoLayer(DaoCallback daoCallback){
-		daoCallback.execute(daoManager);
+	public <T> T executeInDaoLayer(DaoCallback<T> daoCallback){
+		return daoCallback.execute(daoManager);
 	}
 
 	protected String getCodingSchemeId(String codingSchemeUri, String codingSchemeVersion){
