@@ -82,7 +82,7 @@ public class JdbcMrconsoStagingDaoTest {
 		info.password = "";
 		info.prefix = "";
 		info.dbName = "";
-		Properties props = new PropertiesFactory().getProperties(info);
+		Properties props = new PropertiesFactory().getProperties("");
 		
 		props.put("sab", "LNC");
 		props.put("rrfDir", RRF_DIRECTORY);
