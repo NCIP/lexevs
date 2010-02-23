@@ -52,6 +52,7 @@ import org.apache.log4j.Logger;
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  * @author <A HREF="mailto:stancl.craig@mayo.edu">Craig Stancl</A>
  */
+@Deprecated
 public class SQLTableUtilities {
     private Connection sqlConnection_;
     private GenericObjectPool connectionPool_;
