@@ -148,12 +148,7 @@
 			
 		<beans:bean id="abstractIntrospectiveHardcodedValues"
 				class="org.lexgrid.loader.hardcodedvalues.AbstractIntrospectiveHardcodedValues" abstract="true">
-<!--				<beans:property name="lexEvsDao">-->
-<!--					<beans:ref bean="lexEvsDao" />-->
-<!--				</beans:property>	-->
-				<beans:property name="supportedAttributeTemplate">
-					<beans:ref bean="cachingSupportedAttribuiteTemplate" />
-				</beans:property>	
+				<beans:property name="databaseServiceManager" ref="databaseServiceManager" />
 		</beans:bean>
 	
 	<beans:bean id="cachingSupportedAttribuiteTemplate" parent="loggingBean"

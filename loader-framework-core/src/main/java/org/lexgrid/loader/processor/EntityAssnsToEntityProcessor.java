@@ -67,7 +67,9 @@ public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcesso
 		source.addTarget(target);
 
 		String associationPredicateKey = associationPredicateKeyResolver.resolveKey(
-				this.getCodingSchemeIdSetter().getCodingSchemeName(), 
+				this.getCodingSchemeIdSetter().getCodingSchemeUri(),
+				this.getCodingSchemeIdSetter().getCodingSchemeVersion(),
+				relationResolver.getContainerName(),
 				relationResolver.getRelation(item));
 		
 		return new ParentIdHolder<AssociationSource>(

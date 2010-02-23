@@ -21,4 +21,5 @@
 	
 	<beans:bean name="entityWriter" class="org.lexgrid.loader.writer.EntityWriter" parent="abstractLexEvsDaoWriter"/>
 		
+	<beans:bean name="associationSourceWriter" class="org.lexgrid.loader.writer.AssociationSourceWriter" parent="abstractLexEvsDaoWriter"/>
 </beans:beans>
