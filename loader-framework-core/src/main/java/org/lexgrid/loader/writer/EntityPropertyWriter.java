@@ -8,12 +8,13 @@ import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 import org.lexevs.dao.database.service.DatabaseService.DaoCallback;
+import org.lexgrid.loader.wrappers.CodingSchemeUriVersionPair;
 import org.lexgrid.loader.wrappers.ParentIdHolder;
 
 public class EntityPropertyWriter extends AbstractParentIdHolderWriter<Property>{
 
 	@Override
-	public void doWrite(final String codingSchemeId,
+	public void doWrite(final CodingSchemeUriVersionPair codingSchemeId,
 			List<ParentIdHolder<Property>> items) {
 		final List<PropertyBatchInsertItem> batchList = new ArrayList<PropertyBatchInsertItem>();
 		
@@ -21,11 +22,21 @@ public class EntityPropertyWriter extends AbstractParentIdHolderWriter<Property>
 			batchList.add(new PropertyBatchInsertItem(holder.getParentId(), holder.getItem()));
 		}
 		this.getDatabaseServiceManager().
-			getPropertyService().executeInDaoLayer(new DaoCallback(){
+			getPropertyService().executeInDaoLayer(new DaoCallback<Object>(){
 
 				public Object execute(DaoManager daoManager) {
-					daoManager.getPropertyDao(null, null).
-						insertBatchProperties(codingSchemeId, PropertyType.ENTITY, batchList);
+					String codingSchemeIdInDb = daoManager.getCodingSchemeDao(
+							codingSchemeId.getUri(), 
+							codingSchemeId.getVersion()).
+							getCodingSchemeIdByUriAndVersion(
+									codingSchemeId.getUri(), 
+									codingSchemeId.getVersion());
+					
+					daoManager.getPropertyDao(
+							codingSchemeId.getUri(), 
+							codingSchemeId.getVersion()).
+						insertBatchProperties(codingSchemeIdInDb, PropertyType.ENTITY, batchList);
+					
 					return null;
 				}	
 			});
