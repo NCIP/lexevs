@@ -78,7 +78,6 @@ import org.LexGrid.LexBIG.Impl.History.UMLSHistoryServiceImpl;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
 import org.LexGrid.LexBIG.Impl.exporters.OBOExport;
-import org.LexGrid.LexBIG.Impl.helpers.MyClassLoader;
 import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.IndexLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridLoaderImpl;
@@ -103,10 +102,12 @@ import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.exceptions.InternalException;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.system.ResourceManager;
+import org.lexevs.system.utility.MyClassLoader;
 
 /**
  * Implementation of the LexBIGService Interface.
@@ -174,7 +175,6 @@ public class LexBIGServiceImpl implements LexBIGService {
         if (r == null) {
             System.err.println("Initialization Failure.  Beginning debug print:");
             System.out.println("Initialization Failure.  Beginning debug print:");
-            ResourceManager.dumpLogQueue();
             throw new LBInvocationException(
                     "There was a problem starting up.  Please see the log files and / or system.out", "");
 
@@ -220,6 +220,7 @@ public class LexBIGServiceImpl implements LexBIGService {
                                 results.getString(SQLTableConstants.TBLCOL_REPRESENTSVERSION));
 
                         csr.setRenderingDetail(new RenderingDetail());
+                        /*
                         Registry registry = ResourceManager.instance().getRegistry();
 
                         csr.getRenderingDetail().setVersionStatus(
@@ -239,7 +240,8 @@ public class LexBIGServiceImpl implements LexBIGService {
                         csr.getRenderingDetail().setLastUpdateTime(
                                 registry.getLastUpdateDate(csr.getCodingSchemeSummary().getCodingSchemeURI(), csr
                                         .getCodingSchemeSummary().getRepresentsVersion()));
-
+                         */
+                        
                         // reference links don't appear to be fully "baked" yet.
                         // No use right now anyway.
                         csr.setReferenceLink(new ReferenceLink());
@@ -278,7 +280,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         getLogger().logMethod(new Object[] { codingSchemeName, tagOrVersion });
         String version = null;
         if (tagOrVersion == null || tagOrVersion.getVersion() == null || tagOrVersion.getVersion().length() == 0) {
-            version = ResourceManager.instance().getInternalVersionStringFor(codingSchemeName,
+            version = ResourceManager.instance().getInternalVersionStringForTag(codingSchemeName,
                     (tagOrVersion == null ? null : tagOrVersion.getTag()));
         } else {
             version = tagOrVersion.getVersion();
@@ -312,7 +314,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         getLogger().logMethod(new Object[] { codingSchemeName, tagOrVersion });
         String version = null;
         if (tagOrVersion == null || tagOrVersion.getVersion() == null || tagOrVersion.getVersion().length() == 0) {
-            version = ResourceManager.instance().getInternalVersionStringFor(codingSchemeName,
+            version = ResourceManager.instance().getInternalVersionStringForTag(codingSchemeName,
                     (tagOrVersion == null ? null : tagOrVersion.getTag()));
         } else {
             version = tagOrVersion.getVersion();
@@ -384,7 +386,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         getLogger().logMethod(new Object[] { codingScheme, tagOrVersion, relationContainerName });
         String version = null;
         if (tagOrVersion == null || tagOrVersion.getVersion() == null || tagOrVersion.getVersion().length() == 0) {
-            version = ResourceManager.instance().getInternalVersionStringFor(codingScheme,
+            version = ResourceManager.instance().getInternalVersionStringForTag(codingScheme,
                     (tagOrVersion == null ? null : tagOrVersion.getTag()));
         } else {
             version = tagOrVersion.getVersion();
@@ -518,7 +520,7 @@ public class LexBIGServiceImpl implements LexBIGService {
     public GenericExtension getGenericExtension(String name) throws LBParameterException, LBInvocationException {
         getLogger().logMethod(new Object[] { name });
         try {
-            MyClassLoader temp = MyClassLoader.instance();
+            ClassLoader temp = LexEvsServiceLocator.getInstance().getSystemResourceService().getClassLoader();
             ExtensionDescription ed = ExtensionRegistryImpl.instance().getGenericExtension(name);
 
             if (ed == null) {

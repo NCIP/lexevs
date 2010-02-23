@@ -33,10 +33,10 @@ import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Extensions.Query.Search;
 import org.LexGrid.LexBIG.Extensions.Query.Sort;
-import org.LexGrid.LexBIG.Impl.helpers.MyClassLoader;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
+import org.lexevs.system.utility.MyClassLoader;
 
 /**
  * Implementation of the LexGrid Extension Registry.

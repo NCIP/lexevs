@@ -29,8 +29,8 @@ import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.registry.service.Registry.DBEntry;
-import org.lexevs.registry.service.Registry.HistoryEntry;
+import org.lexevs.registry.service.XmlRegistry.DBEntry;
+import org.lexevs.registry.service.XmlRegistry.HistoryEntry;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.constants.SystemVariables;
 

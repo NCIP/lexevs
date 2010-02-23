@@ -37,7 +37,6 @@ import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.connection.SQLInterfaceBase;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.registry.service.Registry.HistoryEntry;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.constants.SystemVariables;
 
@@ -188,7 +187,7 @@ public class NCIHistoryLoaderImpl extends BaseLoader implements NCIHistoryLoader
                     md_.info("Done loading - updating the registry");
                     // this replaces any currently existing history entry with
                     // this URN with the new one
-                    HistoryEntry oldEntry = ResourceManager.instance().getRegistry().addNewHistory(NCI_URN,
+                    org.lexevs.registry.service.XmlRegistry.HistoryEntry oldEntry = ResourceManager.instance().getRegistry().addNewHistory(NCI_URN,
                             sci_.server, sci_.dbName, sci_.prefix);
                     if (sv.getAutoLoadSingleDBMode()) {
                         // some databases (access in particular) won't see new

@@ -38,7 +38,6 @@ import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.connection.SQLInterfaceBase;
-import org.lexevs.registry.service.Registry.HistoryEntry;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.constants.SystemVariables;
 
@@ -190,7 +189,7 @@ private static final long serialVersionUID = 1L;
                     // this replaces any currently existing history entry with
                     // this URN with the new one
                     md_.info("Updating the registry.");
-                    HistoryEntry oldEntry = ResourceManager.instance().getRegistry().addNewHistory(
+                    org.lexevs.registry.service.XmlRegistry.HistoryEntry oldEntry = ResourceManager.instance().getRegistry().addNewHistory(
                             HistoryService.metaURN, sci_.server, sci_.dbName, sci_.prefix);
                     if (sv.getAutoLoadSingleDBMode()) {
                         // some databases (access in particular) won't see new

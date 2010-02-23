@@ -465,7 +465,7 @@ public class GHolder {
                 if (version == null || version.length() == 0) {
                     // try to get a version
                     try {
-                        version = ResourceManager.instance().getInternalVersionStringFor(
+                        version = ResourceManager.instance().getInternalVersionStringForTag(
                                 gCurrentChild.getDefiningCodeSystemURN(), null);
                     } catch (LBParameterException e) {
                         // no version of this code system is available, we won't

@@ -1880,7 +1880,7 @@ public class SQLImplementedMethods {
                 if (!transitiveLookup && assocationQualifiers != null
                         && assocationQualifiers.getNameAndValueCount() > 0) {
                     // boolean is2006Model =
-                    // ResourceManager.instance().getSQLInterface(internalCodeSystemName,
+                    // SystemResourceService.instance().getSQLInterface(internalCodeSystemName,
                     // internalVersionString).supports2006ModelOnly();
                     query.qualiferTableRequired_ = true;
                     query.whereClause_.append(" AND (");
@@ -1945,7 +1945,7 @@ public class SQLImplementedMethods {
                 vals = r.getAssociationQualifiers();
                 if (!transitiveLookup && vals != null && vals.getNameAndValueCount() > 0) {
                     // boolean is2006Model =
-                    // ResourceManager.instance().getSQLInterface(internalCodeSystemName,
+                    // SystemResourceService.instance().getSQLInterface(internalCodeSystemName,
                     // internalVersionString).supports2006ModelOnly();
                     query.qualiferTableRequired_ = true;
                     query.whereClause_.append(" AND (");

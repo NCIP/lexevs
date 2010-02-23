@@ -66,7 +66,7 @@ public class CodeToReturn implements Serializable {
         
         if (version == null) {
             try {
-                version_ = ResourceManager.instance().getInternalVersionStringFor(uri, null);
+                version_ = ResourceManager.instance().getInternalVersionStringForTag(uri, null);
             } catch (LBParameterException e) {
                 // this can happen when resolving graphs - links to code systems
                 // that don't exist.

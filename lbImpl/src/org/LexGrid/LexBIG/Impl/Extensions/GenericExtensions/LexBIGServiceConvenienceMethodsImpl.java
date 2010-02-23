@@ -510,7 +510,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         String version = null;
         long startTime = System.currentTimeMillis();
         if (versionOrTag == null) {
-            version = ResourceManager.instance().getInternalVersionStringFor(codingSchemeName, null);
+            version = ResourceManager.instance().getInternalVersionStringForTag(codingSchemeName, null);
         } else {
             version = versionOrTag.getVersion();
         }
@@ -1697,7 +1697,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
         try {
             if (versionOrTag == null) {
-                version = ResourceManager.instance().getInternalVersionStringFor(codingSchemeName, null);
+                version = ResourceManager.instance().getInternalVersionStringForTag(codingSchemeName, null);
             } else {
                 version = versionOrTag.getVersion();
             }
@@ -1763,7 +1763,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
         try {
             if (versionOrTag == null) {
-                version = ResourceManager.instance().getInternalVersionStringFor(codingSchemeName, null);
+                version = ResourceManager.instance().getInternalVersionStringForTag(codingSchemeName, null);
             } else {
                 version = versionOrTag.getVersion();
             }
@@ -1829,7 +1829,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
         try {
             if (versionOrTag == null) {
-                version = ResourceManager.instance().getInternalVersionStringFor(codingSchemeName, null);
+                version = ResourceManager.instance().getInternalVersionStringForTag(codingSchemeName, null);
             } else {
                 version = versionOrTag.getVersion();
             }
@@ -1890,7 +1890,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         String version = null;
         long startTime = System.currentTimeMillis();
         if (versionOrTag == null) {
-            version = ResourceManager.instance().getInternalVersionStringFor(codingSchemeName, null);
+            version = ResourceManager.instance().getInternalVersionStringForTag(codingSchemeName, null);
         } else {
             version = versionOrTag.getVersion();
         }

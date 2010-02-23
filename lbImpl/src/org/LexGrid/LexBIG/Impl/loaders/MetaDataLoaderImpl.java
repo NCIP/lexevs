@@ -333,7 +333,7 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
                 String internalCSName = null;
 
                 try {
-                    internalVersion = ResourceManager.instance().getInternalVersionStringFor(
+                    internalVersion = ResourceManager.instance().getInternalVersionStringForTag(
                             currentURNVersion_.getCodingSchemeURN(), null);
                     internalCSName = ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(
                             currentURNVersion_.getCodingSchemeURN(), internalVersion);
@@ -381,6 +381,9 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
                 /*-------- Update Registry if urn or version changed --------*/
                 if (urnChanged || versionChanged) {
                     message_.info("Updating registry.xml...");
+                    
+                    //TODO: do this update for the new 6.0 database registry
+                    /*
                     Registry reg = ResourceManager.instance().getRegistry();
                     try {
 
@@ -394,6 +397,7 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
                     }
 
                     message_.info("Finished updating registry.xml...");
+                    */
                 }
 
                 /*-------- Update Index Metadata if version changed --------*/

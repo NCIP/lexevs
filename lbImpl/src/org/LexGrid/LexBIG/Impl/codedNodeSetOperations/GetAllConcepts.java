@@ -43,7 +43,7 @@ public class GetAllConcepts implements Operation {
         String version = null;
         ResourceManager rm = ResourceManager.instance();
         if (tagOrVersion == null || tagOrVersion.getVersion() == null || tagOrVersion.getVersion().length() == 0) {
-            version = rm.getInternalVersionStringFor(codingScheme,
+            version = rm.getInternalVersionStringForTag(codingScheme,
                     (tagOrVersion == null ? null : tagOrVersion.getTag()));
         } else {
             version = tagOrVersion.getVersion();

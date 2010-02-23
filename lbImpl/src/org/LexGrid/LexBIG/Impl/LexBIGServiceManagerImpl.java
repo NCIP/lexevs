@@ -32,10 +32,10 @@ import org.LexGrid.LexBIG.Extensions.Export.Exporter;
 import org.LexGrid.LexBIG.Extensions.Index.Index;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.Impl.helpers.MyClassLoader;
 import org.LexGrid.LexBIG.Impl.loaders.metadata.BaseMetaDataLoader;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.annotations.LgAdminFunction;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.ResourceManager;
@@ -152,7 +152,7 @@ public class LexBIGServiceManagerImpl implements LexBIGServiceManager {
     public Index getIndex(String name) throws LBParameterException, LBInvocationException {
         getLogger().logMethod(new Object[] { name });
         try {
-            MyClassLoader temp = MyClassLoader.instance();
+            ClassLoader temp = LexEvsServiceLocator.getInstance().getSystemResourceService().getClassLoader();
             ExtensionDescription ed = ExtensionRegistryImpl.instance().getIndexExtension(name);
 
             if (ed == null) {
@@ -174,7 +174,7 @@ public class LexBIGServiceManagerImpl implements LexBIGServiceManager {
     public Loader getLoader(String name) throws LBParameterException, LBInvocationException {
         getLogger().logMethod(new Object[] { name });
         try {
-            MyClassLoader temp = MyClassLoader.instance();
+            ClassLoader temp = LexEvsServiceLocator.getInstance().getSystemResourceService().getClassLoader();
             ExtensionDescription ed = ExtensionRegistryImpl.instance().getLoadExtension(name);
 
             if (ed == null) {
@@ -202,7 +202,7 @@ public class LexBIGServiceManagerImpl implements LexBIGServiceManager {
     public Exporter getExporter(String name) throws LBException {
         getLogger().logMethod(new Object[] { name });
         try {
-            MyClassLoader temp = MyClassLoader.instance();
+            ClassLoader temp = LexEvsServiceLocator.getInstance().getSystemResourceService().getClassLoader();
             ExtensionDescription ed = ExtensionRegistryImpl.instance().getExportExtension(name);
 
             if (ed == null) {

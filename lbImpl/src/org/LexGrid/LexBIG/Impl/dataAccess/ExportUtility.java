@@ -113,32 +113,8 @@ public class ExportUtility {
 
     public static void copyAndEditRegistry(File copyTo, String oldValue, String newValue) throws LBInvocationException,
             IOException {
-        File registry = ResourceManager.instance().getRegistry().getRegistryFile();
-        BufferedReader reader = new BufferedReader(new FileReader(registry));
-        BufferedWriter writer = new BufferedWriter(new FileWriter(copyTo));
-
-        WriteLockManager wm = WriteLockManager.instance();
-        try {
-            wm.lockLockFile();
-
-            String currentLine = reader.readLine();
-            while (currentLine != null) {
-                int pos = currentLine.indexOf(oldValue);
-                if (pos != -1) {
-                    currentLine = currentLine.substring(0, pos) + newValue
-                            + currentLine.substring(pos + oldValue.length());
-                }
-
-                writer.write(currentLine);
-                writer.newLine();
-
-                currentLine = reader.readLine();
-            }
-            reader.close();
-            writer.close();
-        } finally {
-            wm.releaseLockFile();
-        }
+        //TODO: Adapt the transfer scheme utilities to 6.0
+       throw new UnsupportedOperationException("Registry is now Database-based.");
     }
 
     public static void main(String[] args) throws LBInvocationException, LBParameterException, IOException {
