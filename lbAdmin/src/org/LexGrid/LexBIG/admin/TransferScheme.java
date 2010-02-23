@@ -121,7 +121,7 @@ public class TransferScheme {
         // figure out if they gave me a tag
         String internalVersion;
         try {
-            internalVersion = ResourceManager.instance().getInternalVersionStringFor(cs, vt);
+            internalVersion = ResourceManager.instance().getInternalVersionStringForTag(cs, vt);
         } catch (Exception e) {
             // if this throws an exception, its not a tag.
             internalVersion = vt;
