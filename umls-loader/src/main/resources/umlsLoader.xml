@@ -41,7 +41,11 @@
 		<step id="registerCodingScheme">
 					<tasklet ref="registeringTasklet" />
 					<fail on="FAILED" exit-code="NON-RECOVERABLE" />
-					<next on="*" to="umlsLoadEntity" />	
+					<next on="*" to="loadHardcodedValues" />	
+		</step>
+		
+		<step id="loadHardcodedValues" next="umlsLoadEntity">
+			<tasklet ref="introspectiveHardcodedValuesTasklet"/>
 		</step>
 
 <!--		<step id="registerCodingScheme">-->
@@ -53,13 +57,25 @@
 <!--		<step id="populateStagingTable" next="umlsLoadEntity"-->
 <!--			parent="stagingTablePopulatorStepFactory" />-->
 <!---->
-		<step id="umlsLoadEntity">
+		<step id="umlsLoadEntity" next="umlsLoadEntityAssnsToEntity">
 			<tasklet>
 				<listeners>
 					<listener ref="stepCompletionListener" />
 				</listeners>
 				<chunk reader="mrconsoStagedReader" processor="umlsEntityListProcessor"
 					writer="entityWriter" commit-interval="1">
+				</chunk>
+			</tasklet>
+		</step>
+		
+		<step id="umlsLoadEntityAssnsToEntity">
+			<tasklet>
+				<listeners>
+					<listener ref="stepCompletionListener" />
+				</listeners>
+				<chunk reader="umlsForwardRelationNameMrrelSkippingReader" 
+				processor="umlsEntityAssnsToEntityProcessor"
+					writer="associationSourceWriter" commit-interval="1">
 				</chunk>
 			</tasklet>
 		</step>
@@ -200,48 +216,34 @@
 <!--				</beans:property>-->
 <!--	</beans:bean>-->
 
-<!--	<beans:bean id="umlsEntityAssocToEntityProcessor" class="org.lexgrid.loader.processor.decorator.PostProcessorValidatingDecorator">-->
-<!--			<beans:constructor-arg>-->
-<!--				<beans:bean	class="org.lexgrid.loader.umls.processor.UmlsEntityAssnsToEntityProcessor">		-->
-<!--					<beans:property name="sourceEntityCodeAndCodingSchemeResolver">-->
-<!--						<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsSourceEntityCodeAndCodingSchemeResolver">-->
-<!--							<beans:property name="mrconsoStagingDao">-->
-<!--								<beans:ref bean="mrconsoStagingDao"/>-->
-<!--							</beans:property>-->
-<!--						</beans:bean>-->
-<!--					</beans:property>-->
-<!--					<beans:property name="targetEntityCodeAndCodingSchemeResolver">-->
-<!--						<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsTargetEntityCodeAndCodingSchemeResolver">-->
-<!--							<beans:property name="mrconsoStagingDao">-->
-<!--								<beans:ref bean="mrconsoStagingDao"/>-->
-<!--							</beans:property>-->
-<!--						</beans:bean>-->
-<!--					</beans:property>	-->
-<!--					<beans:property name="containerResolver">-->
-<!--						<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsRelationContainerResolver"/>-->
-<!--					</beans:property>-->
-<!--					<beans:property name="codingSchemeIdSetter">-->
-<!--						<beans:ref local="umlsCodingSchemeIdSetter" />-->
-<!--					</beans:property>-->
-<!--					<beans:property name="lexEvsDao">-->
-<!--						<beans:ref bean="lexEvsDao" />-->
-<!--					</beans:property>-->
-<!--					<beans:property name="qualifierProcessors">-->
-<!--						<beans:list>-->
-<!--							<beans:ref bean="umlsRelaQualifierProcessor" />-->
-<!--						</beans:list>-->
-<!--					</beans:property>-->
-<!--					</beans:bean>-->
-<!--			</beans:constructor-arg>-->
-<!--			-->
-<!--			<beans:property name="validator">-->
-<!--				<beans:bean class="org.lexgrid.loader.processor.support.validator.ListValidatorAdapter">-->
-<!--					<beans:constructor-arg>-->
-<!--						<beans:bean class="org.lexgrid.loader.processor.support.validator.NamespaceSizeValidator" />-->
-<!--					</beans:constructor-arg>-->
-<!--				</beans:bean>-->
-<!--			</beans:property>-->
-<!--	</beans:bean>-->
+				<beans:bean	id="umlsEntityAssnsToEntityProcessor" 
+					class="org.lexgrid.loader.processor.EntityAssnsToEntityProcessor">		
+					
+					<beans:property name="associationInstanceIdResolver">
+						<beans:bean class="org.lexgrid.loader.rrf.data.association.MrrelRuiAssociationInstanceIdResolver"/>
+					</beans:property>
+					
+	
+					<beans:property name="associationPredicateKeyResolver">
+						<beans:bean class="org.lexgrid.loader.database.key.AssociationPredicateCreatingKeyResolver">
+							<beans:property name="databaseServiceManager" ref="databaseServiceManager"/>
+						</beans:bean>
+					</beans:property> 
+	
+					
+					<beans:property name="codingSchemeIdSetter">
+						<beans:ref local="umlsCodingSchemeIdSetter" />
+					</beans:property>
+					
+ 					<beans:property name="relationResolver">
+						<beans:bean
+							class="org.lexgrid.loader.umls.processor.support.UmlsRelationResolver">
+							<beans:property name="codingSchemeIdSetter" ref="umlsCodingSchemeIdSetter" />
+							<beans:property name="mrconsoStagingDao" ref="mrconsoStagingDao" />
+						</beans:bean>
+					</beans:property>
+			</beans:bean>
+	
 
 	<beans:bean id="entityPropertyPropertyComparator"
 		class="org.lexgrid.loader.umls.data.property.EntityPropertyPropertyComparator">
@@ -263,18 +265,6 @@
 <!--			<beans:ref bean="mrconsoStagingDao" />-->
 <!--		</beans:property>-->
 <!--	</beans:bean>-->
-
-	<beans:bean id="hardcodedValuesReader"
-		class="org.lexgrid.loader.reader.ListReader">
-		<beans:property name="list">
-			<beans:bean
-				class="org.lexgrid.loader.umls.hardcodedvalues.UmlsHardcodedValuesFactory" parent="abstractHardcodedValuesFactory">
-				<beans:property name="codingSchemeNameSetter">
-					<beans:ref local="umlsCodingSchemeIdSetter" />
-				</beans:property>
-			</beans:bean>
-		</beans:property>
-	</beans:bean>
 
 	<beans:bean id="mrconsoStagingReader"
 		class="org.springframework.batch.item.database.JdbcPagingItemReader"
@@ -617,7 +607,7 @@
 			</beans:bean>
 		</beans:property>
 		<beans:property name="delegate">
-			<beans:ref bean="partitionedMrrelReader" />
+			<beans:ref bean="mrrelReader" />
 		</beans:property>
 	</beans:bean>
 
@@ -739,9 +729,6 @@
 	
 	<beans:bean id="introspectiveHardcodedValuesTasklet" parent="abstractIntrospectiveHardcodedValues"
 		class="org.lexgrid.loader.umls.hardcodedvalues.UmlsIntrospectiveHardcodedValues">
-<!--		<beans:property name="lexEvsDao">-->
-<!--			<beans:ref bean="lexEvsDao" />-->
-<!--		</beans:property>-->
 		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
@@ -782,7 +769,7 @@
 	</beans:bean>
 	
 	<beans:bean id="umlsForwardRelationNameMrrelSkippingReader"
-		class="org.lexgrid.loader.reader.SkippingItemReader" scope="step">
+		class="org.lexgrid.loader.reader.SkippingItemReader" >
 		<beans:property name="skipPolicy">
 			<beans:bean
 				class="org.lexgrid.loader.rrf.reader.support.MrrelRelationBasedSkipPolicy">

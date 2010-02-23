@@ -18,10 +18,9 @@
  */
 package org.lexgrid.loader.umls.hardcodedvalues;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.LexGrid.relations.Relations;
 import org.lexgrid.loader.hardcodedvalues.AbstractIntrospectiveHardcodedValues;
+import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 
 /**
  * The Class UmlsIntrospectiveHardcodedValues.
@@ -35,36 +34,15 @@ public class UmlsIntrospectiveHardcodedValues extends AbstractIntrospectiveHardc
 	 */
 	@Override
 	public void loadObjects() {
-		/*
-		List<Object> hardcodedValues = new ArrayList<Object>();
+		Relations relation = new Relations();
+		relation.setContainerName(RrfLoaderConstants.UMLS_RELATIONS_NAME);
 		
-		LexEvsDao lexEvsDao = this.getLexEvsDao();
-		CodingSchemeIdSetter codingSchemeIdSetter = this.getCodingSchemeNameSetter();
+		this.getDatabaseServiceManager().
+			getAssociationService().
+			insertRelation(
+					this.getCodingSchemeIdSetter().getCodingSchemeUri(), 
+					this.getCodingSchemeIdSetter().getCodingSchemeVersion(), 
+					relation);
 		
-		String codingSchemeName = this.getCodingSchemeNameSetter().getCodingSchemeId();
-		
-		getSupportedAttributeTemplate().addSupportedNamespace(codingSchemeName, codingSchemeName, null, codingSchemeName, codingSchemeName);	
-		
-		CodingScheme codingScheme;
-		try {
-			codingScheme = lexEvsDao.findById(CodingScheme.class, codingSchemeIdSetter.getCodingSchemeId());
-		} catch (Exception e) {
-			throw new RuntimeException("Coding not get the Coding Scheme info to load Hard Coded Values.", e);
-		}
-		
-		CodingSchemeMultiAttrib localName1 = buildLocalNameCodingSchemeMultiAttrib("localName");
-		localName1.getId().setAttributeValue(codingSchemeIdSetter.getCodingSchemeId());
-		hardcodedValues.add(localName1);
-		
-		CodingSchemeMultiAttrib localName2 = buildLocalNameCodingSchemeMultiAttrib("localName");
-		localName2.getId().setAttributeValue(codingScheme.getCodingSchemeUri());
-		hardcodedValues.add(localName2);
-		
-		CodingSchemeMultiAttrib source = buildLocalNameCodingSchemeMultiAttrib("source");
-		source.getId().setAttributeValue("UMLS - " + codingScheme.getRepresentsVersion());
-		hardcodedValues.add(source);	
-		
-		*/
 	}
-
 }
