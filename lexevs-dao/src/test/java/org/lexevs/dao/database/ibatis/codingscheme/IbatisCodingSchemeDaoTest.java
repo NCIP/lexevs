@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 import javax.annotation.Resource;
 
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Source;
@@ -21,7 +22,6 @@ import org.junit.Test;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
@@ -408,5 +408,35 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		String id = ibatisCodingSchemeDao.getCodingSchemeIdByNameAndVersion("csName", "1.2");
 		
 		assertNotNull(id);
+	}
+	
+	@Test
+	@Transactional
+	public void testGetCodingSchemeSummaryByUriAndVersion() throws SQLException{
+		
+		CodingScheme cs = new CodingScheme();
+		
+		cs.setCodingSchemeName("csName");
+		cs.setCodingSchemeURI("uri");
+		cs.setRepresentsVersion("1.2");
+		cs.setFormalName("csFormalName");
+		cs.setDefaultLanguage("lang");
+		cs.setApproxNumConcepts(22l);
+		
+		EntityDescription des = new EntityDescription();
+		des.setContent("description");
+		cs.setEntityDescription(des);
+		
+		cs.addLocalName("localName");
+		
+		ibatisCodingSchemeDao.insertCodingScheme(cs);
+		
+		CodingSchemeSummary summary = ibatisCodingSchemeDao.getCodingSchemeSummaryByUriAndVersion("uri", "1.2");
+		
+		assertEquals("uri", summary.getCodingSchemeURI());
+		assertEquals("1.2", summary.getRepresentsVersion());
+		assertEquals("csFormalName", summary.getFormalName());
+		assertEquals("csName", summary.getLocalName());
+		assertEquals("description", summary.getCodingSchemeDescription().getContent());
 	}
 }
