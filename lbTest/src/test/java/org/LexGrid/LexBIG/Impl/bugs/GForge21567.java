@@ -33,7 +33,7 @@ public class GForge21567 extends LexBIGServiceTestCase {
     }
     
     /**
-     * Test putting values in the ResourceManager cache in a multithreaded environment.
+     * Test putting values in the SystemResourceService cache in a multithreaded environment.
      * 
      * @throws Throwable
      */
