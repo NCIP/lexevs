@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.naming.Mappings;
@@ -37,6 +38,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	private static String SUPPORTED_ATTRIB_GETTER_PREFIX = "_supported";
 	private static String INSERT_CODING_SCHEME_SQL = "insertCodingScheme";
 	private static String GET_CODING_SCHEME_BY_ID_SQL = "getCodingSchemeById";
+	private static String GET_CODING_SCHEME_SUMMARY_BY_URI_AND_VERSION_SQL = "getCodingSchemeSummaryByUriAndVersion";
 	private static String GET_CODING_SCHEME_ID_BY_NAME_AND_VERSION_SQL = "getCodingSchemeIdByNameAndVersion";
 	private static String GET_CODING_SCHEME_ID_BY_URI_AND_VERSION_SQL = "getCodingSchemeIdByUriAndVersion";
 	private static String GET_CODING_SCHEME_SOURCE_LIST_SQL = "getSourceListByCodingSchemeId";
@@ -49,6 +51,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	private VersionsDao versionsDao;
 	private EntityDao entityDao;
 	
+	@SuppressWarnings("unchecked")
 	@CacheMethod
 	public CodingScheme getCodingSchemeById(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -109,6 +112,13 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		throw new UnsupportedOperationException();
 	}
 
+	public CodingSchemeSummary getCodingSchemeSummaryByUriAndVersion(
+			String codingSchemeUri, String version) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version);
+		return (CodingSchemeSummary)
+			this.getSqlMapClientTemplate().queryForObject(GET_CODING_SCHEME_SUMMARY_BY_URI_AND_VERSION_SQL, 
+				new PrefixedParameterTuple(prefix, codingSchemeUri, version));
+	}
 
 	public String insertCodingScheme(CodingScheme codingScheme) {
 		return this.insertCodingScheme(codingScheme, null);
