@@ -116,7 +116,7 @@ public class TestPostLoadManifest extends LexBIGServiceTestCase {
         absCSV_.setCodingSchemeURN(NEW_URN);
         absCSV_.setCodingSchemeVersion(NEW_VERSION);
 
-        internalVersion = ResourceManager.instance().getInternalVersionStringFor(absCSV_.getCodingSchemeURN(), null);
+        internalVersion = ResourceManager.instance().getInternalVersionStringForTag(absCSV_.getCodingSchemeURN(), null);
         internalCSName = ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(
                 absCSV_.getCodingSchemeURN(), internalVersion);
 
@@ -149,7 +149,7 @@ public class TestPostLoadManifest extends LexBIGServiceTestCase {
         absCSV_.setCodingSchemeURN(NEW_URN);
         absCSV_.setCodingSchemeVersion(NEW_VERSION);
 
-        internalVersion = ResourceManager.instance().getInternalVersionStringFor(absCSV_.getCodingSchemeURN(), null);
+        internalVersion = ResourceManager.instance().getInternalVersionStringForTag(absCSV_.getCodingSchemeURN(), null);
         internalCSName = ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(
                 absCSV_.getCodingSchemeURN(), internalVersion);
 
