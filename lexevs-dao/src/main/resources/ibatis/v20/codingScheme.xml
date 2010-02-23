@@ -4,6 +4,7 @@
 <sqlMap>
 
 	<typeAlias alias="codingScheme" type="org.LexGrid.codingSchemes.CodingScheme" />
+	<typeAlias alias="codingSchemeSummary" type="org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary" />
 
 	<resultMap id="codingSchemeResult" class="codingScheme">
 		<result property="codingSchemeName" column="codingSchemeName" />
@@ -16,6 +17,14 @@
 		<result property="copyright.content" column="copyright" />
 		<result property="isActive" column="isActive" />
 		<result property="entryState" resultMap="entryStateResult" />
+	</resultMap>
+	
+	<resultMap id="codingSchemeSummaryResult" class="codingSchemeSummary">
+		<result property="localName" column="codingSchemeName" />
+		<result property="codingSchemeURI" column="codingSchemeUri" />
+		<result property="representsVersion" column="representsVersion" />
+		<result property="formalName" column="formalName" />
+		<result property="codingSchemeDescription.content" column="description" />
 	</resultMap>
 	
 	<select id="getCodingSchemeById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="codingSchemeResult">
@@ -56,7 +65,24 @@
 			cs.codingSchemeGuid = #param1#
 
      </select>
-
+     
+    <select id="getCodingSchemeSummaryByUriAndVersion" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="codingSchemeSummaryResult">
+		SELECT
+			codingSchemeName,
+			codingSchemeURI,
+			representsVersion,
+			formalName,
+			description
+		FROM 
+			$prefix$codingScheme
+		WHERE
+			codingSchemeURI =
+			#param1#
+		AND
+			representsVersion =
+			#param2#
+	</select>
+	
 	<select id="getCodingSchemeByNameAndVersion" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="codingSchemeResult">
 		SELECT
 			codingSchemeGuid,
