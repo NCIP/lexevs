@@ -19,9 +19,7 @@
 package org.lexgrid.loader.rrf.processor.support;
 
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
-import org.lexgrid.loader.processor.support.EntityNamespaceResolver;
 import org.lexgrid.loader.processor.support.RelationResolver;
-import org.lexgrid.loader.rrf.constants.RrfLoaderConstants.RrfRelationType;
 import org.lexgrid.loader.rrf.model.Mrrel;
 
 /**
@@ -89,7 +87,7 @@ public abstract class AbstractRrfRelationResolver implements RelationResolver<Mr
 	 * 
 	 * @return the coding scheme name setter
 	 */
-	public CodingSchemeIdSetter getCodingSchemeNameSetter() {
+	public CodingSchemeIdSetter getCodingSchemeIdSetter() {
 		return codingSchemeIdSetter;
 	}
 
@@ -98,7 +96,7 @@ public abstract class AbstractRrfRelationResolver implements RelationResolver<Mr
 	 * 
 	 * @param codingSchemeIdSetter the new coding scheme name setter
 	 */
-	public void setCodingSchemeNameSetter(
+	public void setCodingSchemeIdSetter(
 			CodingSchemeIdSetter codingSchemeIdSetter) {
 		this.codingSchemeIdSetter = codingSchemeIdSetter;
 	}
