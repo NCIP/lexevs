@@ -22,20 +22,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.LexGrid.persistence.dao.LexEvsDao;
-import org.LexGrid.persistence.model.EntityAssnsToEntity;
-import org.LexGrid.persistence.model.EntityAssnsToEquals;
-import org.LexGrid.persistence.model.EntityAssnsToEqualsId;
-import org.LexGrid.persistence.model.EntityPropertyMultiAttrib;
-import org.LexGrid.persistence.model.EntityPropertyMultiAttribId;
 import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
 import org.lexgrid.loader.processor.CodingSchemeIdAwareProcessor;
-import org.lexgrid.loader.processor.support.MinimalMultiAttribResolver;
 import org.lexgrid.loader.processor.support.QualifierResolver;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 import org.lexgrid.loader.rrf.model.Mrhier;
 import org.lexgrid.loader.rrf.processor.support.HcdQualifierResolver;
-import org.lexgrid.loader.wrappers.Pair;
 import org.lexgrid.loader.wrappers.Triple;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.InitializingBean;
@@ -47,13 +39,8 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public abstract class AbstractMrhierProcessor extends CodingSchemeIdAwareProcessor implements InitializingBean, ItemProcessor<Mrhier,List<Object>> {
 
-	/** The lex evs dao. */
-	private LexEvsDao lexEvsDao;
-	
 	/** The qualifier resolver. */
 	private QualifierResolver<Mrhier> qualifierResolver = new HcdQualifierResolver();
-	
-	private List<MinimalMultiAttribResolver<Mrhier>> propertyMultiAttribResolvers;
 	
 	private SupportedAttributeTemplate supportedAttributeTemplate;
 	
@@ -61,6 +48,7 @@ public abstract class AbstractMrhierProcessor extends CodingSchemeIdAwareProcess
 	 * Register known SupportedAttributes here -- save some processing time instead of having to check every one.
 	 */
 	public void afterPropertiesSet() throws Exception {
+		/*
 		if(supportedAttributeTemplate != null){
 			supportedAttributeTemplate.addSupportedPropertyQualifier(
 					this.getCodingSchemeIdSetter().getCodingSchemeName(),
@@ -69,12 +57,14 @@ public abstract class AbstractMrhierProcessor extends CodingSchemeIdAwareProcess
 					this.getCodingSchemeIdSetter().getCodingSchemeName(),
 					RrfLoaderConstants.HCD_QUALIFIER, null, RrfLoaderConstants.HCD_QUALIFIER);
 		}
+		*/
 	}
 
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.item.ItemProcessor#process(java.lang.Object)
 	 */
 	public List<Object> process(Mrhier mrhier) throws Exception {
+		/*
 		List<EntityAssnsToEquals> assocQuals = new ArrayList<EntityAssnsToEquals>();
 		List<EntityPropertyMultiAttrib> propertyQuals = new ArrayList<EntityPropertyMultiAttrib>();
 		
@@ -144,8 +134,10 @@ public abstract class AbstractMrhierProcessor extends CodingSchemeIdAwareProcess
 		}
 		
 		return returnList;
+		*/
+		return null;
 	}
-	
+	/*
 	protected List<EntityPropertyMultiAttrib> removeDuplicatesProps(List<EntityPropertyMultiAttrib> list){
 		List<EntityPropertyMultiAttrib> returnList = new ArrayList<EntityPropertyMultiAttrib>();
 		
@@ -231,6 +223,8 @@ public abstract class AbstractMrhierProcessor extends CodingSchemeIdAwareProcess
 	 * 
 	 * @return the entity assns to entity
 	 */
+	
+	/*
 	protected EntityAssnsToEntity buildEntityAssnsToEntity(String sourceCode, String targetCode){
 		EntityAssnsToEntity assoc = new EntityAssnsToEntity();
 		assoc.setCodingSchemeName(getCodingSchemeIdSetter().getCodingSchemeName());
@@ -262,48 +256,5 @@ public abstract class AbstractMrhierProcessor extends CodingSchemeIdAwareProcess
 		}
 		return returnList;		
 	}
-	
-	/**
-	 * Gets the lex evs dao.
-	 * 
-	 * @return the lex evs dao
-	 */
-	public LexEvsDao getLexEvsDao() {
-		return lexEvsDao;
-	}
-
-	/**
-	 * Sets the lex evs dao.
-	 * 
-	 * @param lexEvsDao the new lex evs dao
-	 */
-	public void setLexEvsDao(LexEvsDao lexEvsDao) {
-		this.lexEvsDao = lexEvsDao;
-	}
-
-	public QualifierResolver<Mrhier> getQualifierResolver() {
-		return qualifierResolver;
-	}
-
-	public void setQualifierResolver(QualifierResolver<Mrhier> qualifierResolver) {
-		this.qualifierResolver = qualifierResolver;
-	}
-
-	public List<MinimalMultiAttribResolver<Mrhier>> getPropertyMultiAttribResolvers() {
-		return propertyMultiAttribResolvers;
-	}
-
-	public void setPropertyMultiAttribResolvers(
-			List<MinimalMultiAttribResolver<Mrhier>> propertyMultiAttribResolvers) {
-		this.propertyMultiAttribResolvers = propertyMultiAttribResolvers;
-	}
-
-	public SupportedAttributeTemplate getSupportedAttributeTemplate() {
-		return supportedAttributeTemplate;
-	}
-
-	public void setSupportedAttributeTemplate(
-			SupportedAttributeTemplate supportedAttributeTemplate) {
-		this.supportedAttributeTemplate = supportedAttributeTemplate;
-	}
+	*/
 }
