@@ -818,7 +818,7 @@ public class VDServiceHelper {
 
             // If it is a named version, try to resolve it
             if(!StringUtils.isEmpty(versionTag)) {
-                String tagVersion = rm_.getInternalVersionStringFor(csURI, versionTag);
+                String tagVersion = rm_.getInternalVersionStringForTag(csURI, versionTag);
                 if(!StringUtils.isEmpty(tagVersion))
                     return Constructors.createAbsoluteCodingSchemeVersionReference(csURI, tagVersion);
             }
