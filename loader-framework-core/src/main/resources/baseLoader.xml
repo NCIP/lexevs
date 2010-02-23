@@ -142,10 +142,6 @@
 		<beans:property name="connectionManager" ref="defaultLexEvsDatabaseOperations" />
 	</beans:bean>	
 
-		<beans:bean id="abstractHardcodedValuesFactory"
-				class="org.lexgrid.loader.hardcodedvalues.AbstractHardcodedValuesFactory" abstract="true">	
-		</beans:bean>
-			
 		<beans:bean id="abstractIntrospectiveHardcodedValues"
 				class="org.lexgrid.loader.hardcodedvalues.AbstractIntrospectiveHardcodedValues" abstract="true">
 				<beans:property name="databaseServiceManager" ref="databaseServiceManager" />
