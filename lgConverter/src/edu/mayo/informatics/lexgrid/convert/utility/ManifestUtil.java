@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.LexOnt.CsmfAssociationDefinition;
 import org.LexGrid.LexOnt.CsmfCodingSchemeName;
@@ -60,7 +61,6 @@ import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedSource;
-import org.LexGrid.relations.Association;
 import org.LexGrid.util.Utility;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -519,7 +519,9 @@ public class ManifestUtil {
              * ----------------------
              * ------------------------------------------------
              */
-
+      
+            //TODO: Update this for the new Associations Model
+            /*
             CsmfAssociationDefinition assocDefinitions = manifest.getAssociationDefinitions();
             for (int i = 0; assocDefinitions != null && i < assocDefinitions.getAssocCount(); i++) {
                 Association association = assocDefinitions.getAssoc(i);
@@ -560,6 +562,7 @@ public class ManifestUtil {
                             + SQLTableConstants.TBL_ASSOCIATION + "- Rolling back applied changes : " + e.getMessage());
                 }
             }
+            */
             sqlConnection_.commit();
 
         } finally {
@@ -911,6 +914,8 @@ public class ManifestUtil {
      * @param rsltSet
      * @throws LgConvertException
      */
+    //TODO: Updated this for the new 6.0 Associations model
+    /*
     private void postLoadUpdateAssociation(Association assoc, ResultSet rsltSet) throws LgConvertException {
 
         try {
@@ -960,6 +965,7 @@ public class ManifestUtil {
             throw new LgConvertException("Exception occured while updating Association : " + e.getMessage());
         }
     }
+    */
 
     /**
      * Method adds the Local names from manifest into the database
