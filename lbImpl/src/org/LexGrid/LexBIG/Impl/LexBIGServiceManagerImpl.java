@@ -73,7 +73,7 @@ public class LexBIGServiceManagerImpl implements LexBIGServiceManager {
     public void setVersionTag(AbsoluteCodingSchemeVersionReference codingSchemeVersion, String tag)
             throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { codingSchemeVersion, tag });
-        ResourceManager.instance().updateTag(codingSchemeVersion, tag);
+        systemResourceService.updateCodingSchemeResourceTag(codingSchemeVersion, tag);
     }
 
     /*
@@ -87,7 +87,7 @@ public class LexBIGServiceManagerImpl implements LexBIGServiceManager {
     public void activateCodingSchemeVersion(AbsoluteCodingSchemeVersionReference codingSchemeVersion)
             throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { codingSchemeVersion });
-        ResourceManager.instance().getRegistry().activate(codingSchemeVersion);
+        systemResourceService.updateCodingSchemeResourceStatus(codingSchemeVersion, CodingSchemeVersionStatus.ACTIVE);
     }
 
     /*
@@ -102,7 +102,7 @@ public class LexBIGServiceManagerImpl implements LexBIGServiceManager {
     public void deactivateCodingSchemeVersion(AbsoluteCodingSchemeVersionReference codingSchemeVersion, Date date)
             throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { codingSchemeVersion });
-        ResourceManager.instance().deactivate(codingSchemeVersion, date);
+        systemResourceService.updateCodingSchemeResourceStatus(codingSchemeVersion, CodingSchemeVersionStatus.INACTIVE);
     }
 
     /*
