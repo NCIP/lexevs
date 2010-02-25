@@ -23,14 +23,12 @@ import java.net.URI;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Impl.loaders.BaseLoader;
-import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.spring.DynamicPropertyApplicationContext;
-import org.lexevs.system.ResourceManager;
 import org.lexevs.system.utility.MyClassLoader;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.logging.SpringBatchMessageDirector;
 import org.lexgrid.loader.properties.impl.PropertiesFactory;
 import org.lexgrid.loader.setup.JobRepositoryManager;
@@ -41,6 +39,9 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.context.ApplicationContext;
+
+import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
  * The Class AbstractSpringBatchLoader.
@@ -54,10 +55,12 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 	private JobExecution jobExecution;
 	private SpringBatchMessageDirector springBatchMessageDirector;
 	
+	private URNVersionPair[] loadedCodingSchemes;
+	
 	protected AbstractSpringBatchLoader(){
 		super();
 	}
-	
+
 	/**
 	 * Launch job.
 	 * 
@@ -87,18 +90,23 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 		
 		springBatchMessageDirector = (SpringBatchMessageDirector)ctx.getBean("logger");
 		
-		super.md_ = springBatchMessageDirector;
-		super.status_ = springBatchMessageDirector.getProcessStatus();
+		//super. = springBatchMessageDirector;
+		//super.status_ = springBatchMessageDirector.getProcessStatus();
 		
 		printStartLogInfo(connectionProperties, jobConfigFile, jobName);
 		
 		jobExecution = jobLauncher.run(job, buildJobParameters(connectionProperties));	
+		
+		this.setLoadedCodingSchemes(
+				this.getLoadedCodingSchemes(ctx));
 
 		if(jobExecution.getExitStatus().equals(ExitStatus.COMPLETED)){
 			JobRepositoryManager jobRepositoryManager = (JobRepositoryManager)ctx.getBean("jobRepositoryManager");
 			jobRepositoryManager.dropJobRepositoryDatabases();
 		}
-	}	
+	}
+	
+	protected abstract URNVersionPair[] getLoadedCodingSchemes(ApplicationContext context);
 	
 	protected void printStartLogInfo(Properties connectionProperties, String jobConfigFile, String jobName){
 		springBatchMessageDirector.info("Starting Loader Job :" + jobName);
@@ -160,12 +168,6 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 		}
 		else return ProcessState.UNKNOWN;	
 	}
-	
-	public AbsoluteCodingSchemeVersionReference[]  getCodingSchemeReferences(){
-		//TODO:
-		return null;
-		//return SystemResourceService.instance().readTerminologiesFromServer(sqlConnectionInfo);
-	}
 
 	public JobExecution getJobExecution() {
 		return jobExecution;
@@ -188,5 +190,13 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 			}
 		}
 		return uri;
+	}
+
+	public void setLoadedCodingSchemes(URNVersionPair[] loadedCodingSchemes) {
+		this.loadedCodingSchemes = loadedCodingSchemes;
+	}
+
+	public URNVersionPair[] getLoadedCodingSchemes() {
+		return loadedCodingSchemes;
 	}
 }
