@@ -17,35 +17,35 @@ import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
-import org.lexevs.system.service.DelegatingResourceManagingService.CodingSchemeAliasHolder;
+import org.lexevs.system.service.LexEvsResourceManagingService.CodingSchemeAliasHolder;
 
-public class SystemResourceServiceTest extends LexEvsDbUnitTestBase {
+public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 
 	@Resource
-	private DelegatingResourceManagingService delegatingResourceManagingService;
+	private LexEvsResourceManagingService lexEvsResourceManagingService;
 	
 	@Test
 	public void testSetup(){
-		assertNotNull(this.delegatingResourceManagingService);
+		assertNotNull(this.lexEvsResourceManagingService);
 	}
 	
 	@Test
 	public void testGetClassLoader(){
-		assertNotNull(delegatingResourceManagingService.getClassLoader());
+		assertNotNull(lexEvsResourceManagingService.getClassLoader());
 	}
 	
 	@Test(expected=LBParameterException.class)
 	public void testGetInternalVersionStringForTagError() throws LBParameterException{
 		assertEquals(
 				"expectedVersion", 
-				delegatingResourceManagingService.getInternalVersionStringForTag("csName", "TEST_TAG"));
+				lexEvsResourceManagingService.getInternalVersionStringForTag("csName", "TEST_TAG"));
 	}
 	
 	@Test(expected=LBParameterException.class)
 	public void testGetInternalCodingSchemeNameForUserCodingSchemeNameError() throws LBParameterException{
 		assertEquals(
 				"csName", 
-				delegatingResourceManagingService.getInternalCodingSchemeNameForUserCodingSchemeName("someCsLocalName", "version"));
+				lexEvsResourceManagingService.getInternalCodingSchemeNameForUserCodingSchemeName("someCsLocalName", "version"));
 	}
 	
 	@Test
@@ -63,7 +63,7 @@ public class SystemResourceServiceTest extends LexEvsDbUnitTestBase {
 		expect(registryMock.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)).andReturn(entries);
 		replay(registryMock);
 		
-		DelegatingResourceManagingService service = new DelegatingResourceManagingService();
+		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
 		CodingSchemeService csService = createMock(CodingSchemeService.class);
 		
 		CodingScheme cs = new CodingScheme();
@@ -100,7 +100,7 @@ public class SystemResourceServiceTest extends LexEvsDbUnitTestBase {
 		expect(registryMock.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)).andReturn(entries);
 		replay(registryMock);
 		
-		DelegatingResourceManagingService service = new DelegatingResourceManagingService();
+		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
 		CodingSchemeService csService = createMock(CodingSchemeService.class);
 		
 		CodingScheme cs = new CodingScheme();
@@ -137,7 +137,7 @@ public class SystemResourceServiceTest extends LexEvsDbUnitTestBase {
 		expect(registryMock.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)).andReturn(entries);
 		replay(registryMock);
 		
-		DelegatingResourceManagingService service = new DelegatingResourceManagingService();
+		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
 		CodingSchemeService csService = createMock(CodingSchemeService.class);
 		
 		CodingScheme cs = new CodingScheme();
@@ -174,7 +174,7 @@ public class SystemResourceServiceTest extends LexEvsDbUnitTestBase {
 		expect(registryMock.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)).andReturn(entries);
 		replay(registryMock);
 		
-		DelegatingResourceManagingService service = new DelegatingResourceManagingService();
+		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
 		CodingSchemeService csService = createMock(CodingSchemeService.class);
 		
 		CodingScheme cs = new CodingScheme();
@@ -212,7 +212,7 @@ public class SystemResourceServiceTest extends LexEvsDbUnitTestBase {
 		expect(registryMock.getEntriesForUri("uri")).andReturn(entries);
 		replay(registryMock);
 		
-		DelegatingResourceManagingService service = new DelegatingResourceManagingService();
+		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
 		CodingSchemeService csService = createMock(CodingSchemeService.class);
 		
 		CodingScheme cs = new CodingScheme();
@@ -250,7 +250,7 @@ public class SystemResourceServiceTest extends LexEvsDbUnitTestBase {
 		expect(registryMock.getEntriesForUri("uri")).andReturn(entries);
 		replay(registryMock);
 		
-		DelegatingResourceManagingService service = new DelegatingResourceManagingService();
+		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
 		CodingSchemeService csService = createMock(CodingSchemeService.class);
 		
 		CodingScheme cs = new CodingScheme();
@@ -294,7 +294,7 @@ public class SystemResourceServiceTest extends LexEvsDbUnitTestBase {
 		expect(registryMock.getEntriesForUri("uri")).andReturn(entries).anyTimes();
 		replay(registryMock);
 		
-		DelegatingResourceManagingService service = new DelegatingResourceManagingService();
+		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
 		CodingSchemeService csService = createMock(CodingSchemeService.class);
 		
 		CodingScheme cs = new CodingScheme();
@@ -345,7 +345,7 @@ public class SystemResourceServiceTest extends LexEvsDbUnitTestBase {
 			list.add(holder);
 		}
 		
-		DelegatingResourceManagingService service = new DelegatingResourceManagingService();
+		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
 		
 		long start = System.currentTimeMillis();
 		boolean found = false;
