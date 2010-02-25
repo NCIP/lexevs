@@ -23,14 +23,22 @@ import java.net.URI;
 import java.util.Properties;
 
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
+import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.lexevs.dao.database.spring.DynamicPropertyApplicationContext;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.ResourceManager;
+import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.loader.AbstractSpringBatchLoader;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.properties.ConnectionPropertiesFactory;
 import org.lexgrid.loader.properties.impl.DefaultLexEVSPropertiesFactory;
 import org.lexgrid.loader.setup.JobRepositoryManager;
 import org.lexgrid.loader.staging.StagingManager;
+import org.springframework.context.ApplicationContext;
+
+import edu.mayo.informatics.lexgrid.convert.options.StringOption;
+import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
  * The Class UmlsBatchLoaderImpl.
@@ -41,6 +49,11 @@ public class UmlsBatchLoaderImpl extends AbstractSpringBatchLoader implements Um
 
 /** The connection properties factory. */
 private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLexEVSPropertiesFactory();
+
+	private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+
+	private static String SAB_OPTION = "SAB";
+	
 
 	/** The UML s_ loade r_ config. */
 	private String UMLS_LOADER_CONFIG = "umlsLoader.xml";
@@ -84,8 +97,7 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 		StagingManager stagingManager = (StagingManager)ctx.getBean("umlsStagingManager");
 		stagingManager.dropAllStagingDatabases();		
 		
-		ResourceManager.instance().removeCodeSystem(
-				Constructors.createAbsoluteCodingSchemeVersionReference(uri, version));	
+		systemResourceService.removeCodingSchemeResourceFromSystem(uri, version);
 	}
     
     @Override
@@ -101,4 +113,30 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 		// mbl.loadMeta("/home/LargeStorage/ontologies/rrf/LNC/LNC226");
     	ubl.loadUmls(new File("src/test/resources/data/sample-air").toURI(), "AIR");
 	 }
+
+	@Override
+	protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+		holder.getStringOptions().add(new StringOption(SAB_OPTION));
+		return holder;
+	}
+
+	@Override
+	protected URNVersionPair[] doLoad() {
+		try {
+			this.loadUmls(this.getResourceUri(), this.getOptions().getStringOption(SAB_OPTION).getOptionValue());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return this.getLoadedCodingSchemes();
+	}
+
+	@Override
+	protected URNVersionPair[] getLoadedCodingSchemes(ApplicationContext context) {
+		CodingSchemeIdSetter codingSchemeIdSetter = (CodingSchemeIdSetter)context.getBean("umlsCodingSchemeIdSetter");
+		
+		URNVersionPair scheme = new URNVersionPair(
+				codingSchemeIdSetter.getCodingSchemeUri(), 
+				codingSchemeIdSetter.getCodingSchemeVersion());
+		return new URNVersionPair[]{scheme};
+	}
 }
