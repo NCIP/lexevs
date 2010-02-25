@@ -47,10 +47,8 @@ import org.apache.lucene.search.BooleanQuery;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.connection.SQLHistoryInterface;
 import org.lexevs.dao.database.connection.SQLInterface;
-import org.lexevs.dao.database.connection.SQLInterfaceBase;
 import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.dao.index.connection.IndexInterface;
-import org.lexevs.exceptions.InitializationException;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -62,6 +60,8 @@ import org.lexevs.registry.service.XmlRegistry.DBEntry;
 import org.lexevs.registry.service.XmlRegistry.HistoryEntry;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
+import org.lexevs.system.service.SystemResourceService;
+import org.lexevs.system.utility.MyClassLoader;
 
 /**
  * This class keeps track of all of the SQL servers and index locations
@@ -73,7 +73,7 @@ import org.lexevs.system.model.LocalCodingScheme;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 @Deprecated
-public class ResourceManager {
+public class ResourceManager implements SystemResourceService {
     private static ResourceManager resourceManager_;
     private SystemVariables systemVars_;
     private XmlRegistry registry_;
@@ -1188,7 +1188,52 @@ public class ResourceManager {
 
 	public void setXmlRegistry(XmlRegistry registry) {
 		registry_ = registry;
+	}
+
+	public boolean containsCodingSchemeResource(String uri, String version)
+			throws LBParameterException {
+		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+		ref.setCodingSchemeURN(uri);
+		ref.setCodingSchemeVersion(version);
+		return this.getRegistry().containsCodingSchemeEntry(ref);
+	}
+
+	public boolean containsNonCodingSchemeResource(String uri)
+			throws LBParameterException {
+		return this.getRegistry().containsNonCodingSchemeEntry(uri);
+	}
+
+	public String createNewTablesForLoad() {
+		throw new UnsupportedOperationException("Cannot load into Deprected LexEVS Database Schema.");
+	}
+
+	public MyClassLoader getClassLoader() {
+		throw new UnsupportedOperationException("Please get System Classloader from a non-deprecated SystemResourceService.");
+	}
+
+	public String getUriForUserCodingSchemeName(String codingSchemeName,
+			String version) throws LBParameterException {
+		return this.getUriForUserCodingSchemeName(codingSchemeName, version);
+	}
+
+	public void removeCodingSchemeResourceFromSystem(String uri, String version)
+			throws LBParameterException {
+		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+		ref.setCodingSchemeURN(uri);
+		ref.setCodingSchemeVersion(version);
+		try {
+			this.removeCodeSystem(ref);
+		} catch (LBInvocationException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void removeNonCodingSchemeResourceFromSystem(String uri)
+			throws LBParameterException {
+		try {
+			this.removeHistoryService(uri);
+		} catch (LBInvocationException e) {
+			throw new RuntimeException(e);
+		}
 	}  
-	
-	
 }

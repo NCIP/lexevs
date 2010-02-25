@@ -23,14 +23,13 @@ import org.lexevs.system.utility.MyClassLoader;
 import org.springframework.beans.factory.InitializingBean;
 
 @Cacheable(cacheName = "DelegatingResourceManagingService")
-public class DelegatingResourceManagingService extends LoggingBean implements SystemResourceService, InitializingBean {
+public class LexEvsResourceManagingService extends LoggingBean implements SystemResourceService, InitializingBean {
 
 	private Registry registry;
 	private PrefixResolver prefixResolver;
 	private LexEvsDatabaseOperations lexEvsDatabaseOperations;
 	private SystemVariables systemVariables;
 	
-	private SystemResourceService delegate;
 	private MyClassLoader myClassLoader;
 	private CodingSchemeService codingSchemeService;
 
@@ -87,6 +86,8 @@ public class DelegatingResourceManagingService extends LoggingBean implements Sy
 		
 		if(! isSingleTableMode() ){
 			lexEvsDatabaseOperations.dropTables(uri, version);
+		} else {
+			this.getCodingSchemeService().removeCodingScheme(uri, version);
 		}
 	}
 
@@ -187,7 +188,7 @@ public class DelegatingResourceManagingService extends LoggingBean implements Sy
                  SQLTableConstants.TBLCOL_CODINGSCHEMENAME + ", " + SQLTableConstants.TBLCOL_VERSION,
                  codingSchemeName + ", " + tag);
 	}
-	
+
 	protected List<RegistryEntry> getTaggedEntries(List<RegistryEntry> entries, String tag){
 		List<RegistryEntry> foundEntries = new ArrayList<RegistryEntry>();
 		for(RegistryEntry entry : foundEntries){
@@ -197,17 +198,33 @@ public class DelegatingResourceManagingService extends LoggingBean implements Sy
 		}
 		return foundEntries;
 	}
+
+	public boolean containsNonCodingSchemeResource(String uri)
+	throws LBParameterException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean containsCodingSchemeResource(String uri, String version)
+	throws LBParameterException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void removeCodingSchemeResourceFromSystem(String uri, String version)
+	throws LBParameterException {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void removeNonCodingSchemeResourceFromSystem(String uri)
+	throws LBParameterException {
+		// TODO Auto-generated method stub
+
+	}
 	
 	protected boolean isSingleTableMode(){
 		return systemVariables.isSingleTableMode();
-	}
-
-	public void setDelegate(SystemResourceService delegate) {
-		this.delegate = delegate;
-	}
-
-	public SystemResourceService getDelegate() {
-		return delegate;
 	}
 
 	public MyClassLoader getClassLoader() {

@@ -9,15 +9,20 @@ public interface SystemResourceService {
 
 	public String createNewTablesForLoad();
 	
-	public void removeCodingSchemeFromSystem(String uri, String version) throws LBParameterException;
+	public void removeCodingSchemeResourceFromSystem(String uri, String version) throws LBParameterException;
 	
-	public void removeResourceFromSystem(String uri) throws LBParameterException;;
+	public void removeNonCodingSchemeResourceFromSystem(String uri) throws LBParameterException;;
 	
 	public String getInternalVersionStringForTag(String codingSchemeName, String tag) throws LBParameterException ;
 	
 	public String getInternalCodingSchemeNameForUserCodingSchemeName(String codingSchemeName, String version) throws LBParameterException ;
 	
 	public String getUriForUserCodingSchemeName(String codingSchemeName, String version) throws LBParameterException ;
+
+	public boolean containsCodingSchemeResource(String uri, String version) throws LBParameterException;
+	
+	public boolean containsNonCodingSchemeResource(String uri) throws LBParameterException;;
+	
 }
 
 
