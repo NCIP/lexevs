@@ -90,12 +90,12 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		
 		RegistryEntry entry = registry.getCodingSchemeEntry(ref);
 		this.registry.removeEntry(entry);
+		this.readCodingSchemeAliasesFromServer();
 	}
 
 	@ClearCache
 	public void removeNonCodingSchemeResourceFromSystem(String uri) {
-		//RegistryEntry entry = registry.getNonCodingSchemeEntry(uri);
-		
+		throw new UnsupportedOperationException();
 	}
 
 	@CacheMethod

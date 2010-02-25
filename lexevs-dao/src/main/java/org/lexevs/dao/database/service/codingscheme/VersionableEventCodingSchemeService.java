@@ -1,20 +1,17 @@
 package org.lexevs.dao.database.service.codingscheme;
 
-import java.sql.Timestamp;
 import java.util.Arrays;
-import java.util.Date;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.versions.EntryState;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
-import org.lexevs.dao.database.constants.DatabaseConstants;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.entity.EntityService;
-import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.registry.service.Registry;
-import org.lexevs.registry.service.Registry.ResourceType;
 import org.springframework.transaction.annotation.Transactional;
 
 public class VersionableEventCodingSchemeService extends AbstractDatabaseService implements CodingSchemeService {
@@ -45,7 +42,20 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	}
 	
 	@Transactional
-	public void insertCodingScheme(CodingScheme scheme) {
+	public void insertCodingScheme(CodingScheme scheme) throws CodingSchemeAlreadyLoadedException {
+		boolean exists = registry.containsCodingSchemeEntry(
+				
+				DaoUtility.createAbsoluteCodingSchemeVersionReference(
+						scheme.getCodingSchemeURI(), 
+						scheme.getRepresentsVersion())
+						
+				);
+		
+		if(exists) {
+			throw new CodingSchemeAlreadyLoadedException(
+					scheme.getCodingSchemeURI(), 
+					scheme.getRepresentsVersion());
+		}
 		
 		this.fireCodingSchemeInsertEvent(scheme);
 		

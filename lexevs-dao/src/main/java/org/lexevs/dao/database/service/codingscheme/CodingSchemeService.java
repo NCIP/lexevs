@@ -5,6 +5,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.versions.EntryState;
 import org.lexevs.dao.database.service.DatabaseService;
+import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 
 public interface CodingSchemeService extends DatabaseService {
 
@@ -18,7 +19,7 @@ public interface CodingSchemeService extends DatabaseService {
 			String uri, String version);
 	
 	public void insertCodingScheme(
-			CodingScheme scheme);
+			CodingScheme scheme) throws CodingSchemeAlreadyLoadedException;
 	
 	public void updateCodingScheme(
 			String codingSchemeName, 
