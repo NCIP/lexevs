@@ -124,7 +124,8 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 		
 		hibernateRegistryDao.getHibernateTemplate().flush();
 		
-		hibernateRegistryDao.updateTag("uri2", "version", "new tag");
+		entry.setTag("new tag");
+		hibernateRegistryDao.updateRegistryEntry(entry);
 		
 		hibernateRegistryDao.getHibernateTemplate().flush();
 		

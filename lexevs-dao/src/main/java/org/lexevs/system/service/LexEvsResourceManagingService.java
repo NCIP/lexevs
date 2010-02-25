@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -229,6 +230,40 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		return registry.containsCodingSchemeEntry(ref);
 	}
 	
+	@ClearCache
+	public void updateCodingSchemeResourceTag(
+			AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
+			throws LBParameterException {
+		RegistryEntry entry = registry.getCodingSchemeEntry(codingScheme);
+		entry.setTag(newTag);
+		registry.updateEntry(entry);
+		
+	}
+
+	@ClearCache
+	public void updateCodingSchemeResourceStatus(
+			AbsoluteCodingSchemeVersionReference codingScheme,
+			CodingSchemeVersionStatus status) throws LBParameterException {
+
+		RegistryEntry entry = registry.getCodingSchemeEntry(codingScheme);
+		entry.setStatus(status.toString());
+		registry.updateEntry(entry);
+	}
+
+	public void updateNonCodingSchemeResourceStatus(String uri,
+			CodingSchemeVersionStatus status) throws LBParameterException {
+		RegistryEntry entry = registry.getNonCodingSchemeEntry(uri);
+		entry.setStatus(status.toString());
+		registry.updateEntry(entry);
+	}
+
+	public void updateNonCodingSchemeResourceTag(String uri, String newTag)
+			throws LBParameterException {
+		RegistryEntry entry = registry.getNonCodingSchemeEntry(uri);
+		entry.setTag(newTag);
+		registry.updateEntry(entry);
+	}
+
 	protected boolean isSingleTableMode(){
 		return systemVariables.isSingleTableMode();
 	}

@@ -1,5 +1,7 @@
 package org.lexevs.system.service;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.system.utility.MyClassLoader;
 
@@ -21,8 +23,15 @@ public interface SystemResourceService {
 
 	public boolean containsCodingSchemeResource(String uri, String version) throws LBParameterException;
 	
-	public boolean containsNonCodingSchemeResource(String uri) throws LBParameterException;;
+	public boolean containsNonCodingSchemeResource(String uri) throws LBParameterException;
 	
+	public void updateCodingSchemeResourceTag(AbsoluteCodingSchemeVersionReference codingScheme, String newTag) throws LBParameterException;
+
+	public void updateNonCodingSchemeResourceTag(String uri, String newTag) throws LBParameterException;
+	
+	public void updateCodingSchemeResourceStatus(AbsoluteCodingSchemeVersionReference codingScheme, CodingSchemeVersionStatus status) throws LBParameterException;
+	
+	public void updateNonCodingSchemeResourceStatus(String uri, CodingSchemeVersionStatus status) throws LBParameterException;
 }
 
 

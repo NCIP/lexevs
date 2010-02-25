@@ -10,10 +10,11 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.dao.database.prefix.NextDatabasePrefixGenerator;
+import org.lexevs.registry.event.RegistryEventSupport;
 import org.lexevs.registry.model.RegistryEntry;
 import org.springframework.transaction.annotation.Transactional;
 
-public class DatabaseRegistry implements Registry {
+public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	
 	private RegistryDao registryDao;
 	
@@ -90,6 +91,12 @@ public class DatabaseRegistry implements Registry {
 			
 		return true;
 	}
+	
+	@Transactional
+	public void updateEntry(
+			RegistryEntry entry){
+		this.registryDao.updateRegistryEntry(entry);
+	}
 
 	public RegistryEntry getCodingSchemeEntry(
 			AbsoluteCodingSchemeVersionReference codingScheme)
@@ -105,7 +112,7 @@ public class DatabaseRegistry implements Registry {
 	}
 
 	public void removeEntry(RegistryEntry entry) throws LBParameterException {
-		registryDao.removeRegistryEntry(entry);	
+		registryDao.deleteRegistryEntry(entry);	
 	}
 	
 	public boolean containsNonCodingSchemeEntry(String uri) {
@@ -128,7 +135,5 @@ public class DatabaseRegistry implements Registry {
 	public void setNextDatabasePrefixGenerator(
 			NextDatabasePrefixGenerator nextDatabasePrefixGenerator) {
 		this.nextDatabasePrefixGenerator = nextDatabasePrefixGenerator;
-	}
-
-	
+	}	
 }

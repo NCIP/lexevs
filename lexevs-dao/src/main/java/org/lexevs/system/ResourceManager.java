@@ -1226,7 +1226,7 @@ public class ResourceManager implements SystemResourceService {
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 	public void removeNonCodingSchemeResourceFromSystem(String uri)
 			throws LBParameterException {
 		try {
@@ -1234,5 +1234,45 @@ public class ResourceManager implements SystemResourceService {
 		} catch (LBInvocationException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public void updateCodingSchemeEntryTag(
+			AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
+			throws LBParameterException {
+		try {
+			this.updateTag(codingScheme, newTag);
+		} catch (LBInvocationException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void updateCodingSchemeResourceStatus(
+			AbsoluteCodingSchemeVersionReference codingScheme,
+			CodingSchemeVersionStatus status) throws LBParameterException {
+		if(status.equals(CodingSchemeVersionStatus.ACTIVE)){
+			this.updateCodingSchemeEntryTag(codingScheme, status.toString());
+		} else {
+			try {
+				this.deactivate(codingScheme, new Date());
+			} catch (LBInvocationException e) {
+				throw new RuntimeException(e);
+			}
+		}	
+	}
+
+	public void updateCodingSchemeResourceTag(
+			AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
+			throws LBParameterException {
+		this.updateCodingSchemeEntryTag(codingScheme, newTag);
+	}
+
+	public void updateNonCodingSchemeResourceStatus(String uri,
+			CodingSchemeVersionStatus status) throws LBParameterException {
+		throw new UnsupportedOperationException("Cannot update the status of a non Coding Scheme Resource.");
+	}
+
+	public void updateNonCodingSchemeResourceTag(String uri, String newTag)
+			throws LBParameterException {
+		throw new UnsupportedOperationException("Cannot update the tag of a non Coding Scheme Resource.");
 	}  
 }

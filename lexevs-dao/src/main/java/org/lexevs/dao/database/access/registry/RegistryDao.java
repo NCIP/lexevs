@@ -33,7 +33,5 @@ public interface RegistryDao {
 	
 	public void insertRegistryEntry(RegistryEntry entry);
 	
-	public void removeRegistryEntry(RegistryEntry entry);
-	
-	public void updateTag(String uri, String version, String newTag) throws LBParameterException;
+	public void deleteRegistryEntry(RegistryEntry entry);
 }

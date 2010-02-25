@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.registry.model.Registry;
@@ -25,7 +24,6 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		Registry registry = getRegistryMetadataEntry();
 		registry.setLastUpdateTime(new Timestamp(lastUpdateTime.getTime()));
 		this.getHibernateTemplate().update(registry);
-		
 	}
 	
 	public Date getLastUpdateTime() {
@@ -37,18 +35,9 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		return (Registry)this.getHibernateTemplate().get(Registry.class, REGISTRY_ID);
 	}
 
-	public void removeRegistryEntry(
-			AbsoluteCodingSchemeVersionReference entry) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void updateTag(String uri, String version,
-			String newTag) throws LBParameterException {
-		RegistryEntry entry = this.getRegistryEntryForUriAndVersion(uri, version);
-		entry.setTag(newTag);
-		
-		this.getHibernateTemplate().update(entry);
+	public void deleteRegistryEntry(
+			RegistryEntry entry) {
+		this.getHibernateTemplate().delete(entry);
 	}
 
 	public String getLastUsedDbIdentifier() {
@@ -57,10 +46,6 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 
 	public String getLastUsedHistoryIdentifier() {
 		return this.getRegistryMetadataEntry().getLastUsedHistoryIdentifer();
-	}
-
-	public void removeRegistryEntry(RegistryEntry entry) {
-		this.getHibernateTemplate().delete(entry);
 	}
 
 	public void insertRegistryEntry(RegistryEntry entry) {
@@ -82,10 +67,8 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		return entries.get(0);
 	}
 
-
 	public void updateRegistryEntry(RegistryEntry entry) {
-		// TODO Auto-generated method stub
-		
+		this.getHibernateTemplate().update(entry);
 	}
 
 	public void updateLastUsedDbIdentifier(String databaseIdentifier) {

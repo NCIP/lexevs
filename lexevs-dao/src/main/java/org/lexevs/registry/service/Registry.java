@@ -39,7 +39,9 @@ public interface Registry {
 	public Date getLastUpdateTime();
 
 	public void removeEntry(RegistryEntry entry) throws LBParameterException;
-
+	
+	public void updateEntry(RegistryEntry entry) throws LBParameterException;
+	
 	public String getNextDBIdentifier() throws LBInvocationException;
 
 	public String getNextHistoryIdentifier() throws LBInvocationException;

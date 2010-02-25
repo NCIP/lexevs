@@ -47,8 +47,7 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	}
 
 	public String getNextDBIdentifier() throws LBInvocationException {
-		// TODO Auto-generated method stub
-		return null;
+		return databaseRegistry.getNextDBIdentifier();
 	}
 
 	public String getNextHistoryIdentifier() throws LBInvocationException {
@@ -86,6 +85,42 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	public void removeEntry(RegistryEntry entry) throws LBParameterException {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void updateEntry(RegistryEntry entry) throws LBParameterException {
+		if(entry.getResourceType().equals(ResourceType.CODING_SCHEME)) {
+			
+			AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+			ref.setCodingSchemeURN(entry.getResourceUri());
+			ref.setCodingSchemeVersion(entry.getResourceVersion());
+			
+			if(this.databaseRegistry.containsCodingSchemeEntry(ref)){
+				 databaseRegistry.updateEntry(entry);
+			} else {
+				 xmlRegistry.updateEntry(entry);
+			}	
+		} else {
+			
+			if(this.databaseRegistry.containsNonCodingSchemeEntry(entry.getResourceUri())){
+				 databaseRegistry.updateEntry(entry);
+			} else {
+				 xmlRegistry.updateEntry(entry);
+			}	
+		}
+	}
+	
+	public void updateCodingSchemeEntryTag(
+			AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
+			throws LBParameterException {
+		if(this.databaseRegistry.containsCodingSchemeEntry(codingScheme)){
+			RegistryEntry entry = databaseRegistry.getCodingSchemeEntry(codingScheme);
+			entry.setTag(newTag);
+			databaseRegistry.updateEntry(entry);
+		} else {
+			RegistryEntry entry = xmlRegistry.getCodingSchemeEntry(codingScheme);
+			entry.setTag(newTag);
+			xmlRegistry.updateEntry(entry);
+		}	
 	}
 	
 	public Registry getDatabaseRegistry() {

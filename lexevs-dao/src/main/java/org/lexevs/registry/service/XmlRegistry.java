@@ -30,6 +30,7 @@ import javax.sql.DataSource;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.util.sql.DBUtility;
@@ -41,7 +42,6 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
-import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.exceptions.InternalException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.logging.LgLoggerIF;
@@ -1155,10 +1155,29 @@ public class XmlRegistry implements Registry {
 		
 	}
 
-	public void updateEntry(RegistryEntry entry) throws LBInvocationException,
-			LBParameterException {
-		// TODO Auto-generated method stub
-		
+	public void updateEntry(RegistryEntry entry) {
+		if(entry.getResourceType().equals(ResourceType.CODING_SCHEME)) {
+			AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+			ref.setCodingSchemeURN(entry.getResourceUri());
+			ref.setCodingSchemeVersion(entry.getResourceVersion());
+			
+			try {
+				RegistryEntry foundEntry = this.getCodingSchemeEntry(ref);
+				if(! entry.getTag().equals(foundEntry.getTag())){
+					this.updateTag(ref, entry.getTag());
+				} else if (! entry.getStatus().equals(foundEntry.getStatus())){
+					if(entry.getStatus().equals(CodingSchemeVersionStatus.ACTIVE.toString())) {
+						this.activate(ref);
+					} else {
+						this.deactivate(this.getEntry(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion()));
+					}
+				} else {
+					throw new RuntimeException("Update cannot be performed.");
+				}
+			} catch (LBException e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 
 	public boolean containsNonCodingSchemeEntry(String uri) {
@@ -1200,5 +1219,16 @@ public class XmlRegistry implements Registry {
 
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
+	}
+
+	public void updateCodingSchemeEntryTag(
+			AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
+	throws LBParameterException {
+
+		try {
+			this.updateTag(codingScheme, newTag);
+		} catch (LBInvocationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
