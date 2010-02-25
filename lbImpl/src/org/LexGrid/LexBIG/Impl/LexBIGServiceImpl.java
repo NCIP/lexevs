@@ -39,11 +39,11 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
+import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.LexBIGServiceConvenienceMethodsImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.ContainsSearch;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.DoubleMetaphoneSearch;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.ExactMatchSearch;
@@ -72,8 +72,6 @@ import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistorySQLQueries;
 import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistoryServiceImpl;
 import org.LexGrid.LexBIG.Impl.History.UMLSHistoryServiceImpl;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
-import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
-import org.LexGrid.LexBIG.Impl.exporters.OBOExport;
 import org.LexGrid.LexBIG.Impl.loaders.TextLoaderImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -547,7 +545,8 @@ public class LexBIGServiceImpl implements LexBIGService {
         new NonLeadingWildcardLiteralSubStringSearch().register();
         
         // load extensions
-        TextLoaderImpl.register();
+        new TextLoaderImpl().register();
+        
         /*
         UMLSLoaderImpl.register();
         IndexLoaderImpl.register();
@@ -573,7 +572,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         } catch (Exception e) {
             getLogger().warn(meta.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
         }
-        
+        */
         //Umls Batch Loader Extension
         ExtensionDescription umls = new ExtensionDescription();
         umls.setExtensionBaseClass(UmlsBatchLoader.class.getName());
@@ -586,7 +585,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         } catch (Exception e) {
             getLogger().warn(umls.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
         }
-        */
+        /*
 
         // export extensions
         LexGridExport.register();
@@ -594,6 +593,7 @@ public class LexBIGServiceImpl implements LexBIGService {
 
         // Generic Extensions
         LexBIGServiceConvenienceMethodsImpl.register();
+        */
     }
 
 }
