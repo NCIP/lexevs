@@ -18,9 +18,8 @@
  */
 package org.LexGrid.LexBIG.Impl;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.Date;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeTagList;
@@ -28,9 +27,8 @@ import org.LexGrid.LexBIG.DataModel.Collections.ExtensionDescriptionList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ModuleDescriptionList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortDescriptionList;
-import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
-import org.LexGrid.LexBIG.DataModel.Core.ReferenceLink;
+import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.RenderingDetail;
@@ -41,8 +39,6 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
-import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
-import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.History.HistoryService;
@@ -78,18 +74,7 @@ import org.LexGrid.LexBIG.Impl.History.UMLSHistoryServiceImpl;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
 import org.LexGrid.LexBIG.Impl.exporters.OBOExport;
-import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
-import org.LexGrid.LexBIG.Impl.loaders.IndexLoaderImpl;
-import org.LexGrid.LexBIG.Impl.loaders.LexGridLoaderImpl;
-import org.LexGrid.LexBIG.Impl.loaders.MetaDataLoaderImpl;
-import org.LexGrid.LexBIG.Impl.loaders.NCIHistoryLoaderImpl;
-import org.LexGrid.LexBIG.Impl.loaders.NCIMetaThesaurusLoaderImpl;
-import org.LexGrid.LexBIG.Impl.loaders.OBOLoaderImpl;
-import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
-import org.LexGrid.LexBIG.Impl.loaders.RadLexProtegeFramesLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.TextLoaderImpl;
-import org.LexGrid.LexBIG.Impl.loaders.UMLSHistoryLoaderImpl;
-import org.LexGrid.LexBIG.Impl.loaders.UMLSLoaderImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -98,16 +83,17 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceMetadata;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.commonTypes.EntityDescription;
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.lexevs.dao.database.connection.SQLInterface;
+import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.exceptions.InternalException;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
+import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.ResourceManager;
-import org.lexevs.system.utility.MyClassLoader;
+import org.lexevs.system.service.SystemResourceService;
 
 /**
  * Implementation of the LexBIGService Interface.
@@ -123,6 +109,9 @@ import org.lexevs.system.utility.MyClassLoader;
 public class LexBIGServiceImpl implements LexBIGService {
     private static LexBIGServiceImpl lexbigService_ = null;
     private static final long serialVersionUID = 6785772690490820208L;
+    private DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
+    private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+    private Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
 
     private LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -190,74 +179,35 @@ public class LexBIGServiceImpl implements LexBIGService {
         getLogger().logMethod();
         try {
             CodingSchemeRenderingList temp = new CodingSchemeRenderingList();
-            SQLInterface[] si = ResourceManager.instance().getAllSQLInterfaces();
 
-            for (int i = 0; i < si.length; i++) {
-                PreparedStatement getCodingSchemes = null;
+            List<RegistryEntry> entries = registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
+            
+            for(RegistryEntry entry : entries){
+                CodingSchemeRendering rendering = new CodingSchemeRendering();
+                
+                rendering.setCodingSchemeSummary(
+                        this.databaseServiceManager.getCodingSchemeService().
+                            getCodingSchemeSummaryByUriAndVersion(
+                                    entry.getResourceUri(), 
+                                    entry.getResourceVersion()));
+                
 
-                try {
-                    getCodingSchemes = si[i].checkOutPreparedStatement("Select * from "
-                            + si[i].getTableName(SQLTableConstants.CODING_SCHEME));
-
-                    ResultSet results = getCodingSchemes.executeQuery();
-                    while (results.next()) {
-
-                        CodingSchemeRendering csr = new CodingSchemeRendering();
-
-                        csr.setCodingSchemeSummary(new CodingSchemeSummary());
-                        csr.getCodingSchemeSummary().setCodingSchemeDescription(new EntityDescription());
-                        csr.getCodingSchemeSummary().getCodingSchemeDescription().setContent(
-                                results.getString(SQLTableConstants.TBLCOL_ENTITYDESCRIPTION));
-                        csr.getCodingSchemeSummary().setCodingSchemeURI(
-                                (si[i].supports2009Model() ? results
-                                        .getString(SQLTableConstants.TBLCOL_CODINGSCHEMEURI) : results
-                                        .getString(SQLTableConstants.TBLCOL_REGISTEREDNAME)));
-                        csr.getCodingSchemeSummary().setFormalName(
-                                results.getString(SQLTableConstants.TBLCOL_FORMALNAME));
-                        csr.getCodingSchemeSummary().setLocalName(
-                                results.getString(SQLTableConstants.TBLCOL_CODINGSCHEMENAME));
-                        csr.getCodingSchemeSummary().setRepresentsVersion(
-                                results.getString(SQLTableConstants.TBLCOL_REPRESENTSVERSION));
-
-                        csr.setRenderingDetail(new RenderingDetail());
-                        /*
-                        Registry registry = ResourceManager.instance().getRegistry();
-
-                        csr.getRenderingDetail().setVersionStatus(
-                                registry.getStatus(csr.getCodingSchemeSummary().getCodingSchemeURI(), csr
-                                        .getCodingSchemeSummary().getRepresentsVersion()));
-                        String tag = registry.getTag(csr.getCodingSchemeSummary().getCodingSchemeURI(), csr
-                                .getCodingSchemeSummary().getRepresentsVersion());
-                        CodingSchemeTagList tags = new CodingSchemeTagList();
-                        if (tag != null && tag.length() > 0) {
-                            tags.addTag(tag);
-                        }
-                        csr.getRenderingDetail().setVersionTags(tags);
-
-                        csr.getRenderingDetail().setDeactivateDate(
-                                registry.getDeactivateDate(csr.getCodingSchemeSummary().getCodingSchemeURI(), csr
-                                        .getCodingSchemeSummary().getRepresentsVersion()));
-                        csr.getRenderingDetail().setLastUpdateTime(
-                                registry.getLastUpdateDate(csr.getCodingSchemeSummary().getCodingSchemeURI(), csr
-                                        .getCodingSchemeSummary().getRepresentsVersion()));
-                         */
-                        
-                        // reference links don't appear to be fully "baked" yet.
-                        // No use right now anyway.
-                        csr.setReferenceLink(new ReferenceLink());
-                        csr.getReferenceLink().setHref(null);
-                        csr.getReferenceLink().setContent(null);
-
-                        // Service handle has to do with the caGrid stuff.
-                        csr.setServiceHandle(new ReferenceLink());
-                        csr.getServiceHandle().setHref(null);
-                        csr.getServiceHandle().setContent(null);
-
-                        temp.addCodingSchemeRendering(csr);
-                    }
-                } finally {
-                    si[i].checkInPreparedStatement(getCodingSchemes);
+                RenderingDetail detail = new RenderingDetail();
+                detail.setDeactivateDate(entry.getDeactivationDate());
+                detail.setLastUpdateTime(entry.getLastUpdateDate());
+                
+                String tag = entry.getStatus();
+                if(StringUtils.isNotBlank(tag)){
+                    detail.setVersionStatus(CodingSchemeVersionStatus.valueOf(tag));
                 }
+
+                CodingSchemeTagList tagList = new CodingSchemeTagList();
+                tagList.addTag(entry.getTag());
+                detail.setVersionTags(tagList);
+                
+                rendering.setRenderingDetail(detail);
+                
+                temp.addCodingSchemeRendering(rendering);  
             }
 
             return temp;
@@ -280,20 +230,22 @@ public class LexBIGServiceImpl implements LexBIGService {
         getLogger().logMethod(new Object[] { codingSchemeName, tagOrVersion });
         String version = null;
         if (tagOrVersion == null || tagOrVersion.getVersion() == null || tagOrVersion.getVersion().length() == 0) {
-            version = ResourceManager.instance().getInternalVersionStringForTag(codingSchemeName,
+            version = systemResourceService.getInternalVersionStringForTag(codingSchemeName,
                     (tagOrVersion == null ? null : tagOrVersion.getTag()));
         } else {
             version = tagOrVersion.getVersion();
         }
 
         try {
-            return SQLImplementedMethods.buildCodingScheme(ResourceManager.instance()
-                    .getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeName, version), version);
+            return databaseServiceManager.getCodingSchemeService().
+                getCodingSchemeByUriAndVersion(
+                        systemResourceService.
+                            getUriForUserCodingSchemeName(
+                                    codingSchemeName),
+                                    version);
         }
 
-        catch (InternalException e) {
-            throw new LBInvocationException("There was an unexpected error", e.getLogId());
-        } catch (LBParameterException e) {
+        catch (LBParameterException e) {
             throw e;
         } catch (Exception e) {
             String id = getLogger().error("There was an unexpected error", e);
@@ -314,7 +266,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         getLogger().logMethod(new Object[] { codingSchemeName, tagOrVersion });
         String version = null;
         if (tagOrVersion == null || tagOrVersion.getVersion() == null || tagOrVersion.getVersion().length() == 0) {
-            version = ResourceManager.instance().getInternalVersionStringForTag(codingSchemeName,
+            version = systemResourceService.getInternalVersionStringForTag(codingSchemeName,
                     (tagOrVersion == null ? null : tagOrVersion.getTag()));
         } else {
             version = tagOrVersion.getVersion();
@@ -386,7 +338,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         getLogger().logMethod(new Object[] { codingScheme, tagOrVersion, relationContainerName });
         String version = null;
         if (tagOrVersion == null || tagOrVersion.getVersion() == null || tagOrVersion.getVersion().length() == 0) {
-            version = ResourceManager.instance().getInternalVersionStringForTag(codingScheme,
+            version = systemResourceService.getInternalVersionStringForTag(codingScheme,
                     (tagOrVersion == null ? null : tagOrVersion.getTag()));
         } else {
             version = tagOrVersion.getVersion();
@@ -411,7 +363,7 @@ public class LexBIGServiceImpl implements LexBIGService {
      */
     public Date getLastUpdateTime() {
         getLogger().logMethod();
-        return ResourceManager.instance().getRegistry().getLastUpdateTime();
+        return registry.getLastUpdateTime();
     }
 
     /*
@@ -445,7 +397,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         getLogger().logMethod(new Object[] { codingScheme });
         String urn;
         try {
-            urn = ResourceManager.instance().getURNForExternalCodingSchemeName(codingScheme);
+            urn = systemResourceService.getUriForUserCodingSchemeName(codingScheme);
         } catch (LBParameterException e) {
             // this means that no coding scheme that was loaded could map to a
             // URN - but
@@ -596,6 +548,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         
         // load extensions
         TextLoaderImpl.register();
+        /*
         UMLSLoaderImpl.register();
         IndexLoaderImpl.register();
         NCIMetaThesaurusLoaderImpl.register();
@@ -633,6 +586,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         } catch (Exception e) {
             getLogger().warn(umls.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
         }
+        */
 
         // export extensions
         LexGridExport.register();

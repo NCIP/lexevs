@@ -38,7 +38,10 @@ import org.LexGrid.annotations.LgAdminFunction;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry;
 import org.lexevs.system.ResourceManager;
+import org.lexevs.system.service.SystemResourceService;
 
 /**
  * This class implements the LexBigServiceManager.
@@ -50,6 +53,9 @@ import org.lexevs.system.ResourceManager;
  */
 public class LexBIGServiceManagerImpl implements LexBIGServiceManager {
     private static final long serialVersionUID = -546654153157636317L;
+    
+    private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+    private Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
 
     private LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -110,20 +116,21 @@ public class LexBIGServiceManagerImpl implements LexBIGServiceManager {
     public void removeCodingSchemeVersion(AbsoluteCodingSchemeVersionReference codingSchemeVersionReference)
             throws LBParameterException, LBInvocationException {
         getLogger().logMethod(new Object[] { codingSchemeVersionReference });
-        ResourceManager rm = ResourceManager.instance();
-        CodingSchemeVersionStatus status = rm.getRegistry().getStatus(
-                codingSchemeVersionReference.getCodingSchemeURN(),
-                codingSchemeVersionReference.getCodingSchemeVersion());
+        
+       RegistryEntry entry = registry.getCodingSchemeEntry(codingSchemeVersionReference);
 
-        if (status == null) {
+        if (entry == null) {
             throw new LBParameterException("The specified coding scheme is not a registered coding scheme",
-                    "codingSchemeVersionReference");
-        } else if (status == CodingSchemeVersionStatus.ACTIVE) {
+                    codingSchemeVersionReference.getCodingSchemeURN() + " - " + 
+                    codingSchemeVersionReference.getCodingSchemeVersion());
+        } else if (entry.getStatus() == CodingSchemeVersionStatus.ACTIVE.toString()) {
             throw new LBParameterException("You cannot remove a 'ACTIVE' coding scheme.");
         }
 
         // must be marked as inactive or pending. Do the delete.
-        rm.removeCodeSystem(codingSchemeVersionReference);
+        systemResourceService.removeCodingSchemeResourceFromSystem(
+                codingSchemeVersionReference.getCodingSchemeURN(), 
+                codingSchemeVersionReference.getCodingSchemeVersion());
     }
 
     @LgAdminFunction
