@@ -17,7 +17,7 @@ public interface SystemResourceService {
 	
 	public String getInternalCodingSchemeNameForUserCodingSchemeName(String codingSchemeName, String version) throws LBParameterException ;
 	
-	public String getUriForUserCodingSchemeName(String codingSchemeName, String version) throws LBParameterException ;
+	public String getUriForUserCodingSchemeName(String codingSchemeName) throws LBParameterException ;
 
 	public boolean containsCodingSchemeResource(String uri, String version) throws LBParameterException;
 	

@@ -58,12 +58,13 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 
 	public boolean containsCodingSchemeEntry(
 			AbsoluteCodingSchemeVersionReference codingScheme) {
-		return false;
+		return databaseRegistry.containsCodingSchemeEntry(codingScheme) ||
+			xmlRegistry.containsCodingSchemeEntry(codingScheme);
 	}
 
 	public boolean containsNonCodingSchemeEntry(String uri) {
-		// TODO Auto-generated method stub
-		return false;
+		return databaseRegistry.containsNonCodingSchemeEntry(uri) ||
+			xmlRegistry.containsNonCodingSchemeEntry(uri);
 	}
 
 	public RegistryEntry getCodingSchemeEntry(

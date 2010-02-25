@@ -14,6 +14,9 @@ public interface CodingSchemeService extends DatabaseService {
 	public CodingSchemeSummary getCodingSchemeSummaryByUriAndVersion(
 			String uri, String version);
 	
+	public void destroyCodingScheme(
+			String uri, String version);
+	
 	public void insertCodingScheme(
 			CodingScheme scheme);
 	

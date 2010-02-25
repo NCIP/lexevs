@@ -33,7 +33,7 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	
 	public String getEntryStateId(String codingSchemeName, String version);
 	
-	public void deleteCodingScheme(CodingScheme codingScheme);
+	public void deleteCodingSchemeById(String codingSchemeId);
 	
 	public void insertCodingSchemeSource(String codingSchemeId, Source source);
 	

@@ -208,4 +208,9 @@ public class SQLInterfaceCodingSchemeDao extends AbstractBaseDao implements Codi
 	public SQLImplementedMethodsDao getSqlImplementedMethodsDao() {
 		return sqlImplementedMethodsDao;
 	}
+
+	public void deleteCodingSchemeById(String codingSchemeId) {
+		// TODO Auto-generated method stub
+		
+	}
 }

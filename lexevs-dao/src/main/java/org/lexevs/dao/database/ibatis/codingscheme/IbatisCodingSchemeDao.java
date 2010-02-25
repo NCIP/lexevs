@@ -32,9 +32,10 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 @Cacheable(cacheName = "IbatisCodingSchemeDao")
 public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSchemeDao {
-	
+
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 
+	private static String REMOVE_CODING_SCHEME_BY_ID_SQL = "deleteCodingSchemeById";
 	private static String SUPPORTED_ATTRIB_GETTER_PREFIX = "_supported";
 	private static String INSERT_CODING_SCHEME_SQL = "insertCodingScheme";
 	private static String GET_CODING_SCHEME_BY_ID_SQL = "getCodingSchemeById";
@@ -89,12 +90,6 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	public CodingScheme getCodingSchemeByNameAndVersion(String codingSchemeName, String representsVersion){
 		String codingSchemeId = this.getCodingSchemeIdByNameAndVersion(codingSchemeName, representsVersion);
 		return this.getCodingSchemeById(codingSchemeId);
-		
-	}
-
-	@ClearCache
-	public void deleteCodingScheme(CodingScheme codingScheme) {
-		throw new UnsupportedOperationException();	
 	}
 
 	public void deleteLocalName(String codingSchemeName, String version,
@@ -128,6 +123,12 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		return this.insertCodingScheme(codingScheme, null);
 	}
 
+	public void deleteCodingSchemeById(String codingSchemeId) {
+		String prefix = 
+			this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		this.getSqlMapClientTemplate().
+			delete(REMOVE_CODING_SCHEME_BY_ID_SQL, new PrefixedParameter(prefix, codingSchemeId));	
+	}
 	
 	public String insertCodingScheme(CodingScheme codingScheme, String previousRevisionId) {
 		String codingSchemeId = this.createUniqueId();

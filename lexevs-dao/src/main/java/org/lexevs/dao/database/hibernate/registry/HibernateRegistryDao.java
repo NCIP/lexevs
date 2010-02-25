@@ -59,9 +59,8 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		return this.getRegistryMetadataEntry().getLastUsedHistoryIdentifer();
 	}
 
-	public void removeRegistryEntry(String uri, String version) {
-		// TODO Auto-generated method stub
-		
+	public void removeRegistryEntry(RegistryEntry entry) {
+		this.getHibernateTemplate().delete(entry);
 	}
 
 	public void insertRegistryEntry(RegistryEntry entry) {

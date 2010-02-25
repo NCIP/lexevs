@@ -304,12 +304,17 @@
 		<property name="xmlRegistry" ref="xmlRegistry"/>
 	</bean>
 	
-	<bean id="delegatingResourceManagingService" class="org.lexevs.system.service.DelegatingResourceManagingService" 
+	<bean id="delegatingResourceManagingService" class="org.lexevs.system.service.DelegatingSystemResourceService">
+		<property name="primarySystemResourceService" ref="lexEvsResourceManagingService"/>
+		<property name="delegateSystemResourceService" ref="resourceManager"/>
+	</bean>
+	
+	<bean id="lexEvsResourceManagingService" class="org.lexevs.system.service.LexEvsResourceManagingService" 
 		parent="loggingBean">
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
-		<property name="registry" ref="registry"/>
+		<property name="registry" ref="databaseRegistry"/>
 		<property name="myClassLoader" ref="myClassLoader"/>
 		<property name="codingSchemeService" ref="codingSchemeService"/>
 	</bean>

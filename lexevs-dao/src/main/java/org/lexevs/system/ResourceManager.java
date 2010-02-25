@@ -1211,9 +1211,8 @@ public class ResourceManager implements SystemResourceService {
 		throw new UnsupportedOperationException("Please get System Classloader from a non-deprecated SystemResourceService.");
 	}
 
-	public String getUriForUserCodingSchemeName(String codingSchemeName,
-			String version) throws LBParameterException {
-		return this.getUriForUserCodingSchemeName(codingSchemeName, version);
+	public String getUriForUserCodingSchemeName(String codingSchemeName) throws LBParameterException {
+		return this.getURNForExternalCodingSchemeName(codingSchemeName);
 	}
 
 	public void removeCodingSchemeResourceFromSystem(String uri, String version)

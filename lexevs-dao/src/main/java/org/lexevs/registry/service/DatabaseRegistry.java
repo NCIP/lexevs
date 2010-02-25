@@ -79,11 +79,6 @@ public class DatabaseRegistry implements Registry {
 		return null;
 	}
 
-	public void removeRegistryEntry(String uri) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public boolean containsCodingSchemeEntry(
 			AbsoluteCodingSchemeVersionReference codingScheme) {
 		try {
@@ -110,8 +105,7 @@ public class DatabaseRegistry implements Registry {
 	}
 
 	public void removeEntry(RegistryEntry entry) throws LBParameterException {
-		// TODO Auto-generated method stub
-		
+		registryDao.removeRegistryEntry(entry);	
 	}
 	
 	public boolean containsNonCodingSchemeEntry(String uri) {

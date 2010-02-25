@@ -76,23 +76,23 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 	}
 	
 	@ClearCache
-	public void removeCodingSchemeFromSystem(String uri, String version) throws LBParameterException {
+	public void removeCodingSchemeResourceFromSystem(String uri, String version) throws LBParameterException {
 		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
 		ref.setCodingSchemeURN(uri);
 		ref.setCodingSchemeVersion(version);
-		
-		RegistryEntry entry = registry.getCodingSchemeEntry(ref);
-		this.registry.removeEntry(entry);
-		
+
 		if(! isSingleTableMode() ){
 			lexEvsDatabaseOperations.dropTables(uri, version);
 		} else {
-			this.getCodingSchemeService().removeCodingScheme(uri, version);
+			this.getCodingSchemeService().destroyCodingScheme(uri, version);
 		}
+		
+		RegistryEntry entry = registry.getCodingSchemeEntry(ref);
+		this.registry.removeEntry(entry);
 	}
 
 	@ClearCache
-	public void removeResourceFromSystem(String uri) {
+	public void removeNonCodingSchemeResourceFromSystem(String uri) {
 		//RegistryEntry entry = registry.getNonCodingSchemeEntry(uri);
 		
 	}
@@ -142,6 +142,22 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 			}
 		}
 		return returnList;
+	}
+	
+	public String getUriForUserCodingSchemeName(String codingSchemeName)
+	throws LBParameterException {
+			List<String> uris = getUriForCodingSchemeName(codingSchemeName);
+			if(uris == null || uris.size() == 0){
+				throw new LBParameterException("No URI found for Coding Scheme Name: " + codingSchemeName);
+			}
+			
+			String uri = uris.get(0);
+			for(int i=1;i<uris.size();i++){
+				if(! uris.get(i).equals(uri)){
+					throw new LBParameterException("Found multiple URIs for Coding Scheme Name: " + codingSchemeName);
+				}
+			}
+			return uri;
 	}
 
 	@CacheMethod
@@ -201,26 +217,16 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 
 	public boolean containsNonCodingSchemeResource(String uri)
 	throws LBParameterException {
-		// TODO Auto-generated method stub
-		return false;
+		return registry.containsNonCodingSchemeEntry(uri);
 	}
 
 	public boolean containsCodingSchemeResource(String uri, String version)
 	throws LBParameterException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public void removeCodingSchemeResourceFromSystem(String uri, String version)
-	throws LBParameterException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void removeNonCodingSchemeResourceFromSystem(String uri)
-	throws LBParameterException {
-		// TODO Auto-generated method stub
-
+		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+		ref.setCodingSchemeURN(uri);
+		ref.setCodingSchemeVersion(version);
+		
+		return registry.containsCodingSchemeEntry(ref);
 	}
 	
 	protected boolean isSingleTableMode(){

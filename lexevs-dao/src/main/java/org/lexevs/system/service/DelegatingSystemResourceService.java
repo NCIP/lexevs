@@ -1,7 +1,6 @@
 package org.lexevs.system.service;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.lexevs.registry.service.Registry;
 import org.lexevs.system.utility.MyClassLoader;
 
 public class DelegatingSystemResourceService implements SystemResourceService {
@@ -48,12 +47,11 @@ public class DelegatingSystemResourceService implements SystemResourceService {
 		}
 	}
 	
-	public String getUriForUserCodingSchemeName(String codingSchemeName,
-			String version) throws LBParameterException {
+	public String getUriForUserCodingSchemeName(String codingSchemeName) throws LBParameterException {
 		try {
-			return primarySystemResourceService.getUriForUserCodingSchemeName(codingSchemeName, version);
+			return primarySystemResourceService.getUriForUserCodingSchemeName(codingSchemeName);
 		} catch (Exception e) {
-			return delegateSystemResourceService.getUriForUserCodingSchemeName(codingSchemeName, version);
+			return delegateSystemResourceService.getUriForUserCodingSchemeName(codingSchemeName);
 		}
 	}
 	
@@ -63,8 +61,9 @@ public class DelegatingSystemResourceService implements SystemResourceService {
 			primarySystemResourceService.removeCodingSchemeResourceFromSystem(uri, version);
 		} else if (delegateSystemResourceService.containsCodingSchemeResource(uri, version)){
 			delegateSystemResourceService.removeCodingSchemeResourceFromSystem(uri, version);
+		} else {
+			throw new LBParameterException("Could not find CodingScheme:" + uri + " - " + version);
 		}
-		throw new LBParameterException("Could not find CodingScheme:" + uri + " - " + version);
 		
 	}
 	public void removeNonCodingSchemeResourceFromSystem(String uri)
@@ -73,9 +72,9 @@ public class DelegatingSystemResourceService implements SystemResourceService {
 			primarySystemResourceService.containsNonCodingSchemeResource(uri);
 		} else if (delegateSystemResourceService.containsNonCodingSchemeResource(uri)){
 			delegateSystemResourceService.containsNonCodingSchemeResource(uri);
+		} else {
+			throw new LBParameterException("Could not find Resource:" + uri);
 		}
-		
-		throw new LBParameterException("Could not find Resource:" + uri);
 	}
 	
 	public SystemResourceService getPrimarySystemResourceService() {

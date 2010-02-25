@@ -27,6 +27,13 @@
 		<result property="codingSchemeDescription.content" column="description" />
 	</resultMap>
 	
+	<delete id="deleteCodingSchemeById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$codingScheme
+		WHERE
+			codingSchemeGuid = #param1#
+	</delete>
+	
 	<select id="getCodingSchemeById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="codingSchemeResult">
 		SELECT
 			cs.codingSchemeGuid,

@@ -37,13 +37,15 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	}
 	
 	@Transactional
+	public void destroyCodingScheme(String uri, String version) {
+		CodingSchemeDao csDao = 
+			this.getDaoManager().getCodingSchemeDao(uri, version);
+		String codingSchemeId = csDao.getCodingSchemeIdByUriAndVersion(uri, version);
+		csDao.deleteCodingSchemeById(codingSchemeId);	
+	}
+	
+	@Transactional
 	public void insertCodingScheme(CodingScheme scheme) {
-		try {
-			//registry.addNewItem(
-			//		codingSchemeToRegistryEntry(scheme));
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 		
 		this.fireCodingSchemeInsertEvent(scheme);
 		
@@ -110,6 +112,8 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	public Registry getRegistry() {
 		return registry;
 	}
+
+	
 
 	
 }
