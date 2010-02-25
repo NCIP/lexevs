@@ -1,6 +1,6 @@
 package org.lexevs.registry.service;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -9,10 +9,7 @@ import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.dao.database.access.registry.RegistryDao;
-import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.prefix.NextDatabasePrefixGenerator;
-import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
-import org.lexevs.exceptions.InternalException;
 import org.lexevs.registry.model.RegistryEntry;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,24 +39,18 @@ public class DatabaseRegistry implements Registry {
 		
 	}
 
-	public void deactivate(RegistryEntry entry) throws LBInvocationException,
-			LBParameterException {
-		// TODO Auto-generated method stub
-		
-	}
-	
+	@Transactional
 	public List<RegistryEntry> getAllRegistryEntries() {
 		return registryDao.getAllRegistryEntries();
 	}
 	
-	public List<RegistryEntry> getAllRegistryEntriesOfType(ResourceType type) {
-		return registryDao.getAllRegistryEntriesOfType(type);
-	}
-
-
 	@Transactional
-	public Date getDeactivateDate(String codingSchemeURN, String version) throws LBParameterException {
-		return registryDao.getRegistryEntryForUriAndVersion(codingSchemeURN, version).getDeactivationDate();
+	public List<RegistryEntry> getAllRegistryEntriesOfType(ResourceType type) {
+		List<RegistryEntry> returnList = new ArrayList<RegistryEntry>();
+		
+		returnList.addAll(registryDao.getAllRegistryEntriesOfType(type));
+		
+		return returnList;
 	}
 
 	@Transactional
@@ -67,25 +58,6 @@ public class DatabaseRegistry implements Registry {
 			throws LBParameterException {
 		return 
 				registryDao.getRegistryEntriesForUri(uri);
-	}
-
-	@Transactional
-	public RegistryEntry getEntry(AbsoluteCodingSchemeVersionReference ref)
-			throws LBParameterException {
-		RegistryEntry entry = this.registryDao.
-			getRegistryEntryForUriAndVersion(ref.getCodingSchemeURN(), 
-					ref.getCodingSchemeVersion());
-		
-		return entry;
-	}
-
-	public List<RegistryEntry> getHistoryEntries() {
-		return this.registryDao.getAllRegistryEntriesOfType(ResourceType.NCI_HISTORY);
-	}
-
-	@Transactional
-	public Date getLastUpdateDate(String codingSchemeURN, String version) throws LBParameterException {
-		return registryDao.getRegistryEntryForUriAndVersion(codingSchemeURN, version).getLastUpdateDate();
 	}
 
 	@Transactional
@@ -107,100 +79,46 @@ public class DatabaseRegistry implements Registry {
 		return null;
 	}
 
-	public File getRegistryFile() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public SQLConnectionInfo getSQLConnectionInfoForCodeSystem(
-			AbsoluteCodingSchemeVersionReference codingSchemeVersion) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public SQLConnectionInfo[] getSQLConnectionInfoForHistory(String urn) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public CodingSchemeVersionStatus getStatus(String codingSchemeURN,
-			String version) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getTag(String codingSchemeURN, String version) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getVersionForTag(String urn, String tag) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public boolean isActive(String codingSchemeURN, String version) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public void removeCodingScheme(AbsoluteCodingSchemeVersionReference codingSchemeVersion){
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setDeactivateDate(AbsoluteCodingSchemeVersionReference acsvr,
-			Date date) throws LBParameterException, LBInvocationException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Transactional
-	public void setStatusPending(RegistryEntry entry) throws LBInvocationException,
-			LBParameterException {
-		//this.registryDao.
-		
-	}
-
-	public void updateTag(AbsoluteCodingSchemeVersionReference codingScheme,
-			String newTag) throws LBInvocationException, LBParameterException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void updateURNVersion(
-			AbsoluteCodingSchemeVersionReference oldURNVerison,
-			AbsoluteCodingSchemeVersionReference newURNVerison)
-			throws LBInvocationException, LBParameterException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void updateVersion(
-			AbsoluteCodingSchemeVersionReference codingScheme, String newVersion)
-			throws LBInvocationException, LBParameterException {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Transactional
-	public LexGridSchemaVersion getSupportedLexGridSchemaVersion(
-			AbsoluteCodingSchemeVersionReference ref)
-			throws LBInvocationException {
-		try {
-			return LexGridSchemaVersion.parseStringToVersion(
-					this.getRegistryDao().
-					getRegistryEntryForUriAndVersion(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion()).getDbSchemaVersion());
-		} catch (LBParameterException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-
 	public void removeRegistryEntry(String uri) {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public boolean containsCodingSchemeEntry(
+			AbsoluteCodingSchemeVersionReference codingScheme) {
+		try {
+			RegistryEntry entry = registryDao.getRegistryEntryForUriAndVersion(
+					codingScheme.getCodingSchemeURN(), codingScheme.getCodingSchemeVersion());
+		} catch (LBParameterException e) {
+			return false;
+		}
+			
+		return true;
+	}
+
+	public RegistryEntry getCodingSchemeEntry(
+			AbsoluteCodingSchemeVersionReference codingScheme)
+			throws LBParameterException {
+		return registryDao.getRegistryEntryForUriAndVersion(codingScheme.getCodingSchemeURN(), codingScheme.getCodingSchemeVersion());
+	}
+
+
+	public RegistryEntry getNonCodingSchemeEntry(String uri)
+			throws LBParameterException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void removeEntry(RegistryEntry entry) throws LBParameterException {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public boolean containsNonCodingSchemeEntry(String uri) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 	public void setRegistryDao(RegistryDao registryDao) {
 		this.registryDao = registryDao;
 	}
@@ -217,5 +135,6 @@ public class DatabaseRegistry implements Registry {
 			NextDatabasePrefixGenerator nextDatabasePrefixGenerator) {
 		this.nextDatabasePrefixGenerator = nextDatabasePrefixGenerator;
 	}
+
 	
 }

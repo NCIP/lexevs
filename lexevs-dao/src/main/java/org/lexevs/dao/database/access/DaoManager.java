@@ -7,6 +7,7 @@ import junit.framework.Assert;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
@@ -64,10 +65,22 @@ public class DaoManager {
 		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
 		ref.setCodingSchemeURN(uri);
 		ref.setCodingSchemeVersion(version);
-		
+
 		try {
-			return registry.getSupportedLexGridSchemaVersion(ref);
-		} catch (LBInvocationException e) {
+			return LexGridSchemaVersion.parseStringToVersion(
+					registry.getCodingSchemeEntry(ref).getDbSchemaVersion()
+			);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	protected LexGridSchemaVersion getLexGridSchemaVersion(String uri){
+		try {
+			return LexGridSchemaVersion.parseStringToVersion(
+					registry.getNonCodingSchemeEntry(uri).getDbSchemaVersion()
+			);
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}

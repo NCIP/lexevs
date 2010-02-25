@@ -26,11 +26,14 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.util.sql.DBUtility;
+import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -38,11 +41,13 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.exceptions.InternalException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.registry.WriteLockManager;
+import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.constants.SystemVariables;
 
@@ -61,7 +66,7 @@ import org.lexevs.system.constants.SystemVariables;
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-public class XmlRegistry {
+public class XmlRegistry implements Registry {
     private long lastUpdateTime_;
     // last used db or table identifiers. If we are in multiDB mode, this
     // identifier will
@@ -75,6 +80,8 @@ public class XmlRegistry {
 
     private Hashtable<String, DBEntry> urnVersionToEntryMap_;
     private Hashtable<String, String> urnTagToVersionMap_;
+    
+    private DataSource dataSource;
 
     private File file_;
 
@@ -263,7 +270,7 @@ public class XmlRegistry {
             throws LBParameterException, LBInvocationException {
         try {
             DBEntry entry = null;
-            entry = getEntry(acsvr);
+            entry = getDBCodingSchemeEntry(acsvr);
 
             WriteLockManager.instance().acquireLock(acsvr.getCodingSchemeURN(), acsvr.getCodingSchemeVersion());
 
@@ -368,7 +375,7 @@ public class XmlRegistry {
 
     private void activateInternal(AbsoluteCodingSchemeVersionReference codingScheme) throws LBInvocationException,
             LBParameterException {
-        DBEntry entry = getEntry(codingScheme);
+        DBEntry entry = getDBCodingSchemeEntry(codingScheme);
         if (entry == null) {
             throw new LBParameterException("The specified coding scheme is not registered");
         }
@@ -416,7 +423,7 @@ public class XmlRegistry {
 
     private void updateTagInternal(AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
             throws LBInvocationException, LBParameterException {
-        DBEntry entry = getEntry(codingScheme);
+        DBEntry entry = getDBCodingSchemeEntry(codingScheme);
         // if another version is assigned this tag, need to clear it.
         String version = getVersionForTag(codingScheme.getCodingSchemeURN(), newTag);
 
@@ -455,7 +462,7 @@ public class XmlRegistry {
                     codingScheme.getCodingSchemeVersion());
             urnTagToVersionMap_.remove(codingScheme.getCodingSchemeURN()
                     + ResourceManager.codingSchemeVersionSeparator_ + tag);
-            getEntry(codingScheme).tag = null;
+            getDBCodingSchemeEntry(codingScheme).tag = null;
             writeFile2();
         } finally {
             WriteLockManager.instance().releaseLock(codingScheme.getCodingSchemeURN(),
@@ -479,7 +486,7 @@ public class XmlRegistry {
 
     private void updateVersionInternal(AbsoluteCodingSchemeVersionReference codingScheme, String newVersion)
             throws LBInvocationException, LBParameterException {
-        DBEntry entry = getEntry(codingScheme);
+        DBEntry entry = getDBCodingSchemeEntry(codingScheme);
         String urn = entry.urn;
         try {
             WriteLockManager.instance().acquireLock(entry.urn, entry.version);
@@ -523,7 +530,7 @@ public class XmlRegistry {
         return urnVersionToEntryMap_.get(codingSchemeURN + ResourceManager.codingSchemeVersionSeparator_ + version);
     }
 
-    public DBEntry getEntry(AbsoluteCodingSchemeVersionReference codingScheme) throws LBParameterException {
+    public DBEntry getDBCodingSchemeEntry(AbsoluteCodingSchemeVersionReference codingScheme) throws LBParameterException {
         if (codingScheme == null) {
             throw new LBParameterException(
                     "The URN and the version must be populated in the AbsoluteCodingSchemeReference");
@@ -636,6 +643,10 @@ public class XmlRegistry {
 
     public String getVersionForTag(String urn, String tag) {
         return urnTagToVersionMap_.get(urn + ResourceManager.codingSchemeVersionSeparator_ + tag);
+    }
+    
+    public XmlRegistry(SystemVariables systemVariables) throws Exception {
+    	this(systemVariables.getAutoLoadRegistryPath());
     }
 
     public XmlRegistry(String pathToRegistryFile) throws Exception {
@@ -879,7 +890,7 @@ public class XmlRegistry {
     private void removeInternal(AbsoluteCodingSchemeVersionReference codingSchemeVersion) throws InternalException,
             LBInvocationException, LBParameterException {
         try {
-            DBEntry entry = getEntry(codingSchemeVersion);
+            DBEntry entry = getDBCodingSchemeEntry(codingSchemeVersion);
 
             WriteLockManager.instance().acquireLock(codingSchemeVersion.getCodingSchemeURN(),
                     codingSchemeVersion.getCodingSchemeVersion());
@@ -1055,7 +1066,7 @@ public class XmlRegistry {
     private void updateURNVersionInternal(AbsoluteCodingSchemeVersionReference oldURNVerison,
             AbsoluteCodingSchemeVersionReference newURNVerison) throws LBInvocationException, LBParameterException {
 
-        DBEntry entry = getEntry(oldURNVerison);
+        DBEntry entry = getDBCodingSchemeEntry(oldURNVerison);
 
         if (entry == null) {
             throw new LBParameterException("The specified coding scheme is not registered");
@@ -1072,4 +1083,122 @@ public class XmlRegistry {
                     oldURNVerison.getCodingSchemeVersion());
         }
     }
+
+	public void addNewItem(RegistryEntry entry) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public List<RegistryEntry> getAllRegistryEntries() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<RegistryEntry> getAllRegistryEntriesOfType(ResourceType type) {
+		List<RegistryEntry> returnList = new ArrayList<RegistryEntry>();
+		
+		if(type.equals(ResourceType.CODING_SCHEME)){
+			for(DBEntry entry : this.getDBEntries()){
+				returnList.add(RegistryEntry.toRegistryEntry(entry));
+			}
+		} else if(type.equals(ResourceType.NCI_HISTORY)){
+			for(HistoryEntry entry : this.getHistoryEntries()){
+				returnList.add(RegistryEntry.toRegistryEntry(entry));
+			}
+		}
+		
+		return returnList;
+	}
+
+	public List<RegistryEntry> getEntriesForUri(String uri)
+			throws LBParameterException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public RegistryEntry getNonCodingSchemeEntry(
+			String uri)
+			throws LBParameterException {
+		RegistryEntry entry =  RegistryEntry.toRegistryEntry(this.getHistoryEntry(uri));
+		
+		try {
+			entry.setDbSchemaVersion(this.getSupportedLexGridSchemaVersionForHistory(uri));
+		} catch (LBInvocationException e) {
+			throw new RuntimeException(e);
+		}
+		return entry;
+	}
+
+	public boolean containsCodingSchemeEntry(
+			AbsoluteCodingSchemeVersionReference codingScheme) {
+		try {
+			return (getDBCodingSchemeEntry(codingScheme) != null);
+		} catch (LBParameterException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public RegistryEntry getCodingSchemeEntry(
+			AbsoluteCodingSchemeVersionReference codingScheme)
+			throws LBParameterException {
+		RegistryEntry entry =  RegistryEntry.toRegistryEntry(getDBCodingSchemeEntry(codingScheme));
+		try {
+			entry.setDbSchemaVersion(this.getSupportedLexGridSchemaVersionForCodingScheme(codingScheme));
+		} catch (LBInvocationException e) {
+			throw new RuntimeException(e);
+		}
+		return entry;
+	}
+
+	public void removeEntry(RegistryEntry entry) throws LBParameterException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void updateEntry(RegistryEntry entry) throws LBInvocationException,
+			LBParameterException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean containsNonCodingSchemeEntry(String uri) {
+		for (HistoryEntry entry : this.historyEntries_) {
+            if (entry.urn.equals(uri)) {
+                return true;
+            }
+        }
+		return false;
+	}
+	
+	protected String getSupportedLexGridSchemaVersionForCodingScheme(
+			AbsoluteCodingSchemeVersionReference ref)
+			throws LBInvocationException {
+		try {
+			DBEntry entry = this.getDBCodingSchemeEntry(ref);
+			SQLTableUtilities utils = new SQLTableUtilities(dataSource, entry.prefix);
+			return utils.getExistingTableVersion();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	protected String getSupportedLexGridSchemaVersionForHistory(
+			String uri)
+			throws LBInvocationException {
+		try {
+			HistoryEntry entry = this.getHistoryEntry(uri);
+			SQLTableUtilities utils = new SQLTableUtilities(dataSource, entry.prefix);
+			return utils.getExistingTableVersion();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public DataSource getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
 }

@@ -19,11 +19,17 @@
 package org.lexevs.dao.database.connection;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
+
+import javax.sql.DataSource;
 
 import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
+import org.LexGrid.util.sql.GenericSQLModifier;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
+import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 
@@ -37,19 +43,20 @@ import org.lexevs.logging.LoggerFactory;
  */
 public class SQLInterface {
     private SQLTableUtilities stu_;
-    private SQLInterfaceBase sib_;
+    private DataSource dataSource;
     private String tablePrefix_;
+    private GenericSQLModifier gSQLMod_;
 
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
 
-    public SQLInterface(SQLInterfaceBase sib, String tablePrefix) {
+    public SQLInterface(DataSource dataSource, DatabaseType databaseType, String tablePrefix) {
         try {
-            sib_ = sib;
+        	this.dataSource = dataSource;
             tablePrefix_ = tablePrefix;
-            stu_ = sib_.getSQLTableUtilities(tablePrefix_);
-            sib_.useCount++;
+           	stu_ = new SQLTableUtilities(dataSource, tablePrefix);
+            gSQLMod_ = new GenericSQLModifier(databaseType.getProductName(), false);
         } catch (Exception e) {
             throw new RuntimeException("Problem setting up the SQLInterface", e);
         }
@@ -63,64 +70,37 @@ public class SQLInterface {
         return stu_.getSQLTableConstants();
     }
 
-    public boolean isAccess() {
-        return sib_.isAccess();
-    }
-
     public String getTableName(String tableKey) {
         return stu_.getSQLTableConstants().getTableName(tableKey);
     }
 
     public PreparedStatement modifyAndCheckOutPreparedStatement(String sql) throws SQLException {
-        return sib_.getArbitraryStatement(sib_.modifySQL(sql));
+        return dataSource.getConnection().prepareStatement(gSQLMod_.modifySQL(sql));
     }
 
     public PreparedStatement checkOutPreparedStatement(String sql) throws SQLException {
-        return sib_.getArbitraryStatement(sql);
-    }
-
-    public void closeUnusedConnections() {
-        sib_.closeUnusedConnections();
+        return dataSource.getConnection().prepareStatement(
+        		sql,
+        		ResultSet.TYPE_FORWARD_ONLY,
+    			ResultSet.CONCUR_READ_ONLY);
     }
 
     public void checkInPreparedStatement(PreparedStatement statement) {
-        sib_.checkInPreparedStatement(statement);
-    }
-
-    public String getKey() {
-        return sib_.getKey() + ":" + tablePrefix_;
-    }
-
-    public String getConnectionKey() {
-        return sib_.getKey();
+    	
+    	try {
+    		if(statement != null){
+    			statement.close();
+    			statement.getConnection().close();
+    		}
+		} catch (SQLException e) {
+			//
+		} finally {
+    		//
+		}
     }
 
     public void dropTables() throws SQLException {
         stu_.dropTables();
-    }
-
-    /**
-     * Close this interface - if no other interfaces are using the underlying db
-     * connection, close that too. return true if we closed the underlying db
-     * connection. False if not.
-     * 
-     * @return
-     */
-    public boolean close() {
-        boolean closedDBConnection = false;
-        sib_.useCount--;
-        if (sib_.useCount == 0) {
-            sib_.close();
-            closedDBConnection = true;
-        }
-
-        getLogger().debug(
-                "Close called on SQL interface.  useCount = " + sib_.useCount + " closed? " + closedDBConnection);
-
-        tablePrefix_ = null;
-        stu_ = null;
-        sib_ = null;
-        return closedDBConnection;
     }
 
     /**
@@ -132,8 +112,7 @@ public class SQLInterface {
         return tablePrefix_;
     }
 
-    public JDBCConnectionDescriptor getConnectionDescriptor() {
-        return sib_.getConnectionDescriptor();
-    }
-
+	public String getKey() {
+		return tablePrefix_;
+	}
 }

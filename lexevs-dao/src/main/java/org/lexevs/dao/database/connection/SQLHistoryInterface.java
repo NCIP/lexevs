@@ -20,86 +20,97 @@ package org.lexevs.dao.database.connection;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.UUID;
 
+import javax.sql.DataSource;
+
+import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
+import org.LexGrid.util.sql.GenericSQLModifier;
+import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
+import org.lexevs.dao.database.type.DatabaseType;
+import org.lexevs.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
 
 /**
  * Code to access the specific sql tables for a terminology. Multiple instances
  * of this class may use the same SQLInterfaceBase (in SINGLE_DB_MODE)
  * 
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
+ * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class SQLHistoryInterface {
-    private SQLTableUtilities sqlTableUtilities;
-    private SQLInterfaceBase sib_;
+    private SQLTableUtilities stu_;
+    private DataSource dataSource;
     private String tablePrefix_;
+    private GenericSQLModifier gSQLMod_;
+    private String key;
 
-    public SQLHistoryInterface(SQLInterfaceBase sib, String tablePrefix) {
+    protected LgLoggerIF getLogger() {
+        return LoggerFactory.getLogger();
+    }
+
+    public SQLHistoryInterface(DataSource dataSource, DatabaseType databaseType, String tablePrefix) {
         try {
-            sib_ = sib;
+        	this.dataSource = dataSource;
             tablePrefix_ = tablePrefix;
-            sqlTableUtilities = sib_.getSQLTableUtilities(tablePrefix_);
-            sib_.useCount++;
+           	stu_ = new SQLTableUtilities(dataSource, tablePrefix);
+           	setKey(UUID.randomUUID().toString());
+            gSQLMod_ = new GenericSQLModifier(databaseType.getProductName(), false);
         } catch (Exception e) {
-            throw new RuntimeException("Problem stting up the SQLInterface", e);
+            throw new RuntimeException("Problem setting up the SQLInterface", e);
         }
     }
 
-    public boolean isAccess() {
-        return sib_.isAccess();
+    public boolean supports2009Model() {
+        return stu_.getSQLTableConstants().supports2009Model();
+    }
+
+    public SQLTableConstants getSQLTableConstants() {
+        return stu_.getSQLTableConstants();
     }
 
     public String getTableName(String tableKey) {
-        return sqlTableUtilities.getSQLTableConstants().getTableName(tableKey);
+        return stu_.getSQLTableConstants().getTableName(tableKey);
+    }
+
+    public PreparedStatement modifyAndCheckOutPreparedStatement(String sql) throws SQLException {
+        return dataSource.getConnection().prepareStatement(gSQLMod_.modifySQL(sql));
     }
 
     public PreparedStatement checkOutPreparedStatement(String sql) throws SQLException {
-        return sib_.getArbitraryStatement(sql);
+        return dataSource.getConnection().prepareStatement(sql);
     }
 
     public void checkInPreparedStatement(PreparedStatement statement) {
-        sib_.checkInPreparedStatement(statement);
-    }
-
-    public String getKey() {
-        return sib_.getKey() + ":" + tablePrefix_;
-    }
-
-    public String getConnectionKey() {
-        return sib_.getKey();
+    	
+    	try {
+    		statement.getConnection().close();
+			statement.close();
+		} catch (SQLException e) {
+			//
+		} 
     }
 
     public void dropTables() throws SQLException {
-        sqlTableUtilities.dropTables();
+        stu_.dropTables();
     }
 
     /**
-     * Close this interface - if no other interfaces are using the underlying db
-     * connection, close that too. return true if we closed the underlying db
-     * connection. False if not.
+     * Return the table prefix that this SQL Interface is accessing.
      * 
      * @return
      */
-    public boolean close() {
-        boolean closedDBConnection = false;
-        sib_.useCount--;
-        if (sib_.useCount == 0) {
-            sib_.close();
-            closedDBConnection = true;
-        }
-
-        tablePrefix_ = null;
-        sqlTableUtilities = null;
-        sib_ = null;
-        return closedDBConnection;
+    public String getTablePrefix() {
+        return tablePrefix_;
     }
 
-    /**
-     * @return the sqlTableUtilities
-     */
-    public SQLTableUtilities getSQLTableUtilities() {
-        return sqlTableUtilities;
-    }
+	public void setKey(String key) {
+		this.key = key;
+	}
 
+	public String getKey() {
+		return key;
+	}
 }

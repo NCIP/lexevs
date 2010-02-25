@@ -32,6 +32,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.sql.DataSource;
+
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -46,6 +48,7 @@ import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.connection.SQLHistoryInterface;
 import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.dao.database.connection.SQLInterfaceBase;
+import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.dao.index.connection.IndexInterface;
 import org.lexevs.exceptions.InitializationException;
 import org.lexevs.exceptions.MissingResourceException;
@@ -74,6 +77,8 @@ public class ResourceManager {
     private static ResourceManager resourceManager_;
     private SystemVariables systemVars_;
     private XmlRegistry registry_;
+    private DataSource dataSource;
+    private DatabaseType databaseType;
 
     private Logger logger_;
 
@@ -96,7 +101,8 @@ public class ResourceManager {
     // that accesses
     // this particular databases (multiple SQLInterfaces can use the same base
     // interface)
-    private Hashtable<String, SQLInterfaceBase> sqlServerBaseInterfaces_;
+    //private Hashtable<String, SQLInterfaceBase> sqlServerBaseInterfaces_;
+    //private SQLInterfaceBase sib;
 
     // this maps indexId's to the IndexInterface that accesses them.
     private Hashtable<String, IndexInterface> indexInterfaces_;
@@ -193,14 +199,14 @@ public class ResourceManager {
 
         codingSchemeToServerMap_ = new Hashtable<String, String>();
         sqlServerInterfaces_ = new Hashtable<String, SQLInterface>();
-        sqlServerBaseInterfaces_ = new Hashtable<String, SQLInterfaceBase>();
+        //sqlServerBaseInterfaces_ = new Hashtable<String, SQLInterfaceBase>();
         historySqlServerInterfaces_ = new Hashtable<String, SQLHistoryInterface>();
         codingSchemeLocalNamesToInternalNameMap_ = new Hashtable<String, Hashtable<String, String>>();
         internalCodingSchemeNameUIDMap_ = new Hashtable<String, String>();
         supportedCodingSchemeToInternalMap_ = new Hashtable<String, String>();
 
         // populate the registry
-        registry_ = new XmlRegistry(systemVars_.getAutoLoadRegistryPath());
+        //registry_ = new XmlRegistry(systemVars_.getAutoLoadRegistryPath());
 
         // connect to the histories
         readHistories();
@@ -268,15 +274,6 @@ public class ResourceManager {
         deactivatorThread_.start();
     }
 
-    public SQLInterfaceBase getSQLInterfaceBase(String username, String password, String server, String driver)
-            throws InitializationException {
-        SQLInterfaceBase sib = sqlServerBaseInterfaces_.get(server);
-        if (sib == null) {
-            sib = new SQLInterfaceBase(username, password, server, driver);
-            sqlServerBaseInterfaces_.put(server, sib);
-        }
-        return sib;
-    }
 
     public void readHistories() {
         Hashtable<String, SQLHistoryInterface> temp = new Hashtable<String, SQLHistoryInterface>();
@@ -284,11 +281,9 @@ public class ResourceManager {
         HistoryEntry[] histories = registry_.getHistoryEntries();
         for (int i = 0; i < histories.length; i++) {
             try {
-
-                temp.put(histories[i].urn, new SQLHistoryInterface(getSQLInterfaceBase(systemVars_
-                        .getAutoLoadDBUsername(), systemVars_.getAutoLoadDBPassword(), histories[i].dbURL, systemVars_
-                        .getAutoLoadDBDriver()), histories[i].prefix));
-            } catch (InitializationException e) {
+            	//TODO:
+                //temp.put(histories[i].urn, new SQLHistoryInterface(dataSource), histories[i].prefix));
+            } catch (Throwable e) {
                 logger_.error("Skipping an invalid History configuration due to previous errors.", e);
             }
         }
@@ -332,8 +327,7 @@ public class ResourceManager {
 
         try {
 
-            SQLInterface si = new SQLInterface(getSQLInterfaceBase(server.username, server.password, server.server,
-                    server.driver), server.prefix);
+            SQLInterface si = new SQLInterface(dataSource, databaseType, server.prefix);
 
             try {
                 getCodingSchemes = si.checkOutPreparedStatement(" Select "
@@ -435,8 +429,6 @@ public class ResourceManager {
                 si.checkInPreparedStatement(getLocalNames);
                 si.checkInPreparedStatement(getSupportedCodingSchemes);
             }
-        } catch (InitializationException e1) {
-            logger_.error("Skipping SQL Server " + server.server + " because of previous error " + e1.getLogId());
         } catch (SQLException e1) {
             logger_.error("Skipping SQL Server " + server.server
                     + " because of a problem reading the available coding schemes", e1);
@@ -607,7 +599,8 @@ public class ResourceManager {
         lcs.codingSchemeName = internalCodingSchemeName;
         lcs.version = internalVersionString;
 
-        String serverKey = codingSchemeToServerMap_.get(lcs.getKey());
+        String csKey = lcs.getKey();
+        String serverKey = codingSchemeToServerMap_.get(csKey);
         if (serverKey == null) {
             throw new MissingResourceException("No server available for " + lcs.getKey());
         }
@@ -884,6 +877,8 @@ public class ResourceManager {
                 // close down the sql statements, remove it from them server
                 // map.
                 SQLInterface si = sqlServerInterfaces_.get(serverId);
+                
+                /* TODO:
                 String connectionKey = si.getConnectionKey();
                 sqlServerInterfaces_.remove(serverId);
 
@@ -900,15 +895,16 @@ public class ResourceManager {
                 if (closedConnection) {
                     sqlServerBaseInterfaces_.remove(connectionKey);
                 }
-
-                String dbName = registry_.getEntry(codingSchemeReference).dbName;
+                 */
+                
+                String dbName = registry_.getDBCodingSchemeEntry(codingSchemeReference).dbName;
                 
                 //This is for backwards compatiblity. Since multi-db mode is now deprecated,
                 //this enables us to still drop a database that has been previously loaded.
                 //We detect a multi-db load by detecting if the 'dbName' is not blank in the
                 //registry. We then reconstruct the jdbc url from the registry.
                 if (!singleDBMode || StringUtils.isNotBlank(dbName)){   
-                    String url = registry_.getEntry(codingSchemeReference).dbURL;
+                    String url = registry_.getDBCodingSchemeEntry(codingSchemeReference).dbURL;
                     url = this.constructJdbcUrlForDeprecatedMultiDbMode(url, dbName);
                     DBUtility.dropDatabase(url, systemVars_.getAutoLoadDBDriver(), dbName,
                             systemVars_.getAutoLoadDBUsername(), systemVars_.getAutoLoadDBPassword());
@@ -989,7 +985,8 @@ public class ResourceManager {
                 throw new LBParameterException("Unknown history service", urn);
             }
 
-            String connectionKey = shi.getConnectionKey();
+            //TODO:
+            //String connectionKey = shi.getConnectionKey();
 
             // remove it from the map.
             historySqlServerInterfaces_.remove(urn);
@@ -1001,15 +998,11 @@ public class ResourceManager {
                 shi.dropTables();
             }
 
+            //TODO:
             // close the connection
-            boolean closedConnection = shi.close();
+           // boolean closedConnection = shi.close();
 
-            // if we closed the underlying connection, we need to remove this
-            // from the
-            // sqlServerBaseInterfaces map.
-            if (closedConnection) {
-                sqlServerBaseInterfaces_.remove(connectionKey);
-            }
+        
 
             String dbName = registry_.getHistoryEntry(urn).dbName;
             
@@ -1036,7 +1029,7 @@ public class ResourceManager {
     public void deactivate(AbsoluteCodingSchemeVersionReference codingScheme, Date date) throws LBInvocationException,
             LBParameterException {
         XmlRegistry r = getRegistry();
-        DBEntry entry = r.getEntry(codingScheme);
+        DBEntry entry = r.getDBCodingSchemeEntry(codingScheme);
         if (entry == null) {
             throw new LBParameterException("The specified coding scheme is not registered");
         }
@@ -1053,7 +1046,7 @@ public class ResourceManager {
     public void setPendingStatus(AbsoluteCodingSchemeVersionReference codingScheme) throws LBInvocationException,
             LBParameterException {
         XmlRegistry r = getRegistry();
-        DBEntry entry = r.getEntry(codingScheme);
+        DBEntry entry = r.getDBCodingSchemeEntry(codingScheme);
         if (entry == null) {
             throw new LBParameterException("The specified coding scheme is not registered");
         }
@@ -1138,7 +1131,7 @@ public class ResourceManager {
             }
         }
     }
-
+/*
     @Override
     protected void finalize() throws Throwable {
         // close all of the SQL connections
@@ -1158,6 +1151,7 @@ public class ResourceManager {
             }
         }
     }
+    */
 
     private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbName){
         return StringUtils.remove(url, dbName);
@@ -1170,5 +1164,31 @@ public class ResourceManager {
 
 	public void setLogger(Logger logger) {
 		logger_ = logger;
+	}
+
+	public DataSource getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
+	public DatabaseType getDatabaseType() {
+		return databaseType;
+	}
+
+	public void setDatabaseType(DatabaseType databaseType) {
+		this.databaseType = databaseType;
+	}
+
+	public XmlRegistry getXmlRegistry() {
+		return registry_;
+	}
+
+	public void setXmlRegistry(XmlRegistry registry) {
+		registry_ = registry;
 	}  
+	
+	
 }

@@ -31,7 +31,7 @@ public class DatabaseRegistryTest extends LexEvsDbUnitTestBase {
 		
 		databaseRegistry.activate(ref);
 		
-		RegistryEntry updatedEntry = databaseRegistry.getEntry(ref);
+		RegistryEntry updatedEntry = databaseRegistry.getCodingSchemeEntry(ref);
 		
 		assertEquals(CodingSchemeVersionStatus.ACTIVE.toString(), updatedEntry.getStatus());
 		

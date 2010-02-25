@@ -74,8 +74,8 @@ public class MyClassLoader extends URLClassLoader {
     private DocumentBuilderFactory docfactory_ = null;
     private Logger logger;
     
-    private Map<String,List<ExtensionDescription>> extensionDescriptions = 
-    	new HashMap<String,List<ExtensionDescription>>();
+    private List<ExtensionDescription> extensionDescriptions = 
+    	new ArrayList<ExtensionDescription>();
     
     private LgLoggerIF getLogger() {
         return logger;
@@ -264,7 +264,7 @@ public class MyClassLoader extends URLClassLoader {
                     //------ register the extension
                     if (extImplements != null)
                     {
-                        registerExtension(extImplements, ed);
+                        registerExtension(ed);
                     }                    
                 }
             }
@@ -294,19 +294,13 @@ public class MyClassLoader extends URLClassLoader {
      * @param extImplements
      * @param ed
      */
-    private void registerExtension(String extImplements, ExtensionDescription ed){
+    private void registerExtension(ExtensionDescription ed){
         getLogger().debug("Registering extension : '" + ed.getName() + "'");
-        if (extImplements != null)
-        {
-        	 if(! this.extensionDescriptions.containsKey(extImplements)){
-        		 this.extensionDescriptions.put(extImplements, new ArrayList<ExtensionDescription>());
-        	 }
-        	 
-        	 this.extensionDescriptions.get(extImplements).add(ed);
-        }
+
+       this.extensionDescriptions.add(ed);
     }
     
-    public Map<String,List<ExtensionDescription>> getExtensionDescriptions(){
+    public List<ExtensionDescription> getExtensionDescriptions(){
     	return this.extensionDescriptions;
     }
     
@@ -353,5 +347,4 @@ public class MyClassLoader extends URLClassLoader {
             return super.loadClass(name);
         }
     }
-
 }

@@ -1,7 +1,6 @@
 package org.lexevs.system.service;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.system.utility.MyClassLoader;
 
 public interface SystemResourceService {
@@ -17,6 +16,8 @@ public interface SystemResourceService {
 	public String getInternalVersionStringForTag(String codingSchemeName, String tag) throws LBParameterException ;
 	
 	public String getInternalCodingSchemeNameForUserCodingSchemeName(String codingSchemeName, String version) throws LBParameterException ;
+	
+	public String getUriForUserCodingSchemeName(String codingSchemeName, String version) throws LBParameterException ;
 }
 
 

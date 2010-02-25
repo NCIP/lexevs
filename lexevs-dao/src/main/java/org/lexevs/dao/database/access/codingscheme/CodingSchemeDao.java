@@ -2,6 +2,7 @@ package org.lexevs.dao.database.access.codingscheme;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.naming.Mappings;
@@ -19,6 +20,8 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	public CodingScheme getCodingSchemeByNameAndVersion(String codingSchemeName, String version);
 	
 	public CodingScheme getCodingSchemeByUriAndVersion(String codingSchemeUri, String version);
+	
+	public CodingSchemeSummary getCodingSchemeSummaryByUriAndVersion(String codingSchemeUri, String version);
 	
 	public CodingScheme getCodingSchemeByRevision(String codingSchemeName, String version, String revisionId);
 	

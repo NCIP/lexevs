@@ -27,6 +27,8 @@ import org.LexGrid.managedobj.FindException;
 import org.LexGrid.managedobj.ManagedObjIF;
 import org.LexGrid.managedobj.jdbc.JDBCBaseService;
 import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
+import org.LexGrid.managedobj.jdbc.JDBCConnectionFactory;
+import org.LexGrid.managedobj.jdbc.JDBCConnectionPool;
 import org.LexGrid.managedobj.jdbc.JDBCConnectionPoolPolicy;
 import org.LexGrid.util.sql.GenericSQLModifier;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
@@ -43,10 +45,12 @@ import org.lexevs.system.ResourceManager;
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-public class SQLInterfaceBase extends JDBCBaseService {
+public class SQLInterfaceBase {
     private GenericSQLModifier gSQLMod_;
-    private boolean isAccess_;
     protected int useCount = 0;
+    protected JDBCConnectionDescriptor _dbDesc;
+    private JDBCConnectionPoolPolicy _connPolicy = null;
+    private JDBCConnectionPool _connPool = null;
 
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -93,64 +97,59 @@ public class SQLInterfaceBase extends JDBCBaseService {
             getConnectionPool().returnObject(conn);
 
             gSQLMod_ = new GenericSQLModifier(databaseName, false);
-            if (gSQLMod_.getDatabaseType().equals("ACCESS")) {
-                isAccess_ = true;
-            } else {
-                isAccess_ = false;
-            }
+           
         } catch (Exception e) {
             throw new RuntimeException("There was a problem initializing the connection to " + url, e);
         }
     }
 
-    public PreparedStatement checkOutStatement(@SuppressWarnings("unused") String key) {
-        throw new UnsupportedOperationException();
-    }
-
     protected PreparedStatement getArbitraryStatement(String sql) throws SQLException {
-        return super.checkOutPreparedStatement(sql);
+    	Connection c = null;
+		try {
+			c = (Connection) getConnectionPool().borrowObject();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			try {
+				getConnectionPool().returnObject(c);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+    	return c.prepareStatement(sql);
     }
 
-    public void closeUnusedConnections() {
-        getConnectionPool().clear();
-    }
 
     public String modifySQL(String query) {
         return gSQLMod_.modifySQL(query);
     }
-
-    public boolean isAccess() {
-        return isAccess_;
-    }
-
-    public String getKey() {
-        return this.getConnectionDescriptor().getDbUrl();
-    }
-
-    protected SQLTableUtilities getSQLTableUtilities(String tablePrefix) throws Exception {
-        SQLTableUtilities stu = new SQLTableUtilities(getConnectionPool(), tablePrefix);
-        return stu;
-    }
-
-    // The following methods are all abstract, so they have to be here, but I
-    // don't need them.
-    @Override
-    protected String getDbTableName() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    protected ManagedObjIF findByPrimaryKeyPrim(Object key) throws FindException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    protected Class getInstanceClass() {
-        throw new UnsupportedOperationException();
-    }
-
-    public ManagedObjIF row2ManagedObj(ResultSet rs) throws SQLException {
-        throw new UnsupportedOperationException();
-    }
+    
+	public JDBCConnectionDescriptor getConnectionDescriptor() {
+		if (_dbDesc == null)
+			_dbDesc = new JDBCConnectionDescriptor();
+		return _dbDesc;
+	}
+	
+	/**
+	 * Returns the policy used to manage the connection pool.
+	 * @return JDBCConnectionPoolPolicy
+	 */
+	public JDBCConnectionPoolPolicy getConnectionPoolPolicy() {
+		if (_connPolicy == null)
+			_connPolicy = new JDBCConnectionPoolPolicy();
+		return _connPolicy;
+	}
+	
+	/**
+	 * Returns an object pool used to manage JDBC connections.
+	 * @return JDBCConnectionPool
+	 */
+	protected JDBCConnectionPool getConnectionPool() {
+		if (_connPool == null)
+			_connPool =
+				new JDBCConnectionPool(
+					new JDBCConnectionFactory(getConnectionDescriptor()),
+					getConnectionPoolPolicy());
+		return _connPool;
+	}
 }

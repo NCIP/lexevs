@@ -42,10 +42,22 @@
 		<property name="versionsDao" ref="ibatisVersionsDao"/>
 	</bean>
 	
+	 <bean id="sqlinterfaceCodingSchemeDao" 
+	 	class="org.lexevs.dao.database.sqlimplementedmethods.codingscheme.SQLInterfaceCodingSchemeDao">
+	 	<property name="resourceManager" ref="resourceManager"/>
+	 	<property name="sqlImplementedMethodsDao" ref="sqlImplementedMethodsDao"/>
+	 </bean>
+	 
+	 <bean id="sqlImplementedMethodsDao" class="org.lexevs.dao.database.sqlimplementedmethods.SQLImplementedMethodsDao">
+	 	<property name="resourceManager" ref="resourceManager"/>
+	 	<property name="logger" ref="loggerFactory"/>
+	 </bean>
+	
 	<bean id="daoManager" class="org.lexevs.dao.database.access.DaoManager">
 		<property name="codingSchemeDaos">
 			<list>
 				<ref bean="ibatisCodingSchemeDao"/>
+				<ref bean="sqlinterfaceCodingSchemeDao"/>
 			</list>
 		</property>
 		<property name="entityDaos">
@@ -58,7 +70,7 @@
 				<ref bean="ibatisAssociationDao"/>
 			</list>
 		</property>
-		<property name="registry" ref="databaseRegistry"/>
+		<property name="registry" ref="registry"/>
 	</bean>
 	
 	 <bean id="ibatisEntityDao"
@@ -142,7 +154,7 @@
 	
 	<bean id="defaultPrefixResolver" class="org.lexevs.dao.database.prefix.DefaultPrefixResolver">
 		<property name="systemVariables" ref="systemVariables"/> 
-		<property name="registry" ref="databaseRegistry"/> 
+		<property name="registry" ref="registry"/> 
 	</bean>
 	
 	<bean id="hibernateRegistryDao" class="org.lexevs.dao.database.hibernate.registry.HibernateRegistryDao">
@@ -269,6 +281,16 @@
 		<property name="nextDatabasePrefixGenerator" ref="cyclingCharDbPrefixGenerator"/>
 	</bean>
 	
+	<bean id="xmlRegistry" class="org.lexevs.registry.service.XmlRegistry">
+		<constructor-arg ref="systemVariables"/>
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<bean id="registry" class="org.lexevs.registry.service.DelegatingDatabaseToXmlRegistry">
+		<property name="xmlRegistry" ref="xmlRegistry"/>
+		<property name="databaseRegistry" ref="databaseRegistry"/>
+	</bean>
+	
 	<bean id="cyclingCharDbPrefixGenerator" class="org.lexevs.dao.database.prefix.CyclingCharDbPrefixGenerator">
 		<property name="databaseUtility" ref="defaultDatabaseUtility"/>
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
@@ -277,14 +299,19 @@
 	<bean id="resourceManager" class="org.lexevs.system.ResourceManager" init-method="init" depends-on="lexEvsSchemaInstallationSetup">
 		<property name="systemVariables" ref="systemVariables"/>
 		<property name="logger" ref="loggerFactory"/>
+		<property name="dataSource" ref="dataSource"/>
+		<property name="databaseType" ref="databaseTypeFactory"/>
+		<property name="xmlRegistry" ref="xmlRegistry"/>
 	</bean>
 	
-	<bean id="delegatingResourceManagingService" class="org.lexevs.system.service.DelegatingResourceManagingService">
+	<bean id="delegatingResourceManagingService" class="org.lexevs.system.service.DelegatingResourceManagingService" 
+		parent="loggingBean">
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
-		<property name="registry" ref="databaseRegistry"/>
+		<property name="registry" ref="registry"/>
 		<property name="myClassLoader" ref="myClassLoader"/>
+		<property name="codingSchemeService" ref="codingSchemeService"/>
 	</bean>
 	
 	<bean id="lexEvsSchemaInstallationSetup" class="org.lexevs.registry.setup.LexEvsSchemaInstallationSetup"
@@ -318,7 +345,7 @@
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
 		<property name="databaseServiceManager" ref="databaseServiceManager"/>
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
-		<property name="registry" ref="databaseRegistry"/>
+		<property name="registry" ref="registry"/>
 	</bean>
 	
 	<bean id="loggingBean" class="org.lexevs.logging.LoggingBean" abstract="true">

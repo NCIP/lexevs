@@ -133,6 +133,11 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		String codingSchemeId = this.createUniqueId();
 		String entryStateId = this.createUniqueId();
 		
+		this.getSqlMapClientTemplate().insert(INSERT_CODING_SCHEME_SQL, 
+				this.buildInsertCodingSchemeBean(
+						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+						codingSchemeId, entryStateId, codingScheme));	
+		
 		
 		versionsDao.insertEntryState(
 				codingScheme.getCodingSchemeName(),
@@ -148,11 +153,6 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		}
 		
 		this.insertMappings(codingSchemeId, codingScheme.getMappings());
-
-		this.getSqlMapClientTemplate().insert(INSERT_CODING_SCHEME_SQL, 
-			this.buildInsertCodingSchemeBean(
-					this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
-					codingSchemeId, entryStateId, codingScheme));	
 		
 		return codingSchemeId;
 	}
