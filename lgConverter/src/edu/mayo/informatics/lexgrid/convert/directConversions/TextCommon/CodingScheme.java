@@ -18,6 +18,10 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.TextCommon;
 
+import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.Text;
+
 /**
  * CodingScheme holder for Text loaders.
  * 
@@ -38,4 +42,27 @@ public class CodingScheme {
     public Association[] associations;
 
     public boolean isTypeB = false;
+    
+    public static org.LexGrid.codingSchemes.CodingScheme toCodingScheme(CodingScheme codingScheme){
+        org.LexGrid.codingSchemes.CodingScheme cs = new org.LexGrid.codingSchemes.CodingScheme();
+        cs.setCodingSchemeName(codingScheme.codingSchemeName);
+        cs.setCodingSchemeURI(codingScheme.codingSchemeId);
+        cs.setDefaultLanguage(codingScheme.defaultLanguage);
+        cs.setRepresentsVersion(codingScheme.representsVersion);
+        cs.setFormalName(codingScheme.formalName);
+        
+        Source source = new Source();
+        source.setContent(codingScheme.source);
+        cs.addSource(source);
+        
+        EntityDescription ed = new EntityDescription();
+        ed.setContent(codingScheme.entityDescription);
+        cs.setEntityDescription(ed);
+        
+        Text text = new Text();
+        text.setContent(codingScheme.copyright);
+        cs.setCopyright(text);
+        
+        return cs;
+    }
 }
