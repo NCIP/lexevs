@@ -104,6 +104,8 @@ import edu.mayo.informatics.lexgrid.convert.utility.Constants;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
+ * TODO: For 6.0, Refactor this (or get rid of it).
+ * 
  * Tool to take a pair of input and output formats, map them to the appropriate
  * conversion tool, and run the conversion.
  * 
@@ -112,6 +114,7 @@ import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @author <A HREF="mailto:sharma.deepak2@mayo.edu">Deepak Sharma</A>
  */
+@Deprecated
 public class ConversionLauncher {
     private static EMFRead emfIn = null;
 
@@ -336,12 +339,14 @@ public class ConversionLauncher {
                 boolean forceFormatB = getBooleanOption(options, Option.FORCE_FORMAT_B);
                 String delimeter = getStringOption(options, Option.DELIMITER);
 
+                /*
                 TextToSQL textToSQL = new TextToSQL(in.getFileLocation(), delimeter, out.getServer(), out.getDriver(),
                         out.getUsername(), out.getPassword(), out.getTablePrefix(), in.getLoaderPreferences(), md,
                         forceFormatB);
 
                 return new URNVersionPair[] { new URNVersionPair(textToSQL.getCodingSchemeName(), textToSQL
                         .getVersion()) };
+                */
 
             } else if (outputFormat.getDescription().equals(LexGridSQLLiteOut.description)) {
                 LexGridSQLLiteOut out = (LexGridSQLLiteOut) outputFormat;
