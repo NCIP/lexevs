@@ -115,9 +115,10 @@ public class BaseExporter {
         SQLInterface si = ResourceManager.instance().getSQLInterface(internalCodeSystemName_,
                 source.getCodingSchemeVersion());
 
-        JDBCConnectionDescriptor jcd = si.getConnectionDescriptor();
+        //TODO: Do we need the ConnectionDescriptor anymore? If so, for what?
+        //JDBCConnectionDescriptor jcd = si.getConnectionDescriptor();
 
-        in_ = new LexGridSQL(jcd.getDbUid(), jcd.getDbPwd(), jcd.getDbUrl(), jcd.getDbDriver(), si.getTablePrefix());
+        //in_ = new LexGridSQL(jcd.getDbUid(), jcd.getDbPwd(), jcd.getDbUrl(), jcd.getDbDriver(), si.getTablePrefix());
     }
 
     public ExportStatus getStatus() {
