@@ -39,6 +39,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
+import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Extensions.Query.Sort;
@@ -72,6 +73,12 @@ import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistorySQLQueries;
 import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistoryServiceImpl;
 import org.LexGrid.LexBIG.Impl.History.UMLSHistoryServiceImpl;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
+import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.LexGridLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.MetaDataLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.OBOLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.RadLexProtegeFramesLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.TextLoaderImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -546,20 +553,20 @@ public class LexBIGServiceImpl implements LexBIGService {
         
         // load extensions
         new TextLoaderImpl().register();
+
+        //UMLSLoaderImpl.register();
+        //IndexLoaderImpl.register();
+        //NCIMetaThesaurusLoaderImpl.register();
+        //NCIHistoryLoaderImpl.register();
+        //UMLSHistoryLoaderImpl.register();
+        new LexGridLoaderImpl().register();
+        new OWLLoaderImpl().register();
+        new OBOLoaderImpl().register();
+        new MetaDataLoaderImpl().register();
+        new RadLexProtegeFramesLoaderImpl().register();
+        new HL7LoaderImpl().register();
         
         /*
-        UMLSLoaderImpl.register();
-        IndexLoaderImpl.register();
-        NCIMetaThesaurusLoaderImpl.register();
-        NCIHistoryLoaderImpl.register();
-        UMLSHistoryLoaderImpl.register();
-        LexGridLoaderImpl.register();
-        OWLLoaderImpl.register();
-        OBOLoaderImpl.register();
-        MetaDataLoaderImpl.register();
-        RadLexProtegeFramesLoaderImpl.register();
-        HL7LoaderImpl.register();
-        
         //Meta Batch Loader Extension
         ExtensionDescription meta = new ExtensionDescription();
         meta.setExtensionBaseClass(MetaBatchLoader.class.getName());
