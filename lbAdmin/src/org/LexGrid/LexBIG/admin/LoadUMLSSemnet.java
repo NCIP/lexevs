@@ -154,7 +154,10 @@ public class LoadUMLSSemnet {
             // Find the registered extension handling this type of load ...
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
             LexBIGServiceManager lbsm = lbs.getServiceManager(null);
-            UMLS_Loader loader = (UMLS_Loader) lbsm.getLoader(org.LexGrid.LexBIG.Impl.loaders.UMLSLoaderImpl.name);
+            UMLS_Loader loader = null;
+            
+            //TODO: Not sure how Semnet is being handled now... fix this for 6.0
+            //(UMLS_Loader) lbsm.getLoader(org.LexGrid.LexBIG.Impl.loaders.UMLSLoaderImpl.name);
 
             // Set the loader preference.
             if (loaderPrefObj != null)
