@@ -26,6 +26,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Extendable;
+import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 
@@ -37,6 +38,10 @@ import org.LexGrid.LexOnt.CodingSchemeManifest;
  * @version 1.0
  */
 public interface Loader extends Extendable {
+	
+	public void load(URI resource);
+	
+	public OptionHolder getOptions();
 
 	/**
 	 * Clears any associated log entries.
