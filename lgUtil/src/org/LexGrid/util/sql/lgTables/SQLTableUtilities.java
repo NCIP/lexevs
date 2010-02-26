@@ -31,10 +31,11 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import javax.sql.DataSource;
 
 import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.LexGrid.messaging.impl.NullMessageDirector;
@@ -55,7 +56,7 @@ import org.apache.log4j.Logger;
 @Deprecated
 public class SQLTableUtilities {
     private Connection sqlConnection_;
-    private GenericObjectPool connectionPool_;
+    private DataSource connectionPool_;
 
     private static Logger log = Logger.getLogger("convert.SQL");
 
@@ -97,7 +98,7 @@ public class SQLTableUtilities {
      * @param tablePrefix
      * @throws Exception
      */
-    public SQLTableUtilities(GenericObjectPool connectionPool, String tablePrefix) throws Exception {
+    public SQLTableUtilities(DataSource connectionPool, String tablePrefix) throws Exception {
         sqlConnection_ = null;
         connectionPool_ = connectionPool;
         tablePrefix_ = tablePrefix;
@@ -123,7 +124,7 @@ public class SQLTableUtilities {
             return sqlConnection_;
         } else {
             try {
-                return (Connection) connectionPool_.borrowObject();
+                return connectionPool_.getConnection();
             } catch (Exception e) {
                 return null;
             }
@@ -131,11 +132,10 @@ public class SQLTableUtilities {
     }
 
     private void returnConnection(Connection connection) {
-        if (connectionPool_ != null) {
-            try {
-                connectionPool_.returnObject(connection);
-            } catch (Exception e) {
-            }
+        try {
+            connection.close();
+        } catch (SQLException e) {
+           //
         }
     }
 
