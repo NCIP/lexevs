@@ -23,7 +23,7 @@ import java.io.PrintWriter;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.lexevs.logging.Logger;
+import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.system.ResourceManager;
 
 /**
@@ -33,7 +33,7 @@ import org.lexevs.system.ResourceManager;
  */
 class Util {
     static final private String _lineReturn = System.getProperty("line.separator");
-    static final private Logger _logger = ResourceManager.instance().getLogger();
+    static final private LgLoggerIF _logger = ResourceManager.instance().getLogger();
     static final private PrintWriter _printWriter = new PrintWriter(System.out);
 
     /**
