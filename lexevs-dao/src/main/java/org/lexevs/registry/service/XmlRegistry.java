@@ -1132,7 +1132,9 @@ public class XmlRegistry implements Registry {
 	public boolean containsCodingSchemeEntry(
 			AbsoluteCodingSchemeVersionReference codingScheme) {
 		try {
-			return (getDBCodingSchemeEntry(codingScheme) != null);
+			DBEntry entry = getDBCodingSchemeEntry(codingScheme);
+			
+			return (entry != null);
 		} catch (LBParameterException e) {
 			throw new RuntimeException(e);
 		}

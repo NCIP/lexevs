@@ -46,6 +46,7 @@ public class SQLInterface {
     private DataSource dataSource;
     private String tablePrefix_;
     private GenericSQLModifier gSQLMod_;
+    private JDBCConnectionDescriptor connectionDescriptor;
 
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -61,6 +62,11 @@ public class SQLInterface {
             throw new RuntimeException("Problem setting up the SQLInterface", e);
         }
     }
+    
+    @Deprecated
+    public SQLTableUtilities getSQLTableUtilities() {
+    	return stu_;
+    }
 
     public boolean supports2009Model() {
         return stu_.getSQLTableConstants().supports2009Model();
@@ -73,6 +79,18 @@ public class SQLInterface {
     public String getTableName(String tableKey) {
         return stu_.getSQLTableConstants().getTableName(tableKey);
     }
+    
+    /**
+     * I'm not sure if we stil need this... hopefully for 6.0 it will be gone.
+     * 
+     * @return
+     */
+    @Deprecated
+    public JDBCConnectionDescriptor getConnectionDescriptor() {
+		if (connectionDescriptor == null)
+			connectionDescriptor = new JDBCConnectionDescriptor();
+		return connectionDescriptor;
+	}
 
     public PreparedStatement modifyAndCheckOutPreparedStatement(String sql) throws SQLException {
         return dataSource.getConnection().prepareStatement(gSQLMod_.modifySQL(sql));

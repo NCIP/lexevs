@@ -62,6 +62,11 @@ public class SQLHistoryInterface {
             throw new RuntimeException("Problem setting up the SQLInterface", e);
         }
     }
+    
+    @Deprecated
+    public SQLTableUtilities getSQLTableUtilities() {
+    	return stu_;
+    }
 
     public boolean supports2009Model() {
         return stu_.getSQLTableConstants().supports2009Model();

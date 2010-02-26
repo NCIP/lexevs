@@ -2,6 +2,23 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap>
+
+	<delete id="deleteEntityPropertiesByCodingSchemeId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$property
+		WHERE
+			referenceType = #param1#
+		AND 
+			referenceGuid
+		IN	(
+			SELECT 
+				entityGuid
+			FROM
+				$prefix$entity
+			WHERE
+				codingSchemeGuid = #param2#
+			)
+	</delete>
 	
      <insert id="insertProperty" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyBean">
 		INSERT INTO $prefix$property (

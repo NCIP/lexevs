@@ -7,6 +7,8 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.versions.EntryState;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
+import org.lexevs.dao.database.access.property.PropertyDao;
+import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
@@ -37,26 +39,18 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	public void destroyCodingScheme(String uri, String version) {
 		CodingSchemeDao csDao = 
 			this.getDaoManager().getCodingSchemeDao(uri, version);
+		PropertyDao propertyDao =
+			this.getDaoManager().getPropertyDao(uri, version);
 		String codingSchemeId = csDao.getCodingSchemeIdByUriAndVersion(uri, version);
+		
+		propertyDao.deleteAllEntityPropertiesOfCodingScheme(codingSchemeId);
+		
 		csDao.deleteCodingSchemeById(codingSchemeId);	
 	}
 	
 	@Transactional
 	public void insertCodingScheme(CodingScheme scheme) throws CodingSchemeAlreadyLoadedException {
-		boolean exists = registry.containsCodingSchemeEntry(
-				
-				DaoUtility.createAbsoluteCodingSchemeVersionReference(
-						scheme.getCodingSchemeURI(), 
-						scheme.getRepresentsVersion())
-						
-				);
-		
-		if(exists) {
-			throw new CodingSchemeAlreadyLoadedException(
-					scheme.getCodingSchemeURI(), 
-					scheme.getRepresentsVersion());
-		}
-		
+
 		this.fireCodingSchemeInsertEvent(scheme);
 		
 		CodingSchemeDao codingSchemeDao = 

@@ -6,18 +6,19 @@ import java.util.List;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent;
+import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 
 public class DatabaseServiceEventSupport {
 
-	private List<DatabaseServiceEventListener> databaseServiceEventListener = new ArrayList<DatabaseServiceEventListener>();
+	private List<DatabaseServiceEventListener> databaseServiceEventListeners = new ArrayList<DatabaseServiceEventListener>();
 
 	protected void fireCodingSchemeUpdateEvent(
 			String revisionId,
 			String entryStateId,
 			CodingScheme originalCodingScheme,
 			CodingScheme updatedCodingScheme){
-		if(databaseServiceEventListener != null){
-			for(DatabaseServiceEventListener listener : this.databaseServiceEventListener){
+		if(databaseServiceEventListeners != null){
+			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
 				listener.onCodingSchemeUpdate(
 						new CodingSchemeUpdateEvent(
 								revisionId,
@@ -29,9 +30,9 @@ public class DatabaseServiceEventSupport {
 	}
 	
 	protected void fireCodingSchemeInsertEvent(
-			CodingScheme codingScheme){
-		if(databaseServiceEventListener != null){
-			for(DatabaseServiceEventListener listener : this.databaseServiceEventListener){
+			CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException{
+		if(databaseServiceEventListeners != null){
+			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
 				listener.onCodingSchemeInsert(
 						new CodingSchemeInsertEvent(
 								codingScheme));
@@ -39,13 +40,13 @@ public class DatabaseServiceEventSupport {
 		}
 	}
 
-	public List<DatabaseServiceEventListener> getDatabaseServiceEventListener() {
-		return databaseServiceEventListener;
+	public List<DatabaseServiceEventListener> getDatabaseServiceEventListeners() {
+		return databaseServiceEventListeners;
 	}
 
-	public void setDatabaseServiceEventListener(
-			List<DatabaseServiceEventListener> databaseServiceEventListener) {
-		this.databaseServiceEventListener = databaseServiceEventListener;
+	public void setDatabaseServiceEventListeners(
+			List<DatabaseServiceEventListener> databaseServiceEventListeners) {
+		this.databaseServiceEventListeners = databaseServiceEventListeners;
 	}
 
 }

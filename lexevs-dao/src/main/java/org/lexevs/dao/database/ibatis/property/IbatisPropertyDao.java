@@ -15,6 +15,7 @@ import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyBean;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyLinkBean;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean;
@@ -33,6 +34,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
 	public static String INSERT_PROPERTY_SQL = "insertProperty";
+	public static String DELETE_ALL_ENTITY_PROPERTIES_OF_CODINGSCHEME_SQL = "deleteEntityPropertiesByCodingSchemeId";
 	public static String INSERT_PROPERTY_QUALIFIER_SQL = "insertPropertyMultiAttrib";
 	public static String INSERT_PROPERTY_SOURCE_SQL = "insertPropertyMultiAttrib";
 	public static String INSERT_PROPERTY_USAGECONTEXT_SQL = "insertPropertyMultiAttrib";
@@ -171,8 +173,15 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						propertyLink
 						));
 	}
-
 	
+	public void deleteAllEntityPropertiesOfCodingScheme(String codingSchemeId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		this.getSqlMapClientTemplate().delete(DELETE_ALL_ENTITY_PROPERTIES_OF_CODINGSCHEME_SQL, 
+				new PrefixedParameterTuple(prefix, 
+						this.propertyTypeClassifier.classify(PropertyType.ENTITY), codingSchemeId));
+	}
+
 	protected InsertPropertyBean buildInsertPropertyBean(String prefix, String entityId, String propertyId, 
 			String entryStateId, PropertyType type, Property property){
 		InsertPropertyBean bean = new InsertPropertyBean();

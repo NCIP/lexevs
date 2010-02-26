@@ -22,7 +22,7 @@ public class RegistryUtility {
 		return entry;
 	}
 	
-	public static RegistryEntry codingSchemeUriAndVersion(String uri, String version){
+	public static RegistryEntry codingSchemeToRegistryEntry(String uri, String version){
 		RegistryEntry entry = new RegistryEntry();
 		entry.setResourceType(ResourceType.CODING_SCHEME);
 		entry.setDbSchemaDescription(DatabaseConstants.CURRENT_LEXGRID_SCHEMA_DESCRIPTION);

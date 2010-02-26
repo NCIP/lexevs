@@ -57,6 +57,7 @@ public class DaoManager {
 	}
 	
 	protected <T extends LexGridSchemaVersionAwareDao> T doGetDao(String codingSchemeUri, String version, List<T> daos){
+		Assert.assertNotNull("No DAOs have been registered for the requested type.", daos);	
 		return getCorrectDaoForSchemaVersion(daos, 
 				getLexGridSchemaVersion(codingSchemeUri, version));
 	}

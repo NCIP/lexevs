@@ -70,6 +70,11 @@
 				<ref bean="ibatisAssociationDao"/>
 			</list>
 		</property>
+		<property name="propertyDaos">
+			<list>
+				<ref bean="ibatisPropertyDao"/>
+			</list>
+		</property>
 		<property name="registry" ref="registry"/>
 	</bean>
 	
@@ -105,6 +110,11 @@
 		parent="abstractService">
 		<property name="entityService" ref="entityService"/>
 		<property name="registry" ref="registry"/>
+		<property name="databaseServiceEventListeners">
+			<list>
+				<ref bean="codingSchemeRegisteringListener"/>
+			</list>
+		</property>
 	</bean>
 		
 	<bean id="propertyService" 
@@ -356,6 +366,11 @@
 	
 	<bean id="loggingBean" class="org.lexevs.logging.LoggingBean" abstract="true">
 		<property name="logger" ref="loggerFactory"/>
+	</bean>
+	
+	
+	<bean id="codingSchemeRegisteringListener" class="org.lexevs.dao.database.service.listener.CodingSchemeRegisteringListener">
+		<property name="registry" ref="registry"/>
 	</bean>
 	
 </beans>

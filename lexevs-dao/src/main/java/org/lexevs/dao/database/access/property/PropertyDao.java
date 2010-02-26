@@ -32,6 +32,9 @@ public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 			PropertyType type,
 			Property property);
 	
+	public void deleteAllEntityPropertiesOfCodingScheme(
+			String codingSchemeId);
+	
 	public void insertBatchProperties(
 			String codingSchemeId, 
 			PropertyType type,

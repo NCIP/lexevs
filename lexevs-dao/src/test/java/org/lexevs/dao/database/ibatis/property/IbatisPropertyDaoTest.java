@@ -334,4 +334,27 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 			}
 		});
 	}
+	
+	@Test
+	public void deleteAllEntityPropertiesOfCodingScheme(){
+
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		assertEquals(1, template.queryForInt("Select count(*) from codingScheme"));
+		assertEquals(1, template.queryForInt("Select count(*) from entity"));
+		assertEquals(1, template.queryForInt("Select count(*) from property"));
+		
+		ibatisPropertyDao.deleteAllEntityPropertiesOfCodingScheme("csguid");
+		
+		assertEquals(0, template.queryForInt("Select count(*) from property"));
+
+	}
 }
