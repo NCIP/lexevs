@@ -38,7 +38,7 @@ import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.lexevs.logging.Logger;
+import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.system.ResourceManager;
 
 /**
@@ -48,7 +48,7 @@ import org.lexevs.system.ResourceManager;
  */
 public class Util {
     static final private String _lineReturn = System.getProperty("line.separator");
-    static final private Logger _logger = ResourceManager.instance().getLogger();
+    static final private LgLoggerIF _logger = ResourceManager.instance().getLogger();
     static final private PrintWriter _printWriter = new PrintWriter(System.out);
 
     /**
