@@ -31,7 +31,9 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
+import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -39,6 +41,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.LexGridXML;
+import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
  * Class to load OWL files into the LexBIG API.
@@ -53,36 +56,14 @@ public class LexGridLoaderImpl extends BaseLoader implements LexGrid_Loader {
     private final static String description = "This loader loads LexGrid XML files into the LexGrid database.";
 
     public LexGridLoaderImpl() {
-        super.name_ = LexGridLoaderImpl.name;
-        super.description_ = LexGridLoaderImpl.description;
+       super();
     }
-
-    public static void register() throws LBParameterException, LBException {
-        ExtensionDescription temp = new ExtensionDescription();
-        temp.setExtensionBaseClass(LexGridLoaderImpl.class.getInterfaces()[0].getName());
-        temp.setExtensionClass(LexGridLoaderImpl.class.getName());
-        temp.setDescription(description);
-        temp.setName(name);
-        temp.setVersion(version_);
-
-        // I'm registering them this way to avoid the lexBig service manager
-        // API.
-        // If you are writing an add-on extension, you should register them
-        // through the
-        // proper interface.
-        ExtensionRegistryImpl.instance().registerLoadExtension(temp);
-    }
-
+    
     public void validate(URI uri, int validationLevel) throws LBParameterException {
         // Verify the file exists ...
         try {
             setInUse();
-            try {
-                in_ = new LexGridXML(getStringFromURI(uri), super.getCodingSchemeManifest());
-                in_.testConnection();
-            } catch (ConnectionFailure e) {
-                throw new LBParameterException("The LexGrid XML file path appears to be invalid - " + e);
-            }
+            
             // Verify content ...
 
             if (validationLevel == 0) {
@@ -116,20 +97,29 @@ public class LexGridLoaderImpl extends BaseLoader implements LexGrid_Loader {
     }
 
     public void load(URI uri, boolean stopOnErrors, boolean async) throws LBParameterException, LBInvocationException {
-        setInUse();
-        try {
-            in_ = new LexGridXML(getStringFromURI(uri), getCodingSchemeManifest());
-            in_.testConnection();
-        } catch (ConnectionFailure e) {
-            inUse = false;
-            throw new LBParameterException("The LexGrid XML file path appears to be invalid - " + e);
-        }
-        status_ = new LoadStatus();
-        status_.setLoadSource(getStringFromURI(uri));
+      //
+    }
+    
+    @Override
+    protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+        return holder;
+    }
 
-        options_.add(new Option(Option.FAIL_ON_ERROR, new Boolean(stopOnErrors)));
+    @Override
+    protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
 
-        baseLoad(async);
+    @Override
+    protected ExtensionDescription buildExtensionDescription() {
+        ExtensionDescription temp = new ExtensionDescription();
+        temp.setExtensionBaseClass(LexGridLoaderImpl.class.getInterfaces()[0].getName());
+        temp.setExtensionClass(LexGridLoaderImpl.class.getName());
+        temp.setDescription(LexGridLoaderImpl.description);
+        temp.setName(LexGridLoaderImpl.name);
+        
+        return temp;
     }
 
     public URI getSchemaURL() {

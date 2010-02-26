@@ -25,7 +25,11 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Index.Index;
 import org.LexGrid.LexBIG.Extensions.Index.IndexLoader;
+import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
+import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+
+import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
  * Loader for rebuilding lucene indexes.
@@ -39,24 +43,17 @@ public class IndexLoaderImpl extends BaseLoader implements IndexLoader {
     private final static String description = "This loader reloads Indexes in the LexGrid system.";
 
     public IndexLoaderImpl() {
-        super.name_ = IndexLoaderImpl.name;
-        super.description_ = IndexLoaderImpl.description;
+        super();
     }
 
-    public static void register() throws LBParameterException, LBException {
+    protected ExtensionDescription buildExtensionDescription(){
         ExtensionDescription temp = new ExtensionDescription();
         temp.setExtensionBaseClass(IndexLoaderImpl.class.getInterfaces()[0].getName());
         temp.setExtensionClass(IndexLoaderImpl.class.getName());
         temp.setDescription(description);
         temp.setName(name);
-        temp.setVersion(version_);
 
-        // I'm registering them this way to avoid the lexBig service manager
-        // API.
-        // If you are writing an add-on extension, you should register them
-        // through the
-        // proper interface.
-        ExtensionRegistryImpl.instance().registerLoadExtension(temp);
+        return temp;
     }
 
     /*
@@ -96,5 +93,16 @@ public class IndexLoaderImpl extends BaseLoader implements IndexLoader {
      */
     public void rebuild(AbsoluteCodingSchemeVersionReference ref, Index index, boolean async) throws LBException {
         reindexCodeSystem(ref, async);
+    }
+
+    @Override
+    protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+        return holder;
+    }
+
+    @Override
+    protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
     }
 }

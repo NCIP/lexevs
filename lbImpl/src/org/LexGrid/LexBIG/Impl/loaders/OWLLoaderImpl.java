@@ -24,20 +24,22 @@ import java.net.URI;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.OWL_Loader;
-import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
+import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Preferences.loader.OWLLoadPreferences.OWLLoaderPreferences;
+import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.NCIOwl;
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.Owl;
+import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
+import edu.mayo.informatics.lexgrid.convert.options.IntegerOption;
+import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
  * Class to load OWL files into the LexBIG API.
@@ -52,34 +54,26 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
     private final static String description = "This loader loads 'OWL Full' files into the LexGrid format.";
 
     public OWLLoaderImpl() {
-
-        super.name_ = OWLLoaderImpl.name;
-        super.description_ = OWLLoaderImpl.description;
+        super();
     }
 
-    public static void register() throws LBParameterException, LBException {
+    protected ExtensionDescription buildExtensionDescription(){
         ExtensionDescription temp = new ExtensionDescription();
         temp.setExtensionBaseClass(OWLLoaderImpl.class.getInterfaces()[0].getName());
         temp.setExtensionClass(OWLLoaderImpl.class.getName());
         temp.setDescription(description);
         temp.setName(name);
-        temp.setVersion(version_);
 
-        // I'm registering them this way to avoid the lexBig service manager
-        // API.
-        // If you are writing an add-on extension, you should register them
-        // through the
-        // proper interface.
-        ExtensionRegistryImpl.instance().registerLoadExtension(temp);
+        return temp;
     }
 
     public void validate(URI uri, URI manifest, int validationLevel) throws LBParameterException {
         try {
             setInUse();
             try {
-                in_ = new Owl(uri, manifest);
-                in_.testConnection();
-            } catch (ConnectionFailure e) {
+                //in_ = new Owl(uri, manifest);
+                //in_.testConnection();
+            } catch (Exception e) {
                 throw new LBParameterException("The OWL file path appears to be invalid - " + e);
             }
             // Verify content ...
@@ -105,18 +99,12 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
             NCIOwl nciowl = new NCIOwl(getStringFromURI(uri), manifest);
             nciowl.setCodingSchemeManifest(this.getCodingSchemeManifest());
             nciowl.setLoaderPreferences(this.getLoaderPreferences());
-            in_ = nciowl;
-            in_.testConnection();
-        } catch (ConnectionFailure e) {
+        } catch (Exception e) {
             inUse = false;
             throw new LBParameterException("The NCIOwl file path appears to be invalid - " + e);
         }
 
-        options_.add(new Option(Option.FAIL_ON_ERROR, new Boolean(stopOnErrors)));
-        options_.add(new Option(Option.MEMORY_SAFE, new Boolean(memorySafe)));
-
-        status_ = new LoadStatus();
-        status_.setLoadSource(getStringFromURI(uri));
+        getStatus().setLoadSource(getStringFromURI(uri));
         baseLoad(async);
     }
 
@@ -136,18 +124,12 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
             }
             owl.setCodingSchemeManifest(this.getCodingSchemeManifest());
             owl.setLoaderPreferences(this.getLoaderPreferences());
-            in_ = owl;
-            in_.testConnection();
-        } catch (ConnectionFailure e) {
+        } catch (Exception e) {
             inUse = false;
             throw new LBParameterException("The Owl file path appears to be invalid - " + e);
         }
 
-        options_.add(new Option(Option.FAIL_ON_ERROR, new Boolean(stopOnErrors)));
-        options_.add(new Option(Option.MEMORY_SAFE, new Integer(memorySafe)));
-
-        status_ = new LoadStatus();
-        status_.setLoadSource(getStringFromURI(source));
+        getStatus().setLoadSource(getStringFromURI(source));
         baseLoad(async);
     }
 
@@ -155,9 +137,9 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
         try {
             setInUse();
             try {
-                in_ = new NCIOwl(getStringFromURI(source), manifest);
-                in_.testConnection();
-            } catch (ConnectionFailure e) {
+                //in_ = new NCIOwl(getStringFromURI(source), manifest);
+               //in_.testConnection();
+            } catch (Exception e) {
                 throw new LBParameterException("The NCI OWL file path appears to be invalid - " + e);
             }
             // Verify content ...
@@ -174,6 +156,19 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
         } finally {
             inUse = false;
         }
+    }
+
+    @Override
+    protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+        holder.getBooleanOptions().add(new BooleanOption(Option.getNameForType(Option.FAIL_ON_ERROR)));
+        holder.getIntegerOptions().add(new IntegerOption(Option.getNameForType(Option.MEMORY_SAFE)));
+        return holder;
+    }
+
+    @Override
+    protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
     }
 
     public void validateNCIThes(URI source, URI manifest, int validationLevel) throws LBException {

@@ -19,34 +19,25 @@
 package org.LexGrid.LexBIG.Impl.loaders;
 
 import java.net.URI;
-import java.sql.Connection;
 import java.util.Date;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.UMLSHistoryLoader;
+import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.History.HistoryService;
-import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.util.SimpleMemUsageReporter;
-import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
-import org.LexGrid.util.sql.DBUtility;
-import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
-import org.lexevs.dao.database.connection.SQLInterfaceBase;
+import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.system.ResourceManager;
-import org.lexevs.system.constants.SystemVariables;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.UMLSHistoryFileToSQL;
-import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
-import edu.mayo.informatics.lexgrid.convert.formats.ConversionLauncher;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
-import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.UMLSHistoryFile;
-import edu.mayo.informatics.lexgrid.convert.formats.outputFormats.LexGridSQLOut;
+import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
+import edu.mayo.informatics.lexgrid.convert.options.StringOption;
+import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 public class UMLSHistoryLoaderImpl extends BaseLoader implements UMLSHistoryLoader {
 
@@ -61,8 +52,7 @@ private static final long serialVersionUID = 1L;
      * Constructor sets the loader name and description.
      */
     public UMLSHistoryLoaderImpl() {
-        super.name_ = UMLSHistoryLoaderImpl.name;
-        super.description_ = UMLSHistoryLoaderImpl.description;
+        super();
     }
 
     /**
@@ -71,20 +61,14 @@ private static final long serialVersionUID = 1L;
      * @throws LBParameterException
      * @throws LBException
      */
-    public static void register() throws LBParameterException, LBException {
+    protected ExtensionDescription buildExtensionDescription() {
         ExtensionDescription temp = new ExtensionDescription();
         temp.setExtensionBaseClass(UMLSHistoryLoaderImpl.class.getInterfaces()[0].getName());
         temp.setExtensionClass(UMLSHistoryLoaderImpl.class.getName());
         temp.setDescription(description);
         temp.setName(name);
-        temp.setVersion(version_);
 
-        // I'm registering them this way to avoid the lexBig service manager
-        // API.
-        // If you are writing an add-on extension, you should register them
-        // through the
-        // proper interface.
-        ExtensionRegistryImpl.instance().registerLoadExtension(temp);
+        return temp;
     }
 
     /**
@@ -104,23 +88,19 @@ private static final long serialVersionUID = 1L;
 
         this.setInUse();
 
-        status_ = new LoadStatus();
-        status_.setLoadSource(source.toString());
-        md_ = new MessageDirector(getName(), status_);
+        getStatus().setLoadSource(source.toString());
 
         try {
 
-            in_ = new UMLSHistoryFile(source, stopOnErrors, md_);
-            in_.testConnection();
-        } catch (ConnectionFailure e) {
+           // in_ = new UMLSHistoryFile(source, stopOnErrors, md_);
+           // in_.testConnection();
+        } catch (Exception e) {
             inUse = false;
             throw new LBParameterException("Validation Exception for NCI MetaThesaurus history file - "
                     + e.getMessage());
         }
 
-        options_.add(new Option(Option.FAIL_ON_ERROR, new Boolean(stopOnErrors)));
-        options_.add(new Option(Option.DELIMITER, new String("|")));
-        options_.add(new Option(Option.OVERWRITE, new Boolean(!append)));
+       
 
         SQLConnectionInfo sci = null;
         try {
@@ -136,16 +116,16 @@ private static final long serialVersionUID = 1L;
                 sci = ResourceManager.instance().getSQLConnectionInfoForHistoryLoad();
             }
 
-            out_ = new LexGridSQLOut(sci.username, sci.password, sci.server, sci.driver, sci.prefix);
-            out_.testConnection();
-        } catch (ConnectionFailure e) {
+            //out_ = new LexGridSQLOut(sci.username, sci.password, sci.server, sci.driver, sci.prefix);
+            //out_.testConnection();
+        } catch (Exception e) {
             String id = getLogger().error("Problem connecting to the sql server", e);
             inUse = false;
             throw new LBInvocationException("There was a problem connecting to the internal sql server", id);
         }
 
-        status_.setState(ProcessState.PROCESSING);
-        status_.setStartTime(new Date(System.currentTimeMillis()));
+        getStatus().setState(ProcessState.PROCESSING);
+        getStatus().setStartTime(new Date(System.currentTimeMillis()));
 
         if (async) {
             Thread conversion = new Thread(new DoLoad(sci, append));
@@ -171,6 +151,11 @@ private static final long serialVersionUID = 1L;
         }
 
         public void run() {
+            //TODO:
+            //Do we really need a new 'DoLoad' class for this? If so, it should not use Baseloader,
+            //or Baseloader is to specific and we need to break it up into levels of abstract Baseloaders...
+    
+            /*
             try {
                 md_.info("Loading NCI MetaThesaurus History...");
                 Snapshot snap = SimpleMemUsageReporter.snapshot();
@@ -239,8 +224,9 @@ private static final long serialVersionUID = 1L;
                 status_.setEndTime(new Date(System.currentTimeMillis()));
                 inUse = false;
             }
-
+             */
         }
+
     }
 
     public void validate(URI source, int validationLevel) throws LBException {
@@ -259,4 +245,21 @@ private static final long serialVersionUID = 1L;
         }
 
     }
+
+    @Override
+    protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+        holder.getBooleanOptions().add(new BooleanOption(Option.getNameForType(Option.FAIL_ON_ERROR)));
+        holder.getBooleanOptions().add(new BooleanOption(Option.getNameForType(Option.OVERWRITE)));
+        holder.getStringOptions().add(new StringOption(Option.getNameForType(Option.DELIMITER)));
+        
+        return holder;
+    }
+
+    @Override
+    protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
+    
+    
 }

@@ -30,11 +30,13 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.NCIHistoryLoader;
+import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.connection.SQLInterfaceBase;
+import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.ResourceManager;
@@ -46,6 +48,9 @@ import edu.mayo.informatics.lexgrid.convert.formats.ConversionLauncher;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.NCIThesaurusHistoryFile;
 import edu.mayo.informatics.lexgrid.convert.formats.outputFormats.LexGridSQLOut;
+import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
+import edu.mayo.informatics.lexgrid.convert.options.StringOption;
+import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
  * Loads a NCI Thesaurus History file.
@@ -69,24 +74,17 @@ public class NCIHistoryLoaderImpl extends BaseLoader implements NCIHistoryLoader
      * 
      */
     public NCIHistoryLoaderImpl() {
-        super.name_ = NCIHistoryLoaderImpl.name;
-        super.description_ = NCIHistoryLoaderImpl.description;
+       super();
     }
 
-    public static void register() throws LBParameterException, LBException {
+    protected ExtensionDescription buildExtensionDescription(){
         ExtensionDescription temp = new ExtensionDescription();
         temp.setExtensionBaseClass(NCIHistoryLoaderImpl.class.getInterfaces()[0].getName());
         temp.setExtensionClass(NCIHistoryLoaderImpl.class.getName());
         temp.setDescription(description);
         temp.setName(name);
-        temp.setVersion(version_);
 
-        // I'm registering them this way to avoid the lexBig service manager
-        // API.
-        // If you are writing an add-on extension, you should register them
-        // through the
-        // proper interface.
-        ExtensionRegistryImpl.instance().registerLoadExtension(temp);
+        return temp;
     }
 
     /*
@@ -99,17 +97,14 @@ public class NCIHistoryLoaderImpl extends BaseLoader implements NCIHistoryLoader
     public void load(URI source, URI versions, boolean append, boolean stopOnErrors, boolean async) throws LBException {
         setInUse();
         try {
-            in_ = new NCIThesaurusHistoryFile(source, versions);
-            in_.testConnection();
-        } catch (ConnectionFailure e) {
+            //in_ = new NCIThesaurusHistoryFile(source, versions);
+            //in_.testConnection();
+        } catch (Exception e) {
             inUse = false;
             throw new LBParameterException("The NCI Thesaurus history file path appears to be invalid - " + e);
         }
-        status_ = new LoadStatus();
-        status_.setLoadSource(source.toString());
 
-        options_.add(new Option(Option.FAIL_ON_ERROR, new Boolean(stopOnErrors)));
-        options_.add(new Option(Option.DELIMITER, new String("|")));
+        getStatus().setLoadSource(source.toString());
 
         SQLConnectionInfo sci = null;
         try {
@@ -125,17 +120,16 @@ public class NCIHistoryLoaderImpl extends BaseLoader implements NCIHistoryLoader
                 sci = ResourceManager.instance().getSQLConnectionInfoForHistoryLoad();
             }
 
-            out_ = new LexGridSQLOut(sci.username, sci.password, sci.server, sci.driver, sci.prefix);
-            out_.testConnection();
-        } catch (ConnectionFailure e) {
+            //out_ = new LexGridSQLOut(sci.username, sci.password, sci.server, sci.driver, sci.prefix);
+            //out_.testConnection();
+        } catch (Exception e) {
             String id = getLogger().error("Problem connecting to the sql server", e);
             inUse = false;
             throw new LBInvocationException("There was a problem connecting to the internal sql server", id);
         }
 
-        status_.setState(ProcessState.PROCESSING);
-        status_.setStartTime(new Date(System.currentTimeMillis()));
-        md_ = new MessageDirector(getName(), status_);
+        getStatus().setState(ProcessState.PROCESSING);
+        getStatus().setStartTime(new Date(System.currentTimeMillis()));
 
         if (async) {
             Thread conversion = new Thread(new DoLoad(sci, append));
@@ -178,6 +172,10 @@ public class NCIHistoryLoaderImpl extends BaseLoader implements NCIHistoryLoader
         }
 
         public void run() {
+            //TODO:
+            //Do we really need a new 'DoLoad' class for this? If so, it should not use Baseloader,
+            //or Baseloader is to specific and we need to break it up into levels of abstract Baseloaders...
+            /*
             try {
                 md_.info("Loading the History file");
                 ConversionLauncher.startConversion(in_, out_, null, options_, md_);
@@ -237,7 +235,21 @@ public class NCIHistoryLoaderImpl extends BaseLoader implements NCIHistoryLoader
                 status_.setEndTime(new Date(System.currentTimeMillis()));
                 inUse = false;
             }
-
+            */
         }
+    }
+
+    @Override
+    protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+        holder.getBooleanOptions().add(new BooleanOption(Option.getNameForType(Option.FAIL_ON_ERROR)));
+        holder.getStringOptions().add(new StringOption(Option.getNameForType(Option.DELIMITER)));
+        
+        return holder;
+    }
+
+    @Override
+    protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
     }
 }

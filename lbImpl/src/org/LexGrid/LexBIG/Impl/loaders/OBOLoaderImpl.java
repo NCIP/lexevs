@@ -26,18 +26,16 @@ import java.io.Reader;
 import java.net.URI;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
-import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
-import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
+import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.jdom.input.SAXBuilder;
+import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 
 import edu.mayo.informatics.lexgrid.convert.emfConversions.obo1_2.OBOFormatValidator;
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
-import edu.mayo.informatics.lexgrid.convert.formats.Option;
-import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.OBO;
+import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
  * Class to load OBO files.
@@ -52,35 +50,28 @@ public class OBOLoaderImpl extends BaseLoader implements OBO_Loader {
     private final static String description = "This loader loads version 1.2 OBO files into the LexGrid format.";
 
     public OBOLoaderImpl() {
-        super.name_ = OBOLoaderImpl.name;
-        super.description_ = OBOLoaderImpl.description;
+        super();
     }
 
     public String getOBOVersion() {
         return "1.2";
     }
 
-    public static void register() throws LBParameterException, LBException {
+    protected ExtensionDescription buildExtensionDescription(){
         ExtensionDescription temp = new ExtensionDescription();
         temp.setExtensionBaseClass(OBOLoaderImpl.class.getInterfaces()[0].getName());
         temp.setExtensionClass(OBOLoaderImpl.class.getName());
         temp.setDescription(description);
         temp.setName(name);
-        temp.setVersion(version_);
+        temp.setVersion( getOBOVersion() );
 
-        // I'm registering them this way to avoid the lexBig service manager
-        // API.
-        // If you are writing an add-on extension, you should register them
-        // through the
-        // proper interface.
-        ExtensionRegistryImpl.instance().registerLoadExtension(temp);
+        return temp;
     }
 
     public void validate(URI uri, URI metaSource, int validationLevel) throws LBParameterException {
         try {
             setInUse();
-            in_ = new OBO(uri);
-            in_.testConnection();
+
             if (validationLevel == 0) {
                 if (!OBOFormatValidator.isValidDocumentHeader(uri)) {
                     throw new LBParameterException("The OBO file header was  malformed while validating  "+ uri);
@@ -124,20 +115,18 @@ public class OBOLoaderImpl extends BaseLoader implements OBO_Loader {
 
     public void load(URI uri, URI metaSource, boolean stopOnErrors, boolean async) throws LBParameterException,
             LBInvocationException {
-        validate(uri, metaSource, 0);
-        setInUse();
+       //
+    }
 
-        in_ = new OBO(uri);
-        ((OBO) in_).setCodingSchemeManifest(codingSchemeManifest_);
+    @Override
+    protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+        return holder;
+    }
 
-        options_.add(new Option(Option.FAIL_ON_ERROR, new Boolean(stopOnErrors)));
-
-        status_ = new LoadStatus();
-        status_.setLoadSource(uri.toString());
-        metadataFileLocation_ = metaSource;
-
-        baseLoad(async);
-
+    @Override
+    protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
     }
 
     public void finalize() throws Throwable {

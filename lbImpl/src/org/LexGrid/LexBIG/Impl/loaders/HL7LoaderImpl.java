@@ -29,21 +29,23 @@ import java.util.Date;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.HL7_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 
 import edu.mayo.informatics.lexgrid.convert.emfConversions.hl7.HL72EMFConstants;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.HL7SQL;
+import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
@@ -74,22 +76,7 @@ public class HL7LoaderImpl extends BaseLoader implements HL7_Loader {
     }
 
     public HL7LoaderImpl() {
-        super.name_ = name;
-        super.description_ = description;
-    }
-
-    public static void register() throws LBParameterException, LBException {
-        ExtensionDescription temp = new ExtensionDescription();
-        temp.setExtensionBaseClass(HL7LoaderImpl.class.getInterfaces()[0].getName());
-        temp.setExtensionClass(HL7LoaderImpl.class.getName());
-        temp.setDescription(description);
-        temp.setName(name);
-        temp.setVersion(version_);
-
-        // I'm registering them this way to avoid the lexBig service manager
-        // API. If you are writing an add-on extension, you should register them
-        // through the proper interface.
-        ExtensionRegistryImpl.instance().registerLoadExtension(temp);
+        super();
     }
 
     // Normally we pass a string naming the driver here. We don't offer a choice
@@ -107,10 +94,6 @@ public class HL7LoaderImpl extends BaseLoader implements HL7_Loader {
         } else if (dbName.startsWith("file")) {
             dbName = dbName.substring(6);
         }
-
-        in_ = new HL7SQL(dbName);
-        ((HL7SQL) in_).setCodingSchemeManifest(codingSchemeManifest_);
-        ((HL7SQL) in_).setLoaderPreferences(loaderPreferences_); // CRS
 
         Connection c = null;
         PreparedStatement getCodingSchemeInfo = null;
@@ -154,22 +137,12 @@ public class HL7LoaderImpl extends BaseLoader implements HL7_Loader {
             }
         }
 
-        status_ = new LoadStatus();
-        status_.setLoadSource("Provided SQL database " + dbName.toString());
-        status_.setState(ProcessState.PROCESSING);
-        status_.setStartTime(new Date(System.currentTimeMillis()));
+        getStatus().setLoadSource("Provided SQL database " + dbName.toString());
+        getStatus().setState(ProcessState.PROCESSING);
+        getStatus().setStartTime(new Date(System.currentTimeMillis()));
 
         setInUse();
 
-        try {
-
-            options_.add(new Option(Option.FAIL_ON_ERROR, new Boolean(stopOnErrors)));
-            ((HL7SQL) in_).setCurrentCodingScheme(hl7CodingSchemes.get(0));
-
-        } catch (Exception e) {
-            inUse = false;
-
-        }
         baseLoad(async);
 
     }
@@ -211,6 +184,29 @@ public class HL7LoaderImpl extends BaseLoader implements HL7_Loader {
             }
         }
     }
+    
+    @Override
+    protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+        holder.getBooleanOptions().add(new BooleanOption("FAIL_ON_ERROR", false));
+        return holder;
+    }
+
+    @Override
+    protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected ExtensionDescription buildExtensionDescription() {
+        ExtensionDescription temp = new ExtensionDescription();
+        temp.setExtensionBaseClass(HL7LoaderImpl.class.getInterfaces()[0].getName());
+        temp.setExtensionClass(HL7LoaderImpl.class.getName());
+        temp.setDescription(description);
+        temp.setName(name);
+
+        return temp;
+    }
 
     // Will only be called after load method
     // Overrides BaseLoader method
@@ -231,7 +227,5 @@ public class HL7LoaderImpl extends BaseLoader implements HL7_Loader {
 
     public void setMetaDataFileLocation(String metaDataFileLocation) {
         this.metaDataFileLocation = metaDataFileLocation;
-        metadataFileLocation_ = new File(metaDataFileLocation).toURI();
     }
-
 }

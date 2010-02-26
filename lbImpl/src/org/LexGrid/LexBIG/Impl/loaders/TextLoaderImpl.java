@@ -18,19 +18,25 @@
  */
 package org.LexGrid.LexBIG.Impl.loaders;
 
+import java.io.File;
 import java.net.URI;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
-import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Extensions.Load.Text_Loader;
-import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
+import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+import org.lexevs.locator.LexEvsServiceLocator;
 
-import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
-import edu.mayo.informatics.lexgrid.convert.formats.Option;
-import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.LexGridDelimitedText;
+import edu.mayo.informatics.lexgrid.convert.directConversions.TextToSQL;
+import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
+import edu.mayo.informatics.lexgrid.convert.options.StringOption;
+import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
  * Class to load a Text files into the LexBIG API.
@@ -42,65 +48,69 @@ public class TextLoaderImpl extends BaseLoader implements Text_Loader {
     private static final long serialVersionUID = -4164433097047462000L;
     public static final String name = "TextLoader";
     private static final String description = "This loader loads LexGrid Text files into the LexGrid database.";
+    
+    public static final String DELIMITER_OPTION = "Delimiter";
+    public static String FORCE_FORMAT_B_OPTION = "Force Format B";
 
     public TextLoaderImpl() {
-        super.name_ = TextLoaderImpl.name;
-        super.description_ = TextLoaderImpl.description;
+        super();
     }
 
-    public static void register() throws LBParameterException, LBException {
+    public void validate(URI uri, Character delimiter, boolean triplesFormat, int validationLevel)
+            throws LBParameterException {
+       //
+    }
+
+    public void load(URI uri, Character delimiter, boolean readDoublesAsTriples, boolean stopOnErrors, boolean async)
+            throws LBParameterException, LBInvocationException {
+      //
+    }
+
+    @Override
+    protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
+  
+            TextToSQL loader = new TextToSQL();
+            
+            URNVersionPair[] schemes =  loader.load(
+                    this.getResourceUri(), 
+                    this.getOptions().getStringOption(TextLoaderImpl.DELIMITER_OPTION).getOptionValue(), 
+                    this.getLoaderPreferences(), 
+                    this.getLogger(), 
+                    this.getOptions().getBooleanOption(TextLoaderImpl.FORCE_FORMAT_B_OPTION).getOptionValue());
+       
+            this.getStatus().setState(ProcessState.COMPLETED);
+            this.getStatus().setErrorsLogged(false);
+            
+            return schemes;
+        
+      
+    }
+
+    
+    public static void main(String[] args){
+        TextLoaderImpl loader = new TextLoaderImpl();
+        loader.addBooleanOptionValue(TextLoaderImpl.FORCE_FORMAT_B_OPTION, true);
+        
+        loader.load(new File("C:\\workspaces\\lexevs60\\lgConverter\\commentedSamples\\textLoad_A.txt").toURI());
+    }
+
+    @Override
+    protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+        BooleanOption forceFormatB = new BooleanOption(TextLoaderImpl.FORCE_FORMAT_B_OPTION, true);
+        holder.getBooleanOptions().add(forceFormatB);
+        
+        StringOption delimeter = new StringOption(TextLoaderImpl.DELIMITER_OPTION);
+        holder.getStringOptions().add(delimeter);
+        return holder;
+    }
+
+    @Override
+    protected ExtensionDescription buildExtensionDescription() {
         ExtensionDescription temp = new ExtensionDescription();
         temp.setExtensionBaseClass(TextLoaderImpl.class.getInterfaces()[0].getName());
         temp.setExtensionClass(TextLoaderImpl.class.getName());
         temp.setDescription(description);
         temp.setName(name);
-        temp.setVersion(version_);
-
-        // I'm registering them this way to avoid the lexBig service manager
-        // API.
-        // If you are writing an add-on extension, you should register them
-        // through the
-        // proper interface.
-        ExtensionRegistryImpl.instance().registerLoadExtension(temp);
-    }
-
-    public void validate(URI uri, Character delimiter, boolean triplesFormat, int validationLevel)
-            throws LBParameterException {
-        try {
-            setInUse();
-            in_ = new LexGridDelimitedText(getStringFromURI(uri));
-            in_.testConnection();
-        } catch (ConnectionFailure e) {
-            throw new LBParameterException("The Text file path appears to be invalid - " + e);
-        } catch (LBInvocationException e) {
-            throw new LBParameterException(
-                    "A loader can only do one task at a time.  Create a new loader to do additional tasks");
-        } finally {
-            inUse = false;
-        }
-    }
-
-    public void load(URI uri, Character delimiter, boolean readDoublesAsTriples, boolean stopOnErrors, boolean async)
-            throws LBParameterException, LBInvocationException {
-        setInUse();
-        try {
-            in_ = new LexGridDelimitedText(getStringFromURI(uri));
-            in_.testConnection();
-        } catch (ConnectionFailure e) {
-            inUse = false;
-            throw new LBParameterException("The LexGrid Text file path appears to be invalid - " + e);
-        }
-        status_ = new LoadStatus();
-        status_.setLoadSource(getStringFromURI(uri));
-
-        options_.add(new Option(Option.FAIL_ON_ERROR, new Boolean(stopOnErrors)));
-        String delimiterVal = "";
-        if (delimiter != null) {
-            delimiterVal = delimiter.toString();
-        }
-        options_.add(new Option(Option.DELIMITER, delimiterVal));
-        options_.add(new Option(Option.FORCE_FORMAT_B, new Boolean(readDoublesAsTriples)));
-
-        baseLoad(async);
+        return temp;
     }
 }

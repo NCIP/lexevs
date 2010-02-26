@@ -36,6 +36,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.loaders.metadata.OBOMetaDataLoader;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
@@ -43,6 +44,7 @@ import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
 import org.apache.commons.lang.BooleanUtils;
 import org.jdom.input.SAXBuilder;
 import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.dao.index.connection.IndexInterface;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.registry.service.Registry;
@@ -70,22 +72,17 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
     private ManifestUtil manifestUtil_ = null;
 
     public MetaDataLoaderImpl() {
-        super.name_ = MetaDataLoaderImpl.name;
-        super.description_ = MetaDataLoaderImpl.description;
+       super();
     }
 
-    public static void register() throws LBParameterException, LBException {
+    protected ExtensionDescription buildExtensionDescription(){
         ExtensionDescription temp = new ExtensionDescription();
         temp.setExtensionBaseClass(MetaDataLoaderImpl.class.getInterfaces()[0].getName());
         temp.setExtensionClass(MetaDataLoaderImpl.class.getName());
         temp.setDescription(description);
         temp.setName(name);
-        temp.setVersion(version_);
 
-        // I'm registering them this way to avoid the lexBig service manager API.
-        // If you are writing an add-on extension, you should register them
-        // through the proper interface.
-        ExtensionRegistryImpl.instance().registerLoadExtension(temp);
+        return temp;
     }
 
     public void validateAuxiliaryData(URI source, AbsoluteCodingSchemeVersionReference codingSchemeVersion,
@@ -134,25 +131,7 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
 
     public void loadAuxiliaryData(URI source, AbsoluteCodingSchemeVersionReference codingSchemeVersion,
             boolean overwrite, boolean stopOnErrors, boolean async) throws LBParameterException, LBInvocationException {
-
-        validateAuxiliaryData(source, codingSchemeVersion, 0);
-        setInUse();
-        options_.add(new Option(Option.FAIL_ON_ERROR, new Boolean(stopOnErrors)));
-
-        status_ = new LoadStatus();
-        status_.setLoadSource(source.toString());
-
-        status_.setState(ProcessState.PROCESSING);
-        status_.setStartTime(new Date(System.currentTimeMillis()));
-        md_ = new MessageDirector(getName(), status_);
-
-        if (async) {
-            Thread conversion = new Thread(new DoConversion(source, codingSchemeVersion, overwrite));
-            conversion.start();
-        } else {
-            new DoConversion(source, codingSchemeVersion, overwrite).run();
-        }
-
+      //
     }
 
     public void loadAuxiliaryData(Map<Object, Object> source, AbsoluteCodingSchemeVersionReference codingSchemeVersion,
@@ -162,53 +141,13 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
     public void loadLexGridManifest(CodingSchemeManifest source,
             AbsoluteCodingSchemeVersionReference codingSchemeURNVersion, boolean stopOnErrors, boolean async)
     throws LBException {
-        setInUse();
-        options_.add(new Option(Option.FAIL_ON_ERROR, new Boolean(stopOnErrors)));
-
-        status_ = new LoadStatus();
-        status_.setLoadSource(codingSchemeURNVersion.getCodingSchemeURN());
-
-        status_.setState(ProcessState.PROCESSING);
-        status_.setStartTime(new Date(System.currentTimeMillis()));
-
-        md_ = new MessageDirector(getName(), status_);
-
-        if (async) {
-            Thread loadManifest = new Thread(new LoadManifest(source, codingSchemeURNVersion, md_));
-            loadManifest.start();
-        } else {
-
-            new LoadManifest(source, codingSchemeURNVersion, md_).run();
-
-        }
+       //
 
     }
 
     public void loadLexGridManifest(URI source, AbsoluteCodingSchemeVersionReference codingSchemeURNVersion,
             boolean stopOnErrors, boolean async) throws LBException {
-
-        setInUse();
-        options_.add(new Option(Option.FAIL_ON_ERROR, new Boolean(stopOnErrors)));
-
-        status_ = new LoadStatus();
-        status_.setLoadSource(source.toString());
-
-        status_.setState(ProcessState.PROCESSING);
-        status_.setStartTime(new Date(System.currentTimeMillis()));
-
-        md_ = new MessageDirector(getName(), status_);
-
-        manifestUtil_ = new ManifestUtil(source, md_);
-        CodingSchemeManifest manifest = manifestUtil_.getManifest();
-
-        if (async) {
-            Thread loadManifest = new Thread(new LoadManifest(manifest, codingSchemeURNVersion, md_));
-            loadManifest.start();
-        } else {
-
-            new LoadManifest(manifest, codingSchemeURNVersion, md_).run();
-
-        }
+        //
 
     }
 
@@ -232,21 +171,21 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
         public void run() {
             try {
 
-                md_.info("Loading the OBO MetaData");
+                getLogger().info("Loading the OBO MetaData");
                 new OBOMetaDataLoader(lacsvr_.getCodingSchemeURN(), lacsvr_.getCodingSchemeVersion(), source_, false,
                         true, true, true, !overwrite_);
-                md_.info("Finished loading the Metadata");
-                status_.setState(ProcessState.COMPLETED);
-                md_.info("Load process completed without error");
+                getLogger().info("Finished loading the Metadata");
+                getStatus().setState(ProcessState.COMPLETED);
+                getLogger().info("Load process completed without error");
             } catch (Exception e) {
-                status_.setState(ProcessState.FAILED);
-                md_.fatal("Failed while running the conversion", e);
+                getStatus().setState(ProcessState.FAILED);
+                getLogger().fatal("Failed while running the conversion", e);
 
             } finally {
-                if (status_.getState() == null || status_.getState().getType() != ProcessState.COMPLETED_TYPE) {
-                    status_.setState(ProcessState.FAILED);
+                if (getStatus().getState() == null || getStatus().getState().getType() != ProcessState.COMPLETED_TYPE) {
+                    getStatus().setState(ProcessState.FAILED);
                 }
-                status_.setEndTime(new Date(System.currentTimeMillis()));
+                getStatus().setEndTime(new Date(System.currentTimeMillis()));
                 inUse = false;
             }
         }
@@ -356,7 +295,7 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
                     .fatalAndThrowException("Exception occured while obtaining sqlInterface: " + e.getMessage());
                 }
 
-                sqlConfig = sqlInterface.getConnectionDescriptor();
+                //sqlConfig = sqlInterface.getConnectionDescriptor();
                 tablePrefix = sqlInterface.getTablePrefix();
 
                 URNVersionPair currentURNVersion = new URNVersionPair(urn, version);
@@ -438,7 +377,7 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
                     message_.info("Finished updating index metadata...");
                 }
 
-                status_.setState(ProcessState.COMPLETED);
+                getStatus().setState(ProcessState.COMPLETED);
 
                 message_.info("Manifest process completed without error!");
 
@@ -446,12 +385,24 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
                 message_.fatal("Load failed due to exception." + e.getMessage());
 
             } finally {
-                if (status_.getState() == null || status_.getState().getType() != ProcessState.COMPLETED_TYPE) {
-                    status_.setState(ProcessState.FAILED);
+                if (getStatus().getState() == null || getStatus().getState().getType() != ProcessState.COMPLETED_TYPE) {
+                    getStatus().setState(ProcessState.FAILED);
                 }
-                status_.setEndTime(new Date(System.currentTimeMillis()));
+                getStatus().setEndTime(new Date(System.currentTimeMillis()));
                 inUse = false;
             }
         }
+    }
+
+    @Override
+    protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
     }
 }

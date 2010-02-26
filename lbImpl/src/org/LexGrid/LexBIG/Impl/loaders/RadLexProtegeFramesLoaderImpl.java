@@ -26,11 +26,14 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.RadlexProtegeFrames_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
+import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.ProtegeFrames;
+import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
  * Validates and/or loads RadLex content, provided by the
@@ -45,23 +48,7 @@ public class RadLexProtegeFramesLoaderImpl extends BaseLoader implements RadlexP
     private final static String description = "This loader loads the RadLex Protégé frame representation into the LexGrid format.";
 
     public RadLexProtegeFramesLoaderImpl() {
-        super.name_ = RadLexProtegeFramesLoaderImpl.name;
-        super.description_ = RadLexProtegeFramesLoaderImpl.description;
-    }
-
-    public static void register() throws LBParameterException, LBException {
-        ExtensionDescription temp = new ExtensionDescription();
-        temp.setExtensionBaseClass(RadLexProtegeFramesLoaderImpl.class.getInterfaces()[0].getName());
-        temp.setExtensionClass(RadLexProtegeFramesLoaderImpl.class.getName());
-        temp.setDescription(description);
-        temp.setName(name);
-        temp.setVersion(version_);
-
-        // I'm registering them this way to avoid the lexBig service manager
-        // API.
-        // If you are writing an add-on extension, you should register them
-        // through the proper interface.
-        ExtensionRegistryImpl.instance().registerLoadExtension(temp);
+        super();
     }
 
     public void validate(URI uri, int validationLevel) throws LBParameterException {
@@ -85,19 +72,33 @@ public class RadLexProtegeFramesLoaderImpl extends BaseLoader implements RadlexP
     }
 
     public void load(URI uri, boolean stopOnErrors, boolean async) throws LBParameterException, LBInvocationException {
-        validate(uri, 0);
-        setInUse();
-        ProtegeFrames pFrame = new ProtegeFrames(uri);
-        pFrame.setCodingSchemeManifest(this.getCodingSchemeManifest());
-        in_ = pFrame;
-        options_.add(new Option(Option.FAIL_ON_ERROR, new Boolean(stopOnErrors)));
-        status_ = new LoadStatus();
-        baseLoad(async);
-
+       //
     }
 
     public void finalize() throws Throwable {
         getLogger().loadLogDebug("Freeing RadLexProtegeFramesLoaderImpl");
         super.finalize();
+    }
+
+    @Override
+    protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+         return holder;
+    }
+
+    @Override
+    protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected ExtensionDescription buildExtensionDescription() {
+        ExtensionDescription temp = new ExtensionDescription();
+        temp.setExtensionBaseClass(RadLexProtegeFramesLoaderImpl.class.getInterfaces()[0].getName());
+        temp.setExtensionClass(RadLexProtegeFramesLoaderImpl.class.getName());
+        temp.setDescription(description);
+        temp.setName(name);
+        
+        return temp;
     }
 }
