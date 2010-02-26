@@ -19,7 +19,10 @@
 package org.LexGrid.LexBIG.Impl.Extensions;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Extendable;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 
 /**
  * The Class AbstractExtendable.

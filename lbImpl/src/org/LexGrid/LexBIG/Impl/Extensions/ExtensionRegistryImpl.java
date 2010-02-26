@@ -60,6 +60,39 @@ public class ExtensionRegistryImpl implements ExtensionRegistry {
     private Hashtable<String, ExtensionDescription> searchExtensions_ = new Hashtable<String, ExtensionDescription>();
     private Hashtable<String, Search> searchCache_ = new Hashtable<String, Search>();
 
+    private ExtensionRegistryImpl(){
+        for(ExtensionDescription ed :
+                MyClassLoader.instance().getExtensionDescriptions()){
+            if(ed.getExtensionBaseClass().equals(Search.class.getName())){
+                try {
+                    this.registerSearchExtension(ed);
+                } catch (LBParameterException e) {
+                   this.getLogger().warn("Could not load Extension: " + ed.getName(), e);
+                }
+            }
+            if(ed.getExtensionBaseClass().equals(Loader.class.getName())){
+                try {
+                    this.registerLoadExtension(ed);
+                } catch (LBParameterException e) {
+                   this.getLogger().warn("Could not load Extension: " + ed.getName(), e);
+                }
+            }
+            if(ed.getExtensionBaseClass().equals(GenericExtension.class.getName())){
+                try {
+                    this.registerGenericExtension(ed);
+                } catch (LBParameterException e) {
+                   this.getLogger().warn("Could not load Extension: " + ed.getName(), e);
+                }
+            }
+            if(ed.getExtensionBaseClass().equals(Filter.class.getName())){
+                try {
+                    this.registerFilterExtension(ed);
+                } catch (LBParameterException e) {
+                   this.getLogger().warn("Could not load Extension: " + ed.getName(), e);
+                }
+            }
+        }
+    }
 
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
