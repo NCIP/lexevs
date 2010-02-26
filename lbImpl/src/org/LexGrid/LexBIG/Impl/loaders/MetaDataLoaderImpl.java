@@ -396,8 +396,7 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
 
     @Override
     protected OptionHolder declareAllowedOptions(OptionHolder holder) {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        return holder;
     }
 
     @Override
