@@ -35,7 +35,6 @@ import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
-import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
@@ -65,8 +64,6 @@ import org.LexGrid.LexBIG.Impl.helpers.graph.GHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
-import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
@@ -79,38 +76,14 @@ import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.concepts.PropertyLink;
-import org.LexGrid.naming.Mappings;
-import org.LexGrid.naming.SupportedAssociation;
-import org.LexGrid.naming.SupportedAssociationQualifier;
-import org.LexGrid.naming.SupportedCodingScheme;
-import org.LexGrid.naming.SupportedContainerName;
-import org.LexGrid.naming.SupportedContext;
-import org.LexGrid.naming.SupportedDataType;
-import org.LexGrid.naming.SupportedDegreeOfFidelity;
-import org.LexGrid.naming.SupportedEntityType;
-import org.LexGrid.naming.SupportedHierarchy;
-import org.LexGrid.naming.SupportedLanguage;
-import org.LexGrid.naming.SupportedNamespace;
-import org.LexGrid.naming.SupportedProperty;
-import org.LexGrid.naming.SupportedPropertyLink;
-import org.LexGrid.naming.SupportedPropertyQualifier;
-import org.LexGrid.naming.SupportedPropertyQualifierType;
-import org.LexGrid.naming.SupportedPropertyType;
-import org.LexGrid.naming.SupportedRepresentationalForm;
-import org.LexGrid.naming.SupportedSortOrder;
-import org.LexGrid.naming.SupportedSource;
-import org.LexGrid.naming.SupportedSourceRole;
-import org.LexGrid.naming.SupportedStatus;
-import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.exceptions.UnexpectedInternalError;
-import org.lexevs.logging.Logger;
+import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.system.ResourceManager;
 
 /**
@@ -126,7 +99,7 @@ import org.lexevs.system.ResourceManager;
 public class SQLImplementedMethods {
     protected static Map<String, String> csNamespaceToName_ = new HashMap<String, String>();
     
-    protected static Logger getLogger() {
+    protected static LgLoggerIF getLogger() {
         return ResourceManager.instance().getLogger();
     }
 
