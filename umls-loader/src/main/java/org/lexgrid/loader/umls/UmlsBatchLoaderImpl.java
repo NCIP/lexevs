@@ -22,12 +22,12 @@ import java.io.File;
 import java.net.URI;
 import java.util.Properties;
 
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
+import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
-import org.LexGrid.LexBIG.Utility.Constructors;
 import org.lexevs.dao.database.spring.DynamicPropertyApplicationContext;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.system.ResourceManager;
 import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.loader.AbstractSpringBatchLoader;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
@@ -54,6 +54,12 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 
 	private static String SAB_OPTION = "SAB";
 	
+	public UmlsBatchLoaderImpl(){
+		super();
+		super.setDoIndexing(false);
+		super.setDoRegister(false);
+		super.setDoComputeTransitiveClosure(false);
+	}
 
 	/** The UML s_ loade r_ config. */
 	private String UMLS_LOADER_CONFIG = "umlsLoader.xml";
@@ -116,6 +122,7 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 
 	@Override
 	protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+		holder.setIsResourceUriFolder(true);
 		holder.getStringOptions().add(new StringOption(SAB_OPTION));
 		return holder;
 	}
@@ -138,5 +145,16 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 				codingSchemeIdSetter.getCodingSchemeUri(), 
 				codingSchemeIdSetter.getCodingSchemeVersion());
 		return new URNVersionPair[]{scheme};
+	}
+	
+	@Override
+	protected ExtensionDescription buildExtensionDescription() {
+		ExtensionDescription meta = new ExtensionDescription();
+		meta.setExtensionBaseClass(MetaBatchLoader.class.getName());
+		meta.setExtensionClass("org.lexgrid.loader.meta.MetaBatchLoaderImpl");
+		meta.setDescription(MetaBatchLoader.DESCRIPTION);
+		meta.setName(MetaBatchLoader.NAME);
+		meta.setVersion(MetaBatchLoader.VERSION);
+		return meta;
 	}
 }

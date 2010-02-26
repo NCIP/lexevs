@@ -35,6 +35,7 @@ public class MrhierAssocAndPropQualProcessor extends AbstractMrhierProcessor {
 	/** The mrconso staging dao. */
 	private MrconsoStagingDao mrconsoStagingDao;
 
+	/* TODO: Handle Mrhier
 	@Override
 	public String getInitalPathElementCode(Mrhier mrhier) {
 		return mrconsoStagingDao.getCodeFromAui(mrhier.getAui());
@@ -54,6 +55,7 @@ public class MrhierAssocAndPropQualProcessor extends AbstractMrhierProcessor {
 	public String getPropertyId(Mrhier mrhier, int pos) {
 		return this.getAuiFromPos(mrhier, pos);
 	}
+	*/
 
 	public MrconsoStagingDao getMrconsoStagingDao() {
 		return mrconsoStagingDao;

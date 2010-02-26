@@ -1,0 +1,763 @@
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:04:47,468 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:04:47,468 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:04:47,468 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:04:47,468 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:04:47,468 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:04:47,468 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:04:47,468 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 10:04:47,468 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:04:47,468 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:04:49,796 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 10:04:50,030 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:06:57,934 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:06:57,934 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:06:57,934 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:06:57,934 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:06:57,934 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:06:57,934 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:06:57,934 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 10:06:57,934 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:06:57,934 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:07:00,262 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 10:07:00,481 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:13:52,082 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:13:52,082 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:13:52,082 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:13:52,082 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:13:52,082 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:13:52,082 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:13:52,082 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 10:13:52,082 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:13:52,082 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:13:54,426 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 10:13:54,660 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:15:01,985 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:15:01,985 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:15:01,985 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:15:01,985 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:15:01,985 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:15:01,985 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:15:01,985 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 10:15:01,985 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:15:01,985 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:15:04,329 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 10:15:04,563 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:16:41,989 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:16:41,989 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:16:41,989 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:16:41,989 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:16:41,989 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:16:41,989 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:16:41,989 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 10:16:41,989 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:16:41,989 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:16:44,317 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 10:16:44,551 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:19:53,154 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:19:53,154 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:19:53,154 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:19:53,154 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:19:53,154 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:19:53,154 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:19:53,154 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 10:19:53,154 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:19:53,154 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:19:55,482 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 10:19:55,716 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:20:43,229 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:20:43,229 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:20:43,229 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:20:43,229 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:20:43,229 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:20:43,229 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:20:43,229 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 10:20:43,229 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:20:43,229 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:20:47,932 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 10:20:48,322 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:22:48,956 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:22:48,956 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:22:48,956 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:22:48,956 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:22:48,956 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:22:48,956 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:22:48,956 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 10:22:48,956 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:22:48,956 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:22:53,721 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 10:22:54,112 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:24:40,137 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:24:40,137 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:24:40,137 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:24:40,137 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:24:40,137 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:24:40,137 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:24:40,137 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 10:24:40,137 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:24:40,137 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:24:44,934 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 10:24:45,324 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:25:35,510 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:25:35,510 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:25:35,510 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:25:35,510 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:25:35,510 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:25:35,510 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:25:35,510 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 10:25:35,510 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:25:35,510 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:25:40,291 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 10:25:40,682 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:26:13,759 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:26:13,759 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:26:13,759 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:26:13,759 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:26:13,759 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:26:13,759 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:26:13,759 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 10:26:13,759 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:26:13,759 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:26:16,087 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 10:26:16,321 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:27:13,491 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:27:13,491 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:27:13,491 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:27:13,491 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:27:13,491 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:27:13,491 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:27:13,491 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 10:27:13,491 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:27:13,491 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:27:15,929 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 10:27:16,163 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:28:05,521 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:28:05,521 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:28:05,521 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:28:05,521 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:28:05,521 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:28:05,521 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 10:28:05,521 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 10:28:05,521 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:28:05,521 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 10:28:07,958 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 10:28:08,193 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_ERROR_LOGGER ERROR - 2010-02-22 10:28:11,099 - [LOG_ID 12] Unexpected error while removing a coding scheme
+org.LexGrid.LexBIG.Exceptions.LBParameterException: No coding scheme could be located for the values you provided Parameter: codingSchemeName, version Value: urn:oid:2.16.840.1.113883.6.110, 1993.bvt
+	at org.lexevs.system.ResourceManager.getInternalCodingSchemeNameForUserCodingSchemeName(ResourceManager.java:629)
+	at org.lexevs.system.ResourceManager.removeCodeSystem(ResourceManager.java:869)
+	at test.rrf.BaseTestRrf.removeAIRScheme(BaseTestRrf.java:102)
+	at org.lexgrid.loader.umls.UmlsBatchLoaderTest.testUmlsLoad(UmlsBatchLoaderTest.java:58)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:59)
+	at org.junit.internal.runners.MethodRoadie.runTestMethod(MethodRoadie.java:98)
+	at org.junit.internal.runners.MethodRoadie$2.run(MethodRoadie.java:79)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:87)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:77)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:42)
+	at org.junit.internal.runners.JUnit4ClassRunner.invokeTestMethod(JUnit4ClassRunner.java:88)
+	at org.junit.internal.runners.JUnit4ClassRunner.runMethods(JUnit4ClassRunner.java:51)
+	at org.junit.internal.runners.JUnit4ClassRunner$1.run(JUnit4ClassRunner.java:44)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)
+	at org.junit.internal.runners.JUnit4ClassRunner.run(JUnit4ClassRunner.java:42)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:46)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:35:35,711 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:35:35,711 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:35:35,711 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:35:35,711 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:35:35,711 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:35:35,711 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:35:35,711 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 12:35:35,711 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 12:35:35,711 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 12:35:38,039 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 12:35:38,274 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:36:49,304 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:36:49,304 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:36:49,304 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:36:49,304 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:36:49,304 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:36:49,304 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:36:49,304 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 12:36:49,304 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 12:36:49,304 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 12:36:51,632 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 12:36:51,866 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:37:26,022 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:37:26,022 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:37:26,022 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:37:26,022 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:37:26,022 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:37:26,022 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:37:26,022 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 12:37:26,022 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 12:37:26,022 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 12:37:28,350 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 12:37:28,584 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_ERROR_LOGGER ERROR - 2010-02-22 12:37:31,568 - [LOG_ID 12] Unexpected error while removing a coding scheme
+org.LexGrid.LexBIG.Exceptions.LBParameterException: No coding scheme could be located for the values you provided Parameter: codingSchemeName, version Value: urn:oid:2.16.840.1.113883.6.110, 1993.bvt
+	at org.lexevs.system.ResourceManager.getInternalCodingSchemeNameForUserCodingSchemeName(ResourceManager.java:629)
+	at org.lexevs.system.ResourceManager.removeCodeSystem(ResourceManager.java:869)
+	at test.rrf.BaseTestRrf.removeAIRScheme(BaseTestRrf.java:102)
+	at org.lexgrid.loader.umls.UmlsBatchLoaderTest.testUmlsLoad(UmlsBatchLoaderTest.java:58)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:59)
+	at org.junit.internal.runners.MethodRoadie.runTestMethod(MethodRoadie.java:98)
+	at org.junit.internal.runners.MethodRoadie$2.run(MethodRoadie.java:79)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:87)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:77)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:42)
+	at org.junit.internal.runners.JUnit4ClassRunner.invokeTestMethod(JUnit4ClassRunner.java:88)
+	at org.junit.internal.runners.JUnit4ClassRunner.runMethods(JUnit4ClassRunner.java:51)
+	at org.junit.internal.runners.JUnit4ClassRunner$1.run(JUnit4ClassRunner.java:44)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)
+	at org.junit.internal.runners.JUnit4ClassRunner.run(JUnit4ClassRunner.java:42)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:46)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:54:11,299 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:54:11,299 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:54:11,299 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:54:11,299 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:54:11,299 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:54:11,299 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:54:11,299 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 12:54:11,299 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 12:54:11,299 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 12:54:13,627 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 12:54:13,877 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:55:33,704 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:55:33,704 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:55:33,704 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:55:33,704 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:55:33,704 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:55:33,704 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:55:33,704 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 12:55:33,704 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 12:55:33,704 - [LOG_ID 9] Logging sql messages turned off.
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:56:21,844 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:56:21,844 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:56:21,844 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:56:21,844 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:56:21,844 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:56:21,844 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:56:21,844 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 12:56:21,844 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 12:56:21,844 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 12:56:24,172 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 12:56:24,390 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:58:27,138 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:58:27,154 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:58:27,154 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:58:27,154 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:58:27,154 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:58:27,154 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 12:58:27,154 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 12:58:27,154 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 12:58:27,154 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 12:58:29,591 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 12:58:29,825 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:01:48,306 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:01:48,306 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:01:48,306 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:01:48,306 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:01:48,306 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:01:48,306 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:01:48,306 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 13:01:48,306 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:01:48,306 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:01:50,759 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 13:01:51,009 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:07:30,068 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:07:30,068 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:07:30,068 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:07:30,068 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:07:30,068 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:07:30,068 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:07:30,068 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 13:07:30,068 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:07:30,068 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:07:34,802 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 13:07:35,208 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:16:44,885 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:16:44,885 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:16:44,885 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:16:44,901 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:16:44,901 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:16:44,901 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:16:44,901 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 13:16:44,901 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:16:44,901 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:16:49,713 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 13:16:50,119 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:18:07,134 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:18:07,134 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:18:07,134 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:18:07,134 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:18:07,134 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:18:07,134 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:18:07,134 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 13:18:07,134 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:18:07,134 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:18:11,837 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 13:18:12,243 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:20:54,037 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:20:54,037 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:20:54,037 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:20:54,037 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:20:54,037 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:20:54,037 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:20:54,037 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 13:20:54,037 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:20:54,037 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:20:58,755 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 13:20:59,146 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:27:56,685 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:27:56,685 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:27:56,685 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:27:56,685 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:27:56,685 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:27:56,685 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:27:56,685 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 13:27:56,685 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:27:56,685 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:28:01,607 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 13:28:02,013 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:34:19,881 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:34:19,881 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:34:19,881 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:34:19,881 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:34:19,881 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:34:19,881 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:34:19,881 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 13:34:19,881 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:34:19,881 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:34:22,240 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 13:34:22,474 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_ERROR_LOGGER ERROR - 2010-02-22 13:34:27,380 - [LOG_ID 12] Unexpected error while removing a coding scheme
+org.LexGrid.LexBIG.Exceptions.LBParameterException: No coding scheme could be located for the values you provided Parameter: codingSchemeName, version Value: urn:oid:2.16.840.1.113883.6.110, 1993.bvt
+	at org.lexevs.system.ResourceManager.getInternalCodingSchemeNameForUserCodingSchemeName(ResourceManager.java:629)
+	at org.lexevs.system.ResourceManager.removeCodeSystem(ResourceManager.java:869)
+	at test.rrf.BaseTestRrf.removeAIRScheme(BaseTestRrf.java:102)
+	at org.lexgrid.loader.umls.UmlsBatchLoaderTest.testUmlsLoad(UmlsBatchLoaderTest.java:58)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:59)
+	at org.junit.internal.runners.MethodRoadie.runTestMethod(MethodRoadie.java:98)
+	at org.junit.internal.runners.MethodRoadie$2.run(MethodRoadie.java:79)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:87)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:77)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:42)
+	at org.junit.internal.runners.JUnit4ClassRunner.invokeTestMethod(JUnit4ClassRunner.java:88)
+	at org.junit.internal.runners.JUnit4ClassRunner.runMethods(JUnit4ClassRunner.java:51)
+	at org.junit.internal.runners.JUnit4ClassRunner$1.run(JUnit4ClassRunner.java:44)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)
+	at org.junit.internal.runners.JUnit4ClassRunner.run(JUnit4ClassRunner.java:42)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:46)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:51:13,564 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:51:13,564 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:51:13,564 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:51:13,564 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:51:13,564 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:51:13,564 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:51:13,564 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 13:51:13,564 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:51:13,564 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:51:15,908 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 13:51:16,127 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:58:19,603 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:58:19,603 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:58:19,603 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:58:19,603 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:58:19,603 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:58:19,603 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 13:58:19,603 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 13:58:19,603 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:58:19,603 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 13:58:21,962 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 13:58:22,212 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_ERROR_LOGGER ERROR - 2010-02-22 13:58:27,212 - [LOG_ID 12] Unexpected error while removing a coding scheme
+org.LexGrid.LexBIG.Exceptions.LBParameterException: No coding scheme could be located for the values you provided Parameter: codingSchemeName, version Value: urn:oid:2.16.840.1.113883.6.110, 1993.bvt
+	at org.lexevs.system.ResourceManager.getInternalCodingSchemeNameForUserCodingSchemeName(ResourceManager.java:629)
+	at org.lexevs.system.ResourceManager.removeCodeSystem(ResourceManager.java:869)
+	at test.rrf.BaseTestRrf.removeAIRScheme(BaseTestRrf.java:102)
+	at org.lexgrid.loader.umls.UmlsBatchLoaderTest.testUmlsLoad(UmlsBatchLoaderTest.java:58)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:59)
+	at org.junit.internal.runners.MethodRoadie.runTestMethod(MethodRoadie.java:98)
+	at org.junit.internal.runners.MethodRoadie$2.run(MethodRoadie.java:79)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:87)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:77)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:42)
+	at org.junit.internal.runners.JUnit4ClassRunner.invokeTestMethod(JUnit4ClassRunner.java:88)
+	at org.junit.internal.runners.JUnit4ClassRunner.runMethods(JUnit4ClassRunner.java:51)
+	at org.junit.internal.runners.JUnit4ClassRunner$1.run(JUnit4ClassRunner.java:44)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)
+	at org.junit.internal.runners.JUnit4ClassRunner.run(JUnit4ClassRunner.java:42)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:46)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:16:11,671 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:16:11,702 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:16:11,702 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:16:11,702 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:16:11,702 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:16:11,702 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:16:11,702 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 19:16:11,702 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 19:16:11,702 - [LOG_ID 9] Logging sql messages turned off.
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:17:07,451 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:17:07,451 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:17:07,451 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:17:07,451 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:17:07,451 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:17:07,451 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:17:07,451 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 19:17:07,451 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 19:17:07,451 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 19:17:09,873 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 19:17:11,013 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:20:41,009 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:20:41,009 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:20:41,009 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:20:41,009 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:20:41,009 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:20:41,009 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:20:41,009 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 19:20:41,009 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 19:20:41,009 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 19:20:43,416 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 19:20:43,650 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:57:57,074 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:57:57,074 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:57:57,074 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:57:57,074 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:57:57,074 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:57:57,074 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 19:57:57,074 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 19:57:57,074 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 19:57:57,074 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 19:57:59,371 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 19:57:59,590 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:03:53,224 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:03:53,224 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:03:53,224 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:03:53,224 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:03:53,224 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:03:53,224 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:03:53,224 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 20:03:53,224 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 20:03:53,224 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 20:03:55,552 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 20:03:55,770 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:04:49,006 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:04:49,006 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:04:49,006 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:04:49,006 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:04:49,006 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:04:49,006 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:04:49,006 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 20:04:49,006 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 20:04:49,006 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 20:04:51,302 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 20:04:51,537 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:05:20,224 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:05:20,224 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:05:20,224 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:05:20,224 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:05:20,224 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:05:20,224 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:05:20,224 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 20:05:20,224 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 20:05:20,224 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 20:05:22,536 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 20:05:22,755 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:06:31,160 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:06:31,160 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:06:31,160 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:06:31,160 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:06:31,160 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:06:31,160 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:06:31,160 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 20:06:31,160 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 20:06:31,160 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 20:06:33,472 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 20:06:33,691 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:09:16,047 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:09:16,047 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:09:16,047 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:09:16,047 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:09:16,047 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:09:16,047 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:09:16,047 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 20:09:16,047 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 20:09:16,047 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 20:09:18,344 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 20:09:18,579 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:10:48,296 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:10:48,296 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:10:48,296 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:10:48,296 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:10:48,296 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:10:48,296 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-22 20:10:48,296 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-22 20:10:48,311 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 20:10:48,311 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-22 20:10:50,592 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-22 20:10:50,827 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:17:18,282 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:17:18,282 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:17:18,282 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:17:18,282 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:17:18,282 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:17:18,282 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:17:18,282 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-23 05:17:18,282 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 05:17:18,282 - [LOG_ID 9] Logging sql messages turned off.
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:19:25,342 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:19:25,342 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:19:25,342 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:19:25,342 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:19:25,342 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:19:25,342 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:19:25,342 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-23 05:19:25,342 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 05:19:25,342 - [LOG_ID 9] Logging sql messages turned off.
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:21:16,934 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:21:16,934 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:21:16,934 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:21:16,934 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:21:16,934 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:21:16,934 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:21:16,934 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-23 05:21:16,934 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 05:21:16,934 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 05:21:19,371 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-23 05:21:23,840 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:23:20,963 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:23:20,963 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:23:20,963 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:23:20,978 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:23:20,978 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:23:20,978 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:23:20,978 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-23 05:23:20,978 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 05:23:20,978 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 05:23:23,275 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-23 05:23:23,494 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:24:21,352 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:24:21,352 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:24:21,352 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:24:21,352 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:24:21,352 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:24:21,352 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:24:21,352 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-23 05:24:21,352 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 05:24:21,352 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 05:24:23,665 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-23 05:24:23,883 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_ERROR_LOGGER ERROR - 2010-02-23 05:24:31,352 - [LOG_ID 12] Unexpected error while removing a coding scheme
+org.LexGrid.LexBIG.Exceptions.LBParameterException: No coding scheme could be located for the values you provided Parameter: codingSchemeName, version Value: urn:oid:2.16.840.1.113883.6.110, 1993.bvt
+	at org.lexevs.system.ResourceManager.getInternalCodingSchemeNameForUserCodingSchemeName(ResourceManager.java:629)
+	at org.lexevs.system.ResourceManager.removeCodeSystem(ResourceManager.java:869)
+	at test.rrf.BaseTestRrf.removeAIRScheme(BaseTestRrf.java:102)
+	at org.lexgrid.loader.umls.UmlsBatchLoaderTest.testUmlsLoad(UmlsBatchLoaderTest.java:58)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:59)
+	at org.junit.internal.runners.MethodRoadie.runTestMethod(MethodRoadie.java:98)
+	at org.junit.internal.runners.MethodRoadie$2.run(MethodRoadie.java:79)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:87)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:77)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:42)
+	at org.junit.internal.runners.JUnit4ClassRunner.invokeTestMethod(JUnit4ClassRunner.java:88)
+	at org.junit.internal.runners.JUnit4ClassRunner.runMethods(JUnit4ClassRunner.java:51)
+	at org.junit.internal.runners.JUnit4ClassRunner$1.run(JUnit4ClassRunner.java:44)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)
+	at org.junit.internal.runners.JUnit4ClassRunner.run(JUnit4ClassRunner.java:42)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:46)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:50:52,618 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:50:52,634 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:50:52,634 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:50:52,634 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:50:52,634 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:50:52,634 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:50:52,634 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-23 05:50:52,634 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 05:50:52,634 - [LOG_ID 9] Logging sql messages turned off.
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:51:12,618 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:51:12,618 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:51:12,618 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:51:12,618 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:51:12,618 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:51:12,618 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:51:12,618 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-23 05:51:12,618 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 05:51:12,618 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 05:51:14,931 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-23 05:51:15,227 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:53:02,788 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:53:02,788 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:53:02,788 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:53:02,788 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:53:02,788 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:53:02,788 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:53:02,788 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-23 05:53:02,788 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 05:53:02,788 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 05:53:07,460 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-23 05:53:07,850 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:53:48,787 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:53:48,787 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:53:48,787 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:53:48,787 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:53:48,787 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:53:48,787 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 05:53:48,787 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-23 05:53:48,787 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 05:53:48,787 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 05:53:53,427 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-23 05:53:53,818 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:06:27,938 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:06:27,938 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:06:27,938 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:06:27,938 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:06:27,938 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:06:27,938 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:06:27,938 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-23 06:06:27,938 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 06:06:27,938 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 06:06:32,579 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-23 06:06:32,969 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:31:33,269 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:31:33,269 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:31:33,269 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:31:33,269 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:31:33,269 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:31:33,269 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:31:33,269 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-23 06:31:33,269 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 06:31:33,269 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 06:31:37,956 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-23 06:31:38,331 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:35:48,686 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:35:48,686 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:35:48,686 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:35:48,686 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:35:48,686 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:35:48,686 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:35:48,686 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-23 06:35:48,686 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 06:35:48,686 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 06:35:51,014 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-23 06:35:51,232 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:49:49,498 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:49:49,498 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:49:49,498 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:49:49,498 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:49:49,498 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:49:49,498 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:49:49,498 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-23 06:49:49,498 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 06:49:49,498 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 06:49:51,826 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-23 06:49:52,044 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:51:08,746 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:51:08,746 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:51:08,746 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:51:08,746 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:51:08,746 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:51:08,746 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:51:08,746 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-23 06:51:08,746 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 06:51:08,746 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 06:51:11,090 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-23 06:51:11,308 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:52:34,869 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:52:34,869 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:52:34,869 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:52:34,869 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:52:34,869 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:52:34,869 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 06:52:34,869 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-23 06:52:34,869 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 06:52:34,869 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 06:52:39,526 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-23 06:52:39,932 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 07:02:07,015 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 07:02:07,015 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 07:02:07,015 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 07:02:07,015 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 07:02:07,015 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 07:02:07,015 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-02-23 07:02:07,015 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-02-23 07:02:07,015 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 07:02:07,015 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-02-23 07:02:09,343 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-02-23 07:02:09,577 - [LOG_ID 11] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_ERROR_LOGGER ERROR - 2010-02-23 07:02:17,358 - [LOG_ID 12] Unexpected error while removing a coding scheme
+org.LexGrid.LexBIG.Exceptions.LBParameterException: No coding scheme could be located for the values you provided Parameter: codingSchemeName, version Value: urn:oid:2.16.840.1.113883.6.110, 1993.bvt
+	at org.lexevs.system.ResourceManager.getInternalCodingSchemeNameForUserCodingSchemeName(ResourceManager.java:629)
+	at org.lexevs.system.ResourceManager.removeCodeSystem(ResourceManager.java:869)
+	at test.rrf.BaseTestRrf.removeAIRScheme(BaseTestRrf.java:102)
+	at org.lexgrid.loader.umls.UmlsBatchLoaderTest.testUmlsLoad(UmlsBatchLoaderTest.java:58)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:59)
+	at org.junit.internal.runners.MethodRoadie.runTestMethod(MethodRoadie.java:98)
+	at org.junit.internal.runners.MethodRoadie$2.run(MethodRoadie.java:79)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:87)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:77)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:42)
+	at org.junit.internal.runners.JUnit4ClassRunner.invokeTestMethod(JUnit4ClassRunner.java:88)
+	at org.junit.internal.runners.JUnit4ClassRunner.runMethods(JUnit4ClassRunner.java:51)
+	at org.junit.internal.runners.JUnit4ClassRunner$1.run(JUnit4ClassRunner.java:44)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)
+	at org.junit.internal.runners.JUnit4ClassRunner.run(JUnit4ClassRunner.java:42)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:46)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)
