@@ -30,7 +30,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Export.OBO_Exporter;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.lexevs.exceptions.MissingResourceException;
-import org.lexevs.logging.Logger;
+import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.system.ResourceManager;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
@@ -49,7 +49,7 @@ public class OBOExport extends BaseExporter implements OBO_Exporter {
     public final static String name = "OBOExport";
     private final static String description = "This loader exports OBO files";
 
-    protected Logger getLogger() {
+    protected LgLoggerIF getLogger() {
         return ResourceManager.instance().getLogger();
     }
 
