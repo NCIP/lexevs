@@ -41,6 +41,7 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 	}
 	
 	protected void readCodingSchemeAliasesFromServer(){
+		aliasHolder.clear();
 		List<RegistryEntry> entries = registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
 		for(RegistryEntry entry : entries){
 			CodingScheme codingScheme = codingSchemeService.getCodingSchemeByUriAndVersion(
@@ -237,6 +238,7 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		RegistryEntry entry = registry.getCodingSchemeEntry(codingScheme);
 		entry.setTag(newTag);
 		registry.updateEntry(entry);
+		this.readCodingSchemeAliasesFromServer();
 		
 	}
 
@@ -248,20 +250,25 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		RegistryEntry entry = registry.getCodingSchemeEntry(codingScheme);
 		entry.setStatus(status.toString());
 		registry.updateEntry(entry);
+		this.readCodingSchemeAliasesFromServer();
 	}
 
+	@ClearCache
 	public void updateNonCodingSchemeResourceStatus(String uri,
 			CodingSchemeVersionStatus status) throws LBParameterException {
 		RegistryEntry entry = registry.getNonCodingSchemeEntry(uri);
 		entry.setStatus(status.toString());
 		registry.updateEntry(entry);
+		this.readCodingSchemeAliasesFromServer();
 	}
 
+	@ClearCache
 	public void updateNonCodingSchemeResourceTag(String uri, String newTag)
 			throws LBParameterException {
 		RegistryEntry entry = registry.getNonCodingSchemeEntry(uri);
 		entry.setTag(newTag);
 		registry.updateEntry(entry);
+		this.readCodingSchemeAliasesFromServer();
 	}
 
 	protected boolean isSingleTableMode(){
