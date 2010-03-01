@@ -60,7 +60,9 @@ abstract public class LexBIGServiceTestCase extends TestCase {
     protected final static String CAMERA_SCHEME_MANIFEST = "CameraManifest";
     protected final static String CAMERA_SCHEME_MANIFEST_URN = "CameraRegisteredName";
     protected final static String CAMERA_SCHEME_MANIFEST_VERSION = "CameraV1";
-
+    protected final static String OVARIANMASS_SCHEME_URN = "http://www.OntoReason.com/Ontologies/OvarianMass_SNOMED_ValueSets.owl";
+    protected final static String OVARIANMASS_SCHEME_VERSION = "UNASSIGNED";
+ 
     public final static String SAMPLE_META_VERSION = "200902_For_Test";
     /**
      * To be implemented by each descendant testcase.

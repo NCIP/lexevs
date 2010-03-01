@@ -115,6 +115,17 @@ public class CleanUpTest extends TestCase {
 
         lbsm.removeCodingSchemeVersion(a);
     }
+
+    public void testRemoveGenericOwlWithInstanceData() throws LBException {
+        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+
+        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+                "http://www.OntoReason.com/Ontologies/OvarianMass_SNOMED_ValueSets.owl",
+                "UNASSIGNED");
+        lbsm.deactivateCodingSchemeVersion(a, null);
+        lbsm.removeCodingSchemeVersion(a);
+    }
+    
     
     public void testRemoveOwlLoaderCompProps() throws LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);

@@ -215,6 +215,23 @@ public class LoadTestDataTest extends TestCase {
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
 
     }
+
+    public void testLoadGenericOwlWithInstanceData() throws InterruptedException, LBException {
+        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+
+        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
+        loader.load(new File("resources/testData/OvarianMass_SNOMED_ValueSets.owl").toURI(), null,  1, false, true);
+
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(1000);
+        }
+        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+
+    }
     
     public void testLoadCompPropsOwl() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
