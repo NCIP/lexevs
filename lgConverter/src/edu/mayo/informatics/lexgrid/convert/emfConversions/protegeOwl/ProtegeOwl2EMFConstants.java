@@ -13,7 +13,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at 
  * 
- * 		http://www.eclipse.org/legal/epl-v10.html
+ *      http://www.eclipse.org/legal/epl-v10.html
  * 
  */
 package edu.mayo.informatics.lexgrid.convert.emfConversions.protegeOwl;
@@ -102,14 +102,10 @@ public class ProtegeOwl2EMFConstants {
     public static final String ASSOC_EQUIVALENTCLASS_URI = OWL_NAMESPACE + "equivalentClass";
     public static final String ASSOC_EQUIVALENTPROPERTY = "equivalentProperty";
     public static final String ASSOC_EQUIVALENTPROPERTY_URI = OWL_NAMESPACE + "equivalentProperty";
-    public static final String ASSOC_HASTYPE = "type";
-    public static final String ASSOC_HASTYPE_URI = RDF_NAMESPACE + "type";
-    // This property will associate an OWL:individual to an OWL:concept.
-    public static final String ASSOC_INSTANCE = "instance";
-    // This property will associate an OWL:concept to an OWL:individual.
-    public static final String ASSOC_INSTANCE_INV = "isInstanceOf"; 
+    public static final String ASSOC_TYPE = "type";
+    public static final String ASSOC_TYPE_URI = RDF_NAMESPACE + "type";
+   
     // This property is manufactured for LexGrid import.
-    public static final String ASSOC_INSTANCEOF_URI = OWL_NAMESPACE + "individual";
     public static final String ASSOC_INVERSEOF = "inverseOf";
     public static final String ASSOC_INVERSEOF_URI = OWL_NAMESPACE + "inverseOf";
     public static final String ASSOC_RANGE = "range";

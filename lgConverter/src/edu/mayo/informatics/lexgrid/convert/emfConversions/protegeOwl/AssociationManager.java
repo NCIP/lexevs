@@ -40,7 +40,7 @@ public class AssociationManager {
     private Association disjointWith = null;
     private Association complementOf = null;
     private Association inverseOf = null;
-    private Association instanceOf = null;
+    private Association rdfType = null;
     private Association sameAs = null;
     private Association differentFrom = null;
     private Association allDifferent = null;
@@ -125,8 +125,8 @@ public class AssociationManager {
         return equivalentProperty;
     }
 
-    public Association getInstanceOf() {
-        return instanceOf;
+    public Association getRdfType() {
+        return rdfType;
     }
 
     public Association getInverseOf() {
@@ -366,19 +366,18 @@ public class AssociationManager {
      * 
      * @return Association
      */
-    protected Association initInstanceAssociation() {
+    protected Association initRdfTypeAssociation() {
         // Build the association definition ...
         Association assoc = RelationsFactory.eINSTANCE.createAssociation();
-        String code = ProtegeOwl2EMFConstants.ASSOC_INSTANCE;
+        String code = ProtegeOwl2EMFConstants.ASSOC_TYPE;
         assoc.setAssociationName(code);
         assoc.setEntityCode(code);
         assoc.setEntityCodeNamespace(RDFNames.RDF_PREFIX); // rdf:type
         assoc.setForwardName(code);
-        assoc.setReverseName(ProtegeOwl2EMFConstants.ASSOC_INSTANCE_INV);
         assoc.setIsSymmetric(Boolean.FALSE);
         assoc.setIsFunctional(Boolean.FALSE);
         assoc = addAssociation(emfRelationsContainer_Assoc, assoc);
-        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_INSTANCEOF_URI, code,
+        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_TYPE_URI, code,
                 false);
         return assoc;
     }
@@ -419,7 +418,7 @@ public class AssociationManager {
         disjointWith = initDisjointWithAssociation();
         complementOf = initComplementOfAssociation();
         inverseOf = initInverseOfAssociation();
-        instanceOf = initInstanceAssociation();
+        rdfType = initRdfTypeAssociation();
         sameAs = initSameAsAssociation();
         differentFrom = initDifferentFromAssociation();
         allDifferent = initAllDifferentAssociation();

@@ -99,10 +99,10 @@ import edu.stanford.smi.protegex.owl.model.OWLNAryLogicalClass;
 import edu.stanford.smi.protegex.owl.model.OWLNamedClass;
 import edu.stanford.smi.protegex.owl.model.OWLNames;
 import edu.stanford.smi.protegex.owl.model.OWLObjectProperty;
-import edu.stanford.smi.protegex.owl.model.OWLProperty;
 import edu.stanford.smi.protegex.owl.model.OWLQuantifierRestriction;
 import edu.stanford.smi.protegex.owl.model.OWLRestriction;
 import edu.stanford.smi.protegex.owl.model.OWLUnionClass;
+import edu.stanford.smi.protegex.owl.model.RDFIndividual;
 import edu.stanford.smi.protegex.owl.model.RDFProperty;
 import edu.stanford.smi.protegex.owl.model.RDFResource;
 import edu.stanford.smi.protegex.owl.model.RDFSClass;
@@ -121,7 +121,9 @@ import edu.stanford.smi.protegex.owl.model.RDFSNames;
  * @author Jyotishman Pathak (pathak.jyotishman@mayo.edu)
  * @author Pradip Kanjamala (kanjamala.pradip@mayo.edu)
  * 
- * For NCI, they want to see the OWL Object Properties that are also annotation properties loaded as Associations in the association container
+ *         For NCI, they want to see the OWL Object Properties that are also
+ *         annotation properties loaded as Associations in the association
+ *         container
  */
 public class ProtegeOwl2EMF {
     /* Define some global variables */
@@ -171,9 +173,8 @@ public class ProtegeOwl2EMF {
     PreferenceManager prefManager = null;
     PropertyComparator propertyComparator;
 
-    //Complex property parser
+    // Complex property parser
     private BasicXMLParser bxp;
-
 
     /**
      * Create a new instance for conversion.
@@ -195,7 +196,7 @@ public class ProtegeOwl2EMF {
      * Create a new instance for conversion.
      * 
      * @param owlURI
-     *             The OWL input file.
+     *            The OWL input file.
      * @param manifest
      *            The OWL manifest Object
      * @param messages
@@ -258,8 +259,8 @@ public class ProtegeOwl2EMF {
     public CodingScheme run() throws LgConvertException {
         // Honor preferences, if provided
         prefManager = new PreferenceManager(loadPrefs_);
-        //Set the property comparator
-        propertyComparator= new PropertyComparator(prefManager);
+        // Set the property comparator
+        propertyComparator = new PropertyComparator(prefManager);
 
         // Load the OWL Java model from source
         initOWLModelFromSource();
@@ -386,7 +387,7 @@ public class ProtegeOwl2EMF {
                 messages_.info("OWL classes processed: " + count);
             }
         }
-
+        messages_.info("Total OWL classes processed: " + count);
         // Now, process all the relationships/associations the
         // concept has with other concepts. Also, process all
         // the restrictions the concept has.
@@ -400,15 +401,15 @@ public class ProtegeOwl2EMF {
 
         for (Iterator namedClasses = owlModel_.getUserDefinedRDFSNamedClasses().iterator(); namedClasses.hasNext();) {
             RDFSNamedClass namedClass = (RDFSNamedClass) namedClasses.next();
-            String emfConceptCode = resolveConceptID(namedClass.getLocalName());
+            String emfConceptCode = resolveConceptID(namedClass);
             if (emfConceptCode != null) {
                 AssociationSource source = EMFCreateUtils.createAssociationSource(emfConceptCode, entityCode2NameSpace_
                         .get(emfConceptCode));
-                resolveConceptEquivalentClassRelations(source, namedClass);
-                resolveConceptSubClassOfRelations(source, namedClass);
-                resolveConceptDisjointWithRelations(source, namedClass);
-                resolveConceptComplementOfRelations(source, namedClass);
-                resolveConceptRDFProperties(source, namedClass);
+                resolveEquivalentClassRelations(source, namedClass);
+                resolveSubClassOfRelations(source, namedClass);
+                resolveDisjointWithRelations(source, namedClass);
+                resolveComplementOfRelations(source, namedClass);
+                resolveOWLObjectPropertyRelations(source, namedClass);
             }
         }
 
@@ -437,7 +438,7 @@ public class ProtegeOwl2EMF {
         // them
         // as well as find out additional associations (e.g,. From)
         for (Iterator individuals = owlModel_.getOWLIndividuals().iterator(); individuals.hasNext();) {
-            OWLIndividual individual = (OWLIndividual) individuals.next();
+            OWLIndividual individual = (OWLIndividual) individuals.next();            
             Instance emfInstance = resolveIndividual(individual);
             if (emfInstance != null) {
                 addEntity(emfInstance);
@@ -446,7 +447,7 @@ public class ProtegeOwl2EMF {
                 messages_.info("OWL individuals processed: " + count);
             count++;
         }
-
+        messages_.info("Total OWL individuals processed: " + count);
         // Now, process all the relationships/associations the
         // concept has with other concepts. Also, process all
         // the restrictions the concept has.
@@ -456,23 +457,25 @@ public class ProtegeOwl2EMF {
                 + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage()) + " Heap Delta:"
                 + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
 
+        // Pradip: This is not needed anymore...replaced with resolveRdfTypeRelations. We decided
+        // to stop using the manufactured relation instanceOf and substitute that with rdf:type
         // Step 1: once the instances have been registered, associate them to
         // specific classes.
-        for (Iterator namedClasses = owlModel_.getUserDefinedOWLNamedClasses().iterator(); namedClasses.hasNext();) {
-            RDFSClass namedClass = (RDFSClass) namedClasses.next();
-
-            String sourceCode = resolveConceptID(((RDFResource) namedClass).getLocalName());
-            String nameSpace = getNameSpace(namedClass.getNamespace());
-
-            AssociationSource source = EMFCreateUtils.createAssociationSource(sourceCode, nameSpace);
-
-            for (Iterator instances = namedClass.getInstances(false).iterator(); instances.hasNext();) {
-                RDFResource instance = (RDFResource) instances.next();
-                relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE_LITERAL, assocManager.getInstanceOf(),
-                        source, instance);
-            }
-
-        }
+//        for (Iterator namedClasses = owlModel_.getUserDefinedOWLNamedClasses().iterator(); namedClasses.hasNext();) {
+//            RDFSClass namedClass = (RDFSClass) namedClasses.next();
+//
+//            String sourceCode = resolveConceptID(namedClass);
+//            String nameSpace = getNameSpace(namedClass.getNamespace());
+//
+//            AssociationSource source = EMFCreateUtils.createAssociationSource(sourceCode, nameSpace);
+//
+//            for (Iterator instances = namedClass.getInstances(false).iterator(); instances.hasNext();) {
+//                RDFResource instance = (RDFResource) instances.next();
+//                relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE_LITERAL, assocManager.getRdfType(),
+//                        source, instance);
+//            }
+//
+//        }
 
         // Step 2: for every individual, we also need to have associations
         // with other individuals depending on the definition of the class.
@@ -494,24 +497,28 @@ public class ProtegeOwl2EMF {
          * for this. We will handle them as individualProperties as opposed to
          * associations.
          */
+        /** Updated 02/25/2010: Replaced "resolveIndividualProperties" method
+         * with resolveEntityProperties.
+         */
 
-        // Step 3: find out associations between instances (e.g.,
-        // allDifferentFrom)
+        // Process the associations (e.g.,
+        // rdf:type, DifferentFrom, SameAs, ObjectProperties)
         for (Iterator individuals = owlModel_.getOWLIndividuals().iterator(); individuals.hasNext();) {
             OWLIndividual individual = (OWLIndividual) individuals.next();
-            String individualName = getFromLastIndexOfColonOrHash(individual.getLocalName());
             String nameSpace = getNameSpace(individual.getNamespace());
-            AssociationSource source = EMFCreateUtils.createAssociationSource(resolveInstanceID(individualName),
-                    nameSpace);
-            for (Iterator differentFrom = individual.getDifferentFrom().iterator(); differentFrom.hasNext();) {
-                OWLIndividual different = (OWLIndividual) differentFrom.next();
-                relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE_LITERAL, assocManager.getDifferentFrom(),
-                        source, different);
+            String emfCode = resolveInstanceID(individual);
+            if (emfCode != null) {
+                AssociationSource source = EMFCreateUtils.createAssociationSource(emfCode,
+                        nameSpace);
+                resolveRdfTypeRelations(source, individual);
+                resolveDifferentFromRelations(source, individual);
+                resolveSameAsRelations(source, individual);
+                resolveOWLObjectPropertyRelations(source, individual);
             }
         }
 
         // Updated on 07/29/2008:
-        // Step 3(b): Process OWL:AllDifferent, which is not the same
+        // Process OWL:AllDifferent, which is not the same
         // as processing OWL:differentFrom. We need a separate logic
         // for this (e.g., Pizza ontology uses OWL:AllDifferent). Since
         // we need to create an association. Cui Tao suggested that we
@@ -526,20 +533,6 @@ public class ProtegeOwl2EMF {
             AssociationTarget target = EMFCreateUtils.createAssociationTarget(allDifferent.getBrowserText(),
                     nameSpaceTarget);
             relateAssociationSourceTarget(assocManager.getAllDifferent(), source, target);
-        }
-
-        // Step 4: find out associations between instances (e.g., sameAs)
-        for (Iterator individuals = owlModel_.getOWLIndividuals().iterator(); individuals.hasNext();) {
-            OWLIndividual individual = (OWLIndividual) individuals.next();
-            String individualName = getFromLastIndexOfColonOrHash(individual.getLocalName());
-            String nameSpace = getNameSpace(individual.getNamespace());
-            AssociationSource source = EMFCreateUtils.createAssociationSource(resolveInstanceID(individualName),
-                    nameSpace);
-            for (Iterator sameAs = individual.getSameAs().iterator(); sameAs.hasNext();) {
-                OWLIndividual same = (OWLIndividual) sameAs.next();
-                relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE_LITERAL, assocManager.getSameAs(), source,
-                        same);
-            }
         }
 
         // If we found at least one, register the supported entity type.
@@ -578,7 +571,7 @@ public class ProtegeOwl2EMF {
 
             // Get the appropriate association name initialized earlier
             // (initSupportedObjectProperties)
-            String propertyName = getFromLastIndexOfColonOrHash(prop.getLocalName());
+            String propertyName = getRDFResourceLocalName(prop);
             Association emfAssoc = assocManager.getAssociation(propertyName);
             String nameSpace = getNameSpace(prop.getNamespace());
             AssociationSource source = EMFCreateUtils.createAssociationSource(emfAssoc.getEntityCode(), nameSpace);
@@ -666,7 +659,8 @@ public class ProtegeOwl2EMF {
 
         for (Iterator props = owlModel_.getUserDefinedOWLDatatypeProperties().iterator(); props.hasNext();) {
             OWLDatatypeProperty prop = (OWLDatatypeProperty) props.next();
-            //Check if the data type property is an annotation property. We do not treat annotation properties as associations.
+            // Check if the data type property is an annotation property. We do
+            // not treat annotation properties as associations.
             if (prop.isAnnotationProperty()) {
                 continue;
             }
@@ -677,7 +671,7 @@ public class ProtegeOwl2EMF {
 
             // Get the appropriate association name initialized earlier
             // (initSupportedObjectProperties)
-            String propertyName = getFromLastIndexOfColonOrHash(prop.getLocalName());
+            String propertyName = getRDFResourceLocalName(prop);
             Association emfAssoc = assocManager.getAssociation(propertyName);
             String nameSpace = getNameSpace(prop.getNamespace());
             AssociationSource source = EMFCreateUtils.createAssociationSource(emfAssoc.getEntityCode(), nameSpace);
@@ -734,7 +728,7 @@ public class ProtegeOwl2EMF {
      */
     protected Concept resolveConcept(RDFResource rdfResource) {
 
-        String rdfName = getFromLastIndexOfColonOrHash(rdfResource.getLocalName());
+        String rdfName = getRDFResourceLocalName(rdfResource);
         if (isNoopNamespace(rdfName))
             return null;
 
@@ -765,7 +759,7 @@ public class ProtegeOwl2EMF {
         }
 
         // Resolve all the concept properties and add to entities.
-        resolveConceptProperties(emfConcept, rdfResource);
+        resolveEntityProperties(emfConcept, rdfResource);
         addEntity(emfConcept);
 
         // Remember the rdf to code mapping and return.
@@ -783,7 +777,7 @@ public class ProtegeOwl2EMF {
      */
     protected Entity resolveAssociation(RDFResource rdfResource) {
 
-        String rdfName = getFromLastIndexOfColonOrHash(rdfResource.getLocalName());
+        String rdfName = getRDFResourceLocalName(rdfResource);
         if (isNoopNamespace(rdfName))
             return null;
 
@@ -815,30 +809,30 @@ public class ProtegeOwl2EMF {
         }
 
         // Resolve all the concept properties and add to entities.
-        resolveConceptProperties(emfEntity, rdfResource);
+        resolveEntityProperties(emfEntity, rdfResource);
         addEntity(emfEntity);
 
         // Remember the rdf to code mapping and return.
         owlClassName2Conceptcode_.put(rdfName, emfEntity.getEntityCode());
 
         return emfEntity;
-    }    
-    
+    }
+
     /**
      * Defines EMF subClassOf relations based on OWL source.
      * 
      */
-    protected void resolveConceptSubClassOfRelations(AssociationSource source, RDFSNamedClass owlClass) {
+    protected void resolveSubClassOfRelations(AssociationSource source, RDFSNamedClass rdfsNamedClass) {
         // Process parent-child (rdfs:subClassOf) relationships
         // Does this concept represent the root of a concept branch that should
         // be centrally linked to the top node for subclass traversal?
-        if (isRootNode(owlClass)) {
+        if (isRootNode(rdfsNamedClass)) {
             AssociationTarget target = EMFCreateUtils.createAssociationTarget(ProtegeOwl2EMFConstants.ROOT_CODE, null);
             relateAssociationSourceTarget(assocManager.getSubClassOf(), source, target);
         }
 
         // Does this concept have any parents?
-        Collection superClassCollection = owlClass.getSuperclasses(false);
+        Collection superClassCollection = rdfsNamedClass.getSuperclasses(false);
         for (Iterator superClasses = superClassCollection.iterator(); superClasses.hasNext();) {
             RDFResource superClass = (RDFResource) superClasses.next();
             relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT_LITERAL, assocManager.getSubClassOf(), source,
@@ -855,8 +849,8 @@ public class ProtegeOwl2EMF {
      * Defines EMF equivalentClass relations based on OWL source.
      * 
      */
-    protected void resolveConceptEquivalentClassRelations(AssociationSource source, RDFSNamedClass owlClass) {
-        for (Iterator equivClasses = owlClass.getEquivalentClasses().iterator(); equivClasses.hasNext();) {
+    protected void resolveEquivalentClassRelations(AssociationSource source, RDFSNamedClass rdfsNamedClass) {
+        for (Iterator equivClasses = rdfsNamedClass.getEquivalentClasses().iterator(); equivClasses.hasNext();) {
             String emfCode = resolveAnonymousClass((OWLClass) equivClasses.next(), source);
             AssociationTarget target = EMFCreateUtils.createAssociationTarget(emfCode, entityCode2NameSpace_
                     .get(emfCode));
@@ -868,10 +862,10 @@ public class ProtegeOwl2EMF {
      * Defines EMF equivalentClass relations based on OWL source.
      * 
      */
-    protected void resolveConceptDisjointWithRelations(AssociationSource source, RDFSNamedClass owlClass) {
-        if (owlClass instanceof OWLNamedClass) {
+    protected void resolveDisjointWithRelations(AssociationSource source, RDFSNamedClass rdfsNamedClass) {
+        if (rdfsNamedClass instanceof OWLNamedClass) {
             OWLNamedClass newOwlClass = null;
-            newOwlClass = (OWLNamedClass) owlClass;
+            newOwlClass = (OWLNamedClass) rdfsNamedClass;
             for (Iterator disjointClasses = newOwlClass.getDisjointClasses().iterator(); disjointClasses.hasNext();) {
                 RDFResource disjointClass = (RDFResource) disjointClasses.next();
                 relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT_LITERAL, assocManager.getDisjointWith(),
@@ -884,10 +878,10 @@ public class ProtegeOwl2EMF {
      * Defines EMF complementOf relations based on OWL source.
      * 
      */
-    protected void resolveConceptComplementOfRelations(AssociationSource source, RDFSNamedClass owlClass) {
-        if (owlClass instanceof OWLComplementClass) {
+    protected void resolveComplementOfRelations(AssociationSource source, RDFSNamedClass rdfsNamedClass) {
+        if (rdfsNamedClass instanceof OWLComplementClass) {
             relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT_LITERAL, assocManager.getComplementOf(), source,
-                    owlClass);
+                    rdfsNamedClass);
         }
     }
 
@@ -895,22 +889,25 @@ public class ProtegeOwl2EMF {
      * Defines EMF class RDF properties.
      * 
      */
-    protected void resolveConceptRDFProperties(AssociationSource source, RDFSNamedClass owlClass) {
-        for (Iterator rdfProps = owlClass.getRDFProperties().iterator(); rdfProps.hasNext();) {
+    protected void resolveOWLObjectPropertyRelations(AssociationSource source, RDFResource rdfResource) {
+        for (Iterator rdfProps = rdfResource.getRDFProperties().iterator(); rdfProps.hasNext();) {
             RDFProperty rdfProp = (RDFProperty) rdfProps.next();
             if (rdfProp instanceof OWLObjectProperty) {
                 // Lookup the LexGrid association; ignore if this property does
                 // not match a defined association ...
-                String relationName = getFromLastIndexOfColonOrHash(rdfProp.getLocalName());
+                String relationName = getRDFResourceLocalName(rdfProp);
                 Association emfAssoc = assocManager.getAssociation(relationName);
                 // Determine the targets ...
-                Collection propVals = owlClass.getPropertyValues(rdfProp);
+                Collection propVals = rdfResource.getPropertyValues(rdfProp);
                 if (propVals != null) {
                     for (Iterator vals = propVals.iterator(); vals.hasNext();) {
                         Object val = vals.next();
                         if (val instanceof OWLNamedClass) {
                             relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT_LITERAL, emfAssoc, source,
                                     (OWLNamedClass) val);
+                        } else if (val instanceof OWLIndividual) {
+                            relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE_LITERAL, emfAssoc, source,
+                                    (OWLIndividual) val);
                         }
                     }
                 }
@@ -919,15 +916,53 @@ public class ProtegeOwl2EMF {
     }
 
     /**
-     * Resolve and assign all property information contained by the given RDF
-     * resource to the EMF concept.
+     * Defines EMF differentFrom relations based on OWL source.
      * 
-     * @param emfConcept
+     */
+    protected void resolveDifferentFromRelations(AssociationSource source, OWLIndividual individual) {
+
+        for (Iterator differentFrom = individual.getDifferentFrom().iterator(); differentFrom.hasNext();) {
+            OWLIndividual different = (OWLIndividual) differentFrom.next();
+            relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE_LITERAL, assocManager.getDifferentFrom(),
+                    source, different);
+        }
+
+    }
+
+    /**
+     * Defines EMF complementOf relations based on OWL source.
+     * 
+     */
+    protected void resolveSameAsRelations(AssociationSource source, OWLIndividual individual) {
+        for (Iterator sameAs = individual.getSameAs().iterator(); sameAs.hasNext();) {
+            OWLIndividual same = (OWLIndividual) sameAs.next();
+            relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE_LITERAL, assocManager.getSameAs(), source, same);
+        }
+    }
+
+    /**
+     * Defines EMF RDFType relations based on OWL source.
+     * 
+     */
+    protected void resolveRdfTypeRelations(AssociationSource source, OWLIndividual individual) {
+        for (Iterator iter = individual.getDirectTypes().iterator(); iter.hasNext();) {
+            Object item= iter.next();
+            if (item instanceof RDFSClass) {
+               RDFSClass typeClass= (RDFSClass) item; 
+               relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT_LITERAL, assocManager.getRdfType(), source, typeClass);
+            }
+        }
+    }    
+    /**
+     * Resolve and assign all property information contained by the given RDF
+     * resource to the EMF Entity.
+     * 
+     * @param emfEntity
      * @param rdfResource
      * 
      *            Last updated: 05/28/2008
      */
-    protected void resolveConceptProperties(Entity emfConcept, RDFResource rdfResource) {
+    protected void resolveEntityProperties(Entity emfEntity, RDFResource rdfResource) {
         String rdfName = rdfResource.getLocalName();
 
         // Temporary container for EMF properties.
@@ -943,7 +978,7 @@ public class ProtegeOwl2EMF {
         // Start with properties from RDF-defined property set ...
         for (Iterator props = rdfResource.getRDFProperties().iterator(); props.hasNext();) {
             RDFProperty prop = (RDFProperty) props.next();
-            String propName = getFromLastIndexOfColonOrHash(prop.getLocalName());
+            String propName = getRDFResourceLocalName(prop);
 
             // Do we care about this rdf property?
             if (isNoop(propName) || isNoopNamespace(propName))
@@ -966,11 +1001,11 @@ public class ProtegeOwl2EMF {
                 // Special case for handling concept code and status, which are
                 // set directly as attributes on the LexGrid concept.
                 if (propName.matches(prefManager.getMatchPattern_conceptCode())) {
-                    emfConcept.setEntityCode(resolvedText);
+                    emfEntity.setEntityCode(resolvedText);
                 } else if (emfLabel != null && emfLabel.matches(prefManager.getMatchPattern_conceptStatus())) {
-                    emfConcept.setStatus(resolvedText);
+                    emfEntity.setStatus(resolvedText);
                     if (resolvedText.matches(prefManager.getMatchPattern_inactiveStatus()))
-                        emfConcept.setIsActive(false);
+                        emfEntity.setIsActive(false);
                 }
                 // Otherwise instantiate a new EMF property and add the new
                 // property to the list to eventually add to the concept.
@@ -1007,7 +1042,7 @@ public class ProtegeOwl2EMF {
                 || ProtegeOwl2EMFConstants.PROPNAME_RDFS_LABEL.equalsIgnoreCase(prefManager
                         .getPrioritized_presentation_names().get(0)) || presentationCount == 0;
         if (generatePreferred) {
-            String entityDesc = emfConcept.getEntityDescription();
+            String entityDesc = emfEntity.getEntityDescription();
             sortedProps.add(EMFCreateUtils.createPresentation(generatePropertyID(++i),
                     rdfName.equals(entityDesc) ? ProtegeOwl2EMFConstants.PROPNAME_RDF_ID
                             : ProtegeOwl2EMFConstants.PROPNAME_RDFS_LABEL, entityDesc, true, emfSupportedMappings_));
@@ -1030,7 +1065,7 @@ public class ProtegeOwl2EMF {
 
                 // Entity description on concept should match preferred
                 // presentation.
-                emfConcept.setEntityDescription(((Presentation) prop).getValue().getValue());
+                emfEntity.setEntityDescription(((Presentation) prop).getValue().getValue());
 
                 // Remember that a preferred presentation was assigned ...
                 assignedPreferredPres = true;
@@ -1057,17 +1092,16 @@ public class ProtegeOwl2EMF {
 
         // Added on 01/14/2009 by Satya as Concept and its
         // properties can be created for OWLObjectProperty's as well.
-        if (!(rdfResource instanceof OWLProperty)) {
-            RDFSNamedClass myOWLNamedClass = (RDFSNamedClass) rdfResource;
-            for (Iterator classProps = myOWLNamedClass.getAssociatedProperties().iterator(); classProps.hasNext();) {
+        if (rdfResource instanceof RDFSNamedClass) {
+            RDFSNamedClass rdfsNamedClass = (RDFSNamedClass) rdfResource;
+            for (Iterator classProps = rdfsNamedClass.getAssociatedProperties().iterator(); classProps.hasNext();) {
                 RDFProperty prop = (RDFProperty) classProps.next();
                 if (prop instanceof OWLDatatypeProperty) {
                     String propertyName = getFromLastIndexOfColonOrHash(prop.getBrowserText());
 
                     RDFSDatatype range = prop.getRangeDatatype();
                     if (range != null) {
-                        String propertyRangeName = range.getLocalName();
-                        propertyRangeName = getFromLastIndexOfColonOrHash(propertyRangeName);
+                        String propertyRangeName = getRDFResourceLocalName(range);
                         Property emfProp = EMFCreateUtils.createProperty(generatePropertyID(++i), propertyName,
                                 propertyRangeName, emfSupportedMappings_);
                         sortedProps.add(emfProp);
@@ -1079,7 +1113,7 @@ public class ProtegeOwl2EMF {
         // Now add all the sorted properties to the concept.
         for (Iterator emfProps = sortedProps.iterator(); emfProps.hasNext();) {
             Property emfProp = (Property) emfProps.next();
-            EntitiesUtil.addProperty(emfConcept, emfProp);
+            EntitiesUtil.addProperty(emfEntity, emfProp);
         }
 
     }
@@ -1088,7 +1122,7 @@ public class ProtegeOwl2EMF {
      * Defines an EMF instance.
      */
     protected Instance resolveIndividual(RDFResource rdfResource) {
-        String rdfName = getFromLastIndexOfColonOrHash(rdfResource.getLocalName());
+        String rdfName = getRDFResourceLocalName(rdfResource);
 
         if (isNoopNamespace(rdfName))
             return null;
@@ -1118,7 +1152,7 @@ public class ProtegeOwl2EMF {
         // Updated 05/28/2008: handle the individual OWLObjectProperties
         // and OWLDatatypeProperties. Essentially, both are represented
         // as instanceProperties.
-        resolveIndividualProperties(emfInstance, rdfResource);
+        resolveEntityProperties(emfInstance, rdfResource);
 
         // Remember the rdf to code mapping and return.
         owlInstanceName2code_.put(rdfName, emfInstance.getEntityCode());
@@ -1150,7 +1184,7 @@ public class ProtegeOwl2EMF {
             myClass = (RDFSNamedClass) userDefinedClasses.next();
 
             if (rdfResource.hasRDFType(myClass, false)) {
-                String className = getFromLastIndexOfColonOrHash(myClass.getLocalName());
+                String className = getRDFResourceLocalName(myClass);
 
                 // Add this information as an instanceProperty.
                 Property emfProp = EMFCreateUtils.createProperty(generatePropertyID(++i), "isInstanceOf", className,
@@ -1168,7 +1202,7 @@ public class ProtegeOwl2EMF {
         // Start with properties from RDF-defined property set ...
         for (Iterator props = rdfResource.getRDFProperties().iterator(); props.hasNext();) {
             RDFProperty prop = (RDFProperty) props.next();
-            String propName = getFromLastIndexOfColonOrHash(prop.getLocalName());
+            String propName = getRDFResourceLocalName(prop);
             // Do we care about this rdf property?
             if (isNoop(propName) || isNoopNamespace(propName))
                 continue;
@@ -1331,14 +1365,13 @@ public class ProtegeOwl2EMF {
                     // Register the source as supported if not already
                     // defined.
                     emfSupportedMappings_.registerSupportedSource(text, rdfNamespace + text, text, null, false);
-                }
-                else if (tag.matches("language")) {
+                } else if (tag.matches("language")) {
                     emfProp.setLanguage(text);
 
                     // Register the source as supported if not already
                     // defined.
-                    emfSupportedMappings_.registerSupportedLanguage(
-                        text, ProtegeOwl2EMFConstants.LANG_URI + ':' + text, text, false);
+                    emfSupportedMappings_.registerSupportedLanguage(text,
+                            ProtegeOwl2EMFConstants.LANG_URI + ':' + text, text, false);
                 }
                 // specific to the new complex props implementation
                 else if (prefManager.isComplexProps_isDbxRefSource()
@@ -1511,7 +1544,7 @@ public class ProtegeOwl2EMF {
         // node...
         RDFProperty onProp = restriction.getOnProperty();
         if (onProp != null) {
-            String assocName = getFromLastIndexOfColonOrHash(onProp.getLocalName());
+            String assocName = getRDFResourceLocalName(onProp);
             Association opAssoc = assocManager.getAssociation(assocName);
             if (opAssoc != null) {
                 // to be intialized later depending on the need.
@@ -1525,7 +1558,7 @@ public class ProtegeOwl2EMF {
                     RDFResource myresource = rest.getFiller();
                     if (myresource instanceof OWLNamedClass) {
                         // Set the OWL Class as the range
-                        targetCode = resolveConceptID(myresource.getLocalName());
+                        targetCode = resolveConceptID(myresource);
                         targetNameSpace = getNameSpace(myresource.getNamespace());
                     } else if (myresource instanceof OWLClass) {
                         targetCode = resolveAnonymousClass((OWLClass) myresource, assocSource);
@@ -1539,7 +1572,7 @@ public class ProtegeOwl2EMF {
 
                     if (hasValueObj instanceof RDFResource) {
                         RDFResource hasValueResource = (RDFResource) hasValueObj;
-                        targetCode = resolveConceptID(hasValueResource.getLocalName());
+                        targetCode = resolveConceptID(hasValueResource);
                         targetNameSpace = getNameSpace(hasValueResource.getNamespace());
                     } else if ((hasValueObj instanceof RDFSLiteral)) {
                         // Updated on 09/23/08: need to store
@@ -1561,7 +1594,7 @@ public class ProtegeOwl2EMF {
                             rpty = restriction.getOWLModel().createRDFProperty("owl:onClass");
                         Object value = restriction.getPropertyValue(rpty);
                         if ((value != null) && (value instanceof OWLNamedClass)) {
-                            targetCode = resolveConceptID(((OWLNamedClass) value).getLocalName());
+                            targetCode = resolveConceptID((OWLNamedClass) value);
                             targetNameSpace = getNameSpace(((OWLNamedClass) value).getNamespace());
                         }
                     } catch (Exception ex1) {
@@ -1921,15 +1954,17 @@ public class ProtegeOwl2EMF {
 
         for (Iterator props = owlModel_.getRDFProperties().iterator(); props.hasNext();) {
             RDFProperty prop = (RDFProperty) props.next();
-            String propertyName = getFromLastIndexOfColonOrHash(prop.getLocalName());
+            String propertyName = getRDFResourceLocalName(prop);
             // Correlate first assigned label to the primary ID.
             String label = resolveLabel(prop);
             if (isNoopNamespace(label))
                 continue;
-            //For NCI we do not want the A type properties i.e Properties that are both an 
-            //annotation property and an  Object Property to be treated as a property.
-            //They are associations that go into the association container
-            if (prop.isAnnotationProperty() && ! (prop instanceof OWLObjectProperty)) {
+            // For NCI we do not want the A type properties i.e Properties that
+            // are both an
+            // annotation property and an Object Property to be treated as a
+            // property.
+            // They are associations that go into the association container
+            if (prop.isAnnotationProperty() && !(prop instanceof OWLObjectProperty)) {
                 addToSupportedPropertyAndMap(label, propertyName, prop);
                 owlDatatypeName2label_.put(propertyName, label);
             } else if (prop instanceof OWLDatatypeProperty) {
@@ -1976,7 +2011,7 @@ public class ProtegeOwl2EMF {
 
     }
 
-    protected void addToSupportedPropertyAndMap(String label, String propertyName, RDFProperty prop) {
+    protected void addToSupportedPropertyAndMap(String label, String propertyName, RDFProperty rdfProp) {
         /*
          * This may be somewhat incorrect, because NOT all datatype properties
          * are supportedProperties for a given ontology. This needs to be fixed
@@ -1994,8 +2029,8 @@ public class ProtegeOwl2EMF {
             emfClass = CommontypesPackage.eINSTANCE.getProperty();
 
         // Register in supported properties
-        emfSupportedMappings_.registerSupportedProperty(propertyName, prop.getNamespace() + propertyName, propertyName,
-                false);
+        emfSupportedMappings_.registerSupportedProperty(propertyName, rdfProp.getNamespace() + propertyName,
+                propertyName, false);
 
         // Register the ID to EMF class mapping; default to
         // generic property class if not mapped above.
@@ -2015,7 +2050,7 @@ public class ProtegeOwl2EMF {
         for (Iterator props = owlModel_.getRDFProperties().iterator(); props.hasNext();) {
             RDFProperty prop = (RDFProperty) props.next();
             if (prop instanceof OWLDatatypeProperty) {
-                String propertyName = getFromLastIndexOfColonOrHash(prop.getLocalName());
+                String propertyName = getRDFResourceLocalName(prop);
 
                 // See if the label is not part of the namespace
                 String label = resolveLabel(prop);
@@ -2024,7 +2059,7 @@ public class ProtegeOwl2EMF {
                     RDFResource range = prop.getRangeDatatype();
                     if (range != null) {
                         String typeURI = range.getURI();
-                        String rangeName = getFromLastIndexOfColonOrHash(range.getLocalName());
+                        String rangeName = getRDFResourceLocalName(range);
                         if (isNoop(typeURI)) {
                             typeURI = range.getNamespace() + rangeName;
                         }
@@ -2053,9 +2088,9 @@ public class ProtegeOwl2EMF {
 
         // Iterate through available OWL object properties and register
         // associations for later reference ...
-        for (Iterator props = owlModel_.getUserDefinedOWLObjectProperties().iterator(); props.hasNext(); ) {
+        for (Iterator props = owlModel_.getUserDefinedOWLObjectProperties().iterator(); props.hasNext();) {
             OWLObjectProperty owlProp = (OWLObjectProperty) props.next();
-            String propertyName = getFromLastIndexOfColonOrHash(owlProp.getLocalName());
+            String propertyName = getRDFResourceLocalName(owlProp);
             // Correlate all assigned labels to the primary ID.
             // String label = propertyName;
             Collection rdfLabels = owlProp.getLabels();
@@ -2087,19 +2122,18 @@ public class ProtegeOwl2EMF {
             }
 
             // Add to supported associations ...
-           
-            emfSupportedMappings_.registerSupportedAssociation(propertyName, owlProp.getNamespace() + propertyName,
-                        label, false);
 
-                // Update 05/13/2008: I am adding this, even though
-                // mostly supportedProperties
-                // only contain information about datatype properties.
-                // Pradip: taking it out.....not sure why we need to add this to
-                // supportedProperties
-                // emfSupportedMappings_.registerSupportedProperty(propertyName,
-                // prop.getNamespace() + propertyName,
-                // propertyName, false);
-           
+            emfSupportedMappings_.registerSupportedAssociation(propertyName, owlProp.getNamespace() + propertyName,
+                    label, false);
+
+            // Update 05/13/2008: I am adding this, even though
+            // mostly supportedProperties
+            // only contain information about datatype properties.
+            // Pradip: taking it out.....not sure why we need to add this to
+            // supportedProperties
+            // emfSupportedMappings_.registerSupportedProperty(propertyName,
+            // prop.getNamespace() + propertyName,
+            // propertyName, false);
 
             // Add the information that this is an object property
             // association, and not an datatype property.
@@ -2170,15 +2204,15 @@ public class ProtegeOwl2EMF {
      * Determines if a given concept is a root node or not.
      * 
      * @author
-     * @param owlClass
+     * @param rdfsNamedClass
      * @return
      */
-    protected boolean isRootNode(RDFSNamedClass owlClass) {
+    protected boolean isRootNode(RDFSNamedClass rdfsNamedClass) {
         if (prefManager.getMatchRootName() != null) {
-            String conceptName = resolveConceptID(owlClass.getLocalName());
+            String conceptName = resolveConceptID(rdfsNamedClass);
             return prefManager.getMatchRootName().matcher(conceptName).matches();
         } else {
-            return owlClass.getSuperclasses(false).contains(owlModel_.getOWLThingClass());
+            return rdfsNamedClass.getSuperclasses(false).contains(owlModel_.getOWLThingClass());
         }
     }
 
@@ -2221,14 +2255,14 @@ public class ProtegeOwl2EMF {
      * corresponding EMF properties to the given association.
      * 
      * @param assoc
-     * @param prop
+     * @param rdfProp
      */
-    protected void resolveAssociationProperty(Association assoc, RDFProperty prop) {
+    protected void resolveAssociationProperty(Association assoc, RDFProperty rdfProp) {
         int i = 0;
-        for (Iterator itr = prop.getRDFProperties().iterator(); itr.hasNext();) {
+        for (Iterator itr = rdfProp.getRDFProperties().iterator(); itr.hasNext();) {
             RDFProperty property = (RDFProperty) itr.next();
-            String propName = getFromLastIndexOfColonOrHash(property.getLocalName());
-            String resolvedText = resolveRDFText(prop, property);
+            String propName = getRDFResourceLocalName(property);
+            String resolvedText = resolveRDFText(rdfProp, property);
             Property pro = EMFCreateUtils.createProperty(generatePropertyID(++i), propName, resolvedText,
                     emfSupportedMappings_);
             assoc.getProperty().add(pro);
@@ -2254,7 +2288,7 @@ public class ProtegeOwl2EMF {
                 return getFromLastIndexOfColonOrHash(rdfName);
             }
         }
-        rdfName = getFromLastIndexOfColonOrHash(rdf.getLocalName());
+        rdfName = getRDFResourceLocalName(rdf);
         return rdfName;
     }
 
@@ -2269,8 +2303,10 @@ public class ProtegeOwl2EMF {
         Object o = rdfProperty;
         if (o instanceof RDFProperty)
             o = rdfResource.getPropertyValue((RDFProperty) o);
-        if (o instanceof OWLNamedClass)
-            o = ((OWLNamedClass) o).getBrowserText();
+        if (o instanceof RDFSClass)
+            o = ((RDFSClass) o).getBrowserText();
+        if (o instanceof RDFIndividual)
+            o = ((RDFIndividual) o).getBrowserText();
         return (o == null) ? StringUtils.EMPTY : o.toString();
     }
 
@@ -2292,17 +2328,17 @@ public class ProtegeOwl2EMF {
     }
 
     /**
-     * Return the concept identifier mapped to the given rdf class name, or the
+     * Return the concept identifier mapped to the given rdf resource, or the
      * null if no mapping exists.
      * 
-     * @param rdfName
+     * @param rdfResource
      * @return java.lang.String
      */
-    protected String resolveConceptID(String rdfName) {
-        rdfName = getFromLastIndexOfColonOrHash(rdfName);
-        String mapped = owlClassName2Conceptcode_.get(rdfName);
-        if (mapped != null)
-            return mapped;
+    protected String resolveConceptID(RDFResource rdfResource) {
+        String rdfLocalName = getRDFResourceLocalName(rdfResource);
+        String code = owlClassName2Conceptcode_.get(rdfLocalName);
+        if (code != null)
+            return code;
         // Updated on 05/28/08: if the concept ID is null,
         // it means that either the concept has not been processed yet
         // OR this is an anonymous concept. So, we need to return null
@@ -2311,17 +2347,18 @@ public class ProtegeOwl2EMF {
     }
 
     /**
-     * Return the instance identifier mapped to the given rdf class name, or the
-     * rdf class name if no mapping exists.
+     * Return the instance identifier mapped to the given rdf resource name, or
+     * the rdf class name if no mapping exists.
      * 
-     * @param rdfName
+     * @param rdfResource
      * @return java.lang.String
      */
-    protected String resolveInstanceID(String rdfName) {
-        String mapped = owlInstanceName2code_.get(rdfName);
-        if (mapped != null)
-            return mapped;
-        return rdfName;
+    protected String resolveInstanceID(RDFResource rdfResource) {
+        String rdfLocalName = getRDFResourceLocalName(rdfResource);
+        String code = owlInstanceName2code_.get(rdfLocalName);
+        if (code != null)
+            return code;
+        return null;
     }
 
     protected AssociationSource addAssocSrc2Assoc(Association assoc, AssociationSource assocSource) {
@@ -2357,6 +2394,16 @@ public class ProtegeOwl2EMF {
             str = str.substring(str.lastIndexOf("#") + 1);
         }
         return str;
+    }
+
+    protected String getRDFResourceLocalName(RDFResource rdfResource) {
+        String rdfLocalName;
+        if (StringUtils.isNotBlank(rdfResource.getLocalName())) {
+            rdfLocalName = getFromLastIndexOfColonOrHash(rdfResource.getLocalName());
+        } else {
+            rdfLocalName = getFromLastIndexOfColonOrHash(rdfResource.getName());
+        }
+        return rdfLocalName;
     }
 
     protected String getNameSpace(String str) {
@@ -2430,11 +2477,11 @@ public class ProtegeOwl2EMF {
      */
     protected void relateAssocSourceWithRDFResourceTarget(EntityTypes type, Association assoc,
             AssociationSource source, RDFResource tgtResource) {
-        String targetID = getFromLastIndexOfColonOrHash(tgtResource.getLocalName());
+        String targetID = getRDFResourceLocalName(tgtResource);
         if (type == EntityTypes.CONCEPT_LITERAL) {
-            targetID = resolveConceptID(targetID);
+            targetID = resolveConceptID(tgtResource);
         } else if (type == EntityTypes.INSTANCE_LITERAL) {
-            targetID = resolveInstanceID(targetID);
+            targetID = resolveInstanceID(tgtResource);
         }
 
         if (StringUtils.isNotBlank(targetID)) {
