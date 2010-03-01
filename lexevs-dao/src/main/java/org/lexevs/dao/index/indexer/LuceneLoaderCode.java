@@ -414,7 +414,7 @@ public abstract class LuceneLoaderCode {
         indexerService_.createIndex(simpleIndexName_, analyzer_);
     }
     
-    protected String reverseTermsInPropertyValue(String propertyValue){
+    public String reverseTermsInPropertyValue(String propertyValue){
         StringBuffer buffer = new StringBuffer();
         String[] terms = propertyValue.split(" ");
         for(int i=0;i<terms.length;i++){
