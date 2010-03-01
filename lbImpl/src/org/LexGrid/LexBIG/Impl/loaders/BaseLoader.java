@@ -49,16 +49,14 @@ import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
-import org.lexevs.dao.index.service.IndexService;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.registry.WriteLockManager;
-import org.lexevs.registry.service.Registry;
-import org.lexevs.registry.utility.RegistryUtility;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.constants.SystemVariables;
+import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.mayo.informatics.lexgrid.convert.indexer.SQLIndexer;
@@ -235,11 +233,12 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                             + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage())
                             + " Heap Delta:" + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
 
+                    //TODO: Fix Transitive table building and indexing
                     //doTransitiveAndIndex(codingSchemeNames, sci_);
-                    IndexService indexService = LexEvsServiceLocator.getInstance().getIndexService();
-                    for(AbsoluteCodingSchemeVersionReference ref : codingSchemeReferences) {
-                       indexService.createIndex(ref);
-                    }
+                    //IndexService indexService = LexEvsServiceLocator.getInstance().getIndexService();
+                    //for(AbsoluteCodingSchemeVersionReference ref : codingSchemeReferences) {
+                    //   indexService.createIndex(ref);
+                    //}
                     
                     md_.info("After Indexing");
                     snap = SimpleMemUsageReporter.snapshot();
@@ -366,9 +365,13 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     }
 
     protected void register(URNVersionPair[] loadedCodingSchemes) throws Exception {
-         Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
+         SystemResourceService service = LexEvsServiceLocator.getInstance().getSystemResourceService();
          for(URNVersionPair pair : loadedCodingSchemes ){
-             registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry(pair.getUrn(), pair.getVersion()));
+            if(service.containsCodingSchemeResource(pair.getUrn(), pair.getVersion())) {
+                service.updateCodingSchemeResourceStatus(Constructors.
+                        createAbsoluteCodingSchemeVersionReference(pair.getUrn(), pair.getVersion()),
+                        CodingSchemeVersionStatus.INACTIVE);
+            }
          }
     }
 
