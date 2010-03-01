@@ -23,8 +23,8 @@ import org.LexGrid.LexBIG.Extensions.Query.Search;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 
-import edu.mayo.informatics.lexgrid.convert.indexer.LuceneLoaderCode;
 
 /**
  * The Class LiteralSearch.

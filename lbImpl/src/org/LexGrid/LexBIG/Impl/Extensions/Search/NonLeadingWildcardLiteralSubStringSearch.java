@@ -26,8 +26,8 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 
-import edu.mayo.informatics.lexgrid.convert.indexer.LuceneLoaderCode;
 
 /**
  * The Class NonLeadingWildcardLiteralSubStringSearch.

@@ -28,6 +28,7 @@ import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.ResourceManager;
@@ -38,7 +39,6 @@ import edu.mayo.informatics.indexer.lucene.analyzers.FieldSkippingAnalyzer;
 import edu.mayo.informatics.indexer.lucene.analyzers.NormAnalyzer;
 import edu.mayo.informatics.indexer.lucene.analyzers.SnowballAnalyzer;
 import edu.mayo.informatics.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
-import edu.mayo.informatics.lexgrid.convert.indexer.LuceneLoaderCode;
 import edu.mayo.informatics.lexgrid.convert.utility.Constants;
 
 /**

@@ -29,8 +29,8 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 
-import edu.mayo.informatics.lexgrid.convert.indexer.LuceneLoaderCode;
 
 /**
  * The Class WeightedDoubleMetaphoneSearch.java.

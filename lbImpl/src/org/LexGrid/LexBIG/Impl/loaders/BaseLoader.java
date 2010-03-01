@@ -49,11 +49,11 @@ import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+import org.lexevs.dao.index.service.IndexService;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.logging.messaging.LgMessageDirectorIF;
 import org.lexevs.registry.WriteLockManager;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.utility.RegistryUtility;
@@ -236,6 +236,10 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                             + " Heap Delta:" + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
 
                     //doTransitiveAndIndex(codingSchemeNames, sci_);
+                    IndexService indexService = LexEvsServiceLocator.getInstance().getIndexService();
+                    for(AbsoluteCodingSchemeVersionReference ref : codingSchemeReferences) {
+                       indexService.createIndex(ref);
+                    }
                     
                     md_.info("After Indexing");
                     snap = SimpleMemUsageReporter.snapshot();
