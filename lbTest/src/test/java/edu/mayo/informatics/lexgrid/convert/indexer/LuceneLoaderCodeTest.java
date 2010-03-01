@@ -19,6 +19,7 @@
 package edu.mayo.informatics.lexgrid.convert.indexer;
 
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 
 /**
  * The Class LuceneLoaderCodeTest.
