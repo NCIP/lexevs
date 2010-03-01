@@ -36,6 +36,7 @@ import org.LexGrid.emf.commonTypes.EntityTypes;
 import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 
 import com.sun.jndi.ldap.ctl.PagedResultsControl;
 import com.sun.jndi.ldap.ctl.PagedResultsResponseControl;

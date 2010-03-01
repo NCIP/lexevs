@@ -35,6 +35,7 @@ import org.LexGrid.util.sql.GenericSQLModifier;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 
 import edu.mayo.informatics.lexgrid.convert.utility.Constants;
 
