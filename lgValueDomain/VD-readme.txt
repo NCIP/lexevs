@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------
-1. Software and Hardware requirements.
+1. Software and Hardware requirements. 
 ----------------------------------------------------------------------------------
 
 	i) This extension requires LexEVS release 5.01 or above.
