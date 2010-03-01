@@ -2,6 +2,7 @@ package org.lexevs.locator;
 
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.index.service.IndexService;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.service.SystemResourceService;
@@ -21,6 +22,7 @@ public class LexEvsServiceLocator {
 	private Registry registry;
 	private LexEvsDatabaseOperations lexEvsDatabaseOperations;
 	private SystemResourceService systemResourceService;
+	private IndexService indexService;
 	
 	public static synchronized LexEvsServiceLocator getInstance(){
 		if(serviceLocator == null){
@@ -75,5 +77,17 @@ public class LexEvsServiceLocator {
 		throws BeansException {
 
 		serviceLocator = (LexEvsServiceLocator) applicationContext.getBean(BEAN_NAME);	
+	}
+
+
+
+	public void setIndexService(IndexService indexService) {
+		this.indexService = indexService;
+	}
+
+
+
+	public IndexService getIndexService() {
+		return indexService;
 	}
 }

@@ -41,7 +41,7 @@ public class CompassEntityDaoTest extends LexEvsDaoTestBase {
 		
 		entity.addPresentation(pres);
 		
-		compassEntityDao.insertResource(builder.buildIndexableResource(entity));
+		
 		
 		List<IndexedProperty> results = compassEntityDao.query("IndexedProperty.value:testContent");
 		
@@ -74,7 +74,7 @@ public class CompassEntityDaoTest extends LexEvsDaoTestBase {
 		entity.addPresentation(pres);
 		entity.addPresentation(pres2);
 		
-		compassEntityDao.insertResource(builder.buildIndexableResource(entity));
+		
 		
 		CompassBooleanQueryBuilder builder = compass.queryBuilder().bool();
 		builder.addMust(this.compass.queryBuilder().fuzzy("IndexedProperty.value", "testContent"));

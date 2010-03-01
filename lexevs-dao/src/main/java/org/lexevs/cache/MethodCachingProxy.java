@@ -9,6 +9,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.lexevs.cache.annotation.Cacheable;
+import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -19,7 +20,7 @@ public class MethodCachingProxy implements InitializingBean {
 	
 	private int cacheSize = 50;
 	
-	private Logger logger;
+	private LgLoggerIF logger;
 	
 	private Map<String,Map<String,Object>> caches;
 	
@@ -87,11 +88,11 @@ public class MethodCachingProxy implements InitializingBean {
 		return cacheSize;
 	}
 
-	public Logger getLogger() {
+	public LgLoggerIF getLogger() {
 		return logger;
 	}
 
-	public void setLogger(Logger logger) {
+	public void setLogger(LgLoggerIF logger) {
 		this.logger = logger;
 	}
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap>
+<sqlMap namespace="Entity">
 
 	<typeAlias alias="entity" type="org.LexGrid.concepts.Entity" />
 
@@ -9,17 +9,29 @@
 		<result property="entityCode" column="entityCode" />
 		<result property="entityCodeNamespace" column="entityCodeNamespace" />
 	</resultMap>
-
-	<select id="getEntityByCodeAndNamespace" parameterClass="map" resultMap="entityResult">
+	
+	<sql id="getEntityFragment">
 		SELECT
 			entityCode,
 			entityCodeNamespace
 		FROM
 			$prefix$entity
+	</sql>
+	
+
+	<select id="getEntityByCodeAndNamespace" parameterClass="map" resultMap="Entity.entityResult">
+		<include refid="getEntityFragment"/>
 		WHERE
 			entityCode = #entityCode#
 		AND
 			entityCodeNamespace = #entityCodeNamespace#
+     </select>
+     
+     <select id="getAllEntitiesOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
+     	resultMap="Entity.entityResult">
+		<include refid="getEntityFragment"/>
+		WHERE
+			codingSchemeGuid = #param1#
      </select>
      
      <insert id="insertEntity" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertEntityBean">

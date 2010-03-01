@@ -22,13 +22,18 @@ import org.junit.Test;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 
 	@Resource
 	private IbatisCodingSchemeDao ibatisCodingSchemeDao;
 	
+	@Resource
+	private DataSourceTransactionManager dataSourceTransactionManager;
+
 	@Test
 	@Transactional
 	public void testInsertCodingScheme() throws SQLException{
@@ -120,22 +125,29 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	@Test
 	@Transactional
 	public void testInsertURIMap() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		CodingScheme codingScheme = new CodingScheme();
+		codingScheme.setCodingSchemeName("name");
+		codingScheme.setCodingSchemeURI("uri");
+		final String csKey = ibatisCodingSchemeDao.insertCodingScheme(codingScheme);
+		
 		SupportedCodingScheme cs = new SupportedCodingScheme();
 		cs.setContent("supported cs");
 		cs.setIsImported(true);
 		cs.setLocalId("cs");
 		cs.setUri("uri://test");
+
+		ibatisCodingSchemeDao.insertURIMap(csKey, cs);
 		
-		ibatisCodingSchemeDao.insertURIMap("cs-guid", cs);
 		
-		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.queryForObject("Select * from csSupportedAttrib", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				
 				assertNotNull(rs.getString(1));
-				assertEquals(rs.getString(2), "cs-guid");
+				assertEquals(rs.getString(2), csKey);
 				assertEquals(rs.getString(3), SQLTableConstants.TBLCOLVAL_SUPPTAG_CODINGSCHEME);
 				assertEquals(rs.getString(4), "cs");
 				assertEquals(rs.getString(5), "uri://test");
@@ -150,13 +162,17 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	@Test
 	@Transactional
 	public void testInsertCodingSchemeSource() throws SQLException{
+		CodingScheme codingScheme = new CodingScheme();
+		codingScheme.setCodingSchemeName("name");
+		codingScheme.setCodingSchemeURI("uri");
+		final String csKey = ibatisCodingSchemeDao.insertCodingScheme(codingScheme);
 		
 		Source source = new Source();
 		source.setContent("a source");
 		source.setSubRef("sub ref");
 		source.setRole("source role");
 		
-		ibatisCodingSchemeDao.insertCodingSchemeSource("cs-guid", source);
+		ibatisCodingSchemeDao.insertCodingSchemeSource(csKey, source);
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
@@ -165,7 +181,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				
 				assertNotNull(rs.getString(1));
-				assertEquals(rs.getString(2), "cs-guid");
+				assertEquals(rs.getString(2), csKey);
 				assertEquals(rs.getString(3), SQLTableConstants.TBLCOLVAL_SOURCE);
 				assertEquals(rs.getString(4), "a source");
 				assertEquals(rs.getString(5), "sub ref");
@@ -179,10 +195,14 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	@Test
 	@Transactional
 	public void testInsertCodingSchemeLocalName() throws SQLException{
+		CodingScheme codingScheme = new CodingScheme();
+		codingScheme.setCodingSchemeName("name");
+		codingScheme.setCodingSchemeURI("uri");
+		final String csKey = ibatisCodingSchemeDao.insertCodingScheme(codingScheme);
 		
 		final String localName = "LocalName";
 		
-		ibatisCodingSchemeDao.insertCodingSchemeLocalName("cs-guid", localName);
+		ibatisCodingSchemeDao.insertCodingSchemeLocalName(csKey, localName);
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
@@ -191,7 +211,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				
 				assertNotNull(rs.getString(1));
-				assertEquals(rs.getString(2), "cs-guid");
+				assertEquals(rs.getString(2), csKey);
 				assertEquals(rs.getString(3), SQLTableConstants.TBLCOLVAL_LOCALNAME);
 				assertEquals(rs.getString(4), localName);
 
@@ -295,7 +315,6 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	@Test
 	@Transactional
 	public void testGetCodingSchemeMultipleLocalNames() throws SQLException{
-		
 		CodingScheme cs = new CodingScheme();
 		
 		cs.setCodingSchemeName("csName");
@@ -317,7 +336,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertTrue(ArrayUtils.contains(returnedCs.getLocalName(), "localName1"));
 		assertTrue(ArrayUtils.contains(returnedCs.getLocalName(), "localName2"));
 	}
-	
+
 	@Test
 	@Transactional
 	public void testGetCodingSchemeSource() throws SQLException{
@@ -334,14 +353,29 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		Source source = new Source();
 		source.setContent("a source");
 		
+		Source source2 = new Source();
+		source2.setContent("another source");
+		
 		cs.addSource(source);
+		cs.addSource(source2);
 		
 		ibatisCodingSchemeDao.insertCodingScheme(cs);
+		
+		CodingScheme css = new CodingScheme();
+		
+		css.setCodingSchemeName("csName");
+		css.setCodingSchemeURI("uri2");
+		css.setRepresentsVersion("1.3");
+		css.setFormalName("csFormalName");
+		css.setDefaultLanguage("lang");
+		css.setApproxNumConcepts(22l);
+		
+		ibatisCodingSchemeDao.insertCodingScheme(css);
 		
 		CodingScheme returnedCs = ibatisCodingSchemeDao.getCodingSchemeByNameAndVersion("csName", "1.2");
 		
 		assertNotNull(returnedCs);
-		assertEquals(returnedCs.getSourceCount(), 1);
+		assertEquals(2, returnedCs.getSourceCount());
 	}
 	
 	@Test

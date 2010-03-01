@@ -128,6 +128,11 @@
 	<bean id="associationService" 
 		class="org.lexevs.dao.database.service.association.VersionableEventAssociationService"
 		parent="abstractService"/>
+		
+	<bean id="indexedEntityBuilder" class="org.lexevs.dao.index.model.compass.v20.IndexedEntityBuilder">
+		<property name="compass" ref="compass"/>
+	</bean>
+	
 
 	<bean id="compass" class="org.compass.spring.LocalCompassBean">
 		<property name="compassSettings">
@@ -362,6 +367,7 @@
 		<property name="databaseServiceManager" ref="databaseServiceManager"/>
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="registry" ref="registry"/>
+		<property name="indexService" ref="compassIndexService"/>
 	</bean>
 	
 	<bean id="loggingBean" class="org.lexevs.logging.LoggingBean" abstract="true">
@@ -371,6 +377,24 @@
 	
 	<bean id="codingSchemeRegisteringListener" class="org.lexevs.dao.database.service.listener.CodingSchemeRegisteringListener">
 		<property name="registry" ref="registry"/>
+	</bean>
+	
+	<bean id="indexInterface" class="org.lexevs.dao.index.factory.IndexInterfaceFactory">
+		<property name="systemVariables" ref="systemVariables"/> 
+	</bean>
+	
+	<bean id="compassIndexService" class="org.lexevs.dao.index.service.CompassIndexService">
+		<property name="indexCreator" ref="entityBatchingIndexCreator"/>
+	</bean>
+	
+	<bean id="entityBatchingIndexCreator" class="org.lexevs.dao.index.indexer.EntityBatchingIndexCreator">
+		<property name="entityService" ref="entityService"/>
+		<property name="indexer" ref="luceneLoaderCodeIndexer"/>
+	</bean>
+	
+	<bean id="luceneLoaderCodeIndexer" class="org.lexevs.dao.index.indexer.LuceneLoaderCodeIndexer">
+		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
+		<property name="systemVariables" ref="systemVariables"/> 
 	</bean>
 	
 </beans>

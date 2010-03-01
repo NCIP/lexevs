@@ -3,6 +3,7 @@ package org.lexevs.dao.database.ibatis.property;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
@@ -34,7 +35,7 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	
 	@Autowired
 	private IbatisEntityDao ibatisEntityDao;
-	
+
 	@Test
 	public void insertPresentation(){
 		final Timestamp effectiveDate = new Timestamp(1l);
@@ -334,7 +335,43 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 			}
 		});
 	}
+
+	@Test
+	public void getPropertyByParent(){
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		List<Property> props = ibatisPropertyDao.getAllPropertiesOfParent("csguid", "eguid", PropertyType.ENTITY);
+		
+		assertEquals(1, props.size());
+	}
 	
+	@Test
+	public void getPresentationPropertyByParent(){
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		List<Property> props = ibatisPropertyDao.getAllPropertiesOfParent("csguid", "eguid", PropertyType.ENTITY);
+		
+		assertEquals(1, props.size());
+		
+		assertTrue(props.get(0) instanceof Presentation);
+	}
+
 	@Test
 	public void deleteAllEntityPropertiesOfCodingScheme(){
 

@@ -52,6 +52,7 @@ import org.lexevs.dao.index.connection.IndexInterface;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.Logger;
 import org.lexevs.registry.WriteLockManager;
 import org.lexevs.registry.service.XmlRegistry;
@@ -80,7 +81,7 @@ public class ResourceManager implements SystemResourceService {
     private DataSource dataSource;
     private DatabaseType databaseType;
 
-    private Logger logger_;
+    private LgLoggerIF logger_;
 
     public static final String codingSchemeVersionSeparator_ = "[:]";
 
@@ -441,7 +442,7 @@ public class ResourceManager implements SystemResourceService {
         return systemVars_;
     }
 
-    public Logger getLogger() {
+    public LgLoggerIF getLogger() {
         return logger_;
     }
 
@@ -1162,7 +1163,7 @@ public class ResourceManager implements SystemResourceService {
 		systemVars_ = systemVars;
 	}
 
-	public void setLogger(Logger logger) {
+	public void setLogger(LgLoggerIF logger) {
 		logger_ = logger;
 	}
 

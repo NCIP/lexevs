@@ -3,6 +3,51 @@
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap>
 
+	<typeAlias alias="property" type="org.LexGrid.commonTypes.Property" />
+	<typeAlias alias="presentation" type="org.LexGrid.concepts.Presentation"/>
+	
+
+	<resultMap id="propertyResult" class="property">
+		<result property="propertyName" column="propertyName" />	
+		<result property="propertyId" column="propertyId" />
+		<result property="propertyType" column="propertyType" />
+		<result property="language" column="language" />
+		<result property="value.content" column="propertyValue" />
+		<result property="value.dataType" column="format" />
+		<discriminator javaType="string" column="propertyType">
+			<subMap value="presentation" resultMap="presentationResult" />
+		</discriminator>
+		
+	</resultMap>
+	
+	<resultMap id="presentationResult" class="presentation" extends="propertyResult" >
+		<result property="isPreferred" column="isPreferred" />
+	</resultMap>
+	
+
+  	<select id="getPropertiesByParent" resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+  		SELECT
+  			referenceType,
+  			propertyId,
+  			propertyType,
+  			propertyName,
+  			language,
+  			format,
+  			isPreferred,
+  			matchIfNoContext,
+  			degreeOfFidelity,
+  			representationalForm,
+  			propertyValue
+  		FROM
+  			$prefix$property
+  		WHERE
+			referenceType = #param1#
+		AND 
+			referenceGuid = #param2#
+  			
+  	
+  	</select>
+
 	<delete id="deleteEntityPropertiesByCodingSchemeId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
 			$prefix$property

@@ -17,6 +17,7 @@ import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
 import org.lexevs.dao.database.ibatis.entity.parameter.InsertEntityBean;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.property.IbatisPropertyDao;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
@@ -31,16 +32,18 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
-	public static String INSERT_ENTITY_SQL = "insertEntity";
-	public static String INSERT_ENTITY_TYPE_SQL = "insertEntityType";
-	public static String GET_ENTITY_BY_CODE_AND_NAMESPACE_SQL = "insertEntity";
+	public static String ENTITY_NAMESPACE = "Entity.";
+	public static String INSERT_ENTITY_SQL = ENTITY_NAMESPACE + "insertEntity";
+	public static String INSERT_ENTITY_TYPE_SQL = ENTITY_NAMESPACE + "insertEntityType";
+	public static String GET_ENTITY_BY_CODE_AND_NAMESPACE_SQL = ENTITY_NAMESPACE + "insertEntity";
+	public static String GET_ENTITIES_OF_CODING_SCHEME_SQL = ENTITY_NAMESPACE + "getAllEntitiesOfCodingScheme";
+	
 	public static String ENTITY_CODE_PARAM = SQLTableConstants.TBLCOL_ENTITYCODE;
 	public static String ENTITY_CODE_NAMESPACE_PARAM = SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE;
 	public static String ENTITY = "entity";
 	public static String ENTITY_ID_PARAM = "entityId";
 	
 	private IbatisVersionsDao ibatisVersionsDao;
-
 
 	private IbatisPropertyDao ibatisPropertyDao;
 
@@ -95,6 +98,20 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 						codingSchemeId, entryStateId, entryStateId, entity));
 
 		return entityId;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Entity> getAllEntitiesOfCodingScheme(String codingSchemeId, int start, int pageSize) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		if(pageSize < 0) {
+			pageSize = Integer.MAX_VALUE;
+		}
+		
+		return 
+			this.getSqlMapClientTemplate().queryForList(GET_ENTITIES_OF_CODING_SCHEME_SQL, 
+					new PrefixedParameter(prefix, codingSchemeId),
+					start, pageSize);
 	}
 	
 	@SuppressWarnings("unchecked")

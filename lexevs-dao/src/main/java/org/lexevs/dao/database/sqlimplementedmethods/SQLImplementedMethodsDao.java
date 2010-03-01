@@ -76,7 +76,7 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.exceptions.UnexpectedInternalError;
-import org.lexevs.logging.Logger;
+import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.system.ResourceManager;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -94,7 +94,7 @@ public class SQLImplementedMethodsDao {
 	protected static Map<String, String> csNamespaceToName_ = new HashMap<String, String>();
 
 	private ResourceManager resourceManager;
-	private Logger logger;
+	private LgLoggerIF logger;
 	
 	@Transactional
 	public CodingScheme buildCodingScheme(String internalCodingSchemeName, String internalVersionString)
@@ -1907,11 +1907,11 @@ public class SQLImplementedMethodsDao {
 		return resourceManager;
 	}
 
-	public void setLogger(Logger logger) {
+	public void setLogger(LgLoggerIF logger) {
 		this.logger = logger;
 	}
 
-	public Logger getLogger() {
+	public LgLoggerIF getLogger() {
 		return logger;
 	}
 }

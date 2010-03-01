@@ -3,12 +3,16 @@ package org.lexevs.dao.database.ibatis.entity;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.junit.Before;
 import org.junit.Test;
+import org.lexevs.dao.database.ibatis.codingscheme.IbatisCodingSchemeDao;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,6 +26,25 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 
 	@Autowired
 	private IbatisEntityDao ibatisEntityDao;
+	
+	@Autowired
+	private IbatisCodingSchemeDao ibatisCodingSchemeDao;
+	
+	private String csId;
+	
+	@Before
+	public void insertCodingScheme() {
+	CodingScheme cs = new CodingScheme();
+		
+		cs.setCodingSchemeName("csName");
+		cs.setCodingSchemeURI("uri");
+		cs.setRepresentsVersion("1.2");
+		cs.setFormalName("csFormalName");
+		cs.setDefaultLanguage("lang");
+		cs.setApproxNumConcepts(22l);
+		
+		csId = ibatisCodingSchemeDao.insertCodingScheme(cs);
+	}
 	
 	@Test
 	public void insertEntity(){
@@ -40,7 +63,6 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		entity.setEntityDescription(ed);
 		entity.addEntityType("type");
 		
-
 		entity.setOwner("entity owner");
 		
 		entity.setStatus("testing");
@@ -53,14 +75,14 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		es.setRelativeOrder(23l);
 		entity.setEntryState(es);
 		
-		final String id = ibatisEntityDao.insertEntity("fake-codingScheme-guid", entity);
+		final String id = ibatisEntityDao.insertEntity(csId, entity);
 	
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		final String[] keys = (String[])template.queryForObject("Select * from Entity", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				String id = rs.getString(1);
-				assertTrue(rs.getString(2).equals("fake-codingScheme-guid"));
+				assertTrue(rs.getString(2).equals(csId));
 				assertTrue(rs.getString(3).equals("code"));
 				assertTrue(rs.getString(4).equals("namespace"));
 				assertTrue(rs.getBoolean(5) == true);
@@ -107,5 +129,69 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 				return null;
 			}
 		});
+	}
+	
+	@Test
+	@Transactional
+	public void testGetAllEntitiesOfCodingScheme() {
+		int limit = 1000;
+		
+		for(int i=0;i<limit;i++) {
+			Entity entity = new Entity();
+			entity.setEntityCode("code" + String.valueOf(i));
+			entity.setEntityCodeNamespace("namespace");
+			entity.setIsDefined(true);
+			entity.setIsAnonymous(true);
+			entity.setIsActive(false);
+			
+			this.ibatisEntityDao.insertEntity(csId, entity);
+		}
+		
+		List<Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme(csId, 0, -1);
+		
+		assertEquals(limit, entities.size());
+		
+	}
+	
+	@Test
+	@Transactional
+	public void testGetAllEntitiesOfCodingSchemeWithLimit() {
+		int limit = 1000;
+		
+		for(int i=0;i<limit;i++) {
+			Entity entity = new Entity();
+			entity.setEntityCode("code" + String.valueOf(i));
+			entity.setEntityCodeNamespace("namespace");
+			entity.setIsDefined(true);
+			entity.setIsAnonymous(true);
+			entity.setIsActive(false);
+			
+			this.ibatisEntityDao.insertEntity(csId, entity);
+		}
+		
+		List<Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme(csId, 0, 10);
+		
+		assertEquals(10, entities.size());
+	}
+	
+	@Test
+	@Transactional
+	public void testGetAllEntitiesOfCodingSchemeWithLimitAndStart() {
+		int limit = 1000;
+		
+		for(int i=0;i<limit;i++) {
+			Entity entity = new Entity();
+			entity.setEntityCode("code" + String.valueOf(i));
+			entity.setEntityCodeNamespace("namespace");
+			entity.setIsDefined(true);
+			entity.setIsAnonymous(true);
+			entity.setIsActive(false);
+			
+			this.ibatisEntityDao.insertEntity(csId, entity);
+		}
+		
+		List<Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme(csId, 100, 100);
+		
+		assertEquals(100, entities.size());
 	}
 }

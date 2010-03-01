@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap>
+<sqlMap namespace="CodingScheme">
 
 	<resultMap id="sourceResult" class="org.LexGrid.commonTypes.Source">
 		<result property="content" column="attributeValue" />
@@ -9,6 +9,11 @@
 		<result property="role" column="role" />
 	</resultMap>
 
+
+	<resultMap id="localNameResult" class="string">
+		<result property="java.lang.String" column="attributeValue" />
+	</resultMap>
+	
 	<select id="getSourceListByCodingSchemeId" 
 			parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
 			resultMap="sourceResult">

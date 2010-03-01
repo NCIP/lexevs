@@ -311,12 +311,7 @@ ON codingScheme (codingSchemeName)
 CREATE INDEX idx_csNameVersion
 ON codingScheme (codingSchemeName, representsVersion)
 ;
-ALTER TABLE csMultiAttrib
-	ADD CONSTRAINT UQ_csMultiAttrib_codingScheme UNIQUE (codingSchemeGuid)
-;
-CREATE INDEX idx_csMultiAttrib
-ON csMultiAttrib (codingSchemeGuid, attributeType)
-;
+
 ALTER TABLE csSupportedAttrib
 	ADD CONSTRAINT UQ_mapping UNIQUE (codingSchemeGuid, supportedAttributeTag, id)
 ;

@@ -2,13 +2,13 @@ package org.lexevs.logging;
 
 public class LoggingBean {
 
-	private Logger logger;
+	private LgLoggerIF logger;
 
-	public void setLogger(Logger logger) {
+	public void setLogger(LgLoggerIF logger) {
 		this.logger = logger;
 	}
 
-	public Logger getLogger() {
+	public LgLoggerIF getLogger() {
 		return logger;
 	}
 

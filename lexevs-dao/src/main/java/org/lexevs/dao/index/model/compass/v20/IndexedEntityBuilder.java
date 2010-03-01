@@ -7,9 +7,15 @@ import java.util.Random;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.concepts.Entity;
+import org.compass.core.Compass;
+import org.compass.core.Resource;
+import org.compass.core.Property.Index;
+import org.compass.core.Property.Store;
 import org.lexevs.dao.index.model.IndexableResourceBuilder;
 
-	public class IndexedEntityBuilder implements IndexableResourceBuilder<Entity,List<IndexedProperty>>{	
+	public class IndexedEntityBuilder implements IndexableResourceBuilder<Entity,Resource>{	
+		
+		private Compass compass;
 	
 		protected List<String> getAllQualifiers(Property[] properties){
 			List<String> returnList = new ArrayList<String>();
@@ -63,8 +69,10 @@ import org.lexevs.dao.index.model.IndexableResourceBuilder;
 		protected String combineNameAndValue(String name, String value){
 			return name + ":" + value;
 		}
+		
+	
 
-		public List<IndexedProperty> buildIndexableResource(Entity input) {
+		public Resource buildIndexableResource(Entity input) {
 			Property[] allProps = input.getAllProperties();
 			List<String> allContexts = getAllContexts(allProps);
 			List<String> allQualifiers = getAllQualifiers(allProps);
@@ -72,47 +80,30 @@ import org.lexevs.dao.index.model.IndexableResourceBuilder;
 			List<String> allPropertyTypes = getAllPropertyTypes(allProps);
 			List<String> allPropertyNames = getAllPropertyNames(allProps);
 			
-			List<IndexedProperty> returnList = new ArrayList<IndexedProperty>();
+			Resource resource = compass.getResourceFactory().createResource("Entity");
 			
-			for(Property prop : input.getAllProperties()){
-				IndexedProperty indexedProperty = new IndexedProperty();
-				indexedProperty.setId(this.resolveId(input));
-				
-				indexedProperty.setEntityCode(input.getEntityCode());
-				indexedProperty.setEntityCodeNamespace(input.getEntityCodeNamespace());
-				
-				if(input.getEntityDescription() != null){
-					indexedProperty.setEntityDescription(input.getEntityDescription().getContent());
-				}
-				
-				indexedProperty.setAllUsageContexts(allContexts);
-				indexedProperty.setAllPropertyQualifiers(allQualifiers);
-				indexedProperty.setAllSources(allSources);
-				indexedProperty.setAllPropertyTypes(allPropertyTypes);
-				indexedProperty.setAllPropertyNames(allPropertyNames);
-				
-				indexedProperty.setUsageContexts(
-						getAllContexts(
-								new Property[]{prop}));
-				indexedProperty.setPropertyQualifiers(
-						getAllQualifiers(
-								new Property[]{prop}));
-				indexedProperty.setSources(
-						getAllSources(
-								new Property[]{prop}));
-				indexedProperty.setPropertyType(prop.getPropertyType());
-				indexedProperty.setPropertyName(prop.getPropertyName());
-				
-				indexedProperty.setValue(prop.getValue().getContent());
-
-				returnList.add(indexedProperty);
+			for(int i=0;i<allProps.length;i++) {
+				org.compass.core.Property prop = compass.
+					getResourceFactory().
+					createProperty("p"+String.valueOf(i), 
+							allProps[i].getValue().getContent(), 
+							Store.NO, Index.TOKENIZED);
+				resource.addProperty(prop);
 			}
 			
-			return returnList;
+			return resource;
 		}
 
 		public String resolveId(Entity input) {
 			return input.getEntityCode() + input.getEntityCodeNamespace() + new Random().nextInt();
+		}
+
+		public void setCompass(Compass compass) {
+			this.compass = compass;
+		}
+
+		public Compass getCompass() {
+			return compass;
 		}
 		
 		

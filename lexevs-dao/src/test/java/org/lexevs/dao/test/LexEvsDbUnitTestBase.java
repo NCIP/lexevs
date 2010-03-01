@@ -15,9 +15,11 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/lexevsDao-test.xml"})
+@Transactional
 public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 
 	private static final String CREATE_COMMON_SCRIPT = "sql/lexevs/common-create-hsqldb.sql";

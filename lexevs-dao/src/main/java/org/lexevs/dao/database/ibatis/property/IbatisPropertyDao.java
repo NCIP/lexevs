@@ -39,6 +39,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	public static String INSERT_PROPERTY_SOURCE_SQL = "insertPropertyMultiAttrib";
 	public static String INSERT_PROPERTY_USAGECONTEXT_SQL = "insertPropertyMultiAttrib";
 	public static String INSERT_PROPERTYLINK_SQL = "insertPropertyLink";
+	public static String GET_ALL_PROPERTIES_OF_PARENT_SQL = "getPropertiesByParent";
 	
 	private IbatisVersionsDao ibatisVersionsDao;
 
@@ -79,6 +80,16 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			String entityCodeId, PropertyType type, Property property) {
 		return this.insertProperty(
 				codingSchemeId, entityCodeId, type, property, this.getNonBatchTemplateInserter());	
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Property> getAllPropertiesOfParent(String codingSchemeId,
+			String parentId, PropertyType type) {
+		return this.getSqlMapClientTemplate().queryForList(GET_ALL_PROPERTIES_OF_PARENT_SQL, 
+				new PrefixedParameterTuple(
+						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+						this.propertyTypeClassifier.classify(PropertyType.ENTITY),
+						parentId));
 	}
 	
 	public String insertProperty(String codingSchemeId,

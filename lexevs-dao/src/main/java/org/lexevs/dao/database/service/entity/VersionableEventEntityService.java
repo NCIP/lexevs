@@ -46,6 +46,16 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		//	getEntityDao(codingSchemeUri, version).g
 	}
 
+	public List<Entity> getEntities(String codingSchemeUri, String version,
+			int start, int pageSize) {
+		String codingSchemeId = this.getDaoManager().
+			getCodingSchemeDao(codingSchemeUri, version).
+			getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
+		
+		return this.getDaoManager().getEntityDao(codingSchemeUri, version).
+			getAllEntitiesOfCodingScheme(codingSchemeId, start, pageSize);
+	}
+
 
 	
 	

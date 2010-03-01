@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap>
+<sqlMap namespace="CodingScheme">
 
 	<typeAlias alias="codingScheme" type="org.LexGrid.codingSchemes.CodingScheme" />
 	<typeAlias alias="codingSchemeSummary" type="org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary" />
 
-	<resultMap id="codingSchemeResult" class="codingScheme">
+	<resultMap id="codingSchemeResult" class="codingScheme" groupBy="codingSchemeName,representsVersion">
 		<result property="codingSchemeName" column="codingSchemeName" />
 		<result property="codingSchemeURI" column="codingSchemeUri" />
 		<result property="representsVersion" column="representsVersion" />
@@ -17,8 +17,10 @@
 		<result property="copyright.content" column="copyright" />
 		<result property="isActive" column="isActive" />
 		<result property="entryState" resultMap="entryStateResult" />
+		<result property="_sourceList" resultMap="CodingScheme.sourceResult"/>
+		<result property="_localNameList" resultMap="CodingScheme.localNameResult"/>
 	</resultMap>
-	
+
 	<resultMap id="codingSchemeSummaryResult" class="codingSchemeSummary">
 		<result property="localName" column="codingSchemeName" />
 		<result property="codingSchemeURI" column="codingSchemeUri" />
@@ -34,7 +36,7 @@
 			codingSchemeGuid = #param1#
 	</delete>
 	
-	<select id="getCodingSchemeById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="codingSchemeResult">
+	<select id="getCodingSchemeById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="CodingScheme.codingSchemeResult">
 		SELECT
 			cs.codingSchemeGuid,
 			cs.codingSchemeName,
@@ -54,7 +56,8 @@
 			es.relativeOrder,
 			es.revisionGuid,
 			es.prevRevisionGuid,
-			rev.revisionGuid
+			rev.revisionGuid,
+			csma.*
 		FROM
 			$prefix$codingScheme cs
 			
@@ -67,6 +70,11 @@
 			$prefix$revision as rev
 		ON
 			es.revisionGuid = rev.revisionGuid
+			
+		LEFT OUTER JOIN
+			$prefix$csMultiAttrib as csma
+		ON
+			csma.codingSchemeGuid = cs.codingSchemeGuid
 
 		WHERE
 			cs.codingSchemeGuid = #param1#

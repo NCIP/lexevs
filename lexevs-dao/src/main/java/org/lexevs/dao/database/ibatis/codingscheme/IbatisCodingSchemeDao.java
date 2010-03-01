@@ -35,17 +35,20 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 
-	private static String REMOVE_CODING_SCHEME_BY_ID_SQL = "deleteCodingSchemeById";
 	private static String SUPPORTED_ATTRIB_GETTER_PREFIX = "_supported";
-	private static String INSERT_CODING_SCHEME_SQL = "insertCodingScheme";
-	private static String GET_CODING_SCHEME_BY_ID_SQL = "getCodingSchemeById";
-	private static String GET_CODING_SCHEME_SUMMARY_BY_URI_AND_VERSION_SQL = "getCodingSchemeSummaryByUriAndVersion";
-	private static String GET_CODING_SCHEME_ID_BY_NAME_AND_VERSION_SQL = "getCodingSchemeIdByNameAndVersion";
-	private static String GET_CODING_SCHEME_ID_BY_URI_AND_VERSION_SQL = "getCodingSchemeIdByUriAndVersion";
-	private static String GET_CODING_SCHEME_SOURCE_LIST_SQL = "getSourceListByCodingSchemeId";
-	private static String GET_CODING_SCHEME_LOCALNAME_LIST_SQL = "getLocalNameListByCodingSchemeId";
-	private static String INSERT_CODING_SCHEME_MULTIATTRIB_SQL = "insertCodingSchemeMultiAttrib";
-	private static String INSERT_URIMAP_SQL = "insertURIMap";
+	
+	
+	public static String CODING_SCHEME_NAMESPACE = "CodingScheme.";
+	private static String REMOVE_CODING_SCHEME_BY_ID_SQL = CODING_SCHEME_NAMESPACE + "deleteCodingSchemeById";
+	private static String INSERT_CODING_SCHEME_SQL = CODING_SCHEME_NAMESPACE + "insertCodingScheme";
+	private static String GET_CODING_SCHEME_BY_ID_SQL = CODING_SCHEME_NAMESPACE + "getCodingSchemeById";
+	private static String GET_CODING_SCHEME_SUMMARY_BY_URI_AND_VERSION_SQL = CODING_SCHEME_NAMESPACE + "getCodingSchemeSummaryByUriAndVersion";
+	private static String GET_CODING_SCHEME_ID_BY_NAME_AND_VERSION_SQL = CODING_SCHEME_NAMESPACE + "getCodingSchemeIdByNameAndVersion";
+	private static String GET_CODING_SCHEME_ID_BY_URI_AND_VERSION_SQL = CODING_SCHEME_NAMESPACE + "getCodingSchemeIdByUriAndVersion";
+	private static String GET_CODING_SCHEME_SOURCE_LIST_SQL = CODING_SCHEME_NAMESPACE + "getSourceListByCodingSchemeId";
+	private static String GET_CODING_SCHEME_LOCALNAME_LIST_SQL = CODING_SCHEME_NAMESPACE + "getLocalNameListByCodingSchemeId";
+	private static String INSERT_CODING_SCHEME_MULTIATTRIB_SQL = CODING_SCHEME_NAMESPACE + "insertCodingSchemeMultiAttrib";
+	private static String INSERT_URIMAP_SQL = CODING_SCHEME_NAMESPACE + "insertURIMap";
 	
 	private MappingClassifier mappingClassifier = new MappingClassifier();
 	
@@ -60,21 +63,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		CodingScheme scheme = 
 			(CodingScheme) this.getSqlMapClientTemplate().queryForObject(
 				GET_CODING_SCHEME_BY_ID_SQL, new PrefixedParameter(prefix, codingSchemeId));
-	
-		List<Source> sourceList = this.getSqlMapClientTemplate().queryForList(
-					GET_CODING_SCHEME_SOURCE_LIST_SQL, new PrefixedParameter(prefix, codingSchemeId));
-		
-		List<String> localNameList = this.getSqlMapClientTemplate().queryForList(
-				GET_CODING_SCHEME_LOCALNAME_LIST_SQL, new PrefixedParameter(prefix, codingSchemeId));
-		
-		for(Source source : sourceList){
-			scheme.addSource(source);
-		}
-		
-		for(String localName : localNameList){
-			scheme.addLocalName(localName);
-		}
-		
+
 		return scheme;
 
 	}

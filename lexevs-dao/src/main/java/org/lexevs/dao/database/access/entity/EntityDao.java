@@ -2,7 +2,6 @@ package org.lexevs.dao.database.access.entity;
 
 import java.util.List;
 
-import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
@@ -19,5 +18,6 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	
 	public void updateEntity(String codingSchemeName, String version, Entity entity);
 	
-	
+	public List<Entity> getAllEntitiesOfCodingScheme(String codingSchemeId, int start, int pageSize);
+
 }

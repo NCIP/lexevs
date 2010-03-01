@@ -72,7 +72,7 @@ public class MyClassLoader extends URLClassLoader {
     private static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema"; 
     
     private DocumentBuilderFactory docfactory_ = null;
-    private Logger logger;
+    private LgLoggerIF logger;
     
     private List<ExtensionDescription> extensionDescriptions = 
     	new ArrayList<ExtensionDescription>();
@@ -81,7 +81,7 @@ public class MyClassLoader extends URLClassLoader {
         return logger;
     }
 
-    private MyClassLoader(SystemVariables systemVariables, Logger logger) {
+    private MyClassLoader(SystemVariables systemVariables, LgLoggerIF logger) {
         super(new URL[] {}, MyClassLoader.class.getClassLoader());
         myClassLoader_ = this;
         this.logger = logger;
@@ -311,7 +311,7 @@ public class MyClassLoader extends URLClassLoader {
     
     @LgClientSideSafe
     @Deprecated
-    public static MyClassLoader instance(SystemVariables systemVariables, Logger logger) {
+    public static MyClassLoader instance(SystemVariables systemVariables, LgLoggerIF logger) {
         if (myClassLoader_ == null) {
             myClassLoader_ = new MyClassLoader(systemVariables, logger);
         }

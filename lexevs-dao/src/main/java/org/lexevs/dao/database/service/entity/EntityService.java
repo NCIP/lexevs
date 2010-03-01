@@ -17,6 +17,12 @@ public interface EntityService extends DatabaseService {
 			String version, 
 			String entityCode,
 			String entityCodeNamespace);
+	
+	public List<Entity> getEntities(
+			String codingSchemeUri, 
+			String version, 
+			int start,
+			int pageSize);
 
 	public void insertBatchEntities(
 			String codingSchemeUri, 
