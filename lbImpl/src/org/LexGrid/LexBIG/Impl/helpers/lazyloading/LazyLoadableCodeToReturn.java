@@ -19,12 +19,13 @@
 package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.ScoreDoc;
-import org.lexevs.exceptions.MissingResourceException;
-import org.lexevs.system.ResourceManager;
+import org.lexevs.dao.index.service.entity.EntityIndexService;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.system.service.SystemResourceService;
 
 /**
  * The Class LazyLoadableCodeToReturn.
@@ -47,6 +48,10 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
     
     /** The is hydrated. */
     private boolean isHydrated = false;
+    
+    private EntityIndexService entityIndexService;
+    
+    private SystemResourceService systemResourceService;
     
     
     /**
@@ -89,6 +94,9 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
         this.setInternalVersionString(internalVersionString);
         this.setScore(score);
         this.documentId = documentId;  
+        
+        this.entityIndexService = LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService();
+        this.systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
     }
     
     /**
@@ -97,14 +105,12 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
      * @throws Exception the exception
      */
     public void hydrate() throws Exception{
+        String uri = this.systemResourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
         
-        IndexReader indexReader = getIndexReader();
-        
-        SQLTableConstants sqlTableConstants = getSQLTableConstants();         
-        
-        Document doc = indexReader.document(documentId);
+        Document doc = entityIndexService.getDocumentById(
+                Constructors.createAbsoluteCodingSchemeVersionReference(uri, internalVersionString), documentId);
  
-        String codeField = sqlTableConstants.entityCodeOrId;
+        String codeField = SQLTableConstants.TBLCOL_ID;
         
         this.setCode(doc.get(codeField));
         
@@ -118,31 +124,6 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
         this.setEntityTypes(
                 doc.getValues("entityType"));
         isHydrated = true;       
-    }
-    
-    /**
-     * Gets the index reader.
-     * 
-     * @return the index reader
-     * 
-     * @throws MissingResourceException the missing resource exception
-     */
-    protected IndexReader getIndexReader() throws MissingResourceException{
-        return ResourceManager.instance()
-        .getIndexInterface(internalCodeSystemName, internalVersionString).
-        getIndexReader(internalCodeSystemName, internalVersionString).getBaseIndexReader();
-    }
-    
-    /**
-     * Gets the sQL table constants.
-     * 
-     * @return the sQL table constants
-     * 
-     * @throws MissingResourceException the missing resource exception
-     */
-    protected SQLTableConstants getSQLTableConstants() throws MissingResourceException{
-        return ResourceManager.instance().
-        getSQLInterface(internalCodeSystemName, internalVersionString).getSQLTableConstants();
     }
 
     /**
