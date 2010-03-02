@@ -105,10 +105,9 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
      * @throws Exception the exception
      */
     public void hydrate() throws Exception{
-        String uri = this.systemResourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
+       
         
-        Document doc = entityIndexService.getDocumentById(
-                Constructors.createAbsoluteCodingSchemeVersionReference(uri, internalVersionString), documentId);
+        Document doc = buildDocument();
  
         String codeField = SQLTableConstants.TBLCOL_ID;
         
@@ -124,6 +123,12 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
         this.setEntityTypes(
                 doc.getValues("entityType"));
         isHydrated = true;       
+    }
+    
+    protected Document buildDocument() throws Exception {
+        String uri = this.systemResourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
+        return entityIndexService.getDocumentById(
+                Constructors.createAbsoluteCodingSchemeVersionReference(uri, internalVersionString), documentId);
     }
 
     /**
