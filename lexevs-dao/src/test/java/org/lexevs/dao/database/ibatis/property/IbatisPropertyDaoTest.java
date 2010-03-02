@@ -205,7 +205,7 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		text.setContent("qual text");
 		qual.setValue(text);
 		
-		ibatisPropertyDao.insertPropertyQualifier(null, null, "prop-id", qual);
+		//ibatisPropertyDao.insertPropertyQualifier(null, null, "prop-id", qual);
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
@@ -233,7 +233,7 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		source.setSubRef("test subref");
 		source.setRole("test role");
 		
-		ibatisPropertyDao.insertPropertySource(null, null, "prop-id", source);
+		//ibatisPropertyDao.insertPropertySource(null, null, "prop-id", source);
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
@@ -258,7 +258,7 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void insertPropertyUsageContext(){
 		String usageContext = "test usageContext";
 		
-		ibatisPropertyDao.insertPropertyUsageContext(null, null, "prop-id", usageContext);
+		//ibatisPropertyDao.insertPropertyUsageContext(null, null, "prop-id", usageContext);
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		

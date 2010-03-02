@@ -8,11 +8,13 @@ import java.util.List;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.concepts.Presentation;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.ibatis.codingscheme.IbatisCodingSchemeDao;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -147,7 +149,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 			this.ibatisEntityDao.insertEntity(csId, entity);
 		}
 		
-		List<Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme(csId, 0, -1);
+		List<? extends Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme(csId, 0, -1);
 		
 		assertEquals(limit, entities.size());
 		
@@ -169,7 +171,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 			this.ibatisEntityDao.insertEntity(csId, entity);
 		}
 		
-		List<Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme(csId, 0, 10);
+		List<? extends Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme(csId, 0, 10);
 		
 		assertEquals(10, entities.size());
 	}
@@ -190,8 +192,32 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 			this.ibatisEntityDao.insertEntity(csId, entity);
 		}
 		
-		List<Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme(csId, 100, 100);
+		List<? extends Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme(csId, 100, 100);
 		
 		assertEquals(100, entities.size());
+	}
+	
+	@Test
+	@Transactional
+	public void testLazyLoadPresentations() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		List<? extends Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme("csguid", 0, -1);
+		
+		assertEquals(1, entities.size());
+		
+		Entity entity = entities.get(0);
+		
+		Presentation pres = entity.getPresentation()[0];
+		
+		assertNotNull(pres);
 	}
 }

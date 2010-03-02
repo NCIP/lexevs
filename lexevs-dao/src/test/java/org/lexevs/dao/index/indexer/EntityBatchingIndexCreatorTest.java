@@ -11,7 +11,6 @@ import org.LexGrid.concepts.Entity;
 import org.junit.Test;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.utility.DaoUtility;
-import org.lexevs.dao.index.service.IndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 public class EntityBatchingIndexCreatorTest  {
@@ -26,12 +25,12 @@ public class EntityBatchingIndexCreatorTest  {
 	
 	@Test
 	public void testCreateIndex() {
-		IndexService service = LexEvsServiceLocator.getInstance().getIndexService();
+		//IndexService service = LexEvsServiceLocator.getInstance().getIndexService();
 		EntityService es = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
-		List<Entity> entities = es.getEntities("urn:oid:2.16.840.1.113883.6.110", "1993.bvt", 0, 10);
+		List<? extends Entity> entities = es.getEntities("urn:oid:2.16.840.1.113883.6.110", "1993.bvt", 0, 10);
 		System.out.println(entities.size());
 		
 		AbsoluteCodingSchemeVersionReference ref = DaoUtility.createAbsoluteCodingSchemeVersionReference("urn:oid:2.16.840.1.113883.6.110", "1993.bvt");
-		service.createIndex(ref);
+		//service.createIndex(ref);
 	}
 }
