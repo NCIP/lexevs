@@ -205,33 +205,16 @@ public class LazyLoadableCodeToReturnTest extends TestCase {
          * @see org.LexGrid.LexBIG.Impl.helpers.lazyloading.LazyLoadableCodeToReturn#getIndexReader()
          */
         @Override
-        protected IndexReader getIndexReader() throws MissingResourceException {
+        protected Document buildDocument(){
             Document doc = new Document();
-            doc.add(new TestField(new TestSQLTableConstants(null,null).entityCodeOrId, "id"));  
+            doc.add(new TestField("id", "id"));  
             doc.add(new TestField("codingSchemeId","cs"));  
             doc.add(new TestField(SQLTableConstants.TBLCOL_ENTITYDESCRIPTION,"description"));  
             doc.add(new TestField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE,"namespace"));  
             doc.add(new TestField("entityType","type1"));
             doc.add(new TestField("entityType","type2"));
             
-            IndexReader reader = createMock(IndexReader.class);  
-            try {
-                expect(reader.document(1)).andReturn(doc).anyTimes();
-            } catch (Exception e) {
-               fail(e.getMessage());
-            }
-            
-            replay(reader);
-            return reader;
-        }
-
-        /* (non-Javadoc)
-         * @see org.LexGrid.LexBIG.Impl.helpers.lazyloading.LazyLoadableCodeToReturn#getSQLTableConstants()
-         */
-        @Override
-        protected SQLTableConstants getSQLTableConstants() throws MissingResourceException {
-            return new TestSQLTableConstants(null, null);
-        }
-        
+            return doc;
+        }  
     }
 }
