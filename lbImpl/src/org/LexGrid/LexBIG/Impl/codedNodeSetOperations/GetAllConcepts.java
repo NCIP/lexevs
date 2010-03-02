@@ -19,11 +19,15 @@
 package org.LexGrid.LexBIG.Impl.codedNodeSetOperations;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Operation;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.annotations.LgClientSideSafe;
-import org.lexevs.system.ResourceManager;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.registry.service.Registry;
+import org.lexevs.system.service.SystemResourceService;
 
 /**
  * Holder for the GetAllConcepts operation.
@@ -41,7 +45,10 @@ public class GetAllConcepts implements Operation {
     public GetAllConcepts(String codingScheme, CodingSchemeVersionOrTag tagOrVersion) throws LBParameterException,
             LBResourceUnavailableException {
         String version = null;
-        ResourceManager rm = ResourceManager.instance();
+        SystemResourceService rm = LexEvsServiceLocator.getInstance().getSystemResourceService();
+        Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
+        
+        
         if (tagOrVersion == null || tagOrVersion.getVersion() == null || tagOrVersion.getVersion().length() == 0) {
             version = rm.getInternalVersionStringForTag(codingScheme,
                     (tagOrVersion == null ? null : tagOrVersion.getTag()));
@@ -53,8 +60,10 @@ public class GetAllConcepts implements Operation {
         internalCodingSchemeName_ = rm.getInternalCodingSchemeNameForUserCodingSchemeName(codingScheme, version);
 
         // make sure that it is active.
-        String urn = rm.getURNForInternalCodingSchemeName(internalCodingSchemeName_);
-        if (!rm.getRegistry().isActive(urn, version)) {
+        String urn = rm.getUriForUserCodingSchemeName(internalCodingSchemeName_);
+        if (!registry.getCodingSchemeEntry(
+                Constructors.createAbsoluteCodingSchemeVersionReference(urn, version)).getStatus().
+                    equals(CodingSchemeVersionStatus.ACTIVE.toString())) {
             throw new LBResourceUnavailableException("The requested coding scheme is not currently active");
         }
 
