@@ -26,12 +26,12 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.concepts.Entity;
-import org.lexevs.exceptions.InternalException;
-import org.lexevs.system.ResourceManager;
+import org.lexevs.dao.database.service.entity.EntityService;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.system.service.SystemResourceService;
 
 /**
  * The Class DefaultCodeToReturnResolver.
@@ -51,31 +51,32 @@ public class DefaultCodeToReturnResolver implements CodeToReturnResolver {
             PropertyType[] restrictToPropertyTypes,
             Filter[] filters,
             boolean resolve) throws LBInvocationException {
+        SystemResourceService resourceManager = LexEvsServiceLocator.getInstance().getSystemResourceService();
+        
         // Always assign the basics...
         ResolvedConceptReference rcr = new ResolvedConceptReference();
-        rcr.setCodingSchemeName(
-            ResourceManager.instance()
-                .getExternalCodingSchemeNameForUserCodingSchemeNameOrId(codeToReturn.getUri(), codeToReturn.getVersion()));
-        rcr.setCodingSchemeURI(codeToReturn.getUri());
-        rcr.setCodingSchemeVersion(codeToReturn.getVersion());
-        rcr.setCode(codeToReturn.getCode());
-        rcr.setCodeNamespace(codeToReturn.getNamespace());
-        EntityDescription ed = new EntityDescription();
-        ed.setContent(codeToReturn.getEntityDescription());
-        rcr.setEntityDescription(ed);
-        rcr.setEntityType(codeToReturn.getEntityTypes());
-
-        // Only attach the fully resolved object if instructed...
         try {
+            rcr.setCodingSchemeName(
+                    resourceManager.getInternalCodingSchemeNameForUserCodingSchemeName(codeToReturn.getUri(), codeToReturn.getVersion()));
+            rcr.setCodingSchemeURI(codeToReturn.getUri());
+            rcr.setCodingSchemeVersion(codeToReturn.getVersion());
+            rcr.setCode(codeToReturn.getCode());
+            rcr.setCodeNamespace(codeToReturn.getNamespace());
+            EntityDescription ed = new EntityDescription();
+            ed.setContent(codeToReturn.getEntityDescription());
+            rcr.setEntityDescription(ed);
+            rcr.setEntityType(codeToReturn.getEntityTypes());
+
+            // Only attach the fully resolved object if instructed...
             if (resolve) {
                 // Resolve and assign the item to the coded node reference.
                 Entity resolvedEntity = buildCodedEntry(
-                    ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(codeToReturn.getUri(), codeToReturn.getVersion()),
-                    codeToReturn.getVersion(),
-                    codeToReturn.getCode(),
-                    codeToReturn.getNamespace(),
-                    restrictToProperties,
-                    restrictToPropertyTypes);
+                        resourceManager.getInternalCodingSchemeNameForUserCodingSchemeName(codeToReturn.getUri(), codeToReturn.getVersion()),
+                        codeToReturn.getVersion(),
+                        codeToReturn.getCode(),
+                        codeToReturn.getNamespace(),
+                        restrictToProperties,
+                        restrictToPropertyTypes);
                 rcr.setEntityDescription(resolvedEntity.getEntityDescription());
                 rcr.setEntity(resolvedEntity);
             }
@@ -90,7 +91,7 @@ public class DefaultCodeToReturnResolver implements CodeToReturnResolver {
         // these (two) stay null by design
         rcr.setSourceOf(null);
         rcr.setTargetOf(null);
-        
+
         // these (two) stay null by design
         rcr.setSourceOf(null);
         rcr.setTargetOf(null);
@@ -102,7 +103,7 @@ public class DefaultCodeToReturnResolver implements CodeToReturnResolver {
                 }
             }
         }
- 
+
         return rcr;
     }
      
@@ -138,11 +139,15 @@ public class DefaultCodeToReturnResolver implements CodeToReturnResolver {
      */
     private Entity buildCodedEntry(String internalCodingSchemeName, String internalVersionString, String code, String namespace,
             LocalNameList restrictToProperties, PropertyType[] restrictToPropertyTypes) throws LBInvocationException {
+        
+        SystemResourceService resourceManager = LexEvsServiceLocator.getInstance().getSystemResourceService();
+        EntityService entityService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
+   
         try {
-            return SQLImplementedMethods.buildCodedEntry(internalCodingSchemeName, internalVersionString, code, namespace,
-                    restrictToProperties, restrictToPropertyTypes);
-        } catch (InternalException e) {
-            throw new LBInvocationException("Unexpected Internal Error", e.getLogId());
-        }
+            String uri = resourceManager.getUriForUserCodingSchemeName(internalCodingSchemeName);
+            return entityService.getEntity(uri, internalVersionString, code, namespace);
+        } catch (LBParameterException e) {
+            throw new RuntimeException(e);
+        }   
     }
 }
