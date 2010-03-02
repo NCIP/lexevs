@@ -9,10 +9,10 @@
 	
 	<import resource="classpath:lexevsCache.xml"/>
 	
-	 <bean id="entityCompassDao" class="org.lexevs.dao.index.compass.CompassEntityDao">
-     	 <property name="compass" ref="compass" />
-     	 <property name="compassSearchHelper" ref="compassSearchHelper" />
-   	</bean>
+<!--	 <bean id="entityCompassDao" class="org.lexevs.dao.index.compass.CompassEntityDao">-->
+<!--     	 <property name="compass" ref="compass" />-->
+<!--     	 <property name="compassSearchHelper" ref="compassSearchHelper" />-->
+<!--   	</bean>-->
   
 	 <bean id="sqlMap"
           class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
@@ -367,7 +367,7 @@
 		<property name="databaseServiceManager" ref="databaseServiceManager"/>
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="registry" ref="registry"/>
-		<property name="indexService" ref="compassIndexService"/>
+		<property name="indexServiceManager" ref="indexServiceManager"/>
 	</bean>
 	
 	<bean id="loggingBean" class="org.lexevs.logging.LoggingBean" abstract="true">
@@ -379,22 +379,48 @@
 		<property name="registry" ref="registry"/>
 	</bean>
 	
-	<bean id="indexInterface" class="org.lexevs.dao.index.factory.IndexInterfaceFactory">
-		<property name="systemVariables" ref="systemVariables"/> 
+	<bean id="indexInterface" class="org.lexevs.dao.index.connection.IndexInterface">
+		<constructor-arg ref="indexerService"/>
 	</bean>
 	
-	<bean id="compassIndexService" class="org.lexevs.dao.index.service.CompassIndexService">
-		<property name="indexCreator" ref="entityBatchingIndexCreator"/>
-	</bean>
+<!--	<bean id="compassIndexService" class="org.lexevs.dao.index.service.CompassIndexService">-->
+<!--		<property name="indexCreator" ref="entityBatchingIndexCreator"/>-->
+<!--		<property name="indexerService" ref="indexerService"/>-->
+<!--	</bean>-->
 	
 	<bean id="entityBatchingIndexCreator" class="org.lexevs.dao.index.indexer.EntityBatchingIndexCreator">
 		<property name="entityService" ref="entityService"/>
-		<property name="indexer" ref="luceneLoaderCodeIndexer"/>
+		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
+		<property name="systemVariables" ref="systemVariables"/> 
+		<property name="indexerService" ref="indexerService"/>
 	</bean>
 	
-	<bean id="luceneLoaderCodeIndexer" class="org.lexevs.dao.index.indexer.LuceneLoaderCodeIndexer">
+	<bean id="luceneEntityIndexService" class="org.lexevs.dao.index.service.entity.LuceneEntityIndexService">
+		<property name="indexDaoManager" ref="indexDaoManager"/> 
+	</bean>
+	
+	<bean id="indexServiceManager" class="org.lexevs.dao.index.service.IndexServiceManager">
+		<property name="entityIndexService" ref="luceneEntityIndexService"/>
+	</bean>
+	
+	<bean id="indexDaoManager" class="org.lexevs.dao.index.access.IndexDaoManager">
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
+		<property name="indexerService" ref="indexerService"/>
+		<property name="entityDaos">
+			<list>
+				<ref bean="luceneIndexEntityDao"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="indexerService" class="org.lexevs.dao.index.factory.IndexerServiceFactory">
 		<property name="systemVariables" ref="systemVariables"/> 
 	</bean>
 	
+	<bean id="luceneIndexEntityDao" class="org.lexevs.dao.index.lucene.entity.LuceneEntityDao">
+		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
+		<property name="indexInterface" ref="indexInterface"/>
+	</bean>
+	
+
 </beans>
