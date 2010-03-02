@@ -213,4 +213,8 @@ public class SQLInterfaceCodingSchemeDao extends AbstractBaseDao implements Codi
 		// TODO Auto-generated method stub
 		
 	}
+
+	public <T> T executeInTransaction(IndividualDaoCallback<T> callback) {
+		throw new UnsupportedOperationException();
+	}
 }

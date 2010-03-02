@@ -61,4 +61,8 @@ public class SIMCodedNodeSetDao extends AbstractBaseDao implements CodedNodeSetD
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public <T> T executeInTransaction(IndividualDaoCallback<T> callback) {
+		throw new UnsupportedOperationException();
+	}
 }
