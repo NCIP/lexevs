@@ -19,7 +19,6 @@
 package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -28,6 +27,7 @@ import org.LexGrid.LexBIG.Impl.helpers.AdditiveCodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
@@ -35,18 +35,10 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.lexevs.dao.index.connection.IndexInterface;
-import org.lexevs.exceptions.MissingResourceException;
-import org.lexevs.logging.LoggerFactory;
-import org.lexevs.system.ResourceManager;
-
-import edu.mayo.informatics.indexer.api.SearchServiceInterface;
-import edu.mayo.informatics.indexer.api.exceptions.IndexSearchException;
-import edu.mayo.informatics.indexer.api.exceptions.InternalIndexerErrorException;
-import edu.mayo.informatics.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
-import edu.mayo.informatics.indexer.lucene.hitcollector.BitSetBestScoreOfEntityHitCollector;
-import edu.mayo.informatics.indexer.lucene.hitcollector.BitSetFilteringBestScoreOfEntityHitCollector;
-import edu.mayo.informatics.indexer.lucene.hitcollector.HitCollectorMerger;
+import org.lexevs.dao.index.service.IndexServiceManager;
+import org.lexevs.dao.index.service.entity.EntityIndexService;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.system.service.SystemResourceService;
 
 /**
  * A factory for creating LazyCodeHolder objects.
@@ -64,7 +56,7 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
             String internalVersionString, 
             List<BooleanQuery> combinedQuery, 
             List<Query> bitSetQueries) throws LBInvocationException, LBParameterException {
-        try {
+   
             //Match all docs (excluding code boundry docs) if no queries are provided
             if(combinedQuery == null || combinedQuery.size() == 0){
                 combinedQuery = new ArrayList<BooleanQuery>();
@@ -77,89 +69,22 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
             }          
             
             AdditiveCodeHolder codeHolder = new DefaultCodeHolder();
-
-            IndexInterface ii = ResourceManager.instance().getIndexInterface(internalCodeSystemName,
-                    internalVersionString);
-
-            SearchServiceInterface searcher = ii.getSearcher(internalCodeSystemName, internalVersionString);
-
-            int maxDoc = ii.
-                getIndexReader(internalCodeSystemName, internalVersionString).maxDoc();
-
-            List<ScoreDoc> scoreDocs = null;
-
-            List<BitSet> bitSets = new ArrayList<BitSet>();
             
-            if(bitSetQueries != null){
-                for(Query query : bitSetQueries){
-                    BitSetBestScoreOfEntityHitCollector bitSetCollector =
-                        new BitSetBestScoreOfEntityHitCollector(
-                                ii.getBoundaryDocumentIterator(
-                                        internalCodeSystemName, 
-                                        internalVersionString), 
-                                        maxDoc);
-                    searcher.search(query, null, bitSetCollector);
-                    bitSets.add(bitSetCollector.getResult());
-                }
-            }
-            
-            if(combinedQuery.size() == 1){
-                BitSetFilteringBestScoreOfEntityHitCollector collector =
-                    new BitSetFilteringBestScoreOfEntityHitCollector(
-                            this.andBitSets(bitSets),
-                            ii.getBoundaryDocumentIterator(
-                                    internalCodeSystemName, 
-                                    internalVersionString), 
-                                    maxDoc);
-                
-                searcher.search(combinedQuery.get(0), null, collector);
-                scoreDocs = collector.getResult();
-            } else {
-                HitCollectorMerger merger = new HitCollectorMerger(
-                        ii.getBoundaryDocumentIterator(
-                                internalCodeSystemName, 
-                                internalVersionString), maxDoc);
-                for(Query query : combinedQuery){
-                    BestScoreOfEntityHitCollector collector =
-                        new BitSetFilteringBestScoreOfEntityHitCollector(
-                                this.andBitSets(bitSets),
-                                ii.getBoundaryDocumentIterator(
-                                        internalCodeSystemName, 
-                                        internalVersionString), 
-                                        maxDoc); 
+            SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
 
-                    searcher.search(query, null, collector);
-                    merger.addHitCollector(collector);
-                }
-                scoreDocs = merger.getMergedScoreDocs();
-            }
+            IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
+            EntityIndexService entityService = indexServiceManager.getEntityIndexService();
+ 
+            List<ScoreDoc> scoreDocs = entityService.query(
+            		Constructors.createAbsoluteCodingSchemeVersionReference(
+            				resourceService.getUriForUserCodingSchemeName(internalCodeSystemName), internalVersionString), 
+            				combinedQuery, bitSetQueries);
   
             for(ScoreDoc doc : scoreDocs){
                 codeHolder.add(buildCodeToReturn(doc, internalCodeSystemName, internalVersionString));
             }
 
             return codeHolder;
-        } catch (MissingResourceException e) {
-           String logId = LoggerFactory.getLogger().error("Problem building the CodeHolder: ", e);
-           throw new LBInvocationException(e.getLocalizedMessage(), logId);
-        } catch (InternalIndexerErrorException e) {
-            String logId = LoggerFactory.getLogger().error("Problem building the CodeHolder: ", e);
-            throw new LBInvocationException(e.getLocalizedMessage(), logId);
-        } catch (IndexSearchException e) {
-            throw new LBParameterException(e.getLocalizedMessage());
-        }
-    }
-    
-    private BitSet andBitSets(List<BitSet> bitSets){
-       BitSet totalBitSet = null;
-        for(BitSet bitSet : bitSets){
-            if(totalBitSet == null){
-                totalBitSet = bitSet;
-            } else {
-                totalBitSet.and(bitSet);
-            }
-        }
-        return totalBitSet;
     }
     
     /**
