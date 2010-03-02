@@ -105,11 +105,10 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
      * @throws Exception the exception
      */
     public void hydrate() throws Exception{
-       
-        
+         
         Document doc = buildDocument();
  
-        String codeField = SQLTableConstants.TBLCOL_ID;
+        String codeField = SQLTableConstants.TBLCOL_ENTITYCODE;
         
         this.setCode(doc.get(codeField));
         
