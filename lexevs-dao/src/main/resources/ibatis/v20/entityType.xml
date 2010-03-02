@@ -13,5 +13,9 @@
      		#param2#
      	)
      </insert>
+     
+     <resultMap id="entityTypeResult" class="string">
+		<result property="java.lang.String" column="entityType" />
+	</resultMap>
 
 </sqlMap>

@@ -3,28 +3,41 @@
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap namespace="Entity">
 
-	<typeAlias alias="entity" type="org.LexGrid.concepts.Entity" />
+	<typeAlias alias="entity" type="org.lexevs.dao.database.lazyload.LazyLoadableEntity" />
 
-	<resultMap id="entityResult" class="entity">
+	<resultMap id="entityResult" class="entity" groupBy="entityCode,entityCodeNamespace">
+		<result property="entityId" column="entityGuid" />
+		<result property="codingSchemeId" column="codingSchemeGuid" />
 		<result property="entityCode" column="entityCode" />
 		<result property="entityCodeNamespace" column="entityCodeNamespace" />
+		<result property="entityDescription.content" column="description" />
+		<result property="_entityTypeList" resultMap="Entity.entityTypeResult"/>
 	</resultMap>
 	
 	<sql id="getEntityFragment">
 		SELECT
-			entityCode,
-			entityCodeNamespace
+			entity.codingSchemeGuid,
+			entity.entityGuid,
+			entity.entityCode,
+			entity.entityCodeNamespace,
+			entity.description,
+			entityType.entityType
 		FROM
-			$prefix$entity
+			$prefix$entity entity
+		LEFT JOIN
+			$prefix$entityType entityType
+		ON
+			entity.entityGuid =
+			entityType.entityGuid
 	</sql>
 	
 
-	<select id="getEntityByCodeAndNamespace" parameterClass="map" resultMap="Entity.entityResult">
+	<select id="getEntityByCodeAndNamespace" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Entity.entityResult">
 		<include refid="getEntityFragment"/>
 		WHERE
-			entityCode = #entityCode#
+			entityCode = #param1#
 		AND
-			entityCodeNamespace = #entityCodeNamespace#
+			entityCodeNamespace = #param2#
      </select>
      
      <select id="getAllEntitiesOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
