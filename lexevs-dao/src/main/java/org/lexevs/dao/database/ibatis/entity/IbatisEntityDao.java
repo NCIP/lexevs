@@ -21,6 +21,7 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.property.IbatisPropertyDao;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
+import org.lexevs.dao.database.lazyload.LazyLoadableEntity;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.beans.factory.InitializingBean;
@@ -35,7 +36,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	public static String ENTITY_NAMESPACE = "Entity.";
 	public static String INSERT_ENTITY_SQL = ENTITY_NAMESPACE + "insertEntity";
 	public static String INSERT_ENTITY_TYPE_SQL = ENTITY_NAMESPACE + "insertEntityType";
-	public static String GET_ENTITY_BY_CODE_AND_NAMESPACE_SQL = ENTITY_NAMESPACE + "insertEntity";
+	public static String GET_ENTITY_BY_CODE_AND_NAMESPACE_SQL = ENTITY_NAMESPACE + "getEntityByCodeAndNamespace";
 	public static String GET_ENTITIES_OF_CODING_SCHEME_SQL = ENTITY_NAMESPACE + "getAllEntitiesOfCodingScheme";
 	
 	public static String ENTITY_CODE_PARAM = SQLTableConstants.TBLCOL_ENTITYCODE;
@@ -47,12 +48,14 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 
 	private IbatisPropertyDao ibatisPropertyDao;
 
-	public Entity getEntity(String entityCode, String entityCodeNamespace){
-		Map<String,String> paramMap = new HashMap<String,String>();
-		paramMap.put(ENTITY_CODE_PARAM, entityCode);
-		paramMap.put(ENTITY_CODE_NAMESPACE_PARAM, entityCodeNamespace);
+	public Entity getEntityByCodeAndNamespace(String codingSchemeId, String entityCode, String entityCodeNamespace){
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		return (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_CODE_AND_NAMESPACE_SQL, paramMap);
+		LazyLoadableEntity entity = (LazyLoadableEntity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_CODE_AND_NAMESPACE_SQL, 
+			new PrefixedParameterTuple(prefix, entityCode, entityCodeNamespace));
+		entity.setPropertyDao(ibatisPropertyDao);
+		
+		return entity;
 	}
 
 
@@ -101,17 +104,23 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Entity> getAllEntitiesOfCodingScheme(String codingSchemeId, int start, int pageSize) {
+	public List<? extends Entity> getAllEntitiesOfCodingScheme(String codingSchemeId, int start, int pageSize) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		if(pageSize < 0) {
 			pageSize = Integer.MAX_VALUE;
 		}
 		
-		return 
+		List<LazyLoadableEntity> entities = 
 			this.getSqlMapClientTemplate().queryForList(GET_ENTITIES_OF_CODING_SCHEME_SQL, 
 					new PrefixedParameter(prefix, codingSchemeId),
 					start, pageSize);
+		
+		for(LazyLoadableEntity entity : entities) {
+			entity.setPropertyDao(this.ibatisPropertyDao);
+		}
+		
+		return entities;
 	}
 	
 	@SuppressWarnings("unchecked")
