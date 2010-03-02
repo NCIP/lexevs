@@ -51,4 +51,11 @@ public class LocalCodingScheme {
                     .indexOf(ResourceManager.codingSchemeVersionSeparator_));
         }
     }
+    
+    public static LocalCodingScheme getLocalCodingScheme(String codingSchemeName, String version) {
+    	LocalCodingScheme lcs = new LocalCodingScheme();
+    	lcs.codingSchemeName = codingSchemeName;
+    	lcs.version = version;
+    	return lcs;
+    }
 }
