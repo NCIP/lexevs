@@ -10,6 +10,8 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	
 	public void insertBatchEntities(String codingSchemeId, List<? extends Entity> entities);
 	
+	public Entity getEntityByCodeAndNamespace(String codingSchemeId, String entityCode, String entityCodeNamespace);
+	
 	public String getEntityId(String codingSchemeId, String entityCode, String entityCodeNamespace);
 	
 	public String insertEntity(String codingSchemeId, Entity entity);
@@ -18,6 +20,6 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	
 	public void updateEntity(String codingSchemeName, String version, Entity entity);
 	
-	public List<Entity> getAllEntitiesOfCodingScheme(String codingSchemeId, int start, int pageSize);
+	public List<? extends Entity> getAllEntitiesOfCodingScheme(String codingSchemeId, int start, int pageSize);
 
 }
