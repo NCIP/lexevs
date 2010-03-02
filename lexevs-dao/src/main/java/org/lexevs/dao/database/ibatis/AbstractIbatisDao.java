@@ -5,6 +5,7 @@ import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.batch.SqlMapClientTemplateInserter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 public abstract class AbstractIbatisDao extends AbstractBaseDao implements InitializingBean {
 
@@ -15,6 +16,14 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	public void afterPropertiesSet() throws Exception {
 		setNonBatchTemplateInserter(new SqlMapClientTemplateInserter(this.getSqlMapClientTemplate()));
 	}
+	
+	
+	@Transactional
+	public <T> T executeInTransaction(IndividualDaoCallback<T> callback) {
+		return callback.execute();
+	}
+
+
 
 	public void setSqlMapClientTemplate(SqlMapClientTemplate sqlMapClientTemplate) {
 		this.sqlMapClientTemplate = sqlMapClientTemplate;
@@ -31,6 +40,8 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	public IbatisInserter getNonBatchTemplateInserter() {
 		return nonBatchTemplateInserter;
 	}
+	
+	
 	
 
 }
