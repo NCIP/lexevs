@@ -27,7 +27,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService imp
 	}
 
 	public void insertEntityProperty(
-			String codingSchemeName, 
+			String codingSchemeUri, 
 			String version, 
 			String entityCode, 
 			String entityCodeNamespace, 
@@ -44,7 +44,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService imp
 	}
 
 
-	public void updateEntityProperty(String codingSchemeName, String version,
+	public void updateEntityProperty(String codingSchemeUri, String version,
 			String entityCode, String entityCodeNamespace, String propertyId,
 			Property property) {
 		// TODO Auto-generated method stub

@@ -5,6 +5,11 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.service.entity.EntityService;
+import org.lexevs.system.constants.SystemVariables;
+import org.lexevs.system.service.SystemResourceService;
+
+import edu.mayo.informatics.indexer.api.IndexerService;
+import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
 
 public class EntityBatchingIndexCreator implements IndexCreator {
 	
@@ -12,25 +17,49 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	
 	private EntityService entityService;
 	
-	private Indexer indexer;
+	private LuceneLoaderCodeIndexer luceneLoaderCodeIndexer;
+	
+	private SystemResourceService systemResourceService;
+	
+	private SystemVariables systemVariables;
+	
+	private IndexerService indexerService;
 
 	public void index(AbsoluteCodingSchemeVersionReference reference) {
+		LuceneLoaderCodeIndexer indexer = new LuceneLoaderCodeIndexer();
+		indexer.setSystemVariables(systemVariables);
+		indexer.setSystemResourceService(systemResourceService);
 		indexer.openIndex();
+		
 		int position = 0;
 		 for(
-				 List<Entity> entities = 
+				 List<? extends Entity> entities = 
 				 entityService.getEntities(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), position, batchSize);
 				 entities.size() > 0; 
 				 entities = entityService.getEntities(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), position += batchSize, batchSize)) {
 
-			 indexEntityBatch(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), entities);
+			 for(Entity entity : entities) {
+				 indexer.indexEntity(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), entity);
+			 }
 		 }
+		 
 		 indexer.closeIndex();
 	}
 	
-	protected void indexEntityBatch(String codingSchemeUri, String codingScheme, List<Entity> entities) {
-		for(Entity entity : entities) {
-			indexer.indexEntity(codingSchemeUri, codingScheme, entity);
+	protected void addIndexMetadata(
+			AbsoluteCodingSchemeVersionReference reference, String indexName) {
+		  try {
+			  indexerService.getMetaData().setIndexMetaDataValue(reference.getCodingSchemeURN() + "[:]" + reference.getCodingSchemeVersion(), indexName);
+			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "codingScheme", reference.getCodingSchemeURN());
+			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "version", reference.getCodingSchemeVersion());
+
+			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "lgModel", "2009");
+			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "has 'Norm' fields", false + "");
+			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "has 'Double Metaphone' fields", true + "");
+			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "indexing started", "");
+			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "indexing finished", "");
+		} catch (InternalErrorException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -50,13 +79,35 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 		this.batchSize = batchSize;
 	}
 
-	public void setIndexer(Indexer indexer) {
-		this.indexer = indexer;
+	public void setLuceneLoaderCodeIndexer(LuceneLoaderCodeIndexer luceneLoaderCodeIndexer) {
+		this.luceneLoaderCodeIndexer = luceneLoaderCodeIndexer;
 	}
 
-	public Indexer getIndexer() {
-		return indexer;
+	public LuceneLoaderCodeIndexer getLuceneLoaderCodeIndexer() {
+		return luceneLoaderCodeIndexer;
 	}
 
+	public void setSystemResourceService(SystemResourceService systemResourceService) {
+		this.systemResourceService = systemResourceService;
+	}
+
+	public SystemResourceService getSystemResourceService() {
+		return systemResourceService;
+	}
+
+	public SystemVariables getSystemVariables() {
+		return systemVariables;
+	}
+
+	public void setSystemVariables(SystemVariables systemVariables) {
+		this.systemVariables = systemVariables;
+	}
 	
+	public IndexerService getIndexerService() {
+		return indexerService;
+	}
+
+	public void setIndexerService(IndexerService indexerService) {
+		this.indexerService = indexerService;
+	}
 }

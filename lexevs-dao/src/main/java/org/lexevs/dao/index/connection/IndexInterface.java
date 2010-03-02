@@ -74,6 +74,15 @@ public class IndexInterface {
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
+    
+    public IndexInterface(IndexerService service) {
+    	this.service_ = service;
+    	try {
+			init();
+		} catch (Exception e) {
+			throw new RuntimeException("There was an unexpected error while initializing the index service. Exception: " + e);
+		} 
+    }
 
     public IndexInterface(String location) {
         try {

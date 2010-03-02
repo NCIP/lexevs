@@ -3,6 +3,7 @@ package org.lexevs.dao.database.service.entity;
 import java.util.List;
 
 import org.LexGrid.concepts.Entity;
+import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,22 +42,23 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	@Transactional
 	public Entity getEntity(String codingSchemeUri, String version,
 			String entityCode, String entityCodeNamespace) {
-		return null;
-		//return this.getDaoManager().
-		//	getEntityDao(codingSchemeUri, version).g
+		String codingSchemeId = this.getDaoManager().
+			getCodingSchemeDao(codingSchemeUri, version).
+			getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
+		
+		return this.getDaoManager().
+			getEntityDao(codingSchemeUri, version).getEntityByCodeAndNamespace(codingSchemeId, entityCode, entityCodeNamespace);
 	}
 
-	public List<Entity> getEntities(String codingSchemeUri, String version,
+	public List<? extends Entity> getEntities(String codingSchemeUri, String version,
 			int start, int pageSize) {
 		String codingSchemeId = this.getDaoManager().
 			getCodingSchemeDao(codingSchemeUri, version).
 			getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
 		
-		return this.getDaoManager().getEntityDao(codingSchemeUri, version).
+		List<? extends Entity> entities = this.getDaoManager().getEntityDao(codingSchemeUri, version).
 			getAllEntitiesOfCodingScheme(codingSchemeId, start, pageSize);
+		
+		return entities;
 	}
-
-
-	
-	
 }

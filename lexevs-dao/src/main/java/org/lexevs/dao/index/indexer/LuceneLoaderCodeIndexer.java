@@ -8,7 +8,7 @@ import org.LexGrid.concepts.Presentation;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
 
-public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements Indexer {
+public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 
 	private SystemResourceService systemResourceService;
 	private SystemVariables systemVariables;
@@ -21,12 +21,14 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements Indexer
 	
 	public void indexEntity(String codingSchemeUri, String codingSchemeVersion,
 			Entity entity) {
-		for(Property prop : entity.getAllProperties()) {
-			try {
+		try {
+			this.addEntityBoundryDocument(codingSchemeVersion, codingSchemeUri, codingSchemeVersion);
+			for(Property prop : entity.getAllProperties()) {
 				this.indexEntity(codingSchemeUri, codingSchemeVersion, entity, prop);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
 			}
+			this.addEntityBoundryDocument(codingSchemeVersion, codingSchemeUri, codingSchemeVersion);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -39,9 +41,14 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements Indexer
 		String repForm = "";
 		if(prop instanceof Presentation) {
 			Presentation pres = (Presentation)prop;
-			isPreferred = pres.getIsPreferred();
+			isPreferred = pres.isIsPreferred();
 			degreeOfFidelity = pres.getDegreeOfFidelity();
-			matchIfNoContext = pres.getMatchIfNoContext();
+			
+			if(pres.isMatchIfNoContext() == null) {
+				matchIfNoContext = false;
+			} else {
+				matchIfNoContext = pres.isMatchIfNoContext();
+			}
 			repForm = pres.getRepresentationalForm();
 		}
 		

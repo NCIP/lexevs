@@ -109,7 +109,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
-		return DaoUtility.createList(supportedDatebaseVersion, LexGridSchemaVersion.class);
+		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
 	}
 
 }

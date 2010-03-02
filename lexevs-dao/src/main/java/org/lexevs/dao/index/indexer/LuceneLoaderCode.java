@@ -126,7 +126,9 @@ public abstract class LuceneLoaderCode {
             String format, String language, Boolean isPreferred, String conceptStatus, String propertyId,
             String degreeOfFidelity, Boolean matchIfNoContext, String representationalForm, String[] sources,
             String[] usageContexts, Qualifier[] qualifiers, SQLTableConstants stc) throws Exception {
-        if (createBoundryDocuments) {
+        
+    	/*
+    	if (createBoundryDocuments) {
             String key = codingSchemeName + ":" + codingSchemeId + ":" + entityId + ":" + entityNamespace;
 
             if (!lastConceptCode.equals(key)) {
@@ -134,6 +136,7 @@ public abstract class LuceneLoaderCode {
                 lastConceptCode = key;
             }
         }
+        */
 
         String idFieldName = "id";
         String propertyFieldName = "propertyName";

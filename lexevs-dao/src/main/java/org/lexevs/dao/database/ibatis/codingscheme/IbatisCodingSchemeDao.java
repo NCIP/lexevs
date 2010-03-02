@@ -295,7 +295,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
-		return DaoUtility.createList(this.supportedDatebaseVersion, LexGridSchemaVersion.class);
+		return DaoUtility.createList(LexGridSchemaVersion.class, this.supportedDatebaseVersion);
 	}
 
 	public void setVersionsDao(VersionsDao versionsDao) {

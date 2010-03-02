@@ -13,6 +13,7 @@
 			 m:classifier="test" />
 	</publications>
 	<dependencies>
+		<dependency org="org.codehaus.castor" name="castor" rev="1.2"/>
 		<dependency org="org.easymock" name="easymock" rev="2.4"/> 
 		<dependency org="org.easymock" name="easymockclassextension" rev="2.4"/> 
 		<dependency org="asm" name="asm" rev="3.2"/>

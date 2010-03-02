@@ -53,8 +53,8 @@ import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LgLoggerIF;
-import org.lexevs.logging.Logger;
 import org.lexevs.registry.WriteLockManager;
+import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.XmlRegistry;
 import org.lexevs.registry.service.Registry.KnownTags;
 import org.lexevs.registry.service.XmlRegistry.DBEntry;
@@ -1250,15 +1250,15 @@ public class ResourceManager implements SystemResourceService {
 	public void updateCodingSchemeResourceStatus(
 			AbsoluteCodingSchemeVersionReference codingScheme,
 			CodingSchemeVersionStatus status) throws LBParameterException {
-		if(status.equals(CodingSchemeVersionStatus.ACTIVE)){
-			this.updateCodingSchemeEntryTag(codingScheme, status.toString());
-		} else {
-			try {
+		try {
+			if(status.equals(CodingSchemeVersionStatus.ACTIVE)){
+				this.getRegistry().activate(codingScheme);
+			} else {
 				this.deactivate(codingScheme, new Date());
-			} catch (LBInvocationException e) {
-				throw new RuntimeException(e);
-			}
-		}	
+			}	
+		} catch (LBInvocationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public void updateCodingSchemeResourceTag(

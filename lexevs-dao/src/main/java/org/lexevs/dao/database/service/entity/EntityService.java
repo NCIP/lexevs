@@ -18,7 +18,7 @@ public interface EntityService extends DatabaseService {
 			String entityCode,
 			String entityCodeNamespace);
 	
-	public List<Entity> getEntities(
+	public List<? extends Entity> getEntities(
 			String codingSchemeUri, 
 			String version, 
 			int start,

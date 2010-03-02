@@ -8,14 +8,14 @@ import org.lexevs.dao.database.service.DatabaseService;
 public interface PropertyService extends DatabaseService {
 	
 	public void insertEntityProperty(
-			String codingSchemeName, 
+			String codingSchemeUri, 
 			String version, 
 			String entityCode,
 			String entityCodeNamespace,
 			Property property);
 	
 	public void insertBatchEntityProperties(
-			String codingSchemeName, 
+			String codingSchemeUri, 
 			String version, 
 			String entityCode,
 			String entityCodeNamespace,
@@ -23,7 +23,7 @@ public interface PropertyService extends DatabaseService {
 
 	
 	public void updateEntityProperty(
-			String codingSchemeName, 
+			String codingSchemeUri, 
 			String version, 
 			String entityCode,
 			String entityCodeNamespace,

@@ -115,25 +115,6 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		
 	}
 
-	public String insertProperty(String codingSchemeUri, String version,
-			String parentId, PropertyType type, Property property) {
-		String propertyId = this.createUniqueId();
-		String entryStateId = this.createUniqueId();
-		
-		this.getSqlMapClientTemplate().insert(INSERT_PROPERTY_SQL,
-				buildInsertPropertyBean(
-						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version),
-						parentId,
-						propertyId,
-						entryStateId,
-						type,
-						property
-						));
-		
-		return propertyId;
-	}
-	
-
 
 	public void updateProperty(String codingSchemeName, String parentId,
 			String propertyId, PropertyType type, Property property) {
@@ -141,34 +122,31 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		
 	}
 	
-	public void insertPropertyQualifier(String codingSchemeUri,
-			String version, String propertyId, PropertyQualifier propertyQualifier) {
+	public void insertPropertyQualifier(String codingSchemeId, String propertyId, PropertyQualifier propertyQualifier) {
 		String qualifierId = this.createUniqueId();
 		
 		this.getSqlMapClientTemplate().insert(INSERT_PROPERTY_QUALIFIER_SQL, 
 				this.buildInsertPropertyQualifierBean(
-						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version),
+						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
 						propertyId, qualifierId, propertyQualifier));
 	}
 	
 
-	public void insertPropertySource(String codingSchemeUri,
-			String version, String propertyId, Source source) {
+	public void insertPropertySource(String codingSchemeId, String propertyId, Source source) {
 		String sourceId = this.createUniqueId();
 		
 		this.getSqlMapClientTemplate().insert(INSERT_PROPERTY_SOURCE_SQL, 
 				this.buildInsertPropertySourceBean(
-						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version),
+						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
 						propertyId, sourceId, source));
 	}
 	
-	public void insertPropertyUsageContext(String codingSchemeUri,
-			String version, String propertyId, String usageContext) {
+	public void insertPropertyUsageContext(String codingSchemeId, String propertyId, String usageContext) {
 		String sourceId = this.createUniqueId();
 		
 		this.getSqlMapClientTemplate().insert(INSERT_PROPERTY_USAGECONTEXT_SQL, 
 				this.buildInsertPropertyUsageContextBean(
-						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version),
+						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
 						propertyId, sourceId, usageContext));
 	}
 	
@@ -261,7 +239,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
-		return DaoUtility.createList(supportedDatebaseVersion, LexGridSchemaVersion.class);
+		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
 	}
 
 	public void setPropertyTypeClassifier(Classifier<PropertyType,String> propertyTypeClassifier) {

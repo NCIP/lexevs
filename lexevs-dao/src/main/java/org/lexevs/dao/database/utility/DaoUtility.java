@@ -8,9 +8,11 @@ import org.LexGrid.commonTypes.Text;
 
 public class DaoUtility {
 
-	public static <T> List<T> createList(T item, Class<T> itemClazz){
+	public static <T> List<T> createList(Class<T> itemClazz, T... items){
 		List<T> returnList = new ArrayList<T>();
-		returnList.add(item);
+		for(T item : items) {
+			returnList.add(item);
+		}
 		return returnList;
 	}
 	

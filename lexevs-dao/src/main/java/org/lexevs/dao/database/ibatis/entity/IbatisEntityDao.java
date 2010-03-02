@@ -180,7 +180,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
-		return DaoUtility.createList(supportedDatebaseVersion, LexGridSchemaVersion.class);
+		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
 	}
 
 	public void setIbatisVersionsDao(IbatisVersionsDao ibatisVersionsDao) {

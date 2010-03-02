@@ -3,9 +3,13 @@ package org.lexevs.dao.index.compass;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.DuplicateFilter;
 import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.compass.core.CompassCallback;
 import org.compass.core.CompassException;
 import org.compass.core.CompassHit;
@@ -16,10 +20,11 @@ import org.compass.core.support.search.CompassSearchCommand;
 import org.compass.core.support.search.CompassSearchHelper;
 import org.compass.core.support.search.CompassSearchResults;
 import org.compass.spring.CompassDaoSupport;
+import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.model.compass.v20.IndexedProperty;
-import org.lexevs.dao.index.repository.entity.EntityDao;
+import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 
-public class CompassEntityDao extends CompassDaoSupport implements EntityDao<CompassQuery,IndexedProperty> {
+public class CompassEntityDao extends CompassDaoSupport implements EntityDao {
 
 	private CompassSearchHelper compassSearchHelper;
 	
@@ -114,5 +119,25 @@ public class CompassEntityDao extends CompassDaoSupport implements EntityDao<Com
 
 	public void setCompassSearchHelper(CompassSearchHelper compassSearchHelper) {
 		this.compassSearchHelper = compassSearchHelper;
+	}
+
+	
+
+	public boolean supportsLexEvsIndexFormatVersion(
+			LexEvsIndexFormatVersion version) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	public List<ScoreDoc> query(AbsoluteCodingSchemeVersionReference reference,
+			List<? extends Query> combinedQueries, List<? extends Query> individualQueries) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	public Document getDocumentById(
+			AbsoluteCodingSchemeVersionReference reference, int documentId) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
 	}
 }

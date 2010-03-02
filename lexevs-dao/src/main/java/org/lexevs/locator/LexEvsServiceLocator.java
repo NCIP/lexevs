@@ -2,7 +2,7 @@ package org.lexevs.locator;
 
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.lexevs.dao.index.service.IndexService;
+import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.service.SystemResourceService;
@@ -22,7 +22,7 @@ public class LexEvsServiceLocator {
 	private Registry registry;
 	private LexEvsDatabaseOperations lexEvsDatabaseOperations;
 	private SystemResourceService systemResourceService;
-	private IndexService indexService;
+	private IndexServiceManager indexServiceManager;
 	
 	public static synchronized LexEvsServiceLocator getInstance(){
 		if(serviceLocator == null){
@@ -31,18 +31,19 @@ public class LexEvsServiceLocator {
 		return serviceLocator;
 	}
 	
-	
-	
 	@Deprecated
 	public ResourceManager getResourceManager() {
 		return resourceManager;
 	}
+	
 	public void setResourceManager(ResourceManager resourceManager) {
 		this.resourceManager = resourceManager;
 	}
+	
 	public Registry getRegistry() {
 		return registry;
 	}
+	
 	public void setRegistry(Registry registry) {
 		this.registry = registry;
 	}
@@ -72,6 +73,13 @@ public class LexEvsServiceLocator {
 		return systemResourceService;
 	}
 
+	public IndexServiceManager getIndexServiceManager() {
+		return indexServiceManager;
+	}
+
+	public void setIndexServiceManager(IndexServiceManager indexServiceManager) {
+		this.indexServiceManager = indexServiceManager;
+	}
 
 	public void setApplicationContext(ApplicationContext applicationContext)
 		throws BeansException {
@@ -80,14 +88,4 @@ public class LexEvsServiceLocator {
 	}
 
 
-
-	public void setIndexService(IndexService indexService) {
-		this.indexService = indexService;
-	}
-
-
-
-	public IndexService getIndexService() {
-		return indexService;
-	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
+import org.LexGrid.commonTypes.Source;
 import org.LexGrid.concepts.PropertyLink;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
@@ -11,18 +12,12 @@ import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 	
 	public enum PropertyType {CODINGSCHEME,VALUEDOMAIN,ENTITY}
+	
+	public List<Property> getAllPropertiesOfParent(String codingSchemeId,
+			String parentId, PropertyType type);
 
-	public String insertProperty(
-			String codingSchemeName, 
-			String version, 
-			String parentId,
-			PropertyType type,
-			Property property);
-	
-	
 	public void insertPropertyQualifier(
-			String codingSchemeName, 
-			String version, 
+			String codingSchemeId, 
 			String propertyId,
 			PropertyQualifier qualifier);
 	
@@ -31,6 +26,10 @@ public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 			String parentId,
 			PropertyType type,
 			Property property);
+	
+	public void insertPropertySource(String codingSchemeId, String propertyId, Source source);
+	
+	public void insertPropertyUsageContext(String codingSchemeId, String propertyId, String usageContext);
 	
 	public void deleteAllEntityPropertiesOfCodingScheme(
 			String codingSchemeId);

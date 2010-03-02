@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -20,12 +21,13 @@ import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.sqlimplementedmethods.SQLImplementedMethodsDao;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.exceptions.MissingResourceException;
-import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.system.ResourceManager;
 
 public class SQLInterfaceCodingSchemeDao extends AbstractBaseDao implements CodingSchemeDao {
 	
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("1.8");
+	
+	private static String KEY_SEPERATOR;
 	
 	private ResourceManager resourceManager;
 	private SQLImplementedMethodsDao sqlImplementedMethodsDao;
@@ -72,7 +74,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstractBaseDao implements Codi
 
 	public String getCodingSchemeIdByUriAndVersion(String codingSchemeUri,
 			String version) {
-		throw new UnsupportedOperationException();
+		return this.resolveCodingSchemeKey(codingSchemeUri, version);
 	}
 
 	public CodingSchemeSummary getCodingSchemeSummaryByUriAndVersion(
@@ -190,7 +192,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstractBaseDao implements Codi
 
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
-		return DaoUtility.createList(supportedDatebaseVersion, LexGridSchemaVersion.class);
+		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
 	}
 	
 	public ResourceManager getResourceManager() {
@@ -216,5 +218,14 @@ public class SQLInterfaceCodingSchemeDao extends AbstractBaseDao implements Codi
 
 	public <T> T executeInTransaction(IndividualDaoCallback<T> callback) {
 		throw new UnsupportedOperationException();
+	}
+	
+	private String resolveCodingSchemeKey(String uri, String version) {
+		return uri + ":" + version;
+	}
+	
+	private AbsoluteCodingSchemeVersionReference resolveCodingSchemeKey(String key) {
+		String[] keys = key.split(KEY_SEPERATOR);
+		return DaoUtility.createAbsoluteCodingSchemeVersionReference(keys[0], keys[1]);
 	}
 }
