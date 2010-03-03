@@ -28,17 +28,17 @@ public class IbatisVersionsDaoTest extends LexEvsDbUnitTestBase {
 		es.setContainingRevision("containingRevision");
 		es.setPrevRevision("previousRevision");
 		
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('csguid', 'csname', 'csuri', 'csversion')");
 		
 		ibatisVersionsDao.insertEntryState(
-				"csName",
-				"csVersion",
+				"csguid",
 				"entryStateId", 
 				"entryId", 
 				"entryType", 
-				"previousEntryStateId", 
+				null, 
 				es);
-		
-		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.queryForObject("Select * from EntryState", new RowMapper(){
 
@@ -50,7 +50,6 @@ public class IbatisVersionsDaoTest extends LexEvsDbUnitTestBase {
 				assertEquals(rs.getLong(5), 24l);
 				assertEquals(rs.getString(6), "containingRevision");
 				assertEquals(rs.getString(7), "previousRevision");
-				assertEquals(rs.getString(8), "previousEntryStateId");
 							
 				return null;
 			}
