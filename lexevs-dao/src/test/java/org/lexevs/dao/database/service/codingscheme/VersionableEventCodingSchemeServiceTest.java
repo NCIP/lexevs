@@ -6,10 +6,10 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
+import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
-import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -18,8 +18,10 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 	@Resource
 	private VersionableEventCodingSchemeService service;
 	
-	@Resource
-	private Registry registry;
+	@Before
+	public void clearListeners() {
+		service.setDatabaseServiceEventListeners(null);
+	}
 	
 	@Test
 	public void insertCodingScheme() throws Exception{
@@ -77,13 +79,6 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		assertEquals(1, template.queryForInt("Select count(*) from codingScheme"));
 		assertEquals(1, template.queryForInt("Select count(*) from entity"));
 		assertEquals(1, template.queryForInt("Select count(*) from property"));
-		
-		service.destroyCodingScheme("uri", "v1");
-		
-		assertEquals(0, template.queryForInt("Select count(*) from codingScheme"));
-		assertEquals(0, template.queryForInt("Select count(*) from entity"));
-		assertEquals(0, template.queryForInt("Select count(*) from property"));
-		
-		
+			
 	}
 }
