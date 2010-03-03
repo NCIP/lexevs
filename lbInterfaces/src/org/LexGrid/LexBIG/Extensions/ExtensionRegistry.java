@@ -381,5 +381,7 @@ public interface ExtensionRegistry extends Serializable {
 	void unregisterSortExtension(String name) throws LBParameterException;
 	
 	void unregisterSearchExtension(String name) throws LBParameterException;
+	
+	public <T extends Extendable> T getGenericExtension(String extensionName, Class<T> extensionClass) throws LBParameterException;
 
 }
