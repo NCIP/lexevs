@@ -195,6 +195,7 @@
  	</update>
 
 	<insert id="insertCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertCodingSchemeBean">
+		
 		INSERT INTO $prefix$codingScheme (
 			codingSchemeGuid,
 			codingSchemeName,

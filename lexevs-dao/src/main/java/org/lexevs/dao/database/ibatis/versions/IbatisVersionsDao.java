@@ -55,8 +55,6 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 		
 	}
 	
-	
-	
 	public void insertEntryState(String codingSchemeId, String entryStateId,
 			String entryId, String entryType, String previousEntryStateId,
 			EntryState entryState) {
@@ -70,24 +68,6 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 				this.getNonBatchTemplateInserter());
 	}
 	
-	public void insertEntryState(
-			String codingSchemeName,
-			String codingSchemeVersion,
-			String entryStateId, 
-			String entryId,
-			String entryType,
-			String previousEntryStateId,
-			EntryState entryState) {
-		
-		this.insertEntryState(
-				this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeName, codingSchemeVersion), 
-				entryStateId, 
-				entryId, 
-				entryType, 
-				previousEntryStateId, 
-				entryState, 
-				this.getNonBatchTemplateInserter());
-	}
 
 	protected InsertEntryStateBean buildInsertEntryStateBean(
 			String prefix, 

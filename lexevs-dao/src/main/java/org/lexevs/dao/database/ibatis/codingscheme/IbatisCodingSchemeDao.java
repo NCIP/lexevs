@@ -128,8 +128,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		
 		
 		versionsDao.insertEntryState(
-				codingScheme.getCodingSchemeName(),
-				codingScheme.getRepresentsVersion(),
+				codingSchemeId,
 				entryStateId, codingSchemeId, "CodingScheme", previousRevisionId, codingScheme.getEntryState());
 		
 		for(Source source : codingScheme.getSource()){
