@@ -18,15 +18,22 @@
  */
 package org.LexGrid.util.sql.sqlReconnect;
 
+import java.sql.Array;
+import java.sql.Blob;
 import java.sql.CallableStatement;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.NClob;
 import java.sql.PreparedStatement;
+import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
+import java.sql.SQLXML;
 import java.sql.Savepoint;
 import java.sql.Statement;
+import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
 
@@ -191,7 +198,7 @@ public class WrappedConnection implements Connection {
 
     private Map typeMap_;
 
-    public void setTypeMap(Map map) throws SQLException {
+    public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
         connection_.setTypeMap(map);
         typeMap_ = map;
     }
@@ -417,6 +424,71 @@ public class WrappedConnection implements Connection {
 
     public static void setDriverClassLoader(ClassLoader driverClassLoader) {
         WrappedConnection.driverClassLoader_ = driverClassLoader;
+    }
+
+    public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
+
+    public Blob createBlob() throws SQLException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
+
+    public Clob createClob() throws SQLException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
+
+    public NClob createNClob() throws SQLException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
+
+    public SQLXML createSQLXML() throws SQLException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
+
+    public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
+
+    public Properties getClientInfo() throws SQLException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
+
+    public String getClientInfo(String name) throws SQLException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean isValid(int timeout) throws SQLException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
+
+    public void setClientInfo(Properties properties) throws SQLClientInfoException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
+
+    public void setClientInfo(String name, String value) throws SQLClientInfoException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
+    }
+
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
     }
 
 }
