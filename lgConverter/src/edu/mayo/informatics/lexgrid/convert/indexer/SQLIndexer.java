@@ -329,7 +329,7 @@ public class SQLIndexer extends LuceneLoaderCode {
                                 && (isAnonymous == null || !isAnonymous.booleanValue())
                                 && (StringUtils.isNotBlank(propertyValue)))
                         {
-                            addEntity(codingSchemeName, codingSchemeId_, lastCode, lastNamespace, lastCodeType, lastED,
+                            addEntity(codingSchemeName, codingSchemeId_, null, lastCode, lastNamespace, lastCodeType, lastED,
                                     propertyType, propertyName, propertyValue, isActive, format, language,
                                     isPreferred, entityStatus, lastPropertyId, degreeOfFidelity, matchIfNoContext,
                                     representationalForm,

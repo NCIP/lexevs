@@ -317,7 +317,7 @@ public class LdapIndexer extends LuceneLoaderCode {
                 // TODO - ldap reader isn't reading sources, usage contexts, or
                 // qualifiers.
                 try {
-                    addEntity(codingSchemeName, codingSchemeId_, code, namespace, EntityTypes.CONCEPT_LITERAL.getLiteral(),
+                    addEntity(codingSchemeName, codingSchemeId_, null, code, namespace, EntityTypes.CONCEPT_LITERAL.getLiteral(),
                             entityDescription, null, propertyName, propertyValue, isActive, presentationFormat,
                             language, isPreferred, conceptStatus, propertyId, degreeOfFidelity, matchIfNoContext,
                             representationalForm, null, null, null, null);
