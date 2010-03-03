@@ -52,10 +52,10 @@ public class MethodCachingProxy implements InitializingBean {
 				cacheableAnnotation.cacheSize());
 		
 		if(cache.containsKey(key)){
-			logger.warn("Cache hit on: " + key);
+			logger.debug("Cache hit on: " + key);
 			return cache.get(key);
 		} else {
-			logger.warn("Caching miss on: " + key);
+			logger.debug("Caching miss on: " + key);
 		}
 
 		Object result = pjp.proceed();
