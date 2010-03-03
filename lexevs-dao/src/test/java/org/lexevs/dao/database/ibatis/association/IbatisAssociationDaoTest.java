@@ -48,7 +48,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				" 's-ns'," +
 				" 't-code'," +
 				" 't-ns'," +
-				" 'ai-id', null, null, null, null, null, ' ', ' ', null)");
+				" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		String key = ibatisAssociationDao.getKeyForAssociationInstanceId("cs-guid", "ai-id");
 		assertEquals("eae-guid", key);
@@ -79,7 +79,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				" 's-ns'," +
 				" 't-code'," +
 				" 't-ns'," +
-				" 'ai-id', null, null, null, null, null, ' ', ' ', null)");
+				" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		ibatisAssociationDao.insertAssociationQualifier("cs-guid", "ai-id", qual);
 		
