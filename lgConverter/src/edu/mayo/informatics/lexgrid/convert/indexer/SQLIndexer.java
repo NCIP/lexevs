@@ -417,7 +417,7 @@ public class SQLIndexer extends LuceneLoaderCode {
             if ((lastCode != null && (isAnonymous == null || !isAnonymous.booleanValue()))
                     && StringUtils.isNotBlank(propertyValue))
             {
-                addEntity(codingSchemeName, codingSchemeId_, lastCode, lastNamespace, lastCodeType, lastED, propertyType,
+                addEntity(codingSchemeName, codingSchemeId_, null, lastCode, lastNamespace, lastCodeType, lastED, propertyType,
                     propertyName, propertyValue, isActive, format, language, isPreferred, entityStatus,
                     lastPropertyId, degreeOfFidelity, matchIfNoContext, representationalForm,
                    (String[]) sources.toArray(new String[sources.size()]),
