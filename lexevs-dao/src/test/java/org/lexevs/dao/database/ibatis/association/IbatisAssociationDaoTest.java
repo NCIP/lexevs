@@ -7,13 +7,10 @@ import java.sql.Timestamp;
 import javax.annotation.Resource;
 
 import org.LexGrid.commonTypes.EntityDescription;
-import org.LexGrid.commonTypes.Source;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
@@ -33,6 +30,10 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 	public void testGetKeyForAssociationInstanceId() throws SQLException{
 
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
 				"values ('rel-guid', 'cs-guid', 'c-name')");
@@ -61,6 +62,9 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		qual.setQualifierText(DaoUtility.createText("qual text"));
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
 				"values ('rel-guid', 'cs-guid', 'c-name')");
@@ -104,10 +108,11 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		ed.setContent("a description");
 		relations.setEntityDescription(ed);
 	
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
 		
 		ibatisAssociationDao.insertRelations("cs-guid", relations);
-		
-		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.queryForObject("Select * from relation", new RowMapper(){
 
@@ -126,6 +131,18 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 	@Test
 	@Transactional
 	public void testInsertAssociationSource() throws SQLException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+				"values ('rel-guid', 'cs-guid', 'c-name')");
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid) values " +
+				"('ap-guid', 'rel-guid')");
+	
+				
 		final Timestamp effectiveDate = new Timestamp(1l);
 		final Timestamp expirationDate = new Timestamp(2l);
 		
@@ -156,23 +173,15 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		
 		target.setEffectiveDate(effectiveDate);
 		target.setExpirationDate(expirationDate);
-
-		EntryState es = new EntryState();
-		es.setChangeType(ChangeType.DEPENDENT);
-		es.setRelativeOrder(23l);
-		target.setEntryState(es);
-	
 		
-		ibatisAssociationDao.insertAssociationSource("cs-id", "ap-id", source);
-		
-		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		ibatisAssociationDao.insertAssociationSource("cs-guid", "ap-guid", source);
 		
 		template.queryForObject("Select * from entityassnstoentity", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				
 				assertNotNull(rs.getString(1));
-				assertEquals(rs.getString(2), "ap-id");
+				assertEquals(rs.getString(2), "ap-guid");
 				assertEquals(rs.getString(3), "s-code");
 				assertEquals(rs.getString(4), "s-ns");
 				assertEquals(rs.getString(5), "t-code");
@@ -189,12 +198,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				return true;
 			}
 		});
-		
-		//check to make sure it inserted the EntryState -- this will
-		//throw an error if there is nothing in the EntryState table.
-		assertEquals(1, template.queryForObject("Select count(*) from entryState", Integer.class));
-		
+			
 		assertEquals(2, template.queryForObject("Select count(*) from entityassnquals", Integer.class));
 	}
-	
 }
