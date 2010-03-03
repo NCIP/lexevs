@@ -8,18 +8,14 @@ import org.LexGrid.naming.URIMap;
 import org.LexGrid.versions.EntryState;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
-import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
-import org.lexevs.dao.database.utility.DaoUtility;
-import org.lexevs.registry.service.Registry;
 import org.springframework.transaction.annotation.Transactional;
 
 public class VersionableEventCodingSchemeService extends AbstractDatabaseService implements CodingSchemeService {
 
 	private EntityService entityService;
-	private Registry registry;
 	
 	@Transactional
 	public CodingScheme getCodingSchemeByUriAndVersion(String uri,
@@ -51,24 +47,22 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	@Transactional
 	public void insertCodingScheme(CodingScheme scheme) throws CodingSchemeAlreadyLoadedException {
 
-		this.fireCodingSchemeInsertEvent(scheme);
-		
 		CodingSchemeDao codingSchemeDao = 
 			this.getDaoManager().getCurrentCodingSchemeDao();
 		
 		String codingSchemeId = codingSchemeDao.insertCodingScheme(scheme);
 		
 		if(scheme.getMappings() != null){
-			getDaoManager().getCodingSchemeDao(
-					scheme.getCodingSchemeURI(), scheme.getRepresentsVersion()).
+			getDaoManager().getCurrentCodingSchemeDao().
 					insertMappings(codingSchemeId, scheme.getMappings());
 		}
 
 		if(scheme.getEntities() != null){
-			this.getDaoManager().getEntityDao(
-					scheme.getCodingSchemeURI(), scheme.getRepresentsVersion()).insertBatchEntities(codingSchemeId, 
+			this.getDaoManager().getCurrentEntityDao().insertBatchEntities(codingSchemeId, 
 					Arrays.asList(scheme.getEntities().getEntity()));
 		}
+		
+		this.fireCodingSchemeInsertEvent(scheme);
 	}
 	
 	@Transactional
@@ -100,7 +94,6 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		
 	}
 	
-
 	public void setEntityService(EntityService entityService) {
 		this.entityService = entityService;
 	}
@@ -108,16 +101,4 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	public EntityService getEntityService() {
 		return entityService;
 	}
-
-	public void setRegistry(Registry registry) {
-		this.registry = registry;
-	}
-
-	public Registry getRegistry() {
-		return registry;
-	}
-
-	
-
-	
 }

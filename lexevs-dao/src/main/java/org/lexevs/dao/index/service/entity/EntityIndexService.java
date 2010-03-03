@@ -15,6 +15,8 @@ public void updateIndexForEntity(String codingSchemeUri, String codingSchemeVers
 	
 	public void createIndex(AbsoluteCodingSchemeVersionReference reference);
 	
+	public void dropIndex(AbsoluteCodingSchemeVersionReference reference);
+	
 	public List<ScoreDoc> query(AbsoluteCodingSchemeVersionReference reference, List<? extends Query> combinedQueries, List<? extends Query> individualQueries);
 	
 	public Document getDocumentById(AbsoluteCodingSchemeVersionReference reference, int documentId);

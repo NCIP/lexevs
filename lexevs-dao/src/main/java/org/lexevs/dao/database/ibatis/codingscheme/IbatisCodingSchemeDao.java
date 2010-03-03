@@ -13,7 +13,6 @@ import org.LexGrid.naming.URIMap;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
-import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
@@ -36,7 +35,6 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 
 	private static String SUPPORTED_ATTRIB_GETTER_PREFIX = "_supported";
-	
 	
 	public static String CODING_SCHEME_NAMESPACE = "CodingScheme.";
 	private static String REMOVE_CODING_SCHEME_BY_ID_SQL = CODING_SCHEME_NAMESPACE + "deleteCodingSchemeById";

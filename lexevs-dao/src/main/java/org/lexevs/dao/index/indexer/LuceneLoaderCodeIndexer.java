@@ -14,6 +14,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 	private SystemVariables systemVariables;
 	
 	private String indexName = "commonIndex";
+	private String currentIndexVersion = "2010";
 	
 	public LuceneLoaderCodeIndexer(){
 		this.normEnabled_ = false;
@@ -22,11 +23,14 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 	public void indexEntity(String codingSchemeUri, String codingSchemeVersion,
 			Entity entity) {
 		try {
-			this.addEntityBoundryDocument(codingSchemeVersion, codingSchemeUri, codingSchemeVersion);
+			String codingSchemeName = 
+				  systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, codingSchemeVersion);
+			//TODO: Add Entity Namespace to the Boundry doc
+			this.addEntityBoundryDocument(codingSchemeName, codingSchemeUri, codingSchemeVersion, entity.getEntityCode());
 			for(Property prop : entity.getAllProperties()) {
 				this.indexEntity(codingSchemeUri, codingSchemeVersion, entity, prop);
 			}
-			this.addEntityBoundryDocument(codingSchemeVersion, codingSchemeUri, codingSchemeVersion);
+			this.addEntityBoundryDocument(codingSchemeName, codingSchemeUri, codingSchemeVersion, entity.getEntityCode());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -41,7 +45,13 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 		String repForm = "";
 		if(prop instanceof Presentation) {
 			Presentation pres = (Presentation)prop;
-			isPreferred = pres.isIsPreferred();
+			
+			if(pres.isIsPreferred() == null) {
+				isPreferred = false;
+			} else {
+				isPreferred = pres.isIsPreferred();
+			}
+			
 			degreeOfFidelity = pres.getDegreeOfFidelity();
 			
 			if(pres.isMatchIfNoContext() == null) {
@@ -56,6 +66,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 				systemResourceService.
 					getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, codingSchemeVersion), 
 				codingSchemeUri, 
+				codingSchemeVersion,
 				entity.getEntityCode(), 
 				entity.getEntityCodeNamespace(), 
 				entity.getEntityType(0), //TODO: Allow multple Entity Types
@@ -134,6 +145,14 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 
 	public void setSystemVariables(SystemVariables systemVariables) {
 		this.systemVariables = systemVariables;
+	}
+
+	public void setCurrentIndexVersion(String currentIndexVersion) {
+		this.currentIndexVersion = currentIndexVersion;
+	}
+
+	public String getCurrentIndexVersion() {
+		return currentIndexVersion;
 	}
 
 }

@@ -1275,5 +1275,10 @@ public class ResourceManager implements SystemResourceService {
 	public void updateNonCodingSchemeResourceTag(String uri, String newTag)
 			throws LBParameterException {
 		throw new UnsupportedOperationException("Cannot update the tag of a non Coding Scheme Resource.");
+	}
+
+	public void addCodingSchemeResourceFromSystem(String uri, String version)
+			throws LBParameterException {
+		throw new UnsupportedOperationException("Cannot add to Deprecated ResourceManager.");
 	}  
 }

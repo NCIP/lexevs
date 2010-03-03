@@ -8,14 +8,16 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.access.IndexDaoManager;
+import org.lexevs.dao.index.indexer.IndexCreator;
 
 public class LuceneEntityIndexService implements EntityIndexService {
 	
 	private IndexDaoManager indexDaoManager;
+	
+	private IndexCreator indexCreator;
 
 	public void createIndex(AbsoluteCodingSchemeVersionReference reference) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+		indexCreator.index(reference);
 	}
 
 	public void removeIndexForEntity(String codingSchemeUri,
@@ -48,4 +50,17 @@ public class LuceneEntityIndexService implements EntityIndexService {
 		return indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion()).getDocumentById(reference, documentId);
 	}
 
+	public void dropIndex(AbsoluteCodingSchemeVersionReference reference) {
+		indexDaoManager.getEntityDao(
+				reference.getCodingSchemeURN(), 
+				reference.getCodingSchemeVersion()).deleteDocumentsOfCodingScheme(reference);
+	}
+
+	public IndexCreator getIndexCreator() {
+		return indexCreator;
+	}
+
+	public void setIndexCreator(IndexCreator indexCreator) {
+		this.indexCreator = indexCreator;
+	}
 }

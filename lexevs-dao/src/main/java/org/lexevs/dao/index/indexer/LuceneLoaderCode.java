@@ -66,6 +66,7 @@ public abstract class LuceneLoaderCode {
     
     public static String CODING_SCHEME_NAME_FIELD = "codingSchemeName";
     public static String CODING_SCHEME_ID_FIELD = "codingSchemeId";
+    public static String CODING_SCHEME_URI_VERSION_KEY_FIELD = "csUriVersionKey";
     
     public static String UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD = "untokenizedLCPropertyValue";
     
@@ -75,8 +76,7 @@ public abstract class LuceneLoaderCode {
     public static String STEMMING_PROPERTY_VALUE_FIELD = STEMMING_PREFIX + PROPERTY_VALUE_FIELD;
     public static String DOUBLE_METAPHONE_PROPERTY_VALUE_FIELD = DOUBLE_METAPHONE_PREFIX + PROPERTY_VALUE_FIELD;
     public static String LITERAL_AND_REVERSE_PROPERTY_VALUE_FIELD = LITERAL_AND_REVERSE_PREFIX + PROPERTY_VALUE_FIELD;
-  
-    private String lastConceptCode = "";
+
     protected boolean createBoundryDocuments = true;
     protected PerFieldAnalyzerWrapper analyzer_ = null;
 
@@ -121,32 +121,16 @@ public abstract class LuceneLoaderCode {
         indexerService_.closeWriter(simpleIndexName_);
     }
 
-    protected void addEntity(String codingSchemeName, String codingSchemeId, String entityId, String entityNamespace, String entityType,
+    protected void addEntity(String codingSchemeName, String codingSchemeId, String codingSchemeVersion, String entityId, String entityNamespace, String entityType,
             String entityDescription, String propertyType, String propertyName, String propertyValue, Boolean isActive,
             String format, String language, Boolean isPreferred, String conceptStatus, String propertyId,
             String degreeOfFidelity, Boolean matchIfNoContext, String representationalForm, String[] sources,
             String[] usageContexts, Qualifier[] qualifiers, SQLTableConstants stc) throws Exception {
-        
-    	/*
-    	if (createBoundryDocuments) {
-            String key = codingSchemeName + ":" + codingSchemeId + ":" + entityId + ":" + entityNamespace;
 
-            if (!lastConceptCode.equals(key)) {
-                addEntityBoundryDocument(codingSchemeName, codingSchemeId, entityId);
-                lastConceptCode = key;
-            }
-        }
-        */
-
-        String idFieldName = "id";
-        String propertyFieldName = "propertyName";
-        String formatFieldName = "format";
-        if (stc != null && stc.supports2009Model()) {
-            idFieldName = SQLTableConstants.TBLCOL_ENTITYCODE;
-            propertyFieldName = SQLTableConstants.TBLCOL_PROPERTYNAME;
-            formatFieldName = SQLTableConstants.TBLCOL_FORMAT;
-        }
-
+        String idFieldName = SQLTableConstants.TBLCOL_ENTITYCODE;
+        String  propertyFieldName = SQLTableConstants.TBLCOL_PROPERTYNAME;
+        String formatFieldName = SQLTableConstants.TBLCOL_FORMAT;
+       
         StringBuffer fields = new StringBuffer();
         generator_.startNewDocument(codingSchemeName + "-" + entityId + "-" + propertyId);
         generator_.addTextField(CODING_SCHEME_NAME_FIELD, codingSchemeName, store(), true, false);
@@ -161,6 +145,8 @@ public abstract class LuceneLoaderCode {
         fields.append(idFieldName + "LC ");
         generator_.addTextField("entityType", entityType, true, true, false);
         fields.append("entityType ");
+        generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
+        fields.append(CODING_SCHEME_URI_VERSION_KEY_FIELD + " ");
        
         //If the EntityDescription is an empty String, replace it with a single space.
         //Lucene will not index an empty String but it will index a space.
@@ -341,7 +327,7 @@ public abstract class LuceneLoaderCode {
      * queries. A boundry document should be added whenever a new entity id is
      * started.
      */
-    protected void addEntityBoundryDocument(String codingSchemeName, String codingSchemeId, String entityId) throws Exception {
+    protected void addEntityBoundryDocument(String codingSchemeName, String codingSchemeId, String codingSchemeVersion, String entityId) throws Exception {
         StringBuffer fields = new StringBuffer();
         generator_.startNewDocument(codingSchemeName + "-" + entityId);
         generator_.addTextField("codingSchemeName", codingSchemeName, store(), true, false);
@@ -350,6 +336,8 @@ public abstract class LuceneLoaderCode {
         fields.append("codingSchemeId ");
         generator_.addTextField("codeBoundry", "T", false, true, false);
         fields.append("codeBoundry ");
+        generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
+        fields.append(CODING_SCHEME_URI_VERSION_KEY_FIELD + " ");
 
         generator_.addTextField("fields", fields.toString(), store(), true, true);
 
@@ -427,6 +415,10 @@ public abstract class LuceneLoaderCode {
             }
         }
         return buffer.toString();
+    }
+    
+    public static String createCodingSchemeUriVersionKey(String uri, String version) {
+    	return uri + "-" + version;
     }
 
     protected class Qualifier {

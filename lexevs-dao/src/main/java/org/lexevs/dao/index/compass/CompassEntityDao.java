@@ -140,4 +140,10 @@ public class CompassEntityDao extends CompassDaoSupport implements EntityDao {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
+
+	public void deleteDocumentsOfCodingScheme(
+			AbsoluteCodingSchemeVersionReference reference) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
 }

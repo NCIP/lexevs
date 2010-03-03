@@ -14,11 +14,14 @@ import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.prefix.PrefixResolver;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.logging.LoggingBean;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
+import org.lexevs.registry.utility.RegistryUtility;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.utility.MyClassLoader;
 import org.springframework.beans.factory.InitializingBean;
@@ -30,9 +33,10 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 	private PrefixResolver prefixResolver;
 	private LexEvsDatabaseOperations lexEvsDatabaseOperations;
 	private SystemVariables systemVariables;
+	private EntityIndexService entityIndexService;
 	
 	private MyClassLoader myClassLoader;
-	private CodingSchemeService codingSchemeService;
+	private DatabaseServiceManager databaseServiceManager;
 
 	private List<CodingSchemeAliasHolder> aliasHolder = new ArrayList<CodingSchemeAliasHolder>();
 
@@ -44,7 +48,8 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		aliasHolder.clear();
 		List<RegistryEntry> entries = registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
 		for(RegistryEntry entry : entries){
-			CodingScheme codingScheme = codingSchemeService.getCodingSchemeByUriAndVersion(
+
+			CodingScheme codingScheme = databaseServiceManager.getCodingSchemeService().getCodingSchemeByUriAndVersion(
 					entry.getResourceUri(), 
 					entry.getResourceVersion());
 			aliasHolder.add(
@@ -86,11 +91,12 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		if(! isSingleTableMode() ){
 			lexEvsDatabaseOperations.dropTables(uri, version);
 		} else {
-			this.getCodingSchemeService().destroyCodingScheme(uri, version);
+			this.databaseServiceManager.getCodingSchemeService().destroyCodingScheme(uri, version);
 		}
 		
 		RegistryEntry entry = registry.getCodingSchemeEntry(ref);
 		this.registry.removeEntry(entry);
+		entityIndexService.dropIndex(ref);
 		this.readCodingSchemeAliasesFromServer();
 	}
 
@@ -270,6 +276,19 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		registry.updateEntry(entry);
 		this.readCodingSchemeAliasesFromServer();
 	}
+	
+	@ClearCache
+	public void addCodingSchemeResourceFromSystem(String uri, String version)
+			throws LBParameterException {
+		RegistryEntry entry = RegistryUtility.codingSchemeToRegistryEntry(uri, version);
+		entry.setStatus(CodingSchemeVersionStatus.PENDING.toString());
+		try {
+			this.getRegistry().addNewItem(entry);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		this.readCodingSchemeAliasesFromServer();
+	}
 
 	protected boolean isSingleTableMode(){
 		return systemVariables.isSingleTableMode();
@@ -316,12 +335,20 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		this.myClassLoader = myClassLoader;
 	}
 	
-	public void setCodingSchemeService(CodingSchemeService codingSchemeService) {
-		this.codingSchemeService = codingSchemeService;
+	public void setEntityIndexService(EntityIndexService entityIndexService) {
+		this.entityIndexService = entityIndexService;
 	}
 
-	public CodingSchemeService getCodingSchemeService() {
-		return codingSchemeService;
+	public EntityIndexService getEntityIndexService() {
+		return entityIndexService;
+	}
+
+	public void setDatabaseServiceManager(DatabaseServiceManager databaseServiceManager) {
+		this.databaseServiceManager = databaseServiceManager;
+	}
+
+	public DatabaseServiceManager getDatabaseServiceManager() {
+		return databaseServiceManager;
 	}
 
 	protected static class CodingSchemeAliasHolder {

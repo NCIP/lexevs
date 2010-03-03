@@ -127,6 +127,11 @@ public class DelegatingSystemResourceService implements SystemResourceService {
 		}	
 		
 	}
+	
+	public void addCodingSchemeResourceFromSystem(String uri, String version)
+		throws LBParameterException {
+		primarySystemResourceService.addCodingSchemeResourceFromSystem(uri, version);
+	}
 
 	public void updateNonCodingSchemeResourceTag(String uri, String newTag)
 			throws LBParameterException {
@@ -157,5 +162,4 @@ public class DelegatingSystemResourceService implements SystemResourceService {
 			SystemResourceService delegateSystemResourceService) {
 		this.delegateSystemResourceService = delegateSystemResourceService;
 	}
-	
 }

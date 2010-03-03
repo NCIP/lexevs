@@ -5,7 +5,6 @@ import java.util.BitSet;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -13,9 +12,12 @@ import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.AbstractBaseIndexDao;
 import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.connection.IndexInterface;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
+import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 
+import edu.mayo.informatics.indexer.api.IndexerService;
 import edu.mayo.informatics.indexer.api.SearchServiceInterface;
 import edu.mayo.informatics.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
 import edu.mayo.informatics.indexer.lucene.hitcollector.BitSetBestScoreOfEntityHitCollector;
@@ -117,6 +119,39 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 		}
 	}
 	
+	public void deleteDocumentsOfCodingScheme(
+			AbsoluteCodingSchemeVersionReference reference) {
+		try {
+			String internalCodeSystemName = systemResourceService.
+			getInternalCodingSchemeNameForUserCodingSchemeName(reference.getCodingSchemeURN(), 
+					reference.getCodingSchemeVersion());
+
+			IndexerService indexerService = this.getIndexInterface().getBaseIndexerService();
+
+			LocalCodingScheme lcs = LocalCodingScheme.getLocalCodingScheme(internalCodeSystemName, 
+					reference.getCodingSchemeVersion());
+			String indexName = indexerService.getMetaData().getIndexMetaDataValue(lcs.getKey());
+
+			indexerService.forceUnlockIndex(indexName);
+			indexerService.openBatchRemover(indexName);
+
+			indexerService.removeDocument(indexName, 
+					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
+					LuceneLoaderCode.createCodingSchemeUriVersionKey(
+					reference.getCodingSchemeURN(), reference.getCodingSchemeVersion()));
+
+			indexerService.closeBatchRemover(indexName);
+			
+			indexerService.optimizeIndex(indexName);
+			
+			indexerService.getMetaData().removeIndexMetaDataValue(lcs.getKey());
+			indexerService.getMetaData().rereadFile(true);
+			
+		} catch(Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public void setIndexInterface(IndexInterface indexInterface) {
 		this.indexInterface = indexInterface;
 	}
@@ -149,4 +184,6 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 	public SystemResourceService getSystemResourceService() {
 		return systemResourceService;
 	}
+
+	
 }

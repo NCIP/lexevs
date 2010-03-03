@@ -3,13 +3,14 @@ package org.lexevs.dao.index.indexer;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.service.entity.EntityService;
+import org.lexevs.dao.index.connection.IndexInterface;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.indexer.api.IndexerService;
-import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
 
 public class EntityBatchingIndexCreator implements IndexCreator {
 	
@@ -17,13 +18,11 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	
 	private EntityService entityService;
 	
-	private LuceneLoaderCodeIndexer luceneLoaderCodeIndexer;
-	
 	private SystemResourceService systemResourceService;
 	
 	private SystemVariables systemVariables;
-	
-	private IndexerService indexerService;
+
+	private IndexInterface indexInterface;
 
 	public void index(AbsoluteCodingSchemeVersionReference reference) {
 		LuceneLoaderCodeIndexer indexer = new LuceneLoaderCodeIndexer();
@@ -43,22 +42,39 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 			 }
 		 }
 		 
+		 String indexName = indexer.getIndexName();
+		 String indexVersion = indexer.getCurrentIndexVersion();
+		 
 		 indexer.closeIndex();
+		 addIndexMetadata(reference, indexName, indexVersion);
+
+		 try {
+			 indexInterface.initCodingSchemes();
+		 } catch (LBInvocationException e) {
+			 throw new RuntimeException(e);
+		 }
 	}
 	
 	protected void addIndexMetadata(
-			AbsoluteCodingSchemeVersionReference reference, String indexName) {
-		  try {
-			  indexerService.getMetaData().setIndexMetaDataValue(reference.getCodingSchemeURN() + "[:]" + reference.getCodingSchemeVersion(), indexName);
-			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "codingScheme", reference.getCodingSchemeURN());
+			AbsoluteCodingSchemeVersionReference reference, String indexName, String indexVersion) {
+		  try {	  
+			  IndexerService indexerService = this.indexInterface.getBaseIndexerService();
+			  
+			  String codingSchemeName = 
+				  systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+			  
+			  indexerService.getMetaData().setIndexMetaDataValue(codingSchemeName + "[:]" + reference.getCodingSchemeVersion(), indexName);
+			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "codingScheme", codingSchemeName);
 			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "version", reference.getCodingSchemeVersion());
 
-			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "lgModel", "2009");
+			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "lgModel", indexVersion);
 			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "has 'Norm' fields", false + "");
 			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "has 'Double Metaphone' fields", true + "");
 			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "indexing started", "");
 			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "indexing finished", "");
-		} catch (InternalErrorException e) {
+			  
+			  indexerService.getMetaData().rereadFile(true);
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -79,14 +95,6 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 		this.batchSize = batchSize;
 	}
 
-	public void setLuceneLoaderCodeIndexer(LuceneLoaderCodeIndexer luceneLoaderCodeIndexer) {
-		this.luceneLoaderCodeIndexer = luceneLoaderCodeIndexer;
-	}
-
-	public LuceneLoaderCodeIndexer getLuceneLoaderCodeIndexer() {
-		return luceneLoaderCodeIndexer;
-	}
-
 	public void setSystemResourceService(SystemResourceService systemResourceService) {
 		this.systemResourceService = systemResourceService;
 	}
@@ -102,12 +110,12 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	public void setSystemVariables(SystemVariables systemVariables) {
 		this.systemVariables = systemVariables;
 	}
-	
-	public IndexerService getIndexerService() {
-		return indexerService;
+
+	public void setIndexInterface(IndexInterface indexInterface) {
+		this.indexInterface = indexInterface;
 	}
 
-	public void setIndexerService(IndexerService indexerService) {
-		this.indexerService = indexerService;
+	public IndexInterface getIndexInterface() {
+		return indexInterface;
 	}
 }

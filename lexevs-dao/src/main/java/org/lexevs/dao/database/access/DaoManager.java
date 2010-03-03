@@ -34,6 +34,10 @@ public class DaoManager {
 		return this.doGetDao(codingSchemeUri, version, this.getVersionsDaos());
 	}
 	
+	public EntityDao getCurrentEntityDao(){
+		return this.getCorrectDaoForSchemaVersion(this.getEntityDaos(), CURRENT_VERSION);
+	}
+	
 	public EntityDao getEntityDao(String codingSchemeUri, String version){
 		return this.doGetDao(codingSchemeUri, version, this.getEntityDaos());
 	}

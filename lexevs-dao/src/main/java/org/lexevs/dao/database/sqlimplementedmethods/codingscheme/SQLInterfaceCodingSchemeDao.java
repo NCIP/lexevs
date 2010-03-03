@@ -14,25 +14,18 @@ import org.LexGrid.commonTypes.Source;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.lexevs.dao.database.access.AbstractBaseDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
-import org.lexevs.dao.database.sqlimplementedmethods.SQLImplementedMethodsDao;
+import org.lexevs.dao.database.sqlimplementedmethods.AbstraceSqlImplementedMethodsDao;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.exceptions.MissingResourceException;
-import org.lexevs.system.ResourceManager;
+import org.springframework.util.StringUtils;
 
-public class SQLInterfaceCodingSchemeDao extends AbstractBaseDao implements CodingSchemeDao {
+public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDao implements CodingSchemeDao {
 	
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("1.8");
 	
-	private static String KEY_SEPERATOR;
-	
-	private ResourceManager resourceManager;
-	private SQLImplementedMethodsDao sqlImplementedMethodsDao;
-
-
 	public void deleteCodingScheme(CodingScheme codingScheme) {
 		// TODO Auto-generated method stub
 		
@@ -58,9 +51,9 @@ public class SQLInterfaceCodingSchemeDao extends AbstractBaseDao implements Codi
 	public CodingScheme getCodingSchemeByUriAndVersion(String codingSchemeUri,
 			String version) {
 		try {
-			String internalCodingSchemeName = resourceManager.
+			String internalCodingSchemeName = this.getResourceManager().
 				getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, version);
-			return sqlImplementedMethodsDao.buildCodingScheme(internalCodingSchemeName, version);
+			return this.getSqlImplementedMethodsDao().buildCodingScheme(internalCodingSchemeName, version);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} 
@@ -81,7 +74,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstractBaseDao implements Codi
 			String codingSchemeUri, String version) {
 		String codingSchemeInternalName;
 		try {
-			codingSchemeInternalName = resourceManager.
+			codingSchemeInternalName = this.getResourceManager().
 				getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, version);
 		} catch (LBParameterException e2) {
 			throw new RuntimeException(e2);
@@ -89,7 +82,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstractBaseDao implements Codi
 		
 		SQLInterface si;
 		try {
-			si = resourceManager.getSQLInterface(codingSchemeInternalName, version);
+			si = this.getResourceManager().getSQLInterface(codingSchemeInternalName, version);
 		} catch (MissingResourceException e1) {
 			throw new RuntimeException(e1);
 		}
@@ -194,22 +187,6 @@ public class SQLInterfaceCodingSchemeDao extends AbstractBaseDao implements Codi
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
 		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
 	}
-	
-	public ResourceManager getResourceManager() {
-		return resourceManager;
-	}
-
-	public void setResourceManager(ResourceManager resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	public void setSqlImplementedMethodsDao(SQLImplementedMethodsDao sqlImplementedMethodsDao) {
-		this.sqlImplementedMethodsDao = sqlImplementedMethodsDao;
-	}
-
-	public SQLImplementedMethodsDao getSqlImplementedMethodsDao() {
-		return sqlImplementedMethodsDao;
-	}
 
 	public void deleteCodingSchemeById(String codingSchemeId) {
 		// TODO Auto-generated method stub
@@ -220,12 +197,12 @@ public class SQLInterfaceCodingSchemeDao extends AbstractBaseDao implements Codi
 		throw new UnsupportedOperationException();
 	}
 	
-	private String resolveCodingSchemeKey(String uri, String version) {
-		return uri + ":" + version;
+	public static String resolveCodingSchemeKey(String uri, String version) {
+		return uri + KEY_SEPERATOR + version;
 	}
 	
-	private AbsoluteCodingSchemeVersionReference resolveCodingSchemeKey(String key) {
-		String[] keys = key.split(KEY_SEPERATOR);
+	public static AbsoluteCodingSchemeVersionReference resolveCodingSchemeKey(String key) {
+		String[] keys = StringUtils.split(key, KEY_SEPERATOR);
 		return DaoUtility.createAbsoluteCodingSchemeVersionReference(keys[0], keys[1]);
 	}
 }

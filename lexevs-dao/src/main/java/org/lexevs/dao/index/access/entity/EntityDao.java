@@ -13,4 +13,6 @@ public interface EntityDao extends LexEvsIndexFormatVersionAwareDao {
 	public List<ScoreDoc> query(AbsoluteCodingSchemeVersionReference reference, List<? extends Query> combinedQueries, List<? extends Query> individualQueries);
 
 	public Document getDocumentById(AbsoluteCodingSchemeVersionReference reference, int documentId);
+	
+	public void deleteDocumentsOfCodingScheme(AbsoluteCodingSchemeVersionReference reference);
 }

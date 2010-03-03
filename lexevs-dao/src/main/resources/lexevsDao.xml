@@ -42,27 +42,34 @@
 		<property name="versionsDao" ref="ibatisVersionsDao"/>
 	</bean>
 	
-	 <bean id="sqlinterfaceCodingSchemeDao" 
-	 	class="org.lexevs.dao.database.sqlimplementedmethods.codingscheme.SQLInterfaceCodingSchemeDao">
-	 	<property name="resourceManager" ref="resourceManager"/>
+	<bean id="abstractSqlInterfaceDao" abstract="true">
+		<property name="resourceManager" ref="resourceManager"/>
 	 	<property name="sqlImplementedMethodsDao" ref="sqlImplementedMethodsDao"/>
-	 </bean>
+	</bean>
+	
+	 <bean id="sqlInterfaceCodingSchemeDao" 
+	 	class="org.lexevs.dao.database.sqlimplementedmethods.codingscheme.SQLInterfaceCodingSchemeDao" 
+	 	parent="abstractSqlInterfaceDao"/>
 	 
 	 <bean id="sqlImplementedMethodsDao" class="org.lexevs.dao.database.sqlimplementedmethods.SQLImplementedMethodsDao">
 	 	<property name="resourceManager" ref="resourceManager"/>
 	 	<property name="logger" ref="loggerFactory"/>
 	 </bean>
-	
+	 
+	 <bean id="sqlInterfaceEntityDao" class="org.lexevs.dao.database.sqlimplementedmethods.entity.SQLInterfaceEntityDao"
+		 parent="abstractSqlInterfaceDao"/>
+
 	<bean id="daoManager" class="org.lexevs.dao.database.access.DaoManager">
 		<property name="codingSchemeDaos">
 			<list>
 				<ref bean="ibatisCodingSchemeDao"/>
-				<ref bean="sqlinterfaceCodingSchemeDao"/>
+				<ref bean="sqlInterfaceCodingSchemeDao"/>
 			</list>
 		</property>
 		<property name="entityDaos">
 			<list>
 				<ref bean="ibatisEntityDao"/>
+				<ref bean="sqlInterfaceEntityDao"/>
 			</list>
 		</property>
 		<property name="associationDaos">
@@ -109,7 +116,6 @@
 		class="org.lexevs.dao.database.service.codingscheme.VersionableEventCodingSchemeService"
 		parent="abstractService">
 		<property name="entityService" ref="entityService"/>
-		<property name="registry" ref="registry"/>
 		<property name="databaseServiceEventListeners">
 			<list>
 				<ref bean="codingSchemeRegisteringListener"/>
@@ -332,7 +338,8 @@
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
 		<property name="registry" ref="databaseRegistry"/>
 		<property name="myClassLoader" ref="myClassLoader"/>
-		<property name="codingSchemeService" ref="codingSchemeService"/>
+		<property name="databaseServiceManager" ref="databaseServiceManager"/>
+		<property name="entityIndexService" ref="luceneEntityIndexService"/>
 	</bean>
 	
 	<bean id="lexEvsSchemaInstallationSetup" class="org.lexevs.registry.setup.LexEvsSchemaInstallationSetup"
@@ -374,9 +381,9 @@
 		<property name="logger" ref="loggerFactory"/>
 	</bean>
 	
-	
-	<bean id="codingSchemeRegisteringListener" class="org.lexevs.dao.database.service.listener.CodingSchemeRegisteringListener">
-		<property name="registry" ref="registry"/>
+	<bean id="codingSchemeRegisteringListener" 
+		class="org.lexevs.dao.database.service.listener.CodingSchemeRegisteringListener">
+<!--		<property name="systemResourceService" ref="delegatingResourceManagingService"/>-->
 	</bean>
 	
 	<bean id="indexInterface" class="org.lexevs.dao.index.connection.IndexInterface">
@@ -392,11 +399,12 @@
 		<property name="entityService" ref="entityService"/>
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="systemVariables" ref="systemVariables"/> 
-		<property name="indexerService" ref="indexerService"/>
+		<property name="indexInterface" ref="indexInterface"/>
 	</bean>
 	
 	<bean id="luceneEntityIndexService" class="org.lexevs.dao.index.service.entity.LuceneEntityIndexService">
 		<property name="indexDaoManager" ref="indexDaoManager"/> 
+		<property name="indexCreator" ref="entityBatchingIndexCreator"/>
 	</bean>
 	
 	<bean id="indexServiceManager" class="org.lexevs.dao.index.service.IndexServiceManager">
