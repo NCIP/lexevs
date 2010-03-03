@@ -49,6 +49,7 @@ import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LgLoggerIF;
@@ -59,10 +60,8 @@ import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
-import edu.mayo.informatics.lexgrid.convert.indexer.SQLIndexer;
 import edu.mayo.informatics.lexgrid.convert.options.DefaultOptionHolder;
 import edu.mayo.informatics.lexgrid.convert.options.URIOption;
-import edu.mayo.informatics.lexgrid.convert.utility.Constants;
 import edu.mayo.informatics.lexgrid.convert.utility.ManifestUtil;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 import edu.mayo.informatics.lexgrid.convert.utility.loaderPreferences.PreferenceLoaderFactory;
@@ -233,13 +232,8 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                             + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage())
                             + " Heap Delta:" + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
 
-                    //TODO: Fix Transitive table building and indexing
-                    //doTransitiveAndIndex(codingSchemeNames, sci_);
-                    //IndexService indexService = LexEvsServiceLocator.getInstance().getIndexService();
-                    //for(AbsoluteCodingSchemeVersionReference ref : codingSchemeReferences) {
-                    //   indexService.createIndex(ref);
-                    //}
-                    
+                    doTransitiveAndIndex(codingSchemeReferences);
+
                     md_.info("After Indexing");
                     snap = SimpleMemUsageReporter.snapshot();
                     md_.info("Read Time : " + SimpleMemUsageReporter.formatTimeDiff(snap.getTimeDelta(null))
@@ -271,7 +265,12 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                         }
 
                         getLogger().warn("Load failed.  Removing temporary resources...");
-                        //TODO: Remove failed load artifcats
+                        SystemResourceService service = 
+                               LexEvsServiceLocator.getInstance().getSystemResourceService();
+                        
+                        for(AbsoluteCodingSchemeVersionReference ref : codingSchemeReferences) {
+                            service.removeCodingSchemeResourceFromSystem(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
+                        }
 
                     } catch (LBParameterException e) {
                         // do nothing - means that the requested delete item
@@ -288,12 +287,12 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         }
     }
 
-    protected void doTransitiveAndIndex(String[] codingSchemes, SQLConnectionInfo sci) throws Exception {
+    protected void doTransitiveAndIndex(AbsoluteCodingSchemeVersionReference[] references) throws Exception {
         if(doComputeTransitiveClosure) {
-            doTransitiveTable(codingSchemes, sci);
+           // doTransitiveTable(codingSchemes, sci);
         }
         if(doIndexing) {
-            doIndex(codingSchemes, sci);
+            doIndex(references);
         }
     }
 
@@ -325,11 +324,11 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         md_.info("Finished building root node");
     }
 
-    protected void doIndex(String[] codingSchemes, SQLConnectionInfo sci) throws Exception {
+    protected void doIndex(AbsoluteCodingSchemeVersionReference[] references) throws Exception {
         Snapshot snap1 = SimpleMemUsageReporter.snapshot();
         md_.info("Building the index");
 
-        buildIndex(codingSchemes, sci, md_);
+        buildIndex(references);
         Snapshot snap2 = SimpleMemUsageReporter.snapshot();
         md_.info("Finished indexing.   Time to index: "
                 + SimpleMemUsageReporter.formatTimeDiff(snap2.getTimeDelta(snap1)) + "   Heap usage: "
@@ -402,7 +401,9 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                             codingSchemeVersion_.get(i).getCodingSchemeVersion());
 
                     md_.info("beginning index process for " + csn);
-                    buildIndex(new String[] { csn }, sci, md_);
+                   
+                    //TODO: Fix Reindexing
+                    //buildIndex(new String[] { csn }, sci, md_);
 
                     // make sure that searches wont hit on a cache from the old
                     // index.
@@ -495,19 +496,14 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         }
     }
 
-    private void buildIndex(String[] codingSchemes, SQLConnectionInfo sci, MessageDirector md) throws Exception {
-        SystemVariables sv = ResourceManager.instance().getSystemVariables();
-        if (sci.server.indexOf("jdbc:mysql") != -1) {
-            // mysql gets results in stages, has to rerun the query multiple
-            // times.
-            // use a much larger batch size.
-            Constants.mySqlBatchSize = 50000;
-        } else {
-            Constants.mySqlBatchSize = 10000;
-        }
-        new SQLIndexer((sv.getAutoLoadSingleDBMode() ? sci.prefix : sci.dbName), sv.getAutoLoadIndexLocation(),
-                sci.username, sci.password, sci.server, sci.driver, sci.prefix, codingSchemes, md, sv.isNormEnabled(),
-                true, true, true);
+    private void buildIndex(AbsoluteCodingSchemeVersionReference[] references) throws Exception {
+       EntityIndexService service = LexEvsServiceLocator.getInstance().
+            getIndexServiceManager().
+                getEntityIndexService();
+       
+       for(AbsoluteCodingSchemeVersionReference reference : references) {
+           service.createIndex(reference);
+       } 
     }
 
     public String getStringFromURI(URI uri) throws LBParameterException {
