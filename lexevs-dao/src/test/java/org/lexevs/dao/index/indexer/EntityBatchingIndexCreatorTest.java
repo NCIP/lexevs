@@ -25,12 +25,6 @@ public class EntityBatchingIndexCreatorTest  {
 	
 	@Test
 	public void testCreateIndex() {
-		//IndexService service = LexEvsServiceLocator.getInstance().getIndexService();
-		EntityService es = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
-		List<? extends Entity> entities = es.getEntities("urn:oid:2.16.840.1.113883.6.110", "1993.bvt", 0, 10);
-		System.out.println(entities.size());
-		
-		AbsoluteCodingSchemeVersionReference ref = DaoUtility.createAbsoluteCodingSchemeVersionReference("urn:oid:2.16.840.1.113883.6.110", "1993.bvt");
-		//service.createIndex(ref);
+		//TODO:
 	}
 }
