@@ -25,7 +25,7 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	
 	public CodingScheme getCodingSchemeByRevision(String codingSchemeName, String version, String revisionId);
 	
-	public void updateCodingScheme(String codingSchemeName, String version, CodingScheme codingScheme);
+	public void updateCodingScheme(String codingSchemeId, CodingScheme codingScheme);
 	
 	public String getCodingSchemeIdByNameAndVersion(String codingSchemeName, String version);
 	
@@ -40,10 +40,6 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	public void insertCodingSchemeLocalName(String codingSchemeId, String localName);
 	
 	public void insertMappings(String codingSchemeId, Mappings mappings);
-	
-	public void insertMappings(String codingSchemeName, String codingSchemeVersion, Mappings mappings);
-	
-	public void insertURIMap(String codingSchemeName, String codingSchemeVersion, URIMap supportedProperty);
 	
 	public void insertURIMap(String codingSchemeId, List<URIMap> supportedProperty);
 

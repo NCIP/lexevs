@@ -3,7 +3,7 @@ package org.lexevs.dao.database.ibatis.codingscheme.parameter;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 
-public class InsertCodingSchemeBean extends IdableParameterBean{
+public class InsertOrUpdateCodingSchemeBean extends IdableParameterBean{
 	
 	private CodingScheme codingScheme;
 

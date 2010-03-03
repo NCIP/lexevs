@@ -61,4 +61,12 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		
 		return entities;
 	}
+
+	@Override
+	public int getEntityCount(String codingSchemeUri, String version) {
+		String codingSchemeId = this.getDaoManager()
+			.getCurrentCodingSchemeDao().
+			getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
+		return this.getDaoManager().getCurrentEntityDao().getEntityCount(codingSchemeId);
+	}
 }

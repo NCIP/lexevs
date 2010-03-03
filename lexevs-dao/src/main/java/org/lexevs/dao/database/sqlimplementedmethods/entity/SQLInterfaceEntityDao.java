@@ -78,4 +78,16 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 		public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
 			return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
 		}
+
+		@Override
+		public int getEntityCount(String codingSchemeId) {
+			// TODO Auto-generated method stub (IMPLEMENT!)
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void updateEntity(String codingSchemeId, Entity entity) {
+			// TODO Auto-generated method stub (IMPLEMENT!)
+			throw new UnsupportedOperationException();
+		}
 }

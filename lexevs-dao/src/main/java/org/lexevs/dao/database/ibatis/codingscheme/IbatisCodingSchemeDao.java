@@ -18,7 +18,7 @@ import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.constants.classifier.mapping.MappingClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
-import org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertCodingSchemeBean;
+import org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean;
 import org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertCodingSchemeMultiAttribBean;
 import org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertURIMapBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
@@ -45,6 +45,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	private static String GET_CODING_SCHEME_ID_BY_URI_AND_VERSION_SQL = CODING_SCHEME_NAMESPACE + "getCodingSchemeIdByUriAndVersion";
 	private static String GET_CODING_SCHEME_SOURCE_LIST_SQL = CODING_SCHEME_NAMESPACE + "getSourceListByCodingSchemeId";
 	private static String GET_CODING_SCHEME_LOCALNAME_LIST_SQL = CODING_SCHEME_NAMESPACE + "getLocalNameListByCodingSchemeId";
+	private static String UPDATE_CODING_SCHEME_BY_ID_SQL = CODING_SCHEME_NAMESPACE + "updateCodingSchemeById";
 	private static String INSERT_CODING_SCHEME_MULTIATTRIB_SQL = CODING_SCHEME_NAMESPACE + "insertCodingSchemeMultiAttrib";
 	private static String INSERT_URIMAP_SQL = CODING_SCHEME_NAMESPACE + "insertURIMap";
 	
@@ -143,7 +144,17 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		
 		return codingSchemeId;
 	}
-
+	
+	public void updateCodingScheme(String codingSchemeId, CodingScheme codingScheme) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		InsertOrUpdateCodingSchemeBean bean = new InsertOrUpdateCodingSchemeBean();
+		bean.setPrefix(prefix);
+		bean.setCodingScheme(codingScheme);
+		bean.setId(codingSchemeId);
+		
+		this.getSqlMapClientTemplate().update(UPDATE_CODING_SCHEME_BY_ID_SQL, bean);
+	}
 
 	public void updateCodingScheme(String codingSchemeName, String version, CodingScheme codingScheme) {
 		throw new UnsupportedOperationException();
@@ -280,8 +291,8 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		return bean;
 	}
 	
-	protected InsertCodingSchemeBean buildInsertCodingSchemeBean(String prefix, String codingSchemeId, String entryStateId, CodingScheme codingScheme){
-		InsertCodingSchemeBean bean = new InsertCodingSchemeBean();
+	protected InsertOrUpdateCodingSchemeBean buildInsertCodingSchemeBean(String prefix, String codingSchemeId, String entryStateId, CodingScheme codingScheme){
+		InsertOrUpdateCodingSchemeBean bean = new InsertOrUpdateCodingSchemeBean();
 		bean.setPrefix(prefix);
 		bean.setCodingScheme(codingScheme);
 		bean.setId(codingSchemeId);

@@ -12,6 +12,10 @@ public interface EntityService extends DatabaseService {
 			String version, 
 			Entity entity);
 	
+	public int getEntityCount(
+			String codingSchemeUri, 
+			String version);
+	
 	public Entity getEntity(
 			String codingSchemeUri, 
 			String version, 

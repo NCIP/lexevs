@@ -473,4 +473,29 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals("csName", summary.getLocalName());
 		assertEquals("description", summary.getCodingSchemeDescription().getContent());
 	}
+	
+	@Test
+	@Transactional
+	public void testUpdateCodingSchemeById() throws SQLException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, approxNumConcepts) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion', '1234')");
+		
+		int count1 = template.queryForInt("select count(*) from codingscheme");
+		assertEquals(1, count1);
+		
+		long preUpdateConcepts = template.queryForLong("select approxNumConcepts from codingscheme where codingSchemeGuid = 'csguid'");
+		assertEquals(1234l, preUpdateConcepts);
+		
+		CodingScheme newCs = new CodingScheme();
+		newCs.setApproxNumConcepts(11111l);
+		
+		ibatisCodingSchemeDao.updateCodingScheme("csguid", newCs);
+		
+		int count2 = template.queryForInt("select count(*) from codingscheme");
+		assertEquals(1, count2);
+		
+		long postUpdateConcepts = template.queryForLong("select approxNumConcepts from codingscheme where codingSchemeGuid = 'csguid'");
+		assertEquals(11111l, postUpdateConcepts);
+	}
 }

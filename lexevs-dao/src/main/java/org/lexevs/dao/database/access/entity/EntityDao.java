@@ -18,7 +18,9 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	
 	public String insertHistoryEntity(String codingSchemeId, Entity entity);
 	
-	public void updateEntity(String codingSchemeName, String version, Entity entity);
+	public void updateEntity(String codingSchemeId, Entity entity);
+	
+	public int getEntityCount(String codingSchemeId);
 	
 	public List<? extends Entity> getAllEntitiesOfCodingScheme(String codingSchemeId, int start, int pageSize);
 

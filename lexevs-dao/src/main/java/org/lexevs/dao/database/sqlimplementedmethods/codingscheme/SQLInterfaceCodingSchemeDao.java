@@ -177,7 +177,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 		
 	}
 
-	public void updateCodingScheme(String codingSchemeName, String version,
+	public void updateCodingScheme(String codingSchemeId,
 			CodingScheme codingScheme) {
 		// TODO Auto-generated method stub
 		

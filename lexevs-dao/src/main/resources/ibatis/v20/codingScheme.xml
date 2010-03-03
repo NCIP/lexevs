@@ -173,28 +173,41 @@
 			isCurrentRelease = #isCurrentRelease#
      </select>
    
-	<update id="updateCodingScheme" parameterClass="map">
-		UPDATE codingScheme
-
+	<update id="updateCodingSchemeById" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
+		UPDATE 
+			$prefix$codingScheme
 		SET 
-			<isNotNull property="codingScheme.codingSchemeName">
+
+
+   		  <dynamic prepend=" ">
+			<isNotNull prepend="," property="codingScheme.codingSchemeName">
 				codingSchemeName = #codingScheme.codingSchemeName#
+			</isNotNull>
+			<isNotNull prepend="," property="codingScheme.codingSchemeURI">
+				codingSchemeUri = #codingScheme.codingSchemeURI#
 			</isNotNull>
 			<isNotNull prepend="," property="codingScheme.representsVersion">
 				representsVersion = #codingScheme.representsVersion#
 			</isNotNull>
+			<isNotNull prepend="," property="codingScheme.formalName">
+				formalName = #codingScheme.formalName#
+			</isNotNull>
 			<isNotNull prepend="," property="codingScheme.approxNumConcepts">
 				approxNumConcepts = #codingScheme.approxNumConcepts#
 			</isNotNull>
+			<isNotNull prepend="," property="codingScheme.defaultLanguage">
+				defaultLanguage = #codingScheme.defaultLanguage#
+			</isNotNull>
+			<isNotNull prepend="," property="codingScheme.entityDescription.content">
+				description = #codingScheme.entityDescription.content#
+			</isNotNull>
+		</dynamic>
+
 		WHERE 
-			codingSchemeName = #codingSchemeName#
-		AND
-			representsVersion = #representsVersion#
-		AND
-			isCurrentRelease = #isCurrentRelease#
+			codingSchemeGuid = #id#
  	</update>
 
-	<insert id="insertCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertCodingSchemeBean">
+	<insert id="insertCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
 		
 		INSERT INTO $prefix$codingScheme (
 			codingSchemeGuid,

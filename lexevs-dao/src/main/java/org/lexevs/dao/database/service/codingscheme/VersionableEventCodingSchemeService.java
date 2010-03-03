@@ -77,14 +77,18 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			insertURIMap(codingSchemeId, uriMap);
 	}
 	
-
 	@Transactional
 	public void updateCodingScheme(
-			String codingSchemeName,
+			String codingSchemeUri,
 			String codingSchemeVersion,
 			CodingScheme codingScheme) {
-		// TODO Auto-generated method stub
+		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, codingSchemeVersion);
 		
+		String codingSchemeId = codingSchemeDao.
+			getCodingSchemeIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
+		
+		codingSchemeDao.
+			updateCodingScheme(codingSchemeId, codingScheme);	
 	}
 
 	@Transactional

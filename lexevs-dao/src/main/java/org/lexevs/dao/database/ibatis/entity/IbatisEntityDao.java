@@ -37,6 +37,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	public static String INSERT_ENTITY_SQL = ENTITY_NAMESPACE + "insertEntity";
 	public static String INSERT_ENTITY_TYPE_SQL = ENTITY_NAMESPACE + "insertEntityType";
 	public static String GET_ENTITY_BY_CODE_AND_NAMESPACE_SQL = ENTITY_NAMESPACE + "getEntityByCodeAndNamespace";
+	public static String GET_ENTITY_COUNT_SQL = ENTITY_NAMESPACE + "getEntityCount";
 	public static String GET_ENTITIES_OF_CODING_SCHEME_SQL = ENTITY_NAMESPACE + "getAllEntitiesOfCodingScheme";
 	
 	public static String ENTITY_CODE_PARAM = SQLTableConstants.TBLCOL_ENTITYCODE;
@@ -57,9 +58,16 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 		
 		return entity;
 	}
+	
+	@Override
+	public int getEntityCount(String codingSchemeId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		return (Integer) 
+			this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_COUNT_SQL, new PrefixedParameter(prefix, codingSchemeId));
+	}
 
-
-	public void updateEntity(String codingSchemeName, String version,
+	public void updateEntity(String codingSchemeId,
 			Entity entity) {
 		// TODO Auto-generated method stub
 		

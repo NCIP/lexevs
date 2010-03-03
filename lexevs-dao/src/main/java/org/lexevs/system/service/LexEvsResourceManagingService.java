@@ -15,7 +15,6 @@ import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.logging.LoggingBean;
 import org.lexevs.registry.model.RegistryEntry;

@@ -10,24 +10,24 @@ import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedExcept
 public interface CodingSchemeService extends DatabaseService {
 
 	public CodingScheme getCodingSchemeByUriAndVersion(
-			String uri, String version);
+			String codingSchemeUri, String codingSchemeVersion);
 	
 	public CodingSchemeSummary getCodingSchemeSummaryByUriAndVersion(
-			String uri, String version);
+			String codingSchemeUri, String codingSchemeVersion);
 	
 	public void destroyCodingScheme(
-			String uri, String version);
+			String codingSchemeUri, String codingSchemeVersion);
 	
 	public void insertCodingScheme(
 			CodingScheme scheme) throws CodingSchemeAlreadyLoadedException;
 	
 	public void updateCodingScheme(
-			String codingSchemeName, 
+			String codingSchemeUri, 
 			String codingSchemeVersion,
 			CodingScheme codingScheme);
 	
 	public void insertURIMap(
-			String codingSchemeName, 
+			String codingSchemeUri, 
 			String codingSchemeVersion,
 			URIMap uriMap);
 	

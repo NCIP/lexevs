@@ -31,6 +31,14 @@
 			entityType.entityGuid
 	</sql>
 	
+	<select id="getEntityCount" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="int">
+		SELECT
+			COUNT(entityGuid)
+		FROM
+			$prefix$entity
+		WHERE
+			codingSchemeGuid = #param1#
+     </select>
 
 	<select id="getEntityByCodeAndNamespace" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Entity.entityResult">
 		<include refid="getEntityFragment"/>
