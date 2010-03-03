@@ -5,12 +5,10 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
-import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
-import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -198,6 +196,16 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	
 	@Test
 	public void insertPropertyQualifier(){
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");		
+		
 		PropertyQualifier qual = new PropertyQualifier();
 		qual.setPropertyQualifierName("qualName");
 		qual.setPropertyQualifierType("qualType");
@@ -205,15 +213,13 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		text.setContent("qual text");
 		qual.setValue(text);
 		
-		//ibatisPropertyDao.insertPropertyQualifier(null, null, "prop-id", qual);
-		
-		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		ibatisPropertyDao.insertPropertyQualifier("csguid", "pguid", qual);
 		
 		template.queryForObject("Select * from propertymultiattrib", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				assertNotNull(rs.getString(1));
-				assertEquals(rs.getString(2), "prop-id");
+				assertEquals(rs.getString(2), "pguid");
 				assertEquals(rs.getString(3), SQLTableConstants.TBLCOLVAL_QUALIFIER);
 				assertEquals(rs.getString(4), "qualName");
 				assertEquals(rs.getString(5), "qual text");
@@ -228,20 +234,29 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	
 	@Test
 	public void insertPropertySource(){
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");	
+		
 		Source source = new Source();
 		source.setContent("test source");
 		source.setSubRef("test subref");
 		source.setRole("test role");
 		
-		//ibatisPropertyDao.insertPropertySource(null, null, "prop-id", source);
+		ibatisPropertyDao.insertPropertySource("csguid","pguid", source);
 		
-		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.queryForObject("Select * from propertymultiattrib", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				assertNotNull(rs.getString(1));
-				assertEquals(rs.getString(2), "prop-id");
+				assertEquals(rs.getString(2), "pguid");
 				assertEquals(rs.getString(3), SQLTableConstants.TBLCOLVAL_SOURCE);
 				assertEquals(rs.getString(4), SQLTableConstants.TBLCOLVAL_SOURCE);
 				assertEquals(rs.getString(5), "test source");
@@ -256,17 +271,26 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	
 	@Test
 	public void insertPropertyUsageContext(){
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");	
+		
 		String usageContext = "test usageContext";
 		
-		//ibatisPropertyDao.insertPropertyUsageContext(null, null, "prop-id", usageContext);
+		ibatisPropertyDao.insertPropertyUsageContext("csguid", "pguid", usageContext);
 		
-		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.queryForObject("Select * from propertymultiattrib", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				assertNotNull(rs.getString(1));
-				assertEquals(rs.getString(2), "prop-id");
+				assertEquals(rs.getString(2), "pguid");
 				assertEquals(rs.getString(3), SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
 				assertEquals(rs.getString(4), SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
 				assertEquals(rs.getString(5), "test usageContext");
@@ -281,55 +305,40 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	
 	@Test
 	public void insertPropertyLink(){
-		Entity entity = new Entity();
-		entity.setEntityCode("code");
-		entity.setEntityCodeNamespace("namespace");
-		entity.setIsDefined(true);
-		entity.setIsAnonymous(true);
-		entity.setIsActive(false);
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId) " +
+				"values ('pguid1', 'eguid', 'entity', 'pname', 'pvalue', '1')");
 		
-		EntityDescription ed = new EntityDescription();
-		ed.setContent("a description");
-		entity.setEntityDescription(ed);
-		entity.addEntityType("type");
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId) " +
+		"values ('pguid2', 'eguid', 'entity', 'pname', 'pvalue', '2')");
 		
-		String entityId = ibatisEntityDao.insertEntity("cs-id", entity);
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
 		
-		Property prop1 = new Property();
-		prop1.setPropertyName("name");
-		prop1.setPropertyType("type");
-		prop1.setPropertyId("1");
-		Text text1 = new Text();
-		text1.setContent("text");
-		prop1.setValue(text1);
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+	
 		
-		Property prop2 = new Property();
-		prop2.setPropertyName("name");
-		prop2.setPropertyType("type");
-		prop2.setPropertyId("2");
-		Text text2 = new Text();
-		text2.setContent("text");
-		prop2.setValue(text2);
+		assertEquals(1, template.queryForInt("Select count(*) from codingScheme"));
+		assertEquals(1, template.queryForInt("Select count(*) from entity"));
+		assertEquals(2, template.queryForInt("Select count(*) from property"));
 		
-		ibatisPropertyDao.insertProperty("cs-id", entityId, PropertyType.ENTITY, prop1);
-		ibatisPropertyDao.insertProperty("cs-id", entityId, PropertyType.ENTITY, prop2);
 		
 		PropertyLink link = new PropertyLink();
 		link.setSourceProperty("1");
 		link.setPropertyLink("link");
 		link.setTargetProperty("2");
 		
-		ibatisPropertyDao.insertPropertyLink("cs-id", entityId, link);
+		ibatisPropertyDao.insertPropertyLink("csgid", "eguid", link);
 		
-		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.queryForObject("Select * from propertylinks", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				assertNotNull(rs.getString(1));
-				assertEquals(rs.getString(2), "1");
+				assertEquals(rs.getString(2), "pguid1");
 				assertEquals(rs.getString(3), "link");
-				assertEquals(rs.getString(4), "2");
+				assertEquals(rs.getString(4), "pguid2");
 			
 				return null;
 			}
