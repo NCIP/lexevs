@@ -23,6 +23,7 @@ import java.net.URI;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
@@ -36,6 +37,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
+import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
@@ -47,6 +49,7 @@ import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
@@ -61,6 +64,7 @@ import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.mayo.informatics.lexgrid.convert.options.DefaultOptionHolder;
+import edu.mayo.informatics.lexgrid.convert.options.StringOption;
 import edu.mayo.informatics.lexgrid.convert.options.URIOption;
 import edu.mayo.informatics.lexgrid.convert.utility.ManifestUtil;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
@@ -80,6 +84,9 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     // TODO - It would be nice if the loader would set the the approximate
     // concept count value when
     // they finish loading something
+    
+    private static String LOADER_POST_PROCESSOR_OPTION = "Loader Post Processor (Extension Name)";
+    
     private AbsoluteCodingSchemeVersionReference[] codingSchemeReferences
         = new AbsoluteCodingSchemeVersionReference[0];
 
@@ -113,6 +120,9 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         loaderPreferencesOption.addAllowedFileExtensions("*.xml");
         
         holder.getURIOptions().add(loaderPreferencesOption);
+        
+        StringOption loaderPostProcessorOption = new StringOption(LOADER_POST_PROCESSOR_OPTION);
+        holder.getStringOptions().add(loaderPostProcessorOption);
         
         this.options_= this.declareAllowedOptions(holder);
     }
@@ -246,6 +256,17 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
 
                     status_.setState(ProcessState.COMPLETED);
                     md_.info("Load process completed without error");
+                    
+                    String postProcessors = options_.getStringOption(LOADER_POST_PROCESSOR_OPTION).getOptionValue();
+                    String[] postProcessorsArray = StringUtils.split(postProcessors, ',');
+                    
+                    for(String postProcessor : postProcessorsArray) {
+                        md_.info("Running PostProcessor:" + postProcessor);
+                        
+                        for(AbsoluteCodingSchemeVersionReference ref : codingSchemeReferences) {
+                            getPostProcessor(postProcessor).runPostProcess(ref);
+                        }
+                    }
                 }
             } catch (CodingSchemeAlreadyLoadedException e) {
                 status_.setState(ProcessState.FAILED);
@@ -285,6 +306,10 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
             }
 
         }
+    }
+    
+    protected void doPostProcessing(String postProcessorName, AbsoluteCodingSchemeVersionReference[] references) {
+        
     }
 
     protected void doTransitiveAndIndex(AbsoluteCodingSchemeVersionReference[] references) throws Exception {
@@ -636,6 +661,16 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                 super.getExtensionDescription());
     }
     
+    protected LoaderPostProcessor getPostProcessor(String postProcessorName) throws LBParameterException {
+        try {
+            return LexBIGServiceImpl.defaultInstance().getServiceManager(null).
+                getExtensionRegistry().
+                getGenericExtension(postProcessorName, LoaderPostProcessor.class);
+        } catch (LBInvocationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void addBooleanOptionValue(String optionName, Boolean value){
         this.getOptions().getBooleanOption(optionName).setOptionValue(value);
     }
