@@ -13,7 +13,7 @@
      	) VALUES (
      		#id#,
      		(	SELECT 
-     				property.propertyId 
+     				property.propertyGuid 
      			FROM 
      				$prefix$entity entity
      			LEFT JOIN 
@@ -27,7 +27,7 @@
      		),
      		#propertyLink.propertyLink#,
      		(	SELECT 
-     				property.propertyId 
+     				property.propertyGuid 
      			FROM 
      				$prefix$entity entity
      			LEFT JOIN 
