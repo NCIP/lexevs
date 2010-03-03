@@ -220,4 +220,29 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		
 		assertNotNull(pres);
 	}
+	
+	@Test
+	@Transactional
+	public void testEntityCount() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid2', 'csguid', 'ecode2', 'ens2')");
+		
+		int count = ibatisEntityDao.getEntityCount("csguid");
+		
+		assertEquals(2, count);
+		
+		int count2 = ibatisEntityDao.getEntityCount("BOGUScsguid");
+		
+		assertEquals(0, count2);
+	}
 }
