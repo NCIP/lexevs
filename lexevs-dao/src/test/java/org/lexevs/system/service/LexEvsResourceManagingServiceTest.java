@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.junit.Test;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.model.RegistryEntry;
@@ -63,7 +64,9 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		expect(registryMock.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)).andReturn(entries);
 		replay(registryMock);
 		
-		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
+		LexEvsResourceManagingService service = lexEvsResourceManagingService;
+		DatabaseServiceManager manager = new DatabaseServiceManager();
+		
 		CodingSchemeService csService = createMock(CodingSchemeService.class);
 		
 		CodingScheme cs = new CodingScheme();
@@ -74,10 +77,13 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		cs.addLocalName("someLocalName");
 		
 		expect(csService.getCodingSchemeByUriAndVersion("uri", "version")).andReturn(cs).once();
+		
+		manager.setCodingSchemeService(csService);
+		
 		replay(csService);
 		
+		service.setDatabaseServiceManager(manager);
 		service.setRegistry(registryMock);
-		service.setCodingSchemeService(csService);
 		service.afterPropertiesSet();
 		
 		assertEquals(
@@ -101,6 +107,8 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		replay(registryMock);
 		
 		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
+		DatabaseServiceManager manager = new DatabaseServiceManager();
+		
 		CodingSchemeService csService = createMock(CodingSchemeService.class);
 		
 		CodingScheme cs = new CodingScheme();
@@ -111,10 +119,13 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		cs.addLocalName("someLocalName");
 		
 		expect(csService.getCodingSchemeByUriAndVersion("uri", "version")).andReturn(cs).once();
+		
+		manager.setCodingSchemeService(csService);
+		
 		replay(csService);
 		
 		service.setRegistry(registryMock);
-		service.setCodingSchemeService(csService);
+		service.setDatabaseServiceManager(manager);
 		service.afterPropertiesSet();
 		
 		assertEquals(
@@ -135,9 +146,10 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		entries.add(entry);
 		
 		expect(registryMock.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)).andReturn(entries);
-		replay(registryMock);
 		
 		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
+		DatabaseServiceManager manager = new DatabaseServiceManager();
+		
 		CodingSchemeService csService = createMock(CodingSchemeService.class);
 		
 		CodingScheme cs = new CodingScheme();
@@ -148,10 +160,13 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		cs.addLocalName("someLocalName");
 		
 		expect(csService.getCodingSchemeByUriAndVersion("uri", "version")).andReturn(cs).once();
-		replay(csService);
+		
+		manager.setCodingSchemeService(csService);
+		
+		replay(registryMock, csService);	
 		
 		service.setRegistry(registryMock);
-		service.setCodingSchemeService(csService);
+		service.setDatabaseServiceManager(manager);
 		service.afterPropertiesSet();
 		
 		assertEquals(
@@ -172,9 +187,10 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		entries.add(entry);
 		
 		expect(registryMock.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)).andReturn(entries);
-		replay(registryMock);
 		
 		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
+		DatabaseServiceManager manager = new DatabaseServiceManager();
+		
 		CodingSchemeService csService = createMock(CodingSchemeService.class);
 		
 		CodingScheme cs = new CodingScheme();
@@ -185,10 +201,13 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		cs.addLocalName("someLocalName");
 		
 		expect(csService.getCodingSchemeByUriAndVersion("uri", "version")).andReturn(cs).once();
-		replay(csService);
+		
+		manager.setCodingSchemeService(csService);
+		
+		replay(csService, registryMock);	
 		
 		service.setRegistry(registryMock);
-		service.setCodingSchemeService(csService);
+		service.setDatabaseServiceManager(manager);
 		service.afterPropertiesSet();
 		
 		assertEquals(
@@ -210,9 +229,10 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		expect(registryMock.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)).andReturn(entries);
 		expect(registryMock.getEntriesForUri("uri")).andReturn(entries);
-		replay(registryMock);
 		
 		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
+		DatabaseServiceManager manager = new DatabaseServiceManager();
+		
 		CodingSchemeService csService = createMock(CodingSchemeService.class);
 		
 		CodingScheme cs = new CodingScheme();
@@ -223,10 +243,14 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		cs.addLocalName("someLocalName");
 		
 		expect(csService.getCodingSchemeByUriAndVersion("uri", "v123")).andReturn(cs).once();
-		replay(csService);
+		
+		manager.setCodingSchemeService(csService);
+		
+		replay(csService, registryMock);	
 		
 		service.setRegistry(registryMock);
-		service.setCodingSchemeService(csService);
+		
+		service.setDatabaseServiceManager(manager);
 		service.afterPropertiesSet();
 		
 		assertEquals(
@@ -248,23 +272,27 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		expect(registryMock.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)).andReturn(entries);
 		expect(registryMock.getEntriesForUri("uri")).andReturn(entries);
-		replay(registryMock);
 		
 		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
+		DatabaseServiceManager manager = new DatabaseServiceManager();
+		
 		CodingSchemeService csService = createMock(CodingSchemeService.class);
 		
 		CodingScheme cs = new CodingScheme();
 		cs.setCodingSchemeName("csName");
 		cs.setFormalName("fname");
-		cs.setRepresentsVersion("v123");
+		cs.setRepresentsVersion("version");
 		cs.setCodingSchemeURI("uri");
 		cs.addLocalName("someLocalName");
 		
 		expect(csService.getCodingSchemeByUriAndVersion("uri", "v123")).andReturn(cs).once();
-		replay(csService);
+		
+		manager.setCodingSchemeService(csService);
+		
+		replay(csService, registryMock);	
 		
 		service.setRegistry(registryMock);
-		service.setCodingSchemeService(csService);
+		service.setDatabaseServiceManager(manager);
 		service.afterPropertiesSet();
 		
 		assertEquals(
@@ -292,31 +320,29 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		expect(registryMock.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)).andReturn(entries);
 		expect(registryMock.getEntriesForUri("uri")).andReturn(entries).anyTimes();
-		replay(registryMock);
 		
 		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
+		DatabaseServiceManager manager = new DatabaseServiceManager();
+		
 		CodingSchemeService csService = createMock(CodingSchemeService.class);
 		
 		CodingScheme cs = new CodingScheme();
 		cs.setCodingSchemeName("csName");
 		cs.setFormalName("fname");
-		cs.setRepresentsVersion("v123");
+		cs.setRepresentsVersion("version");
 		cs.setCodingSchemeURI("uri");
 		cs.addLocalName("someLocalName");
 		
-		CodingScheme cs2 = new CodingScheme();
-		cs2.setCodingSchemeName("csName");
-		cs2.setFormalName("fname");
-		cs2.setRepresentsVersion("v456");
-		cs2.setCodingSchemeURI("uri");
-		cs2.addLocalName("someLocalName");
-		
 		expect(csService.getCodingSchemeByUriAndVersion("uri", "v123")).andReturn(cs).once();
 		expect(csService.getCodingSchemeByUriAndVersion("uri", "v456")).andReturn(cs).once();
-		replay(csService);
 		
+		manager.setCodingSchemeService(csService);
+		
+		replay(csService, registryMock);	
 		service.setRegistry(registryMock);
-		service.setCodingSchemeService(csService);
+		
+		service.setDatabaseServiceManager(manager);
+		service.setRegistry(registryMock);
 		service.afterPropertiesSet();
 		
 		assertEquals(
