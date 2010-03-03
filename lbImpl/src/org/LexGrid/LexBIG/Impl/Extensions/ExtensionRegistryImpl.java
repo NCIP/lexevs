@@ -26,6 +26,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.SortDescriptionList;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortDescription;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Extendable;
 import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 import org.LexGrid.LexBIG.Extensions.Export.Exporter;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
@@ -193,6 +194,20 @@ public class ExtensionRegistryImpl implements ExtensionRegistry {
             edl.addExtensionDescription(iter.next());
         }
         return edl;
+    }
+
+    @LgClientSideSafe
+    public <T extends Extendable> T getGenericExtension(String extensionName, Class<T> extensionClass) 
+        throws LBParameterException {
+        ExtensionDescription ed = getGenericExtension(extensionName);
+        try {
+             Class<T> clazz = (Class<T>) Class.forName(ed.getExtensionClass(), true, MyClassLoader.instance());
+             return clazz.newInstance();
+        } catch (Exception e) {
+            getLogger().error("Problem creating Generic Extension " + extensionName, e);
+            throw new LBParameterException(
+            "Could not instantiate the specified Generic Extension.  See log files for more details.  Will not be registered.");
+        }
     }
 
     @LgClientSideSafe
