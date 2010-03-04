@@ -252,11 +252,11 @@
      	prop.propertyName
      FROM
      	$prefix$property prop
-	 LEFT JOIN 
+	 INNER JOIN 
 	 	$prefix$entity entity
 	 ON 
 	 	prop.referenceGuid = entity.entityGuid
-	 LEFT JOIN
+	 INNER JOIN
 		$prefix$codingscheme cs
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
@@ -270,11 +270,11 @@
      	type.entityType
      FROM
      	$prefix$entityType type
-	 LEFT JOIN 
+	 INNER JOIN 
 	 	$prefix$entity entity
 	 ON 
 	 	type.entityGuid = entity.entityGuid
-	 LEFT JOIN
+	 INNER JOIN
 		$prefix$codingscheme cs
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
@@ -298,16 +298,18 @@
      	prop.format
      FROM
      	$prefix$property prop
-	 LEFT JOIN 
+	 INNER JOIN 
 	 	$prefix$entity entity
 	 ON 
 	 	prop.referenceGuid = entity.entityGuid
-	 LEFT JOIN
+	 INNER JOIN
 		$prefix$codingscheme cs
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
 		cs.codingSchemeGuid = #param1#
+	 AND
+	 	prop.format IS NOT NULL
      </select>
      
       <select id="getDistinctLanguages" 
@@ -316,16 +318,18 @@
      	prop.language
      FROM
      	$prefix$property prop
-	 LEFT JOIN 
+	 INNER JOIN 
 	 	$prefix$entity entity
 	 ON 
 	 	prop.referenceGuid = entity.entityGuid
-	 LEFT JOIN
+	 INNER JOIN
 		$prefix$codingscheme cs
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
 		cs.codingSchemeGuid = #param1#
+	 AND
+	 	prop.language IS NOT NULL
 			
 	  UNION
 		
@@ -341,15 +345,15 @@
 	<sql id="distinctPropQualFragment">
 		FROM
 			$prefix$propertyMultiAttrib propQual
-		LEFT JOIN
+		INNER JOIN
 			$prefix$property prop
 		ON
 			prop.propertyGuid = propQual.propertyGuid
-		LEFT JOIN
+		INNER JOIN
 			$prefix$entity entity
 		ON
 			prop.referenceGuid = entity.entityGuid
-		LEFT JOIN
+		INNER JOIN
 			$prefix$codingscheme cs
 		ON
 			entity.codingSchemeGuid = cs.codingSchemeGuid
