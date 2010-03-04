@@ -417,6 +417,7 @@
 		<property name="entityDaos">
 			<list>
 				<ref bean="luceneIndexEntityDao"/>
+				<ref bean="luceneEntity2009Dao"/>
 			</list>
 		</property>
 	</bean>
@@ -425,10 +426,14 @@
 		<property name="systemVariables" ref="systemVariables"/> 
 	</bean>
 	
-	<bean id="luceneIndexEntityDao" class="org.lexevs.dao.index.lucene.entity.LuceneEntityDao">
+	<bean id="luceneIndexEntityDao" class="org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao">
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="indexInterface" ref="indexInterface"/>
 	</bean>
 	
+	<bean id="luceneEntity2009Dao" class="org.lexevs.dao.index.lucene.v2009.entity.LuceneEntity2009Dao">
+		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
+		<property name="indexInterface" ref="indexInterface"/>
+	</bean>
 
 </beans>
