@@ -20,11 +20,14 @@ package org.lexgrid.loader.listener;
 
 import java.util.Date;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
-import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.loader.constants.LoaderConstants;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.logging.LoggingBean;
@@ -51,6 +54,9 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 	/** The connection manager. */
 	private LexEvsDatabaseOperations connectionManager = LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations();
 	
+	/** The connection manager. */
+	private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+	
 	/** The coding scheme name setter. */
 	private CodingSchemeIdSetter codingSchemeIdSetter;
 	
@@ -59,8 +65,6 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 	
 	/** The job repository manager. */
 	private JobRepositoryManager jobRepositoryManager;
-	
-	private CodingSchemeService codingSchemeService;
 	
 	private String prefix;
 	
@@ -75,9 +79,11 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 			getLogger().info("Job completed, dropping tables");
 			try {
 				stagingManager.dropAllStagingDatabases();
-				//TODO:
-				//connectionManager.deactivate(getCurrentCodingSchemeUri(), getCurrentCodingSchemeVersion());
-				//connectionManager.initLoadedScheme(getCurrentCodingSchemeUri(), getCurrentCodingSchemeVersion());
+				
+				AbsoluteCodingSchemeVersionReference ref = 
+					DaoUtility.createAbsoluteCodingSchemeVersionReference(this.getCurrentCodingSchemeUri(), this.getCurrentCodingSchemeVersion());
+				
+				systemResourceService.updateCodingSchemeResourceStatus(ref, CodingSchemeVersionStatus.INACTIVE);
 			
 				super.getLogger().getProcessStatus().setState(ProcessState.COMPLETED);
 			} catch (Exception e) {
@@ -137,7 +143,7 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 	 * @throws Exception the exception
 	 */
 	protected String getCurrentCodingSchemeUri() throws Exception {	
-		return getCurrentCodingScheme().getCodingSchemeURI();
+		return this.getCodingSchemeIdSetter().getCodingSchemeUri();
 	}
 	
 	/**
@@ -148,21 +154,9 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 	 * @throws Exception the exception
 	 */
 	protected String getCurrentCodingSchemeVersion() throws Exception {
-		return getCurrentCodingScheme().getRepresentsVersion();
+		return this.getCodingSchemeIdSetter().getCodingSchemeVersion();
 	}
-	
-	/**
-	 * Gets the current coding scheme.
-	 * 
-	 * @return the current coding scheme
-	 * 
-	 * @throws Exception the exception
-	 */
-	protected CodingScheme getCurrentCodingScheme() throws Exception {
-		return codingSchemeService.getCodingSchemeByUriAndVersion(
-				this.getCodingSchemeIdSetter().getCodingSchemeUri(), 
-				this.getCodingSchemeIdSetter().getCodingSchemeVersion());
-	}
+
 
 	/**
 	 * Gets the job repository manager.
@@ -205,12 +199,4 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 	public void setCodingSchemeIdSetter(CodingSchemeIdSetter codingSchemeIdSetter) {
 		this.codingSchemeIdSetter = codingSchemeIdSetter;
 	}
-
-	public CodingSchemeService getCodingSchemeService() {
-		return codingSchemeService;
-	}
-
-	public void setCodingSchemeService(CodingSchemeService codingSchemeService) {
-		this.codingSchemeService = codingSchemeService;
-	}	
 }

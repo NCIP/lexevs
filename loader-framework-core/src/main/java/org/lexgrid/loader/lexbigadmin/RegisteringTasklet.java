@@ -22,6 +22,7 @@ import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.ResourceManager;
+import org.lexevs.system.service.SystemResourceService;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -34,7 +35,7 @@ import org.springframework.batch.repeat.RepeatStatus;
  */
 public class RegisteringTasklet extends AbstractLexEvsUtilityTasklet implements Tasklet {
 	
-	private Registry registry;
+	private SystemResourceService systemResourceService;
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.core.step.tasklet.Tasklet#execute(org.springframework.batch.core.StepContribution, org.springframework.batch.core.scope.context.ChunkContext)
@@ -56,18 +57,12 @@ public class RegisteringTasklet extends AbstractLexEvsUtilityTasklet implements 
 		
 		getLogger().info("Registering CodingScheme -- Load is now restartable.");
 
+		/* TODO: Are these needed anymore?
 		String prefix = (String)chunkContext.getStepContext().getJobParameters().get("prefix");
 		String url = (String)chunkContext.getStepContext().getJobParameters().get("jdbcUrl");
 		String database = (String)chunkContext.getStepContext().getJobParameters().get("database");		
-		
+		*/
 
-		RegistryEntry entry = new RegistryEntry();
-		entry.setDbSchemaVersion("2.0");
-		entry.setResourceType(ResourceType.CODING_SCHEME);
-		entry.setResourceUri(this.getCurrentCodingSchemeUri());
-		entry.setResourceVersion(this.getCurrentCodingSchemeVersion());
-		
-		registry.addNewItem(entry);
 	
 		return RepeatStatus.FINISHED;
 	}
@@ -87,13 +82,5 @@ public class RegisteringTasklet extends AbstractLexEvsUtilityTasklet implements 
 	protected RepeatStatus doExecute(StepContribution contribution,
 			ChunkContext chunkContext) throws Exception {
 		return null;
-	}
-
-	public Registry getRegistry() {
-		return registry;
-	}
-
-	public void setRegistry(Registry registry) {
-		this.registry = registry;
 	}
 }

@@ -38,7 +38,7 @@ public class CodingSchemeWriterTest extends LoaderFrameworkCoreTestBase {
 		cs.setCodingSchemeURI("csUri");
 		cs.setRepresentsVersion("v1");
 		
-		List<CodingScheme> csList = DaoUtility.createList(cs, CodingScheme.class);
+		List<CodingScheme> csList = DaoUtility.createList(CodingScheme.class, cs);
 		
 		codingSchemeWriter.write(csList);
 		
