@@ -16,6 +16,8 @@ import org.lexevs.locator.LexEvsServiceLocator;
 public class ApproxNumOfConceptsPostProcessor extends AbstractExtendable implements LoaderPostProcessor {
 
     private static final long serialVersionUID = 2828520523031693573L;
+    
+    public static String EXTENSION_NAME = "ApproxNumOfConceptsPostProcessor";
 
     public void register() throws LBParameterException, LBException {
         ExtensionRegistryImpl.instance().registerGenericExtension(
@@ -26,7 +28,7 @@ public class ApproxNumOfConceptsPostProcessor extends AbstractExtendable impleme
     protected ExtensionDescription buildExtensionDescription() {
         ExtensionDescription ed = new ExtensionDescription();
         ed.setDescription("ApproxNumOfConceptsPostProcessor");
-        ed.setName("ApproxNumOfConceptsPostProcessor");
+        ed.setName(EXTENSION_NAME);
         ed.setExtensionBaseClass(GenericExtension.class.getName());
         ed.setExtensionClass(this.getClass().getName());
         
