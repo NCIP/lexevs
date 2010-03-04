@@ -65,6 +65,8 @@ public interface OptionHolder {
      * @return the string option
      */
     public Option<String> getStringOption(String optionName);
+    
+    public Option<List<String>> getStringArrayOption(String optionName);
 
     /**
      * Gets the integer option.
@@ -104,6 +106,8 @@ public interface OptionHolder {
      * @return the string options
      */
     public List<Option<String>> getStringOptions();
+    
+    public List<Option<List<String>>> getStringArrayOptions();
     
     /**
      * Gets the uRI options.
