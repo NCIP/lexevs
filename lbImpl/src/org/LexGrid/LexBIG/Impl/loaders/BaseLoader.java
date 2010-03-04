@@ -41,6 +41,8 @@ import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
+import org.LexGrid.LexBIG.Impl.loaders.postprocessor.ApproxNumOfConceptsPostProcessor;
+import org.LexGrid.LexBIG.Impl.loaders.postprocessor.SupportedAttributePostProcessor;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -49,7 +51,6 @@ import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
-import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
@@ -64,7 +65,7 @@ import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.mayo.informatics.lexgrid.convert.options.DefaultOptionHolder;
-import edu.mayo.informatics.lexgrid.convert.options.StringOption;
+import edu.mayo.informatics.lexgrid.convert.options.StringArrayOption;
 import edu.mayo.informatics.lexgrid.convert.options.URIOption;
 import edu.mayo.informatics.lexgrid.convert.utility.ManifestUtil;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
@@ -121,8 +122,10 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         
         holder.getURIOptions().add(loaderPreferencesOption);
         
-        StringOption loaderPostProcessorOption = new StringOption(LOADER_POST_PROCESSOR_OPTION);
-        holder.getStringOptions().add(loaderPostProcessorOption);
+        StringArrayOption loaderPostProcessorOption = new StringArrayOption(LOADER_POST_PROCESSOR_OPTION);
+        loaderPostProcessorOption.getOptionValue().add(ApproxNumOfConceptsPostProcessor.EXTENSION_NAME);
+        loaderPostProcessorOption.getOptionValue().add(SupportedAttributePostProcessor.EXTENSION_NAME);
+        holder.getStringArrayOptions().add(loaderPostProcessorOption);
         
         this.options_= this.declareAllowedOptions(holder);
     }
@@ -242,6 +245,9 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                             + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage())
                             + " Heap Delta:" + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
 
+                    
+                    doPostProcessing(options_, codingSchemeReferences);
+                    
                     doTransitiveAndIndex(codingSchemeReferences);
 
                     md_.info("After Indexing");
@@ -257,16 +263,6 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                     status_.setState(ProcessState.COMPLETED);
                     md_.info("Load process completed without error");
                     
-                    String postProcessors = options_.getStringOption(LOADER_POST_PROCESSOR_OPTION).getOptionValue();
-                    String[] postProcessorsArray = StringUtils.split(postProcessors, ',');
-                    
-                    for(String postProcessor : postProcessorsArray) {
-                        md_.info("Running PostProcessor:" + postProcessor);
-                        
-                        for(AbsoluteCodingSchemeVersionReference ref : codingSchemeReferences) {
-                            getPostProcessor(postProcessor).runPostProcess(ref);
-                        }
-                    }
                 }
             } catch (CodingSchemeAlreadyLoadedException e) {
                 status_.setState(ProcessState.FAILED);
@@ -308,8 +304,17 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         }
     }
     
-    protected void doPostProcessing(String postProcessorName, AbsoluteCodingSchemeVersionReference[] references) {
+    protected void doPostProcessing(OptionHolder options, AbsoluteCodingSchemeVersionReference[] references) throws LBParameterException {
+        List<String> postProcessors =
+            options.getStringArrayOption(LOADER_POST_PROCESSOR_OPTION).getOptionValue();
         
+        for(String postProcessor : postProcessors) {
+            md_.info("Running PostProcessor:" + postProcessor);
+            
+            for(AbsoluteCodingSchemeVersionReference ref : references) {
+                getPostProcessor(postProcessor).runPostProcess(ref);
+            }
+        }
     }
 
     protected void doTransitiveAndIndex(AbsoluteCodingSchemeVersionReference[] references) throws Exception {
