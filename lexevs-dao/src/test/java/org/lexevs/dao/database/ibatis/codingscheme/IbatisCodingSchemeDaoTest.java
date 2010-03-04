@@ -593,6 +593,9 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
 			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pvalue', 'presentation', 'format2')");
 		
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+			"values ('pguid3', 'eguid', 'entity', 'pname3', 'pvalue', 'presentation')");
+		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
 			"values ('csguid', 'csname', 'csuri', 'csversion')");
 		
