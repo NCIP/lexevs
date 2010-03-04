@@ -28,6 +28,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
@@ -74,10 +75,14 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.lexevs.dao.index.service.IndexServiceManager;
+import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.exceptions.InternalException;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.ResourceManager;
+import org.lexevs.system.service.SystemResourceService;
 
 /**
  * Implementation of the CodedNodeSet Interface.
@@ -789,7 +794,17 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         queries.addAll(combinedQuery);
         
         if(commonQuery.clauses().size() == 0){
-            commonQuery.add(new BooleanClause(new MatchAllDocsQuery(), Occur.MUST));
+            IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
+            EntityIndexService entityService = indexServiceManager.getEntityIndexService();
+            
+            SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+            String uri = resourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
+            
+            AbsoluteCodingSchemeVersionReference ref =
+                Constructors.createAbsoluteCodingSchemeVersionReference(
+                    uri, internalVersionString);
+            
+            commonQuery.add(new BooleanClause(entityService.getMatchAllDocsQuery(ref), Occur.MUST));
             commonQuery.add(new TermQuery(new Term("codeBoundry", "T")), Occur.MUST_NOT);
         }
 
