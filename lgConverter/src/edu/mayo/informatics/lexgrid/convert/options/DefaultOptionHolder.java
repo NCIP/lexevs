@@ -26,6 +26,9 @@ public class DefaultOptionHolder implements OptionHolder {
     /** The string options. */
     private List<Option<String>> stringOptions = new ArrayList<Option<String>>();
     
+    /** The string options. */
+    private List<Option<List<String>>> stringArrayOptions = new ArrayList<Option<List<String>>>();
+    
     /** The uri options. */
     private List<URIOption> uriOptions = new ArrayList<URIOption>();
     
@@ -35,6 +38,10 @@ public class DefaultOptionHolder implements OptionHolder {
     
     /** The is resource uri folder. */
     private boolean isResourceUriFolder = false;
+    
+    public Option<List<String>> getStringArrayOption(String optionName){
+        return this.findOption(optionName, this.stringArrayOptions); 
+     }
     
     /* (non-Javadoc)
      * @see edu.mayo.informatics.lexgrid.convert.options.OptionHolderI#getBooleanOption(java.lang.String)
@@ -167,6 +174,22 @@ public class DefaultOptionHolder implements OptionHolder {
      */
     public List<URIOption> getURIOptions() {
         return uriOptions;
+    }
+    
+    public List<Option<List<String>>> getStringArrayOptions() {
+        return stringArrayOptions;
+    }
+
+    public void setStringArrayOptions(List<Option<List<String>>> stringArrayOptions) {
+        this.stringArrayOptions = stringArrayOptions;
+    }
+
+    public List<URIOption> getUriOptions() {
+        return uriOptions;
+    }
+
+    public void setUriOptions(List<URIOption> uriOptions) {
+        this.uriOptions = uriOptions;
     }
 
     /**
