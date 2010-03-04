@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.helpers.AdditiveCodeHolder;
@@ -30,7 +31,6 @@ import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
@@ -56,37 +56,39 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
             String internalVersionString, 
             List<BooleanQuery> combinedQuery, 
             List<Query> bitSetQueries) throws LBInvocationException, LBParameterException {
-   
-            //Match all docs (excluding code boundry docs) if no queries are provided
-            if(combinedQuery == null || combinedQuery.size() == 0){
-                combinedQuery = new ArrayList<BooleanQuery>();
-                BooleanQuery booleanQuery = new BooleanQuery();
-                booleanQuery.add(
-                        new MatchAllDocsQuery(), Occur.MUST);
-                booleanQuery.add(
-                        new TermQuery(new Term("codeBoundry", "T")), Occur.MUST_NOT);
-                combinedQuery.add(booleanQuery);
-            }          
-            
-            AdditiveCodeHolder codeHolder = new DefaultCodeHolder();
-            
-            SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+        IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
+        EntityIndexService entityService = indexServiceManager.getEntityIndexService();
+        
+        SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+        String uri = resourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
+        
+        AbsoluteCodingSchemeVersionReference ref =
+            Constructors.createAbsoluteCodingSchemeVersionReference(
+                uri, internalVersionString);
 
-            IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
-            EntityIndexService entityService = indexServiceManager.getEntityIndexService();
- 
-            List<ScoreDoc> scoreDocs = entityService.query(
-            		Constructors.createAbsoluteCodingSchemeVersionReference(
-            				resourceService.getUriForUserCodingSchemeName(internalCodeSystemName), internalVersionString), 
-            				combinedQuery, bitSetQueries);
-  
-            for(ScoreDoc doc : scoreDocs){
-                codeHolder.add(buildCodeToReturn(doc, internalCodeSystemName, internalVersionString));
-            }
+        //Match all docs (excluding code boundry docs) if no queries are provided
+        if(combinedQuery == null || combinedQuery.size() == 0){
+            combinedQuery = new ArrayList<BooleanQuery>();
+            BooleanQuery booleanQuery = new BooleanQuery();
+            booleanQuery.add(
+            		entityService.getMatchAllDocsQuery(ref), Occur.MUST);
+            booleanQuery.add(
+                    new TermQuery(new Term("codeBoundry", "T")), Occur.MUST_NOT);
+            combinedQuery.add(booleanQuery);
+        }          
 
-            return codeHolder;
+        AdditiveCodeHolder codeHolder = new DefaultCodeHolder();
+
+        List<ScoreDoc> scoreDocs = entityService.query(ref, 
+                        combinedQuery, bitSetQueries);
+
+        for(ScoreDoc doc : scoreDocs){
+            codeHolder.add(buildCodeToReturn(doc, internalCodeSystemName, internalVersionString));
+        }
+
+        return codeHolder;
     }
-    
+
     /**
      * Builds the code to return.
      * 
