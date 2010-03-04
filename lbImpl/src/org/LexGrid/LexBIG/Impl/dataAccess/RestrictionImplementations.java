@@ -19,7 +19,6 @@
 package org.LexGrid.LexBIG.Impl.dataAccess;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -34,35 +33,23 @@ import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToMatchingProperti
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToProperties;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToStatus;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
-import org.LexGrid.LexBIG.Impl.helpers.AdditiveCodeHolder;
-import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
-import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
-import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
-import org.LexGrid.LexBIG.Impl.helpers.ScoredBitSet;
-import org.LexGrid.LexBIG.Impl.helpers.ScoredQueryFilter;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.QueryFilter;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.lexevs.dao.index.connection.IndexInterface;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.ResourceManager;
-
-import edu.mayo.informatics.indexer.lucene.LuceneIndexReader;
 
 /**
  * Class which implements all of the restriction operations using Lucene
@@ -107,11 +94,9 @@ public class RestrictionImplementations {
             String internalCodeSystemName, String internalVersionString) throws UnexpectedInternalError,
             MissingResourceException, LBParameterException {
         try {             
-            SQLTableConstants stc = ResourceManager.instance().getSQLInterface(internalCodeSystemName,
-                    internalVersionString).getSQLTableConstants();
-
-            String codeField = stc.entityCodeOrId;
-            String propertyNameField = stc.propertyOrPropertyName;
+           
+            String codeField = SQLTableConstants.TBLCOL_ENTITYCODE;
+            String propertyNameField = SQLTableConstants.TBLCOL_PROPERTYNAME;
             String language = null;
             Query textQueryPart = null;
             SearchDesignationOption preferredOnly = null;
