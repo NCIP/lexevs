@@ -106,14 +106,21 @@ public class SQLInterface {
     public void checkInPreparedStatement(PreparedStatement statement) {
     	
     	try {
-    		if(statement != null){
-    			statement.close();
+    		if(statement.getConnection() != null && (!statement.getConnection().isClosed()) ){
     			statement.getConnection().close();
+    		} if(statement != null && (!statement.isClosed()) ) {
+    			statement.close();
     		}
-		} catch (SQLException e) {
-			//
-		} finally {
-    		//
+		} catch (Exception e) {
+			try {
+				if(statement != null && (!statement.isClosed())){
+					statement.close();
+	    		} if(statement.getConnection() != null && (!statement.getConnection().isClosed()) ) {
+	    			statement.getConnection().close();
+	    		}
+			} catch (Exception e1) {
+				//
+			}
 		}
     }
 
