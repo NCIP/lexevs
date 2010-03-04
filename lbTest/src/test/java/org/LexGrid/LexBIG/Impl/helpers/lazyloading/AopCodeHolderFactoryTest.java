@@ -23,7 +23,6 @@ import java.util.List;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
-import org.apache.lucene.search.MatchAllDocsQuery;
 
 /**
  * The Class LazyCodeHolderFactoryTest.
