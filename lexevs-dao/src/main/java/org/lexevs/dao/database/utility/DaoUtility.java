@@ -9,6 +9,7 @@ import org.LexGrid.commonTypes.Text;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.URIMap;
+import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.compass.core.config.CompassEnvironment.Mapping;
 
 public class DaoUtility {
@@ -54,6 +55,7 @@ public class DaoUtility {
 		} 
 	}
 	
+	//Ignore this -- just some helpers for generating Ibatis Mapping code. Will go away...
 	public static void main(String[] args) {
 		for(Method method : Mappings.class.getMethods()) {
 			if(method.getName().startsWith("addSupported")) {
@@ -61,17 +63,20 @@ public class DaoUtility {
 					/*
 					System.out.println("<subMap value=\"" + method.getParameterTypes()[0].getSimpleName().replaceFirst("Supported", "") + "\" resultMap=\"" + method.getParameterTypes()[0].getSimpleName().replaceFirst("S", "s") + "Result\" />");
 					*/
-			
+					/*
 					System.out.println("<resultMap id=\"" + method.getParameterTypes()[0].getSimpleName().replaceFirst("S", "s") + "Result\" class=\"" + 
 							method.getParameterTypes()[0].getSimpleName().replaceFirst("S", "s") + "\" extends=\"uriMapResult\">"
 							+ "\n" + "</resultMap>"		
 					);
-					
+					*/
 					/*
 					System.out.println("<typeAlias alias=\"" + method.getParameterTypes()[0].getSimpleName().replaceFirst("S", "s")
 					+ 	"\" type=\"" +	method.getParameterTypes()[0].getName() +"\"/>"
 					);
 					*/
+					
+					System.out.println("if(clazz == " + method.getParameterTypes()[0].getSimpleName() + ".class){ \n " +
+									   "   return SQLTableConstants.TBLCOLVAL_SUPPTAG_" + method.getParameterTypes()[0].getSimpleName().replaceFirst("Supported", "").toUpperCase() + "; \n}");
 				}
 			}
 		}
