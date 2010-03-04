@@ -15,4 +15,7 @@ public interface EntityDao extends LexEvsIndexFormatVersionAwareDao {
 	public Document getDocumentById(AbsoluteCodingSchemeVersionReference reference, int documentId);
 	
 	public void deleteDocumentsOfCodingScheme(AbsoluteCodingSchemeVersionReference reference);
+	
+	public Query getMatchAllDocsQuery(
+			AbsoluteCodingSchemeVersionReference reference);
 }

@@ -146,4 +146,11 @@ public class CompassEntityDao extends CompassDaoSupport implements EntityDao {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public Query getMatchAllDocsQuery(
+			AbsoluteCodingSchemeVersionReference reference) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
 }

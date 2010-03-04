@@ -130,15 +130,24 @@ public class IndexInterface {
             // coding system / version combination
             // strings to the index that contains them. I want to find all of
             // the unique index locations.
-            HashSet<String> uniqueIndexLocations = new HashSet<String>();
+            //HashSet<String> uniqueIndexLocations = new HashSet<String>();
             for (int i = 0; i < codingSchemeVersionPairs.length; i++) {
-                uniqueIndexLocations.add(service_.getMetaData().getIndexMetaDataValue(codingSchemeVersionPairs[i]));
+            	temp.put(codingSchemeVersionPairs[i], service_.getMetaData().getIndexMetaDataValue(codingSchemeVersionPairs[i]));
+                
+            	//Don't bother with this...
+            	//uniqueIndexLocations.add(service_.getMetaData().getIndexMetaDataValue(codingSchemeVersionPairs[i]));
             }
 
+            // TODO: This index metadata file is.... weird.
+            // We don't need the code below if we are consistent about key creation.
+            // It would be nice to do this differently -- Castor/XStream marshalling... etc...
+            // This should simplify things and keep backward compatiblity.
+            // TODO:
+            
             // now, for each index location, read the coding scheme name and
             // version information, and
             // add that to the hashtable.
-
+            /*
             Iterator<String> indexLocations = uniqueIndexLocations.iterator();
             while (indexLocations.hasNext()) {
                 String currentLocation = indexLocations.next();
@@ -148,8 +157,8 @@ public class IndexInterface {
                 lcs.version = service_.getMetaData().getIndexMetaDataValue(currentLocation, "version");
 
                 temp.put(lcs.getKey(), currentLocation);
-            }
-
+            } 
+            */
             codeSystemToIndexMap_ = temp;
         } catch (InternalErrorException e) {
             throw new RuntimeException("There was a problem reading the index metadata.", e);

@@ -1,4 +1,4 @@
-package org.lexevs.dao.index.lucene.entity;
+package org.lexevs.dao.index.lucene.v2010.entity;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -6,8 +6,10 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.AbstractBaseIndexDao;
 import org.lexevs.dao.index.access.entity.EntityDao;
@@ -26,7 +28,6 @@ import edu.mayo.informatics.indexer.lucene.hitcollector.HitCollectorMerger;
 
 public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 	
-	public static LexEvsIndexFormatVersion supportedIndexVersion2009 = LexEvsIndexFormatVersion.parseStringToVersion("2009");
 	public static LexEvsIndexFormatVersion supportedIndexVersion2010 = LexEvsIndexFormatVersion.parseStringToVersion("2010");
 	
 	private IndexInterface indexInterface;
@@ -119,6 +120,14 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 		}
 	}
 	
+	public Query getMatchAllDocsQuery(
+			AbsoluteCodingSchemeVersionReference reference) {
+		return new TermQuery(
+				new Term(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
+						LuceneLoaderCode.createCodingSchemeUriVersionKey(reference.getCodingSchemeURN(), 
+								reference.getCodingSchemeVersion())));
+	}
+	
 	public void deleteDocumentsOfCodingScheme(
 			AbsoluteCodingSchemeVersionReference reference) {
 		try {
@@ -174,7 +183,7 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 
 	@Override
 	public List<LexEvsIndexFormatVersion> doGetSupportedLexEvsIndexFormatVersions() {
-		return DaoUtility.createList(LexEvsIndexFormatVersion.class, supportedIndexVersion2009, supportedIndexVersion2010);
+		return DaoUtility.createList(LexEvsIndexFormatVersion.class, supportedIndexVersion2010);
 	}
 	
 	public void setSystemResourceService(SystemResourceService systemResourceService) {

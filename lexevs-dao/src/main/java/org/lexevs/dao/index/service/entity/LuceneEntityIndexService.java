@@ -32,6 +32,14 @@ public class LuceneEntityIndexService implements EntityIndexService {
 		throw new UnsupportedOperationException();
 	}
 	
+
+	@Override
+	public Query getMatchAllDocsQuery(
+			AbsoluteCodingSchemeVersionReference reference) {
+		return indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion()).
+			getMatchAllDocsQuery(reference);
+	}
+	
 	public List<ScoreDoc> query(AbsoluteCodingSchemeVersionReference reference, List<? extends Query> combinedQueries, List<? extends Query> individualQueries){
 		return indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion()).
 			query(reference, combinedQueries, individualQueries);

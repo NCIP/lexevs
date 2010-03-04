@@ -64,8 +64,6 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 				  systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
 			  
 			  indexerService.getMetaData().setIndexMetaDataValue(codingSchemeName + "[:]" + reference.getCodingSchemeVersion(), indexName);
-			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "codingScheme", codingSchemeName);
-			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "version", reference.getCodingSchemeVersion());
 
 			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "lgModel", indexVersion);
 			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "has 'Norm' fields", false + "");
