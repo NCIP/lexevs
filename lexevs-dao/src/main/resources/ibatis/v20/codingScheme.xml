@@ -243,6 +243,134 @@
 			#entryStateId#
 		)
   </insert>
+  
+  
+  	
+	<select id="getDistinctPropertyNames" 
+     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+     SELECT DISTINCT
+     	prop.propertyName
+     FROM
+     	$prefix$property prop
+	 LEFT JOIN 
+	 	$prefix$entity entity
+	 ON 
+	 	prop.referenceGuid = entity.entityGuid
+	 LEFT JOIN
+		$prefix$codingscheme cs
+	 ON 
+	 	entity.codingSchemeGuid = cs.codingSchemeGuid
+	 WHERE
+		cs.codingSchemeGuid = #param1#
+     </select>
      
+     	<select id="getDistinctEntityTypes" 
+     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+     SELECT DISTINCT
+     	type.entityType
+     FROM
+     	$prefix$entityType type
+	 LEFT JOIN 
+	 	$prefix$entity entity
+	 ON 
+	 	type.entityGuid = entity.entityGuid
+	 LEFT JOIN
+		$prefix$codingscheme cs
+	 ON 
+	 	entity.codingSchemeGuid = cs.codingSchemeGuid
+	 WHERE
+		cs.codingSchemeGuid = #param1#
+     </select>
+     
+      <select id="getDistinctNamespaces" 
+     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+     SELECT DISTINCT
+     	entity.entityCodeNamespace
+     FROM
+     	$prefix$entity entity
+	 WHERE
+		entity.codingSchemeGuid = #param1#
+     </select>
+     
+      <select id="getDistinctFormats" 
+     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+        SELECT DISTINCT
+     	prop.format
+     FROM
+     	$prefix$property prop
+	 LEFT JOIN 
+	 	$prefix$entity entity
+	 ON 
+	 	prop.referenceGuid = entity.entityGuid
+	 LEFT JOIN
+		$prefix$codingscheme cs
+	 ON 
+	 	entity.codingSchemeGuid = cs.codingSchemeGuid
+	 WHERE
+		cs.codingSchemeGuid = #param1#
+     </select>
+     
+      <select id="getDistinctLanguages" 
+     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+        SELECT DISTINCT
+     	prop.language
+     FROM
+     	$prefix$property prop
+	 LEFT JOIN 
+	 	$prefix$entity entity
+	 ON 
+	 	prop.referenceGuid = entity.entityGuid
+	 LEFT JOIN
+		$prefix$codingscheme cs
+	 ON 
+	 	entity.codingSchemeGuid = cs.codingSchemeGuid
+	 WHERE
+		cs.codingSchemeGuid = #param1#
+			
+	  UNION
+		
+		SELECT
+			cs.defaultLanguage
+		FROM
+			$prefix$codingScheme cs
+		WHERE
+			cs.codingSchemeGuid = #param1#
+     </select>
+
+
+	<sql id="distinctPropQualFragment">
+		FROM
+			$prefix$propertyMultiAttrib propQual
+		LEFT JOIN
+			$prefix$property prop
+		ON
+			prop.propertyGuid = propQual.propertyGuid
+		LEFT JOIN
+			$prefix$entity entity
+		ON
+			prop.referenceGuid = entity.entityGuid
+		LEFT JOIN
+			$prefix$codingscheme cs
+		ON
+			entity.codingSchemeGuid = cs.codingSchemeGuid
+		WHERE
+			cs.codingSchemeGuid = #param1#
+	</sql>
+
+	<select id="getDistinctPropertyQualifierTypes"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultClass="string">
+		SELECT DISTINCT
+			propQual.attributeType
+		<include refid="distinctPropQualFragment"/>
+     </select>
+     
+     <select id="getDistinctPropertyQualifierNames"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultClass="string">
+		SELECT DISTINCT
+			propQual.attributeId
+		<include refid="distinctPropQualFragment"/>
+     </select>
     
 </sqlMap>

@@ -41,8 +41,27 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	
 	public void insertMappings(String codingSchemeId, Mappings mappings);
 	
+	public Mappings getMappings(String codingSchemeId);
+	
 	public void insertURIMap(String codingSchemeId, List<URIMap> supportedProperty);
 
 	public void insertURIMap(String codingSchemeId, URIMap supportedProperty);
+	
+	public List<String> getDistinctPropertyNamesOfCodingScheme(
+			String codingSchemeId);
+	
+	public List<String> getDistinctFormatsOfCodingScheme(
+			String codingSchemeId);
+	
+	public List<String> getDistinctPropertyQualifierNamesOfCodingScheme(
+			String codingSchemeId);
+	
+	public List<String> getDistinctPropertyQualifierTypesOfCodingScheme(
+			String codingSchemeId);
 
+	public List<String> getDistinctNamespacesOfCodingScheme(String codingSchemeId);
+	
+	public List<String> getDistinctEntityTypesOfCodingScheme(String codingSchemeId);
+	
+	public List<String> getDistinctLanguagesOfCodingScheme(String codingSchemeId);
 }

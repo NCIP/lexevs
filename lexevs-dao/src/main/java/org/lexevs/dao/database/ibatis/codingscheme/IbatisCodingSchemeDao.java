@@ -15,6 +15,7 @@ import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
+import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.constants.classifier.mapping.MappingClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
@@ -32,6 +33,8 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
 @Cacheable(cacheName = "IbatisCodingSchemeDao")
 public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSchemeDao {
 
+	
+
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 
 	private static String SUPPORTED_ATTRIB_GETTER_PREFIX = "_supported";
@@ -48,13 +51,20 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	private static String UPDATE_CODING_SCHEME_BY_ID_SQL = CODING_SCHEME_NAMESPACE + "updateCodingSchemeById";
 	private static String INSERT_CODING_SCHEME_MULTIATTRIB_SQL = CODING_SCHEME_NAMESPACE + "insertCodingSchemeMultiAttrib";
 	private static String INSERT_URIMAP_SQL = CODING_SCHEME_NAMESPACE + "insertURIMap";
+	private static String GET_DISTINCT_PROPERTY_NAMES_OF_CS_SQL = CODING_SCHEME_NAMESPACE + "getDistinctPropertyNames";
+	private static String GET_DISTINCT_ENTITY_TYPES_OF_CS_SQL = CODING_SCHEME_NAMESPACE + "getDistinctEntityTypes";
+	private static String GET_DISTINCT_PROPERTY_QUALIFIER_NAMES_OF_CS_SQL = CODING_SCHEME_NAMESPACE + "getDistinctPropertyQualifierNames";
+	private static String GET_DISTINCT_PROPERTY_QUALIFIER_TYPES_OF_CS_SQL = CODING_SCHEME_NAMESPACE + "getDistinctPropertyQualifierTypes";
+	private static String GET_DISTINCT_FORMATS_OF_CS_SQL = CODING_SCHEME_NAMESPACE + "getDistinctFormats";
+	private static String GET_DISTINCT_NAMESPACES_OF_CS_SQL = CODING_SCHEME_NAMESPACE + "getDistinctNamespaces";
+	private static String GET_DISTINCT_LANGUAGES_OF_CS_SQL = CODING_SCHEME_NAMESPACE + "getDistinctLanguages";
+	private static String GET_URIMAPS_SQL = CODING_SCHEME_NAMESPACE + "getURIMaps";
 	
 	private MappingClassifier mappingClassifier = new MappingClassifier();
 	
 	private VersionsDao versionsDao;
 	private EntityDao entityDao;
-	
-	@SuppressWarnings("unchecked")
+
 	@CacheMethod
 	public CodingScheme getCodingSchemeById(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -63,8 +73,10 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 			(CodingScheme) this.getSqlMapClientTemplate().queryForObject(
 				GET_CODING_SCHEME_BY_ID_SQL, new PrefixedParameter(prefix, codingSchemeId));
 
+		scheme.setMappings(
+				this.getMappings(codingSchemeId));
+		
 		return scheme;
-
 	}
 	
 	public CodingScheme getCodingSchemeByUriAndVersion(String codingSchemeUri,
@@ -254,6 +266,82 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 				} 
 			}
 		}
+	}
+	
+	@Override
+	public List<String> getDistinctFormatsOfCodingScheme(String codingSchemeId) {
+		return doDistinctQuery(
+				GET_DISTINCT_FORMATS_OF_CS_SQL, codingSchemeId);
+	}
+
+	@Override
+	public List<String> getDistinctLanguagesOfCodingScheme(String codingSchemeId) {
+		return doDistinctQuery(
+				GET_DISTINCT_LANGUAGES_OF_CS_SQL, codingSchemeId);
+	}
+
+	@Override
+	public List<String> getDistinctNamespacesOfCodingScheme(
+			String codingSchemeId) {
+		return doDistinctQuery(
+				GET_DISTINCT_NAMESPACES_OF_CS_SQL, codingSchemeId);
+	}
+
+	public List<String> getDistinctPropertyNamesOfCodingScheme(
+			String codingSchemeId) {
+		return doDistinctQuery(
+				GET_DISTINCT_PROPERTY_NAMES_OF_CS_SQL, codingSchemeId);
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected List<String> doDistinctQuery(String queryName, String codingSchemeId){
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		return this.getSqlMapClientTemplate().queryForList(
+				queryName, 
+				new PrefixedParameter(prefix, codingSchemeId));
+	}
+
+	@Override
+	public List<String> getDistinctPropertyQualifierNamesOfCodingScheme(
+			String codingSchemeId) {
+		return doDistinctQuery(
+				GET_DISTINCT_PROPERTY_QUALIFIER_NAMES_OF_CS_SQL, codingSchemeId);
+	}
+
+	@Override
+	public List<String> getDistinctPropertyQualifierTypesOfCodingScheme(
+			String codingSchemeId) {
+		return doDistinctQuery(
+				GET_DISTINCT_PROPERTY_QUALIFIER_TYPES_OF_CS_SQL, codingSchemeId);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getDistinctEntityTypesOfCodingScheme(
+			String codingSchemeId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_DISTINCT_ENTITY_TYPES_OF_CS_SQL, 
+				new PrefixedParameter(prefix, codingSchemeId));
+	}
+
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Mappings getMappings(String codingSchemeId) {
+		Mappings mappings = new Mappings();
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		List<URIMap> uriMaps = this.getSqlMapClientTemplate().queryForList(	
+				GET_URIMAPS_SQL, 
+				new PrefixedParameter(prefix, codingSchemeId));
+		
+		for(URIMap uriMap : uriMaps) {
+			DaoUtility.insertIntoMappings(mappings, uriMap);
+		}
+		
+		return mappings;
 	}
 	
 	protected InsertURIMapBean buildInsertURIMapBean(String prefix, String uriMapId, String codingSchemeId, String supportedAttributeTag, URIMap uriMap){

@@ -3,6 +3,7 @@ package org.lexevs.dao.database.ibatis.codingscheme;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -19,6 +20,7 @@ import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.ArrayUtils;
 import org.junit.Test;
+import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -497,5 +499,199 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		
 		long postUpdateConcepts = template.queryForLong("select approxNumConcepts from codingscheme where codingSchemeGuid = 'csguid'");
 		assertEquals(11111l, postUpdateConcepts);
+	}
+	
+	@Test
+	@Transactional
+	public void testDistinctPropertyNames() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+			"values ('pguid1', 'eguid', 'entity', 'pname1', 'pvalue', 'presentation')");
+		
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pvalue', 'presentation')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		
+		List<String> pnames = this.ibatisCodingSchemeDao.getDistinctPropertyNamesOfCodingScheme("csguid");
+		
+		assertEquals(2, pnames.size());
+		
+		assertTrue(pnames.contains("pname1"));
+		assertTrue(pnames.contains("pname2"));
+	}
+	
+	@Test
+	@Transactional
+	public void testDistinctEntityTypes() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid1', 'csguid', 'ecode1', 'ens1')");
+		
+		template.execute("Insert into entityType " +
+			"values ('eguid1', 'etype1')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid2', 'csguid', 'ecode2', 'ens2')");
+	
+		template.execute("Insert into entityType " +
+			"values ('eguid2', 'etype2')");
+		
+		List<String> etypes = this.ibatisCodingSchemeDao.getDistinctEntityTypesOfCodingScheme("csguid");
+		
+		assertEquals(2, etypes.size());
+		
+		assertTrue(etypes.contains("etype1"));
+		assertTrue(etypes.contains("etype2"));
+	}
+	
+	@Test
+	@Transactional
+	public void testDistinctNamespaces() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid1', 'csguid', 'ecode1', 'ens1')");
+		
+		template.execute("Insert into entityType " +
+			"values ('eguid1', 'etype1')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid2', 'csguid', 'ecode2', 'ens2')");
+	
+		template.execute("Insert into entityType " +
+			"values ('eguid2', 'etype2')");
+		
+		List<String> etypes = this.ibatisCodingSchemeDao.getDistinctNamespacesOfCodingScheme("csguid");
+		
+		assertEquals(2, etypes.size());
+		
+		assertTrue(etypes.contains("ens1"));
+		assertTrue(etypes.contains("ens2"));
+	}
+	
+	@Test
+	@Transactional
+	public void testDistinctFormats() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
+			"values ('pguid1', 'eguid', 'entity', 'pname1', 'pvalue', 'presentation', 'format1')");
+		
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
+			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pvalue', 'presentation', 'format2')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		List<String> formats = this.ibatisCodingSchemeDao.getDistinctFormatsOfCodingScheme("csguid");
+		
+		assertEquals(2, formats.size());
+		
+		assertTrue(formats.contains("format1"));
+		assertTrue(formats.contains("format2"));
+	}
+	
+	@Test
+	@Transactional
+	public void testDistinctLanguages() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into property (language, propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
+			"values ('en', 'pguid1', 'eguid', 'entity', 'pname1', 'pvalue', 'presentation', 'format1')");
+		
+		template.execute("Insert into property (language, propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
+			"values ('fr', 'pguid2', 'eguid', 'entity', 'pname2', 'pvalue', 'presentation', 'format2')");
+		
+		template.execute("Insert into codingScheme (defaultLanguage, codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('ge', 'csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		List<String> langs = this.ibatisCodingSchemeDao.getDistinctLanguagesOfCodingScheme("csguid");
+		
+		assertEquals(3, langs.size());
+		
+		assertTrue(langs.contains("fr"));
+		assertTrue(langs.contains("ge"));
+		assertTrue(langs.contains("en"));
+	}
+	
+	@Test
+	@Transactional
+	public void testDistinctPropertyQualifierTypes() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into property (language, propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
+			"values ('en', 'pguid1', 'eguid', 'entity', 'pname1', 'pvalue', 'presentation', 'format1')");
+		
+		template.execute("Insert into property (language, propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
+			"values ('fr', 'pguid2', 'eguid', 'entity', 'pname2', 'pvalue', 'presentation', 'format2')");
+		
+		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId) " +
+			"values ('pmaguid1', 'pguid1', 'type1', 'name1')");
+		
+		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId) " +
+			"values ('pmaguid2', 'pguid2', 'type2', 'name2')");
+		
+		template.execute("Insert into codingScheme (defaultLanguage, codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('ge', 'csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		List<String> types = this.ibatisCodingSchemeDao.getDistinctPropertyQualifierTypesOfCodingScheme("csguid");
+		
+		assertEquals(2, types.size());
+		
+		assertTrue(types.contains("type1"));
+		assertTrue(types.contains("type2"));
+	}
+	
+	@Test
+	@Transactional
+	public void testDistinctPropertyQualifierNames() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into property (language, propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
+			"values ('en', 'pguid1', 'eguid', 'entity', 'pname1', 'pvalue', 'presentation', 'format1')");
+		
+		template.execute("Insert into property (language, propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
+			"values ('fr', 'pguid2', 'eguid', 'entity', 'pname2', 'pvalue', 'presentation', 'format2')");
+		
+		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId) " +
+			"values ('pmaguid1', 'pguid1', 'type1', 'name1')");
+		
+		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId) " +
+			"values ('pmaguid2', 'pguid2', 'type2', 'name2')");
+		
+		template.execute("Insert into codingScheme (defaultLanguage, codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('ge', 'csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		List<String> names = this.ibatisCodingSchemeDao.getDistinctPropertyQualifierNamesOfCodingScheme("csguid");
+		
+		assertEquals(2, names.size());
+		
+		assertTrue(names.contains("name1"));
+		assertTrue(names.contains("name2"));
 	}
 }

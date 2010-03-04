@@ -23,7 +23,6 @@
 	<resultMap id="presentationResult" class="presentation" extends="propertyResult" >
 		<result property="isPreferred" column="isPreferred" />
 	</resultMap>
-	
 
   	<select id="getPropertiesByParent" resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
   		SELECT

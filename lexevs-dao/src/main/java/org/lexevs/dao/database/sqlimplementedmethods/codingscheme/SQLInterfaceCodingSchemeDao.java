@@ -27,25 +27,22 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("1.8");
 	
 	public void deleteCodingScheme(CodingScheme codingScheme) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 		
 	}
 
 	public CodingScheme getCodingSchemeById(String codingSchemeId) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	public CodingScheme getCodingSchemeByNameAndVersion(
 			String codingSchemeName, String version) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	public CodingScheme getCodingSchemeByRevision(String codingSchemeName,
 			String version, String revisionId) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	public CodingScheme getCodingSchemeByUriAndVersion(String codingSchemeUri,
@@ -61,13 +58,12 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 
 	public String getCodingSchemeIdByNameAndVersion(String codingSchemeName,
 			String version) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	public String getCodingSchemeIdByUriAndVersion(String codingSchemeUri,
 			String version) {
-		return this.resolveCodingSchemeKey(codingSchemeUri, version);
+		return resolveCodingSchemeKey(codingSchemeUri, version);
 	}
 
 	public CodingSchemeSummary getCodingSchemeSummaryByUriAndVersion(
@@ -124,62 +120,59 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	}
 
 	public String getEntryStateId(String codingSchemeName, String version) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	public String insertCodingScheme(CodingScheme cs) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	public void insertCodingSchemeLocalName(String codingSchemeId,
 			String localName) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 		
 	}
 
 	public void insertCodingSchemeSource(String codingSchemeId, Source source) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 		
 	}
 
 	public String insertHistoryCodingScheme(CodingScheme codingScheme) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	public void insertMappings(String codingSchemeId, Mappings mappings) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 		
 	}
 
 	public void insertMappings(String codingSchemeName,
 			String codingSchemeVersion, Mappings mappings) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 		
 	}
 
 	public void insertURIMap(String codingSchemeName,
 			String codingSchemeVersion, URIMap supportedProperty) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 		
 	}
 
 	public void insertURIMap(String codingSchemeId,
 			List<URIMap> supportedProperty) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 		
 	}
 
 	public void insertURIMap(String codingSchemeId, URIMap supportedProperty) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 		
 	}
 
 	public void updateCodingScheme(String codingSchemeId,
 			CodingScheme codingScheme) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 		
 	}
 
@@ -189,7 +182,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	}
 
 	public void deleteCodingSchemeById(String codingSchemeId) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 		
 	}
 
@@ -204,5 +197,50 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	public static AbsoluteCodingSchemeVersionReference resolveCodingSchemeKey(String key) {
 		String[] keys = StringUtils.split(key, KEY_SEPERATOR);
 		return DaoUtility.createAbsoluteCodingSchemeVersionReference(keys[0], keys[1]);
+	}
+
+	@Override
+	public List<String> getDistinctEntityTypesOfCodingScheme(
+			String codingSchemeId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> getDistinctFormatsOfCodingScheme(String codingSchemeId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> getDistinctLanguagesOfCodingScheme(String codingSchemeId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> getDistinctNamespacesOfCodingScheme(
+			String codingSchemeId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> getDistinctPropertyNamesOfCodingScheme(
+			String codingSchemeId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> getDistinctPropertyQualifierNamesOfCodingScheme(
+			String codingSchemeId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> getDistinctPropertyQualifierTypesOfCodingScheme(
+			String codingSchemeId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Mappings getMappings(String codingSchemeId) {
+		throw new UnsupportedOperationException();
 	}
 }

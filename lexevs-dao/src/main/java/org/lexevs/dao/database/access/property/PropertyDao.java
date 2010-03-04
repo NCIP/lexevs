@@ -46,11 +46,15 @@ public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 	
 	
 	public void updateProperty(
-			String codingSchemeName, 
+			String codingSchemeId, 
 			String parentId,
 			String propertyId,
 			PropertyType type,
 			Property property);
+	
+
+	
+	
 	
 }
 

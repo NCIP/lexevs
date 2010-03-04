@@ -48,6 +48,8 @@
 			entityCodeNamespace = #param2#
      </select>
      
+   
+     
      <select id="getAllEntitiesOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
      	resultMap="Entity.entityResult">
 		<include refid="getEntityFragment"/>
