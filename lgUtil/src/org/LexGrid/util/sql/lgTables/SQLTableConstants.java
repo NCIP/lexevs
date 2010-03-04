@@ -384,6 +384,8 @@ public class SQLTableConstants {
     public static final String TBLCOLVAL_SUPPTAG_ROLEGROUP = "RoleGroup";
     public static final String TBLCOLVAL_SUPPTAG_SORTORDER = "SortOrder";
     public static final String TBLCOLVAL_SUPPTAG_SOURCE = "Source";
+    public static final String TBLCOLVAL_SUPPTAG_SOURCEROLE = "SourceRole";
+    public static final String TBLCOLVAL_SUPPTAG_CONCEPTDOMAIN = "ConceptDomain";
     public static final String TBLCOLVAL_SUPPTAG_STATUS = "Status";
 
     public static final String TBLCOLVAL_DC_CODINGSCHEMES = "codingSchemes";
