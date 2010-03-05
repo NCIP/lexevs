@@ -27,7 +27,7 @@
 
 		<step id="populateStagingTable" next="loadCodingScheme" parent="stagingTablePopulatorStepFactory"/>
 
-		<step id="loadCodingScheme" next="registerCodingScheme">
+		<step id="loadCodingScheme">
 			<tasklet>
 				<listeners>
 					<listener ref="stepCompletionListener" />
@@ -36,27 +36,21 @@
 					writer="codingSchemeWriter" commit-interval="1">
 				</chunk>
 			</tasklet>
+			
+			<fail on="FAILED" exit-code="NON-RECOVERABLE" />
+			<next on="*" to="loadHardcodedValues" />	
 		</step>
 		
-		<step id="registerCodingScheme">
-					<tasklet ref="registeringTasklet" />
-					<fail on="FAILED" exit-code="NON-RECOVERABLE" />
-					<next on="*" to="loadHardcodedValues" />	
-		</step>
+<!--		<step id="registerCodingScheme">-->
+<!--					<tasklet ref="registeringTasklet" />-->
+<!--					<fail on="FAILED" exit-code="NON-RECOVERABLE" />-->
+<!--					<next on="*" to="loadHardcodedValues" />	-->
+<!--		</step>-->
 		
 		<step id="loadHardcodedValues" next="umlsLoadEntity">
 			<tasklet ref="introspectiveHardcodedValuesTasklet"/>
 		</step>
 
-<!--		<step id="registerCodingScheme">-->
-<!--			<tasklet ref="registeringTasklet" />-->
-<!--			<fail on="FAILED" exit-code="NON-RECOVERABLE" />-->
-<!--			<next on="*" to="populateStagingTable" />-->
-<!--		</step>-->
-<!---->
-<!--		<step id="populateStagingTable" next="umlsLoadEntity"-->
-<!--			parent="stagingTablePopulatorStepFactory" />-->
-<!---->
 		<step id="umlsLoadEntity" next="umlsLoadEntityAssnsToEntity">
 			<tasklet>
 				<listeners>
@@ -707,7 +701,7 @@
 
 	<beans:bean id="registeringTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.RegisteringTasklet">
-		<beans:property name="registry" ref="registry"/>
+<!--		<beans:property name="registry" ref="registry"/>-->
 		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
