@@ -133,6 +133,7 @@ public class TextToSQL {
             token_ = token;
         }
 
+        
         // this verifies all of the rules except the description rules - and
         // determines A or B.
         try {
