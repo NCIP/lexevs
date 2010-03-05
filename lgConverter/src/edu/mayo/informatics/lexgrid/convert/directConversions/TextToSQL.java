@@ -132,6 +132,7 @@ public class TextToSQL {
         if (token != null && token.length() > 0) {
             token_ = token;
         }
+        
 
         // this verifies all of the rules except the description rules - and
         // determines A or B.
