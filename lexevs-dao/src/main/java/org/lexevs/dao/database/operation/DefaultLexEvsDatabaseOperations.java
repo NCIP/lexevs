@@ -18,23 +18,15 @@
  */
 package org.lexevs.dao.database.operation;
 
-import java.sql.Connection;
-
 import javax.sql.DataSource;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.util.sql.DBUtility;
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.dao.database.utility.DatabaseUtility;
-import org.lexevs.system.ResourceManager;
 import org.springframework.core.io.Resource;
+import org.springframework.transaction.PlatformTransactionManager;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class LexEvsPersistenceConnectionManager.
  * 
@@ -48,6 +40,7 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	
 	private PrefixResolver prefixResolver;
 	private DataSource dataSource;
+	private PlatformTransactionManager transactionManager;
 	private DatabaseType databaseType;
 
 	/* (non-Javadoc)
@@ -171,5 +164,13 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 
 	public void setDatabaseType(DatabaseType databaseType) {
 		this.databaseType = databaseType;
+	}
+
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+	public  PlatformTransactionManager getTransactionManager() {
+		return transactionManager;
 	}
 }

@@ -133,6 +133,30 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		this.insertAssociationSource(codingSchemeId, associationPredicateId, source, 
 				this.getNonBatchTemplateInserter());
 	}
+	
+	@Override
+	public void insertBatchAssociationSources(final String codingSchemeId,
+			final String associationPredicateId, final List<AssociationSource> batch) {
+		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+			
+			public Object doInSqlMapClient(SqlMapExecutor executor)
+					throws SQLException {
+				IbatisBatchInserter batchInserter = new SqlMapExecutorBatchInserter(executor);
+				
+				batchInserter.startBatch();
+				
+				for(AssociationSource source : batch) {
+					insertAssociationSource(codingSchemeId, associationPredicateId, source);
+				}
+				
+				batchInserter.executeBatch();
+				
+				return null;
+			}	
+		});
+	}
+
+
 
 	public void insertAssociationSource(String codingSchemeId,
 			String associationPredicateId, AssociationSource source, IbatisInserter inserter) {
@@ -238,7 +262,5 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public CodingSchemeDao getCodingSchemeDao() {
 		return codingSchemeDao;
 	}
-
-
 
 }

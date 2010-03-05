@@ -1,10 +1,14 @@
 package org.lexevs.dao.database.service.association;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.Relations;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.transaction.annotation.Transactional;
 
 public class VersionableEventAssociationService extends AbstractDatabaseService implements AssociationService{
@@ -21,7 +25,8 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 		String associationPredicateId = this.getDaoManager().getAssociationDao(codingSchemeUri, version).
 			getAssociationPredicateId(codingSchemeId, relationContainerName, associationPredicateName);
 		
-		this.doInsertAssociationSource(codingSchemeUri, codingSchemeUri, codingSchemeId, associationPredicateId, source);
+		this.doInsertAssociationSource(codingSchemeUri, codingSchemeUri, codingSchemeId, associationPredicateId, 
+				DaoUtility.createList(AssociationSource.class, source));
 	}
 
 	@Transactional
@@ -62,15 +67,13 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 		AssociationDao associationDao = this.getDaoManager().getAssociationDao(codingSchemeUri, codingSchemeVersion);
 		String predicateId = associationDao.insertAssociationPredicate(codingSchemeId, relationsId, predicate);
 		
-		for(AssociationSource source : predicate.getSource()) {
-			this.doInsertAssociationSource(codingSchemeUri, codingSchemeVersion, codingSchemeId, predicateId, source);
-		}
+		this.doInsertAssociationSource(codingSchemeUri, codingSchemeVersion, codingSchemeId, predicateId, Arrays.asList(predicate.getSource()));
 		
 	}
 	
 	protected void doInsertAssociationSource(String codingSchemeUri, 
-			String codingSchemeVersion, String codingSchemeId, String predicateId, AssociationSource source) {
+			String codingSchemeVersion, String codingSchemeId, String predicateId, List<AssociationSource> sources) {
 		AssociationDao associationDao = this.getDaoManager().getAssociationDao(codingSchemeUri, codingSchemeVersion);
-		associationDao.insertAssociationSource(codingSchemeId, predicateId, source);
+		associationDao.insertBatchAssociationSources(codingSchemeId, predicateId, sources);
 	}
 }

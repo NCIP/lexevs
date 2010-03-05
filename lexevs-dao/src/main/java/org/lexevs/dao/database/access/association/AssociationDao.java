@@ -24,6 +24,9 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	public void insertBatchAssociationSources(String codingSchemeId,
 			List<AssociationSourceBatchInsertItem> batch);
 	
+	public void insertBatchAssociationSources(String codingSchemeId, String relationsId,
+			List<AssociationSource> batch);
+	
 	public String insertRelations(String codingSchemeId, Relations relations);
 	
 	public String getRelationsId(String codingSchemeId, String relationsName);

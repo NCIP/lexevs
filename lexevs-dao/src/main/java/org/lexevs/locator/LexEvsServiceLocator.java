@@ -85,7 +85,9 @@ public class LexEvsServiceLocator implements ApplicationContextAware {
 	public void setApplicationContext(ApplicationContext applicationContext)
 		throws BeansException {
 
-		serviceLocator = (LexEvsServiceLocator) applicationContext.getBean(BEAN_NAME);	
+		if(serviceLocator == null) {
+			serviceLocator = (LexEvsServiceLocator) applicationContext.getBean(BEAN_NAME);	
+		}
 	}
 
 

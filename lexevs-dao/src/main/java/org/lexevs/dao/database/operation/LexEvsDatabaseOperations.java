@@ -20,10 +20,10 @@ package org.lexevs.dao.database.operation;
 
 import javax.sql.DataSource;
 
-import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.dao.database.utility.DatabaseUtility;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * The Interface PersistenceConnectionManager.
@@ -47,6 +47,8 @@ public interface LexEvsDatabaseOperations {
 	public DatabaseUtility getDatabaseUtility();
 	
 	public DataSource getDataSource();
+	
+	public PlatformTransactionManager getTransactionManager();
 	
 	public PrefixResolver getPrefixResolver();
 	

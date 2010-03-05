@@ -270,6 +270,7 @@
    		<property name="prefixResolver" ref="defaultPrefixResolver"/>
    		<property name="dataSource" ref="dataSource"/>
    		<property name="databaseType" ref="databaseTypeFactory"/>
+   		<property name="transactionManager" ref="transactionManager"/>
    	 </bean>
    	 
    	<bean id="lexevsCodingSchemeSchemaCreateScript"
