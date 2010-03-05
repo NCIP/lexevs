@@ -43,6 +43,11 @@
    		 <property name="targetMethod" value="getPrefixResolver"/>
  	</bean>
  	
+ 	<bean id="transactionManager" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+  		 <property name="targetObject" ref="defaultLexEvsDatabaseOperations"/>
+   		 <property name="targetMethod" value="getTransactionManager"/>
+ 	</bean>
+ 	
  	<bean id="prefix" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
   		 <property name="targetObject" ref="prefixResolver"/>
    		 <property name="targetMethod" value="resolveDefaultPrefix"/>
