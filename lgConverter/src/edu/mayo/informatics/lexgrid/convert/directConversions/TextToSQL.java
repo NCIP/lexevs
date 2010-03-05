@@ -46,6 +46,8 @@ public class TextToSQL {
             "Points to all concepts that aren't children of any other concepts", -1);
     private String codingSchemeName_;
     private String representsVersion_;
+    
+    private CodingScheme codingScheme;
 
     /**
      * @return the codingSchemeName
@@ -73,7 +75,6 @@ public class TextToSQL {
      *    \t &lt;name2&gt;[\t &lt;description&gt;] 
      *    \t\t &lt;name3&gt;[\t &lt;description&gt;]
      *    \t\t &lt;name4&gt;[\t &lt;description&gt;]
-     *    Relation=&quot;rel_name&quot; sourceCodingScheme=&quot;srcCS&quot; sourceCode=&quot;code&quot; targetCodingScheme=&quot;tgtCS&quot; targetCode=&quot;code&quot;
      * </pre>
      * 
      * Where the leading tabs represent hierarchical hasSubtype relationship
@@ -134,7 +135,6 @@ public class TextToSQL {
 
         // this verifies all of the rules except the description rules - and
         // determines A or B.
-        CodingScheme codingScheme;
         try {
             codingScheme = TextUtility.readAndVerifyConcepts(fileLocation.getPath(), messages_, token_, forceFormatB);
         } catch (Exception e) {
@@ -142,14 +142,17 @@ public class TextToSQL {
         }
         
         org.LexGrid.codingSchemes.CodingScheme cs = CodingScheme.toCodingScheme(codingScheme);
-  
+
         databaseServiceManager.getCodingSchemeService().insertCodingScheme(cs);
 
         return new URNVersionPair[]{
                 new URNVersionPair(codingScheme.codingSchemeId, codingScheme.representsVersion)};
     }
 
-   
+    public CodingScheme getCodingScheme(){
+        return codingScheme;
+    }
+    
     private void loadHasSubtypeRelations(CodingScheme codingScheme) throws Exception {
      
     }
