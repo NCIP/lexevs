@@ -96,6 +96,7 @@ import org.lexevs.system.ResourceManager;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  * @version subversion $Revision: $ checked in on $Date: $
  */
+@Deprecated
 public class SQLImplementedMethods {
     protected static Map<String, String> csNamespaceToName_ = new HashMap<String, String>();
     
