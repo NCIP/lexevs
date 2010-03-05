@@ -3,6 +3,7 @@ package org.lexevs.system.service;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.system.utility.MyClassLoader;
 
 public class DelegatingSystemResourceService implements SystemResourceService {
@@ -128,11 +129,16 @@ public class DelegatingSystemResourceService implements SystemResourceService {
 		
 	}
 	
-	public void addCodingSchemeResourceFromSystem(String uri, String version)
+	public void addCodingSchemeResourceToSystem(String uri, String version)
 		throws LBParameterException {
-		primarySystemResourceService.addCodingSchemeResourceFromSystem(uri, version);
+		primarySystemResourceService.addCodingSchemeResourceToSystem(uri, version);
 	}
 
+	public void addCodingSchemeResourceToSystem(CodingScheme codingScheme)
+		throws LBParameterException {
+		primarySystemResourceService.addCodingSchemeResourceToSystem(codingScheme);
+	}
+	
 	public void updateNonCodingSchemeResourceTag(String uri, String newTag)
 			throws LBParameterException {
 		

@@ -20,7 +20,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 	
 	@Before
 	public void clearListeners() {
-		service.setDatabaseServiceEventListeners(null);
+		//service.setDatabaseServiceEventListeners(null);
 	}
 	
 	@Test

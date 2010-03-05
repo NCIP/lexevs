@@ -38,6 +38,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
@@ -1280,5 +1281,19 @@ public class ResourceManager implements SystemResourceService {
 	public void addCodingSchemeResourceFromSystem(String uri, String version)
 			throws LBParameterException {
 		throw new UnsupportedOperationException("Cannot add to Deprecated ResourceManager.");
+	}
+
+	@Override
+	public void addCodingSchemeResourceToSystem(String uri, String version)
+			throws LBParameterException {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void addCodingSchemeResourceToSystem(CodingScheme codingScheme)
+			throws LBParameterException {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
 	}  
 }

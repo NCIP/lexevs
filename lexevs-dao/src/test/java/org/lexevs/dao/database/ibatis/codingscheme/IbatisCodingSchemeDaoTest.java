@@ -20,11 +20,9 @@ import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.ArrayUtils;
 import org.junit.Test;
-import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -32,9 +30,6 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 
 	@Resource
 	private IbatisCodingSchemeDao ibatisCodingSchemeDao;
-	
-	@Resource
-	private DataSourceTransactionManager dataSourceTransactionManager;
 
 	@Test
 	@Transactional

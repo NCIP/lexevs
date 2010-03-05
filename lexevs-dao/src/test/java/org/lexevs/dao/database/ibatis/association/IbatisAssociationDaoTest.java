@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import javax.annotation.Resource;
 
 import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
@@ -200,5 +201,34 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		});
 			
 		assertEquals(2, template.queryForObject("Select count(*) from entityassnquals", Integer.class));
+	}
+	
+	@Test
+	@Transactional
+	public void testInsertAssociationPredicate() throws SQLException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+				"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		AssociationPredicate predicate = new AssociationPredicate();
+		predicate.setAssociationName("assoc-name");
+		
+		ibatisAssociationDao.insertAssociationPredicate("cs-guid", "rel-guid", predicate);
+		
+		template.queryForObject("Select * from associationpredicate", new RowMapper(){
+
+			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
+				
+				assertNotNull(rs.getString(1));
+				assertEquals(rs.getString(2), "rel-guid");
+				// TODO: assertEquals(rs.getString(3), "s-code");
+				assertEquals(rs.getString(4), "assoc-name");
+					
+				return true;
+			}
+		});
 	}
 }

@@ -1,14 +1,11 @@
 package org.lexevs.registry.service;
 
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.registry.model.RegistryEntry;
 
 public interface Registry {

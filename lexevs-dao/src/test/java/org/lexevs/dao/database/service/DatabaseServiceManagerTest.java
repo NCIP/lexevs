@@ -9,9 +9,9 @@ import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.property.PropertyService;
-import org.lexevs.dao.test.LexEvsDaoTestBase;
+import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 
-public class DatabaseServiceManagerTest extends LexEvsDaoTestBase {
+public class DatabaseServiceManagerTest extends LexEvsDbUnitTestBase {
 
 	@Resource
 	private DatabaseServiceManager databaseServiceManager;

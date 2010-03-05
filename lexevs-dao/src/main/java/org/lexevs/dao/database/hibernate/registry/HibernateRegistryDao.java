@@ -10,6 +10,7 @@ import org.lexevs.registry.model.Registry;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 public class HibernateRegistryDao extends HibernateDaoSupport implements RegistryDao {

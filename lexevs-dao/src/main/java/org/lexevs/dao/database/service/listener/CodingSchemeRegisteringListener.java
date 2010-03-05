@@ -11,6 +11,7 @@ public class CodingSchemeRegisteringListener extends DefaultServiceEventListener
 	@Override
 	public boolean onCodingSchemeInsert(CodingSchemeInsertEvent event) throws CodingSchemeAlreadyLoadedException {
 		SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+		
 		CodingScheme scheme = event.getCodingScheme();
 		try {
 			
@@ -25,10 +26,8 @@ public class CodingSchemeRegisteringListener extends DefaultServiceEventListener
 					scheme.getRepresentsVersion());
 		}
 
-		
-			systemResourceService.addCodingSchemeResourceFromSystem(
-					scheme.getCodingSchemeURI(), 
-				    scheme.getRepresentsVersion());
+		systemResourceService.addCodingSchemeResourceToSystem(
+					scheme);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

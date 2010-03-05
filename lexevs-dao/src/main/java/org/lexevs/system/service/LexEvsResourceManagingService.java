@@ -277,7 +277,7 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 	}
 	
 	@ClearCache
-	public void addCodingSchemeResourceFromSystem(String uri, String version)
+	public void addCodingSchemeResourceToSystem(String uri, String version)
 			throws LBParameterException {
 		RegistryEntry entry = RegistryUtility.codingSchemeToRegistryEntry(uri, version);
 		entry.setStatus(CodingSchemeVersionStatus.PENDING.toString());
@@ -287,6 +287,20 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 			throw new RuntimeException(e);
 		}
 		this.readCodingSchemeAliasesFromServer();
+	}
+	
+	@ClearCache
+	public void addCodingSchemeResourceToSystem(CodingScheme codingScheme)
+			throws LBParameterException {
+		RegistryEntry entry = RegistryUtility.codingSchemeToRegistryEntry(codingScheme);
+		entry.setStatus(CodingSchemeVersionStatus.PENDING.toString());
+		try {
+			this.getRegistry().addNewItem(entry);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	
+		this.aliasHolder.add(this.codingSchemeToAliasHolder(codingScheme));
 	}
 
 	protected boolean isSingleTableMode(){

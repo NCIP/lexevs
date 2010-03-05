@@ -3,7 +3,11 @@
 
 <beans>
 
+	<bean id="sysVarSettingBean" class="org.lexevs.dao.test.SystemVariableSettingBean"/>
+
 	<import resource="classpath:lexevsDao.xml" />
+	
+	
 	
 <!--	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">-->
 <!--    	<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>-->
@@ -21,7 +25,7 @@
     
 <!--    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">-->
 <!--    	<property name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
-<!--    	<property name="url" value="jdbc:mysql://localhost/60"/>-->
+<!--    	<property name="url" value="jdbc:mysql://localhost/dbunit"/>-->
 <!--    	<property name="username" value="root"/>-->
 <!--    	<property name="password" value="root"/>-->
 <!--    </bean>-->

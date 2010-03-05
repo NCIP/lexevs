@@ -1,19 +1,19 @@
 package org.lexevs.cache;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import javax.annotation.Resource;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.cache.annotation.Cacheable;
-import org.lexevs.dao.test.LexEvsDaoTestBase;
+import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.dao.test.TestCacheBean;
 import org.springframework.core.annotation.AnnotationUtils;
 
-public class MethodCachingProxyTest extends LexEvsDaoTestBase {
+public class MethodCachingProxyTest extends LexEvsDbUnitTestBase {
 
 	@Resource 
 	private MethodCachingProxy testCacheProxy;

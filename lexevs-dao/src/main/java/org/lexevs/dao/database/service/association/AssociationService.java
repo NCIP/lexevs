@@ -6,7 +6,7 @@ import org.lexevs.dao.database.service.DatabaseService;
 
 public interface AssociationService extends DatabaseService {
 	
-	public String insertRelation(String codingSchemeUri, String version, Relations relation);
+	public void insertRelation(String codingSchemeUri, String version, Relations relation);
 	
 	public void insertAssociationSource(String codingSchemeUri, 
 			String version, 

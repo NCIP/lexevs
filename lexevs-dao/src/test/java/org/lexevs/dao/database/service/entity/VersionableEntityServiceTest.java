@@ -23,13 +23,6 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 	
 	@Test
 	public void insertEntity() throws Exception{
-		RegistryEntry entry = new RegistryEntry();
-		entry.setResourceUri("uri");
-		entry.setResourceVersion("v1");
-		entry.setDbSchemaVersion("2.0");
-
-		registry.addNewItem(entry);
-
 
 		CodingScheme scheme = new CodingScheme();
 		scheme.setApproxNumConcepts(111l);
@@ -51,12 +44,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 	
 	@Test
 	public void insertBatchEntity() throws Exception{
-		RegistryEntry entry = new RegistryEntry();
-		entry.setResourceUri("uri");
-		entry.setResourceVersion("v1");
-		entry.setDbSchemaVersion("2.0");
-		registry.addNewItem(entry);
-		
+
 		CodingScheme scheme = new CodingScheme();
 		scheme.setApproxNumConcepts(111l);
 		scheme.setCodingSchemeName("testName");

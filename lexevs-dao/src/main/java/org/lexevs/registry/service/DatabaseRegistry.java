@@ -36,8 +36,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	public void addNewItem(RegistryEntry entry)
 			throws Exception {
 		
-		registryDao.insertRegistryEntry(entry);
-		
+		registryDao.insertRegistryEntry(entry);	
 	}
 
 	@Transactional
@@ -80,6 +79,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 		return null;
 	}
 
+	@Transactional
 	public boolean containsCodingSchemeEntry(
 			AbsoluteCodingSchemeVersionReference codingScheme) {
 		try {
@@ -98,6 +98,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 		this.registryDao.updateRegistryEntry(entry);
 	}
 
+	@Transactional
 	public RegistryEntry getCodingSchemeEntry(
 			AbsoluteCodingSchemeVersionReference codingScheme)
 			throws LBParameterException {
@@ -111,6 +112,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 		return null;
 	}
 
+	@Transactional
 	public void removeEntry(RegistryEntry entry) throws LBParameterException {
 		registryDao.deleteRegistryEntry(entry);	
 	}

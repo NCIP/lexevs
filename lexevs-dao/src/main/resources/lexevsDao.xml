@@ -170,8 +170,10 @@
      	<property name="bean" ref="resourceManager"/>
      </bean>
     
-     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
-   		<property name="dataSource" ref="dataSource"/>  
+     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">  
+   		<property name="sessionFactory">
+    		<ref local="registrySessionFactory"/>
+ 		 </property>
 	</bean>
 	
 	<bean id="defaultPrefixResolver" class="org.lexevs.dao.database.prefix.DefaultPrefixResolver">
@@ -336,7 +338,7 @@
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
-		<property name="registry" ref="databaseRegistry"/>
+		<property name="registry" ref="registry"/>
 		<property name="myClassLoader" ref="myClassLoader"/>
 		<property name="databaseServiceManager" ref="databaseServiceManager"/>
 		<property name="entityIndexService" ref="luceneEntityIndexService"/>
@@ -368,7 +370,8 @@
 		<property name="dataSource" ref="dataSource"/> 
 	</bean>
 	
-	<bean id="lexEvsServiceLocator" class="org.lexevs.locator.LexEvsServiceLocator">
+	<bean id="lexEvsServiceLocator" 
+		class="org.lexevs.locator.LexEvsServiceLocator">
 		<property name="resourceManager" ref="resourceManager"/>
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
 		<property name="databaseServiceManager" ref="databaseServiceManager"/>
@@ -383,7 +386,6 @@
 	
 	<bean id="codingSchemeRegisteringListener" 
 		class="org.lexevs.dao.database.service.listener.CodingSchemeRegisteringListener">
-<!--		<property name="systemResourceService" ref="delegatingResourceManagingService"/>-->
 	</bean>
 	
 	<bean id="indexInterface" class="org.lexevs.dao.index.connection.IndexInterface">

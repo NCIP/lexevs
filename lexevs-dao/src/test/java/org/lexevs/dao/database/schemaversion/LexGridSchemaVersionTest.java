@@ -1,11 +1,12 @@
 package org.lexevs.dao.database.schemaversion;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.lexevs.dao.test.LexEvsDaoTestBase;
+import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 
-public class LexGridSchemaVersionTest extends LexEvsDaoTestBase {
+public class LexGridSchemaVersionTest extends LexEvsDbUnitTestBase {
 
 	@Test
 	public void testParseDatabaseVersion(){

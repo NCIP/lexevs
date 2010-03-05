@@ -3,6 +3,7 @@ package org.lexevs.system.service;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.system.utility.MyClassLoader;
 
 public interface SystemResourceService {
@@ -11,7 +12,9 @@ public interface SystemResourceService {
 
 	public String createNewTablesForLoad();
 	
-	public void addCodingSchemeResourceFromSystem(String uri, String version) throws LBParameterException;
+	public void addCodingSchemeResourceToSystem(String uri, String version) throws LBParameterException;
+	
+	public void addCodingSchemeResourceToSystem(CodingScheme codingScheme) throws LBParameterException;
 	
 	public void removeCodingSchemeResourceFromSystem(String uri, String version) throws LBParameterException;
 	

@@ -14,7 +14,6 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	private Registry databaseRegistry;
 	private Registry xmlRegistry;
 
-
 	public void addNewItem(RegistryEntry entry) throws Exception {
 	    databaseRegistry.addNewItem(entry);
 	}

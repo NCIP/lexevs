@@ -8,9 +8,10 @@ import org.lexevs.system.ResourceManager;
 import org.lexevs.system.service.SystemResourceService;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class LexEvsServiceLocator {
+public class LexEvsServiceLocator implements ApplicationContextAware {
 	
 	private static LexEvsServiceLocator serviceLocator;
 	

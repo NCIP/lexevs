@@ -61,7 +61,6 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			this.getDaoManager().getCurrentEntityDao().insertBatchEntities(codingSchemeId, 
 					Arrays.asList(scheme.getEntities().getEntity()));
 		}
-		
 		this.fireCodingSchemeInsertEvent(scheme);
 	}
 	

@@ -3,10 +3,8 @@ package org.lexevs.dao.test;
 import static org.junit.Assert.assertNotNull;
 
 import org.LexGrid.commonTypes.Text;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -14,9 +12,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations={"/lexevsDao-test.xml"})
 public class LexEvsDaoTestBase {
 
-	@Before
-	public void reload(){}
-	
 	@Test
 	public void testConfig(){
 		assertNotNull(this);
