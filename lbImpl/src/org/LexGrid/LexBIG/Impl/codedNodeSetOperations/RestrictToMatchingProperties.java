@@ -35,6 +35,7 @@ import org.LexGrid.LexBIG.Impl.dataAccess.IndexQueryParserFactory;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
@@ -42,9 +43,11 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.dao.database.constants.classifier.mapping.StringToClassMappingClassifier;
+import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.exceptions.InternalException;
-import org.lexevs.system.ResourceManager;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.indexer.lucene.query.SerializableRegexQuery;
 
@@ -64,6 +67,12 @@ public class RestrictToMatchingProperties extends RestrictToProperties implement
     private BooleanQuery textQuery_;
     private List<Term> queryTerms_ = new ArrayList<Term>();
     private String language_;
+    private CodingSchemeService codingSchemeService = 
+        LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
+    private SystemResourceService systemResourceService =
+        LexEvsServiceLocator.getInstance().getSystemResourceService();
+    
+    private StringToClassMappingClassifier stringToClassMappingClassifier = new StringToClassMappingClassifier();
 
     @LgClientSideSafe
     public String getLanguage() {
@@ -86,9 +95,8 @@ public class RestrictToMatchingProperties extends RestrictToProperties implement
             throws LBInvocationException, LBParameterException {
         super(sourceList, contextList, qualifierList, internalCodeSystemName, internalVersionString);
         try {
-            SQLInterface si = ResourceManager.instance().getSQLInterface(internalCodeSystemName, internalVersionString);
-
-            String conceptCodeField = si.getSQLTableConstants().entityCodeOrId;
+           
+            String conceptCodeField = SQLTableConstants.TBLCOL_ENTITYCODE;
             String conceptCodeLCField = conceptCodeField + "LC";
             String conceptCodeTokenizedField = conceptCodeField + "Tokenized";
 
@@ -153,8 +161,13 @@ public class RestrictToMatchingProperties extends RestrictToProperties implement
                                         + SQLTableConstants.TBLCOL_CONCEPTSTATUS
                                         + "' is no longer supported in this restriction - please use 'RestrictToStatus' instead");
                     } else {
+                        String uri = systemResourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
                         // this will throw the necessary exceptions
-                        SQLImplementedMethods.validateProperty(internalCodeSystemName, internalVersionString, item);
+                        if(!codingSchemeService.
+                            validatedSupportedAttribute(uri, internalVersionString, item, SupportedProperty.class)) {
+                            throw new LBParameterException("Property: " + item + " is not a Supported Property.");
+                        }
+                        
                         propertyList_.addEntry(item);
                     }
                 }
@@ -177,14 +190,15 @@ public class RestrictToMatchingProperties extends RestrictToProperties implement
 
             if (language != null && language.length() > 0) {
                 // this validated that language (throws exceptions as necessary)
-                SQLImplementedMethods.validateLanguage(internalCodeSystemName, internalVersionString, language);
+                String uri = systemResourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
+                if(!codingSchemeService.
+                        validatedSupportedAttribute(uri, internalVersionString, language, SupportedProperty.class)) {
+                        throw new LBParameterException(language = " is not a Supported Property.");
+                    }
                 language_ = language;
             }
         } catch (LBParameterException e) {
             throw e;
-        } catch (InternalException e) {
-            throw new LBInvocationException("There was an unexpected error while validating the parameters.", e
-                    .getLogId());
         }
     }
 }
