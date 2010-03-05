@@ -322,7 +322,7 @@
 
 	<beans:bean id="umlsEntityListProcessor"
 		class="org.lexgrid.loader.rrf.processor.MrconsoGroupEntityProcessor">
-		<beans:property name="propertyResolver" ref="umlsPresentationPropertyResolver"/>
+		<beans:property name="presentationResolver" ref="umlsPresentationPropertyResolver"/>
 		<beans:property name="sortingListProcessor">
 			<beans:bean
 				class="org.lexgrid.loader.processor.SortingListProcessor">
@@ -332,6 +332,16 @@
 				<beans:property name="delegate"
 					ref="umlsEntityProcessor" />
 			</beans:bean>
+		</beans:property>
+		<beans:property name="filteredPropertyResolvers">
+			<beans:map>
+				<beans:entry>
+					<beans:key>
+						<beans:bean class="org.lexgrid.loader.umls.processor.support.filter.UniqueCuiListFilter"/>	
+					</beans:key>
+					<beans:ref bean="umlsCuiPropertyResolver"/>
+				</beans:entry>
+			</beans:map>
 		</beans:property>
 	</beans:bean>
 
