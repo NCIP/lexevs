@@ -136,8 +136,8 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 	protected boolean hasAlias(CodingSchemeAliasHolder holder, String alias){
 		return holder.getCodingSchemeName().equals(alias) ||
 			holder.getCodingSchemeUri().equals(alias) ||
-			holder.getFormalName().equals(alias) ||
-			holder.getLocalNames().contains(alias);	
+			( holder.getFormalName() != null && holder.getFormalName().equals(alias) ) ||
+			( holder.getLocalNames() != null && holder.getLocalNames().contains(alias) );	
 	}
 	
 	protected List<String> getUriForCodingSchemeName(String codingSchemeName){

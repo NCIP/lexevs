@@ -339,7 +339,7 @@
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
-		<property name="registry" ref="registry"/>
+		<property name="registry" ref="databaseRegistry"/>
 		<property name="myClassLoader" ref="myClassLoader"/>
 		<property name="databaseServiceManager" ref="databaseServiceManager"/>
 		<property name="entityIndexService" ref="luceneEntityIndexService"/>

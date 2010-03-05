@@ -39,7 +39,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 	public void testGetInternalVersionStringForTagError() throws LBParameterException{
 		assertEquals(
 				"expectedVersion", 
-				lexEvsResourceManagingService.getInternalVersionStringForTag("csName", "TEST_TAG"));
+				lexEvsResourceManagingService.getInternalVersionStringForTag("csNameINVALID", "TEST_TAG"));
 	}
 	
 	@Test(expected=LBParameterException.class)
@@ -64,7 +64,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		expect(registryMock.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)).andReturn(entries);
 		replay(registryMock);
 		
-		LexEvsResourceManagingService service = lexEvsResourceManagingService;
+		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
 		DatabaseServiceManager manager = new DatabaseServiceManager();
 		
 		CodingSchemeService csService = createMock(CodingSchemeService.class);
