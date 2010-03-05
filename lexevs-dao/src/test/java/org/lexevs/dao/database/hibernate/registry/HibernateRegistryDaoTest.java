@@ -3,14 +3,12 @@ package org.lexevs.dao.database.hibernate.registry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Date;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.model.RegistryEntry;
@@ -31,7 +29,6 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 	
 	
 	@Test
-	@Transactional
 	public void testInsertCodingSchemeEntry(){
 		final Timestamp activationDate = new Timestamp(1l);
 		final Timestamp deActivationDate = new Timestamp(2l);
@@ -54,11 +51,8 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 		entry.setResourceVersion("v1");
 		entry.setStatus(CodingSchemeVersionStatus.ACTIVE.toString());
 		entry.setTag("tag");
-		
-		
+			
 		hibernateRegistryDao.insertRegistryEntry(entry);
-		
-		hibernateRegistryDao.getHibernateTemplate().flush();
 		
 		JdbcTemplate template = new JdbcTemplate(dataSource);
 		
@@ -102,8 +96,6 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 		
 		hibernateRegistryDao.insertRegistryEntry(entry);
 		
-		hibernateRegistryDao.getHibernateTemplate().flush();
-		
 		RegistryEntry foundEntry = hibernateRegistryDao.getRegistryEntryForUriAndVersion("uri", "version");
 		
 		assertNotNull(foundEntry);
@@ -122,12 +114,8 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 
 		hibernateRegistryDao.insertRegistryEntry(entry);
 		
-		hibernateRegistryDao.getHibernateTemplate().flush();
-		
 		entry.setTag("new tag");
 		hibernateRegistryDao.updateRegistryEntry(entry);
-		
-		hibernateRegistryDao.getHibernateTemplate().flush();
 		
 		RegistryEntry foundEntry = hibernateRegistryDao.getRegistryEntryForUriAndVersion("uri2", "version");
 		
