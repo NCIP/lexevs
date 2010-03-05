@@ -56,7 +56,7 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 	
 	public UmlsBatchLoaderImpl(){
 		super();
-		super.setDoIndexing(false);
+		super.setDoIndexing(true);
 		super.setDoRegister(false);
 		super.setDoComputeTransitiveClosure(false);
 	}
