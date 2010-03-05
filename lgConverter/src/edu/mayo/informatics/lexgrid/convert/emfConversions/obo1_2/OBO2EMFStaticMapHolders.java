@@ -22,16 +22,13 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.LexGrid.emf.codingSchemes.CodingScheme;
-import org.LexGrid.emf.codingSchemes.CodingschemesFactory;
-import org.LexGrid.emf.codingSchemes.impl.CodingschemesFactoryImpl;
-import org.LexGrid.emf.naming.Mappings;
-import org.LexGrid.emf.naming.NamingFactory;
-import org.LexGrid.emf.naming.SupportedCodingScheme;
-import org.LexGrid.emf.naming.SupportedDataType;
-import org.LexGrid.emf.naming.SupportedLanguage;
-import org.LexGrid.emf.naming.impl.NamingFactoryImpl;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.messaging.LgMessageDirectorIF;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedDataType;
+import org.LexGrid.naming.SupportedLanguage;
 
 import edu.mayo.informatics.resourcereader.obo.OBOConstants;
 import edu.mayo.informatics.resourcereader.obo.OBOContents;
@@ -40,14 +37,10 @@ import edu.mayo.informatics.resourcereader.obo.OBOResourceReader;
 import edu.mayo.informatics.resourcereader.obo.OBOTerms;
 
 public class OBO2EMFStaticMapHolders {
-    private static Hashtable properties = new Hashtable();
-    private static Hashtable association = new Hashtable();
-    private static Hashtable conStatus = new Hashtable();
-    private static Hashtable sources = new Hashtable();
-    private static Hashtable repForms = new Hashtable();
+    private static Hashtable<String, String> properties = new Hashtable<String, String> ();
+    private static Hashtable<String, String> association = new Hashtable<String, String>();
+    private static Hashtable<String, String> sources = new Hashtable<String, String> ();
 
-    private NamingFactory nameFactory = new NamingFactoryImpl();
-    private CodingschemesFactory csFactory = new CodingschemesFactoryImpl();
 
     private LgMessageDirectorIF messages_;
 
@@ -58,9 +51,9 @@ public class OBO2EMFStaticMapHolders {
         messages_ = messages;
     }
 
-    private void prepareSupportedLanguages(List suppLang) {
+    private void prepareSupportedLanguages(List<SupportedLanguage> suppLang) {
         try {
-            SupportedLanguage lang = nameFactory.createSupportedLanguage();
+            SupportedLanguage lang = new SupportedLanguage();
             lang.setLocalId(OBO2EMFConstants.LANG_ENGLISH);
             lang.setUri(OBO2EMFConstants.LANG_ENGLISH_URN);
             suppLang.add(lang);
@@ -71,8 +64,8 @@ public class OBO2EMFStaticMapHolders {
 
     private void prepareSupportedCodingScheme(CodingScheme csclass) {
         try {
-            List suppCodingScheme = csclass.getMappings().getSupportedCodingScheme();
-            SupportedCodingScheme scs = nameFactory.createSupportedCodingScheme();
+            List<SupportedCodingScheme> suppCodingScheme = csclass.getMappings().getSupportedCodingSchemeAsReference();
+            SupportedCodingScheme scs = new SupportedCodingScheme();
             scs.setLocalId(csclass.getCodingSchemeName());
             scs.setUri(csclass.getCodingSchemeURI());
             scs.setIsImported(true);
@@ -82,8 +75,8 @@ public class OBO2EMFStaticMapHolders {
         }
     }
 
-    private void prepareSupportedFormats(List supportedFormats) {
-        SupportedDataType fmt = nameFactory.createSupportedDataType();
+    private void prepareSupportedFormats(List<SupportedDataType> supportedFormats) {
+        SupportedDataType fmt = new SupportedDataType();
         fmt.setLocalId(OBO2EMFConstants.PLAIN_FORMAT);
         fmt.setUri(OBO2EMFConstants.PLAIN_FORMAT_URN);
         supportedFormats.add(fmt);
@@ -99,8 +92,8 @@ public class OBO2EMFStaticMapHolders {
                 return csclass;
             }
 
-            csclass = csFactory.createCodingScheme();
-            Mappings mappings = nameFactory.createMappings();
+            csclass = new CodingScheme();
+            Mappings mappings = new Mappings();
             csclass.setMappings(mappings);
 
             // String csName = inputFileNameWithoutExt;
@@ -108,7 +101,7 @@ public class OBO2EMFStaticMapHolders {
             OBOHeader oboHeader = oboRdr.getResourceHeader(false);
             OBOContents oboContents = oboRdr.getContents(false, false);
             OBOTerms terms = oboContents.getOBOTerms();
-            TreeSet nameSpaceSet = terms.getNameSpaceSet();
+            TreeSet<String> nameSpaceSet = terms.getNameSpaceSet();
             if (OBO2EMFUtils.isNull(csName) && nameSpaceSet.size() == 1)
                 csName = nameSpaceSet.first().toString();
 
@@ -137,16 +130,18 @@ public class OBO2EMFStaticMapHolders {
             else
                 csclass.setRepresentsVersion(OBOConstants.UNASSIGNED_LABEL);
 
-            csclass.getLocalName().add(csName);
-            csclass.getLocalName().add(OBO2EMFConstants.LOCAL_FULL_PREFIX + csName); // Pradip
-            csclass.setApproxNumConcepts((int) terms.getMembersCount());
+            csclass.getLocalNameAsReference().add(csName);
+            csclass.getLocalNameAsReference().add(OBO2EMFConstants.LOCAL_FULL_PREFIX + csName); // Pradip
+            csclass.setApproxNumConcepts(terms.getMembersCount());
             // csclass.setIsNative(new Boolean(true));
-            csclass.setEntityDescription(oboHeader.getRemarks());
+            EntityDescription ed= new EntityDescription();
+            ed.setContent(oboHeader.getRemarks());
+            csclass.setEntityDescription(ed);
 
-            List supportedLanguages = csclass.getMappings().getSupportedLanguage();
+            List<SupportedLanguage> supportedLanguages = csclass.getMappings().getSupportedLanguageAsReference();
             prepareSupportedLanguages(supportedLanguages);
 
-            List supportedFormats = csclass.getMappings().getSupportedDataType();
+            List<SupportedDataType> supportedFormats = csclass.getMappings().getSupportedDataTypeAsReference();
             prepareSupportedFormats(supportedFormats);
 
             prepareSupportedCodingScheme(csclass);
@@ -157,7 +152,7 @@ public class OBO2EMFStaticMapHolders {
         return csclass;
     }
 
-    public static Hashtable getFixedProperties() {
+    public static Hashtable<String, String>  getFixedProperties() {
         properties.clear();
         properties.put(OBO2EMFConstants.PROPERTY_COMMENT, OBO2EMFConstants.PROPERTY_COMMENT);
         properties.put(OBO2EMFConstants.PROPERTY_DEFINITION, OBO2EMFConstants.PROPERTY_DEFINITION);
@@ -169,22 +164,15 @@ public class OBO2EMFStaticMapHolders {
         return properties;
     }
 
-    public static Hashtable getFixedConceptStatus() {
-        conStatus.clear();
-        return conStatus;
-    }
 
-    public static Hashtable getFixedSources() {
+    public static Hashtable<String, String> getFixedSources() {
         sources.clear();
         return sources;
     }
 
-    public static Hashtable getFixedRepresentationalForms() {
-        repForms.clear();
-        return repForms;
-    }
 
-    public static Hashtable getFixedAssociations() {
+
+    public static Hashtable<String, String> getFixedAssociations() {
         association.clear();
         // association.put(OBO2EMFConstants.ASSOCIATION_HASSUBTYPE,
         // OBO2EMFConstants.ASSOCIATION_HASSUBTYPE);

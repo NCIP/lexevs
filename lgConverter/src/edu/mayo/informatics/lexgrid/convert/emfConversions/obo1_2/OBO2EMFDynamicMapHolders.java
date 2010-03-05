@@ -29,38 +29,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.LexGrid.emf.codingSchemes.CodingScheme;
-import org.LexGrid.emf.commonTypes.CommontypesFactory;
-import org.LexGrid.emf.commonTypes.Property;
-import org.LexGrid.emf.commonTypes.Source;
-import org.LexGrid.emf.commonTypes.Text;
-import org.LexGrid.emf.commonTypes.impl.CommontypesFactoryImpl;
-import org.LexGrid.emf.concepts.Comment;
-import org.LexGrid.emf.concepts.Concept;
-import org.LexGrid.emf.concepts.ConceptsFactory;
-import org.LexGrid.emf.concepts.Definition;
-import org.LexGrid.emf.concepts.Entities;
-import org.LexGrid.emf.concepts.Presentation;
-import org.LexGrid.emf.concepts.impl.ConceptsFactoryImpl;
-import org.LexGrid.emf.naming.NamingFactory;
-import org.LexGrid.emf.naming.SupportedAssociation;
-import org.LexGrid.emf.naming.SupportedAssociationQualifier;
-import org.LexGrid.emf.naming.SupportedHierarchy;
-import org.LexGrid.emf.naming.SupportedProperty;
-import org.LexGrid.emf.naming.SupportedPropertyLink;
-import org.LexGrid.emf.naming.SupportedRepresentationalForm;
-import org.LexGrid.emf.naming.SupportedSource;
-import org.LexGrid.emf.naming.SupportedStatus;
-import org.LexGrid.emf.naming.impl.NamingFactoryImpl;
-import org.LexGrid.emf.relations.Association;
-import org.LexGrid.emf.relations.AssociationQualification;
-import org.LexGrid.emf.relations.AssociationSource;
-import org.LexGrid.emf.relations.AssociationTarget;
-import org.LexGrid.emf.relations.Relations;
-import org.LexGrid.emf.relations.RelationsFactory;
-import org.LexGrid.emf.relations.impl.RelationsFactoryImpl;
-import org.LexGrid.emf.relations.util.RelationsUtil;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.Text;
+import org.LexGrid.concepts.Comment;
+import org.LexGrid.concepts.Concept;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Entity;
+import org.LexGrid.concepts.Presentation;
+import org.LexGrid.custom.concepts.EntityFactory;
+import org.LexGrid.custom.relations.RelationsUtil;
 import org.LexGrid.messaging.LgMessageDirectorIF;
+import org.LexGrid.naming.SupportedAssociation;
+import org.LexGrid.naming.SupportedAssociationQualifier;
+import org.LexGrid.naming.SupportedHierarchy;
+import org.LexGrid.naming.SupportedProperty;
+import org.LexGrid.naming.SupportedSource;
+import org.LexGrid.relations.AssociationPredicate;
+import org.LexGrid.relations.AssociationQualification;
+import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.AssociationTarget;
+import org.LexGrid.relations.Relations;
 import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
@@ -88,30 +80,19 @@ import edu.mayo.informatics.resourcereader.obo.OBOTerms;
  */
 public class OBO2EMFDynamicMapHolders {
     private LgMessageDirectorIF messages_;
-
-    private Hashtable properties_ = null;
-    private Hashtable propertyLinks_ = null;
-    private Hashtable conceptStatus_ = null;
-    private Hashtable sources_ = null;
-    private Hashtable representationalForms_ = null;
-    private Hashtable supportedAssociationHashtable = null;
-
-    private Hashtable associationHash_ = new Hashtable();
-
-    private RelationsFactory relationsFactory = new RelationsFactoryImpl();
-    private ConceptsFactory conceptFactory = new ConceptsFactoryImpl();
-    private NamingFactory nameFactory = new NamingFactoryImpl();
-    private CommontypesFactory commontypesFactory = new CommontypesFactoryImpl();
-
-    private List allAssociations = null;
+    private Hashtable<String, String> properties_ = null;
+    private Hashtable<String, String> sources_ = null;
+    private Hashtable<String, String> supportedAssociationHashtable = null;
+    private Hashtable<String, AssociationPredicate> associationHash_ = new Hashtable<String, AssociationPredicate>();
+    private List<AssociationPredicate> assocPredicateList = null;
 
     private Entities allConcepts_ = null;
-    private List codedEntriesList = null;
-    CodingScheme csclass_;
+    private List<Entity> codedEntriesList = null;
+    CodingScheme cs;
 
     private long propertyCounter = 0;
     private long anonymousCounter = 0;
-    private Map<String, AssociationSource> assocSrcQName2emfAI = null; // association+source
+    private Map<String, AssociationSource> assocName_SrcCodeStr2assocSrcMap = null; // association+source
 
     // name
     // to
@@ -124,15 +105,11 @@ public class OBO2EMFDynamicMapHolders {
 
     public boolean prepareCSClass(OBOResourceReader oboReader, CodingScheme csclass) {
         boolean success = true;
-        csclass_ = csclass;
+        this.cs = csclass;
         try {
             properties_ = OBO2EMFStaticMapHolders.getFixedProperties();
-            assocSrcQName2emfAI = new HashMap<String, AssociationSource>();
-            if (propertyLinks_ == null)
-                propertyLinks_ = new Hashtable();
+            assocName_SrcCodeStr2assocSrcMap = new HashMap<String, AssociationSource>();
 
-            conceptStatus_ = OBO2EMFStaticMapHolders.getFixedConceptStatus();
-            representationalForms_ = OBO2EMFStaticMapHolders.getFixedRepresentationalForms();
             sources_ = OBO2EMFStaticMapHolders.getFixedSources();
             supportedAssociationHashtable = OBO2EMFStaticMapHolders.getFixedAssociations();
             OBOContents contents = oboReader.getContents(false, false);
@@ -141,32 +118,29 @@ public class OBO2EMFDynamicMapHolders {
             allConcepts_ = csclass.getEntities();
 
             if (allConcepts_ == null) {
-                allConcepts_ = conceptFactory.createEntities();
+                allConcepts_ = new Entities();
                 csclass.setEntities(allConcepts_);
             }
 
-            codedEntriesList = allConcepts_.getEntity();
+            codedEntriesList = allConcepts_.getEntityAsReference();
 
             // Creating the relation instance
-            List relationsList;
-            relationsList = csclass.getRelations();
+            List<Relations> relationsList = csclass.getRelationsAsReference();
 
-            Relations allRelations = relationsFactory.createRelations();
+            Relations allRelations = new Relations();
             allRelations.setContainerName(SQLTableConstants.TBLCOLVAL_DC_RELATIONS);
-            allRelations.setIsNative(new Boolean(true));
 
             relationsList.add(allRelations);
-            allAssociations = allRelations.getAssociation();
+            assocPredicateList = allRelations.getAssociationPredicateAsReference();
 
             OBOTerms terms = contents.getOBOTerms();
-            Collection termList = terms.getAllMembers();
+            Collection<OBOTerm> termList = terms.getAllMembers();
 
             if ((termList != null) && (!termList.isEmpty())) {
                 try {
                     long busyCtr = 0;
                     SimpleMemUsageReporter.snapshot();
-                    for (Iterator items = termList.iterator(); items.hasNext();) {
-                        OBOTerm oboTerm = (OBOTerm) items.next();
+                    for (OBOTerm oboTerm : termList) {
                         storeConceptAndRelations(oboReader, oboTerm, csclass);
                         if ((++busyCtr) % 5000 == 0) {
                             messages_.busy();
@@ -199,7 +173,7 @@ public class OBO2EMFDynamicMapHolders {
                     && ((!OBO2EMFUtils.isNull(oboTerm.getId())) || (!OBO2EMFUtils.isNull(oboTerm.getName())))) {
                 propertyCounter = 0;
 
-                Concept concept = conceptFactory.createConcept();
+                Concept concept = EntityFactory.createConcept();
 
                 if (!OBO2EMFUtils.isNull(oboTerm.getId()))
                     concept.setEntityCode(oboTerm.getId());
@@ -213,41 +187,42 @@ public class OBO2EMFDynamicMapHolders {
                 else
                     termDesc = oboTerm.getId();
 
-                concept.setEntityDescription(termDesc);
+                EntityDescription ed = new EntityDescription();
+                ed.setContent(termDesc);
+                concept.setEntityDescription(ed);
 
                 if (oboTerm.isObsolete()) {
                     concept.setIsActive(new Boolean(false));
                 }
-
-                Presentation tp = conceptFactory.createPresentation();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue(termDesc);
+                Presentation tp = new Presentation();
+                Text txt = new Text();
+                txt.setContent(termDesc);
                 tp.setValue(txt);
                 tp.setIsPreferred(new Boolean(true));
                 tp.setPropertyName(OBO2EMFConstants.PROPERTY_TEXTPRESENTATION);
 
                 String preferredPresetationID = OBO2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter);
                 tp.setPropertyId(preferredPresetationID);
-                concept.getPresentation().add(tp);
+                concept.getPresentationAsReference().add(tp);
 
                 if (!OBO2EMFUtils.isNull(oboTerm.getComment())) {
-                    Comment comment = conceptFactory.createComment();
-                    txt = CommontypesFactory.eINSTANCE.createText();
-                    txt.setValue((String) OBO2EMFUtils.removeInvalidXMLCharacters(oboTerm.getComment(), null));
+                    Comment comment = new Comment();
+                    txt = new Text();
+                    txt.setContent((String) OBO2EMFUtils.removeInvalidXMLCharacters(oboTerm.getComment(), null));
                     comment.setValue(txt);
                     comment.setPropertyName(OBO2EMFConstants.PROPERTY_COMMENT);
                     comment.setPropertyId(OBO2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
-                    concept.getComment().add(comment);
+                    concept.getCommentAsReference().add(comment);
                 }
 
                 if (!OBO2EMFUtils.isNull(oboTerm.getDefinition())) {
-                    Definition defn = conceptFactory.createDefinition();
-                    txt = CommontypesFactory.eINSTANCE.createText();
-                    txt.setValue((String) OBO2EMFUtils.removeInvalidXMLCharacters(oboTerm.getDefinition(), null));
+                    Definition defn = new Definition();
+                    txt = new Text();
+                    txt.setContent((String) OBO2EMFUtils.removeInvalidXMLCharacters(oboTerm.getDefinition(), null));
                     defn.setValue(txt);
                     defn.setPropertyName(OBO2EMFConstants.PROPERTY_DEFINITION);
                     defn.setPropertyId(OBO2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
-                    concept.getDefinition().add(defn);
+                    concept.getDefinitionAsReference().add(defn);
 
                     OBOAbbreviations abbreviations = contents.getOBOAbbreviations();
                     addOBODbxrefAsSource(defn, oboTerm.getDefinitionSources(), abbreviations);
@@ -255,36 +230,31 @@ public class OBO2EMFDynamicMapHolders {
                 }
 
                 addPropertyAttribute(oboTerm.getSubset(), concept, OBO2EMFConstants.PROPERTY_SUBSET);
-                Vector dbxref_src_vector = OBODbxref.getSourceAndSubRefAsVector(oboTerm.getDbXrefs());
+                Vector<String> dbxref_src_vector = OBODbxref.getSourceAndSubRefAsVector(oboTerm.getDbXrefs());
                 addPropertyAttribute(dbxref_src_vector, concept, "xref");
                 // Add Synonyms as presentations
-                Vector synonyms = oboTerm.getSynonyms();
+                Vector<OBOSynonym> synonyms = oboTerm.getSynonyms();
 
                 if ((synonyms != null) && (!synonyms.isEmpty())) {
-                    for (Iterator sItr = synonyms.iterator(); sItr.hasNext();) {
-                        Object synObj = sItr.next();
+                    for (OBOSynonym synonym : synonyms) {
+                        Presentation ip = new Presentation();
+                        txt = new Text();
+                        txt.setContent((String) synonym.getText());
+                        ip.setValue(txt);
+                        ip.setPropertyName(OBO2EMFConstants.PROPERTY_SYNONYM);
+                        String synPresID = OBO2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter);
+                        ip.setPropertyId(synPresID);
+                        concept.getPresentationAsReference().add(ip);
 
-                        if (synObj instanceof OBOSynonym) {
-                            OBOSynonym synonym = (OBOSynonym) synObj;
-                            Presentation ip = conceptFactory.createPresentation();
-                            txt = CommontypesFactory.eINSTANCE.createText();
-                            txt.setValue((String) synonym.getText());
-                            ip.setValue(txt);
-                            ip.setPropertyName(OBO2EMFConstants.PROPERTY_SYNONYM);
-                            String synPresID = OBO2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter);
-                            ip.setPropertyId(synPresID);
-                            concept.getPresentation().add(ip);
+                        String scope = synonym.getScope();
+                        if (scope != null && scope.length() > 0)
+                            ip.setDegreeOfFidelity(scope);
 
-                            String scope = synonym.getScope();
-                            if (scope != null && scope.length() > 0)
-                                ip.setDegreeOfFidelity(scope);
+                        // Add source information
+                        Vector<OBODbxref> dbxref = OBODbxref.parse(synonym.getDbxref());
+                        OBOAbbreviations abbreviations = contents.getOBOAbbreviations();
+                        addOBODbxrefAsSource(ip, dbxref, abbreviations);
 
-                            // Add source information
-                            Vector<OBODbxref> dbxref = OBODbxref.parse(synonym.getDbxref());
-                            OBOAbbreviations abbreviations = contents.getOBOAbbreviations();
-                            addOBODbxrefAsSource(ip, dbxref, abbreviations);
-
-                        }
                     }
                 }
 
@@ -295,16 +265,16 @@ public class OBO2EMFDynamicMapHolders {
 
                         if (StringUtils.isNotBlank(altId)) {
 
-                            Property emfProp = CommontypesFactory.eINSTANCE.createProperty();
+                            Property emfProp = new Property();
                             emfProp.setPropertyName(OBO2EMFConstants.PROPERTY_ALTID);
                             String prop_id = OBO2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter);
                             emfProp.setPropertyId(prop_id);
 
-                            txt = CommontypesFactory.eINSTANCE.createText();
-                            txt.setValue(altId);
+                            txt = new Text();
+                            txt.setContent(altId);
                             emfProp.setValue(txt);
 
-                            concept.getProperty().add(emfProp);
+                            concept.getPropertyAsReference().add(emfProp);
 
                         }
                     }
@@ -313,7 +283,7 @@ public class OBO2EMFDynamicMapHolders {
                 String created_by = oboTerm.getCreated_by();
                 if (StringUtils.isNotBlank(created_by)) {
                     addPropertyAttribute(created_by, concept, OBO2EMFConstants.PROPERTY_CREATED_BY);
-                   
+
                 }
 
                 String creation_date = oboTerm.getCreation_date();
@@ -321,16 +291,14 @@ public class OBO2EMFDynamicMapHolders {
                     addPropertyAttribute(creation_date, concept, OBO2EMFConstants.PROPERTY_CREATION_DATE);
                 }
 
-                Hashtable relationships = oboTerm.getRelationships();
+                Hashtable<String, Vector<String>> relationships = oboTerm.getRelationships();
                 if (relationships != null) {
-                    for (Enumeration e = relationships.keys(); e.hasMoreElements();) {
-                        String relName = e.nextElement().toString();
+                    for (Enumeration<String> e = relationships.keys(); e.hasMoreElements();) {
+                        String relName = e.nextElement();
                         OBORelations relations = contents.getOBORelations();
                         OBORelation relation = relations.getMemberById(relName);
-                        Object targetObj = relationships.get(relName);
-                        Vector targets = null;
-                        if (targetObj != null && targetObj instanceof Vector) {
-                            targets = (Vector) targetObj;
+                        Vector<String> targets = relationships.get(relName);
+                        if (targets != null) {
                             addAssociationAttribute(concept, relation, targets);
                         }
                     }
@@ -362,10 +330,10 @@ public class OBO2EMFDynamicMapHolders {
                             srcVal = abb.getAbbreviation();
                     }
 
-                    Source s = CommontypesFactory.eINSTANCE.createSource();
-                    s.setValue(srcVal);
+                    Source s = new Source();
+                    s.setContent(srcVal);
                     s.setSubRef(dbxref.getSubrefAndDescription());
-                    prop.getSource().add(s);
+                    prop.getSourceAsReference().add(s);
 
                     if (abb == null) {
                         abb = new OBOAbbreviation();
@@ -391,34 +359,29 @@ public class OBO2EMFDynamicMapHolders {
         if (OBO2EMFUtils.isNull(value))
             return;
 
-        Collection values = new ArrayList();
+        Collection<String> values = new ArrayList<String>();
         values.add(value);
         addPropertyAttribute(values, concept, propertyName);
     }
 
-    private String addPropertyAttribute(Collection values, Concept concept, String propertyName) {
+    private String addPropertyAttribute(Collection<String> values, Concept concept, String propertyName) {
         String propertyID = null;
         try {
             if ((values != null) && (!values.isEmpty())) {
-                String propertyNMT = OBO2EMFUtils.toNMToken(propertyName);
-
-                if (!properties_.containsKey(propertyNMT)) {
-                    properties_.put(propertyNMT, propertyNMT);
+                if (!properties_.contains(propertyName)) {
+                    properties_.put(propertyName, propertyName);
                 }
 
-                Iterator itr = values.iterator();
-                while (itr.hasNext()) {
-                    String value = (String) itr.next();
-
+                for (String value : values) {
                     if (!OBO2EMFUtils.isNull(value)) {
-                        Property pc = CommontypesFactory.eINSTANCE.createProperty();
-                        pc.setPropertyName(propertyNMT);
+                        Property pc = new Property();
+                        pc.setPropertyName(propertyName);
                         propertyID = OBO2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter);
                         pc.setPropertyId(propertyID);
-                        Text txt = CommontypesFactory.eINSTANCE.createText();
-                        txt.setValue((String) value);
+                        Text txt = new Text();
+                        txt.setContent((String) value);
                         pc.setValue(txt);
-                        concept.getProperty().add(pc);
+                        concept.getPropertyAsReference().add(pc);
                     }
                 }
             }
@@ -429,25 +392,25 @@ public class OBO2EMFDynamicMapHolders {
         return propertyID;
     }
 
-    private boolean processSpecialAssociationLikeOWL(Concept concept, String relation_name, Collection targets) {
+    private boolean processSpecialAssociationLikeOWL(Concept concept, String relation_name, Collection<String> targets) {
         boolean processed = false;
-        List special_relationNames = Arrays.asList(OBO2EMFConstants.BUILT_IN_SPECIAL_ASSOCIATIONS);
+        List<String> special_relationNames = Arrays.asList(OBO2EMFConstants.BUILT_IN_SPECIAL_ASSOCIATIONS);
         if (special_relationNames.contains(relation_name)) {
             processed = true;
 
             Concept anon_eq = createAnonymousConcept("(" + relation_name + ")");
             addAssociation(concept, "equivalentClass", null, null, null, anon_eq);
 
-            Iterator itr = targets.iterator();
+            Iterator<String> itr = targets.iterator();
             String target1 = "";
             String target2 = "";
             if (itr.hasNext()) {
-                target1 = itr.next().toString();
+                target1 = itr.next();
                 processAnonListTarget(anon_eq, target1);
 
             }
             if (itr.hasNext()) {
-                target2 = itr.next().toString();
+                target2 = itr.next();
                 processAnonListTarget(anon_eq, target2);
             }
 
@@ -471,22 +434,24 @@ public class OBO2EMFDynamicMapHolders {
     }
 
     private Concept createAnonymousConcept(String entityDescription) {
-        Concept concept = conceptFactory.createConcept();
+        Concept concept = EntityFactory.createConcept();
         String conceptCode = OBO2EMFConstants.ANONYMOUS_TEXTPRESENTATION + (++anonymousCounter);
         if (entityDescription == null) {
             entityDescription = conceptCode;
         }
-        Presentation tp = conceptFactory.createPresentation();
-        Text txt = CommontypesFactory.eINSTANCE.createText();
-        txt.setValue((String) entityDescription);
+        Presentation tp = new Presentation();
+        Text txt = new Text();
+        txt.setContent(entityDescription);
         tp.setValue(txt);
         tp.setIsPreferred(new Boolean(true));
         tp.setPropertyName(OBO2EMFConstants.PROPERTY_TEXTPRESENTATION);
         concept.setEntityCode(conceptCode);
-        concept.setEntityDescription(entityDescription);
+        EntityDescription ed = new EntityDescription();
+        ed.setContent(entityDescription);
+        concept.setEntityDescription(ed);
         String preferredPresetationID = OBO2EMFConstants.PROPERTY_ID_PREFIX + anonymousCounter;
         tp.setPropertyId(preferredPresetationID);
-        concept.getPresentation().add(tp);
+        concept.getPresentationAsReference().add(tp);
         concept.setIsAnonymous(new Boolean(true));
         codedEntriesList.add(concept);
         return concept;
@@ -504,98 +469,75 @@ public class OBO2EMFDynamicMapHolders {
             return;
         }
 
-        List associationList = RelationsUtil.resolveAssociations(csclass_, association_name);
-        Association assocClass;
-        if (associationList.isEmpty()) {
-            if (!associationHash_.containsKey(association_name)) {
-                associationHash_.put(association_name, association_name);
-            }
-            assocClass = relationsFactory.createAssociation();
-            assocClass.setEntityCode(association_name);
-            assocClass.setForwardName(association_name);
-            RelationsUtil.subsume(getOrCreateRelations(), assocClass);
+        AssociationPredicate assocPredicate;
+        if (!associationHash_.containsKey(association_name)) {
+
+            assocPredicate = new AssociationPredicate();
+            assocPredicate.setAssociationName(association_name);
+
+            associationHash_.put(association_name, assocPredicate);
+
+            // TODO: Deal with forward name
+            // assocPredicate.setForwardName(association_name);
+            Relations rel = getOrCreateRelations();
+            rel.getAssociationPredicateAsReference().add(assocPredicate);
             if (!supportedAssociationHashtable.containsKey(association_name)) {
                 supportedAssociationHashtable.put(association_name, association_name);
             }
         } else {
-            assocClass = (Association) associationList.get(0);
+            assocPredicate = associationHash_.get(association_name);
         }
-        AssociationSource ai = relationsFactory.createAssociationSource();
-        ai.setSourceEntityCode(source.getEntityCode());
-        ai = RelationsUtil.subsume(assocClass, ai);
-        AssociationTarget at = relationsFactory.createAssociationTarget();
+        AssociationSource as = getOrCreateAssociationInstance(assocPredicate, source);
+
+        AssociationTarget at = new AssociationTarget();
         if (association_qualifier != null) {
-            AssociationQualification aq = relationsFactory.createAssociationQualification();
+            AssociationQualification aq = new AssociationQualification();
             aq.setAssociationQualifier(association_qualifier);
-            at.getAssociationQualification().add(aq);
+            at.getAssociationQualificationAsReference().add(aq);
             addSupportedAssociationQualifier(association_qualifier);
         }
 
         at.setTargetEntityCode(target_code);
-        RelationsUtil.subsume(ai, at);
+        RelationsUtil.subsume(as, at);
 
     }
 
     Relations getOrCreateRelations() {
         Relations relations = null;
-        Iterator itr = csclass_.getRelations().iterator();
-        while (itr.hasNext()) {
-            Relations r = (Relations) itr.next();
+
+        for (Relations r : cs.getRelations()) {
             if (r.getContainerName().equals("relations")) {
                 relations = r;
                 break;
             }
         }
         if (relations == null) {
-            relations = relationsFactory.createRelations();
+            relations = new Relations();
             relations.setContainerName("relations");
-            RelationsUtil.subsume(csclass_, relations);
+            cs.getRelationsAsReference().add(relations);
         }
         return relations;
     }
 
     private void addSupportedAssociationQualifier(String association_qualifier) {
 
-        if (csclass_ == null || association_qualifier == null)
+        if (cs == null || association_qualifier == null)
             return;
-        Iterator itr = csclass_.getMappings().getSupportedAssociationQualifier().iterator();
-        boolean found = false;
+        Iterator<SupportedAssociationQualifier> itr = cs.getMappings().iterateSupportedAssociationQualifier();
         while (itr.hasNext()) {
-            SupportedAssociationQualifier saq = (SupportedAssociationQualifier) itr.next();
+            SupportedAssociationQualifier saq = itr.next();
             if (saq.getLocalId().equals(association_qualifier)) {
                 // We already have it added, return
                 return;
             }
         }
-        SupportedAssociationQualifier qualifier = this.nameFactory.createSupportedAssociationQualifier();
+        SupportedAssociationQualifier qualifier = new SupportedAssociationQualifier();
         qualifier.setLocalId(association_qualifier);
-        csclass_.getMappings().getSupportedAssociationQualifier().add(qualifier);
+        cs.getMappings().getSupportedAssociationQualifierAsReference().add(qualifier);
 
     }
 
-    private boolean processSpecialAssociation(Concept concept, String relation_name, Collection targets) {
-        boolean processed = false;
-        List special_relationNames = Arrays.asList(OBO2EMFConstants.BUILT_IN_SPECIAL_ASSOCIATIONS);
-        if (special_relationNames.contains(relation_name)) {
-            processed = true;
-            Iterator itr = targets.iterator();
-            while (itr.hasNext()) {
-                String stringValue = itr.next().toString();
-                Property cp = commontypesFactory.createProperty();
-                cp.setPropertyName(relation_name);
-                String propertyID = OBO2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter);
-                cp.setPropertyId(propertyID);
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue((String) stringValue);
-                cp.setValue(txt);
-                concept.getProperty().add(cp);
-            }
-
-        }
-        return processed;
-    }
-
-    private void addAssociationAttribute(Concept concept, OBORelation oboRelation, Collection targets) {
+    private void addAssociationAttribute(Concept concept, OBORelation oboRelation, Collection<String> targets) {
         try {
             if ((oboRelation == null) || (concept == null) || (targets == null))
                 return;
@@ -613,47 +555,25 @@ public class OBO2EMFDynamicMapHolders {
 
             if (processSpecialAssociationLikeOWL(concept, relation, targets))
                 return;
-            Association assocClass = null;
+            AssociationPredicate assocPredictate = null;
             boolean createdNew = false;
-            String invSlotName = null;
 
             try {
                 if (associationHash_.containsKey(relation)) {
-                    Object associationHashValue = associationHash_.get(relation);
-                    if (!(associationHashValue instanceof Association))
-                        return;
+                    assocPredictate = associationHash_.get(relation);
 
-                    assocClass = (Association) associationHashValue;
-                } else { // Inverse Slot
-                    invSlotName = oboRelation.getInverseOf();
-                    if (invSlotName != null) {
-                        invSlotName = OBO2EMFUtils.toNMToken(invSlotName);
-                    }
-
+                } else {
                     // System.out.println("Creating Relation=" + relation);
-                    assocClass = relationsFactory.createAssociation();
-                    assocClass.setEntityCode(oboRelation.getId());
-                    assocClass.setForwardName(oboRelation.getId());
-
-                    if (!OBO2EMFUtils.isNull(invSlotName)) {
-                        // Do not put a reserve name of the relation.....the
-                        // reverse name of
-                        // part_of is not has_part....BioPortal bug: #709
-                        // assocClass.setReverseName(invSlotName);
-                        // assocClass.setInverse(invSlotName);
-                        assocClass.setIsNavigable(new Boolean(true));
-                    }
-                    /*
-                     * We do not manufacture a reverse relation name anymore.
-                     * else assocClass.setReverseName("inverseOf_" + relation);
-                     */
-
-                    assocClass.setIsTransitive(oboRelation.getIsTransitive());
-                    assocClass.setIsSymmetric(oboRelation.getIsSymmetric());
-                    assocClass.setIsReflexive(oboRelation.getIsReflexive());
-                    assocClass.setIsAntiSymmetric(oboRelation.getIsAntiSymmetric());
+                    assocPredictate = new AssociationPredicate();
+                    assocPredictate.setAssociationName(oboRelation.getId());
+                    // TODO: Deal with forward name and flags
+                    // assocClass.setForwardName(oboRelation.getId());
+                    // assocClass.setIsTransitive(oboRelation.getIsTransitive());
+                    // assocClass.setIsSymmetric(oboRelation.getIsSymmetric());
+                    // assocClass.setIsReflexive(oboRelation.getIsReflexive());
+                    // assocClass.setIsAntiSymmetric(oboRelation.getIsAntiSymmetric());
                     createdNew = true;
-                    associationHash_.put(relation, assocClass);
+                    associationHash_.put(relation, assocPredictate);
                 }
             } catch (Exception e) {
                 messages_.error("Error while creating/finding association object for=" + relation, e);
@@ -661,24 +581,20 @@ public class OBO2EMFDynamicMapHolders {
             }
 
             if (targets.size() > 0) {
-                AssociationSource ai = getOrCreateAssociationInstance(assocClass, concept);
+                AssociationSource as = getOrCreateAssociationInstance(assocPredictate, concept);
 
-                Iterator itr = targets.iterator();
-                while (itr.hasNext()) {
-                    Object o = itr.next();
-
-                    String stringValue = (String) o;
+                for (String stringValue : targets) {
 
                     if (!OBO2EMFUtils.isNull(stringValue)) {
-                        AssociationTarget at = relationsFactory.createAssociationTarget();
+                        AssociationTarget at = new AssociationTarget();
                         at.setTargetEntityCode(stringValue);
-                        RelationsUtil.subsume(ai, at);
+                        RelationsUtil.subsume(as, at);
                     }
                 }
             }
 
             if (createdNew) {
-                allAssociations.add(assocClass);
+                assocPredicateList.add(assocPredictate);
                 // It is time to store all objects
                 if (!supportedAssociationHashtable.containsKey(relation)) {
                     supportedAssociationHashtable.put(relation, oboRelation.getName());
@@ -691,15 +607,15 @@ public class OBO2EMFDynamicMapHolders {
         }
     }
 
-    private AssociationSource getOrCreateAssociationInstance(Association association, Concept concept) {
-        String assocSrcQName = association.getEntityCode() + "::" + concept.getEntityCode();
-        if (assocSrcQName2emfAI.containsKey(assocSrcQName)) {
-            return assocSrcQName2emfAI.get(assocSrcQName);
+    private AssociationSource getOrCreateAssociationInstance(AssociationPredicate assocPredicate, Concept concept) {
+        String assocNameAndCode = assocPredicate.getAssociationName() + "::" + concept.getEntityCode();
+        if (assocName_SrcCodeStr2assocSrcMap.containsKey(assocNameAndCode)) {
+            return assocName_SrcCodeStr2assocSrcMap.get(assocNameAndCode);
         } else {
-            AssociationSource ai = relationsFactory.createAssociationSource();
+            AssociationSource ai = new AssociationSource();
             ai.setSourceEntityCode(concept.getEntityCode());
-            assocSrcQName2emfAI.put(assocSrcQName, ai);
-            association.getSource().add(ai);
+            assocName_SrcCodeStr2assocSrcMap.put(assocNameAndCode, ai);
+            assocPredicate.getSourceAsReference().add(ai);
             return ai;
         }
     }
@@ -708,20 +624,20 @@ public class OBO2EMFDynamicMapHolders {
         if (csclass == null)
             return;
 
-        List suppProps = csclass.getMappings().getSupportedProperty();
+        List<SupportedProperty> suppProps = csclass.getMappings().getSupportedPropertyAsReference();
 
         try {
             if (properties_.size() > 0) {
-                Iterator kI = properties_.keySet().iterator();
+                Iterator<String> kI = properties_.keySet().iterator();
 
                 while (kI.hasNext()) {
                     String prpCode = null;
-                    String prp = (String) kI.next();
+                    String prp = kI.next();
 
                     if (!OBO2EMFUtils.isNull(prp)) {
                         prpCode = (String) properties_.get(prp);
 
-                        SupportedProperty suppProp = nameFactory.createSupportedProperty();
+                        SupportedProperty suppProp = new SupportedProperty();
 
                         if (!OBO2EMFUtils.isNull(prpCode))
                             suppProp.setUri(OBO2EMFUtils.getWithOBOURN(prpCode));
@@ -739,58 +655,24 @@ public class OBO2EMFDynamicMapHolders {
         }
     }
 
-    public void populateSupportedConceptStatus(CodingScheme csclass) {
-        if (csclass == null)
-            return;
-
-        List suppProps = csclass.getMappings().getSupportedStatus();
-
-        try {
-            if (conceptStatus_.size() > 0) {
-                Iterator kI = conceptStatus_.keySet().iterator();
-
-                while (kI.hasNext()) {
-                    String prpCode = null;
-                    String prp = (String) kI.next();
-
-                    if (!OBO2EMFUtils.isNull(prp)) {
-                        prpCode = (String) conceptStatus_.get(prp);
-
-                        SupportedStatus suppCSs = nameFactory.createSupportedStatus();
-
-                        if (!OBO2EMFUtils.isNull(prpCode))
-                            suppCSs.setUri(OBO2EMFUtils.getWithOBOURN(prpCode));
-                        else
-                            suppCSs.setUri(OBO2EMFUtils.getWithOBOURN(prp));
-
-                        suppCSs.setLocalId(prp);
-                        suppProps.add(suppCSs);
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            messages_.info("Failed while getting supported Concept Status!");
-        }
-    }
-
     public void populateSupportedAssociations(CodingScheme csclass) {
         try {
             if (csclass == null)
                 return;
 
-            List suppAssoc = csclass.getMappings().getSupportedAssociation();
-            for (Enumeration e = supportedAssociationHashtable.keys(); e.hasMoreElements();) {
-                String prpCode = (String) e.nextElement();
+            List<SupportedAssociation> suppAssoc = csclass.getMappings().getSupportedAssociationAsReference();
+            for (Enumeration<String> e = supportedAssociationHashtable.keys(); e.hasMoreElements();) {
+                String prpCode = e.nextElement();
 
                 if (!OBO2EMFUtils.isNull(prpCode)) {
-                    SupportedAssociation suppAss = nameFactory.createSupportedAssociation();
+                    SupportedAssociation suppAss = new SupportedAssociation();
                     suppAss.setUri(OBO2EMFUtils.getWithOBOURN(prpCode));
                     // suppAss.setLocalName(OBO2EMFUtils.toNMToken(prpCode));
                     suppAss.setLocalId(prpCode);
                     suppAssoc.add(suppAss);
                 }
             }
-            SupportedAssociation suppAss = nameFactory.createSupportedAssociation();
+            SupportedAssociation suppAss = new SupportedAssociation();
             suppAss.setUri(OBO2EMFUtils.getWithOBOURN("-multi-assn-@-root-"));
             // suppAss.setLocalName(OBO2EMFUtils.toNMToken(prpCode));
             suppAss.setLocalId("-multi-assn-@-root-");
@@ -805,32 +687,32 @@ public class OBO2EMFDynamicMapHolders {
             if (csclass == null)
                 return;
 
-            List supportedHierList = csclass.getMappings().getSupportedHierarchy();
-            org.LexGrid.emf.naming.SupportedHierarchy hier = nameFactory.createSupportedHierarchy();
+            List<SupportedHierarchy> supportedHierList = csclass.getMappings().getSupportedHierarchyAsReference();
+            SupportedHierarchy hier = new SupportedHierarchy();
             hier.setLocalId(OBO2EMFConstants.HIERARCHY_DEFAULT_NAME);
             hier.setIsForwardNavigable(Boolean.valueOf(OBO2EMFConstants.ASSOCIATION_ISA_ISFORWARDNAVIGABLE)
                     .booleanValue());
             hier.setRootCode(OBO2EMFConstants.HIERARCHY_DEFAULT_ROOT);
 
             if (hier.getAssociationNames() == null) {
-                hier.setAssociationNames(new ArrayList());
+                hier.setAssociationNames(new ArrayList<String>());
             }
 
-            for (Enumeration e = supportedAssociationHashtable.keys(); e.hasMoreElements();) {
+            for (Enumeration<String> e = supportedAssociationHashtable.keys(); e.hasMoreElements();) {
                 String prpCode = (String) e.nextElement();
 
                 if (prpCode.equals(OBO2EMFConstants.ASSOCIATION_DEVELOPS_FROM))
-                    hier.getAssociationNames().add(OBO2EMFConstants.ASSOCIATION_DEVELOPS_FROM);
+                    hier.getAssociationNamesAsReference().add(OBO2EMFConstants.ASSOCIATION_DEVELOPS_FROM);
                 else if (prpCode.equals(OBO2EMFConstants.ASSOCIATION_ISA))
-                    hier.getAssociationNames().add(OBO2EMFConstants.ASSOCIATION_ISA);
+                    hier.getAssociationNamesAsReference().add(OBO2EMFConstants.ASSOCIATION_ISA);
                 else if (prpCode.equals(OBO2EMFConstants.ASSOCIATION_PART_OF))
-                    hier.getAssociationNames().add(OBO2EMFConstants.ASSOCIATION_PART_OF);
+                    hier.getAssociationNamesAsReference().add(OBO2EMFConstants.ASSOCIATION_PART_OF);
                 else if (prpCode.equals(OBO2EMFConstants.ASSOCIATION_LOCATED_IN))
-                    hier.getAssociationNames().add(OBO2EMFConstants.ASSOCIATION_LOCATED_IN);
+                    hier.getAssociationNamesAsReference().add(OBO2EMFConstants.ASSOCIATION_LOCATED_IN);
                 else if (prpCode.equals(OBO2EMFConstants.ASSOCIATION_DERIVES_FROM))
-                    hier.getAssociationNames().add(OBO2EMFConstants.ASSOCIATION_DERIVES_FROM);
+                    hier.getAssociationNamesAsReference().add(OBO2EMFConstants.ASSOCIATION_DERIVES_FROM);
                 else if (prpCode.equals(OBO2EMFConstants.ASSOCIATION_BROADER))
-                    hier.getAssociationNames().add(OBO2EMFConstants.ASSOCIATION_BROADER);
+                    hier.getAssociationNamesAsReference().add(OBO2EMFConstants.ASSOCIATION_BROADER);
             }
 
             // Add all the associations that are defined as transitive to the
@@ -850,7 +732,7 @@ public class OBO2EMFDynamicMapHolders {
             //                  
             // }
 
-            hier.getAssociationNames().add("-multi-assn-@-root-");
+            hier.getAssociationNamesAsReference().add("-multi-assn-@-root-");
             supportedHierList.add(hier);
         } catch (Exception ex) {
             messages_.error("Failed while getting supported associations!", ex);
@@ -871,24 +753,24 @@ public class OBO2EMFDynamicMapHolders {
         if (csclass == null)
             return;
 
-        List suppSrcs = csclass.getMappings().getSupportedSource();
+        List<SupportedSource> suppSrcs = csclass.getMappings().getSupportedSourceAsReference();
         try {
             if (sources_.size() > 0) {
-                Iterator kI = sources_.keySet().iterator();
+                Iterator<String> kI = sources_.keySet().iterator();
 
                 while (kI.hasNext()) {
                     String prpCode = null;
-                    String prp = (String) kI.next();
+                    String prp = kI.next();
 
                     if (!OBO2EMFUtils.isNull(prp)) {
                         prpCode = (String) sources_.get(prp);
 
-                        SupportedSource suppCSs = nameFactory.createSupportedSource();
+                        SupportedSource suppCSs = new SupportedSource();
 
                         if (!OBO2EMFUtils.isNull(prpCode)) {
                             // messages_.("prpCode="+prpCode+" prp="+prp);
                             if (!prpCode.startsWith("http"))
-                                suppCSs.setUri(OBO2EMFConstants.OBO_URN + OBO2EMFUtils.toNMToken(prpCode));
+                                suppCSs.setUri(OBO2EMFConstants.OBO_URN + prpCode);
                             else
                                 suppCSs.setUri(prpCode);
                         }
@@ -904,57 +786,23 @@ public class OBO2EMFDynamicMapHolders {
         }
     }
 
-    public void populateSupportedRepresentationalForms(CodingScheme csclass) {
-        if (csclass == null)
-            return;
-
-        List suppRepf = csclass.getMappings().getSupportedRepresentationalForm();
-
-        try {
-            if (representationalForms_.size() > 0) {
-                Iterator kI = representationalForms_.keySet().iterator();
-
-                while (kI.hasNext()) {
-                    String prpCode = null;
-                    String prp = (String) kI.next();
-
-                    if (!OBO2EMFUtils.isNull(prp)) {
-                        prpCode = (String) representationalForms_.get(prp);
-
-                        SupportedRepresentationalForm suppRPs = nameFactory.createSupportedRepresentationalForm();
-
-                        if (!OBO2EMFUtils.isNull(prpCode))
-                            suppRPs.setUri(OBO2EMFUtils.getWithOBOURN(prpCode));
-                        else
-                            suppRPs.setUri(OBO2EMFUtils.getWithOBOURN(prp));
-
-                        suppRPs.setLocalId(prp);
-                        suppRepf.add(suppRPs);
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            messages_.error("Failed while getting supported Representational Forms !", ex);
-        }
-    }
-
     public void setSupportedHierarchyAssociationsTransitive(CodingScheme csclass) {
         // Holder for all Supported Hierarchy Associations
         // This is a consolidated list of all the associations
         // from all of the supportedHierarchies
-        ArrayList supportedHierarchyAssociations = new ArrayList();
+        ArrayList<String> supportedHierarchyAssociations = new ArrayList<String>();
 
         // Get the Supported Hierarchies
-        List supportedHierList = csclass.getMappings().getSupportedHierarchy();
-        Iterator supportedHierItr = supportedHierList.iterator();
+        List<SupportedHierarchy> supportedHierList = csclass.getMappings().getSupportedHierarchyAsReference();
+        Iterator<SupportedHierarchy> supportedHierItr = supportedHierList.iterator();
         while (supportedHierItr.hasNext()) {
-            SupportedHierarchy hier = (SupportedHierarchy) supportedHierItr.next();
+            SupportedHierarchy hier = supportedHierItr.next();
 
             // For each Supported Hierarchy, get its associations
-            List associations = hier.getAssociationNames();
-            Iterator associationsItr = associations.iterator();
+            List<String> associations = hier.getAssociationNamesAsReference();
+            Iterator<String> associationsItr = associations.iterator();
             while (associationsItr.hasNext()) {
-                String currentAssoc = (String) associationsItr.next();
+                String currentAssoc = associationsItr.next();
                 // Add the associaton (if it hasn't been added already)
                 if (!supportedHierarchyAssociations.contains(currentAssoc)) {
                     supportedHierarchyAssociations.add(currentAssoc);
@@ -963,50 +811,18 @@ public class OBO2EMFDynamicMapHolders {
         }
 
         // Get all of the Associations for this Coding Scheme
-        Iterator associationsItr = allAssociations.iterator();
-        while (associationsItr.hasNext()) {
-            Association currentAssoc = (Association) associationsItr.next();
+
+        for (AssociationPredicate currentAssoc : assocPredicateList) {
+
             // Check to see if the association is part of a Supported Hierarchy
-            String currentAssocName = currentAssoc.getEntityCode();
+            String currentAssocName = currentAssoc.getAssociationName();
             if (supportedHierarchyAssociations.contains(currentAssocName)) {
                 // if so, set isTransitive to true
-                currentAssoc.setIsTransitive(Boolean.valueOf(true));
+                // TODO: Deal with flags
+                // currentAssoc.setIsTransitive(Boolean.valueOf(true));
                 messages_.info("Setting Hierarchical Association " + currentAssocName + " to Transitive");
             }
         }
     }
 
-    public void populateSupportedPropertyLinks(CodingScheme csclass) {
-        if (csclass == null)
-            return;
-
-        List suppRepf = csclass.getMappings().getSupportedPropertyLink();
-
-        try {
-            if (propertyLinks_.size() > 0) {
-                Iterator kI = propertyLinks_.keySet().iterator();
-
-                while (kI.hasNext()) {
-                    String prpCode = null;
-                    String prp = (String) kI.next();
-
-                    if (!OBO2EMFUtils.isNull(prp)) {
-                        prpCode = (String) propertyLinks_.get(prp);
-
-                        SupportedPropertyLink suppPlnks = nameFactory.createSupportedPropertyLink();
-
-                        if (!OBO2EMFUtils.isNull(prpCode))
-                            suppPlnks.setUri(OBO2EMFUtils.getWithOBOURN(prpCode));
-                        else
-                            suppPlnks.setUri(OBO2EMFUtils.getWithOBOURN(prp));
-
-                        suppPlnks.setLocalId(prp);
-                        suppRepf.add(suppPlnks);
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            messages_.error("Failed while getting supported Property Links !", ex);
-        }
-    }
 }

@@ -73,7 +73,7 @@ public class OBO2EMFUtils {
         return result;
     }
 
-    public static String toNMToken(String str) {
+    public static String toNMTokenNotNeeded(String str) {
         if (isNull(str))
             return str;
 
@@ -100,11 +100,11 @@ public class OBO2EMFUtils {
         return result;
     }
 
-    public static boolean containsIgnoreCase(Collection c, String str) {
+    public static boolean containsIgnoreCase(Collection<String> c, String str) {
 
-        Iterator it = c.iterator();
+        Iterator<String> it = c.iterator();
         while (it.hasNext()) {
-            String temp = it.next().toString();
+            String temp = it.next();
             if (temp.equalsIgnoreCase(str)) {
                 return true;
             }

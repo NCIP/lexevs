@@ -18,8 +18,6 @@
  */
 package edu.mayo.informatics.lexgrid.convert.emfConversions.obo1_2;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
 
 /**
  * OBO To EMF Implementation.
