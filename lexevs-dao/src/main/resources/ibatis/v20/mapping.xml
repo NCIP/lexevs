@@ -128,8 +128,8 @@
 		extends="uriMapResult">
 	</resultMap>
 	
-	 <select id="getURIMaps" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="uriMapResult">
-	 	SELECT
+	<sql id="getUriMapFragment">
+		SELECT
 	 		supportedAttributeTag,
 	 		id,
 	 		uri,
@@ -141,8 +141,36 @@
 	 		assemblyRule
 	 	FROM
 	 		$prefix$csSupportedAttrib urimap
+	</sql>
+	
+	 <select id="getURIMaps" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="uriMapResult">
+	 	<include refid="getUriMapFragment"/>
 	 	WHERE
 	 		urimap.codingSchemeGuid = #param1#
+	 </select>
+	 
+	 <select id="getURIMapByLocalNameAndType" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="uriMapResult">
+	 	<include refid="getUriMapFragment"/>
+	 	WHERE
+	 		urimap.codingSchemeGuid = #param1#
+	 	AND
+	 		urimap.supportedAttributeTag = #param2#
+	 	AND
+	 		urimap.id = #param3#
+	 </select>
+	 
+	 <select id="getURIMapCountByLocalNameAndType" 
+	 	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultClass="int">
+	 	SELECT
+	 		COUNT(*)
+	 	FROM
+	 		$prefix$csSupportedAttrib urimap
+	 	WHERE
+	 		urimap.codingSchemeGuid = #param1#
+	 	AND
+	 		urimap.id = #param2#
+	 	AND
+	 		urimap.supportedAttributeTag = #param3#
 	 </select>
 
      <insert id="insertURIMap" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertURIMapBean">

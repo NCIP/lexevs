@@ -15,14 +15,15 @@ import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
-import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.versions.VersionsDao;
-import org.lexevs.dao.database.constants.classifier.mapping.MappingClassifier;
+import org.lexevs.dao.database.constants.classifier.mapping.ClassToStringMappingClassifier;
+import org.lexevs.dao.database.constants.classifier.mapping.StringToClassMappingClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
-import org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean;
 import org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertCodingSchemeMultiAttribBean;
+import org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean;
 import org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertURIMapBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
@@ -59,8 +60,11 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	private static String GET_DISTINCT_NAMESPACES_OF_CS_SQL = CODING_SCHEME_NAMESPACE + "getDistinctNamespaces";
 	private static String GET_DISTINCT_LANGUAGES_OF_CS_SQL = CODING_SCHEME_NAMESPACE + "getDistinctLanguages";
 	private static String GET_URIMAPS_SQL = CODING_SCHEME_NAMESPACE + "getURIMaps";
+	private static String GET_URIMAP_BY_LOCALNAME_AND_TYPE_SQL = CODING_SCHEME_NAMESPACE + "getURIMapByLocalNameAndType";
+	private static String GET_URIMAP_COUNT_BY_LOCALNAME_AND_TYPE_SQL = CODING_SCHEME_NAMESPACE + "getURIMapCountByLocalNameAndType";
 	
-	private MappingClassifier mappingClassifier = new MappingClassifier();
+	private ClassToStringMappingClassifier classToStringMappingClassifier = new ClassToStringMappingClassifier();
+	private StringToClassMappingClassifier stringToClassMappingClassifier = new StringToClassMappingClassifier();
 	
 	private VersionsDao versionsDao;
 	private EntityDao entityDao;
@@ -217,7 +221,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 									this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
 									uriMapId, 
 									codingSchemeId,
-									mappingClassifier.classify(uriMap.getClass()),
+									classToStringMappingClassifier.classify(uriMap.getClass()),
 									uriMap));
 	}
 	
@@ -236,7 +240,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 									getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
 									uriMapId, 
 									codingSchemeId,
-									mappingClassifier.classify(uriMap.getClass()),
+									classToStringMappingClassifier.classify(uriMap.getClass()),
 									uriMap));
 				}
 				return executor.executeBatch();
@@ -342,6 +346,26 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		}
 		
 		return mappings;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T extends URIMap> T getUriMap(String codingSchemeId, String localId, Class<T> uriMap) {	
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		return (T) this.getSqlMapClientTemplate().queryForList(	
+				GET_URIMAP_BY_LOCALNAME_AND_TYPE_SQL, 
+				new PrefixedParameterTriple(prefix, codingSchemeId, localId, this.classToStringMappingClassifier.classify(uriMap)));
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T extends URIMap> boolean validateSupportedAttribute(String codingSchemeId, String localId, Class<T> uriMap) {	
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		String classifiedName = this.classToStringMappingClassifier.classify(uriMap);
+		int count = (Integer) this.getSqlMapClientTemplate().queryForObject(	
+				GET_URIMAP_COUNT_BY_LOCALNAME_AND_TYPE_SQL, 
+				new PrefixedParameterTriple(prefix, codingSchemeId, localId, classifiedName));
+		
+		return count > 0;
 	}
 	
 	protected InsertURIMapBean buildInsertURIMapBean(String prefix, String uriMapId, String codingSchemeId, String supportedAttributeTag, URIMap uriMap){

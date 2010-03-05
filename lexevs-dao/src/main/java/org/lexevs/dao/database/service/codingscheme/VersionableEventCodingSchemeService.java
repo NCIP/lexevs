@@ -97,6 +97,19 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		
 	}
 	
+
+	@Override
+	public <T extends URIMap> boolean validatedSupportedAttribute(
+			String codingSchemeUri, String codingSchemeVersion, String localId,
+			Class<T> attributeClass) {
+		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, codingSchemeVersion);
+		
+		String codingSchemeId = codingSchemeDao.
+		getCodingSchemeIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
+		
+		return codingSchemeDao.validateSupportedAttribute(codingSchemeId, localId, attributeClass);
+	}
+	
 	public void setEntityService(EntityService entityService) {
 		this.entityService = entityService;
 	}
@@ -104,4 +117,5 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	public EntityService getEntityService() {
 		return entityService;
 	}
+
 }

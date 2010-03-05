@@ -37,6 +37,10 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	
 	public void insertCodingSchemeSource(String codingSchemeId, Source source);
 	
+	public <T extends URIMap> T getUriMap(String codingSchemeId, String localId, Class<T> uriMap);
+	
+	public <T extends URIMap> boolean validateSupportedAttribute(String codingSchemeId, String localId, Class<T> uriMap);
+	
 	public void insertCodingSchemeLocalName(String codingSchemeId, String localName);
 	
 	public void insertMappings(String codingSchemeId, Mappings mappings);

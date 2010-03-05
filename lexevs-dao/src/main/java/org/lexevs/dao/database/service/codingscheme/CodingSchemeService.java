@@ -35,5 +35,8 @@ public interface CodingSchemeService extends DatabaseService {
 	public void updateCodingSchemeEntryState( 
 			CodingScheme codingScheme,
 			EntryState entryState);
+	
+	public <T extends URIMap> boolean
+		 validatedSupportedAttribute(String codingSchemeUri, String codingSchemeVersion, String localId, Class<T> attributeClass);
 
 }

@@ -243,4 +243,18 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	public Mappings getMappings(String codingSchemeId) {
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public <T extends URIMap> T getUriMap(String codingSchemeId,
+			String localId, Class<T> uriMap) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T extends URIMap> boolean validateSupportedAttribute(
+			String codingSchemeId, String localId, Class<T> uriMap) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
 }
