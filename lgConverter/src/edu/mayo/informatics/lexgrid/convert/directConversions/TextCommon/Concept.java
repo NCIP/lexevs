@@ -69,4 +69,10 @@ public class Concept {
     public String toString() {
         return "Code: " + code + "\nName: " + name + "\nDescription: " + description + "\nDepth: " + depth;
     }
+    
+    public boolean equals(Object o) {
+        if (o instanceof Concept == true)
+            return code.equals(((Concept)o).code);
+        return false;
+    }
 }

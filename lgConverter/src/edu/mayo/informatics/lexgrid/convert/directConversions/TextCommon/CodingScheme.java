@@ -18,9 +18,20 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.TextCommon;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
+import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Entity;
+import org.LexGrid.concepts.Presentation;
+import org.LexGrid.relations.AssociationPredicate;
+import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.AssociationTarget;
+import org.LexGrid.relations.Relations;
+import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 
 /**
  * CodingScheme holder for Text loaders.
@@ -42,27 +53,91 @@ public class CodingScheme {
     public Association[] associations;
 
     public boolean isTypeB = false;
-    
-    public static org.LexGrid.codingSchemes.CodingScheme toCodingScheme(CodingScheme codingScheme){
+
+    public static org.LexGrid.codingSchemes.CodingScheme toCodingScheme(CodingScheme codingScheme) {
         org.LexGrid.codingSchemes.CodingScheme cs = new org.LexGrid.codingSchemes.CodingScheme();
         cs.setCodingSchemeName(codingScheme.codingSchemeName);
         cs.setCodingSchemeURI(codingScheme.codingSchemeId);
         cs.setDefaultLanguage(codingScheme.defaultLanguage);
         cs.setRepresentsVersion(codingScheme.representsVersion);
         cs.setFormalName(codingScheme.formalName);
-        
-        Source source = new Source();
-        source.setContent(codingScheme.source);
-        cs.addSource(source);
-        
+
         EntityDescription ed = new EntityDescription();
         ed.setContent(codingScheme.entityDescription);
         cs.setEntityDescription(ed);
-        
+
         Text text = new Text();
         text.setContent(codingScheme.copyright);
         cs.setCopyright(text);
         
+        Source src = new Source();
+        src.setContent(codingScheme.source);
+        src.setRole(codingScheme.codingSchemeId);
+        cs.addSource(src);
+        
+        // add entities
+        Collection<String> existedEntities = new ArrayList<String>();
+        cs.setEntities(new Entities());
+        for (Concept c : codingScheme.concepts) {
+            if (existedEntities.contains(c.code) == false) {
+                Entity e = new Entity();
+                e.setEntityCode(c.code);
+                e.setEntityCodeNamespace(codingScheme.codingSchemeName);
+                e.setIsAnonymous(false);
+                e.setIsDefined(true);
+                e.addEntityType(SQLTableConstants.TBL_CONCEPT);
+
+                // add presentations to entity
+                // if both name & desc exist, desc is prefered. otherwise use name
+                Presentation p = new Presentation();
+
+                p.setPropertyType(SQLTableConstants.TBLCOLVAL_PRESENTATION);
+                p.setPropertyName("textPresentation");
+
+                Text presentationText = new Text();
+                if (c.description != null) {
+                    presentationText.setContent(c.description);
+
+                } else if (c.name != null) {
+                    presentationText.setContent(c.name);
+
+                } else {
+                    presentationText.setContent(c.code);
+                }
+                p.setIsPreferred(true);
+                p.setValue(presentationText);
+                e.addPresentation(p);
+
+                cs.getEntities().addEntity(e);
+                existedEntities.add(c.code);
+            }
+            
+        }
+        
+        // add associations
+        Relations relations = new Relations();
+        relations.setContainerName(codingScheme.codingSchemeName + "Relation");
+        
+        AssociationPredicate ap = new AssociationPredicate();
+        ap.setAssociationName("PAR");  //TODO: a constant for PAR
+        
+        for (Association a : codingScheme.associations) {
+            AssociationSource as = new AssociationSource();
+            as.setSourceEntityCode(a.getSourceConcept().code);
+            as.setSourceEntityCodeNamespace(codingScheme.codingSchemeName);
+            for (Concept c : a.getTargetConceptSet()) {
+                AssociationTarget at = new AssociationTarget();
+                at.setTargetEntityCode(c.code);
+                at.setTargetEntityCodeNamespace(codingScheme.codingSchemeName);
+                as.addTarget(at);
+            }
+            ap.addSource(as);
+        }
+        
+        relations.addAssociationPredicate(ap);
+        
+        cs.addRelations(relations);
+
         return cs;
     }
 }

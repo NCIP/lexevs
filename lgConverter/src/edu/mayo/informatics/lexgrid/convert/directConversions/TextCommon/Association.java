@@ -18,6 +18,9 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.TextCommon;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Holder for association loaded from Text files.
  * 
@@ -27,60 +30,25 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.TextCommon;
  */
 public class Association {
     private String relationName;
-    private String sourceCodingScheme;
-    private String sourceCode;
-    private String targetCodingScheme;
-    private String targetCode;
+//    private String sourceCodingScheme;
+    private Concept source;
+//    private String targetCodingScheme;
+    private List<Concept> targetSet;
 
-    public Association(String relationName, String sourceCodingScheme, String sourceCode, String targetCodingScheme,
-            String targetCode) {
-        this.relationName = relationName;
-        this.sourceCodingScheme = sourceCodingScheme;
-        this.sourceCode = sourceCode;
-        this.targetCodingScheme = targetCodingScheme;
-        this.targetCode = targetCode;
+    public Association() {
+        targetSet = new ArrayList<Concept>();
     }
-
-    /**
-     * Parse the line with format Relation="rel_name" sourceCodingScheme="srcCS"
-     * sourceCode="code" targetCodingScheme="tgtCS" targetCode="code"
-     * 
-     * @param line
-     */
-    public Association(String line) {
-        relationName = parseValue(line, "Relation");
-        sourceCodingScheme = parseValue(line, "sourceCodingScheme");
-        sourceCode = parseValue(line, "sourceCode");
-        targetCodingScheme = parseValue(line, "targetCodingScheme");
-        targetCode = parseValue(line, "targetCode");
-
-    }
-
-    public String parseValue(String line, String name) {
-        String value = null;
-        int pos;
-        if ((pos = line.indexOf(name)) != -1) {
-            int firstQuoteIndex = line.indexOf("\"", pos);
-            int secondQuoteIndex = -1;
-            if (firstQuoteIndex != -1) {
-                secondQuoteIndex = line.indexOf("\"", firstQuoteIndex + 1);
-            }
-            if (firstQuoteIndex != -1 && secondQuoteIndex != -1) {
-                value = line.substring(firstQuoteIndex + 1, secondQuoteIndex);
-            }
-        }
-        return value;
-
-    }
-
-    public boolean isValid() {
-        return (relationName != null && relationName.trim().length() != 0 && sourceCode != null
-                && sourceCode.trim().length() != 0 && targetCode != null && targetCode.trim().length() != 0);
-    }
+          
+//    public boolean isValid() {
+//        
+//    }
 
     public String toString() {
-        return "RelationName: " + relationName + "  Source: " + sourceCodingScheme + ":" + sourceCode + " Target: "
-                + targetCodingScheme + ":" + targetCode + "\n";
+        String str = "[" + source.toString() + "] " + relationName + " ";
+        for (Concept c : targetSet){
+            str = str + "[" + c.toString() + "], ";
+        }
+        return str + "\n\n";
     }
 
     public String getRelationName() {
@@ -91,44 +59,41 @@ public class Association {
         this.relationName = relationName;
     }
 
-    public String getSourceCode() {
-        return sourceCode;
+    public Concept getSourceConcept() {
+        return source;
     }
 
-    public void setSourceCode(String sourceCode) {
-        this.sourceCode = sourceCode;
+    public void setSourceConcept(Concept source) {
+        this.source = source;
     }
 
-    public String getSourceCodingScheme() {
-        return sourceCodingScheme;
+    public List<Concept> getTargetConceptSet() {
+        return targetSet;
     }
 
-    public void setSourceCodingScheme(String sourceCodingScheme) {
-        this.sourceCodingScheme = sourceCodingScheme;
+    public void setTargetConceptSet(List<Concept> targetSet) {
+        this.targetSet = targetSet;
     }
-
-    public String getTargetCode() {
-        return targetCode;
-    }
-
-    public void setTargetCode(String targetCode) {
-        this.targetCode = targetCode;
-    }
-
-    public String getTargetCodingScheme() {
-        return targetCodingScheme;
-    }
-
-    public void setTargetCodingScheme(String targetCodingScheme) {
-        this.targetCodingScheme = targetCodingScheme;
+    
+    public boolean addTargetConcept(Concept targetConcept) {
+        if (targetSet.contains(targetConcept) == true)
+            return false;
+        targetSet.add(targetConcept); 
+        return true;
     }
 
     public boolean equals(Object o) {
-        if (!(o instanceof Association))
-            return false;
-        Association assoc = (Association) o;
-        return (this.relationName.equals(assoc.relationName)
-                && this.sourceCodingScheme.equals(assoc.sourceCodingScheme) && this.sourceCode.equals(assoc.sourceCode)
-                && this.targetCodingScheme.equals(assoc.targetCodingScheme) && this.targetCode.equals(assoc.targetCode));
+        if (o instanceof Association) {
+            if ((((Association)o).getRelationName().equals(this.relationName) && 
+                    ((Association)o).getSourceConcept().equals(this.source) &&
+                    ((Association)o).getTargetConceptSet().size() == targetSet.size())== false
+                  )
+                return false;
+            else {
+                return targetSet.containsAll(((Association)o).getTargetConceptSet());
+            }
+        }
+        return false;
     }
+    
 }

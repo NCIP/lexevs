@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.LexGrid.messaging.LgMessageDirectorIF;
@@ -51,8 +52,8 @@ public class TextUtility {
         int uniqueCodeIdentifer = 1;
         messages.info("Reading file into memory");
         try {
-            ArrayList concepts = new ArrayList();
-            ArrayList associations = new ArrayList();
+            List<Concept> concepts = new ArrayList<Concept>();
+
             BufferedReader fileReader = new BufferedReader(new FileReader(fileLocation));
             String line = fileReader.readLine();
 
@@ -97,23 +98,14 @@ public class TextUtility {
             // read the rest of the lines
             while (line != null) {
                 if (line.length() > 0 && line.charAt(0) != '#') {
-                    if (line.startsWith("Relation")) {
-                        Association assoc = new Association(line);
-                        if (assoc.isValid() && !associations.contains(assoc)) {
-                            associations.add(assoc);
-                        } else {
-                            messages.info("WARNING - Line number " + lineNo
-                                    + " is missing required information.  Skipping.");
-                        }
+                    Concept temp = new Concept(line, token, codingScheme);
+                    if (temp.name != null) {
+                        concepts.add(temp);
                     } else {
-                        Concept temp = new Concept(line, token, codingScheme);
-                        if (temp.name != null) {
-                            concepts.add(temp);
-                        } else {
-                            messages.info("WARNING - Line number " + lineNo
-                                    + " is missing required information.  Skipping.");
-                        }
+                        messages.info("WARNING - Line number " + lineNo
+                                + " is missing required information.  Skipping.");
                     }
+                    
 
                 }
                 lineNo++;
@@ -122,7 +114,9 @@ public class TextUtility {
 
             Concept[] allConcepts = (Concept[]) concepts.toArray(new Concept[concepts.size()]);
             concepts = null;
-
+            List<Association> associations = new ArrayList<Association>();
+            List<Association> associationSet = new ArrayList<Association>();
+            
             for (int i = 0; i < allConcepts.length; i++) {
                 if (codingScheme.isTypeB) {
                     if (allConcepts[i].code == null || allConcepts[i].code.length() == 0) {
@@ -160,10 +154,48 @@ public class TextUtility {
                         allConcepts[i].code = uniqueCodeIdentifer++ + "";
                     }
                 }
+                
+                // generate associations. keep all concepts in allConcepts, even redundant concepts.
+                if (i -1 < 0) {//root
+                    //do nothing for the first concept
+                }
+                // if the current concept is deeper than the previous one, 
+                // create an association, the previous is the source and the
+                // current concept should be the target
+                else if (allConcepts[i].depth > allConcepts[i-1].depth) {
+                    Association a = new Association();
+                    a.setRelationName("PAR");
+                    a.setSourceConcept(allConcepts[i-1]);
+                    a.addTargetConcept(allConcepts[i]);
+                    associations.add(a);
+                }
+                // if the current concept's depth is the same as the previous one
+                // it should be a new target concept in the last association
+                else if(allConcepts[i].depth == allConcepts[i-1].depth && associations.size() > 0) {
+                    associations.get(associations.size()-1).addTargetConcept(allConcepts[i]);
+                }
+                // if the current concept's depth is smaller than the previous one,
+                else {
+                    for (int j = associations.size()-1; j >=0; j-- ) {
+                        if (associations.get(j).getSourceConcept().depth >= allConcepts[i].depth &&
+                            associationSet.contains(associations.get(j)) == false ) {
+                            associationSet.add(associations.get(j));
+                        }
+                    }
+                    for (Association a : associationSet)
+                        associations.remove(a);
+                    if (associations.size()>0)
+                        associations.get(associations.size()-1).addTargetConcept(allConcepts[i]);
+                }
+            }
+            //when loop is done, move all associations in stack to the set
+            for (Association a : associations){
+                if (associationSet.contains(a) == false)
+                    associationSet.add(a);
             }
 
             codingScheme.concepts = allConcepts;
-            codingScheme.associations = (Association[]) associations.toArray(new Association[associations.size()]);
+            codingScheme.associations = (Association[]) associationSet.toArray(new Association[associationSet.size()]);
 
             return codingScheme;
         } catch (FileNotFoundException e) {
