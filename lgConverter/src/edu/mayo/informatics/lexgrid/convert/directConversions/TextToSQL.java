@@ -149,6 +149,7 @@ public class TextToSQL {
                 new URNVersionPair(codingScheme.codingSchemeId, codingScheme.representsVersion)};
     }
 
+    // return the codingscheme
     public CodingScheme getCodingScheme(){
         return codingScheme;
     }
