@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.emf.codingSchemes.CodingScheme;
 import org.LexGrid.emf.codingSchemes.CodingschemesFactory;
 import org.LexGrid.emf.codingSchemes.impl.CodingschemesFactoryImpl;
@@ -33,10 +34,7 @@ import org.LexGrid.emf.naming.SupportedCodingScheme;
 import org.LexGrid.emf.naming.SupportedDataType;
 import org.LexGrid.emf.naming.SupportedLanguage;
 import org.LexGrid.emf.naming.impl.NamingFactoryImpl;
-import org.LexGrid.messaging.LgMessageDirectorIF;
-import org.LexGrid.naming.SupportedHierarchy;
 
-import edu.mayo.informatics.lexgrid.convert.emfConversions.protegeOwl.ProtegeOwl2EMFConstants;
 import edu.stanford.smi.protege.model.KnowledgeBase;
 import edu.stanford.smi.protege.model.Slot;
 

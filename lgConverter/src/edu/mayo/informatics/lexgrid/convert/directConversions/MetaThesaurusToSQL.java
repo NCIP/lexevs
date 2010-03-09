@@ -35,7 +35,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
-import org.LexGrid.messaging.LgMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.collections.OrderedMapIterator;
 import org.apache.commons.collections.map.LRUMap;

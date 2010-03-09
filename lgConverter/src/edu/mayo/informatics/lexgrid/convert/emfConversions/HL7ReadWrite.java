@@ -24,11 +24,11 @@ import java.net.URLDecoder;
 import java.util.Iterator;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.emf.codingSchemes.CodingScheme;
 import org.LexGrid.emf.concepts.Entities;
 import org.LexGrid.emf.relations.Association;
 import org.LexGrid.emf.relations.Relations;
-import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.apache.log4j.Logger;
 
 import edu.mayo.informatics.lexgrid.convert.emfConversions.emfInterfaces.EMFRead;

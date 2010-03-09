@@ -20,11 +20,11 @@ package edu.mayo.informatics.lexgrid.convert.formats;
 
 import java.util.Iterator;
 
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.emf.codingSchemes.CodingScheme;
 import org.LexGrid.emf.concepts.Entities;
 import org.LexGrid.emf.relations.Association;
 import org.LexGrid.emf.relations.Relations;
-import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
 

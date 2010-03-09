@@ -34,13 +34,13 @@ import java.util.Map;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Preferences.loader.SemNetLoadPreferences.SemNetLoaderPreferences;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.emf.codingSchemes.CodingScheme;
 import org.LexGrid.emf.codingSchemes.CodingschemesFactory;
 import org.LexGrid.emf.commonTypes.CommontypesFactory;
 import org.LexGrid.emf.commonTypes.Property;
 import org.LexGrid.emf.commonTypes.Text;
 import org.LexGrid.emf.concepts.Comment;
-import org.LexGrid.emf.concepts.Concept;
 import org.LexGrid.emf.concepts.ConceptsFactory;
 import org.LexGrid.emf.concepts.Definition;
 import org.LexGrid.emf.concepts.Entities;
@@ -62,7 +62,6 @@ import org.LexGrid.emf.relations.AssociationTarget;
 import org.LexGrid.emf.relations.Relations;
 import org.LexGrid.emf.relations.RelationsFactory;
 import org.LexGrid.emf.relations.util.RelationsUtil;
-import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.log4j.Logger;
 

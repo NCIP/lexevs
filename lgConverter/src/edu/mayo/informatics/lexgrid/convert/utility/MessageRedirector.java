@@ -18,7 +18,7 @@
  */
 package edu.mayo.informatics.lexgrid.convert.utility;
 
-import org.LexGrid.messaging.LgMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.persistence.sql.MessageIF;
 
 /**

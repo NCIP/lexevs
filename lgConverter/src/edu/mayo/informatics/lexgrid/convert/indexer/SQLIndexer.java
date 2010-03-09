@@ -28,8 +28,8 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.emf.commonTypes.EntityTypes;
-import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.GenericSQLModifier;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;

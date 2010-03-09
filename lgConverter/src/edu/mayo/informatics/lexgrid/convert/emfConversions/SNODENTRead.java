@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.util.Iterator;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.emf.codingSchemes.CodingScheme;
 import org.LexGrid.emf.codingSchemes.CodingschemesFactory;
 import org.LexGrid.emf.commonTypes.CommontypesFactory;
@@ -46,9 +47,7 @@ import org.LexGrid.emf.naming.impl.SupportedPropertyLinkImpl;
 import org.LexGrid.emf.relations.Association;
 import org.LexGrid.emf.relations.Relations;
 import org.LexGrid.emf.relations.RelationsFactory;
-import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.LexGrid.util.sql.DBUtility;
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.log4j.Logger;
 
 import edu.mayo.informatics.lexgrid.convert.emfConversions.emfInterfaces.EMFRead;

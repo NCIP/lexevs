@@ -37,6 +37,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.LexOnt.CsmfCodingSchemeName;
 import org.LexGrid.LexOnt.CsmfCodingSchemeURI;
@@ -66,7 +67,6 @@ import org.LexGrid.emf.relations.AssociationTarget;
 import org.LexGrid.emf.relations.Relations;
 import org.LexGrid.emf.relations.RelationsFactory;
 import org.LexGrid.emf.relations.util.RelationsUtil;
-import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
 import org.LexGrid.util.sql.DBUtility;

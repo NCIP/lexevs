@@ -21,6 +21,7 @@ package edu.mayo.informatics.lexgrid.convert.emfConversions.protegeOwl;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+
 import org.LexGrid.emf.commonTypes.CommontypesPackage;
 import org.LexGrid.emf.commonTypes.Property;
 import org.LexGrid.emf.concepts.ConceptsPackage;

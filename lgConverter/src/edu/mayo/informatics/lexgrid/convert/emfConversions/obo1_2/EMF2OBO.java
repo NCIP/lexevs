@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.emf.codingSchemes.CodingScheme;
 import org.LexGrid.emf.commonTypes.Property;
 import org.LexGrid.emf.commonTypes.Source;
@@ -39,7 +40,6 @@ import org.LexGrid.emf.relations.AssociationSource;
 import org.LexGrid.emf.relations.AssociationTarget;
 import org.LexGrid.emf.relations.Relations;
 import org.LexGrid.emf.relations.util.RelationsUtil;
-import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.apache.commons.lang.StringUtils;
 
 /**

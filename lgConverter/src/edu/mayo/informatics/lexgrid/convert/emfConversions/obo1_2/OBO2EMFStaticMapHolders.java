@@ -22,9 +22,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.TreeSet;
 
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
-import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedDataType;

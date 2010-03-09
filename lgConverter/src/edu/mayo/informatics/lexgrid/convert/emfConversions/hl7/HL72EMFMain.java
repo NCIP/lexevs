@@ -19,10 +19,10 @@
 package edu.mayo.informatics.lexgrid.convert.emfConversions.hl7;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.emf.codingSchemes.CodingScheme;
 import org.LexGrid.emf.codingSchemes.CodingschemesFactory;
-import org.LexGrid.messaging.LgMessageDirectorIF;
-import org.LexGrid.messaging.impl.CachingMessageDirectorImpl;
+import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.HL7SQL;
 

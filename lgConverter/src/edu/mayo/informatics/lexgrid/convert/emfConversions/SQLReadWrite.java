@@ -21,6 +21,7 @@ package edu.mayo.informatics.lexgrid.convert.emfConversions;
 import java.util.Iterator;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.emf.codingSchemes.CodingScheme;
 import org.LexGrid.emf.codingSchemes.CodingschemesFactory;
 import org.LexGrid.emf.codingSchemes.persistence.CodingSchemeHome;
@@ -38,7 +39,6 @@ import org.LexGrid.managedobj.HomeServiceBroker;
 import org.LexGrid.managedobj.ServiceInitException;
 import org.LexGrid.managedobj.ServiceUnavailableException;
 import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
-import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.LexGrid.persistence.sql.CodingSchemeService;
 import org.apache.log4j.Logger;
 

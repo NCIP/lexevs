@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.emf.codingSchemes.CodingScheme;
 import org.LexGrid.emf.naming.Mappings;
 import org.LexGrid.emf.naming.NamingFactory;
@@ -47,7 +48,6 @@ import org.LexGrid.emf.naming.SupportedSource;
 import org.LexGrid.emf.naming.SupportedSourceRole;
 import org.LexGrid.emf.naming.SupportedStatus;
 import org.LexGrid.emf.naming.URIMap;
-import org.LexGrid.messaging.LgMessageDirectorIF;
 
 /**
  * Helper class to maintain supported mappings during EMF conversions

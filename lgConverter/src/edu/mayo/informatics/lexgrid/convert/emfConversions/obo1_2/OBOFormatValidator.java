@@ -26,8 +26,6 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
 
-import org.LexGrid.messaging.LgMessageDirectorIF;
-
 /**
  * Validate that the OBO format looks right.
  * 

@@ -23,7 +23,7 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.URI;
 
-import org.LexGrid.messaging.impl.NullMessageDirector;
+import org.lexevs.logging.messaging.impl.NullMessageDirector;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.UmlsCommon.LoadRRFToDB;
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;

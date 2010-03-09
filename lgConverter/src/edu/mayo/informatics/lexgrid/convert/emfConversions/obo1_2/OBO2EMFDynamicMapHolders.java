@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
@@ -42,7 +43,6 @@ import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.custom.concepts.EntityFactory;
 import org.LexGrid.custom.relations.RelationsUtil;
-import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedAssociationQualifier;
 import org.LexGrid.naming.SupportedHierarchy;

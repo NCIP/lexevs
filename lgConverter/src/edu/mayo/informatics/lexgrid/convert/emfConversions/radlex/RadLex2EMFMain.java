@@ -25,11 +25,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.emf.base.xml.LgXMLResourceImpl;
 import org.LexGrid.emf.codingSchemes.CodingScheme;
-import org.LexGrid.messaging.LgMessageDirectorIF;
-import org.LexGrid.messaging.impl.CachingMessageDirectorImpl;
-import org.LexGrid.messaging.impl.CommandLineMessageDirector;
+import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
+import org.lexevs.logging.messaging.impl.CommandLineMessageDirector;
 
 import edu.stanford.smi.protege.model.KnowledgeBase;
 import edu.stanford.smi.protege.model.Project;

@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import org.LexGrid.messaging.LgMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.GenericSQLModifier;
 import org.apache.commons.lang.StringUtils;

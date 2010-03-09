@@ -18,7 +18,6 @@
  */
 package cl;
 
-import org.LexGrid.messaging.impl.CommandLineMessageDirector;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -32,6 +31,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.varia.LevelRangeFilter;
+import org.lexevs.logging.messaging.impl.CommandLineMessageDirector;
 
 import edu.mayo.informatics.lexgrid.convert.formats.ConversionLauncher;
 import edu.mayo.informatics.lexgrid.convert.formats.OptionHolder;

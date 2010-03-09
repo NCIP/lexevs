@@ -21,10 +21,10 @@ package edu.mayo.informatics.lexgrid.convert.emfConversions.obo1_2;
 import java.net.URI;
 import java.util.Collection;
 
+import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.emf.codingSchemes.CodingScheme;
-import org.LexGrid.messaging.CachingMessageDirectorIF;
-import org.LexGrid.messaging.LgMessageDirectorIF;
-import org.LexGrid.messaging.impl.CachingMessageDirectorImpl;
+import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 
 import edu.mayo.informatics.resourcereader.core.IF.ResourceContents;
 import edu.mayo.informatics.resourcereader.core.IF.ResourceManifest;

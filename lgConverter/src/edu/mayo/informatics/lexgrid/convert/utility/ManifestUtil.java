@@ -35,9 +35,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.LexGrid.LexBIG.DataModel.Core.Association;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
-import org.LexGrid.LexOnt.CsmfAssociationDefinition;
 import org.LexGrid.LexOnt.CsmfCodingSchemeName;
 import org.LexGrid.LexOnt.CsmfCodingSchemeURI;
 import org.LexGrid.LexOnt.CsmfDefaultLanguage;
@@ -57,7 +56,6 @@ import org.LexGrid.emf.naming.NamingFactory;
 import org.LexGrid.emf.naming.SupportedHierarchy;
 import org.LexGrid.emf.naming.URIMap;
 import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
-import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedSource;

@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.emf.codingSchemes.CodingScheme;
 import org.LexGrid.emf.commonTypes.CommontypesFactory;
 import org.LexGrid.emf.commonTypes.Property;
@@ -46,7 +47,6 @@ import org.LexGrid.emf.relations.AssociationTarget;
 import org.LexGrid.emf.relations.Relations;
 import org.LexGrid.emf.relations.RelationsFactory;
 import org.LexGrid.emf.relations.util.RelationsUtil;
-import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 
 import edu.stanford.smi.protege.model.Cls;

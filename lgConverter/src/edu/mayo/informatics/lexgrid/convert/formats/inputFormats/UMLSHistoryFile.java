@@ -20,7 +20,7 @@ package edu.mayo.informatics.lexgrid.convert.formats.inputFormats;
 
 import java.net.URI;
 
-import org.LexGrid.messaging.LgMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.UMLSHistoryFileToSQL;
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
