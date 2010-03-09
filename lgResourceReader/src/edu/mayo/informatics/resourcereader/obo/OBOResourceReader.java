@@ -22,6 +22,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Vector;
 
+import org.LexGrid.LexBIG.DataModel.Core.types.LogLevel;
 import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 
@@ -207,9 +208,8 @@ public class OBOResourceReader extends OBO implements ResourceReader {
 
             loadContents(false, contents);
 
-            if ((logger.getMsgsCount(CachingMessageDirectorIF.WARN) <= 0)
-                    && (logger.getMsgsCount(CachingMessageDirectorIF.ERROR) <= 0)
-                    && (logger.getMsgsCount(CachingMessageDirectorIF.FATAL) <= 0))
+            if ((logger.getLog(LogLevel.WARN).length <= 0)
+                    && (logger.getLog(LogLevel.ERROR).length <= 0))
                 logger.info("OBO Resource contents loaded successfully!");
             else
                 logger.warn("There were problems loading OBO Resource contents; Please see messages.");
