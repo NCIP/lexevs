@@ -29,6 +29,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.emf.base.xml.LgXMLResourceImpl;
 import org.LexGrid.emf.naming.Mappings;
@@ -40,7 +41,6 @@ import org.LexGrid.emf.valueDomains.impl.ValueDomainDefinitionImpl;
 import org.LexGrid.emf.valueDomains.impl.ValueDomainsImpl;
 import org.LexGrid.emf.versions.SystemRelease;
 import org.LexGrid.emf.versions.impl.SystemReleaseImpl;
-import org.LexGrid.messaging.LgMessageDirectorIF;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.xml.sax.SAXException;
