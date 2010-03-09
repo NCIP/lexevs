@@ -26,7 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
-import org.LexGrid.messaging.LgMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 
 /**
  * Class to aid in finding and loading properties files.

@@ -8,5 +8,7 @@
 	<classpathentry exported="true" kind="lib" path="/lgSharedLibraries/apache/commons/commons-collections-3.2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="/lgSharedLibraries/apache/commons/commons-pool-1.4.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/apache/commons/commons-lang-2.4.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbModel"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

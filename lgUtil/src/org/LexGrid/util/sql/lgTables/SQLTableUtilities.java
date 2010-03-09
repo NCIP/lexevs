@@ -37,12 +37,10 @@ import java.util.UUID;
 
 import javax.sql.DataSource;
 
-import org.LexGrid.messaging.LgMessageDirectorIF;
-import org.LexGrid.messaging.impl.NullMessageDirector;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.GenericSQLModifier;
 import org.apache.commons.collections.map.LRUMap;
-import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.log4j.Logger;
 
 /**
@@ -1500,11 +1498,7 @@ public class SQLTableUtilities {
     public void computeTransitivityTable(String codingScheme, LgMessageDirectorIF md) throws SQLException {
         Connection conn = getConnection();
         try {
-            if (md == null) {
-                md = new NullMessageDirector();
-            }
-         
-
+            
             // now, the fun part...
             PreparedStatement getTransitiveAssociations = conn.prepareStatement("Select "
                     + stc_.containerNameOrContainerDC + ", " 
