@@ -119,8 +119,8 @@ CREATE TABLE @PREFIX@entity
 	PRIMARY KEY (entityGuid),
 	UNIQUE UQ_entity(codingSchemeGuid, entityCode, entityCodeNamespace),
 	KEY (codingSchemeGuid),
-	INDEX idx_entity (codingSchemeGuid ASC, entityCode ASC),
-	INDEX idx_entityNS (codingSchemeGuid ASC, entityCode ASC, entityCodeNamespace ASC)
+	INDEX idx_entity (entityCode ASC, codingSchemeGuid ASC ),
+	INDEX idx_entityNS (entityCodeNamespace ASC, entityCode ASC, codingSchemeGuid ASC )
 ) 
 TYPE=INNODB
 ;
@@ -184,10 +184,10 @@ CREATE TABLE @PREFIX@entityAssnsToEntity
 	entryStateGuid VARCHAR(36),
 	PRIMARY KEY (entityAssnsGuid),
 	KEY (associationPredicateGuid),
-	INDEX idx_entAsToEnt_source (associationPredicateGuid ASC, sourceEntityCode ASC),
-	INDEX idx_entAsToEnt_sourceNS (associationPredicateGuid ASC, sourceEntityCode ASC, sourceEntityCodeNamespace ASC),
-	INDEX idx_entAsToEnt_target (associationPredicateGuid ASC, targetEntityCode ASC),
-	INDEX idx_entAsToEnt_targetNS (associationPredicateGuid ASC, targetEntityCode ASC, targetEntityCodeNamespace ASC)
+	INDEX idx_entAsToEnt_source (sourceEntityCode ASC, associationPredicateGuid ASC),
+	INDEX idx_entAsToEnt_sourceNS (sourceEntityCodeNamespace ASC, sourceEntityCode ASC, associationPredicateGuid ASC),
+	INDEX idx_entAsToEnt_target (targetEntityCode ASC, associationPredicateGuid ASC),
+	INDEX idx_entAsToEnt_targetNS (targetEntityCodeNamespace ASC, targetEntityCode ASC, associationPredicateGuid ASC )
 ) 
 TYPE=INNODB
 ;
@@ -202,7 +202,7 @@ CREATE TABLE @PREFIX@entityAssnsToEntityTr
 	targetEntityCode VARCHAR(200) NOT NULL,
 	targetEntityCodeNamespace VARCHAR(50) NOT NULL,
 	PRIMARY KEY (entityAssnsTrGuid),
-	UNIQUE UQ_sourceTargetCombo(sourceEntityCode, sourceEntityCodeNamespace, targetEntityCode, targetEntityCodeNamespace),
+	UNIQUE UQ_sourceTargetCombo(sourceEntityCode, sourceEntityCodeNamespace, targetEntityCode, targetEntityCodeNamespace, associationPredicateGuid),
 	KEY (associationPredicateGuid),
 	INDEX idx_entAsToEntTr_source (associationPredicateGuid ASC, sourceEntityCode ASC, sourceEntityCodeNamespace ASC),
 	INDEX idx_entAsToEntTr_target (associationPredicateGuid ASC, targetEntityCode ASC, targetEntityCodeNamespace ASC)
