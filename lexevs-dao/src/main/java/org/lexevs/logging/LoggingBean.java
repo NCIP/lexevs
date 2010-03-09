@@ -1,5 +1,7 @@
 package org.lexevs.logging;
 
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+
 public class LoggingBean {
 
 	private LgLoggerIF logger;

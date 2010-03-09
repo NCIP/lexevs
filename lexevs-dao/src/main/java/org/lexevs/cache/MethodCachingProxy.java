@@ -4,12 +4,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.commons.collections.map.LRUMap;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.lexevs.cache.annotation.Cacheable;
-import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotationUtils;

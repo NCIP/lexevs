@@ -5,10 +5,12 @@ import java.util.Arrays;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.URIMap;
+import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.EntryState;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.dao.database.service.association.AssociationService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class VersionableEventCodingSchemeService extends AbstractDatabaseService implements CodingSchemeService {
 
 	private EntityService entityService;
+	private AssociationService associationService;
 	
 	@Transactional
 	public CodingScheme getCodingSchemeByUriAndVersion(String uri,
@@ -46,6 +49,10 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	
 	@Transactional
 	public void insertCodingScheme(CodingScheme scheme) throws CodingSchemeAlreadyLoadedException {
+		String uri = scheme.getCodingSchemeURI();
+		String version = scheme.getRepresentsVersion();
+		
+		this.fireCodingSchemeInsertEvent(scheme);
 
 		CodingSchemeDao codingSchemeDao = 
 			this.getDaoManager().getCurrentCodingSchemeDao();
@@ -57,11 +64,15 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 					insertMappings(codingSchemeId, scheme.getMappings());
 		}
 
-		if(scheme.getEntities() != null){
-			this.getDaoManager().getCurrentEntityDao().insertBatchEntities(codingSchemeId, 
-					Arrays.asList(scheme.getEntities().getEntity()));
+		if(scheme.getEntities() != null) {
+			this.entityService.insertBatchEntities(uri, version, Arrays.asList(scheme.getEntities().getEntity()));
 		}
-		this.fireCodingSchemeInsertEvent(scheme);
+		
+		if(scheme.getRelations() != null) {
+			for(Relations relation : scheme.getRelations()) {
+				this.associationService.insertRelation(uri, version, relation);
+			}
+		}
 	}
 	
 	@Transactional
@@ -118,4 +129,11 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		return entityService;
 	}
 
+	public AssociationService getAssociationService() {
+		return associationService;
+	}
+
+	public void setAssociationService(AssociationService associationService) {
+		this.associationService = associationService;
+	}
 }

@@ -19,10 +19,13 @@
 package org.lexevs.logging.messaging.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
-import org.LexGrid.messaging.CachingMessageDirectorIF;
-import org.LexGrid.messaging.LgMessageDirectorIF;
+import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
+import org.LexGrid.LexBIG.DataModel.Core.types.LogLevel;
+import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 
 /**
  * The class implements the CachingMessageDirectorIF interface and is used to
@@ -36,17 +39,8 @@ import org.LexGrid.messaging.LgMessageDirectorIF;
  */
 public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
     protected LgMessageDirectorIF baseMessageDirector_ = null;
-    protected Collection debugMsgs = new ArrayList();
-    protected Collection infoMsgs = new ArrayList();
-    protected Collection warnMsgs = new ArrayList();
-    protected Collection errorMsgs = new ArrayList();
-    protected Collection fatalMsgs = new ArrayList();
-
-    private String DEBUG_STR = "Debug: ";
-    private String INFO_STR = "Info: ";
-    private String WARN_STR = "Warn: ";
-    private String ERROR_STR = "Error: ";
-    private String FATAL_STR = "Fatal: ";
+   
+    private List<LogEntry> logEntries = new ArrayList<LogEntry>();
 
     public CachingMessageDirectorImpl(LgMessageDirectorIF msgDirector) {
         this.baseMessageDirector_ = msgDirector;
@@ -60,7 +54,7 @@ public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
      * (java.lang.Object)
      */
     public String debug(String message) {
-        addMsg(DEBUG, message);
+        addMsg(LogLevel.DEBUG, message);
         return baseMessageDirector_.debug(message);
     }
 
@@ -72,7 +66,7 @@ public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
      * (java.lang.Object, java.lang.Throwable)
      */
     public String error(String message, Throwable cause) {
-        addMsg(ERROR, message, cause.getMessage());
+        addMsg(LogLevel.ERROR, message, cause.getMessage());
         return baseMessageDirector_.error(message, cause);
     }
 
@@ -84,7 +78,7 @@ public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
      * (java.lang.Object)
      */
     public String error(String message) {
-        addMsg(ERROR, message);
+        addMsg(LogLevel.ERROR, message);
 
         return baseMessageDirector_.error(message);
     }
@@ -98,7 +92,7 @@ public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
      */
     public String fatal(String message, Throwable cause) {
 
-        addMsg(FATAL, message, cause.getMessage());
+        addMsg(LogLevel.FATAL, message, cause.getMessage());
 
         return baseMessageDirector_.fatal(message, cause);
     }
@@ -111,7 +105,7 @@ public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
      * (java.lang.Object)
      */
     public String fatal(String message) {
-        addMsg(FATAL, message);
+        addMsg(LogLevel.FATAL, message);
 
         return baseMessageDirector_.fatal(message);
     }
@@ -125,7 +119,7 @@ public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
      */
     public String info(String message) {
 
-        addMsg(INFO, message);
+        addMsg(LogLevel.INFO, message);
 
         return baseMessageDirector_.info(message);
     }
@@ -138,7 +132,7 @@ public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
      * (java.lang.Object, java.lang.Throwable)
      */
     public String warn(String message, Throwable cause) {
-        addMsg(WARN, message, cause.getMessage());
+        addMsg(LogLevel.WARN, message, cause.getMessage());
 
         return baseMessageDirector_.warn(message, cause);
     }
@@ -151,172 +145,25 @@ public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
      * (java.lang.Object)
      */
     public String warn(String message) {
-        addMsg(WARN, message);
+        addMsg(LogLevel.WARN, message);
 
         return baseMessageDirector_.warn(message);
     }
 
-    private void addMsg(int level, String msg, String exceptionMsg) {
+    private void addMsg(LogLevel level, String msg, String exceptionMsg) {
 
-        switch (level) {
-        case DEBUG:
-            debugMsgs.add(getLevelStr(level) + msg + ";\n" + exceptionMsg);
-            break;
-        case INFO:
-            infoMsgs.add(getLevelStr(level) + msg + ";\n" + exceptionMsg);
-            break;
-        case WARN:
-            warnMsgs.add(getLevelStr(level) + msg + ";\n" + exceptionMsg);
-            break;
-        case ERROR:
-            errorMsgs.add(getLevelStr(level) + msg + ";\n" + exceptionMsg);
-            break;
-        case FATAL:
-            fatalMsgs.add(getLevelStr(level) + msg + ";\n" + exceptionMsg);
-            break;
-        default:
-            errorMsgs.add(getLevelStr(level) + msg + ";\n" + exceptionMsg);
-            break;
-        }
+        LogEntry entry = new LogEntry();
+        entry.setEntryLevel(level);
+        entry.setEntryTime(new Date());
+        entry.setMessage(msg + " - " + exceptionMsg);
+        
+        this.logEntries.add(entry);
     }
 
-    private String getLevelStr(int level) {
-        String levelStr = WARN_STR;
-
-        switch (level) {
-        case 0:
-            levelStr = DEBUG_STR;
-            break;
-        case 1:
-            levelStr = INFO_STR;
-            break;
-        case 2:
-            levelStr = WARN_STR;
-            break;
-        case 3:
-            levelStr = ERROR_STR;
-            break;
-        case 4:
-            levelStr = FATAL_STR;
-            break;
-        default:
-            levelStr = WARN_STR;
-            break;
-        }
-
-        return levelStr;
-    }
-
-    private void addMsg(int level, String msg) {
+    private void addMsg(LogLevel level, String msg) {
         addMsg(level, msg, "");
     }
 
-    public Collection getAllMsgs() {
-        Collection allMsgs = new ArrayList();
-
-        allMsgs.addAll(debugMsgs);
-        allMsgs.addAll(infoMsgs);
-        allMsgs.addAll(warnMsgs);
-        allMsgs.addAll(errorMsgs);
-        allMsgs.addAll(fatalMsgs);
-
-        return allMsgs;
-    }
-
-    public long getAllMsgsCount() {
-        try {
-            return getAllMsgs().size();
-        } catch (Exception e) {
-        }
-
-        return -1;
-    }
-
-    public Collection getMsgs(int level) {
-        switch (level) {
-        case DEBUG:
-            return debugMsgs;
-        case INFO:
-            return infoMsgs;
-        case WARN:
-            return warnMsgs;
-        case ERROR:
-            return errorMsgs;
-        case FATAL:
-            return fatalMsgs;
-        default:
-            return getAllMsgs();
-        }
-
-    }
-
-    public long getMsgsCount(int level) {
-        try {
-            return getMsgs(level).size();
-        } catch (Exception e) {
-            return -1;
-        }
-    }
-
-    public Collection getAllMsgsAtAndAbove(int level) {
-        Collection msgs = new ArrayList();
-        switch (level) {
-        case DEBUG:
-            msgs.addAll(debugMsgs);
-        case INFO:
-            msgs.addAll(infoMsgs);
-        case WARN:
-            msgs.addAll(warnMsgs);
-        case ERROR:
-            msgs.addAll(errorMsgs);
-        case FATAL:
-            msgs.addAll(fatalMsgs);
-        default:
-            ;
-        }
-        return msgs;
-    }
-
-    public long getAllMsgsAtAndAboveCount(int level) {
-        try {
-            return getAllMsgsAtAndAbove(level).size();
-
-        } catch (Exception e) {
-            return -1;
-        }
-
-    }
-
-    public void clearLogCollection(int log_level) {
-        switch (log_level) {
-        case DEBUG:
-            debugMsgs.clear();
-            break;
-        case INFO:
-            infoMsgs.clear();
-            break;
-        case WARN:
-            warnMsgs.clear();
-            break;
-        case ERROR:
-            errorMsgs.clear();
-            break;
-        case FATAL:
-            fatalMsgs.clear();
-            break;
-
-        }
-
-    }
-
-    public void clearAllLogs() {
-        debugMsgs.clear();
-        infoMsgs.clear();
-        warnMsgs.clear();
-        errorMsgs.clear();
-        fatalMsgs.clear();
-
-    }
 
     public void busy() {
     }
@@ -331,4 +178,20 @@ public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
         baseMessageDirector_.fatalAndThrowException(message, sourceException);
         throw new Exception(message, sourceException);
     }
+
+	@Override
+	public void clearLog() {
+		this.logEntries.clear();
+	}
+
+	@Override
+	public LogEntry[] getLog(LogLevel level) {
+		List<LogEntry> entries = new ArrayList<LogEntry>();
+		for(LogEntry entry : this.logEntries) {
+			if(entry.getEntryLevel().equals(level)) {
+				entries.add(entry);
+			}
+		}
+		return entries.toArray(new LogEntry[entries.size()]);
+	}
 }

@@ -1,6 +1,8 @@
 package org.lexevs.dao.database.access.versions;
 
 import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.Revision;
+import org.LexGrid.versions.SystemRelease;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
 public interface VersionsDao extends LexGridSchemaVersionAwareDao {
@@ -16,4 +18,8 @@ public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 			String entryType,
 			String previousEntryStateId,
 			EntryState entryState);
+	
+	public void insertRevision(Revision revision);
+	
+	public void insertSystemRelease(SystemRelease systemRelease);
 }

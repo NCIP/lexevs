@@ -38,10 +38,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.commonTypes.Source;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.Logger;
 import org.lexevs.system.constants.SystemVariables;
 import org.w3c.dom.Document;

@@ -1,14 +1,19 @@
 package org.lexevs.dao.database.service.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
-import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
+import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.dao.database.service.property.PropertyService;
 import org.springframework.transaction.annotation.Transactional;
 
 public class VersionableEventEntityService extends AbstractDatabaseService implements EntityService {
 
+	private PropertyService propertyService;
+	
 	@Transactional
 	public void insertEntity(String codingSchemeUri, String version,
 			Entity entity) {

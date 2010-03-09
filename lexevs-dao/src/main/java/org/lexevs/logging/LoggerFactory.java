@@ -18,6 +18,7 @@
  */
 package org.lexevs.logging;
 
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.lexevs.system.constants.SystemVariables;
 
 

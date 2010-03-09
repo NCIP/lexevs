@@ -18,6 +18,8 @@
  */
 package org.lexevs.logging;
 
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+
 /**
  * @author <A HREF="mailto:rokickik@mail.nih.gov">Konrad Rokicki</A>
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>

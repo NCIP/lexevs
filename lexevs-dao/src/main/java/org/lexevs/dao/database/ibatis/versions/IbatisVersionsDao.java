@@ -3,6 +3,8 @@ package org.lexevs.dao.database.ibatis.versions;
 import java.util.List;
 
 import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.Revision;
+import org.LexGrid.versions.SystemRelease;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
@@ -55,6 +57,18 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 		
 	}
 	
+	@Override
+	public void insertRevision(Revision revision) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void insertSystemRelease(SystemRelease systemRelease) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+	
 	public void insertEntryState(String codingSchemeId, String entryStateId,
 			String entryId, String entryType, String previousEntryStateId,
 			EntryState entryState) {
@@ -91,5 +105,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
 		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
 	}
+
+	
 
 }

@@ -18,7 +18,7 @@
  */
 package org.lexevs.logging.messaging.impl;
 
-import org.LexGrid.messaging.LgMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 
 /**
  * Message director implementation that does nothing with the messages. Used in

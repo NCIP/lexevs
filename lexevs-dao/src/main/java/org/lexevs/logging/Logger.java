@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.log4j.Appender;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.DailyRollingFileAppender;
@@ -31,7 +32,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.system.ResourceManager;
 import org.lexevs.system.constants.SystemVariables;
 
 /**

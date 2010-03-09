@@ -18,7 +18,7 @@
  */
 package org.lexevs.logging.messaging.impl;
 
-import org.LexGrid.messaging.LgMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.apache.log4j.Logger;
 
 /**

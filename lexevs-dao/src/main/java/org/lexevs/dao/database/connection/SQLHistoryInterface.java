@@ -24,12 +24,12 @@ import java.util.UUID;
 
 import javax.sql.DataSource;
 
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
 import org.LexGrid.util.sql.GenericSQLModifier;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.dao.database.type.DatabaseType;
-import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 
 /**

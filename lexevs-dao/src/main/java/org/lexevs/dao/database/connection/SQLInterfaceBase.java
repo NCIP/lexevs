@@ -23,6 +23,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.managedobj.FindException;
 import org.LexGrid.managedobj.ManagedObjIF;
 import org.LexGrid.managedobj.jdbc.JDBCBaseService;
@@ -34,7 +35,6 @@ import org.LexGrid.util.sql.GenericSQLModifier;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.ResourceManager;
 

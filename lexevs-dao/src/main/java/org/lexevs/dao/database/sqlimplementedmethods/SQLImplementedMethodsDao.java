@@ -33,6 +33,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Properties;
@@ -76,7 +77,6 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.exceptions.UnexpectedInternalError;
-import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.system.ResourceManager;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -116,6 +116,7 @@
 		class="org.lexevs.dao.database.service.codingscheme.VersionableEventCodingSchemeService"
 		parent="abstractService">
 		<property name="entityService" ref="entityService"/>
+		<property name="associationService" ref="associationService"/>
 		<property name="databaseServiceEventListeners">
 			<list>
 				<ref bean="codingSchemeRegisteringListener"/>
