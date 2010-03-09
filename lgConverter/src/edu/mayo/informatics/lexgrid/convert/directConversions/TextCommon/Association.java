@@ -38,10 +38,6 @@ public class Association {
     public Association() {
         targetSet = new ArrayList<Concept>();
     }
-          
-//    public boolean isValid() {
-//        
-//    }
 
     public String toString() {
         String str = "[" + source.toString() + "] " + relationName + " ";
@@ -84,8 +80,8 @@ public class Association {
 
     public boolean equals(Object o) {
         if (o instanceof Association) {
-            if ((((Association)o).getRelationName().equals(this.relationName) && 
-                    ((Association)o).getSourceConcept().equals(this.source) &&
+            if ((equals(((Association)o).getRelationName(),this.relationName) && 
+                    equals(((Association)o).getSourceConcept(),this.source) &&
                     ((Association)o).getTargetConceptSet().size() == targetSet.size())== false
                   )
                 return false;
@@ -94,6 +90,17 @@ public class Association {
             }
         }
         return false;
+    }
+    
+    private boolean equals(Object src, Object dest){
+        if (src == null && dest == null)
+            return true;
+        else if (src == null && dest != null)
+            return false;
+        else if (src != null && dest == null)
+            return false;
+        else
+            return src.equals(dest);
     }
     
 }
