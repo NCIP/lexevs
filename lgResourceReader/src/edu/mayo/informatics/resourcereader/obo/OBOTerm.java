@@ -44,7 +44,7 @@ public class OBOTerm extends OBOEntity {
         return ((!StringUtils.isNull(id)) && (!StringUtils.isNull(name)));
     }
 
-    public Hashtable getRelationships() {
+    public Hashtable<String, Vector<String>> getRelationships() {
         return relationships;
     }
 

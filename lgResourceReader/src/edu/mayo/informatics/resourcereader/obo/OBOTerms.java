@@ -87,7 +87,7 @@ public class OBOTerms extends OBOCollection {
         }
     }
 
-    public TreeSet getNameSpaceSet() {
+    public TreeSet<String> getNameSpaceSet() {
         TreeSet<String> namespaces = new TreeSet<String>();
         for (OBOTerm term : terms) {
             if (!StringUtils.isNull(term.namespace))
