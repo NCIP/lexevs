@@ -337,16 +337,16 @@ CREATE INDEX idx_entAsToEnt_source
 ON entityAssnsToEntity (associationPredicateGuid, sourceEntityCode)
 ;
 CREATE INDEX idx_entAsToEnt_sourceNS
-ON entityAssnsToEntity (associationPredicateGuid, sourceEntityCode, sourceEntityCodeNamespace)
+ON entityAssnsToEntity (sourceEntityCodeNamespace, sourceEntityCode, associationPredicateGuid)
 ;
 CREATE INDEX idx_entAsToEnt_target
-ON entityAssnsToEntity (associationPredicateGuid, targetEntityCode)
+ON entityAssnsToEntity (targetEntityCode, associationPredicateGuid)
 ;
 CREATE INDEX idx_entAsToEnt_targetNS
-ON entityAssnsToEntity (associationPredicateGuid, targetEntityCode, targetEntityCodeNamespace)
+ON entityAssnsToEntity (targetEntityCodeNamespace, targetEntityCode,  associationPredicateGuid)
 ;
 ALTER TABLE entityAssnsToEntityTr
-	ADD CONSTRAINT UQ_sourceTargetCombo UNIQUE (sourceEntityCode, sourceEntityCodeNamespace, targetEntityCode, targetEntityCodeNamespace)
+	ADD CONSTRAINT UQ_sourceTargetCombo UNIQUE (sourceEntityCode, sourceEntityCodeNamespace, targetEntityCode, targetEntityCodeNamespace, associationPredicateGuid)
 ;
 CREATE INDEX idx_entAsToEntTr_source
 ON entityAssnsToEntityTr (associationPredicateGuid, sourceEntityCode, sourceEntityCodeNamespace)

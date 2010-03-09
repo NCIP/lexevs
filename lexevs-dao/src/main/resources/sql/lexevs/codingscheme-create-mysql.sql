@@ -319,8 +319,7 @@ CREATE TABLE @PREFIX@relation
 	expirationDate DATETIME,
 	entryStateGuid VARCHAR(36),
 	PRIMARY KEY (relationGuid),
-	UNIQUE UQ_relation_codingSchemeGuid(codingSchemeGuid),
-	UNIQUE UQ_relation_containerName(containerName),
+	UNIQUE UQ_csGuid_containerName(codingSchemeGuid, containerName),
 	KEY (codingSchemeGuid)
 ) 
 TYPE=INNODB
