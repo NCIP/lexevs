@@ -23,7 +23,7 @@ import java.net.URI;
 import java.util.Iterator;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
-import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.emf.codingSchemes.CodingScheme;
 import org.LexGrid.emf.concepts.Entities;
 import org.LexGrid.emf.relations.Association;
@@ -52,10 +52,10 @@ public class OboReadWrite extends EMFReadImpl implements EMFRead, EMFWrite {
     URI inputFileLocation_;
     boolean failOnAllErrors_;
     boolean overwrite_ = false;
-    LgMessageDirectorIF messages_;
+    CachingMessageDirectorIF messages_;
     private ResourceManifest oboManifest_ = null;
 
-    public OboReadWrite(URI oboFileLocation, boolean failOnAllErrors, boolean overwrite, LgMessageDirectorIF messages) {
+    public OboReadWrite(URI oboFileLocation, boolean failOnAllErrors, boolean overwrite, CachingMessageDirectorIF messages) {
         this.inputFileLocation_ = oboFileLocation;
         this.messages_ = messages;
         this.overwrite_ = overwrite;
@@ -63,7 +63,7 @@ public class OboReadWrite extends EMFReadImpl implements EMFRead, EMFWrite {
     }
 
     public OboReadWrite(URI oboFileLocation, LoaderPreferences loaderPrefs, boolean failOnAllErrors, boolean overwrite,
-            LgMessageDirectorIF messages) {
+            CachingMessageDirectorIF messages) {
         this.inputFileLocation_ = oboFileLocation;
         this.messages_ = messages;
         this.overwrite_ = overwrite;
@@ -72,7 +72,7 @@ public class OboReadWrite extends EMFReadImpl implements EMFRead, EMFWrite {
     }
 
     public OboReadWrite(URI oboFileLocation, LoaderPreferences loaderPrefs, ResourceManifest manifest,
-            boolean failOnAllErrors, boolean overwrite, LgMessageDirectorIF messages) {
+            boolean failOnAllErrors, boolean overwrite, CachingMessageDirectorIF messages) {
         this.inputFileLocation_ = oboFileLocation;
         this.messages_ = messages;
         this.overwrite_ = overwrite;

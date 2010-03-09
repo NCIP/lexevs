@@ -22,8 +22,8 @@ import java.net.URI;
 import java.util.Collection;
 
 import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
-import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
-import org.LexGrid.emf.codingSchemes.CodingScheme;
+import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 
 import edu.mayo.informatics.resourcereader.core.IF.ResourceContents;
@@ -43,9 +43,9 @@ import edu.mayo.informatics.resourcereader.obo.OBOTerms;
  *          15:52:21 +0000 (Mon, 19 Jun 2006) $
  */
 public class OBO2EMFMain {
-    private LgMessageDirectorIF messages_;
+    private CachingMessageDirectorIF messages_;
 
-    public CodingScheme map(URI inFileName, ResourceManifest manifestObj, LgMessageDirectorIF messages)
+    public CodingScheme map(URI inFileName, ResourceManifest manifestObj, CachingMessageDirectorIF messages)
             throws Exception {
         messages_ = messages;
 
@@ -112,16 +112,13 @@ public class OBO2EMFMain {
 
                         if (processed) {
                             oboDynamicMap.populateSupportedProperties(csclass);
-                            oboDynamicMap.populateSupportedConceptStatus(csclass);
                             oboDynamicMap.populateSupportedSources(csclass);
-                            oboDynamicMap.populateSupportedRepresentationalForms(csclass);
                             oboDynamicMap.populateSupportedAssociations(csclass);
                             // requires call to populateSupportedAssociations
                             // first
                             // so that it can adjust it's association list
                             // properly
                             oboDynamicMap.populateSupportedHierarchy(csclass);
-                            oboDynamicMap.populateSupportedPropertyLinks(csclass);
                             oboDynamicMap.setSupportedHierarchyAssociationsTransitive(csclass);
                             messages_.info("Processing DONE!!");
                             return csclass;
