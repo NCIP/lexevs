@@ -63,6 +63,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.ObjectToString;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgAdminFunction;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -79,7 +80,6 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.dao.index.connection.IndexInterface;
 import org.lexevs.exceptions.MissingResourceException;
-import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.ResourceManager;
 

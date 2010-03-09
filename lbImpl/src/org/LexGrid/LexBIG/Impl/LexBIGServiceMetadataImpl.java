@@ -29,6 +29,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.dataAccess.MetaDataQuery;
 import org.LexGrid.LexBIG.Impl.loaders.metadata.BaseMetaDataLoader;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceMetadata;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;
@@ -37,7 +38,6 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.regex.RegexQuery;
-import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.ResourceManager;
 

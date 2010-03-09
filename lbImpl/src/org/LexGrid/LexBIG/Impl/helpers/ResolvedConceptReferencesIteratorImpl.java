@@ -30,10 +30,10 @@ import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.annotations.LgHasRemoteDependencies;
 import org.LexGrid.annotations.LgProxyField;
-import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.ResourceManager;
 

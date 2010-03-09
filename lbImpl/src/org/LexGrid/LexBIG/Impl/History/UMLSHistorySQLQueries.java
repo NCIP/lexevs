@@ -36,13 +36,13 @@ import org.LexGrid.LexBIG.DataModel.NCIHistory.types.ChangeType;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.CodingSchemeVersion;
 import org.LexGrid.versions.EntityVersion;
 import org.LexGrid.versions.SystemRelease;
 import org.lexevs.dao.database.connection.SQLHistoryInterface;
 import org.lexevs.exceptions.UnexpectedInternalError;
-import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.ResourceManager;
 

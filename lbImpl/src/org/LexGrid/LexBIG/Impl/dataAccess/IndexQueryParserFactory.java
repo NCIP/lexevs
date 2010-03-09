@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.Impl.dataAccess;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.codec.language.DoubleMetaphone;
 import org.apache.lucene.analysis.KeywordAnalyzer;
@@ -29,7 +30,6 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
-import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.ResourceManager;
 

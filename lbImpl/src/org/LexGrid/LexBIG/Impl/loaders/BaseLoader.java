@@ -46,6 +46,7 @@ import org.LexGrid.LexBIG.Impl.loaders.postprocessor.SupportedAttributePostProce
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
@@ -56,7 +57,6 @@ import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedExcept
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.registry.WriteLockManager;
 import org.lexevs.system.ResourceManager;

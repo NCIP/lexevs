@@ -36,6 +36,7 @@ import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.index.Term;
@@ -47,7 +48,6 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.exceptions.UnexpectedInternalError;
-import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.ResourceManager;
 
