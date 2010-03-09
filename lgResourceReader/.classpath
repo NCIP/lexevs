@@ -6,5 +6,7 @@
 	<classpathentry kind="lib" path="/lgSharedLibraries/castor/castor-1.2.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/jena/jena-2.5.4.jar"/>
 	<classpathentry kind="lib" path="/lgModel/lib/lgModelCastor.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

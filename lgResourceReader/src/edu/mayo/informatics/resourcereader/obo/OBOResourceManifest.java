@@ -24,7 +24,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 
-import org.LexGrid.messaging.CachingMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 
 import edu.mayo.informatics.resourcereader.core.IF.ResourceManifest;
 import edu.mayo.informatics.resourcereader.obo.exceptions.OBOResourceException;

@@ -18,9 +18,9 @@
  */
 package edu.mayo.informatics.resourcereader.obo;
 
-import org.LexGrid.messaging.CachingMessageDirectorIF;
-import org.LexGrid.messaging.impl.CachingMessageDirectorImpl;
-import org.LexGrid.messaging.impl.CommandLineMessageDirector;
+import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
+import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
+import org.lexevs.logging.messaging.impl.CommandLineMessageDirector;
 
 import edu.mayo.informatics.resourcereader.core.impl.Resource;
 

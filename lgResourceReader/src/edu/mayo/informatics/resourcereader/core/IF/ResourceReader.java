@@ -18,7 +18,8 @@
  */
 package edu.mayo.informatics.resourcereader.core.IF;
 
-import org.LexGrid.messaging.LgMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
+
 
 /**
  * The minimum interface that must be implemented by any ResourceReader

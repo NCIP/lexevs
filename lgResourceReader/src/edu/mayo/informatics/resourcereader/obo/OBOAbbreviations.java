@@ -23,7 +23,7 @@ import java.io.FileReader;
 import java.util.Collection;
 import java.util.Hashtable;
 
-import org.LexGrid.messaging.CachingMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 
 import edu.mayo.informatics.resourcereader.core.StringUtils;
 import edu.mayo.informatics.resourcereader.core.IF.ResourceEntity;

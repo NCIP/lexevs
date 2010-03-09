@@ -29,7 +29,7 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.LexGrid.messaging.CachingMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 
 import edu.mayo.informatics.resourcereader.core.StringUtils;
 import edu.mayo.informatics.resourcereader.core.IF.ResourceException;

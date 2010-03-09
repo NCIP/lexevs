@@ -22,8 +22,8 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Vector;
 
-import org.LexGrid.messaging.CachingMessageDirectorIF;
-import org.LexGrid.messaging.LgMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 
 import edu.mayo.informatics.resourcereader.core.IF.ResourceHeader;
 import edu.mayo.informatics.resourcereader.core.IF.ResourceManifest;

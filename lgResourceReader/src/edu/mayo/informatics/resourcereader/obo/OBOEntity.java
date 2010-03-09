@@ -20,7 +20,7 @@ package edu.mayo.informatics.resourcereader.obo;
 
 import java.util.Vector;
 
-import org.LexGrid.messaging.CachingMessageDirectorIF;
+import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 
 import edu.mayo.informatics.resourcereader.core.StringUtils;
 import edu.mayo.informatics.resourcereader.core.IF.ResourceEntity;

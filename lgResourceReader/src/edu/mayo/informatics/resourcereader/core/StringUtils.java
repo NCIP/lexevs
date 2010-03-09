@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.regex.Pattern;
 
 /**
  * Convenient methods for String manupulation
