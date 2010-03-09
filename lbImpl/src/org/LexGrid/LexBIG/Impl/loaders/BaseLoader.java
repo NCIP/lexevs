@@ -46,6 +46,7 @@ import org.LexGrid.LexBIG.Impl.loaders.postprocessor.SupportedAttributePostProce
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.util.SimpleMemUsageReporter;
@@ -58,6 +59,7 @@ import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
+import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 import org.lexevs.registry.WriteLockManager;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.constants.SystemVariables;
@@ -92,7 +94,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         = new AbsoluteCodingSchemeVersionReference[0];
 
     protected boolean inUse = false;
-    private MessageDirector md_;
+    private CachingMessageDirectorIF md_;
     private LoadStatus status_;
    
     private OptionHolder options_;
@@ -135,7 +137,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
 
         status_.setState(ProcessState.PROCESSING);
         status_.setStartTime(new Date(System.currentTimeMillis()));
-        md_ = new MessageDirector(getName(), status_);
+        md_ = new CachingMessageDirectorImpl( new MessageDirector(getName(), status_));
 
         if (async) {
             Thread conversion = new Thread(new DoConversion());
@@ -188,7 +190,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         status_ = new LoadStatus();
         status_.setLoadSource(null); // doesn't apply
         status_.setStartTime(new Date(System.currentTimeMillis()));
-        md_ = new MessageDirector(getName(), status_);
+        md_ = new CachingMessageDirectorImpl( new MessageDirector(getName(), status_));
 
         if (async) {
             Thread reIndex = new Thread(new ReIndex(temp));
@@ -488,12 +490,12 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         if (md_ == null) {
             return new LogEntry[] {};
         }
-        return md_.getLogEntries(level);
+        return md_.getLog(level);
     }
 
     public void clearLog() {
         if (md_ != null) {
-            md_.clearMessages();
+            md_.clearLog();
         }
     }
 
@@ -725,7 +727,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         this.doRegister = doRegister;
     }
     
-    public MessageDirector getMessageDirector() {
+    public CachingMessageDirectorIF getMessageDirector() {
         return md_;
     }
 }
