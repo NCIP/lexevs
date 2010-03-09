@@ -174,6 +174,7 @@ public class OBO2EMFDynamicMapHolders {
                 propertyCounter = 0;
 
                 Concept concept = EntityFactory.createConcept();
+                concept.setEntityCodeNamespace(csclass.getCodingSchemeName());
 
                 if (!OBO2EMFUtils.isNull(oboTerm.getId()))
                     concept.setEntityCode(oboTerm.getId());
@@ -498,6 +499,7 @@ public class OBO2EMFDynamicMapHolders {
         }
 
         at.setTargetEntityCode(target_code);
+        at.setTargetEntityCodeNamespace(source.getEntityCodeNamespace());
         RelationsUtil.subsume(as, at);
 
     }
@@ -588,6 +590,7 @@ public class OBO2EMFDynamicMapHolders {
                     if (!OBO2EMFUtils.isNull(stringValue)) {
                         AssociationTarget at = new AssociationTarget();
                         at.setTargetEntityCode(stringValue);
+                        at.setTargetEntityCodeNamespace(concept.getEntityCodeNamespace());
                         RelationsUtil.subsume(as, at);
                     }
                 }
@@ -614,6 +617,7 @@ public class OBO2EMFDynamicMapHolders {
         } else {
             AssociationSource ai = new AssociationSource();
             ai.setSourceEntityCode(concept.getEntityCode());
+            ai.setSourceEntityCodeNamespace(concept.getEntityCodeNamespace());
             assocName_SrcCodeStr2assocSrcMap.put(assocNameAndCode, ai);
             assocPredicate.getSourceAsReference().add(ai);
             return ai;

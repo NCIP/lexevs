@@ -29,6 +29,7 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedDataType;
 import org.LexGrid.naming.SupportedLanguage;
+import org.LexGrid.naming.SupportedNamespace;
 
 import edu.mayo.informatics.resourcereader.obo.OBOConstants;
 import edu.mayo.informatics.resourcereader.obo.OBOContents;
@@ -75,6 +76,17 @@ public class OBO2EMFStaticMapHolders {
         }
     }
 
+    private void prepareSupportedNamespace(CodingScheme csclass) {
+        try {
+            List<SupportedNamespace> suppCodingScheme = csclass.getMappings().getSupportedNamespaceAsReference();
+            SupportedNamespace scs = new SupportedNamespace();
+            scs.setLocalId(csclass.getCodingSchemeName());
+            scs.setUri(csclass.getCodingSchemeURI());           
+            suppCodingScheme.add(scs);
+        } catch (Exception e) {
+            messages_.error("Failed while setting supported codingScheme...", e);
+        }
+    }    
     private void prepareSupportedFormats(List<SupportedDataType> supportedFormats) {
         SupportedDataType fmt = new SupportedDataType();
         fmt.setLocalId(OBO2EMFConstants.PLAIN_FORMAT);
@@ -131,7 +143,6 @@ public class OBO2EMFStaticMapHolders {
                 csclass.setRepresentsVersion(OBOConstants.UNASSIGNED_LABEL);
 
             csclass.getLocalNameAsReference().add(csName);
-            csclass.getLocalNameAsReference().add(OBO2EMFConstants.LOCAL_FULL_PREFIX + csName); // Pradip
             csclass.setApproxNumConcepts(terms.getMembersCount());
             // csclass.setIsNative(new Boolean(true));
             EntityDescription ed= new EntityDescription();
@@ -145,6 +156,7 @@ public class OBO2EMFStaticMapHolders {
             prepareSupportedFormats(supportedFormats);
 
             prepareSupportedCodingScheme(csclass);
+            prepareSupportedNamespace(csclass);
         } catch (Exception e) {
             messages_.error("Failed while preparing for Coding Scheme Class", e);
         }
