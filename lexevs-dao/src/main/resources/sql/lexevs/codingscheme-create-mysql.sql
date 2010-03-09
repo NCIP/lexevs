@@ -73,7 +73,6 @@ CREATE TABLE @PREFIX@csMultiAttrib
 	role VARCHAR(250),
 	entryStateGuid VARCHAR(36),
 	PRIMARY KEY (csMultiAttribGuid),
-	UNIQUE UQ_csMultiAttrib_codingScheme(codingSchemeGuid),
 	KEY (codingSchemeGuid),
 	INDEX idx_csMultiAttrib (codingSchemeGuid ASC, attributeType ASC)
 ) 
