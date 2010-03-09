@@ -4200,3 +4200,149 @@ StepExecution: id=5
  - Step Property:  rollbackCount=0
 LB_LOAD_LOGGER DEBUG - 2010-02-23 07:02:17,186 - Job completed, dropping tables
 LB_LOAD_LOGGER DEBUG - 2010-02-23 07:02:17,186 - Load Job ended in state: exitCode=COMPLETED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:19,193 - Freeing OBOLoaderImpl
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:19,209 - Freeing LexGridLoaderImpl
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:19,209 - Freeing LexGridLoaderImpl
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:19,209 - Freeing OWLLoaderImpl
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:19,209 - Freeing RadLexProtegeFramesLoaderImpl
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:19,209 - Freeing OWLLoaderImpl
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:19,209 - Freeing RadLexProtegeFramesLoaderImpl
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:19,209 - Freeing OBOLoaderImpl
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:24,256 - Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:25,725 - First run of load Job, initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:26,506 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:26,506 - Job Properties : 
+Property: retry
+ - Value: false
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-air/
+Property: prefix
+ - Value: baaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:26,568 - Executing Load Job Id: 0 at Mon Mar 08 09:40:26 CST 2010
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:26,584 - Step: loadStagingInsertsTable starting.
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:26,756 - Step: loadStagingInsertsTable completed.
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:26,756 - Summary for Step: loadStagingInsertsTable
+StepExecution: id=0
+ - Step Property:  name=loadStagingInsertsTable
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=696
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=696 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  commitCount=14
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:26,771 - Step: loadCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:27,053 - Step: loadCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:27,053 - Summary for Step: loadCodingScheme
+StepExecution: id=1
+ - Step Property:  name=loadCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=148
+ - Step Property:  filterCount=147
+ - Step Property:  writeCount=1 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  commitCount=149
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:27,178 - Step: umlsLoadEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:27,396 - Step: umlsLoadEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:27,396 - Summary for Step: umlsLoadEntity
+StepExecution: id=3
+ - Step Property:  name=umlsLoadEntity
+ - Step Property:  status=FAILED
+ - Step Property:  exitStatus=FAILED
+ - Step Property:  readCount=1
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  commitCount=0
+ - Step Property:  rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-03-08 09:40:27,396 - Exceptions for Step: umlsLoadEntity StepExecution: id=3, name=umlsLoadEntity, status=FAILED, exitStatus=FAILED, readCount=1, filterCount=0, writeCount=0 readSkipCount=0, writeSkipCount=0, commitCount=0, rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-03-08 09:40:27,396 - - Exception: java.lang.RuntimeException: java.sql.BatchUpdateException: failed batch
+java.lang.RuntimeException: java.sql.BatchUpdateException: failed batch
+	at org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter.executeBatch(SqlMapExecutorBatchInserter.java:19)
+	at org.lexevs.dao.database.ibatis.entity.IbatisEntityDao$1.doInSqlMapClient(IbatisEntityDao.java:164)
+	at org.springframework.orm.ibatis.SqlMapClientTemplate.execute(SqlMapClientTemplate.java:209)
+	at org.lexevs.dao.database.ibatis.entity.IbatisEntityDao.insertBatchEntities(IbatisEntityDao.java:141)
+	at org.lexevs.dao.database.ibatis.entity.IbatisEntityDao$$FastClassByCGLIB$$f3b66b30.invoke(<generated>)
+	at net.sf.cglib.proxy.MethodProxy.invoke(MethodProxy.java:191)
+	at org.springframework.aop.framework.Cglib2AopProxy$DynamicAdvisedInterceptor.intercept(Cglib2AopProxy.java:628)
+	at org.lexevs.dao.database.ibatis.entity.IbatisEntityDao$$EnhancerByCGLIB$$dd08f45e.insertBatchEntities(<generated>)
+	at org.lexevs.dao.database.service.entity.VersionableEventEntityService.insertBatchEntities(VersionableEventEntityService.java:37)
+	at org.lexevs.dao.database.service.entity.VersionableEventEntityService$$FastClassByCGLIB$$b83e9c8e.invoke(<generated>)
+	at net.sf.cglib.proxy.MethodProxy.invoke(MethodProxy.java:191)
+	at org.springframework.aop.framework.Cglib2AopProxy$CglibMethodInvocation.invokeJoinpoint(Cglib2AopProxy.java:700)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:149)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:106)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:171)
+	at org.springframework.aop.framework.Cglib2AopProxy$DynamicAdvisedInterceptor.intercept(Cglib2AopProxy.java:635)
+	at org.lexevs.dao.database.service.entity.VersionableEventEntityService$$EnhancerByCGLIB$$bffddd68.insertBatchEntities(<generated>)
+	at org.lexgrid.loader.writer.EntityWriter.doWrite(EntityWriter.java:13)
+	at org.lexgrid.loader.writer.AbstractCodingSchemeIdHolderWriter.write(AbstractCodingSchemeIdHolderWriter.java:18)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.writeItems(SimpleChunkProcessor.java:155)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doWrite(SimpleChunkProcessor.java:136)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.write(SimpleChunkProcessor.java:209)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:193)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:70)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:264)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:67)
+	at org.springframework.batch.repeat.support.RepeatTemplate.getNextResult(RepeatTemplate.java:352)
+	at org.springframework.batch.repeat.support.RepeatTemplate.executeInternal(RepeatTemplate.java:212)
+	at org.springframework.batch.repeat.support.RepeatTemplate.iterate(RepeatTemplate.java:143)
+	at org.springframework.batch.core.step.tasklet.TaskletStep.doExecute(TaskletStep.java:239)
+	at org.springframework.batch.core.step.AbstractStep.execute(AbstractStep.java:198)
+	at org.springframework.batch.core.job.AbstractJob.handleStep(AbstractJob.java:348)
+	at org.springframework.batch.core.job.flow.FlowJob.access$0(FlowJob.java:1)
+	at org.springframework.batch.core.job.flow.FlowJob$JobFlowExecutor.executeStep(FlowJob.java:137)
+	at org.springframework.batch.core.job.flow.support.state.StepState.handle(StepState.java:60)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.resume(SimpleFlow.java:144)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.start(SimpleFlow.java:124)
+	at org.springframework.batch.core.job.flow.FlowJob.doExecute(FlowJob.java:105)
+	at org.springframework.batch.core.job.AbstractJob.execute(AbstractJob.java:250)
+	at org.springframework.batch.core.launch.support.SimpleJobLauncher$1.run(SimpleJobLauncher.java:110)
+	at org.springframework.core.task.SyncTaskExecutor.execute(SyncTaskExecutor.java:49)
+	at org.springframework.batch.core.launch.support.SimpleJobLauncher.run(SimpleJobLauncher.java:105)
+	at org.lexgrid.loader.AbstractSpringBatchLoader.launchJob(AbstractSpringBatchLoader.java:98)
+	at org.lexgrid.loader.umls.UmlsBatchLoaderImpl.loadUmls(UmlsBatchLoaderImpl.java:75)
+	at util.integration.LoadUmlsForIntegration.testSingleDbUmlsLoad(LoadUmlsForIntegration.java:39)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:59)
+	at org.junit.internal.runners.MethodRoadie.runTestMethod(MethodRoadie.java:98)
+	at org.junit.internal.runners.MethodRoadie$2.run(MethodRoadie.java:79)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:87)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:77)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:42)
+	at org.junit.internal.runners.JUnit4ClassRunner.invokeTestMethod(JUnit4ClassRunner.java:88)
+	at org.junit.internal.runners.JUnit4ClassRunner.runMethods(JUnit4ClassRunner.java:51)
+	at org.junit.internal.runners.JUnit4ClassRunner$1.run(JUnit4ClassRunner.java:44)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)
+	at org.junit.internal.runners.JUnit4ClassRunner.run(JUnit4ClassRunner.java:42)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:46)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)
+Caused by: java.sql.BatchUpdateException: failed batch
+	at org.hsqldb.jdbc.jdbcStatement.executeBatch(Unknown Source)
+	at org.hsqldb.jdbc.jdbcPreparedStatement.executeBatch(Unknown Source)
+	at org.apache.commons.dbcp.DelegatingStatement.executeBatch(DelegatingStatement.java:297)
+	at org.apache.commons.dbcp.DelegatingStatement.executeBatch(DelegatingStatement.java:297)
+	at com.ibatis.sqlmap.engine.execution.SqlExecutor$Batch.executeBatch(SqlExecutor.java:611)
+	at com.ibatis.sqlmap.engine.execution.SqlExecutor.executeBatch(SqlExecutor.java:118)
+	at com.ibatis.sqlmap.engine.impl.SqlMapExecutorDelegate.executeBatch(SqlMapExecutorDelegate.java:759)
+	at com.ibatis.sqlmap.engine.impl.SqlMapSessionImpl.executeBatch(SqlMapSessionImpl.java:184)
+	at org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter.executeBatch(SqlMapExecutorBatchInserter.java:17)
+	... 66 more
+
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:27,443 - Load Job ended in state: exitCode=FAILED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:27,787 - Not Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-03-08 09:40:28,037 - First run of load Job, initializing Staging Tables.

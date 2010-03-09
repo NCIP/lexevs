@@ -761,3 +761,14 @@ org.LexGrid.LexBIG.Exceptions.LBParameterException: No coding scheme could be lo
 	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)
 	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)
 	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)
+LB_DEBUG_LOGGER DEBUG - 2010-03-08 09:40:06,053 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-08 09:40:06,053 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-08 09:40:06,053 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-08 09:40:06,053 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-08 09:40:06,053 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-08 09:40:06,053 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-08 09:40:06,053 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-08 09:40:06,053 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-08 09:40:06,053 - [LOG_ID 9] Logging sql messages turned off.
+LB_WARN_LOGGER WARN - 2010-03-08 09:40:10,741 - [LOG_ID 10] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
+LB_INFO_LOGGER INFO - 2010-03-08 09:40:13,334 - [LOG_ID 11] Checking for installed LexEVS Database Schema.
