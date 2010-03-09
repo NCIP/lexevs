@@ -112,6 +112,14 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						property
 						));
 		
+		for(Source source : property.getSource()) {
+			this.insertPropertySource(codingSchemeId, propertyId, source, inserter);
+		}
+		
+		for(String context : property.getUsageContext()) {
+			this.insertPropertyUsageContext(codingSchemeId, propertyId, context, inserter);
+		}
+		
 		return propertyId;
 		
 	}
@@ -142,6 +150,23 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						propertyId, sourceId, source));
 	}
 	
+	public void insertPropertySource(final String codingSchemeId, final String propertyId, final Source source, final IbatisInserter inserter) {
+		final String sourceId = this.createUniqueId();	
+
+		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+
+			public Object doInSqlMapClient(SqlMapExecutor executor)
+			throws SQLException {
+
+				inserter.insert(INSERT_PROPERTY_SOURCE_SQL, 
+						buildInsertPropertySourceBean(
+								getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+								propertyId, sourceId, source));
+				return null;
+			}
+		});
+	}
+	
 	public void insertPropertyUsageContext(String codingSchemeId, String propertyId, String usageContext) {
 		String sourceId = this.createUniqueId();
 		
@@ -149,6 +174,24 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				this.buildInsertPropertyUsageContextBean(
 						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
 						propertyId, sourceId, usageContext));
+	}
+	
+	public void insertPropertyUsageContext(final String codingSchemeId, final String propertyId, final String usageContext, final IbatisInserter inserter) {
+		final String sourceId = this.createUniqueId();
+
+		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+
+			public Object doInSqlMapClient(SqlMapExecutor executor)
+			throws SQLException {
+
+				inserter.insert(INSERT_PROPERTY_USAGECONTEXT_SQL, 
+						buildInsertPropertyUsageContextBean(
+								getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+								propertyId, sourceId, usageContext));
+
+				return null;
+			}
+		});
 	}
 	
 	public void insertPropertyLink(String codingSchemeId, String entityId,

@@ -19,6 +19,13 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	
 	public static String INSERT_ENTRY_STATE_SQL = "insertEntryState";
 	public static String GET_ENTRY_STATE_BY_ID_SQL = "insertEntryState";
+	
+
+	@Override
+	public String getSystemReleaseIdByUri(String systemReleaseUri) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
 
 	public EntryState getEntryStateById(String codingSchemeName, String codingSchemeVersion, String entryStateId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeName, codingSchemeVersion);
@@ -105,7 +112,4 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
 		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
 	}
-
-	
-
 }

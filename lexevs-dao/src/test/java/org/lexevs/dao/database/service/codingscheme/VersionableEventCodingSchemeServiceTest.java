@@ -13,6 +13,7 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
@@ -24,6 +25,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 	private VersionableEventCodingSchemeService service;
 	
 	@Test
+	@Ignore
 	public void insertCodingScheme() throws Exception{
 		
 		CodingScheme scheme = new CodingScheme();
@@ -36,6 +38,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 	}
 	
 	@Test
+	@Ignore
 	public void insertCodingSchemeWithLocalName() throws Exception{
 
 		CodingScheme scheme = new CodingScheme();
@@ -83,6 +86,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 	}
 	
 	@Test
+	@Ignore
 	public void testInsertCodingSchemeWithEverything() throws Exception{
 		CodingScheme scheme = new CodingScheme();
 		scheme.setApproxNumConcepts(111l);

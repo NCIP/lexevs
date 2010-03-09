@@ -3,7 +3,9 @@ package org.lexevs.dao.database.service;
 import org.lexevs.dao.database.service.association.AssociationService;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.entity.EntityService;
+import org.lexevs.dao.database.service.picklist.PickListService;
 import org.lexevs.dao.database.service.property.PropertyService;
+import org.lexevs.dao.database.service.valuedomain.ValueDomainService;
 
 public class DatabaseServiceManager {
 	
@@ -14,6 +16,10 @@ public class DatabaseServiceManager {
 	private PropertyService propertyService;
 	
 	private AssociationService associationService;
+	
+	private PickListService pickListService;
+	
+	private ValueDomainService valueDomainService;
 
 	public void setCodingSchemeService(CodingSchemeService codingSchemeService) {
 		this.codingSchemeService = codingSchemeService;
@@ -46,6 +52,24 @@ public class DatabaseServiceManager {
 	public AssociationService getAssociationService() {
 		return associationService;
 	}
+
+	public PickListService getPickListService() {
+		return pickListService;
+	}
+
+	public void setPickListService(PickListService pickListService) {
+		this.pickListService = pickListService;
+	}
+
+	public ValueDomainService getValueDomainService() {
+		return valueDomainService;
+	}
+
+	public void setValueDomainService(ValueDomainService valueDomainService) {
+		this.valueDomainService = valueDomainService;
+	}
+	
+	
 }
 
 

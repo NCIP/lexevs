@@ -22,4 +22,6 @@ public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 	public void insertRevision(Revision revision);
 	
 	public void insertSystemRelease(SystemRelease systemRelease);
+	
+	public String getSystemReleaseIdByUri(String systemReleaseUri);
 }

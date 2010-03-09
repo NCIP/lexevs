@@ -22,6 +22,7 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 
 	private static final String CREATE_COMMON_SCRIPT = "sql/lexevs/common-create-hsqldb.sql";
 	private static final String CREATE_CODINGSCHEME_SCRIPT = "sql/lexevs/codingscheme-create-hsqldb.sql";
+	private static final String CREATE_VD_PICKLIST_SCRIPT = "sql/lexevs/valueDomainPickList-create-hsqldb.sql";
 	
 	@Resource
 	protected DataSource dataSource;
@@ -43,6 +44,7 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 		new SimpleJdbcTemplate(dataSource).getJdbcOperations().execute("DROP SCHEMA PUBLIC CASCADE");
 		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_COMMON_SCRIPT), prefixResolver.resolveDefaultPrefix());
 		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_CODINGSCHEME_SCRIPT), prefixResolver.resolveDefaultPrefix());
+		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_VD_PICKLIST_SCRIPT), prefixResolver.resolveDefaultPrefix());
 	}
 	
 	@After

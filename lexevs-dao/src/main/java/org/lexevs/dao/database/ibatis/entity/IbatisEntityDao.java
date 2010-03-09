@@ -95,10 +95,6 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 			inserter.insert(INSERT_ENTITY_TYPE_SQL, 
 					new PrefixedParameterTuple(prefix, entityId, entityType));
 		}
-		
-		for(Property prop : entity.getAllProperties()) {
-			ibatisPropertyDao.insertProperty(codingSchemeId, entityId, PropertyType.ENTITY, prop, inserter);
-		}
 
 		return entityId;
 	}
@@ -148,17 +144,10 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 				
 				for(Entity entity : entities){
 					String id = insertEntity(codingSchemeId, entity, batchInserter);
-					
-					List<PropertyBatchInsertItem> props = new ArrayList<PropertyBatchInsertItem>();
-					
+
 					for(Property prop : entity.getAllProperties()){
-						PropertyBatchInsertItem item = new PropertyBatchInsertItem();
-						item.setParentId(id);
-						item.setProperty(prop);
-						props.add(item);
+						ibatisPropertyDao.insertProperty(codingSchemeId, id, PropertyType.ENTITY, prop, batchInserter);
 					}
-					
-					ibatisPropertyDao.insertBatchProperties(codingSchemeId, PropertyType.ENTITY, props);
 				}
 				
 				batchInserter.executeBatch();

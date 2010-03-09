@@ -63,3 +63,16 @@ ALTER TABLE @PREFIX@registry ADD CONSTRAINT PK_registry
 ALTER TABLE @PREFIX@registry
 	ADD CONSTRAINT UQ_registry UNIQUE (resourceURI, resourceVersion, resourceType)
 ;
+
+ALTER TABLE  @PREFIX@revision ADD CONSTRAINT PK_revision 
+	PRIMARY KEY (revisionGuid)
+;
+
+
+ALTER TABLE  @PREFIX@systemRelease ADD CONSTRAINT PK_systemRelease 
+	PRIMARY KEY (releaseGuid)
+;
+
+ALTER TABLE @PREFIX@revision ADD CONSTRAINT FK_rev_releaseGuid 
+	FOREIGN KEY (releaseGuid) REFERENCES @PREFIX@systemRelease (releaseGuid)
+;
