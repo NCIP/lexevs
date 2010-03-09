@@ -30,11 +30,16 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.jdom.input.SAXBuilder;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+import org.lexevs.locator.LexEvsServiceLocator;
 
+import edu.mayo.informatics.lexgrid.convert.emfConversions.obo1_2.OBO2EMFMain;
 import edu.mayo.informatics.lexgrid.convert.emfConversions.obo1_2.OBOFormatValidator;
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
+import edu.mayo.informatics.lexgrid.convert.utility.ManifestUtil;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
@@ -124,9 +129,21 @@ public class OBOLoaderImpl extends BaseLoader implements OBO_Loader {
     }
 
     @Override
-    protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
+    protected URNVersionPair[] doLoad() throws Exception {
         // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        DatabaseServiceManager databaseServiceManager = 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
+        
+        
+        OBO2EMFMain mainTxfm = new OBO2EMFMain();
+        CodingScheme codingScheme = mainTxfm.map(this.getResourceUri(), null, this.getMessageDirector());
+        // Apply manifest changes
+        ManifestUtil manifestUtil = new ManifestUtil(null, this.getMessageDirector());
+        //manifestUtil.applyManifest(this.getCodingSchemeManifest(), scheme);
+  
+        databaseServiceManager.getCodingSchemeService().insertCodingScheme(codingScheme);
+        URNVersionPair  urnVersion= new URNVersionPair(codingScheme.getCodingSchemeURI(), codingScheme.getRepresentsVersion());
+        return new URNVersionPair[]{urnVersion};
     }
 
     public void finalize() throws Throwable {

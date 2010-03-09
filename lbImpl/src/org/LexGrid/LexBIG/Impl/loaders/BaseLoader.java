@@ -644,7 +644,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
 
     }
     
-    protected abstract URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException;
+    protected abstract URNVersionPair[] doLoad() throws Exception;
 
     public void load(URI resource){
         this.resourceUri = resource;
