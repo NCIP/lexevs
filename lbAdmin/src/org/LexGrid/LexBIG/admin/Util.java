@@ -36,9 +36,9 @@ import org.LexGrid.LexBIG.Extensions.Export.Exporter;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.system.ResourceManager;
 
 /**

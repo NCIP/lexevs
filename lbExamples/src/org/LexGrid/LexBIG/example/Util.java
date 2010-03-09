@@ -21,9 +21,9 @@ package org.LexGrid.LexBIG.example;
 import java.io.PrintWriter;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.lexevs.logging.LgLoggerIF;
 import org.lexevs.system.ResourceManager;
 
 /**
