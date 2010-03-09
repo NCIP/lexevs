@@ -1,0 +1,26 @@
+#lines starting with "#" are comments
+
+#blank lines are ok 
+
+#the first "real" line of the file must be of the following format:
+#<codingSchemeName>\t<codingSchemeId>\t<defaultLanguage>\t<formalName>[\t<version>][\t<source>][\t<description>][\t<copyright>]
+
+colorsA	1.2.3	en	colors coding scheme	 1.0	Dans Head	a simple example coding scheme using colors	This isn't worth copyrighting :)	
+
+#The rest of the file (for format A) should look like this:
+	Purple	The color purple
+		Light purple	The color purple
+		Purple	The color purple
+Color	Holder of colors
+	Red
+	Green	The color Green
+		Light Green	foobar
+		Dark Green	The color dark green
+	Blue
+	red
+	Blue
+		Red
+			Green	The color Green
+	Black
+	Blue	The color blue
+		Red
