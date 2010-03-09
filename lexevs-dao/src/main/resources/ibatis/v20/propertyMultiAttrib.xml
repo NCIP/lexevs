@@ -16,14 +16,14 @@
 			subRef,
 			role
 		FROM 
-			$prefix$PropertyMultiAttrib
+			$prefix$propertyMultiAttrib
 		WHERE
 			propMultiAttribGuid = #param1#
 			
 	</select>
 
 	<insert id="insertPropertyMultiAttrib" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">
-		INSERT INTO PropertyMultiAttrib (
+		INSERT INTO $prefix$propertyMultiAttrib (
 			propMultiAttribGuid,
 			propertyGuid,
 			attributeType,
