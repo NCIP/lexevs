@@ -27,6 +27,9 @@ public class IbatisPickListDaoTest extends LexEvsDbUnitTestBase {
 	
 	@Test
 	public void testInsertPickListDefinition() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("insert into systemrelease (releaseGuid, releaseURI, releaseDate) values ('123', 'releaseuri', NOW())");
+		
 		final Timestamp effectiveDate = new Timestamp(1l);
 		final Timestamp expirationDate = new Timestamp(2l);
 		
@@ -51,34 +54,17 @@ public class IbatisPickListDaoTest extends LexEvsDbUnitTestBase {
 		def.addSource(source);
 		def.setStatus("testing");
 		
-		ibatisPickListDao.insertPickListDefinition("1234", def);
+		ibatisPickListDao.insertPickListDefinition("releaseuri", def);
 		
-		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		int count = template.queryForInt("Select * from vdpicklist");
+		
+		int count = template.queryForInt("Select count(*) from vdpicklist");
 		assertEquals(1, count);
 		
 		template.queryForObject("Select * from vdpicklist", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
-				/*
-				String id = rs.getString(1);
-				assertTrue(rs.getString(2).equals(csId));
-				assertTrue(rs.getString(3).equals("code"));
-				assertTrue(rs.getString(4).equals("namespace"));
-				assertTrue(rs.getBoolean(5) == true);
-				assertTrue(rs.getBoolean(6) == true);
-				assertTrue(rs.getString(7).equals("a description"));
-				assertTrue(rs.getBoolean(8) == false);
-				assertTrue(rs.getString(9).equals("entity owner"));
-				assertTrue(rs.getString(10).equals("testing"));
-				assertTrue(rs.getTimestamp(11).equals(effectiveDate));
-				assertTrue(rs.getTimestamp(12).equals(expirationDate));
-				
-				String entryStateId = rs.getString(13);
-				
-				String[] keys = new String[]{id, entryStateId};
-				return keys;
-				*/
+				assertNotNull(rs.getString(1));
+				assertEquals("plid", rs.getString(2));
 				
 				return null;
 			}
