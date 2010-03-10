@@ -22,6 +22,33 @@
 			$prefix$vdPickList
 	</select>
 	
+	<select id="getPickListGuidByPickListId" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
+		resultClass="string">
+		SELECT
+			vdPickListGuid
+		FROM
+			$prefix$vdPickList pickListDef
+		WHERE
+			pickListDef.pickListId = #param1#
+	</select>
+	
+	<select id="getPickListDefinitionByPickListId" 
+		resultMap="pickListDefinitionResult" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		SELECT
+			pickListDef.pickListId,
+			pickListDef.representsValueDomain,
+			pickListDef.defaultEntityCodeNamespace,
+			pickListDef.defaultLanguage,
+			pickListDef.defaultSortOrder,
+			pickListDef.completeDomain
+		FROM
+			$prefix$vdPickList pickListDef
+		WHERE
+			pickListDef.pickListId = #param1#
+	</select>
+	
 	<insert id="insertPickListDefinition" 
 		parameterClass="org.lexevs.dao.database.ibatis.picklist.parameter.InsertPickListDefinitionBean">
 		INSERT INTO $prefix$vdPickList
