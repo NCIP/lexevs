@@ -48,6 +48,7 @@ import org.LexGrid.naming.SupportedAssociationQualifier;
 import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.SupportedSource;
+import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
@@ -85,6 +86,7 @@ public class OBO2EMFDynamicMapHolders {
     private Hashtable<String, String> supportedAssociationHashtable = null;
     private Hashtable<String, AssociationPredicate> associationHash_ = new Hashtable<String, AssociationPredicate>();
     private List<AssociationPredicate> assocPredicateList = null;
+    private List<AssociationEntity> assocEntityList = new ArrayList<AssociationEntity>();
 
     private Entities allConcepts_ = null;
     private List<Entity> codedEntriesList = null;
@@ -477,9 +479,17 @@ public class OBO2EMFDynamicMapHolders {
             assocPredicate.setAssociationName(association_name);
 
             associationHash_.put(association_name, assocPredicate);
+            //Add associationEntity
+            AssociationEntity ae= EntityFactory.createAssociation();
+            ae.setEntityCode(association_name);
+            ae.setEntityCodeNamespace(cs.getCodingSchemeName());
+            ae.setForwardName(association_name);
+            codedEntriesList.add(ae);
+            assocEntityList.add(ae);
+           
+            
 
-            // TODO: Deal with forward name
-            // assocPredicate.setForwardName(association_name);
+           
             Relations rel = getOrCreateRelations();
             rel.getAssociationPredicateAsReference().add(assocPredicate);
             if (!supportedAssociationHashtable.containsKey(association_name)) {
@@ -503,6 +513,8 @@ public class OBO2EMFDynamicMapHolders {
         RelationsUtil.subsume(as, at);
 
     }
+    
+    
 
     Relations getOrCreateRelations() {
         Relations relations = null;
@@ -568,6 +580,14 @@ public class OBO2EMFDynamicMapHolders {
                     // System.out.println("Creating Relation=" + relation);
                     assocPredictate = new AssociationPredicate();
                     assocPredictate.setAssociationName(oboRelation.getId());
+                    //Create association Entity to store forward name and transitive flag
+                    AssociationEntity ae= EntityFactory.createAssociation();
+                    ae.setEntityCode(oboRelation.getId());
+                    ae.setEntityCodeNamespace(cs.getCodingSchemeName());
+                    ae.setForwardName(oboRelation.getId());
+                    ae.setIsTransitive(oboRelation.getIsTransitive());
+                    codedEntriesList.add(ae);
+                    assocEntityList.add(ae);
                     // TODO: Deal with forward name and flags
                     // assocClass.setForwardName(oboRelation.getId());
                     // assocClass.setIsTransitive(oboRelation.getIsTransitive());
@@ -816,14 +836,13 @@ public class OBO2EMFDynamicMapHolders {
 
         // Get all of the Associations for this Coding Scheme
 
-        for (AssociationPredicate currentAssoc : assocPredicateList) {
+        for (AssociationEntity currentAssoc : assocEntityList) {
 
             // Check to see if the association is part of a Supported Hierarchy
-            String currentAssocName = currentAssoc.getAssociationName();
+            String currentAssocName = currentAssoc.getEntityCode();
             if (supportedHierarchyAssociations.contains(currentAssocName)) {
-                // if so, set isTransitive to true
-                // TODO: Deal with flags
-                // currentAssoc.setIsTransitive(Boolean.valueOf(true));
+                // if so, set isTransitive to true              
+                currentAssoc.setIsTransitive(Boolean.valueOf(true));
                 messages_.info("Setting Hierarchical Association " + currentAssocName + " to Transitive");
             }
         }
