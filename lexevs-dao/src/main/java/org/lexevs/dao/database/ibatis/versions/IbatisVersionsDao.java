@@ -17,14 +17,17 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
-	public static String INSERT_ENTRY_STATE_SQL = "insertEntryState";
-	public static String GET_ENTRY_STATE_BY_ID_SQL = "insertEntryState";
+	public static String VERSIONS_NAMESPACE = "Versions.";
+	public static String INSERT_ENTRY_STATE_SQL = VERSIONS_NAMESPACE + "insertEntryState";
+	public static String GET_ENTRY_STATE_BY_ID_SQL = VERSIONS_NAMESPACE + "insertEntryState";
+	public static String GET_SYSTEM_RELEASE_ID_BY_URI = VERSIONS_NAMESPACE + "getSystemReleaseIdByUri";
 	
 
 	@Override
 	public String getSystemReleaseIdByUri(String systemReleaseUri) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		return (String) this.getSqlMapClientTemplate().queryForObject(GET_SYSTEM_RELEASE_ID_BY_URI, 
+			new PrefixedParameter(prefix, systemReleaseUri));
 	}
 
 	public EntryState getEntryStateById(String codingSchemeName, String codingSchemeVersion, String entryStateId) {
