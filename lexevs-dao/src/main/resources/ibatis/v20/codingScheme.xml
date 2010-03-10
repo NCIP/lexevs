@@ -16,7 +16,7 @@
 		<result property="entityDescription.content" column="description" />
 		<result property="copyright.content" column="copyright" />
 		<result property="isActive" column="isActive" />
-		<result property="entryState" resultMap="entryStateResult" />
+		<result property="entryState" resultMap="Versions.entryStateResult" />
 		<result property="_sourceList" resultMap="CodingScheme.sourceResult"/>
 		<result property="_localNameList" resultMap="CodingScheme.localNameResult"/>
 	</resultMap>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="PickList">
+
+	<typeAlias alias="pickListDefinition" type="org.LexGrid.valueDomains.PickListDefinition" />
+
+	<resultMap id="pickListDefinitionResult" class="pickListDefinition">
+		<result property="pickListId" column="pickListId" />
+		<result property="representsValueDomain" column="representsValueDomain" />
+		<result property="defaultEntityCodeNamespace" column="defaultEntityCodeNamespace" />
+		<result property="defaultLanguage" column="defaultLanguage" />
+		<result property="defaultSortOrder" column="defaultSortOrder"/>
+		<result property="completeDomain" column="completeDomain"/>
+	</resultMap>
+	
+	<insert id="insertPickListDefinition" 
+		parameterClass="org.lexevs.dao.database.ibatis.picklist.parameter.InsertPickListDefinitionBean">
+		INSERT INTO $prefix$vdPickList
+		(
+				vdPickListGuid,
+				pickListId,
+				representsValueDomain,
+				completeDomain,
+				defaultEntityCodeNamespace,
+				defaultLanguage,
+				defaultSortOrder,
+				description,
+				releaseGuid,
+				isActive,
+				owner,
+				status,
+				effectiveDate,
+				expirationDate,
+				entryStateGuid
+			) VALUES (
+				#id#,
+				#pickListDefinition.pickListId#,
+				#pickListDefinition.representsValueDomain#,
+				#pickListDefinition.completeDomain#,
+				#pickListDefinition.defaultEntityCodeNamespace#,
+				#pickListDefinition.defaultLanguage#,
+				#pickListDefinition.defaultSortOrder#,
+				#pickListDefinition.entityDescription.content#,
+				#systemReleaseId#,
+				#pickListDefinition.isActive#,
+				#pickListDefinition.owner#,
+				#pickListDefinition.status#,
+				#pickListDefinition.effectiveDate#,
+				#pickListDefinition.expirationDate#,
+				#entryStateId#	
+			)
+     </insert>
+
+	
+    
+</sqlMap>

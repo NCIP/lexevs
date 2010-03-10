@@ -8,7 +8,7 @@
  	<settings enhancementEnabled="true" useStatementNamespaces="true"/>
     <sqlMap resource="ibatis/v20/entity.xml"/>
     <sqlMap resource="ibatis/v20/codingScheme.xml"/>
-    <sqlMap resource="ibatis/v20/entryState.xml"/>
+    <sqlMap resource="ibatis/v20/versions.xml"/>
     <sqlMap resource="ibatis/v20/tableMetadata.xml"/>
     <sqlMap resource="ibatis/v20/property.xml"/>
     <sqlMap resource="ibatis/v20/propertyMultiAttrib.xml"/>
@@ -19,4 +19,5 @@
     <sqlMap resource="ibatis/v20/propertyLink.xml"/>
     <sqlMap resource="ibatis/v20/entityAssnsToEntity.xml"/>
     <sqlMap resource="ibatis/v20/entityAssnQuals.xml"/>
+    <sqlMap resource="ibatis/v20/picklist.xml"/>
 </sqlMapConfig>
