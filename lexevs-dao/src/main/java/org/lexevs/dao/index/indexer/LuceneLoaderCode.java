@@ -246,9 +246,7 @@ public abstract class LuceneLoaderCode {
         if (language != null && language.length() > 0) {
             generator_.addTextField("language", language, store(), true, false);
             fields.append("language ");
-        } else {
-            throw new Exception("Language is required");
-        }
+        } 
 
         if (conceptStatus != null && conceptStatus.length() > 0) {
             generator_.addTextField(SQLTableConstants.TBLCOL_CONCEPTSTATUS, conceptStatus, store(), true, false);
