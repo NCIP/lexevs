@@ -3,6 +3,7 @@ package org.lexevs.dao.database.ibatis.picklist;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Source;
@@ -67,8 +68,48 @@ public class IbatisPickListDaoTest extends LexEvsDbUnitTestBase {
 				assertEquals("plid", rs.getString(2));
 				
 				return null;
-			}
-			
+			}		
 		});
+	}
+	
+	@Test
+	public void testGetPickListIds() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("insert into systemrelease (releaseGuid, releaseURI, releaseDate) values ('123', 'releaseuri', NOW())");
+		
+		template.execute("insert into vdPickList (vdPickListGuid, pickListId, representsvaluedomain) values ('pl1', 'id1', 'vd')");
+		template.execute("insert into vdPickList (vdPickListGuid, pickListId, representsvaluedomain) values ('pl2', 'id2', 'vd')");
+		
+		List<String> ids = this.ibatisPickListDao.getPickListIds();
+		
+		assertEquals(2, ids.size());
+		assertTrue(ids.contains("id1"));
+		assertTrue(ids.contains("id2"));
+	}
+	
+	@Test
+	public void testGetPickListDefinitionById() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("insert into systemrelease (releaseGuid, releaseURI, releaseDate) values ('123', 'releaseuri', NOW())");
+		
+		template.execute("insert into vdPickList (vdPickListGuid, pickListId, representsvaluedomain) values ('pl1', 'id1', 'vd')");
+		template.execute("insert into vdPickList (vdPickListGuid, pickListId, representsvaluedomain) values ('pl2', 'id2', 'vd')");
+		
+		PickListDefinition definition = this.ibatisPickListDao.getPickListDefinitionById("id1");
+		
+		assertEquals("id1", definition.getPickListId());
+	}
+	
+	@Test
+	public void testGetGuidFromPickListId() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("insert into systemrelease (releaseGuid, releaseURI, releaseDate) values ('123', 'releaseuri', NOW())");
+		
+		template.execute("insert into vdPickList (vdPickListGuid, pickListId, representsvaluedomain) values ('pl1', 'id1', 'vd')");
+		template.execute("insert into vdPickList (vdPickListGuid, pickListId, representsvaluedomain) values ('pl2', 'id2', 'vd')");
+		
+		String guid = this.ibatisPickListDao.getGuidFromPickListId("id2");
+		
+		assertEquals("pl2", guid);
 	}
 }
