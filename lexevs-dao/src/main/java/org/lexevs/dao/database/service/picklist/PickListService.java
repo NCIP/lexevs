@@ -22,8 +22,5 @@ public interface PickListService {
 			Boolean extractPickListName);
 	
 	public Map<String, String> getReferencedPLDefinitions(
-			String valueSet, Boolean extractPickListName);
-	
-	public PickListDefinition getPickListDefinitionById(String pickListId);
-	
+			String valueSet, Boolean extractPickListName);	
 }
