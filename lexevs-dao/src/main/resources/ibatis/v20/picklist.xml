@@ -14,6 +14,14 @@
 		<result property="completeDomain" column="completeDomain"/>
 	</resultMap>
 	
+	<select id="getPickListIds" 
+		parameterClass="string" resultClass="string">
+		SELECT
+			pickListId
+		FROM
+			$prefix$vdPickList
+	</select>
+	
 	<insert id="insertPickListDefinition" 
 		parameterClass="org.lexevs.dao.database.ibatis.picklist.parameter.InsertPickListDefinitionBean">
 		INSERT INTO $prefix$vdPickList
