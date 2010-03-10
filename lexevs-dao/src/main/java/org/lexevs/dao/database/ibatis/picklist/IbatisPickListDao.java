@@ -16,6 +16,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	
 	public static String PICKLIST_NAMESPACE = "PickList.";
 	public static String INSERT_PICKLIST_DEFINITION_SQL = PICKLIST_NAMESPACE + "insertPickListDefinition";
+	public static String GET_PICKLIST_IDS_SQL = PICKLIST_NAMESPACE + "getPickListIds";
 	
 	private VersionsDao versionsDao;
 	
@@ -49,6 +50,15 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		
 		return pickListId;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getPickListIds() {
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_PICKLIST_IDS_SQL, prefix);
+	}	
 
 	public VersionsDao getVersionsDao() {
 		return versionsDao;
@@ -56,5 +66,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 
 	public void setVersionsDao(VersionsDao versionsDao) {
 		this.versionsDao = versionsDao;
-	}	
+	}
+
+	
 }
