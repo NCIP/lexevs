@@ -4,14 +4,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.valueDomains.PickListDefinition;
-import org.LexGrid.valueDomains.PickListEntryNode;
 
 public interface PickListService {
+	
+	public PickListDefinition getPickListDefinitionByPickListId(String pickListId);
+	
+	public List<PickListDefinition> getPickListDefinitionsByValueDomainUri(String valueDomainUri);
+	
+	public void removePickListDefinitionByPickListId(String pickListId);
 
 	public void insertPickListDefinition(PickListDefinition definition);
-	
-	public void insertPickListEntryNode(PickListEntryNode node);
-	
+
 	public List<String> listPickListIds() ;
 	
 	public Map<String, String> getReferencedPLDefinitions(String entityCode,
