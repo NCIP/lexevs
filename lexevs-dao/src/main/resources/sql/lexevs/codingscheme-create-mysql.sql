@@ -294,7 +294,7 @@ CREATE TABLE @PREFIX@propertyMultiAttrib
 	role VARCHAR(250),
 	entryStateGuid VARCHAR(36),
 	PRIMARY KEY (propMultiAttribGuid),
-	UNIQUE UQ_propertyMultiAttrib(propertyGuid, attributeType, attributeId),
+	INDEX idx_guid_attribType_attribId(propertyGuid, attributeType, attributeId),
 	INDEX idx_propertyMultiAttrib (propertyGuid ASC)
 ) 
 TYPE=INNODB
