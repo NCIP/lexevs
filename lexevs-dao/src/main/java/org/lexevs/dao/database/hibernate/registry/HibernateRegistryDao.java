@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.dao.database.hibernate.registry;
 
 import java.sql.Timestamp;
@@ -13,46 +31,81 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+/**
+ * The Class HibernateRegistryDao.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class HibernateRegistryDao extends HibernateDaoSupport implements RegistryDao {
 	
+	/** The Constant REGISTRY_ID. */
 	private static final int REGISTRY_ID = 0;
 	
+	/** The default history prefix. */
 	private String defaultHistoryPrefix = "aaaa";
+	
+	/** The default coding scheme prefix. */
 	private String defaultCodingSchemePrefix = "aaaa";
 	
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.registry.RegistryDao#updateLastUpdateTime(java.util.Date)
+	 */
 	public void updateLastUpdateTime(Date lastUpdateTime) {
 		Registry registry = getRegistryMetadataEntry();
 		registry.setLastUpdateTime(new Timestamp(lastUpdateTime.getTime()));
 		this.getHibernateTemplate().update(registry);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.registry.RegistryDao#getLastUpdateTime()
+	 */
 	public Date getLastUpdateTime() {
 		Registry registry = getRegistryMetadataEntry();
 		return registry.getLastUpdateTime();
 	}
 	
+	/**
+	 * Gets the registry metadata entry.
+	 * 
+	 * @return the registry metadata entry
+	 */
 	protected Registry getRegistryMetadataEntry(){
 		return (Registry)this.getHibernateTemplate().get(Registry.class, REGISTRY_ID);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.registry.RegistryDao#deleteRegistryEntry(org.lexevs.registry.model.RegistryEntry)
+	 */
 	public void deleteRegistryEntry(
 			RegistryEntry entry) {
 		this.getHibernateTemplate().delete(entry);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.registry.RegistryDao#getLastUsedDbIdentifier()
+	 */
 	public String getLastUsedDbIdentifier() {
 		return this.getRegistryMetadataEntry().getLastUsedDbIdentifer();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.registry.RegistryDao#getLastUsedHistoryIdentifier()
+	 */
 	public String getLastUsedHistoryIdentifier() {
 		return this.getRegistryMetadataEntry().getLastUsedHistoryIdentifer();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.registry.RegistryDao#insertRegistryEntry(org.lexevs.registry.model.RegistryEntry)
+	 */
 	public void insertRegistryEntry(RegistryEntry entry) {
 		this.getHibernateTemplate().save(entry);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.registry.RegistryDao#getRegistryEntryForUriAndVersion(java.lang.String, java.lang.String)
+	 */
 	public RegistryEntry getRegistryEntryForUriAndVersion(String uri, String version) throws LBParameterException {
 		RegistryEntry entry = new RegistryEntry();
 		entry.setResourceUri(uri);
@@ -68,26 +121,41 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		return entries.get(0);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.registry.RegistryDao#updateRegistryEntry(org.lexevs.registry.model.RegistryEntry)
+	 */
 	public void updateRegistryEntry(RegistryEntry entry) {
 		this.getHibernateTemplate().update(entry);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.registry.RegistryDao#updateLastUsedDbIdentifier(java.lang.String)
+	 */
 	public void updateLastUsedDbIdentifier(String databaseIdentifier) {
 		Registry registry = this.getRegistryMetadataEntry();
 		registry.setLastUsedDbIdentifer(databaseIdentifier);
 		this.getHibernateTemplate().update(registry);	
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.registry.RegistryDao#getAllRegistryEntriesOfType(org.lexevs.registry.service.Registry.ResourceType)
+	 */
 	public List<RegistryEntry> getAllRegistryEntriesOfType(ResourceType type) {
 		RegistryEntry entry = new RegistryEntry();
 		entry.setResourceType(type);
 		return this.getHibernateTemplate().findByExample(entry);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.registry.RegistryDao#getAllRegistryEntries()
+	 */
 	public List<RegistryEntry> getAllRegistryEntries() {
 		return this.getHibernateTemplate().findByExample(new RegistryEntry());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.registry.RegistryDao#getRegistryEntriesForUri(java.lang.String)
+	 */
 	public List<RegistryEntry> getRegistryEntriesForUri(String uri) {
 		RegistryEntry entry = new RegistryEntry();
 		entry.setResourceUri(uri);
@@ -99,6 +167,9 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		return entries;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.registry.RegistryDao#initRegistryMetadata()
+	 */
 	public void initRegistryMetadata() {
 		Assert.isNull(this.getRegistryMetadataEntry(), "Registry Metadata has already been initialized.");
 
@@ -113,18 +184,38 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		this.getHibernateTemplate().save(metadata);
 	}
 
+	/**
+	 * Gets the default history prefix.
+	 * 
+	 * @return the default history prefix
+	 */
 	public String getDefaultHistoryPrefix() {
 		return defaultHistoryPrefix;
 	}
 
+	/**
+	 * Sets the default history prefix.
+	 * 
+	 * @param defaultHistoryPrefix the new default history prefix
+	 */
 	public void setDefaultHistoryPrefix(String defaultHistoryPrefix) {
 		this.defaultHistoryPrefix = defaultHistoryPrefix;
 	}
 
+	/**
+	 * Gets the default coding scheme prefix.
+	 * 
+	 * @return the default coding scheme prefix
+	 */
 	public String getDefaultCodingSchemePrefix() {
 		return defaultCodingSchemePrefix;
 	}
 
+	/**
+	 * Sets the default coding scheme prefix.
+	 * 
+	 * @param defaultCodingSchemePrefix the new default coding scheme prefix
+	 */
 	public void setDefaultCodingSchemePrefix(String defaultCodingSchemePrefix) {
 		this.defaultCodingSchemePrefix = defaultCodingSchemePrefix;
 	}

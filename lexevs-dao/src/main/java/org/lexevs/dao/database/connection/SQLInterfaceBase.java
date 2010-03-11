@@ -46,16 +46,41 @@ import org.lexevs.system.ResourceManager;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class SQLInterfaceBase {
+    
+    /** The g sql mod_. */
     private GenericSQLModifier gSQLMod_;
+    
+    /** The use count. */
     protected int useCount = 0;
+    
+    /** The _db desc. */
     protected JDBCConnectionDescriptor _dbDesc;
+    
+    /** The _conn policy. */
     private JDBCConnectionPoolPolicy _connPolicy = null;
+    
+    /** The _conn pool. */
     private JDBCConnectionPool _connPool = null;
 
+    /**
+     * Gets the logger.
+     * 
+     * @return the logger
+     */
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
 
+    /**
+     * Instantiates a new sQL interface base.
+     * 
+     * @param username the username
+     * @param password the password
+     * @param url the url
+     * @param driver the driver
+     * 
+     * @throws RuntimeException the runtime exception
+     */
     public SQLInterfaceBase(String username, String password, String url, String driver)
             throws RuntimeException {
         getLogger().debug("Creating a SQL Interface to " + url);
@@ -103,6 +128,15 @@ public class SQLInterfaceBase {
         }
     }
 
+    /**
+     * Gets the arbitrary statement.
+     * 
+     * @param sql the sql
+     * 
+     * @return the arbitrary statement
+     * 
+     * @throws SQLException the SQL exception
+     */
     protected PreparedStatement getArbitraryStatement(String sql) throws SQLException {
     	Connection c = null;
 		try {
@@ -120,10 +154,22 @@ public class SQLInterfaceBase {
     }
 
 
+    /**
+     * Modify sql.
+     * 
+     * @param query the query
+     * 
+     * @return the string
+     */
     public String modifySQL(String query) {
         return gSQLMod_.modifySQL(query);
     }
     
+	/**
+	 * Gets the connection descriptor.
+	 * 
+	 * @return the connection descriptor
+	 */
 	public JDBCConnectionDescriptor getConnectionDescriptor() {
 		if (_dbDesc == null)
 			_dbDesc = new JDBCConnectionDescriptor();
@@ -132,6 +178,7 @@ public class SQLInterfaceBase {
 	
 	/**
 	 * Returns the policy used to manage the connection pool.
+	 * 
 	 * @return JDBCConnectionPoolPolicy
 	 */
 	public JDBCConnectionPoolPolicy getConnectionPoolPolicy() {
@@ -142,6 +189,7 @@ public class SQLInterfaceBase {
 	
 	/**
 	 * Returns an object pool used to manage JDBC connections.
+	 * 
 	 * @return JDBCConnectionPool
 	 */
 	protected JDBCConnectionPool getConnectionPool() {

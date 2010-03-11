@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.dao.index.indexer;
 
 import org.LexGrid.commonTypes.Property;
@@ -8,18 +26,39 @@ import org.LexGrid.concepts.Presentation;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
 
+/**
+ * The Class LuceneLoaderCodeIndexer.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 
+	/** The system resource service. */
 	private SystemResourceService systemResourceService;
+	
+	/** The system variables. */
 	private SystemVariables systemVariables;
 	
+	/** The index name. */
 	private String indexName = "commonIndex";
+	
+	/** The current index version. */
 	private String currentIndexVersion = "2010";
 	
+	/**
+	 * Instantiates a new lucene loader code indexer.
+	 */
 	public LuceneLoaderCodeIndexer(){
 		this.normEnabled_ = false;
 	}
 	
+	/**
+	 * Index entity.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param codingSchemeVersion the coding scheme version
+	 * @param entity the entity
+	 */
 	public void indexEntity(String codingSchemeUri, String codingSchemeVersion,
 			Entity entity) {
 		try {
@@ -36,6 +75,16 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 		}
 	}
 
+	/**
+	 * Index entity.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param codingSchemeVersion the coding scheme version
+	 * @param entity the entity
+	 * @param prop the prop
+	 * 
+	 * @throws Exception the exception
+	 */
 	protected void indexEntity(String codingSchemeUri, String codingSchemeVersion,
 			Entity entity, Property prop) throws Exception {
 		
@@ -89,6 +138,13 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 				null);
 	}
 	
+	/**
+	 * Property qualifiers to qualifiers.
+	 * 
+	 * @param qualifiers the qualifiers
+	 * 
+	 * @return the qualifier[]
+	 */
 	private Qualifier[] propertyQualifiersToQualifiers(PropertyQualifier[] qualifiers) {
 		Qualifier[] quals = new Qualifier[qualifiers.length];
 		for(int i=0;i<qualifiers.length;i++) {
@@ -97,6 +153,13 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 		return quals;
 	}
 	
+	/**
+	 * Source to string.
+	 * 
+	 * @param sources the sources
+	 * 
+	 * @return the string[]
+	 */
 	private String[] sourceToString(Source[] sources) {
 		String[] stringSource = new String[sources.length];
 		for(int i=0;i<sources.length;i++) {
@@ -105,14 +168,27 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 		return stringSource;
 	}
 
+	/**
+	 * Gets the system resource service.
+	 * 
+	 * @return the system resource service
+	 */
 	public SystemResourceService getSystemResourceService() {
 		return systemResourceService;
 	}
 
+	/**
+	 * Sets the system resource service.
+	 * 
+	 * @param systemResourceService the new system resource service
+	 */
 	public void setSystemResourceService(SystemResourceService systemResourceService) {
 		this.systemResourceService = systemResourceService;
 	}
 
+	/**
+	 * Close index.
+	 */
 	public void closeIndex() {
 		try {
 			this.closeIndexes();
@@ -121,6 +197,9 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 		}
 	}
 
+	/**
+	 * Open index.
+	 */
 	public void openIndex() {
 		try {
 			this.initIndexes(indexName, this.systemVariables.getAutoLoadIndexLocation());
@@ -131,26 +210,56 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 		}
 	}
 
+	/**
+	 * Gets the index name.
+	 * 
+	 * @return the index name
+	 */
 	public String getIndexName() {
 		return indexName;
 	}
 
+	/**
+	 * Sets the index name.
+	 * 
+	 * @param indexName the new index name
+	 */
 	public void setIndexName(String indexName) {
 		this.indexName = indexName;
 	}
 
+	/**
+	 * Gets the system variables.
+	 * 
+	 * @return the system variables
+	 */
 	public SystemVariables getSystemVariables() {
 		return systemVariables;
 	}
 
+	/**
+	 * Sets the system variables.
+	 * 
+	 * @param systemVariables the new system variables
+	 */
 	public void setSystemVariables(SystemVariables systemVariables) {
 		this.systemVariables = systemVariables;
 	}
 
+	/**
+	 * Sets the current index version.
+	 * 
+	 * @param currentIndexVersion the new current index version
+	 */
 	public void setCurrentIndexVersion(String currentIndexVersion) {
 		this.currentIndexVersion = currentIndexVersion;
 	}
 
+	/**
+	 * Gets the current index version.
+	 * 
+	 * @return the current index version
+	 */
 	public String getCurrentIndexVersion() {
 		return currentIndexVersion;
 	}

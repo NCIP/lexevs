@@ -91,11 +91,27 @@ import org.springframework.transaction.annotation.Transactional;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class SQLImplementedMethodsDao {
+	
+	/** The cs namespace to name_. */
 	protected static Map<String, String> csNamespaceToName_ = new HashMap<String, String>();
 
+	/** The resource manager. */
 	private ResourceManager resourceManager;
+	
+	/** The logger. */
 	private LgLoggerIF logger;
 	
+	/**
+	 * Builds the coding scheme.
+	 * 
+	 * @param internalCodingSchemeName the internal coding scheme name
+	 * @param internalVersionString the internal version string
+	 * 
+	 * @return the coding scheme
+	 * 
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws UnexpectedInternalError the unexpected internal error
+	 */
 	@Transactional
 	public CodingScheme buildCodingScheme(String internalCodingSchemeName, String internalVersionString)
 	throws MissingResourceException, UnexpectedInternalError {
@@ -585,6 +601,21 @@ public class SQLImplementedMethodsDao {
 
 	}
 
+	/**
+	 * Builds the coded entry.
+	 * 
+	 * @param internalCodingSchemeName the internal coding scheme name
+	 * @param internalVersionString the internal version string
+	 * @param code the code
+	 * @param namespace the namespace
+	 * @param restrictToProperties the restrict to properties
+	 * @param restrictToPropertyTypes the restrict to property types
+	 * 
+	 * @return the entity
+	 * 
+	 * @throws UnexpectedInternalError the unexpected internal error
+	 * @throws MissingResourceException the missing resource exception
+	 */
 	public Entity buildCodedEntry(String internalCodingSchemeName, String internalVersionString,
 			String code, String namespace, LocalNameList restrictToProperties, PropertyType[] restrictToPropertyTypes)
 	throws UnexpectedInternalError, MissingResourceException {
@@ -1074,6 +1105,7 @@ public class SQLImplementedMethodsDao {
 	 * return.
 	 * 
 	 * @param relativeOrder The String value (with or without decimal places).
+	 * 
 	 * @return The converted Long value (without the decimals).
 	 */
 	private static Long computeRelativeOrder(String relativeOrder){
@@ -1092,6 +1124,18 @@ public class SQLImplementedMethodsDao {
 		return returnLong;
 	}
 
+	/**
+	 * Builds the concept entity description.
+	 * 
+	 * @param internalCodingSchemeName the internal coding scheme name
+	 * @param internalVersionString the internal version string
+	 * @param conceptCode the concept code
+	 * 
+	 * @return the entity description
+	 * 
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws UnexpectedInternalError the unexpected internal error
+	 */
 	@Deprecated
 	public EntityDescription buildConceptEntityDescription(String internalCodingSchemeName,
 			String internalVersionString, String conceptCode) throws MissingResourceException, UnexpectedInternalError {
@@ -1122,6 +1166,17 @@ public class SQLImplementedMethodsDao {
 		return result;
 	}
 
+	/**
+	 * Gets the coding scheme copyright.
+	 * 
+	 * @param internalCodingSchemeName the internal coding scheme name
+	 * @param internalVersionString the internal version string
+	 * 
+	 * @return the coding scheme copyright
+	 * 
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws UnexpectedInternalError the unexpected internal error
+	 */
 	public String getCodingSchemeCopyright(String internalCodingSchemeName, String internalVersionString)
 	throws MissingResourceException, UnexpectedInternalError {
 
@@ -1169,9 +1224,11 @@ public class SQLImplementedMethodsDao {
 	 * 
 	 * @param internalCodingSchemeName CodingScheme name.
 	 * @param internalVersionString CodingScheme version.
+	 * 
 	 * @return The fully populated Properties object.
-	 * @throws MissingResourceException
-	 * @throws SQLException
+	 * 
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws SQLException the SQL exception
 	 */
 	private Properties getCodingSchemeProperties(String internalCodingSchemeName, String internalVersionString) throws MissingResourceException, SQLException
 	{
@@ -1267,36 +1324,115 @@ public class SQLImplementedMethodsDao {
 		}
 	}
 
+	/**
+	 * Validate language.
+	 * 
+	 * @param internalCodingSchemeName the internal coding scheme name
+	 * @param internalVersionString the internal version string
+	 * @param language the language
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws UnexpectedInternalError the unexpected internal error
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	public boolean validateLanguage(String internalCodingSchemeName, String internalVersionString,
 			String language) throws UnexpectedInternalError, MissingResourceException, LBParameterException {
 		return validateSupported(internalCodingSchemeName, internalVersionString,
 				SQLTableConstants.TBLCOLVAL_SUPPTAG_LANGUAGE, language);
 	}
 
+	/**
+	 * Validate source.
+	 * 
+	 * @param internalCodingSchemeName the internal coding scheme name
+	 * @param internalVersionString the internal version string
+	 * @param source the source
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws UnexpectedInternalError the unexpected internal error
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	public boolean validateSource(String internalCodingSchemeName, String internalVersionString, String source)
 	throws UnexpectedInternalError, MissingResourceException, LBParameterException {
 		return validateSupported(internalCodingSchemeName, internalVersionString,
 				SQLTableConstants.TBLCOLVAL_SUPPTAG_SOURCE, source);
 	}
 
+	/**
+	 * Validate context.
+	 * 
+	 * @param internalCodingSchemeName the internal coding scheme name
+	 * @param internalVersionString the internal version string
+	 * @param context the context
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws UnexpectedInternalError the unexpected internal error
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	public boolean validateContext(String internalCodingSchemeName, String internalVersionString, String context)
 	throws UnexpectedInternalError, MissingResourceException, LBParameterException {
 		return validateSupported(internalCodingSchemeName, internalVersionString,
 				SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT, context);
 	}
 
+	/**
+	 * Validate property qualifier.
+	 * 
+	 * @param internalCodingSchemeName the internal coding scheme name
+	 * @param internalVersionString the internal version string
+	 * @param propertyQualifier the property qualifier
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws UnexpectedInternalError the unexpected internal error
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	public boolean validatePropertyQualifier(String internalCodingSchemeName, String internalVersionString,
 			String propertyQualifier) throws UnexpectedInternalError, MissingResourceException, LBParameterException {
 		return validateSupported(internalCodingSchemeName, internalVersionString,
 				SQLTableConstants.TBLCOLVAL_SUPPTAG_PROPERTYQUALIFIER, propertyQualifier);
 	}
 
+	/**
+	 * Validate property.
+	 * 
+	 * @param internalCodingSchemeName the internal coding scheme name
+	 * @param internalVersionString the internal version string
+	 * @param property the property
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws UnexpectedInternalError the unexpected internal error
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	public boolean validateProperty(String internalCodingSchemeName, String internalVersionString,
 			String property) throws UnexpectedInternalError, MissingResourceException, LBParameterException {
 		return validateSupported(internalCodingSchemeName, internalVersionString,
 				SQLTableConstants.TBLCOLVAL_SUPPTAG_PROPERTY, property);
 	}
 
+	/**
+	 * Validate supported.
+	 * 
+	 * @param internalCodingSchemeName the internal coding scheme name
+	 * @param internalVersionString the internal version string
+	 * @param supportedName the supported name
+	 * @param supportedValue the supported value
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws UnexpectedInternalError the unexpected internal error
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	private boolean validateSupported(String internalCodingSchemeName, String internalVersionString,
 			String supportedName, String supportedValue) throws UnexpectedInternalError, MissingResourceException,
 			LBParameterException {
@@ -1357,6 +1493,18 @@ public class SQLImplementedMethodsDao {
 		}
 	}
 
+	/**
+	 * Gets the native relations.
+	 * 
+	 * @param internalCodingScheme the internal coding scheme
+	 * @param internalVersionString the internal version string
+	 * 
+	 * @return the native relations
+	 * 
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws UnexpectedInternalError the unexpected internal error
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	public String[] getNativeRelations(String internalCodingScheme, String internalVersionString)
 	throws MissingResourceException, UnexpectedInternalError, LBParameterException {
 		// first, check the cache
@@ -1421,6 +1569,14 @@ public class SQLImplementedMethodsDao {
 	/**
 	 * Get the urn (registered name) for a code systems internal coding scheme
 	 * name. This is cached.
+	 * 
+	 * @param internalCodingSchemeName the internal coding scheme name
+	 * @param internalVersionString the internal version string
+	 * 
+	 * @return the URN for internal coding scheme name
+	 * 
+	 * @throws UnexpectedInternalError the unexpected internal error
+	 * @throws MissingResourceException the missing resource exception
 	 */
 	public String getURNForInternalCodingSchemeName(String internalCodingSchemeName, String internalVersionString)
 	throws UnexpectedInternalError, MissingResourceException {
@@ -1464,6 +1620,16 @@ public class SQLImplementedMethodsDao {
 	/**
 	 * Get a the urn (registered name) for a coding scheme label used in the
 	 * relationship tables. This is cached.
+	 * 
+	 * @param supportedCodingScheme the supported coding scheme
+	 * @param internalCodingSchemeName the internal coding scheme name
+	 * @param internalVersionString the internal version string
+	 * @param throwError the throw error
+	 * 
+	 * @return the URN for relationship coding scheme name
+	 * 
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws UnexpectedInternalError the unexpected internal error
 	 */
 	public String getURNForRelationshipCodingSchemeName(String supportedCodingScheme,
 			String internalCodingSchemeName, String internalVersionString, boolean throwError)
@@ -1530,6 +1696,15 @@ public class SQLImplementedMethodsDao {
 	/**
 	 * Get a the urn (registered name) for an association label used in the
 	 * relationship tables. This is cached.
+	 * 
+	 * @param associationName the association name
+	 * @param internalCodingSchemeName the internal coding scheme name
+	 * @param internalVersionString the internal version string
+	 * 
+	 * @return the URN for association name
+	 * 
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws UnexpectedInternalError the unexpected internal error
 	 */
 	public String getURNForAssociationName(String associationName, String internalCodingSchemeName,
 			String internalVersionString) throws MissingResourceException, UnexpectedInternalError {
@@ -1592,6 +1767,15 @@ public class SQLImplementedMethodsDao {
 	/**
 	 * Get a the urn (registered name) for a coding scheme label used in the
 	 * relationship tables. This is cached.
+	 * 
+	 * @param urn the urn
+	 * @param internalCodingSchemeName the internal coding scheme name
+	 * @param internalVersionString the internal version string
+	 * 
+	 * @return the relationship coding scheme name for urn
+	 * 
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws UnexpectedInternalError the unexpected internal error
 	 */
 	public String getRelationshipCodingSchemeNameForURN(String urn, String internalCodingSchemeName,
 			String internalVersionString) throws MissingResourceException, UnexpectedInternalError {
@@ -1639,6 +1823,16 @@ public class SQLImplementedMethodsDao {
 	 * This method is for checking if an association defined as
 	 * <codeSystem>:<association> is valid in a particular code system. This is
 	 * cached.
+	 * 
+	 * @param internalCodeSystemName the internal code system name
+	 * @param internalVersionString the internal version string
+	 * @param association the association
+	 * @param associationURN the association urn
+	 * 
+	 * @return true, if checks if is association valid for code system
+	 * 
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws UnexpectedInternalError the unexpected internal error
 	 */
 	private boolean isAssociationValidForCodeSystem(String internalCodeSystemName, String internalVersionString,
 			String association, String associationURN) throws MissingResourceException, UnexpectedInternalError {
@@ -1706,6 +1900,18 @@ public class SQLImplementedMethodsDao {
 
 	}
 
+	/**
+	 * Gets the association reference.
+	 * 
+	 * @param associationName the association name
+	 * @param internalCodingSchemeName the internal coding scheme name
+	 * @param internalVersionString the internal version string
+	 * 
+	 * @return the association reference
+	 * 
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws UnexpectedInternalError the unexpected internal error
+	 */
 	public ConceptReference getAssociationReference(String associationName, String internalCodingSchemeName,
 			String internalVersionString) throws MissingResourceException, UnexpectedInternalError {
 		// get the URN for a associationName.
@@ -1737,11 +1943,11 @@ public class SQLImplementedMethodsDao {
 	 * If working under the 2009 model, the namespace must be mapped to
 	 * the coding scheme name through the SupportedNamespace metadata.
 	 * Otherwise no mapping is required, return the original value.
-	 * @param si
-	 * @param internalCodingSchemeName
-	 *          The scheme used to resolve supported namespace mappings.
-	 * @param idOrNamespace
-	 *          The value to map.
+	 * 
+	 * @param si the si
+	 * @param internalCodingSchemeName The scheme used to resolve supported namespace mappings.
+	 * @param idOrNamespace The value to map.
+	 * 
 	 * @return String
 	 */
 	private String mapToCodingSchemeName(SQLInterface si, String internalCodingSchemeName, String idOrNamespace) {
@@ -1798,6 +2004,20 @@ public class SQLImplementedMethodsDao {
 		return name;
 	}
 
+	/**
+	 * Checks if is association symmetric.
+	 * 
+	 * @param internalCodingSchemeName the internal coding scheme name
+	 * @param internalVersionString the internal version string
+	 * @param relationName the relation name
+	 * @param association the association
+	 * 
+	 * @return true, if is association symmetric
+	 * 
+	 * @throws UnexpectedInternalError the unexpected internal error
+	 * @throws MissingResourceException the missing resource exception
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	public boolean isAssociationSymmetric(String internalCodingSchemeName, String internalVersionString,
 			String relationName, String association) throws UnexpectedInternalError, MissingResourceException,
 			LBParameterException {
@@ -1855,9 +2075,10 @@ public class SQLImplementedMethodsDao {
 	}
 
 	/**
-	 * Checks if the EntityAssnsToEQuals multiAttributesKey column index is present
+	 * Checks if the EntityAssnsToEQuals multiAttributesKey column index is present.
 	 * 
-	 * @param si
+	 * @param si the si
+	 * 
 	 * @return if the multiAttributesKey column index is present
 	 */
 	protected static boolean isEntityAssnsToEQualsIndexPresent(SQLInterface si){
@@ -1867,7 +2088,8 @@ public class SQLImplementedMethodsDao {
 	/**
 	 * Checks if the current Association Table contains the EntryStateId column.
 	 * 
-	 * @param si
+	 * @param si the si
+	 * 
 	 * @return if the EntryStateId column is present.
 	 */
 	protected static boolean isEntryStateIdInAssociationTable(SQLInterface si){
@@ -1877,7 +2099,8 @@ public class SQLImplementedMethodsDao {
 	/**
 	 * Returns the float representation of the current table version.
 	 * 
-	 * @param si
+	 * @param si the si
+	 * 
 	 * @return the current (float) table version.
 	 */
 	protected static float parseFloatFromTableVersion(SQLInterface si){
@@ -1892,25 +2115,47 @@ public class SQLImplementedMethodsDao {
 	 * 
 	 * (This is to be used when putting Sources in Maps or Sets)
 	 * 
-	 * @param source
-	 * @return The id to uniquely identify this source within an Entity 
+	 * @param value the value
+	 * @param val1 the val1
+	 * 
+	 * @return The id to uniquely identify this source within an Entity
 	 */
 	protected static String createUniqueKeyForSource(String value, String val1){
 		return value + val1;
 	}
 
+	/**
+	 * Sets the resource manager.
+	 * 
+	 * @param resourceManager the new resource manager
+	 */
 	public void setResourceManager(ResourceManager resourceManager) {
 		this.resourceManager = resourceManager;
 	}
 
+	/**
+	 * Gets the resource manager.
+	 * 
+	 * @return the resource manager
+	 */
 	public ResourceManager getResourceManager() {
 		return resourceManager;
 	}
 
+	/**
+	 * Sets the logger.
+	 * 
+	 * @param logger the new logger
+	 */
 	public void setLogger(LgLoggerIF logger) {
 		this.logger = logger;
 	}
 
+	/**
+	 * Gets the logger.
+	 * 
+	 * @return the logger
+	 */
 	public LgLoggerIF getLogger() {
 		return logger;
 	}

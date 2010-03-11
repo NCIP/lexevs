@@ -47,28 +47,59 @@ import org.lexevs.system.ResourceManager;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class WriteLockManager {
+    
+    /** The wlm_. */
     private static WriteLockManager wlm_;
 
+    /** The file_. */
     private File file_;
+    
+    /** The lock file lock_. */
     private File lockFileLock_;
+    
+    /** The registry revision_. */
     private int registryRevision_ = 0;
+    
+    /** The previous registry revision_. */
     private int previousRegistryRevision_ = 0;
 
+    /** The active locks_. */
     private ArrayList<CodingSchemeLock> activeLocks_;
+    
+    /** The my id_. */
     private String myId_;
 
+    /** The lock file lock count. */
     private int lockFileLockCount = 0;
+    
+    /** The update time. */
     private int updateTime = 5; // how often to reread the file (in
     // minutes)
+    /** The write lock_. */
     private boolean writeLock_ = false;
+    
+    /** The read lock_. */
     private boolean readLock_ = false;
 
+    /** The continue pinging_. */
     private boolean continuePinging_ = true;
 
+    /**
+     * Gets the logger.
+     * 
+     * @return the logger
+     */
     protected static LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
 
+    /**
+     * Instance.
+     * 
+     * @return the write lock manager
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     */
     public static WriteLockManager instance() throws LBInvocationException {
         if (wlm_ == null) {
             String id = getLogger().error("No WriteLockManager is configured.");
@@ -81,6 +112,15 @@ public class WriteLockManager {
     /*
      * This instance method is used to create a new write lock manager - mostly
      * for bootstrapping.
+     */
+    /**
+     * Instance.
+     * 
+     * @param registryFile the registry file
+     * 
+     * @return the write lock manager
+     * 
+     * @throws LBInvocationException the LB invocation exception
      */
     public synchronized static WriteLockManager instance(File registryFile) throws LBInvocationException {
         if (wlm_ == null) {
@@ -115,6 +155,14 @@ public class WriteLockManager {
         return wlm_;
     }
 
+    /**
+     * Instantiates a new write lock manager.
+     * 
+     * @param registryFile the registry file
+     * 
+     * @throws UnexpectedInternalError the unexpected internal error
+     * @throws LBInvocationException the LB invocation exception
+     */
     private WriteLockManager(File registryFile) throws UnexpectedInternalError, LBInvocationException {
         myId_ = UUID.randomUUID().toString();
 
@@ -133,10 +181,11 @@ public class WriteLockManager {
     /**
      * Lock an individual terminology for loading, indexing, etc.
      * 
-     * @param urn
-     * @param version
-     * @throws LBInvocationException
-     * @throws LBParameterException
+     * @param urn the urn
+     * @param version the version
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
      */
     public void acquireLock(String urn, String version) throws LBInvocationException, LBParameterException {
         lockLockFile();
@@ -184,12 +233,13 @@ public class WriteLockManager {
     }
 
     /**
-     * Unlock a particular coding scheme (finished loading, indexing, etc)
+     * Unlock a particular coding scheme (finished loading, indexing, etc).
      * 
-     * @param urn
-     * @param version
-     * @throws LBInvocationException
-     * @throws LBParameterException
+     * @param urn the urn
+     * @param version the version
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
      */
     public void releaseLock(String urn, String version) throws LBInvocationException, LBParameterException {
         lockLockFile();
@@ -216,6 +266,11 @@ public class WriteLockManager {
         }
     }
 
+    /**
+     * The Class PingThread.
+     * 
+     * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+     */
     private class PingThread implements Runnable {
         /*
          * This threads job is to maintain locks that were acquired by this JVM.
@@ -268,6 +323,11 @@ public class WriteLockManager {
         }
     }
 
+    /**
+     * Registry was revised.
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     */
     public void registryWasRevised() throws LBInvocationException {
         lockLockFile();
 
@@ -288,9 +348,7 @@ public class WriteLockManager {
      * See if another vm or thread has written a newer version of the registry
      * file. If yes, reload the resource manager.
      * 
-     * @param releaseLockWhenDone
-     * @throws UnexpectedInternalError
-     * @throws LBInvocationException
+     * @throws UnexpectedInternalError      * @throws LBInvocationException the LB invocation exception
      */
     public void checkForRegistryUpdates() throws LBInvocationException {
         lockLockFile();
@@ -312,12 +370,33 @@ public class WriteLockManager {
         }
     }
 
+    /**
+     * The Class CodingSchemeLock.
+     * 
+     * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+     */
     private class CodingSchemeLock {
+        
+        /** The urn. */
         String urn;
+        
+        /** The version. */
         String version;
+        
+        /** The lock date. */
         long lockDate;
+        
+        /** The owner id. */
         String ownerId;
 
+        /**
+         * Instantiates a new coding scheme lock.
+         * 
+         * @param urn the urn
+         * @param version the version
+         * 
+         * @throws LBParameterException the LB parameter exception
+         */
         public CodingSchemeLock(String urn, String version) throws LBParameterException {
             if (urn == null || urn.length() == 0) {
                 throw new LBParameterException("URN is required to create lock", "urn");
@@ -331,10 +410,20 @@ public class WriteLockManager {
             this.ownerId = myId_;
         }
 
+        /**
+         * Instantiates a new coding scheme lock.
+         */
         public CodingSchemeLock() {
 
         }
 
+        /**
+         * Equals.
+         * 
+         * @param csl the csl
+         * 
+         * @return true, if successful
+         */
         public boolean equals(CodingSchemeLock csl) {
             if (this.urn.equals(csl.urn) && this.version.equals(csl.version) && this.ownerId.equals(csl.ownerId)) {
                 return true;
@@ -343,6 +432,13 @@ public class WriteLockManager {
             }
         }
 
+        /**
+         * Checks if is locked.
+         * 
+         * @param csl the csl
+         * 
+         * @return true, if is locked
+         */
         public boolean isLocked(CodingSchemeLock csl) {
             if (this.urn.equals(csl.urn) && this.version.equals(csl.version)) {
                 return true;
@@ -352,6 +448,11 @@ public class WriteLockManager {
         }
     }
 
+    /**
+     * Lock lock file.
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     */
     public void lockLockFile() throws LBInvocationException {
         try {
             int i = 0;
@@ -406,6 +507,9 @@ public class WriteLockManager {
         }
     }
 
+    /**
+     * Release lock file.
+     */
     public void releaseLockFile() {
         if (lockFileLockCount > 0) {
             lockFileLockCount--;
@@ -419,14 +523,30 @@ public class WriteLockManager {
         }
     }
 
+    /**
+     * Gets the locks.
+     * 
+     * @return the locks
+     */
     private synchronized CodingSchemeLock[] getLocks() {
         return activeLocks_.toArray(new CodingSchemeLock[activeLocks_.size()]);
     }
 
+    /**
+     * Gets the lock count.
+     * 
+     * @return the lock count
+     */
     public int getLockCount() {
         return activeLocks_.size();
     }
 
+    /**
+     * Read file.
+     * 
+     * @throws UnexpectedInternalError the unexpected internal error
+     * @throws LBInvocationException the LB invocation exception
+     */
     @SuppressWarnings("unchecked")
     private synchronized void readFile() throws UnexpectedInternalError, LBInvocationException {
         // read in the contents of the xml file, populating the local variables.
@@ -492,6 +612,12 @@ public class WriteLockManager {
         }
     }
 
+    /**
+     * Write file.
+     * 
+     * @throws UnexpectedInternalError the unexpected internal error
+     * @throws LBInvocationException the LB invocation exception
+     */
     private synchronized void writeFile() throws UnexpectedInternalError, LBInvocationException {
         // Take the local variables, and write them out to the file.
         try {

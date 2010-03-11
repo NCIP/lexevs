@@ -61,6 +61,9 @@ public class DefaultDatabaseUtility extends JdbcDaoSupport implements DatabaseUt
 		this.executeScript(script);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.utility.DatabaseUtility#executeScript(org.springframework.core.io.Resource, java.lang.String)
+	 */
 	public void executeScript(Resource creationScript, String prefix) throws Exception {
 		String script = convertResourceToString(creationScript);
 		this.executeScript(
@@ -75,6 +78,9 @@ public class DefaultDatabaseUtility extends JdbcDaoSupport implements DatabaseUt
 		doExecuteScript(script);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.utility.DatabaseUtility#executeScript(java.lang.String)
+	 */
 	public void executeScript(String script) throws Exception {	
 		doExecuteScript(script);
 	}
@@ -122,6 +128,7 @@ public class DefaultDatabaseUtility extends JdbcDaoSupport implements DatabaseUt
 	 * Adjust for prefix.
 	 * 
 	 * @param script the script
+	 * @param prefix the prefix
 	 * 
 	 * @return the string
 	 */
@@ -129,6 +136,14 @@ public class DefaultDatabaseUtility extends JdbcDaoSupport implements DatabaseUt
 		return script.replaceAll(DatabaseConstants.PREFIX_PLACEHOLDER, prefix);
 	}
 	
+	/**
+	 * Adjust for individual table prefix.
+	 * 
+	 * @param script the script
+	 * @param individualTablePrefix the individual table prefix
+	 * 
+	 * @return the string
+	 */
 	protected String adjustForIndividualTablePrefix(String script, String individualTablePrefix){
 		return script.replaceAll(DatabaseConstants.MULTIPLE_TABLES_PREFIX_PLACEHOLDER, individualTablePrefix);
 	}
@@ -190,12 +205,18 @@ public class DefaultDatabaseUtility extends JdbcDaoSupport implements DatabaseUt
 		return buffer.toString();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.utility.DatabaseUtility#truncateTable(java.lang.String)
+	 */
 	public void truncateTable(String tableName)
 			throws Exception {
 		String sql = "TRUNCATE table " + tableName;
 		getJdbcTemplate().execute(sql);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.utility.DatabaseUtility#doesTableExist(java.lang.String)
+	 */
 	public boolean doesTableExist(String tableName) {
 		String sql = "SELECT * FROM " + tableName;
 

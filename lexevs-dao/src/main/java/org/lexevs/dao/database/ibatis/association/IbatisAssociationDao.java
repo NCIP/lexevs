@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.dao.database.ibatis.association;
 
 import java.sql.SQLException;
@@ -35,22 +53,49 @@ import org.springframework.orm.ibatis.SqlMapClientCallback;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
 
+/**
+ * The Class IbatisAssociationDao.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class IbatisAssociationDao extends AbstractIbatisDao implements AssociationDao {
 
+	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
+	/** The INSER t_ relation s_ sql. */
 	private static String INSERT_RELATIONS_SQL = "insertRelations";
+	
+	/** The INSER t_ entit y_ assn s_ t o_ entit y_ sql. */
 	private static String INSERT_ENTITY_ASSNS_TO_ENTITY_SQL = "insertEntityAssnsToEntity";
+	
+	/** The INSER t_ associatio n_ qua l_ o r_ contex t_ sql. */
 	private static String INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL = "insertAssociationQualificationOrUsageContext";
+	
+	/** The INSER t_ associatio n_ predicat e_ sql. */
 	private static String INSERT_ASSOCIATION_PREDICATE_SQL = "insertAssociationPredicate";
+	
+	/** The INSER t_ transitiv e_ closur e_ sql. */
 	private static String INSERT_TRANSITIVE_CLOSURE_SQL = "insertTransitiveClosure";
+	
+	/** The GE t_ associatio n_ instanc e_ ke y_ sql. */
 	private static String GET_ASSOCIATION_INSTANCE_KEY_SQL = "getAccociationInstanceKey";
+	
+	/** The GE t_ relation s_ ke y_ sql. */
 	private static String GET_RELATIONS_KEY_SQL = "getRelationsKey";
+	
+	/** The GE t_ associatio n_ predicat e_ ke y_ sql. */
 	private static String GET_ASSOCIATION_PREDICATE_KEY_SQL = "getAssociationPredicateKey";
 	
+	/** The ibatis versions dao. */
 	private IbatisVersionsDao ibatisVersionsDao;
+	
+	/** The coding scheme dao. */
 	private CodingSchemeDao codingSchemeDao;
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.association.AssociationDao#getAssociationPredicateId(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	public String getAssociationPredicateId(String codingSchemeId,
 			String relationContainerId, String associationPredicateName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -60,6 +105,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 						prefix, relationContainerId, associationPredicateName));
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.association.AssociationDao#getRelationsId(java.lang.String, java.lang.String)
+	 */
 	public String getRelationsId(String codingSchemeId, String relationsName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		return
@@ -67,6 +115,13 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				this.getSqlMapClientTemplate().queryForObject(GET_RELATIONS_KEY_SQL, new PrefixedParameterTuple(prefix, codingSchemeId, relationsName));
 	}
 
+	/**
+	 * Insert relations.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param version the version
+	 * @param relations the relations
+	 */
 	public void insertRelations(String codingSchemeUri, String version,
 			Relations relations) {
 		String codingSchemeId = codingSchemeDao.getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
@@ -75,6 +130,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				relations);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertRelations(java.lang.String, org.LexGrid.relations.Relations)
+	 */
 	public String insertRelations(String codingSchemeId,
 			Relations relations) {
 		String relationsId = this.createUniqueId();
@@ -96,6 +154,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		return relationsId;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertAssociationPredicate(java.lang.String, java.lang.String, org.LexGrid.relations.AssociationPredicate)
+	 */
 	public String insertAssociationPredicate(String codingSchemeId, String relationId,
 			AssociationPredicate associationPredicate) {
 		
@@ -113,6 +174,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		return id;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertBatchAssociationSources(java.lang.String, java.util.List)
+	 */
 	public void insertBatchAssociationSources(final String codingSchemeId,
 			final List<AssociationSourceBatchInsertItem> list) {
 		
@@ -140,12 +204,18 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		});
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertAssociationSource(java.lang.String, java.lang.String, org.LexGrid.relations.AssociationSource)
+	 */
 	public void insertAssociationSource(String codingSchemeId,
 			String associationPredicateId, AssociationSource source){
 		this.insertAssociationSource(codingSchemeId, associationPredicateId, source, 
 				this.getNonBatchTemplateInserter());
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertBatchAssociationSources(java.lang.String, java.lang.String, java.util.List)
+	 */
 	@Override
 	public void insertBatchAssociationSources(final String codingSchemeId,
 			final String associationPredicateId, final List<AssociationSource> batch) {
@@ -168,6 +238,19 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		});
 	}
 	
+	/**
+	 * Insert into transitive closure.
+	 * 
+	 * @param codingSchemeId the coding scheme id
+	 * @param associationPredicateId the association predicate id
+	 * @param sourceEntityCode the source entity code
+	 * @param sourceEntityCodeNamespace the source entity code namespace
+	 * @param targetEntityCode the target entity code
+	 * @param targetEntityCodeNamespace the target entity code namespace
+	 * @param executor the executor
+	 * 
+	 * @return the string
+	 */
 	public String insertIntoTransitiveClosure(
 			String codingSchemeId,
 			String associationPredicateId, 
@@ -194,6 +277,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertIntoTransitiveClosure(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public String insertIntoTransitiveClosure(String codingSchemeId,
 			String associationPredicateId, String sourceEntityCode,
@@ -209,6 +295,12 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				this.getNonBatchTemplateInserter());
 	}
 	
+	/**
+	 * Insert batch transitive closure.
+	 * 
+	 * @param codingSchemeId the coding scheme id
+	 * @param batch the batch
+	 */
 	public void insertBatchTransitiveClosure(final String codingSchemeId,
 			final List<TransitiveClosureBatchInsertItem> batch) {
 		
@@ -237,6 +329,14 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	}
 
 
+	/**
+	 * Insert association source.
+	 * 
+	 * @param codingSchemeId the coding scheme id
+	 * @param associationPredicateId the association predicate id
+	 * @param source the source
+	 * @param inserter the inserter
+	 */
 	public void insertAssociationSource(String codingSchemeId,
 			String associationPredicateId, AssociationSource source, IbatisInserter inserter) {
 		Assert.assertTrue("Must Insert at least ONE AssociationTarget per AssociationSource.", source.getTarget().length > 0);
@@ -291,6 +391,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	}
 	
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertAssociationQualifier(java.lang.String, java.lang.String, org.LexGrid.relations.AssociationQualification)
+	 */
 	public void insertAssociationQualifier(String codingSchemeId,
 			String associationInstanceId, AssociationQualification qualifier) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -310,6 +413,14 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				contextBean);
 	}
 	
+	/**
+	 * Gets the key for association instance id.
+	 * 
+	 * @param codingSchemeId the coding scheme id
+	 * @param associationInstanceId the association instance id
+	 * 
+	 * @return the key for association instance id
+	 */
 	protected String getKeyForAssociationInstanceId(String codingSchemeId, String associationInstanceId){
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
@@ -319,6 +430,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				new PrefixedParameterTuple(prefix, codingSchemeId, associationInstanceId));
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.AbstractBaseDao#doGetSupportedLgSchemaVersions()
+	 */
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
 		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
@@ -326,18 +440,38 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 
 	
 
+	/**
+	 * Gets the ibatis versions dao.
+	 * 
+	 * @return the ibatis versions dao
+	 */
 	public IbatisVersionsDao getIbatisVersionsDao() {
 		return ibatisVersionsDao;
 	}
 
+	/**
+	 * Sets the ibatis versions dao.
+	 * 
+	 * @param ibatisVersionsDao the new ibatis versions dao
+	 */
 	public void setIbatisVersionsDao(IbatisVersionsDao ibatisVersionsDao) {
 		this.ibatisVersionsDao = ibatisVersionsDao;
 	}
 
+	/**
+	 * Sets the coding scheme dao.
+	 * 
+	 * @param codingSchemeDao the new coding scheme dao
+	 */
 	public void setCodingSchemeDao(CodingSchemeDao codingSchemeDao) {
 		this.codingSchemeDao = codingSchemeDao;
 	}
 
+	/**
+	 * Gets the coding scheme dao.
+	 * 
+	 * @return the coding scheme dao
+	 */
 	public CodingSchemeDao getCodingSchemeDao() {
 		return codingSchemeDao;
 	}

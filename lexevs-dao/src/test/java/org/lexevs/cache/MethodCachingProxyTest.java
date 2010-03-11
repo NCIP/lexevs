@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.cache;
 
 import static org.junit.Assert.assertEquals;
@@ -13,25 +31,41 @@ import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.dao.test.TestCacheBean;
 import org.springframework.core.annotation.AnnotationUtils;
 
+/**
+ * The Class MethodCachingProxyTest.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class MethodCachingProxyTest extends LexEvsDbUnitTestBase {
 
+	/** The test cache proxy. */
 	@Resource 
 	private MethodCachingProxy testCacheProxy;
 	
+	/** The test cache bean. */
 	@Resource 
 	private TestCacheBean testCacheBean;
 	
+	/**
+	 * Test cache setup.
+	 */
 	@Test
 	public void testCacheSetup(){
 		assertNotNull(this.testCacheProxy);
 		assertNotNull(this.testCacheBean);
 	}
 	
+	/**
+	 * Clear cache.
+	 */
 	@Before
 	public void clearCache(){
 		testCacheProxy.getCaches().clear();
 	}
 	
+	/**
+	 * Test put in cache.
+	 */
 	@Test
 	public void testPutInCache(){
 	
@@ -40,6 +74,9 @@ public class MethodCachingProxyTest extends LexEvsDbUnitTestBase {
 		assertEquals("onetwo", testCacheProxy.getCaches().get("testCache").values().toArray()[0]);
 	}
 	
+	/**
+	 * Test put twice in cache.
+	 */
 	@Test
 	public void testPutTwiceInCache(){
 		
@@ -49,6 +86,9 @@ public class MethodCachingProxyTest extends LexEvsDbUnitTestBase {
 		assertEquals("onetwo", testCacheProxy.getCaches().get("testCache").values().toArray()[0]);
 	}
 	
+	/**
+	 * Test two different in cache.
+	 */
 	@Test
 	public void testTwoDifferentInCache(){
 		
@@ -59,6 +99,9 @@ public class MethodCachingProxyTest extends LexEvsDbUnitTestBase {
 		assertEquals("threefour", testCacheProxy.getCaches().get("testCache").values().toArray()[1]);
 	}
 	
+	/**
+	 * Test un cachable method.
+	 */
 	@Test
 	public void testUnCachableMethod(){
 		
@@ -67,6 +110,9 @@ public class MethodCachingProxyTest extends LexEvsDbUnitTestBase {
 		assertNull(testCacheProxy.getCaches().get("testCache"));
 	}
 	
+	/**
+	 * Test clear cache.
+	 */
 	@Test
 	public void testClearCache(){
 		
@@ -81,6 +127,11 @@ public class MethodCachingProxyTest extends LexEvsDbUnitTestBase {
 		
 	}
 	
+	/**
+	 * The main method.
+	 * 
+	 * @param args the arguments
+	 */
 	public static void main(String[] args){
 		TestCacheBean bean = new TestCacheBean();
 		Class clazz = bean.getClass();

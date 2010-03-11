@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.dao.database.service.property;
 
 import java.util.ArrayList;
@@ -9,8 +27,16 @@ import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * The Class VersionableEventPropertyService.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class VersionableEventPropertyService extends AbstractDatabaseService implements PropertyService{
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.property.PropertyService#insertBatchEntityProperties(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.List)
+	 */
 	@Transactional
 	public void insertBatchEntityProperties(
 			String codingSchemeUri, 
@@ -26,6 +52,9 @@ public class VersionableEventPropertyService extends AbstractDatabaseService imp
 				this.propertyListToBatchInsertList(entityId, items));
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.property.PropertyService#insertEntityProperty(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	public void insertEntityProperty(
 			String codingSchemeUri, 
 			String version, 
@@ -37,6 +66,12 @@ public class VersionableEventPropertyService extends AbstractDatabaseService imp
 	}
 
 
+	/**
+	 * Insert entity properties.
+	 * 
+	 * @param codingSchemeId the coding scheme id
+	 * @param items the items
+	 */
 	public void insertEntityProperties(String codingSchemeId,
 			List<PropertyBatchInsertItem> items) {
 		// TODO Auto-generated method stub
@@ -44,6 +79,9 @@ public class VersionableEventPropertyService extends AbstractDatabaseService imp
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.property.PropertyService#updateEntityProperty(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	public void updateEntityProperty(String codingSchemeUri, String version,
 			String entityCode, String entityCodeNamespace, String propertyId,
 			Property property) {
@@ -51,6 +89,14 @@ public class VersionableEventPropertyService extends AbstractDatabaseService imp
 		
 	}
 
+	/**
+	 * Property list to batch insert list.
+	 * 
+	 * @param parentId the parent id
+	 * @param props the props
+	 * 
+	 * @return the list< property batch insert item>
+	 */
 	protected List<PropertyBatchInsertItem> propertyListToBatchInsertList(
 			String parentId, List<Property> props){
 		List<PropertyBatchInsertItem> returnList = new ArrayList<PropertyBatchInsertItem>();

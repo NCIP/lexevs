@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.dao.database.ibatis.association;
 
 import java.sql.ResultSet;
@@ -20,12 +38,23 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * The Class IbatisAssociationDaoTest.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 @TransactionConfiguration
 public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 	
+	/** The ibatis association dao. */
 	@Resource
 	private IbatisAssociationDao ibatisAssociationDao;
 	
+	/**
+	 * Test get key for association instance id.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testGetKeyForAssociationInstanceId() throws SQLException{
@@ -55,6 +84,11 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals("eae-guid", key);
 	}
 	
+	/**
+	 * Test insert association qualifier.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testInsertAssociationQualifier() throws SQLException{
@@ -98,6 +132,11 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 	
+	/**
+	 * Test insert relations.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testInsertRelations() throws SQLException{
@@ -129,6 +168,11 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 
+	/**
+	 * Test insert association source.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testInsertAssociationSource() throws SQLException {
@@ -203,6 +247,11 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals(2, template.queryForObject("Select count(*) from entityassnquals", Integer.class));
 	}
 	
+	/**
+	 * Test insert association predicate.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testInsertAssociationPredicate() throws SQLException {
@@ -232,6 +281,11 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 	
+	/**
+	 * Test insert transitive closure.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testInsertTransitiveClosure() throws SQLException {

@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.dao.database.lazyload;
 
 import java.util.List;
@@ -9,22 +27,41 @@ import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao.IndividualDao
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 
+/**
+ * The Class LazyLoadableEntity.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class LazyLoadableEntity extends Entity {
 	
+	/** The property dao. */
 	private PropertyDao propertyDao;
+	
+	/** The is hydrated. */
 	private boolean isHydrated = false;
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -3893677635627151845L;
+	
+	/** The entity id. */
 	private String entityId;
+	
+	/** The coding scheme id. */
 	private String codingSchemeId;
 	
 	
+	/* (non-Javadoc)
+	 * @see org.LexGrid.concepts.Entity#getPresentation()
+	 */
 	@Override
 	public Presentation[] getPresentation() {
 		this.hydrate();
 		return super.getPresentation();
 	}
 
+	/**
+	 * Hydrate.
+	 */
 	protected void hydrate() {
 		if(!isHydrated) {
 			doHydrate();
@@ -32,6 +69,9 @@ public class LazyLoadableEntity extends Entity {
 		}
 	}
 	
+	/**
+	 * Do hydrate.
+	 */
 	protected void doHydrate() {
 		List<Property> properties = propertyDao.executeInTransaction(new IndividualDaoCallback<List<Property>>() {
 
@@ -43,22 +83,47 @@ public class LazyLoadableEntity extends Entity {
 		this.addAnyProperties(properties);
 	}
 	
+	/**
+	 * Gets the entity id.
+	 * 
+	 * @return the entity id
+	 */
 	public String getEntityId() {
 		return entityId;
 	}
 
+	/**
+	 * Sets the entity id.
+	 * 
+	 * @param entityId the new entity id
+	 */
 	public void setEntityId(String entityId) {
 		this.entityId = entityId;
 	}
 
+	/**
+	 * Gets the coding scheme id.
+	 * 
+	 * @return the coding scheme id
+	 */
 	public String getCodingSchemeId() {
 		return codingSchemeId;
 	}
 
+	/**
+	 * Gets the property dao.
+	 * 
+	 * @return the property dao
+	 */
 	public PropertyDao getPropertyDao() {
 		return propertyDao;
 	}
 
+	/**
+	 * Sets the property dao.
+	 * 
+	 * @param propertyDao the new property dao
+	 */
 	public void setPropertyDao(PropertyDao propertyDao) {
 		this.propertyDao = propertyDao;
 	}

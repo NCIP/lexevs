@@ -61,67 +61,146 @@ import org.lexevs.system.constants.SystemVariables;
  * the changes, write out the xml file, and finally, release the lock on the
  * lock file.
  * 
- * 
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class XmlRegistry implements Registry {
+    
+    /** The last update time_. */
     private long lastUpdateTime_;
     // last used db or table identifiers. If we are in multiDB mode, this
     // identifier will
     // be a number that starts at 0 and counts up.
     // If we are in single db mode, this will be a character number combination
     // that increments.
+    /** The last used db identifier_. */
     private String lastUsedDBIdentifier_;
+    
+    /** The last used history identifier_. */
     private String lastUsedHistoryIdentifier_;
+    
+    /** The entries_. */
     private ArrayList<DBEntry> entries_;
+    
+    /** The history entries_. */
     private ArrayList<HistoryEntry> historyEntries_;
 
+    /** The urn version to entry map_. */
     private Hashtable<String, DBEntry> urnVersionToEntryMap_;
+    
+    /** The urn tag to version map_. */
     private Hashtable<String, String> urnTagToVersionMap_;
     
+    /** The data source. */
     private DataSource dataSource;
 
+    /** The file_. */
     private File file_;
 
+    /**
+     * Gets the logger.
+     * 
+     * @return the logger
+     */
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
 
+    /**
+     * The Class DBEntry.
+     * 
+     * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+     */
     public static class DBEntry {
-    	public String urn;
-    	public String version;
-    	public String status;
-    	public String dbURL;
+    	
+	    /** The urn. */
+	    public String urn;
+    	
+	    /** The version. */
+	    public String version;
+    	
+	    /** The status. */
+	    public String status;
+    	
+	    /** The db url. */
+	    public String dbURL;
+        
+        /** The prefix. */
         public String prefix = "";
+        
+        /** The tag. */
         public String tag;
+        
+        /** The db name. */
         public String dbName;
+        
+        /** The last update date. */
         public long lastUpdateDate;
+        
+        /** The deactive date. */
         public long deactiveDate;
 
     }
 
+    /**
+     * The Class HistoryEntry.
+     * 
+     * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+     */
     public static class HistoryEntry {
-    	public String urn;
-    	public String dbURL;
-    	public String prefix = "";
-    	public String dbName;
-    	public long lastUpdateDate;
+    	
+	    /** The urn. */
+	    public String urn;
+    	
+	    /** The db url. */
+	    public String dbURL;
+    	
+	    /** The prefix. */
+	    public String prefix = "";
+    	
+	    /** The db name. */
+	    public String dbName;
+    	
+	    /** The last update date. */
+	    public long lastUpdateDate;
 
+        /**
+         * Gets the db name.
+         * 
+         * @return the db name
+         */
         public String getdbName() {
             return dbName;
         }
 
+        /**
+         * Gets the prefix.
+         * 
+         * @return the prefix
+         */
         public String getPrefix() {
             return prefix;
         }
     }
 
+    /**
+     * Gets the registry file.
+     * 
+     * @return the registry file
+     */
     protected File getRegistryFile() {
         return file_;
     }
 
+    /**
+     * Gets the status.
+     * 
+     * @param codingSchemeURN the coding scheme urn
+     * @param version the version
+     * 
+     * @return the status
+     */
     public CodingSchemeVersionStatus getStatus(String codingSchemeURN, String version) {
         // If I don't have an entry in the registry, assume it is a -preloaded-
         // one, and just return active
@@ -144,6 +223,14 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Checks if is active.
+     * 
+     * @param codingSchemeURN the coding scheme urn
+     * @param version the version
+     * 
+     * @return true, if is active
+     */
     public boolean isActive(String codingSchemeURN, String version) {
         // this returns null if the coding scheme isn't registered.
         CodingSchemeVersionStatus temp = getStatus(codingSchemeURN, version);
@@ -152,6 +239,13 @@ public class XmlRegistry implements Registry {
         return (temp == null || temp == CodingSchemeVersionStatus.ACTIVE ? true : false);
     }
 
+    /**
+     * Gets the sQL connection info for code system.
+     * 
+     * @param codingSchemeVersion the coding scheme version
+     * 
+     * @return the sQL connection info for code system
+     */
     public SQLConnectionInfo getSQLConnectionInfoForCodeSystem(AbsoluteCodingSchemeVersionReference codingSchemeVersion) {
         SystemVariables sv = ResourceManager.instance().getSystemVariables();
 
@@ -177,6 +271,13 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Gets the sQL connection info for history.
+     * 
+     * @param urn the urn
+     * 
+     * @return the sQL connection info for history
+     */
     public SQLConnectionInfo[] getSQLConnectionInfoForHistory(String urn) {
         SQLConnectionInfo[] result = null;
         SystemVariables sv = ResourceManager.instance().getSystemVariables();
@@ -216,6 +317,14 @@ public class XmlRegistry implements Registry {
         return result;
     }
 
+    /**
+     * Gets the tag.
+     * 
+     * @param codingSchemeURN the coding scheme urn
+     * @param version the version
+     * 
+     * @return the tag
+     */
     public String getTag(String codingSchemeURN, String version) {
         // If I don't have an entry in the registry, assume it is a -preloaded-
         // one, and just return null.
@@ -232,6 +341,14 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Gets the deactivate date.
+     * 
+     * @param codingSchemeURN the coding scheme urn
+     * @param version the version
+     * 
+     * @return the deactivate date
+     */
     public Date getDeactivateDate(String codingSchemeURN, String version) {
         // If I don't have an entry in the registry, assume it is a -preloaded-
         // one, and just return null.
@@ -252,6 +369,15 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Sets the deactivate date.
+     * 
+     * @param acsvr the acsvr
+     * @param date the date
+     * 
+     * @throws LBParameterException the LB parameter exception
+     * @throws LBInvocationException the LB invocation exception
+     */
     public synchronized void setDeactivateDate(AbsoluteCodingSchemeVersionReference acsvr, Date date)
             throws LBParameterException, LBInvocationException {
         WriteLockManager.instance().lockLockFile();
@@ -266,6 +392,15 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Sets the deactivate date internal.
+     * 
+     * @param acsvr the acsvr
+     * @param date the date
+     * 
+     * @throws LBParameterException the LB parameter exception
+     * @throws LBInvocationException the LB invocation exception
+     */
     public void setDeactivateDateInternal(AbsoluteCodingSchemeVersionReference acsvr, Date date)
             throws LBParameterException, LBInvocationException {
         try {
@@ -282,6 +417,14 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Gets the last update date.
+     * 
+     * @param codingSchemeURN the coding scheme urn
+     * @param version the version
+     * 
+     * @return the last update date
+     */
     public Date getLastUpdateDate(String codingSchemeURN, String version) {
         // If I don't have an entry in the registry, assume it is a -preloaded-
         // one, and just return true.
@@ -302,6 +445,14 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Deactivate.
+     * 
+     * @param entry the entry
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     public synchronized void deactivate(DBEntry entry) throws LBInvocationException, LBParameterException {
         WriteLockManager.instance().lockLockFile();
         WriteLockManager.instance().checkForRegistryUpdates();
@@ -315,6 +466,14 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Deactivate internal.
+     * 
+     * @param entry the entry
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     private void deactivateInternal(DBEntry entry) throws LBInvocationException, LBParameterException {
         try {
             WriteLockManager.instance().acquireLock(entry.urn, entry.version);
@@ -327,6 +486,14 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Sets the status pending.
+     * 
+     * @param entry the new status pending
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     public synchronized void setStatusPending(DBEntry entry) throws LBInvocationException, LBParameterException {
         WriteLockManager.instance().lockLockFile();
         WriteLockManager.instance().checkForRegistryUpdates();
@@ -340,6 +507,14 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Sets the status pending internal.
+     * 
+     * @param entry the new status pending internal
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     private void setStatusPendingInternal(DBEntry entry) throws LBInvocationException, LBParameterException {
         try {
             WriteLockManager.instance().acquireLock(entry.urn, entry.version);
@@ -355,9 +530,10 @@ public class XmlRegistry implements Registry {
     /**
      * Activate a code system.
      * 
-     * @param codingScheme
-     * @throws LBInvocationException
-     * @throws LBParameterException
+     * @param codingScheme the coding scheme
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
      */
     public synchronized void activate(AbsoluteCodingSchemeVersionReference codingScheme) throws LBInvocationException,
             LBParameterException {
@@ -373,6 +549,14 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Activate internal.
+     * 
+     * @param codingScheme the coding scheme
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     private void activateInternal(AbsoluteCodingSchemeVersionReference codingScheme) throws LBInvocationException,
             LBParameterException {
         DBEntry entry = getDBCodingSchemeEntry(codingScheme);
@@ -407,6 +591,15 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Update tag.
+     * 
+     * @param codingScheme the coding scheme
+     * @param newTag the new tag
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     public synchronized void updateTag(AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
             throws LBInvocationException, LBParameterException {
         WriteLockManager.instance().lockLockFile();
@@ -421,6 +614,15 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Update tag internal.
+     * 
+     * @param codingScheme the coding scheme
+     * @param newTag the new tag
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     private void updateTagInternal(AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
             throws LBInvocationException, LBParameterException {
         DBEntry entry = getDBCodingSchemeEntry(codingScheme);
@@ -455,6 +657,15 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Clear tag.
+     * 
+     * @param codingScheme the coding scheme
+     * @param tag the tag
+     * 
+     * @throws LBParameterException the LB parameter exception
+     * @throws LBInvocationException the LB invocation exception
+     */
     private void clearTag(AbsoluteCodingSchemeVersionReference codingScheme, String tag) throws LBParameterException,
             LBInvocationException {
         try {
@@ -470,6 +681,15 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Update version.
+     * 
+     * @param codingScheme the coding scheme
+     * @param newVersion the new version
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     public synchronized void updateVersion(AbsoluteCodingSchemeVersionReference codingScheme, String newVersion)
             throws LBInvocationException, LBParameterException {
         WriteLockManager.instance().lockLockFile();
@@ -484,6 +704,15 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Update version internal.
+     * 
+     * @param codingScheme the coding scheme
+     * @param newVersion the new version
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     private void updateVersionInternal(AbsoluteCodingSchemeVersionReference codingScheme, String newVersion)
             throws LBInvocationException, LBParameterException {
         DBEntry entry = getDBCodingSchemeEntry(codingScheme);
@@ -523,6 +752,16 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Gets the entry.
+     * 
+     * @param codingSchemeURN the coding scheme urn
+     * @param version the version
+     * 
+     * @return the entry
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public DBEntry getEntry(String codingSchemeURN, String version) throws LBParameterException {
         if (codingSchemeURN == null || version == null || codingSchemeURN.length() == 0 || version.length() == 0) {
             throw new LBParameterException("The URN and the version must be populated.");
@@ -530,6 +769,15 @@ public class XmlRegistry implements Registry {
         return urnVersionToEntryMap_.get(codingSchemeURN + ResourceManager.codingSchemeVersionSeparator_ + version);
     }
 
+    /**
+     * Gets the dB coding scheme entry.
+     * 
+     * @param codingScheme the coding scheme
+     * 
+     * @return the dB coding scheme entry
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public DBEntry getDBCodingSchemeEntry(AbsoluteCodingSchemeVersionReference codingScheme) throws LBParameterException {
         if (codingScheme == null) {
             throw new LBParameterException(
@@ -538,6 +786,19 @@ public class XmlRegistry implements Registry {
         return getEntry(codingScheme.getCodingSchemeURN(), codingScheme.getCodingSchemeVersion());
     }
 
+    /**
+     * Adds the new item.
+     * 
+     * @param urn the urn
+     * @param version the version
+     * @param status the status
+     * @param dbURL the db url
+     * @param tag the tag
+     * @param dbName the db name
+     * @param tablePrefix the table prefix
+     * 
+     * @throws Exception the exception
+     */
     public synchronized void addNewItem(String urn, String version, String status, String dbURL, String tag,
             String dbName, String tablePrefix) throws Exception {
         WriteLockManager.instance().lockLockFile();
@@ -553,6 +814,19 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Adds the new item internal.
+     * 
+     * @param urn the urn
+     * @param version the version
+     * @param status the status
+     * @param dbURL the db url
+     * @param tag the tag
+     * @param dbName the db name
+     * @param tablePrefix the table prefix
+     * 
+     * @throws Exception the exception
+     */
     private void addNewItemInternal(String urn, String version, String status, String dbURL, String tag, String dbName,
             String tablePrefix) throws Exception {
         if (urn == null || version == null || status == null || dbURL == null || urn.length() == 0
@@ -591,6 +865,15 @@ public class XmlRegistry implements Registry {
     /**
      * Add a new history item to the registry. Returns the current existing
      * information (if any exists)
+     * 
+     * @param urn the urn
+     * @param dbURL the db url
+     * @param dbName the db name
+     * @param tablePrefix the table prefix
+     * 
+     * @return the history entry
+     * 
+     * @throws Exception the exception
      */
     public synchronized HistoryEntry addNewHistory(String urn, String dbURL, String dbName, String tablePrefix)
             throws Exception {
@@ -609,6 +892,15 @@ public class XmlRegistry implements Registry {
     /**
      * Add a new history item to the registry. Returns the current existing
      * information (if any exists)
+     * 
+     * @param urn the urn
+     * @param dbURL the db url
+     * @param dbName the db name
+     * @param tablePrefix the table prefix
+     * 
+     * @return the history entry
+     * 
+     * @throws Exception the exception
      */
     private HistoryEntry addNewHistoryInternal(String urn, String dbURL, String dbName, String tablePrefix)
             throws Exception {
@@ -641,14 +933,36 @@ public class XmlRegistry implements Registry {
         return old;
     }
 
+    /**
+     * Gets the version for tag.
+     * 
+     * @param urn the urn
+     * @param tag the tag
+     * 
+     * @return the version for tag
+     */
     public String getVersionForTag(String urn, String tag) {
         return urnTagToVersionMap_.get(urn + ResourceManager.codingSchemeVersionSeparator_ + tag);
     }
     
+    /**
+     * Instantiates a new xml registry.
+     * 
+     * @param systemVariables the system variables
+     * 
+     * @throws Exception the exception
+     */
     public XmlRegistry(SystemVariables systemVariables) throws Exception {
     	this(systemVariables.getAutoLoadRegistryPath());
     }
 
+    /**
+     * Instantiates a new xml registry.
+     * 
+     * @param pathToRegistryFile the path to registry file
+     * 
+     * @throws Exception the exception
+     */
     public XmlRegistry(String pathToRegistryFile) throws Exception {
 
         try {
@@ -685,6 +999,11 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Read file.
+     * 
+     * @throws Exception the exception
+     */
     @SuppressWarnings("unchecked")
     private synchronized void readFile() throws Exception {
         // read in the contents of the xml file, populating the local variables.
@@ -762,6 +1081,11 @@ public class XmlRegistry implements Registry {
      * (SystemResourceService initialization issues)
      */
 
+    /**
+     * Write file2.
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     */
     private void writeFile2() throws LBInvocationException {
         try {
             writeFile();
@@ -771,6 +1095,11 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Write file.
+     * 
+     * @throws Exception the exception
+     */
     private synchronized void writeFile() throws Exception {
         // writeFile is only called after changed are made - so update the
         // timestamp.
@@ -853,6 +1182,8 @@ public class XmlRegistry implements Registry {
     }
 
     /**
+     * Gets the db entries.
+     * 
      * @return the entries
      */
     public synchronized DBEntry[] getDBEntries() {
@@ -860,6 +1191,8 @@ public class XmlRegistry implements Registry {
     }
 
     /**
+     * Gets the history entries.
+     * 
      * @return the entries
      */
     public synchronized HistoryEntry[] getHistoryEntries() {
@@ -867,12 +1200,23 @@ public class XmlRegistry implements Registry {
     }
 
     /**
+     * Gets the last update time.
+     * 
      * @return the lastUpdateTime
      */
     public Date getLastUpdateTime() {
         return new Date(this.lastUpdateTime_);
     }
 
+    /**
+     * Removes the.
+     * 
+     * @param codingSchemeVersion the coding scheme version
+     * 
+     * @throws InternalException the internal exception
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     public synchronized void remove(AbsoluteCodingSchemeVersionReference codingSchemeVersion)
             throws InternalException, LBInvocationException, LBParameterException {
         WriteLockManager.instance().lockLockFile();
@@ -887,6 +1231,15 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Removes the internal.
+     * 
+     * @param codingSchemeVersion the coding scheme version
+     * 
+     * @throws InternalException the internal exception
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     private void removeInternal(AbsoluteCodingSchemeVersionReference codingSchemeVersion) throws InternalException,
             LBInvocationException, LBParameterException {
         try {
@@ -913,6 +1266,15 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Gets the history entry.
+     * 
+     * @param urn the urn
+     * 
+     * @return the history entry
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public HistoryEntry getHistoryEntry(String urn) throws LBParameterException {
         for (int i = 0; i < historyEntries_.size(); i++) {
             if (historyEntries_.get(i).urn.equals(urn)) {
@@ -923,10 +1285,13 @@ public class XmlRegistry implements Registry {
     }
 
     /**
-     * @param urn
-     * @throws InternalException
-     * @throws LBInvocationException
-     * @throws LBParameterException
+     * Removes the history entry.
+     * 
+     * @param urn the urn
+     * 
+     * @throws InternalException the internal exception
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
      */
     public synchronized void removeHistoryEntry(String urn) throws InternalException, LBInvocationException,
             LBParameterException {
@@ -942,6 +1307,14 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Removes the history internal.
+     * 
+     * @param urn the urn
+     * 
+     * @throws InternalException the internal exception
+     * @throws LBParameterException the LB parameter exception
+     */
     private void removeHistoryInternal(String urn) throws InternalException, LBParameterException {
         try {
             boolean removed = false;
@@ -964,10 +1337,12 @@ public class XmlRegistry implements Registry {
     }
 
     /**
+     * Gets the next db identifier.
+     * 
      * @return the lastUsedDBIdentifier
-     * @throws LBInvocationException
-     * @throws UnexpectedInternalError
-     */
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws UnexpectedInternalError      */
     public synchronized String getNextDBIdentifier() throws LBInvocationException {
         WriteLockManager.instance().lockLockFile();
         WriteLockManager.instance().checkForRegistryUpdates();
@@ -981,6 +1356,13 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Gets the next free db identifier internal.
+     * 
+     * @return the next free db identifier internal
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     */
     private String getNextFreeDBIdentifierInternal() throws LBInvocationException {
         try {
             boolean singleDBMode = ResourceManager.instance().getSystemVariables().getAutoLoadSingleDBMode();
@@ -1002,10 +1384,12 @@ public class XmlRegistry implements Registry {
     }
 
     /**
+     * Gets the next history identifier.
+     * 
      * @return the lastUsedDBIdentifier
-     * @throws LBInvocationException
-     * @throws UnexpectedInternalError
-     */
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws UnexpectedInternalError      */
     public synchronized String getNextHistoryIdentifier() throws LBInvocationException {
         WriteLockManager.instance().lockLockFile();
         WriteLockManager.instance().checkForRegistryUpdates();
@@ -1019,6 +1403,13 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Gets the next free history identifier internal.
+     * 
+     * @return the next free history identifier internal
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     */
     private String getNextFreeHistoryIdentifierInternal() throws LBInvocationException {
         try {
             boolean singleDBMode = ResourceManager.instance().getSystemVariables().getAutoLoadSingleDBMode();
@@ -1044,9 +1435,11 @@ public class XmlRegistry implements Registry {
     /**
      * Activate a code system.
      * 
-     * @param codingScheme
-     * @throws LBInvocationException
-     * @throws LBParameterException
+     * @param oldURNVerison the old urn verison
+     * @param newURNVerison the new urn verison
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
      */
     public synchronized void updateURNVersion(AbsoluteCodingSchemeVersionReference oldURNVerison,
             AbsoluteCodingSchemeVersionReference newURNVerison) throws LBInvocationException, LBParameterException {
@@ -1063,6 +1456,15 @@ public class XmlRegistry implements Registry {
         }
     }
 
+    /**
+     * Update urn version internal.
+     * 
+     * @param oldURNVerison the old urn verison
+     * @param newURNVerison the new urn verison
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     private void updateURNVersionInternal(AbsoluteCodingSchemeVersionReference oldURNVerison,
             AbsoluteCodingSchemeVersionReference newURNVerison) throws LBInvocationException, LBParameterException {
 
@@ -1084,16 +1486,25 @@ public class XmlRegistry implements Registry {
         }
     }
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#addNewItem(org.lexevs.registry.model.RegistryEntry)
+	 */
 	public void addNewItem(RegistryEntry entry) throws Exception {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#getAllRegistryEntries()
+	 */
 	public List<RegistryEntry> getAllRegistryEntries() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#getAllRegistryEntriesOfType(org.lexevs.registry.service.Registry.ResourceType)
+	 */
 	public List<RegistryEntry> getAllRegistryEntriesOfType(ResourceType type) {
 		List<RegistryEntry> returnList = new ArrayList<RegistryEntry>();
 		
@@ -1110,12 +1521,18 @@ public class XmlRegistry implements Registry {
 		return returnList;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#getEntriesForUri(java.lang.String)
+	 */
 	public List<RegistryEntry> getEntriesForUri(String uri)
 			throws LBParameterException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#getNonCodingSchemeEntry(java.lang.String)
+	 */
 	public RegistryEntry getNonCodingSchemeEntry(
 			String uri)
 			throws LBParameterException {
@@ -1129,6 +1546,9 @@ public class XmlRegistry implements Registry {
 		return entry;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#containsCodingSchemeEntry(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
+	 */
 	public boolean containsCodingSchemeEntry(
 			AbsoluteCodingSchemeVersionReference codingScheme) {
 		try {
@@ -1140,6 +1560,9 @@ public class XmlRegistry implements Registry {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#getCodingSchemeEntry(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
+	 */
 	public RegistryEntry getCodingSchemeEntry(
 			AbsoluteCodingSchemeVersionReference codingScheme)
 			throws LBParameterException {
@@ -1152,11 +1575,17 @@ public class XmlRegistry implements Registry {
 		return entry;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#removeEntry(org.lexevs.registry.model.RegistryEntry)
+	 */
 	public void removeEntry(RegistryEntry entry) throws LBParameterException {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#updateEntry(org.lexevs.registry.model.RegistryEntry)
+	 */
 	public void updateEntry(RegistryEntry entry) {
 		if(entry.getResourceType().equals(ResourceType.CODING_SCHEME)) {
 			AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
@@ -1182,6 +1611,9 @@ public class XmlRegistry implements Registry {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#containsNonCodingSchemeEntry(java.lang.String)
+	 */
 	public boolean containsNonCodingSchemeEntry(String uri) {
 		for (HistoryEntry entry : this.historyEntries_) {
             if (entry.urn.equals(uri)) {
@@ -1191,6 +1623,15 @@ public class XmlRegistry implements Registry {
 		return false;
 	}
 	
+	/**
+	 * Gets the supported lex grid schema version for coding scheme.
+	 * 
+	 * @param ref the ref
+	 * 
+	 * @return the supported lex grid schema version for coding scheme
+	 * 
+	 * @throws LBInvocationException the LB invocation exception
+	 */
 	protected String getSupportedLexGridSchemaVersionForCodingScheme(
 			AbsoluteCodingSchemeVersionReference ref)
 			throws LBInvocationException {
@@ -1203,6 +1644,15 @@ public class XmlRegistry implements Registry {
 		}
 	}
 	
+	/**
+	 * Gets the supported lex grid schema version for history.
+	 * 
+	 * @param uri the uri
+	 * 
+	 * @return the supported lex grid schema version for history
+	 * 
+	 * @throws LBInvocationException the LB invocation exception
+	 */
 	protected String getSupportedLexGridSchemaVersionForHistory(
 			String uri)
 			throws LBInvocationException {
@@ -1215,14 +1665,32 @@ public class XmlRegistry implements Registry {
 		}
 	}
 	
+	/**
+	 * Gets the data source.
+	 * 
+	 * @return the data source
+	 */
 	public DataSource getDataSource() {
 		return dataSource;
 	}
 
+	/**
+	 * Sets the data source.
+	 * 
+	 * @param dataSource the new data source
+	 */
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 
+	/**
+	 * Update coding scheme entry tag.
+	 * 
+	 * @param codingScheme the coding scheme
+	 * @param newTag the new tag
+	 * 
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	public void updateCodingSchemeEntryTag(
 			AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
 	throws LBParameterException {

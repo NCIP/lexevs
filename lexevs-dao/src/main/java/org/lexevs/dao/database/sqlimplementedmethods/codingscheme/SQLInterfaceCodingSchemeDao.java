@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.dao.database.sqlimplementedmethods.codingscheme;
 
 import java.sql.PreparedStatement;
@@ -22,29 +40,52 @@ import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.exceptions.MissingResourceException;
 import org.springframework.util.StringUtils;
 
+/**
+ * The Class SQLInterfaceCodingSchemeDao.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDao implements CodingSchemeDao {
 	
+	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("1.8");
 	
+	/**
+	 * Delete coding scheme.
+	 * 
+	 * @param codingScheme the coding scheme
+	 */
 	public void deleteCodingScheme(CodingScheme codingScheme) {
 		throw new UnsupportedOperationException();
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeById(java.lang.String)
+	 */
 	public CodingScheme getCodingSchemeById(String codingSchemeId) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeByNameAndVersion(java.lang.String, java.lang.String)
+	 */
 	public CodingScheme getCodingSchemeByNameAndVersion(
 			String codingSchemeName, String version) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeByRevision(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	public CodingScheme getCodingSchemeByRevision(String codingSchemeName,
 			String version, String revisionId) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeByUriAndVersion(java.lang.String, java.lang.String)
+	 */
 	public CodingScheme getCodingSchemeByUriAndVersion(String codingSchemeUri,
 			String version) {
 		try {
@@ -56,16 +97,25 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 		} 
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeIdByNameAndVersion(java.lang.String, java.lang.String)
+	 */
 	public String getCodingSchemeIdByNameAndVersion(String codingSchemeName,
 			String version) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeIdByUriAndVersion(java.lang.String, java.lang.String)
+	 */
 	public String getCodingSchemeIdByUriAndVersion(String codingSchemeUri,
 			String version) {
 		return resolveCodingSchemeKey(codingSchemeUri, version);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeSummaryByUriAndVersion(java.lang.String, java.lang.String)
+	 */
 	public CodingSchemeSummary getCodingSchemeSummaryByUriAndVersion(
 			String codingSchemeUri, String version) {
 		String codingSchemeInternalName;
@@ -119,131 +169,227 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getEntryStateId(java.lang.String, java.lang.String)
+	 */
 	public String getEntryStateId(String codingSchemeName, String version) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
+	 */
 	public String insertCodingScheme(CodingScheme cs) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertCodingSchemeLocalName(java.lang.String, java.lang.String)
+	 */
 	public void insertCodingSchemeLocalName(String codingSchemeId,
 			String localName) {
 		throw new UnsupportedOperationException();
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertCodingSchemeSource(java.lang.String, org.LexGrid.commonTypes.Source)
+	 */
 	public void insertCodingSchemeSource(String codingSchemeId, Source source) {
 		throw new UnsupportedOperationException();
 		
 	}
 
+	/**
+	 * Insert history coding scheme.
+	 * 
+	 * @param codingScheme the coding scheme
+	 * 
+	 * @return the string
+	 */
 	public String insertHistoryCodingScheme(CodingScheme codingScheme) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertMappings(java.lang.String, org.LexGrid.naming.Mappings)
+	 */
 	public void insertMappings(String codingSchemeId, Mappings mappings) {
 		throw new UnsupportedOperationException();
 		
 	}
 
+	/**
+	 * Insert mappings.
+	 * 
+	 * @param codingSchemeName the coding scheme name
+	 * @param codingSchemeVersion the coding scheme version
+	 * @param mappings the mappings
+	 */
 	public void insertMappings(String codingSchemeName,
 			String codingSchemeVersion, Mappings mappings) {
 		throw new UnsupportedOperationException();
 		
 	}
 
+	/**
+	 * Insert uri map.
+	 * 
+	 * @param codingSchemeName the coding scheme name
+	 * @param codingSchemeVersion the coding scheme version
+	 * @param supportedProperty the supported property
+	 */
 	public void insertURIMap(String codingSchemeName,
 			String codingSchemeVersion, URIMap supportedProperty) {
 		throw new UnsupportedOperationException();
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertURIMap(java.lang.String, java.util.List)
+	 */
 	public void insertURIMap(String codingSchemeId,
 			List<URIMap> supportedProperty) {
 		throw new UnsupportedOperationException();
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertURIMap(java.lang.String, org.LexGrid.naming.URIMap)
+	 */
 	public void insertURIMap(String codingSchemeId, URIMap supportedProperty) {
 		throw new UnsupportedOperationException();
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#updateCodingScheme(java.lang.String, org.LexGrid.codingSchemes.CodingScheme)
+	 */
 	public void updateCodingScheme(String codingSchemeId,
 			CodingScheme codingScheme) {
 		throw new UnsupportedOperationException();
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.AbstractBaseDao#doGetSupportedLgSchemaVersions()
+	 */
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
 		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#deleteCodingSchemeById(java.lang.String)
+	 */
 	public void deleteCodingSchemeById(String codingSchemeId) {
 		throw new UnsupportedOperationException();
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao#executeInTransaction(org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao.IndividualDaoCallback)
+	 */
 	public <T> T executeInTransaction(IndividualDaoCallback<T> callback) {
 		throw new UnsupportedOperationException();
 	}
 	
+	/**
+	 * Resolve coding scheme key.
+	 * 
+	 * @param uri the uri
+	 * @param version the version
+	 * 
+	 * @return the string
+	 */
 	public static String resolveCodingSchemeKey(String uri, String version) {
 		return uri + KEY_SEPERATOR + version;
 	}
 	
+	/**
+	 * Resolve coding scheme key.
+	 * 
+	 * @param key the key
+	 * 
+	 * @return the absolute coding scheme version reference
+	 */
 	public static AbsoluteCodingSchemeVersionReference resolveCodingSchemeKey(String key) {
 		String[] keys = StringUtils.split(key, KEY_SEPERATOR);
 		return DaoUtility.createAbsoluteCodingSchemeVersionReference(keys[0], keys[1]);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getDistinctEntityTypesOfCodingScheme(java.lang.String)
+	 */
 	@Override
 	public List<String> getDistinctEntityTypesOfCodingScheme(
 			String codingSchemeId) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getDistinctFormatsOfCodingScheme(java.lang.String)
+	 */
 	@Override
 	public List<String> getDistinctFormatsOfCodingScheme(String codingSchemeId) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getDistinctLanguagesOfCodingScheme(java.lang.String)
+	 */
 	@Override
 	public List<String> getDistinctLanguagesOfCodingScheme(String codingSchemeId) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getDistinctNamespacesOfCodingScheme(java.lang.String)
+	 */
 	@Override
 	public List<String> getDistinctNamespacesOfCodingScheme(
 			String codingSchemeId) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getDistinctPropertyNamesOfCodingScheme(java.lang.String)
+	 */
 	@Override
 	public List<String> getDistinctPropertyNamesOfCodingScheme(
 			String codingSchemeId) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getDistinctPropertyQualifierNamesOfCodingScheme(java.lang.String)
+	 */
 	@Override
 	public List<String> getDistinctPropertyQualifierNamesOfCodingScheme(
 			String codingSchemeId) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getDistinctPropertyQualifierTypesOfCodingScheme(java.lang.String)
+	 */
 	@Override
 	public List<String> getDistinctPropertyQualifierTypesOfCodingScheme(
 			String codingSchemeId) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getMappings(java.lang.String)
+	 */
 	@Override
 	public Mappings getMappings(String codingSchemeId) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getUriMap(java.lang.String, java.lang.String, java.lang.Class)
+	 */
 	@Override
 	public <T extends URIMap> T getUriMap(String codingSchemeId,
 			String localId, Class<T> uriMap) {
@@ -251,6 +397,9 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#validateSupportedAttribute(java.lang.String, java.lang.String, java.lang.Class)
+	 */
 	@Override
 	public <T extends URIMap> boolean validateSupportedAttribute(
 			String codingSchemeId, String localId, Class<T> uriMap) {
@@ -258,6 +407,9 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertHistoryCodingScheme(java.lang.String, org.LexGrid.codingSchemes.CodingScheme)
+	 */
 	@Override
 	public void insertHistoryCodingScheme(String codingSchemeId,
 			CodingScheme codingScheme) {

@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.system.service;
 
 import static org.easymock.EasyMock.createMock;
@@ -20,21 +38,38 @@ import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.service.LexEvsResourceManagingService.CodingSchemeAliasHolder;
 
+/**
+ * The Class LexEvsResourceManagingServiceTest.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 
+	/** The lex evs resource managing service. */
 	@Resource
 	private LexEvsResourceManagingService lexEvsResourceManagingService;
 	
+	/**
+	 * Test setup.
+	 */
 	@Test
 	public void testSetup(){
 		assertNotNull(this.lexEvsResourceManagingService);
 	}
 	
+	/**
+	 * Test get class loader.
+	 */
 	@Test
 	public void testGetClassLoader(){
 		assertNotNull(lexEvsResourceManagingService.getClassLoader());
 	}
 	
+	/**
+	 * Test get internal version string for tag error.
+	 * 
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	@Test(expected=LBParameterException.class)
 	public void testGetInternalVersionStringForTagError() throws LBParameterException{
 		assertEquals(
@@ -42,6 +77,11 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 				lexEvsResourceManagingService.getInternalVersionStringForTag("csNameINVALID", "TEST_TAG"));
 	}
 	
+	/**
+	 * Test get internal coding scheme name for user coding scheme name error.
+	 * 
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	@Test(expected=LBParameterException.class)
 	public void testGetInternalCodingSchemeNameForUserCodingSchemeNameError() throws LBParameterException{
 		assertEquals(
@@ -49,6 +89,11 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 				lexEvsResourceManagingService.getInternalCodingSchemeNameForUserCodingSchemeName("someCsLocalName", "version"));
 	}
 	
+	/**
+	 * Test get internal coding scheme name for user coding scheme name by local name.
+	 * 
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void testGetInternalCodingSchemeNameForUserCodingSchemeNameByLocalName() throws Exception{
 		Registry registryMock = createMock(Registry.class);
@@ -91,6 +136,11 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 				service.getInternalCodingSchemeNameForUserCodingSchemeName("someLocalName", "version"));
 	}
 	
+	/**
+	 * Test get internal coding scheme name for user coding scheme name by uri.
+	 * 
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void testGetInternalCodingSchemeNameForUserCodingSchemeNameByUri() throws Exception{
 		Registry registryMock = createMock(Registry.class);
@@ -133,6 +183,11 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 				service.getInternalCodingSchemeNameForUserCodingSchemeName("uri", "version"));
 	}
 	
+	/**
+	 * Test get internal coding scheme name for user coding scheme name by formal name.
+	 * 
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void testGetInternalCodingSchemeNameForUserCodingSchemeNameByFormalName() throws Exception{
 		Registry registryMock = createMock(Registry.class);
@@ -174,6 +229,11 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 				service.getInternalCodingSchemeNameForUserCodingSchemeName("fname", "version"));
 	}
 	
+	/**
+	 * Test get internal coding scheme name for user coding scheme name by coding scheme name.
+	 * 
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void testGetInternalCodingSchemeNameForUserCodingSchemeNameByCodingSchemeName() throws Exception{
 		Registry registryMock = createMock(Registry.class);
@@ -215,6 +275,11 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 				service.getInternalCodingSchemeNameForUserCodingSchemeName("csName", "version"));
 	}
 	
+	/**
+	 * Test get internal version string for tag.
+	 * 
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void testGetInternalVersionStringForTag() throws Exception{
 		Registry registryMock = createMock(Registry.class);
@@ -258,6 +323,11 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 				service.getInternalVersionStringForTag("csName", "someTag"));
 	}
 	
+	/**
+	 * Test get internal version string for tag no match.
+	 * 
+	 * @throws Exception the exception
+	 */
 	@Test(expected=LBParameterException.class)
 	public void testGetInternalVersionStringForTagNoMatch() throws Exception{
 		Registry registryMock = createMock(Registry.class);
@@ -300,6 +370,11 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 				service.getInternalVersionStringForTag("csName", "someTag"));
 	}
 	
+	/**
+	 * Test get internal version string for tag multiple match.
+	 * 
+	 * @throws Exception the exception
+	 */
 	@Test(expected=LBParameterException.class)
 	public void testGetInternalVersionStringForTagMultipleMatch() throws Exception{
 		Registry registryMock = createMock(Registry.class);
@@ -350,6 +425,11 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 				service.getInternalVersionStringForTag("csName", "someTag"));
 	}
 	
+	/**
+	 * Test search performance.
+	 * 
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void testSearchPerformance() throws Exception{
 		int limit = 10000;

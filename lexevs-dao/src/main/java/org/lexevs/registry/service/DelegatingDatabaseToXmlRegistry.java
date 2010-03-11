@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.registry.service;
 
 import java.util.ArrayList;
@@ -9,15 +27,29 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.registry.model.RegistryEntry;
 
+/**
+ * The Class DelegatingDatabaseToXmlRegistry.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class DelegatingDatabaseToXmlRegistry implements Registry {
 	
+	/** The database registry. */
 	private Registry databaseRegistry;
+	
+	/** The xml registry. */
 	private Registry xmlRegistry;
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#addNewItem(org.lexevs.registry.model.RegistryEntry)
+	 */
 	public void addNewItem(RegistryEntry entry) throws Exception {
 	    databaseRegistry.addNewItem(entry);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#getAllRegistryEntries()
+	 */
 	public List<RegistryEntry> getAllRegistryEntries() {
 		List<RegistryEntry> allEntries = new ArrayList<RegistryEntry>();
 		allEntries.addAll(this.databaseRegistry.getAllRegistryEntries());
@@ -26,6 +58,9 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 		return allEntries;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#getAllRegistryEntriesOfType(org.lexevs.registry.service.Registry.ResourceType)
+	 */
 	public List<RegistryEntry> getAllRegistryEntriesOfType(ResourceType type) {
 		List<RegistryEntry> allEntries = new ArrayList<RegistryEntry>();
 		allEntries.addAll(this.databaseRegistry.getAllRegistryEntriesOfType(type));
@@ -34,26 +69,41 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 		return allEntries;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#getEntriesForUri(java.lang.String)
+	 */
 	public List<RegistryEntry> getEntriesForUri(String uri)
 			throws LBParameterException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#getLastUpdateTime()
+	 */
 	public Date getLastUpdateTime() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#getNextDBIdentifier()
+	 */
 	public String getNextDBIdentifier() throws LBInvocationException {
 		return databaseRegistry.getNextDBIdentifier();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#getNextHistoryIdentifier()
+	 */
 	public String getNextHistoryIdentifier() throws LBInvocationException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#containsCodingSchemeEntry(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
+	 */
 	public boolean containsCodingSchemeEntry(
 			AbsoluteCodingSchemeVersionReference codingScheme) {
 		return databaseRegistry.containsCodingSchemeEntry(codingScheme)
@@ -61,11 +111,17 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 			xmlRegistry.containsCodingSchemeEntry(codingScheme);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#containsNonCodingSchemeEntry(java.lang.String)
+	 */
 	public boolean containsNonCodingSchemeEntry(String uri) {
 		return databaseRegistry.containsNonCodingSchemeEntry(uri) ||
 			xmlRegistry.containsNonCodingSchemeEntry(uri);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#getCodingSchemeEntry(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
+	 */
 	public RegistryEntry getCodingSchemeEntry(
 			AbsoluteCodingSchemeVersionReference codingScheme)
 			throws LBParameterException {
@@ -76,17 +132,26 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#getNonCodingSchemeEntry(java.lang.String)
+	 */
 	public RegistryEntry getNonCodingSchemeEntry(String uri)
 			throws LBParameterException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#removeEntry(org.lexevs.registry.model.RegistryEntry)
+	 */
 	public void removeEntry(RegistryEntry entry) throws LBParameterException {
 		// TODO Auto-generated method stub
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.registry.service.Registry#updateEntry(org.lexevs.registry.model.RegistryEntry)
+	 */
 	public void updateEntry(RegistryEntry entry) throws LBParameterException {
 		if(entry.getResourceType().equals(ResourceType.CODING_SCHEME)) {
 			
@@ -109,6 +174,14 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 		}
 	}
 	
+	/**
+	 * Update coding scheme entry tag.
+	 * 
+	 * @param codingScheme the coding scheme
+	 * @param newTag the new tag
+	 * 
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	public void updateCodingSchemeEntryTag(
 			AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
 			throws LBParameterException {
@@ -123,18 +196,38 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 		}	
 	}
 	
+	/**
+	 * Gets the database registry.
+	 * 
+	 * @return the database registry
+	 */
 	public Registry getDatabaseRegistry() {
 		return databaseRegistry;
 	}
 
+	/**
+	 * Sets the database registry.
+	 * 
+	 * @param databaseRegistry the new database registry
+	 */
 	public void setDatabaseRegistry(Registry databaseRegistry) {
 		this.databaseRegistry = databaseRegistry;
 	}
 
+	/**
+	 * Gets the xml registry.
+	 * 
+	 * @return the xml registry
+	 */
 	public Registry getXmlRegistry() {
 		return xmlRegistry;
 	}
 
+	/**
+	 * Sets the xml registry.
+	 * 
+	 * @param xmlRegistry the new xml registry
+	 */
 	public void setXmlRegistry(Registry xmlRegistry) {
 		this.xmlRegistry = xmlRegistry;
 	}

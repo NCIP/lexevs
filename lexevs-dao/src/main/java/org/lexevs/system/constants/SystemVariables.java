@@ -39,64 +39,129 @@ import org.lexevs.system.utility.CryptoUtility;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class SystemVariables {
+    
+    /** The CONFI g_ fil e_ name. */
     public static String CONFIG_FILE_NAME = "lbconfig.props";
+    
+    /** The OVERRID e_ singl e_ d b_ prop. */
     private static String OVERRIDE_SINGLE_DB_PROP = "OVERRIDE_SINGLE_DB";
+    
+    /** The sql servers_. */
     private Hashtable<String, SQLConnectionInfo> sqlServers_;
+    
+    /** The index locations_. */
     private HashSet<String> indexLocations_;
 
+    /** The log location_. */
     private String logLocation_;
 
+    /** The is norm enabled_. */
     private boolean isNormEnabled_;
+    
+    /** The norm config file_. */
     private String normConfigFile_;
 
     // this one is static, because it may need to be read by the logger before
     // this class is loaded.
+    /** The is debug enabled_. */
     private static boolean isDebugEnabled_ = true;
 
+    /** The is api logging enabled. */
     private boolean isAPILoggingEnabled = false;
+    
+    /** The is sql logging enabled. */
     private boolean isSQLLoggingEnabled = false;
 
+    /** The max connections per d b_. */
     private int maxConnectionsPerDB_;
 
+    /** The cache size_. */
     private int cacheSize_;
+    
+    /** The iterator idle time_. */
     private int iteratorIdleTime_;
+    
+    /** The max result size_. */
     private int maxResultSize_;
 
+    /** The jar file locations_. */
     private String[] jarFileLocations_;
+    
+    /** The auto load registry path_. */
     private String autoLoadRegistryPath_;
+    
+    /** The auto load index location_. */
     private String autoLoadIndexLocation_;
+    
+    /** The auto load dbur l_. */
     private String autoLoadDBURL_;
+    
+    /** The auto load single db mode. */
     private boolean autoLoadSingleDBMode;
+    
+    /** The auto load db prefix_. */
     private String autoLoadDBPrefix_;
+    
+    /** The auto load db parameters_. */
     private String autoLoadDBParameters_;
+    
+    /** The auto load db driver_. */
     private String autoLoadDBDriver_;
+    
+    /** The auto load db username_. */
     private String autoLoadDBUsername_;
+    
+    /** The auto load db password_. */
     private String autoLoadDBPassword_;
+    
+    /** The relative path start_. */
     private String relativePathStart_;
     
+    /** The single table mode. */
     private boolean singleTableMode = true;
+    
+    /** The SINGL e_ tabl e_ mod e_ prop. */
     private static String SINGLE_TABLE_MODE_PROP = "SINGLE_TABLE_MODE";
 
+    /** The config file location_. */
     private String configFileLocation_;
     
+    /** The override single db mode. */
     private boolean overrideSingleDbMode;
     
+    /** The lucene max clause count. */
     private int luceneMaxClauseCount = 40000;
+    
+    /** The LUCEN e_ ma x_ claus e_ coun t_ prop. */
     private static String LUCENE_MAX_CLAUSE_COUNT_PROP = "LUCENE_MAX_CLAUSE_COUNT";
 
+    /** The email errors_. */
     private boolean emailErrors_ = false;
+    
+    /** The SMTP server_. */
     private String SMTPServer_;
+    
+    /** The email to_. */
     private String emailTo_;
 
+    /** The log change_. */
     private String logChange_;
+    
+    /** The erase logs after_. */
     private int eraseLogsAfter_;
 
+    /** The real debug enable value_. */
     private static boolean realDebugEnableValue_ = false;
+    
+    /** The is debug overridden_. */
     private static boolean isDebugOverridden_ = false;
     
+    /** The history db schema_. */
     private String historyDBSchema_ = null;
 
     /**
+     * Gets the erase logs after.
+     * 
      * @return the eraseLogsAfter
      */
     public int getEraseLogsAfter() {
@@ -104,6 +169,8 @@ public class SystemVariables {
     }
 
     /**
+     * Gets the log change.
+     * 
      * @return the logChange
      */
     public String getLogChange() {
@@ -111,6 +178,8 @@ public class SystemVariables {
     }
 
     /**
+     * Gets the email to.
+     * 
      * @return the emailTo
      */
     public String getEmailTo() {
@@ -118,6 +187,8 @@ public class SystemVariables {
     }
 
     /**
+     * Email errors.
+     * 
      * @return the emailErrors
      */
     public boolean emailErrors() {
@@ -125,26 +196,48 @@ public class SystemVariables {
     }
 
     /**
+     * Gets the smtp server.
+     * 
      * @return the sMTPServer Address.
      */
     public String getSMTPServer() {
         return this.SMTPServer_;
     }
 
+    /**
+     * Checks if is debug enabled.
+     * 
+     * @return true, if is debug enabled
+     */
     public static boolean isDebugEnabled() {
         return isDebugEnabled_;
     }
 
+    /**
+     * Debug enable override.
+     */
     public static void debugEnableOverride() {
         isDebugOverridden_ = true;
         isDebugEnabled_ = true;
     }
 
+    /**
+     * Debug enable override remove.
+     */
     public static void debugEnableOverrideRemove() {
         isDebugOverridden_ = false;
         isDebugEnabled_ = realDebugEnableValue_;
     }
 
+    /**
+     * Load props file.
+     * 
+     * @param logger the logger
+     * 
+     * @return the properties
+     * 
+     * @throws Exception the exception
+     */
     private Properties loadPropsFile(Logger logger) throws Exception {
         try {
             PropertiesUtility.systemVariable = "LG_CONFIG_FILE";
@@ -162,15 +255,38 @@ public class SystemVariables {
         }
     }
 
+    /**
+     * Instantiates a new system variables.
+     * 
+     * @param logger the logger
+     * 
+     * @throws Exception the exception
+     */
     public SystemVariables(Logger logger) throws Exception {
         Properties props = loadPropsFile(logger);
         init(logger, props);
     }
 
+    /**
+     * Instantiates a new system variables.
+     * 
+     * @param logger the logger
+     * @param props the props
+     * 
+     * @throws Exception the exception
+     */
     public SystemVariables(Logger logger, Properties props) throws Exception {
         init(logger, props);
     }
 
+    /**
+     * Inits the.
+     * 
+     * @param logger the logger
+     * @param props the props
+     * 
+     * @throws Exception the exception
+     */
     private void init(Logger logger, Properties props) throws Exception {
         // Read in the config file
         try {
@@ -361,26 +477,58 @@ public class SystemVariables {
         }
     }
 
+    /**
+     * Checks if is norm enabled.
+     * 
+     * @return true, if is norm enabled
+     */
     public boolean isNormEnabled() {
         return isNormEnabled_;
     }
 
+    /**
+     * Gets the norm config file.
+     * 
+     * @return the norm config file
+     */
     public String getNormConfigFile() {
         return normConfigFile_;
     }
 
+    /**
+     * Gets the meta data index name.
+     * 
+     * @return the meta data index name
+     */
     public static String getMetaDataIndexName() {
         return "MetaDataIndex";
     }
 
+    /**
+     * Gets the sql servers.
+     * 
+     * @return the sql servers
+     */
     public Hashtable<String, SQLConnectionInfo> getSqlServers() {
         return sqlServers_;
     }
 
+    /**
+     * Gets the index locations.
+     * 
+     * @return the index locations
+     */
     public HashSet<String> getIndexLocations() {
         return indexLocations_;
     }
 
+    /**
+     * Load sql server locations.
+     * 
+     * @param props the props
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     private void loadSqlServerLocations(Properties props) throws LBParameterException {
         for (int i = 0; i <= 20; i++) {
             String name = props.getProperty("SQL_" + i + "_NAME");
@@ -404,6 +552,13 @@ public class SystemVariables {
         }
     }
 
+    /**
+     * Load index locations.
+     * 
+     * @param props the props
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     private void loadIndexLocations(Properties props) throws LBParameterException {
         for (int i = 0; i <= 20; i++) {
             String location = props.getProperty("INDEX_" + i + "_LOCATION");
@@ -415,15 +570,27 @@ public class SystemVariables {
         }
     }
 
+    /**
+     * Gets the max connections per db.
+     * 
+     * @return the max connections per db
+     */
     public int getMaxConnectionsPerDB() {
         return this.maxConnectionsPerDB_;
     }
 
+    /**
+     * Gets the cache size.
+     * 
+     * @return the cache size
+     */
     public int getCacheSize() {
         return this.cacheSize_;
     }
 
     /**
+     * Gets the auto load index location.
+     * 
      * @return the autoLoadIndexLocation
      */
     public String getAutoLoadIndexLocation() {
@@ -431,6 +598,8 @@ public class SystemVariables {
     }
 
     /**
+     * Gets the auto load db driver.
+     * 
      * @return the autoLoadDBDriver
      */
     public String getAutoLoadDBDriver() {
@@ -438,6 +607,8 @@ public class SystemVariables {
     }
 
     /**
+     * Gets the auto load db parameters.
+     * 
      * @return the autoLoadDBParameters
      */
     public String getAutoLoadDBParameters() {
@@ -445,17 +616,26 @@ public class SystemVariables {
     }
 
     /**
+     * Gets the auto load db password.
+     * 
      * @return the autoLoadDBPassword
      */
     public String getAutoLoadDBPassword() {
         return this.autoLoadDBPassword_;
     }
 
+    /**
+     * Gets the override single db mode.
+     * 
+     * @return the override single db mode
+     */
     public boolean getOverrideSingleDbMode(){
         return this.overrideSingleDbMode;
     }
     
     /**
+     * Gets the auto load db prefix.
+     * 
      * @return the autoLoadDBPrefix
      */
     public String getAutoLoadDBPrefix() {
@@ -463,6 +643,8 @@ public class SystemVariables {
     }
 
     /**
+     * Gets the auto load dburl.
+     * 
      * @return the autoLoadDBURL
      */
     public String getAutoLoadDBURL() {
@@ -470,6 +652,8 @@ public class SystemVariables {
     }
 
     /**
+     * Gets the auto load db username.
+     * 
      * @return the autoLoadDBUsername
      */
     public String getAutoLoadDBUsername() {
@@ -477,6 +661,8 @@ public class SystemVariables {
     }
 
     /**
+     * Gets the auto load registry path.
+     * 
      * @return the autoLoadRegistryPath
      */
     public String getAutoLoadRegistryPath() {
@@ -484,6 +670,8 @@ public class SystemVariables {
     }
 
     /**
+     * Gets the log location.
+     * 
      * @return the logLocation
      */
     public String getLogLocation() {
@@ -494,13 +682,15 @@ public class SystemVariables {
      * If the configuration was loaded from a properties file - this will have
      * the path of the properties file.
      * 
-     * @return
+     * @return the config file location
      */
     public String getConfigFileLocation() {
         return this.configFileLocation_;
     }
 
     /**
+     * Gets the iterator idle time.
+     * 
      * @return the iteratorIdleTime
      */
     public int getIteratorIdleTime() {
@@ -508,21 +698,38 @@ public class SystemVariables {
     }
 
     /**
+     * Gets the max result size.
+     * 
      * @return the maxResultSize
      */
     public int getMaxResultSize() {
         return this.maxResultSize_;
     }
     
+    /**
+     * Checks if is single table mode.
+     * 
+     * @return true, if is single table mode
+     */
     public boolean isSingleTableMode(){
         return this.singleTableMode;
     }
 
+    /**
+     * Gets the auto load single db mode.
+     * 
+     * @return the auto load single db mode
+     */
     @Deprecated
     public boolean getAutoLoadSingleDBMode() {
         return autoLoadSingleDBMode;
     }
 
+    /**
+     * Gets the jar file locations.
+     * 
+     * @return the jar file locations
+     */
     public String[] getJarFileLocations() {
         if (jarFileLocations_ == null || jarFileLocations_.length == 0) {
             // not in the config file, put in the default
@@ -532,10 +739,22 @@ public class SystemVariables {
         }
     }
     
+    /**
+     * Gets the history db schema.
+     * 
+     * @return the history db schema
+     */
     public String getHistoryDBSchema() {
         return historyDBSchema_;
     }
 
+    /**
+     * Process relative path.
+     * 
+     * @param path the path
+     * 
+     * @return the string
+     */
     private String processRelativePath(String path) {
         if (path != null && isPathRelative(path) && relativePathStart_ != null && relativePathStart_.length() > 0) {
             // If I know what the relativePathStart_ is - I want to reprocess
@@ -558,6 +777,13 @@ public class SystemVariables {
         return path;
     }
 
+    /**
+     * Checks if is path relative.
+     * 
+     * @param path the path
+     * 
+     * @return true, if is path relative
+     */
     private boolean isPathRelative(String path) {
         if (path != null && path.length() > 0) {
             if (path.charAt(0) == '/' || path.charAt(0) == '\\') {
@@ -574,11 +800,28 @@ public class SystemVariables {
         return true;
     }
 
+    /**
+     * Checks if is path valid.
+     * 
+     * @param path the path
+     * 
+     * @return true, if is path valid
+     */
     private boolean isPathValid(String path) {
         File temp = new File(path);
         return temp.exists();
     }
 
+    /**
+     * Gets the property.
+     * 
+     * @param props the props
+     * @param key the key
+     * 
+     * @return the property
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     private String getProperty(Properties props, String key) throws LBParameterException {
         String value = getNullableProperty(props, key);
         if (value == null) {
@@ -588,10 +831,28 @@ public class SystemVariables {
         return value;
     }
     
+    /**
+     * Gets the nullable property.
+     * 
+     * @param props the props
+     * @param key the key
+     * 
+     * @return the nullable property
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     private String getNullableProperty(Properties props, String key) throws LBParameterException {
         return props.getProperty(key); 
     }
     
+    /**
+     * Gets the nullable boolean.
+     * 
+     * @param value the value
+     * @param valueIfNull the value if null
+     * 
+     * @return the nullable boolean
+     */
     private boolean getNullableBoolean(String value, boolean valueIfNull){
         if (value != null) {
             return Boolean.parseBoolean(value);
@@ -601,20 +862,37 @@ public class SystemVariables {
     }
 
     /**
+     * Checks if is api logging enabled.
+     * 
      * @return the isAPILoggingEnabled
      */
     public boolean isAPILoggingEnabled() {
         return this.isAPILoggingEnabled;
     }
     
+    /**
+     * Checks if is sQL logging enabled.
+     * 
+     * @return true, if is sQL logging enabled
+     */
     public boolean isSQLLoggingEnabled() {
         return isSQLLoggingEnabled;
     }
 
+    /**
+     * Sets the sQL logging enabled.
+     * 
+     * @param isSQLLoggingEnabled the new sQL logging enabled
+     */
     public void setSQLLoggingEnabled(boolean isSQLLoggingEnabled) {
         this.isSQLLoggingEnabled = isSQLLoggingEnabled;
     }
 
+    /**
+     * Gets the lucene max clause count.
+     * 
+     * @return the lucene max clause count
+     */
     public int getLuceneMaxClauseCount() {
         return luceneMaxClauseCount;
     }

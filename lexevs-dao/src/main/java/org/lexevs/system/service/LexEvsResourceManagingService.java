@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.system.service;
 
 import java.util.ArrayList;
@@ -25,24 +43,48 @@ import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.utility.MyClassLoader;
 import org.springframework.beans.factory.InitializingBean;
 
+/**
+ * The Class LexEvsResourceManagingService.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 @Cacheable(cacheName = "DelegatingResourceManagingService")
 public class LexEvsResourceManagingService extends LoggingBean implements SystemResourceService, InitializingBean {
 
+	/** The registry. */
 	private Registry registry;
+	
+	/** The prefix resolver. */
 	private PrefixResolver prefixResolver;
+	
+	/** The lex evs database operations. */
 	private LexEvsDatabaseOperations lexEvsDatabaseOperations;
+	
+	/** The system variables. */
 	private SystemVariables systemVariables;
+	
+	/** The entity index service. */
 	private EntityIndexService entityIndexService;
 	
+	/** The my class loader. */
 	private MyClassLoader myClassLoader;
+	
+	/** The database service manager. */
 	private DatabaseServiceManager databaseServiceManager;
 
+	/** The alias holder. */
 	private List<CodingSchemeAliasHolder> aliasHolder = new ArrayList<CodingSchemeAliasHolder>();
 
+	/* (non-Javadoc)
+	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+	 */
 	public void afterPropertiesSet() throws Exception {
 		readCodingSchemeAliasesFromServer();
 	}
 	
+	/**
+	 * Read coding scheme aliases from server.
+	 */
 	protected void readCodingSchemeAliasesFromServer(){
 		aliasHolder.clear();
 		List<RegistryEntry> entries = registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
@@ -56,6 +98,13 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		}
 	}
 	
+	/**
+	 * Coding scheme to alias holder.
+	 * 
+	 * @param codingScheme the coding scheme
+	 * 
+	 * @return the coding scheme alias holder
+	 */
 	public CodingSchemeAliasHolder codingSchemeToAliasHolder(CodingScheme codingScheme){
 		CodingSchemeAliasHolder aliasHolder = new CodingSchemeAliasHolder();
 		aliasHolder.setCodingSchemeName(codingScheme.getCodingSchemeName());
@@ -68,6 +117,9 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#createNewTablesForLoad()
+	 */
 	public String createNewTablesForLoad() {
 		String prefix;
 		if( isSingleTableMode() ){
@@ -81,6 +133,9 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		return prefix;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#removeCodingSchemeResourceFromSystem(java.lang.String, java.lang.String)
+	 */
 	@ClearCache
 	public void removeCodingSchemeResourceFromSystem(String uri, String version) throws LBParameterException {
 		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
@@ -99,11 +154,17 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		this.readCodingSchemeAliasesFromServer();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#removeNonCodingSchemeResourceFromSystem(java.lang.String)
+	 */
 	@ClearCache
 	public void removeNonCodingSchemeResourceFromSystem(String uri) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#getInternalCodingSchemeNameForUserCodingSchemeName(java.lang.String, java.lang.String)
+	 */
 	@CacheMethod
 	public String getInternalCodingSchemeNameForUserCodingSchemeName(
 			 String codingSchemeName, String version) throws LBParameterException {
@@ -119,6 +180,16 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
                  codingSchemeName + ", " + version);
 	}
 	
+	/**
+	 * Gets the uri for user coding scheme name.
+	 * 
+	 * @param codingSchemeName the coding scheme name
+	 * @param version the version
+	 * 
+	 * @return the uri for user coding scheme name
+	 * 
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	public String getUriForUserCodingSchemeName(
 			String codingSchemeName, String version) throws LBParameterException {
 		for(CodingSchemeAliasHolder alias : this.aliasHolder){
@@ -133,6 +204,14 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
                  codingSchemeName + ", " + version);
 	}
 	
+	/**
+	 * Checks for alias.
+	 * 
+	 * @param holder the holder
+	 * @param alias the alias
+	 * 
+	 * @return true, if successful
+	 */
 	protected boolean hasAlias(CodingSchemeAliasHolder holder, String alias){
 		return holder.getCodingSchemeName().equals(alias) ||
 			holder.getCodingSchemeUri().equals(alias) ||
@@ -140,6 +219,13 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 			( holder.getLocalNames() != null && holder.getLocalNames().contains(alias) );	
 	}
 	
+	/**
+	 * Gets the uri for coding scheme name.
+	 * 
+	 * @param codingSchemeName the coding scheme name
+	 * 
+	 * @return the uri for coding scheme name
+	 */
 	protected List<String> getUriForCodingSchemeName(String codingSchemeName){
 		List<String> returnList = new ArrayList<String>();
 
@@ -151,6 +237,9 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		return returnList;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#getUriForUserCodingSchemeName(java.lang.String)
+	 */
 	public String getUriForUserCodingSchemeName(String codingSchemeName)
 	throws LBParameterException {
 			List<String> uris = getUriForCodingSchemeName(codingSchemeName);
@@ -167,6 +256,9 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 			return uri;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#getInternalVersionStringForTag(java.lang.String, java.lang.String)
+	 */
 	@CacheMethod
 	public String getInternalVersionStringForTag(String codingSchemeName,
 			String tag) throws LBParameterException {
@@ -212,6 +304,14 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
                  codingSchemeName + ", " + tag);
 	}
 
+	/**
+	 * Gets the tagged entries.
+	 * 
+	 * @param entries the entries
+	 * @param tag the tag
+	 * 
+	 * @return the tagged entries
+	 */
 	protected List<RegistryEntry> getTaggedEntries(List<RegistryEntry> entries, String tag){
 		List<RegistryEntry> foundEntries = new ArrayList<RegistryEntry>();
 		for(RegistryEntry entry : foundEntries){
@@ -222,11 +322,17 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		return foundEntries;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#containsNonCodingSchemeResource(java.lang.String)
+	 */
 	public boolean containsNonCodingSchemeResource(String uri)
 	throws LBParameterException {
 		return registry.containsNonCodingSchemeEntry(uri);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#containsCodingSchemeResource(java.lang.String, java.lang.String)
+	 */
 	public boolean containsCodingSchemeResource(String uri, String version)
 	throws LBParameterException {
 		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
@@ -236,6 +342,9 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		return registry.containsCodingSchemeEntry(ref);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#updateCodingSchemeResourceTag(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.lang.String)
+	 */
 	@ClearCache
 	public void updateCodingSchemeResourceTag(
 			AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
@@ -247,6 +356,9 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#updateCodingSchemeResourceStatus(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus)
+	 */
 	@ClearCache
 	public void updateCodingSchemeResourceStatus(
 			AbsoluteCodingSchemeVersionReference codingScheme,
@@ -258,6 +370,9 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		this.readCodingSchemeAliasesFromServer();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#updateNonCodingSchemeResourceStatus(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus)
+	 */
 	@ClearCache
 	public void updateNonCodingSchemeResourceStatus(String uri,
 			CodingSchemeVersionStatus status) throws LBParameterException {
@@ -267,6 +382,9 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		this.readCodingSchemeAliasesFromServer();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#updateNonCodingSchemeResourceTag(java.lang.String, java.lang.String)
+	 */
 	@ClearCache
 	public void updateNonCodingSchemeResourceTag(String uri, String newTag)
 			throws LBParameterException {
@@ -276,6 +394,9 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		this.readCodingSchemeAliasesFromServer();
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#addCodingSchemeResourceToSystem(java.lang.String, java.lang.String)
+	 */
 	@ClearCache
 	public void addCodingSchemeResourceToSystem(String uri, String version)
 			throws LBParameterException {
@@ -289,6 +410,9 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		this.readCodingSchemeAliasesFromServer();
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#addCodingSchemeResourceToSystem(org.LexGrid.codingSchemes.CodingScheme)
+	 */
 	@ClearCache
 	public void addCodingSchemeResourceToSystem(CodingScheme codingScheme)
 			throws LBParameterException {
@@ -303,102 +427,248 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		this.aliasHolder.add(this.codingSchemeToAliasHolder(codingScheme));
 	}
 
+	/**
+	 * Checks if is single table mode.
+	 * 
+	 * @return true, if is single table mode
+	 */
 	protected boolean isSingleTableMode(){
 		return systemVariables.isSingleTableMode();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#getClassLoader()
+	 */
 	public MyClassLoader getClassLoader() {
 		return this.myClassLoader;
 	}
 
+	/**
+	 * Gets the registry.
+	 * 
+	 * @return the registry
+	 */
 	public Registry getRegistry() {
 		return registry;
 	}
 
+	/**
+	 * Sets the registry.
+	 * 
+	 * @param registry the new registry
+	 */
 	public void setRegistry(Registry registry) {
 		this.registry = registry;
 	}
 
+	/**
+	 * Gets the prefix resolver.
+	 * 
+	 * @return the prefix resolver
+	 */
 	public PrefixResolver getPrefixResolver() {
 		return prefixResolver;
 	}
 
+	/**
+	 * Sets the prefix resolver.
+	 * 
+	 * @param prefixResolver the new prefix resolver
+	 */
 	public void setPrefixResolver(PrefixResolver prefixResolver) {
 		this.prefixResolver = prefixResolver;
 	}
 
+	/**
+	 * Gets the lex evs database operations.
+	 * 
+	 * @return the lex evs database operations
+	 */
 	public LexEvsDatabaseOperations getLexEvsDatabaseOperations() {
 		return lexEvsDatabaseOperations;
 	}
 
+	/**
+	 * Sets the lex evs database operations.
+	 * 
+	 * @param lexEvsDatabaseOperations the new lex evs database operations
+	 */
 	public void setLexEvsDatabaseOperations(
 			LexEvsDatabaseOperations lexEvsDatabaseOperations) {
 		this.lexEvsDatabaseOperations = lexEvsDatabaseOperations;
 	}
 
+	/**
+	 * Gets the system variables.
+	 * 
+	 * @return the system variables
+	 */
 	public SystemVariables getSystemVariables() {
 		return systemVariables;
 	}
 
+	/**
+	 * Sets the system variables.
+	 * 
+	 * @param systemVariables the new system variables
+	 */
 	public void setSystemVariables(SystemVariables systemVariables) {
 		this.systemVariables = systemVariables;
 	}
 
+	/**
+	 * Sets the my class loader.
+	 * 
+	 * @param myClassLoader the new my class loader
+	 */
 	public void setMyClassLoader(MyClassLoader myClassLoader) {
 		this.myClassLoader = myClassLoader;
 	}
 	
+	/**
+	 * Sets the entity index service.
+	 * 
+	 * @param entityIndexService the new entity index service
+	 */
 	public void setEntityIndexService(EntityIndexService entityIndexService) {
 		this.entityIndexService = entityIndexService;
 	}
 
+	/**
+	 * Gets the entity index service.
+	 * 
+	 * @return the entity index service
+	 */
 	public EntityIndexService getEntityIndexService() {
 		return entityIndexService;
 	}
 
+	/**
+	 * Sets the database service manager.
+	 * 
+	 * @param databaseServiceManager the new database service manager
+	 */
 	public void setDatabaseServiceManager(DatabaseServiceManager databaseServiceManager) {
 		this.databaseServiceManager = databaseServiceManager;
 	}
 
+	/**
+	 * Gets the database service manager.
+	 * 
+	 * @return the database service manager
+	 */
 	public DatabaseServiceManager getDatabaseServiceManager() {
 		return databaseServiceManager;
 	}
 
+	/**
+	 * The Class CodingSchemeAliasHolder.
+	 * 
+	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+	 */
 	protected static class CodingSchemeAliasHolder {
 		
+		/** The coding scheme name. */
 		private String codingSchemeName;
+		
+		/** The coding scheme uri. */
 		private String codingSchemeUri;
+		
+		/** The represents version. */
 		private String representsVersion;
+		
+		/** The formal name. */
 		private String formalName;
+		
+		/** The local names. */
 		private List<String> localNames = new ArrayList<String>();
 		
+		/**
+		 * Gets the coding scheme name.
+		 * 
+		 * @return the coding scheme name
+		 */
 		public String getCodingSchemeName() {
 			return codingSchemeName;
 		}
+		
+		/**
+		 * Sets the coding scheme name.
+		 * 
+		 * @param codingSchemeName the new coding scheme name
+		 */
 		public void setCodingSchemeName(String codingSchemeName) {
 			this.codingSchemeName = codingSchemeName;
 		}
+		
+		/**
+		 * Gets the coding scheme uri.
+		 * 
+		 * @return the coding scheme uri
+		 */
 		public String getCodingSchemeUri() {
 			return codingSchemeUri;
 		}
+		
+		/**
+		 * Sets the coding scheme uri.
+		 * 
+		 * @param codingSchemeUri the new coding scheme uri
+		 */
 		public void setCodingSchemeUri(String codingSchemeUri) {
 			this.codingSchemeUri = codingSchemeUri;
 		}
+		
+		/**
+		 * Gets the represents version.
+		 * 
+		 * @return the represents version
+		 */
 		public String getRepresentsVersion() {
 			return representsVersion;
 		}
+		
+		/**
+		 * Sets the represents version.
+		 * 
+		 * @param representsVersion the new represents version
+		 */
 		public void setRepresentsVersion(String representsVersion) {
 			this.representsVersion = representsVersion;
 		}
+		
+		/**
+		 * Gets the formal name.
+		 * 
+		 * @return the formal name
+		 */
 		public String getFormalName() {
 			return formalName;
 		}
+		
+		/**
+		 * Sets the formal name.
+		 * 
+		 * @param formalName the new formal name
+		 */
 		public void setFormalName(String formalName) {
 			this.formalName = formalName;
 		}
+		
+		/**
+		 * Gets the local names.
+		 * 
+		 * @return the local names
+		 */
 		public List<String> getLocalNames() {
 			return localNames;
 		}
+		
+		/**
+		 * Sets the local names.
+		 * 
+		 * @param localNames the new local names
+		 */
 		public void setLocalNames(List<String> localNames) {
 			this.localNames = localNames;
 		}

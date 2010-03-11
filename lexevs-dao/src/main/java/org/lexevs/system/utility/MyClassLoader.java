@@ -55,7 +55,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * My own class loader that defers to a URLClassLoader - picks up any jar files
  * that are present in the runtime folder of a lexbig install - useful for
- * picking up extensions and sql drivers (that aren't on the normal classpath)
+ * picking up extensions and sql drivers (that aren't on the normal classpath).
  * 
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  * @author <A HREF="mailto:johnson.thomas@mayo.edu">Thomas Johnson</A>
@@ -65,22 +65,46 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class MyClassLoader extends URLClassLoader {
 	
+    /** The my class loader_. */
     private static MyClassLoader myClassLoader_;
+    
+    /** The Constant EXTENSION_SCHEMA. */
     private static final String EXTENSION_SCHEMA = "http://LexGrid.org/schema/LexBIG/2009/01/extensions/extension.xsd";
+    
+    /** The Constant JAXP_SCHEMA_SOURCE. */
     private static final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
+    
+    /** The Constant JAXP_SCHEMA_LANGUAGE. */
     private static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+    
+    /** The Constant W3C_XML_SCHEMA. */
     private static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema"; 
     
+    /** The docfactory_. */
     private DocumentBuilderFactory docfactory_ = null;
+    
+    /** The logger. */
     private LgLoggerIF logger;
     
+    /** The extension descriptions. */
     private List<ExtensionDescription> extensionDescriptions = 
     	new ArrayList<ExtensionDescription>();
     
+    /**
+     * Gets the logger.
+     * 
+     * @return the logger
+     */
     private LgLoggerIF getLogger() {
         return logger;
     }
 
+    /**
+     * Instantiates a new my class loader.
+     * 
+     * @param systemVariables the system variables
+     * @param logger the logger
+     */
     private MyClassLoader(SystemVariables systemVariables, LgLoggerIF logger) {
         super(new URL[] {}, MyClassLoader.class.getClassLoader());
         myClassLoader_ = this;
@@ -115,6 +139,13 @@ public class MyClassLoader extends URLClassLoader {
         }
     }
 
+    /**
+     * Gets the jars from folders.
+     * 
+     * @param fileNames the file names
+     * 
+     * @return the jars from folders
+     */
     private static ArrayList<File> getJarsFromFolders(String[] fileNames) {
         ArrayList<File> files = new ArrayList<File>();
         for (int j = 0; j < fileNames.length; j++) {
@@ -124,6 +155,13 @@ public class MyClassLoader extends URLClassLoader {
         return files;
     }
 
+    /**
+     * Gets the jars from folder.
+     * 
+     * @param fileName the file name
+     * 
+     * @return the jars from folder
+     */
     private static ArrayList<File> getJarsFromFolder(File fileName) {
         ArrayList<File> files = new ArrayList<File>();
 
@@ -140,7 +178,16 @@ public class MyClassLoader extends URLClassLoader {
         return files;
     }
 
+    /**
+     * The Class FileSorter.
+     * 
+     * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+     */
     private class FileSorter implements Comparator<File> {
+        
+        /* (non-Javadoc)
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
         public int compare(File o1, File o2) {
             if (o1.getName().equals("lbPatch.jar")) {
                 return -1;
@@ -160,6 +207,7 @@ public class MyClassLoader extends URLClassLoader {
     
     /**
      * Check if it is an extension and registers if it is valid.
+     * 
      * @param file extension jar
      */
     private void registerIfExtension(final File file){
@@ -275,6 +323,11 @@ public class MyClassLoader extends URLClassLoader {
         }
     }
     
+    /**
+     * Gets the doc factory.
+     * 
+     * @return the doc factory
+     */
     private DocumentBuilderFactory getDocFactory(){
         if (docfactory_ == null)
         {
@@ -291,8 +344,8 @@ public class MyClassLoader extends URLClassLoader {
     
     /**
      * Registers new extension.
-     * @param extImplements
-     * @param ed
+     * 
+     * @param ed the ed
      */
     private void registerExtension(ExtensionDescription ed){
         getLogger().debug("Registering extension : '" + ed.getName() + "'");
@@ -300,15 +353,33 @@ public class MyClassLoader extends URLClassLoader {
        this.extensionDescriptions.add(ed);
     }
     
+    /**
+     * Gets the extension descriptions.
+     * 
+     * @return the extension descriptions
+     */
     public List<ExtensionDescription> getExtensionDescriptions(){
     	return this.extensionDescriptions;
     }
     
+    /**
+     * Instance.
+     * 
+     * @return the my class loader
+     */
     @Deprecated
     public static MyClassLoader instance(){
     	return (MyClassLoader) LexEvsServiceLocator.getInstance().getSystemResourceService().getClassLoader();
     }
     
+    /**
+     * Instance.
+     * 
+     * @param systemVariables the system variables
+     * @param logger the logger
+     * 
+     * @return the my class loader
+     */
     @LgClientSideSafe
     @Deprecated
     public static MyClassLoader instance(SystemVariables systemVariables, LgLoggerIF logger) {

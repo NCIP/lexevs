@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.dao.database.hibernate.registry;
 
 import java.sql.ResultSet;
@@ -18,16 +36,26 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * The Class HibernateRegistryDaoTest.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 @TransactionConfiguration
 public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 
+	/** The hibernate registry dao. */
 	@Resource
 	private HibernateRegistryDao hibernateRegistryDao;
 	
+	/** The data source. */
 	@Resource
 	private DataSource dataSource;
 	
 	
+	/**
+	 * Test insert coding scheme entry.
+	 */
 	@Test
 	public void testInsertCodingSchemeEntry(){
 		final Timestamp activationDate = new Timestamp(1l);
@@ -83,6 +111,11 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 	
+	/**
+	 * Test get coding scheme entry.
+	 * 
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	@Test
 	@Transactional
 	public void testGetCodingSchemeEntry() throws LBParameterException{
@@ -101,6 +134,11 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 		assertNotNull(foundEntry);
 	}
 	
+	/**
+	 * Test change tag.
+	 * 
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	@Test
 	@Transactional
 	public void testChangeTag() throws LBParameterException{

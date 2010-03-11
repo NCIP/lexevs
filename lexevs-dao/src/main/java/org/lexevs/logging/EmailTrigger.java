@@ -32,12 +32,17 @@ import org.apache.log4j.spi.TriggeringEventEvaluator;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class EmailTrigger implements TriggeringEventEvaluator {
+    
+    /** The timestamps. */
     LRUMap timestamps = new LRUMap(5); // Going to keep track of the last 5
                                        // timestamps
 
     // that an email was sent. Do some rate limiting this way.
 
-    public boolean isTriggeringEvent(LoggingEvent event) {
+    /* (non-Javadoc)
+                                        * @see org.apache.log4j.spi.TriggeringEventEvaluator#isTriggeringEvent(org.apache.log4j.spi.LoggingEvent)
+                                        */
+                                       public boolean isTriggeringEvent(LoggingEvent event) {
         long now = System.currentTimeMillis();
         if (timestamps.size() == 5) {
             // If 5 errors have been emailed, and it has been less than 5 minute

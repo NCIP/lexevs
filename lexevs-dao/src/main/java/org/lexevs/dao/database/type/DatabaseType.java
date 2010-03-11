@@ -27,17 +27,35 @@ import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.MetaDataAccessException;
 
+/**
+ * The Enum DatabaseType.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public enum DatabaseType {
 
+	/** The DERBY. */
 	DERBY("Apache Derby"),
+	
+	/** The D b2. */
 	DB2("DB2"),
+	
+	/** The HSQL. */
 	HSQL("HSQL Database Engine"),
+	
+	/** The MYSQL. */
 	MYSQL("MySQL"),
+	
+	/** The ORACLE. */
 	ORACLE("Oracle"),
+	
+	/** The POSTGRES. */
 	POSTGRES("PostgreSQL");
 	
+	/** The Constant nameMap. */
 	private static final Map<String, DatabaseType> nameMap;
 
+	/** The product name. */
 	private final String productName;
 
 	static{
@@ -47,15 +65,34 @@ public enum DatabaseType {
 		}
 	}
 
+	/**
+	 * Instantiates a new database type.
+	 * 
+	 * @param productName the product name
+	 */
 	private DatabaseType(String productName){
 		this.productName = productName;
 	}
 
+	/**
+	 * Gets the product name.
+	 * 
+	 * @return the product name
+	 */
 	public String getProductName() {
 		return productName;
 	}
 
-	 public static DatabaseType getDatabaseType(DataSource dataSource) throws LBResourceUnavailableException {
+	 /**
+ 	 * Gets the database type.
+ 	 * 
+ 	 * @param dataSource the data source
+ 	 * 
+ 	 * @return the database type
+ 	 * 
+ 	 * @throws LBResourceUnavailableException the LB resource unavailable exception
+ 	 */
+ 	public static DatabaseType getDatabaseType(DataSource dataSource) throws LBResourceUnavailableException {
 		 String databaseProductName;
 		try {
 			databaseProductName = JdbcUtils.extractDatabaseMetaData(dataSource, "getDatabaseProductName").toString();

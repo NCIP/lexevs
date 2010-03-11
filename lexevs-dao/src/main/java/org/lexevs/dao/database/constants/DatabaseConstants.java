@@ -25,7 +25,10 @@ package org.lexevs.dao.database.constants;
  */
 public class DatabaseConstants {
 	
+	/** The Constant CURRENT_LEXGRID_SCHEMA_VERSION. */
 	public static final String CURRENT_LEXGRID_SCHEMA_VERSION = "2.0";
+	
+	/** The Constant CURRENT_LEXGRID_SCHEMA_DESCRIPTION. */
 	public static final String CURRENT_LEXGRID_SCHEMA_DESCRIPTION = "LexGrid Table Schema Version 2.0";
 		
 	

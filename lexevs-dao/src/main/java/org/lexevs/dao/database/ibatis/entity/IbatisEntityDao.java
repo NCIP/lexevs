@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.dao.database.ibatis.entity;
 
 import java.sql.SQLException;
@@ -28,26 +46,55 @@ import org.springframework.orm.ibatis.SqlMapClientCallback;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
 
+/**
+ * The Class IbatisEntityDao.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, InitializingBean {
 	
+	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
+	/** The ENTIT y_ namespace. */
 	public static String ENTITY_NAMESPACE = "Entity.";
+	
+	/** The INSER t_ entit y_ sql. */
 	public static String INSERT_ENTITY_SQL = ENTITY_NAMESPACE + "insertEntity";
+	
+	/** The INSER t_ entit y_ typ e_ sql. */
 	public static String INSERT_ENTITY_TYPE_SQL = ENTITY_NAMESPACE + "insertEntityType";
+	
+	/** The GE t_ entit y_ b y_ cod e_ an d_ namespac e_ sql. */
 	public static String GET_ENTITY_BY_CODE_AND_NAMESPACE_SQL = ENTITY_NAMESPACE + "getEntityByCodeAndNamespace";
+	
+	/** The GE t_ entit y_ coun t_ sql. */
 	public static String GET_ENTITY_COUNT_SQL = ENTITY_NAMESPACE + "getEntityCount";
+	
+	/** The GE t_ entitie s_ o f_ codin g_ schem e_ sql. */
 	public static String GET_ENTITIES_OF_CODING_SCHEME_SQL = ENTITY_NAMESPACE + "getAllEntitiesOfCodingScheme";
 	
+	/** The ENTIT y_ cod e_ param. */
 	public static String ENTITY_CODE_PARAM = SQLTableConstants.TBLCOL_ENTITYCODE;
+	
+	/** The ENTIT y_ cod e_ namespac e_ param. */
 	public static String ENTITY_CODE_NAMESPACE_PARAM = SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE;
+	
+	/** The ENTITY. */
 	public static String ENTITY = "entity";
+	
+	/** The ENTIT y_ i d_ param. */
 	public static String ENTITY_ID_PARAM = "entityId";
 	
+	/** The ibatis versions dao. */
 	private IbatisVersionsDao ibatisVersionsDao;
 
+	/** The ibatis property dao. */
 	private IbatisPropertyDao ibatisPropertyDao;
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.entity.EntityDao#getEntityByCodeAndNamespace(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	public Entity getEntityByCodeAndNamespace(String codingSchemeId, String entityCode, String entityCodeNamespace){
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
@@ -58,6 +105,9 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 		return entity;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.entity.EntityDao#getEntityCount(java.lang.String)
+	 */
 	@Override
 	public int getEntityCount(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -66,16 +116,31 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 			this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_COUNT_SQL, new PrefixedParameter(prefix, codingSchemeId));
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.entity.EntityDao#updateEntity(java.lang.String, org.LexGrid.concepts.Entity)
+	 */
 	public void updateEntity(String codingSchemeId,
 			Entity entity) {
 		// TODO Auto-generated method stub
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.entity.EntityDao#insertEntity(java.lang.String, org.LexGrid.concepts.Entity)
+	 */
 	public String insertEntity(String codingSchemeId, Entity entity) {
 		return this.insertEntity(codingSchemeId, entity, this.getNonBatchTemplateInserter());
 	}
 	
+	/**
+	 * Insert entity.
+	 * 
+	 * @param codingSchemeId the coding scheme id
+	 * @param entity the entity
+	 * @param inserter the inserter
+	 * 
+	 * @return the string
+	 */
 	public String insertEntity(String codingSchemeId, Entity entity, IbatisInserter inserter) {
 		Map<String,String> propertyIdToGuidMap = new HashMap<String,String>();
 		
@@ -115,6 +180,9 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 		return entityId;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.entity.EntityDao#insertHistoryEntity(java.lang.String, org.LexGrid.concepts.Entity)
+	 */
 	public String insertHistoryEntity(String codingSchemeId, Entity entity) {
 		String entityId = this.createUniqueId();
 		String entryStateId = this.createUniqueId();
@@ -127,6 +195,9 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 		return entityId;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.entity.EntityDao#getAllEntitiesOfCodingScheme(java.lang.String, int, int)
+	 */
 	@SuppressWarnings("unchecked")
 	public List<? extends Entity> getAllEntitiesOfCodingScheme(String codingSchemeId, int start, int pageSize) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -147,6 +218,9 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 		return entities;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.entity.EntityDao#insertBatchEntities(java.lang.String, java.util.List)
+	 */
 	@SuppressWarnings("unchecked")
 	public void insertBatchEntities(final String codingSchemeId, final List<? extends Entity> entities) {
 
@@ -170,12 +244,26 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	}
 	
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.entity.EntityDao#getEntityId(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	public String getEntityId(String codingSchemeId, String entityCode,
 			String entityCodeNamespace) {
 		return null;
 		
 	}
 	
+	/**
+	 * Builds the insert entity paramater bean.
+	 * 
+	 * @param prefix the prefix
+	 * @param codingSchemeId the coding scheme id
+	 * @param entityId the entity id
+	 * @param entryStateId the entry state id
+	 * @param entity the entity
+	 * 
+	 * @return the insert entity bean
+	 */
 	protected InsertEntityBean buildInsertEntityParamaterBean(String prefix, String codingSchemeId, String entityId, String entryStateId, Entity entity){
 		InsertEntityBean bean = new InsertEntityBean();
 		bean.setPrefix(prefix);
@@ -187,27 +275,58 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 		return bean;
 	}
 	
+	/**
+	 * Builds the entity code namespace paramater map.
+	 * 
+	 * @param entityCode the entity code
+	 * @param entityCodeNamespace the entity code namespace
+	 * 
+	 * @return the insert entity bean
+	 */
 	protected InsertEntityBean buildEntityCodeNamespaceParamaterMap(String entityCode, String entityCodeNamespace){
 		return null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.AbstractBaseDao#doGetSupportedLgSchemaVersions()
+	 */
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
 		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
 	}
 
+	/**
+	 * Sets the ibatis versions dao.
+	 * 
+	 * @param ibatisVersionsDao the new ibatis versions dao
+	 */
 	public void setIbatisVersionsDao(IbatisVersionsDao ibatisVersionsDao) {
 		this.ibatisVersionsDao = ibatisVersionsDao;
 	}
 
+	/**
+	 * Gets the ibatis versions dao.
+	 * 
+	 * @return the ibatis versions dao
+	 */
 	public IbatisVersionsDao getIbatisVersionsDao() {
 		return ibatisVersionsDao;
 	}
 	
+	/**
+	 * Gets the ibatis property dao.
+	 * 
+	 * @return the ibatis property dao
+	 */
 	public IbatisPropertyDao getIbatisPropertyDao() {
 		return ibatisPropertyDao;
 	}
 
+	/**
+	 * Sets the ibatis property dao.
+	 * 
+	 * @param ibatisPropertyDao the new ibatis property dao
+	 */
 	public void setIbatisPropertyDao(IbatisPropertyDao ibatisPropertyDao) {
 		this.ibatisPropertyDao = ibatisPropertyDao;
 	}

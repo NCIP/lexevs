@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.dao.database.ibatis.entity;
 
 import java.sql.ResultSet;
@@ -22,18 +40,29 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * The Class IbatisEntityDaoTest.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 @TransactionConfiguration(transactionManager="transactionManager", defaultRollback=false)
 @Transactional
 public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 
+	/** The ibatis entity dao. */
 	@Autowired
 	private IbatisEntityDao ibatisEntityDao;
 	
+	/** The ibatis coding scheme dao. */
 	@Autowired
 	private IbatisCodingSchemeDao ibatisCodingSchemeDao;
 	
+	/** The cs id. */
 	private String csId;
 	
+	/**
+	 * Insert coding scheme.
+	 */
 	@Before
 	public void insertCodingScheme() {
 	CodingScheme cs = new CodingScheme();
@@ -48,6 +77,9 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		csId = ibatisCodingSchemeDao.insertCodingScheme(cs);
 	}
 	
+	/**
+	 * Insert entity.
+	 */
 	@Test
 	public void insertEntity(){
 		final Timestamp effectiveDate = new Timestamp(1l);
@@ -133,6 +165,9 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 	
+	/**
+	 * Test get all entities of coding scheme.
+	 */
 	@Test
 	@Transactional
 	public void testGetAllEntitiesOfCodingScheme() {
@@ -155,6 +190,9 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		
 	}
 	
+	/**
+	 * Test get all entities of coding scheme with limit.
+	 */
 	@Test
 	@Transactional
 	public void testGetAllEntitiesOfCodingSchemeWithLimit() {
@@ -176,6 +214,9 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals(10, entities.size());
 	}
 	
+	/**
+	 * Test get all entities of coding scheme with limit and start.
+	 */
 	@Test
 	@Transactional
 	public void testGetAllEntitiesOfCodingSchemeWithLimitAndStart() {
@@ -197,6 +238,9 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals(100, entities.size());
 	}
 	
+	/**
+	 * Test lazy load presentations.
+	 */
 	@Test
 	@Transactional
 	public void testLazyLoadPresentations() {
@@ -221,6 +265,9 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		assertNotNull(pres);
 	}
 	
+	/**
+	 * Test entity count.
+	 */
 	@Test
 	@Transactional
 	public void testEntityCount() {

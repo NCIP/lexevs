@@ -34,13 +34,25 @@ import org.springframework.transaction.PlatformTransactionManager;
  */
 public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations{
 	
+	/** The database utility. */
 	private DatabaseUtility databaseUtility;
+	
+	/** The lexevs common schema create script. */
 	private Resource lexevsCommonSchemaCreateScript;
+	
+	/** The lexevs coding scheme schema create script. */
 	private Resource lexevsCodingSchemeSchemaCreateScript;
 	
+	/** The prefix resolver. */
 	private PrefixResolver prefixResolver;
+	
+	/** The data source. */
 	private DataSource dataSource;
+	
+	/** The transaction manager. */
 	private PlatformTransactionManager transactionManager;
+	
+	/** The database type. */
 	private DatabaseType databaseType;
 
 	/* (non-Javadoc)
@@ -50,6 +62,9 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#createCommonTables()
+	 */
 	public void createCommonTables() {
 		try {
 			databaseUtility.executeScript(lexevsCommonSchemaCreateScript, this.prefixResolver.resolveDefaultPrefix());
@@ -58,6 +73,9 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		}	
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#createCodingSchemeTables()
+	 */
 	public void createCodingSchemeTables() {
 		try {
 			databaseUtility.executeScript(lexevsCodingSchemeSchemaCreateScript, this.prefixResolver.resolveDefaultPrefix());
@@ -66,6 +84,9 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		}	
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#createCodingSchemeTables(java.lang.String)
+	 */
 	public void createCodingSchemeTables(String prefix) {
 		try {
 			databaseUtility.executeScript(lexevsCodingSchemeSchemaCreateScript, getCombinedPrefix(prefix));
@@ -74,102 +95,193 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		}	
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#cleanupFailedLoad(java.lang.String, java.lang.String)
+	 */
 	public void cleanupFailedLoad(String dbName, String prefix)
 			throws Exception {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#computeTransitiveTable(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	public void computeTransitiveTable(String codingSchemeName,
 			String codingSchemeUri, String version) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * Index.
+	 * 
+	 * @param codingSchemeName the coding scheme name
+	 * @param connectionInfo the connection info
+	 */
 	public void index(String codingSchemeName, SQLConnectionInfo connectionInfo) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#index(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	public void index(String codingSchemeName, String codingSchemeUri,
 			String version) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#reIndex(java.lang.String, java.lang.String)
+	 */
 	public void reIndex(String codingSchemeUri, String version) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#dropTables(java.lang.String, java.lang.String)
+	 */
 	public void dropTables(String codingSchemeUri, String version) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#dropCommonTables()
+	 */
 	public void dropCommonTables() {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * Gets the combined prefix.
+	 * 
+	 * @param codingSchemePrefix the coding scheme prefix
+	 * 
+	 * @return the combined prefix
+	 */
 	protected String getCombinedPrefix(String codingSchemePrefix){
 		return prefixResolver.resolveDefaultPrefix() + codingSchemePrefix;
 	}
 	
+	/**
+	 * Gets the lexevs common schema create script.
+	 * 
+	 * @return the lexevs common schema create script
+	 */
 	public Resource getLexevsCommonSchemaCreateScript() {
 		return lexevsCommonSchemaCreateScript;
 	}
 
+	/**
+	 * Sets the lexevs common schema create script.
+	 * 
+	 * @param lexevsCommonSchemaCreateScript the new lexevs common schema create script
+	 */
 	public void setLexevsCommonSchemaCreateScript(
 			Resource lexevsCommonSchemaCreateScript) {
 		this.lexevsCommonSchemaCreateScript = lexevsCommonSchemaCreateScript;
 	}
 
+	/**
+	 * Gets the lexevs coding scheme schema create script.
+	 * 
+	 * @return the lexevs coding scheme schema create script
+	 */
 	public Resource getLexevsCodingSchemeSchemaCreateScript() {
 		return lexevsCodingSchemeSchemaCreateScript;
 	}
 
+	/**
+	 * Sets the lexevs coding scheme schema create script.
+	 * 
+	 * @param lexevsCodingSchemeSchemaCreateScript the new lexevs coding scheme schema create script
+	 */
 	public void setLexevsCodingSchemeSchemaCreateScript(
 			Resource lexevsCodingSchemeSchemaCreateScript) {
 		this.lexevsCodingSchemeSchemaCreateScript = lexevsCodingSchemeSchemaCreateScript;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#getDatabaseUtility()
+	 */
 	public DatabaseUtility getDatabaseUtility() {
 		return databaseUtility;
 	}
 
+	/**
+	 * Sets the database utility.
+	 * 
+	 * @param databaseUtility the new database utility
+	 */
 	public void setDatabaseUtility(DatabaseUtility databaseUtility) {
 		this.databaseUtility = databaseUtility;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#getPrefixResolver()
+	 */
 	public PrefixResolver getPrefixResolver() {
 		return prefixResolver;
 	}
 
+	/**
+	 * Sets the prefix resolver.
+	 * 
+	 * @param prefixResolver the new prefix resolver
+	 */
 	public void setPrefixResolver(PrefixResolver prefixResolver) {
 		this.prefixResolver = prefixResolver;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#getDataSource()
+	 */
 	public DataSource getDataSource() {
 		return dataSource;
 	}
 
+	/**
+	 * Sets the data source.
+	 * 
+	 * @param dataSource the new data source
+	 */
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#getDatabaseType()
+	 */
 	public DatabaseType getDatabaseType() {
 		return databaseType;
 	}
 
+	/**
+	 * Sets the database type.
+	 * 
+	 * @param databaseType the new database type
+	 */
 	public void setDatabaseType(DatabaseType databaseType) {
 		this.databaseType = databaseType;
 	}
 
+	/**
+	 * Sets the transaction manager.
+	 * 
+	 * @param transactionManager the new transaction manager
+	 */
 	public void setTransactionManager(PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#getTransactionManager()
+	 */
 	public  PlatformTransactionManager getTransactionManager() {
 		return transactionManager;
 	}

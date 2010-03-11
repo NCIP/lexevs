@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.dao.database.prefix;
 
 import static org.easymock.EasyMock.createMock;
@@ -14,8 +32,16 @@ import org.lexevs.dao.database.utility.DatabaseUtility;
 import org.lexevs.dao.test.StaticPrefixResolver;
 import org.springframework.test.annotation.ExpectedException;
 
+/**
+ * The Class CyclingCharDbPrefixGeneratorTest.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class CyclingCharDbPrefixGeneratorTest {
 
+	/**
+	 * Test adjust length chop.
+	 */
 	@Test
 	public void testAdjustLengthChop(){
 		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
@@ -27,6 +53,9 @@ public class CyclingCharDbPrefixGeneratorTest {
 		assertArrayEquals("aas".toCharArray(), chars);
 	}
 	
+	/**
+	 * Test is in cycle one char true.
+	 */
 	@Test
 	public void testIsInCycleOneCharTrue(){
 		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
@@ -35,6 +64,9 @@ public class CyclingCharDbPrefixGeneratorTest {
 		assertTrue(generator.isInCycle(new char[]{'Z'}));
 	}
 	
+	/**
+	 * Test is in cycle one char false.
+	 */
 	@Test
 	public void testIsInCycleOneCharFalse(){
 		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
@@ -43,6 +75,9 @@ public class CyclingCharDbPrefixGeneratorTest {
 		assertFalse(generator.isInCycle(new char[]{'E'}));
 	}
 	
+	/**
+	 * Test is in cycle multiple chars true.
+	 */
 	@Test
 	public void testIsInCycleMultipleCharsTrue(){
 		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
@@ -51,6 +86,9 @@ public class CyclingCharDbPrefixGeneratorTest {
 		assertTrue(generator.isInCycle("AEDGRYNGRZ".toCharArray()));
 	}
 	
+	/**
+	 * Test is in cycle multiple chars false.
+	 */
 	@Test
 	public void testIsInCycleMultipleCharsFalse(){
 		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
@@ -59,6 +97,9 @@ public class CyclingCharDbPrefixGeneratorTest {
 		assertFalse(generator.isInCycle("EGHHYTVVHH".toCharArray()));
 	}
 	
+	/**
+	 * Test generate starting cycling prefix.
+	 */
 	@Test
 	public void testGenerateStartingCyclingPrefix(){
 		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
@@ -70,6 +111,9 @@ public class CyclingCharDbPrefixGeneratorTest {
 		assertArrayEquals("AAZ".toCharArray(), chars);
 	}
 	
+	/**
+	 * Test adjust length add.
+	 */
 	@Test
 	public void testAdjustLengthAdd(){
 		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
@@ -81,6 +125,9 @@ public class CyclingCharDbPrefixGeneratorTest {
 		assertArrayEquals("ffAAA".toCharArray(), chars);
 	}
 	
+	/**
+	 * Test get prefix without cycle.
+	 */
 	@Test
 	public void testGetPrefixWithoutCycle(){
 		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
@@ -91,6 +138,9 @@ public class CyclingCharDbPrefixGeneratorTest {
 		assertEquals("baaa", newPrefix);
 	}
 	
+	/**
+	 * Test get prefix without cycle one z.
+	 */
 	@Test
 	public void testGetPrefixWithoutCycleOneZ(){
 		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
@@ -101,6 +151,9 @@ public class CyclingCharDbPrefixGeneratorTest {
 		assertEquals("zbaa", newPrefix);
 	}
 	
+	/**
+	 * Test get prefix with cycle.
+	 */
 	@Test
 	public void testGetPrefixWithCycle(){
 
@@ -125,6 +178,9 @@ public class CyclingCharDbPrefixGeneratorTest {
 		assertEquals("daaz", newPrefix);
 	}
 	
+	/**
+	 * Test no more prefixes.
+	 */
 	@Test
 	@ExpectedException(RuntimeException.class)
 	public void testNoMorePrefixes(){
@@ -147,6 +203,11 @@ public class CyclingCharDbPrefixGeneratorTest {
 		String newPrefix = generator.generateNextDatabasePrefix("a");
 	}
 	
+	/**
+	 * Test too small prefix.
+	 * 
+	 * @throws Exception the exception
+	 */
 	@Test(expected=IllegalArgumentException.class)
 	public void testTooSmallPrefix() throws Exception {
 

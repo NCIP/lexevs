@@ -28,13 +28,22 @@ import org.springframework.jdbc.support.MetaDataAccessException;
  */
 public class DatabaseValidationQueryFactory implements InitializingBean, FactoryBean {
 	
+	/** The Constant DEFAULT_VALIDATION_QUERY. */
 	private static final String DEFAULT_VALIDATION_QUERY = "SELECT 1";
+	
+	/** The Constant ORACLE_VALIDATION_QUERY. */
 	private static final String ORACLE_VALIDATION_QUERY = "SELECT sysdate from dual";
+	
+	/** The Constant DB2_VALIDATION_QUERY. */
 	private static final String DB2_VALIDATION_QUERY = null;
+	
+	/** The Constant HSQLDB_VALIDATION_QUERY. */
 	private static final String HSQLDB_VALIDATION_QUERY = null;
 	
+	/** The db url. */
 	private String dbUrl;
 	
+	/** The validation query. */
 	private String validationQuery;
 	
 	/* (non-Javadoc)
@@ -65,6 +74,13 @@ public class DatabaseValidationQueryFactory implements InitializingBean, Factory
 		return true;
 	}
 	
+	/**
+	 * Gets the validation query.
+	 * 
+	 * @return the validation query
+	 * 
+	 * @throws MetaDataAccessException the meta data access exception
+	 */
 	public String getValidationQuery() throws MetaDataAccessException {
 
 		if(dbUrl.toLowerCase().contains("oracle")){
@@ -78,10 +94,20 @@ public class DatabaseValidationQueryFactory implements InitializingBean, Factory
 		}
 	}
 
+	/**
+	 * Gets the db url.
+	 * 
+	 * @return the db url
+	 */
 	public String getDbUrl() {
 		return dbUrl;
 	}
 
+	/**
+	 * Sets the db url.
+	 * 
+	 * @param dbUrl the new db url
+	 */
 	public void setDbUrl(String dbUrl) {
 		this.dbUrl = dbUrl;
 	}

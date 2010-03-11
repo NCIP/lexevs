@@ -28,16 +28,19 @@ import org.apache.log4j.Logger;
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust </A>
  */
 public class CommandLineMessageDirector implements LgMessageDirectorIF {
+    
+    /** The log. */
     private static Logger log = null;
+    
+    /** The print debug. */
     private boolean printDebug = false;
 
     /**
      * Construct a command line message director that will also write to a log4j
      * logger of the given name.
      * 
-     * @param logName
-     * @param showDebug
-     *            should debug messages be printed to the screen.
+     * @param logName the log name
+     * @param showDebug should debug messages be printed to the screen.
      */
     public CommandLineMessageDirector(String logName, boolean showDebug) {
         if (logName != null && logName.length() > 0) {
@@ -52,7 +55,7 @@ public class CommandLineMessageDirector implements LgMessageDirectorIF {
      * Construct a command line message director that will also write to a log4j
      * logger of the given name.
      * 
-     * @param logName
+     * @param logName the log name
      */
     public CommandLineMessageDirector(String logName) {
         if (logName != null && logName.length() > 0) {
@@ -63,18 +66,24 @@ public class CommandLineMessageDirector implements LgMessageDirectorIF {
         printDebug = false;
     }
 
+    /**
+     * Instantiates a new command line message director.
+     */
     public CommandLineMessageDirector() {
         log = null;
         printDebug = false;
     }
 
     /**
-     * Output to indicate system is busy
+     * Output to indicate system is busy.
      */
     public void busy() {
         System.out.print(".");
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#error(java.lang.String)
+     */
     public String error(String message) {
         if (log != null) {
             log.error(message);
@@ -84,6 +93,9 @@ public class CommandLineMessageDirector implements LgMessageDirectorIF {
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#error(java.lang.String, java.lang.Throwable)
+     */
     public String error(String message, Throwable sourceException) {
         if (log != null) {
             log.error(message, sourceException);
@@ -93,6 +105,9 @@ public class CommandLineMessageDirector implements LgMessageDirectorIF {
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#fatal(java.lang.String)
+     */
     public String fatal(String message) {
         if (log != null) {
             log.fatal(message);
@@ -102,6 +117,9 @@ public class CommandLineMessageDirector implements LgMessageDirectorIF {
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#fatal(java.lang.String, java.lang.Throwable)
+     */
     public String fatal(String message, Throwable sourceException) {
         if (log != null) {
             log.fatal(message, sourceException);
@@ -111,10 +129,16 @@ public class CommandLineMessageDirector implements LgMessageDirectorIF {
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#fatalAndThrowException(java.lang.String)
+     */
     public void fatalAndThrowException(String message) throws Exception {
         fatalAndThrowException(message, null);
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#fatalAndThrowException(java.lang.String, java.lang.Throwable)
+     */
     public void fatalAndThrowException(String message, Throwable sourceException) throws Exception {
         if (log != null) {
             log.fatal(message, sourceException);
@@ -124,6 +148,9 @@ public class CommandLineMessageDirector implements LgMessageDirectorIF {
         throw new Exception(message, sourceException);
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#info(java.lang.String)
+     */
     public String info(String message) {
         if (log != null) {
             log.info(message);
@@ -133,6 +160,9 @@ public class CommandLineMessageDirector implements LgMessageDirectorIF {
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#warn(java.lang.String)
+     */
     public String warn(String message) {
         if (log != null) {
             log.warn(message);
@@ -143,6 +173,9 @@ public class CommandLineMessageDirector implements LgMessageDirectorIF {
 
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#warn(java.lang.String, java.lang.Throwable)
+     */
     public String warn(String message, Throwable sourceException) {
         if (log != null) {
             log.warn(message, sourceException);
@@ -152,6 +185,9 @@ public class CommandLineMessageDirector implements LgMessageDirectorIF {
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#debug(java.lang.String)
+     */
     public String debug(String message) {
         if (log != null) {
             log.debug(message);

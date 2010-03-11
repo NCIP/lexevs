@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.dao.database.constants.classifier.mapping;
 
 import java.util.HashMap;
@@ -7,10 +25,19 @@ import org.LexGrid.naming.*;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.springframework.batch.classify.Classifier;
 
+/**
+ * The Class AbstractMappingClassifier.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public abstract class AbstractMappingClassifier<I,O> implements Classifier<I,O>{
 	
+	/** The mappings. */
 	private Map<Class<? extends URIMap>,String> mappings = buildMap();
 	
+	/* (non-Javadoc)
+	 * @see org.springframework.batch.classify.Classifier#classify(java.lang.Object)
+	 */
 	@Override
 	public O classify(I item) {
 		try {
@@ -20,12 +47,32 @@ public abstract class AbstractMappingClassifier<I,O> implements Classifier<I,O>{
 		}
 	}
 	
+	/**
+	 * Gets the exception.
+	 * 
+	 * @param item the item
+	 * 
+	 * @return the exception
+	 */
 	protected RuntimeException getException(Object item) {
 		return new RuntimeException("Cound not classify: " + item.toString());
 	}
 
+	/**
+	 * Do classify.
+	 * 
+	 * @param item the item
+	 * @param mappngs the mappngs
+	 * 
+	 * @return the o
+	 */
 	protected abstract O doClassify(I item, Map<Class<? extends URIMap>,String> mappngs);
 
+	/**
+	 * Builds the map.
+	 * 
+	 * @return the map< class<? extends uri map>, string>
+	 */
 	protected Map<Class<? extends URIMap>,String> buildMap() {
 		Map<Class<? extends URIMap>,String> mappings = new HashMap<Class<? extends URIMap>,String>();
 		

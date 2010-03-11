@@ -42,16 +42,38 @@ import org.lexevs.logging.LoggerFactory;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class SQLInterface {
+    
+    /** The stu_. */
     private SQLTableUtilities stu_;
+    
+    /** The data source. */
     private DataSource dataSource;
+    
+    /** The table prefix_. */
     private String tablePrefix_;
+    
+    /** The g sql mod_. */
     private GenericSQLModifier gSQLMod_;
+    
+    /** The connection descriptor. */
     private JDBCConnectionDescriptor connectionDescriptor;
 
+    /**
+     * Gets the logger.
+     * 
+     * @return the logger
+     */
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
 
+    /**
+     * Instantiates a new sQL interface.
+     * 
+     * @param dataSource the data source
+     * @param databaseType the database type
+     * @param tablePrefix the table prefix
+     */
     public SQLInterface(DataSource dataSource, DatabaseType databaseType, String tablePrefix) {
         try {
         	this.dataSource = dataSource;
@@ -63,19 +85,41 @@ public class SQLInterface {
         }
     }
     
+    /**
+     * Gets the sQL table utilities.
+     * 
+     * @return the sQL table utilities
+     */
     @Deprecated
     public SQLTableUtilities getSQLTableUtilities() {
     	return stu_;
     }
 
+    /**
+     * Supports2009 model.
+     * 
+     * @return true, if successful
+     */
     public boolean supports2009Model() {
         return stu_.getSQLTableConstants().supports2009Model();
     }
 
+    /**
+     * Gets the sQL table constants.
+     * 
+     * @return the sQL table constants
+     */
     public SQLTableConstants getSQLTableConstants() {
         return stu_.getSQLTableConstants();
     }
 
+    /**
+     * Gets the table name.
+     * 
+     * @param tableKey the table key
+     * 
+     * @return the table name
+     */
     public String getTableName(String tableKey) {
         return stu_.getSQLTableConstants().getTableName(tableKey);
     }
@@ -83,7 +127,7 @@ public class SQLInterface {
     /**
      * I'm not sure if we stil need this... hopefully for 6.0 it will be gone.
      * 
-     * @return
+     * @return the connection descriptor
      */
     @Deprecated
     public JDBCConnectionDescriptor getConnectionDescriptor() {
@@ -92,10 +136,28 @@ public class SQLInterface {
 		return connectionDescriptor;
 	}
 
+    /**
+     * Modify and check out prepared statement.
+     * 
+     * @param sql the sql
+     * 
+     * @return the prepared statement
+     * 
+     * @throws SQLException the SQL exception
+     */
     public PreparedStatement modifyAndCheckOutPreparedStatement(String sql) throws SQLException {
         return dataSource.getConnection().prepareStatement(gSQLMod_.modifySQL(sql));
     }
 
+    /**
+     * Check out prepared statement.
+     * 
+     * @param sql the sql
+     * 
+     * @return the prepared statement
+     * 
+     * @throws SQLException the SQL exception
+     */
     public PreparedStatement checkOutPreparedStatement(String sql) throws SQLException {
         return dataSource.getConnection().prepareStatement(
         		sql,
@@ -103,6 +165,11 @@ public class SQLInterface {
     			ResultSet.CONCUR_READ_ONLY);
     }
 
+    /**
+     * Check in prepared statement.
+     * 
+     * @param statement the statement
+     */
     public void checkInPreparedStatement(PreparedStatement statement) {
     	
     	try {
@@ -124,6 +191,11 @@ public class SQLInterface {
 		}
     }
 
+    /**
+     * Drop tables.
+     * 
+     * @throws SQLException the SQL exception
+     */
     public void dropTables() throws SQLException {
         stu_.dropTables();
     }
@@ -131,12 +203,17 @@ public class SQLInterface {
     /**
      * Return the table prefix that this SQL Interface is accessing.
      * 
-     * @return
+     * @return the table prefix
      */
     public String getTablePrefix() {
         return tablePrefix_;
     }
 
+	/**
+	 * Gets the key.
+	 * 
+	 * @return the key
+	 */
 	public String getKey() {
 		return tablePrefix_;
 	}

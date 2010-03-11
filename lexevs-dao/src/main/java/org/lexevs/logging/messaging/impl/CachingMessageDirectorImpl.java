@@ -38,10 +38,18 @@ import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu"> Dan Armbrust</A>
  */
 public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
+    
+    /** The base message director_. */
     protected LgMessageDirectorIF baseMessageDirector_ = null;
    
+    /** The log entries. */
     private List<LogEntry> logEntries = new ArrayList<LogEntry>();
 
+    /**
+     * Instantiates a new caching message director impl.
+     * 
+     * @param msgDirector the msg director
+     */
     public CachingMessageDirectorImpl(LgMessageDirectorIF msgDirector) {
         this.baseMessageDirector_ = msgDirector;
     }
@@ -150,6 +158,13 @@ public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
         return baseMessageDirector_.warn(message);
     }
 
+    /**
+     * Adds the msg.
+     * 
+     * @param level the level
+     * @param msg the msg
+     * @param exceptionMsg the exception msg
+     */
     private void addMsg(LogLevel level, String msg, String exceptionMsg) {
 
         LogEntry entry = new LogEntry();
@@ -160,30 +175,51 @@ public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
         this.logEntries.add(entry);
     }
 
+    /**
+     * Adds the msg.
+     * 
+     * @param level the level
+     * @param msg the msg
+     */
     private void addMsg(LogLevel level, String msg) {
         addMsg(level, msg, "");
     }
 
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#busy()
+     */
     public void busy() {
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#fatalAndThrowException(java.lang.String)
+     */
     public void fatalAndThrowException(String message) throws Exception {
         fatalAndThrowException(message, null);
 
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#fatalAndThrowException(java.lang.String, java.lang.Throwable)
+     */
     public void fatalAndThrowException(String message, Throwable sourceException) throws Exception {
         fatal(message, sourceException);
         baseMessageDirector_.fatalAndThrowException(message, sourceException);
         throw new Exception(message, sourceException);
     }
 
+	/* (non-Javadoc)
+	 * @see org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF#clearLog()
+	 */
 	@Override
 	public void clearLog() {
 		this.logEntries.clear();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF#getLog(org.LexGrid.LexBIG.DataModel.Core.types.LogLevel)
+	 */
 	@Override
 	public LogEntry[] getLog(LogLevel level) {
 		List<LogEntry> entries = new ArrayList<LogEntry>();

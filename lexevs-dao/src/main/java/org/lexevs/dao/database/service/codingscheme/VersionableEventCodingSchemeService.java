@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.dao.database.service.codingscheme;
 
 import java.util.Arrays;
@@ -15,8 +33,16 @@ import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * The Class VersionableEventCodingSchemeService.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class VersionableEventCodingSchemeService extends AbstractDatabaseService implements CodingSchemeService {
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#getCodingSchemeByUriAndVersion(java.lang.String, java.lang.String)
+	 */
 	@Transactional
 	public CodingScheme getCodingSchemeByUriAndVersion(String uri,
 			String version) {
@@ -24,6 +50,9 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			getCodingSchemeByUriAndVersion(uri, version);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#getCodingSchemeSummaryByUriAndVersion(java.lang.String, java.lang.String)
+	 */
 	@Transactional
 	public CodingSchemeSummary getCodingSchemeSummaryByUriAndVersion(
 			String uri, String version) {
@@ -31,6 +60,9 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			getCodingSchemeSummaryByUriAndVersion(uri, version);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#destroyCodingScheme(java.lang.String, java.lang.String)
+	 */
 	@Transactional
 	public void destroyCodingScheme(String uri, String version) {
 		CodingSchemeDao csDao = 
@@ -44,6 +76,9 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		csDao.deleteCodingSchemeById(codingSchemeId);	
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#insertCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
+	 */
 	@Transactional
 	public void insertCodingScheme(CodingScheme scheme) throws CodingSchemeAlreadyLoadedException {
 		CodingSchemeDao codingSchemeDao = 
@@ -71,6 +106,9 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#insertURIMap(java.lang.String, java.lang.String, org.LexGrid.naming.URIMap)
+	 */
 	@Transactional
 	public void insertURIMap(
 			String codingSchemeUri, 
@@ -83,6 +121,9 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			insertURIMap(codingSchemeId, uriMap);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#updateCodingScheme(java.lang.String, java.lang.String, org.LexGrid.codingSchemes.CodingScheme)
+	 */
 	@Transactional
 	public void updateCodingScheme(
 			String codingSchemeUri,
@@ -97,6 +138,9 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			updateCodingScheme(codingSchemeId, codingScheme);	
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#updateCodingSchemeEntryState(org.LexGrid.codingSchemes.CodingScheme, org.LexGrid.versions.EntryState)
+	 */
 	@Transactional
 	public void updateCodingSchemeEntryState(CodingScheme codingScheme,
 			EntryState entryState) {
@@ -105,6 +149,9 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	}
 	
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#validatedSupportedAttribute(java.lang.String, java.lang.String, java.lang.String, java.lang.Class)
+	 */
 	@Override
 	public <T extends URIMap> boolean validatedSupportedAttribute(
 			String codingSchemeUri, String codingSchemeVersion, String localId,

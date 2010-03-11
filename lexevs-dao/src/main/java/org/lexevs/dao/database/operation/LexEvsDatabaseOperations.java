@@ -32,34 +32,115 @@ import org.springframework.transaction.PlatformTransactionManager;
  */
 public interface LexEvsDatabaseOperations {
 
+	/**
+	 * Creates the common tables.
+	 */
 	public void createCommonTables();
 	
+	/**
+	 * Creates the coding scheme tables.
+	 */
 	public void createCodingSchemeTables();
 	
+	/**
+	 * Creates the coding scheme tables.
+	 * 
+	 * @param prefix the prefix
+	 */
 	public void createCodingSchemeTables(String prefix);
 	
+	/**
+	 * Drop common tables.
+	 */
 	public void dropCommonTables();
 	
+	/**
+	 * Drop tables.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param version the version
+	 */
 	public void dropTables(String codingSchemeUri, String version);
 	
+	/**
+	 * Checks if is coding scheme loaded.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param version the version
+	 * 
+	 * @return true, if is coding scheme loaded
+	 */
 	public boolean isCodingSchemeLoaded(String codingSchemeUri, String version);
 
+	/**
+	 * Gets the database utility.
+	 * 
+	 * @return the database utility
+	 */
 	public DatabaseUtility getDatabaseUtility();
 	
+	/**
+	 * Gets the data source.
+	 * 
+	 * @return the data source
+	 */
 	public DataSource getDataSource();
 	
+	/**
+	 * Gets the transaction manager.
+	 * 
+	 * @return the transaction manager
+	 */
 	public PlatformTransactionManager getTransactionManager();
 	
+	/**
+	 * Gets the prefix resolver.
+	 * 
+	 * @return the prefix resolver
+	 */
 	public PrefixResolver getPrefixResolver();
 	
+	/**
+	 * Gets the database type.
+	 * 
+	 * @return the database type
+	 */
 	public DatabaseType getDatabaseType();
 	
+	/**
+	 * Compute transitive table.
+	 * 
+	 * @param codingSchemeName the coding scheme name
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param version the version
+	 */
 	public void computeTransitiveTable(String codingSchemeName, String codingSchemeUri, String version);
 	
+	/**
+	 * Index.
+	 * 
+	 * @param codingSchemeName the coding scheme name
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param version the version
+	 */
 	public void index(String codingSchemeName, String codingSchemeUri, String version);
 		
+	/**
+	 * Cleanup failed load.
+	 * 
+	 * @param dbName the db name
+	 * @param prefix the prefix
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void cleanupFailedLoad(String dbName, String prefix) throws Exception;
 	
+	/**
+	 * Re index.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param version the version
+	 */
 	public void reIndex(String codingSchemeUri, String version);
 }
 

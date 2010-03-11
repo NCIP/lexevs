@@ -25,12 +25,25 @@ package org.lexevs.exceptions;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class InitializationException extends InternalException {
+    
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 7340972251523163860L;
 
+    /**
+     * Instantiates a new initialization exception.
+     * 
+     * @param message the message
+     */
     public InitializationException(String message) {
         super(message);
     }
 
+    /**
+     * Instantiates a new initialization exception.
+     * 
+     * @param message the message
+     * @param cause the cause
+     */
     public InitializationException(String message, Throwable cause) {
         super(message, cause);
     }

@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.system.utility;
 
 /*import static org.bouncycastle.util.encoders.Base64.decode;
@@ -18,22 +36,36 @@ import org.lexevs.logging.Logger;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
+/**
+ * The Class CryptoUtility.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public final class CryptoUtility {
+    
+    /**
+     * Instantiates a new crypto utility.
+     */
     CryptoUtility() {}
  
-    /**
-     * Internal Key
-     */
+    /** Internal Key. */
     protected static char[] key = "MayoClinic".toCharArray();
+    
+    /** The salt. */
     private static byte[] salt = "LEX-GRID".getBytes();
+    
+    /** The log. */
     private static Logger log = new Logger(); 
     
     /**
-    * Encrypts data
-    * @param cleartext
-    * @return
-    * @throws GeneralSecurityException on an encryption error
-    */
+     * Encrypts data.
+     * 
+     * @param cleartext the cleartext
+     * 
+     * @return the string
+     * 
+     * @throws GeneralSecurityException on an encryption error
+     */
     public static String encrypt(final String cleartext) {
         int count = 30;
         PBEParameterSpec parameterSpec = new PBEParameterSpec(salt, count);
@@ -53,7 +85,9 @@ public final class CryptoUtility {
  
     /**
      * Decrypts cipher text using the shared passphrase.
-     * @param cipherText The text to decrypt.
+     * 
+     * @param ciphertext the ciphertext
+     * 
      * @return The decrypted text.
      */
     public static String decrypt(final String ciphertext) {
@@ -77,6 +111,13 @@ public final class CryptoUtility {
         return result;
     }
  
+    /**
+     * Gets the key.
+     * 
+     * @return the key
+     * 
+     * @throws GeneralSecurityException the general security exception
+     */
     protected static SecretKey getKey() throws GeneralSecurityException {
         KeySpec keySpec = new PBEKeySpec(key);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");

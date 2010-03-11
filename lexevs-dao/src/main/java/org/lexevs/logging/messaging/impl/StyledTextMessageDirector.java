@@ -33,18 +33,22 @@ import org.eclipse.swt.widgets.Shell;
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust </A>
  */
 public class StyledTextMessageDirector implements LgMessageDirectorIF {
+    
+    /** The text area_. */
     private StyledText textArea_;
+    
+    /** The shell_. */
     private Shell shell_;
+    
+    /** The log. */
     private static Logger log = Logger.getLogger("convert.MessageUtility");
 
     /**
+     * The Constructor.
      * 
-     * @param commandLine
-     *            true if is from a command line
-     * @param textArea
-     *            where the message is displayed
-     * @param loggerName
-     *            name of the logger used
+     * @param textArea where the message is displayed
+     * @param loggerName name of the logger used
+     * @param shell the shell
      */
     public StyledTextMessageDirector(StyledText textArea, String loggerName, Shell shell) {
         this(textArea, shell);
@@ -52,11 +56,10 @@ public class StyledTextMessageDirector implements LgMessageDirectorIF {
     }
 
     /**
+     * The Constructor.
      * 
-     * @param commandLine
-     *            true if from command line
-     * @param textArea
-     *            where the text is diplayed
+     * @param textArea where the text is diplayed
+     * @param shell the shell
      */
     public StyledTextMessageDirector(StyledText textArea, Shell shell) {
         textArea_ = textArea;
@@ -64,10 +67,10 @@ public class StyledTextMessageDirector implements LgMessageDirectorIF {
     }
 
     /**
-     * Displays message either on the command line or TextArea
+     * Displays message either on the command line or TextArea.
      * 
-     * @param message
-     *            message to be displayed
+     * @param message message to be displayed
+     * @param errorMessage the error message
      */
     private void showMessage(final String message, final boolean errorMessage) {
         if (textArea_ != null) {
@@ -99,7 +102,7 @@ public class StyledTextMessageDirector implements LgMessageDirectorIF {
     }
 
     /**
-     * Output to indicate system is busy
+     * Output to indicate system is busy.
      */
     public void busy() {
         if (textArea_ != null) {
@@ -128,10 +131,16 @@ public class StyledTextMessageDirector implements LgMessageDirectorIF {
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#error(java.lang.String)
+     */
     public String error(String message) {
         return error(message, null);
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#error(java.lang.String, java.lang.Throwable)
+     */
     public String error(String message, Throwable sourceException) {
         if (sourceException == null) {
             log.error(message);
@@ -142,10 +151,16 @@ public class StyledTextMessageDirector implements LgMessageDirectorIF {
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#fatal(java.lang.String)
+     */
     public String fatal(String message) {
         return fatal(message, null);
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#fatal(java.lang.String, java.lang.Throwable)
+     */
     public String fatal(String message, Throwable sourceException) {
         if (sourceException == null) {
             log.fatal(message);
@@ -156,10 +171,16 @@ public class StyledTextMessageDirector implements LgMessageDirectorIF {
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#fatalAndThrowException(java.lang.String)
+     */
     public void fatalAndThrowException(String message) throws Exception {
         fatalAndThrowException(message, null);
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#fatalAndThrowException(java.lang.String, java.lang.Throwable)
+     */
     public void fatalAndThrowException(String message, Throwable sourceException) throws Exception {
         if (sourceException == null) {
             log.fatal(message);
@@ -170,16 +191,25 @@ public class StyledTextMessageDirector implements LgMessageDirectorIF {
         throw new Exception(message, sourceException);
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#info(java.lang.String)
+     */
     public String info(String message) {
         log.info(message);
         showMessage(message, false);
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#warn(java.lang.String)
+     */
     public String warn(String message) {
         return warn(message, null);
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#warn(java.lang.String, java.lang.Throwable)
+     */
     public String warn(String message, Throwable sourceException) {
         if (sourceException == null) {
             log.warn(message);
@@ -190,6 +220,9 @@ public class StyledTextMessageDirector implements LgMessageDirectorIF {
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#debug(java.lang.String)
+     */
     public String debug(String message) {
         log.debug(message);
         return null;

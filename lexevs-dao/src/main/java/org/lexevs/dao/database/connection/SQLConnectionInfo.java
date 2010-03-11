@@ -28,16 +28,36 @@ import org.LexGrid.annotations.LgClientSideSafe;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class SQLConnectionInfo {
+    
+    /** The username. */
     public String username;
+    
+    /** The password. */
     public String password;
+    
+    /** The server. */
     public String server;
+    
+    /** The driver. */
     public String driver;
+    
+    /** The db name. */
     public String dbName;
+    
+    /** The prefix. */
     public String prefix;
 
+    /** The urn. */
     public String urn;
+    
+    /** The version. */
     public String version;
 
+    /**
+     * Gets the key.
+     * 
+     * @return the key
+     */
     @LgClientSideSafe
     public String getKey() {
         return server;

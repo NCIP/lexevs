@@ -44,14 +44,25 @@ import org.lexevs.system.constants.SystemVariables;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class Logger implements LgLoggerIF {
+    
+    /** The gui log_. */
     private org.apache.log4j.Logger fatal_, error_, warn_, info_, debug_, loadLog_, apiLog_, sqlLog_, guiLog_;
 
+    /** The log message id_. */
     private int logMessageId_ = 1;
+    
+    /** The message queue_. */
     private ArrayList<MessageHolder> messageQueue_;
     
+    /** The is api logging enabled. */
     private boolean isAPILoggingEnabled = false;
+    
+    /** The is debug enabled. */
     private boolean isDebugEnabled = false;
 
+    /**
+     * Instantiates a new logger.
+     */
     public Logger() {
         Appender simpleAppender = new ConsoleAppender(new PatternLayout("%c %p - %d - %m%n"));
         // only warnings and worse to the screen
@@ -105,6 +116,11 @@ public class Logger implements LgLoggerIF {
         this.debug("LexBIG Logger configured");
     }
 
+    /**
+     * Finish log config.
+     * 
+     * @param vars the vars
+     */
     public void finishLogConfig(SystemVariables vars) {
         // These operations cannot be done until the system variables are read,
         // but the logger
@@ -278,6 +294,9 @@ public class Logger implements LgLoggerIF {
         messageQueue_ = null;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#debug(java.lang.String)
+     */
     public String debug(String debugMessage) {
         if (SystemVariables.isDebugEnabled()) {
             String idString = getIDString();
@@ -291,6 +310,14 @@ public class Logger implements LgLoggerIF {
         return null;
     }
 
+    /**
+     * Debug.
+     * 
+     * @param debugMessage the debug message
+     * @param cause the cause
+     * 
+     * @return the string
+     */
     public String debug(String debugMessage, Throwable cause) {
         if (SystemVariables.isDebugEnabled()) {
             String idString = getIDString();
@@ -304,6 +331,9 @@ public class Logger implements LgLoggerIF {
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#info(java.lang.String)
+     */
     public String info(String infoMessage) {
         String idString = getIDString();
         if (messageQueue_ == null) {
@@ -314,12 +344,23 @@ public class Logger implements LgLoggerIF {
         return idString;
     }
 
+    /**
+     * Info.
+     * 
+     * @param infoMessage the info message
+     * @param cause the cause
+     * 
+     * @return the string
+     */
     public String info(String infoMessage, Throwable cause) {
         String idString = getIDString();
         info_.info(idString + infoMessage, cause);
         return idString;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#warn(java.lang.String)
+     */
     public String warn(String warning) {
         String idString = getIDString();
         if (messageQueue_ == null) {
@@ -330,6 +371,9 @@ public class Logger implements LgLoggerIF {
         return idString;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#warn(java.lang.String, java.lang.Throwable)
+     */
     public String warn(String warning, Throwable cause) {
         String idString = getIDString();
         if (messageQueue_ == null) {
@@ -340,6 +384,9 @@ public class Logger implements LgLoggerIF {
         return idString;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#error(java.lang.String)
+     */
     public String error(String errorMessage) {
         String idString = getIDString();
         if (errorMessage != null && errorMessage.indexOf("<JUNIT_IGNORE>") != -1) {
@@ -358,6 +405,9 @@ public class Logger implements LgLoggerIF {
         return idString;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#error(java.lang.String, java.lang.Throwable)
+     */
     public String error(String errorMessage, Throwable cause) {
         String idString = getIDString();
         if ((errorMessage != null && errorMessage.indexOf("<JUNIT_IGNORE>") != -1)
@@ -377,6 +427,9 @@ public class Logger implements LgLoggerIF {
         return idString;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#fatal(java.lang.String)
+     */
     public String fatal(String errorMessage) {
         String idString = getIDString();
         if (messageQueue_ == null) {
@@ -387,6 +440,9 @@ public class Logger implements LgLoggerIF {
         return idString;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#fatal(java.lang.String, java.lang.Throwable)
+     */
     public String fatal(String errorMessage, Throwable cause) {
         String idString = getIDString();
         if (messageQueue_ == null) {
@@ -397,14 +453,23 @@ public class Logger implements LgLoggerIF {
         return idString;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgLoggerIF#loadLogDebug(java.lang.String)
+     */
     public void loadLogDebug(String message) {
         loadLog_.debug(message);
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgLoggerIF#logMethod()
+     */
     public void logMethod() {
         logMethod(null);
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgLoggerIF#logMethod(java.lang.Object[])
+     */
     public void logMethod(Object[] params) {
 
         try {
@@ -432,22 +497,39 @@ public class Logger implements LgLoggerIF {
    
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgLoggerIF#loadLogError(java.lang.String, java.lang.Throwable)
+     */
     public void loadLogError(String message, Throwable e) {
         loadLog_.error(message, e);
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgLoggerIF#loadLogError(java.lang.String)
+     */
     public void loadLogError(String message) {
         loadLog_.error(message);
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgLoggerIF#loadLogWarn(java.lang.String, java.lang.Throwable)
+     */
     public void loadLogWarn(String message, Throwable e) {
         loadLog_.warn(message, e);
     }
 
+    /**
+     * Gets the iD string.
+     * 
+     * @return the iD string
+     */
     private String getIDString() {
         return "[LOG_ID " + logMessageId_++ + "] ";
     }
 
+    /**
+     * Sys err log queue.
+     */
     public void sysErrLogQueue() {
         System.err.println("Dumping queued log messages to System.Error and System.Out");
         System.err.println("Dumping queued log messages to System.Error and System.Out");
@@ -460,43 +542,90 @@ public class Logger implements LgLoggerIF {
         }
     }
 
+    /**
+     * The Class MessageHolder.
+     * 
+     * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+     */
     private class MessageHolder {
+        
+        /**
+         * Instantiates a new message holder.
+         * 
+         * @param message the message
+         * @param type the type
+         * @param cause the cause
+         */
         public MessageHolder(String message, String type, Throwable cause) {
             this.message = message;
             this.type = type;
             this.cause = cause;
         }
 
+        /** The message. */
         String message;
+        
+        /** The type. */
         String type;
+        
+        /** The cause. */
         Throwable cause;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#busy()
+     */
     public void busy() {
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#fatalAndThrowException(java.lang.String)
+     */
     public void fatalAndThrowException(String message) throws Exception {
         fatal(message);
         throw new Exception(message);
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF#fatalAndThrowException(java.lang.String, java.lang.Throwable)
+     */
     public void fatalAndThrowException(String message, Throwable sourceException) throws Exception {
         fatal(message, sourceException);
         throw new Exception(sourceException);
     }
 
+	/**
+	 * Checks if is aPI logging enabled.
+	 * 
+	 * @return true, if is aPI logging enabled
+	 */
 	public boolean isAPILoggingEnabled() {
 		return isAPILoggingEnabled;
 	}
 
+	/**
+	 * Sets the aPI logging enabled.
+	 * 
+	 * @param isAPILoggingEnabled the new aPI logging enabled
+	 */
 	public void setAPILoggingEnabled(boolean isAPILoggingEnabled) {
 		this.isAPILoggingEnabled = isAPILoggingEnabled;
 	}
 
+	/**
+	 * Checks if is debug enabled.
+	 * 
+	 * @return true, if is debug enabled
+	 */
 	public boolean isDebugEnabled() {
 		return isDebugEnabled;
 	}
 
+	/**
+	 * Sets the debug enabled.
+	 * 
+	 * @param isDebugEnabled the new debug enabled
+	 */
 	public void setDebugEnabled(boolean isDebugEnabled) {
 		this.isDebugEnabled = isDebugEnabled;
 	}

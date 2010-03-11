@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.dao.database.ibatis.codingscheme;
 
 import java.sql.ResultSet;
@@ -25,12 +43,23 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * The Class IbatisCodingSchemeDaoTest.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 @Transactional
 public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 
+	/** The ibatis coding scheme dao. */
 	@Resource
 	private IbatisCodingSchemeDao ibatisCodingSchemeDao;
 
+	/**
+	 * Test insert coding scheme.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testInsertCodingScheme() throws SQLException{
@@ -119,6 +148,11 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 	
+	/**
+	 * Test insert uri map.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testInsertURIMap() throws SQLException{
@@ -156,6 +190,11 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 	
+	/**
+	 * Test insert coding scheme source.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testInsertCodingSchemeSource() throws SQLException{
@@ -189,6 +228,11 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 	
+	/**
+	 * Test insert coding scheme local name.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testInsertCodingSchemeLocalName() throws SQLException{
@@ -217,6 +261,11 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 	
+	/**
+	 * Test get coding scheme entry state.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testGetCodingSchemeEntryState() throws SQLException{
@@ -243,6 +292,11 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertNotNull(returnedCs.getEntryState());	
 	}
 	
+	/**
+	 * Test insert mappings.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testInsertMappings() throws SQLException{
@@ -285,6 +339,11 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertNotNull(returnedCs.getMappings());	
 	}
 	
+	/**
+	 * Test get coding scheme local name.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testGetCodingSchemeLocalName() throws SQLException{
@@ -309,6 +368,11 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals(returnedCs.getLocalName(0), "localName");
 	}
 	
+	/**
+	 * Test get coding scheme multiple local names.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testGetCodingSchemeMultipleLocalNames() throws SQLException{
@@ -334,6 +398,11 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertTrue(ArrayUtils.contains(returnedCs.getLocalName(), "localName2"));
 	}
 
+	/**
+	 * Test get coding scheme source.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testGetCodingSchemeSource() throws SQLException{
@@ -375,6 +444,11 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals(2, returnedCs.getSourceCount());
 	}
 	
+	/**
+	 * Test get coding scheme by name and version.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testGetCodingSchemeByNameAndVersion() throws SQLException{
@@ -397,6 +471,11 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertNotNull(returnedCs);
 	}
 	
+	/**
+	 * Test get coding scheme id by uri and version.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testGetCodingSchemeIdByUriAndVersion() throws SQLException{
@@ -419,6 +498,11 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertNotNull(id);
 	}
 	
+	/**
+	 * Test get coding scheme id by name and version.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testGetCodingSchemeIdByNameAndVersion() throws SQLException{
@@ -441,6 +525,11 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertNotNull(id);
 	}
 	
+	/**
+	 * Test get coding scheme summary by uri and version.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testGetCodingSchemeSummaryByUriAndVersion() throws SQLException{
@@ -471,6 +560,11 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals("description", summary.getCodingSchemeDescription().getContent());
 	}
 	
+	/**
+	 * Test update coding scheme by id.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
 	@Test
 	@Transactional
 	public void testUpdateCodingSchemeById() throws SQLException {
@@ -496,6 +590,9 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals(11111l, postUpdateConcepts);
 	}
 	
+	/**
+	 * Test distinct property names.
+	 */
 	@Test
 	@Transactional
 	public void testDistinctPropertyNames() {
@@ -521,6 +618,9 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertTrue(pnames.contains("pname2"));
 	}
 	
+	/**
+	 * Test distinct entity types.
+	 */
 	@Test
 	@Transactional
 	public void testDistinctEntityTypes() {
@@ -549,6 +649,9 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertTrue(etypes.contains("etype2"));
 	}
 	
+	/**
+	 * Test distinct namespaces.
+	 */
 	@Test
 	@Transactional
 	public void testDistinctNamespaces() {
@@ -577,6 +680,9 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertTrue(etypes.contains("ens2"));
 	}
 	
+	/**
+	 * Test distinct formats.
+	 */
 	@Test
 	@Transactional
 	public void testDistinctFormats() {
@@ -605,6 +711,9 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertTrue(formats.contains("format2"));
 	}
 	
+	/**
+	 * Test distinct languages.
+	 */
 	@Test
 	@Transactional
 	public void testDistinctLanguages() {
@@ -631,6 +740,9 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertTrue(langs.contains("en"));
 	}
 	
+	/**
+	 * Test distinct property qualifier types.
+	 */
 	@Test
 	@Transactional
 	public void testDistinctPropertyQualifierTypes() {
@@ -662,6 +774,9 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertTrue(types.contains("type2"));
 	}
 	
+	/**
+	 * Test distinct property qualifier names.
+	 */
 	@Test
 	@Transactional
 	public void testDistinctPropertyQualifierNames() {

@@ -27,9 +27,18 @@ import org.lexevs.system.ResourceManager;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class LocalCodingScheme {
+    
+    /** The coding scheme name. */
     public String codingSchemeName;
+    
+    /** The version. */
     public String version;
 
+    /**
+     * Gets the key.
+     * 
+     * @return the key
+     */
     public String getKey() {
         if (codingSchemeName.indexOf(ResourceManager.codingSchemeVersionSeparator_) == -1) {
             // if it is just a codingSchemeName - no version information
@@ -43,6 +52,11 @@ public class LocalCodingScheme {
         }
     }
 
+    /**
+     * Gets the coding scheme name without version.
+     * 
+     * @return the coding scheme name without version
+     */
     public String getCodingSchemeNameWithoutVersion() {
         if (codingSchemeName.indexOf(ResourceManager.codingSchemeVersionSeparator_) == -1) {
             return codingSchemeName;
@@ -52,6 +66,14 @@ public class LocalCodingScheme {
         }
     }
     
+    /**
+     * Gets the local coding scheme.
+     * 
+     * @param codingSchemeName the coding scheme name
+     * @param version the version
+     * 
+     * @return the local coding scheme
+     */
     public static LocalCodingScheme getLocalCodingScheme(String codingSchemeName, String version) {
     	LocalCodingScheme lcs = new LocalCodingScheme();
     	lcs.codingSchemeName = codingSchemeName;

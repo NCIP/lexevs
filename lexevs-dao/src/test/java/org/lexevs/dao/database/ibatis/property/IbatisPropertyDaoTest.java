@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.dao.database.ibatis.property;
 
 import java.sql.ResultSet;
@@ -24,16 +42,26 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * The Class IbatisPropertyDaoTest.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 @TransactionConfiguration(transactionManager="transactionManager", defaultRollback=false)
 @Transactional
 public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 
+	/** The ibatis property dao. */
 	@Autowired
 	private IbatisPropertyDao ibatisPropertyDao;
 	
+	/** The ibatis entity dao. */
 	@Autowired
 	private IbatisEntityDao ibatisEntityDao;
 
+	/**
+	 * Insert presentation.
+	 */
 	@Test
 	public void insertPresentation(){
 		final Timestamp effectiveDate = new Timestamp(1l);
@@ -117,6 +145,9 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 	
+	/**
+	 * Insert generic property.
+	 */
 	@Test
 	public void insertGenericProperty(){
 		final Timestamp effectiveDate = new Timestamp(1l);
@@ -194,6 +225,9 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 	
+	/**
+	 * Insert property qualifier.
+	 */
 	@Test
 	public void insertPropertyQualifier(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
@@ -232,6 +266,9 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 	
+	/**
+	 * Insert property source.
+	 */
 	@Test
 	public void insertPropertySource(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
@@ -269,6 +306,9 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 	
+	/**
+	 * Insert property usage context.
+	 */
 	@Test
 	public void insertPropertyUsageContext(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
@@ -303,6 +343,9 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 	
+	/**
+	 * Insert property link.
+	 */
 	@Test
 	public void insertPropertyLink(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
@@ -345,6 +388,11 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 
+	/**
+	 * Gets the property by parent.
+	 * 
+	 * @return the property by parent
+	 */
 	@Test
 	public void getPropertyByParent(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
@@ -362,6 +410,11 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals(1, props.size());
 	}
 	
+	/**
+	 * Gets the propert id.
+	 * 
+	 * @return the propert id
+	 */
 	@Test
 	public void getPropertId(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
@@ -379,6 +432,11 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals("pguid", id);
 	}
 	
+	/**
+	 * Gets the presentation property by parent.
+	 * 
+	 * @return the presentation property by parent
+	 */
 	@Test
 	public void getPresentationPropertyByParent(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
@@ -398,6 +456,9 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		assertTrue(props.get(0) instanceof Presentation);
 	}
 
+	/**
+	 * Delete all entity properties of coding scheme.
+	 */
 	@Test
 	public void deleteAllEntityPropertiesOfCodingScheme(){
 

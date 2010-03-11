@@ -76,27 +76,43 @@ import org.lexevs.system.utility.MyClassLoader;
  */
 @Deprecated
 public class ResourceManager implements SystemResourceService {
+    
+    /** The resource manager_. */
     private static ResourceManager resourceManager_;
+    
+    /** The system vars_. */
     private SystemVariables systemVars_;
+    
+    /** The registry_. */
     private XmlRegistry registry_;
+    
+    /** The data source. */
     private DataSource dataSource;
+    
+    /** The database type. */
     private DatabaseType databaseType;
 
+    /** The logger_. */
     private LgLoggerIF logger_;
 
+    /** The Constant codingSchemeVersionSeparator_. */
     public static final String codingSchemeVersionSeparator_ = "[:]";
 
     // This maps internal coding scheme names / version to the serverId that
     // contains them.
+    /** The coding scheme to server map_. */
     private Hashtable<String, String> codingSchemeToServerMap_;
     // this maps internal coding scheme names / version to the indexId that
     // contains them.
+    /** The coding scheme to index map_. */
     private Hashtable<String, String> codingSchemeToIndexMap_;
 
     // this maps history URNs to the SQLInterface object that acceesses them.
+    /** The history sql server interfaces_. */
     private Hashtable<String, SQLHistoryInterface> historySqlServerInterfaces_;
 
     // this maps serverId's to the SQLInterface object that acceesses them.
+    /** The sql server interfaces_. */
     private Hashtable<String, SQLInterface> sqlServerInterfaces_;
 
     // This maps low level jdbc connection information to the connection pool
@@ -107,6 +123,7 @@ public class ResourceManager implements SystemResourceService {
     //private SQLInterfaceBase sib;
 
     // this maps indexId's to the IndexInterface that accesses them.
+    /** The index interfaces_. */
     private Hashtable<String, IndexInterface> indexInterfaces_;
 
     // This maps all available coding scheme "localNames" to the internal coding
@@ -114,29 +131,42 @@ public class ResourceManager implements SystemResourceService {
     // local names key into another hashtable, from there, the key is the
     // version. the value in the
     // second hashtable is the internal coding scheme name.
+    /** The coding scheme local names to internal name map_. */
     private Hashtable<String, Hashtable<String, String>> codingSchemeLocalNamesToInternalNameMap_;
 
     // This maps internal coding scheme names to their UID.
+    /** The internal coding scheme name uid map_. */
     private Hashtable<String, String> internalCodingSchemeNameUIDMap_;
 
     // this maps SupportedCodingScheme URN's (for relations) to the
     // codingschemeNames that are
     // used in the relations (on a per codingScheme basis)
+    /** The supported coding scheme to internal map_. */
     private Hashtable<String, String> supportedCodingSchemeToInternalMap_;
 
 
     // A cache to use for values that are frequently used. Automatically throws
     // away oldest unused items.
+    /** The cache_. */
     private Map cache_;
 
     // This thread handles future deactivations
+    /** The deactivator thread_. */
     private Thread deactivatorThread_;
+    
+    /** The fdt_. */
     private FutureDeactivatorThread fdt_;
 
     // Properties object that I was launched with (need to keep incase reinit is
     // called)
+    /** The props_. */
     private static Properties props_;
 
+    /**
+     * Instance.
+     * 
+     * @return the resource manager
+     */
     public static ResourceManager instance() {
         return LexEvsServiceLocator.getInstance().getResourceManager();
     }
@@ -144,6 +174,9 @@ public class ResourceManager implements SystemResourceService {
     /*
      * This method is called if a startup completely fails, so that you can get
      * more debugging info.
+     */
+    /**
+     * Dump log queue.
      */
     public static void dumpLogQueue() {
         System.err.println("SystemResourceService - calling dump log queue.");
@@ -160,6 +193,8 @@ public class ResourceManager implements SystemResourceService {
      * 
      * This method is also used by JUnit tests, and some GUI tools to
      * reconfigure the LexBIG instance with a new configuration.
+     * 
+     * @param props the props
      */
     public static void reInit(Properties props) {
 
@@ -191,6 +226,11 @@ public class ResourceManager implements SystemResourceService {
     }
 
 
+    /**
+     * Inits the.
+     * 
+     * @throws Exception the exception
+     */
     private void init() throws Exception {
         cache_ = Collections.synchronizedMap(new LRUMap(systemVars_.getCacheSize()));  
         
@@ -277,6 +317,9 @@ public class ResourceManager implements SystemResourceService {
     }
 
 
+    /**
+     * Read histories.
+     */
     public void readHistories() {
         Hashtable<String, SQLHistoryInterface> temp = new Hashtable<String, SQLHistoryInterface>();
         logger_.debug("Initializing available history services");
@@ -292,6 +335,12 @@ public class ResourceManager implements SystemResourceService {
         historySqlServerInterfaces_ = temp;
     }
 
+    /**
+     * Reread auto load indexes.
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws UnexpectedInternalError the unexpected internal error
+     */
     public void rereadAutoLoadIndexes() throws LBInvocationException, UnexpectedInternalError {
         // This wont handle removes - but does handle additions.
         IndexInterface is = indexInterfaces_.get(getSystemVariables().getAutoLoadIndexLocation());
@@ -307,8 +356,8 @@ public class ResourceManager implements SystemResourceService {
      * We add the alias to the codingSchemeLocalNamesToInternalNameMap_
      * hashtable.
      * 
-     * @param alias
-     * @param lcs
+     * @param alias the alias
+     * @param lcs the lcs
      */
     private void addToInternalNameMap(String alias, LocalCodingScheme lcs) {
         Hashtable<String, String> temp = codingSchemeLocalNamesToInternalNameMap_.get(alias);
@@ -319,6 +368,13 @@ public class ResourceManager implements SystemResourceService {
         codingSchemeLocalNamesToInternalNameMap_.put(alias, temp);
     }
 
+    /**
+     * Read terminologies from server.
+     * 
+     * @param server the server
+     * 
+     * @return the absolute coding scheme version reference[]
+     */
     public AbsoluteCodingSchemeVersionReference[] readTerminologiesFromServer(SQLConnectionInfo server) {
         PreparedStatement getCodingSchemes = null;
         PreparedStatement getLocalNames = null;
@@ -439,14 +495,29 @@ public class ResourceManager implements SystemResourceService {
         return foundSchemes.toArray(new AbsoluteCodingSchemeVersionReference[foundSchemes.size()]);
     }
 
+    /**
+     * Gets the system variables.
+     * 
+     * @return the system variables
+     */
     public SystemVariables getSystemVariables() {
         return systemVars_;
     }
 
+    /**
+     * Gets the logger.
+     * 
+     * @return the logger
+     */
     public LgLoggerIF getLogger() {
         return logger_;
     }
 
+    /**
+     * Gets the cache.
+     * 
+     * @return the cache
+     */
     public Map getCache() {
         return cache_;
     }
@@ -454,6 +525,10 @@ public class ResourceManager implements SystemResourceService {
     /**
      * Get the connection information to use for loading a new db. This creates
      * a new database.
+     * 
+     * @return the SQL connection info for load
+     * 
+     * @throws LBInvocationException the LB invocation exception
      */
     public SQLConnectionInfo getSQLConnectionInfoForLoad() throws LBInvocationException {
         try {
@@ -531,6 +606,10 @@ public class ResourceManager implements SystemResourceService {
      * Get the connection information to use for loading a new history file.
      * This creates a new database if we are not in single db mode, otherwise,
      * it just sets up a new prefix for table names.
+     * 
+     * @return the SQL connection info for history load
+     * 
+     * @throws LBInvocationException the LB invocation exception
      */
     public SQLConnectionInfo getSQLConnectionInfoForHistoryLoad() throws LBInvocationException {
         try {
@@ -594,6 +673,16 @@ public class ResourceManager implements SystemResourceService {
         }
     }
 
+    /**
+     * Gets the sQL interface.
+     * 
+     * @param internalCodingSchemeName the internal coding scheme name
+     * @param internalVersionString the internal version string
+     * 
+     * @return the sQL interface
+     * 
+     * @throws MissingResourceException the missing resource exception
+     */
     public SQLInterface getSQLInterface(String internalCodingSchemeName, String internalVersionString)
             throws MissingResourceException {
         logger_.debug("Returning SQLInterface for " + internalCodingSchemeName + " " + internalVersionString);
@@ -610,6 +699,9 @@ public class ResourceManager implements SystemResourceService {
         return sqlServerInterfaces_.get(serverKey);
     }
 
+    /* (non-Javadoc)
+     * @see org.lexevs.system.service.SystemResourceService#getInternalCodingSchemeNameForUserCodingSchemeName(java.lang.String, java.lang.String)
+     */
     public String getInternalCodingSchemeNameForUserCodingSchemeName(String codingSchemeName, String version)
             throws LBParameterException {
         if (codingSchemeName == null || codingSchemeName.length() == 0) {
@@ -636,6 +728,14 @@ public class ResourceManager implements SystemResourceService {
         return result;
     }
 
+    /**
+     * Gets the external coding scheme name for user coding scheme name or id.
+     * 
+     * @param codingScheme the coding scheme
+     * @param version the version
+     * 
+     * @return the external coding scheme name for user coding scheme name or id
+     */
     public String getExternalCodingSchemeNameForUserCodingSchemeNameOrId(String codingScheme, String version)
 
     {
@@ -656,9 +756,13 @@ public class ResourceManager implements SystemResourceService {
      * codingSchemeName that is used in the database as a table key in the
      * associations.
      * 
-     * @param urn
-     * @return
-     * @throws MissingResourceException
+     * @param supportedCodingSchemeNameOrUrn the supported coding scheme name or urn
+     * @param internalCodingSchemeName the internal coding scheme name
+     * @param throwError the throw error
+     * 
+     * @return the relationship coding scheme name for ur nor name
+     * 
+     * @throws MissingResourceException the missing resource exception
      */
     public String getRelationshipCodingSchemeNameForURNorName(String supportedCodingSchemeNameOrUrn,
             String internalCodingSchemeName, boolean throwError) throws MissingResourceException {
@@ -690,6 +794,9 @@ public class ResourceManager implements SystemResourceService {
         return result;
     }
 
+    /* (non-Javadoc)
+     * @see org.lexevs.system.service.SystemResourceService#getInternalVersionStringForTag(java.lang.String, java.lang.String)
+     */
     public String getInternalVersionStringForTag(String externalCodeSystemName, String tag) throws LBParameterException {
         if (externalCodeSystemName == null || externalCodeSystemName.length() == 0) {
             throw new LBParameterException("The parameter is required", SQLTableConstants.TBLCOL_CODINGSCHEMENAME);
@@ -765,6 +872,16 @@ public class ResourceManager implements SystemResourceService {
         return version;
     }
 
+    /**
+     * Gets the index interface.
+     * 
+     * @param internalCodingSchemeName the internal coding scheme name
+     * @param internalVersionString the internal version string
+     * 
+     * @return the index interface
+     * 
+     * @throws MissingResourceException the missing resource exception
+     */
     public IndexInterface getIndexInterface(String internalCodingSchemeName, String internalVersionString)
             throws MissingResourceException {
         logger_.debug("Returning index interface for " + internalCodingSchemeName + " " + internalVersionString);
@@ -781,12 +898,22 @@ public class ResourceManager implements SystemResourceService {
         return indexInterfaces_.get(indexKey);
     }
 
+    /**
+     * Gets the meta data index interface.
+     * 
+     * @return the meta data index interface
+     */
     public IndexInterface getMetaDataIndexInterface() {
         logger_.debug("Returning MetaData index interface");
         // metadata index is always in the autoload index location
         return indexInterfaces_.get(systemVars_.getAutoLoadIndexLocation());
     }
 
+    /**
+     * Gets the all sql interfaces.
+     * 
+     * @return the all sql interfaces
+     */
     public SQLInterface[] getAllSQLInterfaces() {
         ArrayList<SQLInterface> temp = new ArrayList<SQLInterface>();
 
@@ -798,6 +925,15 @@ public class ResourceManager implements SystemResourceService {
         return temp.toArray(new SQLInterface[temp.size()]);
     }
 
+    /**
+     * Gets the uRN for internal coding scheme name.
+     * 
+     * @param internalCodingSchemeName the internal coding scheme name
+     * 
+     * @return the uRN for internal coding scheme name
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public String getURNForInternalCodingSchemeName(String internalCodingSchemeName) throws LBParameterException {
         String result = internalCodingSchemeNameUIDMap_.get(internalCodingSchemeName);
         if (result == null) {
@@ -807,6 +943,15 @@ public class ResourceManager implements SystemResourceService {
         return result;
     }
 
+    /**
+     * Gets the uRN for external coding scheme name.
+     * 
+     * @param externalCodingSchemeName the external coding scheme name
+     * 
+     * @return the uRN for external coding scheme name
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public String getURNForExternalCodingSchemeName(String externalCodingSchemeName) throws LBParameterException {
         String version = getInternalVersionStringForTag(externalCodingSchemeName, null);
         String internalName = getInternalCodingSchemeNameForUserCodingSchemeName(externalCodingSchemeName, version);
@@ -814,6 +959,15 @@ public class ResourceManager implements SystemResourceService {
         return getURNForInternalCodingSchemeName(internalName);
     }
 
+    /**
+     * Gets the sQL interface for history.
+     * 
+     * @param codingSchemeURN the coding scheme urn
+     * 
+     * @return the sQL interface for history
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public SQLHistoryInterface getSQLInterfaceForHistory(String codingSchemeURN) throws LBParameterException {
         SQLHistoryInterface result = historySqlServerInterfaces_.get(codingSchemeURN);
         if (result == null) {
@@ -824,12 +978,19 @@ public class ResourceManager implements SystemResourceService {
     }
 
     /**
+     * Gets the registry.
+     * 
      * @return the registry
      */
     public XmlRegistry getRegistry() {
         return this.registry_;
     }
 
+    /**
+     * Removes the internal map.
+     * 
+     * @param lcs the lcs
+     */
     private void removeInternalMap(LocalCodingScheme lcs) {
 
         Enumeration<String> e = codingSchemeLocalNamesToInternalNameMap_.keys();
@@ -848,6 +1009,14 @@ public class ResourceManager implements SystemResourceService {
 
     }
 
+    /**
+     * Removes the code system.
+     * 
+     * @param codingSchemeReference the coding scheme reference
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     public void removeCodeSystem(AbsoluteCodingSchemeVersionReference codingSchemeReference)
             throws LBInvocationException, LBParameterException {
         try {
@@ -973,6 +1142,14 @@ public class ResourceManager implements SystemResourceService {
 
     }
 
+    /**
+     * Removes the history service.
+     * 
+     * @param urn the urn
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     public void removeHistoryService(String urn) throws LBInvocationException, LBParameterException {
         try {
             // garbage collect to ensure any unreferenced ResourceManagers get
@@ -1028,6 +1205,15 @@ public class ResourceManager implements SystemResourceService {
         }
     }
 
+    /**
+     * Deactivate.
+     * 
+     * @param codingScheme the coding scheme
+     * @param date the date
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     public void deactivate(AbsoluteCodingSchemeVersionReference codingScheme, Date date) throws LBInvocationException,
             LBParameterException {
         XmlRegistry r = getRegistry();
@@ -1045,6 +1231,14 @@ public class ResourceManager implements SystemResourceService {
         }
     }
 
+    /**
+     * Sets the pending status.
+     * 
+     * @param codingScheme the new pending status
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     public void setPendingStatus(AbsoluteCodingSchemeVersionReference codingScheme) throws LBInvocationException,
             LBParameterException {
         XmlRegistry r = getRegistry();
@@ -1056,6 +1250,15 @@ public class ResourceManager implements SystemResourceService {
         r.setStatusPending(entry);
     }
 
+    /**
+     * Update tag.
+     * 
+     * @param codingScheme the coding scheme
+     * @param newTag the new tag
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     public void updateTag(AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
             throws LBInvocationException, LBParameterException {
         getRegistry().updateTag(codingScheme, newTag);
@@ -1063,6 +1266,15 @@ public class ResourceManager implements SystemResourceService {
                         // clear the entire cache because of this.
     }
 
+    /**
+     * Update version.
+     * 
+     * @param codingScheme the coding scheme
+     * @param newVersion the new version
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws LBParameterException the LB parameter exception
+     */
     public void updateVersion(AbsoluteCodingSchemeVersionReference codingScheme, String newVersion)
             throws LBInvocationException, LBParameterException {
         getRegistry().updateVersion(codingScheme, newVersion);
@@ -1070,9 +1282,19 @@ public class ResourceManager implements SystemResourceService {
                         // clear the entire cache because of this.
     }
 
+    /**
+     * The Class FutureDeactivatorThread.
+     * 
+     * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+     */
     public class FutureDeactivatorThread implements Runnable {
+        
+        /** The continue running. */
         boolean continueRunning = true;
 
+        /* (non-Javadoc)
+         * @see java.lang.Runnable#run()
+         */
         public void run() {
             // first number doesn't really matter - want the loop to run once so
             // we find out
@@ -1155,43 +1377,94 @@ public class ResourceManager implements SystemResourceService {
     }
     */
 
-    private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbName){
+    /**
+ * Construct jdbc url for deprecated multi db mode.
+ * 
+ * @param url the url
+ * @param dbName the db name
+ * 
+ * @return the string
+ */
+private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbName){
         return StringUtils.remove(url, dbName);
     }
 
 
+	/**
+	 * Sets the system variables.
+	 * 
+	 * @param systemVars the new system variables
+	 */
 	public void setSystemVariables(SystemVariables systemVars) {
 		systemVars_ = systemVars;
 	}
 
+	/**
+	 * Sets the logger.
+	 * 
+	 * @param logger the new logger
+	 */
 	public void setLogger(LgLoggerIF logger) {
 		logger_ = logger;
 	}
 
+	/**
+	 * Gets the data source.
+	 * 
+	 * @return the data source
+	 */
 	public DataSource getDataSource() {
 		return dataSource;
 	}
 
+	/**
+	 * Sets the data source.
+	 * 
+	 * @param dataSource the new data source
+	 */
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 
+	/**
+	 * Gets the database type.
+	 * 
+	 * @return the database type
+	 */
 	public DatabaseType getDatabaseType() {
 		return databaseType;
 	}
 
+	/**
+	 * Sets the database type.
+	 * 
+	 * @param databaseType the new database type
+	 */
 	public void setDatabaseType(DatabaseType databaseType) {
 		this.databaseType = databaseType;
 	}
 
+	/**
+	 * Gets the xml registry.
+	 * 
+	 * @return the xml registry
+	 */
 	public XmlRegistry getXmlRegistry() {
 		return registry_;
 	}
 
+	/**
+	 * Sets the xml registry.
+	 * 
+	 * @param registry the new xml registry
+	 */
 	public void setXmlRegistry(XmlRegistry registry) {
 		registry_ = registry;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#containsCodingSchemeResource(java.lang.String, java.lang.String)
+	 */
 	public boolean containsCodingSchemeResource(String uri, String version)
 			throws LBParameterException {
 		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
@@ -1200,23 +1473,38 @@ public class ResourceManager implements SystemResourceService {
 		return this.getRegistry().containsCodingSchemeEntry(ref);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#containsNonCodingSchemeResource(java.lang.String)
+	 */
 	public boolean containsNonCodingSchemeResource(String uri)
 			throws LBParameterException {
 		return this.getRegistry().containsNonCodingSchemeEntry(uri);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#createNewTablesForLoad()
+	 */
 	public String createNewTablesForLoad() {
 		throw new UnsupportedOperationException("Cannot load into Deprected LexEVS Database Schema.");
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#getClassLoader()
+	 */
 	public MyClassLoader getClassLoader() {
 		throw new UnsupportedOperationException("Please get System Classloader from a non-deprecated SystemResourceService.");
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#getUriForUserCodingSchemeName(java.lang.String)
+	 */
 	public String getUriForUserCodingSchemeName(String codingSchemeName) throws LBParameterException {
 		return this.getURNForExternalCodingSchemeName(codingSchemeName);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#removeCodingSchemeResourceFromSystem(java.lang.String, java.lang.String)
+	 */
 	public void removeCodingSchemeResourceFromSystem(String uri, String version)
 			throws LBParameterException {
 		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
@@ -1229,6 +1517,9 @@ public class ResourceManager implements SystemResourceService {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#removeNonCodingSchemeResourceFromSystem(java.lang.String)
+	 */
 	public void removeNonCodingSchemeResourceFromSystem(String uri)
 			throws LBParameterException {
 		try {
@@ -1238,6 +1529,14 @@ public class ResourceManager implements SystemResourceService {
 		}
 	}
 
+	/**
+	 * Update coding scheme entry tag.
+	 * 
+	 * @param codingScheme the coding scheme
+	 * @param newTag the new tag
+	 * 
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	public void updateCodingSchemeEntryTag(
 			AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
 			throws LBParameterException {
@@ -1248,6 +1547,9 @@ public class ResourceManager implements SystemResourceService {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#updateCodingSchemeResourceStatus(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus)
+	 */
 	public void updateCodingSchemeResourceStatus(
 			AbsoluteCodingSchemeVersionReference codingScheme,
 			CodingSchemeVersionStatus status) throws LBParameterException {
@@ -1262,27 +1564,47 @@ public class ResourceManager implements SystemResourceService {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#updateCodingSchemeResourceTag(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.lang.String)
+	 */
 	public void updateCodingSchemeResourceTag(
 			AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
 			throws LBParameterException {
 		this.updateCodingSchemeEntryTag(codingScheme, newTag);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#updateNonCodingSchemeResourceStatus(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus)
+	 */
 	public void updateNonCodingSchemeResourceStatus(String uri,
 			CodingSchemeVersionStatus status) throws LBParameterException {
 		throw new UnsupportedOperationException("Cannot update the status of a non Coding Scheme Resource.");
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#updateNonCodingSchemeResourceTag(java.lang.String, java.lang.String)
+	 */
 	public void updateNonCodingSchemeResourceTag(String uri, String newTag)
 			throws LBParameterException {
 		throw new UnsupportedOperationException("Cannot update the tag of a non Coding Scheme Resource.");
 	}
 
+	/**
+	 * Adds the coding scheme resource from system.
+	 * 
+	 * @param uri the uri
+	 * @param version the version
+	 * 
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	public void addCodingSchemeResourceFromSystem(String uri, String version)
 			throws LBParameterException {
 		throw new UnsupportedOperationException("Cannot add to Deprecated ResourceManager.");
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#addCodingSchemeResourceToSystem(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void addCodingSchemeResourceToSystem(String uri, String version)
 			throws LBParameterException {
@@ -1290,6 +1612,9 @@ public class ResourceManager implements SystemResourceService {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.system.service.SystemResourceService#addCodingSchemeResourceToSystem(org.LexGrid.codingSchemes.CodingScheme)
+	 */
 	@Override
 	public void addCodingSchemeResourceToSystem(CodingScheme codingScheme)
 			throws LBParameterException {

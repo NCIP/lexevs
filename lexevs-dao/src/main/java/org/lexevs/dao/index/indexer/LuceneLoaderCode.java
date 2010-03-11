@@ -44,44 +44,97 @@ import org.apache.lucene.analysis.Analyzer;
  */
 public abstract class LuceneLoaderCode {
 	
+	/** The lex grid white space index set. */
 	public static char[] lexGridWhiteSpaceIndexSet = new char[] { '-', ';', '(', ')', '{', '}', '[', ']', '<', '>', '|' };
 
+    /** The indexer service_. */
     protected IndexerService indexerService_;
+    
+    /** The simple index name_. */
     protected String simpleIndexName_;
     // protected String normIndexName_;
+    /** The use compound file_. */
     protected boolean useCompoundFile_ = false;
+    
+    /** The generator_. */
     private DocumentFromStringsGenerator generator_;
+    
+    /** The norm enabled_. */
     protected boolean normEnabled_ = true;
+    
+    /** The double metaphone enabled_. */
     protected boolean doubleMetaphoneEnabled_ = true;
+    
+    /** The stemming enabled_. */
     protected boolean stemmingEnabled_ = true;
+    
+    /** The logger. */
     protected final Logger logger = Logger.getLogger("CTS.loader");
+    
+    /** The Constant NORM_PREFIX. */
     protected static final String NORM_PREFIX = "norm_";
+    
+    /** The Constant DOUBLE_METAPHONE_PREFIX. */
     protected static final String DOUBLE_METAPHONE_PREFIX = "dm_";
+    
+    /** The Constant STEMMING_PREFIX. */
     protected static final String STEMMING_PREFIX = "stem_";
+    
+    /** The Constant LITERAL_PREFIX. */
     protected static final String LITERAL_PREFIX = "literal_";
+    
+    /** The Constant REVERSE_PREFIX. */
     protected static final String REVERSE_PREFIX = "reverse_";
+    
+    /** The Constant LITERAL_AND_REVERSE_PREFIX. */
     public static final String LITERAL_AND_REVERSE_PREFIX = LITERAL_PREFIX + REVERSE_PREFIX;
     
+    /** The PROPERT y_ valu e_ field. */
     public static String PROPERTY_VALUE_FIELD = "propertyValue";
     
+    /** The CODIN g_ schem e_ nam e_ field. */
     public static String CODING_SCHEME_NAME_FIELD = "codingSchemeName";
+    
+    /** The CODIN g_ schem e_ i d_ field. */
     public static String CODING_SCHEME_ID_FIELD = "codingSchemeId";
+    
+    /** The CODIN g_ schem e_ ur i_ versio n_ ke y_ field. */
     public static String CODING_SCHEME_URI_VERSION_KEY_FIELD = "csUriVersionKey";
     
+    /** The UNTOKENIZE d_ lowercas e_ propert y_ valu e_ field. */
     public static String UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD = "untokenizedLCPropertyValue";
     
+    /** The LITERA l_ propert y_ valu e_ field. */
     public static String LITERAL_PROPERTY_VALUE_FIELD = LITERAL_PREFIX + PROPERTY_VALUE_FIELD;
+    
+    /** The REVERS e_ propert y_ valu e_ field. */
     public static String REVERSE_PROPERTY_VALUE_FIELD = REVERSE_PREFIX + PROPERTY_VALUE_FIELD;
+    
+    /** The NOR m_ propert y_ valu e_ field. */
     public static String NORM_PROPERTY_VALUE_FIELD = NORM_PREFIX + PROPERTY_VALUE_FIELD;
+    
+    /** The STEMMIN g_ propert y_ valu e_ field. */
     public static String STEMMING_PROPERTY_VALUE_FIELD = STEMMING_PREFIX + PROPERTY_VALUE_FIELD;
+    
+    /** The DOUBL e_ metaphon e_ propert y_ valu e_ field. */
     public static String DOUBLE_METAPHONE_PROPERTY_VALUE_FIELD = DOUBLE_METAPHONE_PREFIX + PROPERTY_VALUE_FIELD;
+    
+    /** The LITERA l_ an d_ revers e_ propert y_ valu e_ field. */
     public static String LITERAL_AND_REVERSE_PROPERTY_VALUE_FIELD = LITERAL_AND_REVERSE_PREFIX + PROPERTY_VALUE_FIELD;
 
+    /** The create boundry documents. */
     protected boolean createBoundryDocuments = true;
+    
+    /** The analyzer_. */
     protected PerFieldAnalyzerWrapper analyzer_ = null;
 
+    /** The Constant STRING_TOKEINZER_TOKEN. */
     public static final String STRING_TOKEINZER_TOKEN = "<:>";
+    
+    /** The Constant QUALIFIER_NAME_VALUE_SPLIT_TOKEN. */
     public static final String QUALIFIER_NAME_VALUE_SPLIT_TOKEN = ":";
+    
+    /** The store lex big minimum. */
     public static boolean storeLexBIGMinimum = false;
 
     // by default, the index stores a copy of most of the information. Switching
@@ -92,9 +145,17 @@ public abstract class LuceneLoaderCode {
 
     // TODO add a GUI option for the codeBoundry stuff.
     
+    /** The literal analyzer. */
     public static Analyzer literalAnalyzer = new WhiteSpaceLowerCaseAnalyzer(new String[] {},
             new char[]{}, new char[]{}); 
 
+    /**
+     * Open indexes clear existing.
+     * 
+     * @param codingSchemes the coding schemes
+     * 
+     * @throws Exception the exception
+     */
     protected void openIndexesClearExisting(String[] codingSchemes) throws Exception {
         indexerService_.forceUnlockIndex(simpleIndexName_);
         indexerService_.openBatchRemover(simpleIndexName_);
@@ -108,6 +169,11 @@ public abstract class LuceneLoaderCode {
         openIndexes();
     }
 
+    /**
+     * Open indexes.
+     * 
+     * @throws Exception the exception
+     */
     protected void openIndexes() throws Exception {
         indexerService_.forceUnlockIndex(simpleIndexName_);
         indexerService_.openWriter(simpleIndexName_, false);
@@ -116,11 +182,45 @@ public abstract class LuceneLoaderCode {
         indexerService_.setMergeFactor(simpleIndexName_, 20);
     }
 
+    /**
+     * Close indexes.
+     * 
+     * @throws Exception the exception
+     */
     protected void closeIndexes() throws Exception {
         indexerService_.optimizeIndex(simpleIndexName_);
         indexerService_.closeWriter(simpleIndexName_);
     }
 
+    /**
+     * Adds the entity.
+     * 
+     * @param codingSchemeName the coding scheme name
+     * @param codingSchemeId the coding scheme id
+     * @param codingSchemeVersion the coding scheme version
+     * @param entityId the entity id
+     * @param entityNamespace the entity namespace
+     * @param entityType the entity type
+     * @param entityDescription the entity description
+     * @param propertyType the property type
+     * @param propertyName the property name
+     * @param propertyValue the property value
+     * @param isActive the is active
+     * @param format the format
+     * @param language the language
+     * @param isPreferred the is preferred
+     * @param conceptStatus the concept status
+     * @param propertyId the property id
+     * @param degreeOfFidelity the degree of fidelity
+     * @param matchIfNoContext the match if no context
+     * @param representationalForm the representational form
+     * @param sources the sources
+     * @param usageContexts the usage contexts
+     * @param qualifiers the qualifiers
+     * @param stc the stc
+     * 
+     * @throws Exception the exception
+     */
     protected void addEntity(String codingSchemeName, String codingSchemeId, String codingSchemeVersion, String entityId, String entityNamespace, String entityType,
             String entityDescription, String propertyType, String propertyName, String propertyValue, Boolean isActive,
             String format, String language, Boolean isPreferred, String conceptStatus, String propertyId,
@@ -325,6 +425,16 @@ public abstract class LuceneLoaderCode {
      * queries. A boundry document should be added whenever a new entity id is
      * started.
      */
+    /**
+     * Adds the entity boundry document.
+     * 
+     * @param codingSchemeName the coding scheme name
+     * @param codingSchemeId the coding scheme id
+     * @param codingSchemeVersion the coding scheme version
+     * @param entityId the entity id
+     * 
+     * @throws Exception the exception
+     */
     protected void addEntityBoundryDocument(String codingSchemeName, String codingSchemeId, String codingSchemeVersion, String entityId) throws Exception {
         StringBuffer fields = new StringBuffer();
         generator_.startNewDocument(codingSchemeName + "-" + entityId);
@@ -342,6 +452,11 @@ public abstract class LuceneLoaderCode {
         indexerService_.addDocument(simpleIndexName_, generator_.getDocument(), analyzer_);
     }
 
+    /**
+     * Store.
+     * 
+     * @return true, if successful
+     */
     private boolean store() {
         if (storeLexBIGMinimum) {
             return false;
@@ -350,6 +465,14 @@ public abstract class LuceneLoaderCode {
         }
     }
 
+    /**
+     * Inits the indexes.
+     * 
+     * @param indexName the index name
+     * @param indexLocation the index location
+     * 
+     * @throws InternalErrorException the internal error exception
+     */
     protected void initIndexes(String indexName, String indexLocation) throws InternalErrorException {
         indexerService_ = new IndexerService(indexLocation, false);
         simpleIndexName_ = indexName;
@@ -399,10 +522,20 @@ public abstract class LuceneLoaderCode {
         generator_ = new DocumentFromStringsGenerator();
     }
     
+    /**
+     * Creates the index.
+     */
     protected void createIndex() {
         indexerService_.createIndex(simpleIndexName_, analyzer_);
     }
     
+    /**
+     * Reverse terms in property value.
+     * 
+     * @param propertyValue the property value
+     * 
+     * @return the string
+     */
     public String reverseTermsInPropertyValue(String propertyValue){
         StringBuffer buffer = new StringBuffer();
         String[] terms = propertyValue.split(" ");
@@ -415,14 +548,37 @@ public abstract class LuceneLoaderCode {
         return buffer.toString();
     }
     
+    /**
+     * Creates the coding scheme uri version key.
+     * 
+     * @param uri the uri
+     * @param version the version
+     * 
+     * @return the string
+     */
     public static String createCodingSchemeUriVersionKey(String uri, String version) {
     	return uri + "-" + version;
     }
 
+    /**
+     * The Class Qualifier.
+     * 
+     * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+     */
     protected class Qualifier {
+        
+        /** The qualifier name. */
         String qualifierName;
+        
+        /** The qualifier value. */
         String qualifierValue;
 
+        /**
+         * Instantiates a new qualifier.
+         * 
+         * @param qualifierName the qualifier name
+         * @param qualifierValue the qualifier value
+         */
         public Qualifier(String qualifierName, String qualifierValue) {
             this.qualifierName = qualifierName;
             this.qualifierValue = qualifierValue;

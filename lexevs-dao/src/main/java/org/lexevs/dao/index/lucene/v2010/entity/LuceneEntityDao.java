@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexevs.dao.index.lucene.v2010.entity;
 
 import java.util.ArrayList;
@@ -26,14 +44,25 @@ import edu.mayo.informatics.indexer.lucene.hitcollector.BitSetBestScoreOfEntityH
 import edu.mayo.informatics.indexer.lucene.hitcollector.BitSetFilteringBestScoreOfEntityHitCollector;
 import edu.mayo.informatics.indexer.lucene.hitcollector.HitCollectorMerger;
 
+/**
+ * The Class LuceneEntityDao.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 	
+	/** The supported index version2010. */
 	public static LexEvsIndexFormatVersion supportedIndexVersion2010 = LexEvsIndexFormatVersion.parseStringToVersion("2010");
 	
+	/** The index interface. */
 	private IndexInterface indexInterface;
 	
+	/** The system resource service. */
 	private SystemResourceService systemResourceService;
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.index.access.entity.EntityDao#query(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.util.List, java.util.List)
+	 */
 	public List<ScoreDoc> query(AbsoluteCodingSchemeVersionReference reference, List<? extends Query> combinedQuery, 
             List<? extends Query> bitSetQueries) {
 		try {
@@ -47,6 +76,18 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 		}
 	}
 
+	/**
+	 * Builds the score docs.
+	 * 
+	 * @param internalCodeSystemName the internal code system name
+	 * @param internalVersionString the internal version string
+	 * @param combinedQuery the combined query
+	 * @param bitSetQueries the bit set queries
+	 * 
+	 * @return the list< score doc>
+	 * 
+	 * @throws Exception the exception
+	 */
 	protected List<ScoreDoc> buildScoreDocs(String internalCodeSystemName, String internalVersionString, List<? extends Query> combinedQuery, 
             List<? extends Query> bitSetQueries) throws Exception {
 
@@ -106,6 +147,9 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
         return scoreDocs;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.index.access.entity.EntityDao#getDocumentById(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, int)
+	 */
 	public Document getDocumentById(
 			AbsoluteCodingSchemeVersionReference reference, int documentId) {
 		try {
@@ -120,6 +164,9 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.index.access.entity.EntityDao#getMatchAllDocsQuery(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
+	 */
 	public Query getMatchAllDocsQuery(
 			AbsoluteCodingSchemeVersionReference reference) {
 		return new TermQuery(
@@ -128,6 +175,9 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 								reference.getCodingSchemeVersion())));
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.index.access.entity.EntityDao#deleteDocumentsOfCodingScheme(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
+	 */
 	public void deleteDocumentsOfCodingScheme(
 			AbsoluteCodingSchemeVersionReference reference) {
 		try {
@@ -161,14 +211,31 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 		}
 	}
 	
+	/**
+	 * Sets the index interface.
+	 * 
+	 * @param indexInterface the new index interface
+	 */
 	public void setIndexInterface(IndexInterface indexInterface) {
 		this.indexInterface = indexInterface;
 	}
 
+	/**
+	 * Gets the index interface.
+	 * 
+	 * @return the index interface
+	 */
 	public IndexInterface getIndexInterface() {
 		return indexInterface;
 	}
 
+	/**
+	 * And bit sets.
+	 * 
+	 * @param bitSets the bit sets
+	 * 
+	 * @return the bit set
+	 */
 	private BitSet andBitSets(List<BitSet> bitSets){
 		BitSet totalBitSet = null;
 		for(BitSet bitSet : bitSets){
@@ -181,15 +248,28 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 		return totalBitSet;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.index.access.AbstractBaseIndexDao#doGetSupportedLexEvsIndexFormatVersions()
+	 */
 	@Override
 	public List<LexEvsIndexFormatVersion> doGetSupportedLexEvsIndexFormatVersions() {
 		return DaoUtility.createList(LexEvsIndexFormatVersion.class, supportedIndexVersion2010);
 	}
 	
+	/**
+	 * Sets the system resource service.
+	 * 
+	 * @param systemResourceService the new system resource service
+	 */
 	public void setSystemResourceService(SystemResourceService systemResourceService) {
 		this.systemResourceService = systemResourceService;
 	}
 
+	/**
+	 * Gets the system resource service.
+	 * 
+	 * @return the system resource service
+	 */
 	public SystemResourceService getSystemResourceService() {
 		return systemResourceService;
 	}

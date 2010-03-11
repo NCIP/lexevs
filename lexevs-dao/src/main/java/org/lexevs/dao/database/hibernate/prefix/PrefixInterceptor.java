@@ -32,8 +32,10 @@ import org.lexevs.dao.database.prefix.PrefixResolver;
  */
 public class PrefixInterceptor extends EmptyInterceptor {  
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1940273682945001115L;
 
+	/** The PREFI x_ placeholder. */
 	public static String PREFIX_PLACEHOLDER = DatabaseConstants.PREFIX_PLACEHOLDER;
 	
 	/** The log. */
@@ -42,10 +44,18 @@ public class PrefixInterceptor extends EmptyInterceptor {
 	/** The prefix. */
 	private PrefixResolver prefixResolver;
 	
+	/**
+	 * Instantiates a new prefix interceptor.
+	 */
 	public PrefixInterceptor(){
 		super();
 	}
 	
+	/**
+	 * Instantiates a new prefix interceptor.
+	 * 
+	 * @param prefixResolver the prefix resolver
+	 */
 	public PrefixInterceptor(PrefixResolver prefixResolver){
 		this.prefixResolver = prefixResolver;
 	}
@@ -61,10 +71,20 @@ public class PrefixInterceptor extends EmptyInterceptor {
 	}
 
 
+	/**
+	 * Sets the prefix resolver.
+	 * 
+	 * @param prefixResolver the new prefix resolver
+	 */
 	public void setPrefixResolver(PrefixResolver prefixResolver) {
 		this.prefixResolver = prefixResolver;
 	}
 
+	/**
+	 * Gets the prefix resolver.
+	 * 
+	 * @return the prefix resolver
+	 */
 	public PrefixResolver getPrefixResolver() {
 		return prefixResolver;
 	}

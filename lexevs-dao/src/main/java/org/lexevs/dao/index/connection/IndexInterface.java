@@ -62,19 +62,39 @@ import edu.mayo.informatics.indexer.lucene.LuceneIndexReader;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class IndexInterface {
+    
+    /** The service_. */
     private IndexerService service_;
 
+    /** The index searchers_. */
     private Hashtable<String, SearchServiceInterface> indexSearchers_;
+    
+    /** The index readers_. */
     private Hashtable<String, LuceneIndexReader> indexReaders_;
+    
+    /** The code system to index map_. */
     private Hashtable<String, String> codeSystemToIndexMap_;
+    
+    /** The boundry doc id set map. */
     private HashMap<String, DocIdSet> boundryDocIdSetMap;
 
+    /** The code boundry filter_. */
     private Filter codeBoundryFilter_;
 
+    /**
+     * Gets the logger.
+     * 
+     * @return the logger
+     */
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
     
+    /**
+     * Instantiates a new index interface.
+     * 
+     * @param service the service
+     */
     public IndexInterface(IndexerService service) {
     	this.service_ = service;
     	try {
@@ -84,6 +104,11 @@ public class IndexInterface {
 		} 
     }
 
+    /**
+     * Instantiates a new index interface.
+     * 
+     * @param location the location
+     */
     public IndexInterface(String location) {
         try {
             service_ = new IndexerService(location, false);
@@ -95,6 +120,12 @@ public class IndexInterface {
 
     /*
      * Initialize all of the lucene index reading/searching parts.
+     */
+    /**
+     * Inits the.
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     * @throws UnexpectedInternalError the unexpected internal error
      */
     private void init() throws LBInvocationException, UnexpectedInternalError {
         indexSearchers_ = new Hashtable<String, SearchServiceInterface>();
@@ -110,6 +141,11 @@ public class IndexInterface {
         initCodingSchemes();
     }
 
+    /**
+     * Inits the coding schemes.
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     */
     public void initCodingSchemes() throws LBInvocationException {
         Hashtable<String, String> temp = new Hashtable<String, String>();
 
@@ -165,10 +201,20 @@ public class IndexInterface {
         }
     }
 
+    /**
+     * Gets the code boundry filter.
+     * 
+     * @return the code boundry filter
+     */
     public Filter getCodeBoundryFilter() {
         return codeBoundryFilter_;
     }
 
+    /**
+     * Gets the code system keys.
+     * 
+     * @return the code system keys
+     */
     public ArrayList<String> getCodeSystemKeys() {
         ArrayList<String> keys = new ArrayList<String>();
         Enumeration<String> e = codeSystemToIndexMap_.keys();
@@ -178,6 +224,14 @@ public class IndexInterface {
         return keys;
     }
     
+    /**
+     * Gets the boundary document iterator.
+     * 
+     * @param internalCodeSystemName the internal code system name
+     * @param internalVersionString the internal version string
+     * 
+     * @return the boundary document iterator
+     */
     public DocIdSetIterator getBoundaryDocumentIterator(String internalCodeSystemName, String internalVersionString){
         String indexName = this.mapCodeSystemToIndexName(internalCodeSystemName, internalVersionString);
         
@@ -197,6 +251,14 @@ public class IndexInterface {
 
     /*
      * Get a index reader for a given code system.
+     */
+    /**
+     * Gets the index reader.
+     * 
+     * @param internalCodeSystemName the internal code system name
+     * @param internalVersionString the internal version string
+     * 
+     * @return the index reader
      */
     public LuceneIndexReader getIndexReader(String internalCodeSystemName, String internalVersionString) {
         String indexName = mapCodeSystemToIndexName(internalCodeSystemName, internalVersionString);
@@ -222,6 +284,9 @@ public class IndexInterface {
         }
     }
 
+    /**
+     * Reopen meta data index reader.
+     */
     public void reopenMetaDataIndexReader() {
         // clear out the current reader, it will be reopened when necessary.
         String indexName = SystemVariables.getMetaDataIndexName();
@@ -229,6 +294,11 @@ public class IndexInterface {
         indexSearchers_.remove(indexName);
     }
 
+    /**
+     * Gets the meta data index reader.
+     * 
+     * @return the meta data index reader
+     */
     public LuceneIndexReader getMetaDataIndexReader() {
         String indexName = SystemVariables.getMetaDataIndexName();
         LuceneIndexReader lir = (LuceneIndexReader) indexReaders_.get(indexName);
@@ -250,6 +320,14 @@ public class IndexInterface {
         }
     }
 
+    /**
+     * Reopen index.
+     * 
+     * @param internalCodeSystemName the internal code system name
+     * @param internalVersionString the internal version string
+     * 
+     * @throws LBInvocationException the LB invocation exception
+     */
     public void reopenIndex(String internalCodeSystemName, String internalVersionString) throws LBInvocationException {
         // remove the index searcher, so a new one gets constructed.
         String indexName = mapCodeSystemToIndexName(internalCodeSystemName, internalVersionString);
@@ -277,6 +355,14 @@ public class IndexInterface {
     /*
      * Get an index searcher for a given code system.
      */
+    /**
+     * Gets the searcher.
+     * 
+     * @param internalCodeSystemName the internal code system name
+     * @param internalVersionString the internal version string
+     * 
+     * @return the searcher
+     */
     public SearchServiceInterface getSearcher(String internalCodeSystemName, String internalVersionString){
         String indexName = mapCodeSystemToIndexName(internalCodeSystemName, internalVersionString);
 
@@ -302,6 +388,11 @@ public class IndexInterface {
         }
     }
 
+    /**
+     * Gets the meta data searcher.
+     * 
+     * @return the meta data searcher
+     */
     public SearchServiceInterface getMetaDataSearcher() {
         String indexName = SystemVariables.getMetaDataIndexName();
 
@@ -325,6 +416,14 @@ public class IndexInterface {
         }
     }
 
+    /**
+     * Delete index.
+     * 
+     * @param internalCodeSystemName the internal code system name
+     * @param internalVersionString the internal version string
+     * 
+     * @throws InternalException the internal exception
+     */
     public void deleteIndex(String internalCodeSystemName, String internalVersionString) throws InternalException {
         try {
             LocalCodingScheme lcs = new LocalCodingScheme();
@@ -362,6 +461,14 @@ public class IndexInterface {
         }
     }
 
+    /**
+     * Map code system to index name.
+     * 
+     * @param internalCodeSystemName the internal code system name
+     * @param internalVersionString the internal version string
+     * 
+     * @return the string
+     */
     private String mapCodeSystemToIndexName(String internalCodeSystemName, String internalVersionString){
         LocalCodingScheme lcs = new LocalCodingScheme();
         lcs.codingSchemeName = internalCodeSystemName;
@@ -376,6 +483,11 @@ public class IndexInterface {
         return indexName;
     }
 
+    /**
+     * Gets the meta location.
+     * 
+     * @return the meta location
+     */
     public String getMetaLocation() {
         try {
             return service_.getMetaData().getMetaLocation();
@@ -384,10 +496,23 @@ public class IndexInterface {
         }
     }
 
+    /**
+     * Gets the base indexer service.
+     * 
+     * @return the base indexer service
+     */
     public IndexerService getBaseIndexerService() {
         return service_;
     }
 
+    /**
+     * Gets the index location.
+     * 
+     * @param internalCodeSystemName the internal code system name
+     * @param internalVersionString the internal version string
+     * 
+     * @return the index location
+     */
     public String getIndexLocation(String internalCodeSystemName, String internalVersionString) {
         try {
             String indexName = mapCodeSystemToIndexName(internalCodeSystemName, internalVersionString);
@@ -397,6 +522,9 @@ public class IndexInterface {
         }
     }
 
+    /**
+     * Close.
+     */
     public void close() {
         Enumeration<SearchServiceInterface> ssi = indexSearchers_.elements();
         while (ssi.hasMoreElements()) {
