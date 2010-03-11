@@ -10,10 +10,16 @@ public class DefaultPrefixResolver implements PrefixResolver {
 	
 	private Registry registry;
 	
+	private String historyPrefix = "h_";
+	
 	public String resolveDefaultPrefix() {
 		return systemVariables.getAutoLoadDBPrefix();
 	}
 
+	public String resolveHistoryPrefix() {
+		return this.resolveDefaultPrefix() + historyPrefix;
+	}
+	
 	public String resolvePrefixForCodingScheme(String codingSchemeName,
 			String version) {
 		return resolveDefaultPrefix();
@@ -46,5 +52,13 @@ public class DefaultPrefixResolver implements PrefixResolver {
 
 	public void setSystemVariables(SystemVariables systemVariables) {
 		this.systemVariables = systemVariables;
+	}
+
+	public void setHistoryPrefix(String historyPrefix) {
+		this.historyPrefix = historyPrefix;
+	}
+
+	public String getHistoryPrefix() {
+		return historyPrefix;
 	}
 }

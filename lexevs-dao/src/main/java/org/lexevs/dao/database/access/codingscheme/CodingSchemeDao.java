@@ -15,7 +15,7 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 
 	public String insertCodingScheme(CodingScheme cs);
 	
-	public String insertHistoryCodingScheme(CodingScheme codingScheme);
+	public void insertHistoryCodingScheme(String codingSchemeId, CodingScheme codingScheme);
 	
 	public CodingScheme getCodingSchemeByNameAndVersion(String codingSchemeName, String version);
 	

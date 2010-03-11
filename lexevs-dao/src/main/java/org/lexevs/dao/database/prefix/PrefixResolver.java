@@ -10,4 +10,6 @@ public interface PrefixResolver {
 	public String resolvePrefixForCodingScheme(String codingSchemeId);
 	
 	public String getNextCodingSchemePrefix();
+
+	public String resolveHistoryPrefix();
 }

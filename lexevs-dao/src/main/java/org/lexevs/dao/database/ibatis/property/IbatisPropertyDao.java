@@ -120,6 +120,10 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			this.insertPropertyUsageContext(codingSchemeId, propertyId, context, inserter);
 		}
 		
+		for(PropertyQualifier qual : property.getPropertyQualifier()) {
+			this.insertPropertyQualifier(codingSchemeId, propertyId, qual, inserter);
+		}
+		
 		return propertyId;
 		
 	}
@@ -132,14 +136,25 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	}
 	
 	public void insertPropertyQualifier(String codingSchemeId, String propertyId, PropertyQualifier propertyQualifier) {
-		String qualifierId = this.createUniqueId();
-		
-		this.getSqlMapClientTemplate().insert(INSERT_PROPERTY_QUALIFIER_SQL, 
-				this.buildInsertPropertyQualifierBean(
-						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
-						propertyId, qualifierId, propertyQualifier));
+		this.insertPropertyQualifier(codingSchemeId, propertyId, propertyQualifier, this.getNonBatchTemplateInserter());	
 	}
 	
+	public void insertPropertyQualifier(final String codingSchemeId, final String propertyId, final PropertyQualifier propertyQualifier, final IbatisInserter inserter) {
+		final String qualifierId = this.createUniqueId();
+
+		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+
+			public Object doInSqlMapClient(SqlMapExecutor executor)
+			throws SQLException {
+
+				inserter.insert(INSERT_PROPERTY_QUALIFIER_SQL, 
+						buildInsertPropertyQualifierBean(
+								getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+								propertyId, qualifierId, propertyQualifier));
+				return null;
+			}
+		});
+	}
 
 	public void insertPropertySource(String codingSchemeId, String propertyId, Source source) {
 		String sourceId = this.createUniqueId();
@@ -194,17 +209,39 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		});
 	}
 	
+	public void doInsertPropertyLink(final String prefix, 
+			final String entityId,
+			final String propertyLinkId,
+			final String link, 
+			final String sourcePropertyId,
+			final String targetPropertyId,
+			final IbatisInserter inserter) {
+		final InsertPropertyLinkBean bean = new InsertPropertyLinkBean();
+		bean.setPrefix(prefix);
+		bean.setLink(link);
+		bean.setId(propertyLinkId);
+		bean.setSourcePropertyId(sourcePropertyId);
+		bean.setTargetPropertyId(targetPropertyId);
+		
+		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+			
+
+			public Object doInSqlMapClient(SqlMapExecutor executor)
+			throws SQLException {
+				inserter.insert(INSERT_PROPERTYLINK_SQL, 
+						bean);
+				return null;
+			}
+		});
+	}
+	
 	public void insertPropertyLink(String codingSchemeId, String entityId,
 			PropertyLink propertyLink) {
 		String propertyLinkId = this.createUniqueId();
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		this.getSqlMapClientTemplate().insert(INSERT_PROPERTYLINK_SQL, 
-				this.buildInsertPropertyLinkBean(prefix, 
-						entityId, 
-						propertyLinkId, 
-						propertyLink
-						));
+		throw new UnsupportedOperationException();
+		//this.doInsertPropertyLink(prefix, entityId, propertyLinkId, link, sourcePropertyId, targetPropertyId, inserter)
 	}
 	
 	public void deleteAllEntityPropertiesOfCodingScheme(String codingSchemeId) {
@@ -240,17 +277,6 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		bean.setAttributeId(propertyQualifier.getPropertyQualifierName());
 		bean.setAttributeValue(propertyQualifier.getValue().getContent());
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_QUALIFIER);
-
-		return bean;
-	}
-	
-	protected InsertPropertyLinkBean buildInsertPropertyLinkBean(String prefix, String entityId, String propertyLinkId,
-			PropertyLink propertyLink){
-		InsertPropertyLinkBean bean = new InsertPropertyLinkBean();
-		bean.setId(propertyLinkId);
-		bean.setEntityId(entityId);
-		bean.setPrefix(prefix);
-		bean.setPropertyLink(propertyLink);
 
 		return bean;
 	}

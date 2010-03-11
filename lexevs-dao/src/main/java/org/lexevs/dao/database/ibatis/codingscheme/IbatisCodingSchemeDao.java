@@ -33,9 +33,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 @Cacheable(cacheName = "IbatisCodingSchemeDao")
 public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSchemeDao {
-
 	
-
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 
 	private static String SUPPORTED_ATTRIB_GETTER_PREFIX = "_supported";
@@ -119,12 +117,10 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 				new PrefixedParameterTuple(prefix, codingSchemeUri, version));
 	}
 
-	public String insertCodingScheme(CodingScheme codingScheme) {
-		return this.insertCodingScheme(codingScheme, null);
-	}
 
-	public String insertHistoryCodingScheme(CodingScheme codingScheme) {
-		return this.insertCodingScheme(codingScheme, null);
+	public void insertHistoryCodingScheme(String codingSchemeId, CodingScheme codingScheme) {
+		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
+		this.doInsertCodingScheme(codingSchemeId, prefix, codingScheme);
 	}
 
 	public void deleteCodingSchemeById(String codingSchemeId) {
@@ -134,15 +130,28 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 			delete(REMOVE_CODING_SCHEME_BY_ID_SQL, new PrefixedParameter(prefix, codingSchemeId));	
 	}
 	
-	public String insertCodingScheme(CodingScheme codingScheme, String previousRevisionId) {
+	public String insertCodingScheme(CodingScheme codingScheme) {
 		String codingSchemeId = this.createUniqueId();
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		return this.doInsertCodingScheme(codingSchemeId, prefix, codingScheme);
+	}
+	
+	public String doInsertCodingScheme(String codingSchemeId, String prefix, CodingScheme codingScheme) {
 		String entryStateId = this.createUniqueId();
 		
 		this.getSqlMapClientTemplate().insert(INSERT_CODING_SCHEME_SQL, 
 				this.buildInsertCodingSchemeBean(
-						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+						prefix,
 						codingSchemeId, entryStateId, codingScheme));	
 		
+		String previousRevisionId = null;
+		if(codingScheme.getEntryState() != null && 
+				codingScheme.getEntryState().getPrevRevision() != null &&
+				!codingScheme.getEntryState().getPrevRevision().isEmpty()) {
+			previousRevisionId = codingScheme.getEntryState().getPrevRevision();
+		}
 		
 		versionsDao.insertEntryState(
 				codingSchemeId,

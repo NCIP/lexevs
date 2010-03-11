@@ -12,33 +12,9 @@
      		targetPropertyGuid
      	) VALUES (
      		#id#,
-     		(	SELECT 
-     				property.propertyGuid 
-     			FROM 
-     				$prefix$entity entity
-     			LEFT JOIN 
-     				$prefix$property property
-     			ON 
-     				entity.entityGuid =  property.referenceGuid
-     			WHERE 
-     				entity.entityGuid = #entityId#
-     			AND
-     				propertyId = #propertyLink.sourceProperty#
-     		),
-     		#propertyLink.propertyLink#,
-     		(	SELECT 
-     				property.propertyGuid 
-     			FROM 
-     				$prefix$entity entity
-     			LEFT JOIN 
-     				$prefix$property property
-     			ON 
-     				entity.entityGuid =  property.referenceGuid
-     			WHERE 
-     				entity.entityGuid = #entityId#
-     			AND
-     				propertyId = #propertyLink.targetProperty#
-     		)
+     		#sourcePropertyId#,
+     		#link#,
+     		#targetPropertyId#
      	)
      </insert>
 

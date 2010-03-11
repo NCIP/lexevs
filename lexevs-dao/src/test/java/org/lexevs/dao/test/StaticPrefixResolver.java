@@ -5,9 +5,15 @@ import org.lexevs.dao.database.prefix.PrefixResolver;
 public class StaticPrefixResolver implements PrefixResolver {
 
 	private String prefix = "";
+	private String historyPrefix = "_h";
 	
 	public StaticPrefixResolver(){
 		super();
+	}
+	
+	@Override
+	public String resolveHistoryPrefix() {
+		return prefix + historyPrefix;
 	}
 	
 	public StaticPrefixResolver(String prefix){
@@ -38,4 +44,14 @@ public class StaticPrefixResolver implements PrefixResolver {
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
 	}
+
+	public void setHistoryPrefix(String historyPrefix) {
+		this.historyPrefix = historyPrefix;
+	}
+
+	public String getHistoryPrefix() {
+		return historyPrefix;
+	}
+
+	
 }
