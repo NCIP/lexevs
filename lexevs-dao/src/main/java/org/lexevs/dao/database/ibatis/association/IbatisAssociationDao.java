@@ -3,6 +3,8 @@ package org.lexevs.dao.database.ibatis.association;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
@@ -12,16 +14,18 @@ import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.junit.Assert;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
+import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchInsertItem;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
+import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationPredicateBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationSourceBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertRelationsBean;
+import org.lexevs.dao.database.ibatis.association.parameter.InsertTransitiveClosureBean;
 import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
-import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
@@ -38,6 +42,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private static String INSERT_ENTITY_ASSNS_TO_ENTITY_SQL = "insertEntityAssnsToEntity";
 	private static String INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL = "insertAssociationQualificationOrUsageContext";
 	private static String INSERT_ASSOCIATION_PREDICATE_SQL = "insertAssociationPredicate";
+	private static String INSERT_TRANSITIVE_CLOSURE_SQL = "insertTransitiveClosure";
 	private static String GET_ASSOCIATION_INSTANCE_KEY_SQL = "getAccociationInstanceKey";
 	private static String GET_RELATIONS_KEY_SQL = "getRelationsKey";
 	private static String GET_ASSOCIATION_PREDICATE_KEY_SQL = "getAssociationPredicateKey";
@@ -155,7 +160,74 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			}	
 		});
 	}
+	
+	public String insertIntoTransitiveClosure(
+			String codingSchemeId,
+			String associationPredicateId, 
+			String sourceEntityCode,
+			String sourceEntityCodeNamespace, 
+			String targetEntityCode,
+			String targetEntityCodeNamespace, 
+			IbatisInserter executor) {
+		
+		String id = this.createUniqueId();
+		
+		InsertTransitiveClosureBean bean = new InsertTransitiveClosureBean();
+		bean.setPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId));
+		bean.setId(id);
+		bean.setAssociationPredicateId(associationPredicateId);
+		bean.setSourceEntityCode(sourceEntityCode);
+		bean.setSourceEntityCodeNamespace(sourceEntityCodeNamespace);
+		bean.setTargetEntityCode(targetEntityCode);
+		bean.setTargetEntityCodeNamespace(targetEntityCodeNamespace);
+		
+		this.getSqlMapClientTemplate().insert(INSERT_TRANSITIVE_CLOSURE_SQL, bean);
+		
+		return id;
+		
+	}
 
+	@Override
+	public String insertIntoTransitiveClosure(String codingSchemeId,
+			String associationPredicateId, String sourceEntityCode,
+			String sourceEntityCodeNamespace, String targetEntityCode,
+			String targetEntityCodeNamespace) {
+		
+		return this.insertIntoTransitiveClosure(codingSchemeId,
+				associationPredicateId, 
+				sourceEntityCode,
+				sourceEntityCodeNamespace, 
+				targetEntityCode,
+				targetEntityCodeNamespace,
+				this.getNonBatchTemplateInserter());
+	}
+	
+	public void insertBatchTransitiveClosure(final String codingSchemeId,
+			final List<TransitiveClosureBatchInsertItem> batch) {
+		
+		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+
+			public Object doInSqlMapClient(SqlMapExecutor executor)
+					throws SQLException {
+				IbatisBatchInserter batchInserter = new SqlMapExecutorBatchInserter(executor);
+				
+				batchInserter.startBatch();
+				
+				for(TransitiveClosureBatchInsertItem item : batch){
+					insertIntoTransitiveClosure(codingSchemeId,
+							item.getAssociationPredicateId(), 
+							item.getSourceEntityCode(),
+							item.getSourceEntityCodeNamespace(), 
+							item.getTargetEntityCode(),
+							item.getTargetEntityCodeNamespace());
+				}
+
+				batchInserter.executeBatch();
+
+				return null;
+			}
+		});
+	}
 
 
 	public void insertAssociationSource(String codingSchemeId,
@@ -262,5 +334,4 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public CodingSchemeDao getCodingSchemeDao() {
 		return codingSchemeDao;
 	}
-
 }

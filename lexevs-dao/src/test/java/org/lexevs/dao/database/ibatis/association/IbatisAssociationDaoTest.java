@@ -231,4 +231,36 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 			}
 		});
 	}
+	
+	@Test
+	@Transactional
+	public void testInsertTransitiveClosure() throws SQLException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+				"values ('rel-guid', 'cs-guid', 'c-name')");
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid) values " +
+				"('ap-guid', 'rel-guid')");
+
+		ibatisAssociationDao.insertIntoTransitiveClosure("cs-guid", "ap-guid", "sc", "sns", "tc", "tns");
+		
+		template.queryForObject("Select * from entityassnstoentitytr", new RowMapper(){
+
+			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
+				
+				assertNotNull(rs.getString(1));
+				assertEquals("ap-guid", rs.getString(2));
+				assertEquals("sc", rs.getString(3));
+				assertEquals("sns", rs.getString(4));
+				assertEquals("tc", rs.getString(5));
+				assertEquals("tns", rs.getString(6));
+					
+				return true;
+			}
+		});
+	}
 }

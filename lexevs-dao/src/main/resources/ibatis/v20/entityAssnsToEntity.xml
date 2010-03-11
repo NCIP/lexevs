@@ -63,5 +63,23 @@
 			#entryStateId#
 		)
   </insert>
+  
+   <insert id="insertTransitiveClosure" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertTransitiveClosureBean">
+		INSERT INTO $prefix$entityAssnsToEntityTr (
+			entityAssnsTrGuid,
+			associationPredicateGuid,
+			sourceEntityCode,
+			sourceEntityCodeNamespace,
+			targetEntityCode,
+			targetEntityCodeNamespace
+		) VALUES (
+			#id#, 
+			#associationPredicateId#,
+			#sourceEntityCode#, 
+			#sourceEntityCodeNamespace#, 
+			#targetEntityCode#, 
+			#targetEntityCodeNamespace#
+		)
+  </insert>
     
 </sqlMap>

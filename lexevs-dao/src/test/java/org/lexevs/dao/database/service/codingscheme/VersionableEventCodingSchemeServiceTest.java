@@ -25,7 +25,6 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 	private VersionableEventCodingSchemeService service;
 	
 	@Test
-	@Ignore
 	public void insertCodingScheme() throws Exception{
 		
 		CodingScheme scheme = new CodingScheme();
@@ -38,7 +37,6 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 	}
 	
 	@Test
-	@Ignore
 	public void insertCodingSchemeWithLocalName() throws Exception{
 
 		CodingScheme scheme = new CodingScheme();
@@ -86,7 +84,6 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 	}
 	
 	@Test
-	@Ignore
 	public void testInsertCodingSchemeWithEverything() throws Exception{
 		CodingScheme scheme = new CodingScheme();
 		scheme.setApproxNumConcepts(111l);
