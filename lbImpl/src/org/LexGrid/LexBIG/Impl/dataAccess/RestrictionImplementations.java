@@ -48,8 +48,8 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.exceptions.UnexpectedInternalError;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.system.ResourceManager;
 
 /**
  * Class which implements all of the restriction operations using Lucene
@@ -279,7 +279,7 @@ public class RestrictionImplementations {
                     if (cr.getCodingSchemeName() == null)
                         cr.setCodingSchemeName(internalCodeSystemName);
 
-                    if (ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(
+                    if (LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalCodingSchemeNameForUserCodingSchemeName(
                             internalCodeSystemName, internalVersionString).equals(internalCodeSystemName)
                             && cr.getConceptCode() != null && cr.getConceptCode().length() > 0) {
                         BooleanQuery codeAndNamespaceQuery = new BooleanQuery();
