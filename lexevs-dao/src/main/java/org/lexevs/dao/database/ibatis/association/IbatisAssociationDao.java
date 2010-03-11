@@ -1,6 +1,7 @@
 package org.lexevs.dao.database.ibatis.association;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.commonTypes.Property;
@@ -87,6 +88,10 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId));
 		
 		this.getSqlMapClientTemplate().insert(INSERT_RELATIONS_SQL, bean);
+		
+		for(AssociationPredicate predicate : relations.getAssociationPredicate()){
+			this.insertAssociationPredicate(codingSchemeId, relationsId, predicate);
+		}
 	
 		return relationsId;
 	}
@@ -102,6 +107,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setRelationId(relationId);
 		
 		this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_PREDICATE_SQL, bean);
+		
+		this.insertBatchAssociationSources(codingSchemeId, id, Arrays.asList(associationPredicate.getSource()));
 		
 		return id;
 	}

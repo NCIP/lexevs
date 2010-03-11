@@ -363,6 +363,23 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
+	public void getPropertId(){
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'id1')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		String id = ibatisPropertyDao.getPropertyIdFromParentIdAndPropId("csguid", "eguid", "id1");
+		
+		assertEquals("pguid", id);
+	}
+	
+	@Test
 	public void getPresentationPropertyByParent(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +

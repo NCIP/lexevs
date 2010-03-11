@@ -41,6 +41,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	public static String INSERT_PROPERTY_USAGECONTEXT_SQL = "insertPropertyMultiAttrib";
 	public static String INSERT_PROPERTYLINK_SQL = "insertPropertyLink";
 	public static String GET_ALL_PROPERTIES_OF_PARENT_SQL = "getPropertiesByParent";
+	public static String GET_PROPERTY_ID_SQL = "getPropertyId";
 	
 	private IbatisVersionsDao ibatisVersionsDao;
 
@@ -240,8 +241,11 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		String propertyLinkId = this.createUniqueId();
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		throw new UnsupportedOperationException();
-		//this.doInsertPropertyLink(prefix, entityId, propertyLinkId, link, sourcePropertyId, targetPropertyId, inserter)
+		String sourcePropertyId = this.getPropertyIdFromParentIdAndPropId(codingSchemeId, entityId, propertyLink.getSourceProperty());
+		String targetPropertyId = this.getPropertyIdFromParentIdAndPropId(codingSchemeId, entityId, propertyLink.getTargetProperty());
+		
+		this.doInsertPropertyLink(prefix, entityId, propertyLinkId, 
+				propertyLink.getPropertyLink(), sourcePropertyId, targetPropertyId, this.getNonBatchTemplateInserter());
 	}
 	
 	public void deleteAllEntityPropertiesOfCodingScheme(String codingSchemeId) {
@@ -250,6 +254,13 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		this.getSqlMapClientTemplate().delete(DELETE_ALL_ENTITY_PROPERTIES_OF_CODINGSCHEME_SQL, 
 				new PrefixedParameterTuple(prefix, 
 						this.propertyTypeClassifier.classify(PropertyType.ENTITY), codingSchemeId));
+	}
+	
+	protected String getPropertyIdFromParentIdAndPropId(String codingSchemeId, String parentId, String propId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		return (String) this.getSqlMapClientTemplate().queryForObject(GET_PROPERTY_ID_SQL, 
+				new PrefixedParameterTuple(prefix, parentId, propId));
 	}
 
 	protected InsertPropertyBean buildInsertPropertyBean(String prefix, String entityId, String propertyId, 

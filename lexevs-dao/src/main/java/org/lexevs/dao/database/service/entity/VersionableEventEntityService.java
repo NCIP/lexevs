@@ -12,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class VersionableEventEntityService extends AbstractDatabaseService implements EntityService {
 
-	private PropertyService propertyService;
-	
 	@Transactional
 	public void insertEntity(String codingSchemeUri, String version,
 			Entity entity) {

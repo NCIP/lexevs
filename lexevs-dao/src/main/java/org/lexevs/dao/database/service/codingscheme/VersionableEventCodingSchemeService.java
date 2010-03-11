@@ -7,18 +7,15 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.EntryState;
+import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
+import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
-import org.lexevs.dao.database.service.association.AssociationService;
-import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.springframework.transaction.annotation.Transactional;
 
 public class VersionableEventCodingSchemeService extends AbstractDatabaseService implements CodingSchemeService {
-
-	private EntityService entityService;
-	private AssociationService associationService;
 	
 	@Transactional
 	public CodingScheme getCodingSchemeByUriAndVersion(String uri,
@@ -49,23 +46,27 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	
 	@Transactional
 	public void insertCodingScheme(CodingScheme scheme) throws CodingSchemeAlreadyLoadedException {
-		String uri = scheme.getCodingSchemeURI();
-		String version = scheme.getRepresentsVersion();
-		
 		CodingSchemeDao codingSchemeDao = 
 			this.getDaoManager().getCurrentCodingSchemeDao();
 		
-		codingSchemeDao.insertCodingScheme(scheme);
+		EntityDao entityDao = 
+			this.getDaoManager().getCurrentEntityDao();
+		
+		AssociationDao associationDao = 
+			this.getDaoManager().getCurrentAssociationDao();
+		
+		String codingSchemeId = codingSchemeDao.insertCodingScheme(scheme);
 		
 		this.fireCodingSchemeInsertEvent(scheme);
 		
 		if(scheme.getEntities() != null) {
-			this.entityService.insertBatchEntities(uri, version, Arrays.asList(scheme.getEntities().getEntity()));
+			entityDao.insertBatchEntities(codingSchemeId,
+					Arrays.asList(scheme.getEntities().getEntity()));
 		}
 		
 		if(scheme.getRelations() != null) {
 			for(Relations relation : scheme.getRelations()) {
-				this.associationService.insertRelation(uri, version, relation);
+				associationDao.insertRelations(codingSchemeId, relation);
 			}
 		}
 	}
@@ -114,21 +115,5 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		getCodingSchemeIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
 		
 		return codingSchemeDao.validateSupportedAttribute(codingSchemeId, localId, attributeClass);
-	}
-	
-	public void setEntityService(EntityService entityService) {
-		this.entityService = entityService;
-	}
-
-	public EntityService getEntityService() {
-		return entityService;
-	}
-
-	public AssociationService getAssociationService() {
-		return associationService;
-	}
-
-	public void setAssociationService(AssociationService associationService) {
-		this.associationService = associationService;
 	}
 }

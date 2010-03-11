@@ -53,12 +53,8 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 	protected void doInsertRelation(String codingSchemeUri, 
 			String codingSchemeVersion, String codingSchemeId, Relations relations) {
 
-		String relationsId = this.getDaoManager().getAssociationDao(codingSchemeUri, codingSchemeVersion)
+		this.getDaoManager().getAssociationDao(codingSchemeUri, codingSchemeVersion)
 			.insertRelations(codingSchemeId, relations);
-		
-		for(AssociationPredicate predicate : relations.getAssociationPredicate()) {
-			this.doInsertAssociationPredicate(codingSchemeUri, codingSchemeVersion, codingSchemeId, relationsId, predicate);
-		}
 	}
 	
 	protected void doInsertAssociationPredicate(String codingSchemeUri, 

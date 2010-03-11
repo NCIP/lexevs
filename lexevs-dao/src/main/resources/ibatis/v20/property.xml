@@ -23,6 +23,17 @@
 	<resultMap id="presentationResult" class="presentation" extends="propertyResult" >
 		<result property="isPreferred" column="isPreferred" />
 	</resultMap>
+	
+	<select id="getPropertyId" resultClass="string" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+  		SELECT
+  			propertyGuid
+  		FROM
+  			$prefix$property
+  		WHERE
+			referenceGuid = #param1#
+		AND
+			propertyId = #param2#
+  	</select>
 
   	<select id="getPropertiesByParent" resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
   		SELECT
