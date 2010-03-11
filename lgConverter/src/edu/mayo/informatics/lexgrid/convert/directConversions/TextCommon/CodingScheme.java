@@ -94,19 +94,23 @@ public class CodingScheme {
                 p.setPropertyType(SQLTableConstants.TBLCOLVAL_PRESENTATION);
                 p.setPropertyName("textPresentation");
 
+                EntityDescription enDesc = new EntityDescription();
                 Text presentationText = new Text();
                 if (c.description != null) {
                     presentationText.setContent(c.description);
+                    enDesc.setContent(c.description);
 
                 } else if (c.name != null) {
                     presentationText.setContent(c.name);
-
+                    enDesc.setContent(c.name);
                 } else {
                     presentationText.setContent(c.code);
+                    enDesc.setContent(c.code);
                 }
                 p.setIsPreferred(true);
                 p.setValue(presentationText);
                 e.addPresentation(p);
+                e.setEntityDescription(enDesc);
 
                 cs.getEntities().addEntity(e);
                 existedEntities.add(c.code);
