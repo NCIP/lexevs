@@ -20,8 +20,7 @@ package edu.mayo.informatics.lexgrid.convert.emfConversions.hl7;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
-import org.LexGrid.emf.codingSchemes.CodingScheme;
-import org.LexGrid.emf.codingSchemes.CodingschemesFactory;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.HL7SQL;
@@ -50,7 +49,7 @@ public class HL72EMFMain {
         CodingScheme csclass = null;
 
         try {
-            csclass = CodingschemesFactory.eINSTANCE.createCodingScheme();
+            csclass = new CodingScheme();
             HL7MapToLexGrid hl7Map = new HL7MapToLexGrid(codingSchemeURN, access_URL, HL7SQL.MSACCESS_DRIVER, messages);
             hl7Map.setLoaderPrefs(loaderPrefs); // CRS
             hl7Map.initRun(csclass);

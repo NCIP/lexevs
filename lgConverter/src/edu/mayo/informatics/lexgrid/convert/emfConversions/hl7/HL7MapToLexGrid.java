@@ -26,36 +26,35 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
-import org.LexGrid.emf.codingSchemes.CodingScheme;
-import org.LexGrid.emf.commonTypes.CommontypesFactory;
-import org.LexGrid.emf.commonTypes.Property;
-import org.LexGrid.emf.commonTypes.PropertyQualifier;
-import org.LexGrid.emf.commonTypes.Source;
-import org.LexGrid.emf.commonTypes.Text;
-import org.LexGrid.emf.concepts.Concept;
-import org.LexGrid.emf.concepts.ConceptsFactory;
-import org.LexGrid.emf.concepts.Definition;
-import org.LexGrid.emf.concepts.Entities;
-import org.LexGrid.emf.concepts.Entity;
-import org.LexGrid.emf.concepts.Presentation;
-import org.LexGrid.emf.naming.Mappings;
-import org.LexGrid.emf.naming.NamingFactory;
-import org.LexGrid.emf.naming.SupportedAssociation;
-import org.LexGrid.emf.naming.SupportedCodingScheme;
-import org.LexGrid.emf.naming.SupportedHierarchy;
-import org.LexGrid.emf.naming.SupportedLanguage;
-import org.LexGrid.emf.naming.SupportedProperty;
-import org.LexGrid.emf.naming.SupportedPropertyQualifier;
-import org.LexGrid.emf.naming.SupportedSource;
-import org.LexGrid.emf.relations.Association;
-import org.LexGrid.emf.relations.AssociationSource;
-import org.LexGrid.emf.relations.AssociationTarget;
-import org.LexGrid.emf.relations.Relations;
-import org.LexGrid.emf.relations.RelationsFactory;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.PropertyQualifier;
+import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.Text;
+import org.LexGrid.concepts.Concept;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Entity;
+import org.LexGrid.concepts.Presentation;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedAssociation;
+import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedHierarchy;
+import org.LexGrid.naming.SupportedLanguage;
+import org.LexGrid.naming.SupportedProperty;
+import org.LexGrid.naming.SupportedPropertyQualifier;
+import org.LexGrid.naming.SupportedSource;
+import org.LexGrid.relations.AssociationEntity;
+import org.LexGrid.relations.AssociationPredicate;
+import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.AssociationTarget;
+import org.LexGrid.relations.Relations;
 import org.LexGrid.emf.relations.util.RelationsUtil;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -151,7 +150,9 @@ public class HL7MapToLexGrid {
             csclass.setCodingSchemeName(name);
             csclass.setCodingSchemeURI(results.getString("codeSystemid"));
             csclass.setFormalName(results.getString("FullName"));
-            csclass.setEntityDescription(results.getString("description"));
+            EntityDescription enDesc = new EntityDescription();
+            enDesc.setContent(results.getString("description"));
+            csclass.setEntityDescription(enDesc);
             csclass.setDefaultLanguage("en");
 
             String version = results.getString("releaseId");
@@ -160,21 +161,21 @@ public class HL7MapToLexGrid {
             else {
                 csclass.setRepresentsVersion(SQLTableConstants.TBLCOLVAL_MISSING);
             }
-            Text txt = CommontypesFactory.eINSTANCE.createText();
-            txt.setValue((String) results.getString("copyrightNotice"));
+            Text txt = new Text();
+            txt.setContent((String) results.getString("copyrightNotice"));
             csclass.setCopyright(txt);
-            csclass.setMappings((Mappings) NamingFactory.eINSTANCE.createMappings());
+            csclass.setMappings(new Mappings());
 
             // Add SupportedCodingScheme and SupportedLanguage Mappings
-            SupportedCodingScheme scs = NamingFactory.eINSTANCE.createSupportedCodingScheme();
+            SupportedCodingScheme scs = new SupportedCodingScheme();
             scs.setLocalId(csclass.getCodingSchemeName());
             scs.setUri(csclass.getCodingSchemeURI());
 
-            csclass.getMappings().getSupportedCodingScheme().add(scs);
+            csclass.getMappings().addSupportedCodingScheme(scs);
 
-            SupportedLanguage lang = NamingFactory.eINSTANCE.createSupportedLanguage();
+            SupportedLanguage lang = new SupportedLanguage();
             lang.setLocalId(HL72EMFConstants.DEFAULT_LANGUAGE_EN);
-            csclass.getMappings().getSupportedLanguage().add(lang);
+            csclass.getMappings().addSupportedLanguage(lang);
 
             results.close();
         } catch (Exception e) {
@@ -197,7 +198,9 @@ public class HL7MapToLexGrid {
             csclass.setCodingSchemeName(name);
             csclass.setCodingSchemeURI(HL72EMFConstants.DEFAULT_URN);
             csclass.setFormalName(results.getString("name"));
-            csclass.setEntityDescription(results.getString("description"));
+            EntityDescription enDesc = new EntityDescription();
+            enDesc.setContent(results.getString("description"));
+            csclass.setEntityDescription(enDesc);
             csclass.setDefaultLanguage(HL72EMFConstants.DEFAULT_LANGUAGE_EN);
             String version = results.getString("versionNumber");
             if (version != null && version.length() > 0)
@@ -205,31 +208,31 @@ public class HL7MapToLexGrid {
             else {
                 csclass.setRepresentsVersion(SQLTableConstants.TBLCOLVAL_MISSING);
             }
-            Text txt = CommontypesFactory.eINSTANCE.createText();
-            txt.setValue("copyrightNotice goes here");
+            Text txt = new Text();
+            txt.setContent("copyrightNotice goes here");
 
             csclass.setCopyright(txt);
-            csclass.setMappings((Mappings) NamingFactory.eINSTANCE.createMappings());
+            csclass.setMappings(new Mappings());
 
             // Add SupportedCodingScheme and SupportedLanguage Mappings
-            SupportedCodingScheme scs = NamingFactory.eINSTANCE.createSupportedCodingScheme();
+            SupportedCodingScheme scs = new SupportedCodingScheme();
             scs.setLocalId(csclass.getCodingSchemeName());
             scs.setUri(csclass.getCodingSchemeURI());
-            csclass.getMappings().getSupportedCodingScheme().add(scs);
+            csclass.getMappings().addSupportedCodingScheme(scs);
 
-            SupportedLanguage lang = NamingFactory.eINSTANCE.createSupportedLanguage();
+            SupportedLanguage lang = new SupportedLanguage();
             lang.setLocalId(HL72EMFConstants.DEFAULT_LANGUAGE_EN);
-            csclass.getMappings().getSupportedLanguage().add(lang);
+            csclass.getMappings().addSupportedLanguage(lang);
             results.close();
             // Add SupportedHierarchy Mappings
-            SupportedHierarchy hierarchy = NamingFactory.eINSTANCE.createSupportedHierarchy();
+            SupportedHierarchy hierarchy = new SupportedHierarchy();
             hierarchy.setLocalId(HL72EMFConstants.DEFAULT_ASSOC);
             ArrayList list = new ArrayList();
             list.add(HL72EMFConstants.DEFAULT_ASSOC);
             hierarchy.setAssociationNames(list);
             hierarchy.setRootCode(HL72EMFConstants.DEFAULT_ROOT_NODE);
             hierarchy.setIsForwardNavigable(true);
-            csclass.getMappings().getSupportedHierarchy().add(hierarchy);
+            csclass.getMappings().addSupportedHierarchy(hierarchy);
 
             
 //            SupportedProperty sp = NamingFactory.eINSTANCE.createSupportedProperty();
@@ -258,8 +261,10 @@ public class HL7MapToLexGrid {
         Connection c = null;
         String association_name = null;
         Relations relations = null;
-        Association parent_assoc = null;
-        Association hasSubtypeAssociation = null;
+        AssociationPredicate parent_assoc = null;
+        AssociationEntity parent_assocEntity = null;
+        AssociationPredicate hasSubtypeAssociation = null;
+        AssociationEntity hasSubtypeAssociationEntity = null;
         ResultSet associations = null;
         ResultSet properties = null;
         ResultSet sources = null;
@@ -268,7 +273,7 @@ public class HL7MapToLexGrid {
         
         Entities concepts = csclass.getEntities();
         if (concepts == null) {
-            concepts = ConceptsFactory.eINSTANCE.createEntities();
+            concepts = new Entities();
             csclass.setEntities(concepts);
         }
         int num = 0;
@@ -276,9 +281,9 @@ public class HL7MapToLexGrid {
             c = DBUtility.connectToDatabase(accessConnectionString, driver, null, null);
             // Pre-Load the supported associations -- this will just be the
             // hasSubtype association for 99% of the contained coding schemes.
-            relations = RelationsFactory.eINSTANCE.createRelations();
+            relations = new Relations();
             relations.setContainerName("relations");
-            csclass.getRelations().add(relations);
+            csclass.addRelations(relations);
 
             PreparedStatement getAssociations = c
                     .prepareStatement("SELECT distinct(relationCode) FROM VCS_concept_relationship");
@@ -289,15 +294,18 @@ public class HL7MapToLexGrid {
             // other than hasSubtype
             while (associations.next()) {
                 association_name = associations.getString("relationCode");
-                SupportedAssociation sa = NamingFactory.eINSTANCE.createSupportedAssociation();
+                SupportedAssociation sa = new SupportedAssociation();
                 sa.setLocalId(association_name);
-                csclass.getMappings().getSupportedAssociation().add(sa);
+                csclass.getMappings().addSupportedAssociation(sa);
 
-                parent_assoc = RelationsFactory.eINSTANCE.createAssociation();
-                parent_assoc.setEntityCode(association_name);
-                parent_assoc.setForwardName(association_name);
-                parent_assoc.setIsTransitive(true);
-                RelationsUtil.subsume(relations, parent_assoc);
+                parent_assoc = new AssociationPredicate();
+                parent_assoc.setAssociationName(association_name);
+                
+                parent_assocEntity = new AssociationEntity();
+                parent_assocEntity.setEntityCode(association_name);
+                parent_assocEntity.setForwardName(association_name);
+                parent_assocEntity.setIsTransitive(true);
+                RelationsUtil.subsume(relations, parent_assoc); // whether need to provide the associationEntity?
                 messages_.info("Loading association: " + association_name);
 
                 // Save a reference to the hasSubtype association so we can
@@ -317,19 +325,19 @@ public class HL7MapToLexGrid {
             String property = null;
             while (properties.next()) {
                 property = properties.getString("propertyCode");
-                SupportedProperty sp = NamingFactory.eINSTANCE.createSupportedProperty();
+                SupportedProperty sp = new SupportedProperty();
                 sp.setLocalId(property);
-                if (!csclass.getMappings().getSupportedProperty().contains(sp))
-                    csclass.getMappings().getSupportedProperty().add(sp);
+                if (!Arrays.asList(csclass.getMappings().getSupportedProperty()).contains(sp))
+                    csclass.getMappings().addSupportedProperty(sp);
             }
             properties.close();
 
             // Pre-load the supported property qualifier source-code
             String propertyQualifier = "source-code";
-            SupportedPropertyQualifier spq = NamingFactory.eINSTANCE.createSupportedPropertyQualifier();
+            SupportedPropertyQualifier spq = new SupportedPropertyQualifier();
             spq.setLocalId(propertyQualifier);
-            if (!csclass.getMappings().getSupportedPropertyQualifier().contains(spq))
-                csclass.getMappings().getSupportedPropertyQualifier().add(spq);
+            if (!Arrays.asList(csclass.getMappings().getSupportedPropertyQualifier()).contains(spq))
+                csclass.getMappings().addSupportedPropertyQualifier(spq);
 
             // Pre-load all the supported sources
             PreparedStatement getSources = c.prepareStatement("SELECT distinct(codeSystemName) FROM VCS_code_system");
@@ -338,11 +346,11 @@ public class HL7MapToLexGrid {
             String source = null;
             while (sources.next()) {
                 source = sources.getString("codeSystemName");
-                SupportedSource ss = NamingFactory.eINSTANCE.createSupportedSource();
+                SupportedSource ss = new SupportedSource();
 
                 ss.setLocalId(source);
-                if (!csclass.getMappings().getSupportedSource().contains(ss))
-                    csclass.getMappings().getSupportedSource().add(ss);
+                if (!Arrays.asList(csclass.getMappings().getSupportedSource()).contains(ss))
+                    csclass.getMappings().addSupportedSource(ss);
             }
             sources.close();
        
@@ -391,7 +399,7 @@ public class HL7MapToLexGrid {
         // process the concept data
         messages_.info("Processing concepts");
         for (int j = 0; j < conceptsList.size(); j++) {
-            Concept concept = ConceptsFactory.eINSTANCE.createConcept();
+            Concept concept = new Concept();
             HL7ConceptContainer conceptContainer = (HL7ConceptContainer) conceptsList.get(new Integer(j));
             String uniqueInternalId = conceptContainer.getInternalId();
             concept.setEntityCode(conceptContainer.getConceptCode());
@@ -399,32 +407,34 @@ public class HL7MapToLexGrid {
             loadConceptProperties(csclass, concept, uniqueInternalId, connectionString, driver);
             loadRelations(csclass, concept, uniqueInternalId, parent_assoc, relations, connectionString, driver,
                     internalIdConceptCodeMap);
-            concepts.getEntity().add(concept);
+            concepts.addEntity(concept);
             num++;
             int out = num % 1000;
             if (out == 0)
             messages_.info("Processed " + num + " concepts: ");
         }
-        csclass.setApproxNumConcepts(concepts.getEntity().size());
+        csclass.setApproxNumConcepts(new Long(concepts.getEntity().length));
         messages_.info("Concepts added=" + num);
 
     }
 
-    void loadArtificialTopNodes(CodingScheme csclass, Entities concepts, Association parent_assoc, Connection c) {
+    void loadArtificialTopNodes(CodingScheme csclass, Entities concepts, AssociationPredicate parent_assoc, Connection c) {
         messages_.info("Processing code systems into top nodes");
         ResultSet isTopNode = null;
         try {
             // Create an "@" top node.
-            Concept rootNode = ConceptsFactory.eINSTANCE.createConcept();
+            Concept rootNode = new Concept();
 
             // Create and set the concept code for "@"
             String topNodeDesignation = "@";
             rootNode.setEntityCode(topNodeDesignation);
             rootNode.setIsAnonymous(Boolean.TRUE);
-            rootNode.setEntityDescription("Root node for subclass relations.");
-            concepts.getEntity().add(rootNode);
+            EntityDescription enDesc = new EntityDescription();
+            enDesc.setContent("Root node for subclass relations.");
+            rootNode.setEntityDescription(enDesc);
+            concepts.addEntity(rootNode);
 
-            AssociationSource ai = RelationsFactory.eINSTANCE.createAssociationSource();
+            AssociationSource ai = new AssociationSource();
             ai.setSourceEntityCode(rootNode.getEntityCode());
             ai = RelationsUtil.subsume(parent_assoc, ai);
 
@@ -435,7 +445,7 @@ public class HL7MapToLexGrid {
             getArtificialTopNodeData.setString(1, HL72EMFConstants.CODE_SYSTEM_OID);
             ResultSet dataResults = getArtificialTopNodeData.executeQuery();
             while (dataResults.next()) {
-                Entity topNode = ConceptsFactory.eINSTANCE.createEntity();
+                Entity topNode = new Entity();
 
                 String nodeName = dataResults.getString("codeSystemName");
                 String entityDescription = dataResults.getString("fullName");
@@ -473,7 +483,9 @@ public class HL7MapToLexGrid {
                 if (getArtificialTopNodeCode != null)
                     getArtificialTopNodeCode.close();
 
-                topNode.setEntityDescription(entityDescription);
+                EntityDescription enD = new EntityDescription();
+                enD.setContent(entityDescription);
+                topNode.setEntityDescription(enD);
                 topNode.setIsActive(true);
 
                 // a property example for some of the values we may want to
@@ -492,35 +504,35 @@ public class HL7MapToLexGrid {
                 // topNode.getProperty().add(property);
 
                 // Set presentation so it's a full fledged concept
-                Presentation p = ConceptsFactory.eINSTANCE.createPresentation();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue((String) entityDescription);
+                Presentation p = new Presentation();
+                Text txt = new Text();
+                txt.setContent((String) entityDescription);
                 p.setValue(txt);
                 p.setIsPreferred(Boolean.TRUE);
                 p.setPropertyName(HL72EMFConstants.PROPERTY_PRINTNAME);
                 p.setPropertyId("T1");
                 p.setLanguage(HL72EMFConstants.DEFAULT_LANGUAGE_EN);
-                topNode.getPresentation().add(p);
+                topNode.addPresentation(p);
 
                 // Set definition
                 if (def != null) {
-                    Definition definition = ConceptsFactory.eINSTANCE.createDefinition();
-                    Text defText = CommontypesFactory.eINSTANCE.createText();
-                    defText.setValue(def);
+                    Definition definition = new Definition();
+                    Text defText = new Text();
+                    defText.setContent(def);
                     definition.setValue(defText);
                     definition.setPropertyName(HL72EMFConstants.PROPERTY_DEFINITION);
                     definition.setPropertyId("D1");
                     definition.setIsActive(Boolean.TRUE);
                     definition.setIsPreferred(Boolean.TRUE);
                     definition.setLanguage(HL72EMFConstants.DEFAULT_LANGUAGE_EN);
-                    topNode.getDefinition().add(definition);
+                    topNode.addDefinition(definition);
                 }
 
-                topNode.getEntityType().add("Coding Scheme");
-                concepts.getEntity().add(topNode);
+                topNode.addEntityType("Coding Scheme");
+                concepts.addEntity(topNode);
 
                 // This coding scheme is attached to an artificial root.
-                AssociationTarget at = RelationsFactory.eINSTANCE.createAssociationTarget();
+                AssociationTarget at = new AssociationTarget();
                 at.setTargetEntityCode(topNode.getEntityCode());
                 RelationsUtil.subsume(ai, at);
 
@@ -582,11 +594,11 @@ public class HL7MapToLexGrid {
                 // the scheme.
                 for (int j = 0; j < topNodes.size(); j++) {
                     try {
-                        AssociationSource atn = RelationsFactory.eINSTANCE.createAssociationSource();
+                        AssociationSource atn = new AssociationSource();
                         atn.setSourceEntityCode(topNode.getEntityCode());
                         atn = RelationsUtil.subsume(parent_assoc, atn);
 
-                        AssociationTarget atopNode = RelationsFactory.eINSTANCE.createAssociationTarget();
+                        AssociationTarget atopNode = new AssociationTarget();
                         atopNode.setTargetEntityCode((String) topNodes.get(j));
                         RelationsUtil.subsume(atn, atopNode);
                     } catch (Exception e) {
@@ -637,14 +649,16 @@ public class HL7MapToLexGrid {
                     sourceCodeSystemName = edResults.getString("codeSystemName");
                     entityDescription = edResults.getString("designation");
 
-                    Presentation p = ConceptsFactory.eINSTANCE.createPresentation();
-                    Text txt = CommontypesFactory.eINSTANCE.createText();
-                    txt.setValue((String) entityDescription);
+                    Presentation p = new Presentation();
+                    Text txt = new Text();
+                    txt.setContent((String) entityDescription);
                     p.setValue(txt);
 
                     if (edResults.getString("preferredForLanguage").equals("1")) {
                         p.setIsPreferred(Boolean.TRUE);
-                        concept.setEntityDescription(entityDescription);
+                        EntityDescription ed = new EntityDescription();
+                        ed.setContent(entityDescription);
+                        concept.setEntityDescription(ed);
                     } else { // Designation is not preferred for language, set
                              // to false
                         p.setIsPreferred(Boolean.FALSE);
@@ -654,41 +668,43 @@ public class HL7MapToLexGrid {
                     p.setLanguage(edResults.getString("language"));
 
                     // Set the Qualifier
-                    PropertyQualifier propQual = CommontypesFactory.eINSTANCE.createPropertyQualifier();
+                    PropertyQualifier propQual = new PropertyQualifier();
                     String tag = "source-code";
                     propQual.setPropertyQualifierName(tag);
-                    txt = CommontypesFactory.eINSTANCE.createText();
-                    txt.setValue((String) conceptCode);
+                    txt = new Text();
+                    txt.setContent((String) conceptCode);
                     propQual.setValue(txt);
-                    p.getPropertyQualifier().add(propQual);
+                    p.addPropertyQualifier(propQual);
 
                     // Set the Source
-                    Source s = CommontypesFactory.eINSTANCE.createSource();
-                    s.setValue(sourceCodeSystemName);
-                    p.getSource().add(s);
+                    Source s = new Source();
+                    s.setContent(sourceCodeSystemName);
+                    p.addSource(s);
 
-                    concept.getPresentation().add(p);
+                    concept.addPresentation(p);
                     presentationCount++;
 
                 } while (edResults.next());
             } else { // There are no designations, so specify they are missing
-                Presentation p = ConceptsFactory.eINSTANCE.createPresentation();
+                Presentation p = new Presentation();
                 p.setPropertyName(HL72EMFConstants.PROPERTY_PRINTNAME);
                 p.setPropertyId("T" + presentationCount);
                 p.setLanguage(HL72EMFConstants.DEFAULT_LANGUAGE_EN);
-                concept.getPresentation().add(p);
+                concept.addPresentation(p);
                 entityDescription = HL72EMFConstants.MISSING;
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue((String) entityDescription);
+                Text txt = new Text();
+                txt.setContent((String) entityDescription);
                 p.setValue(txt);
                 p.setIsPreferred(Boolean.TRUE);
-                concept.setEntityDescription(entityDescription);
+                EntityDescription ed = new EntityDescription();
+                ed.setContent(entityDescription);
+                concept.setEntityDescription(ed);
 
             }
            
 
           //  Presentation pd = ConceptsFactory.eINSTANCE.createPresentation();
-            Definition des = ConceptsFactory.eINSTANCE.createDefinition();
+            Definition des = new Definition();
             PreparedStatement getDescriptions = c
                     .prepareStatement("SELECT description, language FROM VCS_concept_description WHERE internalId = ?");
             getDescriptions.setString(1, uniqueInternalId);
@@ -707,8 +723,8 @@ public class HL7MapToLexGrid {
                     messages_.info("Found an empty description on Concept " + conceptCodeFull);
                 }
 
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue((String) description);
+                Text txt = new Text();
+                txt.setContent((String) description);
                 des.setValue(txt);
                 des.setIsPreferred(Boolean.TRUE);
                 des.setPropertyName(HL72EMFConstants.PROPERTY_DEFINITION);
@@ -718,8 +734,8 @@ public class HL7MapToLexGrid {
             }
 
             else {
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue((String) HL72EMFConstants.MISSING);
+                Text txt = new Text();
+                txt.setContent((String) HL72EMFConstants.MISSING);
                 des.setValue(txt);
                 des.setIsPreferred(Boolean.TRUE);
                 des.setPropertyName(HL72EMFConstants.PROPERTY_DEFINITION);
@@ -728,7 +744,7 @@ public class HL7MapToLexGrid {
                 des.setPropertyId("D" + definitionCount);
 
             }
-            concept.getDefinition().add(des);
+            concept.addDefinition(des);
       
 
         } catch (Exception e) {
@@ -780,7 +796,7 @@ public class HL7MapToLexGrid {
            properties = getProperties.executeQuery();
 
             while (properties.next()) {
-                Property cp = CommontypesFactory.eINSTANCE.createProperty();
+                Property cp = new Property();
                 String propertyLanguage = properties.getString("language");
                 if (propertyLanguage == null || propertyLanguage.length() < 1) {
                     cp.setLanguage(HL72EMFConstants.DEFAULT_LANGUAGE_EN);
@@ -789,11 +805,11 @@ public class HL7MapToLexGrid {
                 }
                 String property = properties.getString("propertyCode");
                 cp.setPropertyName(property);
-                cp.setPropertyId("P" + concept.getProperty().size());
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue((String) properties.getString("propertyValue"));
+                cp.setPropertyId("P" + concept.getProperty().length);
+                Text txt = new Text();
+                txt.setContent((String) properties.getString("propertyValue"));
                 cp.setValue(txt);
-                concept.getProperty().add(cp);
+                concept.addProperty(cp);
             }
          
 
@@ -831,7 +847,7 @@ public class HL7MapToLexGrid {
     }
 
     void loadRelations(CodingScheme csclass, Concept concept, Connection c, String uniqueInternalId,
-            Association parent_assoc, Relations relations, Hashtable concept2Id) {
+            AssociationPredicate parent_assoc, Relations relations, Hashtable concept2Id) {
         ResultSet associations = null;
         Hashtable associationsList = new Hashtable();
         try {
@@ -862,16 +878,16 @@ public class HL7MapToLexGrid {
             HL7AssocContainer assoContainer = (HL7AssocContainer) associationsList.get(new Integer(j));
             int sourceCode = assoContainer.getSourceCode();
             int targetCode = assoContainer.getTargetCode();
-            Association parent_association = (Association) RelationsUtil.resolveAssociations(csclass,
+            AssociationPredicate parent_association = (AssociationPredicate) RelationsUtil.resolveAssociations(csclass,
                     assoContainer.getAssociation()).get(0);
 
             // TODO enclose entire association setup in some kind of try catch.
             try {
-                AssociationSource ai = RelationsFactory.eINSTANCE.createAssociationSource();
+                AssociationSource ai = new AssociationSource();
                 ai.setSourceEntityCode((String) concept2Id.get(new Integer(sourceCode)));
                 ai = RelationsUtil.subsume(parent_association, ai);
 
-                AssociationTarget at = RelationsFactory.eINSTANCE.createAssociationTarget();
+                AssociationTarget at = new AssociationTarget();
                 at.setTargetEntityCode((String) concept2Id.get(new Integer(targetCode)));
                 RelationsUtil.subsume(ai, at);
             } catch (Exception e) {
@@ -882,7 +898,7 @@ public class HL7MapToLexGrid {
         }
     }
 
-    void loadRelations(CodingScheme csclass, Concept concept, String uniqueInternalId, Association association,
+    void loadRelations(CodingScheme csclass, Concept concept, String uniqueInternalId, AssociationPredicate association,
             Relations relations, String connectionString, String driver, Hashtable concept2Id) {
         Connection c = null;
         try {
