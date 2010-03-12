@@ -18,6 +18,7 @@
  */
 package edu.mayo.informatics.lexgrid.convert.emfConversions.radlex;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -25,27 +26,25 @@ import java.util.List;
 import java.util.Vector;
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
-import org.LexGrid.emf.codingSchemes.CodingScheme;
-import org.LexGrid.emf.commonTypes.CommontypesFactory;
-import org.LexGrid.emf.commonTypes.Property;
-import org.LexGrid.emf.commonTypes.Text;
-import org.LexGrid.emf.concepts.Comment;
-import org.LexGrid.emf.concepts.Concept;
-import org.LexGrid.emf.concepts.ConceptsFactory;
-import org.LexGrid.emf.concepts.Definition;
-import org.LexGrid.emf.concepts.Entities;
-import org.LexGrid.emf.concepts.Presentation;
-import org.LexGrid.emf.naming.NamingFactory;
-import org.LexGrid.emf.naming.SupportedAssociation;
-import org.LexGrid.emf.naming.SupportedProperty;
-import org.LexGrid.emf.naming.SupportedRepresentationalForm;
-import org.LexGrid.emf.naming.SupportedSource;
-import org.LexGrid.emf.relations.Association;
-import org.LexGrid.emf.relations.AssociationData;
-import org.LexGrid.emf.relations.AssociationSource;
-import org.LexGrid.emf.relations.AssociationTarget;
-import org.LexGrid.emf.relations.Relations;
-import org.LexGrid.emf.relations.RelationsFactory;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Text;
+import org.LexGrid.concepts.Comment;
+import org.LexGrid.concepts.Concept;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Presentation;
+import org.LexGrid.naming.SupportedAssociation;
+import org.LexGrid.naming.SupportedProperty;
+import org.LexGrid.naming.SupportedRepresentationalForm;
+import org.LexGrid.naming.SupportedSource;
+import org.LexGrid.relations.AssociationPredicate;
+import org.LexGrid.relations.AssociationEntity;
+import org.LexGrid.relations.AssociationData;
+import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.AssociationTarget;
+import org.LexGrid.relations.Relations;
 import org.LexGrid.emf.relations.util.RelationsUtil;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 
@@ -80,6 +79,8 @@ public class RadLex2EMFDynamicMapHolders {
     private Vector relations_ = new Vector();
 
     private Hashtable associationHash_ = new Hashtable();
+    private Hashtable associationEntityHash_ = new Hashtable();
+    
     private Hashtable associationRevHash_ = new Hashtable();
 
     private long propertyCounter = 0;
@@ -87,13 +88,9 @@ public class RadLex2EMFDynamicMapHolders {
     private KnowledgeBase kb_;
 
     /** ****************************** */
-    private RelationsFactory relationsFactory = RelationsFactory.eINSTANCE;
 
-    private ConceptsFactory conceptFactory = ConceptsFactory.eINSTANCE;
-    
-    private NamingFactory nameFactory = NamingFactory.eINSTANCE;
-
-    private Association hasSubTypeAssocClass_ = null;
+    private AssociationPredicate hasSubTypeAssocClass_ = null;
+    private AssociationEntity hasSubTypeAssocEntityClass_ = null;
 
     private List firstRelation_ = null;
 
@@ -108,7 +105,7 @@ public class RadLex2EMFDynamicMapHolders {
     private LgMessageDirectorIF messages_ = null;
     
     private Hashtable<String, Concept> attributeConcepts = new Hashtable<String, Concept>();
-    private Hashtable<String, org.LexGrid.emf.concepts.Instance> attributeInstances = new Hashtable<String, org.LexGrid.emf.concepts.Instance>();
+    private Hashtable<String, org.LexGrid.concepts.Instance> attributeInstances = new Hashtable<String, org.LexGrid.concepts.Instance>();
 
     /** ****************************** */
 
@@ -139,29 +136,30 @@ public class RadLex2EMFDynamicMapHolders {
             allConcepts_ = csclass.getEntities();
 
             if (allConcepts_ == null) {
-                allConcepts_ = conceptFactory.createEntities();
+                allConcepts_ = new Entities();
                 csclass.setEntities(allConcepts_);
             }
-
-            allCodedEntries_ = allConcepts_.getEntity();
+            
+            allCodedEntries_ = Arrays.asList(allConcepts_.getEntity());
 
             // Relations
-            allRelations_ = relationsFactory.createRelations();
+            allRelations_ = new Relations();
             allRelations_.setContainerName(SQLTableConstants.TBLCOLVAL_DC_RELATIONS);
 
             // Creating the relation instance
-            firstRelation_ = csclass.getRelations();
+            firstRelation_ = Arrays.asList(csclass.getRelations());
             firstRelation_.add(allRelations_);
-            allAssociations_ = allRelations_.getAssociation();
+            allAssociations_ = Arrays.asList(allRelations_.getAssociationPredicate());
 
             // Add HasSubtype
-            hasSubTypeAssocClass_ = relationsFactory.createAssociation();
-            hasSubTypeAssocClass_.setEntityCode(RadLex2EMFConstants.ASSOCIATION_HASSUBTYPE);
-            hasSubTypeAssocClass_.setForwardName(RadLex2EMFConstants.ASSOCIATION_HASSUBTYPE);
-            hasSubTypeAssocClass_.setReverseName(RadLex2EMFConstants.ASSOCIATION_ISA);
-            hasSubTypeAssocClass_.setIsTransitive(new Boolean(true));
-            hasSubTypeAssocClass_.setIsSymmetric(new Boolean(true));
-            hasSubTypeAssocClass_.setIsReflexive(new Boolean(true));
+            hasSubTypeAssocClass_ = new AssociationPredicate();
+            hasSubTypeAssocClass_.setAssociationName(RadLex2EMFConstants.ASSOCIATION_HASSUBTYPE);
+            
+            hasSubTypeAssocEntityClass_ = new AssociationEntity();
+            hasSubTypeAssocEntityClass_.setEntityCode(RadLex2EMFConstants.ASSOCIATION_HASSUBTYPE);
+            hasSubTypeAssocEntityClass_.setForwardName(RadLex2EMFConstants.ASSOCIATION_HASSUBTYPE);
+            hasSubTypeAssocEntityClass_.setReverseName(RadLex2EMFConstants.ASSOCIATION_ISA);
+            hasSubTypeAssocEntityClass_.setIsTransitive(new Boolean(true));
 
             // TODO: Set this Association's original Forward and
             // Reverse (isOriginalRevName) Name flags here
@@ -170,6 +168,7 @@ public class RadLex2EMFDynamicMapHolders {
             // for Is_A it will be true as it comes in RadLex file as it is.
 
             associationHash_.put(RadLex2EMFConstants.ASSOCIATION_HASSUBTYPE, hasSubTypeAssocClass_);
+            associationEntityHash_.put(RadLex2EMFConstants.ASSOCIATION_HASSUBTYPE, hasSubTypeAssocEntityClass_);
             associationRevHash_.put(RadLex2EMFConstants.ASSOCIATION_ISA, hasSubTypeAssocClass_);
 
             allAssociations_.add(hasSubTypeAssocClass_);
@@ -294,7 +293,7 @@ public class RadLex2EMFDynamicMapHolders {
                         
                         if (isRadlexAttribute)
                         {
-                            org.LexGrid.emf.concepts.Instance inst = null;
+                            org.LexGrid.concepts.Instance inst = null;
                             String iCode = getConceptCodeFromObj(rlCls);
                             
                             if (!RadLex2EMFUtils.isNull(iCode))
@@ -368,7 +367,7 @@ public class RadLex2EMFDynamicMapHolders {
                                     }
                                 }
 
-                                String relation2Inst = "has_" + RadLex2EMFUtils.toNMToken(slotLGConcept.getEntityDescription());
+                                String relation2Inst = "has_" + RadLex2EMFUtils.toNMToken(slotLGConcept.getEntityDescription().getContent());
                                 //String relation2Inst = "has " + slotLGConcept.getEntityDescription();
                                 
                                 if ((sourceClses != null)&&(!sourceClses.isEmpty()))
@@ -400,23 +399,26 @@ public class RadLex2EMFDynamicMapHolders {
                     propertyCounter = 0;
                     conceptList_.add(conceptCode);
 
-                    con = conceptFactory.createConcept();
+                    con = new Concept();
                     con.setEntityCode(conceptCode);
 
                     String description = getEntityDescriptionFromObj(concept);
-                    if (description != null)
-                        con.setEntityDescription(description);
+                    if (description != null) {
+                        EntityDescription enDesc = new EntityDescription(); 
+                        enDesc.setContent(description);
+                        con.setEntityDescription(enDesc);
+                    }
 
                     Comment[] comments = getCommentsFromObj(concept);
                     if (comments != null)
                         for (int i = 0; i < comments.length; i++)
                             if (comments[i] != null)
-                                con.getComment().add(comments[i]);
+                                con.addComment(comments[i]);
 
                     Definition[] definitions = getDefinitionsFromObj(concept);
                     if (definitions != null)
                         for (int i = 0; i < definitions.length; i++)
-                            con.getDefinition().add(definitions[i]);
+                            con.addDefinition(definitions[i]);
                     // }
 
                     processSlots(concept, con, isRadLexSynonymCls);
@@ -442,53 +444,59 @@ public class RadLex2EMFDynamicMapHolders {
         propertyCounter = 0;
         conceptList_.add(code);
 
-        con = conceptFactory.createConcept();
+        con = new Concept();
         con.setEntityCode(code);
 
         String description = getEntityDescriptionFromObj(slot);
-        if (!RadLex2EMFUtils.isNull(description))
-            con.setEntityDescription(description);
+        if (!RadLex2EMFUtils.isNull(description)) {
+            EntityDescription enDesc = new EntityDescription();
+            enDesc.setContent(description);
+            con.setEntityDescription(enDesc);
+        }
 
         Comment[] comments = getCommentsFromObj(slot);
         if (comments != null)
             for (int i = 0; i < comments.length; i++)
                 if (comments[i] != null)
-                    con.getComment().add(comments[i]);
+                    con.addComment(comments[i]);
 
         Definition[] definitions = getDefinitionsFromObj(slot);
         if (definitions != null)
             for (int i = 0; i < definitions.length; i++)
                 if (definitions[i] != null)
-                    con.getDefinition().add(definitions[i]);
+                    con.addDefinition(definitions[i]);
         
         return con;
     }
 
-    private org.LexGrid.emf.concepts.Instance createInstanceFromProtegeCls(Cls pCls)
+    private org.LexGrid.concepts.Instance createInstanceFromProtegeCls(Cls pCls)
     {
         String code = getConceptCodeFromObj(pCls);
-        org.LexGrid.emf.concepts.Instance inst = null;
+        org.LexGrid.concepts.Instance inst = null;
         propertyCounter = 0;
         conceptList_.add(code);
 
-        inst = conceptFactory.createInstance();
+        inst = new org.LexGrid.concepts.Instance();
         inst.setEntityCode(code);
 
         String description = getEntityDescriptionFromObj(pCls);
-        if (!RadLex2EMFUtils.isNull(description))
-            inst.setEntityDescription(description);
+        if (!RadLex2EMFUtils.isNull(description)) {
+            EntityDescription enDesc = new EntityDescription();
+            enDesc.setContent(description);
+            inst.setEntityDescription(enDesc);
+        }
 
         Comment[] comments = getCommentsFromObj(pCls);
         if (comments != null)
             for (int i = 0; i < comments.length; i++)
                 if (comments[i] != null)
-                    inst.getComment().add(comments[i]);
+                    inst.addComment(comments[i]);
 
         Definition[] definitions = getDefinitionsFromObj(pCls);
         if (definitions != null)
             for (int i = 0; i < definitions.length; i++)
                 if (definitions[i] != null)
-                    inst.getDefinition().add(definitions[i]);
+                    inst.addDefinition(definitions[i]);
         
         return inst;
     }
@@ -570,7 +578,7 @@ public class RadLex2EMFDynamicMapHolders {
     private void addParentChildRelationship(String parentConceptcode, Collection subclasses) 
     {
         if ((subclasses != null) && (subclasses.size() > 0)) {
-            AssociationSource aI = relationsFactory.createAssociationSource();
+            AssociationSource aI = new AssociationSource();
             aI.setSourceEntityCode(parentConceptcode);
             aI = RelationsUtil.subsume(hasSubTypeAssocClass_, aI);
             Iterator itr = subclasses.iterator();
@@ -583,7 +591,7 @@ public class RadLex2EMFDynamicMapHolders {
                  */
                 String childConceptCode = getConceptCodeFromObj(o);
                 if (childConceptCode != null) {
-                    AssociationTarget aT = relationsFactory.createAssociationTarget();
+                    AssociationTarget aT = new AssociationTarget();
                     aT.setTargetEntityCode(childConceptCode);
                     RelationsUtil.subsume(aI, aT);
                 }
@@ -601,10 +609,10 @@ public class RadLex2EMFDynamicMapHolders {
                 return;
             }
             
-            AssociationSource aI = relationsFactory.createAssociationSource();
+            AssociationSource aI = new AssociationSource();
             aI.setSourceEntityCode(parentConceptcode);
             aI = RelationsUtil.subsume(hasSubTypeAssocClass_, aI);
-            AssociationTarget aT = relationsFactory.createAssociationTarget();
+            AssociationTarget aT = new AssociationTarget();
             aT.setTargetEntityCode(childConceptCode);
             RelationsUtil.subsume(aI, aT);
         }
@@ -835,7 +843,7 @@ public class RadLex2EMFDynamicMapHolders {
 
     private void addPresentationToConcept(Concept con, String value, String slotName, String code) {
         boolean foundSome = false;
-        List tps = con.getPresentation();
+        List tps = Arrays.asList(con.getPresentation());
         if ((tps != null) && (tps.size() > 0)) {
             Iterator itr = tps.iterator();
 
@@ -843,7 +851,7 @@ public class RadLex2EMFDynamicMapHolders {
                 Object ob = itr.next();
 
                 if (ob instanceof Presentation) {
-                    if (value.equals(((Presentation) ob).getValue().getValue())) {
+                    if (value.equals(((Presentation) ob).getValue().getContent())) {
                         foundSome = true;
                         if (slotName.equals(RadLex2EMFConstants.SLOT_Radlex_PREFERRED_NAME))
                             ((Presentation) ob).setIsPreferred(new Boolean(true));
@@ -854,9 +862,9 @@ public class RadLex2EMFDynamicMapHolders {
 
         if (!foundSome) 
         {
-            Presentation tp = conceptFactory.createPresentation();
-            Text txt = CommontypesFactory.eINSTANCE.createText();
-            txt.setValue((String) value);
+            Presentation tp = new Presentation();
+            Text txt = new Text();
+            txt.setContent((String) value);
             tp.setValue(txt);
 
             if (slotName.equals(RadLex2EMFConstants.SLOT_Radlex_PREFERRED_NAME))
@@ -967,7 +975,7 @@ public class RadLex2EMFDynamicMapHolders {
             if (!properties_.contains(property))
                 properties_.add(property);
 
-            Property pc = CommontypesFactory.eINSTANCE.createProperty();
+            Property pc = new Property();
             pc.setPropertyName(property);
           //TODO: Deepak:Find if the slot's code with RadLex_ID exists and then use its code if present
             pc.setPropertyId(RadLex2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
@@ -977,19 +985,20 @@ public class RadLex2EMFDynamicMapHolders {
             if (RadLex2EMFUtils.isNull(value))
                 return;
 
-            Text txt = CommontypesFactory.eINSTANCE.createText();
-            txt.setValue((String) value);
+            Text txt = new Text();
+            txt.setContent((String) value);
             pc.setValue(txt);
 
-            con.getProperty().add(pc);
+            con.addProperty(pc);
         } catch (Exception e) {
             System.out.println("Failed while getting value for property for Slot=" + slot.getName());
         }
     }
 
-    private void addAssociationBetweenSourcesAndInstances(String sourceCode, org.LexGrid.emf.concepts.Instance inst, String relation)
+    private void addAssociationBetweenSourcesAndInstances(String sourceCode, org.LexGrid.concepts.Instance inst, String relation)
     {
-        Association assocClass = null;
+        AssociationPredicate assocClass = null;
+        AssociationEntity assocEntityClass = null;
 
         if ((RadLex2EMFUtils.isNull(sourceCode))||
             (RadLex2EMFUtils.isNull(relation))||
@@ -1003,19 +1012,24 @@ public class RadLex2EMFDynamicMapHolders {
             // See if this is already processed relation
             if (associationHash_.containsKey(relation)) {
                 Object associationHashValue = associationHash_.get(relation);
+                Object associationEntityHashValue = associationEntityHash_.get(relation);
 
-                if (!(associationHashValue instanceof Association)) 
+                if (!(associationHashValue instanceof AssociationPredicate)) 
                 {
                     return;
                 }
 
-                assocClass = (Association) associationHashValue;
+                assocClass = (AssociationPredicate) associationHashValue;
+                assocEntityClass = (AssociationEntity)associationEntityHashValue;
             } 
             else 
             {
-                assocClass = relationsFactory.createAssociation();
-                assocClass.setEntityCode(relation);
-                assocClass.setForwardName(relation);
+                assocClass = new AssociationPredicate();
+                assocClass.setAssociationName(relation);
+                
+                assocEntityClass = new AssociationEntity();
+                assocEntityClass.setEntityCode(relation);
+                assocEntityClass.setForwardName(relation);
                 createdNew = true;
             }
             
@@ -1023,7 +1037,7 @@ public class RadLex2EMFDynamicMapHolders {
             
             if (!createdNew)
             {
-                List asources = assocClass.getSource();
+                List asources = Arrays.asList(assocClass.getSource());
                 
                 if ((asources != null)&&(!asources.isEmpty()))
                 {
@@ -1041,13 +1055,13 @@ public class RadLex2EMFDynamicMapHolders {
             
             if (aI == null)
             {
-                aI = relationsFactory.createAssociationSource();
+                aI = new AssociationSource();
                 aI.setSourceEntityCode(sourceCode);
             }
             
-            AssociationTarget aT = relationsFactory.createAssociationTarget();
+            AssociationTarget aT = new AssociationTarget();
             aT.setTargetEntityCode(inst.getEntityCode());
-            aI.getTarget().add(aT);
+            aI.addTarget(aT);
             RelationsUtil.subsume(assocClass, aI);
             
             //System.out.println("Added [" + sourceCode + "] -> [" + relation + "] -> [" + inst.getEntityCode() + "]");
@@ -1059,6 +1073,7 @@ public class RadLex2EMFDynamicMapHolders {
                     associations_.add(relation);
 
                 associationHash_.put(relation, assocClass);
+                associationEntityHash_.put(relation, assocEntityClass);
             }
         }
         catch (Exception e) 
@@ -1081,7 +1096,9 @@ public class RadLex2EMFDynamicMapHolders {
             if (RadLex2EMFUtils.isNull(relation))
                 return;
 
-            Association assocClass = null;
+            AssociationPredicate assocClass = null;
+            AssociationEntity assocEntityClass = null;
+            
             boolean createdNew = false;
             boolean isReverseDirection = false;
 
@@ -1089,23 +1106,26 @@ public class RadLex2EMFDynamicMapHolders {
                 // See if this is already processed relation
                 if (associationHash_.containsKey(relation)) {
                     Object associationHashValue = associationHash_.get(relation);
+                    Object associationEntityHashValue = associationEntityHash_.get(relation);
 
-                    if (!(associationHashValue instanceof Association)) {
+                    if (!(associationHashValue instanceof AssociationPredicate)) {
                         return;
                     }
 
-                    assocClass = (Association) associationHashValue;
+                    assocClass = (AssociationPredicate) associationHashValue;
+                    assocEntityClass = (AssociationEntity) associationEntityHashValue;
                 } else {
                     // May be this is a reverse of an already processed relation
                     if (associationRevHash_.containsKey(relation)) {
                         Object associationHashValue = associationRevHash_.get(relation);
+                        Object associationEntityHashValue = associationEntityHash_.get(relation);
 
-                        if (!(associationHashValue instanceof Association)) {
+                        if (!(associationHashValue instanceof AssociationPredicate)) {
                             return;
                         }
 
-                        assocClass = (Association) associationHashValue;
-
+                        assocClass = (AssociationPredicate) associationHashValue;
+                        assocEntityClass = (AssociationEntity) associationEntityHashValue;
                         isReverseDirection = true;
                     } else {
                         String originalRevName = null;
@@ -1121,12 +1141,15 @@ public class RadLex2EMFDynamicMapHolders {
                         // inverseRelation = getIneverseRelationName(slot,
                         // relation);
 
-                        assocClass = relationsFactory.createAssociation();
-                        assocClass.setEntityCode(relation);
-                        assocClass.setForwardName(relation);
+                        assocClass = new AssociationPredicate();
+                        assocClass.setAssociationName(relation);
+                        
+                        assocEntityClass = new AssociationEntity();
+                        assocEntityClass.setEntityCode(relation);
+                        assocEntityClass.setForwardName(relation);
 
                         if (!RadLex2EMFUtils.isNull(originalRevName))
-                            assocClass.setReverseName(originalRevName);
+                            assocEntityClass.setReverseName(originalRevName);
 
                         createdNew = true;
                     }
@@ -1173,16 +1196,16 @@ public class RadLex2EMFDynamicMapHolders {
 
                             if (!RadLex2EMFUtils.isNull(stringValue)) {
                                 if ((ValueType.CLS.equals(vT)) || (ValueType.INSTANCE.equals(vT))) {
-                                    AssociationTarget aT = relationsFactory.createAssociationTarget();
+                                    AssociationTarget aT = new AssociationTarget();
                                     aT.setTargetEntityCode(stringValue);
                                     valVector.add(aT);
                                 } else {
-                                    AssociationData aD = relationsFactory.createAssociationData();
+                                    AssociationData aD = new AssociationData();
                                     String dataType = getCorrectDataType(vT);
                                     // aD.setDataType(dataType);
                                     // aD.setDataId(dataType);
-                                    Text txt = CommontypesFactory.eINSTANCE.createText();
-                                    txt.setValue(stringValue);
+                                    Text txt = new Text();
+                                    txt.setContent(stringValue);
                                     txt.setDataType(dataType);
                                     aD.setAssociationDataText(txt);
                                     valVector.add(aD);
@@ -1195,13 +1218,13 @@ public class RadLex2EMFDynamicMapHolders {
 
                         if (!isReverseDirection) {
                             // Relation is same as forward name
-                            AssociationSource aI = relationsFactory.createAssociationSource();
+                            AssociationSource aI = new AssociationSource();
 
                             List tc = null;
                             if ((ValueType.CLS.equals(vT)) || (ValueType.INSTANCE.equals(vT))) {
-                                tc = aI.getTarget();
+                                tc = Arrays.asList(aI.getTarget());
                             } else {
-                                tc = aI.getTargetData();
+                                tc = Arrays.asList(aI.getTargetData());
                             }
 
                             aI.setSourceEntityCode(con.getEntityCode());
@@ -1215,10 +1238,10 @@ public class RadLex2EMFDynamicMapHolders {
                             // Relation is same as reverse name
                             if ((ValueType.CLS.equals(vT)) || (ValueType.INSTANCE.equals(vT))) {
                                 for (int i = 0; i < valVector.size(); i++) {
-                                    AssociationSource aI = relationsFactory.createAssociationSource();
+                                    AssociationSource aI = new AssociationSource();
                                     aI.setSourceEntityCode(((AssociationTarget) valVector.elementAt(i))
                                             .getTargetEntityCode());
-                                    AssociationTarget aT2 = relationsFactory.createAssociationTarget();
+                                    AssociationTarget aT2 = new AssociationTarget();
                                     aT2.setTargetEntityCode(con.getEntityCode());
                                     RelationsUtil.subsume(aI, aT2);
                                     // assocClass.getSource().add(aI);
@@ -1236,6 +1259,7 @@ public class RadLex2EMFDynamicMapHolders {
                         associations_.add(relation);
 
                     associationHash_.put(relation, assocClass);
+                    associationEntityHash_.put(relation, assocEntityClass);
                     if (inverseRelation != null)
                         associationRevHash_.put(inverseRelation, assocClass);
                 }
@@ -1370,9 +1394,9 @@ public class RadLex2EMFDynamicMapHolders {
             
             if (!RadLex2EMFUtils.isNull(comment1)) 
             {
-                cmt1 = conceptFactory.createComment();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue(RadLex2EMFUtils.removeInvalidXMLCharacters(comment1, concept.getName()));
+                cmt1 = new Comment();
+                Text txt = new Text();
+                txt.setContent(RadLex2EMFUtils.removeInvalidXMLCharacters(comment1, concept.getName()));
                 cmt1.setValue(txt);
                 cmt1.setPropertyName(RadLex2EMFConstants.PROPERTY_COMMENT);
                 cmt1.setPropertyId(RadLex2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
@@ -1382,9 +1406,9 @@ public class RadLex2EMFDynamicMapHolders {
             
             if (!RadLex2EMFUtils.isNull(comment2)) 
             {
-                cmt2 = conceptFactory.createComment();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue(RadLex2EMFUtils.removeInvalidXMLCharacters(comment2, concept.getName()));
+                cmt2 = new Comment();
+                Text txt = new Text();
+                txt.setContent(RadLex2EMFUtils.removeInvalidXMLCharacters(comment2, concept.getName()));
                 cmt2.setValue(txt);
                 cmt2.setPropertyName(RadLex2EMFConstants.PROPERTY_COMMENT);
                 cmt2.setPropertyId(RadLex2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
@@ -1411,9 +1435,9 @@ public class RadLex2EMFDynamicMapHolders {
             
             if (!RadLex2EMFUtils.isNull(comment1)) 
             {
-                cmt1 = conceptFactory.createComment();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue(RadLex2EMFUtils.removeInvalidXMLCharacters(comment1, concept.getName()));
+                cmt1 = new Comment();
+                Text txt = new Text();
+                txt.setContent(RadLex2EMFUtils.removeInvalidXMLCharacters(comment1, concept.getName()));
                 cmt1.setValue(txt);
                 cmt1.setPropertyName(RadLex2EMFConstants.PROPERTY_COMMENT);
                 cmt1.setPropertyId(RadLex2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
@@ -1423,9 +1447,9 @@ public class RadLex2EMFDynamicMapHolders {
             
             if (!RadLex2EMFUtils.isNull(comment2)) 
             {
-                cmt2 = conceptFactory.createComment();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue(RadLex2EMFUtils.removeInvalidXMLCharacters(comment2, concept.getName()));
+                cmt2 = new Comment();
+                Text txt = new Text();
+                txt.setContent(RadLex2EMFUtils.removeInvalidXMLCharacters(comment2, concept.getName()));
                 cmt2.setValue(txt);
                 cmt2.setPropertyName(RadLex2EMFConstants.PROPERTY_COMMENT);
                 cmt2.setPropertyId(RadLex2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
@@ -1452,9 +1476,9 @@ public class RadLex2EMFDynamicMapHolders {
             
             if (!RadLex2EMFUtils.isNull(comment1)) 
             {
-                cmt1 = conceptFactory.createComment();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue(RadLex2EMFUtils.removeInvalidXMLCharacters(comment1, concept.getName()));
+                cmt1 = new Comment();
+                Text txt = new Text();
+                txt.setContent(RadLex2EMFUtils.removeInvalidXMLCharacters(comment1, concept.getName()));
                 cmt1.setValue(txt);
                 cmt1.setPropertyName(RadLex2EMFConstants.PROPERTY_COMMENT);
                 cmt1.setPropertyId(RadLex2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
@@ -1464,9 +1488,9 @@ public class RadLex2EMFDynamicMapHolders {
             
             if (!RadLex2EMFUtils.isNull(comment2)) 
             {
-                cmt2 = conceptFactory.createComment();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue(RadLex2EMFUtils.removeInvalidXMLCharacters(comment2, concept.getName()));
+                cmt2 = new Comment();
+                Text txt = new Text();
+                txt.setContent(RadLex2EMFUtils.removeInvalidXMLCharacters(comment2, concept.getName()));
                 cmt2.setValue(txt);
                 cmt2.setPropertyName(RadLex2EMFConstants.PROPERTY_COMMENT);
                 cmt2.setPropertyId(RadLex2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
@@ -1499,9 +1523,9 @@ public class RadLex2EMFDynamicMapHolders {
             String definition = (String) concept.getOwnSlotValue(kb_.getSlot(RadLex2EMFConstants.SLOT_DEFINITION));
 
             if (definition != null) {
-                Definition def = conceptFactory.createDefinition();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue(RadLex2EMFUtils.removeInvalidXMLCharacters(definition, concept.getName()));
+                Definition def = new Definition();
+                Text txt = new Text();
+                txt.setContent(RadLex2EMFUtils.removeInvalidXMLCharacters(definition, concept.getName()));
                 def.setValue(txt);
                 def.setPropertyName(RadLex2EMFConstants.PROPERTY_DEFINITION);
                 def.setPropertyId(RadLex2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
@@ -1520,9 +1544,9 @@ public class RadLex2EMFDynamicMapHolders {
             String definition = (String) concept.getOwnSlotValue(kb_.getSlot(RadLex2EMFConstants.SLOT_DEFINITION));
 
             if (definition != null) {
-                Definition def = conceptFactory.createDefinition();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue(RadLex2EMFUtils.removeInvalidXMLCharacters(definition, concept.getName()));
+                Definition def = new Definition();
+                Text txt = new Text();
+                txt.setContent(RadLex2EMFUtils.removeInvalidXMLCharacters(definition, concept.getName()));
                 def.setValue(txt);
                 def.setPropertyName(RadLex2EMFConstants.PROPERTY_DEFINITION);
                 def.setPropertyId(RadLex2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
@@ -1541,9 +1565,9 @@ public class RadLex2EMFDynamicMapHolders {
             String definition = (String) concept.getOwnSlotValue(kb_.getSlot(RadLex2EMFConstants.SLOT_DEFINITION));
 
             if (definition != null) {
-                Definition def = conceptFactory.createDefinition();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue(RadLex2EMFUtils.removeInvalidXMLCharacters(definition, concept.getName()));
+                Definition def = new Definition();
+                Text txt = new Text();
+                txt.setContent(RadLex2EMFUtils.removeInvalidXMLCharacters(definition, concept.getName()));
                 def.setValue(txt);
                 def.setPropertyName(RadLex2EMFConstants.PROPERTY_DEFINITION);
                 def.setPropertyId(RadLex2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
@@ -1561,7 +1585,7 @@ public class RadLex2EMFDynamicMapHolders {
         if (csclass == null)
             return;
 
-        List suppProps = csclass.getMappings().getSupportedProperty();
+        List suppProps = Arrays.asList(csclass.getMappings().getSupportedProperty());
 
         try {
             if (properties_.size() > 0) {
@@ -1569,7 +1593,7 @@ public class RadLex2EMFDynamicMapHolders {
                     String prp = (String) properties_.elementAt(i);
 
                     if (!RadLex2EMFUtils.isNull(prp)) {
-                        SupportedProperty suppProp = nameFactory.createSupportedProperty();
+                        SupportedProperty suppProp = new SupportedProperty();
 
                         if ((!RadLex2EMFConstants.PROPERTY_COMMENT.equals(prp))
                                 && (!RadLex2EMFConstants.PROPERTY_DEFINITION.equals(prp))
@@ -1593,7 +1617,7 @@ public class RadLex2EMFDynamicMapHolders {
             if (csclass == null)
                 return;
 
-            List suppAssoc = csclass.getMappings().getSupportedAssociation();
+            List suppAssoc = Arrays.asList(csclass.getMappings().getSupportedAssociation());
 
             int assocSize = associations_.size();
             int assocAliasSize = associationsAliases_.size();
@@ -1604,7 +1628,7 @@ public class RadLex2EMFDynamicMapHolders {
                     for (int i = 0; i < assocSize; i++) {
                         String sA = (String) associations_.elementAt(i);
                         if (!RadLex2EMFUtils.isNull(sA)) {
-                            SupportedAssociation suppAss = nameFactory.createSupportedAssociation();
+                            SupportedAssociation suppAss = new SupportedAssociation();
                             suppAss.setUri(RadLex2EMFUtils.getWithRadlexURN(sA));
                             suppAss.setLocalId(RadLex2EMFUtils.toNMToken(sA));
                             suppAssoc.add(suppAss);
@@ -1619,7 +1643,7 @@ public class RadLex2EMFDynamicMapHolders {
 
                         if ((ali != null) && (ali.length > 1)) {
                             if (!RadLex2EMFUtils.isNull(ali[1])) {
-                                SupportedAssociation suppAss = nameFactory.createSupportedAssociation();
+                                SupportedAssociation suppAss = new SupportedAssociation();
                                 suppAss.setUri(RadLex2EMFUtils.getWithRadlexURN(ali[0]));
                                 suppAss.setLocalId(RadLex2EMFUtils.toNMToken(ali[1]));
                                 suppAssoc.add(suppAss);
@@ -1638,7 +1662,7 @@ public class RadLex2EMFDynamicMapHolders {
         if (csclass == null)
             return;
 
-        List suppSrcs = csclass.getMappings().getSupportedSource();
+        List suppSrcs = Arrays.asList(csclass.getMappings().getSupportedSource());
 
         try {
             int srcsSize = sources_.size();
@@ -1649,7 +1673,7 @@ public class RadLex2EMFDynamicMapHolders {
                         String src = (String) sources_.elementAt(i);
 
                         if (!RadLex2EMFUtils.isNull(src)) {
-                            SupportedSource suppSrc = nameFactory.createSupportedSource();
+                            SupportedSource suppSrc = new SupportedSource();
                             suppSrc.setUri(RadLex2EMFUtils.getWithRadlexURN(src));
                             suppSrc.setLocalId(RadLex2EMFUtils.toNMToken(src));
                             suppSrcs.add(suppSrc);
@@ -1667,7 +1691,7 @@ public class RadLex2EMFDynamicMapHolders {
         if (csclass == null)
             return;
 
-        List suppRepf = csclass.getMappings().getSupportedRepresentationalForm();
+        List suppRepf = Arrays.asList(csclass.getMappings().getSupportedRepresentationalForm());
 
         try {
             int repfSize = representationalForms_.size();
@@ -1678,7 +1702,7 @@ public class RadLex2EMFDynamicMapHolders {
                         String rep = (String) representationalForms_.elementAt(i);
 
                         if (!RadLex2EMFUtils.isNull(rep)) {
-                            SupportedRepresentationalForm suppRpf = nameFactory.createSupportedRepresentationalForm();
+                            SupportedRepresentationalForm suppRpf = new SupportedRepresentationalForm();
                             suppRpf.setUri(RadLex2EMFUtils.getWithRadlexURN(rep));
                             suppRpf.setLocalId(RadLex2EMFUtils.toNMToken(rep));
                             suppRepf.add(suppRpf);

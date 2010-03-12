@@ -25,15 +25,11 @@ import java.util.List;
 import java.util.Vector;
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
-import org.LexGrid.emf.codingSchemes.CodingScheme;
-import org.LexGrid.emf.codingSchemes.CodingschemesFactory;
-import org.LexGrid.emf.codingSchemes.impl.CodingschemesFactoryImpl;
-import org.LexGrid.emf.naming.Mappings;
-import org.LexGrid.emf.naming.NamingFactory;
-import org.LexGrid.emf.naming.SupportedCodingScheme;
-import org.LexGrid.emf.naming.SupportedDataType;
-import org.LexGrid.emf.naming.SupportedLanguage;
-import org.LexGrid.emf.naming.impl.NamingFactoryImpl;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedDataType;
+import org.LexGrid.naming.SupportedLanguage;
 
 import edu.stanford.smi.protege.model.KnowledgeBase;
 import edu.stanford.smi.protege.model.Slot;
@@ -48,12 +44,10 @@ public class RadLex2EMFStaticMapHolders {
     private static Vector properties = new Vector();
     private static Vector association = new Vector();
 
-    private NamingFactory nameFactory = null;
-    private CodingschemesFactory csFactory = new CodingschemesFactoryImpl();
     private LgMessageDirectorIF messages_;
 
     private void init(KnowledgeBase kb) {
-        nameFactory = new NamingFactoryImpl();
+     
     }
 
     private void prepareSupportedLanguages(List suppLang, KnowledgeBase kb) {
@@ -75,7 +69,7 @@ public class RadLex2EMFStaticMapHolders {
                             String val = (String) itr.next();
 
                             if (!RadLex2EMFUtils.isNull(val)) {
-                                SupportedLanguage lang = nameFactory.createSupportedLanguage();
+                                SupportedLanguage lang = new SupportedLanguage();
                                 lang.setLocalId(val);
                                 lang.setUri(getLanguageURN(val));
 
@@ -89,7 +83,7 @@ public class RadLex2EMFStaticMapHolders {
             }
 
             if (!languagesFound) {
-                SupportedLanguage lang = nameFactory.createSupportedLanguage();
+                SupportedLanguage lang = new SupportedLanguage();
                 lang.setLocalId(RadLex2EMFConstants.LANG_ENGLISH);
                 lang.setUri(RadLex2EMFConstants.LANG_ENGLISH_URN);
                 suppLang.add(lang);
@@ -110,8 +104,8 @@ public class RadLex2EMFStaticMapHolders {
 
     private void prepareSupportedCodingScheme(CodingScheme csclass) {
         try {
-            List suppCodingScheme = csclass.getMappings().getSupportedCodingScheme();
-            SupportedCodingScheme scs = nameFactory.createSupportedCodingScheme();
+            List suppCodingScheme = Arrays.asList(csclass.getMappings().getSupportedCodingScheme());
+            SupportedCodingScheme scs = new SupportedCodingScheme();
             scs.setLocalId(csclass.getCodingSchemeName());
             scs.setUri(csclass.getCodingSchemeURI());
             suppCodingScheme.add(scs);
@@ -122,11 +116,11 @@ public class RadLex2EMFStaticMapHolders {
     
     public void prepareSupportedHierarchy(CodingScheme csclass) {
         try {
-            List suppHierarchy = csclass.getMappings().getSupportedHierarchy();
-            org.LexGrid.emf.naming.SupportedHierarchy shr = nameFactory.createSupportedHierarchy();
+            List suppHierarchy = Arrays.asList(csclass.getMappings().getSupportedHierarchy());
+            org.LexGrid.naming.SupportedHierarchy shr = new org.LexGrid.naming.SupportedHierarchy();
             shr.setLocalId(RadLex2EMFConstants.SUPP_HIERARCHY_ISA);
             shr.setUri(RadLex2EMFConstants.SUPP_HIERARCHY_ISA_URI);
-            shr.setValue(RadLex2EMFConstants.SUPP_HIERARCHY_ISA);
+            shr.setContent(RadLex2EMFConstants.SUPP_HIERARCHY_ISA);
             shr.setIsForwardNavigable(true);
             shr.setRootCode(RadLex2EMFConstants.ROOT_CODE);
             suppHierarchy.add(shr);
@@ -138,7 +132,7 @@ public class RadLex2EMFStaticMapHolders {
     }
 
     private void prepareSupportedFormats(List suppFmt) {
-        SupportedDataType fmt = nameFactory.createSupportedDataType();
+        SupportedDataType fmt = new SupportedDataType();
         fmt.setLocalId(RadLex2EMFConstants.PLAIN_FORMAT);
         fmt.setUri(RadLex2EMFConstants.PLAIN_FORMAT_URN);
         suppFmt.add(fmt);
@@ -149,19 +143,19 @@ public class RadLex2EMFStaticMapHolders {
         try {
             init(kb);
 
-            csclass = csFactory.createCodingScheme();
-            csclass.setMappings((Mappings) nameFactory.createMappings());
+            csclass = new CodingScheme();
+            csclass.setMappings(new Mappings());
             csclass.setCodingSchemeName(RadLex2EMFConstants.CODING_SCHEME_NAME);
             csclass.setFormalName(RadLex2EMFConstants.FORMAL_NAME);
             csclass.setCodingSchemeURI(RadLex2EMFConstants.REGISTERED_NAME);
             csclass.setDefaultLanguage(RadLex2EMFConstants.LANG_ENGLISH);
             csclass.setRepresentsVersion(RadLex2EMFConstants.VERSION);
-            csclass.getLocalName().add(RadLex2EMFConstants.LOCAL_NAME);
+            csclass.addLocalName(RadLex2EMFConstants.LOCAL_NAME);
 
-            List supportedLanguages = csclass.getMappings().getSupportedLanguage();
+            List supportedLanguages = Arrays.asList(csclass.getMappings().getSupportedLanguage());
             prepareSupportedLanguages(supportedLanguages, kb);
 
-            List supportedFormats = csclass.getMappings().getSupportedDataType();
+            List supportedFormats = Arrays.asList(csclass.getMappings().getSupportedDataType());
             prepareSupportedFormats(supportedFormats);
             prepareSupportedCodingScheme(csclass);
             prepareSupportedHierarchy(csclass);

@@ -27,7 +27,7 @@ import java.util.Collection;
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.emf.base.xml.LgXMLResourceImpl;
-import org.LexGrid.emf.codingSchemes.CodingScheme;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 import org.lexevs.logging.messaging.impl.CommandLineMessageDirector;
 
@@ -123,7 +123,7 @@ public class RadLex2EMFMain {
                         radlexAttribs.populateSupportedSources(csclass);
                         radlexAttribs.populateSupportedRepresentationalForms(csclass);
                         radlexAttribs.populateSupportedAssociations(csclass);
-                        csclass.setApproxNumConcepts(radlexAttribs.getApproxNumberOfConcepts());
+                        csclass.setApproxNumConcepts(new Long(radlexAttribs.getApproxNumberOfConcepts()));
                     }
                 }
             } catch (Exception e) {
