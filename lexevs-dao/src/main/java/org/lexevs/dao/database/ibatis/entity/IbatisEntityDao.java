@@ -221,7 +221,6 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.entity.EntityDao#insertBatchEntities(java.lang.String, java.util.List)
 	 */
-	@SuppressWarnings("unchecked")
 	public void insertBatchEntities(final String codingSchemeId, final List<? extends Entity> entities) {
 
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
@@ -273,18 +272,6 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 		bean.setEntity(entity);
 		
 		return bean;
-	}
-	
-	/**
-	 * Builds the entity code namespace paramater map.
-	 * 
-	 * @param entityCode the entity code
-	 * @param entityCodeNamespace the entity code namespace
-	 * 
-	 * @return the insert entity bean
-	 */
-	protected InsertEntityBean buildEntityCodeNamespaceParamaterMap(String entityCode, String entityCodeNamespace){
-		return null;
 	}
 	
 	/* (non-Javadoc)

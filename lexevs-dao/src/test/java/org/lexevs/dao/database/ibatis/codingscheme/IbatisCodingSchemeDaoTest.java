@@ -471,6 +471,25 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertNotNull(returnedCs);
 	}
 	
+	@Test
+	public void testGetCodingSchemeByIdEntryState() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+			template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
+				"values ('csguid', 'csname', 'csuri', 'csversion', 'esguid')");
+		
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+				"values ('rguid', 'rid', NOW() )");
+		
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder) " +
+				"values ('esguid', 'csguid', 'cs', 'NEW', '0')");
+		
+		CodingScheme returnedCs = ibatisCodingSchemeDao.getCodingSchemeByNameAndVersion("csname", "csversion");
+		
+		EntryState es = returnedCs.getEntryState();
+		
+		assertNotNull(es);
+	}
+	
 	/**
 	 * Test get coding scheme id by uri and version.
 	 * 

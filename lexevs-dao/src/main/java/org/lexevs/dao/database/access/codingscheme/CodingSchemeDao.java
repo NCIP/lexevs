@@ -99,7 +99,7 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @return the coding scheme by revision
 	 */
-	public CodingScheme getCodingSchemeByRevision(String codingSchemeName, String version, String revisionId);
+	public CodingScheme getHistoryCodingSchemeByRevision(String codingSchemeId, String revisionId);
 	
 	/**
 	 * Update coding scheme.

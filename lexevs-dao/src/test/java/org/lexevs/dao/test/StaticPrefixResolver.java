@@ -31,7 +31,7 @@ public class StaticPrefixResolver implements PrefixResolver {
 	private String prefix = "";
 	
 	/** The history prefix. */
-	private String historyPrefix = "_h";
+	private String historyPrefix = "h_";
 	
 	/**
 	 * Instantiates a new static prefix resolver.
