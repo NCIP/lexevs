@@ -4,7 +4,7 @@
 <sqlMap namespace="Versions">
 
 	<resultMap id="entryStateResult" class="org.LexGrid.versions.EntryState">
-		<result property="containingRevision" column="revisionGuid" />
+		<result property="containingRevision" column="revisionId" />
 		<result property="relativeOrder" column="relativeOrder" />
 		<result property="changeType" column="changeType" />
 		<result property="prevRevision" column="prevRevisionGuid" />

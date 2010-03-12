@@ -51,14 +51,16 @@
 			attributeType,
 			attributeValue,
 			subRef,
-			role
+			role,
+			entryStateGuid
 		) VALUES (
 			#id#,
 			#codingSchemeId#,
 			#attributeType#,
 			#attributeValue#,
 			#subRef#,
-			#role#
+			#role#,
+			#entryStateId#
 		)
 	</insert>
 

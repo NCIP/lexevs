@@ -36,7 +36,8 @@
 			codingSchemeGuid = #param1#
 	</delete>
 	
-	<select id="getCodingSchemeById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="CodingScheme.codingSchemeResult">
+	
+	<sql id="getCodingSchemeFragment">
 		SELECT
 			cs.codingSchemeGuid,
 			cs.codingSchemeName,
@@ -57,6 +58,7 @@
 			es.revisionGuid,
 			es.prevRevisionGuid,
 			rev.revisionGuid,
+			rev.revisionId,
 			csma.*
 		FROM
 			$prefix$codingScheme cs
@@ -75,7 +77,57 @@
 			$prefix$csMultiAttrib as csma
 		ON
 			csma.codingSchemeGuid = cs.codingSchemeGuid
-
+	</sql>
+	
+	<sql id="getHistoryCodingSchemeFragment">
+		SELECT
+			cs.codingSchemeGuid,
+			cs.codingSchemeName,
+			cs.codingSchemeUri,
+			cs.representsVersion,
+			cs.formalName,
+			cs.defaultLanguage,
+			cs.approxNumConcepts,
+			cs.description,
+			cs.copyright,
+			cs.isActive,
+			cs.owner,
+			cs.status,
+			cs.effectiveDate,
+			cs.expirationDate,
+			es.changeType,
+			es.relativeOrder,
+			es.revisionGuid,
+			es.prevRevisionGuid,
+			rev.revisionGuid,
+			rev.revisionId,
+			csma.*
+		FROM
+			$prefix$h_codingScheme cs
+			
+		LEFT JOIN
+			$prefix$entryState es
+		ON
+			cs.entryStateGuid = es.entryStateGuid
+			
+		LEFT JOIN
+			$prefix$revision as rev
+		ON
+			es.revisionGuid = rev.revisionGuid
+			
+		LEFT OUTER JOIN
+			$prefix$h_csMultiAttrib as csma
+		ON
+			(
+				csma.codingSchemeGuid = cs.codingSchemeGuid
+				AND
+				csma.entryStateGuid = cs.entryStateGuid	
+			)
+	</sql>
+	
+	
+	<select id="getCodingSchemeById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="CodingScheme.codingSchemeResult">
+		<include refid="getCodingSchemeFragment"/>
 		WHERE
 			cs.codingSchemeGuid = #param1#
 
@@ -99,43 +151,19 @@
 	</select>
 	
 	<select id="getCodingSchemeByNameAndVersion" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="codingSchemeResult">
-		SELECT
-			codingSchemeGuid,
-			codingSchemeName,
-			codingSchemeUri,
-			representsVersion,
-			formalName,
-			defaultLanguage,
-			approxNumConcepts,
-			description,
-			copyright,
-			isActive,
-			owner,
-			status,
-			effectiveDate,
-			expirationDate,
-			es.changeType,
-			es.relativeOrder,
-			es.revisionGuid,
-			es.prevRevisionGuid,
-			rev.revisionGuid
-		FROM
-			$prefix$codingScheme cs
-			
-		LEFT JOIN
-			$prefix$entryState es
-		ON
-			cs.entryStateGuid = es.entryStateGuid
-			
-		LEFT JOIN
-			$prefix$revision as rev
-		ON
-			es.revisionGuid = rev.revisionGuid
-
+		<include refid="getCodingSchemeFragment"/>
 		WHERE
 			cs.codingSchemeName = #param1#
 		AND
 			cs.representsVersion = #param2#
+     </select>
+     
+     <select id="getCodingSchemeByIdAndRevisionId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="codingSchemeResult">
+		<include refid="getHistoryCodingSchemeFragment"/>
+		WHERE
+			cs.codingSchemeGuid = #param1#
+		AND
+			rev.revisionGuid = #param2#	
      </select>
      
      <select id="getCodingSchemeIdByNameAndVersion" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
