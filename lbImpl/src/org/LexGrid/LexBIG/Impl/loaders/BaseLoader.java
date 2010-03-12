@@ -66,6 +66,7 @@ import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
+import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 import edu.mayo.informatics.lexgrid.convert.options.DefaultOptionHolder;
 import edu.mayo.informatics.lexgrid.convert.options.StringArrayOption;
 import edu.mayo.informatics.lexgrid.convert.options.URIOption;
@@ -88,7 +89,10 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     // concept count value when
     // they finish loading something
     
-    private static String LOADER_POST_PROCESSOR_OPTION = "Loader Post Processor (Extension Name)";
+    public static String LOADER_POST_PROCESSOR_OPTION = "Loader Post Processor (Extension Name)";
+    public static String MANIFEST_FILE_OPTION = "Manifest File";
+    public static String LOADER_PREFERENCE_FILE_OPTION = "Loader Preferences File";
+    public static String ASYNC_OPTION = "Async Load";
     
     private AbsoluteCodingSchemeVersionReference[] codingSchemeReferences
         = new AbsoluteCodingSchemeVersionReference[0];
@@ -114,12 +118,12 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     
     public BaseLoader(){
         OptionHolder holder = new DefaultOptionHolder();
-        URIOption manifiestOption = new URIOption("Manifest File");
+        URIOption manifiestOption = new URIOption(MANIFEST_FILE_OPTION);
         manifiestOption.addAllowedFileExtensions("*.xml");
         
         holder.getURIOptions().add(manifiestOption);
         
-        URIOption loaderPreferencesOption = new URIOption("Loader Preferences File");
+        URIOption loaderPreferencesOption = new URIOption(LOADER_PREFERENCE_FILE_OPTION);
         loaderPreferencesOption.addAllowedFileExtensions("*.xml");
         
         holder.getURIOptions().add(loaderPreferencesOption);
@@ -128,6 +132,9 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         loaderPostProcessorOption.getOptionValue().add(ApproxNumOfConceptsPostProcessor.EXTENSION_NAME);
         loaderPostProcessorOption.getOptionValue().add(SupportedAttributePostProcessor.EXTENSION_NAME);
         holder.getStringArrayOptions().add(loaderPostProcessorOption);
+        
+        BooleanOption asyncOption = new BooleanOption(ASYNC_OPTION, true);
+        holder.getBooleanOptions().add(asyncOption);
         
         this.options_= this.declareAllowedOptions(holder);
     }
@@ -649,7 +656,8 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     public void load(URI resource){
         this.resourceUri = resource;
         try {
-            baseLoad(true);
+            boolean async = this.getOptions().getBooleanOption(ASYNC_OPTION).getOptionValue();
+            baseLoad(async);
         } catch (LBInvocationException e) {
             throw new RuntimeException(e);
         }
