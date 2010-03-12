@@ -18,33 +18,33 @@
  */
 package edu.mayo.informatics.lexgrid.convert.emfConversions.fma;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import org.LexGrid.emf.codingSchemes.CodingScheme;
-import org.LexGrid.emf.commonTypes.CommontypesFactory;
-import org.LexGrid.emf.commonTypes.Property;
-import org.LexGrid.emf.commonTypes.Text;
-import org.LexGrid.emf.concepts.Comment;
-import org.LexGrid.emf.concepts.Concept;
-import org.LexGrid.emf.concepts.ConceptsFactory;
-import org.LexGrid.emf.concepts.Definition;
-import org.LexGrid.emf.concepts.Entities;
-import org.LexGrid.emf.concepts.Presentation;
-import org.LexGrid.emf.naming.NamingFactory;
-import org.LexGrid.emf.naming.SupportedAssociation;
-import org.LexGrid.emf.naming.SupportedProperty;
-import org.LexGrid.emf.naming.SupportedRepresentationalForm;
-import org.LexGrid.emf.naming.SupportedSource;
-import org.LexGrid.emf.relations.Association;
-import org.LexGrid.emf.relations.AssociationData;
-import org.LexGrid.emf.relations.AssociationSource;
-import org.LexGrid.emf.relations.AssociationTarget;
-import org.LexGrid.emf.relations.Relations;
-import org.LexGrid.emf.relations.RelationsFactory;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.Text;
+import org.LexGrid.concepts.Comment;
+import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.concepts.Concept;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Presentation;
+import org.LexGrid.naming.SupportedAssociation;
+import org.LexGrid.naming.SupportedProperty;
+import org.LexGrid.naming.SupportedRepresentationalForm;
+import org.LexGrid.naming.SupportedSource;
+import org.LexGrid.relations.AssociationPredicate;
+import org.LexGrid.relations.AssociationEntity;
+import org.LexGrid.relations.AssociationData;
+import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.AssociationTarget;
+import org.LexGrid.relations.Relations;
 import org.LexGrid.emf.relations.util.RelationsUtil;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 
@@ -75,18 +75,17 @@ public class FMA2EMFDynamicMapHolders {
     private Vector associationsAliases_ = null;
     private Vector relations_ = new Vector();
 
-    private Hashtable associationHash_ = new Hashtable();
+    private Hashtable associationPredicateHash_ = new Hashtable();
+    private Hashtable associationEntityHash_ = new Hashtable();
 
     private long propertyCounter = 0;
 
     private KnowledgeBase kb_;
 
     /** ****************************** */
-    private RelationsFactory relationsFactory = RelationsFactory.eINSTANCE;
-    private ConceptsFactory conceptFactory = ConceptsFactory.eINSTANCE;
-    private NamingFactory nameFactory = NamingFactory.eINSTANCE;
 
-    private Association hasSubTypeAssocClass_ = null;
+    private AssociationPredicate hasSubTypeAssocClass_ = null;
+    private AssociationEntity hasSubTypeAssocEntityClass_ = null;
     private List firstRelation_ = null;
     private Relations allRelations_ = null;
     private List allAssociations_ = null;
@@ -123,29 +122,30 @@ public class FMA2EMFDynamicMapHolders {
             allConcepts_ = csclass.getEntities();
 
             if (allConcepts_ == null) {
-                allConcepts_ = conceptFactory.createEntities();
+                allConcepts_ = new Entities();
                 csclass.setEntities(allConcepts_);
             }
 
-            allCodedEntries_ = allConcepts_.getEntity();
+            allCodedEntries_ = Arrays.asList(allConcepts_.getEntity());
 
             // Relations
-            allRelations_ = relationsFactory.createRelations();
+            allRelations_ = new Relations();
             allRelations_.setContainerName(SQLTableConstants.TBLCOLVAL_DC_RELATIONS);
 
             // Creating the relation instance
-            firstRelation_ = csclass.getRelations();
+            firstRelation_ = Arrays.asList(csclass.getRelations());
             firstRelation_.add(allRelations_);
-            allAssociations_ = allRelations_.getAssociation();
+            allAssociations_ = Arrays.asList(allRelations_.getAssociationPredicate());
 
             // Add HasSubtype
-            hasSubTypeAssocClass_ = relationsFactory.createAssociation();
-            hasSubTypeAssocClass_.setEntityCode(FMA2EMFConstants.ASSOCIATION_HASSUBTYPE);
-            hasSubTypeAssocClass_.setForwardName(FMA2EMFConstants.ASSOCIATION_HASSUBTYPE);
-            hasSubTypeAssocClass_.setReverseName(FMA2EMFConstants.ASSOCIATION_ISA);
-            hasSubTypeAssocClass_.setIsTransitive(new Boolean(true));
-            hasSubTypeAssocClass_.setIsSymmetric(new Boolean(false));
-            hasSubTypeAssocClass_.setIsReflexive(new Boolean(true));
+            hasSubTypeAssocClass_ = new AssociationPredicate();
+            hasSubTypeAssocClass_.setAssociationName(FMA2EMFConstants.ASSOCIATION_HASSUBTYPE);
+            
+            hasSubTypeAssocEntityClass_ = new AssociationEntity();
+            hasSubTypeAssocEntityClass_.setEntityCode(FMA2EMFConstants.ASSOCIATION_HASSUBTYPE);
+            hasSubTypeAssocEntityClass_.setForwardName(FMA2EMFConstants.ASSOCIATION_HASSUBTYPE);
+            hasSubTypeAssocEntityClass_.setReverseName(FMA2EMFConstants.ASSOCIATION_ISA);
+            hasSubTypeAssocEntityClass_.setIsTransitive(new Boolean(true));
             allAssociations_.add(hasSubTypeAssocClass_);
 
             relations_.add(firstRelation_);
@@ -285,24 +285,26 @@ public class FMA2EMFDynamicMapHolders {
                     propertyCounter = 0;
                     conceptList_.add(conceptCode);
 
-                    Concept con = conceptFactory.createConcept();
+                    Concept con = new Concept();
                     con.setEntityCode(conceptCode);
 
                     String description = getEntityDescriptionFromObj(concept);
                     if (description != null) {
-                        con.setEntityDescription(description);
+                        EntityDescription ed = new EntityDescription();
+                        ed.setContent(description);
+                        con.setEntityDescription(ed);
                         addEntityDescriptionAsPresentation(con);
                     }
 
                     Comment[] comments = getCommentsFromObj(concept);
                     if (comments != null)
                         for (int i = 0; i < comments.length; i++)
-                            con.getComment().add(comments[i]);
+                            con.addComment(comments[i]);
 
                     Definition[] definitions = getDefinitionsFromObj(concept);
                     if (definitions != null)
                         for (int i = 0; i < definitions.length; i++)
-                            con.getDefinition().add(definitions[i]);
+                            con.addDefinition(definitions[i]);
 
                     processSlots(concept, con, false);
 
@@ -349,15 +351,14 @@ public class FMA2EMFDynamicMapHolders {
     }
 
     private void addEntityDescriptionAsPresentation(Concept con) {
-        Presentation tp = conceptFactory.createPresentation();
-        String entityDescription = con.getEntityDescription();
-        Text txt = CommontypesFactory.eINSTANCE.createText();
-        txt.setValue((String) entityDescription);
+        Presentation tp = new Presentation();
+        Text txt = new Text();
+        txt.setContent(con.getEntityDescription().getContent());
 
         tp.setValue(txt);
         tp.setPropertyName(FMA2EMFConstants.PROPERTY_TEXTPRESENTATION);
         tp.setPropertyId(FMA2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
-        con.getPresentation().add(tp);
+        con.addPresentation(tp);
     }
 
     /*
@@ -542,7 +543,7 @@ public class FMA2EMFDynamicMapHolders {
 
     private void addParentChildRelationship(String parentConceptcode, Collection subclasses) {
         if ((subclasses != null) && (subclasses.size() > 0)) {
-            AssociationSource aI = relationsFactory.createAssociationSource();
+            AssociationSource aI = new AssociationSource();
             aI.setSourceEntityCode(parentConceptcode);
             aI = RelationsUtil.subsume(hasSubTypeAssocClass_, aI);
             Iterator itr = subclasses.iterator();
@@ -550,7 +551,7 @@ public class FMA2EMFDynamicMapHolders {
                 Object o = itr.next();
                 String childConceptCode = getConceptCodeFromObj(o);
                 if (childConceptCode != null) {
-                    AssociationTarget aT = relationsFactory.createAssociationTarget();
+                    AssociationTarget aT = new AssociationTarget();
                     aT.setTargetEntityCode(childConceptCode);
                     RelationsUtil.subsume(aI, aT);
                 }
@@ -764,7 +765,7 @@ public class FMA2EMFDynamicMapHolders {
             boolean foundSome = false;
 
             // List tps = con.getProperty();
-            List tps = con.getPresentation();
+            List tps = Arrays.asList(con.getPresentation());
             if ((tps != null) && (tps.size() > 0)) {
                 Iterator itr = tps.iterator();
 
@@ -772,7 +773,7 @@ public class FMA2EMFDynamicMapHolders {
                     Object ob = itr.next();
 
                     if (ob instanceof Presentation) {
-                        if (value.equals(((Presentation) ob).getValue().getValue())) {
+                        if (value.equals(((Presentation) ob).getValue().getContent())) {
                             foundSome = true;
                             if (slotName.equals(FMA2EMFConstants.SLOT_FMA_PREFERRED_NAME))
                                 ((Presentation) ob).setIsPreferred(new Boolean(true));
@@ -782,9 +783,9 @@ public class FMA2EMFDynamicMapHolders {
             }
 
             if (!foundSome) {
-                Presentation tp = conceptFactory.createPresentation();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue((String) value);
+                Presentation tp = new Presentation();
+                Text txt = new Text();
+                txt.setContent((String) value);
                 tp.setValue(txt);
 
                 if (slotName.equals(FMA2EMFConstants.SLOT_FMA_PREFERRED_NAME))
@@ -807,7 +808,7 @@ public class FMA2EMFDynamicMapHolders {
 
             boolean toCreate = true;
 
-            List tps = con.getProperty();
+            List tps = Arrays.asList(con.getProperty());
 
             if ((tps != null) && (tps.size() > 0)) {
                 Iterator itr = tps.iterator();
@@ -823,20 +824,20 @@ public class FMA2EMFDynamicMapHolders {
                             // value of this slot and set Language as "Latin"
                             // Add one if you don't find one.
 
-                            if ((prs.getValue().getValue().equals(value))
-                                    || (prs.getValue().getValue().equals(FMA2EMFConstants.UNKNOWN))) {
+                            if ((prs.getValue().getContent().equals(value))
+                                    || (prs.getValue().getContent().equals(FMA2EMFConstants.UNKNOWN))) {
                                 String lng = prs.getLanguage();
 
                                 if ((!FMA2EMFUtils.isNull(lng)) && (FMA2EMFConstants.LANG_LATIN.equals(lng))) {
-                                    Text txt = CommontypesFactory.eINSTANCE.createText();
-                                    txt.setValue((String) value);
+                                    Text txt = new Text();
+                                    txt.setContent((String) value);
                                     prs.setValue(txt);
                                     toCreate = false;
                                 }
                             }
                         } else {
                             if ("Abbreviation".equalsIgnoreCase(slotName)) {
-                                if (prs.getValue().getValue().equals(value)) {
+                                if (prs.getValue().getContent().equals(value)) {
                                     String rpf = prs.getRepresentationalForm();
 
                                     if (FMA2EMFUtils.isNull(rpf)) {
@@ -853,14 +854,16 @@ public class FMA2EMFDynamicMapHolders {
                                     }
                                 }
                             } else {
-                                if (prs.getValue().getValue().equals(conceptName)) {
+                                if (prs.getValue().getContent().equals(conceptName)) {
                                     if (("authority".equalsIgnoreCase(slotName))
                                             || ("Source".equalsIgnoreCase(slotName))) {
                                         // Go and find a textual representation
                                         // equal with 'conceptName' and set
                                         // source as 'value'
                                         // Add to supported source if not there.
-                                        prs.getSource().add(value);
+                                        Source s = new Source();
+                                        s.setContent(value);
+                                        prs.addSource(s);
                                         if (!sources_.contains(value))
                                             sources_.add(value);
                                         toCreate = false;
@@ -922,13 +925,15 @@ public class FMA2EMFDynamicMapHolders {
             }
 
             if (toCreate) {
-                Presentation tp = conceptFactory.createPresentation();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue((String) conceptName);
+                Presentation tp = new Presentation();
+                Text txt = new Text();
+                txt.setContent((String) conceptName);
                 tp.setValue(txt);
 
                 if (("authority".equalsIgnoreCase(slotName)) || ("Source".equalsIgnoreCase(slotName))) {
-                    tp.getSource().add(value);
+                    Source s = new Source();
+                    s.setContent(value);
+                    tp.addSource(s);
                     if (!sources_.contains(value))
                         sources_.add(value);
                 }
@@ -939,23 +944,23 @@ public class FMA2EMFDynamicMapHolders {
 
                 if ("TA ID".equalsIgnoreCase(slotName)) {
                     tp.setLanguage(FMA2EMFConstants.LANG_LATIN);
-                    txt = CommontypesFactory.eINSTANCE.createText();
-                    txt.setValue((String) FMA2EMFConstants.UNKNOWN);
+                    txt = new Text();
+                    txt.setContent((String) FMA2EMFConstants.UNKNOWN);
                     tp.setValue(txt);
                     tp.setPropertyId(value);
                 } else
                     tp.setPropertyId(FMA2EMFUtils.toNMToken(slotName) + (++propertyCounter));
 
                 if ("Latin name (TA)".equalsIgnoreCase(slotName)) {
-                    txt = CommontypesFactory.eINSTANCE.createText();
-                    txt.setValue((String) value);
+                    txt = new Text();
+                    txt.setContent((String) value);
                     tp.setValue(txt);
                     tp.setLanguage(FMA2EMFConstants.LANG_LATIN);
                 }
 
                 if ("Abbreviation".equalsIgnoreCase(slotName)) {
-                    txt = CommontypesFactory.eINSTANCE.createText();
-                    txt.setValue((String) value);
+                    txt = new Text();
+                    txt.setContent((String) value);
                     tp.setValue(txt);
                     tp.setRepresentationalForm(slotName);
 
@@ -987,7 +992,7 @@ public class FMA2EMFDynamicMapHolders {
             if (!properties_.contains(property))
                 properties_.add(property);
 
-            Property pc = CommontypesFactory.eINSTANCE.createProperty();
+            Property pc = new Property();
             pc.setPropertyName(property);
             pc.setPropertyId(FMA2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
 
@@ -998,11 +1003,11 @@ public class FMA2EMFDynamicMapHolders {
 
             if (FMA2EMFUtils.isNull(value))
                 return;
-            Text txt = CommontypesFactory.eINSTANCE.createText();
-            txt.setValue((String) value);
+            Text txt = new Text();
+            txt.setContent((String) value);
             pc.setValue(txt);
 
-            con.getProperty().add(pc);
+            con.addProperty(pc);
         } catch (Exception e) {
             System.out.println("Failed while getting value for property for Slot=" + slot.getName());
         }
@@ -1016,7 +1021,9 @@ public class FMA2EMFDynamicMapHolders {
             // String relation = FMA2EMFUtils.toNMToken(slot.getName());
 
             String relation = slot.getName();
-            Association assocClass = null;
+            AssociationPredicate assocClass = null;
+            AssociationEntity assocEntityClass = null;
+            
             boolean createdNew = false;
 
             Slot invSlot = null;
@@ -1024,16 +1031,15 @@ public class FMA2EMFDynamicMapHolders {
 
             try {
                 // System.out.println("Processing Relation=" + relation);
-                if (associationHash_.containsKey(relation)) {
-                    Object associationHashValue = associationHash_.get(relation);
-
-                    if (!(associationHashValue instanceof Association)) {
-                        // System.out.println("Relation=" + relation + " is a
-                        // reverse. Skipping it...");
+                if (associationPredicateHash_.containsKey(relation)) {
+                    Object associationHashValue = associationPredicateHash_.get(relation);
+                    Object associationEntityHashValue = associationEntityHash_.get(relation);
+                    if (!(associationHashValue instanceof AssociationPredicate)) {
                         return;
                     }
 
-                    assocClass = (Association) associationHashValue;
+                    assocClass = (AssociationPredicate) associationHashValue;
+                    assocEntityClass = (AssociationEntity) associationEntityHashValue;
                 } else {
                     // Inverse Slot
                     invSlot = kb_.getInverseSlot(slot);
@@ -1055,11 +1061,13 @@ public class FMA2EMFDynamicMapHolders {
                          */
                     }
 
-                    // System.out.println("Creating Relation=" + relation);
-                    assocClass = relationsFactory.createAssociation();
-                    assocClass.setEntityCode(relation);
-                    assocClass.setForwardName(relation);
-                    assocClass.setReverseName(invSlotName);
+                    assocClass = new AssociationPredicate();
+                    assocClass.setAssociationName(relation);
+                    
+                    assocEntityClass = new AssociationEntity();
+                    assocEntityClass.setEntityCode(relation);
+                    assocEntityClass.setForwardName(relation);
+                    assocEntityClass.setReverseName(invSlotName);
                     createdNew = true;
                 }
             } catch (Exception e) {
@@ -1080,7 +1088,7 @@ public class FMA2EMFDynamicMapHolders {
             if (slotCount > 0) {
                 ValueType vT = slot.getValueType();
 
-                AssociationSource aI = relationsFactory.createAssociationSource();
+                AssociationSource aI = new AssociationSource();
                 aI.setSourceEntityCode(con.getEntityCode());
 
                 Vector valVector = new Vector();
@@ -1102,15 +1110,15 @@ public class FMA2EMFDynamicMapHolders {
 
                         if (!FMA2EMFUtils.isNull(stringValue)) {
                             if ((ValueType.CLS.equals(vT)) || (ValueType.INSTANCE.equals(vT))) {
-                                AssociationTarget aT = relationsFactory.createAssociationTarget();
+                                AssociationTarget aT = new AssociationTarget();
                                 aT.setTargetEntityCode(stringValue);
                                 valVector.add(aT);
                             } else {
-                                AssociationData aD = relationsFactory.createAssociationData();
+                                AssociationData aD = new AssociationData();
                                 String dataType = getCorrectDataType(vT);
                                 // aD.setDataType(dataType);
-                                Text txt = CommontypesFactory.eINSTANCE.createText();
-                                txt.setValue((String) stringValue);
+                                Text txt = new Text();
+                                txt.setContent((String) stringValue);
                                 txt.setDataType(dataType);
                                 aD.setAssociationDataText(txt);
                                 valVector.add(aD);
@@ -1122,15 +1130,15 @@ public class FMA2EMFDynamicMapHolders {
                 if (valVector.size() > 0) {
                     List tc = null;
                     if ((ValueType.CLS.equals(vT)) || (ValueType.INSTANCE.equals(vT))) {
-                        tc = aI.getTarget();
+                        tc = Arrays.asList(aI.getTarget());
                     } else {
-                        tc = aI.getTargetData();
+                        tc = Arrays.asList(aI.getTargetData());
                     }
 
                     for (int i = 0; i < valVector.size(); i++)
                         tc.add(valVector.elementAt(i));
 
-                    assocClass.getSource().add(aI);
+                    assocClass.addSource(aI);
 
                     // System.out.println("STORING...");
 
@@ -1187,16 +1195,17 @@ public class FMA2EMFDynamicMapHolders {
                     // concepts to
                     // the existing one.
 
-                    associationHash_.put(relation, assocClass);
+                    associationPredicateHash_.put(relation, assocClass);
+                    associationEntityHash_.put(relation, assocEntityClass);
 
                     if (FMA2EMFUtils.isNull(invSlotName)) {
                         invSlotName = relation + "_reverse";
                     }
 
-                    associationHash_.put(invSlotName, "REVERSE");
+                    associationPredicateHash_.put(invSlotName, "REVERSE");
 
-                    if (FMA2EMFUtils.isNull(assocClass.getReverseName())) {
-                        assocClass.setReverseName(invSlotName);
+                    if (FMA2EMFUtils.isNull(assocEntityClass.getReverseName())) {
+                        assocEntityClass.setReverseName(invSlotName);
                     }
                 }
                 // else
@@ -1317,9 +1326,9 @@ public class FMA2EMFDynamicMapHolders {
             String comment = (String) concept.getOwnSlotValue(cSlt);
 
             if (comment != null) {
-                Comment cmt = conceptFactory.createComment();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue((String) FMA2EMFUtils.removeInvalidXMLCharacters(comment, concept.getName()));
+                Comment cmt = new Comment();
+                Text txt = new Text();
+                txt.setContent((String) FMA2EMFUtils.removeInvalidXMLCharacters(comment, concept.getName()));
                 cmt.setValue(txt);
                 cmt.setPropertyName(FMA2EMFConstants.PROPERTY_COMMENT);
                 cmt.setPropertyId(FMA2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
@@ -1339,9 +1348,9 @@ public class FMA2EMFDynamicMapHolders {
             String comment = (String) concept.getOwnSlotValue(cSlt);
 
             if (comment != null) {
-                Comment cmt = conceptFactory.createComment();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue((String) FMA2EMFUtils.removeInvalidXMLCharacters(comment, concept.getName()));
+                Comment cmt = new Comment();
+                Text txt = new Text();
+                txt.setContent((String) FMA2EMFUtils.removeInvalidXMLCharacters(comment, concept.getName()));
                 cmt.setValue(txt);
                 cmt.setPropertyName(FMA2EMFConstants.PROPERTY_COMMENT);
                 cmt.setPropertyId(FMA2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
@@ -1370,9 +1379,9 @@ public class FMA2EMFDynamicMapHolders {
             String definition = (String) concept.getOwnSlotValue(kb_.getSlot(FMA2EMFConstants.SLOT_DEFINITION));
 
             if (definition != null) {
-                Definition def = conceptFactory.createDefinition();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue((String) FMA2EMFUtils.removeInvalidXMLCharacters(definition, concept.getName()));
+                Definition def = new Definition();
+                Text txt = new Text();
+                txt.setContent((String) FMA2EMFUtils.removeInvalidXMLCharacters(definition, concept.getName()));
                 def.setValue(txt);
                 def.setPropertyName(FMA2EMFConstants.PROPERTY_DEFINITION);
                 def.setPropertyId(FMA2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
@@ -1391,9 +1400,9 @@ public class FMA2EMFDynamicMapHolders {
             String definition = (String) concept.getOwnSlotValue(kb_.getSlot(FMA2EMFConstants.SLOT_DEFINITION));
 
             if (definition != null) {
-                Definition def = conceptFactory.createDefinition();
-                Text txt = CommontypesFactory.eINSTANCE.createText();
-                txt.setValue((String) FMA2EMFUtils.removeInvalidXMLCharacters(definition, concept.getName()));
+                Definition def = new Definition();
+                Text txt = new Text();
+                txt.setContent((String) FMA2EMFUtils.removeInvalidXMLCharacters(definition, concept.getName()));
                 def.setValue(txt);
                 def.setPropertyName(FMA2EMFConstants.PROPERTY_DEFINITION);
                 def.setPropertyId(FMA2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
@@ -1411,7 +1420,7 @@ public class FMA2EMFDynamicMapHolders {
         if (csclass == null)
             return;
 
-        List suppProps = csclass.getMappings().getSupportedProperty();
+        List suppProps = Arrays.asList(csclass.getMappings().getSupportedProperty());
 
         try {
             if (properties_.size() > 0) {
@@ -1419,7 +1428,7 @@ public class FMA2EMFDynamicMapHolders {
                     String prp = (String) properties_.elementAt(i);
 
                     if (!FMA2EMFUtils.isNull(prp)) {
-                        SupportedProperty suppProp = nameFactory.createSupportedProperty();
+                        SupportedProperty suppProp = new SupportedProperty();
 
                         if ((!FMA2EMFConstants.PROPERTY_COMMENT.equals(prp))
                                 && (!FMA2EMFConstants.PROPERTY_DEFINITION.equals(prp))
@@ -1443,7 +1452,7 @@ public class FMA2EMFDynamicMapHolders {
             if (csclass == null)
                 return;
 
-            List suppAssoc = csclass.getMappings().getSupportedAssociation();
+            List suppAssoc = Arrays.asList(csclass.getMappings().getSupportedAssociation());
 
             int assocSize = associations_.size();
             int assocAliasSize = associationsAliases_.size();
@@ -1454,7 +1463,7 @@ public class FMA2EMFDynamicMapHolders {
                     for (int i = 0; i < assocSize; i++) {
                         String sA = (String) associations_.elementAt(i);
                         if (!FMA2EMFUtils.isNull(sA)) {
-                            SupportedAssociation suppAss = nameFactory.createSupportedAssociation();
+                            SupportedAssociation suppAss = new SupportedAssociation();
                             suppAss.setUri(FMA2EMFUtils.getWithFMAURN(sA));
                             suppAss.setLocalId(FMA2EMFUtils.toNMToken(sA));
                             suppAssoc.add(suppAss);
@@ -1469,7 +1478,7 @@ public class FMA2EMFDynamicMapHolders {
 
                         if ((ali != null) && (ali.length > 1)) {
                             if (!FMA2EMFUtils.isNull(ali[1])) {
-                                SupportedAssociation suppAss = nameFactory.createSupportedAssociation();
+                                SupportedAssociation suppAss = new SupportedAssociation();
                                 suppAss.setUri(FMA2EMFUtils.getWithFMAURN(ali[0]));
                                 suppAss.setLocalId(FMA2EMFUtils.toNMToken(ali[1]));
                                 suppAssoc.add(suppAss);
@@ -1488,7 +1497,7 @@ public class FMA2EMFDynamicMapHolders {
         if (csclass == null)
             return;
 
-        List suppSrcs = csclass.getMappings().getSupportedSource();
+        List suppSrcs = Arrays.asList(csclass.getMappings().getSupportedSource());
 
         try {
             int srcsSize = sources_.size();
@@ -1499,7 +1508,7 @@ public class FMA2EMFDynamicMapHolders {
                         String src = (String) sources_.elementAt(i);
 
                         if (!FMA2EMFUtils.isNull(src)) {
-                            SupportedSource suppSrc = nameFactory.createSupportedSource();
+                            SupportedSource suppSrc = new SupportedSource();
                             suppSrc.setUri(FMA2EMFUtils.getWithFMAURN(src));
                             suppSrc.setLocalId(FMA2EMFUtils.toNMToken(src));
                             suppSrcs.add(suppSrc);
@@ -1517,7 +1526,7 @@ public class FMA2EMFDynamicMapHolders {
         if (csclass == null)
             return;
 
-        List suppRepf = csclass.getMappings().getSupportedRepresentationalForm();
+        List suppRepf = Arrays.asList(csclass.getMappings().getSupportedRepresentationalForm());
 
         try {
             int repfSize = representationalForms_.size();
@@ -1528,7 +1537,7 @@ public class FMA2EMFDynamicMapHolders {
                         String rep = (String) representationalForms_.elementAt(i);
 
                         if (!FMA2EMFUtils.isNull(rep)) {
-                            SupportedRepresentationalForm suppRpf = nameFactory.createSupportedRepresentationalForm();
+                            SupportedRepresentationalForm suppRpf = new SupportedRepresentationalForm();
                             suppRpf.setUri(FMA2EMFUtils.getWithFMAURN(rep));
                             suppRpf.setLocalId(FMA2EMFUtils.toNMToken(rep));
                             suppRepf.add(suppRpf);

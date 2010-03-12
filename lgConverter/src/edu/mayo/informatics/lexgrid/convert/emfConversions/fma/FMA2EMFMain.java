@@ -27,7 +27,7 @@ import java.util.Collection;
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.emf.base.xml.LgXMLResourceImpl;
-import org.LexGrid.emf.codingSchemes.CodingScheme;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 import org.lexevs.logging.messaging.impl.CommandLineMessageDirector;
 
@@ -116,7 +116,7 @@ public class FMA2EMFMain {
                         fmaAttribs.populateSupportedSources(csclass);
                         fmaAttribs.populateSupportedRepresentationalForms(csclass);
                         fmaAttribs.populateSupportedAssociations(csclass);
-                        csclass.setApproxNumConcepts(fmaAttribs.getApproxNumberOfConcepts());
+                        csclass.setApproxNumConcepts(new Long(fmaAttribs.getApproxNumberOfConcepts()));
                     }
                 }
             } catch (Exception e) {
