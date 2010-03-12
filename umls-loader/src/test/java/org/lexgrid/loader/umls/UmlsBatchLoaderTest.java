@@ -65,7 +65,6 @@ public class UmlsBatchLoaderTest extends BaseTestRrf {
 	 * @throws Exception the exception
 	 */
 	@Test
-	@Ignore
 	public void testFailedUmlsLoad() throws Exception {
 		UmlsBatchLoader loader = new UmlsBatchLoaderImpl();
 		loader.loadUmls(new File(RRF_FAIL_DIRECTORY).toURI(), LoadUmlsForIntegration.UMLS_SAB);
@@ -81,7 +80,6 @@ public class UmlsBatchLoaderTest extends BaseTestRrf {
 	 * @throws Exception the exception
 	 */
 	@Test
-	@Ignore
 	public void testRestartUmlsLoad() throws Exception {
 		UmlsBatchLoader loader = new UmlsBatchLoaderImpl();
 		loader.loadUmls(new File(RRF_FAIL_DIRECTORY).toURI(), LoadUmlsForIntegration.UMLS_SAB);
