@@ -52,7 +52,7 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 
 	private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
 
-	private static String SAB_OPTION = "SAB";
+	public static String SAB_OPTION = "SAB";
 	
 	public UmlsBatchLoaderImpl(){
 		super();

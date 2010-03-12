@@ -52,7 +52,9 @@ public class UmlsBatchLoaderTest extends BaseTestRrf {
 	@Test
 	public void testUmlsLoad() throws Exception {
 		UmlsBatchLoader loader = new UmlsBatchLoaderImpl();
-		loader.loadUmls(new File(RRF_DIRECTORY).toURI(), LoadUmlsForIntegration.UMLS_SAB);
+		loader.getOptions().getStringOption(UmlsBatchLoaderImpl.SAB_OPTION).setOptionValue(LoadUmlsForIntegration.UMLS_SAB);
+		loader.getOptions().getBooleanOption(UmlsBatchLoaderImpl.ASYNC_OPTION).setOptionValue(false);
+		loader.load(new File(RRF_DIRECTORY).toURI());
 		JobExecution job = loader.getJobExecution();
 		assertTrue(job.getExitStatus().equals(ExitStatus.COMPLETED));	
 		removeAIRScheme();
