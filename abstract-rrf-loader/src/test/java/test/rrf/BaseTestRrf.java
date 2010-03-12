@@ -23,6 +23,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.ResourceManager;
 import org.lexgrid.loader.test.util.LoaderTestUtils;
 
@@ -83,10 +84,8 @@ public class BaseTestRrf {
 	 * @throws Exception the exception
 	 */
 	public void removeMetaScheme() throws Exception {	
-		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
-		ref.setCodingSchemeURN("urn:oid:2.16.840.1.113883.3.26.1.2");
-		ref.setCodingSchemeVersion("2005AC");
-		ResourceManager.instance().removeCodeSystem(ref);
+		LexEvsServiceLocator.getInstance().getSystemResourceService().
+			removeCodingSchemeResourceFromSystem("urn:oid:2.16.840.1.113883.3.26.1.2", "2005AC");
 	}
 	
 
@@ -96,10 +95,8 @@ public class BaseTestRrf {
 	 * @throws Exception the exception
 	 */
 	public void removeAIRScheme() throws Exception {	
-		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();	
-		ref.setCodingSchemeURN("urn:oid:2.16.840.1.113883.6.110");
-		ref.setCodingSchemeVersion("1993.bvt");	
-		ResourceManager.instance().removeCodeSystem(ref);
+		LexEvsServiceLocator.getInstance().getSystemResourceService().
+			removeCodingSchemeResourceFromSystem("urn:oid:2.16.840.1.113883.6.110", "1993.bvt");
 	}	
 	
 	
