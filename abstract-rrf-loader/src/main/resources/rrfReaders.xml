@@ -227,6 +227,15 @@
 		</beans:property>
 	</beans:bean>
 	
+	<beans:bean id="mrstyGroupReader" class="org.lexgrid.loader.reader.BufferedGroupItemReader">
+		<beans:property name="delegate">
+			<beans:ref local="mrstyReader"/>
+		</beans:property>
+		<beans:property name="groupDiscriminator">
+			<beans:bean class="org.lexgrid.loader.rrf.reader.support.MrstyGroupDiscriminator"/>
+		</beans:property>
+	</beans:bean>
+	
 	 <beans:bean id="mrconsoGroupReader" class="org.lexgrid.loader.reader.BufferedGroupItemReader" 
 	 	abstract="true">
 		<beans:property name="delegate">
