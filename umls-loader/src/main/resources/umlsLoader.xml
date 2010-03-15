@@ -51,7 +51,7 @@
 			<tasklet ref="introspectiveHardcodedValuesTasklet"/>
 		</step>
 
-		<step id="umlsLoadEntity" next="umlsLoadEntityAssnsToEntity">
+		<step id="umlsLoadEntity" next="umlsLoadMrstyProperties">
 			<tasklet>
 				<listeners>
 					<listener ref="stepCompletionListener" />
@@ -62,14 +62,29 @@
 			</tasklet>
 		</step>
 		
+		<step id="umlsLoadMrstyProperties" next="umlsLoadEntityAssnsToEntity">
+			<tasklet>
+				<listeners>
+					<listener ref="stepCompletionListener" />
+				</listeners>
+				<chunk reader="mrstyGroupReader" processor="umlsMrstyListProcessor"
+					writer="entityPropertyListWriter" commit-interval="1">
+					<streams>
+						<stream ref="mrstyReader" />
+					</streams>
+				</chunk>
+			</tasklet>
+		</step>
+		
+		
 		<step id="umlsLoadEntityAssnsToEntity">
 			<tasklet>
 				<listeners>
 					<listener ref="stepCompletionListener" />
 				</listeners>
 				<chunk reader="umlsForwardRelationNameMrrelSkippingReader" 
-				processor="umlsEntityAssnsToEntityProcessor"
-					writer="associationSourceWriter" commit-interval="1">
+				processor="umlsRootNodeAddingEntityAssocToEntityListProcessor"
+					writer="associationSourceListWriter" commit-interval="1">
 				</chunk>
 			</tasklet>
 		</step>
@@ -172,26 +187,25 @@
 	</beans:bean>
 
 
-<!--
+
 	<beans:bean id="umlsRootNodeAddingEntityAssocToEntityListProcessor"
-		class="org.lexgrid.loader.processor.decorator.EntityAssnToEntityRootNodeAddingDecorator">
+		class="org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator">
 		<beans:constructor-arg>
-			 <beans:ref bean="umlsEntityAssocToEntityProcessor"/>
+			 <beans:ref bean="umlsEntityAssnsToEntityProcessor"/>
 		</beans:constructor-arg>
-		<beans:property name="codingSchemeIdSetter">
-			<beans:ref local="umlsCodingSchemeIdSetter" />
-		</beans:property>
-		<beans:property name="supportedAttributeTemplate">
-			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
-		</beans:property>	
 		<beans:property name="replaceRelation" value="true"/>
 		<beans:property name="rootNodeResolver">
 			<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsRootNodeResolver">
 				<beans:property name="sab" value="${sab}"/>
+				<beans:property name="codingSchemeIdSetter"
+					ref="umlsCodingSchemeIdSetter" />
+				<beans:property name="databaseServiceManager" 
+					ref="databaseServiceManager"/>
+				<beans:property name="mrconsoStagingDao" ref="mrconsoStagingDao"/>
 			</beans:bean>
 		</beans:property>
 	</beans:bean>
--->
+
 	
 <!--	<beans:bean id="umlsRootNodeAddingEntityAssocToEntityProcessor" -->
 <!--		class="org.lexgrid.loader.processor.decorator.ListEntityAssnToEntityRootNodeAddingDecorator">-->
@@ -399,15 +413,18 @@
 		<beans:property name="mrconsoStagingDao">
 			<beans:ref bean="mrconsoStagingDao" />
 		</beans:property>
-<!--		<beans:property name="parameterizedlistIdSetter">-->
-<!--			<beans:bean-->
-<!--				class="org.lexgrid.loader.data.property.ParameterizedSequentialIdSetter">-->
-<!--				<beans:property name="prefix" value="MSTY"/>-->
-<!--			</beans:bean>-->
-<!--		</beans:property>-->
+		<beans:property name="parameterizedlistIdSetter">
+			<beans:bean
+				class="org.lexgrid.loader.data.property.ParameterizedSequentialIdSetter">
+				<beans:property name="prefix" value="MSTY"/>
+			</beans:bean>
+		</beans:property>
 		<beans:property name="sab" value="${sab}"/>	
 		<beans:property name="delegate"
 			ref="umlsMrstyCombiningProcessor" />
+		<beans:property name="databaseServiceManager" 
+			ref="databaseServiceManager"/>
+		<beans:property name="codingSchemeIdSetter" ref="umlsCodingSchemeIdSetter"/>
 	</beans:bean>
 
 	<beans:bean id="umlsCuiPropertyListProcessor" class="org.lexgrid.loader.processor.decorator.EntityPropertyListIdAddingDecorator">
@@ -465,6 +482,9 @@
 				</beans:property>
 			</beans:bean>
 		</beans:property>
+		<beans:property name="entityKeyResolver">
+			<beans:bean class="org.lexgrid.loader.database.key.NoopEntityKeyResolver"/>
+		</beans:property>
 	</beans:bean>
 	
 	<beans:bean id="umlsTuiPropertyProcessor" parent="umlsDefaultPropertyProcessor"
@@ -478,6 +498,9 @@
 					<beans:bean class="org.lexgrid.loader.data.property.NoopIndividualIdSetter"/>
 				</beans:property>
 			</beans:bean>
+		</beans:property>
+		<beans:property name="entityKeyResolver">
+			<beans:bean class="org.lexgrid.loader.database.key.NoopEntityKeyResolver"/>
 		</beans:property>
 	</beans:bean>
 

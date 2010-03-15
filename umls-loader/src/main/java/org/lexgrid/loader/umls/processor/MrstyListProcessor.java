@@ -22,7 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.commonTypes.Property;
+import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.DatabaseService.DaoCallback;
 import org.lexgrid.loader.data.DataUtils;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.data.property.ParameterizedListIdSetter;
 import org.lexgrid.loader.processor.AbstractParameterPassingDoubleListProcessor;
 import org.lexgrid.loader.rrf.model.Mrsty;
@@ -39,11 +43,15 @@ public class MrstyListProcessor extends AbstractParameterPassingDoubleListProces
 	/** The mrconso staging dao. */
 	private MrconsoStagingDao mrconsoStagingDao;
 	
+	private DatabaseServiceManager databaseServiceManager;
+	
+	private CodingSchemeIdSetter codingSchemeIdSetter;
+	
 	/** The sab. */
 	private String sab;
 	
 	/** The parameterizedlist id setter. */
-	private ParameterizedListIdSetter<Property> parameterizedlistIdSetter;
+	private ParameterizedListIdSetter<ParentIdHolder<Property>> parameterizedlistIdSetter;
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.AbstractParameterPassingListProcessor#beforeProcessing(java.util.List)
@@ -65,21 +73,58 @@ public class MrstyListProcessor extends AbstractParameterPassingDoubleListProces
 
 		for(String code : codes){
 			for(ParentIdHolder<Property> prop : processedItems){
-				Property clonedProp = null;
+				
 				try {
-					prop.setItem(DataUtils.deepCloneProperty(prop.getItem()));
+					ParentIdHolder<Property> holder = new ParentIdHolder<Property>();
+					
+					Property clonedProp = DataUtils.deepCloneProperty(prop.getItem());
+					
+					String codingSchemeUri = 
+						codingSchemeIdSetter.getCodingSchemeUri();
+					
+					String version = 
+						codingSchemeIdSetter.getCodingSchemeVersion();
+					
+					String codingSchemeId = getCodingSchemeId(codingSchemeUri, version);
+					
+					String entityId = getEntityIdForCode(codingSchemeId, code, codingSchemeIdSetter.getCodingSchemeName());
+					
+					holder.setItem(clonedProp);
+					holder.setParentId(entityId);
+					holder.setCodingSchemeIdSetter(this.codingSchemeIdSetter);
+					
+					buffer.add(holder);
+					
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
-				
-				buffer.add(prop);
 			}
 		}
-		//parameterizedlistIdSetter.addIds(buffer, getGroupCui(originalItems));
+
+		parameterizedlistIdSetter.addIds(buffer, getGroupCui(originalItems));
 		return buffer;
 	}
 	
+	protected String getEntityIdForCode(final String codingSchemeId, final String entityCode, final String entityCodeNamespace) {
+		return this.databaseServiceManager.getEntityService().executeInDaoLayer(new DaoCallback<String>() {
 
+			public String execute(DaoManager daoManager) {
+				return 
+					daoManager.getCurrentEntityDao().getEntityId(codingSchemeId, entityCode, entityCodeNamespace);
+			}
+			
+		});
+	}
+
+	protected String getCodingSchemeId(final String codingSchemeUri, final String version) {
+		return this.databaseServiceManager.getEntityService().executeInDaoLayer(new DaoCallback<String>() {
+
+			public String execute(DaoManager daoManager) {
+				return 
+					daoManager.getCurrentCodingSchemeDao().getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
+			}
+		});
+	}
 
 	/**
 	 * Gets the mrconso staging dao.
@@ -126,5 +171,31 @@ public class MrstyListProcessor extends AbstractParameterPassingDoubleListProces
 	 */
 	public void setSab(String sab) {
 		this.sab = sab;
+	}
+
+	public DatabaseServiceManager getDatabaseServiceManager() {
+		return databaseServiceManager;
+	}
+
+	public void setDatabaseServiceManager(
+			DatabaseServiceManager databaseServiceManager) {
+		this.databaseServiceManager = databaseServiceManager;
+	}
+
+	public ParameterizedListIdSetter<ParentIdHolder<Property>> getParameterizedlistIdSetter() {
+		return parameterizedlistIdSetter;
+	}
+
+	public void setParameterizedlistIdSetter(
+			ParameterizedListIdSetter<ParentIdHolder<Property>> parameterizedlistIdSetter) {
+		this.parameterizedlistIdSetter = parameterizedlistIdSetter;
+	}
+
+	public CodingSchemeIdSetter getCodingSchemeIdSetter() {
+		return codingSchemeIdSetter;
+	}
+
+	public void setCodingSchemeIdSetter(CodingSchemeIdSetter codingSchemeIdSetter) {
+		this.codingSchemeIdSetter = codingSchemeIdSetter;
 	}
 }
