@@ -21,13 +21,14 @@ package org.lexgrid.loader.data.property;
 import java.util.List;
 
 import org.LexGrid.commonTypes.Property;
+import org.lexgrid.loader.wrappers.ParentIdHolder;
 
 /**
  * The Class ParameterizedSequentialIdSetter.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class ParameterizedSequentialIdSetter implements ParameterizedListIdSetter<Property>{
+public class ParameterizedSequentialIdSetter implements ParameterizedListIdSetter<ParentIdHolder<Property>>{
 
 	/** The prefix. */
 	private String prefix = "P";
@@ -35,11 +36,11 @@ public class ParameterizedSequentialIdSetter implements ParameterizedListIdSette
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.data.property.ParameterizedListIdSetter#addIds(java.util.List, java.lang.String)
 	 */
-	public void addIds(List<Property> props, String parameter) {
+	public void addIds(List<ParentIdHolder<Property>> props, String parameter) {
 		int counter = 1;
 		
-		for(Property prop : props){
-			prop.setPropertyId(prefix + "-" + parameter + "-" +  counter++);
+		for(ParentIdHolder<Property> prop : props){
+			prop.getItem().setPropertyId(prefix + "-" + parameter + "-" +  counter++);
 		}
 		
 	}

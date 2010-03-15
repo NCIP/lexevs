@@ -100,5 +100,11 @@ public class EntityPropertyProcessor<I> extends AbstractSupportedAttributeRegist
 		this.propertyResolver = propertyResolver;
 	}
 
+	public EntityKeyResolver getEntityKeyResolver() {
+		return entityKeyResolver;
+	}
 
+	public void setEntityKeyResolver(EntityKeyResolver entityKeyResolver) {
+		this.entityKeyResolver = entityKeyResolver;
+	}
 }

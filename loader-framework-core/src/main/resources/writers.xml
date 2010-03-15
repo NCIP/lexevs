@@ -20,6 +20,17 @@
 	<beans:bean name="codingSchemeWriter" class="org.lexgrid.loader.writer.CodingSchemeWriter" parent="abstractLexEvsDaoWriter"/>
 	
 	<beans:bean name="entityWriter" class="org.lexgrid.loader.writer.EntityWriter" parent="abstractLexEvsDaoWriter"/>
+	
+	<beans:bean name="entityPropertyWriter" class="org.lexgrid.loader.writer.EntityPropertyWriter" parent="abstractLexEvsDaoWriter"/>
 		
 	<beans:bean name="associationSourceWriter" class="org.lexgrid.loader.writer.AssociationSourceWriter" parent="abstractLexEvsDaoWriter"/>
+
+	<beans:bean name="associationSourceListWriter" class="org.lexgrid.loader.writer.ListWriter">
+		<beans:property name="delegate" ref="associationSourceWriter"/>
+	</beans:bean>
+	
+	<beans:bean name="entityPropertyListWriter" class="org.lexgrid.loader.writer.ListWriter">
+		<beans:property name="delegate" ref="entityPropertyWriter"/>
+	</beans:bean>
+
 </beans:beans>
