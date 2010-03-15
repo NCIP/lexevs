@@ -25,8 +25,8 @@ import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.emf.base.xml.LgXMLResourceImpl;
-import org.LexGrid.emf.codingSchemes.CodingScheme;
-import org.LexGrid.emf.naming.SupportedCodingScheme;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.naming.SupportedCodingScheme;
 import org.lexevs.logging.messaging.impl.CommandLineMessageDirector;
 
 import edu.mayo.informatics.lexgrid.convert.emfConversions.SQLReadWrite;
@@ -162,7 +162,7 @@ public class ProtegeOwl2EMFMain {
                     new CommandLineMessageDirector());
 
             CodingScheme cst = moem.map();
-            SupportedCodingScheme scs = (SupportedCodingScheme) cst.getMappings().getSupportedCodingScheme().get(0);
+            SupportedCodingScheme scs = (SupportedCodingScheme) cst.getMappings().getSupportedCodingScheme()[0];
             scs.setIsImported(false);
             // URI output_filename = URI
             // .create("file:///c:/fma-owl-dl.xml");

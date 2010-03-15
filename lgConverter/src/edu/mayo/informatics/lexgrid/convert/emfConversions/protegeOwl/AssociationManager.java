@@ -22,9 +22,9 @@ package edu.mayo.informatics.lexgrid.convert.emfConversions.protegeOwl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.LexGrid.emf.relations.Association;
-import org.LexGrid.emf.relations.Relations;
-import org.LexGrid.emf.relations.RelationsFactory;
+import org.LexGrid.relations.AssociationPredicate;
+import org.LexGrid.relations.AssociationEntity;
+import org.LexGrid.relations.Relations;
 import org.LexGrid.emf.relations.util.RelationsUtil;
 
 import edu.mayo.informatics.lexgrid.convert.emfConversions.EMFSupportedMappings;
@@ -33,28 +33,28 @@ import edu.stanford.smi.protegex.owl.model.RDFNames;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
 
 public class AssociationManager {
-    private Association equivalentClass = null;
-    private Association equivalentProperty = null;
-    private Association subClassOf = null;
-    private Association subPropertyOf = null;
-    private Association disjointWith = null;
-    private Association complementOf = null;
-    private Association inverseOf = null;
-    private Association rdfType = null;
-    private Association sameAs = null;
-    private Association differentFrom = null;
-    private Association allDifferent = null;
-    private Association domain = null;
-    private Association range = null;
-    private Association datatype = null;
-    private Association datatypeValue = null;
+    private AssociationWrapper equivalentClass = null;
+    private AssociationWrapper equivalentProperty = null;
+    private AssociationWrapper subClassOf = null;
+    private AssociationWrapper subPropertyOf = null;
+    private AssociationWrapper disjointWith = null;
+    private AssociationWrapper complementOf = null;
+    private AssociationWrapper inverseOf = null;
+    private AssociationWrapper rdfType = null;
+    private AssociationWrapper sameAs = null;
+    private AssociationWrapper differentFrom = null;
+    private AssociationWrapper allDifferent = null;
+    private AssociationWrapper domain = null;
+    private AssociationWrapper range = null;
+    private AssociationWrapper datatype = null;
+    private AssociationWrapper datatypeValue = null;
     private Relations emfRelationsContainer_Assoc = null;
     private Relations emfRelationsContainer_Roles = null;
     private EMFSupportedMappings emfSupportedMappings_ = null;
     // owl relation name to emf container for associations
-    private Map<String, Association> owlRelName2emfRoles_ = new HashMap<String, Association>();
+    private Map<String, AssociationWrapper> owlRelName2emfRoles_ = new HashMap<String, AssociationWrapper>();
     // owl relation name to emf container for roles
-    private Map<String, Association> owlRelName2emfAssoc_ = new HashMap<String, Association>();
+    private Map<String, AssociationWrapper> owlRelName2emfAssoc_ = new HashMap<String, AssociationWrapper>();
 
     public AssociationManager(EMFSupportedMappings emfSupportedMappings_, Relations emfRelationsContainer_Assoc,
             Relations emfRelationsContainer_Roles) {
@@ -65,87 +65,87 @@ public class AssociationManager {
 
     }
 
-    protected Association addAssociation(Relations relContainer, Association assoc) {
+    protected AssociationWrapper addAssociation(Relations relContainer, AssociationWrapper aw) {
         String container = relContainer.getContainerName();
 
         if (ProtegeOwl2EMFConstants.DC_ASSOCIATIONS.equals(container)) {
-            assoc = RelationsUtil.subsume(emfRelationsContainer_Assoc, assoc);
-            owlRelName2emfAssoc_.put(assoc.getEntityCode(), assoc);
+            aw.setAssociationPrediate( RelationsUtil.subsume(emfRelationsContainer_Assoc, aw.getAssociationPredicate()));
+            owlRelName2emfAssoc_.put(aw.getAssociationEntity().getEntityCode(), aw);
         } else if (ProtegeOwl2EMFConstants.DC_ROLES.equals(container)) {
-            assoc = RelationsUtil.subsume(emfRelationsContainer_Roles, assoc);
-            owlRelName2emfRoles_.put(assoc.getEntityCode(), assoc);
+            aw.setAssociationPrediate( RelationsUtil.subsume(emfRelationsContainer_Roles, aw.getAssociationPredicate()) );
+            owlRelName2emfRoles_.put(aw.getAssociationEntity().getEntityCode(), aw);
         }
 
-        return assoc;
+        return aw;
     }
 
-    public Association getAllDifferent() {
+    public AssociationWrapper getAllDifferent() {
         return allDifferent;
     }
 
-    protected Association getAssociation(String assocName) {
-        Association assoc = null;
+    protected AssociationWrapper getAssociation(String assocName) {
+        AssociationWrapper assoc = null;
         if (owlRelName2emfAssoc_.containsKey(assocName)) {
-            assoc = (Association) owlRelName2emfAssoc_.get(assocName);
+            assoc = (AssociationWrapper) owlRelName2emfAssoc_.get(assocName);
         } else if (owlRelName2emfRoles_.containsKey(assocName)) {
-            assoc = (Association) owlRelName2emfRoles_.get(assocName);
+            assoc = (AssociationWrapper) owlRelName2emfRoles_.get(assocName);
         }
         return assoc;
     }
 
-    public Association getComplementOf() {
+    public AssociationWrapper getComplementOf() {
         return complementOf;
     }
 
-    public Association getDatatype() {
+    public AssociationWrapper getDatatype() {
         return datatype;
     }
 
-    public Association getDatatypeValue() {
+    public AssociationWrapper getDatatypeValue() {
         return datatypeValue;
     }
 
-    public Association getDifferentFrom() {
+    public AssociationWrapper getDifferentFrom() {
         return differentFrom;
     }
 
-    public Association getDisjointWith() {
+    public AssociationWrapper getDisjointWith() {
         return disjointWith;
     }
 
-    public Association getDomain() {
+    public AssociationWrapper getDomain() {
         return domain;
     }
 
-    public Association getEquivalentClass() {
+    public AssociationWrapper getEquivalentClass() {
         return equivalentClass;
     }
 
-    public Association getEquivalentProperty() {
+    public AssociationWrapper getEquivalentProperty() {
         return equivalentProperty;
     }
 
-    public Association getRdfType() {
+    public AssociationWrapper getRdfType() {
         return rdfType;
     }
 
-    public Association getInverseOf() {
+    public AssociationWrapper getInverseOf() {
         return inverseOf;
     }
 
-    public Association getRange() {
+    public AssociationWrapper getRange() {
         return range;
     }
 
-    public Association getSameAs() {
+    public AssociationWrapper getSameAs() {
         return sameAs;
     }
 
-    public Association getSubClassOf() {
+    public AssociationWrapper getSubClassOf() {
         return subClassOf;
     }
 
-    public Association getSubPropertyOf() {
+    public AssociationWrapper getSubPropertyOf() {
         return subPropertyOf;
     }
 
@@ -162,23 +162,23 @@ public class AssociationManager {
      * 
      * @return Association
      */
-    protected Association initAllDifferentAssociation() {
+    protected AssociationWrapper initAllDifferentAssociation() {
         // Build the association definition ...
-        Association assoc = RelationsFactory.eINSTANCE.createAssociation();
+        AssociationWrapper aw = new AssociationWrapper();
         String code = ProtegeOwl2EMFConstants.ASSOC_ALLDIFFERENT;
-        assoc.setAssociationName(code);
-        assoc.setEntityCode(code);
-        assoc.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:AllDifferent
-        assoc.setForwardName(code);
-        assoc.setReverseName(code);
-        assoc.setIsTransitive(Boolean.FALSE);
-        assoc.setIsSymmetric(Boolean.TRUE);
-        assoc.setIsNavigable(Boolean.TRUE);
-        assoc.setIsFunctional(Boolean.FALSE);
-        assoc = addAssociation(emfRelationsContainer_Assoc, assoc);
+        aw.setAssociationName(code);
+        aw.setEntityCode(code);
+        aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:AllDifferent
+        aw.setForwardName(code);
+        aw.setReverseName(code);
+        aw.setIsTransitive(Boolean.FALSE);
+        aw.setIsSymmetric(Boolean.TRUE);
+        aw.setIsNavigable(Boolean.TRUE);
+        aw.setIsFunctional(Boolean.FALSE);
+        aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_ALLDIFFERENT_URI, code,
                 false);
-        return assoc;
+        return aw;
     }
 
     /**
@@ -186,23 +186,23 @@ public class AssociationManager {
      * 
      * @return Association
      */
-    protected Association initComplementOfAssociation() {
+    protected AssociationWrapper initComplementOfAssociation() {
         // Build the association definition ...
-        Association assoc = RelationsFactory.eINSTANCE.createAssociation();
+        AssociationWrapper aw = new AssociationWrapper();
         String code = ProtegeOwl2EMFConstants.ASSOC_COMPLEMENTOF;
-        assoc.setAssociationName(code);
-        assoc.setEntityCode(code);
-        assoc.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:complementOf
-        assoc.setForwardName(code);
-        assoc.setReverseName(code);
-        assoc.setIsTransitive(Boolean.FALSE);
-        assoc.setIsSymmetric(Boolean.TRUE);
-        assoc.setIsNavigable(Boolean.TRUE);
-        assoc.setIsFunctional(Boolean.FALSE);
-        assoc = addAssociation(emfRelationsContainer_Assoc, assoc);
+        aw.setAssociationName(code);
+        aw.setEntityCode(code);
+        aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:complementOf
+        aw.setForwardName(code);
+        aw.setReverseName(code);
+        aw.setIsTransitive(Boolean.FALSE);
+        aw.setIsSymmetric(Boolean.TRUE);
+        aw.setIsNavigable(Boolean.TRUE);
+        aw.setIsFunctional(Boolean.FALSE);
+        aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_COMPLEMENTOF_URI, code,
                 false);
-        return assoc;
+        return aw;
     }
 
     /**
@@ -210,17 +210,17 @@ public class AssociationManager {
      * 
      * @return
      */
-    protected Association initDatatypeAssociation() {
-        Association assoc = RelationsFactory.eINSTANCE.createAssociation();
+    protected AssociationWrapper initDatatypeAssociation() {
+        AssociationWrapper aw = new AssociationWrapper();
         String code = ProtegeOwl2EMFConstants.ASSOC_DATATYPE;
-        assoc.setAssociationName(code);
-        assoc.setEntityCode(code);
-        assoc.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX); // rdfs:domain
-        assoc.setForwardName(code);
-        assoc = addAssociation(emfRelationsContainer_Assoc, assoc);
+        aw.setAssociationName(code);
+        aw.setEntityCode(code);
+        aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX); // rdfs:domain
+        aw.setForwardName(code);
+        aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_DATATYPE_URI, code,
                 false);
-        return assoc;
+        return aw;
     }
 
     /**
@@ -229,17 +229,17 @@ public class AssociationManager {
      * 
      * @return
      */
-    protected Association initDatatypeValueAssociation() {
-        Association assoc = RelationsFactory.eINSTANCE.createAssociation();
+    protected AssociationWrapper initDatatypeValueAssociation() {
+        AssociationWrapper aw = new AssociationWrapper();
         String code = ProtegeOwl2EMFConstants.ASSOC_DATATYPEVALUE;
-        assoc.setAssociationName(code);
-        assoc.setEntityCode(code);
-        assoc.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX); // rdfs:domain
-        assoc.setForwardName(code);
-        assoc = addAssociation(emfRelationsContainer_Assoc, assoc);
+        aw.setAssociationName(code);
+        aw.setEntityCode(code);
+        aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX); // rdfs:domain
+        aw.setForwardName(code);
+        aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_DATATYPEVALUE_URI, code,
                 false);
-        return assoc;
+        return aw;
     }
 
     /**
@@ -247,23 +247,23 @@ public class AssociationManager {
      * 
      * @return Association
      */
-    protected Association initDifferentFromAssociation() {
+    protected AssociationWrapper initDifferentFromAssociation() {
         // Build the association definition ...
-        Association assoc = RelationsFactory.eINSTANCE.createAssociation();
+        AssociationWrapper aw = new AssociationWrapper();
         String code = ProtegeOwl2EMFConstants.ASSOC_DIFFERENTFROM;
-        assoc.setAssociationName(code);
-        assoc.setEntityCode(code);
-        assoc.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:differentFrom
-        assoc.setForwardName(code);
-        assoc.setReverseName(code);
-        assoc.setIsTransitive(Boolean.FALSE);
-        assoc.setIsSymmetric(Boolean.TRUE);
-        assoc.setIsNavigable(Boolean.TRUE);
-        assoc.setIsFunctional(Boolean.FALSE);
-        assoc = addAssociation(emfRelationsContainer_Assoc, assoc);
+        aw.setAssociationName(code);
+        aw.setEntityCode(code);
+        aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:differentFrom
+        aw.setForwardName(code);
+        aw.setReverseName(code);
+        aw.setIsTransitive(Boolean.FALSE);
+        aw.setIsSymmetric(Boolean.TRUE);
+        aw.setIsNavigable(Boolean.TRUE);
+        aw.setIsFunctional(Boolean.FALSE);
+        aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_DIFFERENTFROM_URI, code,
                 false);
-        return assoc;
+        return aw;
     }
 
     /**
@@ -271,23 +271,23 @@ public class AssociationManager {
      * 
      * @return Association
      */
-    protected Association initDisjointWithAssociation() {
+    protected AssociationWrapper initDisjointWithAssociation() {
         // Build the association definition ...
-        Association assoc = RelationsFactory.eINSTANCE.createAssociation();
+        AssociationWrapper aw = new AssociationWrapper();
         String code = ProtegeOwl2EMFConstants.ASSOC_DISJOINTWITH;
-        assoc.setAssociationName(code);
-        assoc.setEntityCode(code);
-        assoc.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:disjointWith
-        assoc.setForwardName(code);
-        assoc.setReverseName(code);
-        assoc.setIsTransitive(Boolean.FALSE);
-        assoc.setIsSymmetric(Boolean.TRUE);
-        assoc.setIsNavigable(Boolean.TRUE);
-        assoc.setIsFunctional(Boolean.FALSE);
-        assoc = addAssociation(emfRelationsContainer_Assoc, assoc);
+        aw.setAssociationName(code);
+        aw.setEntityCode(code);
+        aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:disjointWith
+        aw.setForwardName(code);
+        aw.setReverseName(code);
+        aw.setIsTransitive(Boolean.FALSE);
+        aw.setIsSymmetric(Boolean.TRUE);
+        aw.setIsNavigable(Boolean.TRUE);
+        aw.setIsFunctional(Boolean.FALSE);
+        aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_DISJOINTWITH_URI, code,
                 false);
-        return assoc;
+        return aw;
     }
 
     /**
@@ -295,20 +295,20 @@ public class AssociationManager {
      * 
      * @return
      */
-    protected Association initDomainAssociation() {
-        Association assoc = RelationsFactory.eINSTANCE.createAssociation();
+    protected AssociationWrapper initDomainAssociation() {
+        AssociationWrapper aw = new AssociationWrapper();
         String code = ProtegeOwl2EMFConstants.ASSOC_DOMAIN;
-        assoc.setAssociationName(code);
-        assoc.setEntityCode(code);
-        assoc.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX); // rdfs:domain
-        assoc.setForwardName(ProtegeOwl2EMFConstants.ASSOC_DOMAIN_FWD);
-        assoc.setIsTransitive(Boolean.FALSE);
-        assoc.setIsSymmetric(Boolean.FALSE);
-        assoc.setIsReflexive(Boolean.FALSE);
-        assoc.setIsNavigable(Boolean.TRUE);
-        assoc = addAssociation(emfRelationsContainer_Assoc, assoc);
+        aw.setAssociationName(code);
+        aw.setEntityCode(code);
+        aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX); // rdfs:domain
+        aw.setForwardName(ProtegeOwl2EMFConstants.ASSOC_DOMAIN_FWD);
+        aw.setIsTransitive(Boolean.FALSE);
+        aw.setIsSymmetric(Boolean.FALSE);
+        aw.setIsReflexive(Boolean.FALSE);
+        aw.setIsNavigable(Boolean.TRUE);
+        aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_DOMAIN_URI, code, false);
-        return assoc;
+        return aw;
     }
 
     /**
@@ -316,24 +316,24 @@ public class AssociationManager {
      * 
      * @return Association
      */
-    protected Association initEquivalentClassAssociation() {
+    protected AssociationWrapper initEquivalentClassAssociation() {
         // Build the association definition ...
-        Association assoc = RelationsFactory.eINSTANCE.createAssociation();
+        AssociationWrapper aw = new AssociationWrapper();
         String code = ProtegeOwl2EMFConstants.ASSOC_EQUIVALENTCLASS;
-        assoc.setAssociationName(code);
-        assoc.setEntityCode(code);
-        assoc.setEntityCodeNamespace(OWLNames.OWL_PREFIX); // owl:equivalentClass
-        assoc.setForwardName(code);
-        assoc.setReverseName(code);
-        assoc.setIsTransitive(Boolean.TRUE);
-        assoc.setIsSymmetric(Boolean.TRUE);
-        assoc.setIsReflexive(Boolean.TRUE);
-        assoc.setIsNavigable(Boolean.TRUE);
-        assoc.setIsFunctional(Boolean.FALSE);
-        assoc = addAssociation(emfRelationsContainer_Assoc, assoc);
+        aw.setAssociationName(code);
+        aw.setEntityCode(code);
+        aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX); // owl:equivalentClass
+        aw.setForwardName(code);
+        aw.setReverseName(code);
+        aw.setIsTransitive(Boolean.TRUE);
+        aw.setIsSymmetric(Boolean.TRUE);
+        aw.setIsReflexive(Boolean.TRUE);
+        aw.setIsNavigable(Boolean.TRUE);
+        aw.setIsFunctional(Boolean.FALSE);
+        aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_EQUIVALENTCLASS_URI,
                 code, false);
-        return assoc;
+        return aw;
     }
 
     /**
@@ -341,24 +341,24 @@ public class AssociationManager {
      * 
      * @return Association
      */
-    protected Association initEquivalentPropertyAssociation() {
+    protected AssociationWrapper initEquivalentPropertyAssociation() {
         // Build the association definition ...
-        Association assoc = RelationsFactory.eINSTANCE.createAssociation();
+        AssociationWrapper aw =new AssociationWrapper();
         String code = ProtegeOwl2EMFConstants.ASSOC_EQUIVALENTPROPERTY;
-        assoc.setAssociationName(code);
-        assoc.setEntityCode(code);
-        assoc.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:equivalentProperty
-        assoc.setForwardName(code);
-        assoc.setReverseName(code);
-        assoc.setIsTransitive(Boolean.TRUE);
-        assoc.setIsSymmetric(Boolean.TRUE);
-        assoc.setIsReflexive(Boolean.TRUE);
-        assoc.setIsNavigable(Boolean.TRUE);
-        assoc.setIsFunctional(Boolean.FALSE);
-        assoc = addAssociation(emfRelationsContainer_Assoc, assoc);
+        aw.setAssociationName(code);
+        aw.setEntityCode(code);
+        aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:equivalentProperty
+        aw.setForwardName(code);
+        aw.setReverseName(code);
+        aw.setIsTransitive(Boolean.TRUE);
+        aw.setIsSymmetric(Boolean.TRUE);
+        aw.setIsReflexive(Boolean.TRUE);
+        aw.setIsNavigable(Boolean.TRUE);
+        aw.setIsFunctional(Boolean.FALSE);
+        aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_EQUIVALENTPROPERTY_URI,
                 code, false);
-        return assoc;
+        return aw;
     }
 
     /**
@@ -366,20 +366,20 @@ public class AssociationManager {
      * 
      * @return Association
      */
-    protected Association initRdfTypeAssociation() {
+    protected AssociationWrapper initRdfTypeAssociation() {
         // Build the association definition ...
-        Association assoc = RelationsFactory.eINSTANCE.createAssociation();
+        AssociationWrapper aw = new AssociationWrapper();
         String code = ProtegeOwl2EMFConstants.ASSOC_TYPE;
-        assoc.setAssociationName(code);
-        assoc.setEntityCode(code);
-        assoc.setEntityCodeNamespace(RDFNames.RDF_PREFIX); // rdf:type
-        assoc.setForwardName(code);
-        assoc.setIsSymmetric(Boolean.FALSE);
-        assoc.setIsFunctional(Boolean.FALSE);
-        assoc = addAssociation(emfRelationsContainer_Assoc, assoc);
+        aw.setAssociationName(code);
+        aw.setEntityCode(code);
+        aw.setEntityCodeNamespace(RDFNames.RDF_PREFIX); // rdf:type
+        aw.setForwardName(code);
+        aw.setIsSymmetric(Boolean.FALSE);
+        aw.setIsFunctional(Boolean.FALSE);
+        aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_TYPE_URI, code,
                 false);
-        return assoc;
+        return aw;
     }
 
     /**
@@ -387,21 +387,21 @@ public class AssociationManager {
      * 
      * @return Association
      */
-    protected Association initInverseOfAssociation() {
+    protected AssociationWrapper initInverseOfAssociation() {
         // Build the association definition ...
-        Association assoc = RelationsFactory.eINSTANCE.createAssociation();
+        AssociationWrapper aw = new AssociationWrapper();
         String code = ProtegeOwl2EMFConstants.ASSOC_INVERSEOF;
-        assoc.setAssociationName(code);
-        assoc.setEntityCode(code);
-        assoc.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:inverseOf
-        assoc.setForwardName(code);
-        assoc.setReverseName(code);
-        assoc.setIsSymmetric(Boolean.TRUE);
-        assoc.setIsFunctional(Boolean.FALSE);
-        assoc = addAssociation(emfRelationsContainer_Assoc, assoc);
+        aw.setAssociationName(code);
+        aw.setEntityCode(code);
+        aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:inverseOf
+        aw.setForwardName(code);
+        aw.setReverseName(code);
+        aw.setIsSymmetric(Boolean.TRUE);
+        aw.setIsFunctional(Boolean.FALSE);
+        aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_INVERSEOF_URI, code,
                 false);
-        return assoc;
+        return aw;
     }
 
     /**
@@ -430,20 +430,19 @@ public class AssociationManager {
      * @return
      * 
      */
-    protected Association initRangeAssociation() {
-        Association assoc = RelationsFactory.eINSTANCE.createAssociation();
+    protected AssociationWrapper initRangeAssociation() {
+        AssociationWrapper aw = new AssociationWrapper();
         String code = ProtegeOwl2EMFConstants.ASSOC_RANGE;
-        assoc.setAssociationName(code);
-        assoc.setEntityCode(code);
-        assoc.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX);
-        assoc.setForwardName(ProtegeOwl2EMFConstants.ASSOC_RANGE_FWD);
-        assoc.setIsTransitive(Boolean.FALSE);
-        assoc.setIsSymmetric(Boolean.FALSE);
-        assoc.setIsReflexive(Boolean.FALSE);
-        assoc.setIsNavigable(Boolean.TRUE);
-        assoc = addAssociation(emfRelationsContainer_Assoc, assoc);
+        aw.setAssociationName(code);
+        aw.setEntityCode(code);
+        aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX);
+        aw.setForwardName(ProtegeOwl2EMFConstants.ASSOC_RANGE_FWD);
+        aw.setIsTransitive(Boolean.FALSE);
+        aw.setIsReflexive(Boolean.FALSE);
+        aw.setIsNavigable(Boolean.TRUE);
+        aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_RANGE_URI, code, false);
-        return assoc;
+        return aw;
     }
 
     /**
@@ -451,23 +450,23 @@ public class AssociationManager {
      * 
      * @return Association
      */
-    protected Association initSameAsAssociation() {
+    protected AssociationWrapper initSameAsAssociation() {
         // Build the association definition ...
-        Association assoc = RelationsFactory.eINSTANCE.createAssociation();
+        AssociationWrapper aw = new AssociationWrapper();
         String code = ProtegeOwl2EMFConstants.ASSOC_SAMEAS;
-        assoc.setAssociationName(code);
-        assoc.setEntityCode(code);
-        assoc.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:sameAs
-        assoc.setForwardName(code);
-        assoc.setReverseName(code);
-        assoc.setIsTransitive(Boolean.TRUE);
-        assoc.setIsSymmetric(Boolean.TRUE);
-        assoc.setIsReflexive(Boolean.TRUE);
-        assoc.setIsNavigable(Boolean.TRUE);
-        assoc.setIsFunctional(Boolean.FALSE);
-        assoc = addAssociation(emfRelationsContainer_Assoc, assoc);
+        aw.setAssociationName(code);
+        aw.setEntityCode(code);
+        aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:sameAs
+        aw.setForwardName(code);
+        aw.setReverseName(code);
+        aw.setIsTransitive(Boolean.TRUE);
+        aw.setIsSymmetric(Boolean.TRUE);
+        aw.setIsReflexive(Boolean.TRUE);
+        aw.setIsNavigable(Boolean.TRUE);
+        aw.setIsFunctional(Boolean.FALSE);
+        aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_SAMEAS_URI, code, false);
-        return assoc;
+        return aw;
     }
 
     /**
@@ -475,23 +474,23 @@ public class AssociationManager {
      * 
      * @return Association
      */
-    protected Association initSubClassOfAssociation() {
+    protected AssociationWrapper initSubClassOfAssociation() {
         // Build the association definition ...
-        Association assoc = RelationsFactory.eINSTANCE.createAssociation();
+        AssociationWrapper aw = new AssociationWrapper();
         String code = ProtegeOwl2EMFConstants.ASSOC_SUBCLASSOF;
-        assoc.setAssociationName(code);
-        assoc.setEntityCode(code);
-        assoc.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX); // rdfs:subClassOf
-        assoc.setForwardName(code);
-        assoc.setIsTransitive(Boolean.TRUE);
-        assoc.setIsSymmetric(Boolean.FALSE);
-        assoc.setIsReflexive(Boolean.TRUE);
-        assoc.setIsNavigable(Boolean.TRUE);
-        assoc.setIsFunctional(Boolean.FALSE);
-        assoc = addAssociation(emfRelationsContainer_Roles, assoc);
+        aw.setAssociationName(code);
+        aw.setEntityCode(code);
+        aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX); // rdfs:subClassOf
+        aw.setForwardName(code);
+        aw.setIsTransitive(Boolean.TRUE);
+        aw.setIsSymmetric(Boolean.FALSE);
+        aw.setIsReflexive(Boolean.TRUE);
+        aw.setIsNavigable(Boolean.TRUE);
+        aw.setIsFunctional(Boolean.FALSE);
+        aw = addAssociation(emfRelationsContainer_Roles, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_SUBCLASSOF_URI, code,
                 false);
-        return assoc;
+        return aw;
     }
 
     /**
@@ -499,23 +498,22 @@ public class AssociationManager {
      * 
      * @return Association
      */
-    protected Association initSubPropertyOfAssociation() {
+    protected AssociationWrapper initSubPropertyOfAssociation() {
         // Build the association definition ...
-        Association assoc = RelationsFactory.eINSTANCE.createAssociation();
+        AssociationWrapper aw = new AssociationWrapper();
         String code = ProtegeOwl2EMFConstants.ASSOC_SUBPROPERTYOF;
-        assoc.setAssociationName(code);
-        assoc.setEntityCode(code);
-        assoc.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX);// rdfs:subPropertyOf
-        assoc.setForwardName(code);
-        assoc.setIsTransitive(Boolean.TRUE);
-        assoc.setIsSymmetric(Boolean.FALSE);
-        assoc.setIsReflexive(Boolean.TRUE);
-        assoc.setIsNavigable(Boolean.TRUE);
-        assoc.setIsFunctional(Boolean.FALSE);
-        assoc = addAssociation(emfRelationsContainer_Roles, assoc);
+        aw.setAssociationName(code);
+        aw.setEntityCode(code);
+        aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX);// rdfs:subPropertyOf
+        aw.setForwardName(code);
+        aw.setIsTransitive(Boolean.TRUE);
+        aw.setIsSymmetric(Boolean.FALSE);
+        aw.setIsReflexive(Boolean.TRUE);
+        aw.setIsFunctional(Boolean.FALSE);
+        aw = addAssociation(emfRelationsContainer_Roles, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_SUBPROPERTYOF_URI, code,
                 false);
-        return assoc;
+        return aw;
     }
 
 }

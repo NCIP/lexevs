@@ -20,32 +20,32 @@ package edu.mayo.informatics.lexgrid.convert.emfConversions.protegeOwl;
 
 import java.util.Collection;
 
-import org.LexGrid.emf.commonTypes.CommontypesFactory;
-import org.LexGrid.emf.commonTypes.Property;
-import org.LexGrid.emf.commonTypes.PropertyQualifier;
-import org.LexGrid.emf.commonTypes.Source;
-import org.LexGrid.emf.commonTypes.Text;
-import org.LexGrid.emf.concepts.Comment;
-import org.LexGrid.emf.concepts.ConceptsFactory;
-import org.LexGrid.emf.concepts.Definition;
-import org.LexGrid.emf.concepts.Presentation;
-import org.LexGrid.emf.relations.AssociationData;
-import org.LexGrid.emf.relations.AssociationQualification;
-import org.LexGrid.emf.relations.AssociationSource;
-import org.LexGrid.emf.relations.AssociationTarget;
-import org.LexGrid.emf.relations.RelationsFactory;
+//import org.LexGrid.emf.commonTypes.CommontypesFactory;
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.PropertyQualifier;
+import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.Text;
+import org.LexGrid.concepts.Comment;
+//import org.LexGrid.concepts.ConceptsFactory;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Presentation;
+import org.LexGrid.relations.AssociationData;
+import org.LexGrid.relations.AssociationQualification;
+import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.AssociationTarget;
+//import org.LexGrid.emf.relations.RelationsFactory;
 import org.apache.commons.lang.StringUtils;
 
 import edu.mayo.informatics.lexgrid.convert.emfConversions.EMFSupportedMappings;
 import edu.stanford.smi.protegex.owl.model.RDFProperty;
 
-public class EMFCreateUtils {
+public class CreateUtils {
     // /////////////////////////////////////////////
     // // Create and register LexGrid objects //////
     // /////////////////////////////////////////////
 
     public static AssociationData createAssociationTextData(String data) {
-        AssociationData emfData = RelationsFactory.eINSTANCE.createAssociationData();
+        AssociationData emfData = new AssociationData();
         emfData.setAssociationDataText(createText(data));
         return emfData;
     }
@@ -59,14 +59,14 @@ public class EMFCreateUtils {
     }
 
     public static AssociationQualification createAssociationQualification(String name, String uri, String descriptiveText, EMFSupportedMappings emfSupportedMappings_) {
-        AssociationQualification emfQual = RelationsFactory.eINSTANCE.createAssociationQualification();
+        AssociationQualification emfQual = new AssociationQualification();
         emfQual.setAssociationQualifier(name);
         emfSupportedMappings_.registerSupportedAssociationQualifier(name, uri, descriptiveText, false);
         return emfQual;
     }
 
     public static AssociationSource createAssociationSource(String emfConceptCode, String namespace) {
-        AssociationSource emfSrc = RelationsFactory.eINSTANCE.createAssociationSource();
+        AssociationSource emfSrc = new AssociationSource();
         if (StringUtils.isNotBlank(emfConceptCode))
             emfSrc.setSourceEntityCode(emfConceptCode);
         if (StringUtils.isNotBlank(namespace))
@@ -75,7 +75,7 @@ public class EMFCreateUtils {
     }
 
     public static AssociationTarget createAssociationTarget(String emfConceptCode, String namespace) {
-        AssociationTarget emfTgt = RelationsFactory.eINSTANCE.createAssociationTarget();
+        AssociationTarget emfTgt = new AssociationTarget();
         if (emfConceptCode != null)
             emfTgt.setTargetEntityCode(emfConceptCode);
         if (namespace != null)
@@ -84,7 +84,7 @@ public class EMFCreateUtils {
     }
 
     public static Comment createComment(String propID, String propName, String text, EMFSupportedMappings emfSupportedMappings_) {
-        Comment emfComment = ConceptsFactory.eINSTANCE.createComment();
+        Comment emfComment = new Comment();
         emfComment.setPropertyId(propID);
         emfComment.setPropertyName(propName);
         emfComment.setValue(createText(text));
@@ -93,7 +93,7 @@ public class EMFCreateUtils {
     }
 
     public static Definition createDefinition(String propID, String propName, String text, Boolean isPreferred, EMFSupportedMappings emfSupportedMappings_) {
-        Definition emfDefn = ConceptsFactory.eINSTANCE.createDefinition();
+        Definition emfDefn = new Definition();
         emfDefn.setPropertyId(propID);
         emfDefn.setPropertyName(propName);
         emfDefn.setValue(createText(text));
@@ -104,7 +104,7 @@ public class EMFCreateUtils {
     }
 
     public static Presentation createPresentation(String propID, String propName, String text, Boolean isPreferred, EMFSupportedMappings emfSupportedMappings_) {
-        Presentation emfPres = ConceptsFactory.eINSTANCE.createPresentation();
+        Presentation emfPres = new Presentation();
         emfPres.setPropertyId(propID);
         emfPres.setPropertyName(propName);
         emfPres.setValue(createText(text));
@@ -115,7 +115,7 @@ public class EMFCreateUtils {
     }
 
     public static Property createProperty(String propID, String propName, String text, EMFSupportedMappings emfSupportedMappings_) {
-        Property emfProp = CommontypesFactory.eINSTANCE.createProperty();
+        Property emfProp = new Property();
         emfProp.setPropertyName(propName);
         emfProp.setPropertyId(propID);
         emfProp.setValue(createText(text));
@@ -124,7 +124,7 @@ public class EMFCreateUtils {
     }
 
     public static PropertyQualifier createPropertyQualifier(String tag, String text, EMFSupportedMappings emfSupportedMappings_) {
-        PropertyQualifier emfPropQual = CommontypesFactory.eINSTANCE.createPropertyQualifier();
+        PropertyQualifier emfPropQual = new PropertyQualifier();
         emfPropQual.setPropertyQualifierName(tag);
         emfPropQual.setValue(createText(text));
         emfSupportedMappings_.registerSupportedPropertyQualifier(tag, null, tag, false);
@@ -132,8 +132,8 @@ public class EMFCreateUtils {
     }
 
     public static Source createSource(String value, String role, String subref, EMFSupportedMappings emfSupportedMappings_) {
-        Source emfSource = CommontypesFactory.eINSTANCE.createSource();
-        emfSource.setValue(value);
+        Source emfSource = new Source();
+        emfSource.setContent(value);
         emfSource.setRole(role);
         emfSource.setSubRef(subref);
         if (value != null)
@@ -144,8 +144,8 @@ public class EMFCreateUtils {
     }
 
     public static Text createText(String value) {
-        Text emfText = CommontypesFactory.eINSTANCE.createText();
-        emfText.setValue(value);
+        Text emfText = new Text();
+        emfText.setContent(value);
         emfText.setDataType(ProtegeOwl2EMFConstants.DATATYPE_STRING);
         return emfText;
     }

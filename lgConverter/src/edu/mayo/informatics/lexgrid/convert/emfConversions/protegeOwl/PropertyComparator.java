@@ -22,12 +22,12 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import org.LexGrid.emf.commonTypes.CommontypesPackage;
-import org.LexGrid.emf.commonTypes.Property;
-import org.LexGrid.emf.concepts.ConceptsPackage;
-import org.LexGrid.emf.concepts.Definition;
-import org.LexGrid.emf.concepts.Presentation;
-import org.eclipse.emf.ecore.EClass;
+//import org.LexGrid.emf.commonTypes.CommontypesPackage;
+import org.LexGrid.commonTypes.Property;
+//import org.LexGrid.emf.concepts.ConceptsPackage;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Presentation;
+//import org.eclipse.emf.ecore.EClass;
 /**
  *  Comparator used to sort concept properties by type and priority ...
  * 
