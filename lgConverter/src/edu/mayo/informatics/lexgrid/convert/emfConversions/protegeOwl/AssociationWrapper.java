@@ -4,6 +4,16 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 
+/**
+ * Association class in emf model is spit to AssociationPredicate 
+ * and AssociationEntity. AssociationWrapper holds AssociationPredicate
+ * & AssociationEntity, and it's only used in package
+ * edu.mayo.informatics.lexgrid.convert
+ * 
+ * 
+ * @author M077995
+ *
+ */
 public class AssociationWrapper {
     private AssociationPredicate ap;
     private AssociationEntity ae;
