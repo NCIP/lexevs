@@ -60,7 +60,6 @@ public class IbatisVersionsDaoTest extends LexEvsDbUnitTestBase {
 		"values ('csguid', 'csname', 'csuri', 'csversion')");
 		
 		ibatisVersionsDao.insertEntryState(
-				"csguid",
 				"entryStateId", 
 				"entryId", 
 				"entryType", 

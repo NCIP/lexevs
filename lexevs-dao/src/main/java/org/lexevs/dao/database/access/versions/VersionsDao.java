@@ -39,7 +39,7 @@ public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @return the entry state by id
 	 */
-	public EntryState getEntryStateById(String codingSchemeName, String codingSchemeVersion, String entryStateId);
+	public EntryState getEntryStateById(String entryStateId);
 
 	/**
 	 * Update entry state.
@@ -60,7 +60,6 @@ public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 	 * @param entryState the entry state
 	 */
 	public void insertEntryState(
-			String codingSchemeId,
 			String entryStateId, 
 			String entryId,
 			String entryType,

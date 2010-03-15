@@ -67,8 +67,8 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.versions.VersionsDao#getEntryStateById(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public EntryState getEntryStateById(String codingSchemeName, String codingSchemeVersion, String entryStateId) {
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeName, codingSchemeVersion);
+	public EntryState getEntryStateById(String entryStateId) {
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		return (EntryState) this.getSqlMapClientTemplate().queryForObject(GET_ENTRY_STATE_BY_ID_SQL, 
 			new PrefixedParameter(prefix, entryStateId));
 	}
@@ -77,8 +77,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	 * @see org.lexevs.dao.database.access.versions.VersionsDao#updateEntryState(java.lang.String, org.LexGrid.versions.EntryState)
 	 */
 	public void updateEntryState(String id, EntryState entryState) {
-		
-		
+		throw new UnsupportedOperationException();
 	}
 	
 	/**
@@ -139,11 +138,11 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.versions.VersionsDao#insertEntryState(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.versions.EntryState)
 	 */
-	public void insertEntryState(String codingSchemeId, String entryStateId,
+	public void insertEntryState(String entryStateId,
 			String entryId, String entryType, String previousEntryStateId,
 			EntryState entryState) {
 		this.insertEntryState(
-				this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId), 
+				this.getPrefixResolver().resolveDefaultPrefix(), 
 				entryStateId, 
 				entryId, 
 				entryType, 

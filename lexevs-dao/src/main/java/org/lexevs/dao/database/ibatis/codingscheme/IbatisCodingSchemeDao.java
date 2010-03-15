@@ -169,7 +169,6 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeByNameAndVersion(java.lang.String, java.lang.String)
 	 */
-	@SuppressWarnings("unchecked")
 	public CodingScheme getCodingSchemeByNameAndVersion(String codingSchemeName, String representsVersion){
 		String codingSchemeId = this.getCodingSchemeIdByNameAndVersion(codingSchemeName, representsVersion);
 		return this.getCodingSchemeById(codingSchemeId);
@@ -276,7 +275,6 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		}
 		
 		versionsDao.insertEntryState(
-				codingSchemeId,
 				entryStateId, codingSchemeId, "CodingScheme", previousRevisionId, codingScheme.getEntryState());
 		
 		for(Source source : codingScheme.getSource()){

@@ -25,6 +25,8 @@ import java.util.List;
 
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.versions.EntryState;
@@ -163,6 +165,95 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 				return null;
 			}
 		});
+	}
+	
+	/**
+	 * Insert entity.
+	 */
+	@Test
+	public void insertHistoryEntity(){
+		Entity entity = new Entity();
+		entity.setEntityCode("code");
+		entity.setEntityCodeNamespace("namespace");
+		entity.setIsDefined(true);
+		entity.setIsAnonymous(true);
+		entity.setIsActive(false);
+		
+		EntityDescription ed = new EntityDescription();
+		ed.setContent("a description");
+		entity.setEntityDescription(ed);
+		
+		ibatisEntityDao.insertHistoryEntity(csId, entity);
+		
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		assertEquals(1, template.queryForInt("select count(*) from h_entity"));
+	}
+	
+	/**
+	 * Insert entity.
+	 */
+	@Test
+	public void insertHistoryEntityWithProperty(){
+		Entity entity = new Entity();
+		entity.setEntityCode("code");
+		entity.setEntityCodeNamespace("namespace");
+		entity.setIsDefined(true);
+		entity.setIsAnonymous(true);
+		entity.setIsActive(false);
+		
+		EntityDescription ed = new EntityDescription();
+		ed.setContent("a description");
+		entity.setEntityDescription(ed);
+		
+		Property prop = new Property();
+		prop.setPropertyId("someId");
+		prop.setPropertyName("name");
+		prop.setValue(DaoUtility.createText("content"));
+		
+		entity.addProperty(prop);
+		
+		ibatisEntityDao.insertHistoryEntity(csId, entity);
+		
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		assertEquals(1, template.queryForInt("select count(*) from h_entity"));
+		assertEquals(1, template.queryForInt("select count(*) from h_property"));
+	}
+	
+	/**
+	 * Insert entity.
+	 */
+	@Test
+	public void insertHistoryEntityWithPropertyAndQualifier(){
+		Entity entity = new Entity();
+		entity.setEntityCode("code");
+		entity.setEntityCodeNamespace("namespace");
+		entity.setIsDefined(true);
+		entity.setIsAnonymous(true);
+		entity.setIsActive(false);
+		
+		EntityDescription ed = new EntityDescription();
+		ed.setContent("a description");
+		entity.setEntityDescription(ed);
+		
+		Property prop = new Property();
+		prop.setPropertyId("someId");
+		prop.setPropertyName("name");
+		prop.setValue(DaoUtility.createText("content"));
+		
+		PropertyQualifier qual = new PropertyQualifier();
+		qual.setPropertyQualifierName("qualName");
+		qual.setPropertyQualifierType("qualType");
+		qual.setValue(DaoUtility.createText("text"));
+		prop.addPropertyQualifier(qual);
+		
+		entity.addProperty(prop);
+		
+		ibatisEntityDao.insertHistoryEntity(csId, entity);
+		
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		assertEquals(1, template.queryForInt("select count(*) from h_entity"));
+		assertEquals(1, template.queryForInt("select count(*) from h_property"));
+		assertEquals(1, template.queryForInt("select count(*) from h_propertymultiattrib"));
 	}
 	
 	/**

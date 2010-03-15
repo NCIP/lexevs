@@ -91,6 +91,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 */
 	public void insertBatchProperties(final String codingSchemeId, final PropertyType type,
 			final List<PropertyBatchInsertItem> batch) {
+		final String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
 
@@ -101,7 +102,8 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				inserter.startBatch();
 				
 				for(PropertyBatchInsertItem item : batch){
-					insertProperty(codingSchemeId,
+					doInsertProperty(
+							prefix,
 							item.getParentId(),
 							type,
 							item.getProperty(),  inserter);
@@ -124,9 +126,10 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 */
 	public void insertBatchProperties(final String codingSchemeId, final PropertyType type,
 			final List<PropertyBatchInsertItem> batch, IbatisBatchInserter inserter) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		for(PropertyBatchInsertItem item : batch){
-			this.insertProperty(codingSchemeId, item.getParentId(), type, item.getProperty(), inserter);
+			this.doInsertProperty(prefix, item.getParentId(), type, item.getProperty(), inserter);
 		}
 	}
 
@@ -135,8 +138,10 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 */
 	public String insertProperty(String codingSchemeId,
 			String entityCodeId, PropertyType type, Property property) {
-		return this.insertProperty(
-				codingSchemeId, entityCodeId, type, property, this.getNonBatchTemplateInserter());	
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		return this.doInsertProperty(
+				prefix, entityCodeId, type, property, this.getNonBatchTemplateInserter());	
 	}
 	
 	/* (non-Javadoc)
@@ -163,18 +168,18 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * 
 	 * @return the string
 	 */
-	public String insertProperty(String codingSchemeId,
+	public String doInsertProperty(String prefix,
 			String entityCodeId, PropertyType type, Property property, IbatisInserter inserter) {
 		String propertyId = this.createUniqueId();
 		String entryStateId = this.createUniqueId();
 		
 		this.ibatisVersionsDao.insertEntryState(
-				this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+				this.getPrefixResolver().resolveDefaultPrefix(),
 				entryStateId, propertyId, "Property", null, property.getEntryState(), inserter);
 		
 		inserter.insert(INSERT_PROPERTY_SQL,
 				buildInsertPropertyBean(
-						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+						prefix,
 						entityCodeId,
 						propertyId,
 						entryStateId,
@@ -183,15 +188,15 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						));
 		
 		for(Source source : property.getSource()) {
-			this.insertPropertySource(codingSchemeId, propertyId, source, inserter);
+			this.doInsertPropertySource(prefix, propertyId, source, inserter);
 		}
 		
 		for(String context : property.getUsageContext()) {
-			this.insertPropertyUsageContext(codingSchemeId, propertyId, context, inserter);
+			this.doInsertPropertyUsageContext(prefix, propertyId, context, inserter);
 		}
 		
 		for(PropertyQualifier qual : property.getPropertyQualifier()) {
-			this.insertPropertyQualifier(codingSchemeId, propertyId, qual, inserter);
+			this.doInsertPropertyQualifier(prefix, propertyId, qual, inserter);
 		}
 		
 		return propertyId;
@@ -212,7 +217,8 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#insertPropertyQualifier(java.lang.String, java.lang.String, org.LexGrid.commonTypes.PropertyQualifier)
 	 */
 	public void insertPropertyQualifier(String codingSchemeId, String propertyId, PropertyQualifier propertyQualifier) {
-		this.insertPropertyQualifier(codingSchemeId, propertyId, propertyQualifier, this.getNonBatchTemplateInserter());	
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		this.doInsertPropertyQualifier(prefix, propertyId, propertyQualifier, this.getNonBatchTemplateInserter());	
 	}
 	
 	/**
@@ -223,7 +229,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * @param propertyQualifier the property qualifier
 	 * @param inserter the inserter
 	 */
-	public void insertPropertyQualifier(final String codingSchemeId, final String propertyId, final PropertyQualifier propertyQualifier, final IbatisInserter inserter) {
+	protected void doInsertPropertyQualifier(final String prefix, final String propertyId, final PropertyQualifier propertyQualifier, final IbatisInserter inserter) {
 		final String qualifierId = this.createUniqueId();
 
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
@@ -233,7 +239,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 
 				inserter.insert(INSERT_PROPERTY_QUALIFIER_SQL, 
 						buildInsertPropertyQualifierBean(
-								getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+								prefix,
 								propertyId, qualifierId, propertyQualifier));
 				return null;
 			}
@@ -260,7 +266,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * @param source the source
 	 * @param inserter the inserter
 	 */
-	public void insertPropertySource(final String codingSchemeId, final String propertyId, final Source source, final IbatisInserter inserter) {
+	public void doInsertPropertySource(final String prefix, final String propertyId, final Source source, final IbatisInserter inserter) {
 		final String sourceId = this.createUniqueId();	
 
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
@@ -270,23 +276,11 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 
 				inserter.insert(INSERT_PROPERTY_SOURCE_SQL, 
 						buildInsertPropertySourceBean(
-								getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+								prefix,
 								propertyId, sourceId, source));
 				return null;
 			}
 		});
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.access.property.PropertyDao#insertPropertyUsageContext(java.lang.String, java.lang.String, java.lang.String)
-	 */
-	public void insertPropertyUsageContext(String codingSchemeId, String propertyId, String usageContext) {
-		String sourceId = this.createUniqueId();
-		
-		this.getSqlMapClientTemplate().insert(INSERT_PROPERTY_USAGECONTEXT_SQL, 
-				this.buildInsertPropertyUsageContextBean(
-						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
-						propertyId, sourceId, usageContext));
 	}
 	
 	/**
@@ -297,7 +291,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * @param usageContext the usage context
 	 * @param inserter the inserter
 	 */
-	public void insertPropertyUsageContext(final String codingSchemeId, final String propertyId, final String usageContext, final IbatisInserter inserter) {
+	protected void doInsertPropertyUsageContext(final String prefix, final String propertyId, final String usageContext, final IbatisInserter inserter) {
 		final String sourceId = this.createUniqueId();
 
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
@@ -307,12 +301,19 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 
 				inserter.insert(INSERT_PROPERTY_USAGECONTEXT_SQL, 
 						buildInsertPropertyUsageContextBean(
-								getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+								prefix,
 								propertyId, sourceId, usageContext));
 
 				return null;
 			}
 		});
+	}
+	
+	@Override
+	public void insertPropertyUsageContext(String codingSchemeId,
+			String propertyId, String usageContext) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		this.doInsertPropertyUsageContext(prefix, propertyId, usageContext, this.getNonBatchTemplateInserter());
 	}
 	
 	/**
