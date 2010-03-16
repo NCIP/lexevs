@@ -2120,8 +2120,6 @@ public class ProtegeOwl2EMF {
             String label = rdfLabels.iterator().next().toString();
             label = getFromLastIndexOfColonOrHash(label);
             // Create and register a new association ...
-//            AssociationPredicate assoc = new AssociationPredicate();
-//            AssociationEntity assocEntity = new AssociationEntity();
             AssociationWrapper aw = new AssociationWrapper();
             
             aw.setEntityCode(propertyName);
