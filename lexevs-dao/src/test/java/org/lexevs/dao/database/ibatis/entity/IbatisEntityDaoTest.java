@@ -23,6 +23,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
@@ -183,7 +185,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		ed.setContent("a description");
 		entity.setEntityDescription(ed);
 		
-		ibatisEntityDao.insertHistoryEntity(csId, entity);
+		ibatisEntityDao.insertHistoryEntity(csId, "entityId", entity);
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		assertEquals(1, template.queryForInt("select count(*) from h_entity"));
@@ -212,7 +214,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		
 		entity.addProperty(prop);
 		
-		ibatisEntityDao.insertHistoryEntity(csId, entity);
+		ibatisEntityDao.insertHistoryEntity(csId, "entityId", entity);
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		assertEquals(1, template.queryForInt("select count(*) from h_entity"));
@@ -231,6 +233,13 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		entity.setIsAnonymous(true);
 		entity.setIsActive(false);
 		
+		EntryState es = new EntryState();
+		es.setChangeType(ChangeType.DEPENDENT);
+		es.setRelativeOrder(23l);
+		entity.setEntryState(es);
+		
+		entity.setEntryState(es);
+		
 		EntityDescription ed = new EntityDescription();
 		ed.setContent("a description");
 		entity.setEntityDescription(ed);
@@ -248,7 +257,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		
 		entity.addProperty(prop);
 		
-		ibatisEntityDao.insertHistoryEntity(csId, entity);
+		ibatisEntityDao.insertHistoryEntity(csId, "entityId", entity);
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		assertEquals(1, template.queryForInt("select count(*) from h_entity"));
@@ -382,5 +391,61 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		int count2 = ibatisEntityDao.getEntityCount("BOGUScsguid");
 		
 		assertEquals(0, count2);
+	}
+	
+	/**
+	 * Test lazy load presentations.
+	 */
+	@Test
+	@Transactional
+	public void testGetHistoryEntity() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into h_property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, entryStateGuid) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation', 'esguid')");
+		
+		template.execute("Insert into h_entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
+				"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid')");
+		
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+				"values ('rguid1', 'rid1', NOW() )");
+		
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+				"values ('esguid', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
+		
+		Entity entity = ibatisEntityDao.getHistoryEntityByRevision("csguid", "eguid", "rguid1");
+		
+		assertNotNull(entity);
+	}
+	
+	@Test
+	@Transactional
+	public void testGetHistoryEntityWithTwoInHistory() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into h_property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, entryStateGuid) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation', 'esguid1')");
+		
+		template.execute("Insert into h_entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid, description) " +
+				"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid1', 'd1')");
+		
+		template.execute("Insert into h_entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid, description) " +
+				"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid2', 'd2')");
+		
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+				"values ('rguid1', 'rid1', NOW() )");
+		
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+				"values ('rguid2', 'rid2', NOW() )");
+		
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+				"values ('esguid1', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
+		
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+				"values ('esguid2', 'eguid', 'entity', 'MODIFY', '0', 'rguid2')");
+		
+		Entity entity = ibatisEntityDao.getHistoryEntityByRevision("csguid", "eguid", "rguid2");
+		
+		assertNotNull(entity);
+		
+		assertEquals(entity.getEntityDescription().getContent(), "d2");
 	}
 }

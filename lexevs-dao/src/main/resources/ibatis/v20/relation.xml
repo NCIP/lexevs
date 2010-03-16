@@ -79,5 +79,14 @@
 			containerName = 
 			#param2#		
    </select>
-    
+   
+   <select id="getAssociationPredicateNameForId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+   		SELECT
+   			associationName
+   		FROM
+   			$prefix$associationPredicate
+   		WHERE
+			associationPredicateGuid = 
+			#param1#
+   </select> 
 </sqlMap>

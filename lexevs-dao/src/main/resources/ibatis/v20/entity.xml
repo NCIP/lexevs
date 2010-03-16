@@ -29,6 +29,33 @@
 		ON
 			entity.entityGuid =
 			entityType.entityGuid
+		LEFT JOIN
+			$prefix$entryState entryState
+		ON
+			entity.entryStateGuid =
+			entryState.entryStateGuid		
+	</sql>
+	
+	<sql id="getHistoryEntityFragment">
+		SELECT
+			entity.codingSchemeGuid,
+			entity.entityGuid,
+			entity.entityCode,
+			entity.entityCodeNamespace,
+			entity.description,
+			entityType.entityType
+		FROM
+			$prefix$h_entity entity
+		LEFT JOIN
+			$prefix$entityType entityType
+		ON
+			entity.entityGuid =
+			entityType.entityGuid
+		LEFT JOIN
+			$prefix$entryState entryState
+		ON
+			entity.entryStateGuid =
+			entryState.entryStateGuid		
 	</sql>
 	
 	<select id="getEntityCount" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="int">
@@ -40,6 +67,20 @@
 			codingSchemeGuid = #param1#
      </select>
 
+
+	<select id="getEntityIdByCodeAndNamespace" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultClass="string">
+		SELECT
+			entityGuid
+		FROM
+			$prefix$entity
+		WHERE
+			codingSchemeGuid = #param1#
+		AND
+			entityCode = #param2#
+		AND
+			entityCodeNamespace = #param3#
+     </select>
+     
 	<select id="getEntityByCodeAndNamespace" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Entity.entityResult">
 		<include refid="getEntityFragment"/>
 		WHERE
@@ -48,7 +89,13 @@
 			entityCodeNamespace = #param2#
      </select>
      
-   
+    <select id="getEntityByIdAndRevisionId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Entity.entityResult">
+		<include refid="getHistoryEntityFragment"/>
+		WHERE
+			entityGuid = #param1#
+		AND
+			entryState.revisionGuid = #param2#
+     </select>
      
      <select id="getAllEntitiesOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
      	resultMap="Entity.entityResult">

@@ -30,7 +30,8 @@
 			attributeId,
 			attributeValue,
 			subRef,
-			role
+			role,
+			entryStateGuid
 		) VALUES (
 			#id#,
 			#propertyId#,
@@ -38,7 +39,8 @@
 			#attributeId#,
 			#attributeValue#,
 			#subRef#,
-			#role#
+			#role#,
+			#entryStateId#
 		)
 	</insert>
 

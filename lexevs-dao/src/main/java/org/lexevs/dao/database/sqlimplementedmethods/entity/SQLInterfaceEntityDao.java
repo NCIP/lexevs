@@ -151,4 +151,18 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 			// TODO Auto-generated method stub (IMPLEMENT!)
 			throw new UnsupportedOperationException();
 		}
+
+		@Override
+		public String insertHistoryEntity(String codingSchemeId,
+				String entityId, Entity entity) {
+			// TODO Auto-generated method stub (IMPLEMENT!)
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Entity getHistoryEntityByRevision(String codingSchemeId,
+				String entityId, String revisionId) {
+			// TODO Auto-generated method stub (IMPLEMENT!)
+			throw new UnsupportedOperationException();
+		}
 }

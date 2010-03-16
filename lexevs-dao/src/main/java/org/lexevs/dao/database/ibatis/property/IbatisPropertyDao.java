@@ -102,9 +102,12 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				inserter.startBatch();
 				
 				for(PropertyBatchInsertItem item : batch){
+					String propertyId = createUniqueId();
+					
 					doInsertProperty(
 							prefix,
 							item.getParentId(),
+							propertyId,
 							type,
 							item.getProperty(),  inserter);
 				}
@@ -127,9 +130,10 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	public void insertBatchProperties(final String codingSchemeId, final PropertyType type,
 			final List<PropertyBatchInsertItem> batch, IbatisBatchInserter inserter) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		String propertyId = this.createUniqueId();
 		
 		for(PropertyBatchInsertItem item : batch){
-			this.doInsertProperty(prefix, item.getParentId(), type, item.getProperty(), inserter);
+			this.doInsertProperty(prefix, item.getParentId(), propertyId, type, item.getProperty(), inserter);
 		}
 	}
 
@@ -139,9 +143,10 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	public String insertProperty(String codingSchemeId,
 			String entityCodeId, PropertyType type, Property property) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		String propertyId = this.createUniqueId();
 		
 		return this.doInsertProperty(
-				prefix, entityCodeId, type, property, this.getNonBatchTemplateInserter());	
+				prefix, entityCodeId, propertyId, type, property, this.getNonBatchTemplateInserter());	
 	}
 	
 	/* (non-Javadoc)
@@ -168,9 +173,13 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * 
 	 * @return the string
 	 */
-	public String doInsertProperty(String prefix,
-			String entityCodeId, PropertyType type, Property property, IbatisInserter inserter) {
-		String propertyId = this.createUniqueId();
+	public String doInsertProperty(
+			String prefix,
+			String entityCodeId, 
+			String propertyId,
+			PropertyType type, 
+			Property property, 
+			IbatisInserter inserter) {
 		String entryStateId = this.createUniqueId();
 		
 		this.ibatisVersionsDao.insertEntryState(
@@ -188,15 +197,18 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						));
 		
 		for(Source source : property.getSource()) {
-			this.doInsertPropertySource(prefix, propertyId, source, inserter);
+			String propertySourceId = this.createUniqueId();
+			this.doInsertPropertySource(prefix, propertyId, propertySourceId, entryStateId, source, inserter);
 		}
 		
 		for(String context : property.getUsageContext()) {
-			this.doInsertPropertyUsageContext(prefix, propertyId, context, inserter);
+			String propertyUsageContextId = this.createUniqueId();
+			this.doInsertPropertyUsageContext(prefix, propertyId, propertyUsageContextId, entryStateId, context, inserter);
 		}
 		
 		for(PropertyQualifier qual : property.getPropertyQualifier()) {
-			this.doInsertPropertyQualifier(prefix, propertyId, qual, inserter);
+			String propertyQualifierId = this.createUniqueId();
+			this.doInsertPropertyQualifier(prefix, propertyId, propertyQualifierId, entryStateId, qual, inserter);
 		}
 		
 		return propertyId;
@@ -218,7 +230,13 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 */
 	public void insertPropertyQualifier(String codingSchemeId, String propertyId, PropertyQualifier propertyQualifier) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		this.doInsertPropertyQualifier(prefix, propertyId, propertyQualifier, this.getNonBatchTemplateInserter());	
+		String propertyQualifierId = this.createUniqueId();
+		this.doInsertPropertyQualifier(
+				prefix, propertyId, 
+				propertyQualifierId, 
+				null,
+				propertyQualifier, 
+				this.getNonBatchTemplateInserter());	
 	}
 	
 	/**
@@ -229,8 +247,13 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * @param propertyQualifier the property qualifier
 	 * @param inserter the inserter
 	 */
-	protected void doInsertPropertyQualifier(final String prefix, final String propertyId, final PropertyQualifier propertyQualifier, final IbatisInserter inserter) {
-		final String qualifierId = this.createUniqueId();
+	protected void doInsertPropertyQualifier(
+			final String prefix, 
+			final String propertyId, 
+			final String propertyQualifierId, 
+			final String entryStateId,
+			final PropertyQualifier propertyQualifier, 
+			final IbatisInserter inserter) {
 
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
 
@@ -240,24 +263,32 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				inserter.insert(INSERT_PROPERTY_QUALIFIER_SQL, 
 						buildInsertPropertyQualifierBean(
 								prefix,
-								propertyId, qualifierId, propertyQualifier));
+								propertyId, 
+								propertyQualifierId, 
+								entryStateId,
+								propertyQualifier));
 				return null;
 			}
 		});
 	}
-
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.access.property.PropertyDao#insertPropertySource(java.lang.String, java.lang.String, org.LexGrid.commonTypes.Source)
-	 */
-	public void insertPropertySource(String codingSchemeId, String propertyId, Source source) {
-		String sourceId = this.createUniqueId();
-		
-		this.getSqlMapClientTemplate().insert(INSERT_PROPERTY_SOURCE_SQL, 
-				this.buildInsertPropertySourceBean(
-						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
-						propertyId, sourceId, source));
-	}
 	
+	
+
+	@Override
+	public void insertPropertySource(String codingSchemeId, String propertyId,
+			Source source) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		String propertySourceId = this.createUniqueId();
+		
+		this.doInsertPropertySource(
+				prefix, 
+				propertyId, 
+				propertySourceId, 
+				null,
+				source,
+				this.getNonBatchTemplateInserter());
+	}
+
 	/**
 	 * Insert property source.
 	 * 
@@ -266,7 +297,13 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * @param source the source
 	 * @param inserter the inserter
 	 */
-	public void doInsertPropertySource(final String prefix, final String propertyId, final Source source, final IbatisInserter inserter) {
+	protected void doInsertPropertySource(
+			final String prefix, 
+			final String propertyId, 
+			final String propertySourceId, 
+			final String entryStateId,
+			final Source source, 
+			final IbatisInserter inserter) {
 		final String sourceId = this.createUniqueId();	
 
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
@@ -277,7 +314,10 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				inserter.insert(INSERT_PROPERTY_SOURCE_SQL, 
 						buildInsertPropertySourceBean(
 								prefix,
-								propertyId, sourceId, source));
+								propertyId, 
+								sourceId, 
+								entryStateId, 
+								source));
 				return null;
 			}
 		});
@@ -291,9 +331,14 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * @param usageContext the usage context
 	 * @param inserter the inserter
 	 */
-	protected void doInsertPropertyUsageContext(final String prefix, final String propertyId, final String usageContext, final IbatisInserter inserter) {
-		final String sourceId = this.createUniqueId();
-
+	protected void doInsertPropertyUsageContext(
+			final String prefix, 
+			final String propertyId,
+			final String propertyUsageContextId, 
+			final String entryStateId,
+			final String usageContext, 
+			final IbatisInserter inserter) {
+		
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
 
 			public Object doInSqlMapClient(SqlMapExecutor executor)
@@ -302,7 +347,10 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				inserter.insert(INSERT_PROPERTY_USAGECONTEXT_SQL, 
 						buildInsertPropertyUsageContextBean(
 								prefix,
-								propertyId, sourceId, usageContext));
+								propertyId, 
+								propertyUsageContextId, 
+								entryStateId, 
+								usageContext));
 
 				return null;
 			}
@@ -310,10 +358,19 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	}
 	
 	@Override
-	public void insertPropertyUsageContext(String codingSchemeId,
-			String propertyId, String usageContext) {
+	public void insertPropertyUsageContext(
+			String codingSchemeId,
+			String propertyId, 
+			String usageContext) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		this.doInsertPropertyUsageContext(prefix, propertyId, usageContext, this.getNonBatchTemplateInserter());
+		String usageContextId = this.createUniqueId();
+		this.doInsertPropertyUsageContext(
+				prefix, 
+				propertyId, 
+				usageContextId,
+				null, 
+				usageContext,
+				this.getNonBatchTemplateInserter());
 	}
 	
 	/**
@@ -434,6 +491,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			String prefix,
 			String propertyId, 
 			String qualifierId, 
+			String entryStateId,
 			PropertyQualifier propertyQualifier){
 		InsertPropertyMultiAttribBean bean = new InsertPropertyMultiAttribBean();
 		bean.setPrefix(prefix);
@@ -442,6 +500,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		bean.setAttributeId(propertyQualifier.getPropertyQualifierName());
 		bean.setAttributeValue(propertyQualifier.getValue().getContent());
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_QUALIFIER);
+		bean.setEntryStateId(entryStateId);
 
 		return bean;
 	}
@@ -456,7 +515,8 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * 
 	 * @return the insert property multi attrib bean
 	 */
-	protected InsertPropertyMultiAttribBean buildInsertPropertyUsageContextBean(String prefix, String propertyId, String qualifierId, String usageContext){
+	protected InsertPropertyMultiAttribBean buildInsertPropertyUsageContextBean(String prefix, String propertyId, 
+			String qualifierId, String entryStateId, String usageContext){
 		InsertPropertyMultiAttribBean bean = new InsertPropertyMultiAttribBean();
 		bean.setPrefix(prefix);
 		bean.setId(qualifierId);
@@ -464,6 +524,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		bean.setAttributeId(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
 		bean.setAttributeValue(usageContext);
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
+		bean.setEntryStateId(entryStateId);
 
 		return bean;
 	}
@@ -478,7 +539,8 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * 
 	 * @return the insert property multi attrib bean
 	 */
-	protected InsertPropertyMultiAttribBean buildInsertPropertySourceBean(String prefix, String propertyId, String sourceId, Source source){
+	protected InsertPropertyMultiAttribBean buildInsertPropertySourceBean(
+			String prefix, String propertyId, String sourceId, String entryStateId, Source source){
 		InsertPropertyMultiAttribBean bean = new InsertPropertyMultiAttribBean();
 		bean.setPrefix(prefix);
 		bean.setId(sourceId);
@@ -488,6 +550,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_SOURCE);
 		bean.setRole(source.getRole());
 		bean.setSubRef(source.getSubRef());
+		bean.setEntryStateId(entryStateId);
 
 		return bean;
 	}

@@ -67,6 +67,7 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	 */
 	public String getAssociationPredicateId(String codingSchemeId, String relationContainerId, String associationPredicateName);
 	
+	public String getAssociationPredicateNameForId(String codingSchemeId, String associationPredicateId);
 	/**
 	 * Insert association source.
 	 * 
