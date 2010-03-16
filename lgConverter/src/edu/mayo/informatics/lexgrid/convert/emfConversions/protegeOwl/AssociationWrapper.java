@@ -11,7 +11,7 @@ import org.LexGrid.relations.AssociationPredicate;
  * edu.mayo.informatics.lexgrid.convert
  * 
  * 
- * @author M077995
+ * @author Zonghui Lian
  *
  */
 public class AssociationWrapper {
