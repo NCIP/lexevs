@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap>
+<sqlMap namespace="Property">
 
 	<typeAlias alias="property" type="org.LexGrid.commonTypes.Property" />
 	<typeAlias alias="presentation" type="org.LexGrid.concepts.Presentation"/>
 	
 
-	<resultMap id="propertyResult" class="property">
+	<resultMap id="propertyResult" class="property" groupBy="propertyId">
 		<result property="propertyName" column="propertyName" />	
 		<result property="propertyId" column="propertyId" />
 		<result property="propertyType" column="propertyType" />
 		<result property="language" column="language" />
 		<result property="value.content" column="propertyValue" />
 		<result property="value.dataType" column="format" />
+		<result property="_sourceList" resultMap="Property.multiAttribResult"/>
+		<result property="_propertyQualifierList" resultMap="Property.multiAttribResult"/>
+		<result property="_usageContextList" resultMap="Property.multiAttribResult"/>
 		<discriminator javaType="string" column="propertyType">
 			<subMap value="presentation" resultMap="presentationResult" />
 		</discriminator>
@@ -34,28 +37,53 @@
 		AND
 			propertyId = #param2#
   	</select>
+  	
+  	<sql id="getPropertyFragment">
+  	  	SELECT
+  			property.referenceType,
+  			property.propertyId,
+  			property.propertyType,
+  			property.propertyName,
+  			property.language,
+  			property.format,
+  			property.isPreferred,
+  			property.matchIfNoContext,
+  			property.degreeOfFidelity,
+  			property.representationalForm,
+  			property.propertyValue,
+  			entryState.changeType,
+  			entryState.relativeOrder,
+  			multiAttrib.*
+  		FROM
+  			$prefix$property property
+  		LEFT JOIN
+  			${defaultPrefix}entryState entryState
+  		ON
+  			property.entryStateGuid =
+  			entryState.entryStateGuid
+  		LEFT JOIN
+  			$prefix$propertyMultiAttrib multiAttrib
+  		ON
+  			property.propertyGuid =
+  			multiAttrib.propertyGuid		
+  	</sql>
 
   	<select id="getPropertiesByParent" resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
-  		SELECT
-  			referenceType,
-  			propertyId,
-  			propertyType,
-  			propertyName,
-  			language,
-  			format,
-  			isPreferred,
-  			matchIfNoContext,
-  			degreeOfFidelity,
-  			representationalForm,
-  			propertyValue
-  		FROM
-  			$prefix$property
+		<include refid="getPropertyFragment"/>
   		WHERE
-			referenceType = #param1#
+			property.referenceType = #param1#
 		AND 
-			referenceGuid = #param2#
-  			
+			property.referenceGuid = #param2#
+  	</select>
   	
+  	<select id="getPropertiesByParentAndRevisionId" resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
+		<include refid="getPropertyFragment"/>
+  		WHERE
+			property.referenceType = #param1#
+		AND 
+			property.referenceGuid = #param2#
+		AND 
+			entryState.revisionGuid = #param3#
   	</select>
 
 	<delete id="deleteEntityPropertiesByCodingSchemeId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">

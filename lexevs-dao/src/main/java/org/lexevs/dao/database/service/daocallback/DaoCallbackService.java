@@ -16,7 +16,7 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.lexevs.dao.database.service;
+package org.lexevs.dao.database.service.daocallback;
 
 import org.lexevs.dao.database.access.DaoManager;
 
@@ -25,7 +25,7 @@ import org.lexevs.dao.database.access.DaoManager;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface DatabaseService {
+public interface DaoCallbackService {
 
 	/**
 	 * Execute in dao layer.

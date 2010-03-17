@@ -396,6 +396,8 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals(returnedCs.getLocalNameCount(), 2);
 		assertTrue(ArrayUtils.contains(returnedCs.getLocalName(), "localName1"));
 		assertTrue(ArrayUtils.contains(returnedCs.getLocalName(), "localName2"));
+		
+		assertEquals(0, returnedCs.getSourceCount());
 	}
 
 	/**

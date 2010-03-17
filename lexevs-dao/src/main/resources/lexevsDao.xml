@@ -18,7 +18,12 @@
           class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
        		 <property name="configLocation" value="classpath:ibatis/v20/v20SqlMaps.xml"/>
         <property name="dataSource" ref="dataSource" />
+        <property name="sqlMapClientProperties" ref="sqlMapPrefixPropertiesFactory"/>
     </bean>   
+    
+    <bean id="sqlMapPrefixPropertiesFactory" class="org.lexevs.dao.database.ibatis.sqlmap.SqlMapPrefixPropertiesFactory">
+    	<property name="prefixResolver" ref="defaultPrefixResolver"/>
+    </bean>
     
     <bean id="abstractIbatisDao" abstract="true">
     	<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"/>
@@ -111,11 +116,16 @@
 		<property name="propertyService" ref="propertyService"/>
 		<property name="entityService" ref="entityService"/>
 		<property name="associationService" ref="associationService"/>
+		<property name="daoCallbackService" ref="daoManagerDaoCallbackService"/>
 	</bean>
 	
 	<bean id="abstractService" abstract="true">
 		<property name="daoManager" ref="daoManager"/>
 	</bean>
+	
+	<bean id="daoManagerDaoCallbackService" 
+		class="org.lexevs.dao.database.service.daocallback.DaoManagerDaoCallbackService"
+		parent="abstractService" />
 	
 	<bean id="codingSchemeService" 
 		class="org.lexevs.dao.database.service.codingscheme.VersionableEventCodingSchemeService"

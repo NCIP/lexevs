@@ -22,7 +22,6 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.versions.EntryState;
-import org.lexevs.dao.database.service.DatabaseService;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 
 /**
@@ -30,7 +29,7 @@ import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedExcept
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface CodingSchemeService extends DatabaseService {
+public interface CodingSchemeService {
 
 	/**
 	 * Gets the coding scheme by uri and version.

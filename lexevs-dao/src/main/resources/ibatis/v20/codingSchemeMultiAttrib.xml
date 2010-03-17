@@ -11,7 +11,7 @@
 
 
 	<resultMap id="localNameResult" class="string">
-		<result property="java.lang.String" column="attributeValue" />
+		<result property="java.lang.String" column="localNameValue" />
 	</resultMap>
 	
 	<select id="getSourceListByCodingSchemeId" 

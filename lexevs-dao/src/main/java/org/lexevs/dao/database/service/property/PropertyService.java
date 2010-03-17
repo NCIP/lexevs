@@ -21,14 +21,13 @@ package org.lexevs.dao.database.service.property;
 import java.util.List;
 
 import org.LexGrid.commonTypes.Property;
-import org.lexevs.dao.database.service.DatabaseService;
 
 /**
  * The Interface PropertyService.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface PropertyService extends DatabaseService {
+public interface PropertyService {
 	
 	/**
 	 * Insert entity property.

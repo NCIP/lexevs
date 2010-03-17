@@ -59,75 +59,65 @@
 			es.prevRevisionGuid,
 			rev.revisionGuid,
 			rev.revisionId,
-			csma.*
+			csmaSource.*,
+			csmaLocalName.attributeValue localNameValue
 		FROM
 			$prefix$codingScheme cs
 			
 		LEFT JOIN
-			$prefix$entryState es
+			${defaultPrefix}entryState es
 		ON
 			cs.entryStateGuid = es.entryStateGuid
 			
 		LEFT JOIN
-			$prefix$revision as rev
+			${defaultPrefix}revision rev
 		ON
 			es.revisionGuid = rev.revisionGuid
+			</sql>
 			
-		LEFT OUTER JOIN
-			$prefix$csMultiAttrib as csma
-		ON
-			csma.codingSchemeGuid = cs.codingSchemeGuid
+	<sql id="getCodingSchemeMultiAttribsFragment">
+		LEFT JOIN
+			$prefix$csMultiAttrib csmaSource
+		ON (
+			csmaSource.codingSchemeGuid = cs.codingSchemeGuid
+		AND
+			csmaSource.attributeType = 'source'
+			)
+		LEFT JOIN
+			$prefix$csMultiAttrib csmaLocalName
+		ON (
+			csmaLocalName.codingSchemeGuid = cs.codingSchemeGuid
+		AND
+			csmaLocalName.attributeType = 'localName'
+			)
 	</sql>
 	
-	<sql id="getHistoryCodingSchemeFragment">
-		SELECT
-			cs.codingSchemeGuid,
-			cs.codingSchemeName,
-			cs.codingSchemeUri,
-			cs.representsVersion,
-			cs.formalName,
-			cs.defaultLanguage,
-			cs.approxNumConcepts,
-			cs.description,
-			cs.copyright,
-			cs.isActive,
-			cs.owner,
-			cs.status,
-			cs.effectiveDate,
-			cs.expirationDate,
-			es.changeType,
-			es.relativeOrder,
-			es.revisionGuid,
-			es.prevRevisionGuid,
-			rev.revisionGuid,
-			rev.revisionId,
-			csma.*
-		FROM
-			$prefix$h_codingScheme cs
+	<sql id="getHistoryCodingSchemeMultiAttribsFragment">
+		LEFT JOIN
+			${defaultPrefix}h_csMultiAttrib csmaSource
+		ON (
+			csmaSource.codingSchemeGuid = cs.codingSchemeGuid
+		AND
+			csmaSource.attributeType = 'source'
+		AND
+			csmaSource.entryStateGuid = cs.entryStateGuid	
+			)
 			
 		LEFT JOIN
-			$prefix$entryState es
-		ON
-			cs.entryStateGuid = es.entryStateGuid
-			
-		LEFT JOIN
-			$prefix$revision as rev
-		ON
-			es.revisionGuid = rev.revisionGuid
-			
-		LEFT OUTER JOIN
-			$prefix$h_csMultiAttrib as csma
-		ON
-			(
-				csma.codingSchemeGuid = cs.codingSchemeGuid
-				AND
-				csma.entryStateGuid = cs.entryStateGuid	
+			${defaultPrefix}h_csMultiAttrib csmaLocalName
+		ON (
+			csmaLocalName.codingSchemeGuid = cs.codingSchemeGuid
+		AND
+			csmaLocalName.attributeType = 'localName'
+		AND
+			csmaLocalName.entryStateGuid = cs.entryStateGuid	
 			)
 	</sql>
 	
 	
 	<select id="getCodingSchemeById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="CodingScheme.codingSchemeResult">
 		<include refid="getCodingSchemeFragment"/>
+		<include refid="getCodingSchemeMultiAttribsFragment"/>
 		WHERE
 			cs.codingSchemeGuid = #param1#
 
@@ -152,6 +142,7 @@
 	
 	<select id="getCodingSchemeByNameAndVersion" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="codingSchemeResult">
 		<include refid="getCodingSchemeFragment"/>
+		<include refid="getCodingSchemeMultiAttribsFragment"/>
 		WHERE
 			cs.codingSchemeName = #param1#
 		AND
@@ -159,7 +150,8 @@
      </select>
      
      <select id="getCodingSchemeByIdAndRevisionId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="codingSchemeResult">
-		<include refid="getHistoryCodingSchemeFragment"/>
+		<include refid="getCodingSchemeFragment"/>
+		<include refid="getHistoryCodingSchemeMultiAttribsFragment"/>
 		WHERE
 			cs.codingSchemeGuid = #param1#
 		AND

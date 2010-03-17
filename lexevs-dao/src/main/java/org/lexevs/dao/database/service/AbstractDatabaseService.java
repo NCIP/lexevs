@@ -19,9 +19,7 @@
 package org.lexevs.dao.database.service;
 
 import org.lexevs.dao.database.access.DaoManager;
-import org.lexevs.dao.database.service.DatabaseService.DaoCallback;
 import org.lexevs.dao.database.service.event.DatabaseServiceEventSupport;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class AbstractDatabaseService.
@@ -32,18 +30,6 @@ public class AbstractDatabaseService extends DatabaseServiceEventSupport {
 
 	/** The dao manager. */
 	private DaoManager daoManager;
-	
-	/**
-	 * Execute in dao layer.
-	 * 
-	 * @param daoCallback the dao callback
-	 * 
-	 * @return the t
-	 */
-	@Transactional
-	public <T> T executeInDaoLayer(DaoCallback<T> daoCallback){
-		return daoCallback.execute(daoManager);
-	}
 
 	/**
 	 * Gets the coding scheme id.

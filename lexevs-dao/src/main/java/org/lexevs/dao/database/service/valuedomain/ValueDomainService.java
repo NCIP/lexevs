@@ -22,14 +22,13 @@ import java.util.List;
 
 import org.LexGrid.valueDomains.ValueDomainDefinition;
 import org.LexGrid.valueDomains.ValueDomains;
-import org.lexevs.dao.database.service.DatabaseService;
 
 /**
  * The Interface ValueDomainService.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface ValueDomainService extends DatabaseService {
+public interface ValueDomainService {
 
 	/**
 	 * Insert value domain definition.

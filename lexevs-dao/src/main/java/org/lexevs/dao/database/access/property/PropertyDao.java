@@ -39,10 +39,13 @@ public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
 	 */
-	public enum PropertyType {/** The CODINGSCHEME. */
-CODINGSCHEME,/** The VALUEDOMAIN. */
-VALUEDOMAIN,/** The ENTITY. */
-ENTITY}
+	public enum PropertyType {
+		/** The CODINGSCHEME. */
+		CODINGSCHEME,
+		/** The VALUEDOMAIN. */
+		VALUEDOMAIN,
+		/** The ENTITY. */
+		ENTITY}
 	
 	/**
 	 * Gets the all properties of parent.
@@ -55,6 +58,10 @@ ENTITY}
 	 */
 	public List<Property> getAllPropertiesOfParent(String codingSchemeId,
 			String parentId, PropertyType type);
+	
+	public List<Property> getAllHistoryPropertiesOfParentByRevisionId(String codingSchemeId,
+			String parentId, String revisionId, PropertyType type);
+
 
 	/**
 	 * Insert property qualifier.
@@ -81,6 +88,13 @@ ENTITY}
 	public String insertProperty(
 			String codingSchemeId, 
 			String parentId,
+			PropertyType type,
+			Property property);
+	
+	public String insertHistoryProperty(
+			String codingSchemeId, 
+			String parentId,
+			String propertyId,
 			PropertyType type,
 			Property property);
 	

@@ -20,6 +20,7 @@ package org.lexevs.dao.database.service;
 
 import org.lexevs.dao.database.service.association.AssociationService;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.picklist.PickListService;
 import org.lexevs.dao.database.service.property.PropertyService;
@@ -49,7 +50,9 @@ public class DatabaseServiceManager {
 	
 	/** The value domain service. */
 	private ValueDomainService valueDomainService;
-
+	
+	private DaoCallbackService daoCallbackService;
+	
 	/**
 	 * Sets the coding scheme service.
 	 * 
@@ -156,6 +159,14 @@ public class DatabaseServiceManager {
 	 */
 	public void setValueDomainService(ValueDomainService valueDomainService) {
 		this.valueDomainService = valueDomainService;
+	}
+
+	public void setDaoCallbackService(DaoCallbackService daoCallbackService) {
+		this.daoCallbackService = daoCallbackService;
+	}
+
+	public DaoCallbackService getDaoCallbackService() {
+		return daoCallbackService;
 	}
 	
 	

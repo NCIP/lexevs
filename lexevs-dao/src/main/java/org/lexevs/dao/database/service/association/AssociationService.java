@@ -20,14 +20,13 @@ package org.lexevs.dao.database.service.association;
 
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.Relations;
-import org.lexevs.dao.database.service.DatabaseService;
 
 /**
  * The Interface AssociationService.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface AssociationService extends DatabaseService {
+public interface AssociationService {
 	
 	/**
 	 * Insert relation.

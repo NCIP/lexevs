@@ -28,12 +28,13 @@ import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
+import org.lexevs.dao.database.constants.classifier.property.PropertyMultiAttributeClassifier;
 import org.lexevs.dao.database.constants.classifier.property.PropertyTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
-import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyBean;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyLinkBean;
@@ -59,29 +60,37 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
+	public static String PROPERTY_NAMESPACE = "Property.";
+	
 	/** The INSER t_ propert y_ sql. */
-	public static String INSERT_PROPERTY_SQL = "insertProperty";
+	public static String INSERT_PROPERTY_SQL = PROPERTY_NAMESPACE + "insertProperty";
 	
 	/** The DELET e_ al l_ entit y_ propertie s_ o f_ codingschem e_ sql. */
-	public static String DELETE_ALL_ENTITY_PROPERTIES_OF_CODINGSCHEME_SQL = "deleteEntityPropertiesByCodingSchemeId";
+	public static String DELETE_ALL_ENTITY_PROPERTIES_OF_CODINGSCHEME_SQL = PROPERTY_NAMESPACE + "deleteEntityPropertiesByCodingSchemeId";
 	
 	/** The INSER t_ propert y_ qualifie r_ sql. */
-	public static String INSERT_PROPERTY_QUALIFIER_SQL = "insertPropertyMultiAttrib";
+	public static String INSERT_PROPERTY_QUALIFIER_SQL = PROPERTY_NAMESPACE + "insertPropertyMultiAttrib";
 	
 	/** The INSER t_ propert y_ sourc e_ sql. */
-	public static String INSERT_PROPERTY_SOURCE_SQL = "insertPropertyMultiAttrib";
+	public static String INSERT_PROPERTY_SOURCE_SQL = PROPERTY_NAMESPACE + "insertPropertyMultiAttrib";
 	
 	/** The INSER t_ propert y_ usagecontex t_ sql. */
-	public static String INSERT_PROPERTY_USAGECONTEXT_SQL = "insertPropertyMultiAttrib";
+	public static String INSERT_PROPERTY_USAGECONTEXT_SQL = PROPERTY_NAMESPACE + "insertPropertyMultiAttrib";
 	
 	/** The INSER t_ propertylin k_ sql. */
-	public static String INSERT_PROPERTYLINK_SQL = "insertPropertyLink";
+	public static String INSERT_PROPERTYLINK_SQL = PROPERTY_NAMESPACE + "insertPropertyLink";
 	
 	/** The GE t_ al l_ propertie s_ o f_ paren t_ sql. */
-	public static String GET_ALL_PROPERTIES_OF_PARENT_SQL = "getPropertiesByParent";
+	public static String GET_ALL_PROPERTIES_OF_PARENT_SQL =PROPERTY_NAMESPACE +  "getPropertiesByParent";
+
+	public static String GET_ALL_PROPERTIES_OF_PARENT_BY_REVISION_SQL = PROPERTY_NAMESPACE + "getPropertiesByParentAndRevisionId";
 	
 	/** The GE t_ propert y_ i d_ sql. */
-	public static String GET_PROPERTY_ID_SQL = "getPropertyId";
+	public static String GET_PROPERTY_ID_SQL = PROPERTY_NAMESPACE + "getPropertyId";
+	
+	public static String GET_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL = PROPERTY_NAMESPACE + "getPropertyMultiAttribById";
+	
+	PropertyMultiAttributeClassifier propertyMultiAttributeClassifier = new PropertyMultiAttributeClassifier();
 	
 	/** The ibatis versions dao. */
 	private IbatisVersionsDao ibatisVersionsDao;
@@ -149,6 +158,14 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				prefix, entityCodeId, propertyId, type, property, this.getNonBatchTemplateInserter());	
 	}
 	
+	public String insertHistoryProperty(String codingSchemeId,
+			String entityCodeId, String propertyId, PropertyType type, Property property) {
+		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
+		
+		return this.doInsertProperty(
+				prefix, entityCodeId, propertyId, type, property, this.getNonBatchTemplateInserter());	
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#getAllPropertiesOfParent(java.lang.String, java.lang.String, org.lexevs.dao.database.access.property.PropertyDao.PropertyType)
 	 */
@@ -160,6 +177,41 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
 						this.propertyTypeClassifier.classify(PropertyType.ENTITY),
 						parentId));
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Property> getAllHistoryPropertiesOfParentByRevisionId(String codingSchemeId,
+			String parentId, String revisionId, PropertyType type) {
+		return this.getSqlMapClientTemplate().queryForList(GET_ALL_PROPERTIES_OF_PARENT_BY_REVISION_SQL, 
+				new PrefixedParameterTriple(
+						this.getPrefixResolver().resolveHistoryPrefix(),
+						this.propertyTypeClassifier.classify(PropertyType.ENTITY),
+						parentId,
+						revisionId));
+	}
+	
+	public List<Source> getPropertySourcesByPropertyId(String codingSchemeId,
+			String propertyId){
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		return doGetPropertyMultiAttrib(prefix, propertyId, Source.class);
+	}
+	
+	public List<String> getPropertyUsageContextsByPropertyId(String codingSchemeId,
+			String propertyId){
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		return doGetPropertyMultiAttrib(prefix, propertyId, String.class);
+	}
+	
+	public List<PropertyQualifier> getPropertyQualifiersByPropertyId(String codingSchemeId,
+			String propertyId){
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		return doGetPropertyMultiAttrib(prefix, propertyId, PropertyQualifier.class);
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected <T> List<T> doGetPropertyMultiAttrib(String prefix, String propertyId, Class<T> multiAttrib){
+		return this.getSqlMapClientTemplate().queryForList(GET_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL, 
+				new PrefixedParameterTuple(prefix, propertyId, this.propertyMultiAttributeClassifier.classify(multiAttrib)));
 	}
 	
 	/**

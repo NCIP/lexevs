@@ -21,14 +21,13 @@ package org.lexevs.dao.database.service.entity;
 import java.util.List;
 
 import org.LexGrid.concepts.Entity;
-import org.lexevs.dao.database.service.DatabaseService;
 
 /**
  * The Interface EntityService.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface EntityService extends DatabaseService {
+public interface EntityService {
 	
 	/**
 	 * Insert entity.

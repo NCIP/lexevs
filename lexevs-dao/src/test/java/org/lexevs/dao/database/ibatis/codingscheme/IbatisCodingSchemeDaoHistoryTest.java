@@ -151,7 +151,7 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 			"values ('csguid', 'csname', 'csuri', 'csversion2', 'esguid2')");
 		
 		template.execute("Insert into h_csmultiattrib (csMultiAttribGuid, codingSchemeGuid, attributetype, attributevalue, entrystateguid) " +
-			"values ('csmaguid', 'csguid', 'LocalName', 'local name', 'esguid2')");
+			"values ('csmaguid', 'csguid', 'localName', 'local name', 'esguid2')");
 	
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
 			"values ('rguid1', 'rid1', NOW() )");
@@ -181,7 +181,7 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 			"values ('csguid', 'csname', 'csuri', 'csversion2', 'esguid2')");
 		
 		template.execute("Insert into h_csmultiattrib (csMultiAttribGuid, codingSchemeGuid, attributetype, attributevalue, entrystateguid) " +
-			"values ('csmaguid', 'csguid', 'Source', 'a source', 'esguid2')");
+			"values ('csmaguid', 'csguid', 'source', 'a source', 'esguid2')");
 	
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
 			"values ('rguid1', 'rid1', NOW() )");

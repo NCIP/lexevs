@@ -20,14 +20,13 @@ package org.lexevs.dao.database.service.version;
 
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
-import org.lexevs.dao.database.service.DatabaseService;
 
 /**
  * The Interface VersionService.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface VersionService extends DatabaseService {
+public interface VersionService {
 
 	/**
 	 * Insert system release.
