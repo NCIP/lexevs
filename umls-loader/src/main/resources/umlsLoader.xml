@@ -62,13 +62,27 @@
 			</tasklet>
 		</step>
 		
-		<step id="umlsLoadMrstyProperties" next="umlsLoadEntityAssnsToEntity">
+		<step id="umlsLoadMrstyProperties" next="umlsLoadDefinitionProperties">
 			<tasklet>
 				<listeners>
 					<listener ref="stepCompletionListener" />
 				</listeners>
 				<chunk reader="mrstyGroupReader" processor="umlsMrstyListProcessor"
 					writer="entityPropertyListWriter" commit-interval="1">
+					<streams>
+						<stream ref="mrstyReader" />
+					</streams>
+				</chunk>
+			</tasklet>
+		</step>
+		
+		<step id="umlsLoadDefinitionProperties" next="umlsLoadEntityAssnsToEntity">
+			<tasklet>
+				<listeners>
+					<listener ref="stepCompletionListener" />
+				</listeners>
+				<chunk reader="mrdefReader" processor="umlsDefinitionPropertyProcessor"
+					writer="entityPropertyWriter" commit-interval="1">
 					<streams>
 						<stream ref="mrstyReader" />
 					</streams>
@@ -452,7 +466,8 @@
 	<beans:bean id="umlsDefinitionPropertyProcessor" parent="umlsDefaultPropertyProcessor"
 		class="org.lexgrid.loader.processor.EntityPropertyProcessor">
 		<beans:property name="propertyResolver"
-			ref="umlsDefinitionPropertyResolver" />
+			ref="umlsDefinitionPropertyResolver" />		
+		<beans:property name="entityKeyResolver" ref="databaseServiceEntityKeyResolver"/>
 	</beans:bean>
 
 	<beans:bean id="umlsMrsatPropertyProcessor" parent="umlsDefaultPropertyProcessor"
@@ -559,6 +574,9 @@
 		<beans:property name="individualIdSetter">
 			<beans:bean
 				class="org.lexgrid.loader.umls.data.property.MrdefIndividualIdSetter" />
+		</beans:property>
+		<beans:property name="entityNamespaceResolver">
+			<beans:ref bean="umlsEntityNamespaceResolver" />
 		</beans:property>
 		<beans:property name="entityCodeResolver">
 			<beans:bean
