@@ -91,12 +91,4 @@ public class DefaultDefinitionPropertyResolver extends AbstractBasicPropertyReso
 	public String getRepresentationalForm(Mrdef item) {
 		return null;
 	}
-
-	public String getEntityCodeNamespace(Mrdef item) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	
-
 }
