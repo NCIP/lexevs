@@ -30,6 +30,9 @@ public abstract class AbstractBasicPropertyResolver<I> implements PropertyResolv
 	/** The entity code resolver. */
 	private EntityCodeResolver<I> entityCodeResolver;
 	
+	/** The entity code resolver. */
+	private EntityNamespaceResolver<I> entityNamespaceResolver;
+	
 	/** The individual id setter. */
 	private IndividualIdSetter<I> individualIdSetter;
 
@@ -38,6 +41,10 @@ public abstract class AbstractBasicPropertyResolver<I> implements PropertyResolv
 	 */
 	public String getEntityCode(I item) {
 		return entityCodeResolver.getEntityCode(item);
+	}
+	
+	public String getEntityCodeNamespace(I item) {
+		return entityNamespaceResolver.getEntityNamespace(item);
 	}
 	
 	/* (non-Javadoc)
@@ -81,5 +88,13 @@ public abstract class AbstractBasicPropertyResolver<I> implements PropertyResolv
 	 */
 	public void setIndividualIdSetter(IndividualIdSetter<I> individualIdSetter) {
 		this.individualIdSetter = individualIdSetter;
+	}
+
+	public void setEntityNamespaceResolver(EntityNamespaceResolver<I> entityNamespaceResolver) {
+		this.entityNamespaceResolver = entityNamespaceResolver;
+	}
+
+	public EntityNamespaceResolver<I> getEntityNamespaceResolver() {
+		return entityNamespaceResolver;
 	}
 }

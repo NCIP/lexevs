@@ -13,6 +13,7 @@
 	
 	<beans:import resource="writers.xml"/> 
 	<beans:import resource="repositories.xml"/>
+	<beans:import resource="lexEvsCache.xml"/>
 	
 	<beans:bean id="taskExecutor" 
 		class="org.springframework.core.task.SimpleAsyncTaskExecutor">
@@ -149,5 +150,10 @@
 		</beans:property>
 		<beans:property name="maxCacheSize" value="1000"/>
 	</beans:bean>		
+	
+	<beans:bean id="databaseServiceEntityKeyResolver" 
+		class="org.lexgrid.loader.database.key.DatabaseServiceEntityKeyResolver">
+		<beans:property name="databaseServiceManager" ref="databaseServiceManager" />
+	</beans:bean>
 			
 </beans:beans>

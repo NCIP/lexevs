@@ -46,9 +46,10 @@ public class EntityPropertyProcessor<I> extends AbstractSupportedAttributeRegist
 		Property prop = new Property();
 		
 		String parentKey = entityKeyResolver.
-			resolveKey(super.getCodingSchemeIdSetter().getCodingSchemeName(), 
+			resolveKey( getCodingSchemeIdSetter().getCodingSchemeUri(),
+					getCodingSchemeIdSetter().getCodingSchemeVersion(),
 								propertyResolver.getEntityCode(item), 
-								this.getPropertyResolver().getEntityCodeNamespace(item));	
+								propertyResolver.getEntityCodeNamespace(item));	
 		
 		prop.setPropertyId(propertyResolver.getId(item));
 	
