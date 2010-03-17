@@ -56,6 +56,7 @@ import org.LexGrid.emf.base.util.LgModelUtil;
 import org.LexGrid.emf.commonTypes.CommontypesPackage;
 import org.LexGrid.emf.concepts.ConceptsPackage;
 import org.LexGrid.emf.concepts.util.EntitiesUtil;
+import org.LexGrid.custom.concepts.EntityFactory;
 import org.LexGrid.custom.relations.RelationsUtil;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationData;
@@ -262,6 +263,7 @@ public class ProtegeOwl2EMF {
                 
                 emfSupportedMappings_.registerSupportedEntityType(name, null, name, false);
             }
+            
             emfSupportedMappings_.applyToCodingScheme(emfScheme_);
             
             if (memoryProfile_ != ProtegeOwl2EMFConstants.MEMOPT_ALL_IN_MEMORY) {
@@ -275,6 +277,8 @@ public class ProtegeOwl2EMF {
                             daoManager.getCodingSchemeDao(uri, version).getCodingSchemeIdByUriAndVersion(uri, version);
                         
                         daoManager.getCodingSchemeDao(uri, version).insertMappings(codingSchemeId, emfScheme_.getMappings());
+                        
+                        return null;
                     }   
                 });
             }
@@ -715,7 +719,7 @@ public class ProtegeOwl2EMF {
 
         // Create the raw EMF concept and assign label as initial description,
         // which may be overridden later by preferred text.
-        Concept emfConcept = new Concept();
+        Concept emfConcept = EntityFactory.createConcept();
         EntityDescription ed = new EntityDescription();
         ed.setContent(label);
         emfConcept.setEntityDescription(ed);
@@ -766,8 +770,7 @@ public class ProtegeOwl2EMF {
 
         // Create the raw EMF concept and assign label as initial description,
         // which may be overridden later by preferred text.
-        Entity emfEntity = new Entity();
-        emfEntity.addEntityType(EntityTypes.ASSOCIATION.toString());
+        Entity emfEntity = EntityFactory.createAssociation();
         EntityDescription ed = new EntityDescription();
         ed.setContent(label);
         emfEntity.setEntityDescription(ed);
@@ -807,7 +810,8 @@ public class ProtegeOwl2EMF {
         // Does this concept represent the root of a concept branch that should
         // be centrally linked to the top node for subclass traversal?
         if (isRootNode(rdfsNamedClass)) {
-            AssociationTarget target = CreateUtils.createAssociationTarget(ProtegeOwl2EMFConstants.ROOT_CODE, null);
+            AssociationTarget target = CreateUtils.createAssociationTarget(ProtegeOwl2EMFConstants.ROOT_CODE, 
+                    getNameSpace(rdfsNamedClass.getNamespace() ));
             relateAssociationSourceTarget(assocManager.getSubClassOf(), source, target);
         }
 
@@ -1114,7 +1118,7 @@ public class ProtegeOwl2EMF {
         // Create the raw EMF individual and assign label as initial
         // description,
         // which may be overridden later by preferred text.
-        Instance emfInstance = new Instance();
+        Instance emfInstance = EntityFactory.createInstance();
         EntityDescription ed = new EntityDescription();
         ed.setContent(label);
         emfInstance.setEntityDescription(ed);
@@ -1421,9 +1425,12 @@ public class ProtegeOwl2EMF {
             return code;
         }
 
-        Concept emfClass = new Concept();
+        Concept emfClass = EntityFactory.createConcept();
         emfClass.setEntityCode(code);
         emfClass.setIsAnonymous(Boolean.TRUE);
+        
+        String nameSpace = getNameSpace(owlClass.getNamespace());
+        emfClass.setEntityCodeNamespace(nameSpace);
         
         EntityDescription ed = new EntityDescription();
         ed.setContent(owlClass.getBrowserText());
@@ -1432,7 +1439,7 @@ public class ProtegeOwl2EMF {
         int emfPropNum = 0;
         int dataTypeNumber = 0;
 
-        AssociationSource source = CreateUtils.createAssociationSource(code, null);
+        AssociationSource source = CreateUtils.createAssociationSource(code, nameSpace);
         // Add relationships to further break down components of the anonymous
         // node ...
         if (owlClass instanceof OWLNAryLogicalClass) {
@@ -1450,7 +1457,10 @@ public class ProtegeOwl2EMF {
                 if (operand instanceof OWLComplementClass) {
                     OWLComplementClass complement = (OWLComplementClass) operand;
                     String emfCode = resolveAnonymousClass((OWLClass) complement.getComplement(), assocSource);
-                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(emfCode, null);
+                    
+                    String targetNameSpace = getNameSpace(complement.getNamespace());
+                    
+                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(emfCode, targetNameSpace);
                     relateAssociationSourceTarget(assocManager.getComplementOf(), source, opTarget);
 
                 } else if (operand instanceof OWLRestriction) {
@@ -1463,19 +1473,26 @@ public class ProtegeOwl2EMF {
                     // Operand defines a direct participant in the anonymous
                     // node...
                     OWLNamedClass op = (OWLNamedClass) operand;
-                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(op.getLocalName(), null);
+                    
+                    String targetNameSpace = getNameSpace(op.getNamespace());
+                    
+                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(op.getLocalName(), targetNameSpace);
                     relateAssociationSourceTarget(assocManager.getSubClassOf(), source, opTarget);
 
                 } else if (operand instanceof OWLEnumeratedClass) {
                     String emfCode = resolveAnonymousClass((OWLEnumeratedClass) operand, assocSource);
 
-                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(emfCode, null);
+                    String targetNameSpace = getNameSpace( ((OWLEnumeratedClass)operand).getNamespace() );
+                    
+                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(emfCode, targetNameSpace);
 
                     relateAssociationSourceTarget(assocManager.getSubClassOf(), source, opTarget);
                 } else if (operand instanceof OWLNAryLogicalClass) {
                     String emfCode = resolveAnonymousClass((OWLNAryLogicalClass) operand, assocSource);
+                    
+                    String targetNameSpace = getNameSpace( ((OWLNAryLogicalClass)operand).getNamespace() );
 
-                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(emfCode, null);
+                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(emfCode, targetNameSpace);
 
                     relateAssociationSourceTarget(assocManager.getSubClassOf(), source, opTarget);
                 }
@@ -1499,7 +1516,10 @@ public class ProtegeOwl2EMF {
         if (owlClass instanceof OWLComplementClass) {
             OWLComplementClass complement = (OWLComplementClass) owlClass;
             String emfCode = resolveAnonymousClass((OWLClass) complement.getComplement(), assocSource);
-            AssociationTarget opTarget = CreateUtils.createAssociationTarget(emfCode, null);
+            
+            String targetNameSpace = getNameSpace( complement.getNamespace() );
+            
+            AssociationTarget opTarget = CreateUtils.createAssociationTarget(emfCode, targetNameSpace);
             relateAssociationSourceTarget(assocManager.getComplementOf(), source, opTarget);
         }
 
@@ -2138,8 +2158,9 @@ public class ProtegeOwl2EMF {
      * @return Concept
      */
     protected Concept initSubtypeRoot() {
-        Concept topThing = new Concept();
+        Concept topThing = EntityFactory.createConcept();
         topThing.setEntityCode(ProtegeOwl2EMFConstants.ROOT_CODE);
+        topThing.setEntityCodeNamespace(this.getNameSpace(null));
         EntityDescription ed = new EntityDescription();
         ed.setContent(ProtegeOwl2EMFConstants.ROOT_DESCRIPTION);
         topThing.setEntityDescription(ed);

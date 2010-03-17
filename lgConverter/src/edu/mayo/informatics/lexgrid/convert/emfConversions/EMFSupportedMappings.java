@@ -23,31 +23,31 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
-import org.LexGrid.emf.codingSchemes.CodingScheme;
-import org.LexGrid.emf.naming.Mappings;
-import org.LexGrid.emf.naming.NamingFactory;
-import org.LexGrid.emf.naming.SupportedAssociation;
-import org.LexGrid.emf.naming.SupportedAssociationQualifier;
-import org.LexGrid.emf.naming.SupportedCodingScheme;
-import org.LexGrid.emf.naming.SupportedContainerName;
-import org.LexGrid.emf.naming.SupportedContext;
-import org.LexGrid.emf.naming.SupportedDataType;
-import org.LexGrid.emf.naming.SupportedDegreeOfFidelity;
-import org.LexGrid.emf.naming.SupportedEntityType;
-import org.LexGrid.emf.naming.SupportedHierarchy;
-import org.LexGrid.emf.naming.SupportedLanguage;
-import org.LexGrid.emf.naming.SupportedNamespace;
-import org.LexGrid.emf.naming.SupportedProperty;
-import org.LexGrid.emf.naming.SupportedPropertyLink;
-import org.LexGrid.emf.naming.SupportedPropertyQualifier;
-import org.LexGrid.emf.naming.SupportedPropertyQualifierType;
-import org.LexGrid.emf.naming.SupportedPropertyType;
-import org.LexGrid.emf.naming.SupportedRepresentationalForm;
-import org.LexGrid.emf.naming.SupportedSortOrder;
-import org.LexGrid.emf.naming.SupportedSource;
-import org.LexGrid.emf.naming.SupportedSourceRole;
-import org.LexGrid.emf.naming.SupportedStatus;
-import org.LexGrid.emf.naming.URIMap;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedAssociation;
+import org.LexGrid.naming.SupportedAssociationQualifier;
+import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedContainerName;
+import org.LexGrid.naming.SupportedContext;
+import org.LexGrid.naming.SupportedDataType;
+import org.LexGrid.naming.SupportedDegreeOfFidelity;
+import org.LexGrid.naming.SupportedEntityType;
+import org.LexGrid.naming.SupportedHierarchy;
+import org.LexGrid.naming.SupportedLanguage;
+import org.LexGrid.naming.SupportedNamespace;
+import org.LexGrid.naming.SupportedProperty;
+import org.LexGrid.naming.SupportedPropertyLink;
+import org.LexGrid.naming.SupportedPropertyQualifier;
+import org.LexGrid.naming.SupportedPropertyQualifierType;
+import org.LexGrid.naming.SupportedPropertyType;
+import org.LexGrid.naming.SupportedRepresentationalForm;
+import org.LexGrid.naming.SupportedSortOrder;
+import org.LexGrid.naming.SupportedSource;
+import org.LexGrid.naming.SupportedSourceRole;
+import org.LexGrid.naming.SupportedStatus;
+import org.LexGrid.naming.URIMap;
+
 
 /**
  * Helper class to maintain supported mappings during EMF conversions
@@ -90,32 +90,32 @@ public class EMFSupportedMappings {
         // Resolve the coding scheme mappings; create now if not present.
         Mappings mappings = codingScheme.getMappings();
         if (mappings == null) {
-            mappings = NamingFactory.eINSTANCE.createMappings();
+            mappings = new Mappings();
             codingScheme.setMappings(mappings);
         }
         // Apply all registered values.
         messages_.info("Applying supported mappings.");
-        mappings.getSupportedAssociation().addAll(getSupportedAssociations().values());
-        mappings.getSupportedAssociationQualifier().addAll(getSupportedAssociationQualifiers().values());
-        mappings.getSupportedCodingScheme().addAll(getSupportedCodingSchemes().values());
-        mappings.getSupportedContainer().addAll(getSupportedContainerNames().values());
-        mappings.getSupportedContext().addAll(getSupportedContexts().values());
-        mappings.getSupportedDataType().addAll(getSupportedDataTypes().values());
-        mappings.getSupportedDegreeOfFidelity().addAll(getSupportedDegreesOfFidelity().values());
-        mappings.getSupportedEntityType().addAll(getSupportedEntityTypes().values());
-        mappings.getSupportedHierarchy().addAll(getSupportedHierarchies().values());
-        mappings.getSupportedLanguage().addAll(getSupportedLanguages().values());
-        mappings.getSupportedNamespace().addAll(getSupportedNamespaces().values());
-        mappings.getSupportedProperty().addAll(getSupportedProperties().values());
-        mappings.getSupportedPropertyLink().addAll(getSupportedPropertyLinks().values());
-        mappings.getSupportedPropertyQualifier().addAll(getSupportedPropertyQualifiers().values());
-        mappings.getSupportedPropertyQualifierType().addAll(getSupportedPropertyQualifierTypes().values());
-        mappings.getSupportedPropertyType().addAll(getSupportedPropertyTypes().values());
-        mappings.getSupportedRepresentationalForm().addAll(getSupportedRepresentationalForms().values());
-        mappings.getSupportedSortOrder().addAll(getSupportedSortOrders().values());
-        mappings.getSupportedSource().addAll(getSupportedSources().values());
-        mappings.getSupportedSourceRole().addAll(getSupportedSourceRoles().values());
-        mappings.getSupportedStatus().addAll(getSupportedStatus().values());
+        mappings.setSupportedAssociation(getSupportedAssociations().values().toArray(new SupportedAssociation[0]));
+        mappings.setSupportedAssociationQualifier(getSupportedAssociationQualifiers().values().toArray(new SupportedAssociationQualifier[0]));
+        mappings.setSupportedCodingScheme(getSupportedCodingSchemes().values().toArray(new SupportedCodingScheme[0]));
+        mappings.setSupportedContainer(getSupportedContainerNames().values().toArray(new SupportedContainerName[0]));
+        mappings.setSupportedContext(getSupportedContexts().values().toArray(new SupportedContext[0]));
+        mappings.setSupportedDataType(getSupportedDataTypes().values().toArray(new SupportedDataType[0]));
+        mappings.setSupportedDegreeOfFidelity(getSupportedDegreesOfFidelity().values().toArray(new SupportedDegreeOfFidelity[0]));
+        mappings.setSupportedEntityType(getSupportedEntityTypes().values().toArray(new SupportedEntityType[0]));
+        mappings.setSupportedHierarchy(getSupportedHierarchies().values().toArray(new SupportedHierarchy[0]));
+        mappings.setSupportedLanguage(getSupportedLanguages().values().toArray(new SupportedLanguage[0]));
+        mappings.setSupportedNamespace(getSupportedNamespaces().values().toArray(new SupportedNamespace[0]));
+        mappings.setSupportedProperty(getSupportedProperties().values().toArray(new SupportedProperty[0]));
+        mappings.setSupportedPropertyLink(getSupportedPropertyLinks().values().toArray(new SupportedPropertyLink[0]));
+        mappings.setSupportedPropertyQualifier(getSupportedPropertyQualifiers().values().toArray(new SupportedPropertyQualifier[0]));
+        mappings.setSupportedPropertyQualifierType(getSupportedPropertyQualifierTypes().values().toArray(new SupportedPropertyQualifierType[0]));
+        mappings.setSupportedPropertyType(getSupportedPropertyTypes().values().toArray(new SupportedPropertyType[0]));
+        mappings.setSupportedRepresentationalForm(getSupportedRepresentationalForms().values().toArray(new SupportedRepresentationalForm[0]));
+        mappings.setSupportedSortOrder(getSupportedSortOrders().values().toArray(new SupportedSortOrder[0]));
+        mappings.setSupportedSource(getSupportedSources().values().toArray(new SupportedSource[0]));
+        mappings.setSupportedSourceRole(getSupportedSourceRoles().values().toArray(new SupportedSourceRole[0]));
+        mappings.setSupportedStatus(getSupportedStatus().values().toArray(new SupportedStatus[0]));
     }
     
     /////////////////////////////////////////////////////////////////
@@ -241,7 +241,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedAssociation emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedAssociation();
+            emfObj = new SupportedAssociation();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -259,7 +259,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedAssociationQualifier emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedAssociationQualifier();
+            emfObj = new SupportedAssociationQualifier();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -277,7 +277,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedCodingScheme emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedCodingScheme();
+            emfObj = new SupportedCodingScheme();
             setBaseAttributes(emfObj, localId, uri, value);
             emfObj.setIsImported(isImported);
             registry.put(key, emfObj);
@@ -296,7 +296,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedContainerName emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedContainerName();
+            emfObj = new SupportedContainerName();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -314,7 +314,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedContext emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedContext();
+            emfObj = new SupportedContext();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -332,7 +332,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedDataType emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedDataType();
+            emfObj = new SupportedDataType();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -350,7 +350,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedDegreeOfFidelity emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedDegreeOfFidelity();
+            emfObj = new SupportedDegreeOfFidelity();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -368,7 +368,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedEntityType emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedEntityType();
+            emfObj = new SupportedEntityType();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -388,7 +388,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedHierarchy emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedHierarchy();
+            emfObj = new SupportedHierarchy();
             setBaseAttributes(emfObj, localId, uri, value);
             emfObj.setIsForwardNavigable(isForwardNavigable);
             emfObj.setRootCode(rootCode);
@@ -409,7 +409,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedLanguage emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedLanguage();
+            emfObj = new SupportedLanguage();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -429,7 +429,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedNamespace emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedNamespace();
+            emfObj = new SupportedNamespace();
             setBaseAttributes(emfObj, localId, uri, value);
             emfObj.setEquivalentCodingScheme(equivalentCodingScheme);
             registry.put(key, emfObj);
@@ -448,7 +448,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedProperty emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedProperty();
+            emfObj = new SupportedProperty();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -466,7 +466,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedPropertyLink emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedPropertyLink();
+            emfObj = new SupportedPropertyLink();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -484,7 +484,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedPropertyQualifier emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedPropertyQualifier();
+            emfObj = new SupportedPropertyQualifier();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -502,7 +502,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedPropertyQualifierType emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedPropertyQualifierType();
+            emfObj = new SupportedPropertyQualifierType();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -520,7 +520,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedPropertyType emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedPropertyType();
+            emfObj = new SupportedPropertyType();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -538,7 +538,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedRepresentationalForm emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedRepresentationalForm();
+            emfObj = new SupportedRepresentationalForm();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -556,7 +556,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedSortOrder emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedSortOrder();
+            emfObj = new SupportedSortOrder();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -576,7 +576,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedSource emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedSource();
+            emfObj = new SupportedSource();
             setBaseAttributes(emfObj, localId, uri, value);
             emfObj.setAssemblyRule(assemblyRule);
             registry.put(key, emfObj);
@@ -595,7 +595,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedSourceRole emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedSourceRole();
+            emfObj = new SupportedSourceRole();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -613,7 +613,7 @@ public class EMFSupportedMappings {
         String key = localId.toLowerCase();
         SupportedStatus emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
-            emfObj = NamingFactory.eINSTANCE.createSupportedStatus();
+            emfObj = new SupportedStatus();
             setBaseAttributes(emfObj, localId, uri, value);
             registry.put(key, emfObj);
         }
@@ -630,6 +630,6 @@ public class EMFSupportedMappings {
     private void setBaseAttributes(URIMap emfObj, String localId, String uri, String value) {
         emfObj.setLocalId(localId);
         emfObj.setUri(uri);
-        emfObj.setValue(value);
+        emfObj.setContent(value);
     }
 }
