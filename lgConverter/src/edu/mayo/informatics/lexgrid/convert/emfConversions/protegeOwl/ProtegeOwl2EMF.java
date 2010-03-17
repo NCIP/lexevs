@@ -56,7 +56,7 @@ import org.LexGrid.emf.base.util.LgModelUtil;
 import org.LexGrid.emf.commonTypes.CommontypesPackage;
 import org.LexGrid.emf.concepts.ConceptsPackage;
 import org.LexGrid.emf.concepts.util.EntitiesUtil;
-import org.LexGrid.emf.relations.util.RelationsUtil;
+import org.LexGrid.custom.relations.RelationsUtil;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationEntity;

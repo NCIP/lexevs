@@ -55,7 +55,7 @@ import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.emf.relations.util.RelationsUtil;
+import org.LexGrid.custom.relations.RelationsUtil;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
@@ -437,7 +437,7 @@ public class HL7MapToLexGrid {
             AssociationSource ai = new AssociationSource();
             ai.setSourceEntityCode(rootNode.getEntityCode());
             ai = RelationsUtil.subsume(parent_assoc, ai);
-
+            
             // Get all the code systems except the
             // legacy code system coding scheme in HL7
             PreparedStatement getArtificialTopNodeData = c

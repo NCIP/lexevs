@@ -45,7 +45,7 @@ import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.emf.relations.util.RelationsUtil;
+import org.LexGrid.custom.relations.RelationsUtil;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 
 import edu.stanford.smi.protege.model.Cls;

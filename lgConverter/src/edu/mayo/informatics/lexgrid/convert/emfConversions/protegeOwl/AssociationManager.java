@@ -25,8 +25,7 @@ import java.util.Map;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.emf.relations.util.RelationsUtil;
-
+import org.LexGrid.custom.relations.RelationsUtil;
 import edu.mayo.informatics.lexgrid.convert.emfConversions.EMFSupportedMappings;
 import edu.stanford.smi.protegex.owl.model.OWLNames;
 import edu.stanford.smi.protegex.owl.model.RDFNames;
