@@ -31,13 +31,20 @@ import org.LexGrid.LexBIG.Extensions.Load.OWL_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Preferences.loader.OWLLoadPreferences.OWLLoaderPreferences;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.relations.AssociationPredicate;
+import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.AssociationTarget;
+import org.LexGrid.relations.Relations;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.xml.sax.helpers.DefaultHandler;
 
+import edu.mayo.informatics.lexgrid.convert.emfConversions.protegeOwl.ProtegeOwl2EMFConstants;
+import edu.mayo.informatics.lexgrid.convert.emfConversions.protegeOwl.ProtegeOwl2EMFMain;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.NCIOwl;
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.Owl;
-import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 import edu.mayo.informatics.lexgrid.convert.options.IntegerOption;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
@@ -160,15 +167,49 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
 
     @Override
     protected OptionHolder declareAllowedOptions(OptionHolder holder) {
-        holder.getBooleanOptions().add(new BooleanOption(Option.getNameForType(Option.FAIL_ON_ERROR)));
-        holder.getIntegerOptions().add(new IntegerOption(Option.getNameForType(Option.MEMORY_SAFE)));
+        holder.getIntegerOptions().add(new IntegerOption(Option.getNameForType(Option.MEMORY_SAFE), 
+                ProtegeOwl2EMFConstants.MEMOPT_ALL_IN_MEMORY));
         return holder;
     }
 
     @Override
     protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        try {
+            ProtegeOwl2EMFMain owlLoader = new ProtegeOwl2EMFMain(
+                    this.getResourceUri(), 
+                    this.getCodingSchemeManifest(), 
+                    this.getLoaderPreferences(), 
+                    this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).getOptionValue(),
+                    this.getOptions().getIntegerOption(Option.getNameForType(Option.MEMORY_SAFE)).getOptionValue(), 
+                    this.getMessageDirector()
+            );
+
+            CodingScheme owlScheme = owlLoader.map();
+            
+            for(Relations rel : owlScheme.getRelations()) {
+                for(AssociationPredicate pred : rel.getAssociationPredicate()) {
+                    for(AssociationSource source : pred.getSource()) {
+                        if(source.getSourceEntityCodeNamespace() == null) {
+                            System.out.println("SOURCE: " + source.getSourceEntityCode());
+                        }
+                        for(AssociationTarget target : source.getTarget()) {
+                            if(target.getTargetEntityCodeNamespace() == null) {
+                                System.out.println("Target: " + target.getTargetEntityCode());
+                            }
+                        }
+                    }
+                }
+            }
+            
+            LexEvsServiceLocator.getInstance().
+                getDatabaseServiceManager().
+                getCodingSchemeService().
+                insertCodingScheme(owlScheme);
+            
+            return this.constructVersionPairsFromCodingSchemes(owlScheme);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void validateNCIThes(URI source, URI manifest, int validationLevel) throws LBException {
