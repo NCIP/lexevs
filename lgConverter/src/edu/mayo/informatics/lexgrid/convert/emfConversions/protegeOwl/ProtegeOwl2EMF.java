@@ -1093,9 +1093,9 @@ public class ProtegeOwl2EMF {
         }
 
         // Now add all the sorted properties to the concept.
-        for (Iterator emfProps = sortedProps.iterator(); emfProps.hasNext();) {
-            Property emfProp = (Property) emfProps.next();
-            EntitiesUtil.addProperty(emfEntity, emfProp);
+        for (Iterator<? extends Property> emfProps = sortedProps.iterator(); emfProps.hasNext();) {
+            Property emfProp = emfProps.next();
+            emfEntity.addAnyProperty(emfProp);
         }
 
     }
@@ -1263,7 +1263,7 @@ public class ProtegeOwl2EMF {
 
         // Iterate through properties; stop when complete or if both a preferred
         // presentation and definition have been assigned ...
-        for (Iterator props = sortedProps.iterator(); props.hasNext()
+        for (Iterator<? extends Property> props = sortedProps.iterator(); props.hasNext()
                 && !(assignedPreferredPres && assignedPreferredDefn);) {
             Object prop = props.next();
             if (!assignedPreferredPres && (prop instanceof Presentation)) {
@@ -1287,9 +1287,9 @@ public class ProtegeOwl2EMF {
         }
 
         // Now add all the sorted properties to the instance.
-        for (Iterator emfProps = sortedProps.iterator(); emfProps.hasNext();) {
+        for (Iterator<? extends Property> emfProps = sortedProps.iterator(); emfProps.hasNext();) {
             Property emfProp = (Property) emfProps.next();
-            EntitiesUtil.addProperty(emfInstance, emfProp);
+            emfInstance.addAnyProperty(emfProp);
         }
     }
 
@@ -1785,7 +1785,6 @@ public class ProtegeOwl2EMF {
         // Create top-level containers for relations.
         emfRelationsContainer_Assoc = new Relations();
         emfRelationsContainer_Assoc.setContainerName(ProtegeOwl2EMFConstants.DC_ASSOCIATIONS);
-        emfRelationsContainer_Assoc.setIsNative(Boolean.TRUE);
         emfScheme_.addRelations(emfRelationsContainer_Assoc);
         
         // Add this Container to the Supported Mappings
@@ -1795,7 +1794,6 @@ public class ProtegeOwl2EMF {
         // Create top-level "Roles" containers for relations.
         emfRelationsContainer_Roles = new Relations();
         emfRelationsContainer_Roles.setContainerName(ProtegeOwl2EMFConstants.DC_ROLES);
-        emfRelationsContainer_Roles.setIsNative(Boolean.TRUE);
         emfScheme_.addRelations(emfRelationsContainer_Roles);
         // Add this Container to the Supported Mappings
         emfSupportedMappings_.registerSupportedContainerName(ProtegeOwl2EMFConstants.DC_ROLES, null, null, false);
@@ -1967,10 +1965,7 @@ public class ProtegeOwl2EMF {
                     aw.setAssociationName(label);
                     aw.setEntityCode(propertyName);
                     
-                    aw.setIsReverseFunctional(new Boolean(((OWLDatatypeProperty) prop).isInverseFunctional()));
-                    aw.setIsSymmetric(Boolean.FALSE);
                     aw.setIsTransitive(Boolean.FALSE);
-                    aw.setIsFunctional(new Boolean(((OWLDatatypeProperty) prop).isFunctional()));
                     String nameSpace = getNameSpace(((OWLDatatypeProperty) prop).getNamespace());
                     aw.setEntityCodeNamespace(nameSpace);
                     aw = assocManager.addAssociation(emfRelationsContainer_Roles, aw);
@@ -2100,10 +2095,7 @@ public class ProtegeOwl2EMF {
             aw.setAssociationName(label);
             aw.setForwardName(getAssociationLabel(label, true));
             aw.setReverseName(getAssociationLabel(label, false));
-            aw.setIsReverseFunctional(owlProp.isInverseFunctional());
-            aw.setIsSymmetric(owlProp.isSymmetric());
             aw.setIsTransitive(owlProp.isTransitive());
-            aw.setIsFunctional(owlProp.isFunctional());
             String nameSpace = getNameSpace(owlProp.getNamespace());
             aw.setEntityCodeNamespace(nameSpace);
             // Register as role or association and, if applicable,
