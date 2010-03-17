@@ -490,7 +490,7 @@ public class ConversionLauncher {
             OBO in = (OBO) inputFormat;
             boolean failOnErrors = getBooleanOption(options, Option.FAIL_ON_ERROR);
             OboReadWrite obo_rw = new OboReadWrite(in.getFileLocation(), in.getLoaderPreferences(), failOnErrors,
-                    false, md);
+                    false, null);
             obo_rw.setCodingSchemeManifest(in.getCodingSchemeManifest());
             emfIn = obo_rw;
         } else if (inputFormat.getDescription().equals(ProtegeFrames.description)) {
@@ -556,7 +556,7 @@ public class ConversionLauncher {
             boolean failOnErrors = getBooleanOption(options, Option.FAIL_ON_ERROR);
             boolean overwrite = getBooleanOption(options, Option.OVERWRITE);
             OBOOut out = (OBOOut) outputFormat;
-            emfOut = new OboReadWrite(new File(out.getFolderLocation()).toURI(), failOnErrors, overwrite, md);
+            emfOut = new OboReadWrite(new File(out.getFolderLocation()).toURI(), failOnErrors, overwrite, null);
         } else {
             throw new Exception("The conversion that you are attempting to do is not yet possible.");
         }
