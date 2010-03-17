@@ -22,10 +22,9 @@ package edu.mayo.informatics.lexgrid.convert.emfConversions.protegeOwl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.LexGrid.relations.AssociationPredicate;
-import org.LexGrid.relations.AssociationEntity;
-import org.LexGrid.relations.Relations;
 import org.LexGrid.custom.relations.RelationsUtil;
+import org.LexGrid.relations.Relations;
+
 import edu.mayo.informatics.lexgrid.convert.emfConversions.EMFSupportedMappings;
 import edu.stanford.smi.protegex.owl.model.OWLNames;
 import edu.stanford.smi.protegex.owl.model.RDFNames;
@@ -172,9 +171,7 @@ public class AssociationManager {
         aw.setForwardName(code);
         aw.setReverseName(code);
         aw.setIsTransitive(Boolean.FALSE);
-        aw.setIsSymmetric(Boolean.TRUE);
         aw.setIsNavigable(Boolean.TRUE);
-        aw.setIsFunctional(Boolean.FALSE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_ALLDIFFERENT_URI, code,
                 false);
@@ -196,9 +193,7 @@ public class AssociationManager {
         aw.setForwardName(code);
         aw.setReverseName(code);
         aw.setIsTransitive(Boolean.FALSE);
-        aw.setIsSymmetric(Boolean.TRUE);
         aw.setIsNavigable(Boolean.TRUE);
-        aw.setIsFunctional(Boolean.FALSE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_COMPLEMENTOF_URI, code,
                 false);
@@ -257,9 +252,7 @@ public class AssociationManager {
         aw.setForwardName(code);
         aw.setReverseName(code);
         aw.setIsTransitive(Boolean.FALSE);
-        aw.setIsSymmetric(Boolean.TRUE);
         aw.setIsNavigable(Boolean.TRUE);
-        aw.setIsFunctional(Boolean.FALSE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_DIFFERENTFROM_URI, code,
                 false);
@@ -281,9 +274,7 @@ public class AssociationManager {
         aw.setForwardName(code);
         aw.setReverseName(code);
         aw.setIsTransitive(Boolean.FALSE);
-        aw.setIsSymmetric(Boolean.TRUE);
         aw.setIsNavigable(Boolean.TRUE);
-        aw.setIsFunctional(Boolean.FALSE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_DISJOINTWITH_URI, code,
                 false);
@@ -303,8 +294,6 @@ public class AssociationManager {
         aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX); // rdfs:domain
         aw.setForwardName(ProtegeOwl2EMFConstants.ASSOC_DOMAIN_FWD);
         aw.setIsTransitive(Boolean.FALSE);
-        aw.setIsSymmetric(Boolean.FALSE);
-        aw.setIsReflexive(Boolean.FALSE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_DOMAIN_URI, code, false);
@@ -326,10 +315,7 @@ public class AssociationManager {
         aw.setForwardName(code);
         aw.setReverseName(code);
         aw.setIsTransitive(Boolean.TRUE);
-        aw.setIsSymmetric(Boolean.TRUE);
-        aw.setIsReflexive(Boolean.TRUE);
         aw.setIsNavigable(Boolean.TRUE);
-        aw.setIsFunctional(Boolean.FALSE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_EQUIVALENTCLASS_URI,
                 code, false);
@@ -351,10 +337,7 @@ public class AssociationManager {
         aw.setForwardName(code);
         aw.setReverseName(code);
         aw.setIsTransitive(Boolean.TRUE);
-        aw.setIsSymmetric(Boolean.TRUE);
-        aw.setIsReflexive(Boolean.TRUE);
         aw.setIsNavigable(Boolean.TRUE);
-        aw.setIsFunctional(Boolean.FALSE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_EQUIVALENTPROPERTY_URI,
                 code, false);
@@ -374,8 +357,6 @@ public class AssociationManager {
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(RDFNames.RDF_PREFIX); // rdf:type
         aw.setForwardName(code);
-        aw.setIsSymmetric(Boolean.FALSE);
-        aw.setIsFunctional(Boolean.FALSE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_TYPE_URI, code,
                 false);
@@ -396,8 +377,6 @@ public class AssociationManager {
         aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:inverseOf
         aw.setForwardName(code);
         aw.setReverseName(code);
-        aw.setIsSymmetric(Boolean.TRUE);
-        aw.setIsFunctional(Boolean.FALSE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_INVERSEOF_URI, code,
                 false);
@@ -438,7 +417,6 @@ public class AssociationManager {
         aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX);
         aw.setForwardName(ProtegeOwl2EMFConstants.ASSOC_RANGE_FWD);
         aw.setIsTransitive(Boolean.FALSE);
-        aw.setIsReflexive(Boolean.FALSE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_RANGE_URI, code, false);
@@ -460,10 +438,7 @@ public class AssociationManager {
         aw.setForwardName(code);
         aw.setReverseName(code);
         aw.setIsTransitive(Boolean.TRUE);
-        aw.setIsSymmetric(Boolean.TRUE);
-        aw.setIsReflexive(Boolean.TRUE);
         aw.setIsNavigable(Boolean.TRUE);
-        aw.setIsFunctional(Boolean.FALSE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_SAMEAS_URI, code, false);
         return aw;
@@ -483,10 +458,7 @@ public class AssociationManager {
         aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX); // rdfs:subClassOf
         aw.setForwardName(code);
         aw.setIsTransitive(Boolean.TRUE);
-        aw.setIsSymmetric(Boolean.FALSE);
-        aw.setIsReflexive(Boolean.TRUE);
         aw.setIsNavigable(Boolean.TRUE);
-        aw.setIsFunctional(Boolean.FALSE);
         aw = addAssociation(emfRelationsContainer_Roles, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_SUBCLASSOF_URI, code,
                 false);
@@ -507,9 +479,6 @@ public class AssociationManager {
         aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX);// rdfs:subPropertyOf
         aw.setForwardName(code);
         aw.setIsTransitive(Boolean.TRUE);
-        aw.setIsSymmetric(Boolean.FALSE);
-        aw.setIsReflexive(Boolean.TRUE);
-        aw.setIsFunctional(Boolean.FALSE);
         aw = addAssociation(emfRelationsContainer_Roles, aw);
         emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2EMFConstants.ASSOC_SUBPROPERTYOF_URI, code,
                 false);
