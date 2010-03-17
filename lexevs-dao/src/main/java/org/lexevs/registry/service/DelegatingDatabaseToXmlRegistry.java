@@ -127,9 +127,13 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 			throws LBParameterException {
 		if(this.databaseRegistry.containsCodingSchemeEntry(codingScheme)){
 			return databaseRegistry.getCodingSchemeEntry(codingScheme);
-		} else {
+		} else if(this.xmlRegistry.containsCodingSchemeEntry(codingScheme)){
 			return xmlRegistry.getCodingSchemeEntry(codingScheme);
 		}
+		
+		else throw new RuntimeException("No CodingScheme Entry for URI: " 
+				+ codingScheme.getCodingSchemeURN() + ", Version: " 
+				+ codingScheme.getCodingSchemeVersion());
 	}
 
 	/* (non-Javadoc)

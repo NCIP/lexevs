@@ -373,7 +373,10 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				qualBean.setId(qualId);
 				qualBean.setPrefix(prefix);
 				qualBean.setQualifierName(qual.getAssociationQualifier());
-				qualBean.setQualifierValue(qual.getQualifierText().getContent());
+				
+				if(qual.getQualifierText() != null) {
+					qualBean.setQualifierValue(qual.getQualifierText().getContent());
+				}
 				
 				inserter.insert(
 						INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, 
