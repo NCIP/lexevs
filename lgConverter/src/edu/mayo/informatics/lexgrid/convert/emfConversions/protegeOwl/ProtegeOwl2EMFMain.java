@@ -43,13 +43,7 @@ public class ProtegeOwl2EMFMain {
     private LgMessageDirectorIF messages = null;
 
     public ProtegeOwl2EMFMain(URI owlOntologyURI, CodingSchemeManifest manifest, LoaderPreferences loadPrefs,
-            boolean failOnAllErrors, int memorySafe, LgMessageDirectorIF messages) throws Exception {
-        this(owlOntologyURI, manifest, loadPrefs, failOnAllErrors, memorySafe, messages, null);
-
-    }
-
-    public ProtegeOwl2EMFMain(URI owlOntologyURI, CodingSchemeManifest manifest, LoaderPreferences loadPrefs,
-            boolean failOnAllErrors, int memorySafe, LgMessageDirectorIF messages, SQLReadWrite emfOut)
+            boolean failOnAllErrors, int memorySafe, LgMessageDirectorIF messages)
             throws Exception {
         this.messages = messages;
 
@@ -71,7 +65,7 @@ public class ProtegeOwl2EMFMain {
 
             }
 
-            owl2emf = new ProtegeOwl2EMF(owlOntologyURI, manifest, loadPrefs, memorySafe, messages, emfOut);
+            owl2emf = new ProtegeOwl2EMF(owlOntologyURI, manifest, loadPrefs, memorySafe, messages);
         } catch (Exception e) {
             messages.fatalAndThrowException("Conversion failed", e);
         }
