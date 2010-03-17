@@ -49,6 +49,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
 import org.LexGrid.util.sql.DBUtility;
@@ -66,6 +67,7 @@ import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
+import edu.mayo.informatics.lexgrid.convert.formats.Option;
 import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 import edu.mayo.informatics.lexgrid.convert.options.DefaultOptionHolder;
 import edu.mayo.informatics.lexgrid.convert.options.StringArrayOption;
@@ -93,6 +95,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     public static String MANIFEST_FILE_OPTION = "Manifest File";
     public static String LOADER_PREFERENCE_FILE_OPTION = "Loader Preferences File";
     public static String ASYNC_OPTION = "Async Load";
+    public static String FAIL_ON_ERROR_OPTION = Option.getNameForType(Option.FAIL_ON_ERROR);
     
     private AbsoluteCodingSchemeVersionReference[] codingSchemeReferences
         = new AbsoluteCodingSchemeVersionReference[0];
@@ -135,6 +138,9 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         
         BooleanOption asyncOption = new BooleanOption(ASYNC_OPTION, true);
         holder.getBooleanOptions().add(asyncOption);
+        
+        BooleanOption failOnErrorOption = new BooleanOption(FAIL_ON_ERROR_OPTION, false);
+        holder.getBooleanOptions().add(failOnErrorOption);
         
         this.options_= this.declareAllowedOptions(holder);
     }
@@ -674,6 +680,19 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         // proper interface.
         ExtensionRegistryImpl.instance().registerLoadExtension(
                 super.getExtensionDescription());
+    }
+    
+    protected URNVersionPair[] constructVersionPairsFromCodingSchemes(CodingScheme... codingSchemes) {
+        URNVersionPair[] pairs = new URNVersionPair[codingSchemes.length];
+        
+        for(int i=0;i<codingSchemes.length;i++) {
+            String uri = codingSchemes[i].getCodingSchemeURI();
+            String version = codingSchemes[i].getRepresentsVersion();
+            
+            pairs[i] = new URNVersionPair(uri, version);
+        }
+        
+        return pairs;
     }
     
     protected LoaderPostProcessor getPostProcessor(String postProcessorName) throws LBParameterException {
