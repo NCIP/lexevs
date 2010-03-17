@@ -18,5 +18,9 @@ public class IntegerOption extends AbstractOption<Integer>{
     public IntegerOption(String optionName) {
         super(optionName);
     }
+    
+    public IntegerOption(String optionName, int defaultValue) {
+        super(optionName, defaultValue);
+    }
 
 }
