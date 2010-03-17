@@ -19,4 +19,12 @@ public class DaoManagerDaoCallbackService implements DaoCallbackService {
 	public <T> T executeInDaoLayer(DaoCallback<T> daoCallback){
 		return daoCallback.execute(daoManager);
 	}
+
+	public DaoManager getDaoManager() {
+		return daoManager;
+	}
+
+	public void setDaoManager(DaoManager daoManager) {
+		this.daoManager = daoManager;
+	}
 }
