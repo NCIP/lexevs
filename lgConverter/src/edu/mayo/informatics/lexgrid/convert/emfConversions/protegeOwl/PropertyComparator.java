@@ -18,16 +18,14 @@
  */
 package edu.mayo.informatics.lexgrid.convert.emfConversions.protegeOwl;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-//import org.LexGrid.emf.commonTypes.CommontypesPackage;
 import org.LexGrid.commonTypes.Property;
-//import org.LexGrid.emf.concepts.ConceptsPackage;
+import org.LexGrid.concepts.Comment;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Presentation;
-//import org.eclipse.emf.ecore.EClass;
 /**
  *  Comparator used to sort concept properties by type and priority ...
  * 
@@ -36,7 +34,7 @@ import org.LexGrid.concepts.Presentation;
 
 public class PropertyComparator implements Comparator<Property>{
     
-    List<EClass> prioritizedEClass;
+    List<Class<? extends Property>> prioritizedPropertyClasses;
     List<String> prioritizedPresentationNames;
     List<String> prioritizedDefinitionNames;
     PreferenceManager prefManager;
@@ -45,16 +43,18 @@ public class PropertyComparator implements Comparator<Property>{
         this.prefManager= prefManager;
         prioritizedPresentationNames = prefManager.getPrioritized_presentation_names();
         prioritizedDefinitionNames = prefManager.getPrioritized_definition_names();
-        ConceptsPackage emfPackage = ConceptsPackage.eINSTANCE;
-        prioritizedEClass = Arrays.asList(new EClass[] { emfPackage.getPresentation(), emfPackage.getDefinition(),
-                emfPackage.getComment(), CommontypesPackage.eINSTANCE.getProperty() });
+        prioritizedPropertyClasses = new ArrayList<Class<? extends Property>>();
+        prioritizedPropertyClasses.add(Presentation.class);
+        prioritizedPropertyClasses.add(Definition.class);
+        prioritizedPropertyClasses.add(Comment.class);
+        prioritizedPropertyClasses.add(Property.class);
     }
 
     public int compare(Property o1, Property o2) {
         if (o1 instanceof Property && o2 instanceof Property) {
             Property p1 = (Property) o1;
             Property p2 = (Property) o2;
-            int i = prioritizedEClass.indexOf(p1.eClass()) - prioritizedEClass.indexOf(p2.eClass());
+            int i = prioritizedPropertyClasses.indexOf(p1.getClass()) - prioritizedPropertyClasses.indexOf(p2.getClass());
             if (i != 0)
                 return i;
             if (p1 instanceof Presentation && p2 instanceof Presentation) {
