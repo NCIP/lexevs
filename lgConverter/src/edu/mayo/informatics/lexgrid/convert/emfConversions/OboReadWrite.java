@@ -89,7 +89,7 @@ public class OboReadWrite extends EMFReadImpl implements EMFRead, EMFWrite {
             // TODO this loader should pay attention to the failOnAllErrors
             // flag.
             OBO2EMFMain mainTxfm = new OBO2EMFMain();
-            CodingScheme scheme = mainTxfm.map(inputFileLocation_, oboManifest_, messages_);
+            CodingScheme scheme = null;//TODO: We are moving away from the EMF read/write techniques.
             // Apply manifest changes
             ManifestUtil manifestUtil = new ManifestUtil(null, messages_);
             manifestUtil.applyManifest(codingSchemeManifest, scheme);

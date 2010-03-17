@@ -78,10 +78,10 @@ public class ProtegeFramesRead extends EMFReadImpl implements EMFRead {
 
             if ("FMA".equalsIgnoreCase(project_name)) {
                 FMA2EMFMain mainTxfm = new FMA2EMFMain();
-                scheme = mainTxfm.map(proj, messages_);
+                scheme = null;//TODO: We are moving away from the EMF read/write techniques.
             } else if ((project_name != null) && (project_name.toLowerCase().startsWith("radlex"))) {
                 RadLex2EMFMain mainTxfm = new RadLex2EMFMain();
-                scheme = mainTxfm.map(proj, messages_);
+                scheme = null;//TODO: We are moving away from the EMF read/write techniques.
             } else {
                 throw new Exception("Currently the Protege Frames loader only supports loading of FMA and RadLex.");
             }

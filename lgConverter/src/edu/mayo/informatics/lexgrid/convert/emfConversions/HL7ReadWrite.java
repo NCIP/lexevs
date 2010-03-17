@@ -100,7 +100,9 @@ public class HL7ReadWrite extends EMFReadImpl implements EMFRead, EMFWrite {
             }
             HL72EMFMain hl7_main = new HL72EMFMain();
             hl7_main.setLoaderPrefs(loaderPreferences); // CRS
-            CodingScheme scheme = hl7_main.map(null, dbPathName, this.failOnAllErrors, messages);
+            
+            
+            CodingScheme scheme = null;//TODO: We are moving away from the EMF read/write techniques.
             // Apply manifest changes
             ManifestUtil manifestUtil = new ManifestUtil(null, messages);
             manifestUtil.applyManifest(codingSchemeManifest, scheme);

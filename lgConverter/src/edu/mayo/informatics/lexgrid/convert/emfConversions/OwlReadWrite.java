@@ -87,9 +87,8 @@ public class OwlReadWrite extends EMFReadImpl implements EMFRead, EMFWrite {
                 setStreamingOn(true);
             }
 
-            ProtegeOwl2EMFMain owl_main = new ProtegeOwl2EMFMain(owlOntologyURI, codingSchemeManifest, loadPrefs,
-                    failOnAllErrors, memorySafe, messages, emfOut_);
-            CodingScheme scheme = owl_main.map();
+            ProtegeOwl2EMFMain owl_main = null;//TODO: We are moving away from the EMF read/write techniques.
+            CodingScheme scheme = null;//TODO: We are moving away from the EMF read/write techniques.
 
             // Apply manifest changes
             if (codingSchemeManifest != null) {
