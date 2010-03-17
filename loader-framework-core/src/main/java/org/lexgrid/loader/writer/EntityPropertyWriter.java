@@ -7,7 +7,7 @@ import org.LexGrid.commonTypes.Property;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
-import org.lexevs.dao.database.service.DatabaseDaoCallbackService.DaoCallback;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexgrid.loader.wrappers.CodingSchemeUriVersionPair;
 import org.lexgrid.loader.wrappers.ParentIdHolder;
 
@@ -21,7 +21,7 @@ public class EntityPropertyWriter extends AbstractParentIdHolderWriter<Property>
 		for(ParentIdHolder<Property> holder : items){
 			batchList.add(new PropertyBatchInsertItem(holder.getParentId(), holder.getItem()));
 		}
-		this.getDatabaseServiceManager().
+		this.getDatabaseServiceManager().getDaoCallbackService().
 			executeInDaoLayer(new DaoCallback<Object>(){
 
 				public Object execute(DaoManager daoManager) {

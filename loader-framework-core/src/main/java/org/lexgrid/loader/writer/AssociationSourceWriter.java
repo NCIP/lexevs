@@ -6,7 +6,7 @@ import java.util.List;
 import org.LexGrid.relations.AssociationSource;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
-import org.lexevs.dao.database.service.DatabaseDaoCallbackService.DaoCallback;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexgrid.loader.wrappers.CodingSchemeUriVersionPair;
 import org.lexgrid.loader.wrappers.ParentIdHolder;
 
@@ -23,7 +23,8 @@ public class AssociationSourceWriter extends AbstractParentIdHolderWriter<Associ
 			batch.add(new AssociationSourceBatchInsertItem(
 					holder.getParentId(), holder.getItem()));
 		}
-		this.getDatabaseServiceManager().executeInDaoLayer(new DaoCallback<Object>(){
+		this.getDatabaseServiceManager().getDaoCallbackService().
+			executeInDaoLayer(new DaoCallback<Object>(){
 
 			public Object execute(DaoManager daoManager) {
 				String codingSchemeIdInDb = daoManager.getCodingSchemeDao(
