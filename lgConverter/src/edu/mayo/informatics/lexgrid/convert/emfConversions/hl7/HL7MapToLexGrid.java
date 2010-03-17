@@ -878,7 +878,7 @@ public class HL7MapToLexGrid {
             HL7AssocContainer assoContainer = (HL7AssocContainer) associationsList.get(new Integer(j));
             int sourceCode = assoContainer.getSourceCode();
             int targetCode = assoContainer.getTargetCode();
-            AssociationPredicate parent_association = (AssociationPredicate) RelationsUtil.resolveAssociations(csclass,
+            AssociationPredicate parent_association = (AssociationPredicate) RelationsUtil.resolveAssociationPredicates(csclass,
                     assoContainer.getAssociation()).get(0);
 
             // TODO enclose entire association setup in some kind of try catch.
