@@ -5,6 +5,8 @@
 
 	<typeAlias alias="property" type="org.LexGrid.commonTypes.Property" />
 	<typeAlias alias="presentation" type="org.LexGrid.concepts.Presentation"/>
+	<typeAlias alias="definition" type="org.LexGrid.concepts.Definition"/>
+	<typeAlias alias="comment" type="org.LexGrid.concepts.Comment"/>
 	
 
 	<resultMap id="propertyResult" class="property" groupBy="propertyId">
@@ -19,13 +21,23 @@
 		<result property="_usageContextList" resultMap="Property.multiAttribResult"/>
 		<discriminator javaType="string" column="propertyType">
 			<subMap value="presentation" resultMap="presentationResult" />
-		</discriminator>
-		
+			<subMap value="definition" resultMap="definitionResult" />
+			<subMap value="comment" resultMap="commentResult" />
+		</discriminator>	
 	</resultMap>
 	
 	<resultMap id="presentationResult" class="presentation" extends="propertyResult" >
 		<result property="isPreferred" column="isPreferred" />
+		<result property="degreeOfFidelity" column="degreeOfFidelity"/>
+		<result property="matchIfNoContext" column="matchIfNoContext"/>
+		<result property="representationalForm" column="representationalForm"/>
 	</resultMap>
+	
+	<resultMap id="definitionResult" class="definition" extends="propertyResult" >
+		<result property="isPreferred" column="isPreferred" />
+	</resultMap>
+	
+	<resultMap id="commentResult" class="comment" extends="propertyResult" />
 	
 	<select id="getPropertyId" resultClass="string" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
   		SELECT

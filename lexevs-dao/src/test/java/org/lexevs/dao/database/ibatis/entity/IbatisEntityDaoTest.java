@@ -366,6 +366,34 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	/**
+	 * Test lazy load presentations.
+	 */
+	@Test
+	@Transactional
+	public void testLazyLoadDefinition() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'definition')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		List<? extends Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme("csguid", 0, -1);
+		
+		assertEquals(1, entities.size());
+		
+		Entity entity = entities.get(0);
+		
+		assertEquals(0, entity.getCommentCount());
+		assertEquals(0, entity.getPropertyCount());
+		assertEquals(0, entity.getPresentationCount());
+		assertEquals(1, entity.getDefinitionCount());
+	}
+	
+	/**
 	 * Test entity count.
 	 */
 	@Test

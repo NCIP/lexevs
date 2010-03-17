@@ -50,6 +50,8 @@ public class MethodCachingProxy implements InitializingBean {
 	/** The caches. */
 	private Map<String,Map<String,Object>> caches;
 	
+	private static String NULL_VALUE = "null";
+	
 
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
@@ -93,7 +95,7 @@ public class MethodCachingProxy implements InitializingBean {
 					pjp.getSignature().getName(),
 					pjp.getArgs());
 		
-		Cacheable cacheableAnnotation = AnnotationUtils.findAnnotation(pjp.getThis().getClass(), Cacheable.class);
+		Cacheable cacheableAnnotation = AnnotationUtils.findAnnotation(pjp.getTarget().getClass(), Cacheable.class);
 		Map<String,Object> cache = this.getCacheFromName(
 				cacheableAnnotation.cacheName(),
 				cacheableAnnotation.cacheSize());
@@ -139,7 +141,11 @@ public class MethodCachingProxy implements InitializingBean {
 		sb.append(className);
 		sb.append(signature);
 		for(Object arg : arguments){
-			sb.append(arg.toString());
+			if(arg == null) {
+				sb.append(NULL_VALUE);
+			} else {
+				sb.append(arg.toString());
+			}
 		}
 		return sb.toString();
 	}

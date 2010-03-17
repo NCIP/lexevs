@@ -21,6 +21,7 @@ package org.lexevs.dao.database.lazyload;
 import java.util.List;
 
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao.IndividualDaoCallback;
@@ -57,6 +58,18 @@ public class LazyLoadableEntity extends Entity {
 	public Presentation[] getPresentation() {
 		this.hydrate();
 		return super.getPresentation();
+	}
+	
+	@Override
+	public Definition[] getDefinition() {
+		this.hydrate();
+		return super.getDefinition();
+	}
+	
+	@Override
+	public int getDefinitionCount() {
+		this.hydrate();
+		return super.getDefinitionCount();
 	}
 
 	/**
