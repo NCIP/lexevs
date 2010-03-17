@@ -18,8 +18,9 @@ import org.LexGrid.naming.SupportedLanguage;
 import org.LexGrid.naming.SupportedProperty;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
-import org.lexevs.dao.database.service.DatabaseService.DaoCallback;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 public class SupportedAttributePostProcessor extends AbstractExtendable implements LoaderPostProcessor {
@@ -46,6 +47,7 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
 
     public void runPostProcess(AbsoluteCodingSchemeVersionReference reference) {
         CodingSchemeService codingSchemeService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
+        DaoCallbackService daoCallbackService  = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getDaoCallbackService();
         
         final String uri = reference.getCodingSchemeURN();
         final String version = reference.getCodingSchemeVersion();
@@ -60,14 +62,14 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
         
         codingSchemeService.insertURIMap(uri, version, scs);
         
-        this.addSupportedFormats(uri, version, codingSchemeService);
-        this.addSupportedLanguages(uri, version, codingSchemeService);
-        this.addSupportedEntityTypes(uri, version, codingSchemeService);
-        this.addSupportedProperties(uri, version, codingSchemeService); 
+        this.addSupportedFormats(uri, version, daoCallbackService, codingSchemeService);
+        this.addSupportedLanguages(uri, version, daoCallbackService, codingSchemeService);
+        this.addSupportedEntityTypes(uri, version, daoCallbackService, codingSchemeService);
+        this.addSupportedProperties(uri, version, daoCallbackService, codingSchemeService); 
     }
     
-    protected void addSupportedFormats(final String uri, final String version, CodingSchemeService codingSchemeService) {
-        List<String> items = codingSchemeService.executeInDaoLayer(new DaoCallback<List<String>>(){
+    protected void addSupportedFormats(final String uri, final String version, DaoCallbackService daoCallbackService, CodingSchemeService codingSchemeService) {
+        List<String> items = daoCallbackService.executeInDaoLayer(new DaoCallback<List<String>>(){
 
             public List<String> execute(DaoManager daoManager) {
                CodingSchemeDao csDao = daoManager.getCodingSchemeDao(uri, version);
@@ -85,8 +87,8 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
         }
     }
     
-    protected void addSupportedLanguages(final String uri, final String version, CodingSchemeService codingSchemeService) {
-        List<String> items = codingSchemeService.executeInDaoLayer(new DaoCallback<List<String>>(){
+    protected void addSupportedLanguages(final String uri, final String version, DaoCallbackService daoCallbackService, CodingSchemeService codingSchemeService) {
+        List<String> items = daoCallbackService.executeInDaoLayer(new DaoCallback<List<String>>(){
 
             public List<String> execute(DaoManager daoManager) {
                CodingSchemeDao csDao = daoManager.getCodingSchemeDao(uri, version);
@@ -104,8 +106,8 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
         }
     }
     
-    protected void addSupportedEntityTypes(final String uri, final String version, CodingSchemeService codingSchemeService) {
-        List<String> items = codingSchemeService.executeInDaoLayer(new DaoCallback<List<String>>(){
+    protected void addSupportedEntityTypes(final String uri, final String version, DaoCallbackService daoCallbackService, CodingSchemeService codingSchemeService) {
+        List<String> items = daoCallbackService.executeInDaoLayer(new DaoCallback<List<String>>(){
 
             public List<String> execute(DaoManager daoManager) {
                CodingSchemeDao csDao = daoManager.getCodingSchemeDao(uri, version);
@@ -123,8 +125,8 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
         }
     }
     
-    protected void addSupportedProperties(final String uri, final String version, CodingSchemeService codingSchemeService) {
-        List<String> items = codingSchemeService.executeInDaoLayer(new DaoCallback<List<String>>(){
+    protected void addSupportedProperties(final String uri, final String version, DaoCallbackService daoCallbackService, CodingSchemeService codingSchemeService) {
+        List<String> items = daoCallbackService.executeInDaoLayer(new DaoCallback<List<String>>(){
 
             public List<String> execute(DaoManager daoManager) {
                CodingSchemeDao csDao = daoManager.getCodingSchemeDao(uri, version);
