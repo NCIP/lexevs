@@ -301,6 +301,12 @@
 		<property name="creationScriptPrefix" value="sql/lexevs/common-create-"/>
 	</bean>
 	
+	<bean id="registryXmlToDatabaseTransfer" 
+		class="org.lexevs.registry.xmltransfer.RegistryXmlToDatabaseTransfer">
+		<property name="systemVariables" ref="systemVariables"/>
+		<property name="databaseRegistry" ref="databaseRegistry"/>
+		<property name="xmlRegistry" ref="xmlRegistry"/>
+	</bean>
 	
 	<bean id="registrySessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
 		<property name="dataSource">

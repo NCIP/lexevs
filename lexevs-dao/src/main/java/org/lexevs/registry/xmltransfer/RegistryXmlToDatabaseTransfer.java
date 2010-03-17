@@ -51,9 +51,10 @@ public class RegistryXmlToDatabaseTransfer extends LoggingBean implements Initia
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
 	public void afterPropertiesSet() throws Exception {
+
 		//check if flag is set in systemVariables
 		//TODO: ...
-		boolean isMigrateOnstartup = false;
+		boolean isMigrateOnstartup = systemVariables.isMigrateOnStartupEnabled();
 		
 		
 		if( (!isLexGridSchemaInstalled) && isMigrateOnstartup) {

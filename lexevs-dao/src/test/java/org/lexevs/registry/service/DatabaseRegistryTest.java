@@ -18,13 +18,23 @@
  */
 package org.lexevs.registry.service;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.easymock.classextension.EasyMock;
 import org.junit.Test;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.xmltransfer.RegistryXmlToDatabaseTransfer;
+import org.lexevs.system.constants.SystemVariables;
 
 
 /**
@@ -64,6 +74,36 @@ public class DatabaseRegistryTest extends LexEvsDbUnitTestBase {
 		
 		assertEquals(CodingSchemeVersionStatus.ACTIVE.toString(), updatedEntry.getStatus());
 		
+	}
+	
+	@Test
+	public void testMigration() throws Exception{
+		
+		RegistryXmlToDatabaseTransfer transfer = new RegistryXmlToDatabaseTransfer();
+		Registry dbRegistry = EasyMock.createMock(Registry.class);
+		Registry xmlRegistry = EasyMock.createMock(Registry.class);
+		
+		LgLoggerIF logger = EasyMock.createMock(LgLoggerIF.class);
+		
+		RegistryEntry entry = new RegistryEntry();
+		List<RegistryEntry> entries = new ArrayList<RegistryEntry>();
+		entries.add(entry);
+		
+		EasyMock.expect(xmlRegistry.getAllRegistryEntries()).andReturn(entries);
+		
+		transfer.setDatabaseRegistry(dbRegistry);
+		transfer.setLogger(logger);
+	
+		SystemVariables vars = EasyMock.createMock(SystemVariables.class);
+		EasyMock.expect(vars.isMigrateOnStartupEnabled()).andReturn(true);
+		
+		transfer.setSystemVariables(vars);
+		transfer.setXmlRegistry(xmlRegistry);
+		
+		EasyMock.replay(logger,dbRegistry,xmlRegistry,vars);
+		
+
+		transfer.afterPropertiesSet();
 	}
 
 }
