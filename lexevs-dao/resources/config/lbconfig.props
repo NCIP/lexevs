@@ -95,7 +95,14 @@ ITERATOR_IDLE_TIME=5
 MAX_RESULT_SIZE=10000
 
 
+############# Registry migration
+
+# When true, the registry xml from pre-6.0 installations will be moved
+# to the database and deleted upon start-up
+MOVE_REGISTRY_TO_DATABASE=false
+
 ############# Database Configuration
+
 
 # The DB_URL holds the address of the database server that will be used
 # when you load a new terminology through the LexBIG API.  
