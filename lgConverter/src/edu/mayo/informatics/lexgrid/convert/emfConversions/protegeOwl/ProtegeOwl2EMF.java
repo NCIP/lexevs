@@ -42,42 +42,41 @@ import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.LexOnt.CsmfCodingSchemeName;
 import org.LexGrid.LexOnt.CsmfCodingSchemeURI;
 import org.LexGrid.LexOnt.CsmfMappings;
-import org.LexGrid.emf.base.util.LgModelUtil;
 import org.LexGrid.codingSchemes.CodingScheme;
-//import org.LexGrid.emf.codingSchemes.CodingschemesFactory;
-import org.LexGrid.emf.commonTypes.CommontypesPackage;
-import org.LexGrid.commonTypes.types.EntityTypes;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.types.EntityTypes;
 import org.LexGrid.concepts.Concept;
-//import org.LexGrid.emf.concepts.ConceptsFactory;
-import org.LexGrid.emf.concepts.ConceptsPackage;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Instance;
 import org.LexGrid.concepts.Presentation;
+import org.LexGrid.emf.base.util.LgModelUtil;
+import org.LexGrid.emf.commonTypes.CommontypesPackage;
+import org.LexGrid.emf.concepts.ConceptsPackage;
 import org.LexGrid.emf.concepts.util.EntitiesUtil;
+import org.LexGrid.emf.relations.util.RelationsUtil;
 import org.LexGrid.naming.Mappings;
-//import org.LexGrid.emf.naming.NamingFactory;
-import org.LexGrid.relations.AssociationPredicate;
-import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationData;
+import org.LexGrid.relations.AssociationEntity;
+import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.emf.relations.util.RelationsUtil;
 import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
-import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.ecore.EClass;
+import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 import edu.mayo.informatics.lexgrid.convert.emfConversions.EMFSupportedMappings;
-import edu.mayo.informatics.lexgrid.convert.emfConversions.SQLReadWrite;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protege.model.Project;
 import edu.stanford.smi.protege.storage.database.DatabaseKnowledgeBaseFactory;
@@ -136,7 +135,6 @@ public class ProtegeOwl2EMF {
     private LgMessageDirectorIF messages_ = null;
 
     private Connection sqlConnection_ = null;
-    private SQLReadWrite emfOut_ = null;
     private SQLTableUtilities sqlTableUtil_ = null;
     private String dbType_ = null;
     private String dbDriver_ = null, dbUrl_ = null, dbProtegeTempTable_ = null, dbUser_ = null, dbPassword_ = null;
@@ -176,22 +174,8 @@ public class ProtegeOwl2EMF {
 
     // Complex property parser
     private BasicXMLParser bxp;
-
-    /**
-     * Create a new instance for conversion.
-     * 
-     * @param owlURI
-     *            The OWL input file.
-     * @param manifest
-     *            The OWL manifest Object
-     * @param messages
-     *            Responsible for handling display of program messages to the
-     *            user.
-     */
-    public ProtegeOwl2EMF(URI owlURI, CodingSchemeManifest manifest, LoaderPreferences loadPrefs, int memorySafe,
-            LgMessageDirectorIF messages) {
-        this(owlURI, manifest, loadPrefs, memorySafe, messages, null);
-    }
+    
+    private DatabaseServiceManager databaseServiceManager;
 
     /**
      * Create a new instance for conversion.
@@ -220,34 +204,15 @@ public class ProtegeOwl2EMF {
      *            footprint).
      */
     public ProtegeOwl2EMF(URI owlURI, CodingSchemeManifest manifest, LoaderPreferences loadPrefs, int memorySafe,
-            LgMessageDirectorIF messages, SQLReadWrite emfOut) {
+            LgMessageDirectorIF messages) {
         super();
         owlURI_ = owlURI;
         messages_ = messages;
         this.manifest_ = manifest;
         this.memoryProfile_ = memorySafe;
         this.loadPrefs_ = loadPrefs;
-        emfOut_ = emfOut;
         bxp = new BasicXMLParser();
-
-        // If streaming output to database, initialize the connection
-        // and SQL utilities for later reference ...
-        if (emfOut != null && memoryProfile_ != ProtegeOwl2EMFConstants.MEMOPT_ALL_IN_MEMORY) {
-            this.dbDriver_ = emfOut_.getDBDriver();
-            this.dbUrl_ = emfOut_.getDBServer();
-            this.dbProtegeTempTable_ = emfOut_.getDBTablePrefix() + "ProtegeTemp";
-            this.dbUser_ = emfOut_.getDBUsername();
-            this.dbPassword_ = emfOut_.getDBPassword();
-
-            try {
-                sqlConnection_ = DBUtility.connectToDatabase(dbUrl_, dbDriver_, dbUser_, dbPassword_);
-                dbType_ = sqlConnection_.getMetaData().getDatabaseProductName();
-                sqlTableUtil_ = new SQLTableUtilities(sqlConnection_, emfOut_.getDBTablePrefix());
-            } catch (Exception e) {
-                e.printStackTrace();
-                messages_.error("Exception occured obtaining database connection : " + e);
-            }
-        }
+        databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
     }
 
     /**
@@ -283,7 +248,7 @@ public class ProtegeOwl2EMF {
             // If we are streaming the LexGrid model to database, write
             // the coding scheme metadata as defined so far.
             if (memoryProfile_ != ProtegeOwl2EMFConstants.MEMOPT_ALL_IN_MEMORY) {
-                emfOut_.writeCodingScheme(emfScheme_);
+                databaseServiceManager.getCodingSchemeService().insertCodingScheme(emfScheme_);
             }
 
             // Populate the EMF coding scheme from the OWL model
@@ -298,8 +263,20 @@ public class ProtegeOwl2EMF {
                 emfSupportedMappings_.registerSupportedEntityType(name, null, name, false);
             }
             emfSupportedMappings_.applyToCodingScheme(emfScheme_);
+            
             if (memoryProfile_ != ProtegeOwl2EMFConstants.MEMOPT_ALL_IN_MEMORY) {
-                emfOut_.writeCodingSchemeSupportedAttributes(emfScheme_);
+                final String uri = emfScheme_.getCodingSchemeURI();
+                final String version = emfScheme_.getRepresentsVersion();
+                
+                databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<Object>() {
+
+                    public Object execute(DaoManager daoManager) {
+                        String codingSchemeId = 
+                            daoManager.getCodingSchemeDao(uri, version).getCodingSchemeIdByUriAndVersion(uri, version);
+                        
+                        daoManager.getCodingSchemeDao(uri, version).insertMappings(codingSchemeId, emfScheme_.getMappings());
+                    }   
+                });
             }
 
             // Register the number of concepts found and return the scheme
@@ -313,9 +290,6 @@ public class ProtegeOwl2EMF {
             if (owlModel_ != null) {
                 owlModel_.flushCache();
                 owlModel_.getJenaModel().close();
-            }
-            if (emfOut_ != null) {
-                emfOut_.closeServices();
             }
         }
     }
@@ -2477,7 +2451,12 @@ public class ProtegeOwl2EMF {
                 tempEmfScheme_.setEntities(tempEmfEntityList_);
             }
             tempEmfEntityList_.addEntity(entity);
-            emfOut_.writeEntity(entity);
+            
+            String uri = emfScheme_.getCodingSchemeURI();
+            String version = emfScheme_.getRepresentsVersion();
+            
+            databaseServiceManager.getEntityService().
+                insertEntity(uri, version, entity);
 
         } finally {
             tempEmfEntityList_.removeEntity(entity);
@@ -2558,10 +2537,17 @@ public class ProtegeOwl2EMF {
             }
 
             assoc.addSource(source);
-            emfOut_.writeAssociationSourceTarget(source);
+            
+            String uri = emfScheme_.getCodingSchemeURI();
+            String version = emfScheme_.getRepresentsVersion();
+            
+            AssociationWrapper wrapper = this.assocManager.getAssociation(assoc.getAssociationName());
+            databaseServiceManager.getAssociationService().
+                insertAssociationSource(uri, version, 
+                        wrapper.getRelationsContainerName(), assoc.getAssociationName(), source);
 
         } catch (Exception e) {
-            // Exception logged by SQLReadWrite
+            this.messages_.error("Error Inserting AssociationSource.", e);
         } finally {
             assoc.removeSource(source);
             if (target != null)

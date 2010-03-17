@@ -75,6 +75,7 @@ public class AssociationManager {
             aw.setAssociationPrediate( RelationsUtil.subsume(emfRelationsContainer_Roles, aw.getAssociationPredicate()) );
             owlRelName2emfRoles_.put(aw.getAssociationEntity().getEntityCode(), aw);
         }
+        aw.setRelationsContainerName(relContainer.getContainerName());
 
         return aw;
     }

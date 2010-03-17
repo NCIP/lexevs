@@ -17,6 +17,7 @@ import org.LexGrid.relations.AssociationPredicate;
 public class AssociationWrapper {
     private AssociationPredicate ap;
     private AssociationEntity ae;
+    private String relationsContainerName;
     
     public AssociationWrapper(){
         ap = new AssociationPredicate();
@@ -70,6 +71,12 @@ public class AssociationWrapper {
     public void addProperty(Property p) {
         ae.addProperty(p);
     }
-    
 
+    public void setRelationsContainerName(String relationsContainerName) {
+        this.relationsContainerName = relationsContainerName;
+    }
+
+    public String getRelationsContainerName() {
+        return relationsContainerName;
+    }
 }
