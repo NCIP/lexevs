@@ -24,7 +24,7 @@ import java.util.List;
 import org.LexGrid.commonTypes.Property;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.lexevs.dao.database.service.DatabaseDaoCallbackService.DaoCallback;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexgrid.loader.data.DataUtils;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.data.property.ParameterizedListIdSetter;
@@ -106,7 +106,8 @@ public class MrstyListProcessor extends AbstractParameterPassingDoubleListProces
 	}
 	
 	protected String getEntityIdForCode(final String codingSchemeId, final String entityCode, final String entityCodeNamespace) {
-		return this.databaseServiceManager.executeInDaoLayer(new DaoCallback<String>() {
+		return this.databaseServiceManager.getDaoCallbackService().
+			executeInDaoLayer(new DaoCallback<String>() {
 
 			public String execute(DaoManager daoManager) {
 				return 
@@ -117,7 +118,8 @@ public class MrstyListProcessor extends AbstractParameterPassingDoubleListProces
 	}
 
 	protected String getCodingSchemeId(final String codingSchemeUri, final String version) {
-		return this.databaseServiceManager.executeInDaoLayer(new DaoCallback<String>() {
+		return this.databaseServiceManager.getDaoCallbackService().
+			executeInDaoLayer(new DaoCallback<String>() {
 
 			public String execute(DaoManager daoManager) {
 				return 
