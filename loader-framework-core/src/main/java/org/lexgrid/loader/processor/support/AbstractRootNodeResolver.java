@@ -2,11 +2,12 @@ package org.lexgrid.loader.processor.support;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.lexevs.dao.database.service.DatabaseService.DaoCallback;
+import org.lexevs.dao.database.service.DatabaseDaoCallbackService.DaoCallback;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.wrappers.ParentIdHolder;
 import org.springframework.util.Assert;
@@ -43,7 +44,7 @@ public abstract class AbstractRootNodeResolver implements RootNodeResolver<Paren
 
 			final String codingSchemeId = getCodingSchemeId(codingSchemeUri, version);
 
-			String name = databaseServiceManager.getAssociationService().executeInDaoLayer(new DaoCallback<String>() {
+			String name = databaseServiceManager.executeInDaoLayer(new DaoCallback<String>() {
 
 				public String execute(DaoManager daoManager) {
 					return daoManager.getCurrentAssociationDao().getAssociationPredicateNameForId(codingSchemeId, associationPredicateId);
@@ -58,7 +59,7 @@ public abstract class AbstractRootNodeResolver implements RootNodeResolver<Paren
 	}
 	
 	protected String getCodingSchemeId(final String codingSchemeUri, final String version) {
-		return this.databaseServiceManager.getEntityService().executeInDaoLayer(new DaoCallback<String>() {
+		return this.databaseServiceManager.executeInDaoLayer(new DaoCallback<String>() {
 
 			public String execute(DaoManager daoManager) {
 				return 

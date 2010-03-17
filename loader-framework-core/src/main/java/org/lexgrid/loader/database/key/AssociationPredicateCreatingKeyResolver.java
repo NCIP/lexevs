@@ -5,7 +5,7 @@ import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.lexevs.dao.database.service.DatabaseService.DaoCallback;
+import org.lexevs.dao.database.service.DatabaseDaoCallbackService.DaoCallback;
 
 public class AssociationPredicateCreatingKeyResolver implements AssociationPredicateKeyResolver{
 
@@ -16,7 +16,7 @@ public class AssociationPredicateCreatingKeyResolver implements AssociationPredi
 			final String version, 
 			final String relationContainerName,
 			final String associationName) {
-		return databaseServiceManager.getAssociationService().executeInDaoLayer(new DaoCallback<String>(){
+		return databaseServiceManager.executeInDaoLayer(new DaoCallback<String>(){
 
 			public String execute(DaoManager daoManager) {
 				
