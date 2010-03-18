@@ -132,8 +132,11 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         holder.getURIOptions().add(loaderPreferencesOption);
         
         StringArrayOption loaderPostProcessorOption = new StringArrayOption(LOADER_POST_PROCESSOR_OPTION);
-        loaderPostProcessorOption.getOptionValue().add(ApproxNumOfConceptsPostProcessor.EXTENSION_NAME);
-        loaderPostProcessorOption.getOptionValue().add(SupportedAttributePostProcessor.EXTENSION_NAME);
+        
+        //TODO: Do we want to enable these by default?
+        //loaderPostProcessorOption.getOptionValue().add(ApproxNumOfConceptsPostProcessor.EXTENSION_NAME);
+        //loaderPostProcessorOption.getOptionValue().add(SupportedAttributePostProcessor.EXTENSION_NAME);
+        
         holder.getStringArrayOptions().add(loaderPostProcessorOption);
         
         BooleanOption asyncOption = new BooleanOption(ASYNC_OPTION, true);
