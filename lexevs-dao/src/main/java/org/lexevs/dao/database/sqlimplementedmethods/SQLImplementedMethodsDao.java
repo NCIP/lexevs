@@ -566,7 +566,7 @@ public class SQLImplementedMethodsDao {
 			mappings.setSupportedAssociation(supportedAssociations.toArray(new SupportedAssociation[supportedAssociations.size()]));
 			mappings.setSupportedAssociationQualifier(supportedAssociationQualifiers.toArray(new SupportedAssociationQualifier[supportedAssociationQualifiers.size()]));
 			mappings.setSupportedCodingScheme(supportedCodingSchemes.toArray(new SupportedCodingScheme[supportedCodingSchemes.size()]));
-			mappings.setSupportedContainer(supportedRelContainers.toArray(new SupportedContainerName[supportedRelContainers.size()]));
+			mappings.setSupportedContainerName(supportedRelContainers.toArray(new SupportedContainerName[supportedRelContainers.size()]));
 			mappings.setSupportedContext(supportedContexts.toArray(new SupportedContext[supportedContexts.size()]));
 			mappings.setSupportedDataType(supportedDataTypes.toArray(new SupportedDataType[supportedDataTypes.size()]));
 			mappings.setSupportedDegreeOfFidelity(supportedDegreesOfFidelity.toArray(new SupportedDegreeOfFidelity[supportedDegreesOfFidelity.size()]));
