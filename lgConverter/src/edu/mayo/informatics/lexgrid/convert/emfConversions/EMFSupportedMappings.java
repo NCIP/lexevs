@@ -98,7 +98,7 @@ public class EMFSupportedMappings {
         mappings.setSupportedAssociation(getSupportedAssociations().values().toArray(new SupportedAssociation[0]));
         mappings.setSupportedAssociationQualifier(getSupportedAssociationQualifiers().values().toArray(new SupportedAssociationQualifier[0]));
         mappings.setSupportedCodingScheme(getSupportedCodingSchemes().values().toArray(new SupportedCodingScheme[0]));
-        mappings.setSupportedContainer(getSupportedContainerNames().values().toArray(new SupportedContainerName[0]));
+        mappings.setSupportedContainerName(getSupportedContainerNames().values().toArray(new SupportedContainerName[0]));
         mappings.setSupportedContext(getSupportedContexts().values().toArray(new SupportedContext[0]));
         mappings.setSupportedDataType(getSupportedDataTypes().values().toArray(new SupportedDataType[0]));
         mappings.setSupportedDegreeOfFidelity(getSupportedDegreesOfFidelity().values().toArray(new SupportedDegreeOfFidelity[0]));

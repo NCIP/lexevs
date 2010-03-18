@@ -591,7 +591,7 @@ public class ManifestUtil {
                 SQLTableConstants.TBLCOLVAL_SUPPTAG_ASSOCIATIONQUALIFIER);
         postLoadUpdateSupportedMapping(queryResultSet, castorMapping.getSupportedCodingScheme(), toUpdate,
                 SQLTableConstants.TBLCOLVAL_SUPPTAG_CODINGSCHEME);
-        postLoadUpdateSupportedMapping(queryResultSet, castorMapping.getSupportedContainer(), toUpdate,
+        postLoadUpdateSupportedMapping(queryResultSet, castorMapping.getSupportedContainerName(), toUpdate,
                 SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTAINERNAME);
         postLoadUpdateSupportedMapping(queryResultSet, castorMapping.getSupportedContext(), toUpdate,
                 SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT);
