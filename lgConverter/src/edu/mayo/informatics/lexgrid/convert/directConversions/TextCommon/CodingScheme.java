@@ -27,6 +27,7 @@ import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
+import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
@@ -74,6 +75,7 @@ public class CodingScheme {
         src.setContent(codingScheme.source);
         src.setRole(codingScheme.codingSchemeId);
         cs.addSource(src);
+        cs.setMappings(new Mappings());
         
         // add entities
         Collection<String> existedEntities = new ArrayList<String>();
