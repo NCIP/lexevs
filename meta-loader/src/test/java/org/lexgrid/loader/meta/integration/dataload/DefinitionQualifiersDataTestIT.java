@@ -27,8 +27,7 @@ import org.LexGrid.concepts.Definition;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
-
-import test.util.DataTestUtils;
+import org.lexgrid.loader.test.util.DataTestUtils;
 
 /**
  * The Class DefinitionQualifiersDataTestIT.

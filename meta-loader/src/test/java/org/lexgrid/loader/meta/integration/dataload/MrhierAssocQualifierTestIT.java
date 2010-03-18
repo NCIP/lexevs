@@ -28,8 +28,8 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
+import org.lexgrid.loader.test.util.DataTestUtils;
 
-import test.util.DataTestUtils;
 import util.integration.LoadMetaForIntegration;
 
 public class MrhierAssocQualifierTestIT extends DataLoadTestBase {

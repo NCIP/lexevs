@@ -28,8 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.lexgrid.loader.meta.constants.MetaLoaderConstants;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
-
-import test.util.DataTestUtils;
+import org.lexgrid.loader.test.util.DataTestUtils;
 
 /**
  * The Class EntityAssnsToEntityQualsDataTestIT.

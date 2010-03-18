@@ -23,14 +23,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.commonTypes.PropertyQualifier;
-import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entity;
 import org.junit.Before;
 import org.junit.Test;
-import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
-
-import test.util.DataTestUtils;
 
 /**
  * The Class DefinitionPropertyDataTestIT.
