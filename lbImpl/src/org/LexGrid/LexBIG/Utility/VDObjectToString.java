@@ -1080,10 +1080,10 @@ public class VDObjectToString {
             buff.append(getBreakAndIndent())
                 .append("SupportedCodingSchemes: ").append(lineBreak)
                 .append(toString(o.getSupportedCodingScheme(), indent + sp8));
-        if (o.getSupportedContainerCount() > 0)
+        if (o.getSupportedContainerNameCount() > 0)
             buff.append(getBreakAndIndent())
                 .append("SupportedContainer: ").append(lineBreak)
-                .append(toString(o.getSupportedContainer(), indent + sp8));
+                .append(toString(o.getSupportedContainerName(), indent + sp8));
         if (o.getSupportedContextCount() > 0)
             buff.append(getBreakAndIndent())
                 .append("SupportedContext: ").append(lineBreak)
