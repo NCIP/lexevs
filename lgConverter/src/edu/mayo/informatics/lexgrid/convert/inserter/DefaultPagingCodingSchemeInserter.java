@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package edu.mayo.informatics.lexgrid.convert.inserter;
 
 import java.util.ArrayList;
@@ -13,11 +31,22 @@ import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 
+/**
+ * The Class DefaultPagingCodingSchemeInserter.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchemeInserter {
 
+    /** The entity page size. */
     public int entityPageSize = 100;
+    
+    /** The association instance page. */
     public int associationInstancePage = 100;
     
+    /* (non-Javadoc)
+     * @see edu.mayo.informatics.lexgrid.convert.inserter.AbstractPagingCodingSchemeInserter#loadNonPagedItems(org.LexGrid.codingSchemes.CodingScheme)
+     */
     @Override
     protected void loadNonPagedItems(final CodingScheme codingScheme) {
         super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<Object>() {
@@ -30,6 +59,9 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
         });
     }
 
+    /* (non-Javadoc)
+     * @see edu.mayo.informatics.lexgrid.convert.inserter.AbstractPagingCodingSchemeInserter#pageEntities(java.lang.String, java.lang.String, org.LexGrid.concepts.Entities)
+     */
     @Override
     protected void pageEntities(String codingSchemeUri, String codingSchemeVersion, Entities entities) {
         List<Entity> batch = new ArrayList<Entity>();
@@ -49,6 +81,9 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
         }
     }
 
+    /* (non-Javadoc)
+     * @see edu.mayo.informatics.lexgrid.convert.inserter.AbstractPagingCodingSchemeInserter#pageRelations(java.lang.String, java.lang.String, org.LexGrid.relations.Relations)
+     */
     @Override
     protected void pageRelations(String codingSchemeUri, String codingSchemeVersion, Relations relations) {
         List<AssociationSourceBatchInsertItem> batch = new ArrayList<AssociationSourceBatchInsertItem>();
@@ -71,6 +106,12 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
         }
     }
     
+    /**
+     * Insert entity.
+     * 
+     * @param codingSchemeId the coding scheme id
+     * @param batch the batch
+     */
     protected void insertEntity(final String codingSchemeId, final List<Entity> batch) {
         super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>() {
 
@@ -83,6 +124,12 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
         });
     }
     
+    /**
+     * Insert association source.
+     * 
+     * @param codingSchemeId the coding scheme id
+     * @param batch the batch
+     */
     protected void insertAssociationSource(final String codingSchemeId, final List<AssociationSourceBatchInsertItem> batch) {
         super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>() {
 
@@ -95,6 +142,14 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
         });
     }
     
+    /**
+     * Insert relations.
+     * 
+     * @param codingSchemeId the coding scheme id
+     * @param relations the relations
+     * 
+     * @return the string
+     */
     protected String insertRelations(final String codingSchemeId, final Relations relations) {
         return
         super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>() {
@@ -106,6 +161,15 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
         });
     }
     
+    /**
+     * Insert association predicate.
+     * 
+     * @param codingSchemeId the coding scheme id
+     * @param relationsId the relations id
+     * @param predicate the predicate
+     * 
+     * @return the string
+     */
     protected String insertAssociationPredicate(final String codingSchemeId, final String relationsId, final AssociationPredicate predicate) {
         return
         super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>() {
@@ -117,6 +181,14 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
         });
     }
     
+    /**
+     * Gets the coding scheme id.
+     * 
+     * @param uri the uri
+     * @param version the version
+     * 
+     * @return the coding scheme id
+     */
     protected String getCodingSchemeId(final String uri, final String version) {
         return
         super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>() {
@@ -128,10 +200,16 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
         });
     }
 
+    /* (non-Javadoc)
+     * @see edu.mayo.informatics.lexgrid.convert.inserter.PagingCodingSchemeInserter#setAssociationInstancePageSize(int)
+     */
     public void setAssociationInstancePageSize(int pageSize) {
         this.associationInstancePage = pageSize;
     }
 
+    /* (non-Javadoc)
+     * @see edu.mayo.informatics.lexgrid.convert.inserter.PagingCodingSchemeInserter#setEntityPageSize(int)
+     */
     public void setEntityPageSize(int pageSize) {
         this.entityPageSize = pageSize;
     }
