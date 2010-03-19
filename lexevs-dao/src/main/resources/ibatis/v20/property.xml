@@ -16,9 +16,9 @@
 		<result property="language" column="language" />
 		<result property="value.content" column="propertyValue" />
 		<result property="value.dataType" column="format" />
-		<result property="_sourceList" resultMap="Property.multiAttribResult"/>
-		<result property="_propertyQualifierList" resultMap="Property.multiAttribResult"/>
-		<result property="_usageContextList" resultMap="Property.multiAttribResult"/>
+<!--		<result property="_sourceList" resultMap="Property.multiAttribResult"/>-->
+<!--		<result property="_propertyQualifierList" resultMap="Property.multiAttribResult"/>-->
+<!--		<result property="_usageContextList" resultMap="Property.multiAttribResult"/>-->
 		<discriminator javaType="string" column="propertyType">
 			<subMap value="presentation" resultMap="presentationResult" />
 			<subMap value="definition" resultMap="definitionResult" />
@@ -64,20 +64,14 @@
   			property.representationalForm,
   			property.propertyValue,
   			entryState.changeType,
-  			entryState.relativeOrder,
-  			multiAttrib.*
+  			entryState.relativeOrder
   		FROM
   			$prefix$property property
   		LEFT JOIN
   			${defaultPrefix}entryState entryState
   		ON
   			property.entryStateGuid =
-  			entryState.entryStateGuid
-  		LEFT JOIN
-  			$prefix$propertyMultiAttrib multiAttrib
-  		ON
-  			property.propertyGuid =
-  			multiAttrib.propertyGuid		
+  			entryState.entryStateGuid		
   	</sql>
 
   	<select id="getPropertiesByParent" resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
