@@ -27,7 +27,13 @@ public class NullNamespaceResolver extends AbstractResolver<Entity> {
     }
 
     @Override
-    public void doResolveError(Entity errorObject) {
+    public boolean doResolveError(Entity errorObject) {
         errorObject.setEntityCodeNamespace(this.defaultNamespace);
+        return true;
+    }
+
+    @Override
+    public String getResolutionDetails() {
+        return "Namespace set to default: " + this.defaultNamespace;
     }
 }
