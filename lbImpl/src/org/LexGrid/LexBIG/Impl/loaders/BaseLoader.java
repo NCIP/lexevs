@@ -68,9 +68,7 @@ import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
 import edu.mayo.informatics.lexgrid.convert.inserter.CodingSchemeInserter;
 import edu.mayo.informatics.lexgrid.convert.inserter.DefaultPagingCodingSchemeInserter;
-import edu.mayo.informatics.lexgrid.convert.inserter.DirectCodingSchemeInserter;
 import edu.mayo.informatics.lexgrid.convert.inserter.PreValidatingInserterDecorator;
-import edu.mayo.informatics.lexgrid.convert.inserter.ValidatingCodingSchemeInserter;
 import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 import edu.mayo.informatics.lexgrid.convert.options.DefaultOptionHolder;
 import edu.mayo.informatics.lexgrid.convert.options.StringArrayOption;
@@ -272,6 +270,10 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                             + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage())
                             + " Heap Delta:" + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
 
+                    //Pre-register to make this available before indexing.
+                    if(doRegister) {
+                        register(loadedCodingSchemes);
+                    }
                     
                     doPostProcessing(options_, codingSchemeReferences);
                     
@@ -283,12 +285,13 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                             + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage())
                             + " Heap Delta:" + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
 
+                    status_.setState(ProcessState.COMPLETED);
+                    md_.info("Load process completed without error");
+                    
+                    //Register again (to set as INACTIVE)
                     if(doRegister) {
                         register(loadedCodingSchemes);
                     }
-
-                    status_.setState(ProcessState.COMPLETED);
-                    md_.info("Load process completed without error");
                     
                 }
             } catch (CodingSchemeAlreadyLoadedException e) {
@@ -427,6 +430,8 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                 service.updateCodingSchemeResourceStatus(Constructors.
                         createAbsoluteCodingSchemeVersionReference(pair.getUrn(), pair.getVersion()),
                         CodingSchemeVersionStatus.INACTIVE);
+            } else {
+                service.addCodingSchemeResourceToSystem(pair.getUrn(), pair.getVersion());
             }
          }
     }
@@ -508,15 +513,11 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     }
     
     protected void persistCodingSchemeToDatabase(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
-        persistCodingSchemeToDatabase(createDefaultValidatingInserter(codingScheme), codingScheme);
+        persistCodingSchemeToDatabase(createDefaultInserter(codingScheme), codingScheme);
     }
     
     protected void persistCodingSchemeToDatabase(CodingSchemeInserter inserter, CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
-        createDefaultInserter().insertCodingScheme(codingScheme);
-    }
-    
-    protected void persistCodingSchemeToDatabase(ValidatingCodingSchemeInserter inserter, CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
-        List<ResolvedLoadValidationError> errors = inserter.insertCodingSchemeWithValidation(codingScheme);
+        List<ResolvedLoadValidationError> errors = inserter.insertCodingScheme(codingScheme);
         for(ResolvedLoadValidationError error : errors) {
             this.getMessageDirector().info(error.toString());
         }
@@ -524,10 +525,10 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
 
     protected CodingSchemeInserter createDefaultInserter() {
         return
-            new DirectCodingSchemeInserter();
+            new DefaultPagingCodingSchemeInserter();
     }
     
-    protected ValidatingCodingSchemeInserter createDefaultValidatingInserter(CodingScheme codingScheme) {
+    protected CodingSchemeInserter createDefaultInserter(CodingScheme codingScheme) {
         PreValidatingInserterDecorator decorator = 
             new 
             PreValidatingInserterDecorator(
