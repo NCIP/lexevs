@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package edu.mayo.informatics.lexgrid.convert.validator.processor;
 
 import java.lang.reflect.Field;
@@ -8,19 +26,32 @@ import java.util.List;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.relations.AssociationPredicate;
+import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.Relations;
 import org.springframework.util.ClassUtils;
 
 import edu.mayo.informatics.lexgrid.convert.validator.NullNamespaceValidator;
 import edu.mayo.informatics.lexgrid.convert.validator.Validator;
 import edu.mayo.informatics.lexgrid.convert.validator.error.LoadValidationError;
-import edu.mayo.informatics.lexgrid.convert.validator.resolution.ErrorResolutionReport;
+import edu.mayo.informatics.lexgrid.convert.validator.error.ResolvedLoadValidationError;
 import edu.mayo.informatics.lexgrid.convert.validator.resolution.NullNamespaceResolver;
 
-public class ReflectionValidationProcessor implements ValidationProcessor<Object>{
+/**
+ * The Class ReflectionValidationProcessor.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
+public class ReflectionValidationProcessor<T> implements ValidationProcessor<T>{
     
+    /** The validators. */
     private List<Validator> validators = new ArrayList<Validator>();
     
+    /* (non-Javadoc)
+     * @see edu.mayo.informatics.lexgrid.convert.validator.processor.ValidationProcessor#validate(java.lang.Object)
+     */
     public List<LoadValidationError> validate(final Object obj) {
+
         List<LoadValidationError> errorList = new ArrayList<LoadValidationError>();
         
         for(Validator validator : validators) {
@@ -54,15 +85,27 @@ public class ReflectionValidationProcessor implements ValidationProcessor<Object
         return errorList;
     }
     
+    /* (non-Javadoc)
+     * @see edu.mayo.informatics.lexgrid.convert.validator.processor.ValidationProcessor#addValidator(edu.mayo.informatics.lexgrid.convert.validator.Validator)
+     */
     public void addValidator(Validator validator) {
         validators.add(validator);
     }
     
+     /**
+      * The main method.
+      * 
+      * @param args the arguments
+      */
      public static void main(String[] args) {
         CodingScheme cs = new CodingScheme();
         cs.setCodingSchemeName("csName");
         cs.setEntities(new Entities());
         cs.getEntities().addEntity(new Entity());
+        
+        cs.addRelations(new Relations());
+        cs.getRelations(0).addAssociationPredicate(new AssociationPredicate());
+        cs.getRelations(0).getAssociationPredicate(0).addSource(new AssociationSource());
         
         ValidationProcessor<Object> processor = new ReflectionValidationProcessor();
         processor.addValidator(new NullNamespaceValidator());
@@ -72,9 +115,9 @@ public class ReflectionValidationProcessor implements ValidationProcessor<Object
         DefaultResolverProcessor resolverProcessor = new DefaultResolverProcessor();
         resolverProcessor.addResolver(new NullNamespaceResolver(cs));
         
-        List<ErrorResolutionReport> reports = resolverProcessor.resolve(errors);
-        for(ErrorResolutionReport report : reports) {
-            System.out.println(report);
+        List<ResolvedLoadValidationError> resolvedErrors = resolverProcessor.resolve(errors);
+        for(ResolvedLoadValidationError error : resolvedErrors) {
+            System.out.println(error);
         }
         
         

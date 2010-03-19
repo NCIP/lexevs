@@ -16,34 +16,21 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package edu.mayo.informatics.lexgrid.convert.validator;
+package edu.mayo.informatics.lexgrid.convert.validator.error;
 
-import java.util.List;
-
-import edu.mayo.informatics.lexgrid.convert.validator.error.LoadValidationError;
+import edu.mayo.informatics.lexgrid.convert.validator.resolution.ErrorResolutionReport;
 
 /**
- * The Interface Validator.
+ * The Interface ResolvedLoadValidationError.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface Validator {
+public interface ResolvedLoadValidationError extends LoadValidationError {
 
     /**
-     * Checks if is valid class for validator.
+     * Gets the error resolution report.
      * 
-     * @param clazz the clazz
-     * 
-     * @return true, if is valid class for validator
+     * @return the error resolution report
      */
-    public boolean isValidClassForValidator(Class<?> clazz);
-    
-    /**
-     * Validate.
-     * 
-     * @param obj the obj
-     * 
-     * @return the list< load validation error>
-     */
-    public List<LoadValidationError> validate(Object obj);
+    public ErrorResolutionReport getErrorResolutionReport();
 }
