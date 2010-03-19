@@ -123,11 +123,9 @@ public class TextToSQL {
      *            Force reading of a format A file as Format B
      * @throws Exception
      */
-    public URNVersionPair[] load(URI fileLocation, String token, LoaderPreferences loaderPrefs,
+    public org.LexGrid.codingSchemes.CodingScheme load(URI fileLocation, String token, LoaderPreferences loaderPrefs,
             LgMessageDirectorIF messageDirector, boolean forceFormatB) throws CodingSchemeAlreadyLoadedException {
-        DatabaseServiceManager databaseServiceManager = 
-            LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
-        
+       
         messages_ = messageDirector;
         if (token != null && token.length() > 0) {
             token_ = token;
@@ -143,10 +141,7 @@ public class TextToSQL {
         
         org.LexGrid.codingSchemes.CodingScheme cs = CodingScheme.toCodingScheme(codingScheme);
 
-        databaseServiceManager.getCodingSchemeService().insertCodingScheme(cs);
-
-        return new URNVersionPair[]{
-                new URNVersionPair(codingScheme.codingSchemeId, codingScheme.representsVersion)};
+        return cs;
     }
 
     // return the codingscheme
