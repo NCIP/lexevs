@@ -33,7 +33,7 @@ import edu.mayo.informatics.lexgrid.convert.validator.processor.ValidationProces
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class PreValidatingInserterDecorator implements ValidatingCodingSchemeInserter {
+public class PreValidatingInserterDecorator implements CodingSchemeInserter {
 
     /** The validation processor. */
     private ValidationProcessor<CodingScheme> validationProcessor;
@@ -54,21 +54,15 @@ public class PreValidatingInserterDecorator implements ValidatingCodingSchemeIns
     }
     
     /* (non-Javadoc)
-     * @see edu.mayo.informatics.lexgrid.convert.inserter.ValidatingCodingSchemeInserter#insertCodingSchemeWithValidation(org.LexGrid.codingSchemes.CodingScheme)
-     */
-    public List<ResolvedLoadValidationError> insertCodingSchemeWithValidation(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
-        List<LoadValidationError> errors = this.validationProcessor.validate(codingScheme);
-        List<ResolvedLoadValidationError> resolvedErrors =  this.resolverProcessor.resolve(errors);
-        this.insertCodingScheme(codingScheme);
-        
-        return resolvedErrors;
-    }
-    
-    /* (non-Javadoc)
      * @see edu.mayo.informatics.lexgrid.convert.inserter.CodingSchemeInserter#insertCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
      */
-    public void insertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
-        delegate.insertCodingScheme(codingScheme);
+    public List<ResolvedLoadValidationError> insertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
+        List<LoadValidationError> errors = this.validationProcessor.validate(codingScheme);
+        List<ResolvedLoadValidationError> resolvedErrors =  this.resolverProcessor.resolve(errors);
+        
+        resolvedErrors.addAll(delegate.insertCodingScheme(codingScheme));
+       
+        return resolvedErrors;
     }
 
     /**

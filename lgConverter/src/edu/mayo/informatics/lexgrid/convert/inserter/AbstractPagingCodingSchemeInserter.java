@@ -18,10 +18,16 @@
  */
 package edu.mayo.informatics.lexgrid.convert.inserter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.relations.Relations;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+
+import edu.mayo.informatics.lexgrid.convert.validator.error.LoadValidationError;
+import edu.mayo.informatics.lexgrid.convert.validator.error.ResolvedLoadValidationError;
 
 /**
  * The Class AbstractPagingCodingSchemeInserter.
@@ -33,24 +39,31 @@ public abstract class AbstractPagingCodingSchemeInserter extends AbstractCodingS
     /* (non-Javadoc)
      * @see edu.mayo.informatics.lexgrid.convert.inserter.AbstractCodingSchemeInserter#insertCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
      */
-    public void insertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
-        loadNonPagedItems(codingScheme);
+    public List<ResolvedLoadValidationError> insertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
+        List<LoadValidationError> errors = new ArrayList<LoadValidationError>();
+        
+        errors.addAll(loadNonPagedItems(codingScheme));
         
         String uri = codingScheme.getCodingSchemeURI();
         String version = codingScheme.getRepresentsVersion();
         
-        pageEntities(uri, version, codingScheme.getEntities());
+        errors.addAll(pageEntities(uri, version, codingScheme.getEntities()));
+        
         for(Relations relations : codingScheme.getRelations()) {
-            pageRelations(uri, version, relations);
+            errors.addAll(pageRelations(uri, version, relations));
         }
+        
+        return doResolveErrors(errors);
     }
+    
+    protected abstract List<ResolvedLoadValidationError> doResolveErrors(List<LoadValidationError> errors);
     
     /**
      * Load non paged items.
      * 
      * @param codingScheme the coding scheme
      */
-    protected abstract void loadNonPagedItems(CodingScheme codingScheme);
+    protected abstract List<LoadValidationError> loadNonPagedItems(CodingScheme codingScheme);
     
     /**
      * Page entities.
@@ -59,7 +72,7 @@ public abstract class AbstractPagingCodingSchemeInserter extends AbstractCodingS
      * @param codingSchemeVersion the coding scheme version
      * @param entities the entities
      */
-    protected abstract void pageEntities(String codingSchemeUri, String codingSchemeVersion, Entities entities);
+    protected abstract List<LoadValidationError> pageEntities(String codingSchemeUri, String codingSchemeVersion, Entities entities);
     
     /**
      * Page relations.
@@ -68,5 +81,5 @@ public abstract class AbstractPagingCodingSchemeInserter extends AbstractCodingS
      * @param codingSchemeVersion the coding scheme version
      * @param relations the relations
      */
-    protected abstract void pageRelations(String codingSchemeUri, String codingSchemeVersion, Relations relations);
+    protected abstract List<LoadValidationError> pageRelations(String codingSchemeUri, String codingSchemeVersion, Relations relations);
 }

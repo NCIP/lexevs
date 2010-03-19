@@ -55,7 +55,7 @@ public class DaoValidatingInterceptor implements MethodInterceptor, Serializable
         try {
             returnObj = methodInvocation.proceed();
         } catch (Exception e) {
-           //TODO:
+            methodInvocation.getArguments();
         }
         return returnObj;
     }

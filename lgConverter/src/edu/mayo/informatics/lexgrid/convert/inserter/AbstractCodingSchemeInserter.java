@@ -18,10 +18,14 @@
  */
 package edu.mayo.informatics.lexgrid.convert.inserter;
 
+import java.util.List;
+
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.locator.LexEvsServiceLocator;
+
+import edu.mayo.informatics.lexgrid.convert.validator.error.ResolvedLoadValidationError;
 
 /**
  * The Class AbstractCodingSchemeInserter.
@@ -37,7 +41,7 @@ public abstract class AbstractCodingSchemeInserter implements CodingSchemeInsert
     /* (non-Javadoc)
      * @see edu.mayo.informatics.lexgrid.convert.inserter.CodingSchemeInserter#insertCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
      */
-    public abstract void insertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException;
+    public abstract List<ResolvedLoadValidationError> insertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException;
 
     /**
      * Gets the database service manager.

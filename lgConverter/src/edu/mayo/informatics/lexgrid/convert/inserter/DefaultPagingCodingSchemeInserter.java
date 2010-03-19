@@ -31,12 +31,20 @@ import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 
+import edu.mayo.informatics.lexgrid.convert.validator.error.LoadValidationError;
+import edu.mayo.informatics.lexgrid.convert.validator.error.ResolvedLoadValidationError;
+import edu.mayo.informatics.lexgrid.convert.validator.exception.LoadValidationException;
+import edu.mayo.informatics.lexgrid.convert.validator.processor.AllFatalResolverProcessor;
+import edu.mayo.informatics.lexgrid.convert.validator.processor.ResolverProcessor;
+
 /**
  * The Class DefaultPagingCodingSchemeInserter.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchemeInserter {
+    
+    private ResolverProcessor resolverProcessor = new AllFatalResolverProcessor();
 
     /** The entity page size. */
     public int entityPageSize = 100;
@@ -44,16 +52,35 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
     /** The association instance page. */
     public int associationInstancePage = 100;
     
+    public DefaultPagingCodingSchemeInserter(){
+        super();
+    }
+    
+    public DefaultPagingCodingSchemeInserter(ResolverProcessor resolverProcessor) {
+        super();
+        this.resolverProcessor = resolverProcessor;
+    }
+
     /* (non-Javadoc)
      * @see edu.mayo.informatics.lexgrid.convert.inserter.AbstractPagingCodingSchemeInserter#loadNonPagedItems(org.LexGrid.codingSchemes.CodingScheme)
      */
     @Override
-    protected void loadNonPagedItems(final CodingScheme codingScheme) {
+    protected List<LoadValidationError> loadNonPagedItems(final CodingScheme codingScheme) {
+        List<LoadValidationError> errors = new ArrayList<LoadValidationError>();
+        try {
+            doLoadNonPagedItems(codingScheme);
+        } catch (LoadValidationException e) {
+            errors.add(e.getLoadValidationError());
+        }
+        return errors;
+    }
+
+    protected void doLoadNonPagedItems(final CodingScheme codingScheme) throws LoadValidationException {
         super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<Object>() {
 
             public Object execute(DaoManager daoManager) {
                 daoManager.getCurrentCodingSchemeDao().insertCodingScheme(codingScheme);
-                
+
                 return null;
             }
         });
@@ -63,7 +90,9 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
      * @see edu.mayo.informatics.lexgrid.convert.inserter.AbstractPagingCodingSchemeInserter#pageEntities(java.lang.String, java.lang.String, org.LexGrid.concepts.Entities)
      */
     @Override
-    protected void pageEntities(String codingSchemeUri, String codingSchemeVersion, Entities entities) {
+    protected List<LoadValidationError> pageEntities(String codingSchemeUri, String codingSchemeVersion, Entities entities) {
+        List<LoadValidationError> errors = new ArrayList<LoadValidationError>();
+        
         List<Entity> batch = new ArrayList<Entity>();
         
         String codingSchemeId = getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
@@ -71,21 +100,32 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
         for(Entity entity : entities.getEntity()) {
             batch.add(entity);
             if(batch.size() >= this.entityPageSize) {
-                this.insertEntity(codingSchemeId, batch);
+                try {
+                    this.insertEntityBatch(codingSchemeId, batch);
+                } catch (LoadValidationException e) {
+                    errors.add(e.getLoadValidationError());
+                }
                 batch.clear();
             }
         }
         
         if(batch.size() > 0) {
-            insertEntity(codingSchemeId, batch);
+            try {
+                insertEntityBatch(codingSchemeId, batch);
+            } catch (LoadValidationException e) {
+                errors.add(e.getLoadValidationError());
+            }
         }
+        return errors;
     }
 
     /* (non-Javadoc)
      * @see edu.mayo.informatics.lexgrid.convert.inserter.AbstractPagingCodingSchemeInserter#pageRelations(java.lang.String, java.lang.String, org.LexGrid.relations.Relations)
      */
     @Override
-    protected void pageRelations(String codingSchemeUri, String codingSchemeVersion, Relations relations) {
+    protected List<LoadValidationError> pageRelations(String codingSchemeUri, String codingSchemeVersion, Relations relations) {
+        List<LoadValidationError> errors = new ArrayList<LoadValidationError>();
+        
         List<AssociationSourceBatchInsertItem> batch = new ArrayList<AssociationSourceBatchInsertItem>();
 
         String codingSchemeId = getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
@@ -95,15 +135,25 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
             for(AssociationSource source : predicate.getSource()) {
                 batch.add(new AssociationSourceBatchInsertItem(predicateId, source));
                 if(batch.size() >= this.associationInstancePage) {
-                    insertAssociationSource(codingSchemeId, batch);
+                    try {
+                        insertAssociationSourceBatch(codingSchemeId, batch);
+                    } catch (LoadValidationException e) {
+                        errors.add(e.getLoadValidationError());
+                    }
                     batch.clear();
                 }
             }
         }
         
         if(batch.size() > 0) {
-            insertAssociationSource(codingSchemeId, batch);
+            try {
+                insertAssociationSourceBatch(codingSchemeId, batch);
+            } catch (LoadValidationException e) {
+                errors.add(e.getLoadValidationError());
+            }
         }
+        
+        return errors;
     }
     
     /**
@@ -112,7 +162,7 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
      * @param codingSchemeId the coding scheme id
      * @param batch the batch
      */
-    protected void insertEntity(final String codingSchemeId, final List<Entity> batch) {
+    protected void insertEntityBatch(final String codingSchemeId, final List<Entity> batch) throws LoadValidationException {
         super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>() {
 
             public String execute(DaoManager daoManager) {
@@ -130,7 +180,7 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
      * @param codingSchemeId the coding scheme id
      * @param batch the batch
      */
-    protected void insertAssociationSource(final String codingSchemeId, final List<AssociationSourceBatchInsertItem> batch) {
+    protected void insertAssociationSourceBatch(final String codingSchemeId, final List<AssociationSourceBatchInsertItem> batch) throws LoadValidationException {
         super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>() {
 
             public String execute(DaoManager daoManager) {
@@ -195,11 +245,15 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
 
             public String execute(DaoManager daoManager) {
                 return 
-                    daoManager.getCodingSchemeDao(uri, version).getCodingSchemeIdByUriAndVersion(uri, version);
+                    daoManager.getCurrentCodingSchemeDao().getCodingSchemeIdByUriAndVersion(uri, version);
             }
         });
     }
-
+   
+    protected List<ResolvedLoadValidationError> doResolveErrors(List<LoadValidationError> errors){
+        return resolverProcessor.resolve(errors);
+    }
+    
     /* (non-Javadoc)
      * @see edu.mayo.informatics.lexgrid.convert.inserter.PagingCodingSchemeInserter#setAssociationInstancePageSize(int)
      */
@@ -212,5 +266,13 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
      */
     public void setEntityPageSize(int pageSize) {
         this.entityPageSize = pageSize;
+    }
+
+    public void setResolverProcessor(ResolverProcessor resolverProcessor) {
+        this.resolverProcessor = resolverProcessor;
+    }
+
+    public ResolverProcessor getResolverProcessor() {
+        return resolverProcessor;
     }
 }

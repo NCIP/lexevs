@@ -18,8 +18,12 @@
  */
 package edu.mayo.informatics.lexgrid.convert.inserter;
 
+import java.util.List;
+
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+
+import edu.mayo.informatics.lexgrid.convert.validator.error.ResolvedLoadValidationError;
 
 /**
  * The Interface CodingSchemeInserter.
@@ -35,5 +39,5 @@ public interface CodingSchemeInserter {
      * 
      * @throws CodingSchemeAlreadyLoadedException the coding scheme already loaded exception
      */
-    public void insertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException;
+    public List<ResolvedLoadValidationError> insertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException;
 }

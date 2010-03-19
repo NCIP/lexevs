@@ -28,7 +28,6 @@ import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.JdkRegexpMethodPointcut;
 
 import edu.mayo.informatics.lexgrid.convert.validator.error.LoadValidationError;
-import edu.mayo.informatics.lexgrid.convert.validator.resolution.ErrorResolutionReport;
 
 /**
  * A factory for creating ValidatingDaoProxy objects.

@@ -18,8 +18,16 @@
  */
 package edu.mayo.informatics.lexgrid.convert.inserter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+import org.lexevs.dao.database.utility.DaoUtility;
+
+import edu.mayo.informatics.lexgrid.convert.validator.error.FatalError;
+import edu.mayo.informatics.lexgrid.convert.validator.error.ResolvedLoadValidationError;
+import edu.mayo.informatics.lexgrid.convert.validator.error.WrappingLoadValidationError;
 
 /**
  * The Class DirectCodingSchemeInserter.
@@ -31,9 +39,18 @@ public class DirectCodingSchemeInserter extends AbstractCodingSchemeInserter {
     /* (non-Javadoc)
      * @see edu.mayo.informatics.lexgrid.convert.inserter.AbstractCodingSchemeInserter#insertCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
      */
-    public void insertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
-       super.getDatabaseServiceManager().
-           getCodingSchemeService().
-           insertCodingScheme(codingScheme);
+    public List<ResolvedLoadValidationError> insertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
+        try {
+            super.getDatabaseServiceManager().
+            getCodingSchemeService().
+            insertCodingScheme(codingScheme);
+            
+            return new ArrayList<ResolvedLoadValidationError>();
+            
+        } catch (Exception e) {
+            return DaoUtility.createList(ResolvedLoadValidationError.class,
+                      new WrappingLoadValidationError(
+                              new FatalError(codingScheme, e)));
+        }
     } 
 }
