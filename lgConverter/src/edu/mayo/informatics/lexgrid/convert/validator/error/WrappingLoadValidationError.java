@@ -26,7 +26,7 @@ import edu.mayo.informatics.lexgrid.convert.validator.resolution.ErrorResolution
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class WrappingdLoadValidationError implements ResolvedLoadValidationError {
+public class WrappingLoadValidationError implements ResolvedLoadValidationError {
     
     /** The UNRESOLVE d_ details. */
     private static String UNRESOLVED_DETAILS = "NONE";
@@ -43,7 +43,7 @@ public class WrappingdLoadValidationError implements ResolvedLoadValidationError
      * @param error the error
      * @param report the report
      */
-    public WrappingdLoadValidationError(LoadValidationError error, ErrorResolutionReport report){
+    public WrappingLoadValidationError(LoadValidationError error, ErrorResolutionReport report){
         this.error = error;
         this.report = report;
     }
@@ -53,7 +53,7 @@ public class WrappingdLoadValidationError implements ResolvedLoadValidationError
      * 
      * @param error the error
      */
-    public WrappingdLoadValidationError(LoadValidationError error){
+    public WrappingLoadValidationError(LoadValidationError error){
         this.error = error;
         this.report = buildDefaultUnresolvedReport();
     }
@@ -116,6 +116,10 @@ public class WrappingdLoadValidationError implements ResolvedLoadValidationError
        return error.getUniqueErrorId();
     }
     
+    public Exception getErrorException() {
+        return error.getErrorException();
+    }
+    
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
@@ -130,4 +134,6 @@ public class WrappingdLoadValidationError implements ResolvedLoadValidationError
         
         return sb.toString();
     }
+
+ 
 }

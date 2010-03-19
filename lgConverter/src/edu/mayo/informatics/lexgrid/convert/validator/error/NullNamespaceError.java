@@ -32,16 +32,13 @@ public class NullNamespaceError extends AbstractError {
     /** The NUL l_ namespac e_ code. */
     public static String NULL_NAMESPACE_CODE = "NULL-NAMESPACE";
     
-    /** The null namespace object. */
-    private Object nullNamespaceObject;
-    
     /**
      * Instantiates a new null namespace error.
      * 
      * @param nullNamespaceObject the null namespace object
      */
     public NullNamespaceError(Object nullNamespaceObject) {
-        this.nullNamespaceObject = nullNamespaceObject;
+        super(nullNamespaceObject);
     }
     
     /* (non-Javadoc)
@@ -51,12 +48,6 @@ public class NullNamespaceError extends AbstractError {
         return NULL_NAMESPACE_CODE;
     }
 
-    /* (non-Javadoc)
-     * @see edu.mayo.informatics.lexgrid.convert.validator.error.LoadValidationError#getErrorObject()
-     */
-    public Object getErrorObject() {
-        return nullNamespaceObject;
-    }
     
     /* (non-Javadoc)
      * @see edu.mayo.informatics.lexgrid.convert.validator.error.LoadValidationError#getErrorDescription()
@@ -70,6 +61,7 @@ public class NullNamespaceError extends AbstractError {
      */
     @Override
     protected String getErrorObjectDescription() {
+        Object nullNamespaceObject = this.getErrorObject();
         if(nullNamespaceObject instanceof Entity) {
             return "Code: " + ((Entity)nullNamespaceObject).getEntityCode();
         } else if(nullNamespaceObject instanceof AssociationSource) {

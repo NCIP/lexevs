@@ -49,6 +49,8 @@ FATAL, /** The NO n_ fatal. */
      */
     public String getErrorMessage();
     
+    public Exception getErrorException();
+    
     /**
      * Gets the error code.
      * 

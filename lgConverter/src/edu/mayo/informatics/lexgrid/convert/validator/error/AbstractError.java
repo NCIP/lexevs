@@ -33,6 +33,18 @@ public abstract class AbstractError implements LoadValidationError {
     /** The unique id. */
     String uniqueId = UUID.randomUUID().toString();
   
+    private Object errorObject;
+    
+    private Exception errorException;
+    
+    protected AbstractError(Object errorObject) {
+        this(errorObject, null);
+    }
+    
+    protected AbstractError(Object errorObject, Exception errorException) {
+        this.errorObject = errorObject;
+        this.errorException = errorException;
+    }
 
     /* (non-Javadoc)
      * @see edu.mayo.informatics.lexgrid.convert.validator.error.LoadValidationError#getErrorMessage()
@@ -86,5 +98,13 @@ public abstract class AbstractError implements LoadValidationError {
      */
     public String getUniqueErrorId() {
         return uniqueId;
+    }
+
+    public Exception getErrorException() {
+        return this.errorException;
+    }
+
+    public Object getErrorObject() {
+       return this.errorObject;
     }
 }

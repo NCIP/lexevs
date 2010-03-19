@@ -22,7 +22,7 @@ import java.util.List;
 
 import edu.mayo.informatics.lexgrid.convert.validator.error.LoadValidationError;
 import edu.mayo.informatics.lexgrid.convert.validator.error.ResolvedLoadValidationError;
-import edu.mayo.informatics.lexgrid.convert.validator.error.WrappingdLoadValidationError;
+import edu.mayo.informatics.lexgrid.convert.validator.error.WrappingLoadValidationError;
 import edu.mayo.informatics.lexgrid.convert.validator.resolution.ErrorResolutionReport.ResolutionStatus;
 
 /**
@@ -70,7 +70,7 @@ public abstract class AbstractResolver<T> implements Resolver {
                 status,
                 details);
         
-        return new WrappingdLoadValidationError(error, report);
+        return new WrappingLoadValidationError(error, report);
     }
     
     /**
