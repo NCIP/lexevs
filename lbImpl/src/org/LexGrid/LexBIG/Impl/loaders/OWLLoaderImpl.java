@@ -201,10 +201,7 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
                 }
             }
             
-            LexEvsServiceLocator.getInstance().
-                getDatabaseServiceManager().
-                getCodingSchemeService().
-                insertCodingScheme(owlScheme);
+            this.persistCodingSchemeToDatabase(owlScheme);
             
             return this.constructVersionPairsFromCodingSchemes(owlScheme);
         } catch (Exception e) {

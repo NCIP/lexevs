@@ -27,6 +27,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.Text_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.TextToSQL;
@@ -67,7 +68,7 @@ public class TextLoaderImpl extends BaseLoader implements Text_Loader {
   
             TextToSQL loader = new TextToSQL();
             
-            URNVersionPair[] schemes =  loader.load(
+            CodingScheme codingScheme = loader.load(
                     this.getResourceUri(), 
                     this.getOptions().getStringOption(TextLoaderImpl.DELIMITER_OPTION).getOptionValue(), 
                     this.getLoaderPreferences(), 
@@ -77,11 +78,10 @@ public class TextLoaderImpl extends BaseLoader implements Text_Loader {
             this.getStatus().setState(ProcessState.COMPLETED);
             this.getStatus().setErrorsLogged(false);
             
-            return schemes;
-        
-      
+            this.persistCodingSchemeToDatabase(codingScheme);
+            
+            return this.constructVersionPairsFromCodingSchemes(codingScheme);
     }
-
     
     public static void main(String[] args){
         TextLoaderImpl loader = new TextLoaderImpl();
