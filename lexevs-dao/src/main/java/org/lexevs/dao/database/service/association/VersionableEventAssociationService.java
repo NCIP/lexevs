@@ -51,7 +51,7 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 		String associationPredicateId = this.getDaoManager().getAssociationDao(codingSchemeUri, version).
 			getAssociationPredicateId(codingSchemeId, relationContainerName, associationPredicateName);
 		
-		this.doInsertAssociationSource(codingSchemeUri, codingSchemeUri, codingSchemeId, associationPredicateId, 
+		this.doInsertAssociationSource(codingSchemeUri, version, codingSchemeId, associationPredicateId, 
 				DaoUtility.createList(AssociationSource.class, source));
 	}
 
