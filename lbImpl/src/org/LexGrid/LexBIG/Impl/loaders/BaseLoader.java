@@ -41,8 +41,6 @@ import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.Impl.loaders.postprocessor.ApproxNumOfConceptsPostProcessor;
-import org.LexGrid.LexBIG.Impl.loaders.postprocessor.SupportedAttributePostProcessor;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -68,6 +66,11 @@ import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
+import edu.mayo.informatics.lexgrid.convert.inserter.CodingSchemeInserter;
+import edu.mayo.informatics.lexgrid.convert.inserter.DefaultPagingCodingSchemeInserter;
+import edu.mayo.informatics.lexgrid.convert.inserter.DirectCodingSchemeInserter;
+import edu.mayo.informatics.lexgrid.convert.inserter.PreValidatingInserterDecorator;
+import edu.mayo.informatics.lexgrid.convert.inserter.ValidatingCodingSchemeInserter;
 import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 import edu.mayo.informatics.lexgrid.convert.options.DefaultOptionHolder;
 import edu.mayo.informatics.lexgrid.convert.options.StringArrayOption;
@@ -76,6 +79,12 @@ import edu.mayo.informatics.lexgrid.convert.utility.ManifestUtil;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 import edu.mayo.informatics.lexgrid.convert.utility.loaderPreferences.PreferenceLoaderFactory;
 import edu.mayo.informatics.lexgrid.convert.utility.loaderPreferences.interfaces.PreferenceLoader;
+import edu.mayo.informatics.lexgrid.convert.validator.NullNamespaceValidator;
+import edu.mayo.informatics.lexgrid.convert.validator.error.ResolvedLoadValidationError;
+import edu.mayo.informatics.lexgrid.convert.validator.processor.DefaultResolverProcessor;
+import edu.mayo.informatics.lexgrid.convert.validator.processor.ReflectionValidationProcessor;
+import edu.mayo.informatics.lexgrid.convert.validator.processor.ResolverProcessor;
+import edu.mayo.informatics.lexgrid.convert.validator.resolution.NullNamespaceResolver;
 
 /**
  * Common loader code.
@@ -496,6 +505,43 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
             status_.setEndTime(new Date(System.currentTimeMillis()));
             inUse = false;
         }
+    }
+    
+    protected void persistCodingSchemeToDatabase(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
+        persistCodingSchemeToDatabase(createDefaultValidatingInserter(codingScheme), codingScheme);
+    }
+    
+    protected void persistCodingSchemeToDatabase(CodingSchemeInserter inserter, CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
+        createDefaultInserter().insertCodingScheme(codingScheme);
+    }
+    
+    protected void persistCodingSchemeToDatabase(ValidatingCodingSchemeInserter inserter, CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
+        List<ResolvedLoadValidationError> errors = inserter.insertCodingSchemeWithValidation(codingScheme);
+        for(ResolvedLoadValidationError error : errors) {
+            this.getMessageDirector().info(error.toString());
+        }
+    }
+
+    protected CodingSchemeInserter createDefaultInserter() {
+        return
+            new DirectCodingSchemeInserter();
+    }
+    
+    protected ValidatingCodingSchemeInserter createDefaultValidatingInserter(CodingScheme codingScheme) {
+        PreValidatingInserterDecorator decorator = 
+            new 
+            PreValidatingInserterDecorator(
+                       createDefaultInserter());
+        
+        ResolverProcessor resolverProcessor = new DefaultResolverProcessor();
+        resolverProcessor.addResolver(new NullNamespaceResolver(codingScheme));
+        decorator.setResolverProcessor(resolverProcessor);
+        
+        ReflectionValidationProcessor<CodingScheme> validationProcessor = new ReflectionValidationProcessor<CodingScheme>();
+        validationProcessor.addValidator(new NullNamespaceValidator());
+        decorator.setValidationProcessor(validationProcessor);
+        
+        return decorator;
     }
 
     public LoadStatus getStatus() {
