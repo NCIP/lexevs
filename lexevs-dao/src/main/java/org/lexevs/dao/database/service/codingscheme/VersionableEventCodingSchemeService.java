@@ -23,6 +23,7 @@ import java.util.Arrays;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.URIMap;
+import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.EntryState;
 import org.lexevs.dao.database.access.association.AssociationDao;
@@ -101,7 +102,11 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		
 		if(scheme.getRelations() != null) {
 			for(Relations relation : scheme.getRelations()) {
-				associationDao.insertRelations(codingSchemeId, relation);
+				String relationsId = associationDao.insertRelations(codingSchemeId, relation);
+				for(AssociationPredicate predicate : relation.getAssociationPredicate()) {
+					String predicateId = associationDao.insertAssociationPredicate(codingSchemeId, relationsId, predicate);
+					associationDao.insertBatchAssociationSources(codingSchemeId, predicateId, Arrays.asList(predicate.getSource()));
+				}
 			}
 		}
 	}
