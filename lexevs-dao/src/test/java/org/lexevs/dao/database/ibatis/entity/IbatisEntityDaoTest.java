@@ -23,8 +23,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
@@ -39,10 +37,14 @@ import org.lexevs.dao.database.ibatis.codingscheme.IbatisCodingSchemeDao;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
+import org.springframework.validation.Validator;
 
 /**
  * The Class IbatisEntityDaoTest.
@@ -189,6 +191,36 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		assertEquals(1, template.queryForInt("select count(*) from h_entity"));
+	}
+	
+	/**
+	 * Insert entity.
+	 */
+	@Test
+	@Transactional
+	public void insertEntityWithException(){
+		Entity entity = new Entity();
+		entity.setEntityCode("code");
+		entity.setEntityCodeNamespace("namespace");
+		entity.setIsDefined(true);
+		entity.setIsAnonymous(true);
+		entity.setIsActive(false);
+		
+		EntityDescription ed = new EntityDescription();
+		ed.setContent("a description");
+		entity.setEntityDescription(ed);
+		
+		ibatisEntityDao.insertEntity(csId, entity);
+		
+		try {
+			ibatisEntityDao.insertEntity(csId, entity);
+		} catch (Exception e) {
+			assertTrue( e instanceof DataIntegrityViolationException );
+		}
+		
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		assertEquals(1, template.queryForInt("select count(*) from entity"));
+
 	}
 	
 	/**
