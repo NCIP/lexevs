@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test/java"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Indexer"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lgResourceReader"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lgModel.emf"/>
@@ -35,5 +36,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-2.5.6.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/easymock/easymock-2.5.1.jar"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/easymock/easymockclassextension-2.5.1.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
