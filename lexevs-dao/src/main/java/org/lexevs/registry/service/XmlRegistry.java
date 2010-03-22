@@ -978,16 +978,11 @@ public class XmlRegistry implements Registry {
 
                     readFile();
                 } else {
-                    getLogger().warn(
-                            "The registry file '" + file_.getAbsolutePath() + "' does not exist.  Creating a new file");
-
-                    file_.createNewFile();
-
-                    // set variable to defaults
-                    lastUpdateTime_ = System.currentTimeMillis();
-                    lastUsedDBIdentifier_ = "a0";
-                    lastUsedHistoryIdentifier_ = "a0";
-                    writeFile();
+                	
+                	//Don't create a new XML Registry file...
+                	//If there isn't one already, we don't need it.
+                    getLogger().debug(
+                            "There is no XML Registry file -- this instance of LexEVS supports ONLY a Database Registry.");
                 }
             } finally {
                 WriteLockManager.instance().releaseLockFile();
