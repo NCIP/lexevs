@@ -76,6 +76,11 @@ public class DatabaseServiceManager {
 		return codingSchemeService;
 	}
 
+	public CodingSchemeService getCodingSchemeService(ErrorCallbackListener errorCallbackListener) {
+		return errorCallbackDatabaseServiceFactory.
+			getErrorCallbackDatabaseService(codingSchemeService, errorCallbackListener);
+	}
+	
 	/**
 	 * Sets the entity service.
 	 * 
@@ -107,6 +112,11 @@ public class DatabaseServiceManager {
 	public PropertyService getPropertyService() {
 		return propertyService;
 	}
+	
+	public PropertyService getPropertyService(ErrorCallbackListener errorCallbackListener) {
+		return errorCallbackDatabaseServiceFactory.
+			getErrorCallbackDatabaseService(propertyService, errorCallbackListener);
+	}
 
 	/**
 	 * Sets the property service.
@@ -125,7 +135,7 @@ public class DatabaseServiceManager {
 	public void setAssociationService(AssociationService associationService) {
 		this.associationService = associationService;
 	}
-
+	
 	/**
 	 * Gets the association service.
 	 * 
@@ -133,6 +143,11 @@ public class DatabaseServiceManager {
 	 */
 	public AssociationService getAssociationService() {
 		return associationService;
+	}
+	
+	public AssociationService getAssociationService(ErrorCallbackListener errorCallbackListener) {
+		return errorCallbackDatabaseServiceFactory.
+			getErrorCallbackDatabaseService(associationService, errorCallbackListener);
 	}
 
 	/**
