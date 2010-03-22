@@ -3,25 +3,25 @@
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap namespace="Property">
 
-	<resultMap id="multiAttribResult" class="string">
-		<discriminator javaType="string" column="attributeType">
-			<subMap value="source" resultMap="sourceResult" />
-			<subMap value="qualifier" resultMap="qualifierResult" />
-			<subMap value="usageContext" resultMap="usageContextResult"/>
-		</discriminator>
-	</resultMap>
+<!--	<resultMap id="multiAttribResult" class="string">-->
+<!--		<discriminator javaType="string" column="attributeType">-->
+<!--			<subMap value="source" resultMap="sourceResult" />-->
+<!--			<subMap value="qualifier" resultMap="qualifierResult" />-->
+<!--			<subMap value="usageContext" resultMap="usageContextResult"/>-->
+<!--		</discriminator>-->
+<!--	</resultMap>-->
 	
 	<resultMap id="usageContextResult" class="string">
 		<result property="java.lang.String" column="usageContextAttributeId" />
 	</resultMap>
 	
-	<resultMap id="sourceResult" extends="multiAttribResult" class="org.LexGrid.commonTypes.Source">
+	<resultMap id="sourceResult" class="org.LexGrid.commonTypes.Source">
 		<result property="content" column="sourceAttributeId"/>
 		<result property="subRef" column="sourceSubRef" />
 		<result property="role" column="sourceRole" />
 	</resultMap>
 	
-	<resultMap id="qualifierResult" extends="multiAttribResult" class="org.LexGrid.commonTypes.PropertyQualifier">
+	<resultMap id="qualifierResult" class="org.LexGrid.commonTypes.PropertyQualifier">
 		<result property="propertyQualifierName" column="qualifierAttributeId" />
 		<result property="propertyQualifierType" column="qualifierAttributeType" />
 		<result property="value.content" column="qualifierAttributeValue" />
