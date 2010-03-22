@@ -22,6 +22,8 @@ import org.lexevs.dao.database.service.association.AssociationService;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
 import org.lexevs.dao.database.service.entity.EntityService;
+import org.lexevs.dao.database.service.error.ErrorCallbackDatabaseServiceFactory;
+import org.lexevs.dao.database.service.error.ErrorCallbackListener;
 import org.lexevs.dao.database.service.picklist.PickListService;
 import org.lexevs.dao.database.service.property.PropertyService;
 import org.lexevs.dao.database.service.valuedomain.ValueDomainService;
@@ -32,6 +34,9 @@ import org.lexevs.dao.database.service.valuedomain.ValueDomainService;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class DatabaseServiceManager {
+	
+	private ErrorCallbackDatabaseServiceFactory errorCallbackDatabaseServiceFactory = 
+		new ErrorCallbackDatabaseServiceFactory();
 	
 	/** The coding scheme service. */
 	private CodingSchemeService codingSchemeService;
@@ -87,6 +92,11 @@ public class DatabaseServiceManager {
 	 */
 	public EntityService getEntityService() {
 		return entityService;
+	}
+	
+	public EntityService getEntityService(ErrorCallbackListener errorCallbackListener) {
+		return errorCallbackDatabaseServiceFactory.
+			getErrorCallbackDatabaseService(entityService, errorCallbackListener);
 	}
 
 	/**

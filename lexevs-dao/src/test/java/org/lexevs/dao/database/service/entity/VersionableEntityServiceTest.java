@@ -25,8 +25,6 @@ import org.LexGrid.concepts.Entity;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
-import org.lexevs.registry.model.RegistryEntry;
-import org.lexevs.registry.service.Registry;
 
 /**
  * The Class VersionableEntityServiceTest.
@@ -42,10 +40,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 	/** The coding schemeservice. */
 	@Resource
 	private CodingSchemeService codingSchemeservice;
-	
-	/** The registry. */
-	@Resource
-	private Registry registry;
+
 	
 	/**
 	 * Insert entity.

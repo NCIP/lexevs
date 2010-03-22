@@ -23,6 +23,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
@@ -34,6 +36,10 @@ import org.LexGrid.versions.types.ChangeType;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.ibatis.codingscheme.IbatisCodingSchemeDao;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.entity.EntityService;
+import org.lexevs.dao.database.service.error.DatabaseError;
+import org.lexevs.dao.database.service.error.ErrorCallbackListener;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +48,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
 
 /**
  * The Class IbatisEntityDaoTest.
