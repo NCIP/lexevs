@@ -28,7 +28,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.lexevs.cache.annotation.Cacheable;
-import org.lexevs.logging.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotationUtils;
 
@@ -120,6 +119,7 @@ public class MethodCachingProxy implements InitializingBean {
 	 * 
 	 * @return the cache from name
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String,Object> getCacheFromName(String name, int cacheSize){
 		if(!caches.containsKey(name)){
 			caches.put(name, Collections.synchronizedMap(new LRUMap(cacheSize)));
