@@ -65,14 +65,14 @@ public class RegistryXmlToDatabaseTransfer extends LoggingBean implements Initia
 				this.getLogger().info(" - Migrating: " + entry.getResourceUri());
 				databaseRegistry.addNewItem(entry);
 			}
-			deleteRegistryXmlFileExist();
+			deleteRegistryXmlFile();
 		}
 	}
 	
 	/**
 	 * Delete registry xml file exist.
 	 */
-	protected void deleteRegistryXmlFileExist(){
+	protected void deleteRegistryXmlFile(){
 		File registry = new File(systemVariables.getAutoLoadRegistryPath());
 		registry.delete();
 	}
