@@ -31,11 +31,11 @@ public abstract class AbstractError extends DefaultDatabaseError implements Load
     private Severity severity = Severity.UNKNOWN;
   
     protected AbstractError(Object errorObject) {
-        this(errorObject, null);
+        this(null, errorObject, null);
     }
     
-    protected AbstractError(Object errorObject, Exception errorException) {
-        super(errorObject, errorException);
+    protected AbstractError(String errorCode, Object errorObject, Exception errorException) {
+        super(errorCode, errorObject, errorException);
     }
 
     /* (non-Javadoc)

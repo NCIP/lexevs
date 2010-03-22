@@ -38,7 +38,7 @@ public class FatalError extends AbstractError {
      * @param exception the exception
      */
     public FatalError(Object errorObject, Exception exception){
-        super(errorObject, exception);
+        super(FATAL_ERROR_CODE, errorObject, exception);
     }
     
     /* (non-Javadoc)
@@ -47,13 +47,6 @@ public class FatalError extends AbstractError {
     @Override
     protected String getErrorObjectDescription() {
         return this.getErrorException().toString();
-    }
-
-    /* (non-Javadoc)
-     * @see edu.mayo.informatics.lexgrid.convert.validator.error.LoadValidationError#getErrorCode()
-     */
-    public String getErrorCode() {
-        return FATAL_ERROR_CODE;
     }
 
     /* (non-Javadoc)

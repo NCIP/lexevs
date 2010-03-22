@@ -49,13 +49,6 @@ public interface LoadValidationError extends DatabaseError {
 
     
     /**
-     * Gets the error code.
-     * 
-     * @return the error code
-     */
-    public String getErrorCode();
-    
-    /**
      * Gets the error description.
      * 
      * @return the error description
