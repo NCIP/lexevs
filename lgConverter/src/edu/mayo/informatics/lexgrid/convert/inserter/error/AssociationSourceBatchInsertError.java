@@ -47,7 +47,7 @@ public class AssociationSourceBatchInsertError extends AbstractError{
     }
 
     public AssociationSourceBatchInsertError(Object errorObject, Exception errorException) {
-        super(errorObject, errorException);
+        super(ASSOCIATION_SOURCE_BATCH_INSERT_ERROR_CODE, errorObject, errorException);
     }
 
     /* (non-Javadoc)

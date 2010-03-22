@@ -47,7 +47,7 @@ public class EntityBatchInsertError extends AbstractError{
     }
   
     public EntityBatchInsertError(Object errorObject, Exception errorException) {
-        super(errorObject, errorException);
+        super(ENTITY_BATCH_INSERT_ERROR_CODE, errorObject, errorException);
     }
 
     /* (non-Javadoc)
