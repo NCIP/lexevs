@@ -447,29 +447,6 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 	
-	@Test
-	public void getPropertySources(){
-		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
-		
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
-		
-		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");	
-		
-		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId, attributeValue, entryStateGuid) " +
-			"values ('pmaguid1', 'pguid', 'source', 'testsource1', 'value1', 'esguid')");
-		
-		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId, attributeValue, entryStateGuid) " +
-			"values ('pmaguid2', 'pguid', 'source', 'testsource2', 'value2', 'esguid')");
-		
-		List<Source> sources = ibatisPropertyDao.getPropertySourcesByPropertyId("csguid", "pguid");
-		
-		assertEquals(2, sources.size());
-	}
-	
 	/**
 	 * Insert property usage context.
 	 */

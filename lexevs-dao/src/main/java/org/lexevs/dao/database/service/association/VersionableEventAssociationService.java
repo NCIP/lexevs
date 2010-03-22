@@ -18,7 +18,6 @@
  */
 package org.lexevs.dao.database.service.association;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.relations.AssociationPredicate;

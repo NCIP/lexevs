@@ -182,19 +182,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 			inserter.insert(INSERT_ENTITY_TYPE_SQL, 
 					new PrefixedParameterTuple(prefix, entityId, entityType));
 		}
-		
-		for(PropertyLink link : entity.getPropertyLink()) {
-			String propertyLinkId = this.createUniqueId();
-			String sourcePropertyId = propertyIdToGuidMap.get(link.getSourceProperty());
-			String targetPropertyId = propertyIdToGuidMap.get(link.getTargetProperty());
 			
-			this.ibatisPropertyDao.doInsertPropertyLink(prefix, entityId, 
-					propertyLinkId, link.getPropertyLink(), 
-					sourcePropertyId, targetPropertyId, inserter);
-		}
-		
 		if(cascade) {
-
 			for(Property prop : entity.getAllProperties()) {
 				String propertyId = this.createUniqueId();
 				ibatisPropertyDao.doInsertProperty(
@@ -206,7 +195,16 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 						inserter);
 				propertyIdToGuidMap.put(prop.getPropertyId(), propertyId);
 			}
-
+		}
+		
+		for(PropertyLink link : entity.getPropertyLink()) {
+			String propertyLinkId = this.createUniqueId();
+			String sourcePropertyId = propertyIdToGuidMap.get(link.getSourceProperty());
+			String targetPropertyId = propertyIdToGuidMap.get(link.getTargetProperty());
+			
+			this.ibatisPropertyDao.doInsertPropertyLink(prefix, entityId, 
+					propertyLinkId, link.getPropertyLink(), 
+					sourcePropertyId, targetPropertyId, inserter);
 		}
 
 		return entityId;

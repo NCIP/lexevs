@@ -12,36 +12,36 @@
 	</resultMap>
 	
 	<resultMap id="usageContextResult" class="string">
-		<result property="java.lang.String" column="attributeValue" />
+		<result property="java.lang.String" column="usageContextAttributeId" />
 	</resultMap>
 	
 	<resultMap id="sourceResult" extends="multiAttribResult" class="org.LexGrid.commonTypes.Source">
-		<result property="content" column="attributeValue"/>
-		<result property="subRef" column="subRef" />
-		<result property="role" column="role" />
+		<result property="content" column="sourceAttributeId"/>
+		<result property="subRef" column="sourceSubRef" />
+		<result property="role" column="sourceRole" />
 	</resultMap>
 	
 	<resultMap id="qualifierResult" extends="multiAttribResult" class="org.LexGrid.commonTypes.PropertyQualifier">
-		<result property="propertyQualifierName" column="attributeId" />
-		<result property="propertyQualifierType" column="attributeType" />
-		<result property="value.content" column="attributeValue" />
+		<result property="propertyQualifierName" column="qualifierAttributeId" />
+		<result property="propertyQualifierType" column="qualifierAttributeType" />
+		<result property="value.content" column="qualifierAttributeValue" />
 	</resultMap>
 	
-	<select id="getPropertyMultiAttribById" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultMap="Property.multiAttribResult">
-		SELECT 
-			attributeType,
-			attributeValue,
-			subRef,
-			role
-		FROM 
-			$prefix$propertyMultiAttrib
-		WHERE
-			propertyGuid = #param1#	
-		AND
-			attributeType = #param2#	
-	</select>
+<!--	<select id="getPropertyMultiAttribById" -->
+<!--		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"-->
+<!--		resultMap="Property.multiAttribResult">-->
+<!--		SELECT -->
+<!--			attributeType,-->
+<!--			attributeValue,-->
+<!--			subRef,-->
+<!--			role-->
+<!--		FROM -->
+<!--			$prefix$propertyMultiAttrib-->
+<!--		WHERE-->
+<!--			propertyGuid = #param1#	-->
+<!--		AND-->
+<!--			attributeType = #param2#	-->
+<!--	</select>-->
 
 	<insert id="insertPropertyMultiAttrib" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">
 		INSERT INTO $prefix$propertyMultiAttrib (

@@ -214,24 +214,6 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						revisionId));
 	}
 	
-	public List<Source> getPropertySourcesByPropertyId(String codingSchemeId,
-			String propertyId){
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		return doGetPropertyMultiAttrib(prefix, propertyId, Source.class);
-	}
-	
-	public List<String> getPropertyUsageContextsByPropertyId(String codingSchemeId,
-			String propertyId){
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		return doGetPropertyMultiAttrib(prefix, propertyId, String.class);
-	}
-	
-	public List<PropertyQualifier> getPropertyQualifiersByPropertyId(String codingSchemeId,
-			String propertyId){
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		return doGetPropertyMultiAttrib(prefix, propertyId, PropertyQualifier.class);
-	}
-	
 	@SuppressWarnings("unchecked")
 	protected <T> List<T> doGetPropertyMultiAttrib(String prefix, String propertyId, Class<T> multiAttrib){
 		return this.getSqlMapClientTemplate().queryForList(GET_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL, 

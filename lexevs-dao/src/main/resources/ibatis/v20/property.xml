@@ -7,7 +7,6 @@
 	<typeAlias alias="presentation" type="org.LexGrid.concepts.Presentation"/>
 	<typeAlias alias="definition" type="org.LexGrid.concepts.Definition"/>
 	<typeAlias alias="comment" type="org.LexGrid.concepts.Comment"/>
-	
 
 	<resultMap id="propertyResult" class="property" groupBy="propertyId">
 		<result property="propertyName" column="propertyName" />	
@@ -16,9 +15,9 @@
 		<result property="language" column="language" />
 		<result property="value.content" column="propertyValue" />
 		<result property="value.dataType" column="format" />
-<!--		<result property="_sourceList" resultMap="Property.multiAttribResult"/>-->
-<!--		<result property="_propertyQualifierList" resultMap="Property.multiAttribResult"/>-->
-<!--		<result property="_usageContextList" resultMap="Property.multiAttribResult"/>-->
+		<result property="_sourceList" resultMap="Property.sourceResult"/>
+		<result property="_propertyQualifierList" resultMap="Property.qualifierResult"/>
+		<result property="_usageContextList" resultMap="Property.usageContextResult"/>
 		<discriminator javaType="string" column="propertyType">
 			<subMap value="presentation" resultMap="presentationResult" />
 			<subMap value="definition" resultMap="definitionResult" />
@@ -64,14 +63,61 @@
   			property.representationalForm,
   			property.propertyValue,
   			entryState.changeType,
-  			entryState.relativeOrder
+  			entryState.relativeOrder,
+  			
+  			usageContext.attributeId usageContextAttributeId,
+  			
+  			source.attributeId sourceAttributeId,
+  			source.subRef sourceSubRef,
+  			source.role sourceRole,
+  			
+  			qualifier.attributeType qualifierAttributeType,
+  			qualifier.attributeId qualifierAttributeId,
+  			qualifier.attributeValue qualifierAttributeValue
+  			
   		FROM
   			$prefix$property property
   		LEFT JOIN
   			${defaultPrefix}entryState entryState
   		ON
   			property.entryStateGuid =
-  			entryState.entryStateGuid		
+  			entryState.entryStateGuid	
+  				
+  		LEFT JOIN
+  			$prefix$propertyMultiAttrib qualifier
+  		ON
+  		(
+  			property.propertyGuid =
+  			qualifier.propertyGuid	
+  			
+  			AND
+  			
+  			qualifier.attributeType = 'qualifier'
+  		)
+  			
+  		LEFT JOIN
+  			$prefix$propertyMultiAttrib usageContext
+  		ON
+  		(
+  			property.propertyGuid =
+  			usageContext.propertyGuid	
+  			
+  			AND
+  			
+  			usageContext.attributeType = 'usageContext'
+  		)
+  			
+  		LEFT JOIN
+  			$prefix$propertyMultiAttrib source
+  		ON
+  		(
+  			property.propertyGuid =
+  			source.propertyGuid		
+  			
+  			AND
+  			
+  			source.attributeType = 'source'
+  		)		
   	</sql>
 
   	<select id="getPropertiesByParent" resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
