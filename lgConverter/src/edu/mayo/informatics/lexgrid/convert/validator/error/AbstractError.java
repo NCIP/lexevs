@@ -18,8 +18,6 @@
  */
 package edu.mayo.informatics.lexgrid.convert.validator.error;
 
-import java.util.UUID;
-
 import org.lexevs.dao.database.service.error.DefaultDatabaseError;
 
 /**
