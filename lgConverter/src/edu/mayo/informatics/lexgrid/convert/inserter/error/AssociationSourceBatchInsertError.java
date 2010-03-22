@@ -42,7 +42,7 @@ public class AssociationSourceBatchInsertError extends AbstractError{
      * 
      * @param errorItem the error item
      */
-    public AssociationSourceBatchInsertError(AssociationSourceInsertErrorItem errorItem){
+    public AssociationSourceBatchInsertError(AssociationSourceBatchInsertErrorItem errorItem){
         super(errorItem);
     }
     
@@ -52,8 +52,8 @@ public class AssociationSourceBatchInsertError extends AbstractError{
     @Override
     protected String getErrorObjectDescription() {
         StringBuffer sb = new StringBuffer();
-        sb.append("CodingScheme Id: " + ((AssociationSourceInsertErrorItem)this.getErrorObject()).getCodingSchemeId());
-        sb.append("Batch Size: " + ((AssociationSourceInsertErrorItem)this.getErrorObject()).getBatch().size());
+        sb.append("CodingScheme Id: " + ((AssociationSourceBatchInsertErrorItem)this.getErrorObject()).getCodingSchemeId());
+        sb.append("Batch Size: " + ((AssociationSourceBatchInsertErrorItem)this.getErrorObject()).getBatch().size());
         
         return sb.toString();
     }
@@ -77,7 +77,7 @@ public class AssociationSourceBatchInsertError extends AbstractError{
      * 
      * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
      */
-    public static class AssociationSourceInsertErrorItem {
+    public static class AssociationSourceBatchInsertErrorItem {
         
         /** The coding scheme id. */
         public String codingSchemeId;
@@ -91,7 +91,7 @@ public class AssociationSourceBatchInsertError extends AbstractError{
          * @param codingSchemeId the coding scheme id
          * @param batch the batch
          */
-        public AssociationSourceInsertErrorItem(String codingSchemeId, List<AssociationSourceBatchInsertItem> batch) {
+        public AssociationSourceBatchInsertErrorItem(String codingSchemeId, List<AssociationSourceBatchInsertItem> batch) {
             super();
             this.codingSchemeId = codingSchemeId;
             this.batch = batch;

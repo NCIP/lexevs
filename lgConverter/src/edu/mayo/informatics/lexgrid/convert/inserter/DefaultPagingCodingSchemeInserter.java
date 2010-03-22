@@ -31,6 +31,10 @@ import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 
+import edu.mayo.informatics.lexgrid.convert.inserter.error.AssociationSourceBatchInsertError;
+import edu.mayo.informatics.lexgrid.convert.inserter.error.EntityBatchInsertError;
+import edu.mayo.informatics.lexgrid.convert.inserter.error.AssociationSourceBatchInsertError.AssociationSourceBatchInsertErrorItem;
+import edu.mayo.informatics.lexgrid.convert.inserter.error.EntityBatchInsertError.EntityBatchInsertErrorItem;
 import edu.mayo.informatics.lexgrid.convert.validator.error.LoadValidationError;
 import edu.mayo.informatics.lexgrid.convert.validator.error.ResolvedLoadValidationError;
 import edu.mayo.informatics.lexgrid.convert.validator.exception.LoadValidationException;
@@ -166,19 +170,25 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
      * @param batch the batch
      */
     protected void insertEntityBatch(final String codingSchemeId, final List<Entity> batch) throws LoadValidationException {
-        super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>() {
+        try {
+            super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>() {
 
-            public String execute(DaoManager daoManager) {
-    
-                    daoManager.getCurrentEntityDao().
-                        insertBatchEntities(
-                                codingSchemeId, 
-                                batch,
-                                true);
-                    
-                    return null;
-            }
-        });
+                public String execute(DaoManager daoManager) {
+   
+                        daoManager.getCurrentEntityDao().
+                            insertBatchEntities(
+                                    codingSchemeId, 
+                                    batch,
+                                    true);
+                        
+                        return null;
+                }
+            });
+        } catch (Exception e) {
+            EntityBatchInsertErrorItem errorItem = new EntityBatchInsertErrorItem(codingSchemeId, batch);
+            
+            throw new LoadValidationException(new EntityBatchInsertError(errorItem));
+        }
     }
     
     /**
@@ -188,18 +198,24 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
      * @param batch the batch
      */
     protected void insertAssociationSourceBatch(final String codingSchemeId, final List<AssociationSourceBatchInsertItem> batch) throws LoadValidationException {
-        super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>() {
+        try {
+            super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>() {
 
-            public String execute(DaoManager daoManager) {
-    
-                    daoManager.getCurrentAssociationDao().
-                        insertBatchAssociationSources(
-                                codingSchemeId, 
-                                batch);
-                    
-                    return null;
-            }
-        });
+                public String execute(DaoManager daoManager) {
+   
+                        daoManager.getCurrentAssociationDao().
+                            insertBatchAssociationSources(
+                                    codingSchemeId, 
+                                    batch);
+                        
+                        return null;
+                }
+            });
+        } catch (Exception e) {
+            AssociationSourceBatchInsertErrorItem errorItem = new AssociationSourceBatchInsertErrorItem(codingSchemeId, batch);
+        
+            throw new LoadValidationException(new AssociationSourceBatchInsertError(errorItem));
+        }
     }
     
     /**
