@@ -290,7 +290,7 @@ public class SystemVariables {
             isAPILoggingEnabled = new Boolean(getProperty(props, "API_LOG_ENABLED")).booleanValue();
             logger.setAPILoggingEnabled(isAPILoggingEnabled);
             
-            isMigrateOnStartupEnabled = new Boolean(getProperty(props, "MOVE_REGISTRY_TO_DATABASE")).booleanValue();
+            isMigrateOnStartupEnabled = getNullableBoolean("MOVE_REGISTRY_TO_DATABASE", false);
             logger.setAPILoggingEnabled(isMigrateOnStartupEnabled);
             
             String val= props.getProperty("SQL_LOG_ENABLED"); 
