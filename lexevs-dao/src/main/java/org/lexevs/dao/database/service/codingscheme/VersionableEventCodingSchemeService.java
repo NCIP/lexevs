@@ -84,31 +84,11 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	public void insertCodingScheme(CodingScheme scheme) throws CodingSchemeAlreadyLoadedException {
 		CodingSchemeDao codingSchemeDao = 
 			this.getDaoManager().getCurrentCodingSchemeDao();
-		
-		EntityDao entityDao = 
-			this.getDaoManager().getCurrentEntityDao();
-		
-		AssociationDao associationDao = 
-			this.getDaoManager().getCurrentAssociationDao();
-		
-		String codingSchemeId = codingSchemeDao.insertCodingScheme(scheme);
+	
+		codingSchemeDao.
+			insertCodingScheme(scheme, true);
 		
 		this.fireCodingSchemeInsertEvent(scheme);
-		
-		if(scheme.getEntities() != null) {
-			entityDao.insertBatchEntities(codingSchemeId,
-					Arrays.asList(scheme.getEntities().getEntity()));
-		}
-		
-		if(scheme.getRelations() != null) {
-			for(Relations relation : scheme.getRelations()) {
-				String relationsId = associationDao.insertRelations(codingSchemeId, relation);
-				for(AssociationPredicate predicate : relation.getAssociationPredicate()) {
-					String predicateId = associationDao.insertAssociationPredicate(codingSchemeId, relationsId, predicate);
-					associationDao.insertBatchAssociationSources(codingSchemeId, predicateId, Arrays.asList(predicate.getSource()));
-				}
-			}
-		}
 	}
 	
 	/* (non-Javadoc)

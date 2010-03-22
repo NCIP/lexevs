@@ -37,7 +37,9 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	 * @param codingSchemeId the coding scheme id
 	 * @param entities the entities
 	 */
-	public void insertBatchEntities(String codingSchemeId, List<? extends Entity> entities);
+	public void insertBatchEntities(
+			String codingSchemeId, List<? extends Entity> entities,
+			boolean cascade);
 	
 	/**
 	 * Gets the entity by code and namespace.
@@ -71,7 +73,7 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @return the string
 	 */
-	public String insertEntity(String codingSchemeId, Entity entity);
+	public String insertEntity(String codingSchemeId, Entity entity, boolean cascade);
 	
 	/**
 	 * Insert history entity.

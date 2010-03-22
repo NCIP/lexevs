@@ -19,6 +19,7 @@
 package org.lexevs.dao.database.ibatis.association;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.relations.AssociationPredicate;
@@ -121,27 +122,30 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				this.getSqlMapClientTemplate().queryForObject(GET_ASSOCIATION_PREDICATE_NAME_FOR_ID_SQL, new PrefixedParameter(prefix, associationPredicateId));
 	}
 
-	/**
-	 * Insert relations.
-	 * 
-	 * @param codingSchemeUri the coding scheme uri
-	 * @param version the version
-	 * @param relations the relations
-	 */
-	public void insertRelations(String codingSchemeUri, String version,
-			Relations relations) {
-		String codingSchemeId = codingSchemeDao.getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
-		this.insertRelations(
-				codingSchemeId, 
-				relations);
-	}
-
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertRelations(java.lang.String, org.LexGrid.relations.Relations)
 	 */
-	public String insertRelations(String codingSchemeId,
-			Relations relations) {
+	public String insertRelations(
+			String codingSchemeId,
+			Relations relations,
+			boolean cascade) {
 		String relationsId = this.createUniqueId();
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		this.doInsertRelations(
+				prefix, 
+				codingSchemeId, 
+				relationsId, 
+				relations, 
+				cascade);
+		return relationsId;
+	}
+	
+	protected String doInsertRelations(
+			String prefix,
+			String codingSchemeId,
+			String relationsId,
+			Relations relations,
+			boolean cascade) {
 		String entryStateId = this.createUniqueId();
 		
 		InsertRelationsBean bean = new InsertRelationsBean();
@@ -149,18 +153,30 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setId(relationsId);
 		bean.setCodingSchemeId(codingSchemeId);
 		bean.setRelations(relations);
-		bean.setPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId));
+		bean.setPrefix(prefix);
 		
 		this.getSqlMapClientTemplate().insert(INSERT_RELATIONS_SQL, bean);
 		
+		if(cascade){
+			for(AssociationPredicate predicate : relations.getAssociationPredicate()) {
+				this.insertAssociationPredicate(
+						codingSchemeId, 
+						relationsId, 
+						predicate,
+						cascade);
+			}
+		}
 		return relationsId;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertAssociationPredicate(java.lang.String, java.lang.String, org.LexGrid.relations.AssociationPredicate)
 	 */
-	public String insertAssociationPredicate(String codingSchemeId, String relationId,
-			AssociationPredicate associationPredicate) {
+	public String insertAssociationPredicate(
+			String codingSchemeId, 
+			String relationId,
+			AssociationPredicate associationPredicate,
+			boolean cascade) {
 		
 		String id = this.createUniqueId();
 		InsertAssociationPredicateBean bean = new InsertAssociationPredicateBean();
@@ -171,8 +187,12 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 		this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_PREDICATE_SQL, bean);
 		
-		//this.insertBatchAssociationSources(codingSchemeId, id, Arrays.asList(associationPredicate.getSource()));
-		
+		if(cascade) {
+			this.insertBatchAssociationSources(
+					codingSchemeId, 
+					id, 
+					Arrays.asList(associationPredicate.getSource()));
+		}
 		return id;
 	}
 	

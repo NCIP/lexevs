@@ -84,7 +84,7 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 		 * @see org.lexevs.dao.database.access.entity.EntityDao#insertBatchEntities(java.lang.String, java.util.List)
 		 */
 		public void insertBatchEntities(String codingSchemeId,
-				List<? extends Entity> entities) {
+				List<? extends Entity> entities, boolean cascade) {
 			// TODO Auto-generated method stub (IMPLEMENT!)
 			throw new UnsupportedOperationException();
 		}
@@ -92,7 +92,8 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 		/* (non-Javadoc)
 		 * @see org.lexevs.dao.database.access.entity.EntityDao#insertEntity(java.lang.String, org.LexGrid.concepts.Entity)
 		 */
-		public String insertEntity(String codingSchemeId, Entity entity) {
+		public String insertEntity(String codingSchemeId, 
+				Entity entity, boolean cascade) {
 			// TODO Auto-generated method stub (IMPLEMENT!)
 			throw new UnsupportedOperationException();
 		}

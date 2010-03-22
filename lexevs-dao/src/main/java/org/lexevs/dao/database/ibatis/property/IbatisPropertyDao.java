@@ -98,7 +98,9 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#insertBatchProperties(java.lang.String, org.lexevs.dao.database.access.property.PropertyDao.PropertyType, java.util.List)
 	 */
-	public void insertBatchProperties(final String codingSchemeId, final PropertyType type,
+	public void insertBatchProperties(
+			final String codingSchemeId, 
+			final PropertyType type,
 			final List<PropertyBatchInsertItem> batch) {
 		final String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
@@ -118,7 +120,8 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 							item.getParentId(),
 							propertyId,
 							type,
-							item.getProperty(),  inserter);
+							item.getProperty(),
+							inserter);
 				}
 				
 				inserter.executeBatch();
@@ -136,13 +139,22 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * @param batch the batch
 	 * @param inserter the inserter
 	 */
-	public void insertBatchProperties(final String codingSchemeId, final PropertyType type,
-			final List<PropertyBatchInsertItem> batch, IbatisBatchInserter inserter) {
+	public void insertBatchProperties(
+			final String codingSchemeId, 
+			final PropertyType type,
+			final List<PropertyBatchInsertItem> batch, 
+			IbatisBatchInserter inserter) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		String propertyId = this.createUniqueId();
 		
 		for(PropertyBatchInsertItem item : batch){
-			this.doInsertProperty(prefix, item.getParentId(), propertyId, type, item.getProperty(), inserter);
+			this.doInsertProperty(
+					prefix, 
+					item.getParentId(), 
+					propertyId, 
+					type, 
+					item.getProperty(), 
+					inserter);
 		}
 	}
 
@@ -150,12 +162,19 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#insertProperty(java.lang.String, java.lang.String, org.lexevs.dao.database.access.property.PropertyDao.PropertyType, org.LexGrid.commonTypes.Property)
 	 */
 	public String insertProperty(String codingSchemeId,
-			String entityCodeId, PropertyType type, Property property) {
+			String entityCodeId, 
+			PropertyType type, 
+			Property property) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		String propertyId = this.createUniqueId();
 		
 		return this.doInsertProperty(
-				prefix, entityCodeId, propertyId, type, property, this.getNonBatchTemplateInserter());	
+				prefix, 
+				entityCodeId, 
+				propertyId, 
+				type, 
+				property, 
+				this.getNonBatchTemplateInserter());	
 	}
 	
 	public String insertHistoryProperty(String codingSchemeId,
@@ -163,7 +182,12 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
 		
 		return this.doInsertProperty(
-				prefix, entityCodeId, propertyId, type, property, this.getNonBatchTemplateInserter());	
+				prefix, 
+				entityCodeId, 
+				propertyId, 
+				type, 
+				property, 
+				this.getNonBatchTemplateInserter());	
 	}
 	
 	/* (non-Javadoc)

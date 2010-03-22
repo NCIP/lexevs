@@ -50,7 +50,7 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @return the string
 	 */
-	public String insertCodingScheme(CodingScheme cs);
+	public String insertCodingScheme(CodingScheme cs, boolean cascade);
 	
 	/**
 	 * Insert history coding scheme.

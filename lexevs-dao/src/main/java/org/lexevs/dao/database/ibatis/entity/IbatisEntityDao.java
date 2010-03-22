@@ -138,12 +138,16 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.access.entity.EntityDao#insertEntity(java.lang.String, org.LexGrid.concepts.Entity)
-	 */
-	public String insertEntity(String codingSchemeId, Entity entity) {
+	@Override
+	public String insertEntity(String codingSchemeId, Entity entity,
+			boolean cascade) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		return this.doInsertEntity(prefix, codingSchemeId, entity, this.getNonBatchTemplateInserter());
+		return this.doInsertEntity(
+				prefix, 
+				codingSchemeId, 
+				entity, 
+				this.getNonBatchTemplateInserter(), 
+				cascade);
 	}
 	
 	/**
@@ -159,7 +163,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 			String prefix, 
 			String codingSchemeId, 
 			Entity entity, 
-			IbatisInserter inserter) {
+			IbatisInserter inserter,
+			boolean cascade) {
 		Map<String,String> propertyIdToGuidMap = new HashMap<String,String>();
 		
 		String entityId = this.createUniqueId();
@@ -177,13 +182,6 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 			inserter.insert(INSERT_ENTITY_TYPE_SQL, 
 					new PrefixedParameterTuple(prefix, entityId, entityType));
 		}
-
-		for(Property prop : entity.getAllProperties()) {
-			String propertyId = this.createUniqueId();
-			ibatisPropertyDao.doInsertProperty(
-					prefix, entityId, propertyId, PropertyType.ENTITY, prop, inserter);
-			propertyIdToGuidMap.put(prop.getPropertyId(), propertyId);
-		}
 		
 		for(PropertyLink link : entity.getPropertyLink()) {
 			String propertyLinkId = this.createUniqueId();
@@ -194,6 +192,22 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 					propertyLinkId, link.getPropertyLink(), 
 					sourcePropertyId, targetPropertyId, inserter);
 		}
+		
+		if(cascade) {
+
+			for(Property prop : entity.getAllProperties()) {
+				String propertyId = this.createUniqueId();
+				ibatisPropertyDao.doInsertProperty(
+						prefix, 
+						entityId, 
+						propertyId, 
+						PropertyType.ENTITY, 
+						prop, 
+						inserter);
+				propertyIdToGuidMap.put(prop.getPropertyId(), propertyId);
+			}
+
+		}
 
 		return entityId;
 	}
@@ -202,7 +216,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 			String codingSchemeId, 
 			String entityId,
 			Entity entity, 
-			IbatisInserter inserter) {
+			IbatisInserter inserter,
+			boolean cascade) {
 
 		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
 
@@ -219,7 +234,12 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 		for(Property prop : entity.getAllProperties()) {
 			String propertyId = this.createUniqueId();
 			this.ibatisPropertyDao.doInsertProperty(
-					prefix, entityId, propertyId, PropertyType.ENTITY, prop, inserter);
+					prefix, 
+					entityId, 
+					propertyId, 
+					PropertyType.ENTITY, 
+					prop, 
+					inserter);
 		}
 
 		return entryStateId;
@@ -229,7 +249,12 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	 * @see org.lexevs.dao.database.access.entity.EntityDao#insertHistoryEntity(java.lang.String, org.LexGrid.concepts.Entity)
 	 */
 	public String insertHistoryEntity(String codingSchemeId, String entityId, Entity entity) {
-		return this.doInsertHistoryEntity(codingSchemeId, entityId, entity, this.getNonBatchTemplateInserter());
+		return this.doInsertHistoryEntity(
+				codingSchemeId, 
+				entityId, 
+				entity, 
+				this.getNonBatchTemplateInserter(),
+				true);
 	}
 	
 	/* (non-Javadoc)
@@ -258,7 +283,10 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.entity.EntityDao#insertBatchEntities(java.lang.String, java.util.List)
 	 */
-	public void insertBatchEntities(final String codingSchemeId, final List<? extends Entity> entities) {
+	public void insertBatchEntities(
+			final String codingSchemeId, 
+			final List<? extends Entity> entities,
+			final boolean cascade) {
 		final String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
@@ -270,7 +298,12 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 				batchInserter.startBatch();
 				
 				for(Entity entity : entities){
-					doInsertEntity(prefix, codingSchemeId, entity, batchInserter);
+					doInsertEntity(
+							prefix, 
+							codingSchemeId, 
+							entity, 
+							batchInserter,
+							cascade);
 				}
 				
 				batchInserter.executeBatch();
@@ -358,4 +391,5 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	public void setIbatisPropertyDao(IbatisPropertyDao ibatisPropertyDao) {
 		this.ibatisPropertyDao = ibatisPropertyDao;
 	}
+
 }

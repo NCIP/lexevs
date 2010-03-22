@@ -179,7 +179,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
 	 */
-	public String insertCodingScheme(CodingScheme cs) {
+	public String insertCodingScheme(CodingScheme cs, boolean cascade) {
 		throw new UnsupportedOperationException();
 	}
 

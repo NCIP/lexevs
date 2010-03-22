@@ -43,7 +43,11 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @return the string
 	 */
-	public String insertAssociationPredicate(String codingSchemeId, String relationId, AssociationPredicate associationPredicate);
+	public String insertAssociationPredicate(
+			String codingSchemeId, 
+			String relationId, 
+			AssociationPredicate associationPredicate,
+			boolean cascade);
 	
 	/**
 	 * Insert association qualifier.
@@ -104,7 +108,7 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @return the string
 	 */
-	public String insertRelations(String codingSchemeId, Relations relations);
+	public String insertRelations(String codingSchemeId, Relations relations, boolean cascade);
 	
 	/**
 	 * Gets the relations id.

@@ -45,6 +45,8 @@
     <bean id="ibatisCodingSchemeDao"
 		class="org.lexevs.dao.database.ibatis.codingscheme.IbatisCodingSchemeDao" parent="abstractIbatisDao">
 		<property name="versionsDao" ref="ibatisVersionsDao"/>
+		<property name="entityDao" ref="ibatisEntityDao"/>
+		<property name="associationDao" ref="ibatisAssociationDao"/>
 	</bean>
 	
 	<bean id="ibatisPickListDao"

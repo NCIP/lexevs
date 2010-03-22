@@ -43,7 +43,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		
 		this.getDaoManager().
 			getEntityDao(codingSchemeUri, version).
-				insertEntity(codingSchemeId, entity);
+				insertEntity(codingSchemeId, entity, true);
 	}
 
 	/* (non-Javadoc)
@@ -57,7 +57,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 			getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
 		
 		this.getDaoManager().getEntityDao(codingSchemeUri, version).
-			insertBatchEntities(codingSchemeId, entities);
+			insertBatchEntities(codingSchemeId, entities, true);
 	}
 
 	/* (non-Javadoc)

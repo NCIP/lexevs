@@ -20,6 +20,7 @@ package org.lexevs.dao.database.ibatis.codingscheme;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,9 +29,11 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.URIMap;
+import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
+import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
@@ -138,6 +141,8 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	
 	/** The entity dao. */
 	private EntityDao entityDao;
+	
+	private AssociationDao associationDao;
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeById(java.lang.String)
@@ -223,10 +228,16 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertHistoryCodingScheme(java.lang.String, org.LexGrid.codingSchemes.CodingScheme)
 	 */
-	public void insertHistoryCodingScheme(String codingSchemeId, CodingScheme codingScheme) {
+	public void insertHistoryCodingScheme(
+			String codingSchemeId, 
+			CodingScheme codingScheme) {
 		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
 
-		this.doInsertCodingScheme(codingSchemeId, prefix, codingScheme);
+		this.doInsertCodingScheme(
+				codingSchemeId, 
+				prefix, 
+				codingScheme,
+				true);
 	}
 
 	/* (non-Javadoc)
@@ -242,12 +253,18 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
 	 */
-	public String insertCodingScheme(CodingScheme codingScheme) {
+	public String insertCodingScheme(
+			CodingScheme codingScheme,
+			boolean cascade) {
 		String codingSchemeId = this.createUniqueId();
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		return this.doInsertCodingScheme(codingSchemeId, prefix, codingScheme);
+		return this.doInsertCodingScheme(
+				codingSchemeId, 
+				prefix, 
+				codingScheme,
+				cascade);
 	}
 	
 	/**
@@ -259,7 +276,11 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	 * 
 	 * @return the string
 	 */
-	protected String doInsertCodingScheme(String codingSchemeId, String prefix, CodingScheme codingScheme) {
+	protected String doInsertCodingScheme(
+			String codingSchemeId, 
+			String prefix, 
+			CodingScheme codingScheme,
+			boolean cascade) {
 		String entryStateId = this.createUniqueId();
 		
 		this.getSqlMapClientTemplate().insert(INSERT_CODING_SCHEME_SQL, 
@@ -289,6 +310,22 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		
 		this.insertMappings(codingSchemeId, codingScheme.getMappings());
 		
+		if(cascade) {
+			if(codingScheme.getEntities() != null) {
+				this.entityDao.insertBatchEntities(
+						codingSchemeId, 
+						Arrays.asList(codingScheme.getEntities().getEntity()), 
+						cascade);
+			}
+			
+			for(Relations relations : codingScheme.getRelations()) {
+				this.associationDao.
+					insertRelations(
+							codingSchemeId, 
+							relations,
+							cascade);
+			}
+		}
 		return codingSchemeId;
 	}
 	
@@ -723,5 +760,13 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	 */
 	public EntityDao getEntityDao() {
 		return entityDao;
+	}
+
+	public AssociationDao getAssociationDao() {
+		return associationDao;
+	}
+
+	public void setAssociationDao(AssociationDao associationDao) {
+		this.associationDao = associationDao;
 	}
 }

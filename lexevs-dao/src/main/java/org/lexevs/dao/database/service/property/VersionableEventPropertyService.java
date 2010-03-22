@@ -48,7 +48,9 @@ public class VersionableEventPropertyService extends AbstractDatabaseService imp
 		String entityId = this.getDaoManager().getEntityDao(codingSchemeUri, version).getEntityId(codingSchemeId, entityCode, entityCodeNamespace);
 		
 		this.getDaoManager().getPropertyDao(codingSchemeUri, version).
-		insertBatchProperties(codingSchemeId, PropertyType.ENTITY, 
+		insertBatchProperties(
+				codingSchemeId, 
+				PropertyType.ENTITY, 
 				this.propertyListToBatchInsertList(entityId, items));
 	}
 

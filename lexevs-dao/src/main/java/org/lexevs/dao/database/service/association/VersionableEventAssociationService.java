@@ -99,7 +99,10 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 			String codingSchemeVersion, String codingSchemeId, Relations relations) {
 
 		this.getDaoManager().getAssociationDao(codingSchemeUri, codingSchemeVersion)
-			.insertRelations(codingSchemeId, relations);
+			.insertRelations(
+					codingSchemeId, 
+					relations, 
+					true);
 	}
 	
 	/**
@@ -114,10 +117,12 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 	protected void doInsertAssociationPredicate(String codingSchemeUri, 
 			String codingSchemeVersion, String codingSchemeId, String relationsId, AssociationPredicate predicate) {
 		AssociationDao associationDao = this.getDaoManager().getAssociationDao(codingSchemeUri, codingSchemeVersion);
-		String predicateId = associationDao.insertAssociationPredicate(codingSchemeId, relationsId, predicate);
-		
-		this.doInsertAssociationSource(codingSchemeUri, codingSchemeVersion, codingSchemeId, predicateId, Arrays.asList(predicate.getSource()));
-		
+		associationDao.
+			insertAssociationPredicate(
+					codingSchemeId, 
+					relationsId, 
+					predicate,
+					true);
 	}
 	
 	/**
@@ -132,6 +137,9 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 	protected void doInsertAssociationSource(String codingSchemeUri, 
 			String codingSchemeVersion, String codingSchemeId, String predicateId, List<AssociationSource> sources) {
 		AssociationDao associationDao = this.getDaoManager().getAssociationDao(codingSchemeUri, codingSchemeVersion);
-		associationDao.insertBatchAssociationSources(codingSchemeId, predicateId, sources);
+		associationDao.insertBatchAssociationSources(
+				codingSchemeId, 
+				predicateId, 
+				sources);
 	}
 }

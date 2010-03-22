@@ -80,7 +80,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		cs.setDefaultLanguage("lang");
 		cs.setApproxNumConcepts(22l);
 		
-		csId = ibatisCodingSchemeDao.insertCodingScheme(cs);
+		csId = ibatisCodingSchemeDao.insertCodingScheme(cs, true);
 	}
 	
 	/**
@@ -115,7 +115,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		es.setRelativeOrder(23l);
 		entity.setEntryState(es);
 		
-		final String id = ibatisEntityDao.insertEntity(csId, entity);
+		final String id = ibatisEntityDao.insertEntity(csId, entity, true);
 	
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		final String[] keys = (String[])template.queryForObject("Select * from Entity", new RowMapper(){
@@ -210,10 +210,10 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		ed.setContent("a description");
 		entity.setEntityDescription(ed);
 		
-		ibatisEntityDao.insertEntity(csId, entity);
+		ibatisEntityDao.insertEntity(csId, entity, true);
 		
 		try {
-			ibatisEntityDao.insertEntity(csId, entity);
+			ibatisEntityDao.insertEntity(csId, entity, true);
 		} catch (Exception e) {
 			assertTrue( e instanceof DataIntegrityViolationException );
 		}
@@ -313,7 +313,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 			entity.setIsAnonymous(true);
 			entity.setIsActive(false);
 			
-			this.ibatisEntityDao.insertEntity(csId, entity);
+			this.ibatisEntityDao.insertEntity(csId, entity, true);
 		}
 		
 		List<? extends Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme(csId, 0, -1);
@@ -338,7 +338,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 			entity.setIsAnonymous(true);
 			entity.setIsActive(false);
 			
-			this.ibatisEntityDao.insertEntity(csId, entity);
+			this.ibatisEntityDao.insertEntity(csId, entity, true);
 		}
 		
 		List<? extends Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme(csId, 0, 10);
@@ -362,7 +362,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 			entity.setIsAnonymous(true);
 			entity.setIsActive(false);
 			
-			this.ibatisEntityDao.insertEntity(csId, entity);
+			this.ibatisEntityDao.insertEntity(csId, entity, true);
 		}
 		
 		List<? extends Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme(csId, 100, 100);

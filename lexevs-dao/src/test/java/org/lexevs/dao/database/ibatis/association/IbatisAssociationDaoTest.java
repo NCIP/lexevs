@@ -152,7 +152,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
 		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
 		
-		ibatisAssociationDao.insertRelations("cs-guid", relations);
+		ibatisAssociationDao.insertRelations("cs-guid", relations, true);
 		
 		template.queryForObject("Select * from relation", new RowMapper(){
 
@@ -265,7 +265,8 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		AssociationPredicate predicate = new AssociationPredicate();
 		predicate.setAssociationName("assoc-name");
 		
-		ibatisAssociationDao.insertAssociationPredicate("cs-guid", "rel-guid", predicate);
+		ibatisAssociationDao.insertAssociationPredicate("cs-guid", "rel-guid", 
+				predicate, true);
 		
 		template.queryForObject("Select * from associationpredicate", new RowMapper(){
 
