@@ -47,4 +47,6 @@ public interface DatabaseError {
      * @return the error exception
      */
     public Exception getErrorException();
+    
+    public String getUniqueErrorId();
 }
