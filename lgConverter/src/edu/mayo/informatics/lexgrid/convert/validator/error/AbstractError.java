@@ -20,30 +20,24 @@ package edu.mayo.informatics.lexgrid.convert.validator.error;
 
 import java.util.UUID;
 
+import org.lexevs.dao.database.service.error.DefaultDatabaseError;
+
 /**
  * The Class AbstractError.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractError implements LoadValidationError {
+public abstract class AbstractError extends DefaultDatabaseError implements LoadValidationError {
     
     /** The severity. */
     private Severity severity = Severity.UNKNOWN;
-    
-    /** The unique id. */
-    String uniqueId = UUID.randomUUID().toString();
   
-    private Object errorObject;
-    
-    private Exception errorException;
-    
     protected AbstractError(Object errorObject) {
         this(errorObject, null);
     }
     
     protected AbstractError(Object errorObject, Exception errorException) {
-        this.errorObject = errorObject;
-        this.errorException = errorException;
+        super(errorObject, errorException);
     }
 
     /* (non-Javadoc)
@@ -91,20 +85,5 @@ public abstract class AbstractError implements LoadValidationError {
      */
     public void setSeverity(Severity severity) {
         this.severity = severity;
-    }
-
-    /* (non-Javadoc)
-     * @see edu.mayo.informatics.lexgrid.convert.validator.error.LoadValidationError#getUniqueErrorId()
-     */
-    public String getUniqueErrorId() {
-        return uniqueId;
-    }
-
-    public Exception getErrorException() {
-        return this.errorException;
-    }
-
-    public Object getErrorObject() {
-       return this.errorObject;
     }
 }

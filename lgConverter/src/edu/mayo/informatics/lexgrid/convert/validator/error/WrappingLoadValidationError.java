@@ -18,6 +18,8 @@
  */
 package edu.mayo.informatics.lexgrid.convert.validator.error;
 
+import java.util.Date;
+
 import edu.mayo.informatics.lexgrid.convert.validator.resolution.ErrorResolutionReport;
 import edu.mayo.informatics.lexgrid.convert.validator.resolution.ErrorResolutionReport.ResolutionStatus;
 
@@ -120,6 +122,10 @@ public class WrappingLoadValidationError implements ResolvedLoadValidationError 
         return error.getErrorException();
     }
     
+    public Date getErrorTime() {
+        return error.getErrorTime();
+    }
+    
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
@@ -134,6 +140,4 @@ public class WrappingLoadValidationError implements ResolvedLoadValidationError 
         
         return sb.toString();
     }
-
- 
 }

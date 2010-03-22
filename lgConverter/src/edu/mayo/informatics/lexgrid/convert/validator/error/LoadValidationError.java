@@ -18,12 +18,14 @@
  */
 package edu.mayo.informatics.lexgrid.convert.validator.error;
 
+import org.lexevs.dao.database.service.error.DatabaseError;
+
 /**
  * The Interface LoadValidationError.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface LoadValidationError {
+public interface LoadValidationError extends DatabaseError {
     
     /**
      * The Enum Severity.
@@ -39,20 +41,12 @@ public interface LoadValidationError {
             UNKNOWN}
     
     /**
-     * Gets the unique error id.
-     * 
-     * @return the unique error id
-     */
-    public String getUniqueErrorId();
-    
-    /**
      * Gets the error message.
      * 
      * @return the error message
      */
     public String getErrorMessage();
-    
-    public Exception getErrorException();
+
     
     /**
      * Gets the error code.
@@ -67,13 +61,6 @@ public interface LoadValidationError {
      * @return the error description
      */
     public String getErrorDescription();
-    
-    /**
-     * Gets the error object.
-     * 
-     * @return the error object
-     */
-    public Object getErrorObject();
     
     /**
      * Gets the severity.
