@@ -79,7 +79,10 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
         super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<Object>() {
 
             public Object execute(DaoManager daoManager) {
-                daoManager.getCurrentCodingSchemeDao().insertCodingScheme(codingScheme);
+                daoManager.getCurrentCodingSchemeDao().
+                    insertCodingScheme(
+                            codingScheme,
+                            false);
 
                 return null;
             }
@@ -167,7 +170,11 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
 
             public String execute(DaoManager daoManager) {
     
-                    daoManager.getCurrentEntityDao().insertBatchEntities(codingSchemeId, batch);
+                    daoManager.getCurrentEntityDao().
+                        insertBatchEntities(
+                                codingSchemeId, 
+                                batch,
+                                true);
                     
                     return null;
             }
@@ -185,7 +192,10 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
 
             public String execute(DaoManager daoManager) {
     
-                    daoManager.getCurrentAssociationDao().insertBatchAssociationSources(codingSchemeId, batch);
+                    daoManager.getCurrentAssociationDao().
+                        insertBatchAssociationSources(
+                                codingSchemeId, 
+                                batch);
                     
                     return null;
             }
@@ -206,7 +216,11 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
 
             public String execute(DaoManager daoManager) {
                 return 
-                    daoManager.getCurrentAssociationDao().insertRelations(codingSchemeId, relations);
+                    daoManager.getCurrentAssociationDao().
+                        insertRelations(
+                                codingSchemeId, 
+                                relations,
+                                false);
             }
         });
     }
@@ -226,7 +240,12 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
 
             public String execute(DaoManager daoManager) {
                 return 
-                    daoManager.getCurrentAssociationDao().insertAssociationPredicate(codingSchemeId, relationsId, predicate);
+                    daoManager.getCurrentAssociationDao().
+                        insertAssociationPredicate(
+                                codingSchemeId, 
+                                relationsId, 
+                                predicate,
+                                false);
             }
         });
     }

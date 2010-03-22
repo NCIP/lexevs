@@ -30,10 +30,13 @@ public interface LoadValidationError {
      * 
      * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
      */
-    public enum Severity {/** The FATAL. */
-FATAL, /** The NO n_ fatal. */
- NON_FATAL, /** The UNKNOWN. */
- UNKNOWN}
+    public enum Severity {
+            /** The FATAL. */
+            FATAL, 
+            /** The NO n_ fatal. */
+            NON_FATAL, 
+            /** The UNKNOWN. */
+            UNKNOWN}
     
     /**
      * Gets the unique error id.
