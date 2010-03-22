@@ -35,6 +35,9 @@ public abstract class AbstractValidator<T> implements Validator {
      */
     @SuppressWarnings("unchecked")
     public List<LoadValidationError> validate(Object obj) {
+        if(! this.isValidClassForValidator(obj.getClass())) {
+            throw new RuntimeException("Validator cannot be applied to: " + obj.getClass().getName());
+        }
         List<LoadValidationError> errors = new ArrayList<LoadValidationError>();
         
         doValidate( (T)obj, errors);
