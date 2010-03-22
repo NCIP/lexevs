@@ -79,22 +79,22 @@ public class DatabaseRegistryTest extends LexEvsDbUnitTestBase {
 	@Test
 	public void testMigration() throws Exception{
 		
-		RegistryXmlToDatabaseTransfer transfer = new RegistryXmlToDatabaseTransfer();
-		Registry dbRegistry = EasyMock.createMock(Registry.class);
-		Registry xmlRegistry = EasyMock.createMock(Registry.class);
+		TestingRegistryXmlToDatabaseTransfer transfer = new TestingRegistryXmlToDatabaseTransfer();
+		Registry dbRegistry = EasyMock.createNiceMock(Registry.class);
+		Registry xmlRegistry = EasyMock.createNiceMock(Registry.class);
 		
-		LgLoggerIF logger = EasyMock.createMock(LgLoggerIF.class);
+		LgLoggerIF logger = EasyMock.createNiceMock(LgLoggerIF.class);
 		
 		RegistryEntry entry = new RegistryEntry();
 		List<RegistryEntry> entries = new ArrayList<RegistryEntry>();
 		entries.add(entry);
 		
 		EasyMock.expect(xmlRegistry.getAllRegistryEntries()).andReturn(entries);
-		
+
 		transfer.setDatabaseRegistry(dbRegistry);
 		transfer.setLogger(logger);
 	
-		SystemVariables vars = EasyMock.createMock(SystemVariables.class);
+		SystemVariables vars = EasyMock.createNiceMock(SystemVariables.class);
 		EasyMock.expect(vars.isMigrateOnStartupEnabled()).andReturn(true);
 		
 		transfer.setSystemVariables(vars);
@@ -104,6 +104,17 @@ public class DatabaseRegistryTest extends LexEvsDbUnitTestBase {
 		
 
 		transfer.afterPropertiesSet();
+		
+		assertTrue(transfer.fileDeleted);
+	}
+	
+	public static class TestingRegistryXmlToDatabaseTransfer extends RegistryXmlToDatabaseTransfer {
+
+		private boolean fileDeleted = false;
+		@Override
+		protected void deleteRegistryXmlFile() {
+			fileDeleted = true;
+		}
 	}
 
 }
