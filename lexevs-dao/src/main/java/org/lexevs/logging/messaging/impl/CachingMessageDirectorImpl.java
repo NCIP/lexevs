@@ -222,6 +222,10 @@ public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
 	 */
 	@Override
 	public LogEntry[] getLog(LogLevel level) {
+		if(level == null) {
+			return logEntries.toArray(new LogEntry[logEntries.size()]);
+		}
+	
 		List<LogEntry> entries = new ArrayList<LogEntry>();
 		for(LogEntry entry : this.logEntries) {
 			if(entry.getEntryLevel().equals(level)) {
