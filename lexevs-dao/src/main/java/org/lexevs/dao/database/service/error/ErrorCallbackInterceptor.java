@@ -24,6 +24,7 @@ import junit.framework.Assert;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.core.annotation.AnnotationUtils;
 
 /**
  * The Class LazyLoadingCodeToReturnInterceptor.
@@ -53,11 +54,16 @@ public class ErrorCallbackInterceptor implements MethodInterceptor, Serializable
     	Assert.assertFalse("Cannot use Validating Listerner on methods that return anything other than NULL",
     			methodInvocation.getMethod().getReturnType().getClass().equals(Void.class));
     	
+    	DatabaseErrorIdentifier errorId = 
+    		AnnotationUtils.findAnnotation(methodInvocation.getMethod(), DatabaseErrorIdentifier.class);
+    	
+    	String errorCode = errorId.errorCode();
+    	
         Object returnObj = null;
         try {
             methodInvocation.proceed();
         } catch (Exception e) {
-        	errorCallbackListener.onDatabaseError(new DefaultDatabaseError(methodInvocation.getArguments(), e)); 
+        	errorCallbackListener.onDatabaseError(new DefaultDatabaseError(errorCode, methodInvocation.getArguments(), e)); 
         }
         return returnObj;
     }

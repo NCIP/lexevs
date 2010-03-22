@@ -31,6 +31,7 @@ import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,6 +82,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#insertCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
 	 */
 	@Transactional
+	@DatabaseErrorIdentifier(errorCode=INSERT_CODINGSCHEME_ERROR)
 	public void insertCodingScheme(CodingScheme scheme) throws CodingSchemeAlreadyLoadedException {
 		CodingSchemeDao codingSchemeDao = 
 			this.getDaoManager().getCurrentCodingSchemeDao();

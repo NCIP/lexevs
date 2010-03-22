@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -35,6 +36,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	 * @see org.lexevs.dao.database.service.entity.EntityService#insertEntity(java.lang.String, java.lang.String, org.LexGrid.concepts.Entity)
 	 */
 	@Transactional
+	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_ERROR)
 	public void insertEntity(String codingSchemeUri, String version,
 			Entity entity) {
 		String codingSchemeId = this.getDaoManager().
@@ -50,6 +52,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	 * @see org.lexevs.dao.database.service.entity.EntityService#insertBatchEntities(java.lang.String, java.lang.String, java.util.List)
 	 */
 	@Transactional
+	@DatabaseErrorIdentifier(errorCode=INSERT_BATCH_ENTITY_ERROR)
 	public void insertBatchEntities(String codingSchemeUri, String version,
 			List<? extends Entity> entities) {
 		String codingSchemeId = this.getDaoManager().

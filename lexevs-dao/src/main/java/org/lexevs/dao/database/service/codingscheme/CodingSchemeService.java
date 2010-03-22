@@ -30,6 +30,8 @@ import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedExcept
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface CodingSchemeService {
+	
+	public static String INSERT_CODINGSCHEME_ERROR = "INSERT-CODING-SCHEME-ERROR";
 
 	/**
 	 * Gets the coding scheme by uri and version.

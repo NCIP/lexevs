@@ -49,4 +49,11 @@ public interface DatabaseError {
     public Exception getErrorException();
     
     public String getUniqueErrorId();
+    
+    /**
+     * Gets the error code.
+     * 
+     * @return the error code
+     */
+    public String getErrorCode();
 }

@@ -39,6 +39,8 @@ public class DefaultDatabaseError implements DatabaseError {
 	
 	/** The error time. */
 	private Date errorTime = new Date();
+	
+	private String errorCode;
     
 
 	/**
@@ -47,10 +49,11 @@ public class DefaultDatabaseError implements DatabaseError {
 	 * @param errorObject the error object
 	 * @param errorException the error exception
 	 */
-	public DefaultDatabaseError(Object errorObject, Exception errorException) {
+	public DefaultDatabaseError(String errorCode, Object errorObject, Exception errorException) {
 		super();
 		this.errorObject = errorObject;
 		this.errorException = errorException;
+		this.errorCode = errorCode;
 	}
 	
 	/**
@@ -100,5 +103,9 @@ public class DefaultDatabaseError implements DatabaseError {
 	@Override
 	public Date getErrorTime() {
 		return errorTime;
-	}	
+	}
+
+	public String getErrorCode() {
+		return errorCode;
+	}
 }

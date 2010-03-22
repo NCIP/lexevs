@@ -21,15 +21,12 @@ package org.lexevs.dao.database.service.error;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
-import org.springframework.aop.support.JdkRegexpMethodPointcut;
+import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 
 /**
  * A factory for creating ErrorCallbackDatabaseService objects.
  */
 public class ErrorCallbackDatabaseServiceFactory {
-	
-	/** The pattern. */
-	String pattern = ".*insert.*";
 
 	/**
 	 * Gets the error callback database service.
@@ -42,9 +39,7 @@ public class ErrorCallbackDatabaseServiceFactory {
 	@SuppressWarnings("unchecked")
 	public <T> T getErrorCallbackDatabaseService(T databaseService, ErrorCallbackListener callback) {
 
-		JdkRegexpMethodPointcut pointcut = new JdkRegexpMethodPointcut();
-
-		pointcut.setPattern(pattern);
+		AnnotationMatchingPointcut pointcut = new AnnotationMatchingPointcut(null, DatabaseErrorIdentifier.class);
 
 		Advisor advisor = new DefaultPointcutAdvisor(
 				pointcut, new ErrorCallbackInterceptor(callback));
@@ -56,23 +51,5 @@ public class ErrorCallbackDatabaseServiceFactory {
 
 		Object obj = pf.getProxy();
 		return (T)obj;
-	}
-
-	/**
-	 * Gets the pattern.
-	 * 
-	 * @return the pattern
-	 */
-	public String getPattern() {
-		return pattern;
-	}
-
-	/**
-	 * Sets the pattern.
-	 * 
-	 * @param pattern the new pattern
-	 */
-	public void setPattern(String pattern) {
-		this.pattern = pattern;
 	}
 }

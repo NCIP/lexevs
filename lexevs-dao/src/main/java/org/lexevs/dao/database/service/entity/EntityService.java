@@ -29,6 +29,9 @@ import org.LexGrid.concepts.Entity;
  */
 public interface EntityService {
 	
+	public static String INSERT_ENTITY_ERROR = "INSERT-ENTITY-ERROR";
+	public static String INSERT_BATCH_ENTITY_ERROR = "INSERT-BATCH-ENTITY-ERROR";
+	
 	/**
 	 * Insert entity.
 	 * 

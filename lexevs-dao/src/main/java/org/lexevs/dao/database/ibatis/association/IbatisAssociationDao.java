@@ -28,7 +28,6 @@ import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.junit.Assert;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchInsertItem;
@@ -48,6 +47,7 @@ import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
+import org.springframework.util.Assert;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
 
@@ -361,7 +361,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	 */
 	public void insertAssociationSource(String codingSchemeId,
 			String associationPredicateId, AssociationSource source, IbatisInserter inserter) {
-		Assert.assertTrue("Must Insert at least ONE AssociationTarget per AssociationSource.", source.getTarget().length > 0);
+		Assert.isTrue(source.getTarget().length > 0, "Must Insert at least ONE AssociationTarget per AssociationSource.");
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		

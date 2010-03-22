@@ -18,6 +18,9 @@
  */
 package org.lexevs.dao.database.service.codingscheme;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -31,8 +34,10 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.error.DatabaseError;
+import org.lexevs.dao.database.service.error.ErrorCallbackListener;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -44,6 +49,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBase {
 
+	@Resource
+	private DatabaseServiceManager databaseServiceManager;
+	
 	/** The service. */
 	@Resource
 	private VersionableEventCodingSchemeService service;
@@ -211,5 +219,40 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		assertEquals(1, template.queryForInt("Select count(*) from relation"));
 		
 		
+	}
+	
+	/**
+	 * Test insert coding scheme with everything.
+	 * 
+	 * @throws Exception the exception
+	 */
+	@Test
+	public void testErrorCallbackCodingSchemeService() throws Exception{
+		CodingScheme scheme = new CodingScheme();
+		scheme.setApproxNumConcepts(111l);
+		scheme.setCodingSchemeName("testName");
+		scheme.setCodingSchemeURI("uri");
+		
+		CachingCallback callback = new CachingCallback();
+		
+		CodingSchemeService service = databaseServiceManager.getCodingSchemeService(callback);
+		
+		service.insertCodingScheme(scheme);
+		
+		List<DatabaseError> errors = callback.errors;
+		
+		assertEquals(1, errors.size());	
+		
+		assertEquals(CodingSchemeService.INSERT_CODINGSCHEME_ERROR, errors.get(0).getErrorCode());
+	}
+	
+	private class CachingCallback implements ErrorCallbackListener {
+
+		List<DatabaseError> errors = new ArrayList<DatabaseError>();
+		
+		@Override
+		public void onDatabaseError(DatabaseError databaseError) {
+			errors.add(databaseError);
+		}
 	}
 }
