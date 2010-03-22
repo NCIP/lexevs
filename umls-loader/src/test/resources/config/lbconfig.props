@@ -94,6 +94,11 @@ ITERATOR_IDLE_TIME=5
 # can be returned per 'next' call.
 MAX_RESULT_SIZE=10000
 
+############# Registry migration
+
+# When true, the registry xml from pre-6.0 installations will be moved
+# to the database and deleted upon start-up
+MOVE_REGISTRY_TO_DATABASE=false
 
 ############# Database Configuration
 
