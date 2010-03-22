@@ -187,7 +187,7 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
         } catch (Exception e) {
             EntityBatchInsertErrorItem errorItem = new EntityBatchInsertErrorItem(codingSchemeId, batch);
             
-            throw new LoadValidationException(new EntityBatchInsertError(errorItem));
+            throw new LoadValidationException(new EntityBatchInsertError(errorItem, e));
         }
     }
     
@@ -214,7 +214,7 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
         } catch (Exception e) {
             AssociationSourceBatchInsertErrorItem errorItem = new AssociationSourceBatchInsertErrorItem(codingSchemeId, batch);
         
-            throw new LoadValidationException(new AssociationSourceBatchInsertError(errorItem));
+            throw new LoadValidationException(new AssociationSourceBatchInsertError(errorItem, e));
         }
     }
     

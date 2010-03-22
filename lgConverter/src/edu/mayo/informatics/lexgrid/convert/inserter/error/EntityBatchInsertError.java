@@ -45,7 +45,11 @@ public class EntityBatchInsertError extends AbstractError{
     public EntityBatchInsertError(EntityBatchInsertErrorItem errorItem){
         super(errorItem);
     }
-    
+  
+    public EntityBatchInsertError(Object errorObject, Exception errorException) {
+        super(errorObject, errorException);
+    }
+
     /* (non-Javadoc)
      * @see edu.mayo.informatics.lexgrid.convert.validator.error.AbstractError#getErrorObjectDescription()
      */
