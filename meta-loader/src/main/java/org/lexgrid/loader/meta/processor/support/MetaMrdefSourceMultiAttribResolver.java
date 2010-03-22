@@ -19,7 +19,6 @@
 package org.lexgrid.loader.meta.processor.support;
 
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.lexgrid.loader.processor.support.AbstractBasicMultiAttribResolver;
 import org.lexgrid.loader.rrf.model.Mrdef;
 
 /**

@@ -34,7 +34,12 @@ public class AssociationPredicateCreatingKeyResolver implements AssociationPredi
 							getAssociationPredicateId(codingSchemeId, relationId, associationName);
 				
 				if(associationPredicateId == null){
-					return associationDao.insertAssociationPredicate(codingSchemeId, relationId, buildDefaultAssociationPredicate(associationName));
+					return associationDao.
+						insertAssociationPredicate(
+								codingSchemeId, 
+								relationId, 
+								buildDefaultAssociationPredicate(associationName),
+								false);
 				} else {
 					return associationPredicateId;
 				}

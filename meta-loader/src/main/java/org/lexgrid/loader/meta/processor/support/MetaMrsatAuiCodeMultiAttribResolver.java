@@ -18,8 +18,6 @@
  */
 package org.lexgrid.loader.meta.processor.support;
 
-import org.lexgrid.loader.processor.support.AbstractBasicMultiAttribResolver;
-import org.lexgrid.loader.rrf.model.Mrsab;
 import org.lexgrid.loader.rrf.model.Mrsat;
 
 public class MetaMrsatAuiCodeMultiAttribResolver extends

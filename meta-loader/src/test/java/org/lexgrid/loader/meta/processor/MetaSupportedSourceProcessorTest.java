@@ -18,20 +18,18 @@
  */
 package org.lexgrid.loader.meta.processor;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.LexGrid.persistence.model.EntityPropertyMultiAttrib;
-import org.LexGrid.persistence.model.EntityPropertyMultiAttribId;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.easymock.EasyMock.*;
 import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
-
-import test.util.SupportHelpers;
+import org.lexgrid.loader.test.util.SupportHelpers.TestCodingSchemeIdSetter;
 
 /**
  * The Class MetaSupportedSourceProcessorTest.

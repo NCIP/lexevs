@@ -18,9 +18,7 @@
  */
 package org.lexgrid.loader.meta.processor;
 
-import org.LexGrid.persistence.model.EntityAssnsToEntity;
 import org.lexgrid.loader.rrf.model.Mrrel;
-import org.lexgrid.loader.rrf.processor.RrfEntityAssnsToEntityProcessor;
 import org.springframework.batch.item.ItemProcessor;
 
 /**

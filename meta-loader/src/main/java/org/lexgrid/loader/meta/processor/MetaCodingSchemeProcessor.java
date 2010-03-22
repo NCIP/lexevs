@@ -21,7 +21,9 @@ package org.lexgrid.loader.meta.processor;
 import java.util.Map;
 import java.util.Properties;
 
-import org.LexGrid.persistence.model.CodingScheme;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.EntityDescription;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexgrid.loader.constants.LoaderConstants;
 import org.lexgrid.loader.dao.SupportedAttributeSupport;
 import org.lexgrid.loader.rrf.model.Mrdoc;
@@ -65,17 +67,16 @@ public class MetaCodingSchemeProcessor extends SupportedAttributeSupport impleme
 			CodingScheme cs = new CodingScheme();
 			cs.setCodingSchemeName(codingSchemeProperties.getProperty(LoaderConstants.CODING_SCHEME_NAME_PROPERTY));
 			cs.setRepresentsVersion(getVersion(mrdoc));
-			cs.setCodingSchemeUri(isoMap.get(codingSchemeProperties.getProperty(LoaderConstants.CODING_SCHEME_NAME_PROPERTY)));
+			cs.setCodingSchemeURI(isoMap.get(codingSchemeProperties.getProperty(LoaderConstants.CODING_SCHEME_NAME_PROPERTY)));
 			cs.setFormalName(codingSchemeProperties.getProperty(LoaderConstants.FORMAL_NAME_PROPERTY));
 			cs.setDefaultLanguage(codingSchemeProperties.getProperty(LoaderConstants.DEFAULT_LANGUAGE_PROPERTY));
-			cs.setCopyright(codingSchemeProperties.getProperty(LoaderConstants.COPYRIGHT_PROPERTY));
-			cs.setEntityDescription(codingSchemeProperties.getProperty(LoaderConstants.ENTITY_DESCRIPTION_PROPERTY));
+			cs.setCopyright(DaoUtility.createText(codingSchemeProperties.getProperty(LoaderConstants.COPYRIGHT_PROPERTY)));
+			
+			EntityDescription ed = new EntityDescription();
+			ed.setContent(codingSchemeProperties.getProperty(LoaderConstants.ENTITY_DESCRIPTION_PROPERTY));
+			cs.setEntityDescription(ed);
 			cs.setIsActive(true);
 			
-			getSupportedAttributeTemplate()
-			.addSupportedCodingScheme(cs.getCodingSchemeName(), cs.getCodingSchemeName(), 
-					cs.getCodingSchemeUri(), 
-					cs.getCodingSchemeName(), false);
 			return cs;
 		} 
 		return null;

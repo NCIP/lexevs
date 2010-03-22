@@ -40,6 +40,16 @@ public class MetaCodingSchemeNameSetter implements CodingSchemeIdSetter {
 		return codingSchemeProperties.getProperty(LoaderConstants.CODING_SCHEME_NAME_PROPERTY);
 	}
 
+	public String getCodingSchemeUri() {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	public String getCodingSchemeVersion() {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+	
 	/**
 	 * Gets the coding scheme properties.
 	 * 

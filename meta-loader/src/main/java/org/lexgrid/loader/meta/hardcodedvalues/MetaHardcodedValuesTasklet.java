@@ -21,8 +21,8 @@ package org.lexgrid.loader.meta.hardcodedvalues;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.persistence.model.Relation;
-import org.LexGrid.persistence.model.RelationId;
+import javax.management.relation.Relation;
+
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.hardcodedvalues.AbstractIntrospectiveHardcodedValues;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
@@ -39,7 +39,8 @@ public class MetaHardcodedValuesTasklet extends AbstractIntrospectiveHardcodedVa
 	 * @see org.lexgrid.loader.hardcodedvalues.AbstractHardcodedValuesFactory#buildList(java.util.List)
 	 */
 	@Override
-	public List loadObjects() {
+	public void loadObjects() {
+		/*
 		List<Object> hardcodedValues = new ArrayList<Object>();
 		
 		Relation relation = new Relation();
@@ -59,6 +60,7 @@ public class MetaHardcodedValuesTasklet extends AbstractIntrospectiveHardcodedVa
 					codingSchemeIdSetter.getCodingSchemeName());
 		
 		return hardcodedValues;	
+		*/
 	}
 
 	/**

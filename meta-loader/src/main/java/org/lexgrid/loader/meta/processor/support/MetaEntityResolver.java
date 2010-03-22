@@ -48,4 +48,9 @@ public class MetaEntityResolver extends AbstractBasicEntityResolver<Mrconso>{
 	public boolean getIsDefined(Mrconso item) {
 		return true;
 	}
+
+	public String[] getEntityTypes(Mrconso item) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
 }
