@@ -249,7 +249,6 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
  
         @SuppressWarnings("null")
         public void run() {
-            SystemVariables sv = ResourceManager.instance().getSystemVariables();
             URNVersionPair[] locks = null;
             try {          
                 
