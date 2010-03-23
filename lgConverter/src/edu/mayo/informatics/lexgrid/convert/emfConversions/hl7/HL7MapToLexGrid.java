@@ -55,6 +55,7 @@ import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.LexGrid.custom.concepts.EntityFactory;
 import org.LexGrid.custom.relations.RelationsUtil;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -92,12 +93,11 @@ public class HL7MapToLexGrid {
     private Hashtable internalIdConceptCodeMap;
     private LoaderPreferences loaderPrefs;
 
-    public HL7MapToLexGrid(String currentCodingScheme, String database, String driver, LgMessageDirectorIF lg_messages) {
+    public HL7MapToLexGrid(String database, String driver, LgMessageDirectorIF lg_messages) {
 
         this.messages_ = new CachingMessageDirectorImpl(lg_messages);
         accessConnectionString = database;
         this.driver = driver;
-        this.codingScheme = currentCodingScheme;
         conceptsList = new Hashtable();
         internalIdConceptCodeMap = new Hashtable();
     }
@@ -125,6 +125,7 @@ public class HL7MapToLexGrid {
         }
     }
 
+    /*
     void loadCodingScheme(CodingScheme csclass, Connection c) {
 
         try {
@@ -183,6 +184,7 @@ public class HL7MapToLexGrid {
             e.printStackTrace();
         }
     }
+    */
 
     void loadCodingScheme(CodingScheme csclass, String connectionString, String driver) {
         Connection c = null;
@@ -399,7 +401,7 @@ public class HL7MapToLexGrid {
         // process the concept data
         messages_.info("Processing concepts");
         for (int j = 0; j < conceptsList.size(); j++) {
-            Concept concept = new Concept();
+            Entity concept = EntityFactory.createConcept();
             HL7ConceptContainer conceptContainer = (HL7ConceptContainer) conceptsList.get(new Integer(j));
             String uniqueInternalId = conceptContainer.getInternalId();
             concept.setEntityCode(conceptContainer.getConceptCode());
@@ -616,7 +618,7 @@ public class HL7MapToLexGrid {
 
     }
 
-    void loadPresentation(CodingScheme csclass, Concept concept, Connection c, String uniqueInternalId) {
+    void loadPresentation(CodingScheme csclass, Entity concept, Connection c, String uniqueInternalId) {
 
         ResultSet edResults = null;
         ResultSet desResults = null;
@@ -765,7 +767,7 @@ public class HL7MapToLexGrid {
 
     }
 
-    void loadPresentation(CodingScheme csclass, Concept concept, String uniqueInternalId, String connectionString,
+    void loadPresentation(CodingScheme csclass, Entity concept, String uniqueInternalId, String connectionString,
             String driver) {
         Connection c = null;
         try {
@@ -784,7 +786,7 @@ public class HL7MapToLexGrid {
         }
     }
 
-    void loadConceptProperties(CodingScheme csclass, Concept concept, Connection c, String uniqueInternalId) {
+    void loadConceptProperties(CodingScheme csclass, Entity concept, Connection c, String uniqueInternalId) {
         ResultSet properties = null;
         try {
 
@@ -828,7 +830,7 @@ public class HL7MapToLexGrid {
 
     }
 
-    void loadConceptProperties(CodingScheme csclass, Concept concept, String uniqueInternalId, String connectionString,
+    void loadConceptProperties(CodingScheme csclass, Entity concept, String uniqueInternalId, String connectionString,
             String driver) {
         Connection c = null;
         try {
@@ -846,7 +848,7 @@ public class HL7MapToLexGrid {
         }
     }
 
-    void loadRelations(CodingScheme csclass, Concept concept, Connection c, String uniqueInternalId,
+    void loadRelations(CodingScheme csclass, Entity concept, Connection c, String uniqueInternalId,
             AssociationPredicate parent_assoc, Relations relations, Hashtable concept2Id) {
         ResultSet associations = null;
         Hashtable associationsList = new Hashtable();
@@ -898,7 +900,7 @@ public class HL7MapToLexGrid {
         }
     }
 
-    void loadRelations(CodingScheme csclass, Concept concept, String uniqueInternalId, AssociationPredicate association,
+    void loadRelations(CodingScheme csclass, Entity concept, String uniqueInternalId, AssociationPredicate association,
             Relations relations, String connectionString, String driver, Hashtable concept2Id) {
         Connection c = null;
         try {

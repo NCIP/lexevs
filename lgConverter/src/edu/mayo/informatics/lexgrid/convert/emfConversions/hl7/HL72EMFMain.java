@@ -37,7 +37,7 @@ public class HL72EMFMain {
     private String access_URL = null;
     private LoaderPreferences loaderPrefs = null; // CRS
 
-    public CodingScheme map(String codingSchemeURN, String accessPath, boolean failOnAllErrors,
+    public CodingScheme map(String accessPath, boolean failOnAllErrors,
             LgMessageDirectorIF lg_messages) throws Exception {
         this.messages = new CachingMessageDirectorImpl(lg_messages);
 
@@ -50,7 +50,7 @@ public class HL72EMFMain {
 
         try {
             csclass = new CodingScheme();
-            HL7MapToLexGrid hl7Map = new HL7MapToLexGrid(codingSchemeURN, access_URL, HL7SQL.MSACCESS_DRIVER, messages);
+            HL7MapToLexGrid hl7Map = new HL7MapToLexGrid(access_URL, HL7SQL.MSACCESS_DRIVER, messages);
             hl7Map.setLoaderPrefs(loaderPrefs); // CRS
             hl7Map.initRun(csclass);
             messages.info("Processing DONE!!");
