@@ -21,17 +21,15 @@ package org.LexGrid.LexBIG.Impl.loaders;
 import java.net.URI;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
-import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.RadlexProtegeFrames_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
-import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 
+import edu.mayo.informatics.lexgrid.convert.emfConversions.radlex.RadLex2EMFMain;
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
-import edu.mayo.informatics.lexgrid.convert.formats.Option;
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.ProtegeFrames;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
@@ -87,8 +85,12 @@ public class RadLexProtegeFramesLoaderImpl extends BaseLoader implements RadlexP
 
     @Override
     protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        RadLex2EMFMain radlexLoader = new RadLex2EMFMain();
+        CodingScheme codingScheme = radlexLoader.map(this.getResourceUri(), this.getMessageDirector());
+        
+        super.persistCodingSchemeToDatabase(codingScheme);
+        
+        return super.constructVersionPairsFromCodingSchemes(codingScheme);
     }
 
     @Override
