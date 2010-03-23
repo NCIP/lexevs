@@ -20,4 +20,5 @@
     <sqlMap resource="ibatis/v20/entityAssnsToEntity.xml"/>
     <sqlMap resource="ibatis/v20/entityAssnQuals.xml"/>
     <sqlMap resource="ibatis/v20/picklist.xml"/>
+    <sqlMap resource="ibatis/v20/associationEntity.xml"/>
 </sqlMapConfig>

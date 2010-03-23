@@ -26,10 +26,12 @@ import java.util.Map;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.PropertyLink;
+import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
+import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
 import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
@@ -96,6 +98,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 
 	/** The ibatis property dao. */
 	private IbatisPropertyDao ibatisPropertyDao;
+	
+	private IbatisAssociationDao ibatisAssociationDao;
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.entity.EntityDao#getEntityByCodeAndNamespace(java.lang.String, java.lang.String, java.lang.String)
@@ -148,6 +152,22 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 				entity, 
 				this.getNonBatchTemplateInserter(), 
 				cascade);
+	}
+	
+	@Override
+	public String insertEntity(String codingSchemeId, AssociationEntity entity,
+			boolean cascade) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		String entityId = this.doInsertEntity(
+				prefix, 
+				codingSchemeId, 
+				entity, 
+				this.getNonBatchTemplateInserter(), 
+				cascade);
+		
+		ibatisAssociationDao.insertAssociationEntity(codingSchemeId, entityId, entity);
+		
+		return entityId;
 	}
 	
 	/**
@@ -388,6 +408,14 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	 */
 	public void setIbatisPropertyDao(IbatisPropertyDao ibatisPropertyDao) {
 		this.ibatisPropertyDao = ibatisPropertyDao;
+	}
+
+	public void setIbatisAssociationDao(IbatisAssociationDao ibatisAssociationDao) {
+		this.ibatisAssociationDao = ibatisAssociationDao;
+	}
+
+	public IbatisAssociationDao getIbatisAssociationDao() {
+		return ibatisAssociationDao;
 	}
 
 }

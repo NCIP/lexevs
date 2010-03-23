@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
@@ -32,7 +33,9 @@ import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchInsertItem;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
+import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
+import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationEntityBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationPredicateBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationSourceBean;
@@ -61,37 +64,43 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
+	private static String ASSOCIATION_NAMESPACE = "Association.";
+	
 	/** The INSER t_ relation s_ sql. */
-	private static String INSERT_RELATIONS_SQL = "insertRelations";
+	private static String INSERT_RELATIONS_SQL = ASSOCIATION_NAMESPACE + "insertRelations";
 	
 	/** The INSER t_ entit y_ assn s_ t o_ entit y_ sql. */
-	private static String INSERT_ENTITY_ASSNS_TO_ENTITY_SQL = "insertEntityAssnsToEntity";
+	private static String INSERT_ENTITY_ASSNS_TO_ENTITY_SQL = ASSOCIATION_NAMESPACE + "insertEntityAssnsToEntity";
 	
 	/** The INSER t_ associatio n_ qua l_ o r_ contex t_ sql. */
-	private static String INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL = "insertAssociationQualificationOrUsageContext";
+	private static String INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL = ASSOCIATION_NAMESPACE + "insertAssociationQualificationOrUsageContext";
 	
 	/** The INSER t_ associatio n_ predicat e_ sql. */
-	private static String INSERT_ASSOCIATION_PREDICATE_SQL = "insertAssociationPredicate";
+	private static String INSERT_ASSOCIATION_PREDICATE_SQL = ASSOCIATION_NAMESPACE + "insertAssociationPredicate";
+	
+	private static String INSERT_ASSOCIATIONENTITY_SQL = ASSOCIATION_NAMESPACE + "insertAssociationEntity";
 	
 	/** The INSER t_ transitiv e_ closur e_ sql. */
-	private static String INSERT_TRANSITIVE_CLOSURE_SQL = "insertTransitiveClosure";
+	private static String INSERT_TRANSITIVE_CLOSURE_SQL = ASSOCIATION_NAMESPACE + "insertTransitiveClosure";
 	
 	/** The GE t_ associatio n_ instanc e_ ke y_ sql. */
-	private static String GET_ASSOCIATION_INSTANCE_KEY_SQL = "getAccociationInstanceKey";
+	private static String GET_ASSOCIATION_INSTANCE_KEY_SQL = ASSOCIATION_NAMESPACE + "getAccociationInstanceKey";
 	
 	/** The GE t_ relation s_ ke y_ sql. */
-	private static String GET_RELATIONS_KEY_SQL = "getRelationsKey";
+	private static String GET_RELATIONS_KEY_SQL = ASSOCIATION_NAMESPACE + "getRelationsKey";
 	
 	/** The GE t_ associatio n_ predicat e_ ke y_ sql. */
-	private static String GET_ASSOCIATION_PREDICATE_KEY_SQL = "getAssociationPredicateKey";
+	private static String GET_ASSOCIATION_PREDICATE_KEY_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateKey";
 	
-	private static String GET_ASSOCIATION_PREDICATE_NAME_FOR_ID_SQL = "getAssociationPredicateNameForId";
+	private static String GET_ASSOCIATION_PREDICATE_NAME_FOR_ID_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateNameForId";
 	
 	/** The ibatis versions dao. */
 	private IbatisVersionsDao ibatisVersionsDao;
 	
 	/** The coding scheme dao. */
 	private CodingSchemeDao codingSchemeDao;
+	
+	private EntityDao entityDao;
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#getAssociationPredicateId(java.lang.String, java.lang.String, java.lang.String)
@@ -167,6 +176,23 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			}
 		}
 		return relationsId;
+	}
+	
+	public String insertAssociationEntity(
+			String codingSchemeId,
+			String entityId,
+			AssociationEntity associationEntity) {
+		String associationEntityId = this.createUniqueId();
+		
+		InsertAssociationEntityBean bean = new InsertAssociationEntityBean();
+		bean.setPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId));
+		bean.setEntityId(entityId);
+		bean.setId(associationEntityId);
+		bean.setAssociationEntity(associationEntity);
+		
+		this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATIONENTITY_SQL, bean);
+		
+		return entityId;	
 	}
 
 	/* (non-Javadoc)
@@ -499,5 +525,13 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	 */
 	public CodingSchemeDao getCodingSchemeDao() {
 		return codingSchemeDao;
+	}
+
+	public void setEntityDao(EntityDao entityDao) {
+		this.entityDao = entityDao;
+	}
+
+	public EntityDao getEntityDao() {
+		return entityDao;
 	}
 }

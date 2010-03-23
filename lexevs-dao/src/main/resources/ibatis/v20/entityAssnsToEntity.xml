@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap>
+<sqlMap namespace="Association">
 
 	<select id="getAccociationInstanceKey" resultClass="string">
 		SELECT

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="Association">
+	
+     <insert id="insertAssociationEntity" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationEntityBean">
+		INSERT INTO $prefix$associationEntity (
+			associationEntityGuid,
+			entityGuid,
+			forwardName,
+			reverseName,
+			isNavigable,
+			isTransitive
+		) VALUES (
+			#id#, 
+			#entityId#,
+			#associationEntity.forwardName#,
+			#associationEntity.reverseName#,
+			#associationEntity.isNavigable#,
+			#associationEntity.isTransitive#
+		)
+  </insert>
+    
+</sqlMap>

@@ -20,6 +20,7 @@ package org.lexevs.dao.database.access.association;
 
 import java.util.List;
 
+import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;

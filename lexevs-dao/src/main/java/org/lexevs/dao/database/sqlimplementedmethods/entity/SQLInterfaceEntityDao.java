@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.relations.AssociationEntity;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.sqlimplementedmethods.AbstraceSqlImplementedMethodsDao;
@@ -163,6 +164,13 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 		@Override
 		public Entity getHistoryEntityByRevision(String codingSchemeId,
 				String entityId, String revisionId) {
+			// TODO Auto-generated method stub (IMPLEMENT!)
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public String insertEntity(String codingSchemeId,
+				AssociationEntity entity, boolean cascade) {
 			// TODO Auto-generated method stub (IMPLEMENT!)
 			throw new UnsupportedOperationException();
 		}

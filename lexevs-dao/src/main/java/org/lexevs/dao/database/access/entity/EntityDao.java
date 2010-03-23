@@ -21,6 +21,7 @@ package org.lexevs.dao.database.access.entity;
 import java.util.List;
 
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.relations.AssociationEntity;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
 
@@ -112,5 +113,7 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	 * @return the all entities of coding scheme
 	 */
 	public List<? extends Entity> getAllEntitiesOfCodingScheme(String codingSchemeId, int start, int pageSize);
+
+	public String insertEntity(String codingSchemeId, AssociationEntity entity, boolean cascade);
 
 }

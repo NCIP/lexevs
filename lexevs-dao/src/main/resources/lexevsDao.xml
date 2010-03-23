@@ -101,6 +101,7 @@
 		class="org.lexevs.dao.database.ibatis.entity.IbatisEntityDao" parent="abstractIbatisDao">
 		<property name="ibatisVersionsDao" ref="ibatisVersionsDao"/>
 		<property name="ibatisPropertyDao" ref="ibatisPropertyDao"/>
+		<property name="ibatisAssociationDao" ref="ibatisAssociationDao"/>
 	</bean>
 	
 	<bean id="ibatisAssociationDao"
