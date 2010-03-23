@@ -27,6 +27,7 @@ import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.Relations;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
+import org.lexevs.dao.database.access.association.model.Triple;
 
 /**
  * The Interface AssociationDao.
@@ -71,6 +72,10 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	 * @return the association predicate id
 	 */
 	public String getAssociationPredicateId(String codingSchemeId, String relationContainerId, String associationPredicateName);
+	
+	public AssociationEntity getAssociationEntityForAssociationPredicateId(
+			String codingSchemeId, String relationContainerId,
+			String associationPredicateId);
 	
 	public String getAssociationPredicateNameForId(String codingSchemeId, String associationPredicateId);
 	/**
@@ -120,6 +125,12 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	 * @return the relations id
 	 */
 	public String getRelationsId(String codingSchemeId, String relationsName);
+	
+	public List<String> getRelationsIdsForCodingSchemeId(String codingSchemeId);
+	
+	public List<String> getAssociationPredicateIdsForRelationsId(String codingSchemeId, String relationsId);
+	
+	public List<Triple> getAllTriplesOfCodingScheme(String codingSchemeId, String associationPredicateId, int start, int pageSize);
 
 	/**
 	 * Insert into transitive closure.

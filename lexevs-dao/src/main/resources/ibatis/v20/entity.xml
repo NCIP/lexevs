@@ -3,15 +3,26 @@
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap namespace="Entity">
 
-	<typeAlias alias="entity" type="org.lexevs.dao.database.lazyload.LazyLoadableEntity" />
+	<typeAlias alias="entity" type="org.LexGrid.concepts.Entity" />
+	<typeAlias alias="associationEntity" type="org.LexGrid.relations.AssociationEntity" />
 
 	<resultMap id="entityResult" class="entity" groupBy="entityCode,entityCodeNamespace">
-		<result property="entityId" column="entityGuid" />
-		<result property="codingSchemeId" column="codingSchemeGuid" />
+<!--		<result property="entityId" column="entityGuid" />-->
+<!--		<result property="codingSchemeId" column="codingSchemeGuid" />-->
 		<result property="entityCode" column="entityCode" />
 		<result property="entityCodeNamespace" column="entityCodeNamespace" />
 		<result property="entityDescription.content" column="description" />
 		<result property="_entityTypeList" resultMap="Entity.entityTypeResult"/>
+		<discriminator javaType="string" column="entityType">
+			<subMap value="association" resultMap="Entity.associationEntityResult" />
+		</discriminator>
+	</resultMap>
+	
+	<resultMap id="associationEntityResult" class="associationEntity" extends="entityResult">
+		<result property="forwardName" column="forwardName" />
+		<result property="reverseName" column="reverseName" />
+		<result property="isNavigable" column="isNavigable" />
+		<result property="isTransitive" column="isTransitive" />
 	</resultMap>
 	
 	<sql id="getEntityFragment">
@@ -21,14 +32,26 @@
 			entity.entityCode,
 			entity.entityCodeNamespace,
 			entity.description,
-			entityType.entityType
+			entityType.entityType,
+			associationEntity.forwardName,
+			associationEntity.reverseName,
+			associationEntity.isNavigable,
+			associationEntity.isTransitive
 		FROM
 			$prefix$entity entity
+			
 		LEFT JOIN
 			$prefix$entityType entityType
 		ON
 			entity.entityGuid =
 			entityType.entityGuid
+				
+		LEFT JOIN
+			$prefix$associationEntity associationEntity
+		ON
+			entity.entityGuid =
+			associationEntity.entityGuid
+			
 		LEFT JOIN
 			$prefix$entryState entryState
 		ON
@@ -62,9 +85,9 @@
 		SELECT
 			COUNT(entityGuid)
 		FROM
-			$prefix$entity
+			$prefix$entity entity
 		WHERE
-			codingSchemeGuid = #param1#
+			entity.codingSchemeGuid = #param1#
      </select>
 
 
@@ -72,13 +95,21 @@
 		SELECT
 			entityGuid
 		FROM
-			$prefix$entity
+			$prefix$entity entity
 		WHERE
 			codingSchemeGuid = #param1#
 		AND
-			entityCode = #param2#
+			entity.entityCode = #param2#
 		AND
-			entityCodeNamespace = #param3#
+			entity.entityCodeNamespace = #param3#
+     </select>
+     
+     <select id="getEntityById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Entity.entityResult">
+		<include refid="getEntityFragment"/>
+		WHERE
+			entity.entityGuid = #param1#
+		AND
+			entity.codingSchemeGuid = #param2#
      </select>
      
 	<select id="getEntityByCodeAndNamespace" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Entity.entityResult">
@@ -86,13 +117,13 @@
 		WHERE
 			entityCode = #param1#
 		AND
-			entityCodeNamespace = #param2#
+			entity.entityCodeNamespace = #param2#
      </select>
      
     <select id="getEntityByIdAndRevisionId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Entity.entityResult">
 		<include refid="getHistoryEntityFragment"/>
 		WHERE
-			entityGuid = #param1#
+			entity.entityGuid = #param1#
 		AND
 			entryState.revisionGuid = #param2#
      </select>
@@ -101,7 +132,7 @@
      	resultMap="Entity.entityResult">
 		<include refid="getEntityFragment"/>
 		WHERE
-			codingSchemeGuid = #param1#
+			entity.codingSchemeGuid = #param1#
      </select>
      
      <insert id="insertEntity" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertEntityBean">

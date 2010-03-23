@@ -334,7 +334,7 @@ ALTER TABLE @PREFIX@associationEntity ADD CONSTRAINT FK_associationEntity_entity
 ;
 
 ALTER TABLE @PREFIX@associationPredicate ADD CONSTRAINT FK_associationPr_associationEn 
-	FOREIGN KEY (associationEntityGuid) REFERENCES @PREFIX@associationEntity (associationEntityGuid)
+	FOREIGN KEY (associationEntityGuid) REFERENCES @PREFIX@entity (entityGuid)
 ;
 
 ALTER TABLE @PREFIX@associationPredicate ADD CONSTRAINT FK_associationPredica_relation 

@@ -21,16 +21,19 @@ package org.lexevs.dao.database.ibatis.association;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 import org.junit.Test;
+import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -130,6 +133,92 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				return true;
 			}
 		});
+	}
+	
+	@Test
+	@Transactional
+	public void getAllTriplesOfCodingSchemeLimit1() throws SQLException{
+		int limit = 1000;
+		
+		AssociationQualification qual = new AssociationQualification();
+		qual.setAssociationQualifier("qualName");
+		qual.setQualifierText(DaoUtility.createText("qual text"));
+		
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+				"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid) values " +
+				"('ap-guid', 'rel-guid')");
+		
+		for(int i=0;i<limit;i++) {
+			template.execute("insert into entityassnstoentity" +
+					" values ('eae-guid" + String.valueOf(i) + "'," +
+					" 'ap-guid'," +
+					" 's" + String.valueOf(i) + "', " +
+					" 's-ns'," +
+					" 't" + String.valueOf(i) + "', " +
+					" 't-ns'," +
+			" 'ai-id', null, null, null, null, null, null, null, null)");
+		}
+		
+		List<Triple> triples = ibatisAssociationDao.getAllTriplesOfCodingScheme("cs-guid", "ap-guid", 0, 1);
+		assertEquals(1, triples.size());
+		
+		Triple triple = triples.get(0);
+		assertEquals("s0", triple.getSourceEntityCode());
+		assertEquals("t0", triple.getTargetEntityCode());
+		assertEquals("s-ns", triple.getSourceEntityNamespace());
+		assertEquals("t-ns", triple.getTargetEntityNamespace());
+		assertEquals("ap-guid", triple.getAssociationPredicateId());
+	}
+	
+	public void getAllTriplesOfCodingSchemeTestStart() throws SQLException{
+		int limit = 1000;
+		
+		AssociationQualification qual = new AssociationQualification();
+		qual.setAssociationQualifier("qualName");
+		qual.setQualifierText(DaoUtility.createText("qual text"));
+		
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+				"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid) values " +
+				"('ap-guid', 'rel-guid')");
+		
+		for(int i=0;i<limit;i++) {
+			template.execute("insert into entityassnstoentity" +
+					" values ('eae-guid" + String.valueOf(i) + "'," +
+					" 'ap-guid'," +
+					" 's" + String.valueOf(i) + "', " +
+					" 's-ns'," +
+					" 't" + String.valueOf(i) + "', " +
+					" 't-ns'," +
+			" 'ai-id', null, null, null, null, null, null, null, null)");
+		}
+		
+		List<Triple> triples = ibatisAssociationDao.getAllTriplesOfCodingScheme("cs-guid", "ap-guid", 500, 1);
+		assertEquals(1, triples.size());
+		
+		Triple triple = triples.get(0);
+		assertEquals("s499", triple.getSourceEntityCode());
+		assertEquals("t499", triple.getTargetEntityCode());
+		assertEquals("s-ns", triple.getSourceEntityNamespace());
+		assertEquals("t-ns", triple.getTargetEntityNamespace());
+		assertEquals("ap-guid", triple.getAssociationPredicateId());
 	}
 	
 	/**
@@ -245,6 +334,90 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		});
 			
 		assertEquals(2, template.queryForObject("Select count(*) from entityassnquals", Integer.class));
+	}
+	
+	@Test
+	@Transactional
+	public void testGetAssociationEntityForAssociationPredicateId() throws SQLException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'cs-guid', 'ecode', 'ens')");
+
+		template.execute("Insert into associationentity (associationEntityGuid, entityGuid, forwardName, reverseName, isNavigable, isTransitive) " +
+			"values ('aeguid', 'eguid', 'afn', 'arn', 'true', 'false')");
+	
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+				"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid, relationGuid, associationEntityGuid, associationName) values " +
+				"('ap-guid', 'rel-guid', 'eguid', 'apName')");
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('eguid', 'association')");
+		
+		
+		AssociationEntity assocEntity = 
+			ibatisAssociationDao.getAssociationEntityForAssociationPredicateId("cs-guid", "rel-guid", "ap-guid");
+		
+		assertNotNull(assocEntity);
+
+	}
+	
+	@Test
+	@Transactional
+	public void testGetAssociationPredicateIdsForRelationsId() throws SQLException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+				"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid, relationGuid, associationEntityGuid, associationName) values " +
+				"('ap-guid1', 'rel-guid', null, 'apName1')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid, relationGuid, associationEntityGuid, associationName) values " +
+				"('ap-guid2', 'rel-guid', null, 'apName2')");
+		
+		List<String> assocPredIds = 
+			ibatisAssociationDao.getAssociationPredicateIdsForRelationsId("cs-guid", "rel-guid");
+		
+		assertEquals(2, assocPredIds.size());
+		
+		assertTrue(assocPredIds.contains("ap-guid1"));
+		assertTrue(assocPredIds.contains("ap-guid2"));
+	}
+	
+	@Test
+	@Transactional
+	public void testGetRelationsIdsForCodingSchemeId() throws SQLException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+				"values ('rel-guid1', 'cs-guid', 'c-name1')");
+		
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+				"values ('rel-guid2', 'cs-guid', 'c-name2')");
+		
+		List<String> relationsIds = 
+			ibatisAssociationDao.getRelationsIdsForCodingSchemeId("cs-guid");
+		
+		assertEquals(2, relationsIds.size());
+		
+		assertTrue(relationsIds.contains("rel-guid1"));
+		assertTrue(relationsIds.contains("rel-guid2"));
 	}
 	
 	/**

@@ -22,8 +22,8 @@ import java.util.List;
 
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Definition;
-import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
+import org.LexGrid.relations.AssociationEntity;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao.IndividualDaoCallback;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
@@ -33,7 +33,7 @@ import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LazyLoadableEntity extends Entity {
+public class LazyLoadableEntity extends AssociationEntity implements CastorProxy{
 	
 	/** The property dao. */
 	private PropertyDao propertyDao;

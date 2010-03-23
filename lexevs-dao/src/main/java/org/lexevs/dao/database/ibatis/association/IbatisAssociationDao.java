@@ -32,6 +32,7 @@ import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchInsertItem;
+import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
@@ -94,6 +95,14 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	private static String GET_ASSOCIATION_PREDICATE_NAME_FOR_ID_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateNameForId";
 	
+	private static String GET_ASSOCIATIONENTITY_ID_FOR_ASSOCIATION_PREDICATE_NAME_SQL = ASSOCIATION_NAMESPACE + "getAssociationEntityIdForAssociationPredicateName";
+	
+	private static String GET_RELATIONS_IDS_FOR_CODINGSCHEME_ID_SQL = ASSOCIATION_NAMESPACE + "getRelationsKeysForCodingSchemeId";
+	
+	private static String GET_ASSOCIATION_PREDICATE_IDS_FOR_RELATIONS_ID_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateKeysForRelationsId";
+	
+	private static String GET_ALL_TRIPLES_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getAllTriplesOfCodingScheme";
+	
 	/** The ibatis versions dao. */
 	private IbatisVersionsDao ibatisVersionsDao;
 	
@@ -101,6 +110,21 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private CodingSchemeDao codingSchemeDao;
 	
 	private EntityDao entityDao;
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Triple> getAllTriplesOfCodingScheme(
+			String codingSchemeId,
+			String associationPredicateId,
+			int start, int pageSize) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_ALL_TRIPLES_OF_CODINGSCHEME_SQL, 
+				new PrefixedParameterTuple(prefix, codingSchemeId, associationPredicateId), 
+				start, 
+				pageSize);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#getAssociationPredicateId(java.lang.String, java.lang.String, java.lang.String)
@@ -122,6 +146,40 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		return
 			(String) 
 				this.getSqlMapClientTemplate().queryForObject(GET_RELATIONS_KEY_SQL, new PrefixedParameterTuple(prefix, codingSchemeId, relationsName));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getAssociationPredicateIdsForRelationsId(
+			String codingSchemeId, String relationsId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_ASSOCIATION_PREDICATE_IDS_FOR_RELATIONS_ID_SQL, 
+				new PrefixedParameter(prefix, relationsId));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getRelationsIdsForCodingSchemeId(String codingSchemeId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_RELATIONS_IDS_FOR_CODINGSCHEME_ID_SQL,
+				new PrefixedParameter(prefix, codingSchemeId));
+	}
+
+	@Override
+	public AssociationEntity getAssociationEntityForAssociationPredicateId(
+			String codingSchemeId, String relationContainerId,
+			String associationPredicateId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+
+		String associationEntityId =  (String) this.getSqlMapClientTemplate().
+			queryForObject(GET_ASSOCIATIONENTITY_ID_FOR_ASSOCIATION_PREDICATE_NAME_SQL, 
+					new PrefixedParameter(prefix, associationPredicateId));
+		
+		return (AssociationEntity) entityDao.getEntityById(codingSchemeId, associationEntityId);
 	}
 	
 	public String getAssociationPredicateNameForId(String codingSchemeId, String associationPredicateId) {

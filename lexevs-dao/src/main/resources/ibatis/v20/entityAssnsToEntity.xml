@@ -3,6 +3,16 @@
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap namespace="Association">
 
+	<typeAlias alias="triple" type="org.lexevs.dao.database.access.association.model.Triple"/>
+
+	<resultMap id="tripleResult" class="triple">
+		<result property="sourceEntityCode" column="sourceEntityCode" />
+		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace" />
+		<result property="targetEntityCode" column="targetEntityCode" />
+		<result property="targetEntityNamespace" column="targetEntityCodeNamespace" />
+		<result property="associationPredicateId" column="associationPredicateGuid" />
+	</resultMap>
+
 	<select id="getAccociationInstanceKey" resultClass="string">
 		SELECT
 			eae.entityAssnsGuid
@@ -24,8 +34,34 @@
 		AND
 			eae.associationInstanceId = 
 			#param2#
-			
+	</select>
 	
+	<select id="getAllTriplesOfCodingScheme" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Association.tripleResult">
+		SELECT
+			eae.sourceEntityCode,
+			eae.sourceEntityCodeNamespace,
+			eae.targetEntityCode,
+			eae.targetEntityCodeNamespace,
+			eae.associationPredicateGuid
+		FROM 
+			$prefix$entityAssnsToEntity eae
+		JOIN
+			$prefix$associationPredicate ap
+		ON 
+			eae.associationPredicateGuid =
+			ap.associationPredicateGuid
+		JOIN
+			$prefix$relation rel
+		ON
+			ap.relationGuid =
+			rel.relationGuid
+		WHERE
+			rel.codingSchemeGuid = 
+			#param1#
+		AND
+			eae.associationPredicateGuid =
+			#param2#	
 	</select>
 	
      <insert id="insertEntityAssnsToEntity" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationSourceBean">

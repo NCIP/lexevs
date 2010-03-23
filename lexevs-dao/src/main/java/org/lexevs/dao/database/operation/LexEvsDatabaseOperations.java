@@ -114,7 +114,7 @@ public interface LexEvsDatabaseOperations {
 	 * @param codingSchemeUri the coding scheme uri
 	 * @param version the version
 	 */
-	public void computeTransitiveTable(String codingSchemeName, String codingSchemeUri, String version);
+	public void computeTransitiveTable(String codingSchemeUri, String codingSchemeVersion);
 	
 	/**
 	 * Index.

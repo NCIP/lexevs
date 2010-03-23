@@ -18,9 +18,11 @@
  */
 package org.lexevs.dao.database.ibatis.entity;
 
+import java.io.StringWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -32,9 +34,10 @@ import org.LexGrid.concepts.Presentation;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
 import org.junit.Before;
 import org.junit.Test;
-import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
 import org.lexevs.dao.database.ibatis.codingscheme.IbatisCodingSchemeDao;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
@@ -478,7 +481,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 	 */
 	@Test
 	@Transactional
-	public void testLazyLoadPresentations() {
+	public void tesEntityresentations() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
 				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
@@ -505,7 +508,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 	 */
 	@Test
 	@Transactional
-	public void testLazyLoadDefinition() {
+	public void testEntitydDefinition() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
 				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'definition')");
@@ -610,5 +613,95 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		assertNotNull(entity);
 		
 		assertEquals(entity.getEntityDescription().getContent(), "d2");
+	}
+	
+	@Test
+	@Transactional
+	public void testGetAssociationEntity() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+	
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		template.execute("Insert into associationentity (associationEntityGuid, entityGuid, forwardName, reverseName, isNavigable, isTransitive) " +
+			"values ('aeguid', 'eguid', 'afn', 'arn', 'true', 'false')");
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('eguid', 'association')");
+			
+		Entity entity = ibatisEntityDao.getEntityByCodeAndNamespace("csguid", "ecode", "ens");
+		
+		assertNotNull(entity);
+		
+		assertTrue(entity instanceof AssociationEntity);	
+	}
+	
+	@Test
+	@Transactional
+	public void testGetEntityWithTwoTypes() throws Exception {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+	
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		template.execute("Insert into associationentity (associationEntityGuid, entityGuid, forwardName, reverseName, isNavigable, isTransitive) " +
+			"values ('aeguid', 'eguid', 'afn', 'arn', 'true', 'false')");
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('eguid', 'instance')");
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('eguid', 'concept')");
+			
+		Entity entity = ibatisEntityDao.getEntityByCodeAndNamespace("csguid", "ecode", "ens");
+		
+		assertNotNull(entity);
+		
+		assertEquals(2, entity.getEntityTypeCount());
+		
+		assertTrue(Arrays.asList(entity.getEntityType()).contains("instance"));
+		assertTrue(Arrays.asList(entity.getEntityType()).contains("concept"));	
+		
+		StringWriter writer = new StringWriter();
+
+		entity.marshal(writer);
+		
+		writer.flush();
+		
+		System.out.println(writer.toString());
+	}
+	
+	@Test
+	@Transactional
+	public void testGetEntityAssociationEntity() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+	
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		template.execute("Insert into associationentity (associationEntityGuid, entityGuid, forwardName, reverseName, isNavigable, isTransitive) " +
+			"values ('aeguid', 'eguid', 'afn', 'arn', 'true', 'false')");
+
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('eguid', 'association')");
+			
+		Entity entity = ibatisEntityDao.getEntityByCodeAndNamespace("csguid", "ecode", "ens");
+		
+		assertNotNull(entity);
+		
+		assertEquals(1, entity.getEntityTypeCount());
+
+		assertTrue(Arrays.asList(entity.getEntityType()).contains("association"));	
+		
+		assertTrue(entity instanceof AssociationEntity);
 	}
 }

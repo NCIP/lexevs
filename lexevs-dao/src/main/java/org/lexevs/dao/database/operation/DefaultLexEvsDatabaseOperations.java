@@ -21,6 +21,7 @@ package org.lexevs.dao.database.operation;
 import javax.sql.DataSource;
 
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.dao.database.operation.transitivity.TransitivityBuilder;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.dao.database.utility.DatabaseUtility;
@@ -54,6 +55,8 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	
 	/** The database type. */
 	private DatabaseType databaseType;
+	
+	private TransitivityBuilder transitivityBuilder;
 
 	/* (non-Javadoc)
 	 * @see org.LexGrid.persistence.connection.PersistenceConnectionManager#isCodingSchemeLoaded(java.lang.String, java.lang.String)
@@ -107,10 +110,9 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#computeTransitiveTable(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void computeTransitiveTable(String codingSchemeName,
-			String codingSchemeUri, String version) {
-		// TODO Auto-generated method stub
-		
+	public void computeTransitiveTable(String codingSchemeUri,
+			String codingSchemeVersion) {
+		transitivityBuilder.computeTransitivityTable(codingSchemeUri, codingSchemeVersion);
 	}
 
 	/**
@@ -284,5 +286,13 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	 */
 	public  PlatformTransactionManager getTransactionManager() {
 		return transactionManager;
+	}
+
+	public void setTransitivityBuilder(TransitivityBuilder transitivityBuilder) {
+		this.transitivityBuilder = transitivityBuilder;
+	}
+
+	public TransitivityBuilder getTransitivityBuilder() {
+		return transitivityBuilder;
 	}
 }

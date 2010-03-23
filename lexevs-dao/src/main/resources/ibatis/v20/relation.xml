@@ -67,6 +67,26 @@
    			
    </select>
    
+  	<select id="getAssociationPredicateKeysForRelationsId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+   		SELECT
+   			associationPredicateGuid
+   		FROM
+   			$prefix$associationPredicate
+		WHERE
+			relationGuid = 
+			#param1#
+   </select>
+   
+   <select id="getAssociationEntityIdForAssociationPredicateName" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+   		SELECT
+   			associationEntityGuid
+   		FROM
+   			$prefix$associationPredicate
+		WHERE
+			associationPredicateGuid = 
+			#param1#
+   </select>
+   
     <select id="getRelationsKey" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
    		SELECT
    			relationGuid
@@ -78,6 +98,16 @@
 		AND
 			containerName = 
 			#param2#		
+   </select>
+   
+    <select id="getRelationsKeysForCodingSchemeId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+   		SELECT
+   			relationGuid
+   		FROM
+   			$prefix$relation
+		WHERE
+			codingSchemeGuid = 
+			#param1#	
    </select>
    
    <select id="getAssociationPredicateNameForId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">

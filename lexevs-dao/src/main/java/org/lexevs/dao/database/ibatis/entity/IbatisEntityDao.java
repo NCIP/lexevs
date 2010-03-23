@@ -87,6 +87,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	/** The ENTIT y_ cod e_ namespac e_ param. */
 	public static String ENTITY_CODE_NAMESPACE_PARAM = SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE;
 	
+	public static String GET_ENTITY_BY_ID_SQL = ENTITY_NAMESPACE + "getEntityById";
+	
 	/** The ENTITY. */
 	public static String ENTITY = "entity";
 	
@@ -107,11 +109,15 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	public Entity getEntityByCodeAndNamespace(String codingSchemeId, String entityCode, String entityCodeNamespace){
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		LazyLoadableEntity entity = (LazyLoadableEntity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_CODE_AND_NAMESPACE_SQL, 
-			new PrefixedParameterTuple(prefix, entityCode, entityCodeNamespace));
-		entity.setPropertyDao(ibatisPropertyDao);
+		String entityId = this.getEntityId(codingSchemeId, entityCode, entityCodeNamespace);
+
+		return doGetEntity(prefix, codingSchemeId, entityId);
+	}
+	
+	public Entity getEntityById(String codingSchemeId, String entityId){
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		return entity;
+		return doGetEntity(prefix, codingSchemeId, entityId);
 	}
 	
 	@Override
@@ -120,6 +126,16 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 		
 		return (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_ID_AND_REVISION_ID_SQL, 
 				new PrefixedParameterTuple(prefix, entityId, revisionId));
+	}
+	
+	protected Entity doGetEntity(String prefix, String codingSchemeId, String entityId) {
+		Entity entity = (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_ID_SQL, 
+				new PrefixedParameterTuple(prefix, entityId, codingSchemeId));
+			
+		entity.addAnyProperties(
+				ibatisPropertyDao.getAllPropertiesOfParent(codingSchemeId, entityId, PropertyType.ENTITY));
+		
+		return entity;
 	}
 
 	/* (non-Javadoc)
@@ -286,15 +302,19 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 			pageSize = Integer.MAX_VALUE;
 		}
 		
-		List<LazyLoadableEntity> entities = 
+		List<Entity> entities = 
 			this.getSqlMapClientTemplate().queryForList(GET_ENTITIES_OF_CODING_SCHEME_SQL, 
 					new PrefixedParameter(prefix, codingSchemeId),
 					start, pageSize);
 		
-		for(LazyLoadableEntity entity : entities) {
-			entity.setPropertyDao(this.ibatisPropertyDao);
+		for(Entity entity : entities) {
+			entity.addAnyProperties(
+					this.ibatisPropertyDao.getAllPropertiesOfParent(
+							codingSchemeId, 
+							this.getEntityId(codingSchemeId, entity.getEntityCode(), entity.getEntityCodeNamespace()), 
+							PropertyType.ENTITY));
 		}
-		
+
 		return entities;
 	}
 	
