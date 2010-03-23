@@ -18,7 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.loaders;
 
-import java.io.File;
 import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -35,16 +34,15 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.HL7_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
-import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.logging.LoggerFactory;
 
 import edu.mayo.informatics.lexgrid.convert.emfConversions.hl7.HL72EMFConstants;
-import edu.mayo.informatics.lexgrid.convert.formats.Option;
-import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.HL7SQL;
+import edu.mayo.informatics.lexgrid.convert.emfConversions.hl7.HL72EMFMain;
 import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
@@ -187,14 +185,33 @@ public class HL7LoaderImpl extends BaseLoader implements HL7_Loader {
     
     @Override
     protected OptionHolder declareAllowedOptions(OptionHolder holder) {
-        holder.getBooleanOptions().add(new BooleanOption("FAIL_ON_ERROR", false));
         return holder;
     }
 
     @Override
     protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        String dbName = this.getResourceUri().toString();
+        
+        
+        if (!System.getProperties().getProperty("os.name").contains("Windows")) {
+            throw new RuntimeException(
+                    "This loader loads from MS Access and as a result can only be run from Microsoft Windows");
+        }
+        if (dbName.startsWith("/")) {
+            dbName = dbName.substring(1);
+        } else if (dbName.startsWith("file")) {
+            dbName = dbName.substring(6);
+        }
+        
+        HL72EMFMain hl7Loader = new HL72EMFMain();
+        try {
+           CodingScheme codingScheme = hl7Loader.map(dbName, this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).getOptionValue(), this.getMessageDirector());
+           this.persistCodingSchemeToDatabase(codingScheme);
+           
+           return this.constructVersionPairsFromCodingSchemes(codingScheme);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
