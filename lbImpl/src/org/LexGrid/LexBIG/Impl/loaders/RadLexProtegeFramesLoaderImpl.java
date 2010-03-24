@@ -19,6 +19,8 @@
 package org.LexGrid.LexBIG.Impl.loaders;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -27,11 +29,14 @@ import org.LexGrid.LexBIG.Extensions.Load.RadlexProtegeFrames_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+import org.springframework.validation.Errors;
 
+import edu.mayo.informatics.lexgrid.convert.emfConversions.fma.FMA2EMFMain;
 import edu.mayo.informatics.lexgrid.convert.emfConversions.radlex.RadLex2EMFMain;
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.ProtegeFrames;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
+import edu.stanford.smi.protege.model.Project;
 
 /**
  * Validates and/or loads RadLex content, provided by the
@@ -85,12 +90,26 @@ public class RadLexProtegeFramesLoaderImpl extends BaseLoader implements RadlexP
 
     @Override
     protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
-        RadLex2EMFMain radlexLoader = new RadLex2EMFMain();
-        CodingScheme codingScheme = radlexLoader.map(this.getResourceUri(), this.getMessageDirector());
+        List<Object> errors = new ArrayList<Object>();
         
-        super.persistCodingSchemeToDatabase(codingScheme);
+        Project proj = Project.loadProjectFromURI(this.getResourceUri(), errors);
+        String project_name = proj.getProjectName();
         
-        return super.constructVersionPairsFromCodingSchemes(codingScheme);
+        CodingScheme scheme;
+        
+        if ("FMA".equalsIgnoreCase(project_name)) {
+            FMA2EMFMain mainTxfm = new FMA2EMFMain();
+            scheme = mainTxfm.map(this.getResourceUri(), this.getMessageDirector());
+        } else if ((project_name != null) && (project_name.toLowerCase().startsWith("radlex"))) {
+            RadLex2EMFMain mainTxfm = new RadLex2EMFMain();
+            scheme = mainTxfm.map(this.getResourceUri(), this.getMessageDirector());
+        } else {
+            throw new RuntimeException("Currently the Protege Frames loader only supports loading of FMA and RadLex.");
+        }
+ 
+        super.persistCodingSchemeToDatabase(scheme);
+        
+        return super.constructVersionPairsFromCodingSchemes(scheme);
     }
 
     @Override
