@@ -45,6 +45,7 @@ import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.LexGrid.custom.concepts.EntityFactory;
 import org.LexGrid.custom.relations.RelationsUtil;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 
@@ -96,11 +97,11 @@ public class RadLex2EMFDynamicMapHolders {
 
     private Relations allRelations_ = null;
 
-    private List allAssociations_ = null;
+//    private List allAssociations_ = null;
 
     private Entities allConcepts_ = null;
 
-    private List allCodedEntries_ = null;
+//    private List allCodedEntries_ = null;
 
     private LgMessageDirectorIF messages_ = null;
     
@@ -140,16 +141,12 @@ public class RadLex2EMFDynamicMapHolders {
                 csclass.setEntities(allConcepts_);
             }
             
-            allCodedEntries_ = Arrays.asList(allConcepts_.getEntity());
-
             // Relations
             allRelations_ = new Relations();
             allRelations_.setContainerName(SQLTableConstants.TBLCOLVAL_DC_RELATIONS);
 
             // Creating the relation instance
-            firstRelation_ = Arrays.asList(csclass.getRelations());
-            firstRelation_.add(allRelations_);
-            allAssociations_ = Arrays.asList(allRelations_.getAssociationPredicate());
+            csclass.addRelations(allRelations_);
 
             // Add HasSubtype
             hasSubTypeAssocClass_ = new AssociationPredicate();
@@ -171,9 +168,9 @@ public class RadLex2EMFDynamicMapHolders {
             associationEntityHash_.put(RadLex2EMFConstants.ASSOCIATION_HASSUBTYPE, hasSubTypeAssocEntityClass_);
             associationRevHash_.put(RadLex2EMFConstants.ASSOCIATION_ISA, hasSubTypeAssocClass_);
 
-            allAssociations_.add(hasSubTypeAssocClass_);
+            allRelations_.addAssociationPredicate(hasSubTypeAssocClass_);
 
-            relations_.add(firstRelation_);
+            relations_.add(csclass.getRelations());
 
             boolean testing = false;
 
@@ -305,7 +302,7 @@ public class RadLex2EMFDynamicMapHolders {
                                     inst = createInstanceFromProtegeCls(rlCls);
                                     attributeInstances.put(iCode, inst);
                                     conceptList_.add(iCode);
-                                    allCodedEntries_.add(inst);
+                                    allConcepts_.addEntity(inst);
                                 }
                             }
                             
@@ -338,7 +335,7 @@ public class RadLex2EMFDynamicMapHolders {
                                     slotLGConcept = createCoceptFromSlot(referredSlot);
                                     attributeConcepts.put(sltNm, slotLGConcept);
                                     conceptList_.add(slotLGConcept.getEntityCode());
-                                    allCodedEntries_.add(slotLGConcept);
+                                    allConcepts_.addEntity(slotLGConcept);
                                     addParentChildRelationship("RID10310", slotLGConcept.getEntityCode());
                                 }
                                 
@@ -399,7 +396,7 @@ public class RadLex2EMFDynamicMapHolders {
                     propertyCounter = 0;
                     conceptList_.add(conceptCode);
 
-                    con = new Concept();
+                    con = EntityFactory.createConcept();
                     con.setEntityCode(conceptCode);
 
                     String description = getEntityDescriptionFromObj(concept);
@@ -424,7 +421,7 @@ public class RadLex2EMFDynamicMapHolders {
                     processSlots(concept, con, isRadLexSynonymCls);
 
                     // if (!isRadLexSynonymCls)
-                    allCodedEntries_.add(con);
+                    allConcepts_.addEntity(con);
 
                     stored = true;
                 }
@@ -444,7 +441,7 @@ public class RadLex2EMFDynamicMapHolders {
         propertyCounter = 0;
         conceptList_.add(code);
 
-        con = new Concept();
+        con = EntityFactory.createConcept();
         con.setEntityCode(code);
 
         String description = getEntityDescriptionFromObj(slot);
@@ -505,8 +502,8 @@ public class RadLex2EMFDynamicMapHolders {
     public int getApproxNumberOfConcepts() 
     {
         int num = 0;
-        if (allCodedEntries_ != null) {
-            num = allCodedEntries_.size();
+        if (allConcepts_ != null) {
+            num = allConcepts_.getEntity().length;
         }
         return num;
     }
@@ -642,8 +639,8 @@ public class RadLex2EMFDynamicMapHolders {
     private boolean toSkipThisSlot(String slotName) {
         if ((RadLex2EMFConstants.SLOT_Radlex_CONCEPT_CODE.equals(slotName))
                 || (RadLex2EMFConstants.SLOT_NAME.equals(slotName))
-                || (RadLex2EMFConstants.SLOT_HASSUBTYPE.equalsIgnoreCase(slotName))
-                //|| (RadLex2EMFConstants.SLOT_Radlex_SYNONYM_OF.equalsIgnoreCase(slotName))
+                || (RadLex2EMFConstants.SLOT_HASSUBTYPE.equals(slotName))
+                //|| (RadLex2EMFConstants.SLOT_Radlex_SYNONYM_OF.equals(slotName))
                 || (RadLex2EMFConstants.SLOT_DEFINITION.equals(slotName)))
             return true;
 
@@ -891,7 +888,7 @@ public class RadLex2EMFDynamicMapHolders {
             else
                 tp.setPropertyId(code);
             
-            tps.add(tp);
+            con.addPresentation(tp);
         }
     }
 
@@ -911,8 +908,8 @@ public class RadLex2EMFDynamicMapHolders {
             if (RadLex2EMFUtils.isNull(value))
                 return;
 
-            if ((!RadLex2EMFConstants.SLOT_Radlex_SYNONYM.equalsIgnoreCase(slotName)) &&
-                    (!RadLex2EMFConstants.SLOT_Radlex_SYNONYM_OF.equalsIgnoreCase(slotName)))
+            if ((!RadLex2EMFConstants.SLOT_Radlex_SYNONYM.equals(slotName)) &&
+                    (!RadLex2EMFConstants.SLOT_Radlex_SYNONYM_OF.equals(slotName)))
             {
                 addPresentationToConcept(con, value, slotName, null);
             } else {
@@ -1067,7 +1064,7 @@ public class RadLex2EMFDynamicMapHolders {
             //System.out.println("Added [" + sourceCode + "] -> [" + relation + "] -> [" + inst.getEntityCode() + "]");
             if (createdNew) 
             {
-                allAssociations_.add(assocClass);
+                allRelations_.addAssociationPredicate(assocClass);
 
                 if (!associations_.contains(relation))
                     associations_.add(relation);
@@ -1220,17 +1217,17 @@ public class RadLex2EMFDynamicMapHolders {
                             // Relation is same as forward name
                             AssociationSource aI = new AssociationSource();
 
-                            List tc = null;
                             if ((ValueType.CLS.equals(vT)) || (ValueType.INSTANCE.equals(vT))) {
-                                tc = Arrays.asList(aI.getTarget());
+                                aI.setSourceEntityCode(con.getEntityCode());
+                                for (int i = 0; i < valVector.size(); i++)
+                                    aI.addTarget((AssociationTarget) valVector.elementAt(i));
                             } else {
-                                tc = Arrays.asList(aI.getTargetData());
+                                aI.setSourceEntityCode(con.getEntityCode());
+                                for (int i = 0; i < valVector.size(); i++)
+                                    aI.addTargetData((AssociationData) valVector.elementAt(i));
                             }
 
-                            aI.setSourceEntityCode(con.getEntityCode());
-
-                            for (int i = 0; i < valVector.size(); i++)
-                                tc.add(valVector.elementAt(i));
+                            
 
                             // assocClass.getSource().add(aI);
                             RelationsUtil.subsume(assocClass, aI);
@@ -1253,7 +1250,7 @@ public class RadLex2EMFDynamicMapHolders {
                 }
 
                 if (createdNew) {
-                    allAssociations_.add(assocClass);
+                    allRelations_.addAssociationPredicate(assocClass);
 
                     if (!associations_.contains(relation))
                         associations_.add(relation);
@@ -1585,8 +1582,6 @@ public class RadLex2EMFDynamicMapHolders {
         if (csclass == null)
             return;
 
-        List suppProps = Arrays.asList(csclass.getMappings().getSupportedProperty());
-
         try {
             if (properties_.size() > 0) {
                 for (int i = 0; i < properties_.size(); i++) {
@@ -1603,7 +1598,7 @@ public class RadLex2EMFDynamicMapHolders {
                         }
 
                         suppProp.setLocalId(prp);
-                        suppProps.add(suppProp);
+                        csclass.getMappings().addSupportedProperty(suppProp);
                     }
                 }
             }
@@ -1617,8 +1612,6 @@ public class RadLex2EMFDynamicMapHolders {
             if (csclass == null)
                 return;
 
-            List suppAssoc = Arrays.asList(csclass.getMappings().getSupportedAssociation());
-
             int assocSize = associations_.size();
             int assocAliasSize = associationsAliases_.size();
             int total = assocSize + assocAliasSize;
@@ -1631,7 +1624,7 @@ public class RadLex2EMFDynamicMapHolders {
                             SupportedAssociation suppAss = new SupportedAssociation();
                             suppAss.setUri(RadLex2EMFUtils.getWithRadlexURN(sA));
                             suppAss.setLocalId(RadLex2EMFUtils.toNMToken(sA));
-                            suppAssoc.add(suppAss);
+                            csclass.getMappings().addSupportedAssociation(suppAss);
                         }
                     }
                 }
@@ -1646,7 +1639,7 @@ public class RadLex2EMFDynamicMapHolders {
                                 SupportedAssociation suppAss = new SupportedAssociation();
                                 suppAss.setUri(RadLex2EMFUtils.getWithRadlexURN(ali[0]));
                                 suppAss.setLocalId(RadLex2EMFUtils.toNMToken(ali[1]));
-                                suppAssoc.add(suppAss);
+                                csclass.getMappings().addSupportedAssociation(suppAss);
                             }
                         }
                     }
@@ -1662,8 +1655,6 @@ public class RadLex2EMFDynamicMapHolders {
         if (csclass == null)
             return;
 
-        List suppSrcs = Arrays.asList(csclass.getMappings().getSupportedSource());
-
         try {
             int srcsSize = sources_.size();
 
@@ -1676,7 +1667,7 @@ public class RadLex2EMFDynamicMapHolders {
                             SupportedSource suppSrc = new SupportedSource();
                             suppSrc.setUri(RadLex2EMFUtils.getWithRadlexURN(src));
                             suppSrc.setLocalId(RadLex2EMFUtils.toNMToken(src));
-                            suppSrcs.add(suppSrc);
+                            csclass.getMappings().addSupportedSource(suppSrc);
                         }
                     }
                 }
@@ -1691,8 +1682,6 @@ public class RadLex2EMFDynamicMapHolders {
         if (csclass == null)
             return;
 
-        List suppRepf = Arrays.asList(csclass.getMappings().getSupportedRepresentationalForm());
-
         try {
             int repfSize = representationalForms_.size();
 
@@ -1705,7 +1694,7 @@ public class RadLex2EMFDynamicMapHolders {
                             SupportedRepresentationalForm suppRpf = new SupportedRepresentationalForm();
                             suppRpf.setUri(RadLex2EMFUtils.getWithRadlexURN(rep));
                             suppRpf.setLocalId(RadLex2EMFUtils.toNMToken(rep));
-                            suppRepf.add(suppRpf);
+                            csclass.getMappings().addSupportedRepresentationalForm(suppRpf);
                         }
                     }
                 }

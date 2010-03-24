@@ -47,10 +47,10 @@ public class RadLex2EMFStaticMapHolders {
     private LgMessageDirectorIF messages_;
 
     private void init(KnowledgeBase kb) {
-     
+
     }
 
-    private void prepareSupportedLanguages(List suppLang, KnowledgeBase kb) {
+    private void prepareSupportedLanguages(CodingScheme cs, KnowledgeBase kb) {
         try {
             // Read allowed values of languages from
             // Language slot's allowed values
@@ -73,7 +73,7 @@ public class RadLex2EMFStaticMapHolders {
                                 lang.setLocalId(val);
                                 lang.setUri(getLanguageURN(val));
 
-                                suppLang.add(lang);
+                                cs.getMappings().addSupportedLanguage(lang);
                                 languagesFound = true;
                             }
                         }
@@ -86,7 +86,7 @@ public class RadLex2EMFStaticMapHolders {
                 SupportedLanguage lang = new SupportedLanguage();
                 lang.setLocalId(RadLex2EMFConstants.LANG_ENGLISH);
                 lang.setUri(RadLex2EMFConstants.LANG_ENGLISH_URN);
-                suppLang.add(lang);
+                cs.getMappings().addSupportedLanguage(lang);
 
             }
         } catch (Exception e) {
@@ -104,38 +104,35 @@ public class RadLex2EMFStaticMapHolders {
 
     private void prepareSupportedCodingScheme(CodingScheme csclass) {
         try {
-            List suppCodingScheme = Arrays.asList(csclass.getMappings().getSupportedCodingScheme());
             SupportedCodingScheme scs = new SupportedCodingScheme();
             scs.setLocalId(csclass.getCodingSchemeName());
             scs.setUri(csclass.getCodingSchemeURI());
-            suppCodingScheme.add(scs);
+            csclass.getMappings().addSupportedCodingScheme(scs);
         } catch (Exception e) {
             messages_.error("Failed while setting supported codingScheme...", e);
         }
     }
-    
+
     public void prepareSupportedHierarchy(CodingScheme csclass) {
         try {
-            List suppHierarchy = Arrays.asList(csclass.getMappings().getSupportedHierarchy());
             org.LexGrid.naming.SupportedHierarchy shr = new org.LexGrid.naming.SupportedHierarchy();
             shr.setLocalId(RadLex2EMFConstants.SUPP_HIERARCHY_ISA);
             shr.setUri(RadLex2EMFConstants.SUPP_HIERARCHY_ISA_URI);
             shr.setContent(RadLex2EMFConstants.SUPP_HIERARCHY_ISA);
             shr.setIsForwardNavigable(true);
             shr.setRootCode(RadLex2EMFConstants.ROOT_CODE);
-            suppHierarchy.add(shr);
-            shr.setAssociationNames(
-                    Arrays.asList(RadLex2EMFConstants.SUPP_HIERARCHY_ISA_ASSOCIATION_LIST));
+            shr.setAssociationNames(Arrays.asList(RadLex2EMFConstants.SUPP_HIERARCHY_ISA_ASSOCIATION_LIST));
+            csclass.getMappings().addSupportedHierarchy(shr);
         } catch (Exception e) {
             messages_.error("Failed while setting supported Hierarchy...", e);
         }
     }
 
-    private void prepareSupportedFormats(List suppFmt) {
+    private void prepareSupportedFormats(CodingScheme cs) {
         SupportedDataType fmt = new SupportedDataType();
         fmt.setLocalId(RadLex2EMFConstants.PLAIN_FORMAT);
         fmt.setUri(RadLex2EMFConstants.PLAIN_FORMAT_URN);
-        suppFmt.add(fmt);
+        cs.getMappings().addSupportedDataType(fmt);
     }
 
     public CodingScheme getRadlexCodingScheme(KnowledgeBase kb) {
@@ -152,14 +149,12 @@ public class RadLex2EMFStaticMapHolders {
             csclass.setRepresentsVersion(RadLex2EMFConstants.VERSION);
             csclass.addLocalName(RadLex2EMFConstants.LOCAL_NAME);
 
-            List supportedLanguages = Arrays.asList(csclass.getMappings().getSupportedLanguage());
-            prepareSupportedLanguages(supportedLanguages, kb);
+            prepareSupportedLanguages(csclass, kb);
 
-            List supportedFormats = Arrays.asList(csclass.getMappings().getSupportedDataType());
-            prepareSupportedFormats(supportedFormats);
+            prepareSupportedFormats(csclass);
             prepareSupportedCodingScheme(csclass);
             prepareSupportedHierarchy(csclass);
-            
+
             // EList supportedDataTypes = csclass.getSupportedDataType();
             // prepareSupportedDataTypes(supportedDataTypes);
         } catch (Exception e) {
@@ -170,8 +165,7 @@ public class RadLex2EMFStaticMapHolders {
         return csclass;
     }
 
-    public static Vector getFixedProperties() 
-    {
+    public static Vector getFixedProperties() {
         properties.clear();
         properties.add(RadLex2EMFConstants.PROPERTY_COMMENT);
         properties.add(RadLex2EMFConstants.PROPERTY_DEFINITION);
