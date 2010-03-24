@@ -49,8 +49,8 @@
 			propertyId = #param2#
   	</select>
   	
-  	<sql id="getPropertyFragment">
-  	  	SELECT
+  	<sql id="selectPropertyFragment">
+  		SELECT
   			property.referenceType,
   			property.propertyId,
   			property.propertyType,
@@ -82,16 +82,54 @@
   		ON
   			property.entryStateGuid =
   			entryState.entryStateGuid	
+  	</sql>
+  	
+  	<sql id="getHistoryPropertyFragment">
+  	  	<include refid="selectPropertyFragment"/>
   				
   		LEFT JOIN
   			$prefix$propertyMultiAttrib qualifier
   		ON
   		(
-  			property.propertyGuid =
-  			qualifier.propertyGuid	
+  			property.propertyGuid = qualifier.propertyGuid	
+  			AND		
+  			qualifier.attributeType = 'qualifier'		
+  			AND	
+  			qualifier.entryStateGuid = property.entryStateGuid
+  		)
   			
-  			AND
+  		LEFT JOIN
+  			$prefix$propertyMultiAttrib usageContext
+  		ON
+  		(
+  			property.propertyGuid = usageContext.propertyGuid	
+  			AND 			
+  			usageContext.attributeType = 'usageContext' 			
+  			AND 			
+  			usageContext.entryStateGuid = property.entryStateGuid
+  		)
   			
+  		LEFT JOIN
+  			$prefix$propertyMultiAttrib source
+  		ON
+  		(
+  			property.propertyGuid = source.propertyGuid		
+  			AND	
+  			source.attributeType = 'source'	
+  			AND	
+  			source.entryStateGuid = property.entryStateGuid
+  		)		
+  	</sql>
+  	
+  	<sql id="getPropertyFragment">
+  	  	<include refid="selectPropertyFragment"/>
+  				
+  		LEFT JOIN
+  			$prefix$propertyMultiAttrib qualifier
+  		ON
+  		(
+  			property.propertyGuid = qualifier.propertyGuid	  			
+  			AND 			
   			qualifier.attributeType = 'qualifier'
   		)
   			
@@ -99,11 +137,8 @@
   			$prefix$propertyMultiAttrib usageContext
   		ON
   		(
-  			property.propertyGuid =
-  			usageContext.propertyGuid	
-  			
-  			AND
-  			
+  			property.propertyGuid = usageContext.propertyGuid	
+  			AND		
   			usageContext.attributeType = 'usageContext'
   		)
   			
@@ -111,11 +146,8 @@
   			$prefix$propertyMultiAttrib source
   		ON
   		(
-  			property.propertyGuid =
-  			source.propertyGuid		
-  			
-  			AND
-  			
+  			property.propertyGuid = source.propertyGuid		
+  			AND	
   			source.attributeType = 'source'
   		)		
   	</sql>
@@ -129,7 +161,7 @@
   	</select>
   	
   	<select id="getPropertiesByParentAndRevisionId" resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
-		<include refid="getPropertyFragment"/>
+		<include refid="getHistoryPropertyFragment"/>
   		WHERE
 			property.referenceType = #param1#
 		AND 

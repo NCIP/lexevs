@@ -35,17 +35,17 @@ import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
 import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
-import org.lexevs.dao.database.ibatis.entity.parameter.InsertEntityBean;
+import org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.property.IbatisPropertyDao;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
-import org.lexevs.dao.database.lazyload.LazyLoadableEntity;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
+import org.springframework.util.Assert;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
 
@@ -88,6 +88,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	public static String ENTITY_CODE_NAMESPACE_PARAM = SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE;
 	
 	public static String GET_ENTITY_BY_ID_SQL = ENTITY_NAMESPACE + "getEntityById";
+	
+	public static String UPDATE_ENTITY_BY_ID_SQL = ENTITY_NAMESPACE + "updateEntityById";
 	
 	/** The ENTITY. */
 	public static String ENTITY = "entity";
@@ -154,8 +156,19 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	 */
 	public void updateEntity(String codingSchemeId,
 			Entity entity) {
-		// TODO Auto-generated method stub
+		Assert.hasText(entity.getEntityCode(), "An Entity Code is required to be populated to Updated an Entity.");
+		Assert.hasText(entity.getEntityCodeNamespace(), "An Entity Code Namespace is required to be populated to Updated an Entity.");
 		
+		String entityId = this.getEntityId(codingSchemeId, entity.getEntityCode(), entity.getEntityCodeNamespace());
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		InsertOrUpdateEntityBean bean = new InsertOrUpdateEntityBean();
+		bean.setPrefix(prefix);
+		bean.setEntity(entity);
+		bean.setCodingSchemeId(codingSchemeId);
+		bean.setId(entityId);
+		
+		this.getSqlMapClientTemplate().update(UPDATE_ENTITY_BY_ID_SQL, bean);
 	}
 	
 	@Override
@@ -375,8 +388,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	 * 
 	 * @return the insert entity bean
 	 */
-	protected InsertEntityBean buildInsertEntityParamaterBean(String prefix, String codingSchemeId, String entityId, String entryStateId, Entity entity){
-		InsertEntityBean bean = new InsertEntityBean();
+	protected InsertOrUpdateEntityBean buildInsertEntityParamaterBean(String prefix, String codingSchemeId, String entityId, String entryStateId, Entity entity){
+		InsertOrUpdateEntityBean bean = new InsertOrUpdateEntityBean();
 		bean.setPrefix(prefix);
 		bean.setCodingSchemeId(codingSchemeId);
 		bean.setId(entityId);

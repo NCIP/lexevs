@@ -27,7 +27,6 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
-import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -35,7 +34,6 @@ import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
-import org.lexevs.dao.database.ibatis.entity.IbatisEntityDao;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,10 +55,6 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	@Autowired
 	private IbatisPropertyDao ibatisPropertyDao;
 	
-	/** The ibatis entity dao. */
-	@Autowired
-	private IbatisEntityDao ibatisEntityDao;
-
 	/**
 	 * Insert presentation.
 	 */
@@ -316,7 +310,7 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation', 'esguid')");
 		
 		template.execute("Insert into h_propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId, attributeValue, entryStateGuid) " +
-				"values ('pmaguid', 'pguid', 'qual', 'aqual', 'some_qual', 'esguid')");
+				"values ('pmaguid', 'pguid', 'qualifier', 'aqual', 'some_qual', 'esguid')");
 		
 		template.execute("Insert into h_entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
 				"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid')");
@@ -332,6 +326,58 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals(1, props.size());
 		
 		assertEquals(1, props.get(0).getPropertyQualifierCount());
+	}
+	
+	@Transactional
+	@Test
+	public void testGetHistoryPropertyWithTwoQualifiers() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into h_property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, entryStateGuid) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation', 'esguid1')");
+		
+		template.execute("Insert into h_property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, entryStateGuid) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation', 'esguid2')");
+
+		template.execute("Insert into h_propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId, attributeValue, entryStateGuid) " +
+				"values ('pmaguid', 'pguid', 'qualifier', 'aqual', 'some_qual1', 'esguid1')");
+		
+		template.execute("Insert into h_propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId, attributeValue, entryStateGuid) " +
+				"values ('pmaguid', 'pguid', 'qualifier', 'aqual', 'some_qual2', 'esguid2')");
+
+		template.execute("Insert into h_entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
+				"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid1')");
+		
+		template.execute("Insert into h_entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
+				"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid2')");
+
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+				"values ('rguid1', 'rid1', NOW() )");
+		
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+				"values ('rguid2', 'rid2', NOW() )");
+		
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+				"values ('esguid1', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
+		
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+				"values ('esguid2', 'eguid', 'entity', 'MODIFY', '0', 'rguid2')");
+
+		List<Property> props = ibatisPropertyDao.getAllHistoryPropertiesOfParentByRevisionId("csguid", "eguid", "rguid1", PropertyType.ENTITY);
+		
+		assertEquals(1, props.size());
+		
+		assertEquals(1, props.get(0).getPropertyQualifierCount());
+	
+		assertEquals("some_qual1", props.get(0).getPropertyQualifier(0).getValue().getContent());
+	
+		props = ibatisPropertyDao.getAllHistoryPropertiesOfParentByRevisionId("csguid", "eguid", "rguid2", PropertyType.ENTITY);
+		
+		assertEquals(1, props.size());
+		
+		assertEquals(1, props.get(0).getPropertyQualifierCount());
+	
+		assertEquals("some_qual2", props.get(0).getPropertyQualifier(0).getValue().getContent());
+
 	}
 	
 	@Test

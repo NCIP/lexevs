@@ -53,7 +53,7 @@
 			associationEntity.entityGuid
 			
 		LEFT JOIN
-			$prefix$entryState entryState
+			${defaultPrefix}entryState entryState
 		ON
 			entity.entryStateGuid =
 			entryState.entryStateGuid		
@@ -135,7 +135,7 @@
 			entity.codingSchemeGuid = #param1#
      </select>
      
-     <insert id="insertEntity" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertEntityBean">
+     <insert id="insertEntity" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean">
 		INSERT INTO $prefix$entity (
 			entityGuid,
 			codingSchemeGuid,
@@ -166,5 +166,48 @@
 			#entryStateId#
 		)
   </insert>
+  
+  <update id="updateEntityById" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean">
+		UPDATE 
+			$prefix$entity entity
+		SET 
+   		  <dynamic prepend=" ">
+			<isNotNull prepend="," property="entity.entityCode">
+				entityCode = #entity.entityCode#
+			</isNotNull>
+			<isNotNull prepend="," property="entity.entityCodeNamespace">
+				entityCodeNamespace = #entity.entityCodeNamespace#
+			</isNotNull>
+			<isNotNull prepend="," property="entity.isDefined">
+				isDefined = #entity.isDefined#
+			</isNotNull>
+			<isNotNull prepend="," property="entity.isAnonymous">
+				isAnonymous = #entity.isAnonymous#
+			</isNotNull>
+			<isNotNull prepend="," property="entity.entityDescription.content">
+				description = #entity.entityDescription.content#
+			</isNotNull>
+			<isNotNull prepend="," property="entity.isActive">
+				isActive = #entity.isActive#
+			</isNotNull>
+			<isNotNull prepend="," property="entity.owner">
+				owner = #entity.owner#
+			</isNotNull>
+			<isNotNull prepend="," property="entity.status">
+				status = #entity.status#
+			</isNotNull>
+			<isNotNull prepend="," property="entity.effectiveDate">
+				effectiveDate = #entity.effectiveDate#
+			</isNotNull>
+			<isNotNull prepend="," property="entity.expirationDate">
+				expirationDate = #entity.expirationDate#
+			</isNotNull>
+		</dynamic>
+
+		WHERE 
+			entity.entityGuid = #id#
+		AND
+			entity.codingSchemeGuid = #codingSchemeId#
+ 	</update>
     
 </sqlMap>

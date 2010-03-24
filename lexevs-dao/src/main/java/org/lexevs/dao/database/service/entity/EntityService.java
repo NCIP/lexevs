@@ -110,7 +110,7 @@ public interface EntityService {
 	 * @param entity the entity
 	 */
 	public void updateEntity(
-			String codingSchemeName, 
+			String codingSchemeUri, 
 			String version, 
 			String enityCode,
 			String entityCodeNamespace,

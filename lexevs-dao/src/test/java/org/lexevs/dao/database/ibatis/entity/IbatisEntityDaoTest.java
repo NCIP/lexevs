@@ -34,8 +34,6 @@ import org.LexGrid.concepts.Presentation;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.ibatis.codingscheme.IbatisCodingSchemeDao;
@@ -703,5 +701,41 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		assertTrue(Arrays.asList(entity.getEntityType()).contains("association"));	
 		
 		assertTrue(entity instanceof AssociationEntity);
+	}
+	
+	@Test
+	@Transactional
+	public void testUpdateEntityEntityDescription() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+	
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('eguid', 'association')");
+			
+		Entity modifiedEntity = new Entity();
+		modifiedEntity.setEntityCode("ecode");
+		modifiedEntity.setEntityCodeNamespace("ens");
+		
+		EntityDescription ed = new EntityDescription();
+		ed.setContent("updated content");
+		modifiedEntity.setEntityDescription(ed);
+		
+		ibatisEntityDao.updateEntity("csguid", modifiedEntity);
+
+		template.queryForObject("Select * from entity", new RowMapper(){
+
+			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
+
+				assertTrue(rs.getString(7).equals("updated content"));
+				
+				return null;
+				
+			}
+		});
 	}
 }
