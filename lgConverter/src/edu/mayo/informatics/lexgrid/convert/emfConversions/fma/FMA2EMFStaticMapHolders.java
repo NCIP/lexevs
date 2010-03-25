@@ -51,7 +51,7 @@ public class FMA2EMFStaticMapHolders {
     private void init(KnowledgeBase kb) {
     }
 
-    private void prepareSupportedLanguages(List suppLang, KnowledgeBase kb) {
+    private void prepareSupportedLanguages(CodingScheme cs, KnowledgeBase kb) {
         try {
             // Read allowed values of languages from
             // Language slot's allowed values
@@ -73,7 +73,7 @@ public class FMA2EMFStaticMapHolders {
                                 SupportedLanguage lang = new SupportedLanguage();
                                 lang.setLocalId(val);
                                 lang.setUri(getLanguageURN(val));
-                                suppLang.add(lang);
+                                cs.getMappings().addSupportedLanguage(lang);
                                 languagesFound = true;
                             }
                         }
@@ -86,12 +86,12 @@ public class FMA2EMFStaticMapHolders {
                 SupportedLanguage lang = new SupportedLanguage();
                 lang.setLocalId(FMA2EMFConstants.LANG_ENGLISH);
                 lang.setUri(FMA2EMFConstants.LANG_ENGLISH_URN);
-                suppLang.add(lang);
+                cs.getMappings().addSupportedLanguage(lang);
 
                 lang = new SupportedLanguage();
                 lang.setLocalId(FMA2EMFConstants.LANG_LATIN);
                 lang.setUri(FMA2EMFConstants.LANG_LATIN_URN);
-                suppLang.add(lang);
+                cs.getMappings().addSupportedLanguage(lang);
             }
         } catch (Exception e) {
             System.out.println("Failed while setting supported languages...");
@@ -160,21 +160,20 @@ public class FMA2EMFStaticMapHolders {
 
     private void prepareSupportedCodingScheme(CodingScheme csclass) {
         try {
-            List suppCodingScheme = Arrays.asList(csclass.getMappings().getSupportedCodingScheme());
             SupportedCodingScheme scs = new SupportedCodingScheme();
             scs.setLocalId(csclass.getCodingSchemeName());
             scs.setUri(csclass.getCodingSchemeURI());
-            suppCodingScheme.add(scs);
+            csclass.getMappings().addSupportedCodingScheme(scs);
         } catch (Exception e) {
             messages_.error("Failed while setting supported codingScheme...", e);
         }
     }
 
-    private void prepareSupportedFormats(List suppFmt) {
+    private void prepareSupportedFormats(CodingScheme cs) {
         SupportedDataType fmt = new SupportedDataType();
         fmt.setLocalId(FMA2EMFConstants.PLAIN_FORMAT);
         fmt.setUri(FMA2EMFConstants.PLAIN_FORMAT_URN);
-        suppFmt.add(fmt);
+        cs.getMappings().addSupportedDataType(fmt);
     }
 
     public CodingScheme getFMACodingScheme(KnowledgeBase kb) {
@@ -191,11 +190,9 @@ public class FMA2EMFStaticMapHolders {
             csclass.setRepresentsVersion(FMA2EMFConstants.VERSION);
             csclass.addLocalName(FMA2EMFConstants.LOCAL_NAME);
 
-            List supportedLanguages = Arrays.asList(csclass.getMappings().getSupportedLanguage());
-            prepareSupportedLanguages(supportedLanguages, kb);
+            prepareSupportedLanguages(csclass, kb);
 
-            List supportedFormats = Arrays.asList(csclass.getMappings().getSupportedDataType());
-            prepareSupportedFormats(supportedFormats);
+            prepareSupportedFormats(csclass);
             prepareSupportedCodingScheme(csclass);
 
             // EList supportedDataTypes = csclass.getSupportedDataType();

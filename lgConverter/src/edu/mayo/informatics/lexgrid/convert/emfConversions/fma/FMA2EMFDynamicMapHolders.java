@@ -86,12 +86,8 @@ public class FMA2EMFDynamicMapHolders {
 
     private AssociationPredicate hasSubTypeAssocClass_ = null;
     private AssociationEntity hasSubTypeAssocEntityClass_ = null;
-    private List firstRelation_ = null;
     private Relations allRelations_ = null;
-    private List allAssociations_ = null;
-
     private Entities allConcepts_ = null;
-    private List allCodedEntries_ = null;
 
     /** ****************************** */
     public boolean processFMA(CodingScheme csclass, KnowledgeBase kb) {
@@ -126,16 +122,12 @@ public class FMA2EMFDynamicMapHolders {
                 csclass.setEntities(allConcepts_);
             }
 
-            allCodedEntries_ = Arrays.asList(allConcepts_.getEntity());
-
             // Relations
             allRelations_ = new Relations();
             allRelations_.setContainerName(SQLTableConstants.TBLCOLVAL_DC_RELATIONS);
 
             // Creating the relation instance
-            firstRelation_ = Arrays.asList(csclass.getRelations());
-            firstRelation_.add(allRelations_);
-            allAssociations_ = Arrays.asList(allRelations_.getAssociationPredicate());
+            csclass.addRelations(allRelations_);
 
             // Add HasSubtype
             hasSubTypeAssocClass_ = new AssociationPredicate();
@@ -146,9 +138,9 @@ public class FMA2EMFDynamicMapHolders {
             hasSubTypeAssocEntityClass_.setForwardName(FMA2EMFConstants.ASSOCIATION_HASSUBTYPE);
             hasSubTypeAssocEntityClass_.setReverseName(FMA2EMFConstants.ASSOCIATION_ISA);
             hasSubTypeAssocEntityClass_.setIsTransitive(new Boolean(true));
-            allAssociations_.add(hasSubTypeAssocClass_);
+            allRelations_.addAssociationPredicate(hasSubTypeAssocClass_);
 
-            relations_.add(firstRelation_);
+            relations_.add(csclass.getRelations());
 
             boolean testing = false;
 
@@ -308,7 +300,8 @@ public class FMA2EMFDynamicMapHolders {
 
                     processSlots(concept, con, false);
 
-                    allCodedEntries_.add(con);
+//                    allCodedEntries_.add(con);
+                    allConcepts_.addEntity(con);
                     stored = true;
                 } else {
                     if (conceptNameInstance) {
@@ -379,8 +372,8 @@ public class FMA2EMFDynamicMapHolders {
 
     private Concept getConceptFromVector(String name) {
         try {
-            if (allCodedEntries_ != null) {
-                Iterator itr = allCodedEntries_.iterator();
+            if (allConcepts_.getEntity() != null) {
+                Iterator itr = Arrays.asList(allConcepts_.getEntity()).iterator();
                 while (itr.hasNext()) {
                     Object ob = itr.next();
 
@@ -399,8 +392,8 @@ public class FMA2EMFDynamicMapHolders {
 
     public int getApproxNumberOfConcepts() {
         int num = 0;
-        if (allCodedEntries_ != null) {
-            num = allCodedEntries_.size();
+        if (allConcepts_.getEntity() != null) {
+            num = allConcepts_.getEntity().length;
         }
         return num;
     }
@@ -793,7 +786,7 @@ public class FMA2EMFDynamicMapHolders {
 
                 tp.setPropertyName(FMA2EMFConstants.PROPERTY_TEXTPRESENTATION);
                 tp.setPropertyId(FMA2EMFConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
-                tps.add(tp);
+                con.addPresentation(tp);
             }
         } catch (Exception e) {
             System.out.println("Failed while getting value for textual representation for Slot=" + slot);
@@ -978,7 +971,7 @@ public class FMA2EMFDynamicMapHolders {
                 tp.setIsPreferred(new Boolean(false));
                 tp.setPropertyName(FMA2EMFConstants.PROPERTY_TEXTPRESENTATION);
 
-                tps.add(tp);
+                con.addProperty(tp);
             }
         } catch (Exception e) {
             System.out.println("Failed while modifying presentation attribute for Cls/Instance=" + conceptName
@@ -1128,15 +1121,13 @@ public class FMA2EMFDynamicMapHolders {
                 }
 
                 if (valVector.size() > 0) {
-                    List tc = null;
                     if ((ValueType.CLS.equals(vT)) || (ValueType.INSTANCE.equals(vT))) {
-                        tc = Arrays.asList(aI.getTarget());
+                        for (int i = 0; i < valVector.size(); i++)
+                            aI.addTarget((AssociationTarget) valVector.elementAt(i));
                     } else {
-                        tc = Arrays.asList(aI.getTargetData());
+                        for (int i = 0; i < valVector.size(); i++)
+                            aI.addTargetData((AssociationData) valVector.elementAt(i));
                     }
-
-                    for (int i = 0; i < valVector.size(); i++)
-                        tc.add(valVector.elementAt(i));
 
                     assocClass.addSource(aI);
 
@@ -1144,11 +1135,12 @@ public class FMA2EMFDynamicMapHolders {
 
                     // time to store the entries
                     if (createdNew) {
-                        allAssociations_.add(assocClass);
+                        allRelations_.addAssociationPredicate(assocClass);
 
                         // It is time to store all objects
                         if (!associations_.contains(relation))
                             associations_.add(relation);
+                        
 
                         // Setting Association Aliases
                         if (slot.hasOwnSlot(kb_.getSlot("slot synonym"))) {
@@ -1420,8 +1412,6 @@ public class FMA2EMFDynamicMapHolders {
         if (csclass == null)
             return;
 
-        List suppProps = Arrays.asList(csclass.getMappings().getSupportedProperty());
-
         try {
             if (properties_.size() > 0) {
                 for (int i = 0; i < properties_.size(); i++) {
@@ -1438,7 +1428,7 @@ public class FMA2EMFDynamicMapHolders {
                         }
 
                         suppProp.setLocalId(prp);
-                        suppProps.add(suppProp);
+                        csclass.getMappings().addSupportedProperty(suppProp);
                     }
                 }
             }
@@ -1452,8 +1442,6 @@ public class FMA2EMFDynamicMapHolders {
             if (csclass == null)
                 return;
 
-            List suppAssoc = Arrays.asList(csclass.getMappings().getSupportedAssociation());
-
             int assocSize = associations_.size();
             int assocAliasSize = associationsAliases_.size();
             int total = assocSize + assocAliasSize;
@@ -1466,7 +1454,7 @@ public class FMA2EMFDynamicMapHolders {
                             SupportedAssociation suppAss = new SupportedAssociation();
                             suppAss.setUri(FMA2EMFUtils.getWithFMAURN(sA));
                             suppAss.setLocalId(FMA2EMFUtils.toNMToken(sA));
-                            suppAssoc.add(suppAss);
+                            csclass.getMappings().addSupportedAssociation(suppAss);
                         }
                     }
                 }
@@ -1481,7 +1469,7 @@ public class FMA2EMFDynamicMapHolders {
                                 SupportedAssociation suppAss = new SupportedAssociation();
                                 suppAss.setUri(FMA2EMFUtils.getWithFMAURN(ali[0]));
                                 suppAss.setLocalId(FMA2EMFUtils.toNMToken(ali[1]));
-                                suppAssoc.add(suppAss);
+                                csclass.getMappings().addSupportedAssociation(suppAss);
                             }
                         }
                     }
@@ -1497,8 +1485,6 @@ public class FMA2EMFDynamicMapHolders {
         if (csclass == null)
             return;
 
-        List suppSrcs = Arrays.asList(csclass.getMappings().getSupportedSource());
-
         try {
             int srcsSize = sources_.size();
 
@@ -1511,7 +1497,7 @@ public class FMA2EMFDynamicMapHolders {
                             SupportedSource suppSrc = new SupportedSource();
                             suppSrc.setUri(FMA2EMFUtils.getWithFMAURN(src));
                             suppSrc.setLocalId(FMA2EMFUtils.toNMToken(src));
-                            suppSrcs.add(suppSrc);
+                            csclass.getMappings().addSupportedSource(suppSrc);
                         }
                     }
                 }
@@ -1526,8 +1512,6 @@ public class FMA2EMFDynamicMapHolders {
         if (csclass == null)
             return;
 
-        List suppRepf = Arrays.asList(csclass.getMappings().getSupportedRepresentationalForm());
-
         try {
             int repfSize = representationalForms_.size();
 
@@ -1540,7 +1524,7 @@ public class FMA2EMFDynamicMapHolders {
                             SupportedRepresentationalForm suppRpf = new SupportedRepresentationalForm();
                             suppRpf.setUri(FMA2EMFUtils.getWithFMAURN(rep));
                             suppRpf.setLocalId(FMA2EMFUtils.toNMToken(rep));
-                            suppRepf.add(suppRpf);
+                            csclass.getMappings().addSupportedRepresentationalForm(suppRpf);
                         }
                     }
                 }
