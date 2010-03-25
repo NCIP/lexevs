@@ -25,6 +25,7 @@ import org.LexGrid.commonTypes.Property;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -57,38 +58,42 @@ public class VersionableEventPropertyService extends AbstractDatabaseService imp
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.property.PropertyService#insertEntityProperty(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property)
 	 */
+	@Transactional
 	public void insertEntityProperty(
 			String codingSchemeUri, 
 			String version, 
 			String entityCode, 
 			String entityCodeNamespace, 
 			Property property) {
-		// TODO Auto-generated method stub
+		String codingSchemeId = this.getCodingSchemeId(codingSchemeUri, version);
+		String entityId = this.getDaoManager().getEntityDao(codingSchemeUri, version).getEntityId(codingSchemeId, entityCode, entityCodeNamespace);
 		
+		this.getDaoManager().getPropertyDao(codingSchemeUri, version).
+			insertProperty(codingSchemeId, entityId, PropertyType.ENTITY, property);	
 	}
-
-
-	/**
-	 * Insert entity properties.
-	 * 
-	 * @param codingSchemeId the coding scheme id
-	 * @param items the items
-	 */
-	public void insertEntityProperties(String codingSchemeId,
-			List<PropertyBatchInsertItem> items) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.property.PropertyService#updateEntityProperty(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property)
 	 */
+	@Transactional
 	public void updateEntityProperty(String codingSchemeUri, String version,
 			String entityCode, String entityCodeNamespace, String propertyId,
 			Property property) {
-		// TODO Auto-generated method stub
+		String codingSchemeId = this.getCodingSchemeId(codingSchemeUri, version);
+		String entityId = this.getDaoManager().getEntityDao(codingSchemeUri, version).getEntityId(codingSchemeId, entityCode, entityCodeNamespace);
 		
+		this.getDaoManager().
+			getPropertyDao(codingSchemeUri, version).
+				updateProperty(codingSchemeId, entityId, propertyId, PropertyType.ENTITY, property);
+		
+		//TODO
+		this.firePropertyUpdateEvent(new PropertyUpdateEvent(
+			codingSchemeUri,
+			version,
+			entityCode,
+			entityCodeNamespace,
+			null,
+			property));
 	}
 
 	/**

@@ -50,9 +50,6 @@ public abstract class LuceneLoaderCode {
     /** The indexer service_. */
     protected IndexerService indexerService_;
     
-    /** The simple index name_. */
-    protected String simpleIndexName_;
-    // protected String normIndexName_;
     /** The use compound file_. */
     protected boolean useCompoundFile_ = false;
     
@@ -60,7 +57,7 @@ public abstract class LuceneLoaderCode {
     private DocumentFromStringsGenerator generator_;
     
     /** The norm enabled_. */
-    protected boolean normEnabled_ = true;
+    protected boolean normEnabled_ = false;
     
     /** The double metaphone enabled_. */
     protected boolean doubleMetaphoneEnabled_ = true;
@@ -121,6 +118,8 @@ public abstract class LuceneLoaderCode {
     
     /** The LITERA l_ an d_ revers e_ propert y_ valu e_ field. */
     public static String LITERAL_AND_REVERSE_PROPERTY_VALUE_FIELD = LITERAL_AND_REVERSE_PREFIX + PROPERTY_VALUE_FIELD;
+    
+    public static String CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD = "codingSchemeUriVersionCodeNamespaceKey";
 
     /** The create boundry documents. */
     protected boolean createBoundryDocuments = true;
@@ -136,6 +135,14 @@ public abstract class LuceneLoaderCode {
     
     /** The store lex big minimum. */
     public static boolean storeLexBIGMinimum = false;
+    
+    protected LuceneLoaderCode(){
+    	try {
+			this.initIndexes();
+		} catch (InternalErrorException e) {
+			throw new RuntimeException(e);
+		}
+    }
 
     // by default, the index stores a copy of most of the information. Switching
     // this to
@@ -149,48 +156,32 @@ public abstract class LuceneLoaderCode {
     public static Analyzer literalAnalyzer = new WhiteSpaceLowerCaseAnalyzer(new String[] {},
             new char[]{}, new char[]{}); 
 
-    /**
-     * Open indexes clear existing.
-     * 
-     * @param codingSchemes the coding schemes
-     * 
-     * @throws Exception the exception
-     */
-    protected void openIndexesClearExisting(String[] codingSchemes) throws Exception {
-        indexerService_.forceUnlockIndex(simpleIndexName_);
-        indexerService_.openBatchRemover(simpleIndexName_);
+    protected void openIndexesClearExisting(String indexName, String[] codingSchemes) throws Exception {
+        indexerService_.forceUnlockIndex(indexName);
+        indexerService_.openBatchRemover(indexName);
 
         for (int i = 0; i < codingSchemes.length; i++) {
             logger.info("clearing index of code system " + codingSchemes[i]);
-            indexerService_.removeDocument(simpleIndexName_, CODING_SCHEME_NAME_FIELD, codingSchemes[i]);
+            indexerService_.removeDocument(indexName, CODING_SCHEME_NAME_FIELD, codingSchemes[i]);
         }
 
-        indexerService_.closeBatchRemover(simpleIndexName_);
-        openIndexes();
+        indexerService_.closeBatchRemover(indexName);
+        openIndexes(indexName);
     }
 
-    /**
-     * Open indexes.
-     * 
-     * @throws Exception the exception
-     */
-    protected void openIndexes() throws Exception {
-        indexerService_.forceUnlockIndex(simpleIndexName_);
-        indexerService_.openWriter(simpleIndexName_, false);
-        indexerService_.setUseCompoundFile(simpleIndexName_, useCompoundFile_);
-        indexerService_.setMaxBufferedDocs(simpleIndexName_, 500);
-        indexerService_.setMergeFactor(simpleIndexName_, 20);
+    protected void openIndexes(String indexName) throws Exception {
+        indexerService_.forceUnlockIndex(indexName);
+        indexerService_.openWriter(indexName, false);
+        indexerService_.setUseCompoundFile(indexName, useCompoundFile_);
+        indexerService_.setMaxBufferedDocs(indexName, 500);
+        indexerService_.setMergeFactor(indexName, 20);
     }
 
-    /**
-     * Close indexes.
-     * 
-     * @throws Exception the exception
-     */
-    protected void closeIndexes() throws Exception {
-        indexerService_.optimizeIndex(simpleIndexName_);
-        indexerService_.closeWriter(simpleIndexName_);
+    protected void closeIndexes(String indexName) throws Exception {
+        indexerService_.optimizeIndex(indexName);
+        indexerService_.closeWriter(indexName);
     }
+
 
     /**
      * Adds the entity.
@@ -225,7 +216,7 @@ public abstract class LuceneLoaderCode {
             String entityDescription, String propertyType, String propertyName, String propertyValue, Boolean isActive,
             String format, String language, Boolean isPreferred, String conceptStatus, String propertyId,
             String degreeOfFidelity, Boolean matchIfNoContext, String representationalForm, String[] sources,
-            String[] usageContexts, Qualifier[] qualifiers, SQLTableConstants stc) throws Exception {
+            String[] usageContexts, Qualifier[] qualifiers, String indexName) throws Exception {
 
         String idFieldName = SQLTableConstants.TBLCOL_ENTITYCODE;
         String  propertyFieldName = SQLTableConstants.TBLCOL_PROPERTYNAME;
@@ -247,6 +238,8 @@ public abstract class LuceneLoaderCode {
         fields.append("entityType ");
         generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
         fields.append(CODING_SCHEME_URI_VERSION_KEY_FIELD + " ");
+        generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, entityId, entityNamespace), false, true, false);
+        fields.append(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD + " ");
        
         //If the EntityDescription is an empty String, replace it with a single space.
         //Lucene will not index an empty String but it will index a space.
@@ -417,7 +410,7 @@ public abstract class LuceneLoaderCode {
 
         generator_.addTextField("fields", fields.toString(), store(), true, true);
 
-        indexerService_.addDocument(simpleIndexName_, generator_.getDocument(), analyzer_);
+        indexerService_.addDocument(indexName, generator_.getDocument(), analyzer_);
     }
 
     /*
@@ -435,7 +428,12 @@ public abstract class LuceneLoaderCode {
      * 
      * @throws Exception the exception
      */
-    protected void addEntityBoundryDocument(String codingSchemeName, String codingSchemeId, String codingSchemeVersion, String entityId) throws Exception {
+    protected void addEntityBoundryDocument(
+    		String codingSchemeName, 
+    		String codingSchemeId, 
+    		String codingSchemeVersion, 
+    		String entityId,
+    		String indexName) throws Exception {
         StringBuffer fields = new StringBuffer();
         generator_.startNewDocument(codingSchemeName + "-" + entityId);
         generator_.addTextField("codingSchemeName", codingSchemeName, store(), true, false);
@@ -449,7 +447,7 @@ public abstract class LuceneLoaderCode {
 
         generator_.addTextField("fields", fields.toString(), store(), true, true);
 
-        indexerService_.addDocument(simpleIndexName_, generator_.getDocument(), analyzer_);
+        indexerService_.addDocument(indexName, generator_.getDocument(), analyzer_);
     }
 
     /**
@@ -473,9 +471,7 @@ public abstract class LuceneLoaderCode {
      * 
      * @throws InternalErrorException the internal error exception
      */
-    protected void initIndexes(String indexName, String indexLocation) throws InternalErrorException {
-        indexerService_ = new IndexerService(indexLocation, false);
-        simpleIndexName_ = indexName;
+    protected void initIndexes() throws InternalErrorException {
         // normIndexName_ = indexName + "_Normed";
 
         // no stop words, default character removal set.
@@ -525,8 +521,8 @@ public abstract class LuceneLoaderCode {
     /**
      * Creates the index.
      */
-    protected void createIndex() {
-        indexerService_.createIndex(simpleIndexName_, analyzer_);
+    protected void createIndex(String indexName) {
+        indexerService_.createIndex(indexName, analyzer_);
     }
     
     /**
@@ -559,6 +555,10 @@ public abstract class LuceneLoaderCode {
     public static String createCodingSchemeUriVersionKey(String uri, String version) {
     	return uri + "-" + version;
     }
+    
+    public static String createCodingSchemeUriVersionCodeNamespaceKey(String uri, String version, String code, String namespace) {
+    	return createCodingSchemeUriVersionKey(uri, version) + "-" + code + "-" + namespace;
+    }
 
     /**
      * The Class Qualifier.
@@ -583,5 +583,9 @@ public abstract class LuceneLoaderCode {
             this.qualifierName = qualifierName;
             this.qualifierValue = qualifierValue;
         }
+    }
+    
+    public void setIndexerService(IndexerService indexerService) {
+    	this.indexerService_ = indexerService;
     }
 }

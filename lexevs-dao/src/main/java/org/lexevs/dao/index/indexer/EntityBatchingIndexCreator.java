@@ -26,6 +26,7 @@ import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.connection.IndexInterface;
 import org.lexevs.system.constants.SystemVariables;
+import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.indexer.api.IndexerService;
@@ -51,15 +52,21 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 
 	/** The index interface. */
 	private IndexInterface indexInterface;
+	
+	private EntityIndexer entityIndexer;
+	
+	private boolean useCompoundFile = false;
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.indexer.IndexCreator#index(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
 	public void index(AbsoluteCodingSchemeVersionReference reference) {
-		LuceneLoaderCodeIndexer indexer = new LuceneLoaderCodeIndexer();
-		indexer.setSystemVariables(systemVariables);
-		indexer.setSystemResourceService(systemResourceService);
-		indexer.openIndex();
+	
+		String indexName = entityIndexer.getCommonIndexName();
+		
+		IndexerService indexerService = this.indexInterface.getBaseIndexerService();
+
+		this.openIndexingWriter(indexName);
 		
 		int position = 0;
 		 for(
@@ -69,21 +76,36 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 				 entities = entityService.getEntities(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), position += batchSize, batchSize)) {
 
 			 for(Entity entity : entities) {
-				 indexer.indexEntity(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), entity);
+				 entityIndexer.indexEntity(indexName, reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), entity);
 			 }
 		 }
 		 
-		 String indexName = indexer.getIndexName();
-		 String indexVersion = indexer.getCurrentIndexVersion();
+		 try {
+			indexerService.optimizeIndex(indexName);
+			indexerService.closeWriter(indexName);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} 
 		 
-		 indexer.closeIndex();
-		 addIndexMetadata(reference, indexName, indexVersion);
+		 addIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
 
 		 try {
 			 indexInterface.initCodingSchemes();
 		 } catch (LBInvocationException e) {
 			 throw new RuntimeException(e);
 		 }
+	}
+	
+	protected String getIndexName(String codingSchemeUri, String codingSchemeVersion) throws Exception {
+		String internalCodeSystemName = systemResourceService.
+		getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, 
+				codingSchemeVersion);
+
+		IndexerService indexerService = indexInterface.getBaseIndexerService();
+
+		LocalCodingScheme lcs = LocalCodingScheme.getLocalCodingScheme(internalCodeSystemName, 
+				codingSchemeVersion);
+		return indexerService.getMetaData().getIndexMetaDataValue(lcs.getKey());
 	}
 	
 	/**
@@ -113,6 +135,19 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public void openIndexingWriter(String indexName) {
+		IndexerService indexerService = indexInterface.getBaseIndexerService();
+		try {
+			indexerService.forceUnlockIndex(indexName);
+	        indexerService.openWriter(indexName, false);
+	        indexerService.setUseCompoundFile(indexName, useCompoundFile);
+	        indexerService.setMaxBufferedDocs(indexName, 500);
+	        indexerService.setMergeFactor(indexName, 20);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} 
 	}
 
 	/**
@@ -203,5 +238,13 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	 */
 	public IndexInterface getIndexInterface() {
 		return indexInterface;
+	}
+
+	public void setEntityIndexer(EntityIndexer entityIndexer) {
+		this.entityIndexer = entityIndexer;
+	}
+
+	public EntityIndexer getEntityIndexer() {
+		return entityIndexer;
 	}
 }

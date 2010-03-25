@@ -43,15 +43,6 @@ public interface EntityIndexService {
 public void updateIndexForEntity(String codingSchemeUri, String codingSchemeVersion, Entity entity);
 	
 	/**
-	 * Removes the index for entity.
-	 * 
-	 * @param codingSchemeUri the coding scheme uri
-	 * @param codingSchemeVersion the coding scheme version
-	 * @param entity the entity
-	 */
-	public void removeIndexForEntity(String codingSchemeUri, String codingSchemeVersion, Entity entity);
-	
-	/**
 	 * Creates the index.
 	 * 
 	 * @param reference the reference

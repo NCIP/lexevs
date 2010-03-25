@@ -23,7 +23,9 @@ import java.util.List;
 import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
+import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 /**
  * The Class VersionableEventEntityService.
@@ -67,13 +69,22 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	 * @see org.lexevs.dao.database.service.entity.EntityService#updateEntity(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.concepts.Entity)
 	 */
 	@Transactional
-	public void updateEntity(String codingSchemeUri, String version,
-			String enityCode, String entityCodeNamespace, Entity entity) {
+	public void updateEntity(
+			String codingSchemeUri, 
+			String version,
+			Entity entity) {
+		Assert.hasText(entity.getEntityCode(), "An Entity Code is required to be populated to Updated an Entity.");
+		Assert.hasText(entity.getEntityCodeNamespace(), "An Entity Code Namespace is required to be populated to Updated an Entity.");
+		
 		String codingSchemeId = this.getDaoManager().
 			getCodingSchemeDao(codingSchemeUri, version).
 			getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
 		
+		Entity originalEntity = this.getEntity(codingSchemeUri, version, entity.getEntityCode(), entity.getEntityCodeNamespace());
+		
 		this.getDaoManager().getEntityDao(codingSchemeUri, version).updateEntity(codingSchemeId, entity);
+		
+		this.fireEntityUpdateEvent(new EntityUpdateEvent(codingSchemeUri, version, originalEntity, entity));
 	}
 
 	/* (non-Javadoc)
@@ -93,6 +104,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.entity.EntityService#getEntities(java.lang.String, java.lang.String, int, int)
 	 */
+	@Transactional
 	public List<? extends Entity> getEntities(String codingSchemeUri, String version,
 			int start, int pageSize) {
 		String codingSchemeId = this.getDaoManager().

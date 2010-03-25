@@ -20,6 +20,8 @@ package org.lexevs.dao.database.service.event;
 
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent;
+import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
+import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 
 /**
@@ -54,4 +56,8 @@ public interface DatabaseServiceEventListener {
 	 * @throws CodingSchemeAlreadyLoadedException the coding scheme already loaded exception
 	 */
 	public boolean onCodingSchemeInsert(CodingSchemeInsertEvent event) throws CodingSchemeAlreadyLoadedException;
+	
+	public boolean onEntityUpdate(EntityUpdateEvent event);
+	
+	public boolean onPropertyUpdate(PropertyUpdateEvent event);
 }

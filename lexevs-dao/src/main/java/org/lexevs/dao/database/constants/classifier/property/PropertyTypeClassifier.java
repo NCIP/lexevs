@@ -35,7 +35,7 @@ public class PropertyTypeClassifier implements Classifier<PropertyType,String>{
 	 */
 	public String classify(PropertyType type) {
 		if(type.equals(PropertyType.CODINGSCHEME)){
-			return "codingSceme";
+			return "codingScheme";
 		}
 		if(type.equals(PropertyType.ENTITY)){
 			return "entity";

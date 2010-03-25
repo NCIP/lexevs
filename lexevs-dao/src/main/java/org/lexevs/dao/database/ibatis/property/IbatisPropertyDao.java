@@ -36,7 +36,7 @@ import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
-import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyBean;
+import org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyLinkBean;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
@@ -44,6 +44,7 @@ import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.batch.classify.Classifier;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
+import org.springframework.util.Assert;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
 
@@ -89,6 +90,8 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	public static String GET_PROPERTY_ID_SQL = PROPERTY_NAMESPACE + "getPropertyId";
 	
 	public static String GET_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL = PROPERTY_NAMESPACE + "getPropertyMultiAttribById";
+	
+	public static String UPDATE_PROPERTY_BY_ID_SQL = PROPERTY_NAMESPACE + "updatePropertyById";
 	
 	PropertyMultiAttributeClassifier propertyMultiAttributeClassifier = new PropertyMultiAttributeClassifier();
 	
@@ -277,10 +280,30 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#updateProperty(java.lang.String, java.lang.String, java.lang.String, org.lexevs.dao.database.access.property.PropertyDao.PropertyType, org.LexGrid.commonTypes.Property)
 	 */
-	public void updateProperty(String codingSchemeName, String parentId,
+	public void updateProperty(String codingSchemeId, String parentId,
 			String propertyId, PropertyType type, Property property) {
-		// TODO Auto-generated method stub
+		Assert.hasText(
+				property.getPropertyId(),
+				"Property must have a populated PropertyId " +
+				"in order to be updated.");
 		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		String propertyGuid = this.getPropertyIdFromParentIdAndPropId(
+				codingSchemeId, 
+				parentId, 
+				property.getPropertyId());
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_PROPERTY_BY_ID_SQL, 
+				this.buildInsertPropertyBean(
+						prefix, 
+						null, 
+						propertyGuid, 
+						null, 
+						type, 
+						property),
+						1);	
 	}
 	
 	/* (non-Javadoc)
@@ -522,9 +545,9 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * 
 	 * @return the insert property bean
 	 */
-	protected InsertPropertyBean buildInsertPropertyBean(String prefix, String entityId, String propertyId, 
+	protected InsertOrUpdatePropertyBean buildInsertPropertyBean(String prefix, String entityId, String propertyId, 
 			String entryStateId, PropertyType type, Property property){
-		InsertPropertyBean bean = new InsertPropertyBean();
+		InsertOrUpdatePropertyBean bean = new InsertOrUpdatePropertyBean();
 		bean.setPrefix(prefix);
 		bean.setReferenceType(this.propertyTypeClassifier.classify(type));
 		bean.setEntityId(entityId);

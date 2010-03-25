@@ -187,7 +187,7 @@
 			)
 	</delete>
 	
-     <insert id="insertProperty" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyBean">
+     <insert id="insertProperty" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
 		INSERT INTO $prefix$property (
 			propertyGuid,
 			referenceGuid,
@@ -255,5 +255,19 @@
 			#entryStateId#
 		)
   </insert>
+  
+  <update id="updatePropertyById"
+  	parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
+  		UPDATE 
+			$prefix$property property
+		SET 
+   		  <dynamic prepend=" ">
+			<isNotNull prepend="," property="property.value.content">
+				propertyValue = #property.value.content#
+			</isNotNull>
+		  </dynamic>
+		 WHERE
+		 	property.propertyGuid = #id#
+  </update>
     
 </sqlMap>

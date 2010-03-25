@@ -26,7 +26,7 @@ import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class InsertPropertyBean extends IdableParameterBean {
+public class InsertOrUpdatePropertyBean extends IdableParameterBean {
 
 	/** The property. */
 	private Property property;

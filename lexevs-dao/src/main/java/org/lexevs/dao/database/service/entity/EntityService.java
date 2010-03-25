@@ -112,8 +112,6 @@ public interface EntityService {
 	public void updateEntity(
 			String codingSchemeUri, 
 			String version, 
-			String enityCode,
-			String entityCodeNamespace,
 			Entity entity);
 
 }

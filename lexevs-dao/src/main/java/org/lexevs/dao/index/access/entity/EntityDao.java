@@ -21,6 +21,7 @@ package org.lexevs.dao.index.access.entity;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.concepts.Entity;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -60,6 +61,8 @@ public interface EntityDao extends LexEvsIndexFormatVersionAwareDao {
 	 * @param reference the reference
 	 */
 	public void deleteDocumentsOfCodingScheme(AbsoluteCodingSchemeVersionReference reference);
+	
+	public void updateDocumentsOfEntity(AbsoluteCodingSchemeVersionReference reference, Entity entity);
 	
 	/**
 	 * Gets the match all docs query.

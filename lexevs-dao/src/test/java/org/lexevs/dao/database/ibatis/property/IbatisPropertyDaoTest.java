@@ -141,6 +141,42 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		});
 	}
 	
+	@Test
+	public void updateProperty(){
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'propId')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		Property prop = new Property();
+		prop.setPropertyId("propId");
+		prop.setPropertyName("pname");
+		prop.setPropertyType("pType");
+		prop.setValue(DaoUtility.createText("some updated value"));
+		
+		this.ibatisPropertyDao.updateProperty(
+				"csguid", 
+				"eguid", 
+				"pguid", 
+				PropertyType.ENTITY, 
+				prop);
+		
+		template.queryForObject("Select * from property", new RowMapper(){
+
+			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
+				
+				assertEquals("some updated value", rs.getString(13));
+
+				return null;
+			}
+		});
+		
+	}
 	/**
 	 * Insert generic property.
 	 */

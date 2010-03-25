@@ -23,15 +23,17 @@ import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
+import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * The Class LuceneLoaderCodeIndexer.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
+public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityIndexer, InitializingBean {
 
 	/** The system resource service. */
 	private SystemResourceService systemResourceService;
@@ -45,11 +47,17 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 	/** The current index version. */
 	private String currentIndexVersion = "2010";
 	
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		createIndex(indexName);
+	}
+
 	/**
 	 * Instantiates a new lucene loader code indexer.
 	 */
 	public LuceneLoaderCodeIndexer(){
-		this.normEnabled_ = false;
+		super();
 	}
 	
 	/**
@@ -59,17 +67,33 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 	 * @param codingSchemeVersion the coding scheme version
 	 * @param entity the entity
 	 */
-	public void indexEntity(String codingSchemeUri, String codingSchemeVersion,
+	public void indexEntity(
+			String indexName,
+			String codingSchemeUri, 
+			String codingSchemeVersion,
 			Entity entity) {
 		try {
 			String codingSchemeName = 
 				  systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, codingSchemeVersion);
 			//TODO: Add Entity Namespace to the Boundry doc
-			this.addEntityBoundryDocument(codingSchemeName, codingSchemeUri, codingSchemeVersion, entity.getEntityCode());
+			this.addEntityBoundryDocument(
+					codingSchemeName, 
+					codingSchemeUri, 
+					codingSchemeVersion, 
+					entity.getEntityCode(),
+					indexName);
+			
 			for(Property prop : entity.getAllProperties()) {
-				this.indexEntity(codingSchemeUri, codingSchemeVersion, entity, prop);
+				this.indexEntity(codingSchemeUri, codingSchemeVersion, entity, prop, indexName);
 			}
-			this.addEntityBoundryDocument(codingSchemeName, codingSchemeUri, codingSchemeVersion, entity.getEntityCode());
+			
+			this.addEntityBoundryDocument(
+					codingSchemeName, 
+					codingSchemeUri, 
+					codingSchemeVersion, 
+					entity.getEntityCode(),
+					indexName);
+			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -86,7 +110,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 	 * @throws Exception the exception
 	 */
 	protected void indexEntity(String codingSchemeUri, String codingSchemeVersion,
-			Entity entity, Property prop) throws Exception {
+			Entity entity, Property prop, String indexName) throws Exception {
 		
 		boolean isPreferred = false;
 		String degreeOfFidelity = "";
@@ -135,7 +159,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 				sourceToString(prop.getSource()), 
 				prop.getUsageContext(), 
 				propertyQualifiersToQualifiers(prop.getPropertyQualifier()), 
-				null);
+				indexName);
 	}
 	
 	/**
@@ -186,9 +210,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 		this.systemResourceService = systemResourceService;
 	}
 
-	/**
-	 * Close index.
-	 */
+	/*
 	public void closeIndex() {
 		try {
 			this.closeIndexes();
@@ -197,9 +219,6 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 		}
 	}
 
-	/**
-	 * Open index.
-	 */
 	public void openIndex() {
 		try {
 			this.initIndexes(indexName, this.systemVariables.getAutoLoadIndexLocation());
@@ -209,7 +228,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 			throw new RuntimeException(e);
 		}
 	}
-
+	*/
 	/**
 	 * Gets the index name.
 	 * 
@@ -262,6 +281,15 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode {
 	 */
 	public String getCurrentIndexVersion() {
 		return currentIndexVersion;
+	}
+
+	@Override
+	public LexEvsIndexFormatVersion getIndexerFormatVersion() {
+		return LexEvsIndexFormatVersion.parseStringToVersion(this.getCurrentIndexVersion());
+	}
+	
+	public String getCommonIndexName() {
+		return this.getIndexName();
 	}
 
 }

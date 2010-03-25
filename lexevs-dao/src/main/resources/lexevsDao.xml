@@ -143,12 +143,24 @@
 		
 	<bean id="propertyService" 
 		class="org.lexevs.dao.database.service.property.VersionableEventPropertyService"
-		parent="abstractService"/>
+		parent="abstractService">
+		<property name="databaseServiceEventListeners">
+			<list>
+				<bean class="org.lexevs.dao.database.service.listener.LucenePropertyUpdateListener"/>
+			</list>
+		</property>
+	</bean>
 		
 	<bean id="entityService" 
 		class="org.lexevs.dao.database.service.entity.VersionableEventEntityService"
-		parent="abstractService"/>
-		
+		parent="abstractService">
+		<property name="databaseServiceEventListeners">
+			<list>
+				<bean class="org.lexevs.dao.database.service.listener.LuceneEntityUpdateListener"/>
+			</list>
+		</property>
+	</bean>
+	
 	<bean id="associationService" 
 		class="org.lexevs.dao.database.service.association.VersionableEventAssociationService"
 		parent="abstractService"/>
@@ -427,6 +439,7 @@
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="indexInterface" ref="indexInterface"/>
+		<property name="entityIndexer" ref="commonIndexLoaderCodeInder"/>
 	</bean>
 	
 	<bean id="luceneEntityIndexService" class="org.lexevs.dao.index.service.entity.LuceneEntityIndexService">
@@ -456,11 +469,20 @@
 	<bean id="luceneIndexEntityDao" class="org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao">
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="indexInterface" ref="indexInterface"/>
+		<property name="entityIndexer" ref="commonIndexLoaderCodeInder"/>
 	</bean>
 	
 	<bean id="luceneEntity2009Dao" class="org.lexevs.dao.index.lucene.v2009.entity.LuceneEntity2009Dao">
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="indexInterface" ref="indexInterface"/>
-	</bean>
 
+		<property name="entityIndexer" ref="commonIndexLoaderCodeInder"/>
+	</bean>
+	
+	<bean id="commonIndexLoaderCodeInder" class="org.lexevs.dao.index.indexer.LuceneLoaderCodeIndexer">
+		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
+		<property name="systemVariables" ref="systemVariables"/> 
+		<property name="indexerService" ref="indexerService"/>
+	</bean>
+	
 </beans>

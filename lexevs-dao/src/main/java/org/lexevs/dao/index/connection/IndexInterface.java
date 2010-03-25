@@ -338,10 +338,12 @@ public class IndexInterface {
             if (lir != null) {
                 lir.reopen();
             }
-        } catch (InternalIndexerErrorException e1) {
+        } catch (Exception e1) {
             String id = getLogger().error("Problem reopening index", e1);
             throw new LBInvocationException("Unexpected problem reopening index", id);
         }
+        
+        boundryDocIdSetMap.remove(indexName);
 
         try {
             if (ssi != null) {

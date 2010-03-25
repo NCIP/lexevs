@@ -24,6 +24,8 @@ import java.util.List;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent;
+import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
+import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 
 /**
@@ -75,6 +77,23 @@ public class DatabaseServiceEventSupport {
 				listener.onCodingSchemeInsert(
 						new CodingSchemeInsertEvent(
 								codingScheme));
+			}
+		}
+	}
+	
+	protected void firePropertyUpdateEvent(
+			PropertyUpdateEvent event) {
+		if(databaseServiceEventListeners != null){
+			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+				listener.onPropertyUpdate(event);
+			}
+		}
+	}
+	
+	protected void fireEntityUpdateEvent(EntityUpdateEvent entityUpdateEvent) {
+		if(databaseServiceEventListeners != null){
+			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+				listener.onEntityUpdate(entityUpdateEvent);
 			}
 		}
 	}

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.concepts.Entity;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.DuplicateFilter;
@@ -279,6 +280,13 @@ public List<IndexedProperty> query(final CompassQuery query) {
 	@Override
 	public Query getMatchAllDocsQuery(
 			AbsoluteCodingSchemeVersionReference reference) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void updateDocumentsOfEntity(
+			AbsoluteCodingSchemeVersionReference reference, Entity entity) {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}

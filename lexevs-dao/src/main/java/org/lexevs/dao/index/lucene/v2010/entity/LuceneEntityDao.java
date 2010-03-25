@@ -23,6 +23,7 @@ import java.util.BitSet;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.concepts.Entity;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Query;
@@ -32,6 +33,7 @@ import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.AbstractBaseIndexDao;
 import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.connection.IndexInterface;
+import org.lexevs.dao.index.indexer.EntityIndexer;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 import org.lexevs.system.model.LocalCodingScheme;
@@ -59,6 +61,8 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 	
 	/** The system resource service. */
 	private SystemResourceService systemResourceService;
+	
+	private EntityIndexer entityIndexer;
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.access.entity.EntityDao#query(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.util.List, java.util.List)
@@ -194,13 +198,12 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 			indexerService.forceUnlockIndex(indexName);
 			indexerService.openBatchRemover(indexName);
 
-			indexerService.removeDocument(indexName, 
+			this.removeDocumentsByField(indexName, 
 					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
 					LuceneLoaderCode.createCodingSchemeUriVersionKey(
 					reference.getCodingSchemeURN(), reference.getCodingSchemeVersion()));
 
 			indexerService.closeBatchRemover(indexName);
-			
 			indexerService.optimizeIndex(indexName);
 			
 			indexerService.getMetaData().removeIndexMetaDataValue(lcs.getKey());
@@ -211,6 +214,73 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 		}
 	}
 	
+	@Override
+	public void updateDocumentsOfEntity(
+			AbsoluteCodingSchemeVersionReference reference, Entity entity) {
+		String codingSchemeUri = reference.getCodingSchemeURN();
+		String codingSchemeVersion = reference.getCodingSchemeVersion();
+		try {
+			String indexName = getIndexName(codingSchemeUri,codingSchemeVersion);
+
+			IndexerService indexerService = this.getIndexInterface().getBaseIndexerService();
+			indexerService.forceUnlockIndex(indexName);
+			indexerService.openBatchRemover(indexName);
+			
+			
+			this.removeDocumentsByField(
+					indexName, 
+					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, 
+					LuceneLoaderCode.
+						createCodingSchemeUriVersionCodeNamespaceKey(
+							codingSchemeUri, 
+							codingSchemeVersion, 
+							entity.getEntityCode(), 
+							entity.getEntityCodeNamespace()));
+			
+			indexerService.closeBatchRemover(indexName);
+			
+			
+			//indexController.openWriter(indexName);
+			entityIndexer.indexEntity(indexName, codingSchemeUri, codingSchemeVersion, entity);
+			//indexController.closeWriter(indexName);
+			indexerService.optimizeIndex(indexName);
+			//indexController.optimizeIndex(indexName);
+			
+			
+			String internalCodeSystemName = systemResourceService.
+			 getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, 
+			 	codingSchemeVersion);
+			
+			indexInterface.reopenIndex(internalCodeSystemName, codingSchemeVersion);
+		
+		} catch(Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	protected void removeDocumentsByField(String indexName, String fieldName, String fieldValue) {
+		IndexerService indexerService = this.getIndexInterface().getBaseIndexerService();
+		try {
+			indexerService.removeDocument(indexName, 
+					fieldName, 
+					fieldValue);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+		
+	protected String getIndexName(String codingSchemeUri, String codingSchemeVersion) throws Exception {
+		String internalCodeSystemName = systemResourceService.
+		getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, 
+				codingSchemeVersion);
+
+		IndexerService indexerService = indexInterface.getBaseIndexerService();
+
+		LocalCodingScheme lcs = LocalCodingScheme.getLocalCodingScheme(internalCodeSystemName, 
+				codingSchemeVersion);
+		return indexerService.getMetaData().getIndexMetaDataValue(lcs.getKey());
+	}
+
 	/**
 	 * Sets the index interface.
 	 * 
@@ -274,5 +344,11 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 		return systemResourceService;
 	}
 
-	
+	public EntityIndexer getEntityIndexer() {
+		return entityIndexer;
+	}
+
+	public void setEntityIndexer(EntityIndexer entityIndexer) {
+		this.entityIndexer = entityIndexer;
+	}
 }

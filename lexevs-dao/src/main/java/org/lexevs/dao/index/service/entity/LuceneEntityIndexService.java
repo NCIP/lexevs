@@ -48,13 +48,12 @@ public class LuceneEntityIndexService implements EntityIndexService {
 		indexCreator.index(reference);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.index.service.entity.EntityIndexService#removeIndexForEntity(java.lang.String, java.lang.String, org.LexGrid.concepts.Entity)
-	 */
-	public void removeIndexForEntity(String codingSchemeUri,
-			String codingSchemeVersion, Entity entity) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+	protected void optimizeIndex(String indexName) {
+		try {
+			indexDaoManager.getIndexerService().optimizeIndex(indexName);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -62,8 +61,11 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	 */
 	public void updateIndexForEntity(String codingSchemeUri,
 			String codingSchemeVersion, Entity entity) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+		AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
+		reference.setCodingSchemeURN(codingSchemeUri);
+		reference.setCodingSchemeVersion(codingSchemeVersion);
+		
+		indexDaoManager.getEntityDao(codingSchemeUri, codingSchemeVersion).updateDocumentsOfEntity(reference, entity);
 	}
 	
 
