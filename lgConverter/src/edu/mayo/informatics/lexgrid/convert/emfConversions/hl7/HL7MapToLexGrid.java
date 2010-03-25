@@ -318,10 +318,7 @@ public class HL7MapToLexGrid {
             }
 
             associations.close();
-            c.close();
-
-            c = DBUtility.connectToDatabase(accessConnectionString, driver, null, null);
-
+            
             // Pre-load all the supported properties
             PreparedStatement getProperties = c
                     .prepareStatement("SELECT distinct(propertyCode) FROM VCS_concept_property");
@@ -336,10 +333,7 @@ public class HL7MapToLexGrid {
                     csclass.getMappings().addSupportedProperty(sp);
             }
             properties.close();
-            c.close();
-
-            c = DBUtility.connectToDatabase(accessConnectionString, driver, null, null);
-
+            
             // Pre-load the supported property qualifier source-code
             String propertyQualifier = "source-code";
             SupportedPropertyQualifier spq = new SupportedPropertyQualifier();
@@ -361,11 +355,7 @@ public class HL7MapToLexGrid {
                     csclass.getMappings().addSupportedSource(ss);
             }
             sources.close();
-            c.close();
-
-            c = DBUtility.connectToDatabase(accessConnectionString, driver, null, null);
-       
-
+            
             // Create the artificial top nodes, the @ node.
             // Persist the top nodes to a list
             // Create a method do handle them as concepts.
