@@ -172,20 +172,20 @@ public class SQLIndexer extends LuceneLoaderCode {
             String sqlServer, String sqlDriver, String tablePrefix, String[] codingSchemes) throws Exception {
 
         SimpleDateFormat temp = new SimpleDateFormat("yyyy-MM-dd,HH:mm:ss");   
-        initIndexes(indexName, indexLocation);
-        createIndex();
+        initIndexes();
+        createIndex(indexName);
         Connection sqlConnection = DBUtility.connectToDatabase(sqlServer, sqlDriver, sqlUserName, sqlPassword);
         try {
             gsm_ = new GenericSQLModifier(sqlConnection.getMetaData().getDatabaseProductName(), false);
             stc_ = new SQLTableUtilities(sqlConnection, tablePrefix).getSQLTableConstants();
-            openIndexesClearExisting(codingSchemes);
+            openIndexesClearExisting(indexName, codingSchemes);
             
             for (int j = 0; j < codingSchemes.length; j++) {
                 logger.info("Now indexing " + codingSchemes[j] + " " + temp.format(new Date(System.currentTimeMillis())));
                 messageDirector_.info("Now indexing " + codingSchemes[j] + " "
                         + temp.format(new Date(System.currentTimeMillis())));
                 Date start = new Date(System.currentTimeMillis());
-                String version = loadEntityLuceneIndexes(codingSchemes[j], null, sqlConnection);
+                String version = loadEntityLuceneIndexes(indexName, codingSchemes[j], null, sqlConnection);
                 indexerService_.getMetaData().setIndexMetaDataValue(codingSchemes[j] + "[:]" + version, indexName);
                 indexerService_.getMetaData().setIndexMetaDataValue(indexName, "codingScheme", codingSchemes[j]);
                 indexerService_.getMetaData().setIndexMetaDataValue(indexName, "version", version);
@@ -205,7 +205,7 @@ public class SQLIndexer extends LuceneLoaderCode {
                 sqlConnection.close();
             } finally {
                 messageDirector_.info("Closing Indexes " + temp.format(new Date(System.currentTimeMillis())));
-                closeIndexes();
+                closeIndexes(indexName);
                 messageDirector_.info("Closed Indexes " + temp.format(new Date(System.currentTimeMillis())));
             }
         }
@@ -214,7 +214,7 @@ public class SQLIndexer extends LuceneLoaderCode {
     /*
      * Returns the version of the code system
      */
-    protected String loadEntityLuceneIndexes(String codingSchemeName, List<String> entityCodeList, 
+    protected String loadEntityLuceneIndexes(String indexName, String codingSchemeName, List<String> entityCodeList, 
             Connection sqlConnection) throws Exception {
         logger.debug("loadCodedEntries called for " + codingSchemeName);
         
@@ -336,7 +336,7 @@ public class SQLIndexer extends LuceneLoaderCode {
                                     (String[]) sources.toArray(new String[sources.size()]),
                                     (String[]) usageContexts.toArray(new String[usageContexts.size()]),
                                     (Qualifier[]) qualifiers.values().toArray(new Qualifier[qualifiers.size()]),
-                                    stc_);
+                                    indexName);
                         }
 
                         sources = new HashSet();
@@ -423,7 +423,7 @@ public class SQLIndexer extends LuceneLoaderCode {
                    (String[]) sources.toArray(new String[sources.size()]),
                    (String[]) usageContexts.toArray(new String[usageContexts.size()]),
                    (Qualifier[]) qualifiers.values().toArray(new Qualifier[qualifiers.size()]),
-                    stc_);
+                    indexName);
             }
         } catch (Exception e) {
             messageDirector_.fatalAndThrowException("Problem indexing entity", e);

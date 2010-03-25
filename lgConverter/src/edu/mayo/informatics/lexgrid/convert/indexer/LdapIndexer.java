@@ -138,10 +138,9 @@ public class LdapIndexer extends LuceneLoaderCode {
 
     private void index(String indexName, String indexLocation, String ldapUserName, String ldapPassword,
             String ldapAddress, String ldapService, String[] codingSchemes) throws Exception {
-        initIndexes(indexName, indexLocation);
-        createIndex();
+        createIndex(indexName);
 
-        openIndexesClearExisting(codingSchemes);
+        openIndexesClearExisting(indexName, codingSchemes);
 
         // connect LDAP
         initContexts(ldapUserName, ldapPassword, ldapAddress, ldapService);
@@ -169,7 +168,7 @@ public class LdapIndexer extends LuceneLoaderCode {
                     temp.format(new Date(System.currentTimeMillis())));
         }
         md_.info("Closing Indexes " + temp.format(new Date(System.currentTimeMillis())));
-        closeIndexes();
+        closeIndexes(indexName);
         md_.info("Finished " + temp.format(new Date(System.currentTimeMillis())));
 
     }

@@ -24,6 +24,7 @@ public class SQLEntityIndexer extends SQLIndexer {
     private String sqlUserName_;
     private String sqlPassword_;
     private String tablePrefix_;
+    private String indexName;
 
     public SQLEntityIndexer(String indexName, String indexLocation, String sqlUserName, String sqlPassword,
             String sqlServer, String sqlDriver, String tablePrefix, LgMessageDirectorIF messageDirector,
@@ -35,6 +36,7 @@ public class SQLEntityIndexer extends SQLIndexer {
         sqlUserName_ = sqlUserName;
         sqlPassword_ = sqlPassword;
         tablePrefix_ = tablePrefix;
+        this.indexName = indexName;
         
         IndexerService indexerService = new IndexerService(indexLocation, false);
 
@@ -45,7 +47,7 @@ public class SQLEntityIndexer extends SQLIndexer {
         normEnabled_ = new Boolean(norm);
         doubleMetaphoneEnabled_ = new Boolean(doubleMetaPhone);
 
-        initIndexes(indexName, indexLocation);
+        initIndexes();
 
         messageDirector_ = messageDirector;
         useCompoundFile_ = useCompoundFile;
@@ -67,10 +69,10 @@ public class SQLEntityIndexer extends SQLIndexer {
         }
         
         try {
-            openIndexes();
-            loadEntityLuceneIndexes(codingSchemeName, entityCodeList, sqlConnection_);
+            openIndexes(indexName);
+            loadEntityLuceneIndexes(indexName, codingSchemeName, entityCodeList, sqlConnection_);
         } finally {
-            closeIndexes();
+            closeIndexes(indexName);
             sqlConnection_.close();
         }
     }
@@ -85,16 +87,16 @@ public class SQLEntityIndexer extends SQLIndexer {
 
             Iterator<String> itr = entityCodes.iterator();
 
-            indexerService_.forceUnlockIndex(simpleIndexName_);
-            indexerService_.openBatchRemover(simpleIndexName_);
+            indexerService_.forceUnlockIndex(indexName);
+            indexerService_.openBatchRemover(indexName);
 
             while (itr.hasNext()) {
                 String entityCode = itr.next();
-                indexerService_.removeDocument(simpleIndexName_, "entityCode", entityCode);
-                indexerService_.removeDocument(simpleIndexName_, codingSchemeName + "-" + entityCode);
+                indexerService_.removeDocument(indexName, "entityCode", entityCode);
+                indexerService_.removeDocument(indexName, codingSchemeName + "-" + entityCode);
             }
 
-            indexerService_.closeBatchRemover(simpleIndexName_);
+            indexerService_.closeBatchRemover(indexName);
 
         } catch (InternalIndexerErrorException e) {
             messageDirector_.error("Exception while removing the indexes.", e);
