@@ -433,6 +433,7 @@ public abstract class LuceneLoaderCode {
     		String codingSchemeId, 
     		String codingSchemeVersion, 
     		String entityId,
+    		String entityCodeNamespace,
     		String indexName) throws Exception {
         StringBuffer fields = new StringBuffer();
         generator_.startNewDocument(codingSchemeName + "-" + entityId);
@@ -444,6 +445,8 @@ public abstract class LuceneLoaderCode {
         fields.append("codeBoundry ");
         generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
         fields.append(CODING_SCHEME_URI_VERSION_KEY_FIELD + " ");
+        generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, entityId, entityCodeNamespace), false, true, false);
+        fields.append(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD + " ");
 
         generator_.addTextField("fields", fields.toString(), store(), true, true);
 

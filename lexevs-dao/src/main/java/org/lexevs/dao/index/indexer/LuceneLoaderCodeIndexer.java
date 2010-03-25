@@ -75,12 +75,13 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 		try {
 			String codingSchemeName = 
 				  systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, codingSchemeVersion);
-			//TODO: Add Entity Namespace to the Boundry doc
+
 			this.addEntityBoundryDocument(
 					codingSchemeName, 
 					codingSchemeUri, 
 					codingSchemeVersion, 
 					entity.getEntityCode(),
+					entity.getEntityCodeNamespace(),
 					indexName);
 			
 			for(Property prop : entity.getAllProperties()) {
@@ -92,6 +93,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 					codingSchemeUri, 
 					codingSchemeVersion, 
 					entity.getEntityCode(),
+					entity.getEntityCodeNamespace(),
 					indexName);
 			
 		} catch (Exception e) {
