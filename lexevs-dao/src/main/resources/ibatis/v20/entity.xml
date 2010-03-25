@@ -7,11 +7,16 @@
 	<typeAlias alias="associationEntity" type="org.LexGrid.relations.AssociationEntity" />
 
 	<resultMap id="entityResult" class="entity" groupBy="entityCode,entityCodeNamespace">
-<!--		<result property="entityId" column="entityGuid" />-->
-<!--		<result property="codingSchemeId" column="codingSchemeGuid" />-->
 		<result property="entityCode" column="entityCode" />
 		<result property="entityCodeNamespace" column="entityCodeNamespace" />
+		<result property="isDefined" column="isDefined" />
+		<result property="isAnonymous" column="isAnonymous" />
 		<result property="entityDescription.content" column="description" />
+		<result property="isActive" column="isActive" />
+		<result property="owner" column="owner" />
+		<result property="status" column="status" />
+		<result property="effectiveDate" column="effectiveDate" />
+		<result property="expirationDate" column="expirationDate" />
 		<result property="_entityTypeList" resultMap="Entity.entityTypeResult"/>
 		<discriminator javaType="string" column="entityType">
 			<subMap value="association" resultMap="Entity.associationEntityResult" />
@@ -31,7 +36,14 @@
 			entity.entityGuid,
 			entity.entityCode,
 			entity.entityCodeNamespace,
+			entity.isDefined,
+			entity.isAnonymous,
 			entity.description,
+			entity.isActive,
+			entity.owner,
+			entity.status,
+			entity.effectiveDate,
+			entity.expirationDate,
 			entityType.entityType,
 			associationEntity.forwardName,
 			associationEntity.reverseName,

@@ -677,6 +677,51 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 	
 	@Test
 	@Transactional
+	public void testGetEntityWithEverything() throws Exception {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		Timestamp timestamp1 = new Timestamp(1l);
+		Timestamp timestamp2 = new Timestamp(2l);
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+	
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isDefined, isAnonymous, description, isActive, owner, status,       effectiveDate,                 expirationDate) " +
+			"values 							('eguid',   'csguid',         'ecode',       'ens',            false,        true,     'ed',       true,   'me',  'test', '" +timestamp1.toString()+"', '" +timestamp2.toString()+ "')");
+		
+		template.execute("Insert into associationentity (associationEntityGuid, entityGuid, forwardName, reverseName, isNavigable, isTransitive) " +
+			"values ('aeguid', 'eguid', 'afn', 'arn', 'true', 'false')");
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('eguid', 'instance')");
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('eguid', 'concept')");
+			
+		Entity entity = ibatisEntityDao.getEntityByCodeAndNamespace("csguid", "ecode", "ens");
+		
+		assertNotNull(entity);
+		
+		assertEquals(2, entity.getEntityTypeCount());
+		
+		assertTrue(Arrays.asList(entity.getEntityType()).contains("instance"));
+		assertTrue(Arrays.asList(entity.getEntityType()).contains("concept"));	
+		
+		assertEquals("ecode", entity.getEntityCode());
+		assertEquals("ens", entity.getEntityCodeNamespace());
+		assertFalse(entity.getIsDefined());
+		assertTrue(entity.getIsAnonymous());
+		assertEquals("ed", entity.getEntityDescription().getContent());
+		assertTrue(entity.getIsActive());
+		assertEquals("me", entity.getOwner());
+		assertEquals("test", entity.getStatus());
+		assertEquals(timestamp1.getTime(), entity.getEffectiveDate().getTime());
+		assertEquals(timestamp2.getTime(), entity.getExpirationDate().getTime());
+		
+	}
+	
+	@Test
+	@Transactional
 	public void testGetEntityAssociationEntity() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
