@@ -318,6 +318,9 @@ public class HL7MapToLexGrid {
             }
 
             associations.close();
+            c.close();
+
+            c = DBUtility.connectToDatabase(accessConnectionString, driver, null, null);
 
             // Pre-load all the supported properties
             PreparedStatement getProperties = c
@@ -333,6 +336,9 @@ public class HL7MapToLexGrid {
                     csclass.getMappings().addSupportedProperty(sp);
             }
             properties.close();
+            c.close();
+
+            c = DBUtility.connectToDatabase(accessConnectionString, driver, null, null);
 
             // Pre-load the supported property qualifier source-code
             String propertyQualifier = "source-code";
@@ -355,6 +361,9 @@ public class HL7MapToLexGrid {
                     csclass.getMappings().addSupportedSource(ss);
             }
             sources.close();
+            c.close();
+
+            c = DBUtility.connectToDatabase(accessConnectionString, driver, null, null);
        
 
             // Create the artificial top nodes, the @ node.
@@ -381,6 +390,7 @@ public class HL7MapToLexGrid {
                 i++;
             }
             results.close();
+            
         } catch (Exception e) {
             messages_.error("Failed while preparing HL7 concepts.", e);
             e.printStackTrace();
@@ -479,6 +489,7 @@ public class HL7MapToLexGrid {
                 ResultSet codeResults = getArtificialTopNodeCode.executeQuery();
                 if (codeResults.next()) {
                     topNode.setEntityCode(codeResults.getString("internalId") + ":" + nodeName);
+                    codeResults.close();
                 } else {
                     topNode.setEntityCode(nodeName + ":" + nodeName);
                 }
@@ -553,7 +564,8 @@ public class HL7MapToLexGrid {
                     if (testCode != null)
                         topNodes.add(testCode);
                 }
-
+                if(systemCodes != null)
+                    systemCodes.close();
                 if (getSystemCodes != null)
                     getSystemCodes.close();
 
@@ -570,9 +582,11 @@ public class HL7MapToLexGrid {
                             nodesToRemove.add(topNodes.get(i));
                         }
                     }
+                    if (isTopNode != null)
+                        isTopNode.close();
+                    if (checkForTopNode != null)
+                        checkForTopNode.close();
                 }
-                if (checkForTopNode != null)
-                    checkForTopNode.close();
 
                 for (int i = 0; i < nodesToRemove.size(); i++) {
                     topNodes.remove(nodesToRemove.get(i));
@@ -588,9 +602,11 @@ public class HL7MapToLexGrid {
                     conceptCode = getconceptSuffix.executeQuery();
                     conceptCode.next();
                     topNodes.set(i, topNodes.get(i) + ":" + conceptCode.getString(1));
+                    if (conceptCode != null)
+                        conceptCode.close();
+                    if (getconceptSuffix != null)
+                        getconceptSuffix.close();
                 }
-                if (getconceptSuffix != null)
-                    getconceptSuffix.close();
 
                 // For each top node subsume to the current artificial node for
                 // the scheme.
