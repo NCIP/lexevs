@@ -124,10 +124,16 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	
 	@Override
 	public Entity getHistoryEntityByRevision(String codingSchemeId, String entityId, String revisionId) {
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
+		String entityTypeTablePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		PrefixedParameterTuple tuple = 
+			new PrefixedParameterTuple(prefix, entityId, revisionId);
+		
+		tuple.setEntityTypeTablePrefix(entityTypeTablePrefix);
 		
 		return (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_ID_AND_REVISION_ID_SQL, 
-				new PrefixedParameterTuple(prefix, entityId, revisionId));
+				tuple);
 	}
 	
 	protected Entity doGetEntity(String prefix, String codingSchemeId, String entityId) {
@@ -225,6 +231,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 		inserter.insert(INSERT_ENTITY_SQL, 
 				buildInsertEntityParamaterBean(
 						prefix,
+						prefix,
 						codingSchemeId, entityId, entryStateId, entity));
 
 		for(String entityType : entity.getEntityType()){
@@ -267,6 +274,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 			boolean cascade) {
 
 		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
+		String entityTypeTablePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 
 		String entryStateId = this.createUniqueId();
 		
@@ -276,6 +284,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 		inserter.insert(INSERT_ENTITY_SQL, 
 				buildInsertEntityParamaterBean(
 						prefix,
+						entityTypeTablePrefix,
 						codingSchemeId, entityId, entryStateId, entity));
 		
 		for(Property prop : entity.getAllProperties()) {
@@ -388,9 +397,13 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	 * 
 	 * @return the insert entity bean
 	 */
-	protected InsertOrUpdateEntityBean buildInsertEntityParamaterBean(String prefix, String codingSchemeId, String entityId, String entryStateId, Entity entity){
+	protected InsertOrUpdateEntityBean buildInsertEntityParamaterBean(
+			String prefix, 
+			String entityTypeTablePrefix,
+			String codingSchemeId, String entityId, String entryStateId, Entity entity){
 		InsertOrUpdateEntityBean bean = new InsertOrUpdateEntityBean();
 		bean.setPrefix(prefix);
+		bean.setEntityTypeTablePrefix(entityTypeTablePrefix);
 		bean.setCodingSchemeId(codingSchemeId);
 		bean.setId(entityId);
 		bean.setEntryStateId(entryStateId);

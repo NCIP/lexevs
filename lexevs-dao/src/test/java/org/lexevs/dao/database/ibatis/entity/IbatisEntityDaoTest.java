@@ -506,7 +506,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 	 */
 	@Test
 	@Transactional
-	public void testEntitydDefinition() {
+	public void testEntityDefinition() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
 				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'definition')");

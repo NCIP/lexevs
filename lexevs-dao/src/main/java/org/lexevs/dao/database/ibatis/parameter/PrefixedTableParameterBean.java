@@ -28,6 +28,8 @@ public class PrefixedTableParameterBean {
 	/** The prefix. */
 	private String prefix;
 	
+	private String entityTypeTablePrefix;
+	
 	/**
 	 * Instantiates a new prefixed table parameter bean.
 	 */
@@ -62,5 +64,16 @@ public class PrefixedTableParameterBean {
 	public String getPrefix() {
 		return prefix;
 	}
-	
+
+	public void setEntityTypeTablePrefix(String entityTypeTablePrefix) {
+		this.entityTypeTablePrefix = entityTypeTablePrefix;
+	}
+
+	public String getEntityTypeTablePrefix() {
+		if(entityTypeTablePrefix == null) {
+			return prefix;
+		} else {
+			return entityTypeTablePrefix;
+		}
+	}
 }

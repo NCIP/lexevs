@@ -18,6 +18,7 @@
 		<result property="effectiveDate" column="effectiveDate" />
 		<result property="expirationDate" column="expirationDate" />
 		<result property="_entityTypeList" resultMap="Entity.entityTypeResult"/>
+		<result property="entryState" resultMap="Versions.entryStateResult" />
 		<discriminator javaType="string" column="entityType">
 			<subMap value="association" resultMap="Entity.associationEntityResult" />
 		</discriminator>
@@ -48,12 +49,20 @@
 			associationEntity.forwardName,
 			associationEntity.reverseName,
 			associationEntity.isNavigable,
-			associationEntity.isTransitive
+			associationEntity.isTransitive,
+			
+			entryState.changeType,
+  			entryState.relativeOrder,
+  			entryState.relativeOrder,
+			
+			currentRevision.revisionId currentRevisionId,
+  			previousRevision.revisionId previousRevisionId
+  			
 		FROM
 			$prefix$entity entity
 			
 		LEFT JOIN
-			$prefix$entityType entityType
+			$entityTypeTablePrefix$entityType entityType
 		ON
 			entity.entityGuid =
 			entityType.entityGuid
@@ -68,29 +77,17 @@
 			${defaultPrefix}entryState entryState
 		ON
 			entity.entryStateGuid =
-			entryState.entryStateGuid		
-	</sql>
-	
-	<sql id="getHistoryEntityFragment">
-		SELECT
-			entity.codingSchemeGuid,
-			entity.entityGuid,
-			entity.entityCode,
-			entity.entityCodeNamespace,
-			entity.description,
-			entityType.entityType
-		FROM
-			$prefix$h_entity entity
+			entryState.entryStateGuid	
+			
 		LEFT JOIN
-			$prefix$entityType entityType
-		ON
-			entity.entityGuid =
-			entityType.entityGuid
+			${defaultPrefix}revision currentRevision
+		ON 
+			entryState.revisionGuid = currentRevision.revisionGuid
+			
 		LEFT JOIN
-			$prefix$entryState entryState
-		ON
-			entity.entryStateGuid =
-			entryState.entryStateGuid		
+			${defaultPrefix}revision previousRevision
+		ON 
+			entryState.prevRevisionGuid = previousRevision.revisionGuid	
 	</sql>
 	
 	<select id="getEntityCount" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="int">
@@ -133,7 +130,7 @@
      </select>
      
     <select id="getEntityByIdAndRevisionId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Entity.entityResult">
-		<include refid="getHistoryEntityFragment"/>
+		<include refid="getEntityFragment"/>
 		WHERE
 			entity.entityGuid = #param1#
 		AND

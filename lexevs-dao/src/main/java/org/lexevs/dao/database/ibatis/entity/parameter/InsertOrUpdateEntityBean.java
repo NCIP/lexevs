@@ -34,6 +34,8 @@ public class InsertOrUpdateEntityBean extends IdableParameterBean {
 	/** The coding scheme id. */
 	private String codingSchemeId;
 	
+	private String entityTypeTablePrefix;
+	
 	/**
 	 * Gets the entity.
 	 * 
@@ -68,6 +70,14 @@ public class InsertOrUpdateEntityBean extends IdableParameterBean {
 	 */
 	public void setCodingSchemeId(String codingSchemeId) {
 		this.codingSchemeId = codingSchemeId;
+	}
+
+	public void setEntityTypeTablePrefix(String entityTypeTablePrefix) {
+		this.entityTypeTablePrefix = entityTypeTablePrefix;
+	}
+
+	public String getEntityTypeTablePrefix() {
+		return entityTypeTablePrefix;
 	}
 }
 

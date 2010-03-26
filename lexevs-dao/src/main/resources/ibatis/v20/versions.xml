@@ -4,10 +4,10 @@
 <sqlMap namespace="Versions">
 
 	<resultMap id="entryStateResult" class="org.LexGrid.versions.EntryState">
-		<result property="containingRevision" column="revisionId" />
+		<result property="containingRevision" column="currentRevisionId" />
 		<result property="relativeOrder" column="relativeOrder" />
 		<result property="changeType" column="changeType" />
-		<result property="prevRevision" column="prevRevisionGuid" />
+		<result property="prevRevision" column="previousRevisionId" />
 	</resultMap>
 	
 	<select id="getSystemReleaseIdByUri" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">

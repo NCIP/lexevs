@@ -15,9 +15,15 @@
 		<result property="language" column="language" />
 		<result property="value.content" column="propertyValue" />
 		<result property="value.dataType" column="format" />
+		<result property="isActive" column="isActive" />
+		<result property="owner" column="owner" />
+		<result property="status" column="status" />
+		<result property="effectiveDate" column="effectiveDate" />
+		<result property="expirationDate" column="expirationDate" />
 		<result property="_sourceList" resultMap="Property.sourceResult"/>
 		<result property="_propertyQualifierList" resultMap="Property.qualifierResult"/>
 		<result property="_usageContextList" resultMap="Property.usageContextResult"/>
+		<result property="entryState" resultMap="Versions.entryStateResult" />
 		<discriminator javaType="string" column="propertyType">
 			<subMap value="presentation" resultMap="presentationResult" />
 			<subMap value="definition" resultMap="definitionResult" />
@@ -62,8 +68,17 @@
   			property.degreeOfFidelity,
   			property.representationalForm,
   			property.propertyValue,
+  			property.isActive,
+  			property.owner,
+  			property.status,
+  			property.effectiveDate,
+  			property.expirationDate,
   			entryState.changeType,
   			entryState.relativeOrder,
+  			entryState.relativeOrder,
+  			
+  			currentRevision.revisionId currentRevisionId,
+  			previousRevision.revisionId previousRevisionId,
   			
   			usageContext.attributeId usageContextAttributeId,
   			
@@ -82,6 +97,16 @@
   		ON
   			property.entryStateGuid =
   			entryState.entryStateGuid	
+  		LEFT JOIN
+  			${defaultPrefix}revision currentRevision
+  		ON
+  			entryState.revisionGuid =
+  			currentRevision.revisionGuid	
+		LEFT JOIN
+  			${defaultPrefix}revision previousRevision
+  		ON
+  			entryState.prevRevisionGuid =
+  			previousRevision.revisionGuid	
   	</sql>
   	
   	<sql id="getHistoryPropertyFragment">
@@ -265,8 +290,57 @@
    		  	<isNotNull prepend="," property="property.propertyType">
 				propertyType = #property.propertyType#
 			</isNotNull>
+			<isNotNull prepend="," property="property.propertyName">
+				propertyName = #property.propertyName#
+			</isNotNull>
+			<isNotNull prepend="," property="property.language">
+				language = #property.language#
+			</isNotNull>
+			<isNotNull prepend="," property="property.value.dataType">
+				format = #property.value.dataType#
+			</isNotNull>
+			
+			<isPropertyAvailable property="property.isPreferred">
+				<isNotNull prepend="," property="property.isPreferred">
+					isPreferred = #property.isPreferred#
+				</isNotNull>
+			</isPropertyAvailable>
+			
+			<isPropertyAvailable property="property.matchIfNoContext">
+				<isNotNull prepend="," property="property.matchIfNoContext">
+					matchIfNoContext = #property.matchIfNoContext#
+				</isNotNull>
+			</isPropertyAvailable>
+			
+			<isPropertyAvailable property="property.degreeOfFidelity">
+				<isNotNull prepend="," property="property.degreeOfFidelity">
+					degreeOfFidelity = #property.degreeOfFidelity#
+				</isNotNull>
+			</isPropertyAvailable>
+			
+			<isPropertyAvailable property="property.representationalForm">
+				<isNotNull prepend="," property="property.representationalForm">
+					representationalForm = #property.representationalForm#
+				</isNotNull>
+			</isPropertyAvailable>
+			
 			<isNotNull prepend="," property="property.value.content">
 				propertyValue = #property.value.content#
+			</isNotNull>
+			<isNotNull prepend="," property="property.isActive">
+				isActive = #property.isActive#
+			</isNotNull>
+			<isNotNull prepend="," property="property.owner">
+				owner = #property.owner#
+			</isNotNull>
+			<isNotNull prepend="," property="property.status">
+				status = #property.status#
+			</isNotNull>
+			<isNotNull prepend="," property="property.effectiveDate">
+				effectiveDate = #property.effectiveDate#
+			</isNotNull>
+			<isNotNull prepend="," property="property.expirationDate">
+				expirationDate = #property.expirationDate#
 			</isNotNull>
 		  </dynamic>
 		 WHERE

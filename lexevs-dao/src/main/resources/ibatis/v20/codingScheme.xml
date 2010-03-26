@@ -56,9 +56,8 @@
 			es.changeType,
 			es.relativeOrder,
 			es.revisionGuid,
-			es.prevRevisionGuid,
-			rev.revisionGuid,
-			rev.revisionId,
+			currentRevision.revisionId currentRevisionId,
+			previousRevision.revisionId previousRevisionId,
 			csmaSource.*,
 			csmaLocalName.attributeValue localNameValue
 		FROM
@@ -70,10 +69,15 @@
 			cs.entryStateGuid = es.entryStateGuid
 			
 		LEFT JOIN
-			${defaultPrefix}revision rev
-		ON
-			es.revisionGuid = rev.revisionGuid
-			</sql>
+			${defaultPrefix}revision currentRevision
+		ON 
+			es.revisionGuid = currentRevision.revisionGuid
+			
+		LEFT JOIN
+			${defaultPrefix}revision previousRevision
+		ON 
+			es.prevRevisionGuid = previousRevision.revisionGuid
+	</sql>
 			
 	<sql id="getCodingSchemeMultiAttribsFragment">
 		LEFT JOIN
@@ -155,7 +159,7 @@
 		WHERE
 			cs.codingSchemeGuid = #param1#
 		AND
-			rev.revisionGuid = #param2#	
+			currentRevision.revisionGuid = #param2#	
      </select>
      
      <select id="getCodingSchemeIdByNameAndVersion" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">

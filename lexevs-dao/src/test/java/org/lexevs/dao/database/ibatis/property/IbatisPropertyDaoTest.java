@@ -142,7 +142,72 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
-	public void updateProperty(){
+	public void updatePresentation(){
+		final Timestamp timestamp1 = new Timestamp(1l);
+		final Timestamp timestamp2 = new Timestamp(2l);
+		
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'propId')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		Presentation prop = new Presentation();
+		prop.setPropertyId("propId");
+		prop.setPropertyName("pname");
+		prop.setPropertyType("pType");
+		prop.setValue(DaoUtility.createText("some updated value", "testFormat"));
+		prop.setEffectiveDate(timestamp1);
+		prop.setExpirationDate(timestamp2);
+		prop.setIsActive(true);
+		prop.setOwner("me");
+		prop.setLanguage("Lang");
+		prop.setStatus("testing");
+		prop.setMatchIfNoContext(false);
+		prop.setDegreeOfFidelity("dof");
+		prop.setRepresentationalForm("testRepForm");
+		prop.setIsPreferred(true);
+		
+		this.ibatisPropertyDao.updateProperty(
+				"csguid", 
+				"eguid", 
+				"pguid", 
+				PropertyType.ENTITY, 
+				prop);
+		
+		template.queryForObject("Select * from property", new RowMapper(){
+
+			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
+				
+				assertEquals(rs.getString(5), "pType");
+				assertEquals(rs.getString(6), "pname");
+				assertEquals(rs.getString(7), "Lang");
+				assertEquals(rs.getString(8), "testFormat");
+				assertEquals(rs.getBoolean(9), true);
+				assertEquals(rs.getBoolean(10), false);
+				assertEquals(rs.getString(11), "dof");
+				assertEquals(rs.getString(12), "testRepForm");
+				assertEquals(rs.getString(13), "some updated value");
+				assertEquals(rs.getBoolean(14), true);
+				assertEquals(rs.getString(15), "me");
+				assertEquals(rs.getString(16), "testing");
+				assertEquals(timestamp1.getTime(), rs.getTimestamp(17).getTime());
+				assertEquals(timestamp2.getTime(), rs.getTimestamp(18).getTime());
+
+				return null;
+			}
+		});
+	}
+	
+	@Test
+	public void updatePropert(){
+		final Timestamp timestamp1 = new Timestamp(1l);
+		final Timestamp timestamp2 = new Timestamp(2l);
+		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId) " +
 				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'propId')");
@@ -157,7 +222,13 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		prop.setPropertyId("propId");
 		prop.setPropertyName("pname");
 		prop.setPropertyType("pType");
-		prop.setValue(DaoUtility.createText("some updated value"));
+		prop.setValue(DaoUtility.createText("some updated value", "testFormat"));
+		prop.setEffectiveDate(timestamp1);
+		prop.setExpirationDate(timestamp2);
+		prop.setIsActive(true);
+		prop.setOwner("me");
+		prop.setLanguage("Lang");
+		prop.setStatus("testing");
 		
 		this.ibatisPropertyDao.updateProperty(
 				"csguid", 
@@ -170,13 +241,22 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				
-				assertEquals("some updated value", rs.getString(13));
+				assertEquals(rs.getString(5), "pType");
+				assertEquals(rs.getString(6), "pname");
+				assertEquals(rs.getString(7), "Lang");
+				assertEquals(rs.getString(8), "testFormat");
+				assertEquals(rs.getString(13), "some updated value");
+				assertEquals(rs.getBoolean(14), true);
+				assertEquals(rs.getString(15), "me");
+				assertEquals(rs.getString(16), "testing");
+				assertEquals(timestamp1.getTime(), rs.getTimestamp(17).getTime());
+				assertEquals(timestamp2.getTime(), rs.getTimestamp(18).getTime());
 
 				return null;
 			}
 		});
-		
 	}
+	
 	/**
 	 * Insert generic property.
 	 */
@@ -635,9 +715,12 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	
 	@Test
 	public void getPropertyByParentWithEverything(){
+		Timestamp ts1 = new Timestamp(1l);
+		Timestamp ts2 = new Timestamp(2l);
+		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue) " +
-			"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue')");
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyId, propertyType, propertyName, language, format, isPreferred, matchIfNoContext, degreeOfFidelity, representationalForm, propertyValue, isActive, owner, status,    effectiveDate,         expirationDate, entryStateGuid) " +
+			"values (                             'pguid',      'eguid',       'entity',       'pid',  'presentation', 'pname',      'lang',  'xml',    true,          false,             'dof',             'repForm',       'pvalue',        true,   'me', 'test', '"+ ts1.toString()+"', '"+ ts2.toString() + "',      'esguid')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
 			"values ('csguid', 'csname', 'csuri', 'csversion')");
@@ -654,11 +737,39 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId, attributeValue) " +
 			"values ('pmaguid3', 'pguid', 'qualifier', 'aQual', 'aQualValue')");
 		
+		template.execute("Insert into revision (revisionGuid, revisionId, revAppliedDate) " +
+			"values (								'rguid', 	 'rid1',       NOW() )");
+		
+		template.execute("Insert into revision (revisionGuid, revisionId, revAppliedDate) " +
+			"values (								'rguid2', 	 'rid2',       NOW() )");
+		
+		template.execute("Insert into entrystate (entryStateGuid, entryGuid, entryType, changeType, relativeOrder, revisionGuid, prevRevisionGuid) " +
+			"values (								'esguid2', 	   'pguid2', 'property', 'DEPENDENT',     '1',        'rguid',    'rguid2')");
+		
+		template.execute("Insert into entrystate (entryStateGuid, entryGuid, entryType, changeType, relativeOrder, revisionGuid, prevRevisionGuid, prevEntryStateGuid) " +
+			"values (								'esguid', 	   'pguid',  'property', 'MODIFY',     '1',            'rguid',        'rguid2',           'esguid2')");
+		
 		List<Property> props = ibatisPropertyDao.getAllPropertiesOfParent("csguid", "eguid", PropertyType.ENTITY);
 		
 		assertEquals(1, props.size());
 		
-		Property prop = props.get(0);
+		Presentation prop = (Presentation)props.get(0);
+		assertEquals("dof", prop.getDegreeOfFidelity());
+		assertEquals("lang", prop.getLanguage());
+		assertEquals("me", prop.getOwner());
+		assertEquals("pid", prop.getPropertyId());
+		assertEquals("pname", prop.getPropertyName());
+		assertEquals("presentation", prop.getPropertyType());
+		assertEquals("repForm", prop.getRepresentationalForm());
+		assertEquals("test", prop.getStatus());
+		
+		assertEquals(ts2.getTime(), prop.getExpirationDate().getTime());
+		assertEquals(ts1.getTime(), prop.getEffectiveDate().getTime());
+		assertTrue(prop.getIsActive());
+		assertTrue(prop.getIsPreferred());
+		assertFalse(prop.getMatchIfNoContext());
+		assertEquals("pvalue", prop.getValue().getContent());
+		assertEquals("xml", prop.getValue().getDataType());
 		
 		assertEquals(1, prop.getUsageContextCount());
 	    String usageContext = prop.getUsageContext(0);
@@ -674,6 +785,13 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals("aSubRef", source.getSubRef());
 		assertEquals("aRole", source.getRole());
 		assertEquals("aValue", source.getContent());
+		
+		EntryState es = prop.getEntryState();
+		assertNotNull(es);
+		assertEquals("rid1", es.getContainingRevision());
+		assertEquals("rid2", es.getPrevRevision());
+		assertEquals(ChangeType.MODIFY, es.getChangeType());
+		assertTrue(1l == es.getRelativeOrder());
 		
 	}
 	

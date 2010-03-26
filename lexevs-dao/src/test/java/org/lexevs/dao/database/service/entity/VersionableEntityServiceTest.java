@@ -18,6 +18,8 @@
  */
 package org.lexevs.dao.database.service.entity;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import junit.framework.Assert;
@@ -27,6 +29,7 @@ import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.concepts.Entity;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 
 /**
@@ -38,7 +41,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 
 	/** The service. */
 	@Resource
-	private EntityService service;
+	private VersionableEventEntityService service;
 	
 	/** The coding schemeservice. */
 	@Resource
@@ -73,6 +76,8 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 	
 	@Test
 	public void updateEntity() throws Exception{
+		List<DatabaseServiceEventListener> listeners = service.getDatabaseServiceEventListeners();
+		service.getDatabaseServiceEventListeners().clear();
 
 		CodingScheme scheme = new CodingScheme();
 		scheme.setApproxNumConcepts(111l);
@@ -103,6 +108,8 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		Entity moddedEntity = service.getEntity("uri", "v1", "c1", "ns");
 		
 		Assert.assertEquals("post-update", moddedEntity.getEntityDescription().getContent());
+		
+		service.setDatabaseServiceEventListeners(listeners);
 	}
 	
 	/**
