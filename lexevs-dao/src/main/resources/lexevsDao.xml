@@ -157,6 +157,7 @@
 		<property name="databaseServiceEventListeners">
 			<list>
 				<bean class="org.lexevs.dao.database.service.listener.LuceneEntityUpdateListener"/>
+				<bean class="org.lexevs.dao.database.service.listener.HistoryTableReplicatingListener"/>
 			</list>
 		</property>
 	</bean>
@@ -297,11 +298,19 @@
    	 	<property name="databaseUtility" ref="defaultDatabaseUtility" />
    		<property name="lexevsCommonSchemaCreateScript" ref="lexevsCommonSchemaCreateScript"/>
    		<property name="lexevsCodingSchemeSchemaCreateScript" ref="lexevsCodingSchemeSchemaCreateScript"/>
+   		<property name="lexevsHistoryCreateScript" ref="lexevsHistoryCreateScript"/>
    		<property name="prefixResolver" ref="defaultPrefixResolver"/>
    		<property name="dataSource" ref="dataSource"/>
    		<property name="databaseType" ref="databaseTypeFactory"/>
    		<property name="transactionManager" ref="transactionManager"/>
    	 </bean>
+   	 
+   	<bean id="lexevsHistoryCreateScript"
+		class="org.lexevs.dao.database.setup.script.ScriptFactory">
+		<property name="scriptType" value="create"/>
+		<property name="databaseType" ref="databaseTypeFactory"/>
+		<property name="creationScriptPrefix" value="sql/lexevs/codingschemehistory-create-"/>
+	</bean>
    	 
    	<bean id="lexevsCodingSchemeSchemaCreateScript"
 		class="org.lexevs.dao.database.setup.script.ScriptFactory">

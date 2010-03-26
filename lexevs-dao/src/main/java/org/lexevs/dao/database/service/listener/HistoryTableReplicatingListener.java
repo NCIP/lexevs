@@ -18,10 +18,13 @@
  */
 package org.lexevs.dao.database.service.listener;
 
-import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.DaoManager;
-import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent;
+import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
+import org.lexevs.dao.database.access.entity.EntityDao;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
+import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
  * The listener interface for receiving historyTableReplicating events.
@@ -36,18 +39,37 @@ import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEven
  */
 public class HistoryTableReplicatingListener extends DefaultServiceEventListener {
 	
-	/** The dao manager. */
-	private DaoManager daoManager;
-
+	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.listener.DefaultServiceEventListener#onCodingSchemeUpdate(org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent)
 	 */
 	@Override
-	public boolean onCodingSchemeUpdate(CodingSchemeUpdateEvent event) {
-		EntryState es = new EntryState();
-		es.setChangeType(ChangeType.MODIFY);
-		//daoManager.getVersionsDao().updateEntryState(event.getEntryStateId(), es);
-		//daoManager.getCodingSchemeDao().insertHistoryCodingScheme(event.getOriginalCodingScheme());
+	public boolean onEntityUpdate(final EntityUpdateEvent event) {
+		DaoCallbackService callbackService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getDaoCallbackService();
+		callbackService.executeInDaoLayer(new DaoCallback<Object>(){
+
+			@Override
+			public Object execute(DaoManager daoManager) {
+				String uri = event.getCodingSchemeUri();
+				String version = event.getCodingSchemeVersion();
+				
+				CodingSchemeDao codingSchemeDao = daoManager.getCodingSchemeDao(uri, version);
+				String codingSchemeId = codingSchemeDao.getCodingSchemeIdByUriAndVersion(uri, version);
+					
+				EntityDao entityDao = daoManager.getEntityDao(uri, version);
+				String entityId = entityDao.getEntityId(
+						codingSchemeId, 
+						event.getOriginalEntity().getEntityCode(),
+						event.getOriginalEntity().getEntityCodeNamespace());
+				
+				
+				entityDao.insertHistoryEntity(codingSchemeId, entityId, event.getOriginalEntity());
+				return null;
+			}
+			
+		});
+		
+		
 		return true;
 	}
 

@@ -42,6 +42,8 @@ public interface LexEvsDatabaseOperations {
 	 */
 	public void createCodingSchemeTables();
 	
+	public void createHistoryTables();
+	
 	/**
 	 * Creates the coding scheme tables.
 	 * 

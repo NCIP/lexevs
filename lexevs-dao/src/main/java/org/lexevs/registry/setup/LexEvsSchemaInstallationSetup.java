@@ -53,6 +53,7 @@ public class LexEvsSchemaInstallationSetup extends LoggingBean implements Initia
 
 		if(!isLexGridSchemaInstalled){
 				this.getLexEvsDatabaseOperations().createCommonTables();
+				this.getLexEvsDatabaseOperations().createHistoryTables();
 				this.registryDao.initRegistryMetadata();
 				if(this.systemVariables.isSingleTableMode()){
 					lexEvsDatabaseOperations.createCodingSchemeTables();

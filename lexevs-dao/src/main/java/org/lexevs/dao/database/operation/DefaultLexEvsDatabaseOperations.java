@@ -44,6 +44,9 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	/** The lexevs coding scheme schema create script. */
 	private Resource lexevsCodingSchemeSchemaCreateScript;
 	
+	/** The lexevs coding scheme schema create script. */
+	private Resource lexevsHistoryCreateScript;
+	
 	/** The prefix resolver. */
 	private PrefixResolver prefixResolver;
 	
@@ -93,6 +96,15 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	public void createCodingSchemeTables(String prefix) {
 		try {
 			databaseUtility.executeScript(lexevsCodingSchemeSchemaCreateScript, getCombinedPrefix(prefix));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}	
+	}
+	
+
+	public void createHistoryTables() {
+		try {
+			databaseUtility.executeScript(lexevsHistoryCreateScript, this.prefixResolver.resolveDefaultPrefix());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}	
@@ -294,5 +306,13 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 
 	public TransitivityBuilder getTransitivityBuilder() {
 		return transitivityBuilder;
+	}
+
+	public void setLexevsHistoryCreateScript(Resource lexevsHistoryCreateScript) {
+		this.lexevsHistoryCreateScript = lexevsHistoryCreateScript;
+	}
+
+	public Resource getLexevsHistoryCreateScript() {
+		return lexevsHistoryCreateScript;
 	}
 }

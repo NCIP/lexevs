@@ -63,6 +63,8 @@ public class LexGridSchemaCheckFactory implements FactoryBean, InitializingBean 
 			schemaCheck = new CountBasedLexGridSchemaCheck(dataSource, prefixResolver);
 		}
 		
+		//TODO: Add Oracle, DB2, etc
+		
 		Assert.notNull(schemaCheck);
 		
 		isSchemaLoaded = schemaCheck.isCommonLexGridSchemaInstalled();
