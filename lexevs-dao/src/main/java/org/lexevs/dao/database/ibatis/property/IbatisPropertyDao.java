@@ -26,6 +26,7 @@ import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 import org.lexevs.dao.database.constants.classifier.property.PropertyMultiAttributeClassifier;
@@ -223,6 +224,13 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				new PrefixedParameterTuple(prefix, propertyId, this.propertyMultiAttributeClassifier.classify(multiAttrib)));
 	}
 	
+	protected String getPropertyTypeString(Property property) {
+		org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType propertyType = 
+			DaoUtility.propertyClassToTypeMap.get(property.getClass());
+		
+		return DaoUtility.propertyTypeToStringMap.get(propertyType);
+	}
+	
 	/**
 	 * Insert property.
 	 * 
@@ -242,6 +250,11 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			Property property, 
 			IbatisInserter inserter) {
 		String entryStateId = this.createUniqueId();
+		
+		if(StringUtils.isBlank(property.getPropertyType())){
+			property.setPropertyType(
+					getPropertyTypeString(property));
+		}
 		
 		this.ibatisVersionsDao.insertEntryState(
 				this.getPrefixResolver().resolveDefaultPrefix(),

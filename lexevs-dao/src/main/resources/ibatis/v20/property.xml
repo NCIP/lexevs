@@ -262,6 +262,9 @@
 			$prefix$property property
 		SET 
    		  <dynamic prepend=" ">
+   		  	<isNotNull prepend="," property="property.propertyType">
+				propertyType = #property.propertyType#
+			</isNotNull>
 			<isNotNull prepend="," property="property.value.content">
 				propertyValue = #property.value.content#
 			</isNotNull>

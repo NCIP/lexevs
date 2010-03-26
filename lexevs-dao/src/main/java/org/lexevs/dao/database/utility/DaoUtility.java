@@ -20,15 +20,20 @@ package org.lexevs.dao.database.utility;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
+import org.LexGrid.concepts.Comment;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.Mappings;
-import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.compass.core.config.CompassEnvironment.Mapping;
 
 /**
  * The Class DaoUtility.
@@ -36,6 +41,33 @@ import org.compass.core.config.CompassEnvironment.Mapping;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class DaoUtility {
+	
+	public static Map<PropertyType,String> propertyTypeToStringMap = 
+		new HashMap<PropertyType,String>();
+	static {
+		propertyTypeToStringMap.put(PropertyType.COMMENT, SQLTableConstants.TBLCOLVAL_COMMENT);
+		propertyTypeToStringMap.put(PropertyType.PRESENTATION, SQLTableConstants.TBLCOLVAL_PRESENTATION);
+		propertyTypeToStringMap.put(PropertyType.DEFINITION, SQLTableConstants.TBLCOLVAL_DEFINITION);
+		propertyTypeToStringMap.put(PropertyType.GENERIC, SQLTableConstants.TBLCOLVAL_PROPERTY);
+	}
+	
+	public static Map<String,PropertyType> propertyStringToTypeMap = 
+		new HashMap<String,PropertyType>();
+	static {
+		propertyStringToTypeMap.put(SQLTableConstants.TBLCOLVAL_COMMENT, PropertyType.COMMENT);
+		propertyStringToTypeMap.put(SQLTableConstants.TBLCOLVAL_PRESENTATION, PropertyType.PRESENTATION);
+		propertyStringToTypeMap.put(SQLTableConstants.TBLCOLVAL_DEFINITION, PropertyType.DEFINITION);
+		propertyStringToTypeMap.put(SQLTableConstants.TBLCOLVAL_PROPERTY, PropertyType.GENERIC);
+	}
+	
+	public static Map<Class<? extends Property>,PropertyType> propertyClassToTypeMap = 
+		new HashMap<Class<? extends Property>,PropertyType>();
+	static {
+		propertyClassToTypeMap.put(Comment.class, PropertyType.COMMENT);
+		propertyClassToTypeMap.put(Presentation.class, PropertyType.PRESENTATION);
+		propertyClassToTypeMap.put(Definition.class, PropertyType.DEFINITION);
+		propertyClassToTypeMap.put(Property.class, PropertyType.GENERIC);
+	}
 
 	/**
 	 * Creates the list.
