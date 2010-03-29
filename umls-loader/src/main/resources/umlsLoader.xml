@@ -264,6 +264,23 @@
 							<beans:property name="mrconsoStagingDao" ref="mrconsoStagingDao" />
 						</beans:bean>
 					</beans:property>
+					
+					<beans:property name="sourcePropertyIdResolver">
+						<beans:bean
+							class="org.lexgrid.loader.rrf.processor.support.MrrelAuiPropertyIdResolver">
+							<beans:property name="aui" value="AUI1" />
+						</beans:bean>
+					</beans:property>
+					
+					<beans:property name="targetPropertyIdResolver">
+						<beans:bean
+							class="org.lexgrid.loader.rrf.processor.support.MrrelAuiPropertyIdResolver">
+							<beans:property name="aui" value="AUI2" />
+						</beans:bean>
+					</beans:property>
+					
+					<beans:property name="databaseServiceManager" ref="databaseServiceManager"/>
+	
 			</beans:bean>
 	
 
