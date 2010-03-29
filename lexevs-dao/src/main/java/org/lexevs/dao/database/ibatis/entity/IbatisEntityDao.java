@@ -91,6 +91,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	
 	public static String UPDATE_ENTITY_BY_ID_SQL = ENTITY_NAMESPACE + "updateEntityById";
 	
+	public static String GET_PROPERTY_LINKS_BY_ENTITY_ID_SQL = ENTITY_NAMESPACE + "getPropertyLinksByEntityId";
+	
 	/** The ENTITY. */
 	public static String ENTITY = "entity";
 	
@@ -143,7 +145,17 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 		entity.addAnyProperties(
 				ibatisPropertyDao.getAllPropertiesOfParent(codingSchemeId, entityId, PropertyType.ENTITY));
 		
+		entity.setPropertyLink(
+				doGetPropertyLinks(prefix, codingSchemeId, entityId));
+		
 		return entity;
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected List<PropertyLink> doGetPropertyLinks(String prefix, String codingSchemeId, String entityId){
+		return this.getSqlMapClientTemplate().
+			queryForList(GET_PROPERTY_LINKS_BY_ENTITY_ID_SQL, 
+				new PrefixedParameterTuple(prefix, codingSchemeId, entityId));
 	}
 
 	/* (non-Javadoc)

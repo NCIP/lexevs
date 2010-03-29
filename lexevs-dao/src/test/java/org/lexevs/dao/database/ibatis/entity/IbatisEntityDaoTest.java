@@ -31,6 +31,7 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
+import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
@@ -689,14 +690,23 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isDefined, isAnonymous, description, isActive, owner, status,       effectiveDate,                 expirationDate) " +
 			"values 							('eguid',   'csguid',         'ecode',       'ens',            false,        true,     'ed',       true,   'me',  'test', '" +timestamp1.toString()+"', '" +timestamp2.toString()+ "')");
 		
-		template.execute("Insert into associationentity (associationEntityGuid, entityGuid, forwardName, reverseName, isNavigable, isTransitive) " +
-			"values ('aeguid', 'eguid', 'afn', 'arn', 'true', 'false')");
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, propertyId) " +
+			"values ('pguid1', 'eguid', 'entity', 'pid1', 'pvalue', 'presentation', 'propId1')");
+		
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, propertyId) " +
+			"values ('pguid2', 'eguid', 'entity', 'pid2', 'pvalue', 'presentation', 'propId2')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
 			"values ('eguid', 'instance')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
 			"values ('eguid', 'concept')");
+		
+		template.execute("Insert into propertylinks " +
+			"values ('plguid1', 'pguid1', 'propertyLink1', 'pguid2')");
+		
+		template.execute("Insert into propertylinks " +
+			"values ('plguid2', 'pguid2', 'propertyLink2', 'pguid1')");
 			
 		Entity entity = ibatisEntityDao.getEntityByCodeAndNamespace("csguid", "ecode", "ens");
 		
@@ -718,6 +728,19 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals(timestamp1.getTime(), entity.getEffectiveDate().getTime());
 		assertEquals(timestamp2.getTime(), entity.getExpirationDate().getTime());
 		
+		assertEquals(2, entity.getPropertyLinkCount());
+		
+		for(PropertyLink link : entity.getPropertyLink()) {
+			if(link.getPropertyLink().equals("propertyLink1")) {
+				assertEquals("propId1", link.getSourceProperty());
+				assertEquals("propId2", link.getTargetProperty());
+			} else if(link.getPropertyLink().equals("propertyLink2")) {
+				assertEquals("propId2", link.getSourceProperty());
+				assertEquals("propId1", link.getTargetProperty());
+			} else {
+				fail();
+			}
+		}
 	}
 	
 	@Test

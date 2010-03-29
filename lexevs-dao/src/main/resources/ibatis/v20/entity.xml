@@ -5,6 +5,7 @@
 
 	<typeAlias alias="entity" type="org.LexGrid.concepts.Entity" />
 	<typeAlias alias="associationEntity" type="org.LexGrid.relations.AssociationEntity" />
+	<typeAlias alias="propertyLink" type="org.LexGrid.concepts.PropertyLink" />
 
 	<resultMap id="entityResult" class="entity" groupBy="entityCode,entityCodeNamespace">
 		<result property="entityCode" column="entityCode" />
@@ -30,6 +31,43 @@
 		<result property="isNavigable" column="isNavigable" />
 		<result property="isTransitive" column="isTransitive" />
 	</resultMap>
+	
+	<resultMap id="propertyLinkResult" class="propertyLink">
+		<result property="sourceProperty" column="sourcePropId" />
+		<result property="targetProperty" column="targetPropId" />
+		<result property="propertyLink" column="link" />
+	</resultMap>
+	
+	<select id="getPropertyLinksByEntityId"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultMap="Entity.propertyLinkResult">
+		SELECT
+		  	sourceProperty.propertyId sourcePropId,
+  			targetProperty.propertyId targetPropId,
+  			propertyLinks.link
+		FROM
+			$prefix$propertyLinks propertyLinks
+		LEFT JOIN
+			$prefix$property sourceProperty
+		ON
+			sourceProperty.propertyGuid = propertyLinks.sourcePropertyGuid
+		LEFT JOIN
+			$prefix$property targetProperty
+		ON
+			targetProperty.propertyGuid = propertyLinks.targetPropertyGuid
+			
+		LEFT JOIN
+			$prefix$entity entity
+		ON (
+			  targetProperty.referenceGuid = entity.entityGuid
+        	AND
+        	  sourceProperty.referenceGuid = entity.entityGuid
+        	)
+		WHERE
+			entity.codingSchemeGuid = #param1#
+		AND
+			entity.entityGuid = #param2#
+	</select>
 	
 	<sql id="getEntityFragment">
 		SELECT

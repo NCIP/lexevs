@@ -145,7 +145,7 @@ public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 	 */
 	public void insertPropertyLink(
 			String codingSchemeId, 
-			String propertyId,
+			String entityId,
 			PropertyLink propertyLink);
 	
 	
