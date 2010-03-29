@@ -36,6 +36,7 @@ import org.LexGrid.LexBIG.Extensions.Query.Search;
 import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.apache.commons.lang.ClassUtils;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.utility.MyClassLoader;
 
@@ -64,33 +65,42 @@ public class ExtensionRegistryImpl implements ExtensionRegistry {
     private ExtensionRegistryImpl(){
         for(ExtensionDescription ed :
                 MyClassLoader.instance().getExtensionDescriptions()){
-            if(ed.getExtensionBaseClass().equals(Search.class.getName())){
+
+            Class<?> extensionBaseClass;
+            try {
+                extensionBaseClass = Class.forName(ed.getExtensionBaseClass(), true, MyClassLoader.instance());
+            } catch (ClassNotFoundException e1) {
+               getLogger().warn("Extension: " + ed.getName() + " cannot be loaded, " +
+               		"class: " + ed.getExtensionClass() + " could not be found.");
+               continue;
+            }
+            
+            if(ClassUtils.isAssignable(extensionBaseClass, Search.class)){
                 try {
                     this.registerSearchExtension(ed);
                 } catch (LBParameterException e) {
                    this.getLogger().warn("Could not load Extension: " + ed.getName(), e);
                 }
-            }
-            if(ed.getExtensionBaseClass().equals(Loader.class.getName())){
+            } else if(ClassUtils.isAssignable(extensionBaseClass, Loader.class)){
                 try {
                     this.registerLoadExtension(ed);
                 } catch (LBParameterException e) {
                    this.getLogger().warn("Could not load Extension: " + ed.getName(), e);
                 }
-            }
-            if(ed.getExtensionBaseClass().equals(GenericExtension.class.getName())){
+            } else if(ClassUtils.isAssignable(extensionBaseClass, GenericExtension.class)){
                 try {
                     this.registerGenericExtension(ed);
                 } catch (LBParameterException e) {
                    this.getLogger().warn("Could not load Extension: " + ed.getName(), e);
                 }
-            }
-            if(ed.getExtensionBaseClass().equals(Filter.class.getName())){
+            } else if(ClassUtils.isAssignable(extensionBaseClass, Filter.class)){
                 try {
                     this.registerFilterExtension(ed);
                 } catch (LBParameterException e) {
                    this.getLogger().warn("Could not load Extension: " + ed.getName(), e);
                 }
+            } else {
+                getLogger().warn("Extension: " + ed.getName() + " is not recognized as an Extension Type.");
             }
         }
     }
