@@ -75,6 +75,11 @@ public abstract class AbstractRootNodeResolver implements RootNodeResolver<Paren
 	 */
 	public ParentIdHolder<AssociationSource> process(ParentIdHolder<AssociationSource> item)
 			throws Exception {
+		//If the decorated Processors wants to skip this, don't try to process it.
+		if(item == null) {
+			return null;
+		}
+		
 		Assert.isTrue(item.getItem().getTargetCount() == 1,
 				"Only one (1) AssocationSource and one (1) AssociationTarget may be processed at a time.");
 		

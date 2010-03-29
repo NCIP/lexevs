@@ -18,11 +18,16 @@
  */
 package org.lexgrid.loader.processor;
 
+import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexgrid.loader.data.association.AssociationInstanceIdResolver;
 import org.lexgrid.loader.database.key.AssociationPredicateKeyResolver;
+import org.lexgrid.loader.processor.support.PropertyIdResolver;
 import org.lexgrid.loader.processor.support.RelationResolver;
 import org.lexgrid.loader.wrappers.ParentIdHolder;
 import org.springframework.batch.item.ItemProcessor;
@@ -34,6 +39,8 @@ import org.springframework.batch.item.ItemProcessor;
  */
 public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcessor implements ItemProcessor<I,ParentIdHolder<AssociationSource>> {
 	
+	public enum SelfReferencingAssociationPolicy {IGNORE, AS_ASSOCIATIONS, AS_PROPERTY_LINKS, BOTH }
+	
 	/** The relation resolver. */
 	private RelationResolver<I> relationResolver;
 	
@@ -41,6 +48,15 @@ public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcesso
 	private AssociationInstanceIdResolver<I> associationInstanceIdResolver;
 	
 	private AssociationPredicateKeyResolver associationPredicateKeyResolver;
+	
+	private SelfReferencingAssociationPolicy selfReferencingAssociationPolicy = 
+		SelfReferencingAssociationPolicy.AS_PROPERTY_LINKS;
+	
+	private DatabaseServiceManager databaseServiceManager;
+	
+	private PropertyIdResolver<I> sourcePropertyIdResolver;
+	
+	private PropertyIdResolver<I> targetPropertyIdResolver;
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.item.ItemProcessor#process(java.lang.Object)
@@ -54,11 +70,35 @@ public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcesso
 		AssociationSource source = new AssociationSource();
 		AssociationTarget target = new AssociationTarget();
 		
-		source.setSourceEntityCode(relationResolver.getSource(item));
-		source.setSourceEntityCodeNamespace(relationResolver.getSourceNamespace(item));
+		String sourceCode = relationResolver.getSource(item);
+		String sourceNamespace = relationResolver.getSourceNamespace(item);
 		
-		target.setTargetEntityCode(relationResolver.getTarget(item));
-		target.setTargetEntityCodeNamespace(relationResolver.getTargetNamespace(item));
+		String targetCode = relationResolver.getTarget(item);
+		String targetNamespace = relationResolver.getTargetNamespace(item);
+		
+		if(sourceCode.equals(targetCode) && sourceNamespace.equals(targetNamespace)) {
+			if(selfReferencingAssociationPolicy.equals(SelfReferencingAssociationPolicy.AS_PROPERTY_LINKS) ||
+					selfReferencingAssociationPolicy.equals(SelfReferencingAssociationPolicy.BOTH)){
+				this.insertPropertyLink(
+						sourceCode, 
+						sourceNamespace, 
+						rel, 
+						sourcePropertyIdResolver.getPropertyId(item), 
+						targetPropertyIdResolver.getPropertyId(item));
+			}
+			
+			if(selfReferencingAssociationPolicy.equals(SelfReferencingAssociationPolicy.AS_PROPERTY_LINKS) ||
+					selfReferencingAssociationPolicy.equals(SelfReferencingAssociationPolicy.IGNORE)){
+				return null;
+			}
+		}
+		
+		source.setSourceEntityCode(sourceCode);
+		source.setSourceEntityCodeNamespace(sourceNamespace);
+		
+		target.setTargetEntityCode(targetCode);
+		target.setTargetEntityCodeNamespace(targetNamespace);
+		
 		target.setAssociationInstanceId(associationInstanceIdResolver.resolveAssociationInstanceId(item));		
 		
 		target.setIsActive(true);
@@ -76,6 +116,36 @@ public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcesso
 				this.getCodingSchemeIdSetter(),
 				associationPredicateKey, 
 				source);	
+	}
+	
+	protected void insertPropertyLink(
+			final String code,
+			final String namespace,
+			final String link, 
+			final String sourcePropertyId, 
+			final String targetPropertyId) {
+		final String uri = this.getCodingSchemeIdSetter().getCodingSchemeUri();
+		final String version = this.getCodingSchemeIdSetter().getCodingSchemeVersion();
+		
+		final PropertyLink propertyLink = new PropertyLink();
+		propertyLink.setPropertyLink(link);
+		propertyLink.setSourceProperty(sourcePropertyId);
+		propertyLink.setTargetProperty(targetPropertyId);
+		
+		databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<Object>() {
+
+			public Object execute(DaoManager daoManager) {
+				String codingSchemeId = 
+					daoManager.getCodingSchemeDao(uri, version).getCodingSchemeIdByUriAndVersion(uri, version);
+				
+				String entityId = 
+					daoManager.getEntityDao(uri, version).getEntityId(codingSchemeId, code, namespace);
+				
+				daoManager.getPropertyDao(uri, version).insertPropertyLink(codingSchemeId, entityId, propertyLink);
+				
+				return null;
+			}
+		});
 	}
 
 	/**
@@ -112,5 +182,41 @@ public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcesso
 	public void setAssociationPredicateKeyResolver(
 			AssociationPredicateKeyResolver associationPredicateKeyResolver) {
 		this.associationPredicateKeyResolver = associationPredicateKeyResolver;
+	}
+
+	public void setSelfReferencingAssociationPolicy(
+			SelfReferencingAssociationPolicy selfReferencingAssociationPolicy) {
+		this.selfReferencingAssociationPolicy = selfReferencingAssociationPolicy;
+	}
+
+	public SelfReferencingAssociationPolicy getSelfReferencingAssociationPolicy() {
+		return selfReferencingAssociationPolicy;
+	}
+
+	public DatabaseServiceManager getDatabaseServiceManager() {
+		return databaseServiceManager;
+	}
+
+	public void setDatabaseServiceManager(
+			DatabaseServiceManager databaseServiceManager) {
+		this.databaseServiceManager = databaseServiceManager;
+	}
+
+	public PropertyIdResolver<I> getSourcePropertyIdResolver() {
+		return sourcePropertyIdResolver;
+	}
+
+	public void setSourcePropertyIdResolver(
+			PropertyIdResolver<I> sourcePropertyIdResolver) {
+		this.sourcePropertyIdResolver = sourcePropertyIdResolver;
+	}
+
+	public PropertyIdResolver<I> getTargetPropertyIdResolver() {
+		return targetPropertyIdResolver;
+	}
+
+	public void setTargetPropertyIdResolver(
+			PropertyIdResolver<I> targetPropertyIdResolver) {
+		this.targetPropertyIdResolver = targetPropertyIdResolver;
 	}
 }

@@ -55,6 +55,11 @@ public class RootNodeAddingDecorator<I,O> implements RootResolvingNodeDecorator<
 	 */
 	public List<O> process(I item) throws Exception {
 		O processedItem = decoratedItemProcessor.process(item);
+		
+		//If the decorated Process wants to skip this record, skip it.
+		if(processedItem == null) {
+			return null;
+		}
 
 		List<O> buffer = new ArrayList<O>();
 
