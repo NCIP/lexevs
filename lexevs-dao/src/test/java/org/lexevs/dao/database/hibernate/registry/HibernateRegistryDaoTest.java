@@ -79,6 +79,7 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 		entry.setResourceVersion("v1");
 		entry.setStatus(CodingSchemeVersionStatus.ACTIVE.toString());
 		entry.setTag("tag");
+		entry.setStagingPrefix("staging-prefix");
 			
 		hibernateRegistryDao.insertRegistryEntry(entry);
 		
@@ -95,16 +96,17 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 				assertEquals(rs.getString(5), "dbUri://");
 				assertEquals(rs.getString(6), "db name");
 				assertEquals(rs.getString(7), "prefix");
-				assertEquals(rs.getString(8), CodingSchemeVersionStatus.ACTIVE.toString());
-				assertEquals(rs.getString(9), "tag");
-				assertEquals(rs.getTimestamp(10), lastUpdateDate);
-				assertEquals(rs.getTimestamp(11), activationDate);
-				assertEquals(rs.getTimestamp(12), deActivationDate);
-				assertEquals(rs.getString(13), "1");
-				assertEquals(rs.getString(14), "2");
-				assertEquals(rs.getBoolean(15), true);
-				assertEquals(rs.getString(16), "1.1");
-				assertEquals(rs.getString(17), "description");
+				assertEquals(rs.getString(8), "staging-prefix");
+				assertEquals(rs.getString(9), CodingSchemeVersionStatus.ACTIVE.toString());
+				assertEquals(rs.getString(10), "tag");
+				assertEquals(rs.getTimestamp(11), lastUpdateDate);
+				assertEquals(rs.getTimestamp(12), activationDate);
+				assertEquals(rs.getTimestamp(13), deActivationDate);
+				assertEquals(rs.getString(14), "1");
+				assertEquals(rs.getString(15), "2");
+				assertEquals(rs.getBoolean(16), true);
+				assertEquals(rs.getString(17), "1.1");
+				assertEquals(rs.getString(18), "description");
 			
 				return true;
 			}
