@@ -72,31 +72,20 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.SystemReleaseDetail;
 import org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.codingSchemes.CodingSchemes;
+import org.LexGrid.commonTypes.Describable;
 import org.LexGrid.commonTypes.EntityDescription;
-import org.LexGrid.emf.commonTypes.Describable;
-import org.LexGrid.emf.commonTypes.Property;
-import org.LexGrid.emf.commonTypes.Versionable;
-import org.LexGrid.emf.commonTypes.VersionableAndDescribable;
-import org.LexGrid.emf.commonTypes.impl.PropertiesImpl;
-import org.LexGrid.emf.commonTypes.impl.PropertyImpl;
-import org.LexGrid.emf.commonTypes.impl.PropertyQualifierImpl;
-import org.LexGrid.emf.commonTypes.impl.SourceImpl;
-import org.LexGrid.emf.commonTypes.impl.TextImpl;
-import org.LexGrid.emf.concepts.Definition;
-import org.LexGrid.emf.concepts.Entities;
-import org.LexGrid.emf.concepts.Entity;
-import org.LexGrid.emf.concepts.Presentation;
-import org.LexGrid.emf.concepts.PropertyLink;
-import org.LexGrid.emf.valueDomains.CodingSchemeReference;
-import org.LexGrid.emf.valueDomains.PickListEntryNode;
-import org.LexGrid.emf.valueDomains.PickLists;
-import org.LexGrid.emf.valueDomains.impl.EntityReferenceImpl;
-import org.LexGrid.emf.valueDomains.impl.PickListDefinitionImpl;
-import org.LexGrid.emf.valueDomains.impl.PickListEntryExclusionImpl;
-import org.LexGrid.emf.valueDomains.impl.PickListEntryImpl;
-import org.LexGrid.emf.valueDomains.impl.PickListEntryNodeImpl;
-import org.LexGrid.emf.valueDomains.impl.ValueDomainDefinitionImpl;
-import org.LexGrid.emf.versions.impl.EntryStateImpl;
+import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.PropertyQualifier;
+import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.Text;
+import org.LexGrid.commonTypes.Versionable;
+import org.LexGrid.commonTypes.VersionableAndDescribable;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Entity;
+import org.LexGrid.concepts.Presentation;
+import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedHierarchy;
@@ -109,10 +98,22 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.valueDomains.PickListEntryNodeChoice;
+import org.LexGrid.valueSets.CodingSchemeReference;
+import org.LexGrid.valueSets.DefinitionEntry;
+import org.LexGrid.valueSets.EntityReference;
+import org.LexGrid.valueSets.PickListDefinition;
+import org.LexGrid.valueSets.PickListDefinitions;
+import org.LexGrid.valueSets.PickListEntry;
+import org.LexGrid.valueSets.PickListEntryExclusion;
+import org.LexGrid.valueSets.PickListEntryNode;
+import org.LexGrid.valueSets.PickListEntryNodeChoice;
+import org.LexGrid.valueSets.ValueSetDefinition;
+import org.LexGrid.valueSets.ValueSetDefinitionReference;
+import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.EditHistory;
 import org.LexGrid.versions.EntityVersion;
+import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 import org.apache.commons.lang.StringUtils;
@@ -129,7 +130,7 @@ import org.apache.commons.lang.StringUtils;
  * To fulfill toString() for a new object, the only thing required
  * is to add a corresponding append() method for that class.
  */
-public class VDObjectToString {
+public class VSDObjectToString {
     private static final String lineBreak = System.getProperty("line.separator");
     private static final String wordBreak = " \t\n\r\f";
     private static ThreadLocal<String> breakAndIndent = new ThreadLocal<String>();
@@ -208,7 +209,7 @@ public class VDObjectToString {
                     do {
                         try {
                             appendMethod =
-                                VDObjectToString.class.getDeclaredMethod("append",
+                                VSDObjectToString.class.getDeclaredMethod("append",
                                     new Class[] {StringBuffer.class, String.class, oClazz});
                         } catch (NoSuchMethodException e) {
                         }
@@ -221,7 +222,7 @@ public class VDObjectToString {
             
                     // Found?  Invoke now ...
                     if (appendMethod != null) {
-                        appendMethod.invoke(VDObjectToString.class, new Object[] {buff, indent, o});
+                        appendMethod.invoke(VSDObjectToString.class, new Object[] {buff, indent, o});
                         added = true;
                     }
                     
@@ -877,14 +878,14 @@ public class VDObjectToString {
         appendAndWrap(buff, "Description: ", indent, o.getContent());
     }
     
-    protected static void append(StringBuffer buff, String indent, PropertiesImpl o) {
+    protected static void append(StringBuffer buff, String indent, Properties o) {
         buff.append(indent)
             .append(getBreakAndIndent())
             .append(getBoldedString("Properties: ")).append(lineBreak)
             .append(toString(o.getProperty(), indent + sp8));
     }
     
-    protected static void append(StringBuffer buff, String indent, PropertyImpl o) {
+    protected static void append(StringBuffer buff, String indent, Property o) {
         buff.append(indent)
             .append(getBreakAndIndent())
             .append(getBoldedString("Name: ")).append(o.getPropertyName())
@@ -895,21 +896,21 @@ public class VDObjectToString {
             .append(toString(o.getValue(), indent + sp8))
             .append(getBreakAndIndent())
             .append(getBoldedString("Language: ")).append(o.getLanguage());
-        if (o.getSource().size() > 0)
+        if (o.getSource().length > 0)
             buff.append(getBreakAndIndent())
                 .append(getBoldedString("Sources: ")).append(lineBreak)
                 .append(toString(o.getSource(), indent + sp8));
-        if (o.getUsageContext().size() > 0)
+        if (o.getUsageContext().length > 0)
             buff.append(getBreakAndIndent())
                 .append(getBoldedString("Usage Contexts")).append(lineBreak)
                 .append(toString(o.getUsageContext(), indent + sp8));
-        if (o.getPropertyQualifier().size() > 0)
+        if (o.getPropertyQualifier().length > 0)
             buff.append(getBreakAndIndent())
                 .append(getBoldedString("Property Qualifiers")).append(lineBreak)
                 .append(toString(o.getPropertyQualifier(), indent + sp8));
     }
     
-    protected static void append(StringBuffer buff, String indent, PropertyQualifierImpl o) {
+    protected static void append(StringBuffer buff, String indent, PropertyQualifier o) {
         buff.append(indent)
             .append(getBreakAndIndent())
             .append(getBoldedString("Property Qualifier Name: ")).append(o.getPropertyQualifierName())
@@ -918,10 +919,10 @@ public class VDObjectToString {
             .append(toString(o.getValue(), indent + sp8));
     }
     
-    protected static void append(StringBuffer buff, String indent, SourceImpl o) {
+    protected static void append(StringBuffer buff, String indent, Source o) {
         buff.append(indent)
             .append(getBreakAndIndent())
-            .append(getBoldedString("Content: ")).append(o.getValue());
+            .append(getBoldedString("Content: ")).append(o.getContent());
         if (o.getRole() != null)
             buff.append(getBreakAndIndent())
                 .append(getBoldedString("Role: ")).append(o.getRole());
@@ -930,8 +931,8 @@ public class VDObjectToString {
                 .append(getBoldedString("Sub Ref: ")).append(o.getSubRef());
     }
     
-    protected static void append(StringBuffer buff, String indent, TextImpl o) {
-        appendAndWrap(buff, getType(o) + ": ", indent, o.getValue());
+    protected static void append(StringBuffer buff, String indent, Text o) {
+        appendAndWrap(buff, getType(o) + ": ", indent, o.getContent());
     }
     
     protected static void append(StringBuffer buff, String indent, Versionable o) {
@@ -1005,23 +1006,23 @@ public class VDObjectToString {
             buff.append(getBreakAndIndent())
                 .append("Expiration Date: ")
                 .append(mmddyyyy.format(o.getExpirationDate()));
-        if (o.getPresentation().size() > 0)
+        if (o.getPresentation().length > 0)
             buff.append(getBreakAndIndent())
                 .append("Presentations: ").append(lineBreak)
                 .append(toString(o.getPresentation(), indent + sp8));
-        if (o.getDefinition().size() > 0)
+        if (o.getDefinition().length > 0)
             buff.append(getBreakAndIndent())
                 .append("Definitions: ").append(lineBreak)
                 .append(toString(o.getDefinition(), indent + sp8));
-        if (o.getComment().size() > 0)
+        if (o.getComment().length > 0)
             buff.append(getBreakAndIndent())
                 .append("Comments: ").append(lineBreak)
                 .append(toString(o.getComment(), indent + sp8));
-        if (o.getProperty().size() > 0)
+        if (o.getProperty().length > 0)
             buff.append(getBreakAndIndent())
                 .append("Other Properties: ").append(lineBreak)
                 .append(toString(o.getProperty(), indent + sp8));
-        if (o.getPropertyLink().size() > 0)
+        if (o.getPropertyLink().length > 0)
             buff.append(getBreakAndIndent())
                 .append("Property Links: ").append(lineBreak)
                 .append(toString(o.getPropertyLink(), indent + sp8));
@@ -1336,7 +1337,7 @@ public class VDObjectToString {
                 .append(toString(o.getChangeInstructions(), indent + sp8));
     }
     
-    protected static void append(StringBuffer buff, String indent, EntryStateImpl o) {
+    protected static void append(StringBuffer buff, String indent, EntryState o) {
         buff.append(indent)
             .append(getBreakAndIndent())
             .append(getBoldedString("Change Type: ")).append(o.getChangeType())
@@ -1396,7 +1397,7 @@ public class VDObjectToString {
     
     
     /////////////////////////////////
-    // LexGrid ValueDomains package
+    // LexGrid ValueSets package
     /////////////////////////////////
     protected static void append(StringBuffer buff, String indent, CodingSchemeReference o) {
         buff.append(indent).append(getType(o))
@@ -1404,7 +1405,7 @@ public class VDObjectToString {
             .append("Coding Scheme: ").append(o.getCodingScheme());
     }
 
-    protected static void append(StringBuffer buff, String indent, org.LexGrid.emf.valueDomains.impl.DefinitionEntryImpl o) {
+    protected static void append(StringBuffer buff, String indent, DefinitionEntry o) {
         buff.append(indent)
             .append(getBreakAndIndent())
             .append(getBoldedString("Operator: ")).append(o.getOperator())
@@ -1414,17 +1415,17 @@ public class VDObjectToString {
             buff.append(getBreakAndIndent())
                 .append(getBoldedString("Entity Reference: ")).append(lineBreak)
                 .append(toString(o.getEntityReference(), indent + sp8));
-        if (o.getValueDomainReference() != null)
+        if (o.getValueSetDefinitionReference() != null)
             buff.append(getBreakAndIndent())
-                .append(getBoldedString("Value Domain Reference: ")).append(lineBreak)
-                .append(o.getValueDomainReference());
+                .append(getBoldedString("Value Set Definition Reference: ")).append(lineBreak)
+                .append(o.getValueSetDefinitionReference());
         if (o.getCodingSchemeReference() != null)
             buff.append(getBreakAndIndent())
                 .append(getBoldedString("Coding Scheme Reference: ")).append(lineBreak)
                 .append(o.getCodingSchemeReference());
     }
 
-    protected static void append(StringBuffer buff, String indent, EntityReferenceImpl o) {
+    protected static void append(StringBuffer buff, String indent, EntityReference o) {
         buff.append(indent)
             .append(getBreakAndIndent())
             .append(getBoldedString("Entity Code: ")).append(o.getEntityCode());
@@ -1443,13 +1444,13 @@ public class VDObjectToString {
             .append(getBoldedString("Transitive Closure: ")).append(o.isTransitiveClosure());
     }
 
-    protected static void append(StringBuffer buff, String indent, PickListDefinitionImpl o) {
+    protected static void append(StringBuffer buff, String indent, PickListDefinition o) {
         buff.append(getBreakAndIndent())
             .append(getBoldedString("Pick List ID: ")).append(o.getPickListId())
             .append(getBreakAndIndent())
-            .append(getBoldedString("Represents Value Domain: ")).append(o.getRepresentsValueDomain())
+            .append(getBoldedString("Represents Value Set Definition: ")).append(o.getRepresentsValueSetDefinition())
             .append(getBreakAndIndent())
-            .append(getBoldedString("Represents Complete Domain: ")).append(o.isCompleteDomain());
+            .append(getBoldedString("Represents Complete Value Set: ")).append(o.isCompleteSet());
         if (StringUtils.isNotBlank(o.getDefaultEntityCodeNamespace()))
             buff.append(getBreakAndIndent())
                 .append(getBoldedString("Default Code Namespace: ")).append(o.getDefaultEntityCodeNamespace());
@@ -1482,7 +1483,7 @@ public class VDObjectToString {
         return "<b>" + str + "</b>";
     }
     
-    protected static void append(StringBuffer buff, String indent, PickListEntryImpl o) {
+    protected static void append(StringBuffer buff, String indent, PickListEntry o) {
         buff.append(indent)
             .append(getBreakAndIndent())
             .append(getBoldedString("Pick Text: ")).append(o.getPickText())
@@ -1504,31 +1505,13 @@ public class VDObjectToString {
         if (StringUtils.isNotBlank(o.getLanguage()))
             buff.append(getBreakAndIndent())
                 .append(getBoldedString("Language: ")).append(o.getLanguage());
-        if (o.getPickContext().size() > 0)
+        if (o.getPickContext().length > 0)
             buff.append(getBreakAndIndent())
                 .append(getBoldedString("Pick Contexts: ")).append(lineBreak)
                 .append(toString(o.getPickContext(), indent + sp8));
     }
     
-    protected static void append(StringBuffer buff, String indent, PickListEntryNodeImpl o) {
-        if (StringUtils.isNotBlank(o.getPickListEntryId()))
-            buff.append(getBreakAndIndent())
-                .append(getBoldedString("Pick List Id: ")).append(o.getPickListEntryId());
-        if (o.getInclusionEntry() != null)
-            buff.append(getBreakAndIndent())
-                .append(getBoldedString("Pick List Inclusion : ")).append(lineBreak)
-                .append(toString(o.getInclusionEntry(), indent + sp8));
-        if (o.getExclusionEntry() != null)
-            buff.append(getBreakAndIndent())
-                .append(getBoldedString("Pick List Exclusion : ")).append(lineBreak)
-                .append(toString(o.getExclusionEntry(), indent + sp8));
-        if (o.getProperties() != null)
-            buff.append(getBreakAndIndent())
-                .append(getBoldedString("Properties: ")).append(lineBreak)
-                .append(toString(o.getProperties(), indent + sp8));
-    }
-    
-    protected static void append(StringBuffer buff, String indent, PickListEntryExclusionImpl o) {
+    protected static void append(StringBuffer buff, String indent, PickListEntryExclusion o) {
         buff.append(indent)
             .append(getBreakAndIndent())
             .append(getBoldedString("Entity Code: ")).append(o.getEntityCode());
@@ -1559,8 +1542,8 @@ public class VDObjectToString {
                 .append(toString(o.getExclusionEntry(), indent + sp8));
     }
     
-    protected static void append(StringBuffer buff, String indent, PickLists o) {
-        if (o.getPickListDefinition().size() > 0)
+    protected static void append(StringBuffer buff, String indent, PickListDefinitions o) {
+        if (o.getPickListDefinition().length > 0)
             buff.append(getBreakAndIndent())
                 .append(getBoldedString("Definitions: ")).append(lineBreak)
                 .append(toString(o.getPickListDefinition(), indent + sp8));
@@ -1571,24 +1554,24 @@ public class VDObjectToString {
     }
     
     //ValueDomainDefinition
-    protected static void append(StringBuffer buff, String indent, ValueDomainDefinitionImpl o) {
+    protected static void append(StringBuffer buff, String indent, ValueSetDefinition o) {
         buff.append(getBreakAndIndent())
-            .append(getBoldedString("Domain Name: ")).append(o.getValueDomainName());
-        if (StringUtils.isNotBlank(o.getValueDomainURI()))
+            .append(getBoldedString("Value Set Definition Name: ")).append(o.getValueSetDefinitionName());
+        if (StringUtils.isNotBlank(o.getValueSetDefinitionURI()))
             buff.append(getBreakAndIndent())
-                .append(getBoldedString("Domain URI: ")).append(o.getValueDomainURI());
+                .append(getBoldedString("Value Set Definition URI: ")).append(o.getValueSetDefinitionURI());
         if (StringUtils.isNotBlank(o.getDefaultCodingScheme()))
             buff.append(getBreakAndIndent())
                 .append(getBoldedString("Default Coding Scheme: ")).append(o.getDefaultCodingScheme());
-        if (o.getDefinitionEntry().size() > 0)
+        if (o.getDefinitionEntry().length > 0)
             buff.append(getBreakAndIndent())
                 .append(getBoldedString("Definition Entries: ")).append(lineBreak)
                 .append(toString(o.getDefinitionEntry(), indent + sp8));
-        if (o.getRepresentsRealmOrContext().size() > 0)
+        if (o.getRepresentsRealmOrContext().length > 0)
             buff.append(getBreakAndIndent())
                 .append(getBoldedString("Represents Realm or Context: ")).append(lineBreak)
                 .append(toString(o.getRepresentsRealmOrContext(), indent + sp8));
-        if (o.getSource().size() > 0)
+        if (o.getSource().length > 0)
             buff.append(getBreakAndIndent())
                 .append(getBoldedString("Sources: ")).append(lineBreak)
                 .append(toString(o.getSource(), indent + sp8));
@@ -1599,18 +1582,18 @@ public class VDObjectToString {
         append(buff, indent, (VersionableAndDescribable) o);        
     }
     
-    protected static void append(StringBuffer buff, String indent, org.LexGrid.emf.valueDomains.ValueDomainReference o) {
+    protected static void append(StringBuffer buff, String indent, ValueSetDefinitionReference o) {
         buff.append(indent).append(getType(o))
             .append(getBreakAndIndent())
-            .append(getBoldedString("URI: ")).append(o.getValueDomainURI());
+            .append(getBoldedString("URI: ")).append(o.getValueSetDefinitionURI());
     }
     
-    protected static void append(StringBuffer buff, String indent, org.LexGrid.emf.valueDomains.ValueDomains o) {
+    protected static void append(StringBuffer buff, String indent, ValueSetDefinitions o) {
         buff.append(indent).append(getType(o));
-        if (o.getValueDomainDefinition().size() > 0)
+        if (o.getValueSetDefinition().length > 0)
             buff.append(getBreakAndIndent())
                 .append(getBoldedString("Definitions: ")).append(lineBreak)
-                .append(toString(o.getValueDomainDefinition(), indent + sp8));
+                .append(toString(o.getValueSetDefinition(), indent + sp8));
         if (o.getMappings() != null)
             buff.append(getBreakAndIndent())
                 .append(getBoldedString("Mappings: ")).append(lineBreak)
@@ -1631,9 +1614,9 @@ public class VDObjectToString {
     
     public static void main(String args[]) {
        
-       System.out.println(VDObjectToString.toString("Test", "  "));
-       System.out.println(VDObjectToString.toString(Boolean.FALSE, "  "));
-       System.out.println(VDObjectToString.toString(Boolean.FALSE.booleanValue(), "  "));
+       System.out.println(VSDObjectToString.toString("Test", "  "));
+       System.out.println(VSDObjectToString.toString(Boolean.FALSE, "  "));
+       System.out.println(VSDObjectToString.toString(Boolean.FALSE.booleanValue(), "  "));
        
    
     }

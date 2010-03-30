@@ -98,18 +98,18 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.valueDomains.CodingSchemeReference;
-import org.LexGrid.valueDomains.DefinitionEntry;
-import org.LexGrid.valueDomains.EntityReference;
-import org.LexGrid.valueDomains.PickListDefinition;
-import org.LexGrid.valueDomains.PickListEntry;
-import org.LexGrid.valueDomains.PickListEntryExclusion;
-import org.LexGrid.valueDomains.PickListEntryNode;
-import org.LexGrid.valueDomains.PickListEntryNodeChoice;
-import org.LexGrid.valueDomains.PickLists;
-import org.LexGrid.valueDomains.ValueDomainDefinition;
-import org.LexGrid.valueDomains.ValueDomainReference;
-import org.LexGrid.valueDomains.ValueDomains;
+import org.LexGrid.valueSets.CodingSchemeReference;
+import org.LexGrid.valueSets.DefinitionEntry;
+import org.LexGrid.valueSets.EntityReference;
+import org.LexGrid.valueSets.PickListDefinition;
+import org.LexGrid.valueSets.PickListEntry;
+import org.LexGrid.valueSets.PickListEntryExclusion;
+import org.LexGrid.valueSets.PickListEntryNode;
+import org.LexGrid.valueSets.PickListEntryNodeChoice;
+import org.LexGrid.valueSets.PickListDefinitions;
+import org.LexGrid.valueSets.ValueSetDefinition;
+import org.LexGrid.valueSets.ValueSetDefinitionReference;
+import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.EditHistory;
 import org.LexGrid.versions.EntityVersion;
@@ -1396,7 +1396,7 @@ public class ObjectToString {
     
     
     /////////////////////////////////
-    // LexGrid ValueDomains package
+    // LexGrid ValueSets package
     /////////////////////////////////
     protected static void append(StringBuffer buff, String indent, CodingSchemeReference o) {
         buff.append(indent).append(getType(o))
@@ -1416,10 +1416,10 @@ public class ObjectToString {
             buff.append(getBreakAndIndent())
                 .append("Entity Reference: ").append(lineBreak)
                 .append(o.getEntityReference());
-        if (o.getValueDomainReference() != null)
+        if (o.getValueSetDefinitionReference() != null)
             buff.append(getBreakAndIndent())
-                .append("Value Domain Reference: ").append(lineBreak)
-                .append(o.getValueDomainReference());
+                .append("Value Set Definition Reference: ").append(lineBreak)
+                .append(o.getValueSetDefinitionReference());
         if (o.getCodingSchemeReference() != null)
             buff.append(getBreakAndIndent())
                 .append("Coding Scheme Reference: ").append(lineBreak)
@@ -1450,9 +1450,9 @@ public class ObjectToString {
         buff.append(getBreakAndIndent())
             .append("Pick List ID: ").append(o.getPickListId())
             .append(getBreakAndIndent())
-            .append("Represents Value Domain: ").append(o.getRepresentsValueDomain())
+            .append("Represents Value Set Definition: ").append(o.getRepresentsValueSetDefinition())
             .append(getBreakAndIndent())
-            .append("Represents Complete Domain: ").append(o.getCompleteDomain());
+            .append("Represents Complete Value Set: ").append(o.getCompleteSet());
         if (StringUtils.isNotBlank(o.getDefaultEntityCodeNamespace()))
             buff.append(getBreakAndIndent())
                 .append("Default Code Namespace: ").append(o.getDefaultEntityCodeNamespace());
@@ -1539,7 +1539,7 @@ public class ObjectToString {
                 .append(toString(o.getExclusionEntry(), indent + sp8));
     }
     
-    protected static void append(StringBuffer buff, String indent, PickLists o) {
+    protected static void append(StringBuffer buff, String indent, PickListDefinitions o) {
         if (o.getPickListDefinitionCount() > 0)
             buff.append(getBreakAndIndent())
                 .append("Definitions: ").append(lineBreak)
@@ -1550,13 +1550,13 @@ public class ObjectToString {
                 .append(toString(o.getMappings(), indent + sp8));
     }
     
-    protected static void append(StringBuffer buff, String indent, ValueDomainDefinition o) {
+    protected static void append(StringBuffer buff, String indent, ValueSetDefinition o) {
         append(buff, indent, (VersionableAndDescribable) o);
         buff.append(getBreakAndIndent())
-            .append("Domain Name: ").append(o.getValueDomainName());
-        if (StringUtils.isNotBlank(o.getValueDomainURI()))
+            .append("Value Set Definition Name: ").append(o.getValueSetDefinitionName());
+        if (StringUtils.isNotBlank(o.getValueSetDefinitionURI()))
             buff.append(getBreakAndIndent())
-                .append("Domain URI: ").append(o.getValueDomainURI());
+                .append("Value Set Definition URI: ").append(o.getValueSetDefinitionURI());
         if (StringUtils.isNotBlank(o.getDefaultCodingScheme()))
             buff.append(getBreakAndIndent())
                 .append("Default Coding Scheme: ").append(o.getDefaultCodingScheme());
@@ -1578,18 +1578,18 @@ public class ObjectToString {
                 .append(toString(o.getProperties(), indent + sp8));
     }
     
-    protected static void append(StringBuffer buff, String indent, ValueDomainReference o) {
+    protected static void append(StringBuffer buff, String indent, ValueSetDefinitionReference o) {
         buff.append(indent).append(getType(o))
             .append(getBreakAndIndent())
-            .append("URI: ").append(o.getValueDomainURI());
+            .append("URI: ").append(o.getValueSetDefinitionURI());
     }
     
-    protected static void append(StringBuffer buff, String indent, ValueDomains o) {
+    protected static void append(StringBuffer buff, String indent, ValueSetDefinitions o) {
         buff.append(indent).append(getType(o));
-        if (o.getValueDomainDefinitionCount() > 0)
+        if (o.getValueSetDefinitionCount() > 0)
             buff.append(getBreakAndIndent())
                 .append("Definitions: ").append(lineBreak)
-                .append(toString(o.getValueDomainDefinition(), indent + sp8));
+                .append(toString(o.getValueSetDefinition(), indent + sp8));
         if (o.getMappings() != null)
             buff.append(getBreakAndIndent())
                 .append("Mappings: ").append(lineBreak)
