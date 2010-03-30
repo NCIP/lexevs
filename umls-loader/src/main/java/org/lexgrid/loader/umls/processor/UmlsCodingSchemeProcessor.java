@@ -38,6 +38,8 @@ public class UmlsCodingSchemeProcessor extends SupportedAttributeSupport impleme
 	/** The coding scheme name setter. */
 	private CodingSchemeIdSetter codingSchemeIdSetter;
 	
+	private String prefix;
+	
 	/** The sab. */
 	private String sab;
 	
@@ -122,5 +124,13 @@ public class UmlsCodingSchemeProcessor extends SupportedAttributeSupport impleme
 	 */
 	public void setSab(String sab) {
 		this.sab = sab;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public String getPrefix() {
+		return prefix;
 	}
 }

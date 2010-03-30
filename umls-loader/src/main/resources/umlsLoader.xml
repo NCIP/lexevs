@@ -25,6 +25,7 @@
 			<listener ref="cleanupListener" />
 		</listeners>
 
+		
 		<step id="populateStagingTable" next="loadCodingScheme" parent="stagingTablePopulatorStepFactory"/>
 
 		<step id="loadCodingScheme">
@@ -38,14 +39,14 @@
 			</tasklet>
 			
 			<fail on="FAILED" exit-code="NON-RECOVERABLE" />
-			<next on="*" to="loadHardcodedValues" />	
+			<next on="*" to="registerCodingScheme" />	
 		</step>
 		
-<!--		<step id="registerCodingScheme">-->
-<!--					<tasklet ref="registeringTasklet" />-->
-<!--					<fail on="FAILED" exit-code="NON-RECOVERABLE" />-->
-<!--					<next on="*" to="loadHardcodedValues" />	-->
-<!--		</step>-->
+		<step id="registerCodingScheme">
+			<tasklet ref="registeringTasklet" />
+			<fail on="FAILED" exit-code="NON-RECOVERABLE" />
+			<next on="*" to="loadHardcodedValues" />	
+		</step>
 		
 		<step id="loadHardcodedValues" next="umlsLoadEntity">
 			<tasklet ref="introspectiveHardcodedValuesTasklet"/>
@@ -57,7 +58,7 @@
 					<listener ref="stepCompletionListener" />
 				</listeners>
 				<chunk reader="mrconsoStagedReader" processor="umlsEntityListProcessor"
-					writer="entityWriter" commit-interval="1">
+					writer="entityWriter" commit-interval="100">
 				</chunk>
 			</tasklet>
 		</step>
@@ -68,7 +69,7 @@
 					<listener ref="stepCompletionListener" />
 				</listeners>
 				<chunk reader="mrstyGroupReader" processor="umlsMrstyListProcessor"
-					writer="entityPropertyListWriter" commit-interval="1">
+					writer="entityPropertyListWriter" commit-interval="100">
 					<streams>
 						<stream ref="mrstyReader" />
 					</streams>
@@ -82,7 +83,7 @@
 					<listener ref="stepCompletionListener" />
 				</listeners>
 				<chunk reader="mrdefReader" processor="umlsDefinitionPropertyProcessor"
-					writer="entityPropertyWriter" commit-interval="1">
+					writer="entityPropertyWriter" commit-interval="100">
 					<streams>
 						<stream ref="mrstyReader" />
 					</streams>
@@ -91,16 +92,20 @@
 		</step>
 		
 		
-		<step id="umlsLoadEntityAssnsToEntity">
+		<step id="umlsLoadEntityAssnsToEntity" next="index">
 			<tasklet>
 				<listeners>
 					<listener ref="stepCompletionListener" />
 				</listeners>
 				<chunk reader="umlsForwardRelationNameMrrelSkippingReader" 
 				processor="umlsRootNodeAddingEntityAssocToEntityListProcessor"
-					writer="associationSourceListWriter" commit-interval="1">
+					writer="associationSourceListWriter" commit-interval="100">
 				</chunk>
 			</tasklet>
+		</step>
+		
+		<step id="index">
+			<tasklet ref="indexingTasklet" />
 		</step>
 
 	</job>
@@ -343,6 +348,8 @@
 			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="sab" value="${sab}"/>
+		
+		<beans:property name="prefix" value="${prefix}"/>
 		
 		<beans:property name="supportedAttributeTemplate">
 			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
@@ -769,7 +776,8 @@
 
 	<beans:bean id="registeringTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.RegisteringTasklet">
-<!--		<beans:property name="registry" ref="registry"/>-->
+		<beans:property name="retry" value="${retry}"/>
+		<beans:property name="prefix" value="${prefix}"/>
 		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>

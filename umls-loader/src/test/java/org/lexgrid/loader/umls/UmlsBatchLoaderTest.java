@@ -67,10 +67,13 @@ public class UmlsBatchLoaderTest extends BaseTestRrf {
 	 * @throws Exception the exception
 	 */
 	@Test
-	@Ignore
 	public void testFailedUmlsLoad() throws Exception {
+		System.setProperty("LG_CONFIG_FILE", LoadUmlsForIntegration.CONFIG_FILE);
 		UmlsBatchLoader loader = new UmlsBatchLoaderImpl();
-		loader.loadUmls(new File(RRF_FAIL_DIRECTORY).toURI(), LoadUmlsForIntegration.UMLS_SAB);
+		loader.getOptions().getStringOption(UmlsBatchLoaderImpl.SAB_OPTION).setOptionValue(LoadUmlsForIntegration.UMLS_SAB);
+		loader.getOptions().getBooleanOption(UmlsBatchLoaderImpl.ASYNC_OPTION).setOptionValue(false);
+		loader.load(new File(RRF_FAIL_DIRECTORY).toURI());
+		
 		JobExecution job = loader.getJobExecution();
 		assertTrue(job.getExitStatus().equals(ExitStatus.FAILED));
 
@@ -83,10 +86,14 @@ public class UmlsBatchLoaderTest extends BaseTestRrf {
 	 * @throws Exception the exception
 	 */
 	@Test
-	@Ignore
 	public void testRestartUmlsLoad() throws Exception {
+		System.setProperty("LG_CONFIG_FILE", LoadUmlsForIntegration.CONFIG_FILE);
+		
 		UmlsBatchLoader loader = new UmlsBatchLoaderImpl();
-		loader.loadUmls(new File(RRF_FAIL_DIRECTORY).toURI(), LoadUmlsForIntegration.UMLS_SAB);
+		loader.getOptions().getStringOption(UmlsBatchLoaderImpl.SAB_OPTION).setOptionValue(LoadUmlsForIntegration.UMLS_SAB);
+		loader.getOptions().getBooleanOption(UmlsBatchLoaderImpl.ASYNC_OPTION).setOptionValue(false);
+		loader.load(new File(RRF_FAIL_DIRECTORY).toURI());
+		
 		JobExecution job = loader.getJobExecution();
 		assertTrue(job.getExitStatus().equals(ExitStatus.FAILED));	
 

@@ -33,6 +33,7 @@ import org.lexgrid.loader.AbstractSpringBatchLoader;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.properties.ConnectionPropertiesFactory;
 import org.lexgrid.loader.properties.impl.DefaultLexEVSPropertiesFactory;
+import org.lexgrid.loader.properties.impl.PropertiesFactory;
 import org.lexgrid.loader.setup.JobRepositoryManager;
 import org.lexgrid.loader.staging.StagingManager;
 import org.springframework.context.ApplicationContext;
@@ -56,7 +57,7 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 	
 	public UmlsBatchLoaderImpl(){
 		super();
-		super.setDoIndexing(true);
+		super.setDoIndexing(false);
 		super.setDoRegister(false);
 		super.setDoComputeTransitiveClosure(false);
 	}
@@ -68,11 +69,8 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 	 * @see org.lexgrid.loader.umls.UmlsBatchLoader#loadUmls(java.lang.String, java.lang.String)
 	 */
 	public void loadUmls(URI rrfDir, String sab) throws Exception {
-		Properties connectionProps = connectionPropertiesFactory.getPropertiesForNewLoad();	
-		connectionProps.put("sab", sab);
-		connectionProps.put("rrfDir", rrfDir.toString());
-		connectionProps.put("retry", "false");
-		launchJob(connectionProps, UMLS_LOADER_CONFIG, "umlsJob");
+		this.setResourceUri(rrfDir);
+		this.getOptions().getStringOption(SAB_OPTION).setOptionValue(sab);
 	}	
 	
 	/* (non-Javadoc)
@@ -130,7 +128,11 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 	@Override
 	protected URNVersionPair[] doLoad() {
 		try {
-			this.loadUmls(this.getResourceUri(), this.getOptions().getStringOption(SAB_OPTION).getOptionValue());
+			Properties connectionProps = connectionPropertiesFactory.getPropertiesForNewLoad();	
+			connectionProps.put("sab", this.getOptions().getStringOption(SAB_OPTION).getOptionValue());
+			connectionProps.put("rrfDir", this.getResourceUri().toString());
+			connectionProps.put("retry", "false");
+			launchJob(connectionProps, UMLS_LOADER_CONFIG, "umlsJob");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
