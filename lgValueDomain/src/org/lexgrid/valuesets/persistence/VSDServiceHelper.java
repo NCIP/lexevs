@@ -1,0 +1,899 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
+package org.lexgrid.valuesets.persistence;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.ListIterator;
+
+import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
+import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
+import org.LexGrid.emf.naming.Mappings;
+import org.LexGrid.emf.naming.SupportedAssociation;
+import org.LexGrid.emf.naming.SupportedCodingScheme;
+import org.LexGrid.emf.naming.SupportedNamespace;
+import org.LexGrid.emf.valueDomains.DefinitionEntry;
+import org.LexGrid.emf.valueDomains.DefinitionOperator;
+import org.LexGrid.emf.valueDomains.EntityReference;
+import org.LexGrid.emf.valueDomains.ValueDomainDefinition;
+import org.LexGrid.emf.valueDomains.persistence.ValueDomainHome;
+import org.LexGrid.emf.valueDomains.persistence.ValueDomainsHome;
+import org.LexGrid.managedobj.FindException;
+import org.LexGrid.managedobj.HomeServiceBroker;
+import org.LexGrid.managedobj.ServiceInitException;
+import org.LexGrid.managedobj.ServiceUnavailableException;
+import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.lexevs.system.ResourceManager;
+import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
+
+import edu.mayo.informatics.lexgrid.convert.utility.Constants;
+import edu.mayo.informatics.lexgrid.convert.utility.MessageRedirector;
+
+/**
+ * Helper class for Value Domain extension.
+ * 
+ * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
+ */
+public class VSDServiceHelper {
+	@SuppressWarnings("unused")
+    private static Logger log = Logger.getLogger("convert.SQL");
+	
+	// The maximum number of nodes to cache in the process of searching for leaf nodes of a graph
+	private int maxLeafCacheSize = 10000;
+
+	private String sqlServer, sqlDriver, sqlUsername, sqlPassword, tablePrefix;
+	private boolean failOnAllErrors;
+	private HomeServiceBroker broker_ = null;
+	private ValueDomainHome vdContext_ = null;
+	private ValueDomainsHome vdsContext_ = null;
+	private LgMessageDirectorIF md_;
+	private LexBIGService lbs_;
+	private VSDServices vds_;
+	private VSDSServices vdss_;
+	private PickListServices pls_;
+	private PickListsServices plss_;
+	private ResourceManager rm_;
+
+	/**
+	 * Constructor
+	 * @param sqlServer - SQL Server URI
+	 * @param sqlDriver - SQL driver name
+	 * @param sqlUsername - logon user name
+	 * @param sqlPassword - logon password
+	 * @param tablePrefix - prefix to use (?)
+	 * @param failOnAllErrors - true means fail on any load, false means try
+	 * @param messages    - message director
+	 * @throws LBParameterException
+	 * @throws LBInvocationException
+	 */
+	public VSDServiceHelper(String sqlServer, String sqlDriver,
+			String sqlUsername, String sqlPassword, String tablePrefix,
+			boolean failOnAllErrors, LgMessageDirectorIF messages)
+			throws LBParameterException, LBInvocationException {
+		this.sqlServer = sqlServer;
+		this.sqlDriver = sqlDriver;
+		this.sqlUsername = sqlUsername;
+		this.sqlPassword = sqlPassword;
+		this.tablePrefix = tablePrefix;
+		this.md_ = messages;
+		this.failOnAllErrors = failOnAllErrors;
+		this.rm_ = ResourceManager.instance();
+		
+	}
+
+	/**
+	 * Returns a SQL-based services to load, manage, and persist valueDomain
+	 * objects.
+	 * 
+	 * @return ValueDomainService
+	 * @throws ServiceInitException
+	 */
+	private VSDSServices getVDSService() throws ServiceInitException {
+		if (vdss_ != null)
+			return vdss_;
+		
+		HomeServiceBroker broker = getBroker();
+		if (vdsContext_ != null)
+			try {
+				vdss_ = (VSDSServices) broker.getService(vdsContext_);
+			} catch (ServiceUnavailableException sue) {
+			}
+		if (vdss_ == null) {
+			JDBCConnectionDescriptor desc = new JDBCConnectionDescriptor();
+			desc.setDbUid(sqlUsername);
+			desc.setDbPwd(sqlPassword);
+			desc.setDbUrl(sqlServer);
+			desc.setUseUTF8(true);
+			desc.setAutoRetryFailedConnections(true);
+			try {
+				desc.setDbDriver(sqlDriver);
+			} catch (ClassNotFoundException e) {
+				md_.fatal("The requested data base driver was not found on the classpath");
+				throw new ServiceInitException("The requested driver was not found on the classpath");
+			}
+			vdss_ = new VSDSServices(broker, desc, false, tablePrefix,
+					failOnAllErrors, new MessageRedirector(md_), false);
+			vdss_.setPageSize(Constants.mySqlBatchSize);
+			vdsContext_ = new ValueDomainsHome(broker);
+			broker.registerService(vdsContext_, vdss_);
+		}
+		return vdss_;
+	}
+	
+	/**
+	 * Returns a SQL-based services to load, manage, and persist pick list
+	 * objects.
+	 * 
+	 * @return PickListsService
+	 * @throws ServiceInitException
+	 */
+	public PickListsServices getPickListsService() throws ServiceInitException {
+		if (plss_ != null)
+			return plss_;
+		
+		HomeServiceBroker broker = getBroker();
+		if (vdsContext_ != null)
+			try {
+				plss_ = (PickListsServices) broker.getService(vdsContext_);
+			} catch (ServiceUnavailableException sue) {
+			}
+		if (plss_ == null) {
+			JDBCConnectionDescriptor desc = new JDBCConnectionDescriptor();
+			desc.setDbUid(sqlUsername);
+			desc.setDbPwd(sqlPassword);
+			desc.setDbUrl(sqlServer);
+			desc.setUseUTF8(true);
+			desc.setAutoRetryFailedConnections(true);
+			try {
+				desc.setDbDriver(sqlDriver);
+			} catch (ClassNotFoundException e) {
+				md_.fatal("The requested data base driver was not found on the classpath");
+				throw new ServiceInitException("The requested driver was not found on the classpath");
+			}
+			plss_ = new PickListsServices(broker, desc, false, tablePrefix,
+					failOnAllErrors, new MessageRedirector(md_), false);
+			plss_.setPageSize(Constants.mySqlBatchSize);
+			vdsContext_ = new ValueDomainsHome(broker);
+			broker.registerService(vdsContext_, plss_);
+		}
+		return plss_;
+	}
+	
+	/**
+	 * Returns a SQL-based services to load, manage, and persist pick list
+	 * objects.
+	 * 
+	 * @return PickListServices
+	 * @throws ServiceInitException
+	 */
+	public PickListServices getPickListService() throws ServiceInitException {
+		if (pls_ != null)
+			return pls_;
+		
+		HomeServiceBroker broker = getBroker();
+		if (vdContext_ != null)
+			try {
+				pls_ = (PickListServices) broker.getService(vdContext_);
+			} catch (ServiceUnavailableException sue) {
+			}
+		if (pls_ == null) {
+			JDBCConnectionDescriptor desc = new JDBCConnectionDescriptor();
+			desc.setDbUid(sqlUsername);
+			desc.setDbPwd(sqlPassword);
+			desc.setDbUrl(sqlServer);
+			desc.setUseUTF8(true);
+			desc.setAutoRetryFailedConnections(true);
+			try {
+				desc.setDbDriver(sqlDriver);
+			} catch (ClassNotFoundException e) {
+				md_.fatal("The requested data base driver was not found on the classpath");
+				throw new ServiceInitException("The requested driver was not found on the classpath");
+			}
+			pls_ = new PickListServices(broker, desc, false, tablePrefix,
+					failOnAllErrors, new MessageRedirector(md_), false);
+			pls_.setPageSize(Constants.mySqlBatchSize);
+			vdContext_ = new ValueDomainHome(broker);
+			broker.registerService(vdContext_, pls_);
+		}
+		return pls_;
+	}
+
+	/**
+	 * Returns a SQL-based services to load, manage, and persist valueDomain
+	 * objects.
+	 * 
+	 * @return ValueDomainService
+	 * @throws ServiceInitException
+	 */
+	private VSDServices getVDDefinitionService() throws ServiceInitException {
+		if (vds_ != null)
+			return vds_;
+		
+		HomeServiceBroker broker = getBroker();
+		vds_ = null;
+		if (vdContext_ != null)
+			try {
+				vds_ = (VSDServices) broker.getService(vdContext_);
+			} catch (ServiceUnavailableException sue) {
+			}
+		if (vds_ == null) {
+			JDBCConnectionDescriptor desc = new JDBCConnectionDescriptor();
+			desc.setDbUid(sqlUsername);
+			desc.setDbPwd(sqlPassword);
+			desc.setDbUrl(sqlServer);
+			desc.setUseUTF8(true);
+			desc.setAutoRetryFailedConnections(true);
+			try {
+				desc.setDbDriver(sqlDriver);
+			} catch (ClassNotFoundException e) {
+				md_.fatal("The requested data base driver was not found on the classpath");
+				throw new ServiceInitException("The requested driver was not found on the classpath");
+			}
+			vds_ = new VSDServices(broker, desc, false, tablePrefix,
+					failOnAllErrors, new MessageRedirector(md_), false);
+			vds_.setPageSize(Constants.mySqlBatchSize);
+			vdContext_ = new ValueDomainHome(broker);
+			broker.registerService(vdContext_, vds_);
+		}
+		return vds_;
+	}
+
+	/**
+	 * Returns the broker used to manage SQL services.
+	 * 
+	 * @return HomeServiceBroker
+	 */
+	protected HomeServiceBroker getBroker() {
+		if (broker_ == null)
+			broker_ = new HomeServiceBroker();
+		return broker_;
+	}
+	
+	/**
+	 * Returns the valueDomainDefinition object for supplied value domain URI. 
+	 * @param valueDomainURI
+	 * @return ValueDomainDefinition if found; otherwise NULL
+	 * @throws LBException
+	 */
+	public ValueDomainDefinition getValueDomain(URI valueDomainURI) throws LBException {
+		ValueDomainDefinition vdDef = null;
+		try {
+			vdDef = (ValueDomainDefinition) getValueDomainServices().findByPrimaryKey(valueDomainURI);
+		} catch (FindException e) {
+			md_.fatal("Failed while processing value domain definition : " + valueDomainURI, e);
+			throw new LBException(e.getMessage());
+		}
+		return vdDef;
+	}
+	
+	/**
+	 * Return the local identifier of the coding scheme name associated with the supplied namespace name
+	 * in the context of the supplied mapping. Comparison is case insensitive.
+	 * @param maps Mappings to use for transformation
+	 * @param namespaceName name to map
+	 * @return local id of coding scheme if there is one, else null
+	 */
+	@SuppressWarnings("unchecked")
+    public String getCodingSchemeNameForNamespaceName(Mappings maps, String namespaceName) {
+	    if(!StringUtils.isEmpty(namespaceName)) {
+	        if(maps != null && maps.getSupportedNamespace() != null) {
+	           Iterator<SupportedNamespace> sni = maps.getSupportedNamespace().iterator();
+	           while(sni.hasNext()) {
+	               SupportedNamespace sns = sni.next();
+	               if(sns.getLocalId().equalsIgnoreCase(namespaceName))
+	                   return sns.getEquivalentCodingScheme();
+	           }
+	        }
+	    }
+	    return null;
+	}
+	
+	/**
+	 * Return the URI that corresponds to the supplied coding scheme name. Comparison is case insensitive.
+	 * @param maps - Mappings that contain the name to URI maps
+	 * @param codingSchemeName - local identifier of the coding scheme
+	 * @return - URI or, if missing, the coding scheme name (surrogate)
+	 */
+	@SuppressWarnings("unchecked")
+    public String getURIForCodingSchemeName(Mappings maps, String codingSchemeName) {
+	    if(maps != null && maps.getSupportedCodingScheme() != null) {
+	        ListIterator<SupportedCodingScheme> scsi = maps.getSupportedCodingScheme().listIterator();
+    	    while(scsi.hasNext()) {
+    	        SupportedCodingScheme scs = scsi.next();
+    	        if(scs.getLocalId().equalsIgnoreCase(codingSchemeName))
+    	            return scs.getUri();
+    	    }
+	    }
+	    return codingSchemeName;
+	}
+	
+	/**
+	 * Return the URI that corresponds to the supplied association name. This function will use <i>either</i>
+	 * the local association identifier or the value text.  Comparison is case insensitive.
+     * @param maps - Mappings that contain the name to URI maps
+     * @param associationName - local identifier of the coding scheme
+     * @return - URI or, if missing, the association name (surrogate)
+     */
+    @SuppressWarnings("unchecked")
+    public String getURIForAssociationName(Mappings maps, String associationName) {
+        if(maps != null && maps.getSupportedAssociation() != null) {
+            ListIterator<SupportedAssociation> sai = maps.getSupportedAssociation().listIterator();
+            while(sai.hasNext()) {
+                SupportedAssociation sa = sai.next();
+                if(sa.getLocalId().equalsIgnoreCase(associationName) || sa.getValue().equalsIgnoreCase(associationName) )
+                    return sa.getUri();
+            }
+        }
+        return associationName;
+    }
+	
+	/**
+	 * Return a string representation the URI's of all of the coding schemes used in the supplied value domain
+	 * @param vdDef supplied value domain
+	 * @return List of unique URIs.  Returned as strings because we aren't all that picky about the syntax
+	 * @throws LBException
+	 * @throws URISyntaxException 
+	 */
+	@SuppressWarnings("unchecked")
+    public HashSet<String> getCodingSchemeURIs(ValueDomainDefinition vdDef) 
+		throws LBException {
+	    HashSet<String> csRefs = new HashSet<String>();
+		
+		if (vdDef != null && vdDef.getDefinitionEntry() != null) {
+		    // Always add the default coding scheme, even if it isn't used
+		    if(!StringUtils.isEmpty(vdDef.getDefaultCodingScheme()))
+		        csRefs.add(getURIForCodingSchemeName(vdDef.getMappings(), vdDef.getDefaultCodingScheme()));
+		    
+		    // Iterate over all of the individual definitions
+			Iterator<DefinitionEntry> deIter = vdDef.getDefinitionEntry().iterator();
+			while (deIter.hasNext()) {
+				DefinitionEntry de = deIter.next();
+				String csName = null;
+				if(de.getCodingSchemeReference() != null) {
+				    csName = de.getCodingSchemeReference().getCodingScheme();
+				} else if (de.getEntityReference() != null) {
+				    String entityNamespaceName = de.getEntityReference().getEntityCodeNamespace();
+				    if(!StringUtils.isEmpty(entityNamespaceName)) {
+				        csName = getCodingSchemeNameForNamespaceName(vdDef.getMappings(), entityNamespaceName);
+				    }
+				} else if (de.getValueDomainReference() != null) {
+                    try {
+                        csRefs.addAll(getCodingSchemeURIs(getValueDomain(new URI(de.getValueDomainReference().getValueDomainURI() ))));
+                    } catch (URISyntaxException e) {
+                        // TODO Decide what to do here - the value domain URI isn't valid?
+                        e.printStackTrace();
+                    }
+				} else {
+				    assert false : "Invalid value domain definition";
+				}
+			    if(!StringUtils.isEmpty(csName) && !StringUtils.equals(csName, vdDef.getDefaultCodingScheme()) ) {
+                    String csURI = getURIForCodingSchemeName(vdDef.getMappings(), csName);
+                    if(!StringUtils.isEmpty(csURI))
+                        csRefs.add(csURI);
+			    }
+			}
+		}
+		return csRefs;
+	}
+
+	/**
+	 * Return a list of all the versions of the supplied coding scheme URI or local identifier that are supported by the service
+	 * @param codingSchemeNameOrURI - URI to return versions for or return all URI's if null
+	 * @return AbsoluteCodingSchemeVersionReferenceList list of codingScheme and version.  Names are transformed to URI's for the return
+	 * @throws LBException
+	 */
+	public AbsoluteCodingSchemeVersionReferenceList getAbsoluteCodingSchemeVersionReference(String codingSchemeNameOrURI) throws LBException {
+		AbsoluteCodingSchemeVersionReferenceList acsvrList = new AbsoluteCodingSchemeVersionReferenceList();
+		CodingSchemeRendering[] csrList = getLexBIGService().getSupportedCodingSchemes().getCodingSchemeRendering();
+		
+		for(CodingSchemeRendering csr : csrList) {
+		    if(StringUtils.isEmpty(codingSchemeNameOrURI) || 
+		       csr.getCodingSchemeSummary().getCodingSchemeURI().equalsIgnoreCase(codingSchemeNameOrURI) ||
+		       csr.getCodingSchemeSummary().getLocalName().equalsIgnoreCase(codingSchemeNameOrURI)) {
+		        AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
+		        acsvr.setCodingSchemeURN(csr.getCodingSchemeSummary().getCodingSchemeURI());
+		        acsvr.setCodingSchemeVersion(csr.getCodingSchemeSummary().getRepresentsVersion());
+		        acsvrList.addAbsoluteCodingSchemeVersionReference(acsvr);
+		    }
+		}
+		return acsvrList;
+	}
+	
+	/**
+	 * Checks if the supplied codingScheme and version is loaded.
+	 * @param codingSchemeName
+	 * @param version
+	 * @return True; if given codingScheme/version is loader, otherwise, False.
+	 * @throws LBException
+	 */
+	protected boolean isCodingSchemeVersionLoaded(
+			String codingSchemeName, String version) throws LBException {
+		
+		String csName = codingSchemeName;
+		ResourceManager rm = ResourceManager.instance();			
+		
+		if (StringUtils.isEmpty(version)) {
+			// check if supplied version for the coding scheme is loaded
+			csName = rm.getExternalCodingSchemeNameForUserCodingSchemeNameOrId(codingSchemeName, version);
+			if (StringUtils.isNotEmpty(csName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+
+	/**
+	 * Resolve a value domain definition.
+	 * @param vdd   - the value domain  definition to be resolved
+	 * @param acsvl - a list of coding scheme URI's and versions to be used in the resolution.
+	 * @param versionTag - a tag (e.g. "production", "test", etc. used to any coding schemes not in asvl
+	 *   If a coding scheme does not appear in the asvl list the resolution will be as follows:
+	 *                1) If the service supports a single active version of the coding scheme it will be used.
+	 *                2) If there is more than one version the one that uses the supplied versionTag will be used
+	 *                3) If the versionTag isn't supplied, or if none of the versions matches it, then the one
+	 *                    marked "production" will be used
+	 *                4) If there isn't one marked production, then the "latest" will be used
+	 * @return ResolvedValueDomainCodedNodeSet
+	 * @throws LBException
+	 */
+    public ResolvedValueSetCodedNodeSet getResolvedCodedNodeSetForValueDomain(
+	        ValueDomainDefinition vdd, AbsoluteCodingSchemeVersionReferenceList csVersionsToUse, String versionTag) 
+	            throws LBException {
+        ResolvedValueSetCodedNodeSet rval = new ResolvedValueSetCodedNodeSet();
+        
+		// Remove anything from the resolution list that isn't available in the coding scheme and turn into map from URI to Version
+		// TODO What should the behavior be if it is in the list but not supported by the service?  Warning?
+		HashMap<String, String> refVersions = pruneVersionList(csVersionsToUse);
+	
+		rval.setCodedNodeSet(getCodedNodeSetForValueDomain(vdd, refVersions, versionTag));
+		rval.setCodingSchemeVersionRefList(new AbsoluteCodingSchemeVersionReferenceList());
+		
+	    // Transfer the list of used versions
+		Iterator<String> versionURLs = refVersions.keySet().iterator();
+		while(versionURLs.hasNext()) {
+		    String versionURL = versionURLs.next();
+		    rval.getCodingSchemeVersionRefList().addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference(versionURL, refVersions.get(versionURL)));
+		}
+		return rval;
+    }
+	
+    /**
+     * Resolves the supplied valueDomainDefinition object against the list of coding scheme versions 
+     * @param vdd - the value domain to be resolved
+     * @param refVersions - a map from coding scheme URIs to the corresponding version
+     * @param versionTag - a tag (e.g. "production", "test", etc. used to resolve missing coding schemes)
+     *   If a coding scheme does not appear in this list the resolution will be as follows:
+     *                1) If the service supports a single version of the coding scheme it will be used.
+     *                2) If there is more than one version the one that uses the supplied versionTag will be used
+     *                3) If the versionTag isn't supplied, or if none of the versions matches it, then the one
+     *                    marked "production" will be used
+     *                4) If there isn't one marked production, then the "latest" will be used     */
+	@SuppressWarnings("unchecked")
+    public CodedNodeSet getCodedNodeSetForValueDomain( 
+	        ValueDomainDefinition vdd, HashMap<String, String> refVersions, String versionTag) 
+                                                        throws LBException {
+	    CodedNodeSet finalNodeSet = null;
+	    
+		// Iterate over the value domain resolving contents
+		if(vdd != null && vdd.getDefinitionEntry() != null) {
+		    Iterator<DefinitionEntry> defIter = vdd.getDefinitionEntry().iterator();
+		    while(defIter.hasNext()) {
+		        DefinitionEntry vdDef = defIter.next();
+		        CodedNodeSet product = null;
+		        
+		        // All of the contents of a coding scheme
+		        if(vdDef.getCodingSchemeReference() != null) {
+		            product = getNodeSetForCodingScheme(vdd, vdDef.getCodingSchemeReference().getCodingScheme(), refVersions, versionTag);
+		        } else if(vdDef.getValueDomainReference() != null) {
+		            ValueDomainDefinition innerVdd = null;
+                    try {
+                        innerVdd = getValueDomain(new URI(vdDef.getValueDomainReference().getValueDomainURI()));
+                    } catch (URISyntaxException e) {
+                        // TODO This is a data error.  We whine in enough places that it isn't worth doing here
+                    }
+                    if(innerVdd != null)
+                        product = getCodedNodeSetForValueDomain(innerVdd, refVersions, versionTag);   
+		        } else if(vdDef.getEntityReference() != null) {
+		            product = getNodeSetForEntityReference(vdd, vdDef.getEntityReference(), refVersions, versionTag);
+		        }
+		        if(product != null) {
+    		        switch (vdDef.getOperator().getValue()) {
+                    case DefinitionOperator.OR:
+                        finalNodeSet = finalNodeSet == null? product : finalNodeSet.union(product);
+                        break;
+                    case DefinitionOperator.AND:
+                        finalNodeSet = finalNodeSet == null? null : finalNodeSet.intersect(product);
+                        break;
+                    case DefinitionOperator.SUBTRACT:
+                        finalNodeSet = finalNodeSet == null? null : finalNodeSet.difference(product);
+                        break;
+                    default:
+                        // TODO error message here?
+                        break;
+                    }
+		        } else {
+		            // TODO we probably want to say something when we get no resolution at all.
+		        }
+		    }
+		}
+		return finalNodeSet;
+	}
+	
+	/**
+	 * Return the coded node set that represents all of the concept codes in the referenced coding scheme
+	 * @param vdd          - containing value domain definition
+	 * @param csName       - local name of coding scheme within the value domain
+	 * @param refVersions  - map from coding scheme URI to versions.  A new node will be added to this list if the coding scheme isn't already there
+	 * @param versionTag   - default version or tag
+	 * @return coded node set that corresponds to this node or null if none available
+	 * @throws LBException
+	 */
+	protected CodedNodeSet getNodeSetForCodingScheme(
+	        ValueDomainDefinition vdd, String csName, HashMap<String, String> refVersions, String versionTag) 
+    throws LBException {
+	    
+        if(StringUtils.isEmpty(csName))
+            csName = vdd.getDefaultCodingScheme();
+        if(!StringUtils.isEmpty(csName)) {
+            AbsoluteCodingSchemeVersionReference resVersion = resolveCSVersion(csName, vdd.getMappings(), versionTag, refVersions);
+            CodingSchemeVersionOrTag verOrTag = new CodingSchemeVersionOrTag();
+            verOrTag.setVersion(resVersion.getCodingSchemeVersion());
+            return getLexBIGService().getCodingSchemeConcepts(resVersion.getCodingSchemeURN(), verOrTag).restrictToStatus(ActiveOption.ACTIVE_ONLY, null); 
+        }
+        return null;
+	}
+	
+	/**
+	 * Return a coded node set that represents the supplied entity reference
+	 * @param vdd - containing value domain
+	 * @param entityRef - entity reference to resolve
+	 * @param refVersions - fixed versions to resolve against
+	 * @param versionTag - version tag to resolve elsewise
+	 * @return corresponding coded node set
+	 * @throws LBException
+	 */
+	protected CodedNodeSet getNodeSetForEntityReference(
+	        ValueDomainDefinition vdd, EntityReference entityRef, HashMap<String, String> refVersions, String versionTag) 
+    throws LBException {
+	    
+	    // Locate the coding scheme namespace
+	    String entityCodeCodingScheme = getCodingSchemeNameForNamespaceName(vdd.getMappings(), entityRef.getEntityCodeNamespace());
+	    if(StringUtils.isEmpty(entityCodeCodingScheme))
+	        entityCodeCodingScheme = vdd.getDefaultCodingScheme();
+	    if(StringUtils.isEmpty(entityCodeCodingScheme)) {
+	        // TODO report an error here.  Can't have a code without some coding scheme reference
+	        return null;
+	    }
+	    AbsoluteCodingSchemeVersionReference resVersion = resolveCSVersion(entityCodeCodingScheme, vdd.getMappings(), versionTag, refVersions);
+	    CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+	    versionOrTag.setVersion(resVersion.getCodingSchemeVersion());	    
+	    ConceptReference cr = ConvenienceMethods.createConceptReference(entityRef.getEntityCode(), resVersion.getCodingSchemeURN());
+	    // Option 1: A single entity code
+	    if (StringUtils.isEmpty(entityRef.getReferenceAssociation()) ) {
+	        ConceptReferenceList crl = new ConceptReferenceList();
+	        
+	        crl.addConceptReference(cr);
+	        return getLexBIGService().getCodingSchemeConcepts(resVersion.getCodingSchemeURN(), versionOrTag).restrictToCodes(crl);
+	    }
+	    
+	    // Option 2: Some type of graph
+	    // TODO file model bug report because we don't know the relation container name here...
+	    CodedNodeGraph cng = getLexBIGService().getNodeGraph(resVersion.getCodingSchemeURN(), versionOrTag, null);
+	    cng = cng.restrictToAssociations(Constructors.createNameAndValueList(entityRef.getReferenceAssociation()), null);
+	    return entityRef.isLeafOnly()?
+	            leavesOfGraph(cng, entityRef.isTargetToSource(), cr, vdd, refVersions, versionTag) :
+	            cng.toNodeList(cr, !entityRef.isTargetToSource(), entityRef.isTargetToSource(), entityRef.isTransitiveClosure()? -1 : 1, -1);
+	}
+	
+	/**
+     * Return the leaf nodes for the supplied graph.  As the graph to be traversed could be quite large, this is
+     * done breadth first and non-recursively.  With apologies to Walt Whitman
+     * 
+     * Note: were we to implement both the forward and reverse closure on
+     * transitive graphs, this routine could be replaced with the intersection of the supplied graph and the immediate
+     * children or ancestors of the top or bottom nodes respectively.
+     * 
+     * @param cng - graph to be traversed
+     * @param isTargetToSource - direction to traverse the graph
+     * @param root - the root node to start the traverse at
+     * @param vdd  - value domain definition to resolve leaf nodes against if isLeaf is set
+     * @param refVersions - map of coding Scheme URI to version (may be updated by this routine)
+     * @param versionTag  - version tag (e.g. devel, production, etc.) to resolve new nodes
+     * @return - a list of all leaf nodes
+	 * @throws LBException 
+     */
+    public CodedNodeSet leavesOfGraph(
+            CodedNodeGraph cng, boolean isTargetToSource, ConceptReference root, ValueDomainDefinition vdd, HashMap<String,String> refVersions, String versionTag) 
+                    throws LBException {
+ 
+        ConceptReferenceList leaves = new ConceptReferenceList();
+        ConceptReferenceList probes = new ConceptReferenceList();
+        probes.addConceptReference(root);
+        HashSet<String> seenNode = new HashSet<String>();          // Trade performance for space
+       
+        while(probes.getConceptReferenceCount() > 0) {
+            ConceptReferenceList newProbes = new ConceptReferenceList();
+            Iterator<ConceptReference> cri = probes.iterateConceptReference();
+            while(cri.hasNext()) {
+                ConceptReference probe = cri.next();
+                // Never look at a node more than once. 
+                if(seenNode.contains(constructKey(probe)))
+                    continue;
+                if(seenNode.size() < maxLeafCacheSize)
+                    seenNode.add(constructKey(probe));
+                
+                boolean probeHasChildren = false;
+                CodedNodeSet directChildren = cng.toNodeList(probe, !isTargetToSource, isTargetToSource, 1, -1);
+                if(directChildren != null) {
+                    ResolvedConceptReferencesIterator dcIter = directChildren.resolve(null, null, null, null, false);
+                    while(dcIter.hasNext()) {
+                        ConceptReference childNode = dcIter.next();
+                        if(!equalReferences(probe, childNode)) {
+                            probeHasChildren = true;
+                            newProbes.addConceptReference(childNode);
+                        }
+                    }
+                }
+                
+                if(!probeHasChildren)
+                    leaves.addConceptReference(probe);
+            }
+            probes = newProbes;
+        }
+        return conceptReferenceListToCodedNodeSet(leaves, vdd, refVersions, versionTag );
+    }
+    
+    
+    /**
+     * Go over the supplied coding scheme version reference list and remove any entries that aren't supported by the service.
+     * If a coding scheme URI appears more than once in the list, only the first entry will be used.
+     * @param suppliedVersions - a list of "suggested" versions to use
+     * @return  A list of unique coding scheme URIs and the corresponding versions
+     */
+    public HashMap<String, String> pruneVersionList(AbsoluteCodingSchemeVersionReferenceList suppliedCsVersions) 
+            throws LBException {
+        HashMap<String, String> prunedList = new HashMap<String, String>();
+        if(suppliedCsVersions != null) {   
+            // List of all coding scheme versions that are supported in the service
+            AbsoluteCodingSchemeVersionReferenceList serviceCsVersions = getAbsoluteCodingSchemeVersionReference(null);
+            for(AbsoluteCodingSchemeVersionReference suppliedVer : suppliedCsVersions.getAbsoluteCodingSchemeVersionReference()) {
+                String externalVersionId = rm_.getURNForInternalCodingSchemeName(
+                        rm_.getExternalCodingSchemeNameForUserCodingSchemeNameOrId(suppliedVer.getCodingSchemeURN(), suppliedVer.getCodingSchemeVersion()));
+                // TODO - implement a content equality operator so we can use "contains" vs. an inner iterator
+                for(AbsoluteCodingSchemeVersionReference serviceVer : serviceCsVersions.getAbsoluteCodingSchemeVersionReference()) {
+                    if(StringUtils.equalsIgnoreCase(externalVersionId, serviceVer.getCodingSchemeURN()) &&
+                       StringUtils.equalsIgnoreCase(suppliedVer.getCodingSchemeVersion(), serviceVer.getCodingSchemeVersion()) ) {
+                        if(!prunedList.containsKey(externalVersionId))
+                            prunedList.put(externalVersionId, suppliedVer.getCodingSchemeVersion()); 
+                        else {
+                            // TODO Should we report an error here?  A duplicate URN could result in inconsistent behavior.
+                        }
+                        break;
+                    }     
+                }
+            }
+        }
+        return prunedList;
+    }
+    
+    /**
+     * Set the maximum cache size to be used when traversing graphs looking for leaf nodes.
+     * @param newSize New max size
+     */
+    public void setMaxLeafCacheSize(int newSize) {
+        maxLeafCacheSize = newSize;
+    }
+    
+    /**
+     * Return the maximum cache size for traversing graphs looking for leaf nodes
+     */
+    public int getMaxLeafCacheSize() {
+        return maxLeafCacheSize;
+    }
+
+	/**
+	 * Record a persistent link to the LexBIG service for use by this and other classes
+	 * @param lbs
+	 */
+	public void setLexBIGService(LexBIGService lbs) {
+		this.lbs_ = lbs;
+	}
+
+	/**
+	 * Return a persistent link to the LexBIG service
+	 * @return
+	 */
+	public LexBIGService getLexBIGService() {
+		if (lbs_ == null)
+			lbs_ = LexBIGServiceImpl.defaultInstance();
+		return lbs_;
+	}
+	
+	   /**
+     * Return a persistent link to the layer that handles Value Domain mapping to the physical database
+     * @return
+     * @throws LBException
+     */
+    public VSDServices getValueDomainServices() throws LBException {
+        if (vds_ == null) {
+            try {
+                vds_ = getVDDefinitionService();
+            } catch (ServiceInitException e) {
+                md_.fatal("Failed while getting ValueDomainService ", e);
+                throw new LBException(e.getMessage());
+            }
+        }
+        return vds_;
+    }
+
+ 
+    /**
+     * Return a persistent link to the layer that that handles ValueDomains to the database
+     * @return
+     * @throws ServiceInitException
+     */
+    public VSDSServices getValueDomainsServices() throws ServiceInitException {
+        if (vdss_ == null) {
+            vdss_ = getVDSService();
+        }
+        return vdss_;
+    }
+    
+    /**
+     * Set a a persistent link to the layer that handles Value Domain mapping to the physical database
+     * @param vds
+     */
+    public void setValueDomainServices(VSDServices vds) {
+        this.vds_ = vds;
+    }
+
+
+    /**
+     * Set a a persistent link to the layer that handles ValueDomains to the database
+     * @param vds
+     */
+    public void setValueDomainsServices(VSDSServices vdss_) {
+        this.vdss_ = vdss_;
+    }
+    
+    
+    /*==================================================================================================================
+     * Helper Functions
+     ==================================================================================================================*/
+    
+    /**
+     * Return the absolute reference for the supplied csName.  Add the entry to the refVersions if it isn't there
+     * @param csName        - the local identifier of the coding scheme to be resolved
+     * @param maps          - mappings that contain local ids to URIs
+     * @param versionTag    - the version tag to use if there is more than one version in the service
+     * @param refVersions   - a list of URI/version pairs that are already resolved
+     * @return the URI/Version to use or null if none can be found
+     * @throws LBException
+     */
+    protected AbsoluteCodingSchemeVersionReference resolveCSVersion(
+            String csName, Mappings maps, String versionTag, HashMap<String, String> refVersions) throws LBException {
+        String csURI = getURIForCodingSchemeName(maps, csName);
+        if(!StringUtils.isEmpty(csURI)) {           
+            // If it is already in the list, use it
+            if(refVersions.containsKey(csURI))
+                return Constructors.createAbsoluteCodingSchemeVersionReference(csURI, refVersions.get(csURI));
+
+            // If it is a named version, try to resolve it
+            if(!StringUtils.isEmpty(versionTag)) {
+                String tagVersion = rm_.getInternalVersionStringForTag(csURI, versionTag);
+                if(!StringUtils.isEmpty(tagVersion))
+                    return Constructors.createAbsoluteCodingSchemeVersionReference(csURI, tagVersion);
+            }
+
+            // Take whatever is most appropriate from the service
+            AbsoluteCodingSchemeVersionReferenceList serviceCsVersions = getAbsoluteCodingSchemeVersionReference(csURI);
+            if(serviceCsVersions.getAbsoluteCodingSchemeVersionReferenceCount() > 0) {
+                refVersions.put(csURI, serviceCsVersions.getAbsoluteCodingSchemeVersionReference(0).getCodingSchemeVersion());
+                return serviceCsVersions.getAbsoluteCodingSchemeVersionReference(0);
+            }   
+        }
+        return null;
+
+    }
+    
+    /**
+     * Construct a (hopefully) unique key from a concept reference
+     * @param cr concept reference
+     * @return unique key
+     */
+    protected String constructKey(ConceptReference cr) {
+        return (StringUtils.isEmpty(cr.getCodeNamespace())? cr.getCodingSchemeName() : cr.getCodeNamespace()) + ":" + cr.getCode();
+    }
+    
+    /**
+     * Determine whether two concept references refer to the same thing <b>in the context of a single coding scheme!</b>
+     * @param r1 - first concept reference
+     * @param r2 - second concept reference
+     * @return true if the references are the same within the context of a coding scheme
+     */
+    protected boolean equalReferences(ConceptReference r1, ConceptReference r2) {
+        return constructKey(r1).equals(constructKey(r2));
+    }
+    
+ 
+ 
+    
+    /**
+     * Convert a concept reference list into a coded node set in the context of a particular value domain
+     * @param crl - list to convert
+     * @param vdd - context to do the conversion in
+     * @param refVersions - set of already resolved versions (may have new versions added)
+     * @param versionTag  - the versionTag to use if more than one version of the coding scheme exists
+     * @return corresponding coded node set
+     * @throws LBException 
+     */
+    protected CodedNodeSet conceptReferenceListToCodedNodeSet(ConceptReferenceList crl, ValueDomainDefinition vdd, HashMap<String,String> refVersions, String versionTag) throws LBException {
+        HashMap<String, ConceptReferenceList> csConcepts = new HashMap<String, ConceptReferenceList>();
+        Iterator<ConceptReference> crli = crl.iterateConceptReference();
+        
+        CodedNodeSet mergedNodeSet = null;
+        
+        // Split the list among the target coding schemes
+        while(crli.hasNext()) {
+            ConceptReference cr = crli.next();
+            String crCs = StringUtils.isEmpty(cr.getCodeNamespace())? cr.getCodingSchemeName() : getCodingSchemeNameForNamespaceName(vdd.getMappings(), cr.getCodeNamespace());
+            if(!csConcepts.containsKey(crCs))
+                csConcepts.put(crCs, new ConceptReferenceList());
+            csConcepts.get(crCs).addConceptReference(cr);
+        }
+        
+        // Create a coded node set for each coding scheme and union it
+        Iterator<String> csNames = csConcepts.keySet().iterator();
+        while(csNames.hasNext()) {
+            String csName = csNames.next();
+            CodedNodeSet csNodes = getNodeSetForCodingScheme(vdd, csName, refVersions, versionTag);
+            if(csNodes != null) {
+                if(mergedNodeSet == null)
+                    mergedNodeSet = csNodes.restrictToCodes(csConcepts.get(csName));
+                else
+                    mergedNodeSet = mergedNodeSet.union(csNodes.restrictToCodes(csConcepts.get(csName)));
+            } else {
+                // TODO - do we want to say anything about the fact that we aren't resolving all of the association contents?
+            }
+        }
+        return mergedNodeSet;
+    }
+}
