@@ -6,6 +6,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="/lgModel/lib/lgModelCastor.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/apache/lucene/lucene-core-2.4.0.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-core-2.0.1.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-core-2.1.0.RELEASE.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
