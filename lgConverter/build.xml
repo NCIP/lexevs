@@ -205,7 +205,7 @@
 			</fileset>
 		</copy>
 		<!-- Compile the java code from ${src.dir} into ${classes.dir} -->
-		<javac target="1.5" source="1.5" debug="true" destdir="${classes.dir}">
+		<javac target="1.6" source="1.6" debug="true" destdir="${classes.dir}">
 			<src path="${src.dir}"/>
 			<src path="${depSrc.dir}/Indexer/src"/>
 			<src path="${depSrc.dir}/lgModel.emf/src"/>
