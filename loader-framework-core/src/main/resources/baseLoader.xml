@@ -7,7 +7,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.0.xsd
+		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
 	
@@ -47,7 +47,7 @@
 		<beans:property name="dataSource" ref="dataSource"/> 
 		<beans:property name="transactionManager" ref="noOptransactionManager"/>
 		<beans:property name="incrementerFactory" ref="incrementerFactory"/>
-		<beans:property name="tablePrefix" ref="prefix"/>
+		<beans:property name="tablePrefix" value="${prefix}"/>
 	</beans:bean>
 	
 	<beans:bean id="abstractCleanupListener" parent="loggingBean" abstract="true"
@@ -84,6 +84,7 @@
 		<beans:property name="createScript" ref="jobRepositoryCreationScriptFactory"/>
 		<beans:property name="dropScript" ref="jobRepositoryDropScriptFactory"/>	
 		<beans:property name="databaseType" ref="databaseTypeFactory"/>
+		<beans:property name="prefix" value="${prefix}"/>
 	</beans:bean>
 	
 	<beans:bean id="stagingManager" parent="loggingBean"

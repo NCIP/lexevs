@@ -47,6 +47,8 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	
 	private DatabaseType databaseType;
 	
+	private String prefix;
+	
 	//Not needed now... just in case a subclass might...
 	/** The tables. */
 	protected String[] tables = {
@@ -75,7 +77,7 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 			getLogger().info("Creating Job Repository.");
 			String script = DefaultDatabaseUtility.convertResourceToString(createScript);
 			lexEvsDatabaseOperations.getDatabaseUtility().executeScript(insertPrefixVariable(script), 
-					lexEvsDatabaseOperations.getPrefixResolver().resolveDefaultPrefix());
+					prefix);
 		} else {
 			getLogger().info("Not Creating Job Repository.");
 		}
@@ -107,7 +109,7 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	 */
 	protected boolean doJobRepositoryTablesExist(){
 		try {
-			lexEvsDatabaseOperations.getDatabaseUtility().executeScript("SELECT * FROM " + this.getLexEvsDatabaseOperations().getPrefixResolver().resolveDefaultPrefix() + "JOB_INSTANCE");
+			lexEvsDatabaseOperations.getDatabaseUtility().executeScript("SELECT * FROM " + prefix + "JOB_INSTANCE");
 		} catch (Exception e) {
 			return false;
 		}
@@ -121,7 +123,7 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	 */
 	public void dropJobRepositoryDatabases() throws Exception {
 		String script = DefaultDatabaseUtility.convertResourceToString(dropScript);
-		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(insertPrefixVariable(script), this.getLexEvsDatabaseOperations().getPrefixResolver().resolveDefaultPrefix());
+		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(insertPrefixVariable(script), prefix);
 	}
 	
 	public void dropJobRepositoryDatabasesOnClose() throws Exception {
@@ -194,6 +196,14 @@ public class JobRepositoryManager extends LoggingBean implements InitializingBea
 	public void setLexEvsDatabaseOperations(
 			LexEvsDatabaseOperations lexEvsDatabaseOperations) {
 		this.lexEvsDatabaseOperations = lexEvsDatabaseOperations;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public String getPrefix() {
+		return prefix;
 	}
 	
 	
