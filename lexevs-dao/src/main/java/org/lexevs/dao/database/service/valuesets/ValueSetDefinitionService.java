@@ -16,50 +16,50 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.lexevs.dao.database.service.valuedomain;
+package org.lexevs.dao.database.service.valuesets;
 
 import java.util.List;
 
-import org.LexGrid.valueDomains.ValueDomainDefinition;
-import org.LexGrid.valueDomains.ValueDomains;
+import org.LexGrid.valueSets.ValueSetDefinition;
+import org.LexGrid.valueSets.ValueSetDefinitions;
 
 /**
- * The Interface ValueDomainService.
+ * The Interface ValueSetDefinitionService.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface ValueDomainService {
+public interface ValueSetDefinitionService {
 
 	/**
-	 * Insert value domain definition.
+	 * Insert value set definition.
 	 * 
 	 * @param definition the definition
 	 */
-	public void insertValueDomainDefinition(ValueDomainDefinition definition);
+	public void insertValueSetDefinition(ValueSetDefinition definition);
 	
 	/**
-	 * Insert value domains.
+	 * Insert value set definitions.
 	 * 
-	 * @param valueDomains the value domains
+	 * @param valueSetDefinitions the value set definitions
 	 * @param systemReleaseUri the system release uri
 	 */
-	public void insertValueDomains(ValueDomains valueDomains, String systemReleaseUri);
+	public void insertValueSetDefinitions(ValueSetDefinitions valueSetDefinitions, String systemReleaseUri);
 	
 	/**
-	 * Find by value uris by domain name.
+	 * Find by value uris by value set definition name name.
 	 * 
-	 * @param valueDomainName the value domain name
+	 * @param valueSetDefinitionName the value set definition name
 	 * 
 	 * @return the list< string>
 	 */
-	public List<String> findByValueUrisByDomainName(String valueDomainName);
+	public List<String> findByValueUrisByValueSetDefinitionName(String valueDomainName);
 	
 	/**
-	 * Gets the value domain definition by uri.
+	 * Gets the value set definition by uri.
 	 * 
 	 * @param uri the uri
 	 * 
-	 * @return the value domain definition by uri
+	 * @return the value set definition by uri
 	 */
-	public ValueDomainDefinition getValueDomainDefinitionByUri(String uri);
+	public ValueSetDefinition getValueSetDefinitionByUri(String uri);
 }

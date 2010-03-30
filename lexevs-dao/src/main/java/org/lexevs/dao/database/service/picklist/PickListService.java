@@ -21,7 +21,7 @@ package org.lexevs.dao.database.service.picklist;
 import java.util.List;
 import java.util.Map;
 
-import org.LexGrid.valueDomains.PickListDefinition;
+import org.LexGrid.valueSets.PickListDefinition;
 
 /**
  * The Interface PickListService.

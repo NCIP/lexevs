@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Source;
-import org.LexGrid.valueDomains.PickListDefinition;
+import org.LexGrid.valueSets.PickListDefinition;
 import org.junit.Test;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +65,7 @@ public class IbatisPickListDaoTest extends LexEvsDbUnitTestBase {
 		final Timestamp expirationDate = new Timestamp(2l);
 		
 		PickListDefinition def = new PickListDefinition();
-		def.setCompleteDomain(false);
+		def.setCompleteSet(false);
 		def.setDefaultEntityCodeNamespace("ns");
 		def.addDefaultPickContext("context");
 		def.setDefaultSortOrder("asc");
@@ -76,7 +76,7 @@ public class IbatisPickListDaoTest extends LexEvsDbUnitTestBase {
 		def.setEntityDescription(ed);
 		def.setExpirationDate(expirationDate);
 		def.setIsActive(true);
-		def.setRepresentsValueDomain("vd");
+		def.setRepresentsValueSetDefinition("vd");
 		def.setOwner("owner");
 		def.setPickListId("plid");
 		

@@ -26,7 +26,7 @@ import org.lexevs.dao.database.service.error.ErrorCallbackDatabaseServiceFactory
 import org.lexevs.dao.database.service.error.ErrorCallbackListener;
 import org.lexevs.dao.database.service.picklist.PickListService;
 import org.lexevs.dao.database.service.property.PropertyService;
-import org.lexevs.dao.database.service.valuedomain.ValueDomainService;
+import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 
 /**
  * The Class DatabaseServiceManager.
@@ -54,7 +54,7 @@ public class DatabaseServiceManager {
 	private PickListService pickListService;
 	
 	/** The value domain service. */
-	private ValueDomainService valueDomainService;
+	private ValueSetDefinitionService valueDomainService;
 	
 	private DaoCallbackService daoCallbackService;
 	
@@ -173,7 +173,7 @@ public class DatabaseServiceManager {
 	 * 
 	 * @return the value domain service
 	 */
-	public ValueDomainService getValueDomainService() {
+	public ValueSetDefinitionService getValueDomainService() {
 		return valueDomainService;
 	}
 
@@ -182,7 +182,7 @@ public class DatabaseServiceManager {
 	 * 
 	 * @param valueDomainService the new value domain service
 	 */
-	public void setValueDomainService(ValueDomainService valueDomainService) {
+	public void setValueDomainService(ValueSetDefinitionService valueDomainService) {
 		this.valueDomainService = valueDomainService;
 	}
 

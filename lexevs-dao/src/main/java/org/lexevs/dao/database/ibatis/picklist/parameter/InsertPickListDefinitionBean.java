@@ -18,7 +18,7 @@
  */
 package org.lexevs.dao.database.ibatis.picklist.parameter;
 
-import org.LexGrid.valueDomains.PickListDefinition;
+import org.LexGrid.valueSets.PickListDefinition;
 import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 
 /**

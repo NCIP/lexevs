@@ -16,53 +16,53 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.lexevs.dao.database.service.valuedomain;
+package org.lexevs.dao.database.service.valuesets;
 
 import java.util.List;
 
-import org.LexGrid.valueDomains.ValueDomainDefinition;
-import org.LexGrid.valueDomains.ValueDomains;
+import org.LexGrid.valueSets.ValueSetDefinition;
+import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 
 /**
- * The Class VersionableEventValueDomainService.
+ * The Class VersionableEventValueSetDefinitionService.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class VersionableEventValueDomainService extends AbstractDatabaseService implements ValueDomainService{
+public class VersionableEventValueSetDefinitionService extends AbstractDatabaseService implements ValueSetDefinitionService{
 
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.service.valuedomain.ValueDomainService#findByValueUrisByDomainName(java.lang.String)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#findByValueUrisByValueSetDefinitionName(java.lang.String)
 	 */
 	@Override
-	public List<String> findByValueUrisByDomainName(String valueDomainName) {
+	public List<String> findByValueUrisByValueSetDefinitionName(String valueSetDefinitionName) {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.service.valuedomain.ValueDomainService#getValueDomainDefinitionByUri(java.lang.String)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#getValueSetDefinitionByUri(java.lang.String)
 	 */
 	@Override
-	public ValueDomainDefinition getValueDomainDefinitionByUri(String uri) {
+	public ValueSetDefinition getValueSetDefinitionByUri(String uri) {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.service.valuedomain.ValueDomainService#insertValueDomainDefinition(org.LexGrid.valueDomains.ValueDomainDefinition)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#insertValueDomainDefinition(org.LexGrid.valueDomains.ValueDomainDefinition)
 	 */
 	@Override
-	public void insertValueDomainDefinition(ValueDomainDefinition definition) {
+	public void insertValueSetDefinition(ValueSetDefinition definition) {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.service.valuedomain.ValueDomainService#insertValueDomains(org.LexGrid.valueDomains.ValueDomains, java.lang.String)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#insertValueDomains(org.LexGrid.valueDomains.ValueDomains, java.lang.String)
 	 */
 	@Override
-	public void insertValueDomains(ValueDomains valueDomains,
+	public void insertValueSetDefinitions(ValueSetDefinitions valueSetDefinitions,
 			String systemReleaseUri) {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();

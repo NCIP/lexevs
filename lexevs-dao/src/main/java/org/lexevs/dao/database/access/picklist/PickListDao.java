@@ -20,7 +20,7 @@ package org.lexevs.dao.database.access.picklist;
 
 import java.util.List;
 
-import org.LexGrid.valueDomains.PickListDefinition;
+import org.LexGrid.valueSets.PickListDefinition;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
 /**

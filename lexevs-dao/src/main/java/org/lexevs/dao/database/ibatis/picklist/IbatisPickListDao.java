@@ -20,7 +20,7 @@ package org.lexevs.dao.database.ibatis.picklist;
 
 import java.util.List;
 
-import org.LexGrid.valueDomains.PickListDefinition;
+import org.LexGrid.valueSets.PickListDefinition;
 import org.lexevs.dao.database.access.picklist.PickListDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
