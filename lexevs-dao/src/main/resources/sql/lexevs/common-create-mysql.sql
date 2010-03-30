@@ -11,6 +11,7 @@ CREATE TABLE @PREFIX@registry
 	dbURI VARCHAR(250),
 	dbName VARCHAR(50),
 	prefix VARCHAR(20),
+	stagingPrefix VARCHAR(20),
 	status VARCHAR(50),
 	tag VARCHAR(50),
 	lastUpdateDate DATETIME,

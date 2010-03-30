@@ -6,6 +6,7 @@ CREATE TABLE @PREFIX@registry (
 	dbURI varchar(250),
 	dbName varchar(50),
 	prefix varchar(20),
+	stagingPrefix varchar(20),
 	status varchar(50),
 	tag varchar(50),
 	lastUpdateDate timestamp,
