@@ -90,9 +90,6 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 		
 		springBatchMessageDirector = (SpringBatchMessageDirector)ctx.getBean("logger");
 		
-		//super. = springBatchMessageDirector;
-		//super.status_ = springBatchMessageDirector.getProcessStatus();
-		
 		printStartLogInfo(connectionProperties, jobConfigFile, jobName);
 		
 		jobExecution = jobLauncher.run(job, buildJobParameters(connectionProperties));	
@@ -121,11 +118,9 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 			Object key = keys.nextElement();
 			connectionProps.append("Property: " + key.toString() + "\n");
 			String propertyValue = null;
-			if(key.equals(PropertiesFactory.PASSWORD)){
-				propertyValue = "*****";
-			} else {
-				propertyValue = jobProperties.getProperty(key.toString());
-			}
+			
+			propertyValue = jobProperties.getProperty(key.toString());
+
 			connectionProps.append(" - Value: " + propertyValue + "\n");
 		}
 		springBatchMessageDirector.info(connectionProps.toString());

@@ -29,21 +29,6 @@ public class PropertiesFactory {
 
 	/** The PREFIX. */
 	public static String PREFIX = "prefix";
-	
-	/** The URL. */
-	public static String URL = "jdbcUrl";
-	
-	/** The DATABASE. */
-	public static String DATABASE = "database";
-	
-	/** The DRIVER. */
-	public static String DRIVER = "driver";
-	
-	/** The USERNAME. */
-	public static String USERNAME = "user";
-	
-	/** The PASSWORD. */
-	public static String PASSWORD = "password";
 
 	/**
 	 * Gets the properties.

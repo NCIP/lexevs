@@ -18,6 +18,8 @@
  */
 package org.lexgrid.loader.lexbigadmin;
 
+import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
@@ -35,35 +37,25 @@ import org.springframework.batch.repeat.RepeatStatus;
  */
 public class RegisteringTasklet extends AbstractLexEvsUtilityTasklet implements Tasklet {
 	
-	private SystemResourceService systemResourceService;
+	private boolean retry = false;
+	private String prefix;
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.core.step.tasklet.Tasklet#execute(org.springframework.batch.core.StepContribution, org.springframework.batch.core.scope.context.ChunkContext)
 	 */
 	public RepeatStatus execute(StepContribution contribution,
 			ChunkContext chunkContext) throws Exception {
-		boolean alreadyLoaded = true;
-		try {
-			ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(getCurrentCodingSchemeUri(), getCurrentCodingSchemeVersion());
-		} catch (Exception e) {
-			// this is a good thing, means that is hasn't been loaded.
-			alreadyLoaded = false;
+		if(!retry) {
+			Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
+			RegistryEntry entry = registry.getCodingSchemeEntry(
+					DaoUtility.createAbsoluteCodingSchemeVersionReference(
+							getCurrentCodingSchemeUri(), 
+							getCurrentCodingSchemeVersion()));
+			
+			entry.setStagingPrefix(prefix);
+			
+			registry.updateEntry(entry);
 		}
-
-		if(alreadyLoaded){
-			getLogger().error("Coding Scheme is already Loaded.");
-			throw new Exception("Coding Scheme is already Loaded.");
-		}
-		
-		getLogger().info("Registering CodingScheme -- Load is now restartable.");
-
-		/* TODO: Are these needed anymore?
-		String prefix = (String)chunkContext.getStepContext().getJobParameters().get("prefix");
-		String url = (String)chunkContext.getStepContext().getJobParameters().get("jdbcUrl");
-		String database = (String)chunkContext.getStepContext().getJobParameters().get("database");		
-		*/
-
-	
 		return RepeatStatus.FINISHED;
 	}
 
@@ -82,5 +74,21 @@ public class RegisteringTasklet extends AbstractLexEvsUtilityTasklet implements 
 	protected RepeatStatus doExecute(StepContribution contribution,
 			ChunkContext chunkContext) throws Exception {
 		return null;
+	}
+
+	public void setRetry(boolean retry) {
+		this.retry = retry;
+	}
+
+	public boolean isRetry() {
+		return retry;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public String getPrefix() {
+		return prefix;
 	}
 }

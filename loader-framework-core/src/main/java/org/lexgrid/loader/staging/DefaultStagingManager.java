@@ -21,7 +21,11 @@ package org.lexgrid.loader.staging;
 import java.util.Map;
 import java.util.Set;
 
+import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.logging.LoggingBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
@@ -43,6 +47,7 @@ public class DefaultStagingManager extends LoggingBean implements StagingManager
 	private boolean retry;
 	
 	private String prefix;
+	
 	
 	/**
 	 * Gets the registered staging databases.
@@ -105,6 +110,8 @@ public class DefaultStagingManager extends LoggingBean implements StagingManager
 		lexEvsDatabaseOperations.getDatabaseUtility().dropDatabase(databaseName);
 		registeredStagingDatabases.remove(databaseName);
 	}
+	
+	
 	
 	/**
 	 * Sets the registered staging databases.

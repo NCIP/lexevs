@@ -92,10 +92,7 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 		} else if(jobExecution.getExitStatus().getExitCode().equals(LoaderConstants.NON_RECOVERABLE)){
 			getLogger().info("Non recoverable error in Job Processing. Job is not restartable, dropping all tables.");
 			try {	
-				String prefix = getParameterFromJobExecution(PropertiesFactory.PREFIX, jobExecution);
-				String database = getParameterFromJobExecution(PropertiesFactory.DATABASE, jobExecution);
 				
-				connectionManager.cleanupFailedLoad(database, prefix);
 				stagingManager.dropAllStagingDatabases();
 				jobRepositoryManager.dropJobRepositoryDatabasesOnClose();
 				

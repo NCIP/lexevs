@@ -20,9 +20,11 @@ package org.lexgrid.loader.properties.impl;
 
 import java.util.Properties;
 
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.system.service.SystemResourceService;
+import org.lexevs.registry.service.Registry;
 import org.lexgrid.loader.properties.ConnectionPropertiesFactory;
 
 /**
@@ -30,10 +32,10 @@ import org.lexgrid.loader.properties.ConnectionPropertiesFactory;
  */
 public class DefaultLexEVSPropertiesFactory extends PropertiesFactory implements ConnectionPropertiesFactory {
 	
-	/** The connection manager. */
-	private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+	private Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
 	
 	private LexEvsDatabaseOperations lexEvsDatabaseOperations = LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations();
+
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.properties.ConnectionPropertiesFactory#getPropertiesForNewLoad()
@@ -47,9 +49,14 @@ public class DefaultLexEVSPropertiesFactory extends PropertiesFactory implements
 	 * @see org.lexgrid.loader.properties.ConnectionPropertiesFactory#getPropertiesForExistingLoad(java.lang.String, java.lang.String)
 	 */
 	public Properties getPropertiesForExistingLoad(String codingSchemeUri, String version) {		
-		String prefix = 
-			lexEvsDatabaseOperations.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version);
-		return getProperties(prefix);
-	}
 
+		try {
+			String 
+				prefix = registry.getCodingSchemeEntry(DaoUtility.createAbsoluteCodingSchemeVersionReference(codingSchemeUri, version)).getStagingPrefix();
+			return getProperties(prefix);
+		} catch (LBParameterException e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
 }

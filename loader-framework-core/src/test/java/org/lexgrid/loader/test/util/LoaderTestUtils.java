@@ -118,8 +118,9 @@ public class LoaderTestUtils {
 	 * Clean tmp dir.
 	 */
 	public static void cleanTmpDirContents(){
-		if(!emptyDirectory(new File(TMP_DIR))){
-			throw new RuntimeException("Cound not delete Temporary Directory.");
+		File tmpDir = new File(TMP_DIR);
+		if(!emptyDirectory(tmpDir)){
+			tmpDir.deleteOnExit();
 		}
 	}
 	
@@ -127,8 +128,9 @@ public class LoaderTestUtils {
 	 * Clean indexes.
 	 */
 	public static void cleanIndexes(){
-		if(!deleteDirectory(new File(INDEX_DIR))){
-			throw new RuntimeException("Cound not delete Index Directory.");
+		File indexDir = new File(INDEX_DIR);
+		if(!deleteDirectory(indexDir)){
+			indexDir.deleteOnExit();
 		}
 	}
 	

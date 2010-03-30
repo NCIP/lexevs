@@ -18,6 +18,10 @@
  */
 package org.lexgrid.loader.lexbigadmin;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.dao.index.service.entity.EntityIndexService;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -38,17 +42,17 @@ public class IndexingTasklet extends AbstractLexEvsUtilityTasklet implements Tas
 	public RepeatStatus doExecute(StepContribution contribution,
 			ChunkContext chunkContext) throws Exception {
 		
+		EntityIndexService entityIndexService = 
+			LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService();
+		
+		AbsoluteCodingSchemeVersionReference ref = DaoUtility.
+			createAbsoluteCodingSchemeVersionReference(getCurrentCodingSchemeUri(), getCurrentCodingSchemeVersion());
 		if(retry){
-			getConnectionManager().reIndex(
-					getCurrentCodingSchemeUri(), 
-					getCurrentCodingSchemeVersion());
-		} else {
-			getLogger().info("Starting Lucene Indexing.");
-			
-			getConnectionManager().index(getCodingSchemeIdSetter().getCodingSchemeName(),
-					getCurrentCodingSchemeUri(), 
-					getCurrentCodingSchemeVersion());		
+			entityIndexService.dropIndex(ref);
 		}
+		getLogger().info("Starting Lucene Indexing.");
+		entityIndexService.createIndex(ref);
+		
 		return RepeatStatus.FINISHED;
 	}
 

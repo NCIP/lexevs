@@ -13,7 +13,7 @@
 	
 	<beans:import resource="writers.xml"/> 
 	<beans:import resource="repositories.xml"/>
-	<beans:import resource="lexEvsCache.xml"/>
+	<beans:import resource="classpath:lexevsCache.xml"/>
 	
 	<beans:bean id="taskExecutor" 
 		class="org.springframework.core.task.SimpleAsyncTaskExecutor">
