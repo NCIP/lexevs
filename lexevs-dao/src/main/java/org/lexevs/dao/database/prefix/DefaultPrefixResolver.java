@@ -61,14 +61,18 @@ public class DefaultPrefixResolver implements PrefixResolver {
 	public String resolvePrefixForCodingScheme(String codingSchemeUri,
 			String version) {
 		try {
+			//TODO: Enable this for multiple tables
+			/*
 			RegistryEntry entry = registry.getCodingSchemeEntry(
 					DaoUtility.createAbsoluteCodingSchemeVersionReference(codingSchemeUri, version));
 			
 			String entryPrefix = entry.getPrefix();
 			
 			return resolveDefaultPrefix() + entryPrefix;
+			*/
 					
-		} catch (LBParameterException e) {
+			return this.resolveDefaultPrefix();
+		} catch (Exception e) {
 			throw new RuntimeException("CodingScheme Uri: " + codingSchemeUri + " Version: " + version + " not found.");
 		}
 	}
