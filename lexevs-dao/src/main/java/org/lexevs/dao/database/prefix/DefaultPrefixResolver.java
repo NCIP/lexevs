@@ -19,6 +19,9 @@
 package org.lexevs.dao.database.prefix;
 
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.system.constants.SystemVariables;
 
@@ -55,9 +58,19 @@ public class DefaultPrefixResolver implements PrefixResolver {
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.prefix.PrefixResolver#resolvePrefixForCodingScheme(java.lang.String, java.lang.String)
 	 */
-	public String resolvePrefixForCodingScheme(String codingSchemeName,
+	public String resolvePrefixForCodingScheme(String codingSchemeUri,
 			String version) {
-		return resolveDefaultPrefix();
+		try {
+			RegistryEntry entry = registry.getCodingSchemeEntry(
+					DaoUtility.createAbsoluteCodingSchemeVersionReference(codingSchemeUri, version));
+			
+			String entryPrefix = entry.getPrefix();
+			
+			return resolveDefaultPrefix() + entryPrefix;
+					
+		} catch (LBParameterException e) {
+			throw new RuntimeException("CodingScheme Uri: " + codingSchemeUri + " Version: " + version + " not found.");
+		}
 	}
 
 	/* (non-Javadoc)

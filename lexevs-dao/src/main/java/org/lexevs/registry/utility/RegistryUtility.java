@@ -49,6 +49,9 @@ public class RegistryUtility {
 		entry.setResourceVersion(codingScheme.getRepresentsVersion());
 		entry.setLastUpdateDate(new Timestamp(new Date().getTime()));
 		
+		//TODO: Fix this for multiple sets of tables
+		entry.setPrefix("");
+		
 		return entry;
 	}
 	

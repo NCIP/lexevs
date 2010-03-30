@@ -150,7 +150,12 @@ public class LexEvsResourceManagingService extends LoggingBean implements System
 		
 		RegistryEntry entry = registry.getCodingSchemeEntry(ref);
 		this.registry.removeEntry(entry);
-		entityIndexService.dropIndex(ref);
+		
+		try {
+			entityIndexService.dropIndex(ref);
+		} catch (Exception e) {
+			this.getLogger().warn("Index could not be dropped.");
+		}
 		this.readCodingSchemeAliasesFromServer();
 	}
 

@@ -125,7 +125,7 @@ public interface LexEvsDatabaseOperations {
 	 * @param codingSchemeUri the coding scheme uri
 	 * @param version the version
 	 */
-	public void index(String codingSchemeName, String codingSchemeUri, String version);
+	public void index(String codingSchemeUri, String version);
 		
 	/**
 	 * Cleanup failed load.

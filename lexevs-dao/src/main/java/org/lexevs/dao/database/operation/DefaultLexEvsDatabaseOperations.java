@@ -24,7 +24,9 @@ import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.operation.transitivity.TransitivityBuilder;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.type.DatabaseType;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.database.utility.DatabaseUtility;
+import org.lexevs.dao.index.service.IndexServiceManager;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -37,6 +39,8 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	
 	/** The database utility. */
 	private DatabaseUtility databaseUtility;
+	
+	private IndexServiceManager indexServiceManager;
 	
 	/** The lexevs common schema create script. */
 	private Resource lexevsCommonSchemaCreateScript;
@@ -127,24 +131,14 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		transitivityBuilder.computeTransitivityTable(codingSchemeUri, codingSchemeVersion);
 	}
 
-	/**
-	 * Index.
-	 * 
-	 * @param codingSchemeName the coding scheme name
-	 * @param connectionInfo the connection info
-	 */
-	public void index(String codingSchemeName, SQLConnectionInfo connectionInfo) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#index(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void index(String codingSchemeName, String codingSchemeUri,
-			String version) {
-		// TODO Auto-generated method stub
-		
+	public void index(String codingSchemeUri,
+			String codingSchemeVersion) {
+		indexServiceManager.getEntityIndexService().
+			createIndex(DaoUtility.createAbsoluteCodingSchemeVersionReference(codingSchemeUri, codingSchemeVersion));
 	}
 
 	/* (non-Javadoc)
@@ -314,5 +308,13 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 
 	public Resource getLexevsHistoryCreateScript() {
 		return lexevsHistoryCreateScript;
+	}
+
+	public void setIndexServiceManager(IndexServiceManager indexServiceManager) {
+		this.indexServiceManager = indexServiceManager;
+	}
+
+	public IndexServiceManager getIndexServiceManager() {
+		return indexServiceManager;
 	}
 }

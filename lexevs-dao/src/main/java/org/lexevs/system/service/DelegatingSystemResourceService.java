@@ -22,6 +22,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.utility.MyClassLoader;
 
 /**
@@ -259,5 +260,10 @@ public class DelegatingSystemResourceService implements SystemResourceService {
 	public void setDelegateSystemResourceService(
 			SystemResourceService delegateSystemResourceService) {
 		this.delegateSystemResourceService = delegateSystemResourceService;
+	}
+
+	@Override
+	public SystemVariables getSystemVariables() {
+		return this.primarySystemResourceService.getSystemVariables();
 	}
 }

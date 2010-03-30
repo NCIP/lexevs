@@ -303,6 +303,7 @@
    		<property name="dataSource" ref="dataSource"/>
    		<property name="databaseType" ref="databaseTypeFactory"/>
    		<property name="transactionManager" ref="transactionManager"/>
+<!--   		<property name="indexServiceManager" ref="indexServiceManager"/>-->
    	 </bean>
    	 
    	<bean id="lexevsHistoryCreateScript"

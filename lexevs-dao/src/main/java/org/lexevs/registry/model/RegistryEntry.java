@@ -83,6 +83,9 @@ public class RegistryEntry {
 	/** The prefix. */
 	private String prefix;
 	
+	/** The prefix. */
+	private String stagingPrefix;
+	
 	/** The resource type. */
 	@Enumerated(EnumType.STRING)
 	private ResourceType resourceType;
@@ -472,5 +475,13 @@ public class RegistryEntry {
 		entry.setResourceUri(historyEntry.urn);
 		
 		return entry;
+	}
+
+	public void setStagingPrefix(String stagingPrefix) {
+		this.stagingPrefix = stagingPrefix;
+	}
+
+	public String getStagingPrefix() {
+		return stagingPrefix;
 	}
 }
