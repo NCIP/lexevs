@@ -290,8 +290,15 @@
     	<property name="variableName" value="AutoLoadDBDriver"/>
     </bean>
     
-    <bean id="dataSource" class="org.apache.commons.dbcp.PoolingDataSource" depends-on="poolableConnectionFactory">
+    <bean id="dbcpDataSource" class="org.apache.commons.dbcp.PoolingDataSource" depends-on="poolableConnectionFactory">
         <constructor-arg><ref bean="pool"/></constructor-arg>
+    </bean>
+    
+    <bean id="dataSource" 
+    	class="org.lexevs.dao.database.datasource.ErrorReportingDataSourceDecorator">
+    	<constructor-arg ref="dbcpDataSource"/>
+    	<property name="systemVariables" ref="systemVariables"/>
+		<property name="logger" ref="loggerFactory"/>
     </bean>
     
     <bean id="defaultLexEvsDatabaseOperations" class="org.lexevs.dao.database.operation.DefaultLexEvsDatabaseOperations">
