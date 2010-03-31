@@ -3,15 +3,15 @@
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap namespace="PickList">
 
-	<typeAlias alias="pickListDefinition" type="org.LexGrid.valueDomains.PickListDefinition" />
+	<typeAlias alias="pickListDefinition" type="org.LexGrid.valueSets.PickListDefinition" />
 
 	<resultMap id="pickListDefinitionResult" class="pickListDefinition">
 		<result property="pickListId" column="pickListId" />
-		<result property="representsValueDomain" column="representsValueDomain" />
+		<result property="representsValueSetDefinition" column="representsValueDomain" />
 		<result property="defaultEntityCodeNamespace" column="defaultEntityCodeNamespace" />
 		<result property="defaultLanguage" column="defaultLanguage" />
 		<result property="defaultSortOrder" column="defaultSortOrder"/>
-		<result property="completeDomain" column="completeDomain"/>
+		<result property="completeSet" column="completeDomain"/>
 	</resultMap>
 	
 	<select id="getPickListIds" 
@@ -71,8 +71,8 @@
 			) VALUES (
 				#id#,
 				#pickListDefinition.pickListId#,
-				#pickListDefinition.representsValueDomain#,
-				#pickListDefinition.completeDomain#,
+				#pickListDefinition.representsValueSetDefinition#,
+				#pickListDefinition.completeSet#,
 				#pickListDefinition.defaultEntityCodeNamespace#,
 				#pickListDefinition.defaultLanguage#,
 				#pickListDefinition.defaultSortOrder#,
