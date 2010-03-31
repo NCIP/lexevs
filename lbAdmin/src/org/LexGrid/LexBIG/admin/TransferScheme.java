@@ -34,14 +34,19 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.constants.SystemVariables;
+import org.lexevs.system.service.SystemResourceService;
 
 /**
- * Assists in transfering a terminology from one server to another.
+ * Assists in transferring a terminology from one server to another.
  * 
  * This tool was written specifically for the needs of NCI's production
- * environment, it may not work well for general purpose tranfers.
+ * environment, it may not work well for general purpose transfers.
  * 
  * Given two servers, STAGE and PRODUCTION - this tool is meant to help move a
  * terminology that was loaded on STAGE over to the PRODUCTION server. It makes
@@ -83,7 +88,10 @@ public class TransferScheme {
      * @throws Exception
      */
     public void run(String[] args) throws Exception {
-
+        
+        Registry sysReg = LexEvsServiceLocator.getInstance().getRegistry();
+        SystemResourceService sysResServ = LexEvsServiceLocator.getInstance().getSystemResourceService();
+        
         // Parse the command line ...
         CommandLine cl = null;
         Options options = getCommandOptions();
@@ -121,22 +129,24 @@ public class TransferScheme {
         // figure out if they gave me a tag
         String internalVersion;
         try {
-            internalVersion = ResourceManager.instance().getInternalVersionStringForTag(cs, vt);
+            internalVersion = sysResServ.getInternalVersionStringForTag(cs, vt);
+//            internalVersion = ResourceManager.instance().getInternalVersionStringForTag(cs, vt);
         } catch (Exception e) {
             // if this throws an exception, its not a tag.
             internalVersion = vt;
         }
-
-        String internalCSName = ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(cs,
-                internalVersion);
+        String internalCSName = sysResServ.getInternalCodingSchemeNameForUserCodingSchemeName(cs,internalVersion);
+//        String internalCSName = ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(cs,
+//                internalVersion);
 
         System.out.println("The following instructions are for transfering the code system '" + internalCSName
                 + "' version '" + internalVersion + "'.");
         boolean moveDB = isDatabaseOnDifferentServer();
         String newDBName = "";
         int step = 1;
-
-        SystemVariables sv = ResourceManager.instance().getSystemVariables();
+        
+        SystemVariables sv = sysResServ.getSystemVariables();
+//        SystemVariables sv = ResourceManager.instance().getSystemVariables();
         File registry = new File(sv.getAutoLoadRegistryPath());
 
         if (moveDB) {
@@ -174,8 +184,13 @@ public class TransferScheme {
                 System.out.print(" " + si.getTableName(SQLTableConstants.ENTITY_ASSOCIATION_TO_ENTITY_TRANSITIVE));
                 System.out.println(" " + si.getTableName(SQLTableConstants.LEXGRID_TABLE_META_DATA));
             } else {
-                String connUrl = ResourceManager.instance().getSQLInterface(internalCSName, internalVersion)
-                        .getConnectionDescriptor().getDbUrl();
+                RegistryEntry entry = sysReg.getCodingSchemeEntry(
+                        DaoUtility.createAbsoluteCodingSchemeVersionReference(
+                                internalCSName, 
+                                internalVersion));
+                String connUrl = entry.getDbUri();
+//                String connUrl = ResourceManager.instance().getSQLInterface(internalCSName, internalVersion)
+//                        .getConnectionDescriptor().getDbUrl();
                 System.out.println("You are using Multiple Database mode.");
                 System.out.println("You will need to copy the database '" + connUrl + "' to the new database server.");
                 System.out.println("You should do this with native tools provided by your SQL database.");
