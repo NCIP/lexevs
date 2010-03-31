@@ -1265,3 +1265,267 @@ LB_INFO_LOGGER INFO - 2010-03-15 12:23:13,607 - [LOG_ID 8] Logging debug message
 LB_INFO_LOGGER INFO - 2010-03-15 12:23:13,607 - [LOG_ID 9] Logging sql messages turned off.
 LB_WARN_LOGGER WARN - 2010-03-15 12:23:14,341 - [LOG_ID 10] The registry file 'C:\workspaces\lexevs60\umls-loader\src\test\resources\config\registry.xml' does not exist.  Creating a new file
 LB_INFO_LOGGER INFO - 2010-03-15 12:23:15,763 - [LOG_ID 11] Checking for installed LexEVS Database Schema.
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:04:03,175 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:04:03,206 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:04:03,206 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:04:03,206 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:04:03,206 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:04:03,206 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:04:03,206 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:04:03,206 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:04:03,206 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:04:06,863 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:04:08,378 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:04:08,534 - [LOG_ID 12] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:04:08,659 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:06:52,924 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:06:52,924 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:06:52,924 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:06:52,924 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:06:52,924 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:06:52,924 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:06:52,924 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:06:52,924 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:06:52,924 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:06:55,017 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:06:56,189 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:06:56,330 - [LOG_ID 12] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:06:56,455 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:13:29,837 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:13:29,837 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:13:29,837 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:13:29,837 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:13:29,837 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:13:29,837 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:13:29,837 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:13:29,837 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:13:29,837 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:13:31,915 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:13:33,072 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:13:33,228 - [LOG_ID 12] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:13:33,353 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:22:58,354 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:22:58,354 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:22:58,354 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:22:58,354 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:22:58,354 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:22:58,354 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:22:58,354 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:22:58,354 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:22:58,354 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:23:00,479 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:23:01,682 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:23:01,869 - [LOG_ID 12] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:23:01,979 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:26:12,833 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:26:12,833 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:26:12,833 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:26:12,833 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:26:12,833 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:26:12,833 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:26:12,833 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:26:12,833 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:26:12,833 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:26:15,349 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:26:16,552 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:26:16,708 - [LOG_ID 12] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:26:16,818 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:26:40,848 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:26:40,848 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:26:40,848 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:26:40,848 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:26:40,848 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:26:40,848 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:26:40,848 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:26:40,848 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:26:40,848 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:26:43,067 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:26:44,286 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:26:44,442 - [LOG_ID 12] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:26:44,567 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:28:21,525 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:28:21,525 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:28:21,525 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:28:21,525 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:28:21,525 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:28:21,525 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:28:21,525 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:28:21,525 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:28:21,525 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:28:23,853 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:28:25,056 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:28:25,228 - [LOG_ID 12] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:28:25,353 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:29:02,774 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:29:02,774 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:29:02,774 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:29:02,774 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:29:02,774 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:29:02,774 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:29:02,774 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:29:02,774 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:29:02,774 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:29:05,367 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:29:06,570 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:29:06,742 - [LOG_ID 12] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:29:06,883 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:29:36,398 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:29:36,398 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:29:36,398 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:29:36,398 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:29:36,398 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:29:36,398 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:29:36,398 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:29:36,398 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:29:36,398 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:29:38,538 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:29:39,741 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:29:39,898 - [LOG_ID 12] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:29:40,038 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:31:47,426 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:31:47,441 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:31:47,441 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:31:47,441 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:31:47,441 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:31:47,441 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:31:47,441 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:31:47,441 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:31:47,441 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:31:49,566 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:31:50,816 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:31:51,004 - [LOG_ID 12] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:31:51,129 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:32:26,253 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:32:26,253 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:32:26,253 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:32:26,253 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:32:26,253 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:32:26,253 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:32:26,253 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:32:26,253 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:32:26,253 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:32:28,534 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:32:29,706 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:32:29,862 - [LOG_ID 12] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:32:29,971 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:34:23,859 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:34:23,859 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:34:23,859 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:34:23,859 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:34:23,859 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:34:23,859 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:34:23,859 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:34:23,859 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:34:23,859 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:34:26,484 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:34:28,421 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:34:28,765 - [LOG_ID 12] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:34:29,015 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:36:49,933 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:36:49,933 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:36:49,933 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:36:49,933 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:36:49,933 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:36:49,933 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:36:49,933 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:36:49,933 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:36:49,933 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:36:52,043 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:36:53,855 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:36:54,168 - [LOG_ID 12] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:36:54,433 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:42:28,581 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:42:28,581 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:42:28,581 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:42:28,581 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:42:28,581 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:42:28,581 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:42:28,581 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:42:28,581 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:42:28,581 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:42:30,659 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:42:33,862 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:42:33,972 - [LOG_ID 12] Index could not be dropped.
+LB_WARN_LOGGER WARN - 2010-03-31 06:42:34,909 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:43:23,127 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:43:23,127 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:43:23,127 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:43:23,127 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:43:23,127 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:43:23,127 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:43:23,127 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:43:23,127 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:43:23,127 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:43:25,220 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:43:28,345 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:43:28,376 - [LOG_ID 12] Index could not be dropped.
+LB_WARN_LOGGER WARN - 2010-03-31 06:43:29,283 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:43:51,860 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:43:51,860 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:43:51,860 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:43:51,860 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:43:51,860 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:43:51,860 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:43:51,860 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:43:51,860 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:43:51,860 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:43:53,938 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:43:57,438 - [LOG_ID 11] Index could not be dropped.
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:45:00,905 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:45:00,905 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:45:00,905 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:45:00,905 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:45:00,905 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:45:00,905 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:45:00,905 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:45:00,905 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:45:00,905 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:45:02,999 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:45:04,171 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:45:04,311 - [LOG_ID 12] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:45:04,436 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:45:22,702 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:45:22,702 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:45:22,702 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:45:22,717 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:45:22,717 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:45:22,717 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:45:22,717 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:45:22,717 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:45:22,717 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:45:24,983 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:45:27,608 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:45:28,217 - [LOG_ID 12] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:45:28,889 - [LOG_ID 13] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:46:14,856 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:46:14,856 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:46:14,856 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:46:14,856 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:46:14,856 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:46:14,856 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:46:14,856 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:46:14,856 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:46:14,856 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:46:16,950 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_WARN_LOGGER WARN - 2010-03-31 06:46:29,950 - [LOG_ID 11] Load failed.  Removing temporary resources...
+LB_WARN_LOGGER WARN - 2010-03-31 06:46:30,747 - [LOG_ID 12] Load failed.  Removing temporary resources...
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:47:40,979 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:47:40,979 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:47:40,979 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:47:40,979 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:47:40,979 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:47:40,979 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 06:47:40,979 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 06:47:40,979 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:47:40,979 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 06:47:43,073 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 07:38:47,511 - [LOG_ID 1] LexBIG Logger configured
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 07:38:47,511 - [LOG_ID 2] Reading properties from src/test/resources/config/lbconfig.props
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 07:38:47,511 - [LOG_ID 3] Reading registry, index location and db configuration information from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 07:38:47,511 - [LOG_ID 4] Relative Path root defaulted to lbconfig.props location 'src/test/resources/config/lbconfig.props'
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 07:38:47,511 - [LOG_ID 5] Reading the Preconfigured SQL Server configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 07:38:47,511 - [LOG_ID 6] Reading the Prebuilt Lucene index configurations from the properties file
+LB_DEBUG_LOGGER DEBUG - 2010-03-31 07:38:47,511 - [LOG_ID 7] Reading additional variables from the properties file
+LB_INFO_LOGGER INFO - 2010-03-31 07:38:47,511 - [LOG_ID 8] Logging debug messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 07:38:47,511 - [LOG_ID 9] Logging sql messages turned off.
+LB_INFO_LOGGER INFO - 2010-03-31 07:38:50,214 - [LOG_ID 10] Checking for installed LexEVS Database Schema.
