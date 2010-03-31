@@ -40,7 +40,6 @@ import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.loaders.metadata.OBOMetaDataLoader;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
-import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
 import org.apache.commons.lang.BooleanUtils;
 import org.jdom.input.SAXBuilder;
 import org.lexevs.dao.database.connection.SQLInterface;
@@ -197,7 +196,6 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
         AbsoluteCodingSchemeVersionReference currentURNVersion_;
         AbsoluteCodingSchemeVersionReference newURNVersion_ = new AbsoluteCodingSchemeVersionReference();
 
-        JDBCConnectionDescriptor sqlConfig;
         SQLInterface sqlInterface;
         String tablePrefix;
         MessageDirector message_ = null;
@@ -283,7 +281,6 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
                             + e1.getMessage());
                 }
 
-                JDBCConnectionDescriptor sqlConfig = null;
                 String tablePrefix = null;
 
                 try {
@@ -304,7 +301,7 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
                 message_.info("Applying manifest entries to the coding scheme...");
                 try {
 
-                    manifestUtil_.applyManifest(manifest_, sqlConfig, tablePrefix, currentURNVersion);
+                    manifestUtil_.applyManifest(manifest_, tablePrefix, currentURNVersion);
 
                 } catch (LgConvertException e) {
                     message_.fatalAndThrowException("Exception occured while applying manifest: " + e.getMessage());

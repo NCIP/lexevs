@@ -33,7 +33,6 @@ import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.system.ResourceManager;
 
-import edu.mayo.informatics.lexgrid.convert.formats.ConversionLauncher;
 import edu.mayo.informatics.lexgrid.convert.formats.OptionHolder;
 import edu.mayo.informatics.lexgrid.convert.formats.OutputFormatInterface;
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.LexGridSQL;
@@ -76,24 +75,26 @@ public class BaseExporter {
 
     private class DoConversion implements Runnable {
         public void run() {
-            try {
-                @SuppressWarnings("unused")
-                URNVersionPair[] loadedCodingSchemes = ConversionLauncher.startConversion(in_, out_,
-                        new String[] { internalCodeSystemName_ }, options_, md_);
-                loadedCodingSchemes = ConversionLauncher
-                        .finishConversion(in_, out_, loadedCodingSchemes, options_, md_);
-                status_.setState(ProcessState.COMPLETED);
-                md_.info("Export process completed without error");
-            } catch (Exception e) {
-                status_.setState(ProcessState.FAILED);
-                md_.fatal("Failed while running the export", e);
-            } finally {
-                if (status_.getState() == null || status_.getState().getType() != ProcessState.COMPLETED_TYPE) {
-                    status_.setState(ProcessState.FAILED);
-                }
-                status_.setEndTime(new Date(System.currentTimeMillis()));
-                inUse = false;
-            }
+            throw new UnsupportedOperationException(); //TODO  Need to implement new 6.0 exporter 
+//            
+//            try {
+//                @SuppressWarnings("unused")
+//                URNVersionPair[] loadedCodingSchemes = ConversionLauncher.startConversion(in_, out_,
+//                        new String[] { internalCodeSystemName_ }, options_, md_);
+//                loadedCodingSchemes = ConversionLauncher
+//                        .finishConversion(in_, out_, loadedCodingSchemes, options_, md_);
+//                status_.setState(ProcessState.COMPLETED);
+//                md_.info("Export process completed without error");
+//            } catch (Exception e) {
+//                status_.setState(ProcessState.FAILED);
+//                md_.fatal("Failed while running the export", e);
+//            } finally {
+//                if (status_.getState() == null || status_.getState().getType() != ProcessState.COMPLETED_TYPE) {
+//                    status_.setState(ProcessState.FAILED);
+//                }
+//                status_.setEndTime(new Date(System.currentTimeMillis()));
+//                inUse = false;
+//            }
 
         }
     }

@@ -36,8 +36,8 @@ import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.locator.LexEvsServiceLocator;
 
-import edu.mayo.informatics.lexgrid.convert.emfConversions.obo1_2.OBO2EMFMain;
-import edu.mayo.informatics.lexgrid.convert.emfConversions.obo1_2.OBOFormatValidator;
+import edu.mayo.informatics.lexgrid.convert.directConversions.obo1_2.OBO2LGMain;
+import edu.mayo.informatics.lexgrid.convert.directConversions.obo1_2.OBOFormatValidator;
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
 import edu.mayo.informatics.lexgrid.convert.utility.ManifestUtil;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
@@ -135,7 +135,7 @@ public class OBOLoaderImpl extends BaseLoader implements OBO_Loader {
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
         
         
-        OBO2EMFMain mainTxfm = new OBO2EMFMain();
+        OBO2LGMain mainTxfm = new OBO2LGMain();
         CodingScheme codingScheme = mainTxfm.map(this.getResourceUri(), null, this.getMessageDirector());
         // Apply manifest changes
         ManifestUtil manifestUtil = new ManifestUtil(null, this.getMessageDirector());

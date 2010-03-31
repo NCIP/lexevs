@@ -68,20 +68,22 @@ import org.LexGrid.annotations.LgAdminFunction;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
-import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedHierarchy;
-import org.LexGrid.relations.AssociationPredicate;
-import org.LexGrid.relations.Relations;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.connection.IndexInterface;
 import org.lexevs.exceptions.MissingResourceException;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry;
 import org.lexevs.system.ResourceManager;
+import org.lexevs.system.constants.SystemVariables;
 
 import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
 import edu.mayo.informatics.lexgrid.convert.indexer.SQLEntityIndexer;
@@ -1725,13 +1727,21 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         }
 
         try {
-            SQLInterface sqlInterface = ResourceManager.instance().getSQLInterface(internalCodingSchemeName, version);
-            JDBCConnectionDescriptor connDesc = sqlInterface.getConnectionDescriptor();
+            Registry sysReg = LexEvsServiceLocator.getInstance().getRegistry();
+            SystemVariables sv = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables();
+            RegistryEntry entry = sysReg.getCodingSchemeEntry(
+                    DaoUtility.createAbsoluteCodingSchemeVersionReference(
+                            internalCodingSchemeName, 
+                            version));
+            
+//            SQLInterface sqlInterface = ResourceManager.instance().getSQLInterface(internalCodingSchemeName, version);
+//            JDBCConnectionDescriptor connDesc = sqlInterface.getConnectionDescriptor();
 
-            String tablePrefix = sqlInterface.getTablePrefix();
+//            String tablePrefix = sqlInterface.getTablePrefix();
+            String tablePrefix = entry.getPrefix();
 
-            SQLEntityIndexer sqlIndexer = new SQLEntityIndexer(indexName, indexLocation, connDesc.getDbUid(), connDesc
-                    .getDbPwd(), connDesc.getDbUrl(), connDesc.getDbDriver(), tablePrefix, getLogger(), true);
+            SQLEntityIndexer sqlIndexer = new SQLEntityIndexer(indexName, indexLocation, sv.getAutoLoadDBUsername(), 
+                    sv.getAutoLoadDBPassword(), entry.getDbUri(), sv.getAutoLoadDBDriver(), tablePrefix, getLogger(), true);
 
             sqlIndexer.addEntityIndexes(internalCodingSchemeName, entityCodes);
 
@@ -1791,13 +1801,23 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         }
 
         try {
-            SQLInterface sqlInterface = ResourceManager.instance().getSQLInterface(internalCodingSchemeName, version);
-            JDBCConnectionDescriptor connDesc = sqlInterface.getConnectionDescriptor();
-
-            String tablePrefix = sqlInterface.getTablePrefix();
-
-            SQLEntityIndexer sqlIndexer = new SQLEntityIndexer(indexName, indexLocation, connDesc.getDbUid(), connDesc
-                    .getDbPwd(), connDesc.getDbUrl(), connDesc.getDbDriver(), tablePrefix, getLogger(), true);
+            
+            Registry sysReg = LexEvsServiceLocator.getInstance().getRegistry();
+            SystemVariables sv = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables();
+            RegistryEntry entry = sysReg.getCodingSchemeEntry(
+                    DaoUtility.createAbsoluteCodingSchemeVersionReference(
+                            internalCodingSchemeName, 
+                            version));
+//            
+//            SQLInterface sqlInterface = ResourceManager.instance().getSQLInterface(internalCodingSchemeName, version);
+//            JDBCConnectionDescriptor connDesc = sqlInterface.getConnectionDescriptor();
+//
+//            String tablePrefix = sqlInterface.getTablePrefix();
+            String tablePrefix = entry.getPrefix();
+            
+            SQLEntityIndexer sqlIndexer = new SQLEntityIndexer(indexName, indexLocation, 
+                    sv.getAutoLoadDBUsername(), sv.getAutoLoadDBPassword(), 
+                    entry.getDbUri(), sv.getAutoLoadDBDriver(), tablePrefix, getLogger(), true);
 
             sqlIndexer.removeEntityIndexes(internalCodingSchemeName, entityCodes);
 
@@ -1857,13 +1877,23 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         }
 
         try {
-            SQLInterface sqlInterface = ResourceManager.instance().getSQLInterface(internalCodingSchemeName, version);
-            JDBCConnectionDescriptor connDesc = sqlInterface.getConnectionDescriptor();
+            
+            Registry sysReg = LexEvsServiceLocator.getInstance().getRegistry();
+            SystemVariables sv = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables();
+            RegistryEntry entry = sysReg.getCodingSchemeEntry(
+                    DaoUtility.createAbsoluteCodingSchemeVersionReference(
+                            internalCodingSchemeName, 
+                            version));
+            
+//            SQLInterface sqlInterface = ResourceManager.instance().getSQLInterface(internalCodingSchemeName, version);
+//            JDBCConnectionDescriptor connDesc = sqlInterface.getConnectionDescriptor();
 
-            String tablePrefix = sqlInterface.getTablePrefix();
+//            String tablePrefix = sqlInterface.getTablePrefix();
+            String tablePrefix = entry.getPrefix();
 
-            SQLEntityIndexer sqlIndexer = new SQLEntityIndexer(indexName, indexLocation, connDesc.getDbUid(), connDesc
-                    .getDbPwd(), connDesc.getDbUrl(), connDesc.getDbDriver(), tablePrefix, getLogger(), true);
+            SQLEntityIndexer sqlIndexer = new SQLEntityIndexer(indexName, indexLocation, 
+                    sv.getAutoLoadDBUsername(), sv.getAutoLoadDBPassword(), 
+                    entry.getDbUri(), sv.getAutoLoadDBDriver(), tablePrefix, getLogger(), true);
 
             sqlIndexer.removeEntityIndexes(internalCodingSchemeName, entityCodes);
             sqlIndexer.addEntityIndexes(internalCodingSchemeName, entityCodes);

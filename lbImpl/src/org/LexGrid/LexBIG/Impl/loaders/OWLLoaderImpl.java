@@ -40,8 +40,8 @@ import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedExcept
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.xml.sax.helpers.DefaultHandler;
 
-import edu.mayo.informatics.lexgrid.convert.emfConversions.protegeOwl.ProtegeOwl2EMFConstants;
-import edu.mayo.informatics.lexgrid.convert.emfConversions.protegeOwl.ProtegeOwl2EMFMain;
+import edu.mayo.informatics.lexgrid.convert.directConversions.protegeOwl.ProtegeOwl2LGConstants;
+import edu.mayo.informatics.lexgrid.convert.directConversions.protegeOwl.ProtegeOwl2LGMain;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.NCIOwl;
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.Owl;
@@ -168,14 +168,14 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
     @Override
     protected OptionHolder declareAllowedOptions(OptionHolder holder) {
         holder.getIntegerOptions().add(new IntegerOption(Option.getNameForType(Option.MEMORY_SAFE), 
-                ProtegeOwl2EMFConstants.MEMOPT_ALL_IN_MEMORY));
+                ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY));
         return holder;
     }
 
     @Override
     protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
         try {
-            ProtegeOwl2EMFMain owlLoader = new ProtegeOwl2EMFMain(
+            ProtegeOwl2LGMain owlLoader = new ProtegeOwl2LGMain(
                     this.getResourceUri(), 
                     this.getCodingSchemeManifest(), 
                     this.getLoaderPreferences(), 

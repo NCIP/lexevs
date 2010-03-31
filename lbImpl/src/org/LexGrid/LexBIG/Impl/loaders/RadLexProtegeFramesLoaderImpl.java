@@ -31,8 +31,8 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.springframework.validation.Errors;
 
+import edu.mayo.informatics.lexgrid.convert.directConversions.radlex.RadLex2LGMain;
 import edu.mayo.informatics.lexgrid.convert.emfConversions.fma.FMA2EMFMain;
-import edu.mayo.informatics.lexgrid.convert.emfConversions.radlex.RadLex2EMFMain;
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.ProtegeFrames;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
@@ -101,7 +101,7 @@ public class RadLexProtegeFramesLoaderImpl extends BaseLoader implements RadlexP
             FMA2EMFMain mainTxfm = new FMA2EMFMain();
             scheme = mainTxfm.map(this.getResourceUri(), this.getMessageDirector());
         } else if ((project_name != null) && (project_name.toLowerCase().startsWith("radlex"))) {
-            RadLex2EMFMain mainTxfm = new RadLex2EMFMain();
+            RadLex2LGMain mainTxfm = new RadLex2LGMain();
             scheme = mainTxfm.map(this.getResourceUri(), this.getMessageDirector());
         } else {
             throw new RuntimeException("Currently the Protege Frames loader only supports loading of FMA and RadLex.");

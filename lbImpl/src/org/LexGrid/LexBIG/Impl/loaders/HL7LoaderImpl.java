@@ -41,8 +41,8 @@ import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.logging.LoggerFactory;
 
-import edu.mayo.informatics.lexgrid.convert.emfConversions.hl7.HL72EMFConstants;
-import edu.mayo.informatics.lexgrid.convert.emfConversions.hl7.HL72EMFMain;
+import edu.mayo.informatics.lexgrid.convert.directConversions.hl7.HL72LGConstants;
+import edu.mayo.informatics.lexgrid.convert.directConversions.hl7.HL72LGMain;
 import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
@@ -116,7 +116,7 @@ public class HL7LoaderImpl extends BaseLoader implements HL7_Loader {
                 representsVersion = SQLTableConstants.TBLCOLVAL_MISSING;
             }
             hl7CodingSchemes.add(new URNVersionPair(codingSchemeName, representsVersion));
-            urns.add(HL72EMFConstants.DEFAULT_URN);
+            urns.add(HL72LGConstants.DEFAULT_URN);
 
         } catch (Exception e) {
 
@@ -203,7 +203,7 @@ public class HL7LoaderImpl extends BaseLoader implements HL7_Loader {
             dbName = dbName.substring(6);
         }
         
-        HL72EMFMain hl7Loader = new HL72EMFMain();
+        HL72LGMain hl7Loader = new HL72LGMain();
         try {
            CodingScheme codingScheme = hl7Loader.map(dbName, this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).getOptionValue(), this.getMessageDirector());
            this.persistCodingSchemeToDatabase(codingScheme);

@@ -19,35 +19,23 @@
 package org.LexGrid.LexBIG.Impl.loaders;
 
 import java.net.URI;
-import java.sql.Connection;
 import java.util.Date;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.NCIHistoryLoader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
-import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
-import org.LexGrid.util.sql.DBUtility;
-import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
-import org.lexevs.dao.database.connection.SQLInterfaceBase;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.ResourceManager;
-import org.lexevs.system.constants.SystemVariables;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.NCIThesaurusHistoryFileToSQL;
-import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
-import edu.mayo.informatics.lexgrid.convert.formats.ConversionLauncher;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
-import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.NCIThesaurusHistoryFile;
-import edu.mayo.informatics.lexgrid.convert.formats.outputFormats.LexGridSQLOut;
 import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 import edu.mayo.informatics.lexgrid.convert.options.StringOption;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
