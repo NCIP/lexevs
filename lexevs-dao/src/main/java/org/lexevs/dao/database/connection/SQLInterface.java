@@ -21,12 +21,10 @@ package org.lexevs.dao.database.connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 
 import javax.sql.DataSource;
 
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
-import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
 import org.LexGrid.util.sql.GenericSQLModifier;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
@@ -55,9 +53,6 @@ public class SQLInterface {
     /** The g sql mod_. */
     private GenericSQLModifier gSQLMod_;
     
-    /** The connection descriptor. */
-    private JDBCConnectionDescriptor connectionDescriptor;
-
     /**
      * Gets the logger.
      * 
@@ -124,19 +119,7 @@ public class SQLInterface {
         return stu_.getSQLTableConstants().getTableName(tableKey);
     }
     
-    /**
-     * I'm not sure if we stil need this... hopefully for 6.0 it will be gone.
-     * 
-     * @return the connection descriptor
-     */
-    @Deprecated
-    public JDBCConnectionDescriptor getConnectionDescriptor() {
-		if (connectionDescriptor == null)
-			connectionDescriptor = new JDBCConnectionDescriptor();
-		return connectionDescriptor;
-	}
-
-    /**
+   /**
      * Modify and check out prepared statement.
      * 
      * @param sql the sql

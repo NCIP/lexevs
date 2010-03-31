@@ -10,6 +10,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Indexer"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbModel"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/lgModel.emf"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
