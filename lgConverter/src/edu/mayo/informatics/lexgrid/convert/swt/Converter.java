@@ -53,7 +53,6 @@ import org.lexevs.logging.messaging.impl.StyledTextMessageDirector;
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
 import edu.mayo.informatics.lexgrid.convert.exceptions.UnexpectedError;
 import edu.mayo.informatics.lexgrid.convert.formats.CombinationOptions;
-import edu.mayo.informatics.lexgrid.convert.formats.ConversionLauncher;
 import edu.mayo.informatics.lexgrid.convert.formats.InputFormatSWTInterface;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
 import edu.mayo.informatics.lexgrid.convert.formats.OptionHolder;
@@ -728,8 +727,9 @@ public class Converter {
 
             try {
                 preConversionGuiSetup();
-                ConversionLauncher.startConversion(selectedInputFormat, selectedOutputFormat, selectedTerminologies_,
-                        currentOptions, md);
+                //TODO .. replace EMF with direct conversion
+//                ConversionLauncher.startConversion(selectedInputFormat, selectedOutputFormat, selectedTerminologies_,
+//                        currentOptions, md);
             } catch (Exception e) {
                 errorHandler.showError("Error", "An error occurred while running the conversion\n" + e.toString());
             } catch (Error e) {

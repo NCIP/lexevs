@@ -29,6 +29,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,18 +48,17 @@ import org.LexGrid.LexOnt.CsmfMappings;
 import org.LexGrid.LexOnt.CsmfSource;
 import org.LexGrid.LexOnt.CsmfText;
 import org.LexGrid.LexOnt.CsmfVersion;
-import org.LexGrid.emf.codingSchemes.CodingScheme;
-import org.LexGrid.emf.commonTypes.CommontypesFactory;
-import org.LexGrid.emf.commonTypes.Source;
-import org.LexGrid.emf.commonTypes.Text;
-import org.LexGrid.emf.naming.Mappings;
-import org.LexGrid.emf.naming.NamingFactory;
-import org.LexGrid.emf.naming.SupportedHierarchy;
-import org.LexGrid.emf.naming.URIMap;
-import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.Text;
+import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedHierarchy;
+import org.LexGrid.naming.SupportedLanguage;
 import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedSource;
+import org.LexGrid.naming.URIMap;
 import org.LexGrid.util.Utility;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -66,6 +66,8 @@ import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exolab.castor.xml.Marshaller;
+import org.lexevs.system.constants.SystemVariables;
+import org.lexevs.system.service.LexEvsResourceManagingService;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 
@@ -205,7 +207,7 @@ public class ManifestUtil {
         emfScheme_ = emfCodingScheme;
         Mappings emfMappings = emfScheme_.getMappings();
         if (emfMappings == null) {
-            emfMappings = NamingFactory.eINSTANCE.createMappings();
+            emfMappings = new Mappings(); //TODO Check if this works?
             emfScheme_.setMappings(emfMappings);
         }
 
@@ -268,16 +270,17 @@ public class ManifestUtil {
      * @throws LgConvertException
      * @throws SQLException
      */
-    public void applyManifest(CodingSchemeManifest manifest, JDBCConnectionDescriptor sqlConfig, String tablePrefix,
+    public void applyManifest(CodingSchemeManifest manifest, String tablePrefix,
             URNVersionPair codingSchemes) throws LgConvertException, SQLException {
 
         ResultSet queryResultSet = null;
         String codingSchemeName = null;
-
+        LexEvsResourceManagingService service = new LexEvsResourceManagingService();
+        
+        SystemVariables sv = service.getSystemVariables();
         try {
             try {
-                sqlConnection_ = DBUtility.connectToDatabase(sqlConfig.getDbUrl(), sqlConfig.getDbDriver(), sqlConfig
-                        .getDbUid(), sqlConfig.getDbPwd());
+                sqlConnection_ = DBUtility.connectToDatabase(sv.getAutoLoadDBURL(), sv.getAutoLoadDBDriver(), sv.getAutoLoadDBUsername(), sv.getAutoLoadDBPassword());
                 dbType_ = sqlConnection_.getMetaData().getDatabaseProductName();
                 sqlTableUtil_ = new SQLTableUtilities(sqlConnection_, tablePrefix);
                 sqlConnection_.setAutoCommit(false);
@@ -1225,10 +1228,14 @@ public class ManifestUtil {
 
         if ((override) || (isNoop(emfScheme_.getCodingSchemeURI()))) {
             emfScheme_.setCodingSchemeURI(regName.trim());
-            List suppCodingSchemeList = emfScheme_.getMappings().getSupportedCodingScheme();
+            List<SupportedCodingScheme> suppCodingSchemeList = null;
+            
+            if (emfScheme_.getMappings() != null)
+                suppCodingSchemeList = Arrays.asList(emfScheme_.getMappings().getSupportedCodingScheme());
+            
             boolean urnPresent = false;
             for (int i = 0; i < suppCodingSchemeList.size(); i++) {
-                org.LexGrid.emf.naming.SupportedCodingScheme suppCodingScheme = (org.LexGrid.emf.naming.SupportedCodingScheme) suppCodingSchemeList
+                SupportedCodingScheme suppCodingScheme = (SupportedCodingScheme) suppCodingSchemeList
                         .get(i);
                 if (suppCodingScheme.getLocalId().equals(emfScheme_.getCodingSchemeName())) {
                     urnPresent = true;
@@ -1236,8 +1243,7 @@ public class ManifestUtil {
                 }
             }
             if (!urnPresent) {
-                org.LexGrid.emf.naming.SupportedCodingScheme suppCodingScheme = NamingFactory.eINSTANCE
-                        .createSupportedCodingScheme();
+                SupportedCodingScheme suppCodingScheme = new SupportedCodingScheme();
                 suppCodingScheme.setLocalId(emfScheme_.getCodingSchemeName());
                 suppCodingScheme.setUri(regName);
                 suppCodingSchemeList.add(suppCodingScheme);
@@ -1258,11 +1264,15 @@ public class ManifestUtil {
 
         if ((override) || isNoop(emfScheme_.getDefaultLanguage())) {
             emfScheme_.setDefaultLanguage(lang.trim());
-            List suppLanguageList = emfScheme_.getMappings().getSupportedLanguage();
+            List<SupportedLanguage> suppLanguageList = null;
+            
+            if (emfScheme_.getMappings() != null)
+                suppLanguageList = Arrays.asList(emfScheme_.getMappings().getSupportedLanguage());
+            
             boolean urnPresent = false;
 
             for (int i = 0; i < suppLanguageList.size(); i++) {
-                org.LexGrid.emf.naming.SupportedLanguage suppLanguage = (org.LexGrid.emf.naming.SupportedLanguage) suppLanguageList
+                SupportedLanguage suppLanguage = (SupportedLanguage) suppLanguageList
                         .get(i);
                 if (suppLanguage.getLocalId().equals(emfScheme_.getDefaultLanguage())) {
                     urnPresent = true;
@@ -1271,8 +1281,7 @@ public class ManifestUtil {
             }
 
             if (!urnPresent) {
-                org.LexGrid.emf.naming.SupportedLanguage suppLanguage = NamingFactory.eINSTANCE
-                        .createSupportedLanguage();
+                SupportedLanguage suppLanguage =  new SupportedLanguage();
                 suppLanguage.setLocalId(emfScheme_.getDefaultLanguage());
                 suppLanguage.setUri(emfScheme_.getCodingSchemeURI());
                 suppLanguageList.add(suppLanguage);
@@ -1310,11 +1319,11 @@ public class ManifestUtil {
         String copyright = null;
 
         if (emfScheme_.getCopyright() != null)
-            copyright = emfScheme_.getCopyright().getValue();
+            copyright = emfScheme_.getCopyright().getContent();
 
         if ((override) || isNoop(copyright)) {
-            Text txt = CommontypesFactory.eINSTANCE.createText();
-            txt.setValue((String) text.trim());
+            Text txt = new Text();
+            txt.setContent((String) text.trim());
             emfScheme_.setCopyright(txt);
             return;
         }
@@ -1331,8 +1340,10 @@ public class ManifestUtil {
         if (isNoop(desc))
             return;
 
-        if ((override) || isNoop(emfScheme_.getEntityDescription())) {
-            emfScheme_.setEntityDescription(desc.trim());
+        if ((override) || isNoop(emfScheme_.getEntityDescription().toString())) {
+            EntityDescription ed = new EntityDescription();
+            ed.setContent(desc);
+            emfScheme_.setEntityDescription(ed);
         }
     }
 
@@ -1355,7 +1366,7 @@ public class ManifestUtil {
      */
     @SuppressWarnings("unchecked")
     private void preLoadAddSources(CsmfSource[] castorSources) {
-        List<Source> emfSources = emfScheme_.getSource();
+        List<Source> emfSources = Arrays.asList(emfScheme_.getSource());
         List<SupportedSource> supportedSourcesList = new ArrayList();
         Source tempEmfSource = null;
         boolean present = false;
@@ -1367,7 +1378,7 @@ public class ManifestUtil {
                 present = false;
                 for (int j = 0; j < emfSources.size(); j++) {
                     tempEmfSource = (Source) emfSources.get(j);
-                    if (tempEmfSource.getValue().equalsIgnoreCase(Utility.trim(castorSources[i].getContent()))) {
+                    if (tempEmfSource.getContent().equalsIgnoreCase(Utility.trim(castorSources[i].getContent()))) {
                         present = true;
                         // if toUpdate = true, and given source already
                         // exists (i.e present = true), update with new
@@ -1382,11 +1393,11 @@ public class ManifestUtil {
 
                 if (!present) {
                     // Add castorSources data to the Sources of emfScheme_
-                    Source emfSource = CommontypesFactory.eINSTANCE.createSource();
-                    emfSource.setValue(Utility.trim(castorSources[i].getContent()));
+                    Source emfSource = new Source();
+                    emfSource.setContent(Utility.trim(castorSources[i].getContent()));
                     emfSource.setRole(Utility.trim(castorSources[i].getRole()));
                     emfSource.setSubRef(Utility.trim(castorSources[i].getSubRef()));
-                    emfScheme_.getSource().add(emfSource);
+                    Arrays.asList(emfScheme_.getSource()).add(emfSource);
 
                     // Add castorSources data to the List EMF
                     // SupportedSource objects
@@ -1403,7 +1414,7 @@ public class ManifestUtil {
         // Add the EMF SupportedSource objects to Supported Sources of
         // emfScheme_ mappings
         if (supportedSourcesList.size() > 0) {
-            preLoadUpdateSupportedMapping(emfScheme_.getMappings().getSupportedSource(), supportedSourcesList
+            preLoadUpdateSupportedMapping(Arrays.asList(emfScheme_.getMappings().getSupportedSource()), supportedSourcesList
                     .toArray(new org.LexGrid.naming.URIMap[supportedSourcesList.size()]), false,
                     "createSupportedSource");
         }
@@ -1419,7 +1430,7 @@ public class ManifestUtil {
 
         if (castorLocalNames != null) {
 
-            List<String> emfLocalNames = emfScheme_.getLocalName();
+            List<String> emfLocalNames = Arrays.asList(emfScheme_.getLocalName());
             boolean present = false;
 
             for (int i = 0; i < castorLocalNames.length; i++) {
@@ -1429,7 +1440,7 @@ public class ManifestUtil {
 
                     present = false;
 
-                    if ((castorLocalNames[i].getToAdd().booleanValue()) || (emfScheme_.getLocalName().isEmpty())) {
+                    if ((castorLocalNames[i].getToAdd().booleanValue()) || Arrays.asList(emfScheme_.getLocalName()).isEmpty()) {
 
                         for (int j = 0; j < emfLocalNames.size(); j++) {
 
@@ -1440,7 +1451,7 @@ public class ManifestUtil {
                         }
 
                         if (!present) {
-                            emfScheme_.getLocalName().add(Utility.trim(castorLocalNames[i].getContent()));
+                            Arrays.asList(emfScheme_.getLocalName()).add(Utility.trim(castorLocalNames[i].getContent()));
                         }
                     }
                 }
@@ -1462,47 +1473,47 @@ public class ManifestUtil {
             boolean toUpdate = castorMappings.getToUpdate().booleanValue();
 
             // Supported CodingScheme
-            preLoadUpdateSupportedMapping(emfMappings.getSupportedCodingScheme(), castorMappings
+            preLoadUpdateSupportedMapping(Arrays.asList(emfMappings.getSupportedCodingScheme()), castorMappings
                     .getSupportedCodingScheme(), toUpdate, "createSupportedCodingScheme");
 
             // Supported Source
-            preLoadUpdateSupportedMapping(emfMappings.getSupportedSource(), castorMappings.getSupportedSource(),
+            preLoadUpdateSupportedMapping(Arrays.asList(emfMappings.getSupportedSource()), castorMappings.getSupportedSource(),
                     toUpdate, "createSupportedSource");
 
             // Supported Language
-            preLoadUpdateSupportedMapping(emfMappings.getSupportedLanguage(), castorMappings.getSupportedLanguage(),
+            preLoadUpdateSupportedMapping(Arrays.asList(emfMappings.getSupportedLanguage()), castorMappings.getSupportedLanguage(),
                     toUpdate, "createSupportedLanguage");
 
             // Supported Property
-            preLoadUpdateSupportedMapping(emfMappings.getSupportedProperty(), castorMappings.getSupportedProperty(),
+            preLoadUpdateSupportedMapping(Arrays.asList(emfMappings.getSupportedProperty()), castorMappings.getSupportedProperty(),
                     toUpdate, "createSupportedProperty");
 
             // Supported Association
-            preLoadUpdateSupportedMapping(emfMappings.getSupportedAssociation(), castorMappings
+            preLoadUpdateSupportedMapping(Arrays.asList(emfMappings.getSupportedAssociation()), castorMappings
                     .getSupportedAssociation(), toUpdate, "createSupportedAssociation");
 
             // Supported Context
-            preLoadUpdateSupportedMapping(emfMappings.getSupportedContext(), castorMappings.getSupportedContext(),
+            preLoadUpdateSupportedMapping(Arrays.asList(emfMappings.getSupportedContext()), castorMappings.getSupportedContext(),
                     toUpdate, "createSupportedContext");
 
             // Supported AssociationQualifier
-            preLoadUpdateSupportedMapping(emfMappings.getSupportedAssociationQualifier(), castorMappings
+            preLoadUpdateSupportedMapping(Arrays.asList(emfMappings.getSupportedAssociationQualifier()), castorMappings
                     .getSupportedAssociationQualifier(), toUpdate, "createSupportedAssociationQualifier");
 
             // Supported RepresentationalForm
-            preLoadUpdateSupportedMapping(emfMappings.getSupportedRepresentationalForm(), castorMappings
+            preLoadUpdateSupportedMapping(Arrays.asList(emfMappings.getSupportedRepresentationalForm()), castorMappings
                     .getSupportedRepresentationalForm(), toUpdate, "createSupportedRepresentationalForm");
 
             // Supported PropertyLink
-            preLoadUpdateSupportedMapping(emfMappings.getSupportedPropertyLink(), castorMappings
+            preLoadUpdateSupportedMapping(Arrays.asList(emfMappings.getSupportedPropertyLink()), castorMappings
                     .getSupportedPropertyLink(), toUpdate, "createSupportedPropertyLink");
 
             // Supported DegreeOfFidelity
-            preLoadUpdateSupportedMapping(emfMappings.getSupportedDegreeOfFidelity(), castorMappings
+            preLoadUpdateSupportedMapping(Arrays.asList(emfMappings.getSupportedDegreeOfFidelity()), castorMappings
                     .getSupportedDegreeOfFidelity(), toUpdate, "createSupportedDegreeOfFidelity");
 
             // Supported PropertyQualifier
-            preLoadUpdateSupportedMapping(emfMappings.getSupportedPropertyQualifier(), castorMappings
+            preLoadUpdateSupportedMapping(Arrays.asList(emfMappings.getSupportedPropertyQualifier()), castorMappings
                     .getSupportedPropertyQualifier(), toUpdate, "createSupportedPropertyQualifier");
 
             // Supported Hierarchy
@@ -1543,16 +1554,16 @@ public class ManifestUtil {
 
                         if (toUpdate) {
                             supportedMap.setUri(Utility.trim(tempCastorMap.getUri()));
-                            supportedMap.setValue(Utility.trim(tempCastorMap.getContent()));
+                            supportedMap.setContent(Utility.trim(tempCastorMap.getContent()));
                             if (tempCastorMap instanceof SupportedSource) {
                                 // ((org.LexGrid.emf.naming.SupportedSource)
                                 // supportedMap).setAgentRole(Utility
                                 // .trim(((SupportedSource)
                                 // tempCastorMap).getAgentRole()));
-                                ((org.LexGrid.emf.naming.SupportedSource) supportedMap).setAssemblyRule(Utility
+                                ((SupportedSource) supportedMap).setAssemblyRule(Utility
                                         .trim(((SupportedSource) tempCastorMap).getAssemblyRule()));
                             } else if (tempCastorMap instanceof SupportedCodingScheme) {
-                                ((org.LexGrid.emf.naming.SupportedCodingScheme) supportedMap)
+                                ((SupportedCodingScheme) supportedMap)
                                         .setIsImported(((SupportedCodingScheme) tempCastorMap).getIsImported());
                             }
                         }
@@ -1571,16 +1582,16 @@ public class ManifestUtil {
 
                     emfURNMap.setUri(Utility.trim(tempCastorMap.getUri()));
                     emfURNMap.setLocalId(Utility.trim(tempCastorMap.getLocalId()));
-                    emfURNMap.setValue(Utility.trim(tempCastorMap.getContent()));
+                    emfURNMap.setContent(Utility.trim(tempCastorMap.getContent()));
                     if (tempCastorMap instanceof SupportedSource) {
                         // ((org.LexGrid.emf.naming.SupportedSource)
                         // emfURNMap).setAgentRole(Utility
                         // .trim(((SupportedSource)
                         // tempCastorMap).getAgentRole()));
-                        ((org.LexGrid.emf.naming.SupportedSource) emfURNMap).setAssemblyRule(Utility
+                        ((SupportedSource) emfURNMap).setAssemblyRule(Utility
                                 .trim(((SupportedSource) tempCastorMap).getAssemblyRule()));
                     } else if (tempCastorMap instanceof SupportedCodingScheme) {
-                        ((org.LexGrid.emf.naming.SupportedCodingScheme) emfURNMap)
+                        ((SupportedCodingScheme) emfURNMap)
                                 .setIsImported(((SupportedCodingScheme) tempCastorMap).getIsImported());
                     }
                     emfMapList.add(emfURNMap);
@@ -1606,10 +1617,10 @@ public class ManifestUtil {
                     // Is this candidate already registered as a supported
                     // hierarchy for this scheme?
                     boolean present = false;
-                    for (Iterator itr = emfMappings.getSupportedHierarchy().iterator(); itr.hasNext();) {
+                    for (Iterator itr = Arrays.asList(emfMappings.getSupportedHierarchy()).iterator(); itr.hasNext();) {
                         SupportedHierarchy sHierEMF = (SupportedHierarchy) itr.next();
                         List registeredAssociations = arrayToList(tempCastorSuppHier.getAssociationNames(0).split(","));
-                        List candidateAssociations = sHierEMF.getAssociationNames();
+                        List candidateAssociations = Arrays.asList(sHierEMF.getAssociationNames());
 
                         Collections.sort(registeredAssociations);
                         Collections.sort(candidateAssociations);
@@ -1626,7 +1637,7 @@ public class ManifestUtil {
                             present = true;
                             if (toUpdate) {
                                 sHierEMF.setUri(tempCastorSuppHier.getUri());
-                                sHierEMF.setValue(tempCastorSuppHier.getContent());
+                                sHierEMF.setContent(tempCastorSuppHier.getContent());
                                 sHierEMF.setIsForwardNavigable(tempCastorSuppHier.getIsForwardNavigable());
                             }
                             break;
@@ -1635,17 +1646,17 @@ public class ManifestUtil {
 
                     // No matching hierarchy; add it now...
                     if (!present) {
-                        SupportedHierarchy emfSuppHier = NamingFactory.eINSTANCE.createSupportedHierarchy();
+                        SupportedHierarchy emfSuppHier = new SupportedHierarchy();
                         emfSuppHier.setLocalId(Utility.trim(tempCastorSuppHier.getLocalId()));
                         emfSuppHier.setUri(Utility.trim(tempCastorSuppHier.getUri()));
-                        emfSuppHier.setValue(Utility.trim(tempCastorSuppHier.getContent()));
+                        emfSuppHier.setContent(Utility.trim(tempCastorSuppHier.getContent()));
 
                         List lHierAssoc = arrayToList(tempCastorSuppHier.getAssociationNames(0).split(","));
                         emfSuppHier.setAssociationNames(lHierAssoc);
                         emfSuppHier.setRootCode(Utility.trim(tempCastorSuppHier.getRootCode()));
                         emfSuppHier.setIsForwardNavigable(tempCastorSuppHier.getIsForwardNavigable().booleanValue());
 
-                        emfMappings.getSupportedHierarchy().add(emfSuppHier);
+                        Arrays.asList(emfMappings.getSupportedHierarchy()).add(emfSuppHier);
                     }
                 }
             }

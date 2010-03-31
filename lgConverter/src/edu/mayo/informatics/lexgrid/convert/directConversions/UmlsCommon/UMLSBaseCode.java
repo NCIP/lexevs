@@ -43,8 +43,6 @@ import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.LexOnt.CsmfCodingSchemeName;
 import org.LexGrid.LexOnt.CsmfCodingSchemeURI;
-import org.LexGrid.managedobj.InsertException;
-import org.LexGrid.managedobj.ObjectAlreadyExistsException;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.GenericSQLModifier;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -653,13 +651,10 @@ public class UMLSBaseCode {
         try {
             addEntryState(entryStateId, SQLTableConstants.ENTRY_STATE_TYPE_ENTITY, null, conceptStatus, null, null, null,
                     null, null, 0);
-        } catch (ObjectAlreadyExistsException e) {
+        } catch (SQLException e) {
             log.error("Problem inserting entryState for new code " + conceptCode, e);
             messages_.info("ERROR - Problem inserting entryState for new code " + conceptCode);
-        } catch (InsertException e) {
-            log.error("Problem inserting entryState for new code " + conceptCode, e);
-            messages_.info("ERROR - Problem inserting entryState for new code " + conceptCode);
-        }
+        } 
 
         int k = 1;
         insertIntoEntities.setString(k++, codingSchemeName);
@@ -697,7 +692,7 @@ public class UMLSBaseCode {
 
     protected void addEntryState(int entryStateId, String entryType, String owner, String status, String effectiveDate,
             String expirationDate, String revisionId, String prevRevisionId, String changeType, int relativeOrder)
-            throws InsertException, ObjectAlreadyExistsException, SQLException {
+            throws SQLException {
         // Insert only if there is any data.
         if (!StringUtils.isBlank(owner) || !StringUtils.isBlank(status) 
                 || effectiveDate != null || expirationDate != null

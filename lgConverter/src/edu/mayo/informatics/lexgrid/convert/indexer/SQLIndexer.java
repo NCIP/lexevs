@@ -29,7 +29,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
-import org.LexGrid.emf.commonTypes.EntityTypes;
+import org.LexGrid.commonTypes.types.EntityTypes;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.GenericSQLModifier;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -312,7 +312,7 @@ public class SQLIndexer extends LuceneLoaderCode {
                     String newCode = results.getString(stc_.entityCodeOrEntityId);
                     String newCodeType = stc_.supports2009Model()
                     ? results.getString(SQLTableConstants.TBLCOL_ENTITYTYPE)
-                            : EntityTypes.CONCEPT_LITERAL.getLiteral();
+                            : EntityTypes.CONCEPT.value();
 
                     newED = results.getString(SQLTableConstants.TBLCOL_ENTITYDESCRIPTION);
 

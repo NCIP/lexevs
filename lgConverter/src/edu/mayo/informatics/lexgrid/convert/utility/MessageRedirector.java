@@ -18,9 +18,6 @@
  */
 package edu.mayo.informatics.lexgrid.convert.utility;
 
-import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
-import org.LexGrid.persistence.sql.MessageIF;
-
 /**
  * This class implements the MessageIF as defined in the lexgrid sql plugin - it
  * allows me to catch messages from inside of the sql load process and redirect

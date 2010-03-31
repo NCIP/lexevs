@@ -4,7 +4,6 @@
 	<classpathentry kind="src" path="test/java"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Indexer"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lgResourceReader"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lgModel.emf"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/apache/commons/commons-cli-1.0.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/sqlDrivers/restricted-license/db2jcc.jar"/>
@@ -38,5 +37,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/easymock/easymock-2.5.1.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/easymock/easymockclassextension-2.5.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

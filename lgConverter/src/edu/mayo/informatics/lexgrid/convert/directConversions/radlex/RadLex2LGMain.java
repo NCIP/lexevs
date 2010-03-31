@@ -16,7 +16,7 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package edu.mayo.informatics.lexgrid.convert.emfConversions.fma;
+package edu.mayo.informatics.lexgrid.convert.directConversions.radlex;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,33 +33,41 @@ import org.lexevs.logging.messaging.impl.CommandLineMessageDirector;
 import edu.stanford.smi.protege.model.KnowledgeBase;
 import edu.stanford.smi.protege.model.Project;
 
-/* @author <A HREF="mailto:dks02@mayo.edu">Deepak Sharma</A>
- * @author <A HREF="mailto:kanjamala.pradip@mayo.edu">Pradip Kanjamala</A>
+/*
+ * @author <A HREF="mailto:dks02@mayo.edu">Deepak Sharma</A> @author <A
+ * HREF="mailto:kanjamala.pradip@mayo.edu">Pradip Kanjamala</A>
+ * 
  * @version subversion $Revision: 2917 $ checked in on $Date: 2006-06-19
  *          15:52:21 +0000 (Mon, 19 Jun 2006) $
  */
 
-public class FMA2EMFMain {
+public class RadLex2LGMain {
     public static void main(String[] args) {
-        LgMessageDirectorIF logger = new CachingMessageDirectorImpl(new CommandLineMessageDirector("FMA2EMFLogger"));
+        LgMessageDirectorIF logger = new CachingMessageDirectorImpl(new CommandLineMessageDirector("radlex2emfLogger"));
+
         if (args.length != 2) {
-            System.out.println("Usage: FMA2EMFMain  <ProtegeFrames pprj uri>  <target lexgrid xml file uri>");
-
-            System.out.println("\t target file name - place to put output XML.");
-
+            String errorMsg = "Usage: RadLex2EMFMain  <Radlex pprj uri>  <target lexgrid xml file uri>"
+                    + "\n\t target file name - place to put output XML.";
+            System.out.println(errorMsg);
+            logger.error(errorMsg);
             System.exit(0);
         }
 
-        System.out.println("=== Converting " + args[0] + " started at " + (new java.util.Date()) + " ===");
+        logger.info("Converting this ... \n");
+        logger.info("Source: " + args[0] + "\nTarget: " + args[1]);
+        logger.info("Started at " + (new java.util.Date()));
+
         try {
 
             URI input_uri = createURIFromString(args[0]);
-            URI output_uri = createURIFromString(args[1]);
+            URI output_uri = new URI(args[1]);
 
-            FMA2EMFMain f2e = new FMA2EMFMain();
-            CodingScheme cst = f2e.map(input_uri, logger);
+            RadLex2LGMain r2e = new RadLex2LGMain();
+            CodingScheme cst = r2e.map(input_uri, logger);
 
-            f2e.writeLexGridXML(cst, output_uri, logger);
+            r2e.writeLexGridXML(cst, output_uri, logger);
+            System.out.println("Ended!!");
+            logger.info("Conversion ended at " + (new java.util.Date()));
         } catch (Exception ex) {
             logger.fatal(ex.getMessage());
             ex.printStackTrace();
@@ -74,7 +82,7 @@ public class FMA2EMFMain {
         File f;
         if (!(f = new File(trimmed)).exists()) {
             // Check if we can find the file using the ClassLoader
-            URL url = FMA2EMFMain.class.getClassLoader().getResource(trimmed);
+            URL url = RadLex2LGMain.class.getClassLoader().getResource(trimmed);
             if (url != null) {
                 return url.toURI();
             } else {
@@ -93,33 +101,32 @@ public class FMA2EMFMain {
 
     public CodingScheme map(Project proj, LgMessageDirectorIF messages) {
         CodingScheme csclass = null;
+
         KnowledgeBase kb_ = null;
         if (proj != null) {
-            // System.out.println("Current Project=" + proj);
             kb_ = proj.getKnowledgeBase();
         }
 
         if ((proj != null) && (kb_ != null)) {
             try {
-                // XMLMap mapping = getXMLMappings();
-
-                FMA2EMFStaticMapHolders fmaCodeSys = new FMA2EMFStaticMapHolders();
-                csclass = fmaCodeSys.getFMACodingScheme(kb_);
+                RadLex2LGStaticMapHolders RadlexCodeSys = new RadLex2LGStaticMapHolders();
+                csclass = RadlexCodeSys.getRadlexCodingScheme(kb_);
 
                 if (csclass != null) {
-                    FMA2EMFDynamicMapHolders fmaAttribs = new FMA2EMFDynamicMapHolders();
-                    boolean processed = fmaAttribs.processFMA(csclass, kb_);
+                    RadLex2LGDynamicMapHolders radlexAttribs = new RadLex2LGDynamicMapHolders();
+                    boolean processed = radlexAttribs.processRadlex(csclass, kb_, messages);
 
-                    if (processed) {
-                        fmaAttribs.populateSupportedProperties(csclass);
-                        fmaAttribs.populateSupportedSources(csclass);
-                        fmaAttribs.populateSupportedRepresentationalForms(csclass);
-                        fmaAttribs.populateSupportedAssociations(csclass);
-                        csclass.setApproxNumConcepts(new Long(fmaAttribs.getApproxNumberOfConcepts()));
+                    if (processed) 
+                    {
+                        radlexAttribs.populateSupportedProperties(csclass);
+                        radlexAttribs.populateSupportedSources(csclass);
+                        radlexAttribs.populateSupportedRepresentationalForms(csclass);
+                        radlexAttribs.populateSupportedAssociations(csclass);
+                        csclass.setApproxNumConcepts(new Long(radlexAttribs.getApproxNumberOfConcepts()));
                     }
                 }
             } catch (Exception e) {
-                messages.error("Failed in ProtegeFrames Mapping...");
+                messages.error("Failed in Radlex Mapping...");
                 e.printStackTrace();
             }
         }
@@ -127,20 +134,14 @@ public class FMA2EMFMain {
     }
 
     public CodingScheme map(URI inFileName, LgMessageDirectorIF messages) {
-        // URI projectURI =
-        // URI.create("file:///C:/Work/Protege-Projects/ProtegeFrames.pprj");
         Collection errors = new ArrayList();
-
         Project proj = Project.loadProjectFromURI(inFileName, errors);
-        System.out.println("Project name= " + proj.getName());
         return map(proj, messages);
-
     }
 
     void writeLexGridXML(CodingScheme codingScheme, URI output_filename, LgMessageDirectorIF messages) {
-        throw new UnsupportedOperationException(); //TODO  Need to implement new 6.0 exporter 
+        throw new UnsupportedOperationException(); // TODO Need to implement new 6.0 exporter 
 //        LgXMLResourceImpl xml = null;
-//
 //        try {
 //
 //            xml = new LgXMLResourceImpl(org.eclipse.emf.common.util.URI.createURI(output_filename.toURL().toString()));
@@ -148,12 +149,10 @@ public class FMA2EMFMain {
 //
 //            // Perform the save ...
 //            xml.save();
-//        }
-//
-//        catch (Exception e) {
+//        } catch (Exception e) {
 //
 //            messages.fatal("Failed - " + e.toString() + " see log file.");
+//
 //        }
     }
-
 }

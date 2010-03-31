@@ -86,15 +86,16 @@ public class CombinationOptions {
 
     public static Option[] getEMFSpecificOptions(InputFormatInterface inputFormat, OutputFormatInterface outputFormat,
             OptionHolder optionsSoFar) {
-        if (ConversionLauncher.willBeDoneWithEMF(inputFormat, outputFormat, optionsSoFar)) {
-            // if it will be done with EMF....
-
-            if (inputFormat.getDescription().equals(LexGridSQL.description)
-                    || outputFormat.getDescription().equals(LexGridSQLOut.description)) {
-                return new Option[] { new Option(Option.FAIL_ON_ERROR, new Boolean(false)) };
-            }
-        }
-        return new Option[] {};
+        throw new UnsupportedOperationException(); //TODO  Do we still need this since emf is no more supported? 
+//        if (ConversionLauncher.willBeDoneWithEMF(inputFormat, outputFormat, optionsSoFar)) {
+//            // if it will be done with EMF....
+//
+//            if (inputFormat.getDescription().equals(LexGridSQL.description)
+//                    || outputFormat.getDescription().equals(LexGridSQLOut.description)) {
+//                return new Option[] { new Option(Option.FAIL_ON_ERROR, new Boolean(false)) };
+//            }
+//        }
+//        return new Option[] {};
     }
 
 }

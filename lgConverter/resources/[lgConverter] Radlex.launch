@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="edu.mayo.informatics.lexgrid.convert.emfConversions.radlex.RadLex2EMFMain"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="file:///C:/cbio_info/protege/radlex.pprj file:///C:/cbio_info/protege/radlex_LexGrid.xml"/>
-<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
-<listEntry value="4"/>
-</listAttribute>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="lgConverter"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1400M"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/lgConverter"/>
+<listEntry value="/lgConverter/src/edu/mayo/informatics/lexgrid/convert/directConversions/radlex/RadLex2LGMain.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
 </listAttribute>
 <booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="edu.mayo.informatics.lexgrid.convert.directConversions.radlex.RadLex2LGMain"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="file:///C:/cbio_info/protege/radlex.pprj file:///C:/cbio_info/protege/radlex_LexGrid.xml"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="lgConverter"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1400M"/>
 </launchConfiguration>
