@@ -78,6 +78,8 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 	 */
 	protected void launchJob(Properties connectionProperties, String jobConfigFile, String jobName) throws Exception {
 		super.setInUse();
+		
+		Thread.currentThread().setContextClassLoader(MyClassLoader.instance());
 
 		DynamicPropertyApplicationContext ctx = new DynamicPropertyApplicationContext(jobConfigFile, connectionProperties);
 		ctx.setClassLoader(MyClassLoader.instance());
