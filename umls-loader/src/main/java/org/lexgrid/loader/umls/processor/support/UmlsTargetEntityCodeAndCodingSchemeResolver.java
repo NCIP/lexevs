@@ -19,10 +19,8 @@
 package org.lexgrid.loader.umls.processor.support;
 
 import org.lexgrid.loader.processor.support.EntityCodeAndCodingSchemeResolver;
-import org.lexgrid.loader.processor.support.EntityCodeResolver;
 import org.lexgrid.loader.rrf.model.Mrrel;
 import org.lexgrid.loader.rrf.staging.MrconsoStagingDao;
-import org.lexgrid.loader.rrf.staging.model.CodeSabPair;
 import org.lexgrid.loader.wrappers.CodeCodingSchemePair;
 
 /**

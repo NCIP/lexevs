@@ -18,8 +18,6 @@
  */
 package org.lexgrid.loader.umls.processor;
 
-import java.util.Map;
-
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.lexevs.dao.database.utility.DaoUtility;

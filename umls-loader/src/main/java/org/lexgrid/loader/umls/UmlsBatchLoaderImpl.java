@@ -33,7 +33,6 @@ import org.lexgrid.loader.AbstractSpringBatchLoader;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.properties.ConnectionPropertiesFactory;
 import org.lexgrid.loader.properties.impl.DefaultLexEVSPropertiesFactory;
-import org.lexgrid.loader.properties.impl.PropertiesFactory;
 import org.lexgrid.loader.setup.JobRepositoryManager;
 import org.lexgrid.loader.staging.StagingManager;
 import org.springframework.context.ApplicationContext;

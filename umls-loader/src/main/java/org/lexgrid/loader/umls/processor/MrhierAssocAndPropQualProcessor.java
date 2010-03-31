@@ -18,10 +18,6 @@
  */
 package org.lexgrid.loader.umls.processor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lexgrid.loader.rrf.model.Mrhier;
 import org.lexgrid.loader.rrf.processor.AbstractMrhierProcessor;
 import org.lexgrid.loader.rrf.staging.MrconsoStagingDao;
 

@@ -21,7 +21,6 @@ package org.lexgrid.loader.umls.processor.support;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexgrid.loader.processor.support.AbstractBasicPropertyResolver;
 import org.lexgrid.loader.rrf.model.Mrconso;
-import org.lexgrid.loader.rrf.staging.model.IdableMrconso;
 
 /**
  * The Class UmlsPropertyResolver.

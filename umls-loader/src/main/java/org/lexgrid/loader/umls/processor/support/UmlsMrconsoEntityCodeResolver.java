@@ -19,10 +19,10 @@
 package org.lexgrid.loader.umls.processor.support;
 
 import org.lexgrid.loader.processor.support.EntityCodeResolver;
+import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 import org.lexgrid.loader.rrf.data.entity.DefaultMrconsoNoCodeHandler;
 import org.lexgrid.loader.rrf.data.entity.NoCodeHandler;
 import org.lexgrid.loader.rrf.model.Mrconso;
-import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 
 /**
  * The Class UmlsMrconsoEntityCodeResolver.

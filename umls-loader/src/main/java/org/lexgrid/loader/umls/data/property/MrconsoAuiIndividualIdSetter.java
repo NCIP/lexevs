@@ -19,7 +19,6 @@
 package org.lexgrid.loader.umls.data.property;
 import org.lexgrid.loader.data.property.IndividualIdSetter;
 import org.lexgrid.loader.rrf.model.Mrconso;
-import org.lexgrid.loader.rrf.staging.model.IdableMrconso;
 
 /**
  * The Class MrconsoAuiIndividualIdSetter.

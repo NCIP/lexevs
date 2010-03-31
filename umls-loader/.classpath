@@ -17,5 +17,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-core-2.1.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-infrastructure-2.1.0.RELEASE.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

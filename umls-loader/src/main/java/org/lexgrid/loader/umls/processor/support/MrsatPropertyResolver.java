@@ -18,13 +18,10 @@
  */
 package org.lexgrid.loader.umls.processor.support;
 
-import java.util.Map;
-
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexgrid.loader.data.DataUtils;
 import org.lexgrid.loader.processor.support.AbstractBasicPropertyResolver;
 import org.lexgrid.loader.rrf.data.property.MrsatUtility;
-import org.lexgrid.loader.rrf.factory.MrsatUsageFactory.MrsatPropertyTypes;
 import org.lexgrid.loader.rrf.model.Mrsat;
 
 /**

@@ -19,7 +19,6 @@
 package org.lexgrid.loader.umls.reader.support;
 
 import org.lexgrid.loader.reader.support.GroupDiscriminator;
-import org.lexgrid.loader.rrf.model.Mrconso;
 import org.lexgrid.loader.rrf.model.Mrrel;
 
 /**
