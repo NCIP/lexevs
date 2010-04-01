@@ -154,6 +154,14 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	 */
 	public void insertCodingSchemeSource(String codingSchemeId, Source source);
 	
+	public void insertOrUpdateCodingSchemeSource(String codingSchemeId, Source source);
+	
+	public void deleteCodingSchemeSources(String codingSchemeId);
+	
+	public void deleteCodingSchemeLocalNames(String codingSchemeId);
+	
+	public void deleteCodingSchemeMappings(String codingSchemeId);
+
 	/**
 	 * Gets the uri map.
 	 * 
@@ -216,6 +224,8 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	 * @param supportedProperty the supported property
 	 */
 	public void insertURIMap(String codingSchemeId, URIMap supportedProperty);
+	
+	public void insertOrUpdateURIMap(String codingSchemeId, URIMap supportedProperty);
 	
 	/**
 	 * Gets the distinct property names of coding scheme.

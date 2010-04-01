@@ -20,6 +20,7 @@ package org.lexevs.dao.database.service.codingscheme;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.Source;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.URIMap;
@@ -29,6 +30,7 @@ import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -142,6 +144,30 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		
 		codingSchemeDao.
 			updateCodingScheme(codingSchemeId, codingScheme);	
+		
+		codingSchemeDao.deleteCodingSchemeMappings(codingSchemeId);
+		
+		if(codingScheme.getMappings() != null) {
+			for(URIMap uriMap : DaoUtility.getAllURIMappings(codingScheme.getMappings())){
+				codingSchemeDao.insertOrUpdateURIMap(codingSchemeId, uriMap);
+			}
+		}
+		
+		codingSchemeDao.deleteCodingSchemeLocalNames(codingSchemeId);
+		
+		if(codingScheme.getLocalName() != null) {
+			for(String localName : codingScheme.getLocalName()) {
+				codingSchemeDao.insertCodingSchemeLocalName(codingSchemeId, localName);
+			}
+		}
+		
+		codingSchemeDao.deleteCodingSchemeSources(codingSchemeId);
+		
+		if(codingScheme.getSource() != null) {
+			for(Source source : codingScheme.getSource()) {
+				codingSchemeDao.insertOrUpdateCodingSchemeSource(codingSchemeId, source);
+			}
+		}
 	}
 
 	/* (non-Javadoc)

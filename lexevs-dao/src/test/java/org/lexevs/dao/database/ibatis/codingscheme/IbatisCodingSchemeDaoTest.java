@@ -154,7 +154,6 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	 * @throws SQLException the SQL exception
 	 */
 	@Test
-	@Transactional
 	public void testInsertURIMap() throws SQLException{
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
@@ -173,6 +172,40 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		
 		
 		
+		template.queryForObject("Select * from csSupportedAttrib", new RowMapper(){
+
+			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
+				
+				assertNotNull(rs.getString(1));
+				assertEquals(rs.getString(2), csKey);
+				assertEquals(rs.getString(3), SQLTableConstants.TBLCOLVAL_SUPPTAG_CODINGSCHEME);
+				assertEquals(rs.getString(4), "cs");
+				assertEquals(rs.getString(5), "uri://test");
+				assertEquals(rs.getString(6), "supported cs");
+				assertEquals(rs.getBoolean(9), true);
+
+				return true;
+			}
+		});
+	}
+	
+	@Test
+	public void testInsertOrUpdateURIMap() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		CodingScheme codingScheme = new CodingScheme();
+		codingScheme.setCodingSchemeName("name");
+		codingScheme.setCodingSchemeURI("uri");
+		final String csKey = ibatisCodingSchemeDao.insertCodingScheme(codingScheme, true);
+		
+		SupportedCodingScheme cs = new SupportedCodingScheme();
+		cs.setContent("supported cs");
+		cs.setIsImported(true);
+		cs.setLocalId("cs");
+		cs.setUri("uri://test");
+
+		ibatisCodingSchemeDao.insertOrUpdateURIMap(csKey, cs);
+	
 		template.queryForObject("Select * from csSupportedAttrib", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
@@ -222,6 +255,37 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 				assertEquals(rs.getString(4), "a source");
 				assertEquals(rs.getString(5), "sub ref");
 				assertEquals(rs.getString(6), "source role");
+
+				return true;
+			}
+		});
+	}
+	
+	@Test
+	public void testUpdateCodingSchemeSource() throws SQLException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+	
+		template.execute("Insert into csmultiattrib " +
+			"values ('csmaguid', 'csguid', 'source', 'a source', 'subRef', 'role', null)");
+		
+		Source source = new Source();
+		source.setContent("a source");
+		source.setSubRef("updatedSubRef");
+		source.setRole("updated role");
+		
+		ibatisCodingSchemeDao.insertOrUpdateCodingSchemeSource("csguid", source);
+		
+		assertEquals(1, template.queryForInt("select count(*) from csmultiattrib"));
+		
+		template.queryForObject("Select * from csmultiattrib", new RowMapper(){
+
+			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
+				
+				assertEquals(rs.getString(4), "a source");
+				assertEquals(rs.getString(5), "updatedSubRef");
+				assertEquals(rs.getString(6), "updated role");
 
 				return true;
 			}
@@ -337,6 +401,42 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		
 		assertNotNull(returnedCs);
 		assertNotNull(returnedCs.getMappings());	
+	}
+	
+	/**
+	 * Test distinct namespaces.
+	 */
+	@Test
+	@Transactional
+	public void testUpdateUriMap() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into cssupportedattrib " +
+			"values ('cssaguid', 'csguid', 'CodingScheme', 'id', 'uri', null, null, null, null, null, null)");
+		
+		
+		SupportedCodingScheme scs = new SupportedCodingScheme();
+		scs.setIsImported(true);
+		scs.setLocalId("id");
+		scs.setUri("changedUri");
+		
+		ibatisCodingSchemeDao.insertOrUpdateURIMap("csguid", scs);
+		
+		assertEquals(1, template.queryForInt("Select count(*) from cssupportedattrib"));
+		
+		template.queryForObject("Select * from cssupportedattrib", new RowMapper(){
+
+			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
+				
+				assertEquals("changedUri", rs.getString(5));
+				assertTrue(rs.getBoolean(9));
+
+				return true;
+			}
+		});
 	}
 	
 	/**

@@ -423,4 +423,35 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public void insertOrUpdateCodingSchemeSource(String codingSchemeId, Source source) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void insertOrUpdateURIMap(String codingSchemeId,
+			URIMap supportedProperty) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void deleteCodingSchemeLocalNames(String codingSchemeId) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void deleteCodingSchemeMappings(String codingSchemeId) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void deleteCodingSchemeSources(String codingSchemeId) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
 }

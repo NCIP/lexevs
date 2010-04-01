@@ -44,7 +44,8 @@
 			
 	</select>
 
-	<insert id="insertCodingSchemeMultiAttrib" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertCodingSchemeMultiAttribBean">
+	<insert id="insertCodingSchemeMultiAttrib" 
+		parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeMultiAttribBean">
 		INSERT INTO $prefix$csMultiAttrib (
 			csMultiAttribGuid,
 			codingSchemeGuid,
@@ -63,5 +64,37 @@
 			#entryStateId#
 		)
 	</insert>
+
+	<update id="updateCodingSchemeSourceByValue"
+		parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeMultiAttribBean">
+		UPDATE
+			$prefix$csMultiAttrib csMultiAttrib
+		SET
+
+		<dynamic prepend=" ">
+			<isNotNull prepend="," property="subRef">
+				subRef = #subRef#
+			</isNotNull>
+			<isNotNull prepend="," property="role">
+				role = #role#
+			</isNotNull>
+		</dynamic>
+		
+		WHERE
+			csMultiAttrib.codingSchemeGuid = #codingSchemeId#
+		AND
+			csMultiAttrib.attributeType = #attributeType#
+		AND
+			csMultiAttrib.attributeValue = #attributeValue#
+	</update>
+	
+	<delete id="deleteCodingSchemeMultiAttributeByCodingSchemeId">
+		DELETE FROM
+			$prefix$csMultiAttrib csMultiAttrib
+		WHERE
+			csMultiAttrib.codingSchemeGuid = #param1#
+		AND
+			csMultiAttrib.attributeType = #param2#
+	</delete>
 
 </sqlMap>

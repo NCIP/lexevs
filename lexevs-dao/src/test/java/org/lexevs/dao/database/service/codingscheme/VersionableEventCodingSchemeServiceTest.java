@@ -29,6 +29,9 @@ import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.PropertyLink;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
@@ -40,7 +43,11 @@ import org.lexevs.dao.database.service.error.DatabaseError;
 import org.lexevs.dao.database.service.error.ErrorCallbackListener;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.service.Registry.ResourceType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class VersionableEventCodingSchemeServiceTest.
@@ -55,6 +62,9 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 	/** The service. */
 	@Resource
 	private VersionableEventCodingSchemeService service;
+	
+	@Resource
+	private Registry registry;
 	
 	/**
 	 * Insert coding scheme.
@@ -219,6 +229,70 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		assertEquals(1, template.queryForInt("Select count(*) from relation"));
 		
 		
+	}
+	
+	@Test
+	@Transactional
+	public void updateCodingSchemeWithMappingsInsert() throws Exception{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		assertEquals(0, template.queryForInt("Select count(*) from cssupportedattrib"));
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into cssupportedattrib " +
+			"values ('cssaguid', 'csguid', 'CodingScheme', 'id', 'uri', null, null, null, null, null, null)");
+		
+		RegistryEntry entry = new RegistryEntry();
+		entry.setResourceType(ResourceType.CODING_SCHEME);
+		entry.setResourceUri("csuri");
+		entry.setResourceVersion("csversion");
+		entry.setDbSchemaVersion("2.0");
+		
+		registry.addNewItem(entry);
+		
+		CodingScheme cs = service.getCodingSchemeByUriAndVersion("csuri", "csversion");
+		
+		SupportedSource source = new SupportedSource();
+		source.setContent("test");
+		source.setLocalId("someId");
+		cs.getMappings().addSupportedSource(source);
+		
+		service.updateCodingScheme("csuri", "csversion", cs);
+		
+		assertEquals(2, template.queryForInt("Select count(*) from cssupportedattrib"));
+	}
+	
+	@Test
+	public void updateCodingSchemeWithMappingsUpdate() throws Exception{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		assertEquals(0, template.queryForInt("Select count(*) from cssupportedattrib"));
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into cssupportedattrib " +
+			"values ('cssaguid', 'csguid', 'CodingScheme', 'id', 'uri', null, null, null, null, null, null)");
+		
+		RegistryEntry entry = new RegistryEntry();
+		entry.setResourceType(ResourceType.CODING_SCHEME);
+		entry.setResourceUri("csuri");
+		entry.setResourceVersion("csversion");
+		entry.setDbSchemaVersion("2.0");
+		
+		registry.addNewItem(entry);
+		
+		CodingScheme cs = service.getCodingSchemeByUriAndVersion("csuri", "csversion");
+		
+		SupportedCodingScheme scs = new SupportedCodingScheme();
+		scs.setLocalId("id");
+		scs.setUri("uri");
+		
+		cs.getMappings().addSupportedCodingScheme(scs);
+		
+		service.updateCodingScheme("csuri", "csversion", cs);
+		
+		assertEquals(1, template.queryForInt("Select count(*) from cssupportedattrib"));
 	}
 	
 	/**

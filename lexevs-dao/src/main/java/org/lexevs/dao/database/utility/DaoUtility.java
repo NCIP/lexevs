@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.database.utility;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -35,7 +36,10 @@ import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.ReflectionUtils.FieldCallback;
 import org.springframework.util.ReflectionUtils.MethodCallback;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 
@@ -149,6 +153,43 @@ public class DaoUtility {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} 
+	}
+	
+	public static void updateBean(final Object changes, Object beanToUpdate) {
+		final String contentField = "_content";
+		
+		final List<String> nullProperties = new ArrayList<String>();
+		
+		ReflectionUtils.doWithFields(changes.getClass(), new FieldCallback() {
+
+			@Override
+			public void doWith(Field field) throws IllegalArgumentException,
+					IllegalAccessException {
+				field.setAccessible(true);
+				Object value = field.get(changes);
+				if(value == null) {
+					nullProperties.add(removeLeadingUnderscore(field.getName()));
+					/*
+				} else if(value instanceof String && field.getName().equals(contentField)) {
+					if(StringUtils.isEmpty(((String)value))){
+						nullProperties.add(removeLeadingUnderscore(field.getName()));
+					}
+					*/
+				}
+			}
+			
+		});
+		
+		BeanUtils.copyProperties(changes, beanToUpdate, nullProperties.toArray(new String[nullProperties.size()]));
+	}
+	
+	private static String removeLeadingUnderscore(String string) {
+		if(StringUtils.isBlank(string)) {return null;}
+		
+		if(string.startsWith("_")) {
+			string = StringUtils.removeStart(string, "_");
+		}
+		return string;
 	}
 	
 	/**

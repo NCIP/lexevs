@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.LexGrid.commonTypes.Source;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedCodingScheme;
@@ -22,5 +23,22 @@ public class DaoUtilityTest {
 		List<URIMap> list = DaoUtility.getAllURIMappings(mappings);
 
 		assertEquals(2, list.size());
+	}
+	
+	@Test
+	public void updateBeanTest() {
+		Source original = new Source();
+		original.setRole("originalRole");
+		original.setContent("content");
+		original.setSubRef("subref");
+		
+		Source updates = new Source();
+		updates.setRole("changedRole");
+		
+		DaoUtility.updateBean(updates, original);
+		
+		assertEquals("changedRole", original.getRole());
+		assertEquals("content", original.getContent());
+		assertEquals("subref", original.getSubRef());
 	}
 }

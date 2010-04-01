@@ -173,7 +173,7 @@
 	 		urimap.supportedAttributeTag = #param3#
 	 </select>
 
-     <insert id="insertURIMap" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertURIMapBean">
+     <insert id="insertURIMap" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean">
 		INSERT INTO $prefix$csSupportedAttrib (
 			csSuppAttribGuid,
 			codingSchemeGuid,
@@ -234,5 +234,72 @@
 			</isPropertyAvailable>
 		)
   </insert>
+
+	<update id="updateUriMapByLocalId">
+		UPDATE
+			$prefix$cssupportedattrib cssupportedattrib
+		SET
+		
+		<dynamic prepend=" ">
+			<isNotNull prepend="," property="uriMap.uri">
+				uri = #uriMap.uri#
+			</isNotNull>
+			
+			<isNotNull prepend="," property="uriMap.localId">
+				id = #uriMap.localId#
+			</isNotNull>
+		
+			<isPropertyAvailable property="uriMap.rootCode">
+				<isNotNull prepend="," property="uriMap.rootCode">
+					rootCode = #uriMap.rootCode#
+				</isNotNull>
+			</isPropertyAvailable>	
+			
+			<isPropertyAvailable property="uriMap.isForwardNavigable">
+				<isNotNull prepend="," property="uriMap.isForwardNavigable">
+					isForwardNavigable = #uriMap.isForwardNavigable#
+				</isNotNull>
+			</isPropertyAvailable>
+			
+			<isPropertyAvailable property="uriMap.isImported">
+				<isNotNull prepend="," property="uriMap.isImported">
+					isImported = #uriMap.isImported#
+				</isNotNull>
+			</isPropertyAvailable>
+			
+			<isPropertyAvailable property="uriMap.equivalentCodingScheme">
+				<isNotNull prepend="," property="uriMap.equivalentCodingScheme">
+					equivalentCodingScheme = #uriMap.equivalentCodingScheme#
+				</isNotNull>
+			</isPropertyAvailable>	
+			
+			<isPropertyAvailable property="uriMap.assemblyRule">
+				<isNotNull prepend="," property="uriMap.assemblyRule">
+					assemblyRule = #uriMap.assemblyRule#
+				</isNotNull>
+			</isPropertyAvailable>
+			
+			<isPropertyAvailable property="uriMap.conceptDomainCodingScheme">
+				<isNotNull prepend="," property="uriMap.conceptDomainCodingScheme">
+					conceptDomainCodingScheme =#uriMap.conceptDomainCodingScheme#
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+		
+		WHERE
+			cssupportedattrib.codingSchemeGuid = #codingSchemeId#
+		AND
+			cssupportedattrib.supportedAttributeTag = #supportedAttributeTag#
+		AND
+			cssupportedattrib.id = #uriMap.localId#	
+	</update>
+	
+	
+	<delete id="deleteMappingsByCodingSchemeId">
+		DELETE FROM
+			$prefix$cssupportedattrib cssupportedattrib
+		WHERE
+			cssupportedattrib.codingSchemeGuid = #param1#
+	</delete>
     
 </sqlMap>

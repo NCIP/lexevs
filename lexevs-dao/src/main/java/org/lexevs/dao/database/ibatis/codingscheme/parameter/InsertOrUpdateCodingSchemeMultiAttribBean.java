@@ -18,61 +18,102 @@
  */
 package org.lexevs.dao.database.ibatis.codingscheme.parameter;
 
-import org.LexGrid.naming.URIMap;
 import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 
 /**
- * The Class InsertURIMapBean.
+ * The Class InsertCodingSchemeMultiAttribBean.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class InsertURIMapBean extends IdableParameterBean{
+public class InsertOrUpdateCodingSchemeMultiAttribBean extends IdableParameterBean {
 
 	/** The coding scheme id. */
 	private String codingSchemeId;
 	
-	/** The supported attribute tag. */
-	private String supportedAttributeTag;
+	/** The attribute type. */
+	private String attributeType;
 	
-	/** The uri map. */
-	private URIMap uriMap;
+	/** The attribute value. */
+	private String attributeValue;
+	
+	/** The sub ref. */
+	private String subRef;
+	
+	/** The role. */
+	private String role;
 	
 	/**
-	 * Sets the supported attribute tag.
+	 * Gets the attribute type.
 	 * 
-	 * @param supportedAttributeTag the new supported attribute tag
+	 * @return the attribute type
 	 */
-	public void setSupportedAttributeTag(String supportedAttributeTag) {
-		this.supportedAttributeTag = supportedAttributeTag;
+	public String getAttributeType() {
+		return attributeType;
 	}
-
+	
 	/**
-	 * Gets the supported attribute tag.
+	 * Sets the attribute type.
 	 * 
-	 * @return the supported attribute tag
+	 * @param attributeType the new attribute type
 	 */
-	public String getSupportedAttributeTag() {
-		return supportedAttributeTag;
+	public void setAttributeType(String attributeType) {
+		this.attributeType = attributeType;
 	}
-
+	
 	/**
-	 * Sets the uri map.
+	 * Gets the attribute value.
 	 * 
-	 * @param uriMap the new uri map
+	 * @return the attribute value
 	 */
-	public void setUriMap(URIMap uriMap) {
-		this.uriMap = uriMap;
+	public String getAttributeValue() {
+		return attributeValue;
 	}
-
+	
 	/**
-	 * Gets the uri map.
+	 * Sets the attribute value.
 	 * 
-	 * @return the uri map
+	 * @param attributeValue the new attribute value
 	 */
-	public URIMap getUriMap() {
-		return uriMap;
+	public void setAttributeValue(String attributeValue) {
+		this.attributeValue = attributeValue;
 	}
-
+	
+	/**
+	 * Gets the sub ref.
+	 * 
+	 * @return the sub ref
+	 */
+	public String getSubRef() {
+		return subRef;
+	}
+	
+	/**
+	 * Sets the sub ref.
+	 * 
+	 * @param subRef the new sub ref
+	 */
+	public void setSubRef(String subRef) {
+		this.subRef = subRef;
+	}
+	
+	/**
+	 * Gets the role.
+	 * 
+	 * @return the role
+	 */
+	public String getRole() {
+		return role;
+	}
+	
+	/**
+	 * Sets the role.
+	 * 
+	 * @param role the new role
+	 */
+	public void setRole(String role) {
+		this.role = role;
+	}
+	
 	/**
 	 * Sets the coding scheme id.
 	 * 
@@ -81,7 +122,7 @@ public class InsertURIMapBean extends IdableParameterBean{
 	public void setCodingSchemeId(String codingSchemeId) {
 		this.codingSchemeId = codingSchemeId;
 	}
-
+	
 	/**
 	 * Gets the coding scheme id.
 	 * 
@@ -91,3 +132,4 @@ public class InsertURIMapBean extends IdableParameterBean{
 		return codingSchemeId;
 	}
 }
+
