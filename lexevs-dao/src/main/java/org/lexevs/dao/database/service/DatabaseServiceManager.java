@@ -24,8 +24,8 @@ import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.error.ErrorCallbackDatabaseServiceFactory;
 import org.lexevs.dao.database.service.error.ErrorCallbackListener;
-import org.lexevs.dao.database.service.picklist.PickListService;
 import org.lexevs.dao.database.service.property.PropertyService;
+import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 
 /**
@@ -51,7 +51,7 @@ public class DatabaseServiceManager {
 	private AssociationService associationService;
 	
 	/** The pick list service. */
-	private PickListService pickListService;
+	private PickListDefinitionService pickListService;
 	
 	/** The value domain service. */
 	private ValueSetDefinitionService valueDomainService;
@@ -155,7 +155,7 @@ public class DatabaseServiceManager {
 	 * 
 	 * @return the pick list service
 	 */
-	public PickListService getPickListService() {
+	public PickListDefinitionService getPickListService() {
 		return pickListService;
 	}
 
@@ -164,7 +164,7 @@ public class DatabaseServiceManager {
 	 * 
 	 * @param pickListService the new pick list service
 	 */
-	public void setPickListService(PickListService pickListService) {
+	public void setPickListService(PickListDefinitionService pickListService) {
 		this.pickListService = pickListService;
 	}
 

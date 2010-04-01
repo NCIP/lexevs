@@ -27,6 +27,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
+import org.lexevs.dao.database.access.picklist.PickListDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
@@ -53,6 +54,9 @@ public class DaoManager {
 	
 	/** The association daos. */
 	private List<AssociationDao> associationDaos;
+	
+	/** The pick list definition daos. */
+	private List<PickListDao> pickListDaos;
 	
 	/** The versions daos. */
 	private List<VersionsDao> versionsDaos;
@@ -316,5 +320,21 @@ public class DaoManager {
 	 */
 	public List<AssociationDao> getAssociationDaos() {
 		return associationDaos;
+	}
+
+	/**
+	 * Gets the pick list definition daos.
+	 * @return the pickListDaos
+	 */
+	public List<PickListDao> getPickListDaos() {
+		return pickListDaos;
+	}
+
+	/**
+	 * Sets the pick list definition daos.
+	 * @param pickListDaos the pickListDaos to set
+	 */
+	public void setPickListDaos(List<PickListDao> pickListDaos) {
+		this.pickListDaos = pickListDaos;
 	}
 }

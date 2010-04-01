@@ -120,6 +120,7 @@
 		<property name="propertyService" ref="propertyService"/>
 		<property name="entityService" ref="entityService"/>
 		<property name="associationService" ref="associationService"/>
+		<property name="pickListDefinitionService" ref="pickListDefinitionService"/>
 		<property name="daoCallbackService" ref="daoManagerDaoCallbackService"/>
 	</bean>
 	
@@ -165,6 +166,11 @@
 	<bean id="associationService" 
 		class="org.lexevs.dao.database.service.association.VersionableEventAssociationService"
 		parent="abstractService"/>
+	
+	<bean id="pickListDefinitionService" 
+		class="org.lexevs.dao.database.service.valuesets.VersionableEventPickListDefinitionService"
+		parent="abstractService">
+	</bean>
 		
 	<bean id="indexedEntityBuilder" class="org.lexevs.dao.index.model.compass.v20.IndexedEntityBuilder">
 		<property name="compass" ref="compass"/>
@@ -309,6 +315,7 @@
    	 	<property name="databaseUtility" ref="defaultDatabaseUtility" />
    		<property name="lexevsCommonSchemaCreateScript" ref="lexevsCommonSchemaCreateScript"/>
    		<property name="lexevsCodingSchemeSchemaCreateScript" ref="lexevsCodingSchemeSchemaCreateScript"/>
+   		<property name="lexevsValueSetsSchemaCreateScript" ref="lexevsValueSetsSchemaCreateScript"/>
    		<property name="lexevsHistoryCreateScript" ref="lexevsHistoryCreateScript"/>
    		<property name="prefixResolver" ref="defaultPrefixResolver"/>
    		<property name="dataSource" ref="dataSource"/>
@@ -336,6 +343,13 @@
 		<property name="scriptType" value="create"/>
 		<property name="databaseType" ref="databaseTypeFactory"/>
 		<property name="creationScriptPrefix" value="sql/lexevs/common-create-"/>
+	</bean>
+	
+	<bean id="lexevsValueSetsSchemaCreateScript"
+		class="org.lexevs.dao.database.setup.script.ScriptFactory">
+		<property name="scriptType" value="create"/>
+		<property name="databaseType" ref="databaseTypeFactory"/>
+		<property name="creationScriptPrefix" value="sql/lexevs/valuesets-create-"/>
 	</bean>
 	
 	<bean id="registryXmlToDatabaseTransfer" 

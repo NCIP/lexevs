@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.database.service.valuesets;
 
+import java.net.URI;
 import java.util.List;
 
 import org.LexGrid.valueSets.ValueSetDefinition;
@@ -32,19 +33,19 @@ import org.lexevs.dao.database.service.AbstractDatabaseService;
 public class VersionableEventValueSetDefinitionService extends AbstractDatabaseService implements ValueSetDefinitionService{
 
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#findByValueUrisByValueSetDefinitionName(java.lang.String)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#getValueSetDefinitionURISForName(java.lang.String)
 	 */
 	@Override
-	public List<String> findByValueUrisByValueSetDefinitionName(String valueSetDefinitionName) {
+	public List<URI> getValueSetDefinitionURISForName(String valueSetDefinitionName) {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#getValueSetDefinitionByUri(java.lang.String)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#getValueSetDefinitionByUri(java.net.URI)
 	 */
 	@Override
-	public ValueSetDefinition getValueSetDefinitionByUri(String uri) {
+	public ValueSetDefinition getValueSetDefinitionByUri(URI uri) {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}

@@ -16,7 +16,7 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.lexevs.dao.database.service.picklist;
+package org.lexevs.dao.database.service.valuesets;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +28,7 @@ import org.LexGrid.valueSets.PickListDefinition;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface PickListService {
+public interface PickListDefinitionService {
 	
 	/**
 	 * Gets the pick list definition by pick list id.

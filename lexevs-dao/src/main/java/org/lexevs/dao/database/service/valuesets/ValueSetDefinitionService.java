@@ -18,8 +18,10 @@
  */
 package org.lexevs.dao.database.service.valuesets;
 
+import java.net.URI;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
 
@@ -31,11 +33,11 @@ import org.LexGrid.valueSets.ValueSetDefinitions;
 public interface ValueSetDefinitionService {
 
 	/**
-	 * Insert value set definition.
-	 * 
+	 * Insert value set definition into the system. 
 	 * @param definition the definition
+	 * @throws LBException
 	 */
-	public void insertValueSetDefinition(ValueSetDefinition definition);
+	public void insertValueSetDefinition(ValueSetDefinition definition) throws LBException;
 	
 	/**
 	 * Insert value set definitions.
@@ -46,20 +48,21 @@ public interface ValueSetDefinitionService {
 	public void insertValueSetDefinitions(ValueSetDefinitions valueSetDefinitions, String systemReleaseUri);
 	
 	/**
-	 * Find by value uris by value set definition name name.
-	 * 
-	 * @param valueSetDefinitionName the value set definition name
-	 * 
-	 * @return the list< string>
+	 * Return all value set definition URIs that match the supplied key
+	 * @param key - null: return all value set definition URI's
+	 *            - " ":  return all value set definition URI's with no name
+	 *            - otherwise return all URIs that match the key
+	 * @return list of matching URIs
+	 * @throws LBException
 	 */
-	public List<String> findByValueUrisByValueSetDefinitionName(String valueDomainName);
+	public List<URI> getValueSetDefinitionURISForName(String valueSetDefinitionName) throws LBException;
 	
 	/**
 	 * Gets the value set definition by uri.
 	 * 
 	 * @param uri the uri
 	 * 
-	 * @return the value set definition by uri
+	 * @return the value set definition
 	 */
-	public ValueSetDefinition getValueSetDefinitionByUri(String uri);
+	public ValueSetDefinition getValueSetDefinitionByUri(URI uri);
 }

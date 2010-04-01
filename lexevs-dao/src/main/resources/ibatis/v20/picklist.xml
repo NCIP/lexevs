@@ -7,7 +7,7 @@
 
 	<resultMap id="pickListDefinitionResult" class="pickListDefinition">
 		<result property="pickListId" column="pickListId" />
-		<result property="representsValueSetDefinition" column="representsValueSetDefinition" />
+		<result property="representsValueSetDef" column="representsValueSetDef" />
 		<result property="defaultEntityCodeNamespace" column="defaultEntityCodeNamespace" />
 		<result property="defaultLanguage" column="defaultLanguage" />
 		<result property="defaultSortOrder" column="defaultSortOrder"/>
@@ -19,16 +19,16 @@
 		SELECT
 			pickListId
 		FROM
-			$prefix$vdPickList
+			$prefix$vsPickList
 	</select>
 	
 	<select id="getPickListGuidByPickListId" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
 		resultClass="string">
 		SELECT
-			vdPickListGuid
+			vsPickListGuid
 		FROM
-			$prefix$vdPickList pickListDef
+			$prefix$vsPickList pickListDef
 		WHERE
 			pickListDef.pickListId = #param1#
 	</select>
@@ -38,24 +38,24 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		SELECT
 			pickListDef.pickListId,
-			pickListDef.representsValueSetDefinition,
+			pickListDef.representsValueSetDef,
 			pickListDef.defaultEntityCodeNamespace,
 			pickListDef.defaultLanguage,
 			pickListDef.defaultSortOrder,
 			pickListDef.completeDomain
 		FROM
-			$prefix$vdPickList pickListDef
+			$prefix$vsPickList pickListDef
 		WHERE
 			pickListDef.pickListId = #param1#
 	</select>
 	
 	<insert id="insertPickListDefinition" 
 		parameterClass="org.lexevs.dao.database.ibatis.picklist.parameter.InsertPickListDefinitionBean">
-		INSERT INTO $prefix$vdPickList
+		INSERT INTO $prefix$vsPickList
 		(
-				vdPickListGuid,
+				vsPickListGuid,
 				pickListId,
-				representsValueSetDefinition,
+				representsValueSetDef,
 				completeDomain,
 				defaultEntityCodeNamespace,
 				defaultLanguage,
@@ -71,7 +71,7 @@
 			) VALUES (
 				#id#,
 				#pickListDefinition.pickListId#,
-				#pickListDefinition.representsValueSetDefinition#,
+				#pickListDefinition.representsValueSetDef#,
 				#pickListDefinition.completeSet#,
 				#pickListDefinition.defaultEntityCodeNamespace#,
 				#pickListDefinition.defaultLanguage#,
