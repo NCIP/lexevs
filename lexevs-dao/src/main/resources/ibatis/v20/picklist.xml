@@ -7,7 +7,7 @@
 
 	<resultMap id="pickListDefinitionResult" class="pickListDefinition">
 		<result property="pickListId" column="pickListId" />
-		<result property="representsValueSetDefinition" column="representsValueDomain" />
+		<result property="representsValueSetDefinition" column="representsValueSetDefinition" />
 		<result property="defaultEntityCodeNamespace" column="defaultEntityCodeNamespace" />
 		<result property="defaultLanguage" column="defaultLanguage" />
 		<result property="defaultSortOrder" column="defaultSortOrder"/>
@@ -38,7 +38,7 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		SELECT
 			pickListDef.pickListId,
-			pickListDef.representsValueDomain,
+			pickListDef.representsValueSetDefinition,
 			pickListDef.defaultEntityCodeNamespace,
 			pickListDef.defaultLanguage,
 			pickListDef.defaultSortOrder,
@@ -55,7 +55,7 @@
 		(
 				vdPickListGuid,
 				pickListId,
-				representsValueDomain,
+				representsValueSetDefinition,
 				completeDomain,
 				defaultEntityCodeNamespace,
 				defaultLanguage,
