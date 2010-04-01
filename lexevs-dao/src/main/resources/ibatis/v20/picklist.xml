@@ -7,7 +7,7 @@
 
 	<resultMap id="pickListDefinitionResult" class="pickListDefinition">
 		<result property="pickListId" column="pickListId" />
-		<result property="representsValueSetDef" column="representsValueSetDef" />
+		<result property="representsValueSetDefinition" column="representsValueSetDef" />
 		<result property="defaultEntityCodeNamespace" column="defaultEntityCodeNamespace" />
 		<result property="defaultLanguage" column="defaultLanguage" />
 		<result property="defaultSortOrder" column="defaultSortOrder"/>
@@ -71,7 +71,7 @@
 			) VALUES (
 				#id#,
 				#pickListDefinition.pickListId#,
-				#pickListDefinition.representsValueSetDef#,
+				#pickListDefinition.representsValueSetDefinition#,
 				#pickListDefinition.completeSet#,
 				#pickListDefinition.defaultEntityCodeNamespace#,
 				#pickListDefinition.defaultLanguage#,
