@@ -13,7 +13,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at 
  * 
- * 		http://www.eclipse.org/legal/epl-v10.html
+ *      http://www.eclipse.org/legal/epl-v10.html
  * 
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions;
