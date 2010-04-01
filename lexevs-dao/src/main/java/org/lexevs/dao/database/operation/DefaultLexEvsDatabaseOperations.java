@@ -20,11 +20,9 @@ package org.lexevs.dao.database.operation;
 
 import javax.sql.DataSource;
 
-import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.operation.transitivity.TransitivityBuilder;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.type.DatabaseType;
-import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.database.utility.DatabaseUtility;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.springframework.core.io.Resource;
@@ -47,6 +45,8 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	
 	/** The lexevs coding scheme schema create script. */
 	private Resource lexevsCodingSchemeSchemaCreateScript;
+	
+	private Resource lexevsValueSetsSchemaCreateScript;
 	
 	/** The lexevs coding scheme schema create script. */
 	private Resource lexevsHistoryCreateScript;
@@ -298,5 +298,14 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 
 	public IndexServiceManager getIndexServiceManager() {
 		return indexServiceManager;
+	}
+
+	public void setLexevsValueSetsSchemaCreateScript(
+			Resource lexevsValueSetsSchemaCreateScript) {
+		this.lexevsValueSetsSchemaCreateScript = lexevsValueSetsSchemaCreateScript;
+	}
+
+	public Resource getLexevsValueSetsSchemaCreateScript() {
+		return lexevsValueSetsSchemaCreateScript;
 	}
 }
