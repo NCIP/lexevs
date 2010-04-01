@@ -27,6 +27,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.lexevs.cache.MethodCachingProxy;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.springframework.core.io.ClassPathResource;
@@ -67,6 +68,9 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	@Resource
 	protected LexEvsDatabaseOperations lexEvsDatabaseOperations;
 	
+	@Resource
+	protected MethodCachingProxy methodCachingProxy;
+	
 	/**
 	 * Test set up.
 	 */
@@ -80,6 +84,7 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		methodCachingProxy.clearAll();
 
 		new SimpleJdbcTemplate(dataSource).getJdbcOperations().execute("DROP SCHEMA PUBLIC CASCADE");
 		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_COMMON_SCRIPT), prefixResolver.resolveDefaultPrefix());

@@ -239,13 +239,7 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 			
 			indexerService.closeBatchRemover(indexName);
 			
-			
-			//indexController.openWriter(indexName);
 			entityIndexer.indexEntity(indexName, codingSchemeUri, codingSchemeVersion, entity);
-			//indexController.closeWriter(indexName);
-			indexerService.optimizeIndex(indexName);
-			//indexController.optimizeIndex(indexName);
-			
 			
 			String internalCodeSystemName = systemResourceService.
 			 getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, 

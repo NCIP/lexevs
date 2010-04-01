@@ -33,6 +33,7 @@ import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
+import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
@@ -243,6 +244,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#deleteCodingSchemeById(java.lang.String)
 	 */
+	@ClearCache
 	public void deleteCodingSchemeById(String codingSchemeId) {
 		String prefix = 
 			this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -357,6 +359,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeIdByNameAndVersion(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public String getCodingSchemeIdByNameAndVersion(String codingSchemeName, String version) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeName, version);
 		return (String) this.getSqlMapClientTemplate().queryForObject(GET_CODING_SCHEME_ID_BY_NAME_AND_VERSION_SQL,
@@ -366,6 +369,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeIdByUriAndVersion(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public String getCodingSchemeIdByUriAndVersion(String codingSchemeUri, String version) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version);
 		return (String) this.getSqlMapClientTemplate().queryForObject(GET_CODING_SCHEME_ID_BY_URI_AND_VERSION_SQL,

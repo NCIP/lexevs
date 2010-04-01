@@ -56,6 +56,10 @@ public class MethodCachingProxy implements InitializingBean {
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
 	public void afterPropertiesSet() throws Exception {
+		initializeCache();
+	}
+	
+	protected void initializeCache() {
 		caches = Collections.synchronizedMap(new HashMap<String,Map<String,Object>>());
 	}
 
@@ -76,6 +80,10 @@ public class MethodCachingProxy implements InitializingBean {
 		Map<String,Object> cache = this.getCacheFromName(cacheableAnnotation.cacheName(), cacheableAnnotation.cacheSize());
 		cache.clear();
 		return pjp.proceed();
+	}
+	
+	public void clearAll() {
+		initializeCache();
 	}
 	
 	/**

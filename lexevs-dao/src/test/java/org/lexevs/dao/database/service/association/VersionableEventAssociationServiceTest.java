@@ -25,12 +25,11 @@ import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.lexevs.dao.database.hibernate.registry.HibernateRegistryDao;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -38,7 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@TransactionConfiguration(defaultRollback=false)
+//@TransactionConfiguration(defaultRollback=false)
 public class VersionableEventAssociationServiceTest extends LexEvsDbUnitTestBase {
 
 	/** The versionable event association service. */

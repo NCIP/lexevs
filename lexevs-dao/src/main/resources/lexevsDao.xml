@@ -274,9 +274,13 @@
      	<property name="bean" ref="systemVariables"/>
      </bean>
     
-    <bean id="dbUrl" parent="abstractSystemVariableFactory">
-    	<property name="variableName" value="AutoLoadDBURL"/>
-    </bean>
+<!--    <bean id="dbUrl" parent="abstractSystemVariableFactory">-->
+<!--    	<property name="variableName" value="AutoLoadDBURL"/>-->
+<!--    </bean>-->
+    
+     <bean id="dbUrl" class="org.lexevs.dao.database.jdbc.MysqlJdbcUrlAppendingFactory">
+     	<property name="systemVariables" ref="systemVariables"/>
+     </bean>
     
     <bean id="dbPassword" parent="abstractSystemVariableFactory">
     	<property name="variableName" value="AutoLoadDBPassword"/>
@@ -457,11 +461,14 @@
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="indexInterface" ref="indexInterface"/>
 		<property name="entityIndexer" ref="commonIndexLoaderCodeInder"/>
+		<property name="logger" ref="loggerFactory"/>
 	</bean>
 	
 	<bean id="luceneEntityIndexService" class="org.lexevs.dao.index.service.entity.LuceneEntityIndexService">
 		<property name="indexDaoManager" ref="indexDaoManager"/> 
 		<property name="indexCreator" ref="entityBatchingIndexCreator"/>
+		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
+		<property name="indexerService" ref="indexerService"/>
 	</bean>
 	
 	<bean id="indexServiceManager" class="org.lexevs.dao.index.service.IndexServiceManager">

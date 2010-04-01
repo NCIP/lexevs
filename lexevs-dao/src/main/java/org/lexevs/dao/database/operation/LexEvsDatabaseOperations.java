@@ -118,15 +118,7 @@ public interface LexEvsDatabaseOperations {
 	 */
 	public void computeTransitiveTable(String codingSchemeUri, String codingSchemeVersion);
 	
-	/**
-	 * Index.
-	 * 
-	 * @param codingSchemeName the coding scheme name
-	 * @param codingSchemeUri the coding scheme uri
-	 * @param version the version
-	 */
-	public void index(String codingSchemeUri, String version);
-		
+	
 	/**
 	 * Cleanup failed load.
 	 * 
@@ -137,13 +129,6 @@ public interface LexEvsDatabaseOperations {
 	 */
 	public void cleanupFailedLoad(String dbName, String prefix) throws Exception;
 	
-	/**
-	 * Re index.
-	 * 
-	 * @param codingSchemeUri the coding scheme uri
-	 * @param version the version
-	 */
-	public void reIndex(String codingSchemeUri, String version);
 }
 
 

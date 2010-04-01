@@ -131,24 +131,6 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		transitivityBuilder.computeTransitivityTable(codingSchemeUri, codingSchemeVersion);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#index(java.lang.String, java.lang.String, java.lang.String)
-	 */
-	public void index(String codingSchemeUri,
-			String codingSchemeVersion) {
-		indexServiceManager.getEntityIndexService().
-			createIndex(DaoUtility.createAbsoluteCodingSchemeVersionReference(codingSchemeUri, codingSchemeVersion));
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#reIndex(java.lang.String, java.lang.String)
-	 */
-	public void reIndex(String codingSchemeUri, String version) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#dropTables(java.lang.String, java.lang.String)
 	 */

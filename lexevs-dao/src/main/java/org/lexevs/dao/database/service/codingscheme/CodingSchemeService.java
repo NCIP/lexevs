@@ -55,6 +55,9 @@ public interface CodingSchemeService {
 	public CodingSchemeSummary getCodingSchemeSummaryByUriAndVersion(
 			String codingSchemeUri, String codingSchemeVersion);
 	
+	public CodingScheme getCompleteCodingScheme(
+			String codingSchemeUri, String codingSchemeVersion);
+	
 	/**
 	 * Destroy coding scheme.
 	 * 

@@ -18,17 +18,13 @@
  */
 package org.lexevs.dao.database.service.codingscheme;
 
-import java.util.Arrays;
-
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.URIMap;
-import org.LexGrid.relations.AssociationPredicate;
-import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.EntryState;
-import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
-import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
@@ -50,6 +46,29 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			String version) {
 		return this.getDaoManager().getCodingSchemeDao(uri, version).
 			getCodingSchemeByUriAndVersion(uri, version);
+	}
+	
+
+	@Override
+	public CodingScheme getCompleteCodingScheme(String codingSchemeUri,
+			String codingSchemeVersion) {
+		CodingScheme codingScheme = this.getDaoManager().getCodingSchemeDao(codingSchemeUri, codingSchemeVersion).
+			getCodingSchemeByUriAndVersion(codingSchemeUri, codingSchemeVersion);
+		
+		String codingSchemeId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri, codingSchemeVersion).
+			getCodingSchemeIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
+		
+		codingScheme.setEntities(new Entities());
+		
+		for(Entity entity : 
+			this.getDaoManager().getEntityDao(codingSchemeUri, codingSchemeVersion).
+			getAllEntitiesOfCodingScheme(codingSchemeId, 0, -1)){
+			codingScheme.getEntities().addEntity(entity);
+		}
+		
+		//TODO add Relations
+		
+		return codingScheme;		
 	}
 	
 	/* (non-Javadoc)

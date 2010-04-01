@@ -21,12 +21,19 @@ package org.lexevs.dao.index.service.entity;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.concepts.Entity;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.indexer.IndexCreator;
+import org.lexevs.system.model.LocalCodingScheme;
+import org.lexevs.system.service.SystemResourceService;
+
+import edu.mayo.informatics.indexer.api.IndexerService;
+import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
 
 /**
  * The Class LuceneEntityIndexService.
@@ -40,6 +47,10 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	
 	/** The index creator. */
 	private IndexCreator indexCreator;
+	
+	private IndexerService indexerService;
+	
+	private SystemResourceService systemResourceService;
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.service.entity.EntityIndexService#createIndex(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
@@ -121,6 +132,27 @@ public class LuceneEntityIndexService implements EntityIndexService {
 				reference.getCodingSchemeURN(), 
 				reference.getCodingSchemeVersion()).deleteDocumentsOfCodingScheme(reference);
 	}
+	
+
+	@Override
+	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference reference) {
+		String uri = reference.getCodingSchemeURN();
+		String version = reference.getCodingSchemeVersion();
+		
+		String codingSchemeName;
+		try {
+			codingSchemeName = systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(uri, version);
+		} catch (LBParameterException e) {
+			throw new RuntimeException(e);
+		}
+		
+		LocalCodingScheme lcs = LocalCodingScheme.getLocalCodingScheme(codingSchemeName, version);
+		try {
+			return StringUtils.isNotBlank(indexerService.getMetaData().getIndexMetaDataValue(lcs.getKey()));
+		} catch (InternalErrorException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	/**
 	 * Gets the index creator.
@@ -138,5 +170,21 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	 */
 	public void setIndexCreator(IndexCreator indexCreator) {
 		this.indexCreator = indexCreator;
+	}
+
+	public void setIndexerService(IndexerService indexerService) {
+		this.indexerService = indexerService;
+	}
+
+	public IndexerService getIndexerService() {
+		return indexerService;
+	}
+
+	public SystemResourceService getSystemResourceService() {
+		return systemResourceService;
+	}
+
+	public void setSystemResourceService(SystemResourceService systemResourceService) {
+		this.systemResourceService = systemResourceService;
 	}
 }

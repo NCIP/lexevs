@@ -56,6 +56,8 @@ public void updateIndexForEntity(String codingSchemeUri, String codingSchemeVers
 	 */
 	public void dropIndex(AbsoluteCodingSchemeVersionReference reference);
 	
+	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference reference);
+	
 	/**
 	 * Query.
 	 * 

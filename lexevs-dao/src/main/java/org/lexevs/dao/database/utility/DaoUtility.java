@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.database.utility;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +35,9 @@ import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.ReflectionUtils.MethodCallback;
+import org.springframework.util.ReflectionUtils.MethodFilter;
 
 /**
  * The Class DaoUtility.
@@ -145,6 +149,45 @@ public class DaoUtility {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} 
+	}
+	
+	/**
+	 * Insert into mappings.
+	 * 
+	 * @param mappings the mappings
+	 * @param uriMap the uri map
+	 */
+	public static List<URIMap> getAllURIMappings(final Mappings mappings) {
+		final String getPrefix = "get";
+		final String getSuffix = "AsReference";
+		
+		final List<URIMap> uriMapList = new ArrayList<URIMap>();
+
+		ReflectionUtils.doWithMethods(mappings.getClass(), new MethodCallback() {
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void doWith(Method method) throws IllegalArgumentException,
+					IllegalAccessException {
+				try {
+					List<URIMap> list = (List<URIMap>) method.invoke(mappings);
+					uriMapList.addAll(list);
+				} catch (InvocationTargetException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			
+		}, new MethodFilter() {
+
+			@Override
+			public boolean matches(Method method) {
+				return method.getName().startsWith(getPrefix) &&
+					method.getName().endsWith(getSuffix);
+			}
+			
+		});
+		
+		return uriMapList;	
 	}
 	
 	//Ignore this -- just some helpers for generating Ibatis Mapping code. Will go away...

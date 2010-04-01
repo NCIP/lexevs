@@ -25,6 +25,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.connection.IndexInterface;
+import org.lexevs.logging.LoggingBean;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
@@ -36,10 +37,10 @@ import edu.mayo.informatics.indexer.api.IndexerService;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class EntityBatchingIndexCreator implements IndexCreator {
+public class EntityBatchingIndexCreator extends LoggingBean implements IndexCreator {
 	
 	/** The batch size. */
-	private int batchSize = 10;
+	private int batchSize = 1000;
 	
 	/** The entity service. */
 	private EntityService entityService;
@@ -61,41 +62,50 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	 * @see org.lexevs.dao.index.indexer.IndexCreator#index(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
 	public void index(AbsoluteCodingSchemeVersionReference reference) {
-	
+		int totalIndexedEntities = 0;
+
 		String indexName = entityIndexer.getCommonIndexName();
-		
+
 		IndexerService indexerService = this.indexInterface.getBaseIndexerService();
 
 		this.openIndexingWriter(indexName);
-		
-		int position = 0;
-		 for(
-				 List<? extends Entity> entities = 
-				 entityService.getEntities(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), position, batchSize);
-				 entities.size() > 0; 
-				 entities = entityService.getEntities(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), position += batchSize, batchSize)) {
 
-			 for(Entity entity : entities) {
-				 entityIndexer.indexEntity(indexName, reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), entity);
-			 }
-		 }
-		 
-		 try {
+		int position = 0;
+		for(
+				List<? extends Entity> entities = 
+					entityService.getEntities(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), position, batchSize);
+				entities.size() > 0; 
+				entities = entityService.getEntities(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), position += batchSize, batchSize)) {
+
+			for(Entity entity : entities) {
+				entityIndexer.indexEntity(indexName, reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), entity);
+				
+				totalIndexedEntities++;
+				
+				if(totalIndexedEntities % 1000 == 0) {
+					this.getLogger().info("Indexed: " + totalIndexedEntities + " Entities.");
+				}
+			}
+		}
+		
+		this.getLogger().info("Indexing Complete. Indexed: " + totalIndexedEntities + " Entities.");
+
+		try {
 			indexerService.optimizeIndex(indexName);
 			indexerService.closeWriter(indexName);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} 
-		 
-		 addIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
 
-		 try {
-			 indexInterface.initCodingSchemes();
-		 } catch (LBInvocationException e) {
-			 throw new RuntimeException(e);
-		 }
+		addIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
+
+		try {
+			indexInterface.initCodingSchemes();
+		} catch (LBInvocationException e) {
+			throw new RuntimeException(e);
+		}
 	}
-	
+
 	protected String getIndexName(String codingSchemeUri, String codingSchemeVersion) throws Exception {
 		String internalCodeSystemName = systemResourceService.
 		getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, 
@@ -107,7 +117,7 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 				codingSchemeVersion);
 		return indexerService.getMetaData().getIndexMetaDataValue(lcs.getKey());
 	}
-	
+
 	/**
 	 * Adds the index metadata.
 	 * 
@@ -117,34 +127,34 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	 */
 	protected void addIndexMetadata(
 			AbsoluteCodingSchemeVersionReference reference, String indexName, String indexVersion) {
-		  try {	  
-			  IndexerService indexerService = this.indexInterface.getBaseIndexerService();
-			  
-			  String codingSchemeName = 
-				  systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-			  
-			  indexerService.getMetaData().setIndexMetaDataValue(codingSchemeName + "[:]" + reference.getCodingSchemeVersion(), indexName);
+		try {	  
+			IndexerService indexerService = this.indexInterface.getBaseIndexerService();
 
-			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "lgModel", indexVersion);
-			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "has 'Norm' fields", false + "");
-			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "has 'Double Metaphone' fields", true + "");
-			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "indexing started", "");
-			  indexerService.getMetaData().setIndexMetaDataValue(indexName, "indexing finished", "");
-			  
-			  indexerService.getMetaData().rereadFile(true);
+			String codingSchemeName = 
+				systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+
+			indexerService.getMetaData().setIndexMetaDataValue(codingSchemeName + "[:]" + reference.getCodingSchemeVersion(), indexName);
+
+			indexerService.getMetaData().setIndexMetaDataValue(indexName, "lgModel", indexVersion);
+			indexerService.getMetaData().setIndexMetaDataValue(indexName, "has 'Norm' fields", false + "");
+			indexerService.getMetaData().setIndexMetaDataValue(indexName, "has 'Double Metaphone' fields", true + "");
+			indexerService.getMetaData().setIndexMetaDataValue(indexName, "indexing started", "");
+			indexerService.getMetaData().setIndexMetaDataValue(indexName, "indexing finished", "");
+
+			indexerService.getMetaData().rereadFile(true);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public void openIndexingWriter(String indexName) {
 		IndexerService indexerService = indexInterface.getBaseIndexerService();
 		try {
 			indexerService.forceUnlockIndex(indexName);
-	        indexerService.openWriter(indexName, false);
-	        indexerService.setUseCompoundFile(indexName, useCompoundFile);
-	        indexerService.setMaxBufferedDocs(indexName, 500);
-	        indexerService.setMergeFactor(indexName, 20);
+			indexerService.openWriter(indexName, false);
+			indexerService.setUseCompoundFile(indexName, useCompoundFile);
+			indexerService.setMaxBufferedDocs(indexName, 500);
+			indexerService.setMergeFactor(indexName, 20);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} 
