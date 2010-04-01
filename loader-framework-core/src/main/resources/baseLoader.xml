@@ -34,6 +34,16 @@
   	<beans:bean id="incrementerFactory" class="org.springframework.batch.item.database.support.DefaultDataFieldMaxValueIncrementerFactory">
       <beans:constructor-arg index="0" ref="dataSource"/>
     </beans:bean>
+    
+    <beans:bean id="listenerStep" abstract="true">
+		<beans:property name="listeners">
+			<beans:list>
+				<step-listener>
+					<beans:ref bean="stepCompletionListener" />
+				</step-listener>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
 
 	<beans:bean id="stepCompletionListener" parent="loggingBean"
 	class="org.lexgrid.loader.listener.StepCompletionListener"/>
