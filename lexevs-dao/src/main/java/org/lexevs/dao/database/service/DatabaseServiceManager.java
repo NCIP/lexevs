@@ -51,7 +51,7 @@ public class DatabaseServiceManager {
 	private AssociationService associationService;
 	
 	/** The pick list service. */
-	private PickListDefinitionService pickListService;
+	private PickListDefinitionService pickListDefinitionService;
 	
 	/** The value domain service. */
 	private ValueSetDefinitionService valueDomainService;
@@ -151,24 +151,6 @@ public class DatabaseServiceManager {
 	}
 
 	/**
-	 * Gets the pick list service.
-	 * 
-	 * @return the pick list service
-	 */
-	public PickListDefinitionService getPickListService() {
-		return pickListService;
-	}
-
-	/**
-	 * Sets the pick list service.
-	 * 
-	 * @param pickListService the new pick list service
-	 */
-	public void setPickListService(PickListDefinitionService pickListService) {
-		this.pickListService = pickListService;
-	}
-
-	/**
 	 * Gets the value domain service.
 	 * 
 	 * @return the value domain service
@@ -193,8 +175,14 @@ public class DatabaseServiceManager {
 	public DaoCallbackService getDaoCallbackService() {
 		return daoCallbackService;
 	}
-	
-	
+
+	public void setPickListDefinitionService(PickListDefinitionService pickListDefinitionService) {
+		this.pickListDefinitionService = pickListDefinitionService;
+	}
+
+	public PickListDefinitionService getPickListDefinitionService() {
+		return pickListDefinitionService;
+	}
 }
 
 
