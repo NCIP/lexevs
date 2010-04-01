@@ -30,11 +30,8 @@
 		<step id="populateStagingTable" next="loadCodingScheme"
 			parent="stagingTablePopulatorStepFactory" />
 
-		<step id="loadCodingScheme">
+		<step id="loadCodingScheme" parent="listenerStep">
 			<tasklet>
-				<listeners>
-					<listener ref="stepCompletionListener" />
-				</listeners>
 				<chunk reader="umlsCodingSchemeReader" processor="umlsCodingSchemeProcessor"
 					writer="codingSchemeWriter" commit-interval="1">
 				</chunk>
@@ -44,24 +41,21 @@
 			<next on="*" to="registerCodingScheme" />
 		</step>
 
-		<step id="registerCodingScheme">
+		<step id="registerCodingScheme" parent="listenerStep">
 			<tasklet ref="registeringTasklet" />
 			<fail on="FAILED" exit-code="NON-RECOVERABLE" />
 			<next on="*" to="loadHardcodedValues" />
 		</step>
 
 
-		<step id="loadHardcodedValues" next="doLoad">
+		<step id="loadHardcodedValues" next="doLoad" parent="listenerStep">
 			<tasklet ref="introspectiveHardcodedValuesTasklet" />
 		</step>
 
 		<split id="doLoad">
 			<flow>
-				<step id="umlsLoadEntity">
+				<step id="umlsLoadEntity" parent="listenerStep">
 					<tasklet>
-						<listeners>
-							<listener ref="stepCompletionListener" />
-						</listeners>
 						<chunk reader="mrconsoStagedReader" processor="umlsEntityListProcessor"
 							writer="entityWriter" commit-interval="100">
 						</chunk>
@@ -72,11 +66,8 @@
 			<flow>
 				<split id="loadPropertiesAndAssociations" task-executor="taskExecutor">
 					<flow>
-						<step id="umlsLoadEntityAssnsToEntity">
+						<step id="umlsLoadEntityAssnsToEntity" parent="listenerStep">
 							<tasklet>
-								<listeners>
-									<listener ref="stepCompletionListener" />
-								</listeners>
 								<chunk reader="umlsForwardRelationNameMrrelSkippingReader"
 									processor="umlsRootNodeAddingEntityAssocToEntityListProcessor"
 									writer="associationSourceListWriter" commit-interval="100">
@@ -90,11 +81,8 @@
 							<flow>
 								<split id="loadProperties" task-executor="taskExecutor">
 									<flow>
-										<step id="umlsLoadMrstyProperties">
+										<step id="umlsLoadMrstyProperties" parent="listenerStep">
 											<tasklet>
-												<listeners>
-													<listener ref="stepCompletionListener" />
-												</listeners>
 												<chunk reader="mrstyGroupReader" processor="umlsMrstyListProcessor"
 													writer="entityPropertyListWriter" commit-interval="100">
 													<streams>
@@ -105,11 +93,8 @@
 										</step>
 									</flow>
 									<flow>
-										<step id="umlsLoadDefinitionProperties">
+										<step id="umlsLoadDefinitionProperties" parent="listenerStep">
 											<tasklet>
-												<listeners>
-													<listener ref="stepCompletionListener" />
-												</listeners>
 												<chunk reader="mrdefReader" processor="umlsDefinitionPropertyProcessor"
 													writer="entityPropertyWriter" commit-interval="100">
 													<streams>
@@ -122,7 +107,7 @@
 								</split>
 							</flow>
 							<flow>
-								<step id="index">
+								<step id="index" parent="listenerStep">
 									<tasklet ref="indexingTasklet" />
 								</step>
 							</flow>
