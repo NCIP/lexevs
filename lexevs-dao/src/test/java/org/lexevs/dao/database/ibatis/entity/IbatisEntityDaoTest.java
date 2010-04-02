@@ -666,14 +666,6 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		
 		assertTrue(Arrays.asList(entity.getEntityType()).contains("instance"));
 		assertTrue(Arrays.asList(entity.getEntityType()).contains("concept"));	
-		
-		StringWriter writer = new StringWriter();
-
-		entity.marshal(writer);
-		
-		writer.flush();
-		
-		System.out.println(writer.toString());
 	}
 	
 	@Test
