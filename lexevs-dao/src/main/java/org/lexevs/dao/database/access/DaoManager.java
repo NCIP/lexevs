@@ -337,4 +337,13 @@ public class DaoManager {
 	public void setPickListDaos(List<PickListDao> pickListDaos) {
 		this.pickListDaos = pickListDaos;
 	}
+	
+	/**
+	 * Gets the current pick list dao.
+	 * 
+	 * @return the current pick list dao
+	 */
+	public PickListDao getCurrentPickListDefinitionDao(){
+		return this.getCorrectDaoForSchemaVersion(this.getPickListDaos(), CURRENT_VERSION);
+	}
 }
