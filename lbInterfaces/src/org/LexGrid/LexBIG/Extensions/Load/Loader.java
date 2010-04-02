@@ -28,6 +28,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Extendable;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
+import org.LexGrid.LexBIG.Utility.logging.StatusReporter;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 
 /**
@@ -37,7 +38,7 @@ import org.LexGrid.LexOnt.CodingSchemeManifest;
  * @author solbrigcvs
  * @version 1.0
  */
-public interface Loader extends Extendable {
+public interface Loader extends Extendable, StatusReporter {
 	
 	public void load(URI resource);
 	
