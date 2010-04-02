@@ -7,11 +7,19 @@
 
 	<resultMap id="pickListDefinitionResult" class="pickListDefinition">
 		<result property="pickListId" column="pickListId" />
-		<result property="representsValueSetDefinition" column="representsValueSetDef" />
+		<result property="representsValueSetDefinition" column="representsValueSetDefinition" />
 		<result property="defaultEntityCodeNamespace" column="defaultEntityCodeNamespace" />
 		<result property="defaultLanguage" column="defaultLanguage" />
 		<result property="defaultSortOrder" column="defaultSortOrder"/>
-		<result property="completeSet" column="completeDomain"/>
+		<result property="completeSet" column="completeSet"/>
+		<result property="entityDescription.content" column="description" />
+		<result property="isActive" column="isActive" />
+		<result property="owner" column="owner" />
+		<result property="status" column="status" />
+		<result property="effectiveDate" column="effectiveDate" />
+		<result property="expirationDate" column="expirationDate" />
+		<result property="entryState" resultMap="Versions.entryStateResult" />
+		<result property="_sourceList" resultMap="PickListDefinition.sourceResult"/>
 	</resultMap>
 	
 	<select id="getPickListIds" 
@@ -19,7 +27,7 @@
 		SELECT
 			pickListId
 		FROM
-			$prefix$vsPickList
+			vsPickList
 	</select>
 	
 	<select id="getPickListGuidByPickListId" 
@@ -28,7 +36,7 @@
 		SELECT
 			vsPickListGuid
 		FROM
-			$prefix$vsPickList pickListDef
+			vsPickList pickListDef
 		WHERE
 			pickListDef.pickListId = #param1#
 	</select>
@@ -38,25 +46,41 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		SELECT
 			pickListDef.pickListId,
-			pickListDef.representsValueSetDef,
+			pickListDef.representsValueSetDefinition,
 			pickListDef.defaultEntityCodeNamespace,
 			pickListDef.defaultLanguage,
 			pickListDef.defaultSortOrder,
-			pickListDef.completeDomain
+			pickListDef.completeSet
 		FROM
-			$prefix$vsPickList pickListDef
+			vsPickList pickListDef
+		WHERE
+			pickListDef.pickListId = #param1#
+	</select>
+	
+	<select id="getPickListDefinitionIdForValueSet" 
+		resultMap="pickListDefinitionResult" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		SELECT
+			pickListDef.pickListId,
+			pickListDef.representsValueSetDefinition,
+			pickListDef.defaultEntityCodeNamespace,
+			pickListDef.defaultLanguage,
+			pickListDef.defaultSortOrder,
+			pickListDef.completeSet
+		FROM
+			vsPickList pickListDef
 		WHERE
 			pickListDef.pickListId = #param1#
 	</select>
 	
 	<insert id="insertPickListDefinition" 
 		parameterClass="org.lexevs.dao.database.ibatis.picklist.parameter.InsertPickListDefinitionBean">
-		INSERT INTO $prefix$vsPickList
+		INSERT INTO vsPickList
 		(
 				vsPickListGuid,
 				pickListId,
-				representsValueSetDef,
-				completeDomain,
+				representsValueSetDefinition,
+				completeSet,
 				defaultEntityCodeNamespace,
 				defaultLanguage,
 				defaultSortOrder,
