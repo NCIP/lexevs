@@ -21,6 +21,7 @@ package org.lexevs.dao.database.ibatis.picklist;
 import java.util.List;
 
 import org.LexGrid.valueSets.PickListDefinition;
+import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.picklist.PickListDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
@@ -54,6 +55,10 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	/** The GE t_ picklis t_ definitio n_ b y_ picklisti d_ sql. */
 	public static String GET_PICKLIST_DEFINITION_BY_PICKLISTID_SQL = PICKLIST_NAMESPACE + "getPickListDefinitionByPickListId";
 	
+	public static String GET_PICKLIST_DEFINITION_ID_FOR_VALUESET_DEFINITION_URI_SQL = PICKLIST_NAMESPACE + "getPickListDefinitionIdForValueSetDefinitionUri";
+	
+	public static String REMOVE_PICKLIST_DEFINITION_BY_PICKLISTID_SQL = PICKLIST_NAMESPACE + "removePickListDefinitionByPickListId";
+	
 	/** The versions dao. */
 	private VersionsDao versionsDao;
 	
@@ -63,11 +68,9 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	 */
 	@Override
 	public PickListDefinition getPickListDefinitionById(String pickListId) {
-		String prefix = getPrefix();
-		
 		return (PickListDefinition) 
 			this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_DEFINITION_BY_PICKLISTID_SQL, 
-				new PrefixedParameter(prefix, pickListId));
+				new PrefixedParameter(null, pickListId));
 	}
 	
 	/* (non-Javadoc)
@@ -75,13 +78,19 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	 */
 	@Override
 	public String getGuidFromPickListId(String pickListId) {
-		String prefix = getPrefix();
-		
 		return (String) 
 		this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_GUID_BY_PICKLISTID_SQL, 
-			new PrefixedParameter(prefix, pickListId));
+			new PrefixedParameter(null, pickListId));
 	}
-
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<String> getPickListDefinitionIdForValueSetDefinitionURI(
+			String valueSetDefURI) {
+		return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_DEFINITION_ID_FOR_VALUESET_DEFINITION_URI_SQL, 
+				new PrefixedParameter(null, valueSetDefURI));
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.picklist.PickListDao#insertPickListEntry(java.lang.String, org.LexGrid.valueDomains.PickListDefinition)
 	 */
@@ -118,8 +127,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getPickListIds() {
-		return this.getSqlMapClientTemplate().queryForList(
-				GET_PICKLIST_IDS_SQL, getPrefix());
+		return this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_IDS_SQL);
 	}	
 	
 	/**
@@ -156,4 +164,12 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	public void setVersionsDao(VersionsDao versionsDao) {
 		this.versionsDao = versionsDao;
 	}
+
+	@ClearCache
+	public void removePickListDefinitionByPickListId(String pickListDefinitionId) {
+		this.getSqlMapClientTemplate().
+			delete(REMOVE_PICKLIST_DEFINITION_BY_PICKLISTID_SQL, new PrefixedParameter(null, pickListDefinitionId));	
+	}
+
+	
 }
