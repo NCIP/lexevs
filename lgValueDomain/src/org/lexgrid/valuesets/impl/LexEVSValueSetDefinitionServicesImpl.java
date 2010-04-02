@@ -22,11 +22,11 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -49,34 +49,26 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
-import org.LexGrid.emf.naming.Mappings;
-import org.LexGrid.emf.valueDomains.ValueDomainDefinition;
-import org.LexGrid.emf.versions.SystemRelease;
-import org.LexGrid.emf.versions.impl.SystemReleaseImpl;
-import org.LexGrid.managedobj.FindException;
-import org.LexGrid.managedobj.InsertException;
-import org.LexGrid.managedobj.ObjectAlreadyExistsException;
-import org.LexGrid.managedobj.RemoveException;
-import org.LexGrid.managedobj.ServiceInitException;
+import org.LexGrid.naming.Mappings;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.system.ResourceManager;
-import org.lexevs.system.constants.SystemVariables;
+import org.lexevs.registry.service.Registry;
+import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
-import org.lexgrid.valuesets.persistence.SystemReleaseServices;
 import org.lexgrid.valuesets.persistence.VSDMappingServices;
 import org.lexgrid.valuesets.persistence.VSDSServices;
 import org.lexgrid.valuesets.persistence.VSDServiceHelper;
 import org.lexgrid.valuesets.persistence.VSDServices;
 import org.lexgrid.valuesets.persistence.VSDXMLread;
 
-import edu.mayo.informatics.lexgrid.convert.emfConversions.XMLWrite;
-
 /**
- * Implementation of Value Domain extension for LexGrid.
+ * Implementation of Value Set Definition for LexGrid.
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
@@ -90,14 +82,19 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	private VSDServiceHelper sh_;
 	protected MessageDirector md_;
 	protected LoadStatus status_;
-	private static final String name_ = "LexEVSValueDomainServicesImpl";
-	private static final String desc_ = "Implements LexGrid Value Domain services.";
+	private static final String name_ = "LexEVSValueSetDefinitionServicesImpl";
+	private static final String desc_ = "Implements LexGrid Value Set Definition services.";
 	private static final String provider_ = "Mayo Clinic";
-	private static final String version_ = "1.0";
+	private static final String version_ = "2.0";
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4995582014921448463L;
+	
+	private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+	private Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
+	private ValueSetDefinitionService vsds_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueDomainService();
+
 
 	public LexEVSValueSetDefinitionServicesImpl() {
 		getStatus().setState(ProcessState.PROCESSING);
@@ -121,47 +118,31 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		
 		return null;
 	}
-	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#loadValueDomain(org.LexGrid.emf.valueDomains.ValueDomainDefinition)
-	 */
-	public void loadValueDomain(ValueDomainDefinition vddef, String systemReleaseURI, Mappings mappings)
+	
+	public void loadValueSetDefinition(ValueSetDefinition definition, String systemReleaseURI, Mappings mappings)
 			throws LBException {
-		getLogger().logMethod(new Object[] { vddef });
-		try {
-			if (vddef != null)
-			{
-				md_.info("Loading value domain definition : " + vddef.getValueDomainURI());				
-				getVDService().insert(vddef, systemReleaseURI, mappings);
-			}
-		} catch (ObjectAlreadyExistsException e) {
-			md_.fatal("Failed while while loading value domain definition", e);
-			throw new LBException("Failed while while loading value domain definition", e);
-		} catch (InsertException e) {
-			md_.fatal("Failed while while loading value domain definition", e);
-			throw new LBException("Failed while while loading value domain definition", e);
-		} catch (ServiceInitException e) {
-			md_.fatal("Failed while while loading value domain definition", e);
-			throw new LBException("Failed while while loading value domain definition", e);
+		getLogger().logMethod(new Object[] { definition });
+		if (definition != null)
+		{
+			md_.info("Loading value set definition : " + definition.getValueSetDefinitionURI());
+			this.vsds_.insertValueSetDefinition(definition);
+//			getVDService().insert(vddef, systemReleaseURI, mappings);
 		}
-		md_.info("Finished loading value domain definition");
+		md_.info("Finished loading value set definition");
 	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#loadValueDomain(java.io.InputStream, boolean)
-	 */
-	public void loadValueDomain(InputStream inputStream, boolean failOnAllErrors)
-			throws LBException {
+	
+	@Override
+	public void loadValueSetDefinition(InputStream inputStream,
+			boolean failOnAllErrors) throws LBException {
 		getLogger().logMethod(new Object[] { inputStream });
 		VSDXMLread vdXML = new VSDXMLread(inputStream, md_, failOnAllErrors);
 
 		internalLoadVD(vdXML);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#loadValueDomain(java.lang.String, boolean)
-	 */
-	public void loadValueDomain(String xmlFileLocation, boolean failOnAllErrors)
-			throws LBException {
+	
+	@Override
+	public void loadValueSetDefinition(String xmlFileLocation,
+			boolean failOnAllErrors) throws LBException {
 		getLogger().logMethod(new Object[] { xmlFileLocation });
 		VSDXMLread vdXML;
 		try {
@@ -181,56 +162,49 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	private void internalLoadVD(VSDXMLread vdXML) throws LBException {
 		getLogger().logMethod(new Object[] { vdXML });
 		
-		try 
-		{
-			ValueDomainDefinition[] vdDefs = vdXML.readAllValueDomains();
-			SystemRelease systemRelease = vdXML.getSystemRelease();
-			
-			String releaseURI = null;
-			
-			if (systemRelease != null)
-			{
-				releaseURI = systemRelease.getReleaseURI();
-				
-				md_.info("Loading System Release : " + releaseURI);
-				
-				SystemReleaseServices releaseService = (SystemReleaseServices) getVDService().getNestedService(SystemReleaseImpl.class);
-				releaseService.insert(systemRelease);
-				
-				md_.info("Finished Loading System Release : " + releaseURI);
-			}
-			
-			md_.info("Loading Value Domain Definitions");
-			for (ValueDomainDefinition vddef : vdDefs) {
-				loadValueDomain(vddef, releaseURI, vdXML.getVdMappings());			
-			}
-			md_.info("Finished Loading Value Domain Definitions");
-			
-			// Mappings have to belong to a specific value domain - they are passed through in the load call above
-//			md_.info("Loading Mappings");
-//			mapS_ = (VDMappingServices) getVDSService().getNestedService(
-//					VDMappingServices.class);
-//			mapS_.insert(vdXML.getVdMappings(), -1);
-//			md_.info("Finished Loading Mappings");
-			
-			md_.info("Load Process Complete.");
-		} 
-		catch (ServiceInitException e)
-		{
-			throw new LBException("Problem loading valueDomain." + e.getStackTrace());
-		} 
-		catch (ObjectAlreadyExistsException e) 
-		{
-			throw new LBException("Problem loading valueDomain." + e.getStackTrace());
-		} 
-		catch (InsertException e) 
-		{
-			throw new LBException("Problem loading valueDomain." + e.getStackTrace());
-		} 
-		catch (Exception e) 
-		{
-			throw new LBException("Problem loading valueDomain." + e.getStackTrace());
-		}
+//		try 
+//		{
+//			ValueSetDefinition[] vdDefs = vdXML.readAllValueDomains();
+//			SystemRelease systemRelease = vdXML.getSystemRelease();
+//			
+//			String releaseURI = null;
+//			
+//			if (systemRelease != null)
+//			{
+//				releaseURI = systemRelease.getReleaseURI();
+//				
+//				md_.info("Loading System Release : " + releaseURI);
+//				
+//				SystemReleaseServices releaseService = (SystemReleaseServices) getVDService().getNestedService(SystemReleaseImpl.class);
+//				releaseService.insert(systemRelease);
+//				
+//				md_.info("Finished Loading System Release : " + releaseURI);
+//			}
+//			
+//			md_.info("Loading Value Domain Definitions");
+//			for (ValueSetDefinition vddef : vdDefs) {
+//				loadValueDomain(vddef, releaseURI, vdXML.getVdMappings());			
+//			}
+//			md_.info("Finished Loading Value Domain Definitions");
+//			
+//			md_.info("Load Process Complete.");
+//		} 
+//		catch (ServiceInitException e)
+//		{
+//			throw new LBException("Problem loading valueDomain." + e.getStackTrace());
+//		} 
+//		catch (ObjectAlreadyExistsException e) 
+//		{
+//			throw new LBException("Problem loading valueDomain." + e.getStackTrace());
+//		} 
+//		catch (InsertException e) 
+//		{
+//			throw new LBException("Problem loading valueDomain." + e.getStackTrace());
+//		} 
+//		catch (Exception e) 
+//		{
+//			throw new LBException("Problem loading valueDomain." + e.getStackTrace());
+//		}
 	}
 	
 	/* (non-Javadoc)
@@ -240,27 +214,25 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		VSDXMLread vdXML = new VSDXMLread(uri.toString(), null, md_, true);
 		vdXML.validate(uri, validationLevel);
 	}
-	   
-    /* (non-Javadoc)
-     * @see org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#isConceptInDomain(java.lang.String, java.net.URI, java.lang.String)
-     */
-    public AbsoluteCodingSchemeVersionReference isEntityInDomain(
-            String entityCode, URI valueDomainURI, String versionTag)  throws LBException {
-        getLogger().logMethod(new Object[] { entityCode, valueDomainURI, versionTag });
-        return isEntityInDomain(entityCode, null, valueDomainURI, null, versionTag);
-    }
 	
-	/* (non-Javadoc)
-     * @see org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#isEntityInDomain(java.lang.String, java.net.URI, java.net.URI, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, java.lang.String)
-     */
-    public AbsoluteCodingSchemeVersionReference isEntityInDomain(
-            String entityCode, URI entityCodeNamespace, URI valueDomainURI, AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) 
-            throws LBException {
+	@Override
+	public AbsoluteCodingSchemeVersionReference isEntityInValueSet(
+			String entityCode, URI valueSetDefinitionURI, String versionTag)
+			throws LBException {
+		getLogger().logMethod(new Object[] { entityCode, valueSetDefinitionURI, versionTag });
+        return isEntityInValueSet(entityCode, null, valueSetDefinitionURI, null, versionTag);
+	}
 
-        getLogger().logMethod(new Object[] { entityCode, entityCodeNamespace, valueDomainURI, csVersionList, versionTag });
+	@Override
+	public AbsoluteCodingSchemeVersionReference isEntityInValueSet(
+			String entityCode, URI entityCodeNamespace,
+			URI valueSetDefinitionURI,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList,
+			String versionTag) throws LBException {
+		getLogger().logMethod(new Object[] { entityCode, entityCodeNamespace, valueSetDefinitionURI, csVersionList, versionTag });
         String entityCodeNamespaceString = entityCodeNamespace != null && !StringUtils.isEmpty(entityCodeNamespace.toString())? entityCodeNamespace.toString() : null;
         
-        ValueDomainDefinition vdDef = getServiceHelper().getValueDomain(valueDomainURI);
+        ValueSetDefinition vdDef = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);
         
         if (vdDef != null) {
             ResolvedValueSetCodedNodeSet rvdcns = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vdDef, csVersionList, versionTag);            
@@ -277,90 +249,84 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
                 }
             }
         } else {
-            md_.fatal("No Value Domain found for URI : " + valueDomainURI);
-            throw new LBException("No Value Domain found for URI : " + valueDomainURI);
+            md_.fatal("No Value set definition found for URI : " + valueSetDefinitionURI);
+            throw new LBException("No Value set definition found for URI : " + valueSetDefinitionURI);
         }
         return null;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#resolveValueDomain(java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
-     */
-    @SuppressWarnings("unchecked")
-    public ResolvedValueSetDefinition resolveValueDomain(
-            URI valueDomainURI,AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException{
-        getLogger().logMethod(new Object[] { valueDomainURI, csVersionList, versionTag });
+	}
+
+	@Override
+	public ResolvedValueSetDefinition resolveValueSetDefinition(
+			URI valueSetDefinitionURI,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList,
+			String versionTag) throws LBException {
+		getLogger().logMethod(new Object[] { valueSetDefinitionURI, csVersionList, versionTag });
         
  
-        ValueDomainDefinition vdDef = getServiceHelper().getValueDomain(valueDomainURI);  
+        ValueSetDefinition vdDef = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);  
         if(vdDef != null) {
             ResolvedValueSetCodedNodeSet domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vdDef, csVersionList, versionTag);
             
             // Assemble the reply
             ResolvedValueSetDefinition rvddef = new ResolvedValueSetDefinition();
             try {
-                rvddef.setValueDomainURI(new URI(vdDef.getValueDomainURI()));
+                rvddef.setValueDomainURI(new URI(vdDef.getValueSetDefinitionURI()));
             } catch (URISyntaxException e) {
-                md_.fatal("Value domain URI is not a valid URI : " + vdDef.getValueDomainURI());
-                throw new LBException("Value domain URI is not a valid URI : " + vdDef.getValueDomainURI());
+                md_.fatal("Value Set Definition URI is not a valid URI : " + vdDef.getValueSetDefinitionURI());
+                throw new LBException("Value Set Definition URI is not a valid URI : " + vdDef.getValueSetDefinitionURI());
             }
-            rvddef.setValueDomainName(vdDef.getValueDomainName());
+            rvddef.setValueDomainName(vdDef.getValueSetDefinitionName());
             rvddef.setDefaultCodingScheme(vdDef.getDefaultCodingScheme());
-            rvddef.setRepresentsRealmOrContext(vdDef.getRepresentsRealmOrContext());
-            rvddef.setSource(vdDef.getSource());
+            rvddef.setRepresentsRealmOrContext(vdDef.getRepresentsRealmOrContextAsReference());
+            rvddef.setSource(vdDef.getSourceAsReference());
             rvddef.setCodingSchemeVersionRefList(domainNodes.getCodingSchemeVersionRefList());
             if(domainNodes != null && domainNodes.getCodedNodeSet() != null)
                 rvddef.setResolvedConceptReferenceIterator(domainNodes.getCodedNodeSet().restrictToStatus(ActiveOption.ACTIVE_ONLY, null).resolve(null, null, null));
             return rvddef;
         } else {
-            md_.fatal("No Value Domain found for URI : " + valueDomainURI);
-            throw new LBException("No Value Domain found for URI : " + valueDomainURI);
+            md_.fatal("No Value DomSet Definition found for URI : " + valueSetDefinitionURI);
+            throw new LBException("No Value Set Definition found for URI : " + valueSetDefinitionURI);
         }
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#isSubDomain
-     * (java.net.URI, java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.Srting)
-     */
-    public boolean isSubDomain(URI childValueDomainURI, URI parentValueDomainURI,
-            AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException {
-        getLogger().logMethod(new Object[] { childValueDomainURI, parentValueDomainURI , csVersionList, versionTag});
+    @Override
+	public boolean isSubSet(URI childValueSetDefinitionURI,
+			URI parentValueSetDefinitionURI,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList,
+			String versionTag) throws LBException {
+		getLogger().logMethod(new Object[] { childValueSetDefinitionURI, parentValueSetDefinitionURI , csVersionList, versionTag});
 
         CodedNodeSet childCNS = null;
         CodedNodeSet parentCNS = null;
         
-        // populate valueDomainDefinitions for both child and parent value domains
-        ValueDomainDefinition childVDDef = getServiceHelper().getValueDomain(childValueDomainURI);
+        // populate ValueSetDefinitions for both child and parent value set definition
+        ValueSetDefinition childVDDef = this.vsds_.getValueSetDefinitionByUri(childValueSetDefinitionURI);
+        
         if(childVDDef == null) {
-            md_.fatal("No Value Domain found for child domain URI : " + childValueDomainURI);
-            throw new LBException("No Value Domain found for child domain URI : " + childValueDomainURI);
+            md_.fatal("No Value set definition found for child domain URI : " + childValueSetDefinitionURI);
+            throw new LBException("No Value set definition found for child domain URI : " + childValueSetDefinitionURI);
         }
-        ValueDomainDefinition parentVDDef = getServiceHelper().getValueDomain(parentValueDomainURI);
+        ValueSetDefinition parentVDDef = this.vsds_.getValueSetDefinitionByUri(parentValueSetDefinitionURI);
         if(parentVDDef == null) {
-            md_.fatal("No Value Domain found for parent domain URI : " + parentValueDomainURI);
-            throw new LBException("No Value Domain found for parent domain URI : " + parentValueDomainURI);
+            md_.fatal("No Value set definition found for parent domain URI : " + parentValueSetDefinitionURI);
+            throw new LBException("No Value set definition found for parent domain URI : " + parentValueSetDefinitionURI);
         }
         
         // Prune the return version list down to what we've got available
         HashMap<String,String> refVersions = getServiceHelper().pruneVersionList(csVersionList);
         
-        // Resolve the child value domain and populate CodedNodeSet for this domain and the coding scheme version that was used.
+        // Resolve the child value set definition and populate CodedNodeSet for this domain and the coding scheme version that was used.
         childCNS = getServiceHelper().getCodedNodeSetForValueDomain(childVDDef, refVersions, versionTag);
         if (childCNS == null) {
-            md_.fatal("There was a problem creating CodedNodeSet for child valueDomain : " + childValueDomainURI);
-            throw new LBException("There was a problem creating CodedNodeSet for child valueDomain : " + childValueDomainURI);
+            md_.fatal("There was a problem creating CodedNodeSet for child value set definition : " + childValueSetDefinitionURI);
+            throw new LBException("There was a problem creating CodedNodeSet for child value set definition : " + childValueSetDefinitionURI);
         }
             
-        // Resolve the parent value domain and populate CodedNodeSet for this domain and the coding scheme version that was used.
+        // Resolve the parent value set definition and populate CodedNodeSet for this domain and the coding scheme version that was used.
         parentCNS = getServiceHelper().getCodedNodeSetForValueDomain(parentVDDef, refVersions, versionTag);
         if (parentCNS == null) {
-            md_.fatal("There was a problem creating CodedNodeSet for parent valueDomain : " + parentValueDomainURI);
-            throw new LBException("There was a problem creating CodedNodeSet for parent valueDomain : " + parentValueDomainURI);
+            md_.fatal("There was a problem creating CodedNodeSet for parent value set definition : " + parentValueSetDefinitionURI);
+            throw new LBException("There was a problem creating CodedNodeSet for parent value set definition : " + parentValueSetDefinitionURI);
         }
         LocalNameList lnl = new LocalNameList();
         return childCNS.difference(parentCNS.intersect(childCNS)).resolveToList(null, lnl, null, 1).getResolvedConceptReferenceCount() == 0;
@@ -370,60 +336,35 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
      * (non-Javadoc)
      * 
      * @seeorg.lexgrid.extension.valuedomain.LexEVSValueDomainServices#
-     * getValueDomainDefinition (java.net.URI)
+     * getValueSetDefinition (java.net.URI)
      */
-    public ValueDomainDefinition getValueDomainDefinition(URI valueDomainURI) throws LBException {
+    public ValueSetDefinition getValueSetDefinition(URI valueDomainURI) throws LBException {
         getLogger().logMethod(new Object[] { valueDomainURI });
-        return getServiceHelper().getValueDomain(valueDomainURI);
+        return this.vsds_.getValueSetDefinitionByUri(valueDomainURI);
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#listValueDomains
-     * (java.lang.String)
-     */
-    public URI[] listValueDomains(String valueDomainName) throws LBException {
-        getLogger().logMethod(new Object[] { valueDomainName });
-        URI[] uris;
-        try {
-            uris = getServiceHelper().getValueDomainServices().findByValueDomainName(valueDomainName);
-        } catch (FindException e) {
-            md_.fatal("Failed during list value domain for value domain name : " + valueDomainName, e);
-            throw new LBException("Failed during list value domain for value domain name : " + valueDomainName, e);
-        }     
-        return uris;
+    @Override
+	public List<URI> listValueSetDefinitions(String valueSetDefinitionName)
+			throws LBException {
+		getLogger().logMethod(new Object[] { valueSetDefinitionName });
+        return this.vsds_.getValueSetDefinitionURISForName(valueSetDefinitionName);        
     }
 
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.lexgrid.extension.valuedomain.LexEVSValueDomainServices#
-	 * getAllValueDomainsWithNoName()
-	 */
-	public URI[] getAllValueDomainsWithNoName() throws LBException {
+	@Override
+	public List<URI> getAllValueSetDefinitionsWithNoName() throws LBException {
 		getLogger().logMethod(new Object[]{});
-		URI[] uris;
-		try {
-			uris = getServiceHelper().getValueDomainServices().findByValueDomainName(" ");
-		} catch (FindException e) {
-			md_.fatal("Failed while finding Value Domain Definition with no names", e);
-			throw new LBException("Failed while finding Value Domain Definition with no names", e);
-		}
-		return uris;
+		return this.vsds_.getValueSetDefinitionURISForName(" ");
 	}
 	
-	/* (non-Javadoc)
-     * @see org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#getValueDomainEntitiesForTerm(java.lang.String, java.lang.String java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.Srting)
-     */
-    @SuppressWarnings("unchecked")
-    public ResolvedValueSetCodedNodeSet getValueDomainEntitiesForTerm(String term, String matchAlgorithm, URI valueDomainURI,
-            AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException {
-        getLogger().logMethod(new Object[] { term, matchAlgorithm, valueDomainURI, csVersionList, versionTag });
+	@Override
+	public ResolvedValueSetCodedNodeSet getValueSetDefinitionEntitiesForTerm(
+			String term, String matchAlgorithm, URI valueSetDefinitionURI,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList,
+			String versionTag) throws LBException {
+		getLogger().logMethod(new Object[] { term, matchAlgorithm, valueSetDefinitionURI, csVersionList, versionTag });
         
-        ValueDomainDefinition vdDef = getServiceHelper().getValueDomain(valueDomainURI);
+        ValueSetDefinition vdDef = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);
         if (vdDef != null) {
             ResolvedValueSetCodedNodeSet domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vdDef, csVersionList, versionTag);
             
@@ -447,26 +388,22 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
             }
             return domainNodes;
         } else {
-            md_.fatal("Value domain uri : '"+ valueDomainURI + "' not found.");
-            throw new LBException("Value domain uri : '"+ valueDomainURI + "' not found.");
+            md_.fatal("Value set definition uri : '"+ valueSetDefinitionURI + "' not found.");
+            throw new LBException("Value set definition uri : '"+ valueSetDefinitionURI + "' not found.");
         }
-    }
+	}
 
+	
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.lexgrid.extension.valuedomain.LexEVSValueDomainServices#
-	 * getCodingSchemesInValueDomain(java.net.URI)
-	 */
-	public AbsoluteCodingSchemeVersionReferenceList getCodingSchemesInValueDomain(
-			URI valueDomainURI) throws LBException {
-		getLogger().logMethod(new Object[] { valueDomainURI });
+	@Override
+	public AbsoluteCodingSchemeVersionReferenceList getCodingSchemesInValueSetDefinition(
+			URI valueSetDefinitionURI) throws LBException {
+		getLogger().logMethod(new Object[] { valueSetDefinitionURI });
 		
 		AbsoluteCodingSchemeVersionReferenceList csList = new AbsoluteCodingSchemeVersionReferenceList();
 		
-		// Get valueDomain definition object for supplied uri.
-		ValueDomainDefinition vd = getServiceHelper().getValueDomain(valueDomainURI);
+		// Get value set definition object for supplied uri.
+		ValueSetDefinition vd = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);
 		
 		// Get a list of all the coding schemes in the domain
 		HashSet<String> vdURIs = getServiceHelper().getCodingSchemeURIs(vd);
@@ -487,19 +424,17 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		return csList;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#isDomain(java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
-	 */
-	public boolean isDomain(String domainId, String codingSchemeName,
-			CodingSchemeVersionOrTag csvt) throws LBException {
-		getLogger().logMethod(new Object[] { domainId, codingSchemeName, csvt });
+	@Override
+	public boolean isValueSetDefinition(String entityCode,
+			String codingSchemeName, CodingSchemeVersionOrTag csvt)
+			throws LBException {
+		getLogger().logMethod(new Object[] { entityCode, codingSchemeName, csvt });
 		
 		LocalNameList lnl = Constructors.createLocalNameList(SQLTableConstants.ENTRY_STATE_TYPE_VALUEDOMAIN);
 		
 		// Populate CodedNodeSet for supplied domainId and csVersion and restrict to 'valueDomain' type.
 		CodedNodeSet cns = getLexBIGService().getNodeSet(codingSchemeName, csvt, lnl);
-		cns.restrictToCodes(Constructors.createConceptReferenceList(domainId));
+		cns.restrictToCodes(Constructors.createConceptReferenceList(entityCode));
 		
 		Iterator<ResolvedConceptReference> rcrIter = cns.resolveToList(null, null, null, null, 1).iterateResolvedConceptReference();
 		// If there were entities after resolving the codedNodeSet; the supplied domainId is a valueDomain
@@ -509,50 +444,47 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		return false;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#removeValueDomain(java.net.URI)
-	 */
-	public void removeValueDomain(URI valueDomainURI) throws LBException, RemoveException {
-		try {
-			getServiceHelper().getValueDomainServices().remove(valueDomainURI);
-		} catch (FindException e) {
-			md_.fatal("Failed during removing value domain : " + valueDomainURI, e);
-			throw new LBException("Failed during removing value domain : " + valueDomainURI, e);
-		}
+	@Override
+	public void removeValueSetDefinition(URI valueSetDefinitionURI)
+			throws LBException {
+		//TODO - sod
+//		try {
+//			getServiceHelper().getValueDomainServices().remove(valueDomainURI);
+//		} catch (FindException e) {
+//			md_.fatal("Failed during removing value domain : " + valueDomainURI, e);
+//			throw new LBException("Failed during removing value domain : " + valueDomainURI, e);
+//		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#removeAllValueDomains()
-	 */
-	public void removeAllValueDomains() throws RemoveException, LBException{
-		try {
-			URI[] vdURIs = listValueDomains(null);
-			
-			for (URI vdURI : vdURIs)
-			{
-				getServiceHelper().getValueDomainServices().remove(vdURI);
-			}
-		} catch (FindException e) {
-			md_.fatal("Failed during removing all value domains", e);
-			throw new LBException("Failed during removing all value domains", e);
-		}
+	@Override
+	public void removeAllValueSetDefinitions() throws LBException {
+		//TODO - sod
+//		try {
+//			URI[] vdURIs = listValueDomains(null);
+//			
+//			for (URI vdURI : vdURIs)
+//			{
+//				getServiceHelper().getValueDomainServices().remove(vdURI);
+//			}
+//		} catch (FindException e) {
+//			md_.fatal("Failed during removing all value domains", e);
+//			throw new LBException("Failed during removing all value domains", e);
+//		}
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#dropValueDomainTables()
 	 */
-	public void dropValueDomainTables() throws RemoveException, LBException {
-		try {
-			getServiceHelper().getValueDomainServices().dropValueDomainTables(false);
-		} catch (FindException e) {
-			md_.fatal("Failed to drop value domain tables", e);
-			throw new LBException("Failed to drop value domain tables", e);
-		} catch (SQLException e) {
-			md_.fatal("Failed to drop value domain tables", e);
-			throw new LBException("Failed to drop value domain tables", e);
-		}
+	public void dropValueDomainTables() throws LBException {
+//		try {
+//			getServiceHelper().getValueDomainServices().dropValueDomainTables(false);
+//		} catch (FindException e) {
+//			md_.fatal("Failed to drop value domain tables", e);
+//			throw new LBException("Failed to drop value domain tables", e);
+//		} catch (SQLException e) {
+//			md_.fatal("Failed to drop value domain tables", e);
+//			throw new LBException("Failed to drop value domain tables", e);
+//		}
 	}
 	
 	/*
@@ -614,25 +546,11 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         return lbs_;
     }
 
-	public VSDServices getVDService() throws ServiceInitException, LBException {
-		if (vds_ == null)
-			vds_ = getServiceHelper().getValueDomainServices();
-		return vds_;
-	}
-
-	public VSDSServices getVDSService() throws ServiceInitException {
-		if (vdss_ == null)
-			vdss_ = getServiceHelper().getValueDomainsServices();
-		return vdss_;
-	}
-	
 	public VSDServiceHelper getServiceHelper(){
 		if (sh_ == null)
 		{
-			SystemVariables sv = ResourceManager.instance().getSystemVariables();
 			try {
-				sh_ = new VSDServiceHelper(sv.getAutoLoadDBURL(), sv.getAutoLoadDBDriver(), sv.getAutoLoadDBUsername(),
-						sv.getAutoLoadDBPassword(), sv.getAutoLoadDBPrefix(), true, md_);
+				sh_ = new VSDServiceHelper(true, md_);
 			} catch (LBParameterException e) {
 				md_.fatal("Problem getting ServiceHelper", e);
 				e.printStackTrace();
@@ -656,20 +574,24 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	
 	
 	/* (non-Javadoc)
-	 * @see org.lexgrid.valuedomain.LexEVSValueDomainServices#exportValueDomainDefinition(java.net.URI, java.lang.String, boolean, boolean)
+	 * @see org.lexgrid.valuedomain.LexEVSValueDomainServices#exportValueSetDefinition(java.net.URI, java.lang.String, boolean, boolean)
 	 */
-	public void exportValueDomainDefinition(URI valueDomainURI,
+	public void exportValueSetDefinition(URI valueDomainURI,
 			String xmlFolderLocation, boolean overwrite, boolean failOnAllErrors)
 			throws LBException {
-		md_.info("Starting to export value domain definition : " + valueDomainURI);
-		XMLWrite xmlWrite = new XMLWrite(xmlFolderLocation, overwrite, failOnAllErrors, md_);
-		ValueDomainDefinition vdDef = getValueDomainDefinition(valueDomainURI);
-		try {
-			//xmlWrite.writeValueDomainDefinition(vdDef);
-		} catch (Exception e) {
-			md_.fatal("Problem exporting value domain definition", e);
-			e.printStackTrace();
-		}
-		md_.info("Completed exporting value domain definition : " + valueDomainURI);
+//		md_.info("Starting to export value domain definition : " + valueDomainURI);
+//		XMLWrite xmlWrite = new XMLWrite(xmlFolderLocation, overwrite, failOnAllErrors, md_);
+//		ValueSetDefinition vdDef = getValueSetDefinition(valueDomainURI);
+//		try {
+//			//xmlWrite.writeValueSetDefinition(vdDef);
+//		} catch (Exception e) {
+//			md_.fatal("Problem exporting value domain definition", e);
+//			e.printStackTrace();
+//		}
+//		md_.info("Completed exporting value domain definition : " + valueDomainURI);
 	}
+
+	
+
+	
 }

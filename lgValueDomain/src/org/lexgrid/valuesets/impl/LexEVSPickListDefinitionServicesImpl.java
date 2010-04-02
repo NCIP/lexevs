@@ -34,11 +34,9 @@ import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
-import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
@@ -49,35 +47,20 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
-import org.LexGrid.concepts.Entity;
-import org.LexGrid.concepts.Presentation;
-import org.LexGrid.emf.naming.Mappings;
-import org.LexGrid.emf.valueDomains.PickListDefinition;
-import org.LexGrid.emf.valueDomains.PickListEntry;
-import org.LexGrid.emf.valueDomains.PickListEntryExclusion;
-import org.LexGrid.emf.valueDomains.PickListEntryNode;
-import org.LexGrid.emf.versions.SystemRelease;
-import org.LexGrid.emf.versions.impl.SystemReleaseImpl;
-import org.LexGrid.managedobj.FindException;
-import org.LexGrid.managedobj.InsertException;
-import org.LexGrid.managedobj.ObjectAlreadyExistsException;
-import org.LexGrid.managedobj.RemoveException;
-import org.LexGrid.managedobj.ServiceInitException;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.valueSets.PickListDefinition;
+import org.LexGrid.valueSets.PickListEntry;
+import org.LexGrid.valueSets.PickListEntryExclusion;
+import org.LexGrid.valueSets.PickListEntryNode;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.system.ResourceManager;
-import org.lexevs.system.constants.SystemVariables;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
-import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntry;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntryList;
-import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
-import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 import org.lexgrid.valuesets.helper.PLEntryNodeSortUtil;
-import org.lexgrid.valuesets.persistence.PickListServices;
-import org.lexgrid.valuesets.persistence.PickListsServices;
-import org.lexgrid.valuesets.persistence.SystemReleaseServices;
-import org.lexgrid.valuesets.persistence.VSDMappingServices;
 import org.lexgrid.valuesets.persistence.VSDServiceHelper;
 import org.lexgrid.valuesets.persistence.VSDXMLread;
 
@@ -94,17 +77,19 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	private static final long serialVersionUID = 1L;
 	// Associated service ...
 	private LexBIGService lbs_;
-	private PickListsServices plss_;
-	private PickListServices pls_;
-	private VSDMappingServices mapS_;
+	private PickListDefinitionService pls_;
 	private VSDServiceHelper sh_;
 	
 	protected MessageDirector md_;
 	protected LoadStatus status_;
-	private static final String name_ = "LexEVSPickListServicesImpl";
-	private static final String desc_ = "Implements LexGrid Pick List services.";
+	private static final String name_ = "LexEVSPickListDefinitionServicesImpl";
+	private static final String desc_ = "Implements LexGrid Pick List Definition services.";
 	private static final String provider_ = "Mayo Clinic";
-	private static final String version_ = "1.0";
+	private static final String version_ = "2.0";
+	
+	private DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
+//    private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+//    private Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
 	
 	
 	public LexEVSPickListDefinitionServicesImpl() {
@@ -124,28 +109,29 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSPickListServices#loadPickList(org.LexGrid.valueDomains.PickListDefinition, java.lang.String)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#loadPickList(org.LexGrid.valueSets.PickListDefinition, java.lang.String)
 	 */
 	public void loadPickList(PickListDefinition pldef, URI systemReleaseURI, Mappings mappings)
 			throws LBException {
 		getLogger().logMethod(new Object[] { pldef, systemReleaseURI});
-		try {
-			getPickListService().insert(pldef, systemReleaseURI, mappings);
-		} catch (ObjectAlreadyExistsException e) {
-			md_.fatal("Failed loading PickListDefinition : " + pldef.getPickListId(), e);
-			throw new LBException(e.getMessage());
-		} catch (InsertException e) {
-			md_.fatal("Failed loading PickListDefinition : " + pldef.getPickListId(), e);
-			throw new LBException(e.getMessage());
-		} catch (ServiceInitException e) {
-			md_.fatal("Failed loading PickListDefinition : " + pldef.getPickListId(), e);
-			throw new LBException(e.getMessage());
-		}
+		this.databaseServiceManager.getPickListDefinitionService().insertPickListDefinition(pldef);
+//		try {			
+//			getPickListDefinitionService().insert(pldef, systemReleaseURI, mappings);
+//		} catch (ObjectAlreadyExistsException e) {
+//			md_.fatal("Failed loading PickListDefinition : " + pldef.getPickListId(), e);
+//			throw new LBException(e.getMessage());
+//		} catch (InsertException e) {
+//			md_.fatal("Failed loading PickListDefinition : " + pldef.getPickListId(), e);
+//			throw new LBException(e.getMessage());
+//		} catch (ServiceInitException e) {
+//			md_.fatal("Failed loading PickListDefinition : " + pldef.getPickListId(), e);
+//			throw new LBException(e.getMessage());
+//		}
 
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSPickListServices#loadPickList(java.io.InputStream, boolean)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#loadPickList(java.io.InputStream, boolean)
 	 */
 	public void loadPickList(InputStream inputStream, boolean failOnAllErrors)
 			throws LBException {
@@ -156,7 +142,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSPickListServices#loadPickList(java.lang.String, boolean)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#loadPickList(java.lang.String, boolean)
 	 */
 	public void loadPickList(String xmlFileLocation, boolean failOnAllErrors)
 			throws LBException {
@@ -172,7 +158,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSPickListServices#validate(java.net.URI, int)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#validate(java.net.URI, int)
 	 */
 	public void validate(URI uri, int v1) throws LBParameterException{
 		VSDXMLread vdXML = new VSDXMLread(uri.toString(), null, md_, true);
@@ -186,86 +172,60 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	 */
 	private void internalLoadPickList(VSDXMLread vdXML) throws LBException {
 		getLogger().logMethod(new Object[] { vdXML });
-		try {
-			PickListDefinition[] plDefs = vdXML.readAllPickLists();
-			SystemRelease systemRelease = vdXML.getSystemRelease();
-			
-			String releaseURI = null;
-			
-			if (systemRelease != null)
-			{
-				releaseURI = systemRelease.getReleaseURI();
-				md_.info("Loading SystemRelease : " + releaseURI);
-				SystemReleaseServices releaseService = (SystemReleaseServices) getPickListService().getNestedService(SystemReleaseImpl.class);
-				releaseService.insert(systemRelease);
-				md_.info("Finished Loading SystemRelease : " + releaseURI);
-			}
-			
-			md_.info("Loading PickListDefinitions");
-			for (PickListDefinition pldef : plDefs) {
-				loadPickList(pldef, new URI(releaseURI), vdXML.getVdMappings());			
-			}
-			md_.info("Finished Loading PickListDefinitions");
-			
-//			md_.info("Loading Mappings");
-//			mapS_ = (VDMappingServices) getPickListsService().getNestedService(
-//					VDMappingServices.class);
-//			mapS_.insert(vdXML.getVdMappings(), -1);
-//			md_.info("Finished Loading Mappings");
-			
-			md_.info("Load Process Complete.");
-		} 
-		catch (Exception e)
-		{
-			throw new LBException("Problem loading PickLists", e);
-		}
+//		try {
+//			PickListDefinition[] plDefs = vdXML.readAllPickLists();
+//			SystemRelease systemRelease = vdXML.getSystemRelease();
+//			
+//			String releaseURI = null;
+//			
+//			if (systemRelease != null)
+//			{
+//				releaseURI = systemRelease.getReleaseURI();
+//				md_.info("Loading SystemRelease : " + releaseURI);
+//				SystemReleaseServices releaseService = (SystemReleaseServices) getPickListDefinitionService().getNestedService(SystemReleaseImpl.class);
+//				releaseService.insert(systemRelease);
+//				md_.info("Finished Loading SystemRelease : " + releaseURI);
+//			}
+//			
+//			md_.info("Loading PickListDefinitions");
+//			for (PickListDefinition pldef : plDefs) {
+//				loadPickList(pldef, new URI(releaseURI), vdXML.getVdMappings());			
+//			}
+//			md_.info("Finished Loading PickListDefinitions");
+//			
+//			md_.info("Load Process Complete.");
+//		} 
+//		catch (Exception e)
+//		{
+//			throw new LBException("Problem loading PickLists", e);
+//		}
 	}
 
 	
 	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSPickListServices#getPickListDefinitionById(java.lang.String)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#getPickListDefinitionById(java.lang.String)
 	 */
 	public PickListDefinition getPickListDefinitionById(String pickListId) throws LBException{
-		PickListDefinition pickList = null;
-		try {
-			pickList = (PickListDefinition) getPickListService().findByPrimaryKey(pickListId);
-		} catch (FindException e) {
-			md_.fatal("Problem getting PickLists for pickListId : " + pickListId, e);
-			throw new LBException("Problem getting PickLists for pickListId : " + pickListId, e);
-		} catch (ServiceInitException e) {
-			md_.fatal("Problem getting PickLists for pickListId : " + pickListId, e);
-			throw new LBException("Problem getting PickLists for pickListId : " + pickListId, e);
-		}
-		return pickList;
+		return (PickListDefinition) this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionByPickListId(pickListId);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSPickListServices#listPickListIds()
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#listPickListIds()
 	 */
 	public List<String> listPickListIds() throws LBException {
-		List<String> pickListIds;
-		try {
-			pickListIds = getPickListService().listPickListIds();
-		} catch (FindException e) {
-			md_.fatal("Problem getting list of PickListIds", e);
-			throw new LBException("Problem getting list of PickListIds", e);
-		} catch (ServiceInitException e) {
-			md_.fatal("Problem getting list of PickListIds", e);
-			throw new LBException("Problem getting list of PickListIds", e);
-		}
-		return pickListIds;
+		return this.databaseServiceManager.getPickListDefinitionService().listPickListIds();
 	}	
 
 	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSPickListServices#getPickListValueDomain(java.lang.String)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#getPickListValueSetDefinition(java.lang.String)
 	 */
-	public URI getPickListValueDomain(String pickListId) throws LBException {
+	public URI getPickListValueSetDefinition(String pickListId) throws LBException {
 		URI valueDomainURI = null;
 		
 		try {
 			PickListDefinition pickList = getPickListDefinitionById(pickListId);
 			if (pickList != null)
-				valueDomainURI = new URI(pickList.getRepresentsValueDomain()); // TODO need to change representsValueDomain from String to URI in XML schema
+				valueDomainURI = new URI(pickList.getRepresentsValueSetDefinition()); // TODO need to change representsValueDomain from String to URI in XML schema
 		} catch (URISyntaxException e) {
 			md_.fatal("Problem getting PickLists for pickListId : " + pickListId, e);
 			throw new LBException("Problem getting PickLists for pickListId : " + pickListId, e);
@@ -274,28 +234,15 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSPickListServices#getPickListDefinitionsForDomain(java.net.URI)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#getPickListDefinitionsForValueSetDef(java.net.URI)
 	 */
-	public PickListDefinition[] getPickListDefinitionsForDomain(URI valueDomainURI) throws LBException {
-		PickListDefinition[] pickLists = null;
-		try {
-			pickLists = getPickListService().findByValueDomainURI(valueDomainURI);
-		} catch (FindException e) {
-			md_.fatal("Problem getting PickLists for ValueDomainURI : " + valueDomainURI, e);
-			throw new LBException("Problem getting PickLists for ValueDomainURI : " + valueDomainURI, e);
-		} catch (ServiceInitException e) {
-			md_.fatal("Problem getting PickLists for ValueDomainURI : " + valueDomainURI, e);
-			throw new LBException("Problem getting PickLists for ValueDomainURI : " + valueDomainURI, e);
-		} catch (LBException e) {
-			md_.fatal("Problem getting PickLists for ValueDomainURI : " + valueDomainURI, e);
-			throw new LBException("Problem getting PickLists for ValueDomainURI : " + valueDomainURI, e);
-		}
-		return pickLists;
+	public List<PickListDefinition> getPickListDefinitionsForValueSetDef(URI valueSetDefURI) throws LBException {
+		return this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionsByValueDomainUri(valueSetDefURI.toString());		
 	}
 	
 	
 	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSPickListServices#resolvePickListForTerm(java.lang.String, java.lang.String, org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#resolvePickListForTerm(java.lang.String, java.lang.String, org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms)
 	 */
 	public ResolvedPickListEntryList resolvePickListForTerm(String pickListId,
 			String term, String matchAlgorithm, String language, String[] context, boolean sortByText) throws LBException {
@@ -304,41 +251,43 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		List<String> rcrCodes = new ArrayList<String>();
 		List<String> excludeEntityCodes = new ArrayList<String>();
 		
-		PickListDefinition pickList = getPickListDefinitionById(pickListId);
+		PickListDefinition pickList = this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionByPickListId(pickListId);
 		if (pickList != null)
 		{
 			String defaultCS = pickList.getDefaultEntityCodeNamespace();
 			String defaultLang = pickList.getDefaultLanguage();
 			
-			boolean completeDomain = pickList.isCompleteDomain();
+			boolean completeDomain = pickList.isCompleteSet();
 			
 			//TODO, if completeDomain is true, dynamically populate pickListEntries
 			if (completeDomain)
 			{
-				return internalResolvePickListForTerm(pickList.getRepresentsValueDomain(), term, matchAlgorithm, language, context, sortByText);
+				return internalResolvePickListForTerm(pickList.getRepresentsValueSetDefinition(), term, matchAlgorithm, language, context, sortByText);
 			}
 			
 			// get all static pickListEntryNodes to get any exclude entries.
-			List<PickListEntryNode> plEntryNodeList = pickList.getPickListEntryNode();
+			List<PickListEntryNode> plEntryNodeList = pickList.getPickListEntryNodeAsReference();
 			
 			// Get all exclude list
 			for (int i = 0; i < plEntryNodeList.size(); i++)
 			{
 				PickListEntryNode plEntryNode = plEntryNodeList.get(i);
 				
-				PickListEntryExclusion plEntryExclusion = plEntryNode.getExclusionEntry();
-				if (plEntryExclusion != null)
-					excludeEntityCodes.add(plEntryExclusion.getEntityCode());
+				if (plEntryNode.getPickListEntryNodeChoice() != null)
+				{
+					PickListEntryExclusion plEntryExclusion = plEntryNode.getPickListEntryNodeChoice().getExclusionEntry();
+					if (plEntryExclusion != null)
+						excludeEntityCodes.add(plEntryExclusion.getEntityCode());
+				}
 			}
 			
 			CodedNodeSet cns = null;
-			ConceptReferenceList crList = new ConceptReferenceList();
-			
+			ConceptReferenceList crList = new ConceptReferenceList();			
 			
 			
 			for (int i = 0; i < plEntryNodeList.size(); i++)
 			{
-				PickListEntry plEntry = plEntryNodeList.get(i).getInclusionEntry();
+				PickListEntry plEntry = plEntryNodeList.get(i).getPickListEntryNodeChoice().getInclusionEntry();
 				
 				if (plEntry != null && !excludeEntityCodes.contains(plEntry.getEntityCode()))
 				{
@@ -384,7 +333,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 				
 				for (int i = 0; i < plEntryNodeList.size(); i++)
 				{
-					PickListEntry plEntry = plEntryNodeList.get(i).getInclusionEntry();
+					PickListEntry plEntry = plEntryNodeList.get(i).getPickListEntryNodeChoice().getInclusionEntry();
 					
 					if (plEntry != null && rcrCodes.contains(plEntry.getEntityCode()))
 					{
@@ -408,43 +357,45 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		
 		ResolvedPickListEntryList plList = new ResolvedPickListEntryList();
 		
-		LexEVSValueSetDefinitionServices vds = new LexEVSValueSetDefinitionServicesImpl();
+		//TODO implement the below stuff - sod
+//		LexEVSValueSetDefinitionServices vds = new LexEVSValueSetDefinitionServicesImpl();
+//		
+//		ResolvedValueSetCodedNodeSet rvdCNS;
 		
-		ResolvedValueSetCodedNodeSet rvdCNS;
-		try {
-			rvdCNS = vds.getValueDomainEntitiesForTerm(term, matchAlgorithm, new URI(valueDomainURI), null, null);
-		} catch (URISyntaxException e) {
-			throw new LBException("Problem with ValueDomain URI", e);
-		}
-		
-		CodedNodeSet cns = rvdCNS.getCodedNodeSet();
-		
-		ResolvedConceptReferencesIterator rcrItr = cns.resolve(null, null, null, null, true);
-		
-		while (rcrItr.hasNext())
-		{
-			ResolvedConceptReference rcr = rcrItr.next();
-			ResolvedPickListEntry rpl = new ResolvedPickListEntry();
-			rpl.setEntityCode(rcr.getCode());
-			rpl.setEntityCodeNamespace(rcr.getCodeNamespace());
-			Entity entity = rcr.getEntity();
-			Presentation[] presentations = entity.getPresentation();
-			for (Presentation pres : presentations)
-			{
-				if (pres.isIsPreferred())
-				{
-					rpl.setPickText(pres.getValue().getContent());
-					rpl.setPropertyId(pres.getPropertyId());
-					plList.addResolvedPickListEntry(rpl);
-				}				
-			}
-		}
+//		try {
+//			rvdCNS = vds.getValueDomainEntitiesForTerm(term, matchAlgorithm, new URI(valueDomainURI), null, null);
+//		} catch (URISyntaxException e) {
+//			throw new LBException("Problem with ValueDomain URI", e);
+//		}
+//		
+//		CodedNodeSet cns = rvdCNS.getCodedNodeSet();
+//		
+//		ResolvedConceptReferencesIterator rcrItr = cns.resolve(null, null, null, null, true);
+//		
+//		while (rcrItr.hasNext())
+//		{
+//			ResolvedConceptReference rcr = rcrItr.next();
+//			ResolvedPickListEntry rpl = new ResolvedPickListEntry();
+//			rpl.setEntityCode(rcr.getCode());
+//			rpl.setEntityCodeNamespace(rcr.getCodeNamespace());
+//			Entity entity = rcr.getEntity();
+//			Presentation[] presentations = entity.getPresentation();
+//			for (Presentation pres : presentations)
+//			{
+//				if (pres.isIsPreferred())
+//				{
+//					rpl.setPickText(pres.getValue().getContent());
+//					rpl.setPropertyId(pres.getPropertyId());
+//					plList.addResolvedPickListEntry(rpl);
+//				}				
+//			}
+//		}
 		
 		return plList;
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSPickListServices#resolvePickList(java.lang.String, boolean)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#resolvePickList(java.lang.String, boolean)
 	 */
 	public ResolvedPickListEntryList resolvePickList(String pickListId, boolean sortByText) throws LBException {
 		ResolvedPickListEntryList plList = new ResolvedPickListEntryList();
@@ -452,23 +403,24 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
         List<String> excludeEntityCodes = new ArrayList<String>();
         Set<String> includedEntityCodes = new HashSet<String>();
         
-        PickListDefinition pickList = getPickListDefinitionById(pickListId);
+        PickListDefinition pickList = this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionByPickListId(pickListId);
+
         if (pickList != null)
         {
             String defaultCS = pickList.getDefaultEntityCodeNamespace();
             String defaultLang = pickList.getDefaultLanguage();
             
-            boolean completeDomain = pickList.isCompleteDomain();
+            boolean completeDomain = pickList.isCompleteSet();
             
             // get all static pickListEntryNodes to get any exclude entries.
-            List<PickListEntryNode> plEntryNodeList = pickList.getPickListEntryNode();
+            List<PickListEntryNode> plEntryNodeList = pickList.getPickListEntryNodeAsReference();
             
             // Get all exclude list
             for (int i = 0; i < plEntryNodeList.size(); i++)
             {
                 PickListEntryNode plEntryNode = plEntryNodeList.get(i);
                 
-                PickListEntryExclusion plEntryExclusion = plEntryNode.getExclusionEntry();
+                PickListEntryExclusion plEntryExclusion = plEntryNode.getPickListEntryNodeChoice().getExclusionEntry();
                 if (plEntryExclusion != null)
                     excludeEntityCodes.add(plEntryExclusion.getEntityCode());
             }
@@ -476,7 +428,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
             
             for (int i = 0; i < plEntryNodeList.size(); i++)
             {
-                PickListEntry plEntry = plEntryNodeList.get(i).getInclusionEntry();
+                PickListEntry plEntry = plEntryNodeList.get(i).getPickListEntryNodeChoice().getInclusionEntry();
                 
                 if (plEntry != null && !excludeEntityCodes.contains(plEntry.getEntityCode()))
                 {
@@ -490,7 +442,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
                     rpl.setDefault(plEntry.isIsDefault());
                     rpl.setEntityCode(plEntry.getEntityCode());
                     rpl.setEntityCodeNamespace(StringUtils.isEmpty(plEntry.getEntityCodeNamespace()) ? cs : plEntry.getEntityCodeNamespace());
-                    rpl.setEntryOrder(plEntry.getEntryOrder());
+                    rpl.setEntryOrder(Integer.valueOf(plEntry.getEntryOrder().toString()));
                     rpl.setPickText(plEntry.getPickText());
                     rpl.setPropertyId(plEntry.getPropertyId());
                     plList.addResolvedPickListEntry(rpl);
@@ -500,7 +452,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
             //if completeDomain is true, resolve value domain and add any missing entities to the list
             if (completeDomain)
             {
-            	ResolvedPickListEntryList vdPLList = internalResolvePickListForTerm(pickList.getRepresentsValueDomain(), sortByText);
+            	ResolvedPickListEntryList vdPLList = internalResolvePickListForTerm(pickList.getRepresentsValueSetDefinition(), sortByText);
             	if (plList.getResolvedPickListEntryCount() > 0 )
             	{
             		for (int i = 0; i < vdPLList.getResolvedPickListEntryCount(); i++)
@@ -554,67 +506,59 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
     private ResolvedPickListEntryList internalResolvePickListForTerm(String valueDomainURI, boolean sortByText) throws LBException {
         
         ResolvedPickListEntryList plList = new ResolvedPickListEntryList();
+      //TODO implement below stuff - sod
+//        LexEVSValueSetDefinitionServices vds = new LexEVSValueSetDefinitionServicesImpl();
+//        
+//        ResolvedValueSetDefinition rvdDef;
         
-        LexEVSValueSetDefinitionServices vds = new LexEVSValueSetDefinitionServicesImpl();
+//        try {
+//            rvdDef = vds.resolveValueDomain(new URI(valueDomainURI), null, null);
+//        } catch (URISyntaxException e) {
+//            throw new LBException("Problem with ValueDomain URI", e);
+//        }
         
-        ResolvedValueSetDefinition rvdDef;
-        try {
-            rvdDef = vds.resolveValueDomain(new URI(valueDomainURI), null, null);
-        } catch (URISyntaxException e) {
-            throw new LBException("Problem with ValueDomain URI", e);
-        }
-        
-        ResolvedConceptReferencesIterator rcrItr = rvdDef.getResolvedConceptReferenceIterator();
-        
-        while (rcrItr.hasNext())
-        {
-            ResolvedConceptReference rcr = rcrItr.next();
-            ResolvedPickListEntry rpl = new ResolvedPickListEntry();
-            rpl.setEntityCode(rcr.getCode());
-            rpl.setEntityCodeNamespace(rcr.getCodeNamespace());
-            Entity entity = rcr.getEntity();
-            Presentation[] presentations = entity.getPresentation();
-            for (Presentation pres : presentations)
-            {
-                if (pres.isIsPreferred())
-                {
-                    rpl.setPickText(pres.getValue().getContent());
-                    rpl.setPropertyId(pres.getPropertyId());
-                    plList.addResolvedPickListEntry(rpl);
-                }               
-            }
-        }
+//        ResolvedConceptReferencesIterator rcrItr = rvdDef.getResolvedConceptReferenceIterator();
+//        
+//        while (rcrItr.hasNext())
+//        {
+//            ResolvedConceptReference rcr = rcrItr.next();
+//            ResolvedPickListEntry rpl = new ResolvedPickListEntry();
+//            rpl.setEntityCode(rcr.getCode());
+//            rpl.setEntityCodeNamespace(rcr.getCodeNamespace());
+//            Entity entity = rcr.getEntity();
+//            Presentation[] presentations = entity.getPresentation();
+//            for (Presentation pres : presentations)
+//            {
+//                if (pres.isIsPreferred())
+//                {
+//                    rpl.setPickText(pres.getValue().getContent());
+//                    rpl.setPropertyId(pres.getPropertyId());
+//                    plList.addResolvedPickListEntry(rpl);
+//                }               
+//            }
+//        }
         
         return plList;
     }
 
 	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSPickListServices#removePickList(java.lang.String)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#removePickList(java.lang.String)
 	 */
-	public void removePickList(String pickListId) throws LBException, RemoveException {
+	public void removePickList(String pickListId) throws LBException{
 		getLogger().logMethod(new Object[] { pickListId });
-		try {
-			getPickListService().remove(pickListId);
-		} catch (FindException e) {
-			md_.fatal("Problem removing PickListDefinition with id : " + pickListId, e);
-			throw new LBException("Problem removing PickListDefinition with id : " + pickListId, e);
-		} catch (ServiceInitException e) {
-			md_.fatal("Problem removing PickListDefinition with id : " + pickListId, e);
-			throw new LBException("Problem removing PickListDefinition with id : " + pickListId, e);
-		}
+		this.databaseServiceManager.getPickListDefinitionService().removePickListDefinitionByPickListId(pickListId);
 	}
 	
 	public Map<String, String> getReferencedPLDefinitions(String entityCode,
 			String entityCodeNameSpace, String propertyId,
-			Boolean extractPickListName) throws FindException,
-			ServiceInitException, LBException {
+			Boolean extractPickListName) throws LBException {
 		return getPickListService().getReferencedPLDefinitions(entityCode,
 				entityCodeNameSpace, propertyId, extractPickListName);
 	}
 
 	public Map<String, String> getReferencedPLDefinitions(
 			String valueSet, Boolean extractPickListName)
-			throws FindException, ServiceInitException, LBException {
+			throws LBException {
 		return getPickListService().getReferencedPLDefinitions(valueSet,
 				extractPickListName);
 	}
@@ -685,35 +629,34 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		return lbs_;
 	}
 
-	private PickListServices getPickListService() throws ServiceInitException, LBException {
+	private PickListDefinitionService getPickListService() throws LBException {
 		if (pls_ == null)
-			pls_ = getServiceHelper().getPickListService();
+			pls_ = this.databaseServiceManager.getPickListDefinitionService();
 		return pls_;
 	}
 	
-	private PickListsServices getPickListsService() throws ServiceInitException, LBException {
-		if (plss_ == null)
-			plss_ = getServiceHelper().getPickListsService();
-		return plss_;
-	}
+//	private PickListsServices getPickListsService() throws ServiceInitException, LBException {
+//		if (plss_ == null)
+//			plss_ = getServiceHelper().getPickListsService();
+//		return plss_;
+//	}
 
-	private VSDServiceHelper getServiceHelper(){
-		if (sh_ == null)
-		{
-			SystemVariables sv = ResourceManager.instance().getSystemVariables();
-			try {
-				sh_ = new VSDServiceHelper(sv.getAutoLoadDBURL(), sv.getAutoLoadDBDriver(), sv.getAutoLoadDBUsername(),
-						sv.getAutoLoadDBPassword(), sv.getAutoLoadDBPrefix(), true, md_);
-			} catch (LBParameterException e) {
-				md_.fatal("Problem getting ServiceHelper", e);
-				e.printStackTrace();
-			} catch (LBInvocationException e) {
-				md_.fatal("Problem getting ServiceHelper", e);
-				e.printStackTrace();
-			}
-		}
-		return sh_;
-	}
+//	private VSDServiceHelper getServiceHelper(){
+//		if (sh_ == null)
+//		{
+//			try {
+//				sh_ = new VSDServiceHelper(sv.getAutoLoadDBURL(), sv.getAutoLoadDBDriver(), sv.getAutoLoadDBUsername(),
+//						sv.getAutoLoadDBPassword(), sv.getAutoLoadDBPrefix(), true, md_);
+//			} catch (LBParameterException e) {
+//				md_.fatal("Problem getting ServiceHelper", e);
+//				e.printStackTrace();
+//			} catch (LBInvocationException e) {
+//				md_.fatal("Problem getting ServiceHelper", e);
+//				e.printStackTrace();
+//			}
+//		}
+//		return sh_;
+//	}
 	
 	private String getStringFromURI(URI uri) throws LBParameterException {
         if ("file".equals(uri.getScheme()))
