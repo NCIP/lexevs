@@ -18,8 +18,6 @@
 		<result property="status" column="status" />
 		<result property="effectiveDate" column="effectiveDate" />
 		<result property="expirationDate" column="expirationDate" />
-		<result property="entryState" resultMap="Versions.entryStateResult" />
-		<result property="_sourceList" resultMap="PickListDefinition.sourceResult"/>
 	</resultMap>
 	
 	<select id="getPickListIds" 
@@ -47,30 +45,31 @@
 		SELECT
 			pickListDef.pickListId,
 			pickListDef.representsValueSetDefinition,
+			pickListDef.completeSet,
 			pickListDef.defaultEntityCodeNamespace,
 			pickListDef.defaultLanguage,
 			pickListDef.defaultSortOrder,
-			pickListDef.completeSet
+			pickListDef.description,
+			pickListDef.isActive,
+			pickListDef.owner,
+			pickListDef.status,
+			pickListDef.effectiveDate,
+			pickListDef.expirationDate
 		FROM
 			vsPickList pickListDef
 		WHERE
 			pickListDef.pickListId = #param1#
 	</select>
 	
-	<select id="getPickListDefinitionIdForValueSet" 
-		resultMap="pickListDefinitionResult" 
+	<select id="getPickListDefinitionIdForValueSetDefinitionUri" 
+		resultClass="string" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		SELECT
-			pickListDef.pickListId,
-			pickListDef.representsValueSetDefinition,
-			pickListDef.defaultEntityCodeNamespace,
-			pickListDef.defaultLanguage,
-			pickListDef.defaultSortOrder,
-			pickListDef.completeSet
+			pickListDef.pickListId
 		FROM
 			vsPickList pickListDef
 		WHERE
-			pickListDef.pickListId = #param1#
+			pickListDef.representsValueSetDefinition = #param1#
 	</select>
 	
 	<insert id="insertPickListDefinition" 
@@ -111,6 +110,11 @@
 			)
      </insert>
 
-	
+	<delete id="removePickListDefinitionByPickListId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			vsPickList
+		WHERE
+			pickListId = #param1#
+	</delete>
     
 </sqlMap>
