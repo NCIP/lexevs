@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.valueSets.PickListDefinition;
+import org.lexevs.dao.database.access.picklist.PickListDao;
+import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class VersionableEventPickListDefinitionService.
@@ -14,7 +17,7 @@ import org.LexGrid.valueSets.PickListDefinition;
  * @author <a href="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</a>
  *
  */
-public class VersionableEventPickListDefinitionService implements
+public class VersionableEventPickListDefinitionService extends AbstractDatabaseService implements
 		PickListDefinitionService {
 
 	/* (non-Javadoc)
@@ -61,12 +64,16 @@ public class VersionableEventPickListDefinitionService implements
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#insertPickListDefinition(org.LexGrid.valueSets.PickListDefinition)
 	 */
-	@Override
+	@Transactional
+//	@DatabaseErrorIdentifier(errorCode=INSERT_PICKLIST_ERROR)
 	public void insertPickListDefinition(PickListDefinition definition) {
-		// TODO Auto-generated method stub
-
+		PickListDao plDao = this.getDaoManager().getCurrentPickListDefinitionDao();
+	
+		plDao.insertPickListDefinition(null, definition);
+		
+//		this.fireCodingSchemeInsertEvent(definition);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#listPickListIds()
 	 */
