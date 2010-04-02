@@ -40,6 +40,14 @@ public interface PickListDao extends LexGridSchemaVersionAwareDao {
 	public PickListDefinition getPickListDefinitionById(String pickListId);
 	
 	/**
+	 * Gets the list of pick list definitions that are derived by supplied value set definition URI.
+	 * 
+	 * @param valueSet the uri of value set definition
+	 * @return the pick list id
+	 */
+	public List<String> getPickListDefinitionIdForValueSetDefinitionURI(String valueSetDefURI);
+	
+	/**
 	 * Gets the guid from pick list id.
 	 * 
 	 * @param pickListId the pick list id
@@ -74,4 +82,11 @@ public interface PickListDao extends LexGridSchemaVersionAwareDao {
 	 * @return the string
 	 */
 	public String insertPickListEntry(String pickListGuid, PickListDefinition definition);
+	
+	/**
+	 * Delete pick list definition by pick list id.
+	 * 
+	 * @param pickListDefinitionId the pick list definition id
+	 */
+	public void removePickListDefinitionByPickListId(String pickListDefinitionId);
 }
