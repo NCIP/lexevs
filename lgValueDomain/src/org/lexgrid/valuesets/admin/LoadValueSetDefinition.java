@@ -107,7 +107,7 @@ public class LoadValueSetDefinition {
                 vds.validate(source, vl);
                 Util.displayTaggedMessage("VALIDATION SUCCESSFUL");
             } else {
-            	vds.loadValueDomain(source.toString(), false);
+            	vds.loadValueSetDefinition(source.toString(), false);
             }            
         }
     }
