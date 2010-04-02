@@ -29,6 +29,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.indexer.IndexCreator;
+import org.lexevs.dao.index.indexer.IndexCreator.EntityIndexerProgressCallback;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 
@@ -56,7 +57,11 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	 * @see org.lexevs.dao.index.service.entity.EntityIndexService#createIndex(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
 	public void createIndex(AbsoluteCodingSchemeVersionReference reference) {
-		indexCreator.index(reference);
+		createIndex(reference, null);
+	}
+	
+	public void createIndex(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback) {
+		indexCreator.index(reference, callback);
 	}
 
 	protected void optimizeIndex(String indexName) {

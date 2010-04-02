@@ -22,10 +22,10 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.connection.IndexInterface;
-import org.lexevs.logging.LoggingBean;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
@@ -37,7 +37,7 @@ import edu.mayo.informatics.indexer.api.IndexerService;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class EntityBatchingIndexCreator extends LoggingBean implements IndexCreator {
+public class EntityBatchingIndexCreator implements IndexCreator {
 	
 	/** The batch size. */
 	private int batchSize = 1000;
@@ -57,11 +57,16 @@ public class EntityBatchingIndexCreator extends LoggingBean implements IndexCrea
 	private EntityIndexer entityIndexer;
 	
 	private boolean useCompoundFile = false;
+	
+	private LgLoggerIF logger;
 
+	public void index(AbsoluteCodingSchemeVersionReference reference) {
+		this.index(reference, null);
+	}
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.indexer.IndexCreator#index(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
-	public void index(AbsoluteCodingSchemeVersionReference reference) {
+	public void index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback) {
 		int totalIndexedEntities = 0;
 
 		String indexName = entityIndexer.getCommonIndexName();
@@ -81,6 +86,10 @@ public class EntityBatchingIndexCreator extends LoggingBean implements IndexCrea
 				entityIndexer.indexEntity(indexName, reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), entity);
 				
 				totalIndexedEntities++;
+				
+				if(callback != null) {
+					callback.onEntityIndex(entity);
+				}
 				
 				if(totalIndexedEntities % 1000 == 0) {
 					this.getLogger().info("Indexed: " + totalIndexedEntities + " Entities.");
@@ -256,5 +265,13 @@ public class EntityBatchingIndexCreator extends LoggingBean implements IndexCrea
 
 	public EntityIndexer getEntityIndexer() {
 		return entityIndexer;
+	}
+
+	public void setLogger(LgLoggerIF logger) {
+		this.logger = logger;
+	}
+
+	public LgLoggerIF getLogger() {
+		return logger;
 	}
 }

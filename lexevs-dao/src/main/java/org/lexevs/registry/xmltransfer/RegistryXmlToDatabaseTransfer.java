@@ -21,7 +21,7 @@ package org.lexevs.registry.xmltransfer;
 import java.io.File;
 import java.util.List;
 
-import org.lexevs.logging.LoggingBean;
+import org.lexevs.logging.AbstractLoggingBean;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.system.constants.SystemVariables;
@@ -32,7 +32,7 @@ import org.springframework.beans.factory.InitializingBean;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class RegistryXmlToDatabaseTransfer extends LoggingBean implements InitializingBean {
+public class RegistryXmlToDatabaseTransfer extends AbstractLoggingBean implements InitializingBean {
 	
 	/** The system variables. */
 	private SystemVariables systemVariables;

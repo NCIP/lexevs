@@ -44,6 +44,8 @@ public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
    
     /** The log entries. */
     private List<LogEntry> logEntries = new ArrayList<LogEntry>();
+    
+    private int messageNumber = 0;
 
     /**
      * Instantiates a new caching message director impl.
@@ -168,6 +170,7 @@ public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
     private void addMsg(LogLevel level, String msg, String exceptionMsg) {
 
         LogEntry entry = new LogEntry();
+        entry.setMessageNumber(messageNumber++);
         entry.setEntryLevel(level);
         entry.setEntryTime(new Date());
         entry.setMessage(msg + " - " + exceptionMsg);

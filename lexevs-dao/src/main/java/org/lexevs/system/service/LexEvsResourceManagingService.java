@@ -34,7 +34,7 @@ import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
-import org.lexevs.logging.LoggingBean;
+import org.lexevs.logging.AbstractLoggingBean;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
@@ -49,7 +49,7 @@ import org.springframework.beans.factory.InitializingBean;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 @Cacheable(cacheName = "DelegatingResourceManagingService")
-public class LexEvsResourceManagingService extends LoggingBean implements SystemResourceService, InitializingBean {
+public class LexEvsResourceManagingService extends AbstractLoggingBean implements SystemResourceService, InitializingBean {
 
 	/** The registry. */
 	private Registry registry;

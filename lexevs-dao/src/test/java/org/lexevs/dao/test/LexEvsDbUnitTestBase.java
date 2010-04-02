@@ -51,9 +51,8 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	private static final String CREATE_CODINGSCHEME_SCRIPT = "sql/lexevs/codingscheme-create-hsqldb.sql";
 	
 	/** The Constant CREATE_VD_PICKLIST_SCRIPT. */
-	private static final String CREATE_VD_PICKLIST_SCRIPT = "sql/lexevs/valueDomainPickList-create-hsqldb.sql";
+	private static final String CREATE_VD_PICKLIST_SCRIPT = "sql/lexevs/valuesetst-create-hsqldb.sql";
 	
-	/** The Constant CREATE_VD_PICKLIST_SCRIPT. */
 	private static final String CREATE_CODINGSCHEME_HISTORY_SCRIPT = "sql/lexevs/codingschemehistory-create-hsqldb.sql";
 	
 	/** The data source. */
@@ -89,7 +88,7 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 		new SimpleJdbcTemplate(dataSource).getJdbcOperations().execute("DROP SCHEMA PUBLIC CASCADE");
 		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_COMMON_SCRIPT), prefixResolver.resolveDefaultPrefix());
 		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_CODINGSCHEME_SCRIPT), prefixResolver.resolveDefaultPrefix());
-		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_VD_PICKLIST_SCRIPT), prefixResolver.resolveDefaultPrefix());
+		//lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_VD_PICKLIST_SCRIPT), prefixResolver.resolveDefaultPrefix());
 		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_CODINGSCHEME_HISTORY_SCRIPT), prefixResolver.resolveDefaultPrefix());
 	}
 	

@@ -25,6 +25,7 @@ import org.LexGrid.concepts.Entity;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.lexevs.dao.index.indexer.IndexCreator.EntityIndexerProgressCallback;
 
 /**
  * The Interface EntityIndexService.
@@ -49,6 +50,7 @@ public void updateIndexForEntity(String codingSchemeUri, String codingSchemeVers
 	 */
 	public void createIndex(AbsoluteCodingSchemeVersionReference reference);
 	
+	public void createIndex(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback);
 	/**
 	 * Drop index.
 	 * 

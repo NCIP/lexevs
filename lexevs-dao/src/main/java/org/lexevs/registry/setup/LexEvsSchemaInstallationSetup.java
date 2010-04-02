@@ -20,17 +20,16 @@ package org.lexevs.registry.setup;
 
 import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
-import org.lexevs.logging.LoggingBean;
+import org.lexevs.logging.AbstractLoggingBean;
 import org.lexevs.system.constants.SystemVariables;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class LexEvsSchemaInstallationSetup.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LexEvsSchemaInstallationSetup extends LoggingBean implements InitializingBean {
+public class LexEvsSchemaInstallationSetup extends AbstractLoggingBean implements InitializingBean {
 	
 	/** The system variables. */
 	private SystemVariables systemVariables;

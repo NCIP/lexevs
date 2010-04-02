@@ -440,6 +440,30 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	/**
+	 * Test distinct namespaces.
+	 */
+	@Test
+	@Transactional
+	public void testDeleteUriMapsOfCodingScheme() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into cssupportedattrib " +
+			"values ('cssaguid1', 'csguid', 'CodingScheme', 'id1', 'uri1', null, null, null, null, null, null)");
+		
+		template.execute("Insert into cssupportedattrib " +
+			"values ('cssaguid2', 'csguid', 'CodingScheme', 'id2', 'uri2', null, null, null, null, null, null)");
+
+		assertEquals(2, template.queryForInt("Select count(*) from cssupportedattrib"));
+		
+		ibatisCodingSchemeDao.deleteCodingSchemeMappings("csguid");
+		
+		assertEquals(0, template.queryForInt("Select count(*) from cssupportedattrib"));
+	}
+	
+	/**
 	 * Test get coding scheme local name.
 	 * 
 	 * @throws SQLException the SQL exception

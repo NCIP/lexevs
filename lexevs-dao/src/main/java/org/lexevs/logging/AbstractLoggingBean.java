@@ -16,31 +16,36 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.lexevs.dao.index.indexer;
+package org.lexevs.logging;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.concepts.Entity;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 
 /**
- * The Interface IndexCreator.
+ * The Class LoggingBean.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface IndexCreator {
+public abstract class AbstractLoggingBean implements LoggingBean {
+
+	/** The logger. */
+	private LgLoggerIF logger;
 
 	/**
-	 * Index.
+	 * Sets the logger.
 	 * 
-	 * @param reference the reference
+	 * @param logger the new logger
 	 */
-	public void index(AbsoluteCodingSchemeVersionReference reference);
-	
-	public void index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback);
-	
-	public interface EntityIndexerProgressCallback {
-		public void onEntityIndex(Entity entity);
+	public void setLogger(LgLoggerIF logger) {
+		this.logger = logger;
 	}
+
+	/**
+	 * Gets the logger.
+	 * 
+	 * @return the logger
+	 */
+	public LgLoggerIF getLogger() {
+		return logger;
+	}
+
 }
-
-
-
