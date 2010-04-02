@@ -10,6 +10,7 @@ import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
 import org.lexgrid.loader.processor.HighestRankingListProcessor;
 import org.lexgrid.loader.processor.support.ListFilter;
 import org.lexgrid.loader.processor.support.PropertyResolver;
@@ -19,37 +20,42 @@ import org.lexgrid.loader.wrappers.CodingSchemeIdHolder;
 
 public class MrconsoGroupEntityProcessor extends HighestRankingListProcessor<Mrconso,CodingSchemeIdHolder<Entity>>{
 
-	public PropertyResolver<Mrconso> presentationResolver;
+	private PropertyResolver<Mrconso> presentationResolver;
 	
-	public List<PropertyResolver<Mrconso>> propertyResolvers;
+	private List<PropertyResolver<Mrconso>> propertyResolvers;
 	
-	public Map<ListFilter<Mrconso>,PropertyResolver<Mrconso>> filteredPropertyResolvers;
+	private Map<ListFilter<Mrconso>,PropertyResolver<Mrconso>> filteredPropertyResolvers;
 	
-	public List<QualifierResolver<Mrconso>> qualifierResolvers;
+	private List<QualifierResolver<Mrconso>> qualifierResolvers;
 	
-	public List<QualifierResolver<List<Mrconso>>> qualifierListResolvers;
+	private List<QualifierResolver<List<Mrconso>>> qualifierListResolvers;
+	
+	private SupportedAttributeTemplate supportedAttributeTemplate;
 	
 	@Override
 	public CodingSchemeIdHolder<Entity> process(List<Mrconso> items)
 			throws Exception {
 		CodingSchemeIdHolder<Entity> entityHolder = super.process(items);
 		
+		String uri = entityHolder.getCodingSchemeIdSetter().getCodingSchemeUri();
+		String version = entityHolder.getCodingSchemeIdSetter().getCodingSchemeVersion();
+		
 		//the highest ranking MRCONSO Line will be Preferred -- and every line
 		//in MRCONSO is considered a Presentation;
 		Mrconso preferred = items.get(0);
 
-		entityHolder.getItem().addPresentation(buildPresentation(preferred, true));
+		entityHolder.getItem().addPresentation(buildPresentation(uri, version, preferred, true));
 		
 		//process the rest of the MRCONSO lines
 		for(int i=1;i<items.size();i++){
-			entityHolder.getItem().addPresentation(buildPresentation(items.get(i), false));
+			entityHolder.getItem().addPresentation(buildPresentation(uri, version, items.get(i), false));
 		}
 		
 		if(propertyResolvers != null) {
 			for(PropertyResolver<Mrconso> resolver : propertyResolvers) {
 				for(Mrconso item : items) {
 					entityHolder.getItem().addProperty(
-							buildProperty(item, resolver));
+							buildProperty(uri, version, item, resolver));
 				}
 			}
 		}
@@ -60,6 +66,8 @@ public class MrconsoGroupEntityProcessor extends HighestRankingListProcessor<Mrc
 				for(Mrconso mrconso : filteredList) {
 					entityHolder.getItem().addProperty(
 							buildProperty(
+									uri,
+									version,
 									mrconso,
 									entry.getValue()));	
 				}
@@ -69,7 +77,7 @@ public class MrconsoGroupEntityProcessor extends HighestRankingListProcessor<Mrc
 		return entityHolder;
 	}
 	
-	protected Property buildProperty(Mrconso mrconso, PropertyResolver<Mrconso> resolver){
+	protected Property buildProperty(String uri, String version, Mrconso mrconso, PropertyResolver<Mrconso> resolver){
 		Property prop = new Property();
 		prop.setPropertyId(resolver.getId(mrconso));
 		prop.setLanguage(resolver.getLanguage(mrconso));
@@ -78,14 +86,14 @@ public class MrconsoGroupEntityProcessor extends HighestRankingListProcessor<Mrc
 		prop.setValue(DaoUtility.createText(resolver.getPropertyValue(mrconso)));
 		
 		if(this.qualifierResolvers != null){
-			prop.setPropertyQualifier(buildPropertyQualifiers(mrconso).toArray(new PropertyQualifier[0]));
+			prop.setPropertyQualifier(buildPropertyQualifiers(uri, version, mrconso).toArray(new PropertyQualifier[0]));
 		}
 
-		return prop;
-		
+		this.getSupportedAttributeTemplate().addSupportedProperty(uri, version, prop.getPropertyName(), null, prop.getPropertyName());
+		return prop;	
 	}
 	
-	protected Presentation buildPresentation(Mrconso mrconso, boolean preferred){
+	protected Presentation buildPresentation(String uri, String version, Mrconso mrconso, boolean preferred){
 		Presentation pres = new Presentation();
 		pres.setPropertyId(presentationResolver.getId(mrconso));
 		pres.setDegreeOfFidelity(presentationResolver.getDegreeOfFidelity(mrconso));
@@ -97,13 +105,14 @@ public class MrconsoGroupEntityProcessor extends HighestRankingListProcessor<Mrc
 		pres.setIsPreferred(preferred);
 		
 		if(this.qualifierResolvers != null){
-			pres.setPropertyQualifier(buildPropertyQualifiers(mrconso).toArray(new PropertyQualifier[0]));
+			pres.setPropertyQualifier(buildPropertyQualifiers(uri, version, mrconso).toArray(new PropertyQualifier[0]));
 		}
 
+		this.getSupportedAttributeTemplate().addSupportedProperty(uri, version, pres.getPropertyName(), null, pres.getPropertyName());
 		return pres;
 	}
 	
-	protected List<PropertyQualifier> buildPropertyQualifiers(Mrconso mrconso){
+	protected List<PropertyQualifier> buildPropertyQualifiers(String uri, String version, Mrconso mrconso){
 		List<PropertyQualifier> returnList = new ArrayList<PropertyQualifier>();
 		
 		for(QualifierResolver<Mrconso> qualResolver : this.qualifierResolvers){
@@ -111,6 +120,7 @@ public class MrconsoGroupEntityProcessor extends HighestRankingListProcessor<Mrc
 			qual.setPropertyQualifierName(qualResolver.getQualifierName());
 			qual.setValue(DaoUtility.createText(qualResolver.getQualifierValue(mrconso)));
 			
+			this.getSupportedAttributeTemplate().addSupportedPropertyQualifier(uri, version, qual.getPropertyQualifierName(), null, qual.getPropertyQualifierName());
 			returnList.add(qual);
 		}
 		return returnList;
@@ -159,5 +169,13 @@ public class MrconsoGroupEntityProcessor extends HighestRankingListProcessor<Mrc
 	public void setFilteredPropertyResolvers(
 			Map<ListFilter<Mrconso>, PropertyResolver<Mrconso>> filteredPropertyResolvers) {
 		this.filteredPropertyResolvers = filteredPropertyResolvers;
+	}
+
+	public void setSupportedAttributeTemplate(SupportedAttributeTemplate supportedAttributeTemplate) {
+		this.supportedAttributeTemplate = supportedAttributeTemplate;
+	}
+
+	public SupportedAttributeTemplate getSupportedAttributeTemplate() {
+		return supportedAttributeTemplate;
 	}
 }
