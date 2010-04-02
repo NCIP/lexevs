@@ -97,7 +97,7 @@ CREATE TABLE vsPickList
 (
 	vsPickListGuid VARCHAR(36) NOT NULL,
 	pickListId VARCHAR(50) NOT NULL,
-	representsValueSetDef VARCHAR(250) NOT NULL,
+	representsValueSetDefinition VARCHAR(250) NOT NULL,
 	completeSet CHAR(1),
 	defaultEntityCodeNamespace VARCHAR(50),
 	defaultLanguage VARCHAR(50),
@@ -113,7 +113,7 @@ CREATE TABLE vsPickList
 	PRIMARY KEY (vsPickListGuid),
 	KEY (releaseGuid),
 	INDEX idx_pickListId (pickListId ASC),
-	INDEX idx_representsVSD (representsValueSetDef ASC)
+	INDEX idx_representsVSD (representsValueSetDefinition ASC)
 ) 
 ;
 
@@ -232,7 +232,7 @@ ALTER TABLE vsPickList ADD CONSTRAINT FK_vsdPL_releaseGuid
 ;
 
 ALTER TABLE vsPLEntry ADD CONSTRAINT FK_vsPLEnt_vsPLGuid 
-	FOREIGN KEY (vsPickListGuid) REFERENCES vsPickList (representsValueSetDef)
+	FOREIGN KEY (vsPickListGuid) REFERENCES vsPickList (representsValueSetDefinition)
 	ON DELETE CASCADE
 ;
 
