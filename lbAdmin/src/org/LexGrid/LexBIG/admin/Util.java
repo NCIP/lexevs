@@ -30,6 +30,7 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExportStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.ProcessStatus;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Export.Exporter;
@@ -37,6 +38,7 @@ import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.LexGrid.LexBIG.Utility.logging.StatusReporter;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.lexevs.system.ResourceManager;
@@ -104,6 +106,29 @@ public class Util {
             displayMessage("");
             displayMessage("Example: " + example);
         }
+    }
+    
+    /**
+     * Displays any available status messages, polling periodically and
+     * returning when the export operation is complete.
+     * 
+     * @param loader
+     */
+    public static void displayStatus(StatusReporter reporter) {
+        ProcessStatus status = null;
+        String msg = "";
+        do {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+            }
+            status = reporter.getStatus();
+            String s = status.getMessage();
+            if (s != null && !s.equals(msg)) {
+                Util.displayTaggedMessage(s);
+                msg = s;
+            }
+        } while (status.getEndTime() == null);
     }
 
     /**
