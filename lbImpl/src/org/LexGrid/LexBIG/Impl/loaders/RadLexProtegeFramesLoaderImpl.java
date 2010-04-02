@@ -29,10 +29,9 @@ import org.LexGrid.LexBIG.Extensions.Load.RadlexProtegeFrames_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
-import org.springframework.validation.Errors;
 
+import edu.mayo.informatics.lexgrid.convert.directConversions.fma.FMA2LGMain;
 import edu.mayo.informatics.lexgrid.convert.directConversions.radlex.RadLex2LGMain;
-import edu.mayo.informatics.lexgrid.convert.emfConversions.fma.FMA2EMFMain;
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.ProtegeFrames;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
@@ -98,7 +97,7 @@ public class RadLexProtegeFramesLoaderImpl extends BaseLoader implements RadlexP
         CodingScheme scheme;
         
         if ("FMA".equalsIgnoreCase(project_name)) {
-            FMA2EMFMain mainTxfm = new FMA2EMFMain();
+            FMA2LGMain mainTxfm = new FMA2LGMain();
             scheme = mainTxfm.map(this.getResourceUri(), this.getMessageDirector());
         } else if ((project_name != null) && (project_name.toLowerCase().startsWith("radlex"))) {
             RadLex2LGMain mainTxfm = new RadLex2LGMain();

@@ -138,8 +138,8 @@ public class OBOLoaderImpl extends BaseLoader implements OBO_Loader {
         OBO2LGMain mainTxfm = new OBO2LGMain();
         CodingScheme codingScheme = mainTxfm.map(this.getResourceUri(), null, this.getMessageDirector());
         // Apply manifest changes
-        ManifestUtil manifestUtil = new ManifestUtil(null, this.getMessageDirector());
-        //manifestUtil.applyManifest(this.getCodingSchemeManifest(), scheme);
+        ManifestUtil manifestUtil = this.getManifestUtil();
+        manifestUtil.applyManifest(this.getCodingSchemeManifest(), codingScheme);
   
         databaseServiceManager.getCodingSchemeService().insertCodingScheme(codingScheme);
         URNVersionPair  urnVersion= new URNVersionPair(codingScheme.getCodingSchemeURI(), codingScheme.getRepresentsVersion());

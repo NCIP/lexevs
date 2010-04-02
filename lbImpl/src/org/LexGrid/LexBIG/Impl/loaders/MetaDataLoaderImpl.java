@@ -301,7 +301,7 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
                 message_.info("Applying manifest entries to the coding scheme...");
                 try {
 
-                    manifestUtil_.applyManifest(manifest_, tablePrefix, currentURNVersion);
+                    manifestUtil_.applyManifest(manifest_, currentURNVersion);
 
                 } catch (LgConvertException e) {
                     message_.fatalAndThrowException("Exception occured while applying manifest: " + e.getMessage());

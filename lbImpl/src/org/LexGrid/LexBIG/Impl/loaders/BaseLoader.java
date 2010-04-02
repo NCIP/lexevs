@@ -98,6 +98,8 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     // concept count value when
     // they finish loading something
     
+    private ManifestUtil manifestUtil = new ManifestUtil();
+    
     public static String LOADER_POST_PROCESSOR_OPTION = "Loader Post Processor (Extension Name)";
     public static String MANIFEST_FILE_OPTION = "Manifest File";
     public static String LOADER_PREFERENCE_FILE_OPTION = "Loader Preferences File";
@@ -170,59 +172,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         }
     }
 
-    /**
-     * Reindexes the specified registered code system - otherwise, if no code
-     * system is specified, reindexes all registered code systems.
-     * 
-     * @param codingSchemeVersion
-     * @throws LBInvocationException
-     * @throws LBParameterException
-     */
-    protected void reindexCodeSystem(AbsoluteCodingSchemeVersionReference codingSchemeVersion, boolean async)
-            throws LBInvocationException, LBParameterException {
-        setInUse();
-        ArrayList<AbsoluteCodingSchemeVersionReference> temp = new ArrayList<AbsoluteCodingSchemeVersionReference>();
-
-        if (codingSchemeVersion == null) {
-            // They want me to reindex all of the code systems...
-            LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-            CodingSchemeRendering[] csr = lbs.getSupportedCodingSchemes().getCodingSchemeRendering();
-            for (int i = 0; i < csr.length; i++) {
-                temp.add(Constructors.createAbsoluteCodingSchemeVersionReference(csr[i].getCodingSchemeSummary()));
-            }
-
-        } else if (codingSchemeVersion.getCodingSchemeURN() == null
-                || codingSchemeVersion.getCodingSchemeURN().length() == 0
-                || codingSchemeVersion.getCodingSchemeVersion() == null
-                || codingSchemeVersion.getCodingSchemeVersion().length() == 0) {
-            inUse = false;
-            throw new LBParameterException(
-                    "If you supply a codingSchemeVersion, it needs to contain both the coding scheme and the version");
-        } else {
-            SQLConnectionInfo sci = ResourceManager.instance().getRegistry().getSQLConnectionInfoForCodeSystem(
-                    codingSchemeVersion);
-            if (sci == null) {
-                inUse = false;
-                String id = getLogger().error("Couldn't map urn / version to internal name");
-                throw new LBInvocationException("There was an unexpected internal error", id);
-            }
-
-            temp.add(codingSchemeVersion);
-        }
-
-        status_ = new LoadStatus();
-        status_.setLoadSource(null); // doesn't apply
-        status_.setStartTime(new Date(System.currentTimeMillis()));
-        md_ = new CachingMessageDirectorImpl( new MessageDirector(getName(), status_));
-
-        if (async) {
-            Thread reIndex = new Thread(new ReIndex(temp));
-            reIndex.start();
-        } else {
-            new ReIndex(temp).run();
-        }
-
-    }
+   
 
     /*
      * A loader class can only safely do one thing at a time.
@@ -435,81 +385,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
          }
     }
 
-    private class ReIndex implements Runnable {
-        ArrayList<AbsoluteCodingSchemeVersionReference> codingSchemeVersion_;
-
-        public ReIndex(ArrayList<AbsoluteCodingSchemeVersionReference> codingSchemeVersion) {
-            codingSchemeVersion_ = codingSchemeVersion;
-        }
-
-        public void run() {
-            status_.setState(ProcessState.PROCESSING);
-            for (int i = 0; i < codingSchemeVersion_.size(); i++) {
-                boolean success = false;
-
-                CodingSchemeVersionStatus status = null;
-                try {
-                    SQLConnectionInfo sci = ResourceManager.instance().getRegistry().getSQLConnectionInfoForCodeSystem(
-                            codingSchemeVersion_.get(i));
-                    String csn = ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(sci.urn,
-                            sci.version);
-
-                    status = ResourceManager.instance().getRegistry().getStatus(
-                            codingSchemeVersion_.get(i).getCodingSchemeURN(),
-                            codingSchemeVersion_.get(i).getCodingSchemeVersion());
-                    ResourceManager.instance().setPendingStatus(codingSchemeVersion_.get(i));
-                    WriteLockManager.instance().acquireLock(codingSchemeVersion_.get(i).getCodingSchemeURN(),
-                            codingSchemeVersion_.get(i).getCodingSchemeVersion());
-
-                    md_.info("beginning index process for " + csn);
-                   
-                    //TODO: Fix Reindexing
-                    //buildIndex(new String[] { csn }, sci, md_);
-
-                    // make sure that searches wont hit on a cache from the old
-                    // index.
-                    // If the index was missing outright - this can fail with a
-                    // missing resource exception. recover
-                    try {
-                        ResourceManager.instance().getIndexInterface(csn, sci.version).reopenIndex(csn, sci.version);
-                    } catch (MissingResourceException e) {
-                        ResourceManager.instance().rereadAutoLoadIndexes();
-                    }
-
-                    success = true;
-                    md_.info("Finished indexing " + csn);
-
-                } catch (Exception e) {
-                    status_.setState(ProcessState.FAILED);
-                    md_.fatal("Failed while running the conversion", e);
-                } finally {
-                    try {
-                        WriteLockManager.instance().releaseLock(codingSchemeVersion_.get(i).getCodingSchemeURN(),
-                                codingSchemeVersion_.get(i).getCodingSchemeVersion());
-                        if (status != null) {
-                            // restore the state if we had a successful reindex.
-                            if (status.getType() == CodingSchemeVersionStatus.ACTIVE_TYPE && success) {
-                                ResourceManager.instance().getRegistry().activate(codingSchemeVersion_.get(i));
-                            } else if (status.getType() == CodingSchemeVersionStatus.INACTIVE_TYPE && success) {
-                                ResourceManager.instance().deactivate(codingSchemeVersion_.get(i), null);
-                            }
-                        }
-                    } catch (Exception e) {
-                        md_.fatal("Failed while running the conversion", e);
-                    }
-                    if (!success) {
-                        status_.setState(ProcessState.FAILED);
-                    }
-
-                }
-            }
-            if (status_.getState().getType() == ProcessState.PROCESSING_TYPE) {
-                status_.setState(ProcessState.COMPLETED);
-            }
-            status_.setEndTime(new Date(System.currentTimeMillis()));
-            inUse = false;
-        }
-    }
+   
     
     protected void persistCodingSchemeToDatabase(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
         persistCodingSchemeToDatabase(createDefaultInserter(codingScheme), codingScheme);
@@ -645,10 +521,8 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
      */
     public void setCodingSchemeManifestURI(URI codingSchemeManifestURI) {
         this.codingSchemeManifestURI_ = codingSchemeManifestURI;
-        ManifestUtil util = new ManifestUtil(codingSchemeManifestURI, md_);
-
-        codingSchemeManifest_ = util.getManifest();
-
+        
+        codingSchemeManifest_ = manifestUtil.getManifest(codingSchemeManifestURI);
     }
 
     /**
@@ -805,5 +679,9 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     
     public CachingMessageDirectorIF getMessageDirector() {
         return md_;
+    }
+    
+    public ManifestUtil getManifestUtil() {
+        return this.manifestUtil;
     }
 }

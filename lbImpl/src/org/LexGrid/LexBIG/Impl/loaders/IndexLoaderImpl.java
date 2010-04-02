@@ -19,17 +19,12 @@
 package org.LexGrid.LexBIG.Impl.loaders;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Extensions.Index.Index;
-import org.LexGrid.LexBIG.Extensions.Index.IndexLoader;
-import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
-import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
-
-import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.ProcessStatus;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
+import org.LexGrid.concepts.Entity;
+import org.lexevs.dao.index.indexer.IndexCreator.EntityIndexerProgressCallback;
+import org.lexevs.dao.index.service.entity.EntityIndexService;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
  * Loader for rebuilding lucene indexes.
@@ -37,72 +32,44 @@ import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-public class IndexLoaderImpl extends BaseLoader implements IndexLoader {
-    private static final long serialVersionUID = 7286800973587921077L;
-    public final static String name = "IndexLoader";
-    private final static String description = "This loader reloads Indexes in the LexGrid system.";
-
-    public IndexLoaderImpl() {
-        super();
-    }
-
-    protected ExtensionDescription buildExtensionDescription(){
-        ExtensionDescription temp = new ExtensionDescription();
-        temp.setExtensionBaseClass(IndexLoaderImpl.class.getInterfaces()[0].getName());
-        temp.setExtensionClass(IndexLoaderImpl.class.getName());
-        temp.setDescription(description);
-        temp.setName(name);
-
-        return temp;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.LexGrid.LexBIG.Indexers.IndexLoader#clear(org.LexGrid.LexBIG.DataModel
-     * .Core.AbsoluteCodingSchemeVersionReference)
-     */
-    public void clear(AbsoluteCodingSchemeVersionReference ref, Index index, boolean async)
-            throws LBInvocationException {
-        throw new java.lang.UnsupportedOperationException(
-                "Index extensions are not currently supported, and clear is not allowed on the base indexes.  "
-                        + "See 'rebuildBase' if you need to regenerate the base indexes.");
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.LexGrid.LexBIG.Indexers.IndexLoader#load(org.LexGrid.LexBIG.DataModel
-     * .Core.AbsoluteCodingSchemeVersionReference, boolean, boolean)
-     */
-    public void load(AbsoluteCodingSchemeVersionReference ref, Index index, boolean stopOnErrors, boolean async)
-            throws LBException {
-        throw new java.lang.UnsupportedOperationException(
-                "Method load not yet implemented - it is not yet used for base indexes - and we don't yet support Index Extensions.  "
-                        + "Index loading happens automatically.  If you want to rebuild an index, call 'rebuildBase'");
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.LexGrid.LexBIG.Indexers.IndexLoader#rebuildBase(org.LexGrid.LexBIG
-     * .DataModel.Core.AbsoluteCodingSchemeVersionReference, boolean)
-     */
-    public void rebuild(AbsoluteCodingSchemeVersionReference ref, Index index, boolean async) throws LBException {
-        reindexCodeSystem(ref, async);
-    }
+public class IndexLoaderImpl extends AbstractProcessRunner {
 
     @Override
-    protected OptionHolder declareAllowedOptions(OptionHolder holder) {
-        return holder;
+    protected void doRunProcess(AbsoluteCodingSchemeVersionReference codingSchemeVersion, final LgMessageDirectorIF md,
+            ProcessStatus status) {
+  
+        EntityIndexService entityIndexService = 
+            LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService();
+        
+        if(entityIndexService.doesIndexExist(codingSchemeVersion)) {
+            entityIndexService.dropIndex(codingSchemeVersion);
+        }
+        
+        CountingEntityIndexerProgressCallback callback = new CountingEntityIndexerProgressCallback(md);
+        entityIndexService.createIndex(codingSchemeVersion, callback);
+        
+        md.info("Indexed a total of: " + callback.getNumberIndexed() + " Entities.");
+      
     }
+    
+    private static class CountingEntityIndexerProgressCallback implements EntityIndexerProgressCallback {
 
-    @Override
-    protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        private int numberIndexed = 0;
+        private LgMessageDirectorIF md;
+        
+        private CountingEntityIndexerProgressCallback(LgMessageDirectorIF md){
+            this.md = md;
+        }
+        
+        public void onEntityIndex(Entity entity) {
+            if(numberIndexed % 1000 == 0) {
+                md.info("Indexed: " + numberIndexed + " Entities.");
+            }
+            numberIndexed++;
+        }
+        
+        public int getNumberIndexed() {
+            return this.numberIndexed;
+        } 
     }
 }
