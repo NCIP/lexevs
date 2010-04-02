@@ -24,12 +24,13 @@ import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
 import org.LexGrid.LexBIG.DataModel.Core.types.LogLevel;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExportStatus;
 import org.LexGrid.LexBIG.Extensions.Extendable;
+import org.LexGrid.LexBIG.Utility.logging.StatusReporter;
 
 /**
  * Defines a class of object used to export content from the underlying LexGrid
  * repository to another repository or file format.
  */
-public interface Exporter extends Extendable {
+public interface Exporter extends Extendable, StatusReporter {
 
 	/**
 	 * Clears any associated log entries.
