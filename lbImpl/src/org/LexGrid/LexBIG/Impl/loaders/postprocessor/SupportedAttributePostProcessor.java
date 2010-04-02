@@ -1,5 +1,6 @@
 package org.LexGrid.LexBIG.Impl.loaders.postprocessor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -11,12 +12,15 @@ import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedDataType;
 import org.LexGrid.naming.SupportedEntityType;
 import org.LexGrid.naming.SupportedLanguage;
 import org.LexGrid.naming.SupportedProperty;
+import org.LexGrid.naming.URIMap;
 import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
@@ -60,15 +64,47 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
         scs.setLocalId(codingScheme.getCodingSchemeName());
         scs.setUri(codingScheme.getCodingSchemeURI());
         
-        codingSchemeService.insertURIMap(uri, version, scs);
+        insertURIMap(uri, version, scs);
         
-        this.addSupportedFormats(uri, version, daoCallbackService, codingSchemeService);
-        this.addSupportedLanguages(uri, version, daoCallbackService, codingSchemeService);
-        this.addSupportedEntityTypes(uri, version, daoCallbackService, codingSchemeService);
-        this.addSupportedProperties(uri, version, daoCallbackService, codingSchemeService); 
+        this.addSupportedFormats(uri, version, daoCallbackService);
+        this.addSupportedLanguages(uri, version, daoCallbackService);
+        this.addSupportedEntityTypes(uri, version, daoCallbackService);
+        this.addSupportedProperties(uri, version, daoCallbackService); 
+        this.addSupportedAssociations(uri, version, daoCallbackService); 
     }
     
-    protected void addSupportedFormats(final String uri, final String version, DaoCallbackService daoCallbackService, CodingSchemeService codingSchemeService) {
+    protected void addSupportedAssociations(final String uri, final String version, DaoCallbackService daoCallbackService) {
+        List<String> items = daoCallbackService.executeInDaoLayer(new DaoCallback<List<String>>(){
+
+            public List<String> execute(DaoManager daoManager) {
+                CodingSchemeDao csDao = daoManager.getCodingSchemeDao(uri, version);
+                String csId = csDao.getCodingSchemeIdByUriAndVersion(uri, version);
+
+                AssociationDao associationDao = daoManager.getAssociationDao(uri, version);
+
+                List<String> associationNames = new ArrayList<String>();
+
+                for(String relationsId :
+                    associationDao.getRelationsIdsForCodingSchemeId(csId)){
+                    for(String associationPredicateId :
+                        associationDao.getAssociationPredicateIdsForRelationsId(csId, relationsId)) {
+                        associationNames.add(
+                                associationDao.getAssociationPredicateNameForId(csId, associationPredicateId));
+                    }
+                }
+                return associationNames;
+            }  
+        });
+
+        for(String item : items) {
+            SupportedAssociation supportedAssociation = new SupportedAssociation();
+            supportedAssociation.setContent(item);
+            supportedAssociation.setLocalId(item);
+            insertURIMap(uri, version, supportedAssociation);
+        }
+    }
+    
+    protected void addSupportedFormats(final String uri, final String version, DaoCallbackService daoCallbackService) {
         List<String> items = daoCallbackService.executeInDaoLayer(new DaoCallback<List<String>>(){
 
             public List<String> execute(DaoManager daoManager) {
@@ -83,11 +119,11 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
             SupportedDataType supportedFormat = new SupportedDataType();
             supportedFormat.setContent(item);
             supportedFormat.setLocalId(item);
-            codingSchemeService.insertURIMap(uri, version, supportedFormat);
+            insertURIMap(uri, version, supportedFormat);
         }
     }
     
-    protected void addSupportedLanguages(final String uri, final String version, DaoCallbackService daoCallbackService, CodingSchemeService codingSchemeService) {
+    protected void addSupportedLanguages(final String uri, final String version, DaoCallbackService daoCallbackService) {
         List<String> items = daoCallbackService.executeInDaoLayer(new DaoCallback<List<String>>(){
 
             public List<String> execute(DaoManager daoManager) {
@@ -102,11 +138,11 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
             SupportedLanguage supportedLanguage = new SupportedLanguage();
             supportedLanguage.setContent(item);
             supportedLanguage.setLocalId(item);
-            codingSchemeService.insertURIMap(uri, version, supportedLanguage);
+            insertURIMap(uri, version, supportedLanguage);
         }
     }
     
-    protected void addSupportedEntityTypes(final String uri, final String version, DaoCallbackService daoCallbackService, CodingSchemeService codingSchemeService) {
+    protected void addSupportedEntityTypes(final String uri, final String version, DaoCallbackService daoCallbackService) {
         List<String> items = daoCallbackService.executeInDaoLayer(new DaoCallback<List<String>>(){
 
             public List<String> execute(DaoManager daoManager) {
@@ -121,11 +157,11 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
             SupportedEntityType supportedEntityType = new SupportedEntityType();
             supportedEntityType.setContent(item);
             supportedEntityType.setLocalId(item);
-            codingSchemeService.insertURIMap(uri, version, supportedEntityType);
+            insertURIMap(uri, version, supportedEntityType);
         }
     }
     
-    protected void addSupportedProperties(final String uri, final String version, DaoCallbackService daoCallbackService, CodingSchemeService codingSchemeService) {
+    protected void addSupportedProperties(final String uri, final String version, DaoCallbackService daoCallbackService) {
         List<String> items = daoCallbackService.executeInDaoLayer(new DaoCallback<List<String>>(){
 
             public List<String> execute(DaoManager daoManager) {
@@ -140,7 +176,13 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
             SupportedProperty uriMap = new SupportedProperty();
             uriMap.setContent(item);
             uriMap.setLocalId(item);
-            codingSchemeService.insertURIMap(uri, version, uriMap);
+            insertURIMap(uri, version, uriMap);
         }
+    }
+    
+    protected void insertURIMap(String uri, String version, URIMap uriMap) {
+        LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
+            getCodingSchemeService().
+                updateURIMap(uri, version, uriMap);
     }
 }
