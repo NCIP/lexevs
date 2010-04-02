@@ -201,8 +201,7 @@
 		UPDATE 
 			$prefix$codingScheme
 		SET 
-
-
+		
    		  <dynamic prepend=" ">
 			<isNotNull prepend="," property="codingScheme.codingSchemeName">
 				codingSchemeName = #codingScheme.codingSchemeName#
@@ -224,6 +223,9 @@
 			</isNotNull>
 			<isNotNull prepend="," property="codingScheme.entityDescription.content">
 				description = #codingScheme.entityDescription.content#
+			</isNotNull>
+			<isNotNull prepend="," property="codingScheme.copyright.content">
+				copyright = #codingScheme.copyright.content#
 			</isNotNull>
 		</dynamic>
 

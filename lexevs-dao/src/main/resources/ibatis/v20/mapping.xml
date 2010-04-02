@@ -235,7 +235,8 @@
 		)
   </insert>
 
-	<update id="updateUriMapByLocalId">
+	<update id="updateUriMapByLocalId"
+		parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean">
 		UPDATE
 			$prefix$cssupportedattrib cssupportedattrib
 		SET
@@ -295,11 +296,12 @@
 	</update>
 	
 	
-	<delete id="deleteMappingsByCodingSchemeId">
+	<delete id="deleteMappingsByCodingSchemeId"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			$prefix$cssupportedattrib cssupportedattrib
+			$prefix$csSupportedAttrib
 		WHERE
-			cssupportedattrib.codingSchemeGuid = #param1#
+			codingSchemeGuid = #param1#
 	</delete>
     
 </sqlMap>
