@@ -191,29 +191,16 @@
 		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
-<!--		<beans:property name="rrfPostProcessingDao">-->
-<!--			<beans:ref bean="postProcessingDao" />-->
-<!--		</beans:property>-->
 	</beans:bean>
 
-<!--	<beans:bean id="postProcessingDao"-->
-<!--		parent="hibernateRrfPostProcessingDao">-->
-<!--		<beans:property name="codingSchemeIdSetter">-->
-<!--			<beans:ref bean="umlsCodingSchemeIdSetter" />-->
-<!--		</beans:property>-->
-<!--	</beans:bean>-->
+
 
 	<beans:bean id="umlsCodingSchemeNameSettingProcessor"
 		abstract="true">
 		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
-<!--		<beans:property name="lexEvsDao">-->
-<!--			<beans:ref bean="lexEvsDao" />-->
-<!--		</beans:property>-->
 	</beans:bean>
-
-
 
 	<beans:bean id="umlsRootNodeAddingEntityAssocToEntityListProcessor"
 		class="org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator">
@@ -233,38 +220,18 @@
 		</beans:property>
 	</beans:bean>
 
-	
-<!--	<beans:bean id="umlsRootNodeAddingEntityAssocToEntityProcessor" -->
-<!--		class="org.lexgrid.loader.processor.decorator.ListEntityAssnToEntityRootNodeAddingDecorator">-->
-<!--				<beans:constructor-arg>-->
-<!--					 <beans:ref bean="umlsEntityAssocToEntityProcessor"/>-->
-<!--				</beans:constructor-arg>-->
-<!--				<beans:property name="supportedAttributeTemplate">-->
-<!--					<beans:ref bean="cachingSupportedAttribuiteTemplate" />-->
-<!--				</beans:property>	-->
-<!--				<beans:property name="replaceRelation" value="true"/>-->
-<!--				<beans:property name="rootNodeResolver">-->
-<!--					<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsRootNodeResolver">-->
-<!--						<beans:property name="sab" value="${sab}"/>-->
-<!--						<beans:property name="mrconsoStagingDao" ref="mrconsoStagingDao"/>-->
-<!--					</beans:bean>-->
-<!--				</beans:property>-->
-<!--	</beans:bean>-->
-
 				<beans:bean	id="umlsEntityAssnsToEntityProcessor" 
 					class="org.lexgrid.loader.processor.EntityAssnsToEntityProcessor">		
 					
 					<beans:property name="associationInstanceIdResolver">
 						<beans:bean class="org.lexgrid.loader.rrf.data.association.MrrelRuiAssociationInstanceIdResolver"/>
-					</beans:property>
-					
+					</beans:property>		
 	
 					<beans:property name="associationPredicateKeyResolver">
 						<beans:bean class="org.lexgrid.loader.database.key.AssociationPredicateCreatingKeyResolver">
 							<beans:property name="databaseServiceManager" ref="databaseServiceManager"/>
 						</beans:bean>
 					</beans:property> 
-	
 					
 					<beans:property name="codingSchemeIdSetter">
 						<beans:ref local="umlsCodingSchemeIdSetter" />
@@ -304,19 +271,6 @@
 		</beans:property>
 		<beans:property name="sab" value="${sab}"/>
 	</beans:bean>
-
-<!--	<beans:bean id="mrhierAssocAndPropQualProcessor"-->
-<!--		class="org.lexgrid.loader.umls.processor.MrhierAssocAndPropQualProcessor">-->
-<!--		<beans:property name="codingSchemeIdSetter">-->
-<!--			<beans:ref local="umlsCodingSchemeIdSetter" />-->
-<!--		</beans:property>-->
-<!--		<beans:property name="lexEvsDao">-->
-<!--			<beans:ref bean="lexEvsDao" />-->
-<!--		</beans:property>-->
-<!--		<beans:property name="mrconsoStagingDao">-->
-<!--			<beans:ref bean="mrconsoStagingDao" />-->
-<!--		</beans:property>-->
-<!--	</beans:bean>-->
 
 	<beans:bean id="mrconsoStagingReader"
 		class="org.springframework.batch.item.database.JdbcPagingItemReader"
@@ -383,6 +337,7 @@
 	<beans:bean id="umlsEntityListProcessor"
 		class="org.lexgrid.loader.rrf.processor.MrconsoGroupEntityProcessor">
 		<beans:property name="presentationResolver" ref="umlsPresentationPropertyResolver"/>
+		<beans:property name="supportedAttributeTemplate" ref="cachingSupportedAttribuiteTemplate" />
 		<beans:property name="sortingListProcessor">
 			<beans:bean
 				class="org.lexgrid.loader.processor.SortingListProcessor">
@@ -404,28 +359,6 @@
 			</beans:map>
 		</beans:property>
 	</beans:bean>
-
-<!--	<beans:bean id="entityTypeAddingEntityProcessor"-->
-<!--		class="org.lexgrid.loader.processor.ClassifierCompositeProcessor">-->
-<!--		<beans:property name="processorList">-->
-<!--			<beans:list>-->
-<!--			    <beans:ref bean="umlsEntityListProcessor" />-->
-<!--			    <beans:ref bean="umlsPresentationPropertyListProcessor" />-->
-<!--			    <beans:bean class="org.lexgrid.loader.processor.decorator.ListToSingleItemProcessorDecorator">-->
-<!--			    	<beans:constructor-arg>-->
-<!--			    		<beans:bean class="org.lexgrid.loader.processor.SettableEntityTypeProcessor">-->
-<!--			    			<beans:property name="entityCodeResolver">-->
-<!--			    				<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsMrconsoEntityCodeResolver"/>-->
-<!--			    			</beans:property>-->
-<!--			    			<beans:property name="codingSchemeIdSetter">-->
-<!--			    				<beans:ref bean="umlsCodingSchemeIdSetter"/>-->
-<!--			    			</beans:property>-->
-<!--			    		</beans:bean>-->
-<!--			    	</beans:constructor-arg>-->
-<!--			    </beans:bean>	-->
-<!--			</beans:list>-->
-<!--		</beans:property>-->
-<!--	</beans:bean>-->
 
 	<beans:bean id="umlsEntityProcessor"
 		class="org.lexgrid.loader.processor.EntityProcessor">
@@ -745,42 +678,6 @@
 			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
-
-    <!--
-	<beans:bean id="umlsMrrelRelMetaMultiAttribKeyResolver"
-		class="org.lexgrid.loader.rrf.data.association.RelationBasedReproducibleKeyResolver">
-		<beans:property name="relationResolver">
-			<beans:bean
-				class="org.lexgrid.loader.umls.processor.support.AuiBasedRelationResolver">
-				<beans:property name="rrfrelationType" value="REL" />
-				<beans:property name="codingSchemeIdSetter">
-					<beans:ref local="umlsCodingSchemeIdSetter" />
-				</beans:property>
-			</beans:bean>
-		</beans:property>
-		<beans:property name="entityCodeResolver">
-			<beans:bean
-				class="org.lexgrid.loader.umls.processor.support.UmlsMrrelEntityCodeResolver" />
-		</beans:property>
-	</beans:bean>
-
-	<beans:bean id="umlsMrrelRelaMetaMultiAttribKeyResolver"
-		class="org.lexgrid.loader.rrf.data.association.RelationBasedReproducibleKeyResolver">
-		<beans:property name="relationResolver">
-			<beans:bean
-				class="org.lexgrid.loader.umls.processor.support.AuiBasedRelationResolver">
-				<beans:property name="rrfrelationType" value="RELA" />
-				<beans:property name="codingSchemeIdSetter">
-					<beans:ref local="umlsCodingSchemeIdSetter" />
-				</beans:property>
-			</beans:bean>
-		</beans:property>
-		<beans:property name="entityCodeResolver">
-			<beans:bean
-				class="org.lexgrid.loader.umls.processor.support.UmlsMrrelEntityCodeResolver" />
-		</beans:property>
-	</beans:bean>
-	-->
 
 	<beans:bean id="registeringTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.RegisteringTasklet">

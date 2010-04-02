@@ -15242,3 +15242,2356 @@ StepExecution: id=9
  - Step Property:  rollbackCount=0
 LB_LOAD_LOGGER DEBUG - 2010-03-31 07:40:08,571 - Job completed, dropping tables
 LB_LOAD_LOGGER DEBUG - 2010-03-31 07:40:08,571 - Load Job ended in state: exitCode=COMPLETED;exitDescription=
+LB_LOAD_LOGGER ERROR - 2010-04-01 16:57:47,119 - Failed while running the conversion
+java.lang.RuntimeException: org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: Failed to import bean definitions from URL location [classpath:rrfBaseLoader.xml]
+Offending resource: class path resource [umlsLoader.xml]; nested exception is org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: Failed to import bean definitions from relative location [baseLoader.xml]
+Offending resource: class path resource [rrfBaseLoader.xml]; nested exception is org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: Line 171 in XML document from class path resource [baseLoader.xml] is invalid; nested exception is org.xml.sax.SAXParseException: cvc-complex-type.2.3: Element 'beans:beans' cannot have character [children], because the type's content type is element-only.
+	at org.lexgrid.loader.umls.UmlsBatchLoaderImpl.doLoad(UmlsBatchLoaderImpl.java:136)
+	at org.LexGrid.LexBIG.Impl.loaders.BaseLoader$DoConversion.run(BaseLoader.java:258)
+	at org.LexGrid.LexBIG.Impl.loaders.BaseLoader.baseLoad(BaseLoader.java:171)
+	at org.LexGrid.LexBIG.Impl.loaders.BaseLoader.load(BaseLoader.java:715)
+	at org.lexgrid.loader.umls.UmlsBatchLoaderTest.testUmlsLoad(UmlsBatchLoaderTest.java:57)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:59)
+	at org.junit.internal.runners.MethodRoadie.runTestMethod(MethodRoadie.java:98)
+	at org.junit.internal.runners.MethodRoadie$2.run(MethodRoadie.java:79)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:87)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:77)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:42)
+	at org.junit.internal.runners.JUnit4ClassRunner.invokeTestMethod(JUnit4ClassRunner.java:88)
+	at org.junit.internal.runners.JUnit4ClassRunner.runMethods(JUnit4ClassRunner.java:51)
+	at org.junit.internal.runners.JUnit4ClassRunner$1.run(JUnit4ClassRunner.java:44)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)
+	at org.junit.internal.runners.JUnit4ClassRunner.run(JUnit4ClassRunner.java:42)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:46)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)
+Caused by: org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: Failed to import bean definitions from URL location [classpath:rrfBaseLoader.xml]
+Offending resource: class path resource [umlsLoader.xml]; nested exception is org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: Failed to import bean definitions from relative location [baseLoader.xml]
+Offending resource: class path resource [rrfBaseLoader.xml]; nested exception is org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: Line 171 in XML document from class path resource [baseLoader.xml] is invalid; nested exception is org.xml.sax.SAXParseException: cvc-complex-type.2.3: Element 'beans:beans' cannot have character [children], because the type's content type is element-only.
+	at org.springframework.beans.factory.parsing.FailFastProblemReporter.error(FailFastProblemReporter.java:68)
+	at org.springframework.beans.factory.parsing.ReaderContext.error(ReaderContext.java:85)
+	at org.springframework.beans.factory.parsing.ReaderContext.error(ReaderContext.java:76)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.importBeanDefinitionResource(DefaultBeanDefinitionDocumentReader.java:182)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseDefaultElement(DefaultBeanDefinitionDocumentReader.java:147)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseBeanDefinitions(DefaultBeanDefinitionDocumentReader.java:132)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.registerBeanDefinitions(DefaultBeanDefinitionDocumentReader.java:92)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.registerBeanDefinitions(XmlBeanDefinitionReader.java:507)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.doLoadBeanDefinitions(XmlBeanDefinitionReader.java:398)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:342)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:310)
+	at org.springframework.beans.factory.support.AbstractBeanDefinitionReader.loadBeanDefinitions(AbstractBeanDefinitionReader.java:143)
+	at org.springframework.context.support.AbstractXmlApplicationContext.loadBeanDefinitions(AbstractXmlApplicationContext.java:109)
+	at org.springframework.context.support.AbstractXmlApplicationContext.loadBeanDefinitions(AbstractXmlApplicationContext.java:80)
+	at org.springframework.context.support.AbstractRefreshableApplicationContext.refreshBeanFactory(AbstractRefreshableApplicationContext.java:123)
+	at org.springframework.context.support.AbstractApplicationContext.obtainFreshBeanFactory(AbstractApplicationContext.java:422)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:352)
+	at org.lexevs.dao.database.spring.DynamicPropertyApplicationContext.<init>(DynamicPropertyApplicationContext.java:61)
+	at org.lexgrid.loader.AbstractSpringBatchLoader.launchJob(AbstractSpringBatchLoader.java:84)
+	at org.lexgrid.loader.umls.UmlsBatchLoaderImpl.doLoad(UmlsBatchLoaderImpl.java:134)
+	... 26 more
+Caused by: org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: Failed to import bean definitions from relative location [baseLoader.xml]
+Offending resource: class path resource [rrfBaseLoader.xml]; nested exception is org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: Line 171 in XML document from class path resource [baseLoader.xml] is invalid; nested exception is org.xml.sax.SAXParseException: cvc-complex-type.2.3: Element 'beans:beans' cannot have character [children], because the type's content type is element-only.
+	at org.springframework.beans.factory.parsing.FailFastProblemReporter.error(FailFastProblemReporter.java:68)
+	at org.springframework.beans.factory.parsing.ReaderContext.error(ReaderContext.java:85)
+	at org.springframework.beans.factory.parsing.ReaderContext.error(ReaderContext.java:76)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.importBeanDefinitionResource(DefaultBeanDefinitionDocumentReader.java:201)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseDefaultElement(DefaultBeanDefinitionDocumentReader.java:147)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseBeanDefinitions(DefaultBeanDefinitionDocumentReader.java:132)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.registerBeanDefinitions(DefaultBeanDefinitionDocumentReader.java:92)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.registerBeanDefinitions(XmlBeanDefinitionReader.java:507)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.doLoadBeanDefinitions(XmlBeanDefinitionReader.java:398)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:342)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:310)
+	at org.springframework.beans.factory.support.AbstractBeanDefinitionReader.loadBeanDefinitions(AbstractBeanDefinitionReader.java:143)
+	at org.springframework.beans.factory.support.AbstractBeanDefinitionReader.loadBeanDefinitions(AbstractBeanDefinitionReader.java:178)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.importBeanDefinitionResource(DefaultBeanDefinitionDocumentReader.java:174)
+	... 42 more
+Caused by: org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: Line 171 in XML document from class path resource [baseLoader.xml] is invalid; nested exception is org.xml.sax.SAXParseException: cvc-complex-type.2.3: Element 'beans:beans' cannot have character [children], because the type's content type is element-only.
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.doLoadBeanDefinitions(XmlBeanDefinitionReader.java:404)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:342)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:310)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.importBeanDefinitionResource(DefaultBeanDefinitionDocumentReader.java:190)
+	... 52 more
+Caused by: org.xml.sax.SAXParseException: cvc-complex-type.2.3: Element 'beans:beans' cannot have character [children], because the type's content type is element-only.
+	at org.apache.xerces.util.ErrorHandlerWrapper.createSAXParseException(Unknown Source)
+	at org.apache.xerces.util.ErrorHandlerWrapper.error(Unknown Source)
+	at org.apache.xerces.impl.XMLErrorReporter.reportError(Unknown Source)
+	at org.apache.xerces.impl.XMLErrorReporter.reportError(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator$XSIErrorReporter.reportError(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.reportSchemaError(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.elementLocallyValidComplexType(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.elementLocallyValidType(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.processElementContent(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.handleEndElement(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.endElement(Unknown Source)
+	at org.apache.xerces.impl.XMLNSDocumentScannerImpl.scanEndElement(Unknown Source)
+	at org.apache.xerces.impl.XMLDocumentFragmentScannerImpl$FragmentContentDispatcher.dispatch(Unknown Source)
+	at org.apache.xerces.impl.XMLDocumentFragmentScannerImpl.scanDocument(Unknown Source)
+	at org.apache.xerces.parsers.XML11Configuration.parse(Unknown Source)
+	at org.apache.xerces.parsers.XML11Configuration.parse(Unknown Source)
+	at org.apache.xerces.parsers.XMLParser.parse(Unknown Source)
+	at org.apache.xerces.parsers.DOMParser.parse(Unknown Source)
+	at org.apache.xerces.jaxp.DocumentBuilderImpl.parse(Unknown Source)
+	at org.springframework.beans.factory.xml.DefaultDocumentLoader.loadDocument(DefaultDocumentLoader.java:75)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.doLoadBeanDefinitions(XmlBeanDefinitionReader.java:396)
+	... 55 more
+LB_LOAD_LOGGER ERROR - 2010-04-01 16:57:47,291 - Failed while running the conversion
+java.lang.RuntimeException: org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: Failed to import bean definitions from URL location [classpath:rrfBaseLoader.xml]
+Offending resource: class path resource [umlsLoader.xml]; nested exception is org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: Failed to import bean definitions from relative location [baseLoader.xml]
+Offending resource: class path resource [rrfBaseLoader.xml]; nested exception is org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: Line 171 in XML document from class path resource [baseLoader.xml] is invalid; nested exception is org.xml.sax.SAXParseException: cvc-complex-type.2.3: Element 'beans:beans' cannot have character [children], because the type's content type is element-only.
+	at org.lexgrid.loader.umls.UmlsBatchLoaderImpl.doLoad(UmlsBatchLoaderImpl.java:136)
+	at org.LexGrid.LexBIG.Impl.loaders.BaseLoader$DoConversion.run(BaseLoader.java:258)
+	at org.LexGrid.LexBIG.Impl.loaders.BaseLoader.baseLoad(BaseLoader.java:171)
+	at org.LexGrid.LexBIG.Impl.loaders.BaseLoader.load(BaseLoader.java:715)
+	at org.lexgrid.loader.umls.UmlsBatchLoaderTest.testFailedUmlsLoad(UmlsBatchLoaderTest.java:75)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:59)
+	at org.junit.internal.runners.MethodRoadie.runTestMethod(MethodRoadie.java:98)
+	at org.junit.internal.runners.MethodRoadie$2.run(MethodRoadie.java:79)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:87)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:77)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:42)
+	at org.junit.internal.runners.JUnit4ClassRunner.invokeTestMethod(JUnit4ClassRunner.java:88)
+	at org.junit.internal.runners.JUnit4ClassRunner.runMethods(JUnit4ClassRunner.java:51)
+	at org.junit.internal.runners.JUnit4ClassRunner$1.run(JUnit4ClassRunner.java:44)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)
+	at org.junit.internal.runners.JUnit4ClassRunner.run(JUnit4ClassRunner.java:42)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:46)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)
+Caused by: org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: Failed to import bean definitions from URL location [classpath:rrfBaseLoader.xml]
+Offending resource: class path resource [umlsLoader.xml]; nested exception is org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: Failed to import bean definitions from relative location [baseLoader.xml]
+Offending resource: class path resource [rrfBaseLoader.xml]; nested exception is org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: Line 171 in XML document from class path resource [baseLoader.xml] is invalid; nested exception is org.xml.sax.SAXParseException: cvc-complex-type.2.3: Element 'beans:beans' cannot have character [children], because the type's content type is element-only.
+	at org.springframework.beans.factory.parsing.FailFastProblemReporter.error(FailFastProblemReporter.java:68)
+	at org.springframework.beans.factory.parsing.ReaderContext.error(ReaderContext.java:85)
+	at org.springframework.beans.factory.parsing.ReaderContext.error(ReaderContext.java:76)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.importBeanDefinitionResource(DefaultBeanDefinitionDocumentReader.java:182)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseDefaultElement(DefaultBeanDefinitionDocumentReader.java:147)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseBeanDefinitions(DefaultBeanDefinitionDocumentReader.java:132)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.registerBeanDefinitions(DefaultBeanDefinitionDocumentReader.java:92)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.registerBeanDefinitions(XmlBeanDefinitionReader.java:507)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.doLoadBeanDefinitions(XmlBeanDefinitionReader.java:398)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:342)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:310)
+	at org.springframework.beans.factory.support.AbstractBeanDefinitionReader.loadBeanDefinitions(AbstractBeanDefinitionReader.java:143)
+	at org.springframework.context.support.AbstractXmlApplicationContext.loadBeanDefinitions(AbstractXmlApplicationContext.java:109)
+	at org.springframework.context.support.AbstractXmlApplicationContext.loadBeanDefinitions(AbstractXmlApplicationContext.java:80)
+	at org.springframework.context.support.AbstractRefreshableApplicationContext.refreshBeanFactory(AbstractRefreshableApplicationContext.java:123)
+	at org.springframework.context.support.AbstractApplicationContext.obtainFreshBeanFactory(AbstractApplicationContext.java:422)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:352)
+	at org.lexevs.dao.database.spring.DynamicPropertyApplicationContext.<init>(DynamicPropertyApplicationContext.java:61)
+	at org.lexgrid.loader.AbstractSpringBatchLoader.launchJob(AbstractSpringBatchLoader.java:84)
+	at org.lexgrid.loader.umls.UmlsBatchLoaderImpl.doLoad(UmlsBatchLoaderImpl.java:134)
+	... 26 more
+Caused by: org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: Failed to import bean definitions from relative location [baseLoader.xml]
+Offending resource: class path resource [rrfBaseLoader.xml]; nested exception is org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: Line 171 in XML document from class path resource [baseLoader.xml] is invalid; nested exception is org.xml.sax.SAXParseException: cvc-complex-type.2.3: Element 'beans:beans' cannot have character [children], because the type's content type is element-only.
+	at org.springframework.beans.factory.parsing.FailFastProblemReporter.error(FailFastProblemReporter.java:68)
+	at org.springframework.beans.factory.parsing.ReaderContext.error(ReaderContext.java:85)
+	at org.springframework.beans.factory.parsing.ReaderContext.error(ReaderContext.java:76)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.importBeanDefinitionResource(DefaultBeanDefinitionDocumentReader.java:201)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseDefaultElement(DefaultBeanDefinitionDocumentReader.java:147)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseBeanDefinitions(DefaultBeanDefinitionDocumentReader.java:132)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.registerBeanDefinitions(DefaultBeanDefinitionDocumentReader.java:92)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.registerBeanDefinitions(XmlBeanDefinitionReader.java:507)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.doLoadBeanDefinitions(XmlBeanDefinitionReader.java:398)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:342)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:310)
+	at org.springframework.beans.factory.support.AbstractBeanDefinitionReader.loadBeanDefinitions(AbstractBeanDefinitionReader.java:143)
+	at org.springframework.beans.factory.support.AbstractBeanDefinitionReader.loadBeanDefinitions(AbstractBeanDefinitionReader.java:178)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.importBeanDefinitionResource(DefaultBeanDefinitionDocumentReader.java:174)
+	... 42 more
+Caused by: org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: Line 171 in XML document from class path resource [baseLoader.xml] is invalid; nested exception is org.xml.sax.SAXParseException: cvc-complex-type.2.3: Element 'beans:beans' cannot have character [children], because the type's content type is element-only.
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.doLoadBeanDefinitions(XmlBeanDefinitionReader.java:404)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:342)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:310)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.importBeanDefinitionResource(DefaultBeanDefinitionDocumentReader.java:190)
+	... 52 more
+Caused by: org.xml.sax.SAXParseException: cvc-complex-type.2.3: Element 'beans:beans' cannot have character [children], because the type's content type is element-only.
+	at org.apache.xerces.util.ErrorHandlerWrapper.createSAXParseException(Unknown Source)
+	at org.apache.xerces.util.ErrorHandlerWrapper.error(Unknown Source)
+	at org.apache.xerces.impl.XMLErrorReporter.reportError(Unknown Source)
+	at org.apache.xerces.impl.XMLErrorReporter.reportError(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator$XSIErrorReporter.reportError(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.reportSchemaError(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.elementLocallyValidComplexType(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.elementLocallyValidType(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.processElementContent(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.handleEndElement(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.endElement(Unknown Source)
+	at org.apache.xerces.impl.XMLNSDocumentScannerImpl.scanEndElement(Unknown Source)
+	at org.apache.xerces.impl.XMLDocumentFragmentScannerImpl$FragmentContentDispatcher.dispatch(Unknown Source)
+	at org.apache.xerces.impl.XMLDocumentFragmentScannerImpl.scanDocument(Unknown Source)
+	at org.apache.xerces.parsers.XML11Configuration.parse(Unknown Source)
+	at org.apache.xerces.parsers.XML11Configuration.parse(Unknown Source)
+	at org.apache.xerces.parsers.XMLParser.parse(Unknown Source)
+	at org.apache.xerces.parsers.DOMParser.parse(Unknown Source)
+	at org.apache.xerces.jaxp.DocumentBuilderImpl.parse(Unknown Source)
+	at org.springframework.beans.factory.xml.DefaultDocumentLoader.loadDocument(DefaultDocumentLoader.java:75)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.doLoadBeanDefinitions(XmlBeanDefinitionReader.java:396)
+	... 55 more
+LB_LOAD_LOGGER ERROR - 2010-04-01 16:57:47,385 - Failed while running the conversion
+java.lang.RuntimeException: org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: Failed to import bean definitions from URL location [classpath:rrfBaseLoader.xml]
+Offending resource: class path resource [umlsLoader.xml]; nested exception is org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: Failed to import bean definitions from relative location [baseLoader.xml]
+Offending resource: class path resource [rrfBaseLoader.xml]; nested exception is org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: Line 171 in XML document from class path resource [baseLoader.xml] is invalid; nested exception is org.xml.sax.SAXParseException: cvc-complex-type.2.3: Element 'beans:beans' cannot have character [children], because the type's content type is element-only.
+	at org.lexgrid.loader.umls.UmlsBatchLoaderImpl.doLoad(UmlsBatchLoaderImpl.java:136)
+	at org.LexGrid.LexBIG.Impl.loaders.BaseLoader$DoConversion.run(BaseLoader.java:258)
+	at org.LexGrid.LexBIG.Impl.loaders.BaseLoader.baseLoad(BaseLoader.java:171)
+	at org.LexGrid.LexBIG.Impl.loaders.BaseLoader.load(BaseLoader.java:715)
+	at org.lexgrid.loader.umls.UmlsBatchLoaderTest.testRestartUmlsLoad(UmlsBatchLoaderTest.java:95)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:59)
+	at org.junit.internal.runners.MethodRoadie.runTestMethod(MethodRoadie.java:98)
+	at org.junit.internal.runners.MethodRoadie$2.run(MethodRoadie.java:79)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:87)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:77)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:42)
+	at org.junit.internal.runners.JUnit4ClassRunner.invokeTestMethod(JUnit4ClassRunner.java:88)
+	at org.junit.internal.runners.JUnit4ClassRunner.runMethods(JUnit4ClassRunner.java:51)
+	at org.junit.internal.runners.JUnit4ClassRunner$1.run(JUnit4ClassRunner.java:44)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)
+	at org.junit.internal.runners.JUnit4ClassRunner.run(JUnit4ClassRunner.java:42)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:46)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)
+Caused by: org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: Failed to import bean definitions from URL location [classpath:rrfBaseLoader.xml]
+Offending resource: class path resource [umlsLoader.xml]; nested exception is org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: Failed to import bean definitions from relative location [baseLoader.xml]
+Offending resource: class path resource [rrfBaseLoader.xml]; nested exception is org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: Line 171 in XML document from class path resource [baseLoader.xml] is invalid; nested exception is org.xml.sax.SAXParseException: cvc-complex-type.2.3: Element 'beans:beans' cannot have character [children], because the type's content type is element-only.
+	at org.springframework.beans.factory.parsing.FailFastProblemReporter.error(FailFastProblemReporter.java:68)
+	at org.springframework.beans.factory.parsing.ReaderContext.error(ReaderContext.java:85)
+	at org.springframework.beans.factory.parsing.ReaderContext.error(ReaderContext.java:76)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.importBeanDefinitionResource(DefaultBeanDefinitionDocumentReader.java:182)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseDefaultElement(DefaultBeanDefinitionDocumentReader.java:147)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseBeanDefinitions(DefaultBeanDefinitionDocumentReader.java:132)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.registerBeanDefinitions(DefaultBeanDefinitionDocumentReader.java:92)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.registerBeanDefinitions(XmlBeanDefinitionReader.java:507)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.doLoadBeanDefinitions(XmlBeanDefinitionReader.java:398)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:342)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:310)
+	at org.springframework.beans.factory.support.AbstractBeanDefinitionReader.loadBeanDefinitions(AbstractBeanDefinitionReader.java:143)
+	at org.springframework.context.support.AbstractXmlApplicationContext.loadBeanDefinitions(AbstractXmlApplicationContext.java:109)
+	at org.springframework.context.support.AbstractXmlApplicationContext.loadBeanDefinitions(AbstractXmlApplicationContext.java:80)
+	at org.springframework.context.support.AbstractRefreshableApplicationContext.refreshBeanFactory(AbstractRefreshableApplicationContext.java:123)
+	at org.springframework.context.support.AbstractApplicationContext.obtainFreshBeanFactory(AbstractApplicationContext.java:422)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:352)
+	at org.lexevs.dao.database.spring.DynamicPropertyApplicationContext.<init>(DynamicPropertyApplicationContext.java:61)
+	at org.lexgrid.loader.AbstractSpringBatchLoader.launchJob(AbstractSpringBatchLoader.java:84)
+	at org.lexgrid.loader.umls.UmlsBatchLoaderImpl.doLoad(UmlsBatchLoaderImpl.java:134)
+	... 26 more
+Caused by: org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: Failed to import bean definitions from relative location [baseLoader.xml]
+Offending resource: class path resource [rrfBaseLoader.xml]; nested exception is org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: Line 171 in XML document from class path resource [baseLoader.xml] is invalid; nested exception is org.xml.sax.SAXParseException: cvc-complex-type.2.3: Element 'beans:beans' cannot have character [children], because the type's content type is element-only.
+	at org.springframework.beans.factory.parsing.FailFastProblemReporter.error(FailFastProblemReporter.java:68)
+	at org.springframework.beans.factory.parsing.ReaderContext.error(ReaderContext.java:85)
+	at org.springframework.beans.factory.parsing.ReaderContext.error(ReaderContext.java:76)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.importBeanDefinitionResource(DefaultBeanDefinitionDocumentReader.java:201)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseDefaultElement(DefaultBeanDefinitionDocumentReader.java:147)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseBeanDefinitions(DefaultBeanDefinitionDocumentReader.java:132)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.registerBeanDefinitions(DefaultBeanDefinitionDocumentReader.java:92)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.registerBeanDefinitions(XmlBeanDefinitionReader.java:507)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.doLoadBeanDefinitions(XmlBeanDefinitionReader.java:398)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:342)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:310)
+	at org.springframework.beans.factory.support.AbstractBeanDefinitionReader.loadBeanDefinitions(AbstractBeanDefinitionReader.java:143)
+	at org.springframework.beans.factory.support.AbstractBeanDefinitionReader.loadBeanDefinitions(AbstractBeanDefinitionReader.java:178)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.importBeanDefinitionResource(DefaultBeanDefinitionDocumentReader.java:174)
+	... 42 more
+Caused by: org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: Line 171 in XML document from class path resource [baseLoader.xml] is invalid; nested exception is org.xml.sax.SAXParseException: cvc-complex-type.2.3: Element 'beans:beans' cannot have character [children], because the type's content type is element-only.
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.doLoadBeanDefinitions(XmlBeanDefinitionReader.java:404)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:342)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(XmlBeanDefinitionReader.java:310)
+	at org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.importBeanDefinitionResource(DefaultBeanDefinitionDocumentReader.java:190)
+	... 52 more
+Caused by: org.xml.sax.SAXParseException: cvc-complex-type.2.3: Element 'beans:beans' cannot have character [children], because the type's content type is element-only.
+	at org.apache.xerces.util.ErrorHandlerWrapper.createSAXParseException(Unknown Source)
+	at org.apache.xerces.util.ErrorHandlerWrapper.error(Unknown Source)
+	at org.apache.xerces.impl.XMLErrorReporter.reportError(Unknown Source)
+	at org.apache.xerces.impl.XMLErrorReporter.reportError(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator$XSIErrorReporter.reportError(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.reportSchemaError(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.elementLocallyValidComplexType(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.elementLocallyValidType(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.processElementContent(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.handleEndElement(Unknown Source)
+	at org.apache.xerces.impl.xs.XMLSchemaValidator.endElement(Unknown Source)
+	at org.apache.xerces.impl.XMLNSDocumentScannerImpl.scanEndElement(Unknown Source)
+	at org.apache.xerces.impl.XMLDocumentFragmentScannerImpl$FragmentContentDispatcher.dispatch(Unknown Source)
+	at org.apache.xerces.impl.XMLDocumentFragmentScannerImpl.scanDocument(Unknown Source)
+	at org.apache.xerces.parsers.XML11Configuration.parse(Unknown Source)
+	at org.apache.xerces.parsers.XML11Configuration.parse(Unknown Source)
+	at org.apache.xerces.parsers.XMLParser.parse(Unknown Source)
+	at org.apache.xerces.parsers.DOMParser.parse(Unknown Source)
+	at org.apache.xerces.jaxp.DocumentBuilderImpl.parse(Unknown Source)
+	at org.springframework.beans.factory.xml.DefaultDocumentLoader.loadDocument(DefaultDocumentLoader.java:75)
+	at org.springframework.beans.factory.xml.XmlBeanDefinitionReader.doLoadBeanDefinitions(XmlBeanDefinitionReader.java:396)
+	... 55 more
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:05,208 - Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:07,208 - First run of load Job, initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:07,724 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:07,724 - Job Properties : 
+Property: retry
+ - Value: false
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-air/
+Property: prefix
+ - Value: baaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:07,817 - Executing Load Job Id: 0 at Thu Apr 01 17:01:07 CDT 2010
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:07,833 - Step: loadStagingInsertsTable starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:08,005 - Step: loadStagingInsertsTable completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:08,005 - Summary for Step: loadStagingInsertsTable
+StepExecution: id=0
+ - Step Property:  name=loadStagingInsertsTable
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=696
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=696 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=14
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:08,005 - Step: loadCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:08,427 - Step: loadCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:08,442 - Summary for Step: loadCodingScheme
+StepExecution: id=1
+ - Step Property:  name=loadCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=148
+ - Step Property:  filterCount=147
+ - Step Property:  writeCount=1 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=149
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:08,489 - Step: umlsLoadEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:09,083 - Step: umlsLoadEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:09,083 - Summary for Step: umlsLoadEntity
+StepExecution: id=4
+ - Step Property:  name=umlsLoadEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=682
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=682 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:09,114 - Step: umlsLoadEntityAssnsToEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:09,114 - Step: umlsLoadDefinitionProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:09,114 - Step: umlsLoadMrstyProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:10,677 - Step: umlsLoadDefinitionProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:10,677 - Summary for Step: umlsLoadDefinitionProperties
+StepExecution: id=6
+ - Step Property:  name=umlsLoadDefinitionProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=160
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=160 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=2
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:12,614 - Step: umlsLoadEntityAssnsToEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:12,614 - Summary for Step: umlsLoadEntityAssnsToEntity
+StepExecution: id=5
+ - Step Property:  name=umlsLoadEntityAssnsToEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=1198
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=1198 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=12
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:24,676 - Step: umlsLoadMrstyProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:24,676 - Summary for Step: umlsLoadMrstyProperties
+StepExecution: id=7
+ - Step Property:  name=umlsLoadMrstyProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=633
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=633 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:24,692 - Starting Lucene Indexing.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:29,504 - Job completed, dropping tables
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:29,504 - Load Job ended in state: exitCode=COMPLETED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:29,551 - Finished loading the DB
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:29,801 - Read Time : 00:00:00 Heap Usage: 20.86 MB Heap Delta:20.86 MB
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:29,801 - After Indexing
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:29,957 - Read Time : 00:00:00 Heap Usage: 20.86 MB Heap Delta:1.91 KB
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:29,957 - Load process completed without error
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:30,645 - Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,254 - First run of load Job, initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,301 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,301 - Job Properties : 
+Property: retry
+ - Value: false
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-airFAIL/
+Property: prefix
+ - Value: caaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,301 - Executing Load Job Id: 0 at Thu Apr 01 17:01:31 CDT 2010
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,317 - Step: loadStagingInsertsTable starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,379 - Step: loadStagingInsertsTable completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,379 - Summary for Step: loadStagingInsertsTable
+StepExecution: id=0
+ - Step Property:  name=loadStagingInsertsTable
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=695
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=695 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=14
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,379 - Step: loadCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,473 - Step: loadCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,473 - Summary for Step: loadCodingScheme
+StepExecution: id=1
+ - Step Property:  name=loadCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=148
+ - Step Property:  filterCount=147
+ - Step Property:  writeCount=1 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=149
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,489 - Step: umlsLoadEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,754 - Step: umlsLoadEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,754 - Summary for Step: umlsLoadEntity
+StepExecution: id=4
+ - Step Property:  name=umlsLoadEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=682
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=682 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,754 - Step: umlsLoadEntityAssnsToEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,754 - Step: umlsLoadMrstyProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,754 - Step: umlsLoadDefinitionProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,910 - Step: umlsLoadEntityAssnsToEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:31,910 - Summary for Step: umlsLoadEntityAssnsToEntity
+StepExecution: id=5
+ - Step Property:  name=umlsLoadEntityAssnsToEntity
+ - Step Property:  status=FAILED
+ - Step Property:  exitStatus=FAILED
+ - Step Property:  readCount=100
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=0
+ - Step Property:  rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-04-01 17:01:31,910 - Exceptions for Step: umlsLoadEntityAssnsToEntity StepExecution: id=5, name=umlsLoadEntityAssnsToEntity, status=FAILED, exitStatus=FAILED, readCount=100, filterCount=0, writeCount=0 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=0, rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-04-01 17:01:31,910 - - Exception: java.lang.NullPointerException
+java.lang.NullPointerException
+	at org.lexgrid.loader.rrf.staging.JdbcMrconsoStagingDao.getCodeAndSab(JdbcMrconsoStagingDao.java:99)
+	at org.lexgrid.loader.umls.processor.support.UmlsRelationResolver.getSource(UmlsRelationResolver.java:40)
+	at org.lexgrid.loader.rrf.processor.support.AbstractRrfRelationResolver.getSource(AbstractRrfRelationResolver.java:1)
+	at org.lexgrid.loader.processor.EntityAssnsToEntityProcessor.process(EntityAssnsToEntityProcessor.java:73)
+	at org.lexgrid.loader.processor.EntityAssnsToEntityProcessor.process(EntityAssnsToEntityProcessor.java:1)
+	at org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator.process(RootNodeAddingDecorator.java:57)
+	at org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator.process(RootNodeAddingDecorator.java:1)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:118)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:260)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:171)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:74)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:347)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:128)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:261)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:76)
+	at org.springframework.batch.repeat.support.RepeatTemplate.getNextResult(RepeatTemplate.java:367)
+	at org.springframework.batch.repeat.support.RepeatTemplate.executeInternal(RepeatTemplate.java:214)
+	at org.springframework.batch.repeat.support.RepeatTemplate.iterate(RepeatTemplate.java:143)
+	at org.springframework.batch.core.step.tasklet.TaskletStep.doExecute(TaskletStep.java:247)
+	at org.springframework.batch.core.step.AbstractStep.execute(AbstractStep.java:196)
+	at org.springframework.batch.core.job.SimpleStepHandler.handleStep(SimpleStepHandler.java:115)
+	at org.springframework.batch.core.job.flow.JobFlowExecutor.executeStep(JobFlowExecutor.java:61)
+	at org.springframework.batch.core.job.flow.support.state.StepState.handle(StepState.java:60)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.resume(SimpleFlow.java:144)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.start(SimpleFlow.java:124)
+	at org.springframework.batch.core.job.flow.support.state.SplitState$1.call(SplitState.java:83)
+	at org.springframework.batch.core.job.flow.support.state.SplitState$1.call(SplitState.java:81)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:192)
+	at java.lang.Thread.run(Thread.java:619)
+
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:32,160 - Step: umlsLoadDefinitionProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:32,160 - Summary for Step: umlsLoadDefinitionProperties
+StepExecution: id=6
+ - Step Property:  name=umlsLoadDefinitionProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=160
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=160 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=2
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:44,848 - Step: umlsLoadMrstyProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:44,848 - Summary for Step: umlsLoadMrstyProperties
+StepExecution: id=7
+ - Step Property:  name=umlsLoadMrstyProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=633
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=633 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:44,848 - Starting Lucene Indexing.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:48,457 - Load Job ended in state: exitCode=FAILED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:48,457 - Finished loading the DB
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:48,644 - Read Time : 00:00:18 Heap Usage: 25.86 MB Heap Delta:5.01 MB
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:48,644 - After Indexing
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:48,816 - Read Time : 00:00:00 Heap Usage: 24.83 MB Heap Delta:-1.04 MB
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:48,816 - Load process completed without error
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:49,066 - Not Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:49,598 - Retrying load Job, not initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:50,082 - Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:50,613 - First run of load Job, initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:50,660 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:50,660 - Job Properties : 
+Property: retry
+ - Value: false
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-airFAIL/
+Property: prefix
+ - Value: daaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:50,660 - Executing Load Job Id: 0 at Thu Apr 01 17:01:50 CDT 2010
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:50,660 - Step: loadStagingInsertsTable starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:50,707 - Step: loadStagingInsertsTable completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:50,707 - Summary for Step: loadStagingInsertsTable
+StepExecution: id=0
+ - Step Property:  name=loadStagingInsertsTable
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=695
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=695 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=14
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:50,707 - Step: loadCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:50,801 - Step: loadCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:50,801 - Summary for Step: loadCodingScheme
+StepExecution: id=1
+ - Step Property:  name=loadCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=148
+ - Step Property:  filterCount=147
+ - Step Property:  writeCount=1 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=149
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:50,801 - Step: umlsLoadEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:51,066 - Step: umlsLoadEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:51,066 - Summary for Step: umlsLoadEntity
+StepExecution: id=4
+ - Step Property:  name=umlsLoadEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=682
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=682 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:51,082 - Step: umlsLoadEntityAssnsToEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:51,082 - Step: umlsLoadDefinitionProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:51,082 - Step: umlsLoadMrstyProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:51,160 - Step: umlsLoadEntityAssnsToEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:51,160 - Summary for Step: umlsLoadEntityAssnsToEntity
+StepExecution: id=6
+ - Step Property:  name=umlsLoadEntityAssnsToEntity
+ - Step Property:  status=FAILED
+ - Step Property:  exitStatus=FAILED
+ - Step Property:  readCount=100
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=0
+ - Step Property:  rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-04-01 17:01:51,160 - Exceptions for Step: umlsLoadEntityAssnsToEntity StepExecution: id=6, name=umlsLoadEntityAssnsToEntity, status=FAILED, exitStatus=FAILED, readCount=100, filterCount=0, writeCount=0 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=0, rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-04-01 17:01:51,160 - - Exception: java.lang.NullPointerException
+java.lang.NullPointerException
+	at org.lexgrid.loader.rrf.staging.JdbcMrconsoStagingDao.getCodeAndSab(JdbcMrconsoStagingDao.java:99)
+	at org.lexgrid.loader.umls.processor.support.UmlsRelationResolver.getSource(UmlsRelationResolver.java:40)
+	at org.lexgrid.loader.rrf.processor.support.AbstractRrfRelationResolver.getSource(AbstractRrfRelationResolver.java:1)
+	at org.lexgrid.loader.processor.EntityAssnsToEntityProcessor.process(EntityAssnsToEntityProcessor.java:73)
+	at org.lexgrid.loader.processor.EntityAssnsToEntityProcessor.process(EntityAssnsToEntityProcessor.java:1)
+	at org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator.process(RootNodeAddingDecorator.java:57)
+	at org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator.process(RootNodeAddingDecorator.java:1)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:118)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:260)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:171)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:74)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:347)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:128)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:261)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:76)
+	at org.springframework.batch.repeat.support.RepeatTemplate.getNextResult(RepeatTemplate.java:367)
+	at org.springframework.batch.repeat.support.RepeatTemplate.executeInternal(RepeatTemplate.java:214)
+	at org.springframework.batch.repeat.support.RepeatTemplate.iterate(RepeatTemplate.java:143)
+	at org.springframework.batch.core.step.tasklet.TaskletStep.doExecute(TaskletStep.java:247)
+	at org.springframework.batch.core.step.AbstractStep.execute(AbstractStep.java:196)
+	at org.springframework.batch.core.job.SimpleStepHandler.handleStep(SimpleStepHandler.java:115)
+	at org.springframework.batch.core.job.flow.JobFlowExecutor.executeStep(JobFlowExecutor.java:61)
+	at org.springframework.batch.core.job.flow.support.state.StepState.handle(StepState.java:60)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.resume(SimpleFlow.java:144)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.start(SimpleFlow.java:124)
+	at org.springframework.batch.core.job.flow.support.state.SplitState$1.call(SplitState.java:83)
+	at org.springframework.batch.core.job.flow.support.state.SplitState$1.call(SplitState.java:81)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:192)
+	at java.lang.Thread.run(Thread.java:619)
+
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:51,363 - Step: umlsLoadDefinitionProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:01:51,363 - Summary for Step: umlsLoadDefinitionProperties
+StepExecution: id=7
+ - Step Property:  name=umlsLoadDefinitionProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=160
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=160 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=2
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:03,707 - Step: umlsLoadMrstyProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:03,707 - Summary for Step: umlsLoadMrstyProperties
+StepExecution: id=5
+ - Step Property:  name=umlsLoadMrstyProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=633
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=633 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:03,707 - Starting Lucene Indexing.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:07,175 - Load Job ended in state: exitCode=FAILED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:07,175 - Finished loading the DB
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:07,378 - Read Time : 00:00:18 Heap Usage: 27.20 MB Heap Delta:2.38 MB
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:07,378 - After Indexing
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:07,550 - Read Time : 00:00:00 Heap Usage: 27.20 MB Heap Delta:776 bytes
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:07,566 - Load process completed without error
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:07,800 - Not Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:08,316 - Retrying load Job, not initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:08,347 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:08,347 - Job Properties : 
+Property: retry
+ - Value: true
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-air/
+Property: prefix
+ - Value: daaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:08,410 - Executing Load Job Id: 1 at Thu Apr 01 17:02:08 CDT 2010
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:08,425 - Step: umlsLoadEntityAssnsToEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:09,941 - Step: umlsLoadEntityAssnsToEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:09,941 - Summary for Step: umlsLoadEntityAssnsToEntity
+StepExecution: id=9
+ - Step Property:  name=umlsLoadEntityAssnsToEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=1198
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=1198 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=12
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:09,941 - Job completed, dropping tables
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:02:09,941 - Load Job ended in state: exitCode=COMPLETED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:47,498 - Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:48,654 - First run of load Job, initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:48,841 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:48,841 - Job Properties : 
+Property: retry
+ - Value: false
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-air/
+Property: prefix
+ - Value: baaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:48,873 - Executing Load Job Id: 0 at Thu Apr 01 17:05:48 CDT 2010
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:48,888 - Step: loadStagingInsertsTable starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:49,013 - Step: loadStagingInsertsTable completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:49,013 - Summary for Step: loadStagingInsertsTable
+StepExecution: id=0
+ - Step Property:  name=loadStagingInsertsTable
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=696
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=696 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=14
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:49,013 - Step: loadCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:49,404 - Step: loadCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:49,420 - Summary for Step: loadCodingScheme
+StepExecution: id=1
+ - Step Property:  name=loadCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=148
+ - Step Property:  filterCount=147
+ - Step Property:  writeCount=1 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=149
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:49,420 - Step: registerCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:49,420 - Step: registerCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:49,420 - Summary for Step: registerCodingScheme
+StepExecution: id=2
+ - Step Property:  name=registerCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:49,420 - Step: loadHardcodedValues starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:49,451 - Step: loadHardcodedValues completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:49,466 - Summary for Step: loadHardcodedValues
+StepExecution: id=3
+ - Step Property:  name=loadHardcodedValues
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:49,466 - Step: umlsLoadEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:49,982 - Step: umlsLoadEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:49,982 - Summary for Step: umlsLoadEntity
+StepExecution: id=4
+ - Step Property:  name=umlsLoadEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=682
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=682 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:50,013 - Step: umlsLoadDefinitionProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:50,013 - Step: umlsLoadEntityAssnsToEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:50,013 - Step: umlsLoadMrstyProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:50,732 - Step: umlsLoadDefinitionProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:50,732 - Summary for Step: umlsLoadDefinitionProperties
+StepExecution: id=6
+ - Step Property:  name=umlsLoadDefinitionProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=160
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=160 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=2
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:52,638 - Step: umlsLoadEntityAssnsToEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:05:52,638 - Summary for Step: umlsLoadEntityAssnsToEntity
+StepExecution: id=5
+ - Step Property:  name=umlsLoadEntityAssnsToEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=1198
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=1198 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=12
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:05,075 - Step: umlsLoadMrstyProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:05,075 - Summary for Step: umlsLoadMrstyProperties
+StepExecution: id=7
+ - Step Property:  name=umlsLoadMrstyProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=633
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=633 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:05,075 - Step: index starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:05,091 - Starting Lucene Indexing.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:09,075 - Step: index completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:09,075 - Summary for Step: index
+StepExecution: id=8
+ - Step Property:  name=index
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:09,075 - Job completed, dropping tables
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:09,091 - Load Job ended in state: exitCode=COMPLETED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:09,091 - Finished loading the DB
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:09,341 - Read Time : 00:00:00 Heap Usage: 20.86 MB Heap Delta:20.86 MB
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:09,341 - After Indexing
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:09,497 - Read Time : 00:00:00 Heap Usage: 20.87 MB Heap Delta:1.91 KB
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:09,497 - Load process completed without error
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,122 - Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,653 - First run of load Job, initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,716 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,716 - Job Properties : 
+Property: retry
+ - Value: false
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-airFAIL/
+Property: prefix
+ - Value: caaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,716 - Executing Load Job Id: 0 at Thu Apr 01 17:06:10 CDT 2010
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,716 - Step: loadStagingInsertsTable starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,763 - Step: loadStagingInsertsTable completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,763 - Summary for Step: loadStagingInsertsTable
+StepExecution: id=0
+ - Step Property:  name=loadStagingInsertsTable
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=695
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=695 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=14
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,763 - Step: loadCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,856 - Step: loadCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,856 - Summary for Step: loadCodingScheme
+StepExecution: id=1
+ - Step Property:  name=loadCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=148
+ - Step Property:  filterCount=147
+ - Step Property:  writeCount=1 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=149
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,856 - Step: registerCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,872 - Step: registerCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,872 - Summary for Step: registerCodingScheme
+StepExecution: id=2
+ - Step Property:  name=registerCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,872 - Step: loadHardcodedValues starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,872 - Step: loadHardcodedValues completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,872 - Summary for Step: loadHardcodedValues
+StepExecution: id=3
+ - Step Property:  name=loadHardcodedValues
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:10,872 - Step: umlsLoadEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:11,153 - Step: umlsLoadEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:11,153 - Summary for Step: umlsLoadEntity
+StepExecution: id=4
+ - Step Property:  name=umlsLoadEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=682
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=682 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:11,153 - Step: umlsLoadEntityAssnsToEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:11,153 - Step: umlsLoadMrstyProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:11,153 - Step: umlsLoadDefinitionProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:11,294 - Step: umlsLoadEntityAssnsToEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:11,294 - Summary for Step: umlsLoadEntityAssnsToEntity
+StepExecution: id=5
+ - Step Property:  name=umlsLoadEntityAssnsToEntity
+ - Step Property:  status=FAILED
+ - Step Property:  exitStatus=FAILED
+ - Step Property:  readCount=100
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=0
+ - Step Property:  rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-04-01 17:06:11,294 - Exceptions for Step: umlsLoadEntityAssnsToEntity StepExecution: id=5, name=umlsLoadEntityAssnsToEntity, status=FAILED, exitStatus=FAILED, readCount=100, filterCount=0, writeCount=0 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=0, rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-04-01 17:06:11,294 - - Exception: java.lang.NullPointerException
+java.lang.NullPointerException
+	at org.lexgrid.loader.rrf.staging.JdbcMrconsoStagingDao.getCodeAndSab(JdbcMrconsoStagingDao.java:99)
+	at org.lexgrid.loader.umls.processor.support.UmlsRelationResolver.getSource(UmlsRelationResolver.java:40)
+	at org.lexgrid.loader.rrf.processor.support.AbstractRrfRelationResolver.getSource(AbstractRrfRelationResolver.java:1)
+	at org.lexgrid.loader.processor.EntityAssnsToEntityProcessor.process(EntityAssnsToEntityProcessor.java:73)
+	at org.lexgrid.loader.processor.EntityAssnsToEntityProcessor.process(EntityAssnsToEntityProcessor.java:1)
+	at org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator.process(RootNodeAddingDecorator.java:57)
+	at org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator.process(RootNodeAddingDecorator.java:1)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:118)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:260)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:171)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:74)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:347)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:128)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:261)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:76)
+	at org.springframework.batch.repeat.support.RepeatTemplate.getNextResult(RepeatTemplate.java:367)
+	at org.springframework.batch.repeat.support.RepeatTemplate.executeInternal(RepeatTemplate.java:214)
+	at org.springframework.batch.repeat.support.RepeatTemplate.iterate(RepeatTemplate.java:143)
+	at org.springframework.batch.core.step.tasklet.TaskletStep.doExecute(TaskletStep.java:247)
+	at org.springframework.batch.core.step.AbstractStep.execute(AbstractStep.java:196)
+	at org.springframework.batch.core.job.SimpleStepHandler.handleStep(SimpleStepHandler.java:115)
+	at org.springframework.batch.core.job.flow.JobFlowExecutor.executeStep(JobFlowExecutor.java:61)
+	at org.springframework.batch.core.job.flow.support.state.StepState.handle(StepState.java:60)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.resume(SimpleFlow.java:144)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.start(SimpleFlow.java:124)
+	at org.springframework.batch.core.job.flow.support.state.SplitState$1.call(SplitState.java:83)
+	at org.springframework.batch.core.job.flow.support.state.SplitState$1.call(SplitState.java:81)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:192)
+	at java.lang.Thread.run(Thread.java:619)
+
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:11,481 - Step: umlsLoadDefinitionProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:11,481 - Summary for Step: umlsLoadDefinitionProperties
+StepExecution: id=6
+ - Step Property:  name=umlsLoadDefinitionProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=160
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=160 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=2
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:24,340 - Step: umlsLoadMrstyProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:24,340 - Summary for Step: umlsLoadMrstyProperties
+StepExecution: id=7
+ - Step Property:  name=umlsLoadMrstyProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=633
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=633 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:24,340 - Step: index starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:24,340 - Starting Lucene Indexing.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:27,887 - Step: index completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:27,887 - Summary for Step: index
+StepExecution: id=8
+ - Step Property:  name=index
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:27,887 - Load Job ended in state: exitCode=FAILED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:27,887 - Finished loading the DB
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:28,075 - Read Time : 00:00:18 Heap Usage: 25.88 MB Heap Delta:5.01 MB
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:28,075 - After Indexing
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:28,247 - Read Time : 00:00:00 Heap Usage: 24.84 MB Heap Delta:-1.04 MB
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:28,247 - Load process completed without error
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:28,512 - Not Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:29,028 - Retrying load Job, not initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:29,668 - Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,184 - First run of load Job, initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,231 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,231 - Job Properties : 
+Property: retry
+ - Value: false
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-airFAIL/
+Property: prefix
+ - Value: daaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,231 - Executing Load Job Id: 0 at Thu Apr 01 17:06:30 CDT 2010
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,231 - Step: loadStagingInsertsTable starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,278 - Step: loadStagingInsertsTable completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,278 - Summary for Step: loadStagingInsertsTable
+StepExecution: id=0
+ - Step Property:  name=loadStagingInsertsTable
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=695
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=695 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=14
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,293 - Step: loadCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,372 - Step: loadCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,372 - Summary for Step: loadCodingScheme
+StepExecution: id=1
+ - Step Property:  name=loadCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=148
+ - Step Property:  filterCount=147
+ - Step Property:  writeCount=1 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=149
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,372 - Step: registerCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,387 - Step: registerCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,387 - Summary for Step: registerCodingScheme
+StepExecution: id=2
+ - Step Property:  name=registerCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,387 - Step: loadHardcodedValues starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,387 - Step: loadHardcodedValues completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,387 - Summary for Step: loadHardcodedValues
+StepExecution: id=3
+ - Step Property:  name=loadHardcodedValues
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,387 - Step: umlsLoadEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,653 - Step: umlsLoadEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,653 - Summary for Step: umlsLoadEntity
+StepExecution: id=4
+ - Step Property:  name=umlsLoadEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=682
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=682 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,653 - Step: umlsLoadEntityAssnsToEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,668 - Step: umlsLoadDefinitionProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,668 - Step: umlsLoadMrstyProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,762 - Step: umlsLoadEntityAssnsToEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,762 - Summary for Step: umlsLoadEntityAssnsToEntity
+StepExecution: id=5
+ - Step Property:  name=umlsLoadEntityAssnsToEntity
+ - Step Property:  status=FAILED
+ - Step Property:  exitStatus=FAILED
+ - Step Property:  readCount=100
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=0
+ - Step Property:  rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-04-01 17:06:30,762 - Exceptions for Step: umlsLoadEntityAssnsToEntity StepExecution: id=5, name=umlsLoadEntityAssnsToEntity, status=FAILED, exitStatus=FAILED, readCount=100, filterCount=0, writeCount=0 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=0, rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-04-01 17:06:30,762 - - Exception: java.lang.NullPointerException
+java.lang.NullPointerException
+	at org.lexgrid.loader.rrf.staging.JdbcMrconsoStagingDao.getCodeAndSab(JdbcMrconsoStagingDao.java:99)
+	at org.lexgrid.loader.umls.processor.support.UmlsRelationResolver.getSource(UmlsRelationResolver.java:40)
+	at org.lexgrid.loader.rrf.processor.support.AbstractRrfRelationResolver.getSource(AbstractRrfRelationResolver.java:1)
+	at org.lexgrid.loader.processor.EntityAssnsToEntityProcessor.process(EntityAssnsToEntityProcessor.java:73)
+	at org.lexgrid.loader.processor.EntityAssnsToEntityProcessor.process(EntityAssnsToEntityProcessor.java:1)
+	at org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator.process(RootNodeAddingDecorator.java:57)
+	at org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator.process(RootNodeAddingDecorator.java:1)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:118)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:260)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:171)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:74)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:347)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:128)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:261)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:76)
+	at org.springframework.batch.repeat.support.RepeatTemplate.getNextResult(RepeatTemplate.java:367)
+	at org.springframework.batch.repeat.support.RepeatTemplate.executeInternal(RepeatTemplate.java:214)
+	at org.springframework.batch.repeat.support.RepeatTemplate.iterate(RepeatTemplate.java:143)
+	at org.springframework.batch.core.step.tasklet.TaskletStep.doExecute(TaskletStep.java:247)
+	at org.springframework.batch.core.step.AbstractStep.execute(AbstractStep.java:196)
+	at org.springframework.batch.core.job.SimpleStepHandler.handleStep(SimpleStepHandler.java:115)
+	at org.springframework.batch.core.job.flow.JobFlowExecutor.executeStep(JobFlowExecutor.java:61)
+	at org.springframework.batch.core.job.flow.support.state.StepState.handle(StepState.java:60)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.resume(SimpleFlow.java:144)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.start(SimpleFlow.java:124)
+	at org.springframework.batch.core.job.flow.support.state.SplitState$1.call(SplitState.java:83)
+	at org.springframework.batch.core.job.flow.support.state.SplitState$1.call(SplitState.java:81)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:192)
+	at java.lang.Thread.run(Thread.java:619)
+
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,965 - Step: umlsLoadDefinitionProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:30,965 - Summary for Step: umlsLoadDefinitionProperties
+StepExecution: id=7
+ - Step Property:  name=umlsLoadDefinitionProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=160
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=160 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=2
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:43,887 - Step: umlsLoadMrstyProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:43,902 - Summary for Step: umlsLoadMrstyProperties
+StepExecution: id=6
+ - Step Property:  name=umlsLoadMrstyProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=633
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=633 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:43,902 - Step: index starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:43,902 - Starting Lucene Indexing.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:47,965 - Step: index completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:47,965 - Summary for Step: index
+StepExecution: id=8
+ - Step Property:  name=index
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:47,965 - Load Job ended in state: exitCode=FAILED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:47,965 - Finished loading the DB
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:48,199 - Read Time : 00:00:19 Heap Usage: 27.14 MB Heap Delta:2.30 MB
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:48,199 - After Indexing
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:48,371 - Read Time : 00:00:00 Heap Usage: 27.14 MB Heap Delta:776 bytes
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:48,371 - Load process completed without error
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:48,637 - Not Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:49,137 - Retrying load Job, not initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:49,184 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:49,184 - Job Properties : 
+Property: retry
+ - Value: true
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-air/
+Property: prefix
+ - Value: daaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:49,199 - Executing Load Job Id: 1 at Thu Apr 01 17:06:49 CDT 2010
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:49,199 - Step: umlsLoadEntityAssnsToEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:50,652 - Step: umlsLoadEntityAssnsToEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:50,652 - Summary for Step: umlsLoadEntityAssnsToEntity
+StepExecution: id=9
+ - Step Property:  name=umlsLoadEntityAssnsToEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=1198
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=1198 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=12
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:50,652 - Job completed, dropping tables
+LB_LOAD_LOGGER DEBUG - 2010-04-01 17:06:50,668 - Load Job ended in state: exitCode=COMPLETED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:38,758 - Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:40,320 - First run of load Job, initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:40,523 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:40,523 - Job Properties : 
+Property: retry
+ - Value: false
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-air/
+Property: prefix
+ - Value: baaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:40,586 - Executing Load Job Id: 0 at Fri Apr 02 16:57:40 CDT 2010
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:40,601 - Step: loadStagingInsertsTable starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:40,804 - Step: loadStagingInsertsTable completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:40,804 - Summary for Step: loadStagingInsertsTable
+StepExecution: id=0
+ - Step Property:  name=loadStagingInsertsTable
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=696
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=696 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=14
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:40,804 - Step: loadCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:41,101 - Step: loadCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:41,101 - Summary for Step: loadCodingScheme
+StepExecution: id=1
+ - Step Property:  name=loadCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=148
+ - Step Property:  filterCount=147
+ - Step Property:  writeCount=1 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=149
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:41,117 - Step: registerCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:41,117 - Step: registerCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:41,117 - Summary for Step: registerCodingScheme
+StepExecution: id=2
+ - Step Property:  name=registerCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:41,133 - Step: loadHardcodedValues starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:41,179 - Step: loadHardcodedValues completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:41,179 - Summary for Step: loadHardcodedValues
+StepExecution: id=3
+ - Step Property:  name=loadHardcodedValues
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:41,195 - Step: umlsLoadEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:41,773 - Step: umlsLoadEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:41,773 - Summary for Step: umlsLoadEntity
+StepExecution: id=4
+ - Step Property:  name=umlsLoadEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=682
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=682 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:41,789 - Step: umlsLoadEntityAssnsToEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:41,789 - Step: umlsLoadMrstyProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:41,789 - Step: umlsLoadDefinitionProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:43,086 - Step: umlsLoadDefinitionProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:43,086 - Summary for Step: umlsLoadDefinitionProperties
+StepExecution: id=7
+ - Step Property:  name=umlsLoadDefinitionProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=160
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=160 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=2
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:45,070 - Step: umlsLoadEntityAssnsToEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:45,070 - Summary for Step: umlsLoadEntityAssnsToEntity
+StepExecution: id=5
+ - Step Property:  name=umlsLoadEntityAssnsToEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=1198
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=1198 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=12
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:57,273 - Step: umlsLoadMrstyProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:57,273 - Summary for Step: umlsLoadMrstyProperties
+StepExecution: id=6
+ - Step Property:  name=umlsLoadMrstyProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=633
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=633 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:57,273 - Step: index starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:57:57,273 - Starting Lucene Indexing.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:01,523 - Step: index completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:01,523 - Summary for Step: index
+StepExecution: id=8
+ - Step Property:  name=index
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:01,523 - Job completed, dropping tables
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:01,523 - Load Job ended in state: exitCode=COMPLETED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:01,523 - Finished loading the DB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:01,695 - Read Time : 00:00:00 Heap Usage: 22.65 MB Heap Delta:22.65 MB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:01,695 - After Indexing
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:01,851 - Read Time : 00:00:00 Heap Usage: 21.81 MB Heap Delta:-864.07 KB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:01,851 - Load process completed without error
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:02,570 - Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,116 - First run of load Job, initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,163 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,163 - Job Properties : 
+Property: retry
+ - Value: false
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-airFAIL/
+Property: prefix
+ - Value: caaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,163 - Executing Load Job Id: 0 at Fri Apr 02 16:58:03 CDT 2010
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,163 - Step: loadStagingInsertsTable starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,241 - Step: loadStagingInsertsTable completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,241 - Summary for Step: loadStagingInsertsTable
+StepExecution: id=0
+ - Step Property:  name=loadStagingInsertsTable
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=695
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=695 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=14
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,241 - Step: loadCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,335 - Step: loadCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,335 - Summary for Step: loadCodingScheme
+StepExecution: id=1
+ - Step Property:  name=loadCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=148
+ - Step Property:  filterCount=147
+ - Step Property:  writeCount=1 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=149
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,335 - Step: registerCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,335 - Step: registerCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,335 - Summary for Step: registerCodingScheme
+StepExecution: id=2
+ - Step Property:  name=registerCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,335 - Step: loadHardcodedValues starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,335 - Step: loadHardcodedValues completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,335 - Summary for Step: loadHardcodedValues
+StepExecution: id=3
+ - Step Property:  name=loadHardcodedValues
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,351 - Step: umlsLoadEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,616 - Step: umlsLoadEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,616 - Summary for Step: umlsLoadEntity
+StepExecution: id=4
+ - Step Property:  name=umlsLoadEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=682
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=682 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,616 - Step: umlsLoadEntityAssnsToEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,616 - Step: umlsLoadDefinitionProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,616 - Step: umlsLoadMrstyProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,773 - Step: umlsLoadEntityAssnsToEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:03,773 - Summary for Step: umlsLoadEntityAssnsToEntity
+StepExecution: id=5
+ - Step Property:  name=umlsLoadEntityAssnsToEntity
+ - Step Property:  status=FAILED
+ - Step Property:  exitStatus=FAILED
+ - Step Property:  readCount=100
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=0
+ - Step Property:  rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-04-02 16:58:03,773 - Exceptions for Step: umlsLoadEntityAssnsToEntity StepExecution: id=5, name=umlsLoadEntityAssnsToEntity, status=FAILED, exitStatus=FAILED, readCount=100, filterCount=0, writeCount=0 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=0, rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-04-02 16:58:03,773 - - Exception: java.lang.NullPointerException
+java.lang.NullPointerException
+	at org.lexgrid.loader.rrf.staging.JdbcMrconsoStagingDao.getCodeAndSab(JdbcMrconsoStagingDao.java:99)
+	at org.lexgrid.loader.umls.processor.support.UmlsRelationResolver.getSource(UmlsRelationResolver.java:40)
+	at org.lexgrid.loader.rrf.processor.support.AbstractRrfRelationResolver.getSource(AbstractRrfRelationResolver.java:1)
+	at org.lexgrid.loader.processor.EntityAssnsToEntityProcessor.process(EntityAssnsToEntityProcessor.java:73)
+	at org.lexgrid.loader.processor.EntityAssnsToEntityProcessor.process(EntityAssnsToEntityProcessor.java:1)
+	at org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator.process(RootNodeAddingDecorator.java:57)
+	at org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator.process(RootNodeAddingDecorator.java:1)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:118)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:260)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:171)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:74)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:347)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:128)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:261)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:76)
+	at org.springframework.batch.repeat.support.RepeatTemplate.getNextResult(RepeatTemplate.java:367)
+	at org.springframework.batch.repeat.support.RepeatTemplate.executeInternal(RepeatTemplate.java:214)
+	at org.springframework.batch.repeat.support.RepeatTemplate.iterate(RepeatTemplate.java:143)
+	at org.springframework.batch.core.step.tasklet.TaskletStep.doExecute(TaskletStep.java:247)
+	at org.springframework.batch.core.step.AbstractStep.execute(AbstractStep.java:196)
+	at org.springframework.batch.core.job.SimpleStepHandler.handleStep(SimpleStepHandler.java:115)
+	at org.springframework.batch.core.job.flow.JobFlowExecutor.executeStep(JobFlowExecutor.java:61)
+	at org.springframework.batch.core.job.flow.support.state.StepState.handle(StepState.java:60)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.resume(SimpleFlow.java:144)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.start(SimpleFlow.java:124)
+	at org.springframework.batch.core.job.flow.support.state.SplitState$1.call(SplitState.java:83)
+	at org.springframework.batch.core.job.flow.support.state.SplitState$1.call(SplitState.java:81)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:192)
+	at java.lang.Thread.run(Thread.java:619)
+
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:04,038 - Step: umlsLoadDefinitionProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:04,054 - Summary for Step: umlsLoadDefinitionProperties
+StepExecution: id=6
+ - Step Property:  name=umlsLoadDefinitionProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=160
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=160 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=2
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:16,491 - Step: umlsLoadMrstyProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:16,491 - Summary for Step: umlsLoadMrstyProperties
+StepExecution: id=7
+ - Step Property:  name=umlsLoadMrstyProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=633
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=633 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:16,491 - Step: index starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:16,491 - Starting Lucene Indexing.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:20,069 - Step: index completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:20,085 - Summary for Step: index
+StepExecution: id=8
+ - Step Property:  name=index
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:20,085 - Load Job ended in state: exitCode=FAILED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:20,085 - Finished loading the DB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:20,272 - Read Time : 00:00:18 Heap Usage: 26.53 MB Heap Delta:4.72 MB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:20,272 - After Indexing
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:20,475 - Read Time : 00:00:00 Heap Usage: 23.55 MB Heap Delta:-2.98 MB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:20,475 - Load process completed without error
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:20,835 - Not Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:21,444 - Retrying load Job, not initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:21,991 - Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,507 - First run of load Job, initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,553 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,553 - Job Properties : 
+Property: retry
+ - Value: false
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-airFAIL/
+Property: prefix
+ - Value: daaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,553 - Executing Load Job Id: 0 at Fri Apr 02 16:58:22 CDT 2010
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,553 - Step: loadStagingInsertsTable starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,616 - Step: loadStagingInsertsTable completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,616 - Summary for Step: loadStagingInsertsTable
+StepExecution: id=0
+ - Step Property:  name=loadStagingInsertsTable
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=695
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=695 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=14
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,616 - Step: loadCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,694 - Step: loadCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,694 - Summary for Step: loadCodingScheme
+StepExecution: id=1
+ - Step Property:  name=loadCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=148
+ - Step Property:  filterCount=147
+ - Step Property:  writeCount=1 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=149
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,694 - Step: registerCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,694 - Step: registerCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,694 - Summary for Step: registerCodingScheme
+StepExecution: id=2
+ - Step Property:  name=registerCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,710 - Step: loadHardcodedValues starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,710 - Step: loadHardcodedValues completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,710 - Summary for Step: loadHardcodedValues
+StepExecution: id=3
+ - Step Property:  name=loadHardcodedValues
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,710 - Step: umlsLoadEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,975 - Step: umlsLoadEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,975 - Summary for Step: umlsLoadEntity
+StepExecution: id=4
+ - Step Property:  name=umlsLoadEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=682
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=682 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,975 - Step: umlsLoadMrstyProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,975 - Step: umlsLoadDefinitionProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:22,975 - Step: umlsLoadEntityAssnsToEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:23,038 - Step: umlsLoadEntityAssnsToEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:23,038 - Summary for Step: umlsLoadEntityAssnsToEntity
+StepExecution: id=5
+ - Step Property:  name=umlsLoadEntityAssnsToEntity
+ - Step Property:  status=FAILED
+ - Step Property:  exitStatus=FAILED
+ - Step Property:  readCount=100
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=0
+ - Step Property:  rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-04-02 16:58:23,085 - Exceptions for Step: umlsLoadEntityAssnsToEntity StepExecution: id=5, name=umlsLoadEntityAssnsToEntity, status=FAILED, exitStatus=FAILED, readCount=100, filterCount=0, writeCount=0 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=0, rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-04-02 16:58:23,085 - - Exception: java.lang.NullPointerException
+java.lang.NullPointerException
+	at org.lexgrid.loader.rrf.staging.JdbcMrconsoStagingDao.getCodeAndSab(JdbcMrconsoStagingDao.java:99)
+	at org.lexgrid.loader.umls.processor.support.UmlsRelationResolver.getSource(UmlsRelationResolver.java:40)
+	at org.lexgrid.loader.rrf.processor.support.AbstractRrfRelationResolver.getSource(AbstractRrfRelationResolver.java:1)
+	at org.lexgrid.loader.processor.EntityAssnsToEntityProcessor.process(EntityAssnsToEntityProcessor.java:73)
+	at org.lexgrid.loader.processor.EntityAssnsToEntityProcessor.process(EntityAssnsToEntityProcessor.java:1)
+	at org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator.process(RootNodeAddingDecorator.java:57)
+	at org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator.process(RootNodeAddingDecorator.java:1)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:118)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:260)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:171)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:74)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:347)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:128)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:261)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:76)
+	at org.springframework.batch.repeat.support.RepeatTemplate.getNextResult(RepeatTemplate.java:367)
+	at org.springframework.batch.repeat.support.RepeatTemplate.executeInternal(RepeatTemplate.java:214)
+	at org.springframework.batch.repeat.support.RepeatTemplate.iterate(RepeatTemplate.java:143)
+	at org.springframework.batch.core.step.tasklet.TaskletStep.doExecute(TaskletStep.java:247)
+	at org.springframework.batch.core.step.AbstractStep.execute(AbstractStep.java:196)
+	at org.springframework.batch.core.job.SimpleStepHandler.handleStep(SimpleStepHandler.java:115)
+	at org.springframework.batch.core.job.flow.JobFlowExecutor.executeStep(JobFlowExecutor.java:61)
+	at org.springframework.batch.core.job.flow.support.state.StepState.handle(StepState.java:60)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.resume(SimpleFlow.java:144)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.start(SimpleFlow.java:124)
+	at org.springframework.batch.core.job.flow.support.state.SplitState$1.call(SplitState.java:83)
+	at org.springframework.batch.core.job.flow.support.state.SplitState$1.call(SplitState.java:81)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:192)
+	at java.lang.Thread.run(Thread.java:619)
+
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:23,319 - Step: umlsLoadDefinitionProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:23,319 - Summary for Step: umlsLoadDefinitionProperties
+StepExecution: id=7
+ - Step Property:  name=umlsLoadDefinitionProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=160
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=160 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=2
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:35,631 - Step: umlsLoadMrstyProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:35,631 - Summary for Step: umlsLoadMrstyProperties
+StepExecution: id=6
+ - Step Property:  name=umlsLoadMrstyProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=633
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=633 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:35,631 - Step: index starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:35,631 - Starting Lucene Indexing.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:39,178 - Step: index completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:39,178 - Summary for Step: index
+StepExecution: id=8
+ - Step Property:  name=index
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:39,178 - Load Job ended in state: exitCode=FAILED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:39,178 - Finished loading the DB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:39,365 - Read Time : 00:00:18 Heap Usage: 29.67 MB Heap Delta:6.12 MB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:39,365 - After Indexing
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:39,553 - Read Time : 00:00:00 Heap Usage: 28.81 MB Heap Delta:-876.39 KB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:39,553 - Load process completed without error
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:39,803 - Not Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:40,319 - Retrying load Job, not initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:40,365 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:40,365 - Job Properties : 
+Property: retry
+ - Value: true
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-air/
+Property: prefix
+ - Value: daaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:40,412 - Executing Load Job Id: 1 at Fri Apr 02 16:58:40 CDT 2010
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:40,428 - Step: umlsLoadEntityAssnsToEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:41,944 - Step: umlsLoadEntityAssnsToEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:41,944 - Summary for Step: umlsLoadEntityAssnsToEntity
+StepExecution: id=9
+ - Step Property:  name=umlsLoadEntityAssnsToEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=1198
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=1198 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=12
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:41,959 - Job completed, dropping tables
+LB_LOAD_LOGGER DEBUG - 2010-04-02 16:58:41,959 - Load Job ended in state: exitCode=COMPLETED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:17:58,617 - Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:17:59,867 - First run of load Job, initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:00,070 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:00,070 - Job Properties : 
+Property: retry
+ - Value: false
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-air/
+Property: prefix
+ - Value: baaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:00,101 - Executing Load Job Id: 0 at Fri Apr 02 17:18:00 CDT 2010
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:00,117 - Step: loadStagingInsertsTable starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:00,242 - Step: loadStagingInsertsTable completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:00,242 - Summary for Step: loadStagingInsertsTable
+StepExecution: id=0
+ - Step Property:  name=loadStagingInsertsTable
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=696
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=696 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=14
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:00,258 - Step: loadCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:00,476 - Step: loadCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:00,476 - Summary for Step: loadCodingScheme
+StepExecution: id=1
+ - Step Property:  name=loadCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=148
+ - Step Property:  filterCount=147
+ - Step Property:  writeCount=1 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=149
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:00,476 - Step: registerCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:00,492 - Step: registerCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:00,492 - Summary for Step: registerCodingScheme
+StepExecution: id=2
+ - Step Property:  name=registerCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:00,492 - Step: loadHardcodedValues starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:00,539 - Step: loadHardcodedValues completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:00,539 - Summary for Step: loadHardcodedValues
+StepExecution: id=3
+ - Step Property:  name=loadHardcodedValues
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:00,539 - Step: umlsLoadEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:01,054 - Step: umlsLoadEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:01,054 - Summary for Step: umlsLoadEntity
+StepExecution: id=4
+ - Step Property:  name=umlsLoadEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=682
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=682 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:01,070 - Step: umlsLoadEntityAssnsToEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:01,070 - Step: umlsLoadDefinitionProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:01,070 - Step: umlsLoadMrstyProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:01,804 - Step: umlsLoadDefinitionProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:01,804 - Summary for Step: umlsLoadDefinitionProperties
+StepExecution: id=6
+ - Step Property:  name=umlsLoadDefinitionProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=160
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=160 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=2
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:03,758 - Step: umlsLoadEntityAssnsToEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:03,758 - Summary for Step: umlsLoadEntityAssnsToEntity
+StepExecution: id=5
+ - Step Property:  name=umlsLoadEntityAssnsToEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=1198
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=1198 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=12
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:16,882 - Step: umlsLoadMrstyProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:16,882 - Summary for Step: umlsLoadMrstyProperties
+StepExecution: id=7
+ - Step Property:  name=umlsLoadMrstyProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=633
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=633 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:16,898 - Step: index starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:16,913 - Starting Lucene Indexing.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:21,898 - Step: index completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:21,898 - Summary for Step: index
+StepExecution: id=8
+ - Step Property:  name=index
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:21,898 - Job completed, dropping tables
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:21,913 - Load Job ended in state: exitCode=COMPLETED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:21,913 - Finished loading the DB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:22,085 - Read Time : 00:00:00 Heap Usage: 22.86 MB Heap Delta:22.86 MB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:22,085 - After Indexing
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:22,241 - Read Time : 00:00:00 Heap Usage: 22.02 MB Heap Delta:-860.41 KB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:22,241 - Load process completed without error
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:22,757 - Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,288 - First run of load Job, initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,351 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,351 - Job Properties : 
+Property: retry
+ - Value: false
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-airFAIL/
+Property: prefix
+ - Value: caaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,351 - Executing Load Job Id: 0 at Fri Apr 02 17:18:23 CDT 2010
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,351 - Step: loadStagingInsertsTable starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,398 - Step: loadStagingInsertsTable completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,398 - Summary for Step: loadStagingInsertsTable
+StepExecution: id=0
+ - Step Property:  name=loadStagingInsertsTable
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=695
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=695 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=14
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,398 - Step: loadCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,491 - Step: loadCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,491 - Summary for Step: loadCodingScheme
+StepExecution: id=1
+ - Step Property:  name=loadCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=148
+ - Step Property:  filterCount=147
+ - Step Property:  writeCount=1 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=149
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,491 - Step: registerCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,491 - Step: registerCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,491 - Summary for Step: registerCodingScheme
+StepExecution: id=2
+ - Step Property:  name=registerCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,491 - Step: loadHardcodedValues starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,507 - Step: loadHardcodedValues completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,507 - Summary for Step: loadHardcodedValues
+StepExecution: id=3
+ - Step Property:  name=loadHardcodedValues
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,507 - Step: umlsLoadEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,773 - Step: umlsLoadEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,773 - Summary for Step: umlsLoadEntity
+StepExecution: id=4
+ - Step Property:  name=umlsLoadEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=682
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=682 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,788 - Step: umlsLoadMrstyProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,788 - Step: umlsLoadEntityAssnsToEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,788 - Step: umlsLoadDefinitionProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,866 - Step: umlsLoadEntityAssnsToEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:23,866 - Summary for Step: umlsLoadEntityAssnsToEntity
+StepExecution: id=6
+ - Step Property:  name=umlsLoadEntityAssnsToEntity
+ - Step Property:  status=FAILED
+ - Step Property:  exitStatus=FAILED
+ - Step Property:  readCount=100
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=0
+ - Step Property:  rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-04-02 17:18:23,944 - Exceptions for Step: umlsLoadEntityAssnsToEntity StepExecution: id=6, name=umlsLoadEntityAssnsToEntity, status=FAILED, exitStatus=FAILED, readCount=100, filterCount=0, writeCount=0 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=0, rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-04-02 17:18:23,944 - - Exception: java.lang.NullPointerException
+java.lang.NullPointerException
+	at org.lexgrid.loader.rrf.staging.JdbcMrconsoStagingDao.getCodeAndSab(JdbcMrconsoStagingDao.java:99)
+	at org.lexgrid.loader.umls.processor.support.UmlsRelationResolver.getSource(UmlsRelationResolver.java:40)
+	at org.lexgrid.loader.rrf.processor.support.AbstractRrfRelationResolver.getSource(AbstractRrfRelationResolver.java:1)
+	at org.lexgrid.loader.processor.EntityAssnsToEntityProcessor.process(EntityAssnsToEntityProcessor.java:73)
+	at org.lexgrid.loader.processor.EntityAssnsToEntityProcessor.process(EntityAssnsToEntityProcessor.java:1)
+	at org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator.process(RootNodeAddingDecorator.java:57)
+	at org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator.process(RootNodeAddingDecorator.java:1)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:118)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:260)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:171)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:74)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:347)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:128)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:261)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:76)
+	at org.springframework.batch.repeat.support.RepeatTemplate.getNextResult(RepeatTemplate.java:367)
+	at org.springframework.batch.repeat.support.RepeatTemplate.executeInternal(RepeatTemplate.java:214)
+	at org.springframework.batch.repeat.support.RepeatTemplate.iterate(RepeatTemplate.java:143)
+	at org.springframework.batch.core.step.tasklet.TaskletStep.doExecute(TaskletStep.java:247)
+	at org.springframework.batch.core.step.AbstractStep.execute(AbstractStep.java:196)
+	at org.springframework.batch.core.job.SimpleStepHandler.handleStep(SimpleStepHandler.java:115)
+	at org.springframework.batch.core.job.flow.JobFlowExecutor.executeStep(JobFlowExecutor.java:61)
+	at org.springframework.batch.core.job.flow.support.state.StepState.handle(StepState.java:60)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.resume(SimpleFlow.java:144)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.start(SimpleFlow.java:124)
+	at org.springframework.batch.core.job.flow.support.state.SplitState$1.call(SplitState.java:83)
+	at org.springframework.batch.core.job.flow.support.state.SplitState$1.call(SplitState.java:81)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:192)
+	at java.lang.Thread.run(Thread.java:619)
+
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:24,116 - Step: umlsLoadDefinitionProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:24,116 - Summary for Step: umlsLoadDefinitionProperties
+StepExecution: id=5
+ - Step Property:  name=umlsLoadDefinitionProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=160
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=160 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=2
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:37,054 - Step: umlsLoadMrstyProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:37,054 - Summary for Step: umlsLoadMrstyProperties
+StepExecution: id=7
+ - Step Property:  name=umlsLoadMrstyProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=633
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=633 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:37,054 - Step: index starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:37,054 - Starting Lucene Indexing.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:41,444 - Step: index completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:41,444 - Summary for Step: index
+StepExecution: id=8
+ - Step Property:  name=index
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:41,444 - Load Job ended in state: exitCode=FAILED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:41,444 - Finished loading the DB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:41,616 - Read Time : 00:00:19 Heap Usage: 26.49 MB Heap Delta:4.47 MB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:41,616 - After Indexing
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:41,819 - Read Time : 00:00:00 Heap Usage: 23.54 MB Heap Delta:-2.95 MB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:41,819 - Load process completed without error
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:42,085 - Not Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:42,600 - Retrying load Job, not initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:43,819 - Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,350 - First run of load Job, initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,397 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,397 - Job Properties : 
+Property: retry
+ - Value: false
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-airFAIL/
+Property: prefix
+ - Value: daaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,397 - Executing Load Job Id: 0 at Fri Apr 02 17:18:44 CDT 2010
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,397 - Step: loadStagingInsertsTable starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,444 - Step: loadStagingInsertsTable completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,444 - Summary for Step: loadStagingInsertsTable
+StepExecution: id=0
+ - Step Property:  name=loadStagingInsertsTable
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=695
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=695 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=14
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,444 - Step: loadCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,538 - Step: loadCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,538 - Summary for Step: loadCodingScheme
+StepExecution: id=1
+ - Step Property:  name=loadCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=148
+ - Step Property:  filterCount=147
+ - Step Property:  writeCount=1 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=149
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,538 - Step: registerCodingScheme starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,538 - Step: registerCodingScheme completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,538 - Summary for Step: registerCodingScheme
+StepExecution: id=2
+ - Step Property:  name=registerCodingScheme
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,538 - Step: loadHardcodedValues starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,538 - Step: loadHardcodedValues completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,538 - Summary for Step: loadHardcodedValues
+StepExecution: id=3
+ - Step Property:  name=loadHardcodedValues
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,538 - Step: umlsLoadEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,819 - Step: umlsLoadEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,819 - Summary for Step: umlsLoadEntity
+StepExecution: id=4
+ - Step Property:  name=umlsLoadEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=682
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=682 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,835 - Step: umlsLoadMrstyProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,835 - Step: umlsLoadDefinitionProperties starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,835 - Step: umlsLoadEntityAssnsToEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,991 - Step: umlsLoadEntityAssnsToEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:44,991 - Summary for Step: umlsLoadEntityAssnsToEntity
+StepExecution: id=5
+ - Step Property:  name=umlsLoadEntityAssnsToEntity
+ - Step Property:  status=FAILED
+ - Step Property:  exitStatus=FAILED
+ - Step Property:  readCount=100
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=0
+ - Step Property:  rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-04-02 17:18:45,006 - Exceptions for Step: umlsLoadEntityAssnsToEntity StepExecution: id=5, name=umlsLoadEntityAssnsToEntity, status=FAILED, exitStatus=FAILED, readCount=100, filterCount=0, writeCount=0 readSkipCount=0, writeSkipCount=0, processSkipCount=0, commitCount=0, rollbackCount=1
+LB_LOAD_LOGGER WARN - 2010-04-02 17:18:45,006 - - Exception: java.lang.NullPointerException
+java.lang.NullPointerException
+	at org.lexgrid.loader.rrf.staging.JdbcMrconsoStagingDao.getCodeAndSab(JdbcMrconsoStagingDao.java:99)
+	at org.lexgrid.loader.umls.processor.support.UmlsRelationResolver.getSource(UmlsRelationResolver.java:40)
+	at org.lexgrid.loader.rrf.processor.support.AbstractRrfRelationResolver.getSource(AbstractRrfRelationResolver.java:1)
+	at org.lexgrid.loader.processor.EntityAssnsToEntityProcessor.process(EntityAssnsToEntityProcessor.java:73)
+	at org.lexgrid.loader.processor.EntityAssnsToEntityProcessor.process(EntityAssnsToEntityProcessor.java:1)
+	at org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator.process(RootNodeAddingDecorator.java:57)
+	at org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator.process(RootNodeAddingDecorator.java:1)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.doProcess(SimpleChunkProcessor.java:118)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.transform(SimpleChunkProcessor.java:260)
+	at org.springframework.batch.core.step.item.SimpleChunkProcessor.process(SimpleChunkProcessor.java:171)
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:74)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:347)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:128)
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:261)
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:76)
+	at org.springframework.batch.repeat.support.RepeatTemplate.getNextResult(RepeatTemplate.java:367)
+	at org.springframework.batch.repeat.support.RepeatTemplate.executeInternal(RepeatTemplate.java:214)
+	at org.springframework.batch.repeat.support.RepeatTemplate.iterate(RepeatTemplate.java:143)
+	at org.springframework.batch.core.step.tasklet.TaskletStep.doExecute(TaskletStep.java:247)
+	at org.springframework.batch.core.step.AbstractStep.execute(AbstractStep.java:196)
+	at org.springframework.batch.core.job.SimpleStepHandler.handleStep(SimpleStepHandler.java:115)
+	at org.springframework.batch.core.job.flow.JobFlowExecutor.executeStep(JobFlowExecutor.java:61)
+	at org.springframework.batch.core.job.flow.support.state.StepState.handle(StepState.java:60)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.resume(SimpleFlow.java:144)
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.start(SimpleFlow.java:124)
+	at org.springframework.batch.core.job.flow.support.state.SplitState$1.call(SplitState.java:83)
+	at org.springframework.batch.core.job.flow.support.state.SplitState$1.call(SplitState.java:81)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+	at org.springframework.core.task.SimpleAsyncTaskExecutor$ConcurrencyThrottlingRunnable.run(SimpleAsyncTaskExecutor.java:192)
+	at java.lang.Thread.run(Thread.java:619)
+
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:45,147 - Step: umlsLoadDefinitionProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:45,147 - Summary for Step: umlsLoadDefinitionProperties
+StepExecution: id=7
+ - Step Property:  name=umlsLoadDefinitionProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=160
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=160 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=2
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:58,162 - Step: umlsLoadMrstyProperties completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:58,162 - Summary for Step: umlsLoadMrstyProperties
+StepExecution: id=6
+ - Step Property:  name=umlsLoadMrstyProperties
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=633
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=633 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=7
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:58,162 - Step: index starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:18:58,162 - Starting Lucene Indexing.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:03,318 - Step: index completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:03,318 - Summary for Step: index
+StepExecution: id=8
+ - Step Property:  name=index
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=0
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=0 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=1
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:03,318 - Load Job ended in state: exitCode=FAILED;exitDescription=
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:03,318 - Finished loading the DB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:03,522 - Read Time : 00:00:21 Heap Usage: 29.65 MB Heap Delta:6.11 MB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:03,522 - After Indexing
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:03,709 - Read Time : 00:00:00 Heap Usage: 28.76 MB Heap Delta:-907.98 KB
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:03,709 - Load process completed without error
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:03,975 - Not Creating Job Repository.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:04,522 - Retrying load Job, not initializing Staging Tables.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:04,584 - Starting Loader Job :umlsJob
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:04,584 - Job Properties : 
+Property: retry
+ - Value: true
+Property: rrfDir
+ - Value: file:/C:/workspaces/lexevs60/umls-loader/src/test/resources/data/sample-air/
+Property: prefix
+ - Value: daaa
+Property: sab
+ - Value: AIR
+
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:04,600 - Executing Load Job Id: 1 at Fri Apr 02 17:19:04 CDT 2010
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:04,600 - Step: umlsLoadEntityAssnsToEntity starting.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:06,209 - Step: umlsLoadEntityAssnsToEntity completed.
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:06,209 - Summary for Step: umlsLoadEntityAssnsToEntity
+StepExecution: id=9
+ - Step Property:  name=umlsLoadEntityAssnsToEntity
+ - Step Property:  status=COMPLETED
+ - Step Property:  exitStatus=COMPLETED
+ - Step Property:  readCount=1198
+ - Step Property:  filterCount=0
+ - Step Property:  writeCount=1198 readSkipCount=0
+ - Step Property:  writeSkipCount=0
+ - Step Property:  processSkipCount=0
+ - Step Property:  commitCount=12
+ - Step Property:  rollbackCount=0
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:06,209 - Job completed, dropping tables
+LB_LOAD_LOGGER DEBUG - 2010-04-02 17:19:06,209 - Load Job ended in state: exitCode=COMPLETED;exitDescription=
