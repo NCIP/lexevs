@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.LexGrid.naming.URIMap;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 
 /**
  * The Class CachingSupportedAttribuiteTemplate.
@@ -45,15 +44,14 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 	 * @see org.lexgrid.loader.dao.template.AbstractSupportedAttributeTemplate#insert(org.LexGrid.persistence.model.CodingSchemeSupportedAttrib)
 	 */
 	@Override
-	protected synchronized void insert(String codingSchemeName, String codingSchemeVersion, URIMap map){
-		String key = this.buildCacheKey(map);
-		/*
+	protected synchronized void insert(String codingSchemeUri, String codingSchemeVersion, URIMap uriMap){
+		String key = this.buildCacheKey(uriMap);
+
 		if(! attributeCache.containsKey(key)){
 			this.getDatabaseServiceManager().getCodingSchemeService().
-				insertURIMap(codingSchemeName, codingSchemeVersion, map);
-			attributeCache.put(key, map);
+				updateURIMap(codingSchemeUri, codingSchemeVersion, uriMap);
+			attributeCache.put(key, uriMap);
 		}
-		*/
 	}
 	
 	protected String buildCacheKey(URIMap map){
