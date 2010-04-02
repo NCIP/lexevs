@@ -21,6 +21,7 @@ package org.lexgrid.valuesets;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URI;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -28,14 +29,13 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.emf.naming.Mappings;
-import org.LexGrid.emf.valueDomains.ValueDomainDefinition;
-import org.LexGrid.managedobj.RemoveException;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 
 /**
- * Value Domain extension for LexGrid.
+ * Value Set Definition Services.
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
@@ -43,33 +43,33 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	
 	
 	/**
-	 * Loads supplied valueDomainDefinition object
-	 * @param vddef value domain to load
+	 * Loads supplied valueSetDefinition object
+	 * @param vsdef value set definition to load
 	 * @param systemReleaseURI
-	 * @param mappings - additional mappings passed from the value domain container
+	 * @param mappings - additional mappings passed from the value set definition container
 	 * @throws LBException
 	 */
-	public void loadValueDomain(ValueDomainDefinition vddef, String systemReleaseURI, Mappings mappings) throws LBException;
+	public void loadValueSetDefinition(ValueSetDefinition vsdef, String systemReleaseURI, Mappings mappings) throws LBException;
 	
 	/**
-	 * Loads value domain using inputStream
+	 * Loads value set definition using inputStream
 	 * @param inputStream
 	 * @param failOnAllErrors
 	 * @throws Exception
 	 */
-	public void loadValueDomain(InputStream inputStream, boolean failOnAllErrors) throws LBException;
+	public void loadValueSetDefinition(InputStream inputStream, boolean failOnAllErrors) throws LBException;
 	
 	/**
-	 * Loads value domain by reading XML file location supplied
-	 * @param xmlFileLocation XML file containing valueDomain definitions
+	 * Loads value set definition by reading XML file location supplied
+	 * @param xmlFileLocation XML file containing value set definitions
 	 * @param failOnAllErrors
 	 * @throws Exception
 	 */
-	public void loadValueDomain(String xmlFileLocation, boolean failOnAllErrors) throws LBException;
+	public void loadValueSetDefinition(String xmlFileLocation, boolean failOnAllErrors) throws LBException;
 	
 	/**
 	 * Perform validation of the candidate resource without loading data.  
-	 * @param uri XML file containing valueDomain definitions
+	 * @param uri XML file containing value set definitions
 	 * @param validationLevel validate &lt;int&gt; 
 	 *         Supported levels of validation include:
 	 *         0 = Verify document is well-formed
@@ -79,27 +79,29 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	public void validate(URI uri, int validationLevel) throws LBParameterException;
 	
 	/**
-     * Determine whether the supplied entity code is a valid entity code somewhere in the supplied value domain. This function is intended for
-     * use with simple value domains that are drawn from a single coding scheme where most parameters can be defaulted
+     * Determine whether the supplied entity code is a valid entity code somewhere in the supplied value set definition. 
+     * This function is intended for use with simple value set definition that are drawn from a single coding scheme 
+     * where most parameters can be defaulted
 	 * 
-	 * @param entityCode       - the entity code to search for.  If the value domain has a default coding scheme, this will become the namespace
+	 * @param entityCode       - the entity code to search for.  If the value set definition has a default coding scheme, 
+	 * 							 this will become the namespace
 	 *                           for the entity code.  If not, any matching entity code will pass.
-	 * @param valueDomainURI   - the URI of the value domain to search
+	 * @param valueSetDefinitionURI   - the URI of the value set definition to search
 	 * @param versionTag       - the version or tag (e.g. "devel", "production", etc.) to be used for <i>all</i> of the coding schemes searched.
 	 * @return coding scheme and version if the entityCode is valid, null otherwise
 	 * @throws LBException
 	 */
-	public AbsoluteCodingSchemeVersionReference isEntityInDomain(
-	        String entityCode, URI valueDomainURI, String versionTag)  throws LBException;
+	public AbsoluteCodingSchemeVersionReference isEntityInValueSet(
+	        String entityCode, URI valueSetDefinitionURI, String versionTag)  throws LBException;
 
 	/**
-     * Determine whether the supplied entity code is valid in the suppled value domain, when reconciled against the supplied
+     * Determine whether the supplied entity code is valid in the suppled value set definition, when reconciled against the supplied
      * set of coding scheme versions and/or version tags
 	 * 
 	 * @param entityCode           - the entity code to validate.
 	 * @param entityCodeNamespace  - the URI of the entity code namespace.  If omitted, the default coding scheme namespace for the value domain
 	 *                               will be used, if it is present.  Otherwise the first matching entity code, if any, will pass
-	 * @param domainURI            - the URI of the value domain
+	 * @param valueSetDefinitionURI            - the URI of the value set definitionn
 	 * @param csVersionList        - a list of coding scheme URI's and versions to be used.  These will be used only if they are present in
 	 *                               the service.  If absent, the most recent version will be used instead.
      * @param versionTag           - the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
@@ -107,18 +109,18 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * @return The codingScheme URI and version of that asserts that the code is in the domain 
 	 * @throws LBException
 	 */
-	public AbsoluteCodingSchemeVersionReference isEntityInDomain(
-	        String entityCode, URI entityCodeNamespace, URI valueDomainURI, AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) 
+	public AbsoluteCodingSchemeVersionReference isEntityInValueSet(
+	        String entityCode, URI entityCodeNamespace, URI valueSetDefinitionURI, AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) 
 	        throws LBException;
 
 	/**
-	 * Resolve a value domain using the supplied set of coding scheme versions.
+	 * Resolve a value set definition using the supplied set of coding scheme versions.
 	 * 
-	 * @param valueDomainURI
-	 * 			  value domain URI
+	 * @param valueSetDefinitionURI
+	 * 			  value set definition URI
 	 * @param csVersionList
 	 *            list of coding scheme versions to use in resolution. IF the
-	 *            value domain uses a version that isn't mentioned in this list,
+	 *            value set definition uses a version that isn't mentioned in this list,
 	 *            the resolve function will return the codingScheme and version 
 	 *            that was used as a default for the resolution. 
 	 * @param versionTag 
@@ -126,21 +128,21 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * @return Resolved Value Domain Definition
 	 * @throws LBException
 	 */
-	public ResolvedValueSetDefinition resolveValueDomain(URI valueDomainURI,
+	public ResolvedValueSetDefinition resolveValueSetDefinition(URI valueSetDefinitionURI,
 			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException;
 	
 	
 
 	/**
-	 * Check whether childValueDomainURI is a child of parentValueDomainURI.
+	 * Check whether childValueDSetDefinitionURI is a child of parentValueSetDefinitionURI.
 	 * 
-	 * @param childValueDomainURI
-	 * 			child value domain URI
-	 * @param parentValueDomainURI
-	 * 			parent value domain URI
+	 * @param childValueSetDefinitionURI
+	 * 			child value set definition URI
+	 * @param parentValueSetDefinitionURI
+	 * 			parent value set definition URI
 	 *  @param csVersionList
      *            list of coding scheme versions to use in resolution. IF the
-     *            value domain uses a version that isn't mentioned in this list,
+     *            value set definition uses a version that isn't mentioned in this list,
      *            the resolve function will return the codingScheme and version 
      *            that was used as a default for the resolution. 
      * @param versionTag 
@@ -149,24 +151,24 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 *  		NO otherwise.
 	 *  @throws LBException
 	 */
-	public boolean isSubDomain(URI childValueDomainURI, URI parentValueDomainURI,
+	public boolean isSubSet(URI childValueSetDefinitionURI, URI parentValueSetDefinitionURI,
 	        AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException;
 
 	/**
-	 * Returns value domain definition for supplied value domain URI.
+	 * Returns value set definition for supplied value set definition URI.
 	 * 
-	 * @param valueDomainURI
-	 * 			value domain URI
-	 * @return value domain definition
+	 * @param valueSetDefinitionURI
+	 * 			value set definition URI
+	 * @return value set definition
 	 * @throws LBException
 	 */
-	public ValueDomainDefinition getValueDomainDefinition(URI valueDomainURI) throws LBException;
+	public ValueSetDefinition getValueSetDefinition(URI valueSetDefinitionURI) throws LBException;
 	
 	/**
-	 * Export value domain definition to LexGrid cononical XML format.
+	 * Export value set definition to LexGrid cononical XML format.
 	 * 
-	 * @param valueDomainURI
-	 * 			value domain URI
+	 * @param valueSetDefinitionURI
+	 * 			value set definition URI
 	 * @param xmlFolderLocation
 	 * 			Location to save the definition
 	 * @param overwrite
@@ -175,93 +177,90 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * 			True: stops exporting if any error.
 	 * @throws LBException
 	 */
-	public void exportValueDomainDefinition(URI valueDomainURI, String xmlFolderLocation, boolean overwrite, boolean failOnAllErrors) throws LBException;
+	public void exportValueSetDefinition(URI valueSetDefinitionURI, String xmlFolderLocation, boolean overwrite, boolean failOnAllErrors) throws LBException;
 	
 	/**
-	 * Return the URI's for the value domain definition(s) for the supplied
-	 * domain name. If the name is null, returns everything. If the name is not
-	 * null, returns the value domain(s) that have the assigned name. 
+	 * Return the URI's for the value set definition(s) for the supplied
+	 * value set definition name. If the name is null, returns everything. If the name is not
+	 * null, returns the value set definition(s) that have the assigned name. 
 	 * 
-	 * Note: plural because there is no guarantee of valueDomain uniqueness. If the name is the
-	 * empty string "", returns all unnamed valueDomains.
+	 * Note: plural because there is no guarantee of valueSetDefinition uniqueness. If the name is the
+	 * empty string "", returns all unnamed valueSetDefinitions.
 	 * 
 	 * @param valueDomainName
 	 * @return value domain URI's
 	 * @throws LBException
 	 */
-	public URI[] listValueDomains(String valueDomainName) throws LBException;
+	public List<URI> listValueSetDefinitions(String valueSetDefinitionName) throws LBException;
 
 	/**
-	 * Return the URI's of all unnamed value domain definition(s).
+	 * Return the URI's of all unnamed value set definition(s).
 	 * 
-	 * @return value domain URI's
+	 * @return value set definition URI's
 	 * @throws LBException
 	 */
-	public URI[] getAllValueDomainsWithNoName()  throws LBException;
+	public List<URI> getAllValueSetDefinitionsWithNoName()  throws LBException;
 	
 	
 	/**
-	 * Resolve the value domain definition, restricting the matching values to entities the match the supplied term and match algorithm.
-	 * Behavior is the same as resolveValueDomain with the exception that a restricted set is returned
+	 * Resolve the value set definition, restricting the matching values to entities the match the supplied term and match algorithm.
+	 * Behavior is the same as resolveValueSetDefinition with the exception that a restricted set is returned
 	 * @param term - text to match. Format is specific to the match algorithm
 	 * @param matchAlgorithm - match algorithm to use.  Must be the name of a supported match algorithm
-	 * @param valueDomainURI - value domain to resolve
+	 * @param valueSetDefinitionURI - value set definition to resolve
 	 * @param csVersionList  - list of coding schemes and versions to resolve against
 	 * @param versionTag     - version tag to use for resolving coding schemes
 	 * @return Resolution
 	 * @throws LBException
 	 */
-	public ResolvedValueSetCodedNodeSet getValueDomainEntitiesForTerm(String term, String matchAlgorithm, URI valueDomainURI,
+	public ResolvedValueSetCodedNodeSet getValueSetDefinitionEntitiesForTerm(String term, String matchAlgorithm, URI valueSetDefinitionURI,
             AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException;
 
 	
 	
 	/**
 	 * Returns list of coding scheme summary that is referenced by the supplied
-	 * value domain. 
-	 * @param valueDomainURI
+	 * value set definition. 
+	 * @param valueSetDefinitionURI
 	 * @return coding scheme version reference list
 	 * 
 	 * @throws LBException
 	 */
-	public AbsoluteCodingSchemeVersionReferenceList getCodingSchemesInValueDomain(URI valueDomainURI) throws LBException;
+	public AbsoluteCodingSchemeVersionReferenceList getCodingSchemesInValueSetDefinition(URI valueSetDefinitionURI) throws LBException;
 	
 	/**
-	 * Determine if the supplied entity code is of type valueDomain in supplied
+	 * Determine if the supplied entity code is of type valueSetDefinition in supplied
 	 * coding scheme and, if it is, return the true, otherwise return false.
 	 * 
 	 * @param entityCode
 	 * @param codingSchemeName
 	 * @param csvt
-	 * @return TRUE : If entityCode is of type valueDomain in supplied coding scheme, FALSE : otherwise
+	 * @return TRUE : If entityCode is of type valueSetDefinition in supplied coding scheme, FALSE : otherwise
 	 * 
 	 * @throws LBException
 	 */
-	public boolean isDomain(String entityCode, String codingSchemeName, CodingSchemeVersionOrTag csvt) throws LBException;
+	public boolean isValueSetDefinition(String entityCode, String codingSchemeName, CodingSchemeVersionOrTag csvt) throws LBException;
 	
 	/**
-	 * Removes supplied value domain definition from the system.
+	 * Removes supplied value set definition from the system.
 	 * 
-	 * @param valueDomainURI URI of value domain to remove
+	 * @param valueSetDefinitionURI URI of value set definition to remove
 	 * @throws LBException
-	 * @throws RemoveException
 	 */
-	public void removeValueDomain(URI valueDomainURI) throws LBException, RemoveException ;
+	public void removeValueSetDefinition(URI valueSetDefinitionURI) throws LBException;
 	
 	/**
-	 * Removes all value domain definitions from the system.
+	 * Removes all value set definitions from the system.
 	 * 
 	 * @throws LBException
-	 * @throws RemoveException
 	 */
-	public void removeAllValueDomains() throws LBException, RemoveException ;
+	public void removeAllValueSetDefinitions() throws LBException;
 	
 	/**
-	 * Drops value domain tables only if there are no value domain and pick list entries.
+	 * Drops value sets tables only if there are no value set definition and pick list definition entries.
 	 * @throws LBException
-	 * @throws RemoveException
 	 */
-	public void dropValueDomainTables() throws LBException, RemoveException ;
+	public void dropValueDomainTables() throws LBException;
 	
 	public LogEntry[] getLogEntries();
 }

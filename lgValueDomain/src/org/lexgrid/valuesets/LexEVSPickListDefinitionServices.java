@@ -27,11 +27,8 @@ import java.util.Map;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.emf.naming.Mappings;
-import org.LexGrid.emf.valueDomains.PickListDefinition;
-import org.LexGrid.managedobj.FindException;
-import org.LexGrid.managedobj.RemoveException;
-import org.LexGrid.managedobj.ServiceInitException;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.valueSets.PickListDefinition;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntryList;
 
 /**
@@ -53,24 +50,24 @@ public interface LexEVSPickListDefinitionServices extends Serializable {
 	public PickListDefinition getPickListDefinitionById(String pickListId) throws LBException;
 	
 	/**
-	 * Returns all the pickList definitions that represents supplied valueDomain URI.
+	 * Returns all the pickList definitions that represents supplied value set definition URI.
 	 * 
-	 * @param valueDomainURI
-	 * 			URI of an valueDomain
+	 * @param valueSetDefURI
+	 * 			URI of an value set definition
 	 * @throws LBException
 	 * @return
-	 * 			Array of PickListDefinition objects that represents supplied valueDomainURI.
+	 * 			Array of PickListDefinition objects that represents supplied valueSetDefURI.
 	 */
-	public PickListDefinition[] getPickListDefinitionsForDomain(URI valueDomainURI)throws LBException;
+	public List<PickListDefinition> getPickListDefinitionsForValueSetDef(URI valueSetDefURI)throws LBException;
 	
 	/**
-	 * Returns an URI of the represented valueDomain of the pickList.
+	 * Returns an URI of the represented value set definition of the pickList.
 	 *  
 	 * @param pickListId
 	 * @throws LBException
-	 * @return valueDomainURI
+	 * @return valueSetDefURI
 	 */
-	public URI getPickListValueDomain(String pickListId) throws LBException;
+	public URI getPickListValueSetDefinition(String pickListId) throws LBException;
 	
 	/**
 	 * Returns list of pickListIds that are available in the system.
@@ -110,9 +107,8 @@ public interface LexEVSPickListDefinitionServices extends Serializable {
 	 * 
 	 * @param pickListId id of pickList to remove
 	 * @throws LBException
-	 * @throws RemoveException
 	 */
-	void removePickList(String pickListId) throws LBException, RemoveException ;
+	void removePickList(String pickListId) throws LBException;
 	
 	/**
 	 * Resolves pickList definition for supplied pickListId.
@@ -193,27 +189,22 @@ public interface LexEVSPickListDefinitionServices extends Serializable {
 	 * @param propertyId
 	 * @param extractPickListName
 	 * @return
-	 * @throws FindException
-	 * @throws ServiceInitException
 	 * @throws LBException
 	 */
 	public Map<String, String> getReferencedPLDefinitions(String entityCode,
 			String entityCodeNameSpace, String propertyId,
-			Boolean extractPickListName) throws FindException,
-			ServiceInitException, LBException ;
+			Boolean extractPickListName) throws LBException ;
 
 	/**
 	 * 
 	 * @param valueSet
 	 * @param extractPickListName
 	 * @return
-	 * @throws FindException
-	 * @throws ServiceInitException
 	 * @throws LBException
 	 */
 	public Map<String, String> getReferencedPLDefinitions(
 			String valueSet, Boolean extractPickListName)
-			throws FindException, ServiceInitException, LBException;
+			throws LBException;
 
 	public LogEntry[] getLogEntries();
 }
