@@ -33,7 +33,7 @@ import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LazyLoadableEntity extends AssociationEntity implements CastorProxy{
+public class LazyLoadableEntity extends AssociationEntity {
 	
 	/** The property dao. */
 	private PropertyDao propertyDao;
