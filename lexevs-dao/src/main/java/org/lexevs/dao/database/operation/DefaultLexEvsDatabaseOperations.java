@@ -46,6 +46,7 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	/** The lexevs coding scheme schema create script. */
 	private Resource lexevsCodingSchemeSchemaCreateScript;
 	
+	/** The lexevs value sets schema create script. */
 	private Resource lexevsValueSetsSchemaCreateScript;
 	
 	/** The lexevs coding scheme schema create script. */
@@ -105,6 +106,13 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		}	
 	}
 	
+	public void createValueSetsTables() {
+		try {
+			databaseUtility.executeScript(lexevsValueSetsSchemaCreateScript, null);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}	
+	}
 
 	public void createHistoryTables() {
 		try {
