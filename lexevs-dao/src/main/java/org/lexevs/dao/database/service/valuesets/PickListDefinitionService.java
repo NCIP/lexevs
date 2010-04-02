@@ -40,13 +40,13 @@ public interface PickListDefinitionService {
 	public PickListDefinition getPickListDefinitionByPickListId(String pickListId);
 	
 	/**
-	 * Gets the pick list definitions by value domain uri.
+	 * Gets the pick list definition id's by value set definition uri.
 	 * 
-	 * @param valueDomainUri the value domain uri
+	 * @param valueDomainUri the value set definition uri
 	 * 
-	 * @return the pick list definitions by value domain uri
+	 * @return list of pick list definition id that match value set definition uri
 	 */
-	public List<PickListDefinition> getPickListDefinitionsByValueDomainUri(String valueDomainUri);
+	public List<String> getPickListDefinitionIdForValueSetDefinitionUri(String valueSetDefUri);
 	
 	/**
 	 * Removes the pick list definition by pick list id.

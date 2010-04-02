@@ -26,18 +26,16 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 	@Override
 	public PickListDefinition getPickListDefinitionByPickListId(
 			String pickListId) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getDaoManager().getCurrentPickListDefinitionDao().getPickListDefinitionById(pickListId);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#getPickListDefinitionsByValueDomainUri(java.lang.String)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#getPickListDefinitionIdForValueSetDefinitionUri(java.lang.String)
 	 */
 	@Override
-	public List<PickListDefinition> getPickListDefinitionsByValueDomainUri(
-			String valueDomainUri) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<String> getPickListDefinitionIdForValueSetDefinitionUri(
+			String valueSetDefURI) {
+		return this.getDaoManager().getCurrentPickListDefinitionDao().getPickListDefinitionIdForValueSetDefinitionURI(valueSetDefURI);
 	}
 
 	/* (non-Javadoc)
@@ -79,8 +77,7 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 	 */
 	@Override
 	public List<String> listPickListIds() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getDaoManager().getCurrentPickListDefinitionDao().getPickListIds();
 	}
 
 	/* (non-Javadoc)
@@ -88,8 +85,8 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 	 */
 	@Override
 	public void removePickListDefinitionByPickListId(String pickListId) {
-		// TODO Auto-generated method stub
-
+		PickListDao plDao = this.getDaoManager().getCurrentPickListDefinitionDao();
+		
+		plDao.removePickListDefinitionByPickListId(pickListId);
 	}
-
 }
