@@ -101,6 +101,10 @@ public interface CodingSchemeService {
 			String codingSchemeVersion,
 			URIMap uriMap);
 	
+	public void updateURIMap(
+			String codingSchemeUri, 
+			String codingSchemeVersion,
+			URIMap uriMap);
 	
 	/**
 	 * Update coding scheme entry state.

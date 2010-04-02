@@ -32,6 +32,7 @@ import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 /**
  * The Class VersionableEventCodingSchemeService.
@@ -126,6 +127,20 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			getCodingSchemeIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
 		getDaoManager().getCodingSchemeDao(codingSchemeUri, codingSchemeVersion).
 			insertURIMap(codingSchemeId, uriMap);
+	}
+	
+	@Transactional
+	public void updateURIMap(
+			String codingSchemeUri, 
+			String codingSchemeVersion,
+			URIMap uriMap){
+		Assert.hasText(uriMap.getLocalId());
+		
+		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, codingSchemeVersion);
+		String codingSchemeId = codingSchemeDao.
+			getCodingSchemeIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
+		getDaoManager().getCodingSchemeDao(codingSchemeUri, codingSchemeVersion).
+			insertOrUpdateURIMap(codingSchemeId, uriMap);
 	}
 	
 	/* (non-Javadoc)

@@ -121,6 +121,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	 * @see org.lexevs.dao.database.service.entity.EntityService#getEntityCount(java.lang.String, java.lang.String)
 	 */
 	@Override
+	@Transactional
 	public int getEntityCount(String codingSchemeUri, String version) {
 		String codingSchemeId = this.getDaoManager()
 			.getCurrentCodingSchemeDao().
