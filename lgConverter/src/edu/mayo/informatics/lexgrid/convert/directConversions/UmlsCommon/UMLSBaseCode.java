@@ -124,6 +124,7 @@ import edu.mayo.informatics.lexgrid.convert.utility.ManifestUtil;
  * @version subversion $Revision: 9636 $ checked in on $Date: 2008-08-20
  *          16:32:48 +0000 (Wed, 20 Aug 2008) $
  */
+@Deprecated
 public class UMLSBaseCode {
     protected static Logger log;
 
@@ -2455,8 +2456,8 @@ public class UMLSBaseCode {
      */
     protected String getRegisteredNameFromManifest(String defaultRegisteredName) {
         if (manifestLocation_ != null) {
-            ManifestUtil manifestUtil = new ManifestUtil(manifestLocation_, messages_);
-            CodingSchemeManifest manifest = manifestUtil.getManifest();
+            ManifestUtil manifestUtil = new ManifestUtil();
+            CodingSchemeManifest manifest = manifestUtil.getManifest(manifestLocation_);
             CsmfCodingSchemeURI registeredName = manifest.getCodingSchemeURI();
             if (registeredName != null) {
                 manifestNameChange_ = true;
@@ -2476,8 +2477,8 @@ public class UMLSBaseCode {
      */
     protected String getCodingSchemeNameFromManifest(String defaultCodingSchemeName) {
         if (manifestLocation_ != null) {
-            ManifestUtil manifestUtil = new ManifestUtil(manifestLocation_, messages_);
-            CodingSchemeManifest manifest = manifestUtil.getManifest();
+            ManifestUtil manifestUtil = new ManifestUtil();
+            CodingSchemeManifest manifest = manifestUtil.getManifest(manifestLocation_);
             CsmfCodingSchemeName codingScheme = manifest.getCodingScheme();
             if (codingScheme != null) {
                 manifestNameChange_ = true;
