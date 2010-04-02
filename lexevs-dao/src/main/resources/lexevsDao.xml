@@ -94,6 +94,11 @@
 				<ref bean="ibatisPropertyDao"/>
 			</list>
 		</property>
+		<property name="pickListDaos">
+			<list>
+				<ref bean="ibatisPickListDao"/>
+			</list>
+		</property>
 		<property name="registry" ref="registry"/>
 	</bean>
 	
