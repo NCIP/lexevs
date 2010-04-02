@@ -50,8 +50,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			getCodingSchemeByUriAndVersion(uri, version);
 	}
 	
-
-	@Override
+	@Transactional
 	public CodingScheme getCompleteCodingScheme(String codingSchemeUri,
 			String codingSchemeVersion) {
 		CodingScheme codingScheme = this.getDaoManager().getCodingSchemeDao(codingSchemeUri, codingSchemeVersion).
@@ -184,7 +183,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#validatedSupportedAttribute(java.lang.String, java.lang.String, java.lang.String, java.lang.Class)
 	 */
-	@Override
+	@Transactional
 	public <T extends URIMap> boolean validatedSupportedAttribute(
 			String codingSchemeUri, String codingSchemeVersion, String localId,
 			Class<T> attributeClass) {
