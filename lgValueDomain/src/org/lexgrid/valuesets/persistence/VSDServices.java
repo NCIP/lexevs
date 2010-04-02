@@ -25,40 +25,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.LexGrid.emf.base.LgModelObj;
-import org.LexGrid.emf.base.LgStagedObj;
-import org.LexGrid.emf.commonTypes.CommontypesFactory;
-import org.LexGrid.emf.commonTypes.Property;
-import org.LexGrid.emf.commonTypes.Source;
-import org.LexGrid.emf.naming.Mappings;
-import org.LexGrid.emf.valueDomains.DefinitionEntry;
-import org.LexGrid.emf.valueDomains.ValueDomainDefinition;
-import org.LexGrid.emf.valueDomains.ValuedomainsFactory;
-import org.LexGrid.emf.valueDomains.impl.ValueDomainDefinitionImpl;
-import org.LexGrid.managedobj.FindException;
-import org.LexGrid.managedobj.HomeServiceBroker;
-import org.LexGrid.managedobj.InsertException;
-import org.LexGrid.managedobj.ManagedObjException;
-import org.LexGrid.managedobj.ManagedObjIF;
-import org.LexGrid.managedobj.ObjectAlreadyExistsException;
-import org.LexGrid.managedobj.ObjectNotFoundException;
-import org.LexGrid.managedobj.RemoveException;
-import org.LexGrid.managedobj.ResolveException;
-import org.LexGrid.managedobj.ServiceInitException;
-import org.LexGrid.managedobj.UpdateException;
-import org.LexGrid.managedobj.jdbc.JDBCBaseService;
-import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
-import org.LexGrid.persistence.sql.SingletonVariables;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import edu.mayo.informatics.lexgrid.convert.utility.MessageRedirector;
 
 /**
  * <pre>
- *        Title:        VDServices.java
- *        Description:  Class that handles Value Domain to the database.
+ *        Title:        VSDServices.java
+ *        Description:  Class that handles Value Set Definition to the database.
  * </pre>
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>

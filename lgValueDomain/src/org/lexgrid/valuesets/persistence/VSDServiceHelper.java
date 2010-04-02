@@ -43,31 +43,24 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
-import org.LexGrid.emf.naming.Mappings;
-import org.LexGrid.emf.naming.SupportedAssociation;
-import org.LexGrid.emf.naming.SupportedCodingScheme;
-import org.LexGrid.emf.naming.SupportedNamespace;
-import org.LexGrid.emf.valueDomains.DefinitionEntry;
-import org.LexGrid.emf.valueDomains.DefinitionOperator;
-import org.LexGrid.emf.valueDomains.EntityReference;
-import org.LexGrid.emf.valueDomains.ValueDomainDefinition;
-import org.LexGrid.emf.valueDomains.persistence.ValueDomainHome;
-import org.LexGrid.emf.valueDomains.persistence.ValueDomainsHome;
-import org.LexGrid.managedobj.FindException;
-import org.LexGrid.managedobj.HomeServiceBroker;
-import org.LexGrid.managedobj.ServiceInitException;
-import org.LexGrid.managedobj.ServiceUnavailableException;
-import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedAssociation;
+import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedNamespace;
+import org.LexGrid.valueSets.DefinitionEntry;
+import org.LexGrid.valueSets.EntityReference;
+import org.LexGrid.valueSets.ValueSetDefinition;
+import org.LexGrid.valueSets.types.DefinitionOperator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.lexevs.system.ResourceManager;
+import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.system.constants.SystemVariables;
+import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 
-import edu.mayo.informatics.lexgrid.convert.utility.Constants;
-import edu.mayo.informatics.lexgrid.convert.utility.MessageRedirector;
-
 /**
- * Helper class for Value Domain extension.
+ * Helper class for Value Set Definition functions.
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
@@ -80,16 +73,17 @@ public class VSDServiceHelper {
 
 	private String sqlServer, sqlDriver, sqlUsername, sqlPassword, tablePrefix;
 	private boolean failOnAllErrors;
-	private HomeServiceBroker broker_ = null;
-	private ValueDomainHome vdContext_ = null;
-	private ValueDomainsHome vdsContext_ = null;
 	private LgMessageDirectorIF md_;
 	private LexBIGService lbs_;
 	private VSDServices vds_;
 	private VSDSServices vdss_;
 	private PickListServices pls_;
 	private PickListsServices plss_;
-	private ResourceManager rm_;
+	private SystemResourceService rm_;
+	private SystemVariables sv_;
+	
+	private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+	private ValueSetDefinitionService vsds_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueDomainService();
 
 	/**
 	 * Constructor
@@ -103,206 +97,19 @@ public class VSDServiceHelper {
 	 * @throws LBParameterException
 	 * @throws LBInvocationException
 	 */
-	public VSDServiceHelper(String sqlServer, String sqlDriver,
-			String sqlUsername, String sqlPassword, String tablePrefix,
-			boolean failOnAllErrors, LgMessageDirectorIF messages)
+	public VSDServiceHelper(boolean failOnAllErrors, LgMessageDirectorIF messages)
 			throws LBParameterException, LBInvocationException {
-		this.sqlServer = sqlServer;
-		this.sqlDriver = sqlDriver;
-		this.sqlUsername = sqlUsername;
-		this.sqlPassword = sqlPassword;
-		this.tablePrefix = tablePrefix;
+		this.rm_ = LexEvsServiceLocator.getInstance().getSystemResourceService();
+		this.sv_ = rm_.getSystemVariables();
+		this.sqlServer = sv_.getAutoLoadDBURL();
+		this.sqlDriver = sv_.getAutoLoadDBDriver();
+		this.sqlUsername = sv_.getAutoLoadDBUsername();
+		this.sqlPassword = sv_.getAutoLoadDBPassword();
+		this.tablePrefix = null;
 		this.md_ = messages;
-		this.failOnAllErrors = failOnAllErrors;
-		this.rm_ = ResourceManager.instance();
-		
+		this.failOnAllErrors = failOnAllErrors;		
 	}
 
-	/**
-	 * Returns a SQL-based services to load, manage, and persist valueDomain
-	 * objects.
-	 * 
-	 * @return ValueDomainService
-	 * @throws ServiceInitException
-	 */
-	private VSDSServices getVDSService() throws ServiceInitException {
-		if (vdss_ != null)
-			return vdss_;
-		
-		HomeServiceBroker broker = getBroker();
-		if (vdsContext_ != null)
-			try {
-				vdss_ = (VSDSServices) broker.getService(vdsContext_);
-			} catch (ServiceUnavailableException sue) {
-			}
-		if (vdss_ == null) {
-			JDBCConnectionDescriptor desc = new JDBCConnectionDescriptor();
-			desc.setDbUid(sqlUsername);
-			desc.setDbPwd(sqlPassword);
-			desc.setDbUrl(sqlServer);
-			desc.setUseUTF8(true);
-			desc.setAutoRetryFailedConnections(true);
-			try {
-				desc.setDbDriver(sqlDriver);
-			} catch (ClassNotFoundException e) {
-				md_.fatal("The requested data base driver was not found on the classpath");
-				throw new ServiceInitException("The requested driver was not found on the classpath");
-			}
-			vdss_ = new VSDSServices(broker, desc, false, tablePrefix,
-					failOnAllErrors, new MessageRedirector(md_), false);
-			vdss_.setPageSize(Constants.mySqlBatchSize);
-			vdsContext_ = new ValueDomainsHome(broker);
-			broker.registerService(vdsContext_, vdss_);
-		}
-		return vdss_;
-	}
-	
-	/**
-	 * Returns a SQL-based services to load, manage, and persist pick list
-	 * objects.
-	 * 
-	 * @return PickListsService
-	 * @throws ServiceInitException
-	 */
-	public PickListsServices getPickListsService() throws ServiceInitException {
-		if (plss_ != null)
-			return plss_;
-		
-		HomeServiceBroker broker = getBroker();
-		if (vdsContext_ != null)
-			try {
-				plss_ = (PickListsServices) broker.getService(vdsContext_);
-			} catch (ServiceUnavailableException sue) {
-			}
-		if (plss_ == null) {
-			JDBCConnectionDescriptor desc = new JDBCConnectionDescriptor();
-			desc.setDbUid(sqlUsername);
-			desc.setDbPwd(sqlPassword);
-			desc.setDbUrl(sqlServer);
-			desc.setUseUTF8(true);
-			desc.setAutoRetryFailedConnections(true);
-			try {
-				desc.setDbDriver(sqlDriver);
-			} catch (ClassNotFoundException e) {
-				md_.fatal("The requested data base driver was not found on the classpath");
-				throw new ServiceInitException("The requested driver was not found on the classpath");
-			}
-			plss_ = new PickListsServices(broker, desc, false, tablePrefix,
-					failOnAllErrors, new MessageRedirector(md_), false);
-			plss_.setPageSize(Constants.mySqlBatchSize);
-			vdsContext_ = new ValueDomainsHome(broker);
-			broker.registerService(vdsContext_, plss_);
-		}
-		return plss_;
-	}
-	
-	/**
-	 * Returns a SQL-based services to load, manage, and persist pick list
-	 * objects.
-	 * 
-	 * @return PickListServices
-	 * @throws ServiceInitException
-	 */
-	public PickListServices getPickListService() throws ServiceInitException {
-		if (pls_ != null)
-			return pls_;
-		
-		HomeServiceBroker broker = getBroker();
-		if (vdContext_ != null)
-			try {
-				pls_ = (PickListServices) broker.getService(vdContext_);
-			} catch (ServiceUnavailableException sue) {
-			}
-		if (pls_ == null) {
-			JDBCConnectionDescriptor desc = new JDBCConnectionDescriptor();
-			desc.setDbUid(sqlUsername);
-			desc.setDbPwd(sqlPassword);
-			desc.setDbUrl(sqlServer);
-			desc.setUseUTF8(true);
-			desc.setAutoRetryFailedConnections(true);
-			try {
-				desc.setDbDriver(sqlDriver);
-			} catch (ClassNotFoundException e) {
-				md_.fatal("The requested data base driver was not found on the classpath");
-				throw new ServiceInitException("The requested driver was not found on the classpath");
-			}
-			pls_ = new PickListServices(broker, desc, false, tablePrefix,
-					failOnAllErrors, new MessageRedirector(md_), false);
-			pls_.setPageSize(Constants.mySqlBatchSize);
-			vdContext_ = new ValueDomainHome(broker);
-			broker.registerService(vdContext_, pls_);
-		}
-		return pls_;
-	}
-
-	/**
-	 * Returns a SQL-based services to load, manage, and persist valueDomain
-	 * objects.
-	 * 
-	 * @return ValueDomainService
-	 * @throws ServiceInitException
-	 */
-	private VSDServices getVDDefinitionService() throws ServiceInitException {
-		if (vds_ != null)
-			return vds_;
-		
-		HomeServiceBroker broker = getBroker();
-		vds_ = null;
-		if (vdContext_ != null)
-			try {
-				vds_ = (VSDServices) broker.getService(vdContext_);
-			} catch (ServiceUnavailableException sue) {
-			}
-		if (vds_ == null) {
-			JDBCConnectionDescriptor desc = new JDBCConnectionDescriptor();
-			desc.setDbUid(sqlUsername);
-			desc.setDbPwd(sqlPassword);
-			desc.setDbUrl(sqlServer);
-			desc.setUseUTF8(true);
-			desc.setAutoRetryFailedConnections(true);
-			try {
-				desc.setDbDriver(sqlDriver);
-			} catch (ClassNotFoundException e) {
-				md_.fatal("The requested data base driver was not found on the classpath");
-				throw new ServiceInitException("The requested driver was not found on the classpath");
-			}
-			vds_ = new VSDServices(broker, desc, false, tablePrefix,
-					failOnAllErrors, new MessageRedirector(md_), false);
-			vds_.setPageSize(Constants.mySqlBatchSize);
-			vdContext_ = new ValueDomainHome(broker);
-			broker.registerService(vdContext_, vds_);
-		}
-		return vds_;
-	}
-
-	/**
-	 * Returns the broker used to manage SQL services.
-	 * 
-	 * @return HomeServiceBroker
-	 */
-	protected HomeServiceBroker getBroker() {
-		if (broker_ == null)
-			broker_ = new HomeServiceBroker();
-		return broker_;
-	}
-	
-	/**
-	 * Returns the valueDomainDefinition object for supplied value domain URI. 
-	 * @param valueDomainURI
-	 * @return ValueDomainDefinition if found; otherwise NULL
-	 * @throws LBException
-	 */
-	public ValueDomainDefinition getValueDomain(URI valueDomainURI) throws LBException {
-		ValueDomainDefinition vdDef = null;
-		try {
-			vdDef = (ValueDomainDefinition) getValueDomainServices().findByPrimaryKey(valueDomainURI);
-		} catch (FindException e) {
-			md_.fatal("Failed while processing value domain definition : " + valueDomainURI, e);
-			throw new LBException(e.getMessage());
-		}
-		return vdDef;
-	}
-	
 	/**
 	 * Return the local identifier of the coding scheme name associated with the supplied namespace name
 	 * in the context of the supplied mapping. Comparison is case insensitive.
@@ -314,7 +121,7 @@ public class VSDServiceHelper {
     public String getCodingSchemeNameForNamespaceName(Mappings maps, String namespaceName) {
 	    if(!StringUtils.isEmpty(namespaceName)) {
 	        if(maps != null && maps.getSupportedNamespace() != null) {
-	           Iterator<SupportedNamespace> sni = maps.getSupportedNamespace().iterator();
+	           Iterator<SupportedNamespace> sni = maps.getSupportedNamespaceAsReference().iterator();
 	           while(sni.hasNext()) {
 	               SupportedNamespace sns = sni.next();
 	               if(sns.getLocalId().equalsIgnoreCase(namespaceName))
@@ -334,7 +141,7 @@ public class VSDServiceHelper {
 	@SuppressWarnings("unchecked")
     public String getURIForCodingSchemeName(Mappings maps, String codingSchemeName) {
 	    if(maps != null && maps.getSupportedCodingScheme() != null) {
-	        ListIterator<SupportedCodingScheme> scsi = maps.getSupportedCodingScheme().listIterator();
+	        ListIterator<SupportedCodingScheme> scsi = maps.getSupportedCodingSchemeAsReference().listIterator();
     	    while(scsi.hasNext()) {
     	        SupportedCodingScheme scs = scsi.next();
     	        if(scs.getLocalId().equalsIgnoreCase(codingSchemeName))
@@ -354,10 +161,10 @@ public class VSDServiceHelper {
     @SuppressWarnings("unchecked")
     public String getURIForAssociationName(Mappings maps, String associationName) {
         if(maps != null && maps.getSupportedAssociation() != null) {
-            ListIterator<SupportedAssociation> sai = maps.getSupportedAssociation().listIterator();
+            ListIterator<SupportedAssociation> sai = maps.getSupportedAssociationAsReference().listIterator();
             while(sai.hasNext()) {
                 SupportedAssociation sa = sai.next();
-                if(sa.getLocalId().equalsIgnoreCase(associationName) || sa.getValue().equalsIgnoreCase(associationName) )
+                if(sa.getLocalId().equalsIgnoreCase(associationName) || sa.getContent().equalsIgnoreCase(associationName) )
                     return sa.getUri();
             }
         }
@@ -372,7 +179,7 @@ public class VSDServiceHelper {
 	 * @throws URISyntaxException 
 	 */
 	@SuppressWarnings("unchecked")
-    public HashSet<String> getCodingSchemeURIs(ValueDomainDefinition vdDef) 
+    public HashSet<String> getCodingSchemeURIs(ValueSetDefinition vdDef) 
 		throws LBException {
 	    HashSet<String> csRefs = new HashSet<String>();
 		
@@ -382,7 +189,7 @@ public class VSDServiceHelper {
 		        csRefs.add(getURIForCodingSchemeName(vdDef.getMappings(), vdDef.getDefaultCodingScheme()));
 		    
 		    // Iterate over all of the individual definitions
-			Iterator<DefinitionEntry> deIter = vdDef.getDefinitionEntry().iterator();
+			Iterator<DefinitionEntry> deIter = vdDef.getDefinitionEntryAsReference().iterator();
 			while (deIter.hasNext()) {
 				DefinitionEntry de = deIter.next();
 				String csName = null;
@@ -393,9 +200,9 @@ public class VSDServiceHelper {
 				    if(!StringUtils.isEmpty(entityNamespaceName)) {
 				        csName = getCodingSchemeNameForNamespaceName(vdDef.getMappings(), entityNamespaceName);
 				    }
-				} else if (de.getValueDomainReference() != null) {
+				} else if (de.getValueSetDefinitionReference() != null) {
                     try {
-                        csRefs.addAll(getCodingSchemeURIs(getValueDomain(new URI(de.getValueDomainReference().getValueDomainURI() ))));
+                        csRefs.addAll(getCodingSchemeURIs(vsds_.getValueSetDefinitionByUri(new URI(de.getValueSetDefinitionReference().getValueSetDefinitionURI()))));
                     } catch (URISyntaxException e) {
                         // TODO Decide what to do here - the value domain URI isn't valid?
                         e.printStackTrace();
@@ -447,11 +254,10 @@ public class VSDServiceHelper {
 			String codingSchemeName, String version) throws LBException {
 		
 		String csName = codingSchemeName;
-		ResourceManager rm = ResourceManager.instance();			
 		
 		if (StringUtils.isEmpty(version)) {
 			// check if supplied version for the coding scheme is loaded
-			csName = rm.getExternalCodingSchemeNameForUserCodingSchemeNameOrId(codingSchemeName, version);
+			csName = systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeName, version);
 			if (StringUtils.isNotEmpty(csName)) {
 				return true;
 			}
@@ -475,7 +281,7 @@ public class VSDServiceHelper {
 	 * @throws LBException
 	 */
     public ResolvedValueSetCodedNodeSet getResolvedCodedNodeSetForValueDomain(
-	        ValueDomainDefinition vdd, AbsoluteCodingSchemeVersionReferenceList csVersionsToUse, String versionTag) 
+	        ValueSetDefinition vdd, AbsoluteCodingSchemeVersionReferenceList csVersionsToUse, String versionTag) 
 	            throws LBException {
         ResolvedValueSetCodedNodeSet rval = new ResolvedValueSetCodedNodeSet();
         
@@ -508,13 +314,13 @@ public class VSDServiceHelper {
      *                4) If there isn't one marked production, then the "latest" will be used     */
 	@SuppressWarnings("unchecked")
     public CodedNodeSet getCodedNodeSetForValueDomain( 
-	        ValueDomainDefinition vdd, HashMap<String, String> refVersions, String versionTag) 
+	        ValueSetDefinition vdd, HashMap<String, String> refVersions, String versionTag) 
                                                         throws LBException {
 	    CodedNodeSet finalNodeSet = null;
 	    
 		// Iterate over the value domain resolving contents
 		if(vdd != null && vdd.getDefinitionEntry() != null) {
-		    Iterator<DefinitionEntry> defIter = vdd.getDefinitionEntry().iterator();
+		    Iterator<DefinitionEntry> defIter = vdd.getDefinitionEntryAsReference().iterator();
 		    while(defIter.hasNext()) {
 		        DefinitionEntry vdDef = defIter.next();
 		        CodedNodeSet product = null;
@@ -522,10 +328,10 @@ public class VSDServiceHelper {
 		        // All of the contents of a coding scheme
 		        if(vdDef.getCodingSchemeReference() != null) {
 		            product = getNodeSetForCodingScheme(vdd, vdDef.getCodingSchemeReference().getCodingScheme(), refVersions, versionTag);
-		        } else if(vdDef.getValueDomainReference() != null) {
-		            ValueDomainDefinition innerVdd = null;
+		        } else if(vdDef.getValueSetDefinitionReference() != null) {
+		            ValueSetDefinition innerVdd = null;
                     try {
-                        innerVdd = getValueDomain(new URI(vdDef.getValueDomainReference().getValueDomainURI()));
+                        innerVdd = vsds_.getValueSetDefinitionByUri(new URI(vdDef.getValueSetDefinitionReference().getValueSetDefinitionURI()));
                     } catch (URISyntaxException e) {
                         // TODO This is a data error.  We whine in enough places that it isn't worth doing here
                     }
@@ -535,20 +341,15 @@ public class VSDServiceHelper {
 		            product = getNodeSetForEntityReference(vdd, vdDef.getEntityReference(), refVersions, versionTag);
 		        }
 		        if(product != null) {
-    		        switch (vdDef.getOperator().getValue()) {
-                    case DefinitionOperator.OR:
-                        finalNodeSet = finalNodeSet == null? product : finalNodeSet.union(product);
-                        break;
-                    case DefinitionOperator.AND:
-                        finalNodeSet = finalNodeSet == null? null : finalNodeSet.intersect(product);
-                        break;
-                    case DefinitionOperator.SUBTRACT:
-                        finalNodeSet = finalNodeSet == null? null : finalNodeSet.difference(product);
-                        break;
-                    default:
-                        // TODO error message here?
-                        break;
-                    }
+    		        if (vdDef.getOperator() != null)
+    		        {
+    		        	if (vdDef.getOperator().value().equals(DefinitionOperator.OR.value())) 
+    		        		finalNodeSet = finalNodeSet == null? product : finalNodeSet.union(product);
+    		        	if (vdDef.getOperator().value().equals(DefinitionOperator.AND.value()))
+    		        		finalNodeSet = finalNodeSet == null? null : finalNodeSet.intersect(product);
+    		        	if (vdDef.getOperator().value().equals(DefinitionOperator.SUBTRACT.value()))
+    		        		finalNodeSet = finalNodeSet == null? null : finalNodeSet.difference(product);
+    		        }
 		        } else {
 		            // TODO we probably want to say something when we get no resolution at all.
 		        }
@@ -559,7 +360,7 @@ public class VSDServiceHelper {
 	
 	/**
 	 * Return the coded node set that represents all of the concept codes in the referenced coding scheme
-	 * @param vdd          - containing value domain definition
+	 * @param vdd          - containing value set definition
 	 * @param csName       - local name of coding scheme within the value domain
 	 * @param refVersions  - map from coding scheme URI to versions.  A new node will be added to this list if the coding scheme isn't already there
 	 * @param versionTag   - default version or tag
@@ -567,7 +368,7 @@ public class VSDServiceHelper {
 	 * @throws LBException
 	 */
 	protected CodedNodeSet getNodeSetForCodingScheme(
-	        ValueDomainDefinition vdd, String csName, HashMap<String, String> refVersions, String versionTag) 
+	        ValueSetDefinition vdd, String csName, HashMap<String, String> refVersions, String versionTag) 
     throws LBException {
 	    
         if(StringUtils.isEmpty(csName))
@@ -583,7 +384,7 @@ public class VSDServiceHelper {
 	
 	/**
 	 * Return a coded node set that represents the supplied entity reference
-	 * @param vdd - containing value domain
+	 * @param vdd - containing value set definition
 	 * @param entityRef - entity reference to resolve
 	 * @param refVersions - fixed versions to resolve against
 	 * @param versionTag - version tag to resolve elsewise
@@ -591,7 +392,7 @@ public class VSDServiceHelper {
 	 * @throws LBException
 	 */
 	protected CodedNodeSet getNodeSetForEntityReference(
-	        ValueDomainDefinition vdd, EntityReference entityRef, HashMap<String, String> refVersions, String versionTag) 
+	        ValueSetDefinition vdd, EntityReference entityRef, HashMap<String, String> refVersions, String versionTag) 
     throws LBException {
 	    
 	    // Locate the coding scheme namespace
@@ -641,7 +442,7 @@ public class VSDServiceHelper {
 	 * @throws LBException 
      */
     public CodedNodeSet leavesOfGraph(
-            CodedNodeGraph cng, boolean isTargetToSource, ConceptReference root, ValueDomainDefinition vdd, HashMap<String,String> refVersions, String versionTag) 
+            CodedNodeGraph cng, boolean isTargetToSource, ConceptReference root, ValueSetDefinition vdd, HashMap<String,String> refVersions, String versionTag) 
                     throws LBException {
  
         ConceptReferenceList leaves = new ConceptReferenceList();
@@ -695,8 +496,13 @@ public class VSDServiceHelper {
             // List of all coding scheme versions that are supported in the service
             AbsoluteCodingSchemeVersionReferenceList serviceCsVersions = getAbsoluteCodingSchemeVersionReference(null);
             for(AbsoluteCodingSchemeVersionReference suppliedVer : suppliedCsVersions.getAbsoluteCodingSchemeVersionReference()) {
-                String externalVersionId = rm_.getURNForInternalCodingSchemeName(
-                        rm_.getExternalCodingSchemeNameForUserCodingSchemeNameOrId(suppliedVer.getCodingSchemeURN(), suppliedVer.getCodingSchemeVersion()));
+            	
+            	String externalVersionId = rm_.getUriForUserCodingSchemeName(
+                        rm_.getInternalCodingSchemeNameForUserCodingSchemeName(suppliedVer.getCodingSchemeURN(), suppliedVer.getCodingSchemeVersion()));
+            	
+            	//TODO - verify if the above (externalversionId) behaves the same as the one below - sod
+//                String externalVersionId = rm_.getURNForInternalCodingSchemeName(
+//                        rm_.getExternalCodingSchemeNameForUserCodingSchemeNameOrId(suppliedVer.getCodingSchemeURN(), suppliedVer.getCodingSchemeVersion()));
                 // TODO - implement a content equality operator so we can use "contains" vs. an inner iterator
                 for(AbsoluteCodingSchemeVersionReference serviceVer : serviceCsVersions.getAbsoluteCodingSchemeVersionReference()) {
                     if(StringUtils.equalsIgnoreCase(externalVersionId, serviceVer.getCodingSchemeURN()) &&
@@ -747,37 +553,7 @@ public class VSDServiceHelper {
 		return lbs_;
 	}
 	
-	   /**
-     * Return a persistent link to the layer that handles Value Domain mapping to the physical database
-     * @return
-     * @throws LBException
-     */
-    public VSDServices getValueDomainServices() throws LBException {
-        if (vds_ == null) {
-            try {
-                vds_ = getVDDefinitionService();
-            } catch (ServiceInitException e) {
-                md_.fatal("Failed while getting ValueDomainService ", e);
-                throw new LBException(e.getMessage());
-            }
-        }
-        return vds_;
-    }
-
- 
-    /**
-     * Return a persistent link to the layer that that handles ValueDomains to the database
-     * @return
-     * @throws ServiceInitException
-     */
-    public VSDSServices getValueDomainsServices() throws ServiceInitException {
-        if (vdss_ == null) {
-            vdss_ = getVDSService();
-        }
-        return vdss_;
-    }
-    
-    /**
+	 /**
      * Set a a persistent link to the layer that handles Value Domain mapping to the physical database
      * @param vds
      */
@@ -857,7 +633,7 @@ public class VSDServiceHelper {
  
     
     /**
-     * Convert a concept reference list into a coded node set in the context of a particular value domain
+     * Convert a concept reference list into a coded node set in the context of a particular value set definition
      * @param crl - list to convert
      * @param vdd - context to do the conversion in
      * @param refVersions - set of already resolved versions (may have new versions added)
@@ -865,7 +641,7 @@ public class VSDServiceHelper {
      * @return corresponding coded node set
      * @throws LBException 
      */
-    protected CodedNodeSet conceptReferenceListToCodedNodeSet(ConceptReferenceList crl, ValueDomainDefinition vdd, HashMap<String,String> refVersions, String versionTag) throws LBException {
+    protected CodedNodeSet conceptReferenceListToCodedNodeSet(ConceptReferenceList crl, ValueSetDefinition vdd, HashMap<String,String> refVersions, String versionTag) throws LBException {
         HashMap<String, ConceptReferenceList> csConcepts = new HashMap<String, ConceptReferenceList>();
         Iterator<ConceptReference> crli = crl.iterateConceptReference();
         
