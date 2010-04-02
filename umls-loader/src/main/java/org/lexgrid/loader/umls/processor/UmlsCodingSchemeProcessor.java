@@ -61,10 +61,7 @@ public class UmlsCodingSchemeProcessor extends SupportedAttributeSupport impleme
 			cs.setEntityDescription(ed);
 			cs.setCopyright(DaoUtility.createText(mrsab.getScc()));
 			cs.setIsActive(true);
-
-			getSupportedAttributeTemplate().addSupportedCodingScheme(cs.getCodingSchemeName(), cs.getRepresentsVersion(),
-					cs.getCodingSchemeName(), cs.getCodingSchemeURI(), cs.getFormalName(), false);
-
+			
 			return cs;
 		} else {
 			return null;
