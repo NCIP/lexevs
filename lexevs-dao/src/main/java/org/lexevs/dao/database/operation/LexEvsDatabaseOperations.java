@@ -42,6 +42,11 @@ public interface LexEvsDatabaseOperations {
 	 */
 	public void createCodingSchemeTables();
 	
+	/**
+	 * Creates the Value Sets (Value Set and Pick List Definition) tables.
+	 */
+	public void createValueSetsTables();
+	
 	public void createHistoryTables();
 	
 	/**
