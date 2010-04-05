@@ -328,87 +328,87 @@ TYPE=INNODB
 SET FOREIGN_KEY_CHECKS=1;
 
 
-ALTER TABLE @PREFIX@associationEntity ADD CONSTRAINT FK_associationEntity_entity 
+ALTER TABLE @PREFIX@associationEntity ADD CONSTRAINT @PREFIX@FK_associationEntity_entity 
 	FOREIGN KEY (entityGuid) REFERENCES @PREFIX@entity (entityGuid)
 	ON DELETE CASCADE
 ;
 
-ALTER TABLE @PREFIX@associationPredicate ADD CONSTRAINT FK_associationPr_associationEn 
+ALTER TABLE @PREFIX@associationPredicate ADD CONSTRAINT @PREFIX@FK_associationPr_associationEn 
 	FOREIGN KEY (associationEntityGuid) REFERENCES @PREFIX@entity (entityGuid)
 ;
 
-ALTER TABLE @PREFIX@associationPredicate ADD CONSTRAINT FK_associationPredica_relation 
+ALTER TABLE @PREFIX@associationPredicate ADD CONSTRAINT @PREFIX@FK_associationPredica_relation 
 	FOREIGN KEY (relationGuid) REFERENCES @PREFIX@relation (relationGuid)
 	ON DELETE CASCADE
 ;
 
-ALTER TABLE @PREFIX@codingScheme ADD CONSTRAINT FK_cs_releaseGuid 
-	FOREIGN KEY (releaseGuid) REFERENCES @PREFIX@systemRelease (releaseGuid)
+ALTER TABLE @PREFIX@codingScheme ADD CONSTRAINT @PREFIX@FK_cs_releaseGuid 
+	FOREIGN KEY (releaseGuid) REFERENCES @DEFAULT_PREFIX@systemRelease (releaseGuid)
 ;
 
-ALTER TABLE @PREFIX@csMultiAttrib ADD CONSTRAINT FK_csMulti_csGuid 
+ALTER TABLE @PREFIX@csMultiAttrib ADD CONSTRAINT @PREFIX@FK_csMulti_csGuid 
 	FOREIGN KEY (codingSchemeGuid) REFERENCES @PREFIX@codingScheme (codingSchemeGuid)
 	ON DELETE CASCADE
 ;
 
-ALTER TABLE @PREFIX@csSupportedAttrib ADD CONSTRAINT FK_map_csGuid 
+ALTER TABLE @PREFIX@csSupportedAttrib ADD CONSTRAINT @PREFIX@FK_map_csGuid 
 	FOREIGN KEY (codingSchemeGuid) REFERENCES @PREFIX@codingScheme (codingSchemeGuid)
 	ON DELETE CASCADE
 ;
 
-ALTER TABLE @PREFIX@entity ADD CONSTRAINT FK_ent_csGuid 
+ALTER TABLE @PREFIX@entity ADD CONSTRAINT @PREFIX@FK_ent_csGuid 
 	FOREIGN KEY (codingSchemeGuid) REFERENCES @PREFIX@codingScheme (codingSchemeGuid)
 	ON DELETE CASCADE
 ;
 
-ALTER TABLE @PREFIX@entityAssnsToData ADD CONSTRAINT FK_entAsToData_assnGuid 
+ALTER TABLE @PREFIX@entityAssnsToData ADD CONSTRAINT @PREFIX@FK_entAsToData_assnGuid 
 	FOREIGN KEY (associationPredicateGuid) REFERENCES @PREFIX@associationPredicate (associationPredicateGuid)
 	ON DELETE CASCADE
 ;
 
-ALTER TABLE @PREFIX@entityAssnsToEntity ADD CONSTRAINT FK_entAsToEnt_assnGuid 
+ALTER TABLE @PREFIX@entityAssnsToEntity ADD CONSTRAINT @PREFIX@FK_entAsToEnt_assnGuid 
 	FOREIGN KEY (associationPredicateGuid) REFERENCES @PREFIX@associationPredicate (associationPredicateGuid)
 	ON DELETE CASCADE
 ;
 
-ALTER TABLE @PREFIX@entityAssnsToEntityTr ADD CONSTRAINT FK_entAsToEntTr_assnGuid 
+ALTER TABLE @PREFIX@entityAssnsToEntityTr ADD CONSTRAINT @PREFIX@FK_entAsToEntTr_assnGuid 
 	FOREIGN KEY (associationPredicateGuid) REFERENCES @PREFIX@associationPredicate (associationPredicateGuid)
 	ON DELETE CASCADE
 ;
 
-ALTER TABLE @PREFIX@entityType ADD CONSTRAINT FK_eType_entityGuid 
+ALTER TABLE @PREFIX@entityType ADD CONSTRAINT @PREFIX@FK_eType_entityGuid 
 	FOREIGN KEY (entityGuid) REFERENCES @PREFIX@entity (entityGuid)
 	ON DELETE CASCADE
 ;
 
-ALTER TABLE @PREFIX@entryState ADD CONSTRAINT FK_es_prevEntryStateGuid 
+ALTER TABLE @PREFIX@entryState ADD CONSTRAINT @PREFIX@FK_es_prevEntryStateGuid 
 	FOREIGN KEY (prevEntryStateGuid) REFERENCES @PREFIX@entryState (entryStateGuid)
 ;
 
-ALTER TABLE @PREFIX@entryState ADD CONSTRAINT FK_es_revisionGuid 
-	FOREIGN KEY (revisionGuid) REFERENCES @PREFIX@revision (revisionGuid)
+ALTER TABLE @PREFIX@entryState ADD CONSTRAINT @PREFIX@FK_es_revisionGuid 
+	FOREIGN KEY (revisionGuid) REFERENCES @DEFAULT_PREFIX@revision (revisionGuid)
 ;
 
-ALTER TABLE @PREFIX@entryState ADD CONSTRAINT FK_es_prevRevisionGuid 
-	FOREIGN KEY (prevRevisionGuid) REFERENCES @PREFIX@revision (revisionGuid)
+ALTER TABLE @PREFIX@entryState ADD CONSTRAINT @PREFIX@FK_es_prevRevisionGuid 
+	FOREIGN KEY (prevRevisionGuid) REFERENCES @DEFAULT_PREFIX@revision (revisionGuid)
 ;
 
-ALTER TABLE @PREFIX@propertyLinks ADD CONSTRAINT FK_pLinks_sPropGuid 
+ALTER TABLE @PREFIX@propertyLinks ADD CONSTRAINT @PREFIX@FK_pLinks_sPropGuid 
 	FOREIGN KEY (sourcePropertyGuid) REFERENCES @PREFIX@property (propertyGuid)
 	ON DELETE CASCADE
 ;
 
-ALTER TABLE @PREFIX@propertyLinks ADD CONSTRAINT FK_pLinks_tPropGuid 
+ALTER TABLE @PREFIX@propertyLinks ADD CONSTRAINT @PREFIX@FK_pLinks_tPropGuid 
 	FOREIGN KEY (targetPropertyGuid) REFERENCES @PREFIX@property (propertyGuid)
 	ON DELETE CASCADE
 ;
 
-ALTER TABLE @PREFIX@propertyMultiAttrib ADD CONSTRAINT FK_pma_propertyGuid 
+ALTER TABLE @PREFIX@propertyMultiAttrib ADD CONSTRAINT @PREFIX@FK_pma_propertyGuid 
 	FOREIGN KEY (propertyGuid) REFERENCES @PREFIX@property (propertyGuid)
 	ON DELETE CASCADE
 ;
 
-ALTER TABLE @PREFIX@relation ADD CONSTRAINT FK_relation_codingScheme 
+ALTER TABLE @PREFIX@relation ADD CONSTRAINT @PREFIX@FK_relation_codingScheme 
 	FOREIGN KEY (codingSchemeGuid) REFERENCES @PREFIX@codingScheme (codingSchemeGuid)
 	ON DELETE CASCADE
 ;
