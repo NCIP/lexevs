@@ -40,7 +40,7 @@
 	
 	<select id="getPropertyLinksByEntityId"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultMap="Entity.propertyLinkResult">
+		resultMap="Entity.propertyLinkResult" remapResults="true">
 		SELECT
 		  	sourceProperty.propertyId sourcePropId,
   			targetProperty.propertyId targetPropId,
@@ -112,7 +112,7 @@
 			associationEntity.entityGuid
 			
 		LEFT JOIN
-			${defaultPrefix}entryState entryState
+			$prefix$entryState entryState
 		ON
 			entity.entryStateGuid =
 			entryState.entryStateGuid	
@@ -128,7 +128,10 @@
 			entryState.prevRevisionGuid = previousRevision.revisionGuid	
 	</sql>
 	
-	<select id="getEntityCount" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="int">
+	<select id="getEntityCount" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
+		resultClass="int"
+		remapResults="true">
 		SELECT
 			COUNT(entityGuid)
 		FROM
@@ -138,7 +141,9 @@
      </select>
 
 
-	<select id="getEntityIdByCodeAndNamespace" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultClass="string">
+	<select id="getEntityIdByCodeAndNamespace" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" 
+		resultClass="string" remapResults="true">
 		SELECT
 			entityGuid
 		FROM
@@ -151,7 +156,10 @@
 			entity.entityCodeNamespace = #param3#
      </select>
      
-     <select id="getEntityById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Entity.entityResult">
+     <select id="getEntityById" 
+     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+     	resultMap="Entity.entityResult"
+     	remapResults="true">
 		<include refid="getEntityFragment"/>
 		WHERE
 			entity.entityGuid = #param1#
@@ -159,7 +167,10 @@
 			entity.codingSchemeGuid = #param2#
      </select>
      
-	<select id="getEntityByCodeAndNamespace" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Entity.entityResult">
+	<select id="getEntityByCodeAndNamespace" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+		resultMap="Entity.entityResult"
+		remapResults="true">
 		<include refid="getEntityFragment"/>
 		WHERE
 			entityCode = #param1#
@@ -167,7 +178,10 @@
 			entity.entityCodeNamespace = #param2#
      </select>
      
-    <select id="getEntityByIdAndRevisionId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Entity.entityResult">
+    <select id="getEntityByIdAndRevisionId" 
+    	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+    	resultMap="Entity.entityResult"
+    	remapResults="true">
 		<include refid="getEntityFragment"/>
 		WHERE
 			entity.entityGuid = #param1#
@@ -175,14 +189,16 @@
 			entryState.revisionGuid = #param2#
      </select>
      
-     <select id="getAllEntitiesOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
+     <select id="getAllEntitiesOfCodingScheme" 
+     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
      	resultMap="Entity.entityResult">
 		<include refid="getEntityFragment"/>
 		WHERE
 			entity.codingSchemeGuid = #param1#
      </select>
      
-     <insert id="insertEntity" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean">
+     <insert id="insertEntity" 
+     	parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean">
 		INSERT INTO $prefix$entity (
 			entityGuid,
 			codingSchemeGuid,

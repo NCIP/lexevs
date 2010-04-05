@@ -64,7 +64,7 @@
 			$prefix$codingScheme cs
 			
 		LEFT JOIN
-			${defaultPrefix}entryState es
+			$prefix$entryState es
 		ON
 			cs.entryStateGuid = es.entryStateGuid
 			
@@ -119,7 +119,10 @@
 	</sql>
 	
 	
-	<select id="getCodingSchemeById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="CodingScheme.codingSchemeResult">
+	<select id="getCodingSchemeById" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
+		resultMap="CodingScheme.codingSchemeResult"
+		remapResults="true">
 		<include refid="getCodingSchemeFragment"/>
 		<include refid="getCodingSchemeMultiAttribsFragment"/>
 		WHERE
@@ -127,7 +130,10 @@
 
      </select>
      
-    <select id="getCodingSchemeSummaryByUriAndVersion" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="codingSchemeSummaryResult">
+    <select id="getCodingSchemeSummaryByUriAndVersion" 
+    	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+    	resultMap="codingSchemeSummaryResult"
+     	remapResults="true">
 		SELECT
 			codingSchemeName,
 			codingSchemeURI,
@@ -144,7 +150,10 @@
 			#param2#
 	</select>
 	
-	<select id="getCodingSchemeByNameAndVersion" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="codingSchemeResult">
+	<select id="getCodingSchemeByNameAndVersion" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+		resultMap="codingSchemeResult"
+		remapResults="true">
 		<include refid="getCodingSchemeFragment"/>
 		<include refid="getCodingSchemeMultiAttribsFragment"/>
 		WHERE
@@ -162,7 +171,10 @@
 			currentRevision.revisionGuid = #param2#	
      </select>
      
-     <select id="getCodingSchemeIdByNameAndVersion" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
+     <select id="getCodingSchemeIdByNameAndVersion" 
+     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+     	resultClass="string" 
+     	remapResults="true">
 		SELECT
 			codingSchemeGuid
 		FROM
@@ -173,7 +185,10 @@
 			representsVersion = #param2#
      </select>
      
-     <select id="getCodingSchemeIdByUriAndVersion" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
+     <select id="getCodingSchemeIdByUriAndVersion" 
+     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+     	resultClass="string"
+     	remapResults="true">
 		SELECT
 			codingSchemeGuid
 		FROM
@@ -184,7 +199,7 @@
 			representsVersion = #param2#
      </select>
      
-     <select id="getEntryStateId" parameterClass="map" resultClass="string">
+     <select id="getEntryStateId" parameterClass="map" remapResults="true"> resultClass="string">
 		SELECT
 			entryStateId
 		FROM
@@ -197,7 +212,8 @@
 			isCurrentRelease = #isCurrentRelease#
      </select>
    
-	<update id="updateCodingSchemeById" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
+	<update id="updateCodingSchemeById" 
+		parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
 		UPDATE 
 			$prefix$codingScheme
 		SET 
@@ -273,7 +289,9 @@
   
   	
 	<select id="getDistinctPropertyNames" 
-     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+		remapResults="true"
+     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
+     	resultClass="string">
      SELECT DISTINCT
      	prop.propertyName
      FROM
@@ -290,7 +308,7 @@
 		cs.codingSchemeGuid = #param1#
      </select>
      
-     	<select id="getDistinctEntityTypes" 
+     	<select id="getDistinctEntityTypes" remapResults="true"
      	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
      SELECT DISTINCT
      	type.entityType
@@ -308,7 +326,7 @@
 		cs.codingSchemeGuid = #param1#
      </select>
      
-      <select id="getDistinctNamespaces" 
+      <select id="getDistinctNamespaces" remapResults="true"
      	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
      SELECT DISTINCT
      	entity.entityCodeNamespace
@@ -318,7 +336,7 @@
 		entity.codingSchemeGuid = #param1#
      </select>
      
-      <select id="getDistinctFormats" 
+      <select id="getDistinctFormats" remapResults="true"
      	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
         SELECT DISTINCT
      	prop.format
@@ -338,7 +356,7 @@
 	 	prop.format IS NOT NULL
      </select>
      
-      <select id="getDistinctLanguages" 
+      <select id="getDistinctLanguages" remapResults="true"
      	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
         SELECT DISTINCT
      	prop.language
@@ -387,7 +405,7 @@
 			cs.codingSchemeGuid = #param1#
 	</sql>
 
-	<select id="getDistinctPropertyQualifierTypes"
+	<select id="getDistinctPropertyQualifierTypes" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
 		resultClass="string">
 		SELECT DISTINCT
@@ -395,7 +413,7 @@
 		<include refid="distinctPropQualFragment"/>
      </select>
      
-     <select id="getDistinctPropertyQualifierNames"
+     <select id="getDistinctPropertyQualifierNames" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
 		resultClass="string">
 		SELECT DISTINCT

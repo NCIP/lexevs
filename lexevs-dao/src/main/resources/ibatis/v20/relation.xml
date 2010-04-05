@@ -53,7 +53,8 @@
    		)
    </insert>
    
-   <select id="getAssociationPredicateKey" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
+   <select id="getAssociationPredicateKey" remapResults="true"
+   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
    		SELECT
    			associationPredicateGuid
    		FROM
@@ -67,7 +68,8 @@
    			
    </select>
    
-  	<select id="getAssociationPredicateKeysForRelationsId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+  	<select id="getAssociationPredicateKeysForRelationsId" remapResults="true"
+  		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
    		SELECT
    			associationPredicateGuid
    		FROM
@@ -77,7 +79,8 @@
 			#param1#
    </select>
    
-   <select id="getAssociationEntityIdForAssociationPredicateName" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+   <select id="getAssociationEntityIdForAssociationPredicateName" remapResults="true"
+   		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
    		SELECT
    			associationEntityGuid
    		FROM
@@ -87,7 +90,8 @@
 			#param1#
    </select>
    
-    <select id="getRelationsKey" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
+    <select id="getRelationsKey" 
+    	remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
    		SELECT
    			relationGuid
    		FROM
@@ -100,7 +104,8 @@
 			#param2#		
    </select>
    
-    <select id="getRelationsKeysForCodingSchemeId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+    <select id="getRelationsKeysForCodingSchemeId" remapResults="true"
+    	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
    		SELECT
    			relationGuid
    		FROM
@@ -110,7 +115,8 @@
 			#param1#	
    </select>
    
-   <select id="getAssociationPredicateNameForId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+   <select id="getAssociationPredicateNameForId" remapResults="true"
+   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
    		SELECT
    			associationName
    		FROM
