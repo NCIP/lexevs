@@ -34,7 +34,8 @@ public abstract class AbstractBasicPropertyResolver<I> implements PropertyResolv
 	private EntityNamespaceResolver<I> entityNamespaceResolver;
 	
 	/** The individual id setter. */
-	private IndividualIdSetter<I> individualIdSetter;
+	private IndividualIdSetter<I> individualIdSetter = 
+		new org.lexgrid.loader.data.property.RandomGuidIndividualIdSetter<I>();
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.PropertyResolver#getEntityCode(java.lang.Object)
