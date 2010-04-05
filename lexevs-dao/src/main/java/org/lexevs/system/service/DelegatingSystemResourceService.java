@@ -206,7 +206,7 @@ public class DelegatingSystemResourceService implements SystemResourceService {
 	 */
 	public void addCodingSchemeResourceToSystem(CodingScheme codingScheme)
 		throws LBParameterException {
-		primarySystemResourceService.addCodingSchemeResourceToSystem(codingScheme);
+		//primarySystemResourceService.addCodingSchemeResourceToSystem(codingScheme);
 	}
 	
 	/* (non-Javadoc)
@@ -265,5 +265,11 @@ public class DelegatingSystemResourceService implements SystemResourceService {
 	@Override
 	public SystemVariables getSystemVariables() {
 		return this.primarySystemResourceService.getSystemVariables();
+	}
+
+	@Override
+	public void initialize() {
+		primarySystemResourceService.initialize();
+		delegateSystemResourceService.initialize();
 	}
 }

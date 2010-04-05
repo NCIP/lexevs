@@ -20,9 +20,15 @@ package org.lexevs.dao.database.prefix;
 
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.lexevs.cache.annotation.CacheMethod;
+import org.lexevs.cache.annotation.Cacheable;
+import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.constants.SystemVariables;
 
 /**
@@ -30,6 +36,7 @@ import org.lexevs.system.constants.SystemVariables;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Cacheable(cacheName="PrefixResolver")
 public class DefaultPrefixResolver implements PrefixResolver {
 
 	/** The system variables. */
@@ -40,6 +47,8 @@ public class DefaultPrefixResolver implements PrefixResolver {
 	
 	/** The history prefix. */
 	private String historyPrefix = "h_";
+	
+	private DatabaseServiceManager databaseServiceManager;
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.prefix.PrefixResolver#resolveDefaultPrefix()
@@ -58,21 +67,19 @@ public class DefaultPrefixResolver implements PrefixResolver {
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.prefix.PrefixResolver#resolvePrefixForCodingScheme(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public String resolvePrefixForCodingScheme(String codingSchemeUri,
 			String version) {
 		try {
-			//TODO: Enable this for multiple tables
-			/*
+
 			RegistryEntry entry = registry.getCodingSchemeEntry(
 					DaoUtility.createAbsoluteCodingSchemeVersionReference(codingSchemeUri, version));
 			
 			String entryPrefix = entry.getPrefix();
 			
 			return resolveDefaultPrefix() + entryPrefix;
-			*/
-					
-			return this.resolveDefaultPrefix();
-		} catch (Exception e) {
+
+		} catch (LBParameterException e) {
 			throw new RuntimeException("CodingScheme Uri: " + codingSchemeUri + " Version: " + version + " not found.");
 		}
 	}
@@ -80,8 +87,27 @@ public class DefaultPrefixResolver implements PrefixResolver {
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.prefix.PrefixResolver#resolvePrefixForCodingScheme(java.lang.String)
 	 */
-	public String resolvePrefixForCodingScheme(String codingSchemeId) {
-		return resolveDefaultPrefix();
+	@CacheMethod
+	public String resolvePrefixForCodingScheme(final String codingSchemeId) {
+		String prefix =
+			databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>() {
+
+				@Override
+				public String execute(DaoManager daoManager) {
+					for(RegistryEntry entry : registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)){
+						String foundCodingSchemeId = daoManager.getCurrentCodingSchemeDao().
+							getCodingSchemeIdByUriAndVersion(entry.getResourceUri(), entry.getResourceVersion());
+						
+						if(foundCodingSchemeId.equals(codingSchemeId)) {
+							return entry.getPrefix();
+						}
+					}
+					throw new RuntimeException("CodingScheme ID: " + codingSchemeId + " not found.");
+				}
+
+			});
+
+		return this.resolveDefaultPrefix() + prefix;
 	}
 
 	/* (non-Javadoc)
@@ -148,5 +174,13 @@ public class DefaultPrefixResolver implements PrefixResolver {
 	 */
 	public String getHistoryPrefix() {
 		return historyPrefix;
+	}
+
+	public void setDatabaseServiceManager(DatabaseServiceManager databaseServiceManager) {
+		this.databaseServiceManager = databaseServiceManager;
+	}
+
+	public DatabaseServiceManager getDatabaseServiceManager() {
+		return databaseServiceManager;
 	}
 }

@@ -72,6 +72,7 @@ public class LexEvsServiceLocator implements ApplicationContextAware {
 		if(serviceLocator == null){
 			serviceLocator = (LexEvsServiceLocator) new ClassPathXmlApplicationContext(CONTEXT_FILE).getBean(BEAN_NAME);
 		}
+		
 		return serviceLocator;
 	}
 	

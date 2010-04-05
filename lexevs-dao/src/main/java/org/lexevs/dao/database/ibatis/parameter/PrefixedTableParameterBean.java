@@ -28,7 +28,7 @@ public class PrefixedTableParameterBean {
 	/** The prefix. */
 	private String prefix;
 	
-	private String entityTypeTablePrefix;
+	private String actualTableSetPrefix;
 	
 	/**
 	 * Instantiates a new prefixed table parameter bean.
@@ -65,15 +65,15 @@ public class PrefixedTableParameterBean {
 		return prefix;
 	}
 
-	public void setEntityTypeTablePrefix(String entityTypeTablePrefix) {
-		this.entityTypeTablePrefix = entityTypeTablePrefix;
+	public void setActualTableSetPrefix(String actualTableSetPrefix) {
+		this.actualTableSetPrefix = actualTableSetPrefix;
 	}
 
-	public String getEntityTypeTablePrefix() {
-		if(entityTypeTablePrefix == null) {
-			return prefix;
+	public String getActualTableSetPrefix() {
+		if(actualTableSetPrefix == null) {
+			return this.getPrefix();
 		} else {
-			return entityTypeTablePrefix;
+			return actualTableSetPrefix;
 		}
 	}
 }

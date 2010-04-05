@@ -22,8 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent;
+import org.lexevs.dao.database.service.event.codingscheme.PostCodingSchemeInsertEvent;
+import org.lexevs.dao.database.service.event.codingscheme.PreCodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
@@ -70,12 +71,23 @@ public class DatabaseServiceEventSupport {
 	 * 
 	 * @throws CodingSchemeAlreadyLoadedException the coding scheme already loaded exception
 	 */
-	protected void fireCodingSchemeInsertEvent(
+	protected void firePreCodingSchemeInsertEvent(
 			CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException{
 		if(databaseServiceEventListeners != null){
 			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
-				listener.onCodingSchemeInsert(
-						new CodingSchemeInsertEvent(
+				listener.onPreCodingSchemeInsert(
+						new PreCodingSchemeInsertEvent(
+								codingScheme));
+			}
+		}
+	}
+	
+	protected void firePostCodingSchemeInsertEvent(
+			CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException{
+		if(databaseServiceEventListeners != null){
+			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+				listener.onPostCodingSchemeInsert(
+						new PostCodingSchemeInsertEvent(
 								codingScheme));
 			}
 		}

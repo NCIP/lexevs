@@ -20,8 +20,8 @@ package org.lexevs.dao.database.setup.schemacheck;
 
 import javax.sql.DataSource;
 
-import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.type.DatabaseType;
+import org.lexevs.system.constants.SystemVariables;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
@@ -41,7 +41,7 @@ public class LexGridSchemaCheckFactory implements FactoryBean, InitializingBean 
 	private DataSource dataSource;
 	
 	/** The prefix resolver. */
-	private PrefixResolver prefixResolver;
+	private SystemVariables systemVariables;
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.FactoryBean#getObject()
@@ -56,11 +56,11 @@ public class LexGridSchemaCheckFactory implements FactoryBean, InitializingBean 
 	public void afterPropertiesSet() throws Exception {
 		LexGridSchemaCheck schemaCheck = null;
 		if(databaseType.equals(DatabaseType.HSQL)){
-			schemaCheck = new CountBasedLexGridSchemaCheck(dataSource, prefixResolver);
+			schemaCheck = new CountBasedLexGridSchemaCheck(dataSource, systemVariables);
 		}
 		
 		if(databaseType.equals(DatabaseType.MYSQL)){
-			schemaCheck = new CountBasedLexGridSchemaCheck(dataSource, prefixResolver);
+			schemaCheck = new CountBasedLexGridSchemaCheck(dataSource, systemVariables);
 		}
 		
 		//TODO: Add Oracle, DB2, etc
@@ -125,16 +125,12 @@ public class LexGridSchemaCheckFactory implements FactoryBean, InitializingBean 
 	 * 
 	 * @param prefixResolver the new prefix resolver
 	 */
-	public void setPrefixResolver(PrefixResolver prefixResolver) {
-		this.prefixResolver = prefixResolver;
+
+	public void setSystemVariables(SystemVariables systemVariables) {
+		this.systemVariables = systemVariables;
 	}
 
-	/**
-	 * Gets the prefix resolver.
-	 * 
-	 * @return the prefix resolver
-	 */
-	public PrefixResolver getPrefixResolver() {
-		return prefixResolver;
+	public SystemVariables getSystemVariables() {
+		return systemVariables;
 	}
 }

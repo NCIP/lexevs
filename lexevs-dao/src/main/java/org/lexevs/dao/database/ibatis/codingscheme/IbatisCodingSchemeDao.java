@@ -220,9 +220,16 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	 */
 	public CodingScheme getHistoryCodingSchemeByRevision(String codingSchemeId, String revisionId) {
 		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
+		
+		PrefixedParameterTuple param = new PrefixedParameterTuple(prefix, codingSchemeId, revisionId);
+		
+		String actualTableSetPrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		param.setActualTableSetPrefix(actualTableSetPrefix);
+		
 		return (CodingScheme)
 			this.getSqlMapClientTemplate().queryForObject(GET_CODING_SCHEME_BY_ID_AND_REVISION_GUID_SQL, 
-				new PrefixedParameterTuple(prefix, codingSchemeId, revisionId));
+					param);
 	}
 
 	/* (non-Javadoc)
@@ -271,7 +278,9 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 			boolean cascade) {
 		String codingSchemeId = this.createUniqueId();
 		
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingScheme.getCodingSchemeURI(),
+				codingScheme.getRepresentsVersion());
 		
 		return this.doInsertCodingScheme(
 				codingSchemeId, 

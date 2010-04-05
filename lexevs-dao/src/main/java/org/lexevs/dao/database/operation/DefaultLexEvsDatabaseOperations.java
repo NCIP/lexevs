@@ -46,6 +46,9 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	/** The lexevs coding scheme schema create script. */
 	private Resource lexevsCodingSchemeSchemaCreateScript;
 	
+	/** The lexevs coding scheme schema create script. */
+	private Resource lexevsCodingSchemeSchemaDropScript;
+	
 	/** The lexevs value sets schema create script. */
 	private Resource lexevsValueSetsSchemaCreateScript;
 	
@@ -78,7 +81,11 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	 */
 	public void createCommonTables() {
 		try {
-			databaseUtility.executeScript(lexevsCommonSchemaCreateScript, this.prefixResolver.resolveDefaultPrefix());
+			databaseUtility.executeScript(
+					lexevsCommonSchemaCreateScript, 
+					this.prefixResolver.resolveDefaultPrefix(),
+					this.prefixResolver.resolveDefaultPrefix()
+			);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}	
@@ -89,7 +96,10 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	 */
 	public void createCodingSchemeTables() {
 		try {
-			databaseUtility.executeScript(lexevsCodingSchemeSchemaCreateScript, this.prefixResolver.resolveDefaultPrefix());
+			databaseUtility.executeScript(
+					lexevsCodingSchemeSchemaCreateScript, 
+					this.prefixResolver.resolveDefaultPrefix(),
+					this.prefixResolver.resolveDefaultPrefix());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}	
@@ -100,7 +110,10 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	 */
 	public void createCodingSchemeTables(String prefix) {
 		try {
-			databaseUtility.executeScript(lexevsCodingSchemeSchemaCreateScript, getCombinedPrefix(prefix));
+			databaseUtility.executeScript(
+					lexevsCodingSchemeSchemaCreateScript, 
+					this.prefixResolver.resolveDefaultPrefix(),
+					getCombinedPrefix(prefix));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}	
@@ -108,7 +121,10 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	
 	public void createValueSetsTables() {
 		try {
-			databaseUtility.executeScript(lexevsValueSetsSchemaCreateScript, null);
+			databaseUtility.executeScript(
+					lexevsValueSetsSchemaCreateScript, 
+					this.prefixResolver.resolveDefaultPrefix(),
+					this.prefixResolver.resolveDefaultPrefix());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}	
@@ -116,7 +132,10 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 
 	public void createHistoryTables() {
 		try {
-			databaseUtility.executeScript(lexevsHistoryCreateScript, this.prefixResolver.resolveDefaultPrefix());
+			databaseUtility.executeScript(
+					lexevsHistoryCreateScript, 
+					this.prefixResolver.resolveDefaultPrefix(),
+					this.prefixResolver.resolveDefaultPrefix());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}	
@@ -143,8 +162,13 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#dropTables(java.lang.String, java.lang.String)
 	 */
 	public void dropTables(String codingSchemeUri, String version) {
-		// TODO Auto-generated method stub
+		String prefix = prefixResolver.resolvePrefixForCodingScheme(codingSchemeUri, version);
 		
+		try {
+			this.databaseUtility.executeScript(lexevsCodingSchemeSchemaDropScript, prefix);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}	
 	}
 
 	/* (non-Javadoc)
@@ -315,5 +339,14 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 
 	public Resource getLexevsValueSetsSchemaCreateScript() {
 		return lexevsValueSetsSchemaCreateScript;
+	}
+
+	public void setLexevsCodingSchemeSchemaDropScript(
+			Resource lexevsCodingSchemeSchemaDropScript) {
+		this.lexevsCodingSchemeSchemaDropScript = lexevsCodingSchemeSchemaDropScript;
+	}
+
+	public Resource getLexevsCodingSchemeSchemaDropScript() {
+		return lexevsCodingSchemeSchemaDropScript;
 	}
 }

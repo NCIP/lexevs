@@ -20,7 +20,7 @@ package org.lexevs.dao.database.setup.schemacheck;
 
 import javax.sql.DataSource;
 
-import org.lexevs.dao.database.prefix.PrefixResolver;
+import org.lexevs.system.constants.SystemVariables;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -34,7 +34,7 @@ public abstract class AbstractLesGridSchemaCheck implements LexGridSchemaCheck {
 	private DataSource dataSource;
 	
 	/** The prefix resolver. */
-	private PrefixResolver prefixResolver;
+	private SystemVariables systemVariables;
 	
 	/**
 	 * Instantiates a new abstract les grid schema check.
@@ -49,9 +49,9 @@ public abstract class AbstractLesGridSchemaCheck implements LexGridSchemaCheck {
 	 * @param dataSource the data source
 	 * @param prefixResolver the prefix resolver
 	 */
-	public AbstractLesGridSchemaCheck(DataSource dataSource, PrefixResolver prefixResolver){
+	public AbstractLesGridSchemaCheck(DataSource dataSource, SystemVariables systemVariables){
 		this.dataSource = dataSource;
-		this.prefixResolver = prefixResolver;
+		this.setSystemVariables(systemVariables);
 	}
 
 	/**
@@ -99,21 +99,11 @@ public abstract class AbstractLesGridSchemaCheck implements LexGridSchemaCheck {
 	 */
 	protected abstract boolean checkResult(JdbcTemplate template, String sql);
 
-	/**
-	 * Gets the prefix resolver.
-	 * 
-	 * @return the prefix resolver
-	 */
-	public PrefixResolver getPrefixResolver() {
-		return prefixResolver;
+	public void setSystemVariables(SystemVariables systemVariables) {
+		this.systemVariables = systemVariables;
 	}
 
-	/**
-	 * Sets the prefix resolver.
-	 * 
-	 * @param prefixResolver the new prefix resolver
-	 */
-	public void setPrefixResolver(PrefixResolver prefixResolver) {
-		this.prefixResolver = prefixResolver;
+	public SystemVariables getSystemVariables() {
+		return systemVariables;
 	}
 }

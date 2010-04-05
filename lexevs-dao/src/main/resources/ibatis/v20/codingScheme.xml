@@ -64,7 +64,7 @@
 			$prefix$codingScheme cs
 			
 		LEFT JOIN
-			$prefix$entryState es
+			$actualTableSetPrefix$entryState es
 		ON
 			cs.entryStateGuid = es.entryStateGuid
 			

@@ -49,7 +49,7 @@ import org.springframework.beans.factory.InitializingBean;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 @Cacheable(cacheName = "DelegatingResourceManagingService")
-public class LexEvsResourceManagingService extends AbstractLoggingBean implements SystemResourceService, InitializingBean {
+public class LexEvsResourceManagingService extends AbstractLoggingBean implements SystemResourceService {
 
 	/** The registry. */
 	private Registry registry;
@@ -78,7 +78,7 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
-	public void afterPropertiesSet() throws Exception {
+	public void initialize() {
 		readCodingSchemeAliasesFromServer();
 	}
 	
@@ -127,7 +127,10 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 			prefix = prefixResolver.resolveDefaultPrefix();
 		} else {
 			this.getLogger().info("In multi-table mode -- creating a new set of tables.");
+			
 			prefix = prefixResolver.getNextCodingSchemePrefix();
+			
+			lexEvsDatabaseOperations.createCodingSchemeTables(prefix);
 		}
 
 		return prefix;
@@ -407,30 +410,17 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 			throws LBParameterException {
 		RegistryEntry entry = RegistryUtility.codingSchemeToRegistryEntry(uri, version);
 		entry.setStatus(CodingSchemeVersionStatus.PENDING.toString());
+		
+		String prefix = createNewTablesForLoad();
+		entry.setPrefix(prefix);
 		try {
 			this.getRegistry().addNewItem(entry);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		this.readCodingSchemeAliasesFromServer();
+		//this.readCodingSchemeAliasesFromServer();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.lexevs.system.service.SystemResourceService#addCodingSchemeResourceToSystem(org.LexGrid.codingSchemes.CodingScheme)
-	 */
-	@ClearCache
-	public void addCodingSchemeResourceToSystem(CodingScheme codingScheme)
-			throws LBParameterException {
-		RegistryEntry entry = RegistryUtility.codingSchemeToRegistryEntry(codingScheme);
-		entry.setStatus(CodingSchemeVersionStatus.PENDING.toString());
-		try {
-			this.getRegistry().addNewItem(entry);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	
-		this.aliasHolder.add(this.codingSchemeToAliasHolder(codingScheme));
-	}
 
 	/**
 	 * Checks if is single table mode.

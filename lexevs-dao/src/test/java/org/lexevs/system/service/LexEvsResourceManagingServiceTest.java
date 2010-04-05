@@ -129,7 +129,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		service.setDatabaseServiceManager(manager);
 		service.setRegistry(registryMock);
-		service.afterPropertiesSet();
+		service.initialize();
 		
 		assertEquals(
 				"csName", 
@@ -176,7 +176,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		service.setRegistry(registryMock);
 		service.setDatabaseServiceManager(manager);
-		service.afterPropertiesSet();
+		service.initialize();
 		
 		assertEquals(
 				"csName", 
@@ -222,7 +222,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		service.setRegistry(registryMock);
 		service.setDatabaseServiceManager(manager);
-		service.afterPropertiesSet();
+		service.initialize();
 		
 		assertEquals(
 				"csName", 
@@ -268,7 +268,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		service.setRegistry(registryMock);
 		service.setDatabaseServiceManager(manager);
-		service.afterPropertiesSet();
+		service.initialize();
 		
 		assertEquals(
 				"csName", 
@@ -316,7 +316,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		service.setRegistry(registryMock);
 		
 		service.setDatabaseServiceManager(manager);
-		service.afterPropertiesSet();
+		service.initialize();
 		
 		assertEquals(
 				"v123", 
@@ -363,7 +363,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		service.setRegistry(registryMock);
 		service.setDatabaseServiceManager(manager);
-		service.afterPropertiesSet();
+		service.initialize();
 		
 		assertEquals(
 				"v123", 
@@ -418,7 +418,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		service.setDatabaseServiceManager(manager);
 		service.setRegistry(registryMock);
-		service.afterPropertiesSet();
+		service.initialize();
 		
 		assertEquals(
 				"v123", 

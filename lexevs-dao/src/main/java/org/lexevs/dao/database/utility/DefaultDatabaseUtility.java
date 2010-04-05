@@ -64,17 +64,26 @@ public class DefaultDatabaseUtility extends JdbcDaoSupport implements DatabaseUt
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.utility.DatabaseUtility#executeScript(org.springframework.core.io.Resource, java.lang.String)
 	 */
-	public void executeScript(Resource creationScript, String prefix) throws Exception {
+	public void executeScript(Resource creationScript, String defaultPrefix, String tableSetPrefix) throws Exception {
 		String script = convertResourceToString(creationScript);
 		this.executeScript(
-				adjustForPrefix(script,prefix));
+				adjustForCommonAndTableSetPrefixes(script, defaultPrefix, tableSetPrefix));
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.utility.DatabaseUtility#executeScript(org.springframework.core.io.Resource, java.lang.String)
+	 */
+	public void executeScript(Resource creationScript, String tableSetPrefix) throws Exception {
+		String script = convertResourceToString(creationScript);
+		this.executeScript(
+				adjustForPrefix(script, tableSetPrefix));
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.LexGrid.persistence.database.DatabaseUtility#executeScript(java.lang.String)
 	 */
-	public void executeScript(String script, String prefix) throws Exception {	
-		script = adjustForPrefix(script, prefix);
+	public void executeScript(String script, String defaultPrefix, String tableSetPrefix) throws Exception {	
+		script = adjustForCommonAndTableSetPrefixes(script, defaultPrefix, tableSetPrefix);
 		doExecuteScript(script);
 	}
 	
@@ -132,20 +141,18 @@ public class DefaultDatabaseUtility extends JdbcDaoSupport implements DatabaseUt
 	 * 
 	 * @return the string
 	 */
-	protected String adjustForPrefix(String script, String prefix){
-		return script.replaceAll(DatabaseConstants.PREFIX_PLACEHOLDER, prefix);
+	protected String adjustForCommonAndTableSetPrefixes(String script, String commonPrefix, String tableSetPrefix){
+		script = adjustForPrefix(script, tableSetPrefix);
+		
+		script = script.replaceAll(DatabaseConstants.DEFAULT_PREFIX_PLACEHOLDER, commonPrefix);
+		
+		return script;
 	}
 	
-	/**
-	 * Adjust for individual table prefix.
-	 * 
-	 * @param script the script
-	 * @param individualTablePrefix the individual table prefix
-	 * 
-	 * @return the string
-	 */
-	protected String adjustForIndividualTablePrefix(String script, String individualTablePrefix){
-		return script.replaceAll(DatabaseConstants.MULTIPLE_TABLES_PREFIX_PLACEHOLDER, individualTablePrefix);
+	protected String adjustForPrefix(String script, String prefix){
+		script = script.replaceAll(DatabaseConstants.PREFIX_PLACEHOLDER, prefix);
+		
+		return script;
 	}
 	
 	/**

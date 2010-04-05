@@ -43,7 +43,6 @@ import org.lexevs.dao.database.ibatis.property.IbatisPropertyDao;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
 import org.springframework.util.Assert;
 
@@ -54,7 +53,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, InitializingBean {
+public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	
 	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
@@ -127,12 +126,12 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao, Ini
 	@Override
 	public Entity getHistoryEntityByRevision(String codingSchemeId, String entityId, String revisionId) {
 		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
-		String entityTypeTablePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		String actualTableSetPrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		PrefixedParameterTuple tuple = 
 			new PrefixedParameterTuple(prefix, entityId, revisionId);
 		
-		tuple.setEntityTypeTablePrefix(entityTypeTablePrefix);
+		tuple.setActualTableSetPrefix(actualTableSetPrefix);
 		
 		return (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_ID_AND_REVISION_ID_SQL, 
 				tuple);

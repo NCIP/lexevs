@@ -20,8 +20,7 @@ package org.lexevs.dao.database.setup.schemacheck;
 
 import javax.sql.DataSource;
 
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.lexevs.dao.database.prefix.PrefixResolver;
+import org.lexevs.system.constants.SystemVariables;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -48,8 +47,8 @@ public class CountBasedLexGridSchemaCheck extends AbstractLesGridSchemaCheck {
 	 * @param prefixResolver the prefix resolver
 	 */
 	public CountBasedLexGridSchemaCheck(DataSource dataSource,
-			PrefixResolver prefixResolver) {
-		super(dataSource, prefixResolver);
+			SystemVariables systemVariables) {
+		super(dataSource, systemVariables);
 	}
 
 	/* (non-Javadoc)
@@ -70,7 +69,7 @@ public class CountBasedLexGridSchemaCheck extends AbstractLesGridSchemaCheck {
 	 */
 	@Override
 	protected String getDbCheckSql() {
-		return "SELECT count(*) from " + this.getPrefixResolver().resolveDefaultPrefix() + checkTableName;
+		return "SELECT count(*) from " + this.getSystemVariables().getAutoLoadDBPrefix() + checkTableName;
 	}
 
 	/**

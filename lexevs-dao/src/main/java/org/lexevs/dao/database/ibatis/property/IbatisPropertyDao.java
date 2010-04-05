@@ -210,12 +210,19 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	@SuppressWarnings("unchecked")
 	public List<Property> getAllHistoryPropertiesOfParentByRevisionId(String codingSchemeId,
 			String parentId, String revisionId, PropertyType type) {
+		
+		PrefixedParameterTriple param = new PrefixedParameterTriple(
+				this.getPrefixResolver().resolveHistoryPrefix(),
+				this.propertyTypeClassifier.classify(PropertyType.ENTITY),
+				parentId,
+				revisionId);
+		
+		String actualTablePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		param.setActualTableSetPrefix(actualTablePrefix);
+		
 		return this.getSqlMapClientTemplate().queryForList(GET_ALL_PROPERTIES_OF_PARENT_BY_REVISION_SQL, 
-				new PrefixedParameterTriple(
-						this.getPrefixResolver().resolveHistoryPrefix(),
-						this.propertyTypeClassifier.classify(PropertyType.ENTITY),
-						parentId,
-						revisionId));
+				param);
 	}
 	
 	@SuppressWarnings("unchecked")

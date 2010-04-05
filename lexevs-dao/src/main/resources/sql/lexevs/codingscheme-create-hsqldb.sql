@@ -380,7 +380,10 @@ ALTER TABLE @PREFIX@relation
 	ADD CONSTRAINT UQ_relation_containerName UNIQUE (containerName)
 ;
 
-
+ALTER TABLE @PREFIX@associationEntity ADD CONSTRAINT FK_associationEntity_entity 
+	FOREIGN KEY (entityGuid) REFERENCES @PREFIX@entity (entityGuid)
+ON DELETE CASCADE
+;
 
 ALTER TABLE @PREFIX@associationPredicate ADD CONSTRAINT @PREFIX@FK_associationPr_associationEn 
 	FOREIGN KEY (associationEntityGuid) REFERENCES @PREFIX@entity (entityGuid)
@@ -411,7 +414,10 @@ ALTER TABLE @PREFIX@entityAssnsToData ADD CONSTRAINT @PREFIX@FK_entAsToData_assn
 ON DELETE CASCADE
 ;
 
-
+ALTER TABLE @PREFIX@entityAssnsToEntity ADD CONSTRAINT @PREFIX@FK_entAsToEnt_assnGuid 
+	FOREIGN KEY (associationPredicateGuid) REFERENCES @PREFIX@associationPredicate (associationPredicateGuid)
+ON DELETE CASCADE
+;
 
 ALTER TABLE @PREFIX@entityAssnsToEntityTr ADD CONSTRAINT @PREFIX@FK_entAsToEntTr_assnGuid 
 	FOREIGN KEY (associationPredicateGuid) REFERENCES @PREFIX@associationPredicate (associationPredicateGuid)
@@ -440,5 +446,10 @@ ON DELETE CASCADE
 
 ALTER TABLE @PREFIX@propertyMultiAttrib ADD CONSTRAINT @PREFIX@FK_pma_propertyGuid 
 	FOREIGN KEY (propertyGuid) REFERENCES @PREFIX@property (propertyGuid)
+ON DELETE CASCADE
+;
+
+ALTER TABLE @PREFIX@relation ADD CONSTRAINT @PREFIX@FK_relation_codingScheme 
+	FOREIGN KEY (codingSchemeGuid) REFERENCES @PREFIX@codingScheme (codingSchemeGuid)
 ON DELETE CASCADE
 ;

@@ -18,8 +18,9 @@
  */
 package org.lexevs.dao.database.service.listener;
 import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
-import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent;
+import org.lexevs.dao.database.service.event.codingscheme.PostCodingSchemeInsertEvent;
+import org.lexevs.dao.database.service.event.codingscheme.PreCodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
@@ -48,7 +49,11 @@ public class DefaultServiceEventListener implements DatabaseServiceEventListener
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.event.DatabaseServiceEventListener#onCodingSchemeInsert(org.lexevs.dao.database.service.event.codingscheme.CodingSchemeInsertEvent)
 	 */
-	public boolean onCodingSchemeInsert(CodingSchemeInsertEvent event) throws CodingSchemeAlreadyLoadedException {
+	public boolean onPreCodingSchemeInsert(PreCodingSchemeInsertEvent event) throws CodingSchemeAlreadyLoadedException {
+		return true;
+	}
+	
+	public boolean onPostCodingSchemeInsert(PostCodingSchemeInsertEvent event) {
 		return true;
 	}
 	

@@ -84,6 +84,7 @@
 			entity.effectiveDate,
 			entity.expirationDate,
 			entityType.entityType,
+			 
 			associationEntity.forwardName,
 			associationEntity.reverseName,
 			associationEntity.isNavigable,
@@ -98,21 +99,21 @@
   			
 		FROM
 			$prefix$entity entity
-			
+			 
 		LEFT JOIN
-			$entityTypeTablePrefix$entityType entityType
+			$actualTableSetPrefix$entityType entityType
 		ON
 			entity.entityGuid =
-			entityType.entityGuid
-				
+			entityType.entityGuid	
+			 
 		LEFT JOIN
 			$prefix$associationEntity associationEntity
 		ON
 			entity.entityGuid =
 			associationEntity.entityGuid
-			
+			 	
 		LEFT JOIN
-			$prefix$entryState entryState
+			$actualTableSetPrefix$entryState entryState
 		ON
 			entity.entryStateGuid =
 			entryState.entryStateGuid	

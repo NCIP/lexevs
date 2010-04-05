@@ -31,6 +31,8 @@ public class DatabaseConstants {
 	/** The Constant CURRENT_LEXGRID_SCHEMA_DESCRIPTION. */
 	public static final String CURRENT_LEXGRID_SCHEMA_DESCRIPTION = "LexGrid Table Schema Version 2.0";
 		
+	/** The Constant PREFIX_PLACEHOLDER. */
+	public static final String DEFAULT_PREFIX_PLACEHOLDER = "@DEFAULT_PREFIX@";
 	
 	/** The Constant PREFIX_PLACEHOLDER. */
 	public static final String PREFIX_PLACEHOLDER = "@PREFIX@";

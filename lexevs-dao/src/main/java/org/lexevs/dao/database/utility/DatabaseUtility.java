@@ -71,7 +71,9 @@ public interface DatabaseUtility {
 	 * 
 	 * @throws Exception the exception
 	 */
-	public void executeScript(Resource creationScript, String prefix) throws Exception;
+	public void executeScript(Resource creationScript, String commonPrefix, String tableSetPrefix) throws Exception;
+	
+	public void executeScript(Resource creationScript, String tableSetPrefix) throws Exception;
 	
 	/**
 	 * Execute script.
@@ -81,14 +83,4 @@ public interface DatabaseUtility {
 	 * @throws Exception the exception
 	 */
 	public void executeScript(String creationScript) throws Exception;
-	
-	/**
-	 * Execute script.
-	 * 
-	 * @param creationScript the creation script
-	 * @param prefix the prefix
-	 * 
-	 * @throws Exception the exception
-	 */
-	public void executeScript(String creationScript, String prefix) throws Exception;
 }

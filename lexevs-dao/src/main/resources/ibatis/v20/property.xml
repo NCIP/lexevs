@@ -94,7 +94,7 @@
   		FROM
   			$prefix$property property
   		LEFT JOIN
-  			$prefix$entryState entryState
+  			$actualTableSetPrefix$entryState entryState
   		ON
   			property.entryStateGuid =
   			entryState.entryStateGuid	

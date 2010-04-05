@@ -2,7 +2,6 @@ CREATE TABLE @PREFIX@registry (
 	registryGuid varchar(36) NOT NULL,
 	resourceURI varchar(250),
 	resourceVersion varchar(50),
-	resourceGuid VARCHAR(50),
 	resourceType varchar(50),
 	dbURI varchar(250),
 	dbName varchar(50),

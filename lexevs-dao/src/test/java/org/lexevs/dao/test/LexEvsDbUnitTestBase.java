@@ -84,12 +84,14 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	@Before
 	public void setUp() throws Exception {
 		methodCachingProxy.clearAll();
+		
+		String prefix = prefixResolver.resolveDefaultPrefix();
 
 		new SimpleJdbcTemplate(dataSource).getJdbcOperations().execute("DROP SCHEMA PUBLIC CASCADE");
-		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_COMMON_SCRIPT), prefixResolver.resolveDefaultPrefix());
-		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_CODINGSCHEME_SCRIPT), prefixResolver.resolveDefaultPrefix());
-		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_VD_PICKLIST_SCRIPT), prefixResolver.resolveDefaultPrefix());
-		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_CODINGSCHEME_HISTORY_SCRIPT), prefixResolver.resolveDefaultPrefix());
+		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_COMMON_SCRIPT), prefix, prefix);
+		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_CODINGSCHEME_SCRIPT), prefix, prefix);
+		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_VD_PICKLIST_SCRIPT), prefix, prefix);
+		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_CODINGSCHEME_HISTORY_SCRIPT), prefix, prefix);
 	}
 	
 	/* (non-Javadoc)

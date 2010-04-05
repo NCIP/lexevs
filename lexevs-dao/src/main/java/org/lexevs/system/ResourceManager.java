@@ -1615,10 +1615,14 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#addCodingSchemeResourceToSystem(org.LexGrid.codingSchemes.CodingScheme)
 	 */
-	@Override
 	public void addCodingSchemeResourceToSystem(CodingScheme codingScheme)
 			throws LBParameterException {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void initialize() {
+		// should already be initialized here.
 	}  
 }

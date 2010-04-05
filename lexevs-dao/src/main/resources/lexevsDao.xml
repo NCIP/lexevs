@@ -18,24 +18,23 @@
           class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
        		 <property name="configLocation" value="classpath:ibatis/v20/v20SqlMaps.xml"/>
         <property name="dataSource" ref="dataSource" />
-        <property name="sqlMapClientProperties" ref="sqlMapPrefixPropertiesFactory"/>
+        <property name="sqlMapClientProperties">
+        	<map>
+        		<entry key="defaultPrefix">
+        			<ref bean="dbPrefix"/>
+        		</entry>
+        	</map>
+        </property>
     </bean>   
     
-    <bean id="sqlMapPrefixPropertiesFactory" class="org.lexevs.dao.database.ibatis.sqlmap.SqlMapPrefixPropertiesFactory">
-    	<property name="prefixResolver" ref="defaultPrefixResolver"/>
-    </bean>
+<!--    <bean id="sqlMapPrefixPropertiesFactory" class="org.lexevs.dao.database.ibatis.sqlmap.SqlMapPrefixPropertiesFactory">-->
+<!--    	<property name="systemVariables" ref="systemVariables"/>-->
+<!--    </bean>-->
     
     <bean id="abstractIbatisDao" abstract="true">
     	<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"/>
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
     </bean>
-    
-
-    <bean id="ibatisTableMetadataDao"
-		class="org.lexevs.dao.database.ibatis.tablemetadata.IbatisTableMetadataDao">
-		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"/>
-		<property name="prefixResolver" ref="defaultPrefixResolver"/>
-	</bean>
 	
 	<bean id="ibatisPropertyDao"
 		class="org.lexevs.dao.database.ibatis.property.IbatisPropertyDao" parent="abstractIbatisDao">
@@ -220,7 +219,8 @@
 	
 	<bean id="defaultPrefixResolver" class="org.lexevs.dao.database.prefix.DefaultPrefixResolver">
 		<property name="systemVariables" ref="systemVariables"/> 
-		<property name="registry" ref="registry"/> 
+		<property name="registry" ref="registry"/>
+		<property name="databaseServiceManager" ref="databaseServiceManager"/>
 	</bean>
 	
 	<bean id="hibernateRegistryDao" class="org.lexevs.dao.database.hibernate.registry.HibernateRegistryDao">
@@ -285,10 +285,6 @@
      	<property name="bean" ref="systemVariables"/>
      </bean>
     
-<!--    <bean id="dbUrl" parent="abstractSystemVariableFactory">-->
-<!--    	<property name="variableName" value="AutoLoadDBURL"/>-->
-<!--    </bean>-->
-    
      <bean id="dbUrl" class="org.lexevs.dao.database.jdbc.MysqlJdbcUrlAppendingFactory">
      	<property name="systemVariables" ref="systemVariables"/>
      </bean>
@@ -303,6 +299,10 @@
     
     <bean id="dbDriver" parent="abstractSystemVariableFactory">
     	<property name="variableName" value="AutoLoadDBDriver"/>
+    </bean>
+    
+    <bean id="dbPrefix" parent="abstractSystemVariableFactory">
+    	<property name="variableName" value="AutoLoadDBPrefix"/>
     </bean>
     
     <bean id="dbcpDataSource" class="org.apache.commons.dbcp.PoolingDataSource" depends-on="poolableConnectionFactory">
@@ -320,6 +320,7 @@
    	 	<property name="databaseUtility" ref="defaultDatabaseUtility" />
    		<property name="lexevsCommonSchemaCreateScript" ref="lexevsCommonSchemaCreateScript"/>
    		<property name="lexevsCodingSchemeSchemaCreateScript" ref="lexevsCodingSchemeSchemaCreateScript"/>
+   		<property name="lexevsCodingSchemeSchemaDropScript" ref="lexevsCodingSchemeSchemaDropScript"/>
    		<property name="lexevsValueSetsSchemaCreateScript" ref="lexevsValueSetsSchemaCreateScript"/>
    		<property name="lexevsHistoryCreateScript" ref="lexevsHistoryCreateScript"/>
    		<property name="prefixResolver" ref="defaultPrefixResolver"/>
@@ -340,6 +341,13 @@
 		<property name="scriptType" value="create"/>
 		<property name="databaseType" ref="databaseTypeFactory"/>
 		<property name="creationScriptPrefix" value="sql/lexevs/codingscheme-create-"/>
+	</bean>
+	
+	<bean id="lexevsCodingSchemeSchemaDropScript"
+		class="org.lexevs.dao.database.setup.script.ScriptFactory">
+		<property name="scriptType" value="drop"/>
+		<property name="databaseType" ref="databaseTypeFactory"/>
+		<property name="dropScriptPrefix" value="sql/lexevs/codingscheme-drop-"/>
 	</bean>
 	
 	<bean id="lexevsCommonSchemaCreateScript"
@@ -410,7 +418,7 @@
 	</bean>
 	
 	<bean id="lexEvsResourceManagingService" class="org.lexevs.system.service.LexEvsResourceManagingService" 
-		parent="loggingBean">
+		parent="loggingBean" init-method="initialize">
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
@@ -437,7 +445,7 @@
 		class="org.lexevs.dao.database.setup.schemacheck.LexGridSchemaCheckFactory">
 		<property name="dataSource" ref="dataSource"/>  
 		<property name="databaseType" ref="databaseTypeFactory"/>  
-		<property name="prefixResolver" ref="defaultPrefixResolver"/>
+		<property name="systemVariables" ref="systemVariables"/>
 	</bean>
 	
 	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager"/>

@@ -38,6 +38,8 @@ public interface SystemResourceService {
 	 * @return the class loader
 	 */
 	public MyClassLoader getClassLoader();
+	
+	public void initialize();
 
 	/**
 	 * Creates the new tables for load.
@@ -63,7 +65,7 @@ public interface SystemResourceService {
 	 * 
 	 * @throws LBParameterException the LB parameter exception
 	 */
-	public void addCodingSchemeResourceToSystem(CodingScheme codingScheme) throws LBParameterException;
+	//public void addCodingSchemeResourceToSystem(CodingScheme codingScheme) throws LBParameterException;
 	
 	/**
 	 * Removes the coding scheme resource from system.

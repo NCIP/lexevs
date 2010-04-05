@@ -53,7 +53,7 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	public List<RegistryEntry> getAllRegistryEntries() {
 		List<RegistryEntry> allEntries = new ArrayList<RegistryEntry>();
 		allEntries.addAll(this.databaseRegistry.getAllRegistryEntries());
-		allEntries.addAll(this.xmlRegistry.getAllRegistryEntries());
+		//allEntries.addAll(this.xmlRegistry.getAllRegistryEntries());
 		
 		return allEntries;
 	}

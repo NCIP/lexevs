@@ -111,13 +111,15 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	@Transactional
 	@DatabaseErrorIdentifier(errorCode=INSERT_CODINGSCHEME_ERROR)
 	public void insertCodingScheme(CodingScheme scheme) throws CodingSchemeAlreadyLoadedException {
+		this.firePreCodingSchemeInsertEvent(scheme);
+		
 		CodingSchemeDao codingSchemeDao = 
 			this.getDaoManager().getCurrentCodingSchemeDao();
 	
 		codingSchemeDao.
-			insertCodingScheme(scheme, true);
+			insertCodingScheme(scheme, true);	
 		
-		this.fireCodingSchemeInsertEvent(scheme);
+		this.firePostCodingSchemeInsertEvent(scheme);
 	}
 	
 	/* (non-Javadoc)

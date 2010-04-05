@@ -25,7 +25,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CodingSchemeInsertEvent {
+public class PreCodingSchemeInsertEvent {
 
 	/** The coding scheme. */
 	private CodingScheme codingScheme;
@@ -36,7 +36,7 @@ public class CodingSchemeInsertEvent {
 	 * 
 	 * @param codingScheme the coding scheme
 	 */
-	public CodingSchemeInsertEvent(
+	public PreCodingSchemeInsertEvent(
 			CodingScheme codingScheme) {
 		this.codingScheme = codingScheme;
 	}
