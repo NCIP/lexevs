@@ -17,11 +17,13 @@ public class MysqlJdbcUrlAppendingFactory implements FactoryBean{
 		
 		if(isMysqlUrl(url)) {
 			
-			return url + urlAppendString;
-		
-		} else {
-			return url;
+			if(! url.contains(urlAppendString)) {
+			
+				return url + urlAppendString;
+			}
 		}
+		
+		return url;
 	}
 
 	protected boolean isMysqlUrl(String url) {
