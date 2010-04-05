@@ -62,6 +62,8 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 			String codingSchemeId, 
 			String associatableInstanceId, AssociationQualification qualifier);
 	
+	public void deleteAssociationQualificationsByCodingSchemeId(String codingSchemeId);
+	
 	/**
 	 * Gets the association predicate id.
 	 * 

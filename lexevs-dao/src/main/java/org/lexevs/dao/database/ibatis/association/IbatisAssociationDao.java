@@ -103,6 +103,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	private static String GET_ALL_TRIPLES_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getAllTriplesOfCodingScheme";
 	
+	private static String DELETE_ASSOCIATION_QUALS_FOR_CODINGSCHEME_ID_SQL = ASSOCIATION_NAMESPACE + "deleteAssocQualsByCodingSchemeId";
+	
 	/** The ibatis versions dao. */
 	private IbatisVersionsDao ibatisVersionsDao;
 	
@@ -169,6 +171,15 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				new PrefixedParameter(prefix, codingSchemeId));
 	}
 
+	@Override
+	public void deleteAssociationQualificationsByCodingSchemeId(String codingSchemeId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		this.getSqlMapClientTemplate().delete(
+				DELETE_ASSOCIATION_QUALS_FOR_CODINGSCHEME_ID_SQL,
+				new PrefixedParameter(prefix, codingSchemeId));
+	}
+	
 	@Override
 	public AssociationEntity getAssociationEntityForAssociationPredicateId(
 			String codingSchemeId, String relationContainerId,

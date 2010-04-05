@@ -25,6 +25,7 @@ import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.versions.EntryState;
+import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
@@ -92,9 +93,14 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			this.getDaoManager().getCodingSchemeDao(uri, version);
 		PropertyDao propertyDao =
 			this.getDaoManager().getPropertyDao(uri, version);
+		
+		AssociationDao assocDao = 
+			this.getDaoManager().getAssociationDao(uri, version);
+		
 		String codingSchemeId = csDao.getCodingSchemeIdByUriAndVersion(uri, version);
 		
 		propertyDao.deleteAllEntityPropertiesOfCodingScheme(codingSchemeId);
+		assocDao.deleteAssociationQualificationsByCodingSchemeId(codingSchemeId);
 		
 		csDao.deleteCodingSchemeById(codingSchemeId);	
 	}

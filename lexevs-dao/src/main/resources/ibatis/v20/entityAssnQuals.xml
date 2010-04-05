@@ -16,5 +16,59 @@
 			#qualifierValue#
 		)
   </insert>
+  
+  <delete id="deleteAssocQualsByCodingSchemeId" 
+  	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+  		DELETE FROM
+  			$prefix$entityAssnQuals
+  			
+  		WHERE 
+  			referenceGuid IN
+  		( 
+  		SELECT
+  			eate.entityAssnsGuid
+  			
+  		FROM
+  			$prefix$entityAssnsToEntity eate
+	
+  		LEFT JOIN
+  			$prefix$associationPredicate ap
+  		ON
+  			ap.associationPredicateGuid =
+  			eate.associationPredicateGuid
+  			
+  		LEFT JOIN
+  			$prefix$relation rel
+  		ON
+  			ap.relationGuid =
+  			rel.relationGuid
+  			
+  		WHERE
+  			rel.codingSchemeGuid = #param1#
+  
+  		UNION
+  		
+  		SELECT
+  			eatd.entityAssnsDataGuid
+  			
+  		FROM
+  			$prefix$entityAssnsToData eatd
+	
+  		LEFT JOIN
+  			$prefix$associationPredicate ap
+  		ON
+  			ap.associationPredicateGuid =
+  			eatd.associationPredicateGuid
+  			
+  		LEFT JOIN
+  			$prefix$relation rel
+  		ON
+  			ap.relationGuid =
+  			rel.relationGuid
+  			
+  		WHERE
+  			rel.codingSchemeGuid = #param1#
+  		)
+  </delete>
     
 </sqlMap>

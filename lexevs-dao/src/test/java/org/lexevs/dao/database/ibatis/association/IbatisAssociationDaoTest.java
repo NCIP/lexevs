@@ -338,6 +338,70 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 	
 	@Test
 	@Transactional
+	public void testDeleteAllAssocQuals() throws SQLException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+				"values ('rel-guid', 'cs-guid', 'c-name')");
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid) values " +
+				"('ap-guid', 'rel-guid')");
+		
+		template.execute("insert into " +
+				"entityassnstoentity (" +
+				"entityAssnsGuid, " +
+				"associationPredicateGuid, " +
+				"sourceEntityCode, " +
+				"sourceEntityCodeNamespace, " +
+				"targetEntityCode, " +
+				"targetEntityCodeNamespace " +
+				") values " +
+				"('eae-guid', " +
+				"'ap-guid'," +
+				"'sc'," +
+				"'sns'," +
+				"'tc'," +
+				"'tns')");
+		
+		template.execute("insert into " +
+				"entityassnstodata (" +
+				"entityAssnsDataGuid, " +
+				"associationPredicateGuid, " +
+				"sourceEntityCode, " +
+				"sourceEntityCodeNamespace) values " +
+				"('ead-guid', " +
+				"'ap-guid'," +
+				"'sc'," +
+				"'sns')");
+		
+		template.execute("insert into " +
+				"entityassnquals values ( " +
+				"'eaeq-guid', " +
+				"'eae-guid'," +
+				"'qualName'," +
+				"'qualValue'," +
+				"null )");
+		
+		template.execute("insert into " +
+				"entityassnquals values ( " +
+				"'eaeq-guid2', " +
+				"'ead-guid'," +
+				"'qualName'," +
+				"'qualValue'," +
+				"null )");
+		
+		assertEquals(2, template.queryForInt("select count(*) from entityassnquals"));
+		
+		ibatisAssociationDao.deleteAssociationQualificationsByCodingSchemeId("cs-guid");
+		
+		assertEquals(0, template.queryForInt("select count(*) from entityassnquals"));
+	}
+	
+	@Test
+	@Transactional
 	public void testGetAssociationEntityForAssociationPredicateId() throws SQLException {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
