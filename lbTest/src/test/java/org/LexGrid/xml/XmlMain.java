@@ -11,7 +11,8 @@ public class XmlMain {
 	 */
 	public static void main(String[] args) throws IOException {
 		SchemeXml sg = new SchemeXml();
-		sg.createXml(new File("big.xml"));
+		sg.createXml(new File("big.xml")); // make sure this file does not exist
 		System.out.println("done");
+		
 	}
 }
