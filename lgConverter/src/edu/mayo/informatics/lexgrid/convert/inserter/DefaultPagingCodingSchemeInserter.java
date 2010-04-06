@@ -21,6 +21,7 @@ package edu.mayo.informatics.lexgrid.convert.inserter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
@@ -80,6 +81,15 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
     }
 
     protected void doLoadNonPagedItems(final CodingScheme codingScheme) throws LoadValidationException {
+        try {
+            super.getSystemResourceService().
+                addCodingSchemeResourceToSystem(
+                        codingScheme.getCodingSchemeURI(), 
+                        codingScheme.getRepresentsVersion());
+        } catch (LBParameterException e) {
+            throw new RuntimeException(e);
+        }
+      
         super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<Object>() {
 
             public Object execute(DaoManager daoManager) {
