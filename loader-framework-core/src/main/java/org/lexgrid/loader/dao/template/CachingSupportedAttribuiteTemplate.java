@@ -52,6 +52,10 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 				updateURIMap(codingSchemeUri, codingSchemeVersion, uriMap);
 			attributeCache.put(key, uriMap);
 		}
+		
+		if(attributeCache.size() >= maxCacheSize) {
+			attributeCache.clear();
+		}	
 	}
 	
 	protected String buildCacheKey(URIMap map){

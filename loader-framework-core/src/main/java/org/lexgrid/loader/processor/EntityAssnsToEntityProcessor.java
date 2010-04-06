@@ -18,16 +18,21 @@
  */
 package org.lexgrid.loader.processor;
 
+import java.util.List;
+
 import org.LexGrid.concepts.PropertyLink;
+import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexgrid.loader.data.association.AssociationInstanceIdResolver;
 import org.lexgrid.loader.database.key.AssociationPredicateKeyResolver;
 import org.lexgrid.loader.processor.support.PropertyIdResolver;
+import org.lexgrid.loader.processor.support.QualifierResolver;
 import org.lexgrid.loader.processor.support.RelationResolver;
 import org.lexgrid.loader.wrappers.ParentIdHolder;
 import org.springframework.batch.item.ItemProcessor;
@@ -57,6 +62,10 @@ public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcesso
 	private PropertyIdResolver<I> sourcePropertyIdResolver;
 	
 	private PropertyIdResolver<I> targetPropertyIdResolver;
+	
+	private List<QualifierResolver<I>> qualifierResolvers;
+	
+	private boolean skipNullValueQualifiers = true;
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.item.ItemProcessor#process(java.lang.Object)
@@ -103,6 +112,22 @@ public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcesso
 		
 		target.setIsActive(true);
 		target.setIsDefining(true);
+		
+		if(qualifierResolvers != null) {
+			for(QualifierResolver<I> qualResolver : qualifierResolvers) {
+				String qualName = qualResolver.getQualifierName();
+				String qualValue = qualResolver.getQualifierValue(item);
+
+				if(StringUtils.isNotBlank(qualValue) || !skipNullValueQualifiers) {
+					AssociationQualification qual = new AssociationQualification();
+
+					qual.setAssociationQualifier(qualName);
+					qual.setQualifierText(DaoUtility.createText(qualValue));
+
+					target.addAssociationQualification(qual);	
+				}
+			}
+		}
 		
 		source.addTarget(target);
 
@@ -218,5 +243,21 @@ public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcesso
 	public void setTargetPropertyIdResolver(
 			PropertyIdResolver<I> targetPropertyIdResolver) {
 		this.targetPropertyIdResolver = targetPropertyIdResolver;
+	}
+
+	public void setQualifierResolvers(List<QualifierResolver<I>> qualifierResolvers) {
+		this.qualifierResolvers = qualifierResolvers;
+	}
+
+	public List<QualifierResolver<I>> getQualifierResolvers() {
+		return qualifierResolvers;
+	}
+
+	public void setSkipNullValueQualifiers(boolean skipNullValueQualifiers) {
+		this.skipNullValueQualifiers = skipNullValueQualifiers;
+	}
+
+	public boolean isSkipNullValueQualifiers() {
+		return skipNullValueQualifiers;
 	}
 }
