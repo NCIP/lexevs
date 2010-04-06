@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.LexGrid.commonTypes.Source;
+import org.LexGrid.concepts.Entity;
+import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedCodingScheme;
@@ -40,5 +42,21 @@ public class DaoUtilityTest {
 		assertEquals("changedRole", original.getRole());
 		assertEquals("content", original.getContent());
 		assertEquals("subref", original.getSubRef());
+	}
+	
+	@Test
+	public void updateBeanTestWithEntity() {
+		Entity original = new Entity();
+		original.addPresentation(new Presentation());
+		original.addEntityType("type1");
+		
+		Entity updates = new Entity();
+		updates.setEntityCode("code");
+
+		DaoUtility.updateBean(updates, original);
+		
+		assertEquals(1, original.getEntityTypeCount());
+		assertEquals("code", original.getEntityCode());
+		assertEquals(1, original.getPresentationCount());
 	}
 }

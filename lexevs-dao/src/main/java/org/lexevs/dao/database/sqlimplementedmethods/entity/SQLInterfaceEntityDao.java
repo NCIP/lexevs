@@ -180,4 +180,10 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 			// TODO Auto-generated method stub (IMPLEMENT!)
 			throw new UnsupportedOperationException();
 		}
+
+		@Override
+		public void updateEntity(String codingSchemeId, AssociationEntity entity) {
+			// TODO Auto-generated method stub (IMPLEMENT!)
+			throw new UnsupportedOperationException();
+		}
 }

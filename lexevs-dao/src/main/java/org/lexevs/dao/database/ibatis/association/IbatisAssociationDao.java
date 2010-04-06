@@ -36,10 +36,10 @@ import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
-import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationEntityBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationPredicateBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationSourceBean;
+import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertRelationsBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertTransitiveClosureBean;
 import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
@@ -80,6 +80,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private static String INSERT_ASSOCIATION_PREDICATE_SQL = ASSOCIATION_NAMESPACE + "insertAssociationPredicate";
 	
 	private static String INSERT_ASSOCIATIONENTITY_SQL = ASSOCIATION_NAMESPACE + "insertAssociationEntity";
+	
+	private static String UPDATE_ASSOCIATIONENTITY_FOR_ENTITY_ID_SQL = ASSOCIATION_NAMESPACE + "updateAssociationEntityForEntityId";
 	
 	/** The INSER t_ transitiv e_ closur e_ sql. */
 	private static String INSERT_TRANSITIVE_CLOSURE_SQL = ASSOCIATION_NAMESPACE + "insertTransitiveClosure";
@@ -250,18 +252,40 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public String insertAssociationEntity(
 			String codingSchemeId,
 			String entityId,
-			AssociationEntity associationEntity) {
+			AssociationEntity associationEntity,
+			IbatisInserter inserter){
+		
 		String associationEntityId = this.createUniqueId();
 		
-		InsertAssociationEntityBean bean = new InsertAssociationEntityBean();
+		InsertOrUpdateAssociationEntityBean bean = new InsertOrUpdateAssociationEntityBean();
 		bean.setPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId));
 		bean.setEntityId(entityId);
 		bean.setId(associationEntityId);
 		bean.setAssociationEntity(associationEntity);
 		
-		this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATIONENTITY_SQL, bean);
+		inserter.insert(INSERT_ASSOCIATIONENTITY_SQL, bean);	
 		
-		return entityId;	
+		return associationEntityId;
+	}
+	
+	public String insertAssociationEntity(
+			String codingSchemeId,
+			String entityId,
+			AssociationEntity associationEntity) {
+		return this.insertAssociationEntity(
+				codingSchemeId, entityId, associationEntity, this.getNonBatchTemplateInserter());	
+	}
+	
+	public void updateAssociationEntity(String codingSchemeId, String entityId,
+			AssociationEntity entity) {
+		InsertOrUpdateAssociationEntityBean bean = new InsertOrUpdateAssociationEntityBean();
+		bean.setPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId));
+		bean.setEntityId(entityId);
+		bean.setAssociationEntity(entity);
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_ASSOCIATIONENTITY_FOR_ENTITY_ID_SQL, 
+				bean, 1);
 	}
 
 	/* (non-Javadoc)
@@ -603,4 +627,5 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public EntityDao getEntityDao() {
 		return entityDao;
 	}
+
 }

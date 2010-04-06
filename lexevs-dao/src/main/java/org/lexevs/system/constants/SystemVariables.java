@@ -151,7 +151,7 @@ public class SystemVariables {
         try {
             PropertiesUtility.systemVariable = "LG_CONFIG_FILE";
             String location = PropertiesUtility.locatePropFile("config" + System.getProperty("file.separator")
-                    + CONFIG_FILE_NAME, this.getClass().getName());
+                    + CONFIG_FILE_NAME, this.getClass().getName(), logger);
             Properties props = new Properties();
 
             logger.debug("Reading properties from " + location);

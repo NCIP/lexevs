@@ -21,6 +21,7 @@ package org.lexevs.dao.database.service.entity;
 import java.util.List;
 
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.relations.AssociationEntity;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
@@ -41,6 +42,19 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_ERROR)
 	public void insertEntity(String codingSchemeUri, String version,
 			Entity entity) {
+		String codingSchemeId = this.getDaoManager().
+			getCodingSchemeDao(codingSchemeUri, version).
+			getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
+		
+		this.getDaoManager().
+			getEntityDao(codingSchemeUri, version).
+				insertEntity(codingSchemeId, entity, true);
+	}
+	
+	@Transactional
+	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_ERROR)
+	public void insertEntity(String codingSchemeUri, String version,
+			AssociationEntity entity) {
 		String codingSchemeId = this.getDaoManager().
 			getCodingSchemeDao(codingSchemeUri, version).
 			getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
@@ -73,6 +87,25 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 			String codingSchemeUri, 
 			String version,
 			Entity entity) {
+		Assert.hasText(entity.getEntityCode(), "An Entity Code is required to be populated to Updated an Entity.");
+		Assert.hasText(entity.getEntityCodeNamespace(), "An Entity Code Namespace is required to be populated to Updated an Entity.");
+		
+		String codingSchemeId = this.getDaoManager().
+			getCodingSchemeDao(codingSchemeUri, version).
+			getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
+		
+		Entity originalEntity = this.getEntity(codingSchemeUri, version, entity.getEntityCode(), entity.getEntityCodeNamespace());
+		
+		this.getDaoManager().getEntityDao(codingSchemeUri, version).updateEntity(codingSchemeId, entity);
+		
+		this.fireEntityUpdateEvent(new EntityUpdateEvent(codingSchemeUri, version, originalEntity, entity));
+	}
+	
+	@Transactional
+	public void updateEntity(
+			String codingSchemeUri, 
+			String version,
+			AssociationEntity entity) {
 		Assert.hasText(entity.getEntityCode(), "An Entity Code is required to be populated to Updated an Entity.");
 		Assert.hasText(entity.getEntityCodeNamespace(), "An Entity Code Namespace is required to be populated to Updated an Entity.");
 		

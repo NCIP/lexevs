@@ -3,11 +3,7 @@
 
 <beans>
 
-	<bean id="sysVarSettingBean" class="org.lexevs.dao.test.SystemVariableSettingBean"/>
-
 	<import resource="classpath:lexevsDao.xml" />
-	
-	
 	
 <!--	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">-->
 <!--    	<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>-->

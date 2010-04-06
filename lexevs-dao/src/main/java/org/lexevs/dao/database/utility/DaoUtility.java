@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -156,7 +157,7 @@ public class DaoUtility {
 	}
 	
 	public static void updateBean(final Object changes, Object beanToUpdate) {
-		final String contentField = "_content";
+		final String asReferenceSuffix = "AsReference";
 		
 		final List<String> nullProperties = new ArrayList<String>();
 		
@@ -169,15 +170,18 @@ public class DaoUtility {
 				Object value = field.get(changes);
 				if(value == null) {
 					nullProperties.add(removeLeadingUnderscore(field.getName()));
-					/*
-				} else if(value instanceof String && field.getName().equals(contentField)) {
-					if(StringUtils.isEmpty(((String)value))){
-						nullProperties.add(removeLeadingUnderscore(field.getName()));
-					}
-					*/
 				}
-			}
-			
+				if(value instanceof Collection && ((Collection)value).size() == 0) {
+					nullProperties.add(
+							removeTrailingList(
+									removeLeadingUnderscore(field.getName()))
+					);
+					nullProperties.add(
+							removeTrailingList(
+									removeLeadingUnderscore(field.getName())) + asReferenceSuffix
+					);
+				}
+			}	
 		});
 		
 		BeanUtils.copyProperties(changes, beanToUpdate, nullProperties.toArray(new String[nullProperties.size()]));
@@ -188,6 +192,15 @@ public class DaoUtility {
 		
 		if(string.startsWith("_")) {
 			string = StringUtils.removeStart(string, "_");
+		}
+		return string;
+	}
+	
+	private static String removeTrailingList(String string) {
+		if(StringUtils.isBlank(string)) {return null;}
+		
+		if(string.endsWith("List")) {
+			string = StringUtils.removeEnd(string, "List");
 		}
 		return string;
 	}

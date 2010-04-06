@@ -3,7 +3,8 @@
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap namespace="Association">
 	
-     <insert id="insertAssociationEntity" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationEntityBean">
+     <insert id="insertAssociationEntity" 
+     	parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean">
 		INSERT INTO $prefix$associationEntity (
 			associationEntityGuid,
 			entityGuid,
@@ -20,5 +21,29 @@
 			#associationEntity.isTransitive#
 		)
   </insert>
-    
+  
+  <update id="updateAssociationEntityForEntityId"
+  		parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean">
+  		UPDATE 
+			$prefix$associationEntity associationEntity
+		SET 
+   		  <dynamic prepend=" ">
+			<isNotNull prepend="," property="associationEntity.forwardName">
+				associationEntity.forwardName = #associationEntity.forwardName#
+			</isNotNull>
+			<isNotNull prepend="," property="associationEntity.reverseName">
+				associationEntity.reverseName = #associationEntity.reverseName#
+			</isNotNull>
+			<isNotNull prepend="," property="associationEntity.isNavigable">
+				associationEntity.isNavigable = #associationEntity.isNavigable#
+			</isNotNull>
+			<isNotNull prepend="," property="associationEntity.isTransitive">
+				associationEntity.isTransitive = #associationEntity.isTransitive#
+			</isNotNull>
+		</dynamic>
+
+		WHERE 
+			associationEntity.entityGuid = #entityId#
+  </update>
+
 </sqlMap>

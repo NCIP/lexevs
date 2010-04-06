@@ -25,6 +25,7 @@ import org.dbunit.DataSourceBasedDBTestCase;
 import org.dbunit.dataset.IDataSet;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexevs.cache.MethodCachingProxy;
@@ -69,6 +70,11 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	
 	@Resource
 	protected MethodCachingProxy methodCachingProxy;
+	
+    @BeforeClass
+    public static void setSystemProp() {
+        System.setProperty("LG_CONFIG_FILE", "src/test/resources/lbconfig.props");
+    }
 	
 	/**
 	 * Test set up.

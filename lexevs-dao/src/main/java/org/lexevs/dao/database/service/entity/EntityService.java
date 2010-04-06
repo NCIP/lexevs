@@ -21,6 +21,7 @@ package org.lexevs.dao.database.service.entity;
 import java.util.List;
 
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.relations.AssociationEntity;
 
 /**
  * The Interface EntityService.
@@ -43,6 +44,11 @@ public interface EntityService {
 			String codingSchemeUri, 
 			String version, 
 			Entity entity);
+	
+	public void insertEntity(
+			String codingSchemeUri, 
+			String version,
+			AssociationEntity entity);
 	
 	/**
 	 * Gets the entity count.
@@ -111,7 +117,11 @@ public interface EntityService {
 	 */
 	public void updateEntity(
 			String codingSchemeUri, 
-			String version, 
+			String version,
 			Entity entity);
-
+	
+	public void updateEntity(
+			String codingSchemeUri, 
+			String version,
+			AssociationEntity entity);
 }

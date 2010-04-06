@@ -96,6 +96,9 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	 */
 	public void updateEntity(String codingSchemeId, Entity entity);
 	
+	public void updateEntity(String codingSchemeId,
+			AssociationEntity entity);
+	
 	/**
 	 * Gets the entity count.
 	 * 

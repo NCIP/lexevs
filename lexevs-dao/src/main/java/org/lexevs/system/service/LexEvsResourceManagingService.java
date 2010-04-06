@@ -418,7 +418,6 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		//this.readCodingSchemeAliasesFromServer();
 	}
 	
 

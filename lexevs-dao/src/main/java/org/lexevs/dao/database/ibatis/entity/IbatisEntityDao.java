@@ -140,6 +140,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	protected Entity doGetEntity(String prefix, String codingSchemeId, String entityId) {
 		Entity entity = (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_ID_SQL, 
 				new PrefixedParameterTuple(prefix, entityId, codingSchemeId));
+		
+		if(entity == null) {return null;}
 			
 		entity.addAnyProperties(
 				ibatisPropertyDao.getAllPropertiesOfParent(codingSchemeId, entityId, PropertyType.ENTITY));
@@ -173,12 +175,16 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	 */
 	public void updateEntity(String codingSchemeId,
 			Entity entity) {
-		Assert.hasText(entity.getEntityCode(), "An Entity Code is required to be populated to Updated an Entity.");
-		Assert.hasText(entity.getEntityCodeNamespace(), "An Entity Code Namespace is required to be populated to Updated an Entity.");
-		
 		String entityId = this.getEntityId(codingSchemeId, entity.getEntityCode(), entity.getEntityCodeNamespace());
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
+		this.doUpdateEntity(prefix, codingSchemeId, entityId, entity);	
+	}
+	
+	protected void doUpdateEntity(String prefix, String codingSchemeId, String entityId, Entity entity) {
+		Assert.hasText(entity.getEntityCode(), "An Entity Code is required to be populated to Update an Entity.");
+		Assert.hasText(entity.getEntityCodeNamespace(), "An Entity Code Namespace is required to be populated to Update an Entity.");
+	
 		InsertOrUpdateEntityBean bean = new InsertOrUpdateEntityBean();
 		bean.setPrefix(prefix);
 		bean.setEntity(entity);
@@ -188,9 +194,20 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		this.getSqlMapClientTemplate().update(UPDATE_ENTITY_BY_ID_SQL, bean);
 	}
 	
+	public void updateEntity(String codingSchemeId,
+			AssociationEntity entity) {
+		String entityId = this.getEntityId(codingSchemeId, entity.getEntityCode(), entity.getEntityCodeNamespace());
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		this.doUpdateEntity(prefix, codingSchemeId, entityId, entity);	
+		
+		this.ibatisAssociationDao.updateAssociationEntity(codingSchemeId, entityId, entity);
+	}
+	
 	@Override
 	public String insertEntity(String codingSchemeId, Entity entity,
 			boolean cascade) {
+		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		return this.doInsertEntity(
 				prefix, 
@@ -369,12 +386,20 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				batchInserter.startBatch();
 				
 				for(Entity entity : entities){
-					doInsertEntity(
+					String entityId = doInsertEntity(
 							prefix, 
 							codingSchemeId, 
 							entity, 
 							batchInserter,
 							cascade);
+					if(entity instanceof AssociationEntity) {
+						ibatisAssociationDao.
+							insertAssociationEntity(
+									codingSchemeId, 
+									entityId, 
+									(AssociationEntity)entity, 
+									batchInserter);
+					}
 				}
 				
 				batchInserter.executeBatch();
