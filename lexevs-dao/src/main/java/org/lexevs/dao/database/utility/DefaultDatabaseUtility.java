@@ -79,6 +79,11 @@ public class DefaultDatabaseUtility extends JdbcDaoSupport implements DatabaseUt
 				adjustForPrefix(script, tableSetPrefix));
 	}
 	
+	public void executeScript(String script, String tableSetPrefix) throws Exception {
+		this.executeScript(
+				adjustForPrefix(script, tableSetPrefix));
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.LexGrid.persistence.database.DatabaseUtility#executeScript(java.lang.String)
 	 */
