@@ -40,6 +40,8 @@ public interface SystemResourceService {
 	public MyClassLoader getClassLoader();
 	
 	public void initialize();
+	
+	public void refresh();
 
 	/**
 	 * Creates the new tables for load.

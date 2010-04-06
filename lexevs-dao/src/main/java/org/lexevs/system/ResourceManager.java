@@ -1625,4 +1625,8 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 	public void initialize() {
 		// should already be initialized here.
 	}  
+	
+	public void refresh() {
+		//no-op
+	}
 }

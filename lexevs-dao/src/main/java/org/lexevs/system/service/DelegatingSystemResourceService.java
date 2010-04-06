@@ -272,4 +272,10 @@ public class DelegatingSystemResourceService implements SystemResourceService {
 		primarySystemResourceService.initialize();
 		delegateSystemResourceService.initialize();
 	}
+	
+	@Override
+	public void refresh() {
+		primarySystemResourceService.refresh();
+		delegateSystemResourceService.refresh();
+	}
 }

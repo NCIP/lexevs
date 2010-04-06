@@ -89,6 +89,11 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 		readCodingSchemeAliasesFromServer();
 	}
 	
+	@ClearCache
+	public void refresh() {
+		readCodingSchemeAliasesFromServer();
+	}
+	
 	/**
 	 * Read coding scheme aliases from server.
 	 */
