@@ -26,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 
 /**
@@ -151,6 +152,10 @@ public class PropertiesUtility {
      *         a URL.
      */
     public static String locatePropFile(String fileName, String classToSearchFor) {
+        return locatePropFile(fileName, classToSearchFor, null);
+    }
+    
+    public static String locatePropFile(String fileName, String classToSearchFor, LgLoggerIF logger) {
         // If they passed in a location, and it exists, then use it.
         String location = System.getProperty(systemVariable);
         if (location != null) {
