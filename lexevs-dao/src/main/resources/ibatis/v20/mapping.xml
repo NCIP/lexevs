@@ -238,7 +238,7 @@
 	<update id="updateUriMapByLocalId"
 		parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean">
 		UPDATE
-			$prefix$cssupportedattrib cssupportedattrib
+			$prefix$csSupportedAttrib cssupportedattrib
 		SET
 		
 		<dynamic prepend=" ">
