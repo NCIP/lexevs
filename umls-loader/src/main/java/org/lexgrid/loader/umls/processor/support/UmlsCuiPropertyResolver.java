@@ -97,7 +97,4 @@ public class UmlsCuiPropertyResolver extends AbstractBasicPropertyResolver<Mrcon
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
-
 }

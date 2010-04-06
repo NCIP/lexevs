@@ -260,6 +260,12 @@
 					</beans:property>
 					
 					<beans:property name="databaseServiceManager" ref="databaseServiceManager"/>
+					
+					<beans:property name="qualifierResolvers">
+						<beans:list>
+							<beans:bean class="org.lexgrid.loader.rrf.processor.support.RelaAssocQualResolver" />
+						</beans:list>
+					</beans:property>
 	
 			</beans:bean>
 	
