@@ -18,29 +18,21 @@
  */
 package org.lexgrid.loader.meta.processor.support;
 
+import org.lexgrid.loader.processor.support.SourceResolver;
 import org.lexgrid.loader.rrf.model.Mrsat;
 
-public class MetaMrsatAuiCodeMultiAttribResolver extends
-		AbstractBasicMultiAttribResolver<Mrsat> {
+public class MetaMrsatAuiCodeMultiAttribResolver implements
+		SourceResolver<Mrsat> {
 
-	public String getAttributeValue(Mrsat item) {
-		// TODO Auto-generated method stub
-		return item.getSab();
-	}
-
-	public String getTypeName() {
-		// TODO Auto-generated method stub
-		return "source";
-	}
-
-	public String getVal1(Mrsat item) {
-		// TODO Auto-generated method stub
-		return " ";
-	}
-
-	public String getVal2(Mrsat item) {
-		// TODO Auto-generated method stub
+	public String getRole(Mrsat item) {
 		return null;
 	}
 
+	public String getSource(Mrsat item) {
+		return item.getSab();
+	}
+
+	public String getSubRef(Mrsat item) {
+		return null;
+	}
 }

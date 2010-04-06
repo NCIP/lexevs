@@ -18,9 +18,8 @@
  */
 package org.lexgrid.loader.meta.processor.support;
 
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexgrid.loader.meta.constants.MetaLoaderConstants;
-import org.lexgrid.loader.processor.support.AbstractBasicMultiAttribResolver;
+import org.lexgrid.loader.processor.support.AbstractPropertyQualifierResolver;
 import org.lexgrid.loader.rrf.model.Mrconso;
 
 /**
@@ -28,34 +27,13 @@ import org.lexgrid.loader.rrf.model.Mrconso;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MetaSourceCodeMultiAttribResolver extends AbstractBasicMultiAttribResolver<Mrconso>{
+public class MetaSourceCodeMultiAttribResolver extends AbstractPropertyQualifierResolver<Mrconso>{
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getAttributeValue(java.lang.Object)
-	 */
-	public String getAttributeValue(Mrconso item) {
+	public String getQualifierName() {
 		return MetaLoaderConstants.SOURCE_CODE_QUALIFIER;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getTypeName()
-	 */
-	public String getTypeName() {
-		return SQLTableConstants.TBLCOLVAL_QUALIFIER;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal1(java.lang.Object)
-	 */
-	public String getVal1(Mrconso item) {
+	public String getQualifierValue(Mrconso item) {
 		return item.getCode();
 	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal2(java.lang.Object)
-	 */
-	public String getVal2(Mrconso item) {
-		return null;
-	}
-
 }

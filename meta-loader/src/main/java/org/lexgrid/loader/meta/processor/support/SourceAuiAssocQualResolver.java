@@ -19,7 +19,7 @@
 package org.lexgrid.loader.meta.processor.support;
 
 import org.lexgrid.loader.meta.constants.MetaLoaderConstants;
-import org.lexgrid.loader.processor.support.AbstractNullValueSkippingOptionalQualifierResolver;
+import org.lexgrid.loader.processor.support.AbstractAssociationQualifierResolver;
 import org.lexgrid.loader.rrf.model.Mrrel;
 
 /**
@@ -27,7 +27,7 @@ import org.lexgrid.loader.rrf.model.Mrrel;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class SourceAuiAssocQualResolver extends AbstractNullValueSkippingOptionalQualifierResolver<Mrrel>{
+public class SourceAuiAssocQualResolver extends AbstractAssociationQualifierResolver<Mrrel>{
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.AbstractNullValueSkippingOptionalQualifierResolver#getQualifierName()

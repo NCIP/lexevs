@@ -22,11 +22,16 @@ import java.io.File;
 import java.net.URI;
 import java.util.Properties;
 
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
+import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.lexgrid.loader.AbstractSpringBatchLoader;
 import org.lexgrid.loader.properties.ConnectionPropertiesFactory;
 import org.lexgrid.loader.properties.impl.DefaultLexEVSPropertiesFactory;
+import org.springframework.context.ApplicationContext;
+
+import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
  * The Class MetaBatchLoaderImpl.
@@ -45,7 +50,7 @@ public class MetaBatchLoaderImpl extends AbstractSpringBatchLoader implements Me
 	 * @see org.lexgrid.loader.meta.MetaBatchLoader#loadMeta(java.lang.String)
 	 */
 	public void loadMeta(URI rrfDir) throws Exception {
-		Properties connectionProps = connectionPropertiesFactory.getPropertiesForNewLoad(true);
+		Properties connectionProps = connectionPropertiesFactory.getPropertiesForNewLoad();
 		connectionProps.put("rrfDir", rrfDir.toString());
 		connectionProps.put("retry", "false");
 		launchJob(connectionProps, META_LOADER_CONFIG, "metaJob");
@@ -73,4 +78,28 @@ public class MetaBatchLoaderImpl extends AbstractSpringBatchLoader implements Me
 		 mbl.loadMeta(new File("src/test/resources/data/SAMPLEMETA").toURI());
 		// mbl.loadMeta("/home/LargeStorage/ontologies/rrf/LNC/LNC226");
 	 }
+
+	@Override
+	protected URNVersionPair[] getLoadedCodingSchemes(ApplicationContext context) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected URNVersionPair[] doLoad() throws Exception {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected ExtensionDescription buildExtensionDescription() {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
 }

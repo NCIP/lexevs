@@ -18,7 +18,7 @@
  */
 package org.lexgrid.loader.meta.processor.support;
 
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.lexgrid.loader.processor.support.SourceResolver;
 import org.lexgrid.loader.rrf.model.Mrdef;
 
 /**
@@ -26,33 +26,17 @@ import org.lexgrid.loader.rrf.model.Mrdef;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MetaMrdefSourceMultiAttribResolver extends AbstractBasicMultiAttribResolver<Mrdef>{
+public class MetaMrdefSourceMultiAttribResolver implements SourceResolver<Mrdef>{
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getAttributeValue(java.lang.Object)
-	 */
-	public String getAttributeValue(Mrdef item) {
+	public String getRole(Mrdef item) {
+		return null;
+	}
+
+	public String getSource(Mrdef item) {
 		return item.getSab();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getTypeName()
-	 */
-	public String getTypeName() {
-		return SQLTableConstants.TBLCOLVAL_SOURCE;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal1(java.lang.Object)
-	 */
-	public String getVal1(Mrdef item) {
-		return " ";
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal2(java.lang.Object)
-	 */
-	public String getVal2(Mrdef item) {
+	public String getSubRef(Mrdef item) {
 		return null;
 	}
 }

@@ -18,54 +18,24 @@
  */
 package org.lexgrid.loader.meta.processor.support;
 
-import org.lexgrid.loader.processor.support.AbstractBasicMultiAttribResolver;
+import org.lexgrid.loader.processor.support.SourceResolver;
 import org.lexgrid.loader.rrf.model.Mrsat;
 
 /**
  * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
  */
-public class MetaMrsatSourceCodeMultiAttribResolver extends
-		AbstractBasicMultiAttribResolver<Mrsat> {
+public class MetaMrsatSourceCodeMultiAttribResolver implements
+		SourceResolver<Mrsat> {
 
-		/*
-	 * ToDo (non-Javadoc)
-	 * 
-	 * @see
-	 * org.lexgrid.loader.processor.support.MultiAttribResolver#getAttributeValue
-	 * (java.lang.Object)
-	 */
-	public String getAttributeValue(Mrsat item) {
+	public String getRole(Mrsat item) {
+		return null;
+	}
+
+	public String getSource(Mrsat item) {
 		return item.getSab();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getTypeName()
-	 */
-	public String getTypeName() {
-		return "source";
-	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.lexgrid.loader.processor.support.MultiAttribResolver#getVal1(java
-	 * .lang.Object)
-	 */
-	public String getVal1(Mrsat item) {
-		return " ";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.lexgrid.loader.processor.support.MultiAttribResolver#getVal2(java
-	 * .lang.Object)
-	 */
-	public String getVal2(Mrsat item) {
+	public String getSubRef(Mrsat item) {
 		return null;
-
 	}
-
-
 }

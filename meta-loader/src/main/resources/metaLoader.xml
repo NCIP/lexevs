@@ -1032,7 +1032,7 @@
 	</beans:bean>
 
 	<beans:bean id="metaCodingSchemeNameSetter"
-		class="org.lexgrid.loader.meta.data.codingscheme.MetaCodingSchemeNameSetter">
+		class="org.lexgrid.loader.meta.data.codingscheme.MetaCodingSchemeIdSetter">
 		<beans:property name="codingSchemeProperties">
 			<beans:ref local="codingSchemeProperties" />
 		</beans:property>

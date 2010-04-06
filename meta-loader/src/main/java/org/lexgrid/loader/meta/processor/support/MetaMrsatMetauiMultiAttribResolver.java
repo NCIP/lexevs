@@ -18,44 +18,21 @@
  */
 package org.lexgrid.loader.meta.processor.support;
 
+import org.lexgrid.loader.meta.constants.MetaLoaderConstants;
+import org.lexgrid.loader.processor.support.AbstractPropertyQualifierResolver;
 import org.lexgrid.loader.rrf.model.Mrsat;
 
 /**
  * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
  */
 public class MetaMrsatMetauiMultiAttribResolver extends
-		AbstractBasicMultiAttribResolver<Mrsat> {
+	AbstractPropertyQualifierResolver<Mrsat> {
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getAttributeValue(java.lang.Object)
-	 */
-	public String getAttributeValue(Mrsat item) {
-		// TODO Auto-generated method stub
-		return "METAUI";
+	public String getQualifierName() {
+		return MetaLoaderConstants.METAUI_QUALIFIER;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getTypeName()
-	 */
-	public String getTypeName() {
-		// TODO Auto-generated method stub
-		return "qualifier";
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal1(java.lang.Object)
-	 */
-	public String getVal1(Mrsat item) {
-		// TODO Auto-generated method stub
+	public String getQualifierValue(Mrsat item) {
 		return item.getMetaui();
 	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal2(java.lang.Object)
-	 */
-	public String getVal2(Mrsat item) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

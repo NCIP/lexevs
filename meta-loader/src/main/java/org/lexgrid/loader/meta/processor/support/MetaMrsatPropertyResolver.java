@@ -27,9 +27,6 @@ import org.lexgrid.loader.rrf.model.Mrsat;
  */
 public class MetaMrsatPropertyResolver extends AbstractBasicPropertyResolver<Mrsat> {
 
-
-
-
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.PropertyResolver#getDegreeOfFidelity(java.lang.Object)
 	 */

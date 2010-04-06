@@ -21,9 +21,11 @@ package org.lexgrid.loader.meta.reader;
 import java.util.Map;
 import java.util.Properties;
 
-import org.LexGrid.persistence.model.CodingScheme;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
@@ -68,13 +70,17 @@ public class MetaCodingSchemeReader implements ItemReader<CodingScheme>{
 		if(hasBeenRead == true){
 			return null;
 		}
+		
 		CodingScheme cs = new CodingScheme();
 		cs.setCodingSchemeName(codingSchemeProperties.getProperty(CODING_SCHEME_NAME));
 		cs.setFormalName(codingSchemeProperties.getProperty(FORMAL_NAME));
-		cs.setCodingSchemeUri(isoMap.get(codingSchemeProperties.getProperty(CODING_SCHEME_NAME)));
+		cs.setCodingSchemeURI(isoMap.get(codingSchemeProperties.getProperty(CODING_SCHEME_NAME)));
 		cs.setDefaultLanguage(codingSchemeProperties.getProperty(DEFAULT_LANGUAGE));
-		cs.setCopyright(codingSchemeProperties.getProperty(COPYRIGHT));
-		cs.setEntityDescription(codingSchemeProperties.getProperty(ENTITY_DESCRIPTION));
+		cs.setCopyright(DaoUtility.createText(codingSchemeProperties.getProperty(COPYRIGHT)));
+		
+		EntityDescription ed = new EntityDescription();
+		ed.setContent(codingSchemeProperties.getProperty(ENTITY_DESCRIPTION));
+		cs.setEntityDescription(ed);
 		hasBeenRead = true;
 		return cs;
 	}	

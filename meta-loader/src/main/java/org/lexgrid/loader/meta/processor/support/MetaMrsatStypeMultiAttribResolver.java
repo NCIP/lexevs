@@ -18,56 +18,21 @@
  */
 package org.lexgrid.loader.meta.processor.support;
 
-import org.lexgrid.loader.processor.support.AbstractBasicMultiAttribResolver;
+import org.lexgrid.loader.meta.constants.MetaLoaderConstants;
+import org.lexgrid.loader.processor.support.AbstractPropertyQualifierResolver;
 import org.lexgrid.loader.rrf.model.Mrsat;
 
 /**
  * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
  */
 public class MetaMrsatStypeMultiAttribResolver extends
-		AbstractBasicMultiAttribResolver<Mrsat> {
+		AbstractPropertyQualifierResolver<Mrsat> {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.lexgrid.loader.processor.support.MultiAttribResolver#getAttributeValue
-	 * (java.lang.Object)
-	 */
-	public String getAttributeValue(Mrsat item) {
-		return "STYPE";
+	public String getQualifierName() {
+		return MetaLoaderConstants.STYPE_QUALIFIER;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.lexgrid.loader.processor.support.MultiAttribResolver#getTypeName()
-	 */
-	public String getTypeName() {
-		return "qualifier";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.lexgrid.loader.processor.support.MultiAttribResolver#getVal1(java
-	 * .lang.Object)
-	 */
-	public String getVal1(Mrsat item) {
+	public String getQualifierValue(Mrsat item) {
 		return item.getStype();
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.lexgrid.loader.processor.support.MultiAttribResolver#getVal2(java
-	 * .lang.Object)
-	 */
-	public String getVal2(Mrsat item) {
-		return null;
-	}
-
 }

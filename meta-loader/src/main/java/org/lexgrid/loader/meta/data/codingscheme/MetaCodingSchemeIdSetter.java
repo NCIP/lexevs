@@ -24,11 +24,11 @@ import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.constants.LoaderConstants;
 
 /**
- * The Class MetaCodingSchemeNameSetter.
+ * The Class MetaCodingSchemeIdSetter.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MetaCodingSchemeNameSetter implements CodingSchemeIdSetter {
+public class MetaCodingSchemeIdSetter implements CodingSchemeIdSetter {
 
 	/** The coding scheme properties. */
 	private Properties codingSchemeProperties;

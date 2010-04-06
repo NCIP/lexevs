@@ -18,8 +18,7 @@
  */
 package org.lexgrid.loader.meta.processor.support;
 
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.lexgrid.loader.processor.support.AbstractBasicMultiAttribResolver;
+import org.lexgrid.loader.processor.support.SourceResolver;
 import org.lexgrid.loader.rrf.model.Mrconso;
 
 /**
@@ -27,34 +26,17 @@ import org.lexgrid.loader.rrf.model.Mrconso;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MetaSourceMultiAttribResolver extends AbstractBasicMultiAttribResolver<Mrconso>{
+public class MetaSourceMultiAttribResolver implements SourceResolver<Mrconso>{
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getAttributeValue(java.lang.Object)
-	 */
-	public String getAttributeValue(Mrconso item) {
-		return item.getSab();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getTypeName()
-	 */
-	public String getTypeName() {
-		return SQLTableConstants.TBLCOLVAL_SOURCE;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal1(java.lang.Object)
-	 */
-	public String getVal1(Mrconso item) {
-		return " ";
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal2(java.lang.Object)
-	 */
-	public String getVal2(Mrconso item) {
+	public String getRole(Mrconso item) {
 		return null;
 	}
 
+	public String getSource(Mrconso item) {
+		return item.getSab();
+	}
+
+	public String getSubRef(Mrconso item) {
+		return null;
+	}
 }
