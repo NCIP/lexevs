@@ -144,7 +144,7 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
         try {
             setInUse();
             try {
-                //in_ = new NCIOwl(getStringFromURI(source), manifest);
+               //in_ = new NCIOwl(getStringFromURI(source), manifest);
                //in_.testConnection();
             } catch (Exception e) {
                 throw new LBParameterException("The NCI OWL file path appears to be invalid - " + e);
@@ -185,22 +185,7 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
             );
 
             CodingScheme owlScheme = owlLoader.map();
-            
-            for(Relations rel : owlScheme.getRelations()) {
-                for(AssociationPredicate pred : rel.getAssociationPredicate()) {
-                    for(AssociationSource source : pred.getSource()) {
-                        if(source.getSourceEntityCodeNamespace() == null) {
-                            System.out.println("SOURCE: " + source.getSourceEntityCode());
-                        }
-                        for(AssociationTarget target : source.getTarget()) {
-                            if(target.getTargetEntityCodeNamespace() == null) {
-                                System.out.println("Target: " + target.getTargetEntityCode());
-                            }
-                        }
-                    }
-                }
-            }
-            
+
             this.persistCodingSchemeToDatabase(owlScheme);
             
             return this.constructVersionPairsFromCodingSchemes(owlScheme);
