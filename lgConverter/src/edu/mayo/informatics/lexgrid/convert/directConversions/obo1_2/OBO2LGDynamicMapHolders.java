@@ -535,11 +535,11 @@ public class OBO2LGDynamicMapHolders {
 
     private void addSupportedAssociationQualifier(String association_qualifier) {
 
-        if (cs == null || association_qualifier == null)
+        if (cs == null || association_qualifier == null) {
             return;
-        Iterator<SupportedAssociationQualifier> itr = cs.getMappings().iterateSupportedAssociationQualifier();
-        while (itr.hasNext()) {
-            SupportedAssociationQualifier saq = itr.next();
+        }
+        for (SupportedAssociationQualifier saq : cs.getMappings().getSupportedAssociationQualifier()) {
+
             if (saq.getLocalId().equals(association_qualifier)) {
                 // We already have it added, return
                 return;
