@@ -83,4 +83,6 @@ public interface DatabaseUtility {
 	 * @throws Exception the exception
 	 */
 	public void executeScript(String creationScript) throws Exception;
+	
+	public void executeScript(String creationScript, String tableSetPrefix) throws Exception;
 }
