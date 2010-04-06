@@ -133,10 +133,10 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 	 * @see org.lexevs.system.service.SystemResourceService#createNewTablesForLoad()
 	 */
 	public String createNewTablesForLoad() {
-		String prefix;
+		String prefix = "";
 		if( isSingleTableMode() ){
 			this.getLogger().info("In single-table mode -- not creating a new set of tables.");
-			prefix = prefixResolver.resolveDefaultPrefix();
+			prefixResolver.resolveDefaultPrefix();
 		} else {
 			this.getLogger().info("In multi-table mode -- creating a new set of tables.");
 			
