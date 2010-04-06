@@ -220,10 +220,14 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#getPickListValueSetDefinition(java.lang.String)
 	 */
 	public URI getPickListValueSetDefinition(String pickListId) throws LBException {
+		System.out.println("in impl, plId supplied : " + pickListId);
+		
 		URI valueDomainURI = null;
 		
 		try {
 			PickListDefinition pickList = getPickListDefinitionById(pickListId);
+			
+			System.out.println("pickList object + id : " + pickList.getPickListId());
 			if (pickList != null)
 				valueDomainURI = new URI(pickList.getRepresentsValueSetDefinition()); // TODO need to change representsValueDomain from String to URI in XML schema
 		} catch (URISyntaxException e) {
@@ -236,8 +240,8 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	/* (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#getPickListDefinitionsForValueSetDef(java.net.URI)
 	 */
-	public List<PickListDefinition> getPickListDefinitionsForValueSetDef(URI valueSetDefURI) throws LBException {
-		return this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionsByValueDomainUri(valueSetDefURI.toString());		
+	public List<String> getPickListDefinitionIdForValueSetDefinitionUri(URI valueSetDefURI) throws LBException {
+		return this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionIdForValueSetDefinitionUri(valueSetDefURI.toString());		
 	}
 	
 	
