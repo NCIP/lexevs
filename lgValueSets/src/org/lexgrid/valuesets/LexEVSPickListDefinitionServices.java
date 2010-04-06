@@ -50,15 +50,15 @@ public interface LexEVSPickListDefinitionServices extends Serializable {
 	public PickListDefinition getPickListDefinitionById(String pickListId) throws LBException;
 	
 	/**
-	 * Returns all the pickList definitions that represents supplied value set definition URI.
+	 * Returns all the pickList definition id's that represents supplied value set definition URI.
 	 * 
 	 * @param valueSetDefURI
 	 * 			URI of an value set definition
 	 * @throws LBException
 	 * @return
-	 * 			Array of PickListDefinition objects that represents supplied valueSetDefURI.
+	 * 			List of Pick List Definition Id's that represents supplied valueSetDefURI.
 	 */
-	public List<PickListDefinition> getPickListDefinitionsForValueSetDef(URI valueSetDefURI)throws LBException;
+	public List<String> getPickListDefinitionIdForValueSetDefinitionUri(URI valueSetDefURI)throws LBException;
 	
 	/**
 	 * Returns an URI of the represented value set definition of the pickList.
