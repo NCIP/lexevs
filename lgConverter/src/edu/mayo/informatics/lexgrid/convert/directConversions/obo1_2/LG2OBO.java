@@ -29,18 +29,24 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.custom.concepts.EntitiesUtil;
+import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.custom.relations.RelationsUtil;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 
 /**
  * EMF to OBO Implementation.
@@ -124,12 +130,12 @@ public class LG2OBO {
         str += "name: " + codedEntry.getEntityDescription() + lineReturn;
 
         // OBO def
-        property = EntitiesUtil.resolveProperty(codedEntry, OBO2EMFConstants.PROPERTY_DEFINITION);
+        property = EntitiesUtil.resolveProperty(codedEntry, OBO2LGConstants.PROPERTY_DEFINITION);
         if (property != null) {
             str += "def: \"" + property.getValue().getContent() + "\"" + generateSource(property) + lineReturn;
         }
         // OBO comment
-        property = EntitiesUtil.resolveProperty(codedEntry, OBO2EMFConstants.PROPERTY_COMMENT);
+        property = EntitiesUtil.resolveProperty(codedEntry, OBO2LGConstants.PROPERTY_COMMENT);
         if (property != null) {
             str += "comment: " + property.getValue().getContent() + lineReturn;
         }
@@ -184,7 +190,7 @@ public class LG2OBO {
 
     String generateSubset(Entity codedEntry) {
         String str = "";
-        List list = EntitiesUtil.resolveProperties(codedEntry, OBO2EMFConstants.PROPERTY_SUBSET);
+        List list = EntitiesUtil.resolveProperties(codedEntry, OBO2LGConstants.PROPERTY_SUBSET);
         for (Iterator items = list.iterator(); items.hasNext();) {
             Property property = (Property) items.next();
             str += "subset: " + property.getValue().getContent();
@@ -195,7 +201,7 @@ public class LG2OBO {
     }
 
     boolean isBuiltInRelationName(String relation_name) {
-        List built_in_relationNames = Arrays.asList(OBO2EMFConstants.BUILT_IN_ASSOCIATIONS);
+        List built_in_relationNames = Arrays.asList(OBO2LGConstants.BUILT_IN_ASSOCIATIONS);
         return built_in_relationNames.contains(relation_name);
     }
 
@@ -203,50 +209,49 @@ public class LG2OBO {
         String str = "";
         str += generateIsARelation(codedEntry);
 
-        List associations = RelationsUtil.resolveAssociations(codingScheme);
-        for (Iterator items = associations.iterator(); items.hasNext();) {
-            Association ac = (Association) items.next();
-            String as_name = ac.getEntityCode();
-            if (isBuiltInRelationName(as_name)) {
-                str += generateBuiltInRelation(codedEntry, as_name);
-            } else {
-                str += generateNonBuiltInRelation(codedEntry, as_name);
+        for (Entity en: codingScheme.getEntities().getEntity()) {
+            if (en instanceof AssociationEntity) {
+                String as_name = en.getEntityCode();
+                if (isBuiltInRelationName(as_name)) {
+                    str += generateBuiltInRelation(codedEntry, as_name);
+                } else {
+                    str += generateNonBuiltInRelation(codedEntry, as_name);
+                }   
             }
         }
-
         return str;
 
     }
 
     String generateBuiltInRelation(Entity codedEntry, String association_name) {
         String str = "";
-        List association_list = RelationsUtil.resolveAssociations(codingScheme, association_name);
-        Collection ac_instances = RelationsUtil.resolveRelationSources(codingScheme, codedEntry, association_list);
-        for (Iterator items = ac_instances.iterator(); items.hasNext();) {
-            AssociationSource ai = (AssociationSource) items.next();
-            for (Iterator targets = ai.getTarget().iterator(); targets.hasNext();) {
-                AssociationTarget target = (AssociationTarget) targets.next();
-                if (target != null && !"@@".equals(target.getTargetEntityCode())) {
-                    str += association_name + ": " + target.getTargetEntityCode() + lineReturn;
+        List<AssociationPredicate> association_list = RelationsUtil.resolveAssociationPredicates(codingScheme, association_name);
+        List<AssociationSource> aSrcs = RelationsUtil.resolveRelationSources(codedEntry, association_list);
+        
+        for(AssociationSource src : aSrcs){
+            for(AssociationTarget tgt: src.getTarget()) {
+                if (tgt != null && !"@@".equals(tgt.getTargetEntityCode())) {
+                    str += association_name + ": " + tgt.getTargetEntityCode() + lineReturn;
                 }
             }
         }
+        
         return str;
     }
 
     String generateNonBuiltInRelation(Entity codedEntry, String association_name) {
         String str = "";
-        List association_list = RelationsUtil.resolveAssociations(codingScheme, association_name);
-        Collection instances = RelationsUtil.resolveRelationSources(codingScheme, codedEntry, association_list);
-        for (Iterator items = instances.iterator(); items.hasNext();) {
-            AssociationSource ai = (AssociationSource) items.next();
-            for (Iterator targets = ai.getTarget().iterator(); targets.hasNext();) {
-                AssociationTarget target = (AssociationTarget) targets.next();
-                if (target != null && !"@@".equals(target.getTargetEntityCode())) {
-                    str += "relationship: " + association_name + " " + target.getTargetEntityCode() + lineReturn;
+        List<AssociationPredicate> association_list = RelationsUtil.resolveAssociationPredicates(codingScheme, association_name);
+        List<AssociationSource> srcList = RelationsUtil.resolveRelationSources(codedEntry, association_list);
+        
+        for (AssociationSource src : srcList) {
+            for (AssociationTarget tgt : src.getTarget()) {
+                if (tgt != null && !"@@".equals(tgt.getTargetEntityCode())) {
+                    str += "relationship: " + association_name + " " + tgt.getTargetEntityCode() + lineReturn;
                 }
             }
         }
+        
         return str;
     }
 
@@ -260,14 +265,10 @@ public class LG2OBO {
      */
     String generateIsARelation(Entity codedEntry) {
         String str = "";
-        List association_list = RelationsUtil
-                .resolveAssociations(codingScheme, OBO2EMFConstants.ASSOCIATION_HASSUBTYPE);
-        Collection targets = RelationsUtil.resolveRelationTargets(codingScheme, codedEntry, association_list);
-        for (Iterator items = targets.iterator(); items.hasNext();) {
-            AssociationTarget at = (AssociationTarget) items.next();
-            AssociationSource instance = (AssociationSource) at.getContainer(AssociationSource.class, 0);
-            str += OBO2EMFConstants.ASSOCIATION_ISA + ": " + instance.getSourceEntityCode() + lineReturn;
-
+        List<AssociationPredicate> association_list = RelationsUtil.resolveAssociationPredicates(codingScheme, OBO2LGConstants.ASSOCIATION_HASSUBTYPE);
+        List<AssociationSource> sources = RelationsUtil.resolveRelationTargets(codedEntry, association_list);
+        for(AssociationSource as: sources) {
+            str += OBO2LGConstants.ASSOCIATION_ISA + ": " + as.getSourceEntityCode() + lineReturn;
         }
         return str;
     }
@@ -275,16 +276,13 @@ public class LG2OBO {
     String generateTypeDef() {
         String str = "";
 
-        List containers = RelationsUtil.resolveRelationContainers(codingScheme);
-        for (Iterator items = containers.iterator(); items.hasNext();) {
-            Relations relations = (Relations) items.next();
-            for (Iterator i = relations.getAssociation().iterator(); i.hasNext();) {
-                Association association = (Association) i.next();
-                String assoc_name = association.getEntityCode();
-                if (!isBuiltInRelationName(assoc_name) && !assoc_name.equalsIgnoreCase("-multi-assn-@-root-")) {
+        for (Entity ae: codingScheme.getEntities().getEntity()) {
+            if (ae instanceof AssociationEntity) {
+                String code = ((AssociationEntity)ae).getEntityCode();
+                if (!isBuiltInRelationName(code) && !code.equalsIgnoreCase("-multi-assn-@-root-")) {
                     str += "[Typedef]" + lineReturn;
-                    str += "id: " + assoc_name + lineReturn;
-                    str += "name: " + assoc_name + lineReturn;
+                    str += "id: " + code + lineReturn;
+                    str += "name: " + code + lineReturn;
                     str += lineReturn;
                 }
             }
@@ -295,6 +293,69 @@ public class LG2OBO {
 
     String println(String str) {
         return str + " \n";
+    }
+    
+    public static void main(String[] args) {
+//        CodingScheme cs = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
+//        getCodingSchemeService().getCodingSchemeByUriAndVersion(codingSchemeUri, codingSchemeVersion);
+        CodingScheme cs = new CodingScheme();
+        cs.setCodingSchemeName("codingSchemeName");
+        cs.setCodingSchemeURI("codingSchemeURI");
+        cs.setRepresentsVersion("representsVersion");
+        EntityDescription ed = new EntityDescription();
+        ed.setContent("enttiy description");
+        cs.setEntityDescription(ed);
+        Text t = new Text();
+        t.setContent("copy right");
+        cs.setCopyright(t);
+        cs.setDefaultLanguage("english");
+        
+        //new entity 1
+        Entity entity = new Entity();
+        entity.setEntityCode("entityCode1");
+        entity.setEntityCodeNamespace("entityCodeNamespace");
+        entity.addEntityType(SQLTableConstants.TBL_CONCEPT);
+        EntityDescription enDesc = new EntityDescription();
+        enDesc.setContent("entityDescription");
+        entity.setEntityDescription(enDesc);
+        
+        
+        Presentation presentation = new Presentation();
+        presentation.setPropertyType(SQLTableConstants.TBLCOLVAL_PRESENTATION);
+        presentation.setPropertyName("presentation propertyName");
+        presentation.setIsPreferred(true);
+        Text value = new Text();
+        value.setContent("presentation value");
+        presentation.setValue(value);
+        
+        entity.addPresentation(presentation);
+        
+        
+        cs.setEntities(new Entities());
+        cs.getEntities().addEntity(entity);
+        
+      //new entity 2
+        Entity entity2 = new Entity();
+        entity2.setEntityCode("entityCode1");
+        entity2.setEntityCodeNamespace("entityCodeNamespace");
+        entity2.addEntityType(SQLTableConstants.TBL_CONCEPT);
+        enDesc = new EntityDescription();
+        enDesc.setContent("entityDescription");
+        entity2.setEntityDescription(enDesc);
+        
+        
+        presentation = new Presentation();
+        presentation.setPropertyType(SQLTableConstants.TBLCOLVAL_PRESENTATION);
+        presentation.setPropertyName("presentation propertyName");
+        presentation.setIsPreferred(true);
+        value = new Text();
+        value.setContent("presentation value");
+        presentation.setValue(value);
+        
+        entity2.addPresentation(presentation);
+        
+        cs.getEntities().addEntity(entity2);
+        
     }
 
 }
