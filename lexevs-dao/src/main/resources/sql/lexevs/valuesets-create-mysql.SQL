@@ -2,7 +2,7 @@ SET FOREIGN_KEY_CHECKS=0;
 
 
 
-CREATE TABLE valueSetDefinition
+CREATE TABLE @PREFIX@valueSetDefinition
 (
 	valueSetDefGuid VARCHAR(36) NOT NULL,
 	valueSetDefURI VARCHAR(250) NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE valueSetDefinition
 ;
 
 
-CREATE TABLE vsdEntry
+CREATE TABLE @PREFIX@vsdEntry
 (
 	vsdEntryGuid VARCHAR(36) NOT NULL,
 	valueSetDefGuid VARCHAR(36) NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE vsdEntry
 ;
 
 
-CREATE TABLE vsEntryState
+CREATE TABLE @PREFIX@vsEntryState
 (
 	entryStateGuid VARCHAR(36) NOT NULL,
 	entryGuid VARCHAR(36) NOT NULL,
@@ -77,7 +77,7 @@ CREATE TABLE vsEntryState
 ;
 
 
-CREATE TABLE vsMultiAttrib
+CREATE TABLE @PREFIX@vsMultiAttrib
 (
 	vsMultiAttribGuid VARCHAR(36) NOT NULL,
 	referenceGuid VARCHAR(36) NOT NULL,
@@ -93,7 +93,7 @@ CREATE TABLE vsMultiAttrib
 ;
 
 
-CREATE TABLE vsPickList
+CREATE TABLE @PREFIX@vsPickList
 (
 	vsPickListGuid VARCHAR(36) NOT NULL,
 	pickListId VARCHAR(50) NOT NULL,
@@ -118,7 +118,7 @@ CREATE TABLE vsPickList
 ;
 
 
-CREATE TABLE vsPLEntry
+CREATE TABLE @PREFIX@vsPLEntry
 (
 	vsPLEntryGuid VARCHAR(36) NOT NULL,
 	vsPickListGuid VARCHAR(36) NOT NULL,
@@ -146,7 +146,7 @@ CREATE TABLE vsPLEntry
 ;
 
 
-CREATE TABLE vsProperty
+CREATE TABLE @PREFIX@vsProperty
 (
 	vsPropertyGuid VARCHAR(36) NOT NULL,
 	referenceGuid VARCHAR(36) NOT NULL,
@@ -174,7 +174,7 @@ CREATE TABLE vsProperty
 ;
 
 
-CREATE TABLE vsPropertyMultiAttrib
+CREATE TABLE @PREFIX@vsPropertyMultiAttrib
 (
 	vsPropMultiAttribGuid VARCHAR(36) NOT NULL,
 	vsPropertyGuid VARCHAR(36) NOT NULL,
@@ -190,7 +190,7 @@ CREATE TABLE vsPropertyMultiAttrib
 ;
 
 
-CREATE TABLE vsSupportedAttrib
+CREATE TABLE @PREFIX@vsSupportedAttrib
 (
 	vsSuppAttribGuid VARCHAR(36) NOT NULL,
 	referenceGuid VARCHAR(36),
@@ -214,29 +214,29 @@ CREATE TABLE vsSupportedAttrib
 SET FOREIGN_KEY_CHECKS=1;
 
 
-ALTER TABLE valueSetDefinition ADD CONSTRAINT FK_vsd_releaseGuid 
-	FOREIGN KEY (releaseGuid) REFERENCES systemRelease (releaseGuid)
+ALTER TABLE @PREFIX@valueSetDefinition ADD CONSTRAINT FK_vsd_releaseGuid 
+	FOREIGN KEY (releaseGuid) REFERENCES @PREFIX@systemRelease (releaseGuid)
 ;
 
-ALTER TABLE vsdEntry ADD CONSTRAINT FK_vsdEnt_vsdGuid 
-	FOREIGN KEY (valueSetDefGuid) REFERENCES valueSetDefinition (valueSetDefName)
+ALTER TABLE @PREFIX@vsdEntry ADD CONSTRAINT FK_vsdEnt_vsdGuid 
+	FOREIGN KEY (valueSetDefGuid) REFERENCES @PREFIX@valueSetDefinition (valueSetDefName)
 	ON DELETE CASCADE
 ;
 
-ALTER TABLE vsEntryState ADD CONSTRAINT FK_vsES_prevEntryStateGuid 
-	FOREIGN KEY (prevEntryStateGuid) REFERENCES vsEntryState (entryStateGuid)
+ALTER TABLE @PREFIX@vsEntryState ADD CONSTRAINT FK_vsES_prevEntryStateGuid 
+	FOREIGN KEY (prevEntryStateGuid) REFERENCES @PREFIX@vsEntryState (entryStateGuid)
 ;
 
-ALTER TABLE vsPickList ADD CONSTRAINT FK_vsdPL_releaseGuid 
-	FOREIGN KEY (releaseGuid) REFERENCES systemRelease (releaseGuid)
+ALTER TABLE @PREFIX@vsPickList ADD CONSTRAINT FK_vsdPL_releaseGuid 
+	FOREIGN KEY (releaseGuid) REFERENCES @PREFIX@systemRelease (releaseGuid)
 ;
 
-ALTER TABLE vsPLEntry ADD CONSTRAINT FK_vsPLEnt_vsPLGuid 
-	FOREIGN KEY (vsPickListGuid) REFERENCES vsPickList (representsValueSetDefinition)
+ALTER TABLE @PREFIX@vsPLEntry ADD CONSTRAINT FK_vsPLEnt_vsPLGuid 
+	FOREIGN KEY (vsPickListGuid) REFERENCES @PREFIX@vsPickList (representsValueSetDefinition)
 	ON DELETE CASCADE
 ;
 
-ALTER TABLE vsPropertyMultiAttrib ADD CONSTRAINT FK_vsProperty 
-	FOREIGN KEY (vsPropertyGuid) REFERENCES vsProperty (referenceGuid, propertyId, propertyName)
+ALTER TABLE @PREFIX@vsPropertyMultiAttrib ADD CONSTRAINT FK_vsProperty 
+	FOREIGN KEY (vsPropertyGuid) REFERENCES @PREFIX@vsProperty (referenceGuid)
 	ON DELETE CASCADE
 ;

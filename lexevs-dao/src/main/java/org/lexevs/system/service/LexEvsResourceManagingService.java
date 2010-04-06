@@ -38,10 +38,10 @@ import org.lexevs.logging.AbstractLoggingBean;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
+import org.lexevs.registry.setup.LexEvsDatabaseSchemaSetup;
 import org.lexevs.registry.utility.RegistryUtility;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.utility.MyClassLoader;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * The Class LexEvsResourceManagingService.
@@ -71,6 +71,8 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 	
 	/** The database service manager. */
 	private DatabaseServiceManager databaseServiceManager;
+	
+	private LexEvsDatabaseSchemaSetup lexEvsDatabaseSchemaSetup;
 
 	/** The alias holder. */
 	private List<CodingSchemeAliasHolder> aliasHolder = new ArrayList<CodingSchemeAliasHolder>();
@@ -79,6 +81,11 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
 	public void initialize() {
+		try {
+			lexEvsDatabaseSchemaSetup.setUpLexEvsDbSchema();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 		readCodingSchemeAliasesFromServer();
 	}
 	
@@ -553,6 +560,14 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 	 */
 	public DatabaseServiceManager getDatabaseServiceManager() {
 		return databaseServiceManager;
+	}
+
+	public void setLexEvsDatabaseSchemaSetup(LexEvsDatabaseSchemaSetup lexEvsDatabaseSchemaSetup) {
+		this.lexEvsDatabaseSchemaSetup = lexEvsDatabaseSchemaSetup;
+	}
+
+	public LexEvsDatabaseSchemaSetup getLexEvsDatabaseSchemaSetup() {
+		return lexEvsDatabaseSchemaSetup;
 	}
 
 	/**

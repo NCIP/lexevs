@@ -404,7 +404,7 @@
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
 	</bean>
 	
-	<bean id="resourceManager" class="org.lexevs.system.ResourceManager" init-method="init" depends-on="lexEvsSchemaInstallationSetup">
+	<bean id="resourceManager" class="org.lexevs.system.ResourceManager" init-method="init">
 		<property name="systemVariables" ref="systemVariables"/>
 		<property name="logger" ref="loggerFactory"/>
 		<property name="dataSource" ref="dataSource"/>
@@ -419,6 +419,7 @@
 	
 	<bean id="lexEvsResourceManagingService" class="org.lexevs.system.service.LexEvsResourceManagingService" 
 		parent="loggingBean" init-method="initialize">
+		<property name="lexEvsDatabaseSchemaSetup" ref="lexEvsSchemaInstallationSetup"/>
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>

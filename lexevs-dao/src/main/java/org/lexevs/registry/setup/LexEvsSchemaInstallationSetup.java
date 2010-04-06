@@ -29,7 +29,7 @@ import org.springframework.beans.factory.InitializingBean;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LexEvsSchemaInstallationSetup extends AbstractLoggingBean implements InitializingBean {
+public class LexEvsSchemaInstallationSetup extends AbstractLoggingBean implements LexEvsDatabaseSchemaSetup {
 	
 	/** The system variables. */
 	private SystemVariables systemVariables;
@@ -47,7 +47,7 @@ public class LexEvsSchemaInstallationSetup extends AbstractLoggingBean implement
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
-	public void afterPropertiesSet() throws Exception {
+	public void setUpLexEvsDbSchema() throws Exception {
 		this.getLogger().info("Checking for installed LexEVS Database Schema.");
 
 		if(!isLexGridSchemaInstalled){
