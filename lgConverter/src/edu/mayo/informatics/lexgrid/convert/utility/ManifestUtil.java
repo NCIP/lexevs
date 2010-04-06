@@ -154,8 +154,9 @@ public class ManifestUtil {
      */
     protected void doApplyCommonManifestElements(CodingSchemeManifest manifest, CodingScheme codingScheme) {
 
-        if (manifest == null || codingScheme == null)
+        if (manifest == null || codingScheme == null) {
             return;
+        }
 
         Mappings emfMappings = codingScheme.getMappings();
         if (emfMappings == null) {
@@ -213,6 +214,10 @@ public class ManifestUtil {
     public void applyManifest(
             CodingSchemeManifest manifest, 
            CodingScheme codingScheme){
+        if (manifest == null || codingScheme == null) {
+            return;
+        }
+        
         this.doApplyCommonManifestElements(manifest, codingScheme);
         this.preLoadAssociationDefinitions(codingScheme, manifest.getAssociationDefinitions());
     }
@@ -233,7 +238,10 @@ public class ManifestUtil {
     public void applyManifest(
             CodingSchemeManifest manifest, 
             URNVersionPair versionPair) throws LgConvertException, SQLException {
-
+        if (manifest == null || versionPair == null) {
+            return;
+        }
+        
         CodingSchemeService codingSchemeService = 
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
 
