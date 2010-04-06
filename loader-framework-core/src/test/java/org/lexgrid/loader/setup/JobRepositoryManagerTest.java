@@ -233,6 +233,12 @@ public class JobRepositoryManagerTest extends LoaderFrameworkCoreTestBase{
 			// TODO Auto-generated method stub
 			return false;
 		}
+
+		public void executeScript(Resource creationScript, String commonPrefix,
+				String tableSetPrefix) throws Exception {
+			// TODO Auto-generated method stub (IMPLEMENT!)
+			throw new UnsupportedOperationException();
+		}
 		
 	}
 }
