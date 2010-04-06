@@ -1,20 +1,47 @@
 package edu.mayo.informatics.lexgrid.convert.utility;
 
+import java.util.ArrayList;
+
+import javax.annotation.Resource;
+
 import org.LexGrid.LexOnt.CodingSchemeManifest;
+import org.LexGrid.LexOnt.CsmfAssociationDefinition;
 import org.LexGrid.LexOnt.CsmfFormalName;
 import org.LexGrid.LexOnt.CsmfLocalName;
 import org.LexGrid.LexOnt.CsmfMappings;
 import org.LexGrid.LexOnt.CsmfSource;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Source;
+import org.LexGrid.concepts.Entities;
+import org.LexGrid.custom.concepts.EntityFactory;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.relations.AssociationEntity;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.database.service.entity.VersionableEventEntityService;
+import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
-import org.lexevs.locator.LexEvsServiceLocator;
 
 public class ManifestUtilTest extends LexEvsDbUnitTestBase {
+    
+    @Resource
+    private CodingSchemeService codingSchemeService;
+    
+    @Resource
+    private VersionableEventEntityService entityService;
+    
+    @Before
+    public void clearEntityListeners() {
+        entityService.setDatabaseServiceEventListeners(new ArrayList<DatabaseServiceEventListener>());
+    }
+    
+    @BeforeClass
+    public static void setSystemProp() {
+        System.setProperty("LG_CONFIG_FILE", "../lexevs-dao/src/test/resources/lbconfig.props");
+    }
     
     @Test
     public void testApplyCodingSchemeFormalNameWithOverride() {
@@ -270,7 +297,6 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
     
     @Test
     public void testApplyPostLoadManifestFormalName() throws Exception {
-        CodingSchemeService service = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
         
         CodingScheme cs = new CodingScheme();
         cs.setCodingSchemeName("csname");
@@ -278,7 +304,7 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
         cs.setRepresentsVersion("version");
         cs.setFormalName("original formal name");
         
-        service.insertCodingScheme(cs);
+        codingSchemeService.insertCodingScheme(cs);
         
         CodingSchemeManifest csManifest = new CodingSchemeManifest();
         CsmfFormalName formalName = new CsmfFormalName();
@@ -289,15 +315,14 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
         ManifestUtil util = new ManifestUtil();
         util.applyManifest(csManifest, new URNVersionPair("uri", "version"));
         
-        CodingScheme moddedCs = service.getCodingSchemeByUriAndVersion("uri", "version");
+        CodingScheme moddedCs = codingSchemeService.getCodingSchemeByUriAndVersion("uri", "version");
         
         assertEquals("modified Formal Name", moddedCs.getFormalName());
     }
     
     @Test
     public void testApplyPostLoadManifestAddSupportedAttribute() throws Exception {
-        CodingSchemeService service = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
-        
+           
         CodingScheme cs = new CodingScheme();
         cs.setCodingSchemeName("csname");
         cs.setCodingSchemeURI("uri");
@@ -309,7 +334,7 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
         cs.setMappings(new Mappings());
         cs.getMappings().addSupportedCodingScheme(scs);
         
-        service.insertCodingScheme(cs);
+        codingSchemeService.insertCodingScheme(cs);
         
         CodingSchemeManifest csManifest = new CodingSchemeManifest();
         csManifest.setMappings(new CsmfMappings());
@@ -323,15 +348,14 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
         ManifestUtil util = new ManifestUtil();
         util.applyManifest(csManifest, new URNVersionPair("uri", "version"));
         
-        CodingScheme moddedCs = service.getCodingSchemeByUriAndVersion("uri", "version");
+        CodingScheme moddedCs = codingSchemeService.getCodingSchemeByUriAndVersion("uri", "version");
         
         assertEquals(2, moddedCs.getMappings().getSupportedCodingSchemeCount());
     }
     
     @Test
     public void testApplyPostLoadManifestAddSupportedAttributeUpdate() throws Exception {
-        CodingSchemeService service = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
-        
+            
         CodingScheme cs = new CodingScheme();
         cs.setCodingSchemeName("csname");
         cs.setCodingSchemeURI("uri");
@@ -343,7 +367,7 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
         cs.setMappings(new Mappings());
         cs.getMappings().addSupportedCodingScheme(scs);
         
-        service.insertCodingScheme(cs);
+        codingSchemeService.insertCodingScheme(cs);
         
         CodingSchemeManifest csManifest = new CodingSchemeManifest();
         csManifest.setMappings(new CsmfMappings());
@@ -358,9 +382,198 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
         ManifestUtil util = new ManifestUtil();
         util.applyManifest(csManifest, new URNVersionPair("uri", "version"));
         
-        CodingScheme moddedCs = service.getCodingSchemeByUriAndVersion("uri", "version");
+        CodingScheme moddedCs = codingSchemeService.getCodingSchemeByUriAndVersion("uri", "version");
         
         assertEquals(1, moddedCs.getMappings().getSupportedCodingSchemeCount());
         assertEquals("some uri", moddedCs.getMappings().getSupportedCodingScheme(0).getUri());
+    }
+    
+    @Test
+    public void testApplyPreLoadManifestAddAssociationEntity() throws Exception {
+        CodingScheme cs = new CodingScheme();
+        cs.setCodingSchemeName("csname");
+        cs.setCodingSchemeURI("uri");
+        cs.setRepresentsVersion("version");
+        cs.setFormalName("original formal name");
+        
+        ManifestUtil util = new ManifestUtil();
+        
+        CodingSchemeManifest csManifest = new CodingSchemeManifest();
+        
+        CsmfAssociationDefinition assocDefs = new CsmfAssociationDefinition();
+        AssociationEntity assoc = new AssociationEntity();
+        assoc.setEntityCode("code");
+        assoc.setEntityCodeNamespace("ns");
+        assoc.setIsTransitive(true);
+        
+        assocDefs.addAssoc(assoc);
+        csManifest.setAssociationDefinitions(assocDefs);
+        
+        csManifest.setAssociationDefinitions(assocDefs);
+        
+        util.applyManifest(csManifest, cs);
+        
+        assertEquals(1, cs.getEntities().getEntityCount());   
+        assertEquals("code", cs.getEntities().getEntity(0).getEntityCode());
+        assertEquals("ns", cs.getEntities().getEntity(0).getEntityCodeNamespace());
+        assertTrue(((AssociationEntity)cs.getEntities().getEntity(0)).getIsTransitive());
+    }
+    
+    @Test
+    public void testApplyPreLoadManifestModifyAssociationEntityWithToUpdateTrue() throws Exception {
+        CodingScheme cs = new CodingScheme();
+        cs.setCodingSchemeName("csname");
+        cs.setCodingSchemeURI("uri");
+        cs.setRepresentsVersion("version");
+        cs.setFormalName("original formal name");
+        
+        cs.setEntities(new Entities());
+        AssociationEntity assoc1 = new AssociationEntity();
+        assoc1.setEntityCode("code");
+        assoc1.setEntityCodeNamespace("ns");
+        assoc1.setIsTransitive(true);
+        cs.getEntities().addEntity(assoc1);
+        
+        ManifestUtil util = new ManifestUtil();
+        
+        CodingSchemeManifest csManifest = new CodingSchemeManifest();
+        
+        CsmfAssociationDefinition assocDefs = new CsmfAssociationDefinition();
+        assocDefs.setToUpdate(true);
+        AssociationEntity assoc2 = new AssociationEntity();
+        assoc2.setEntityCode("code");
+        assoc2.setEntityCodeNamespace("ns");
+        assoc2.setIsTransitive(false);
+        
+        assocDefs.addAssoc(assoc2);
+        csManifest.setAssociationDefinitions(assocDefs);
+        
+        csManifest.setAssociationDefinitions(assocDefs);
+        
+        util.applyManifest(csManifest, cs);
+        
+        assertEquals(1, cs.getEntities().getEntityCount());   
+        assertEquals("code", cs.getEntities().getEntity(0).getEntityCode());
+        assertFalse(((AssociationEntity)cs.getEntities().getEntity(0)).getIsTransitive());
+    }
+    
+    @Test
+    public void testApplyPreLoadManifestModifyAssociationEntityWithToUpdateFalse() throws Exception {
+        CodingScheme cs = new CodingScheme();
+        cs.setCodingSchemeName("csname");
+        cs.setCodingSchemeURI("uri");
+        cs.setRepresentsVersion("version");
+        cs.setFormalName("original formal name");
+        
+        cs.setEntities(new Entities());
+        AssociationEntity assoc1 = new AssociationEntity();
+        assoc1.setEntityCode("code");
+        assoc1.setEntityCodeNamespace("ns");
+        assoc1.setIsTransitive(true);
+        cs.getEntities().addEntity(assoc1);
+        
+        ManifestUtil util = new ManifestUtil();
+        
+        CodingSchemeManifest csManifest = new CodingSchemeManifest();
+        
+        CsmfAssociationDefinition assocDefs = new CsmfAssociationDefinition();
+        assocDefs.setToUpdate(false);
+        AssociationEntity assoc2 = new AssociationEntity();
+        assoc2.setEntityCode("code");
+        assoc2.setEntityCodeNamespace("ns");
+        assoc2.setIsTransitive(false);
+        
+        assocDefs.addAssoc(assoc2);
+        csManifest.setAssociationDefinitions(assocDefs);
+        
+        csManifest.setAssociationDefinitions(assocDefs);
+        
+        util.applyManifest(csManifest, cs);
+        
+        assertEquals(1, cs.getEntities().getEntityCount());   
+        assertEquals("code", cs.getEntities().getEntity(0).getEntityCode());
+        assertTrue(((AssociationEntity)cs.getEntities().getEntity(0)).getIsTransitive());
+    }
+    
+    @Test
+    public void testApplyPostLoadManifestAddAssociationEntity() throws Exception {
+        CodingScheme cs = new CodingScheme();
+        cs.setCodingSchemeName("csname");
+        cs.setCodingSchemeURI("uri");
+        cs.setRepresentsVersion("version");
+        cs.setFormalName("original formal name");
+        
+        this.codingSchemeService.insertCodingScheme(cs);
+        
+        ManifestUtil util = new ManifestUtil();
+        
+        CodingSchemeManifest csManifest = new CodingSchemeManifest();
+        
+        CsmfAssociationDefinition assocDefs = new CsmfAssociationDefinition();
+        AssociationEntity assoc = new AssociationEntity();
+        assoc.setEntityCode("code");
+        assoc.setEntityCodeNamespace("ns");
+        assoc.setIsTransitive(true);
+        
+        assocDefs.addAssoc(assoc);
+        csManifest.setAssociationDefinitions(assocDefs);
+        
+        csManifest.setAssociationDefinitions(assocDefs);
+        
+        URNVersionPair pair = new URNVersionPair("uri", "version");
+        util.applyManifest(csManifest, pair);
+        
+        CodingScheme updatedCs = codingSchemeService.getCompleteCodingScheme("uri", "version");
+        
+        assertEquals(1, updatedCs.getEntities().getEntityCount());   
+        assertEquals("code", updatedCs.getEntities().getEntity(0).getEntityCode());
+        assertEquals("ns", updatedCs.getEntities().getEntity(0).getEntityCodeNamespace());
+        assertTrue(((AssociationEntity)updatedCs.getEntities().getEntity(0)).getIsTransitive());
+    }
+    
+    @Test
+    public void testApplyPostLoadManifestAddAssociationEntityUpdate() throws Exception {
+        CodingScheme cs = new CodingScheme();
+        cs.setCodingSchemeName("csname");
+        cs.setCodingSchemeURI("uri");
+        cs.setRepresentsVersion("version");
+        cs.setFormalName("original formal name");
+        
+        cs.setEntities(new Entities());
+        AssociationEntity assoc1 = EntityFactory.createAssociation();
+        assoc1.setEntityCode("code");
+        assoc1.setEntityCodeNamespace("ns");
+        assoc1.setIsTransitive(true);
+        cs.getEntities().addEntity(assoc1);
+        
+        this.codingSchemeService.insertCodingScheme(cs);
+        //this.entityService.insertEntity("uri", "version", assoc1);
+        
+        ManifestUtil util = new ManifestUtil();
+        
+        CodingSchemeManifest csManifest = new CodingSchemeManifest();
+        
+        CsmfAssociationDefinition assocDefs = new CsmfAssociationDefinition();
+        AssociationEntity assoc = new AssociationEntity();
+        assoc.setEntityCode("code");
+        assoc.setEntityCodeNamespace("ns");
+        assoc.setIsTransitive(false);
+        
+        assocDefs.addAssoc(assoc);
+        csManifest.setAssociationDefinitions(assocDefs);
+        
+        csManifest.setAssociationDefinitions(assocDefs);
+        
+        URNVersionPair pair = new URNVersionPair("uri", "version");
+        util.applyManifest(csManifest, pair);
+        
+        CodingScheme updatedCs = codingSchemeService.getCompleteCodingScheme("uri", "version");
+        
+        assertEquals(1, updatedCs.getEntities().getEntityCount());   
+        assertEquals("code", updatedCs.getEntities().getEntity(0).getEntityCode());
+        assertEquals("ns", updatedCs.getEntities().getEntity(0).getEntityCodeNamespace());
+        
+        AssociationEntity assocEntity = (AssociationEntity)updatedCs.getEntities().getEntity(0);
+        assertFalse(assocEntity.getIsTransitive());
     }
 }
