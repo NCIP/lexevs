@@ -84,8 +84,8 @@ public URI getManifestLocation() {
 
         if (manifestLocation != null) {
 
-            ManifestUtil manf = new ManifestUtil(manifestLocation, null);
-            if (!manf.isValidManifest()) {
+            ManifestUtil manf = new ManifestUtil();
+            if (!manf.isValidManifest(manifestLocation)) {
                 throw new ConnectionFailure("The manifest file '" + manifestLocation + "' is not valid. ");
             }
 
