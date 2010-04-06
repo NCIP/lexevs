@@ -24,12 +24,12 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
+import org.LexGrid.LexOnt.CsmfAssociationDefinition;
 import org.LexGrid.LexOnt.CsmfCodingSchemeName;
 import org.LexGrid.LexOnt.CsmfCodingSchemeURI;
 import org.LexGrid.LexOnt.CsmfDefaultLanguage;
@@ -44,14 +44,19 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
+import org.LexGrid.commonTypes.types.EntityTypes;
+import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedLanguage;
 import org.LexGrid.naming.URIMap;
+import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.util.Utility;
 import org.apache.commons.lang.StringUtils;
 import org.exolab.castor.xml.Marshaller;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
@@ -147,7 +152,7 @@ public class ManifestUtil {
      * @param emfCodingScheme
      * @throws LgConvertException
      */
-    public void applyManifest(CodingSchemeManifest manifest, CodingScheme codingScheme) {
+    protected void doApplyCommonManifestElements(CodingSchemeManifest manifest, CodingScheme codingScheme) {
 
         if (manifest == null || codingScheme == null)
             return;
@@ -201,8 +206,16 @@ public class ManifestUtil {
 
         // Transfer Mappings
         preLoadAddSupportedMappings(codingScheme, manifest.getMappings());
+        
+        preLoadAssociationDefinitions(codingScheme, manifest.getAssociationDefinitions());
     } 
     
+    public void applyManifest(
+            CodingSchemeManifest manifest, 
+           CodingScheme codingScheme){
+        this.doApplyCommonManifestElements(manifest, codingScheme);
+        this.preLoadAssociationDefinitions(codingScheme, manifest.getAssociationDefinitions());
+    }
 
     /**
      * Applies the given manifest to an existing coding scheme definition in a
@@ -229,9 +242,22 @@ public class ManifestUtil {
 
         CodingScheme codingScheme = codingSchemeService.getCodingSchemeByUriAndVersion(uri, version);
 
-        this.applyManifest(manifest, codingScheme);
+        this.doApplyCommonManifestElements(manifest, codingScheme);
+        this.postLoadAssociationDefinitions(codingScheme, manifest.getAssociationDefinitions());
 
         codingSchemeService.updateCodingScheme(uri, version, codingScheme);
+    }
+    
+    protected AssociationEntity findAssociationEntityInDatabase(String uri, String version, String code, String namespace) {
+        Entity entity = LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().getEntityService().
+                getEntity(uri, version, code, namespace);
+        
+        if(entity != null && entity instanceof AssociationEntity){
+            return (AssociationEntity)entity;
+        } else {
+            return null;
+        }
     }
 
 
@@ -442,6 +468,74 @@ public class ManifestUtil {
         }
     }
     
+    protected void postLoadAssociationDefinitions(CodingScheme codingScheme, CsmfAssociationDefinition assocDefinitions) {
+        if(assocDefinitions == null) {return;}
+        
+        EntityService entityService = 
+            LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().
+            getEntityService();
+
+        String uri = codingScheme.getCodingSchemeURI();
+        String version = codingScheme.getRepresentsVersion();
+
+        for(AssociationEntity manifestEntity : assocDefinitions.getAssoc()) {
+            String code = manifestEntity.getEntityCode();
+            String namespace = manifestEntity.getEntityCodeNamespace();
+
+            AssociationEntity originalAssocEntity = 
+                findAssociationEntityInDatabase(
+                        uri, version, code, namespace);
+
+            if(originalAssocEntity == null) {
+                manifestEntity.addEntityType(EntityTypes.ASSOCIATION.toString());
+                entityService.insertEntity(uri, version, manifestEntity);
+            } else {
+                if(assocDefinitions.getToUpdate()) {
+                    DaoUtility.updateBean(manifestEntity, originalAssocEntity);
+                    entityService.updateEntity(uri, version, originalAssocEntity);
+                }
+            }
+        } 
+    }
+    
+    protected void preLoadAssociationDefinitions(CodingScheme codingScheme, CsmfAssociationDefinition assocDefinitions) {
+        if(assocDefinitions == null) {return;}
+
+        for(AssociationEntity manifestEntity : assocDefinitions.getAssoc()) {
+            String code = manifestEntity.getEntityCode();
+            String namespace = manifestEntity.getEntityCodeNamespace();
+
+            AssociationEntity originalAssocEntity = findAssociationEntityInCodingScheme(code, namespace, codingScheme.getEntities());
+
+            if(originalAssocEntity == null) {
+                if(codingScheme.getEntities() == null) {
+                    codingScheme.setEntities(new Entities());
+                }
+                codingScheme.getEntities().addEntity(manifestEntity);
+            } else {
+                if(assocDefinitions.getToUpdate()) {
+                    DaoUtility.updateBean(manifestEntity, originalAssocEntity);
+                }
+            }
+        }
+    }
+    
+    protected AssociationEntity findAssociationEntityInCodingScheme(String code, String namespace, Entities entities) {
+        if(entities == null) {return null;}
+        
+        for(Entity entity : entities.getEntity()) {
+            if(entity.getEntityCode().equals(code) && 
+                    entity.getEntityCodeNamespace().equals(namespace)){
+                if(entity instanceof AssociationEntity) {
+                    return (AssociationEntity)entity;
+                }
+            }
+        }
+        
+        return null;
+    }
+    
     protected void preLoadAddSources(CodingScheme codingScheme, CsmfSource[] sources) {
 
         if (sources != null) {
@@ -509,20 +603,5 @@ public class ManifestUtil {
         }
         
         return null;
-    }
-
-    /**
-     * Method populates the elements of given String array into a List.
-     * 
-     * @param str
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    private List<String> arrayToList(String[] str) {
-        List list = new ArrayList();
-        for (int i = 0; i < str.length; i++) {
-            list.add(str[i].trim());
-        }
-        return list;
     }
 }
