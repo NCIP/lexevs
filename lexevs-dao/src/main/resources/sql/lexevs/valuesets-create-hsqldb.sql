@@ -210,6 +210,9 @@ ON valueDomain (valueDomainName)
 CREATE INDEX idx_vdURI
 ON valueDomain (valueDomainURI)
 ;
+ALTER TABLE vdEntry
+	ADD CONSTRAINT UQ_vdEntry UNIQUE (valueDomainGuid, ruleOrder)
+;
 CREATE INDEX idx_valueDomainGuid
 ON vdEntry (valueDomainGuid)
 ;
