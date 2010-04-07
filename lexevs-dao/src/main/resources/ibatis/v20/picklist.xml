@@ -4,6 +4,10 @@
 <sqlMap namespace="PickList">
 
 	<typeAlias alias="pickListDefinition" type="org.LexGrid.valueSets.PickListDefinition" />
+	<typeAlias alias="pickListEntryNode" type="org.LexGrid.valueSets.PickListEntryNode" />
+	<typeAlias alias="pickListEntryNodeChoice" type="org.LexGrid.valueSets.PickListEntryNodeChoice" />
+	<typeAlias alias="pickListEntryExclusion" type="org.LexGrid.valueSets.PickListEntryExclusion" />
+	<typeAlias alias="pickListEntry" type="org.LexGrid.valueSets.PickListEntry" />	
 
 	<resultMap id="pickListDefinitionResult" class="pickListDefinition">
 		<result property="pickListId" column="pickListId" />
@@ -106,6 +110,48 @@
 				#pickListDefinition.status#,
 				#pickListDefinition.effectiveDate#,
 				#pickListDefinition.expirationDate#,
+				#entryStateId#	
+			)
+     </insert>
+     
+     <insert id="insertPickListEntry" 
+		parameterClass="org.lexevs.dao.database.ibatis.picklist.parameter.InsertOrUpdatePickListEntryBean">
+		INSERT INTO vsPLEntry
+		(
+				vsPLEntryGuid,
+				vsPickListGuid,
+				plEntryId,
+				entityCodeNamespace,
+				entityCode,
+				entryOrder,
+				isDefault,
+				matchIfNoContext,
+				propertyId,
+				include,
+				pickText,
+				isActive,
+				owner,
+				status,
+				effectiveDate,
+				expirationDate,
+				entryStateGuid
+			) VALUES (
+				#id#,
+				#pickListGuid#,
+				#pickListEntryNode.pickListEntryId#,
+				#entityCodeNamespace#,
+				#entityCode#,
+				#entryOrder#,
+				#isDefault#,
+				#matchIfNoContext#,
+				#propertyId#,
+				#include#,
+				#pickText#,
+				#pickListEntryNode.isActive#,
+				#pickListEntryNode.owner#,
+				#pickListEntryNode.status#,
+				#pickListEntryNode.effectiveDate#,
+				#pickListEntryNode.expirationDate#,
 				#entryStateId#	
 			)
      </insert>
