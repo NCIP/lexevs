@@ -46,6 +46,8 @@ public class InsertOrUpdatePickListEntryBean extends IdableParameterBean {
 	
 	private String propertyId;
 	
+	private String langauage;
+	
 	private boolean include;
 	
 	private String pickText;
@@ -188,6 +190,20 @@ public class InsertOrUpdatePickListEntryBean extends IdableParameterBean {
 	 */
 	public void setPickText(String pickText) {
 		this.pickText = pickText;
+	}
+
+	/**
+	 * @return the langauage
+	 */
+	public String getLangauage() {
+		return langauage;
+	}
+
+	/**
+	 * @param langauage the langauage to set
+	 */
+	public void setLangauage(String langauage) {
+		this.langauage = langauage;
 	}
 
 	

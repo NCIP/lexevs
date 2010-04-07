@@ -65,6 +65,8 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	
 	public static String REMOVE_PICKLIST_DEFINITION_BY_PICKLISTID_SQL = PICKLIST_NAMESPACE + "removePickListDefinitionByPickListId";
 	
+	public static String REMOVE_PICKLIST_ENTRY_BY_PICKLISTGUID_SQL = PICKLIST_NAMESPACE + "removePickListEntryByPickListGuid";
+	
 	/** The versions dao. */
 	private VersionsDao versionsDao;
 	
@@ -144,10 +146,11 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 					plEntryBean.setEntityCode(plEntry.getEntityCodeNamespace());
 					plEntryBean.setEntityCode(plEntry.getEntityCode());
 					plEntryBean.setDefault(plEntry.isIsDefault() == null? false : plEntry.isIsDefault());
-					plEntryBean.setEntryOrder(plEntry.getEntryOrder());
+					plEntryBean.setEntryOrder(plEntry.getEntryOrder() == null? 0 : plEntry.getEntryOrder());
 					plEntryBean.setMatchIfNoContext(plEntry.getMatchIfNoContext() == null ? true : plEntry.getMatchIfNoContext());
 					plEntryBean.setPropertyId(plEntry.getPropertyId());
 					plEntryBean.setPickText(plEntry.getPickText());
+					plEntryBean.setLangauage(plEntry.getLanguage());
 				}
 				else if (plExclusion != null)
 				{
@@ -210,6 +213,13 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 
 	@ClearCache
 	public void removePickListDefinitionByPickListId(String pickListDefinitionId) {
+		
+		String pickListGuid = (String) this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_GUID_BY_PICKLISTID_SQL, new PrefixedParameter(null, pickListDefinitionId));
+		
+		// remove pick list entries
+		this.getSqlMapClientTemplate().delete(REMOVE_PICKLIST_ENTRY_BY_PICKLISTGUID_SQL, new PrefixedParameter(null, pickListGuid));
+		
+		// remove pick list definition
 		this.getSqlMapClientTemplate().
 			delete(REMOVE_PICKLIST_DEFINITION_BY_PICKLISTID_SQL, new PrefixedParameter(null, pickListDefinitionId));	
 	}
