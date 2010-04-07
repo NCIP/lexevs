@@ -48,6 +48,8 @@ public class InsertOrUpdatePickListEntryBean extends IdableParameterBean {
 	
 	private boolean include;
 	
+	private String pickText;
+	
 	/**
 	 * @return the pickListEntryNode
 	 */
@@ -172,6 +174,20 @@ public class InsertOrUpdatePickListEntryBean extends IdableParameterBean {
 	 */
 	public void setInclude(boolean include) {
 		this.include = include;
+	}
+
+	/**
+	 * @return the pickText
+	 */
+	public String getPickText() {
+		return pickText;
+	}
+
+	/**
+	 * @param pickText the pickText to set
+	 */
+	public void setPickText(String pickText) {
+		this.pickText = pickText;
 	}
 
 	
