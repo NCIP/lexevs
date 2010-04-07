@@ -3,10 +3,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/castor/castor-1.2.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/jena/jena-2.5.4.jar"/>
 	<classpathentry kind="lib" path="/lgModel/lib/lgModelCastor.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/castor/castor-1.3.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
