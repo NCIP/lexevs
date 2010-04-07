@@ -47,16 +47,9 @@
   		 <property name="targetObject" ref="defaultLexEvsDatabaseOperations"/>
    		 <property name="targetMethod" value="getTransactionManager"/>
  	</bean>
- 	
- 	<bean id="prefix" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-  		 <property name="targetObject" ref="prefixResolver"/>
-   		 <property name="targetMethod" value="resolveDefaultPrefix"/>
- 	</bean>
 
  	<bean id="serviceLocator" class="org.lexevs.locator.LexEvsServiceLocator" factory-method="getInstance"/>
  	
  	<bean id="loggerFactory" class="org.lexevs.logging.LoggerFactory" factory-method="getLogger"/>
- 	
 
-	
 </beans>
