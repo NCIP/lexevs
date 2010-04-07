@@ -64,10 +64,10 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 	 */
 	@Transactional
 //	@DatabaseErrorIdentifier(errorCode=INSERT_PICKLIST_ERROR)
-	public void insertPickListDefinition(PickListDefinition definition) {
+	public void insertPickListDefinition(String systemReleaseUri, PickListDefinition definition) {
 		PickListDao plDao = this.getDaoManager().getCurrentPickListDefinitionDao();
 	
-		plDao.insertPickListDefinition(null, definition);
+		plDao.insertPickListDefinition(systemReleaseUri, definition);
 		
 //		this.fireCodingSchemeInsertEvent(definition);
 	}

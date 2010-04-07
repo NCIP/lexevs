@@ -58,9 +58,10 @@ public interface PickListDefinitionService {
 	/**
 	 * Insert pick list definition.
 	 * 
+	 * @param systemReleaseUri the system release uri
 	 * @param definition the definition
 	 */
-	public void insertPickListDefinition(PickListDefinition definition);
+	public void insertPickListDefinition(String systemReleaseUri, PickListDefinition definition);
 
 	/**
 	 * List pick list ids.
