@@ -21,11 +21,15 @@ package org.lexevs.dao.database.ibatis.picklist;
 import java.util.List;
 
 import org.LexGrid.valueSets.PickListDefinition;
+import org.LexGrid.valueSets.PickListEntry;
+import org.LexGrid.valueSets.PickListEntryExclusion;
+import org.LexGrid.valueSets.PickListEntryNode;
 import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.picklist.PickListDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.picklist.parameter.InsertOrUpdatePickListEntryBean;
 import org.lexevs.dao.database.ibatis.picklist.parameter.InsertPickListDefinitionBean;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
@@ -45,6 +49,8 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	
 	/** The INSER t_ picklis t_ definitio n_ sql. */
 	public static String INSERT_PICKLIST_DEFINITION_SQL = PICKLIST_NAMESPACE + "insertPickListDefinition";
+	
+	public static String INSERT_PICKLIST_ENTRY_SQL = PICKLIST_NAMESPACE + "insertPickListEntry";
 	
 	/** The GE t_ picklis t_ id s_ sql. */
 	public static String GET_PICKLIST_IDS_SQL = PICKLIST_NAMESPACE + "getPickListIds";
@@ -107,18 +113,55 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	@Override
 	public String insertPickListDefinition(String systemReleaseUri,
 			PickListDefinition definition) {
-		String pickListId = this.createUniqueId();
+		String pickListGuid = this.createUniqueId();
 		
 		String systemReleaseId = this.versionsDao.getSystemReleaseIdByUri(systemReleaseUri);
 		
-		InsertPickListDefinitionBean bean = new InsertPickListDefinitionBean();
-		bean.setId(pickListId);
-		bean.setPickListDefinition(definition);
-		bean.setPrefix(getPrefix());
-		bean.setSystemReleaseId(systemReleaseId);
-		this.getSqlMapClientTemplate().insert(INSERT_PICKLIST_DEFINITION_SQL, bean);
+		InsertPickListDefinitionBean plDefBean = new InsertPickListDefinitionBean();
+		plDefBean.setId(pickListGuid);
+		plDefBean.setPickListDefinition(definition);
+		plDefBean.setPrefix(getPrefix());
+		plDefBean.setSystemReleaseId(systemReleaseId);
+		this.getSqlMapClientTemplate().insert(INSERT_PICKLIST_DEFINITION_SQL, plDefBean);
 		
-		return pickListId;
+		InsertOrUpdatePickListEntryBean plEntryBean = null;
+		for (PickListEntryNode plEntryNode : definition.getPickListEntryNode()) 
+		{
+			String plEntryGuid = this.createUniqueId();
+			plEntryBean = new InsertOrUpdatePickListEntryBean();
+			plEntryBean.setId(plEntryGuid);
+			plEntryBean.setPickListEntryNode(plEntryNode);
+			plEntryBean.setPickListGuid(pickListGuid);
+			
+			if (plEntryNode.getPickListEntryNodeChoice() != null)
+			{
+				PickListEntry plEntry = plEntryNode.getPickListEntryNodeChoice().getInclusionEntry();
+				PickListEntryExclusion plExclusion = plEntryNode.getPickListEntryNodeChoice().getExclusionEntry();
+				
+				if (plEntry != null)
+				{
+					plEntryBean.setInclude(true);
+					plEntryBean.setEntityCode(plEntry.getEntityCodeNamespace());
+					plEntryBean.setEntityCode(plEntry.getEntityCode());
+					plEntryBean.setDefault(plEntry.isIsDefault() == null? false : plEntry.isIsDefault());
+					plEntryBean.setEntryOrder(plEntry.getEntryOrder());
+					plEntryBean.setMatchIfNoContext(plEntry.getMatchIfNoContext() == null ? true : plEntry.getMatchIfNoContext());
+					plEntryBean.setPropertyId(plEntry.getPropertyId());
+					plEntryBean.setPickText(plEntry.getPickText());
+				}
+				else if (plExclusion != null)
+				{
+					plEntryBean.setInclude(false);
+					plEntryBean.setEntityCode(plExclusion.getEntityCodeNamespace());
+					plEntryBean.setEntityCode(plExclusion.getEntityCode());
+				}
+			}
+			
+			// insert into plEntry table
+			this.getSqlMapClientTemplate().insert(INSERT_PICKLIST_ENTRY_SQL, plEntryBean);
+		}
+		
+		return pickListGuid;
 	}
 	
 	/* (non-Javadoc)
