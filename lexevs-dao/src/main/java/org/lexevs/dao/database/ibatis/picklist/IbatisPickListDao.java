@@ -65,7 +65,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	
 	public static String GET_PICKLIST_DEFINITION_ID_FOR_VALUESET_DEFINITION_URI_SQL = PICKLIST_NAMESPACE + "getPickListDefinitionIdForValueSetDefinitionUri";
 	
-	public static String GET_PICKLIST_ENTRYNODE_BY_PICKLIST_GUID_SQL = PICKLIST_NAMESPACE + "getPickListEntryNodeInclusionByPickListGuid";
+	public static String GET_PICKLIST_ENTRYNODE_BEAN_BY_PICKLIST_GUID_SQL = PICKLIST_NAMESPACE + "getPickListEntryNodeBeanByPickListGuid";
 	
 	public static String REMOVE_PICKLIST_DEFINITION_BY_PICKLISTID_SQL = PICKLIST_NAMESPACE + "removePickListDefinitionByPickListId";
 	
@@ -89,7 +89,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		{
 			String plDefGuid = getGuidFromPickListId(pickListId);
 			
-			List<PickListEntryNodeBean> plEntryNodeBeans = (List<PickListEntryNodeBean>) this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_ENTRYNODE_BY_PICKLIST_GUID_SQL, 
+			List<PickListEntryNodeBean> plEntryNodeBeans = (List<PickListEntryNodeBean>) this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_ENTRYNODE_BEAN_BY_PICKLIST_GUID_SQL, 
 				new PrefixedParameter(null, plDefGuid));
 			
 			if (plEntryNodeBeans != null)

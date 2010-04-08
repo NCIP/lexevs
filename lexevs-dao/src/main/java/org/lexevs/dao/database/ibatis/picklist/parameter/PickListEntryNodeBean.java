@@ -10,7 +10,7 @@ implements java.io.Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private String pickListEntryGuid;
+	private String vsPLEntryGuid;
 	
 	private String pickListEntryId;
 	
@@ -78,17 +78,17 @@ implements java.io.Serializable{
 	}
 
 	/**
-	 * @return the pickListEntryGuid
+	 * @return the vsPLEntryGuid
 	 */
-	public String getPickListEntryGuid() {
-		return pickListEntryGuid;
+	public String getVsPLEntryGuid() {
+		return vsPLEntryGuid;
 	}
 
 	/**
-	 * @param pickListEntryGuid the pickListEntryGuid to set
+	 * @param vsPLEntryGuid the vsPLEntryGuid to set
 	 */
-	public void setPickListEntryGuid(String pickListEntryGuid) {
-		this.pickListEntryGuid = pickListEntryGuid;
+	public void setVsPLEntryGuid(String vsPLEntryGuid) {
+		this.vsPLEntryGuid = vsPLEntryGuid;
 	}
 	
 }
