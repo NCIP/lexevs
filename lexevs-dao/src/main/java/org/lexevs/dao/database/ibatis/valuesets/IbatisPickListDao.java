@@ -26,7 +26,7 @@ import org.LexGrid.valueSets.PickListEntryExclusion;
 import org.LexGrid.valueSets.PickListEntryNode;
 import org.LexGrid.valueSets.PickListEntryNodeChoice;
 import org.lexevs.cache.annotation.ClearCache;
-import org.lexevs.dao.database.access.picklist.PickListDao;
+import org.lexevs.dao.database.access.valuesets.PickListDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
