@@ -1,0 +1,260 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
+package org.lexevs.dao.database.ibatis.valuesets.parameter;
+
+import org.LexGrid.valueSets.DefinitionEntry;
+import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
+
+/**
+ * The Class to handle insert or update DefinitionEntry table.
+ * 
+ * @author <a href="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</a>
+ */
+public class InsertOrUpdateDefinitionEntryBean extends IdableParameterBean {
+
+	/** The pick list entry node. */
+	private DefinitionEntry definitionEntry;
+	
+	private String valueSetDefGuid;
+	private String codingSchemeReference;
+	private String valueSetDefReference;
+	private String entityCode;				
+	private String entityCodeNamespace;
+	private boolean leafOnly;
+	private String referenceAssociation;
+	private boolean targetToSource;
+	private boolean transitiveClosure;
+	private String propertyRefCodingScheme;
+	private String propertyName;
+	private String propertyMatchValue;
+	private String matchAlgorithm;
+	private String format;
+	
+	/**
+	 * @return the definitionEntry
+	 */
+	public DefinitionEntry getDefinitionEntry() {
+		return definitionEntry;
+	}
+
+	/**
+	 * @param definitionEntry the definitionEntry to set
+	 */
+	public void setDefinitionEntry(DefinitionEntry definitionEntry) {
+		this.definitionEntry = definitionEntry;
+	}
+
+	/**
+	 * @return the valueSetDefGuid
+	 */
+	public String getValueSetDefGuid() {
+		return valueSetDefGuid;
+	}
+
+	/**
+	 * @param valueSetDefGuid the valueSetDefGuid to set
+	 */
+	public void setValueSetDefGuid(String valueSetDefGuid) {
+		this.valueSetDefGuid = valueSetDefGuid;
+	}
+
+	/**
+	 * @return the codingSchemeReference
+	 */
+	public String getCodingSchemeReference() {
+		return codingSchemeReference;
+	}
+
+	/**
+	 * @param codingSchemeReference the codingSchemeReference to set
+	 */
+	public void setCodingSchemeReference(String codingSchemeReference) {
+		this.codingSchemeReference = codingSchemeReference;
+	}
+
+	/**
+	 * @return the valueSetDefReference
+	 */
+	public String getValueSetDefReference() {
+		return valueSetDefReference;
+	}
+
+	/**
+	 * @param valueSetDefReference the valueSetDefReference to set
+	 */
+	public void setValueSetDefReference(String valueSetDefReference) {
+		this.valueSetDefReference = valueSetDefReference;
+	}
+
+	/**
+	 * @return the entityCode
+	 */
+	public String getEntityCode() {
+		return entityCode;
+	}
+
+	/**
+	 * @param entityCode the entityCode to set
+	 */
+	public void setEntityCode(String entityCode) {
+		this.entityCode = entityCode;
+	}
+
+	/**
+	 * @return the entityCodeNamespace
+	 */
+	public String getEntityCodeNamespace() {
+		return entityCodeNamespace;
+	}
+
+	/**
+	 * @param entityCodeNamespace the entityCodeNamespace to set
+	 */
+	public void setEntityCodeNamespace(String entityCodeNamespace) {
+		this.entityCodeNamespace = entityCodeNamespace;
+	}
+
+	/**
+	 * @return the leafOnly
+	 */
+	public boolean isLeafOnly() {
+		return leafOnly;
+	}
+
+	/**
+	 * @param leafOnly the leafOnly to set
+	 */
+	public void setLeafOnly(boolean leafOnly) {
+		this.leafOnly = leafOnly;
+	}
+
+	/**
+	 * @return the referenceAssociation
+	 */
+	public String getReferenceAssociation() {
+		return referenceAssociation;
+	}
+
+	/**
+	 * @param referenceAssociation the referenceAssociation to set
+	 */
+	public void setReferenceAssociation(String referenceAssociation) {
+		this.referenceAssociation = referenceAssociation;
+	}
+
+	/**
+	 * @return the targetToSource
+	 */
+	public boolean isTargetToSource() {
+		return targetToSource;
+	}
+
+	/**
+	 * @param targetToSource the targetToSource to set
+	 */
+	public void setTargetToSource(boolean targetToSource) {
+		this.targetToSource = targetToSource;
+	}
+
+	/**
+	 * @return the transitiveClosure
+	 */
+	public boolean isTransitiveClosure() {
+		return transitiveClosure;
+	}
+
+	/**
+	 * @param transitiveClosure the transitiveClosure to set
+	 */
+	public void setTransitiveClosure(boolean transitiveClosure) {
+		this.transitiveClosure = transitiveClosure;
+	}
+
+	/**
+	 * @return the propertyRefCodingScheme
+	 */
+	public String getPropertyRefCodingScheme() {
+		return propertyRefCodingScheme;
+	}
+
+	/**
+	 * @param propertyRefCodingScheme the propertyRefCodingScheme to set
+	 */
+	public void setPropertyRefCodingScheme(String propertyRefCodingScheme) {
+		this.propertyRefCodingScheme = propertyRefCodingScheme;
+	}
+
+	/**
+	 * @return the propertyName
+	 */
+	public String getPropertyName() {
+		return propertyName;
+	}
+
+	/**
+	 * @param propertyName the propertyName to set
+	 */
+	public void setPropertyName(String propertyName) {
+		this.propertyName = propertyName;
+	}
+
+	/**
+	 * @return the propertyMatchValue
+	 */
+	public String getPropertyMatchValue() {
+		return propertyMatchValue;
+	}
+
+	/**
+	 * @param propertyMatchValue the propertyMatchValue to set
+	 */
+	public void setPropertyMatchValue(String propertyMatchValue) {
+		this.propertyMatchValue = propertyMatchValue;
+	}
+
+	/**
+	 * @return the matchAlgorithm
+	 */
+	public String getMatchAlgorithm() {
+		return matchAlgorithm;
+	}
+
+	/**
+	 * @param matchAlgorithm the matchAlgorithm to set
+	 */
+	public void setMatchAlgorithm(String matchAlgorithm) {
+		this.matchAlgorithm = matchAlgorithm;
+	}
+
+	/**
+	 * @return the format
+	 */
+	public String getFormat() {
+		return format;
+	}
+
+	/**
+	 * @param format the format to set
+	 */
+	public void setFormat(String format) {
+		this.format = format;
+	}
+
+}
+
