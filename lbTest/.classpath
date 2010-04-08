@@ -7,11 +7,11 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lbModel"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgConverter"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgModel"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/lgModel.emf"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/loader-framework-core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/umls-loader"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/abstract-rrf-loader"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/lgValueDomain"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/apache/ant/ant-launcher-1.7.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lgValueSets"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
