@@ -25,6 +25,7 @@
 	</resultMap>
 	
 	<resultMap  id="pickListEntryNodeBeanResult" class="pickListEntryNodeBean">
+		<result property="vsPLEntryGuid" column="vsPLEntryGuid"/>
 		<result property="pickListEntryId" column="plEntryId"/>
 		<result property="include" column="include" />
 		<result property="isActive" column="isActive" />
@@ -93,10 +94,11 @@
 			pickListDef.pickListId = #param1#
 	</select>
 	
-	<select id="getPickListEntryNodeInclusionByPickListGuid" 
+	<select id="getPickListEntryNodeBeanByPickListGuid" 
 		resultMap="PickList.pickListEntryNodeBeanResult" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		SELECT
+			vsPLEntryGuid,
 			plEntryId,
 			entityCodeNamespace,
 			entityCode,
