@@ -24,6 +24,7 @@ import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListEntry;
 import org.LexGrid.valueSets.PickListEntryExclusion;
 import org.LexGrid.valueSets.PickListEntryNode;
+import org.LexGrid.valueSets.PickListEntryNodeChoice;
 import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.picklist.PickListDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
@@ -31,6 +32,7 @@ import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.picklist.parameter.InsertOrUpdatePickListEntryBean;
 import org.lexevs.dao.database.ibatis.picklist.parameter.InsertPickListDefinitionBean;
+import org.lexevs.dao.database.ibatis.picklist.parameter.PickListEntryNodeBean;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 
@@ -86,14 +88,35 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		if (plDef != null)
 		{
 			String plDefGuid = getGuidFromPickListId(pickListId);
-			List<PickListEntryNode> plEntryNodes = (List<PickListEntryNode>) this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_ENTRYNODE_BY_PICKLIST_GUID_SQL, 
+			
+			List<PickListEntryNodeBean> plEntryNodeBeans = (List<PickListEntryNodeBean>) this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_ENTRYNODE_BY_PICKLIST_GUID_SQL, 
 				new PrefixedParameter(null, plDefGuid));
 			
-			System.out.println("plEntryNodes size : " + plEntryNodes.size());
-			if (plEntryNodes != null)
+			if (plEntryNodeBeans != null)
 			{
-				for (PickListEntryNode plEntryNode : plEntryNodes)					
+				for (PickListEntryNodeBean plEntryNodeBean : plEntryNodeBeans)		
+				{
+					PickListEntryNode plEntryNode = new PickListEntryNode();
+					plEntryNode.setPickListEntryId(plEntryNodeBean.getPickListEntryId());
+					plEntryNode.setEffectiveDate(plEntryNodeBean.getEffectiveDate());
+					plEntryNode.setExpirationDate(plEntryNodeBean.getExpirationDate());
+					plEntryNode.setEntryState(plEntryNodeBean.getEntryState());
+					plEntryNode.setIsActive(plEntryNodeBean.getIsActive());
+					plEntryNode.setOwner(plEntryNodeBean.getOwner());
+					
+					PickListEntryNodeChoice plEntryNodeChoice = new PickListEntryNodeChoice();
+					
+					if (plEntryNodeBean.getInclude().booleanValue())
+					{
+						plEntryNodeChoice.setInclusionEntry(plEntryNodeBean.getPickListEntry());
+					}
+					else
+					{
+						plEntryNodeChoice.setExclusionEntry(plEntryNodeBean.getPickListEntryExclusion());
+					}
+					plEntryNode.setPickListEntryNodeChoice(plEntryNodeChoice);
 					plDef.addPickListEntryNode(plEntryNode);
+				}
 			}
 		}
 		return plDef;
