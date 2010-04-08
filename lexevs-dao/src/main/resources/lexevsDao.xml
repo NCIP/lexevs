@@ -53,6 +53,11 @@
 		<property name="versionsDao" ref="ibatisVersionsDao"/>
 	</bean>
 	
+	<bean id="ibatisValueSetDefinitionDao"
+		class="org.lexevs.dao.database.ibatis.valuesets.IbatisValueSetDefinitionDao" parent="abstractIbatisDao">
+		<property name="versionsDao" ref="ibatisVersionsDao"/>
+	</bean>
+	
 	<bean id="abstractSqlInterfaceDao" abstract="true">
 		<property name="resourceManager" ref="resourceManager"/>
 	 	<property name="sqlImplementedMethodsDao" ref="sqlImplementedMethodsDao"/>
@@ -96,6 +101,11 @@
 		<property name="pickListDaos">
 			<list>
 				<ref bean="ibatisPickListDao"/>
+			</list>
+		</property>		
+		<property name="valueSetDefinitionDaos">
+			<list>
+				<ref bean="ibatisValueSetDefinitionDao"/>
 			</list>
 		</property>
 		<property name="registry" ref="registry"/>
