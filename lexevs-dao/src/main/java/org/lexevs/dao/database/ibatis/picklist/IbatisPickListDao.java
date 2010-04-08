@@ -63,6 +63,8 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	
 	public static String GET_PICKLIST_DEFINITION_ID_FOR_VALUESET_DEFINITION_URI_SQL = PICKLIST_NAMESPACE + "getPickListDefinitionIdForValueSetDefinitionUri";
 	
+	public static String GET_PICKLIST_ENTRYNODE_BY_PICKLIST_GUID_SQL = PICKLIST_NAMESPACE + "getPickListEntryNodeInclusionByPickListGuid";
+	
 	public static String REMOVE_PICKLIST_DEFINITION_BY_PICKLISTID_SQL = PICKLIST_NAMESPACE + "removePickListDefinitionByPickListId";
 	
 	public static String REMOVE_PICKLIST_ENTRY_BY_PICKLISTGUID_SQL = PICKLIST_NAMESPACE + "removePickListEntryByPickListGuid";
@@ -74,11 +76,27 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.picklist.PickListDao#getPickListDefinitionById(java.lang.String)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public PickListDefinition getPickListDefinitionById(String pickListId) {
-		return (PickListDefinition) 
+		PickListDefinition plDef = (PickListDefinition) 
 			this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_DEFINITION_BY_PICKLISTID_SQL, 
 				new PrefixedParameter(null, pickListId));
+		
+		if (plDef != null)
+		{
+			String plDefGuid = getGuidFromPickListId(pickListId);
+			List<PickListEntryNode> plEntryNodes = (List<PickListEntryNode>) this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_ENTRYNODE_BY_PICKLIST_GUID_SQL, 
+				new PrefixedParameter(null, plDefGuid));
+			
+			System.out.println("plEntryNodes size : " + plEntryNodes.size());
+			if (plEntryNodes != null)
+			{
+				for (PickListEntryNode plEntryNode : plEntryNodes)					
+					plDef.addPickListEntryNode(plEntryNode);
+			}
+		}
+		return plDef;
 	}
 	
 	/* (non-Javadoc)

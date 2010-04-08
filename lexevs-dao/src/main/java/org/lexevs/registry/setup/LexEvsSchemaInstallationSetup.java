@@ -54,9 +54,9 @@ public class LexEvsSchemaInstallationSetup extends AbstractLoggingBean implement
 				this.getLexEvsDatabaseOperations().createCommonTables();
 				this.getLexEvsDatabaseOperations().createHistoryTables();
 				this.registryDao.initRegistryMetadata();
+				this.getLexEvsDatabaseOperations().createValueSetsTables();
 				if(this.systemVariables.isSingleTableMode()){
-					lexEvsDatabaseOperations.createCodingSchemeTables();
-					lexEvsDatabaseOperations.createValueSetsTables();
+					lexEvsDatabaseOperations.createCodingSchemeTables();					
 				}
 		}	
 	}
