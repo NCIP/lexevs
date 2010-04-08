@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.valueSets.PickListDefinition;
-import org.lexevs.dao.database.access.picklist.PickListDao;
+import org.lexevs.dao.database.access.valuesets.PickListDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.springframework.transaction.annotation.Transactional;
 
