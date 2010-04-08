@@ -24,8 +24,28 @@
 		<result property="expirationDate" column="expirationDate" />
 	</resultMap>
 	
-	<resultMap id="pickListEntryNodeResult" class="pickListEntryNode">
-		<result property="pickListEntryId" column="pickListEntryId"/>		
+	<resultMap id="pickListEntryNodeInclusionResult" class="pickListEntryNode">
+		<result property="pickListEntryId" column="plEntryId"/>
+		<result property="isActive" column="isActive" />
+		<result property="owner" column="owner" />
+		<result property="status" column="status" />
+		<result property="effectiveDate" column="effectiveDate" />
+		<result property="expirationDate" column="expirationDate" />
+		<result property="_pickListEntryNodeChoice" resultMap="PickList.pickListEntryNodeChoiceInclusionResult"/>		
+	</resultMap>
+	
+	<resultMap id="pickListEntryNodeExclusionResult" class="pickListEntryNode">
+		<result property="pickListEntryId" column="plEntryId"/>
+		<result property="isActive" column="isActive" />
+		<result property="owner" column="owner" />
+		<result property="status" column="status" />
+		<result property="effectiveDate" column="effectiveDate" />
+		<result property="expirationDate" column="expirationDate" />
+		<result property="pickListEntryNodeChoice" resultMap="PickList.pickListEntryNodeChoiceExclusionResult"/>		
+	</resultMap>
+	
+	<resultMap id="pickListEntryNodeChoiceInclusionResult" class="pickListEntryNodeChoice">
+		<result property="_inclusionEntry" resultMap="PickList.pickListEntyResult"/>
 	</resultMap>
 	
 	<resultMap  id="pickListEntyResult" class="pickListEntry">
@@ -37,6 +57,10 @@
 		<result property="matchIfNoContext" column="matchIfNoContext"/>
 		<result property="language" column="langauge"/>
 		<result property="pickText" column="pickText"/>
+	</resultMap>
+	
+	<resultMap id="pickListEntryNodeChoiceExclusionResult" class="pickListEntryNodeChoice">
+		<result property="exclusionEntry" resultMap="PickList.pickListExclusionResult"/>
 	</resultMap>
 	
 	<resultMap  id="pickListExclusionResult" class="pickListEntryExclusion">
@@ -85,51 +109,30 @@
 			pickListDef.pickListId = #param1#
 	</select>
 	
-	<select id="getPickListEntryByPickListGuid" 
-		resultMap="pickListEntryResult" 
+	<select id="getPickListEntryNodeInclusionByPickListGuid" 
+		resultMap="pickListEntryNodeInclusionResult" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		SELECT
-			
-		INSERT INTO vsPLEntry
-		(
-				vsPLEntryGuid,
-				vsPickListGuid,
-				plEntryId,
-				entityCodeNamespace,
-				entityCode,
-				entryOrder,
-				isDefault,
-				matchIfNoContext,
-				propertyId,
-				language,
-				include,
-				pickText,
-				isActive,
-				owner,
-				status,
-				effectiveDate,
-				expirationDate,
-				entryStateGuid
-			) VALUES (
-				#id#,
-				#pickListGuid#,
-				#pickListEntryNode.pickListEntryId#,
-				#entityCodeNamespace#,
-				#entityCode#,
-				#entryOrder#,
-				#isDefault#,
-				#matchIfNoContext#,
-				#propertyId#,
-				#language#,
-				#include#,
-				#pickText#,
-				#pickListEntryNode.isActive#,
-				#pickListEntryNode.owner#,
-				#pickListEntryNode.status#,
-				#pickListEntryNode.effectiveDate#,
-				#pickListEntryNode.expirationDate#,
-				#entryStateId#	
-			)
+			plEntryId,
+			entityCodeNamespace,
+			entityCode,
+			entryOrder,
+			isDefault,
+			matchIfNoContext,
+			propertyId,
+			language,
+			include,
+			pickText,
+			isActive,
+			owner,
+			status,
+			effectiveDate,
+			expirationDate,
+			entryStateGuid
+		FROM
+			vsPLEntry
+		WHERE
+			vsPickListGuid = #param1#
      </select>
      
      
@@ -237,5 +240,24 @@
 		WHERE
 			vsPickListGuid = #param1#
 	</delete>
-    
+   
+<!--	<resultMap id="pickListEntryNodeResult" class="pickListEntryNode">-->
+<!--		<result property="pickListEntryId" column="plEntryId"/>-->
+<!--		<result property="isActive" column="isActive" />-->
+<!--		<result property="owner" column="owner" />-->
+<!--		<result property="status" column="status" />-->
+<!--		<result property="effectiveDate" column="effectiveDate" />-->
+<!--		<result property="expirationDate" column="expirationDate" />-->
+<!--		<result property="_pickListEntryNodeChoice" resultMap="PickList.pickListEntryNodeChoiceResult"/>		-->
+<!--	</resultMap>-->
+	
+<!--	<resultMap id="pickListEntryNodeChoiceResult" class="pickListEntryNodeChoice">-->
+<!--		<result property="_inclusionEntry" resultMap="PickList.pickListEntyResult"/>-->
+<!--		<result property="_exclusionEntry" resultMap="PickList.pickListExclusionResult"/>-->
+<!--		<discriminator javaType="Boolean" column="include">-->
+<!--			<subMap resultMap="PickList.pickListEntryNodeChoiceInclusionResult" value="1"/>-->
+<!--			<subMap resultMap="PickList.pickListEntryNodeChoiceExclusionResult" value="0"/>-->
+<!--		</discriminator>-->
+<!--	</resultMap>-->
+
 </sqlMap>
