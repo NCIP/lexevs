@@ -49,7 +49,7 @@
 	</bean>
 	
 	<bean id="ibatisPickListDao"
-		class="org.lexevs.dao.database.ibatis.picklist.IbatisPickListDao" parent="abstractIbatisDao">
+		class="org.lexevs.dao.database.ibatis.valuesets.IbatisPickListDao" parent="abstractIbatisDao">
 		<property name="versionsDao" ref="ibatisVersionsDao"/>
 	</bean>
 	

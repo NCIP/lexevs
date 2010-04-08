@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="PickList">
+<sqlMap namespace="ValueSetDefinition">
 
-	<typeAlias alias="pickListDefinition" type="org.LexGrid.valueSets.PickListDefinition" />
-	<typeAlias alias="pickListEntryExclusion" type="org.LexGrid.valueSets.PickListEntryExclusion" />
-	<typeAlias alias="pickListEntry" type="org.LexGrid.valueSets.PickListEntry" />	
+	<typeAlias alias="valueSetDefinition" type="org.LexGrid.valueSets.ValueSetDefinition" />
+	<typeAlias alias="definitionEntry" type="org.LexGrid.valueSets.DefinitionEntry" />
+	<typeAlias alias="entityReference" type="org.LexGrid.valueSets.EntityReference" />	
+	<typeAlias alias="codingSchemeReference" type="org.LexGrid.valueSets.CodingSchemeReference" />
+	<typeAlias alias="valueSetDefinitionReference" type="org.LexGrid.valueSets.ValueSetDefinitionReference" />
+	<typeAlias alias="propertyReference" type="org.LexGrid.valueSets.PropertyReference" />
+	<typeAlias alias="propertyMatchValue" type="org.LexGrid.valueSets.PropertyMatchValue" />
 	
-	<typeAlias alias="pickListEntryNodeBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.PickListEntryNodeBean" />
-
-	<resultMap id="pickListDefinitionResult" class="pickListDefinition">
-		<result property="pickListId" column="pickListId" />
-		<result property="representsValueSetDefinition" column="representsValueSetDefinition" />
-		<result property="defaultEntityCodeNamespace" column="defaultEntityCodeNamespace" />
-		<result property="defaultLanguage" column="defaultLanguage" />
-		<result property="defaultSortOrder" column="defaultSortOrder"/>
-		<result property="completeSet" column="completeSet"/>
+	<resultMap id="valueSetDefinitionResult" class="valueSetDefinition">
+		<result property="valueSetDefinitionURI" column="valueSetDefURI" />
+		<result property="valueSetDefinitionName" column="valueSetDefName" />
+		<result property="defaultCodingScheme" column="defaultCodingScheme" />
+		<result property="conceptDomain" column="conceptDomain" />
 		<result property="entityDescription.content" column="description" />
+		<result property="completeSet" column="completeSet"/>
 		<result property="isActive" column="isActive" />
 		<result property="owner" column="owner" />
 		<result property="status" column="status" />
@@ -24,22 +25,9 @@
 		<result property="expirationDate" column="expirationDate" />
 	</resultMap>
 	
-	<resultMap  id="pickListEntryNodeBeanResult" class="pickListEntryNodeBean">
-		<result property="vsPLEntryGuid" column="vsPLEntryGuid"/>
-		<result property="pickListEntryId" column="plEntryId"/>
-		<result property="include" column="include" />
-		<result property="isActive" column="isActive" />
-		<result property="owner" column="owner" />
-		<result property="status" column="status" />
-		<result property="effectiveDate" column="effectiveDate" />
-		<result property="expirationDate" column="expirationDate" />
-		<result property="pickListEntry" resultMap="PickList.pickListEntryResult"/>		
-		<result property="pickListEntryExclusion" resultMap="PickList.pickListExclusionResult"/>
-	</resultMap>
-	
-	<resultMap  id="pickListEntryResult" class="pickListEntry">
-		<result property="entityCode" column="entityCode"/>
-		<result property="entityCodeNamespace" column="entityCodeNamespace"/>
+	<resultMap  id="definitionEntryResult" class="definitionEntry">
+		<result property="ruleOrder" column="ruleOrder"/>
+		<result property="operator" column="operator"/>
 		<result property="entryOrder" column="entryOrder"/>
 		<result property="propertyId" column="propertyId"/>
 		<result property="isDefault" column="isDefault"/>
@@ -134,7 +122,7 @@
 	</select>
 	
 	<insert id="insertPickListDefinition" 
-		parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertPickListDefinitionBean">
+		parameterClass="org.lexevs.dao.database.ibatis.picklist.parameter.InsertPickListDefinitionBean">
 		INSERT INTO vsPickList
 		(
 				vsPickListGuid,
@@ -172,7 +160,7 @@
      </insert>
      
      <insert id="insertPickListEntry" 
-		parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdatePickListEntryBean">
+		parameterClass="org.lexevs.dao.database.ibatis.picklist.parameter.InsertOrUpdatePickListEntryBean">
 		INSERT INTO vsPLEntry
 		(
 				vsPLEntryGuid,
