@@ -27,6 +27,7 @@ import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.junit.Test;
+import org.lexevs.dao.database.ibatis.valuesets.IbatisPickListDao;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
