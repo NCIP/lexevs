@@ -4,10 +4,10 @@
 <sqlMap namespace="PickList">
 
 	<typeAlias alias="pickListDefinition" type="org.LexGrid.valueSets.PickListDefinition" />
-	<typeAlias alias="pickListEntryNode" type="org.LexGrid.valueSets.PickListEntryNode" />
-	<typeAlias alias="pickListEntryNodeChoice" type="org.LexGrid.valueSets.PickListEntryNodeChoice" />
 	<typeAlias alias="pickListEntryExclusion" type="org.LexGrid.valueSets.PickListEntryExclusion" />
 	<typeAlias alias="pickListEntry" type="org.LexGrid.valueSets.PickListEntry" />	
+	
+	<typeAlias alias="pickListEntryNodeBean" type="org.lexevs.dao.database.ibatis.picklist.parameter.PickListEntryNodeBean" />
 
 	<resultMap id="pickListDefinitionResult" class="pickListDefinition">
 		<result property="pickListId" column="pickListId" />
@@ -24,43 +24,27 @@
 		<result property="expirationDate" column="expirationDate" />
 	</resultMap>
 	
-	<resultMap id="pickListEntryNodeInclusionResult" class="pickListEntryNode">
+	<resultMap  id="pickListEntryNodeBeanResult" class="pickListEntryNodeBean">
 		<result property="pickListEntryId" column="plEntryId"/>
+		<result property="include" column="include" />
 		<result property="isActive" column="isActive" />
 		<result property="owner" column="owner" />
 		<result property="status" column="status" />
 		<result property="effectiveDate" column="effectiveDate" />
 		<result property="expirationDate" column="expirationDate" />
-		<result property="_pickListEntryNodeChoice" resultMap="PickList.pickListEntryNodeChoiceInclusionResult"/>		
+		<result property="pickListEntry" resultMap="PickList.pickListEntryResult"/>		
+		<result property="pickListEntryExclusion" resultMap="PickList.pickListExclusionResult"/>
 	</resultMap>
 	
-	<resultMap id="pickListEntryNodeExclusionResult" class="pickListEntryNode">
-		<result property="pickListEntryId" column="plEntryId"/>
-		<result property="isActive" column="isActive" />
-		<result property="owner" column="owner" />
-		<result property="status" column="status" />
-		<result property="effectiveDate" column="effectiveDate" />
-		<result property="expirationDate" column="expirationDate" />
-		<result property="pickListEntryNodeChoice" resultMap="PickList.pickListEntryNodeChoiceExclusionResult"/>		
-	</resultMap>
-	
-	<resultMap id="pickListEntryNodeChoiceInclusionResult" class="pickListEntryNodeChoice">
-		<result property="_inclusionEntry" resultMap="PickList.pickListEntyResult"/>
-	</resultMap>
-	
-	<resultMap  id="pickListEntyResult" class="pickListEntry">
+	<resultMap  id="pickListEntryResult" class="pickListEntry">
 		<result property="entityCode" column="entityCode"/>
 		<result property="entityCodeNamespace" column="entityCodeNamespace"/>
 		<result property="entryOrder" column="entryOrder"/>
 		<result property="propertyId" column="propertyId"/>
 		<result property="isDefault" column="isDefault"/>
 		<result property="matchIfNoContext" column="matchIfNoContext"/>
-		<result property="language" column="langauge"/>
+		<result property="language" column="language"/>
 		<result property="pickText" column="pickText"/>
-	</resultMap>
-	
-	<resultMap id="pickListEntryNodeChoiceExclusionResult" class="pickListEntryNodeChoice">
-		<result property="exclusionEntry" resultMap="PickList.pickListExclusionResult"/>
 	</resultMap>
 	
 	<resultMap  id="pickListExclusionResult" class="pickListEntryExclusion">
@@ -110,7 +94,7 @@
 	</select>
 	
 	<select id="getPickListEntryNodeInclusionByPickListGuid" 
-		resultMap="pickListEntryNodeInclusionResult" 
+		resultMap="PickList.pickListEntryNodeBeanResult" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		SELECT
 			plEntryId,
@@ -133,10 +117,10 @@
 			vsPLEntry
 		WHERE
 			vsPickListGuid = #param1#
+		ORDER BY entryOrder
      </select>
      
-     
-	<select id="getPickListDefinitionIdForValueSetDefinitionUri" 
+     <select id="getPickListDefinitionIdForValueSetDefinitionUri" 
 		resultClass="string" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		SELECT
@@ -240,24 +224,4 @@
 		WHERE
 			vsPickListGuid = #param1#
 	</delete>
-   
-<!--	<resultMap id="pickListEntryNodeResult" class="pickListEntryNode">-->
-<!--		<result property="pickListEntryId" column="plEntryId"/>-->
-<!--		<result property="isActive" column="isActive" />-->
-<!--		<result property="owner" column="owner" />-->
-<!--		<result property="status" column="status" />-->
-<!--		<result property="effectiveDate" column="effectiveDate" />-->
-<!--		<result property="expirationDate" column="expirationDate" />-->
-<!--		<result property="_pickListEntryNodeChoice" resultMap="PickList.pickListEntryNodeChoiceResult"/>		-->
-<!--	</resultMap>-->
-	
-<!--	<resultMap id="pickListEntryNodeChoiceResult" class="pickListEntryNodeChoice">-->
-<!--		<result property="_inclusionEntry" resultMap="PickList.pickListEntyResult"/>-->
-<!--		<result property="_exclusionEntry" resultMap="PickList.pickListExclusionResult"/>-->
-<!--		<discriminator javaType="Boolean" column="include">-->
-<!--			<subMap resultMap="PickList.pickListEntryNodeChoiceInclusionResult" value="1"/>-->
-<!--			<subMap resultMap="PickList.pickListEntryNodeChoiceExclusionResult" value="0"/>-->
-<!--		</discriminator>-->
-<!--	</resultMap>-->
-
 </sqlMap>
