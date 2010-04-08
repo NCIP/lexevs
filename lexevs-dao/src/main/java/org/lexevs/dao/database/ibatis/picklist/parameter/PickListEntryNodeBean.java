@@ -9,7 +9,9 @@ implements java.io.Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
+	private String pickListEntryGuid;
+	
 	private String pickListEntryId;
 	
 	private Boolean include;
@@ -73,6 +75,20 @@ implements java.io.Serializable{
 	public void setPickListEntryExclusion(
 			PickListEntryExclusion pickListEntryExclusion) {
 		this.pickListEntryExclusion = pickListEntryExclusion;
+	}
+
+	/**
+	 * @return the pickListEntryGuid
+	 */
+	public String getPickListEntryGuid() {
+		return pickListEntryGuid;
+	}
+
+	/**
+	 * @param pickListEntryGuid the pickListEntryGuid to set
+	 */
+	public void setPickListEntryGuid(String pickListEntryGuid) {
+		this.pickListEntryGuid = pickListEntryGuid;
 	}
 	
 }
