@@ -29,109 +29,89 @@
 		<result property="ruleOrder" column="ruleOrder"/>
 		<result property="operator" column="operator"/>
 		<result property="entryOrder" column="entryOrder"/>
-		<result property="propertyId" column="propertyId"/>
-		<result property="isDefault" column="isDefault"/>
-		<result property="matchIfNoContext" column="matchIfNoContext"/>
-		<result property="language" column="language"/>
-		<result property="pickText" column="pickText"/>
+		<result property="isActive" column="isActive" />
+		<result property="owner" column="owner" />
+		<result property="status" column="status" />
+		<result property="effectiveDate" column="effectiveDate" />
+		<result property="expirationDate" column="expirationDate" />
 	</resultMap>
 	
-	<resultMap  id="pickListExclusionResult" class="pickListEntryExclusion">
+	<resultMap  id="codingSchemeReferenceResult" class="codingSchemeReference">
+		<result property="codingScheme" column="codingSchemeReference"/>
+	</resultMap>
+	
+	<resultMap  id="valueSetDefinitionReferenceResult" class="valueSetDefinitionReference">
+		<result property="valueSetDefinitionURI" column="valueSetDefReference"/>
+	</resultMap>
+	
+	<resultMap  id="entityReferenceResult" class="entityReference">
 		<result property="entityCode" column="entityCode"/>
 		<result property="entityCodeNamespace" column="entityCodeNamespace"/>
+		<result property="leafOnly" column="leafOnly"/>
+		<result property="referenceAssociation" column="referenceAssociation"/>
+		<result property="targetToSource" column="targetToSource"/>
+		<result property="transitiveClosure" column="transitiveClosure"/>
 	</resultMap>
 	
-	<select id="getPickListIds" 
+	<resultMap  id="propertyReferenceResult" class="propertyReference">
+		<result property="codingScheme" column="propertyRefCodingScheme"/>
+		<result property="propertyName" column="propertyName"/>
+		<result property="value.content" column="propertyMatchValue" />
+		<result property="value.dataType" column="format" />
+	</resultMap>
+	
+	<resultMap  id="propertyMatchValueResult" class="propertyMatchValue">
+		<result property="matchAlgorithm" column="matchAlgorithm"/>
+	</resultMap>
+	
+	<select id="getValueSetDefinitionURIs" 
 		parameterClass="string" resultClass="string">
 		SELECT
-			pickListId
+			valueSetDefURI
 		FROM
-			vsPickList
+			valueSetDefinition
 	</select>
 	
-	<select id="getPickListGuidByPickListId" 
+	<select id="getValueSetDefinitionGuidByValueSetDefinitionURI" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
 		resultClass="string">
 		SELECT
-			vsPickListGuid
+			valueSetDefGuid
 		FROM
-			vsPickList pickListDef
+			valueSetDefinition
 		WHERE
-			pickListDef.pickListId = #param1#
+			valueSetDefURI = #param1#
 	</select>
 	
-	<select id="getPickListDefinitionByPickListId" 
-		resultMap="pickListDefinitionResult" 
+	<select id="getValueSetDefinitionByValueSetURI" 
+		resultMap="valueSetDefinitionResult" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		SELECT
-			pickListDef.pickListId,
-			pickListDef.representsValueSetDefinition,
-			pickListDef.completeSet,
-			pickListDef.defaultEntityCodeNamespace,
-			pickListDef.defaultLanguage,
-			pickListDef.defaultSortOrder,
-			pickListDef.description,
-			pickListDef.isActive,
-			pickListDef.owner,
-			pickListDef.status,
-			pickListDef.effectiveDate,
-			pickListDef.expirationDate
-		FROM
-			vsPickList pickListDef
-		WHERE
-			pickListDef.pickListId = #param1#
-	</select>
-	
-	<select id="getPickListEntryNodeBeanByPickListGuid" 
-		resultMap="PickList.pickListEntryNodeBeanResult" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
-		SELECT
-			vsPLEntryGuid,
-			plEntryId,
-			entityCodeNamespace,
-			entityCode,
-			entryOrder,
-			isDefault,
-			matchIfNoContext,
-			propertyId,
-			language,
-			include,
-			pickText,
+			valueSetDefURI,
+			valueSetDefName,
+			defaultCodingScheme,
+			conceptDomain,
+			description,
 			isActive,
 			owner,
 			status,
 			effectiveDate,
-			expirationDate,
-			entryStateGuid
+			expirationDate
 		FROM
-			vsPLEntry
+			valueSetDefinition
 		WHERE
-			vsPickListGuid = #param1#
-		ORDER BY entryOrder
-     </select>
-     
-     <select id="getPickListDefinitionIdForValueSetDefinitionUri" 
-		resultClass="string" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
-		SELECT
-			pickListDef.pickListId
-		FROM
-			vsPickList pickListDef
-		WHERE
-			pickListDef.representsValueSetDefinition = #param1#
+			valueSetDefURI = #param1#
 	</select>
 	
-	<insert id="insertPickListDefinition" 
-		parameterClass="org.lexevs.dao.database.ibatis.picklist.parameter.InsertPickListDefinitionBean">
-		INSERT INTO vsPickList
+	<insert id="insertValueSetDefinition" 
+		parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean">
+		INSERT INTO valueSetDefinition
 		(
-				vsPickListGuid,
-				pickListId,
-				representsValueSetDefinition,
-				completeSet,
-				defaultEntityCodeNamespace,
-				defaultLanguage,
-				defaultSortOrder,
+				valueSetDefGuid,
+				valueSetDefURI,
+				valueSetDefName,
+				defaultCodingScheme,
+				conceptDomain,
 				description,
 				releaseGuid,
 				isActive,
@@ -142,38 +122,42 @@
 				entryStateGuid
 			) VALUES (
 				#id#,
-				#pickListDefinition.pickListId#,
-				#pickListDefinition.representsValueSetDefinition#,
-				#pickListDefinition.completeSet#,
-				#pickListDefinition.defaultEntityCodeNamespace#,
-				#pickListDefinition.defaultLanguage#,
-				#pickListDefinition.defaultSortOrder#,
-				#pickListDefinition.entityDescription.content#,
+				#valueSetDefinition.valueSetDefinitionURI#,
+				#valueSetDefinition.valueSetDefinitionName#,
+				#valueSetDefinition.defaultCodingScheme#,
+				#valueSetDefinition.conceptDomain#,
+				#valueSetDefinition.entityDescription.content#,
 				#systemReleaseId#,
-				#pickListDefinition.isActive#,
-				#pickListDefinition.owner#,
-				#pickListDefinition.status#,
-				#pickListDefinition.effectiveDate#,
-				#pickListDefinition.expirationDate#,
+				#valueSetDefinition.isActive#,
+				#valueSetDefinition.owner#,
+				#valueSetDefinition.status#,
+				#valueSetDefinition.effectiveDate#,
+				#valueSetDefinition.expirationDate#,
 				#entryStateId#	
 			)
      </insert>
      
-     <insert id="insertPickListEntry" 
-		parameterClass="org.lexevs.dao.database.ibatis.picklist.parameter.InsertOrUpdatePickListEntryBean">
-		INSERT INTO vsPLEntry
+     <insert id="insertDefinitionEntry" 
+		parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateDefinitionEntryBean">
+		INSERT INTO vsdEntry
 		(
-				vsPLEntryGuid,
-				vsPickListGuid,
-				plEntryId,
-				entityCodeNamespace,
+				vsdEntryGuid,
+				valueSetDefGuid,
+				ruleOrder,
+				operator,
+				codingSchemeReference,
+				valueSetDefReference,
 				entityCode,
-				entryOrder,
-				isDefault,
-				matchIfNoContext,
-				propertyId,
-				include,
-				pickText,
+				entityCodeNamespace,
+				leafOnly,
+				referenceAssociation,
+				targetToSource,
+				transitiveClosure,
+				propertyRefCodingScheme,
+				propertyName,
+				propertyMatchValue,
+				matchAlgorithm,
+				format,
 				isActive,
 				owner,
 				status,
@@ -182,36 +166,42 @@
 				entryStateGuid
 			) VALUES (
 				#id#,
-				#pickListGuid#,
-				#pickListEntryNode.pickListEntryId#,
+				#valueSetDefGuid#,
+				#definitionEntry.ruleOrder#,
+				#definitionEntry.operator#,
+				#codingSchemeReference#,
+				#valueSetDefReference#,
+				#entityCode#,				
 				#entityCodeNamespace#,
-				#entityCode#,
-				#entryOrder#,
-				#isDefault#,
-				#matchIfNoContext#,
-				#propertyId#,
-				#include#,
-				#pickText#,
-				#pickListEntryNode.isActive#,
-				#pickListEntryNode.owner#,
-				#pickListEntryNode.status#,
-				#pickListEntryNode.effectiveDate#,
-				#pickListEntryNode.expirationDate#,
+				#leafOnly#,
+				#referenceAssociation#,
+				#targetToSource#,
+				#transitiveClosure#,
+				#propertyRefCodingScheme#,
+				#propertyName#,
+				#propertyMatchValue#,
+				#matchAlgorithm#,
+				#format#,
+				#definitionEntry.isActive#,
+				#definitionEntry.owner#,
+				#definitionEntry.status#,
+				#definitionEntry.effectiveDate#,
+				#definitionEntry.expirationDate#,
 				#entryStateId#	
 			)
      </insert>
 
-	<delete id="removePickListDefinitionByPickListId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="removevalueSetDefinitionByValueSetDefinitionURI" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			vsPickList
+			valueSetDefinition
 		WHERE
-			pickListId = #param1#
+			valueSetDefURI = #param1#
 	</delete>
 	
-	<delete id="removePickListEntryByPickListGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="removeDefinitionEntryByValueSetDefinitionGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			vsPLEntry
+			vsdEntry
 		WHERE
-			vsPickListGuid = #param1#
+			valueSetDefinitionGuid = #param1#
 	</delete>
 </sqlMap>
