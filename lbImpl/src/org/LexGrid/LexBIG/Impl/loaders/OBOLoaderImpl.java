@@ -130,18 +130,15 @@ public class OBOLoaderImpl extends BaseLoader implements OBO_Loader {
 
     @Override
     protected URNVersionPair[] doLoad() throws Exception {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        DatabaseServiceManager databaseServiceManager = 
-            LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
-        
-        
+      
         OBO2LGMain mainTxfm = new OBO2LGMain();
         CodingScheme codingScheme = mainTxfm.map(this.getResourceUri(), null, this.getMessageDirector());
         // Apply manifest changes
         ManifestUtil manifestUtil = this.getManifestUtil();
         manifestUtil.applyManifest(this.getCodingSchemeManifest(), codingScheme);
   
-        databaseServiceManager.getCodingSchemeService().insertCodingScheme(codingScheme);
+        this.persistCodingSchemeToDatabase(codingScheme);
+
         URNVersionPair  urnVersion= new URNVersionPair(codingScheme.getCodingSchemeURI(), codingScheme.getRepresentsVersion());
         return new URNVersionPair[]{urnVersion};
     }
