@@ -27,8 +27,9 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
-import org.lexevs.dao.database.access.picklist.PickListDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
+import org.lexevs.dao.database.access.valuesets.PickListDao;
+import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.registry.service.Registry;
@@ -57,6 +58,9 @@ public class DaoManager {
 	
 	/** The pick list definition daos. */
 	private List<PickListDao> pickListDaos;
+	
+	/** The value set definition daos. */
+	private List<ValueSetDefinitionDao> valueSetDefinitionDaos;
 	
 	/** The versions daos. */
 	private List<VersionsDao> versionsDaos;
@@ -345,5 +349,29 @@ public class DaoManager {
 	 */
 	public PickListDao getCurrentPickListDefinitionDao(){
 		return this.getCorrectDaoForSchemaVersion(this.getPickListDaos(), CURRENT_VERSION);
+	}
+
+	/**
+	 * @return the valueSetDefinitionDaos
+	 */
+	public List<ValueSetDefinitionDao> getValueSetDefinitionDaos() {
+		return valueSetDefinitionDaos;
+	}
+
+	/**
+	 * @param valueSetDefinitionDaos the valueSetDefinitionDaos to set
+	 */
+	public void setValueSetDefinitionDaos(
+			List<ValueSetDefinitionDao> valueSetDefinitionDaos) {
+		this.valueSetDefinitionDaos = valueSetDefinitionDaos;
+	}
+	
+	/**
+	 * Gets the current value set definition dao.
+	 * 
+	 * @return the current value set dafinition dao
+	 */
+	public ValueSetDefinitionDao getCurrentValueSetDefinitionDao(){
+		return this.getCorrectDaoForSchemaVersion(this.getValueSetDefinitionDaos(), CURRENT_VERSION);
 	}
 }
