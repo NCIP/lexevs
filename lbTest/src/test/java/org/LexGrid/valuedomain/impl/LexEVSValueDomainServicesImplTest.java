@@ -38,23 +38,13 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
-import org.LexGrid.emf.commonTypes.Property;
-import org.LexGrid.emf.commonTypes.PropertyQualifier;
-import org.LexGrid.emf.commonTypes.Source;
-import org.LexGrid.emf.naming.Mappings;
-import org.LexGrid.emf.naming.SupportedAssociation;
-import org.LexGrid.emf.naming.SupportedDataType;
-import org.LexGrid.emf.naming.SupportedPropertyQualifier;
-import org.LexGrid.emf.naming.SupportedSource;
-import org.LexGrid.emf.valueDomains.ValueDomainDefinition;
-import org.LexGrid.emf.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
-import org.lexgrid.valuedomain.LexEVSValueDomainServices;
-import org.lexgrid.valuedomain.dto.ResolvedValueDomainCodedNodeSet;
-import org.lexgrid.valuedomain.dto.ResolvedValueDomainDefinition;
-import org.lexgrid.valuedomain.impl.LexEVSValueDomainServicesImpl;
+import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
+import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
+import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
+import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 /**
  * JUnit for Value Domain extension.
@@ -63,11 +53,11 @@ import org.lexgrid.valuedomain.impl.LexEVSValueDomainServicesImpl;
  */
 public class LexEVSValueDomainServicesImplTest extends TestCase {
 	private LexBIGService lbsm_ = null;
-	private LexEVSValueDomainServices vds_;
+	private LexEVSValueSetDefinitionServices vds_;
 	
 	@Test
 	public void testGetAllValueDomainsWithNoNames() throws LBException, URISyntaxException {
-		URI[] uris = getValueDomainService().getAllValueDomainsWithNoName();
+		URI[] uris = getValueSetDefinitionService().getAllValueDomainsWithNoName();
 		ArrayList<URI> blankURIS = new ArrayList<URI>();
 		
 		for(URI uri : uris)
@@ -529,21 +519,21 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 
 	@Test
 	public void testIsDomain() throws LBException {
-		assertTrue(getValueDomainService().isDomain("VD005", "Automobiles", Constructors.createCodingSchemeVersionOrTag(null, "2.0")));
+		assertTrue(getValueSetDefinitionService().isValueSetDefinition("VD005", "Automobiles", Constructors.createCodingSchemeVersionOrTag(null, "2.0")));
 	}
 	
-	private LexEVSValueDomainServices getValueDomainService(){
+	private LexEVSValueSetDefinitionServices getValueSetDefinitionService(){
 		if (vds_ == null) {
-			LexEVSValueDomainServicesImpl valueDomainService = new LexEVSValueDomainServicesImpl();
+			LexEVSValueSetDefinitionServicesImpl valueDomainService = new LexEVSValueSetDefinitionServicesImpl();
 			valueDomainService.setLexBIGService(ServiceHolder.instance().getLexBIGService());
 			vds_ = valueDomainService;
 		}
 		return vds_;
 	}
 	
-	protected void dumpValueDomainResolution(URI vdURI, AbsoluteCodingSchemeVersionReferenceList csvs) {
+	protected void dumpValueSetDefinitionResolution(URI vdURI, AbsoluteCodingSchemeVersionReferenceList csvs) {
 	    try {     
-            ResolvedValueDomainDefinition resDef = getValueDomainService().resolveValueDomain(vdURI, csvs, null);
+            ResolvedValueSetDefinition resDef = getValueSetDefinitionService().resolveValueSetDefinition(vdURI, csvs, null);
             Iterator<AbsoluteCodingSchemeVersionReference> csList = resDef.getCodingSchemeVersionRefList().iterateAbsoluteCodingSchemeVersionReference();
             System.out.println("Value domain: " + vdURI.toString() + " used: ");
             while(csList.hasNext()) {
