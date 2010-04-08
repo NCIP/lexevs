@@ -213,10 +213,6 @@ CREATE TABLE vsSupportedAttrib
 SET FOREIGN_KEY_CHECKS=1;
 
 
-ALTER TABLE valueSetDefinition ADD CONSTRAINT FK_vsd_releaseGuid 
-	FOREIGN KEY (releaseGuid) REFERENCES systemRelease (releaseGuid)
-;
-
 ALTER TABLE vsdEntry ADD CONSTRAINT FK_vsdEnt_vsdGuid 
 	FOREIGN KEY (valueSetDefGuid) REFERENCES valueSetDefinition (valueSetDefGuid)
 	ON DELETE CASCADE
@@ -224,10 +220,6 @@ ALTER TABLE vsdEntry ADD CONSTRAINT FK_vsdEnt_vsdGuid
 
 ALTER TABLE vsEntryState ADD CONSTRAINT FK_vsES_prevEntryStateGuid 
 	FOREIGN KEY (prevEntryStateGuid) REFERENCES vsEntryState (entryStateGuid)
-;
-
-ALTER TABLE vsPickList ADD CONSTRAINT FK_vsdPL_releaseGuid 
-	FOREIGN KEY (releaseGuid) REFERENCES systemRelease (releaseGuid)
 ;
 
 ALTER TABLE vsPLEntry ADD CONSTRAINT FK_vsPLEnt_vsPLGuid 
