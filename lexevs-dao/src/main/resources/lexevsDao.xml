@@ -135,6 +135,7 @@
 		<property name="entityService" ref="entityService"/>
 		<property name="associationService" ref="associationService"/>
 		<property name="pickListDefinitionService" ref="pickListDefinitionService"/>
+		<property name="valueSetDefinitionService" ref="valueSetDefinitionService"/>
 		<property name="daoCallbackService" ref="daoManagerDaoCallbackService"/>
 	</bean>
 	
@@ -184,6 +185,11 @@
 	
 	<bean id="pickListDefinitionService" 
 		class="org.lexevs.dao.database.service.valuesets.VersionableEventPickListDefinitionService"
+		parent="abstractService">
+	</bean>
+	
+	<bean id="valueSetDefinitionService" 
+		class="org.lexevs.dao.database.service.valuesets.VersionableEventValueSetDefinitionService"
 		parent="abstractService">
 	</bean>
 		

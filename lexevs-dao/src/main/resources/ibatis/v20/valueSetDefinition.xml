@@ -17,7 +17,6 @@
 		<result property="defaultCodingScheme" column="defaultCodingScheme" />
 		<result property="conceptDomain" column="conceptDomain" />
 		<result property="entityDescription.content" column="description" />
-		<result property="completeSet" column="completeSet"/>
 		<result property="isActive" column="isActive" />
 		<result property="owner" column="owner" />
 		<result property="status" column="status" />
@@ -28,7 +27,6 @@
 	<resultMap  id="definitionEntryResult" class="definitionEntry">
 		<result property="ruleOrder" column="ruleOrder"/>
 		<result property="operator" column="operator"/>
-		<result property="entryOrder" column="entryOrder"/>
 		<result property="isActive" column="isActive" />
 		<result property="owner" column="owner" />
 		<result property="status" column="status" />
@@ -56,12 +54,12 @@
 	<resultMap  id="propertyReferenceResult" class="propertyReference">
 		<result property="codingScheme" column="propertyRefCodingScheme"/>
 		<result property="propertyName" column="propertyName"/>
-		<result property="value.content" column="propertyMatchValue" />
-		<result property="value.dataType" column="format" />
 	</resultMap>
 	
 	<resultMap  id="propertyMatchValueResult" class="propertyMatchValue">
-		<result property="matchAlgorithm" column="matchAlgorithm"/>
+		<result property="matchAlgorithm" column="matchAlgorithm"/>		
+		<result property="content" column="propertyMatchValue" />
+		<result property="dataType" column="format" />
 	</resultMap>
 	
 	<select id="getValueSetDefinitionURIs" 
