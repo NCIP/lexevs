@@ -731,6 +731,8 @@ public class OBO2LGDynamicMapHolders {
                     hier.getAssociationNamesAsReference().add(OBO2LGConstants.ASSOCIATION_ISA);
                 else if (prpCode.equals(OBO2LGConstants.ASSOCIATION_PART_OF))
                     hier.getAssociationNamesAsReference().add(OBO2LGConstants.ASSOCIATION_PART_OF);
+                else if (prpCode.equals(OBO2LGConstants.ASSOCIATION_OBO_REL_PART_OF))
+                    hier.getAssociationNamesAsReference().add(OBO2LGConstants.ASSOCIATION_OBO_REL_PART_OF);
                 else if (prpCode.equals(OBO2LGConstants.ASSOCIATION_LOCATED_IN))
                     hier.getAssociationNamesAsReference().add(OBO2LGConstants.ASSOCIATION_LOCATED_IN);
                 else if (prpCode.equals(OBO2LGConstants.ASSOCIATION_DERIVES_FROM))
