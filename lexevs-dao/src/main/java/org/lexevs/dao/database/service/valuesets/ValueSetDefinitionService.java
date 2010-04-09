@@ -35,9 +35,10 @@ public interface ValueSetDefinitionService {
 	/**
 	 * Insert value set definition into the system. 
 	 * @param definition the definition
+	 * @param systemReleaseUri the system release uri
 	 * @throws LBException
 	 */
-	public void insertValueSetDefinition(ValueSetDefinition definition) throws LBException;
+	public void insertValueSetDefinition(ValueSetDefinition definition, String systemReleaseUri) throws LBException;
 	
 	/**
 	 * Insert value set definitions.
@@ -65,4 +66,11 @@ public interface ValueSetDefinitionService {
 	 * @return the value set definition
 	 */
 	public ValueSetDefinition getValueSetDefinitionByUri(URI uri);
+	
+	/**
+	 * Lists all the value set definition URIs that are loaded in the system.
+	 * 
+	 * @return list of value set definition URIs
+	 */
+	public List<String> listValueSetDefinitionURIs();
 }

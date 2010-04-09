@@ -98,6 +98,8 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		vsDefBean.setValueSetDefinition(definition);
 		vsDefBean.setPrefix(getPrefix());
 		vsDefBean.setSystemReleaseId(systemReleaseId);
+		
+		// insert into value set definition table
 		this.getSqlMapClientTemplate().insert(INSERT_VALUESET_DEFINITION_SQL, vsDefBean);
 		
 		InsertOrUpdateDefinitionEntryBean vsdEntryBean = null;

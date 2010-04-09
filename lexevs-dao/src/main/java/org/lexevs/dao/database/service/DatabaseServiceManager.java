@@ -53,8 +53,8 @@ public class DatabaseServiceManager {
 	/** The pick list service. */
 	private PickListDefinitionService pickListDefinitionService;
 	
-	/** The value domain service. */
-	private ValueSetDefinitionService valueDomainService;
+	/** The value set definition service. */
+	private ValueSetDefinitionService valueSetDefinitionService;
 	
 	private DaoCallbackService daoCallbackService;
 	
@@ -150,24 +150,6 @@ public class DatabaseServiceManager {
 			getErrorCallbackDatabaseService(associationService, errorCallbackListener);
 	}
 
-	/**
-	 * Gets the value domain service.
-	 * 
-	 * @return the value domain service
-	 */
-	public ValueSetDefinitionService getValueDomainService() {
-		return valueDomainService;
-	}
-
-	/**
-	 * Sets the value domain service.
-	 * 
-	 * @param valueDomainService the new value domain service
-	 */
-	public void setValueDomainService(ValueSetDefinitionService valueDomainService) {
-		this.valueDomainService = valueDomainService;
-	}
-
 	public void setDaoCallbackService(DaoCallbackService daoCallbackService) {
 		this.daoCallbackService = daoCallbackService;
 	}
@@ -182,6 +164,21 @@ public class DatabaseServiceManager {
 
 	public PickListDefinitionService getPickListDefinitionService() {
 		return pickListDefinitionService;
+	}
+
+	/**
+	 * @return the valueSetDefinitionService
+	 */
+	public ValueSetDefinitionService getValueSetDefinitionService() {
+		return valueSetDefinitionService;
+	}
+
+	/**
+	 * @param valueSetDefinitionService the valueSetDefinitionService to set
+	 */
+	public void setValueSetDefinitionService(
+			ValueSetDefinitionService valueSetDefinitionService) {
+		this.valueSetDefinitionService = valueSetDefinitionService;
 	}
 }
 

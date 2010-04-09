@@ -23,7 +23,10 @@ import java.util.List;
 
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
+import org.lexevs.dao.database.access.valuesets.PickListDao;
+import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class VersionableEventValueSetDefinitionService.
@@ -46,17 +49,18 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	 */
 	@Override
 	public ValueSetDefinition getValueSetDefinitionByUri(URI uri) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+		return this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetDefinitionByURI(uri.toString());
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#insertValueDomainDefinition(org.LexGrid.valueDomains.ValueDomainDefinition)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#insertValueSetDefinition(org.LexGrid.valuesets.ValueSetDefinition, java.lang.String)
 	 */
 	@Override
-	public void insertValueSetDefinition(ValueSetDefinition definition) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+	@Transactional
+	public void insertValueSetDefinition(ValueSetDefinition definition, String systemReleaseUri) {
+		ValueSetDefinitionDao plDao = this.getDaoManager().getCurrentValueSetDefinitionDao();
+		
+		plDao.insertValueSetDefinition(systemReleaseUri, definition);
 	}
 
 	/* (non-Javadoc)
@@ -67,6 +71,11 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 			String systemReleaseUri) {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> listValueSetDefinitionURIs() {
+		return this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetDefinitionURIs();
 	}
 
 	
