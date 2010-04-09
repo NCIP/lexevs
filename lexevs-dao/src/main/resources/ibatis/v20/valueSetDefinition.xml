@@ -106,6 +106,17 @@
 			valueSetDefURI = #param1#
 	</select>
 	
+	<select id="getValueSetDefinitionURIForValueSetName" 
+		resultClass="string" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		SELECT
+			valueSetDefURI
+		FROM
+			valueSetDefinition
+		WHERE
+			valueSetDefName = #param1#
+	</select>
+	
 	<select id="getDefinitionEntryByValueSetGuid" 
 		resultMap="definitionEntryResult" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
