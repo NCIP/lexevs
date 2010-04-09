@@ -81,6 +81,7 @@ public class OBO2LGConstants {
     public static final String PROPERTY_ALTID = "alt_id";
     public static final String PROPERTY_CREATED_BY = "created_by";
     public static final String PROPERTY_CREATION_DATE = "creation_date";
+    public static final String PROPERTY_XREF = "xref";
 
     public static final String PROPERTY_SYNONYM = "synonym";
     public static final String BIOONTOLOGY_LSID_PREFIX = "urn:lsid:bioontology.org:";

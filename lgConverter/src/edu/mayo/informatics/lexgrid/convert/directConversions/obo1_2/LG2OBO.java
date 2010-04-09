@@ -23,8 +23,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
@@ -45,8 +43,7 @@ import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.custom.relations.RelationsUtil;
 import org.apache.commons.lang.StringUtils;
-import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
+import org.lexevs.logging.LoggerFactory;
 
 /**
  * EMF to OBO Implementation.
@@ -112,7 +109,8 @@ public class LG2OBO {
         String str = "";
         // Try to find an existing target to match
         for (Entity en : codingScheme.getEntities().getEntity()) {
-            if (en.getEntityCode()!= null && en.getEntityCode().trim().length()>0){
+            if (en.getEntityCode()!= null && en.getEntityCode().trim().length()>0
+                    && en instanceof AssociationEntity == false){
                 String entityCode = en.getEntityCode();
                 if (!"@".equals(entityCode) || !"@@".equals(entityCode))
                     str += generateOBOTerm(en);
@@ -127,7 +125,7 @@ public class LG2OBO {
         // OBO id
         str += "id: " + codedEntry.getEntityCode() + lineReturn;
         // OBO name
-        str += "name: " + codedEntry.getEntityDescription() + lineReturn;
+        str += "name: " + codedEntry.getEntityDescription().getContent() + lineReturn;
 
         // OBO def
         property = EntitiesUtil.resolveProperty(codedEntry, OBO2LGConstants.PROPERTY_DEFINITION);
@@ -139,12 +137,18 @@ public class LG2OBO {
         if (property != null) {
             str += "comment: " + property.getValue().getContent() + lineReturn;
         }
+        // OBO xref
+        List<Property> propertyList = EntitiesUtil.resolveProperties(codedEntry, OBO2LGConstants.PROPERTY_XREF);
+        for (Property p : propertyList) {
+            str += "xref: " + p.getValue().getContent() + lineReturn;
+        }
+        
         // OBO subset
         str += generateSubset(codedEntry);
         // OBO synonym
         str += generateSynonyms(codedEntry);
 
-        if (!codedEntry.getIsActive().booleanValue()) {
+        if (codedEntry.getIsActive() != null && !codedEntry.getIsActive().booleanValue()) {
             str += "is_obsolete: true " + lineReturn;
         }
 
@@ -155,11 +159,13 @@ public class LG2OBO {
 
     String generateSynonyms(Entity codedEntry) {
         String str = "";
-        List list = EntitiesUtil.getNonPreferredPresentation(codedEntry);
-        for (Iterator items = list.iterator(); items.hasNext();) {
-            Presentation presentation = (Presentation) items.next();
-            str += "synonym: " + presentation.getValue().getContent() + " " + presentation.getDegreeOfFidelity()
+        List<Presentation> list = EntitiesUtil.getNonPreferredPresentation(codedEntry);
+        for (Presentation presentation : list) {
+            if (presentation.getDegreeOfFidelity() != null)
+                str += "synonym: " + "\"" + presentation.getValue().getContent() + "\"" + " " + presentation.getDegreeOfFidelity()
                     + generateSource(presentation);
+            else
+                str += "synonym: " + "\"" + presentation.getValue().getContent() + "\"";
             str += lineReturn;
         }
         return str;
@@ -168,12 +174,11 @@ public class LG2OBO {
 
     String generateSource(Property property) {
         String str = "";
-        List sources = Arrays.asList(property.getSource());
-        for (Iterator items = sources.iterator(); items.hasNext();) {
+        List<Source> sources = Arrays.asList(property.getSource());
+        for(Source source : sources) {
             if (str.length() == 0) {
                 str = " [";
             }
-            Source source = (Source) items.next();
             str += source.getContent();
             if (StringUtils.isNotBlank(source.getSubRef())) {
                 str += ":" + source.getSubRef();
@@ -190,9 +195,8 @@ public class LG2OBO {
 
     String generateSubset(Entity codedEntry) {
         String str = "";
-        List list = EntitiesUtil.resolveProperties(codedEntry, OBO2LGConstants.PROPERTY_SUBSET);
-        for (Iterator items = list.iterator(); items.hasNext();) {
-            Property property = (Property) items.next();
+        List<Property> list = EntitiesUtil.resolveProperties(codedEntry, OBO2LGConstants.PROPERTY_SUBSET);
+        for (Property property: list){
             str += "subset: " + property.getValue().getContent();
             str += lineReturn;
         }
@@ -201,7 +205,7 @@ public class LG2OBO {
     }
 
     boolean isBuiltInRelationName(String relation_name) {
-        List built_in_relationNames = Arrays.asList(OBO2LGConstants.BUILT_IN_ASSOCIATIONS);
+        List<String> built_in_relationNames = Arrays.asList(OBO2LGConstants.BUILT_IN_ASSOCIATIONS);
         return built_in_relationNames.contains(relation_name);
     }
 
@@ -209,14 +213,14 @@ public class LG2OBO {
         String str = "";
         str += generateIsARelation(codedEntry);
 
-        for (Entity en: codingScheme.getEntities().getEntity()) {
-            if (en instanceof AssociationEntity) {
-                String as_name = en.getEntityCode();
+        for (Relations relations: codingScheme.getRelations()) {
+            for (AssociationPredicate ap : relations.getAssociationPredicate()){
+                String as_name = ap.getAssociationName();
                 if (isBuiltInRelationName(as_name)) {
                     str += generateBuiltInRelation(codedEntry, as_name);
                 } else {
                     str += generateNonBuiltInRelation(codedEntry, as_name);
-                }   
+                }
             }
         }
         return str;
@@ -276,9 +280,9 @@ public class LG2OBO {
     String generateTypeDef() {
         String str = "";
 
-        for (Entity ae: codingScheme.getEntities().getEntity()) {
-            if (ae instanceof AssociationEntity) {
-                String code = ((AssociationEntity)ae).getEntityCode();
+        for (Relations relations : codingScheme.getRelations()){
+            for (AssociationPredicate ap : relations.getAssociationPredicate()) {
+                String code = ap.getAssociationName();
                 if (!isBuiltInRelationName(code) && !code.equalsIgnoreCase("-multi-assn-@-root-")) {
                     str += "[Typedef]" + lineReturn;
                     str += "id: " + code + lineReturn;
@@ -299,6 +303,7 @@ public class LG2OBO {
 //        CodingScheme cs = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
 //        getCodingSchemeService().getCodingSchemeByUriAndVersion(codingSchemeUri, codingSchemeVersion);
         CodingScheme cs = new CodingScheme();
+        cs.setFormalName("formalName");
         cs.setCodingSchemeName("codingSchemeName");
         cs.setCodingSchemeURI("codingSchemeURI");
         cs.setRepresentsVersion("representsVersion");
@@ -318,12 +323,12 @@ public class LG2OBO {
         EntityDescription enDesc = new EntityDescription();
         enDesc.setContent("entityDescription");
         entity.setEntityDescription(enDesc);
-        
+        entity.setIsActive(true);
         
         Presentation presentation = new Presentation();
         presentation.setPropertyType(SQLTableConstants.TBLCOLVAL_PRESENTATION);
         presentation.setPropertyName("presentation propertyName");
-        presentation.setIsPreferred(true);
+        presentation.setIsPreferred(false);
         Text value = new Text();
         value.setContent("presentation value");
         presentation.setValue(value);
@@ -334,15 +339,15 @@ public class LG2OBO {
         cs.setEntities(new Entities());
         cs.getEntities().addEntity(entity);
         
-      //new entity 2
+        //new entity 2
         Entity entity2 = new Entity();
-        entity2.setEntityCode("entityCode1");
+        entity2.setEntityCode("entityCode2");
         entity2.setEntityCodeNamespace("entityCodeNamespace");
         entity2.addEntityType(SQLTableConstants.TBL_CONCEPT);
         enDesc = new EntityDescription();
         enDesc.setContent("entityDescription");
         entity2.setEntityDescription(enDesc);
-        
+        entity2.setIsActive(false);
         
         presentation = new Presentation();
         presentation.setPropertyType(SQLTableConstants.TBLCOLVAL_PRESENTATION);
@@ -355,6 +360,44 @@ public class LG2OBO {
         entity2.addPresentation(presentation);
         
         cs.getEntities().addEntity(entity2);
+        
+        // relation
+        Relations relations = new Relations();
+        relations.setContainerName(cs.getCodingSchemeName()+ " relation");
+        AssociationPredicate ap = new AssociationPredicate();
+        ap.setAssociationName("hasSubtype");
+        AssociationSource as = new AssociationSource();
+        as.setSourceEntityCode("entityCode1");
+        as.setSourceEntityCodeNamespace("entityCodeNamespace");
+        AssociationTarget at = new AssociationTarget();
+        at.setTargetEntityCode("entityCode2");
+        at.setTargetEntityCodeNamespace("entityCodeNamespace");
+        as.addTarget(at);
+        ap.addSource(as);
+        relations.addAssociationPredicate(ap);
+        
+        // relation 2
+        ap = new AssociationPredicate();
+        ap.setAssociationName("is_a");
+        as = new AssociationSource();
+        as.setSourceEntityCode("entityCode1");
+        as.setSourceEntityCodeNamespace("entityCodeNamespace");
+        at = new AssociationTarget();
+        at.setTargetEntityCode("entityCode2");
+        at.setTargetEntityCodeNamespace("entityCodeNamespace");
+        as.addTarget(at);
+        ap.addSource(as);
+        relations.addAssociationPredicate(ap);
+        
+        cs.addRelations(relations);
+        
+        LG2OBO lg2Obo = new LG2OBO(cs, LoggerFactory.getLogger());
+        File file = new File("2obo.obo");
+        try {
+            lg2Obo.save(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         
     }
 
