@@ -499,7 +499,7 @@ public class OBOResourceReaderHelper extends OBO {
                                         }
                                     } else if (OBOConstants.RELATION_CTX == ctx) {
                                         if (currentRel != null) {
-                                            currentRel.id = id;
+                                            currentRel.id = aVal;
                                             currentRel.prefix = prefix;
                                         }
                                     } else if (OBOConstants.INSTANCE_CTX == ctx) {
@@ -787,7 +787,7 @@ public class OBOResourceReaderHelper extends OBO {
                                             String relation = tokens[0].trim();
                                             String target = tokens[1].trim();
                                             currentTerm.addRelationship(relation, target);
-                                            OBORelation uRel = rels.getMemberByName(relation);
+                                            OBORelation uRel = rels.getMemberById(relation);
                                             if (uRel != null)
                                                 uRel.isUsed = true;
                                         } else {

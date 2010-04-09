@@ -163,10 +163,7 @@ public class OBORelations extends OBOCollection {
 
                 if (!relationsByNames.containsKey(rel.name))
                     relationsByNames.put(rel.name, rel);
-                else {
-                    OBORelation existing_rel = getMemberByName(rel.name);
-                    existing_rel.merge(rel);
-                }
+               
             }
         }
     }
