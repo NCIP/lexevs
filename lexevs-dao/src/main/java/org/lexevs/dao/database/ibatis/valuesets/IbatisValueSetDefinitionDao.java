@@ -54,6 +54,8 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	
 	public static String GET_VALUESET_DEFINITION_BY_VALUESET_DEFINITION_URI_SQL = VALUESETDEFINITION_NAMESPACE + "getValueSetDefinitionByValueSetURI";
 	
+	public static String GET_DEFINITION_ENTRY_BY_VALUESET_DEFINITION_GUID_SQL = VALUESETDEFINITION_NAMESPACE + "getDefinitionEntryByValueSetGuid";
+	
 	public static String REMOVE_VALUESET_DEFINITION_BY_VALUESET_DEFINITION_URI_SQL = VALUESETDEFINITION_NAMESPACE + "removevalueSetDefinitionByValueSetDefinitionURI";
 	
 	public static String REMOVE_DEFINITION_ENTRY_BY_VALUESET_DEFINITION_GUID_SQL = VALUESETDEFINITION_NAMESPACE + "removeDefinitionEntryByValueSetDefinitionGuid";
@@ -65,12 +67,25 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao#getValueSetDefinitionByURI(java.lang.String)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public ValueSetDefinition getValueSetDefinitionByURI(String pickListId) {
-		ValueSetDefinition vdDef = (ValueSetDefinition) 
+	public ValueSetDefinition getValueSetDefinitionByURI(String valueSetDefinitionURI) {
+		ValueSetDefinition vsd = (ValueSetDefinition) 
 			this.getSqlMapClientTemplate().queryForObject(GET_VALUESET_DEFINITION_BY_VALUESET_DEFINITION_URI_SQL, 
-				new PrefixedParameter(null, pickListId));
-		return vdDef;
+				new PrefixedParameter(null, valueSetDefinitionURI));
+		
+		if (vsd != null)
+		{
+			String vsdGuid = getGuidFromvalueSetDefinitionURI(valueSetDefinitionURI);
+			
+			List<DefinitionEntry> des = this.getSqlMapClientTemplate().queryForList(GET_DEFINITION_ENTRY_BY_VALUESET_DEFINITION_GUID_SQL,
+					new PrefixedParameter(null, vsdGuid));
+			
+			if (des != null)
+				vsd.setDefinitionEntry(des);			
+			
+		}
+		return vsd;
 	}
 	
 	/* (non-Javadoc)

@@ -58,9 +58,9 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	@Override
 	@Transactional
 	public void insertValueSetDefinition(ValueSetDefinition definition, String systemReleaseUri) {
-		ValueSetDefinitionDao plDao = this.getDaoManager().getCurrentValueSetDefinitionDao();
+		ValueSetDefinitionDao vsdDao = this.getDaoManager().getCurrentValueSetDefinitionDao();
 		
-		plDao.insertValueSetDefinition(systemReleaseUri, definition);
+		vsdDao.insertValueSetDefinition(systemReleaseUri, definition);
 	}
 
 	/* (non-Javadoc)
@@ -76,6 +76,11 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	@Override
 	public List<String> listValueSetDefinitionURIs() {
 		return this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetDefinitionURIs();
+	}
+
+	@Override
+	public void removeValueSetDefinition(String valueSetDefinitionURI) {
+		this.getDaoManager().getCurrentValueSetDefinitionDao().removeValueSetDefinitionByValueSetDefinitionURI(valueSetDefinitionURI);
 	}
 
 	

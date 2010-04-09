@@ -73,4 +73,11 @@ public interface ValueSetDefinitionService {
 	 * @return list of value set definition URIs
 	 */
 	public List<String> listValueSetDefinitionURIs();
+	
+	/**
+	 * Delete value set definition by value set definition URI.
+	 * 
+	 * @param valuesetdefinitionURI the value set definition URI
+	 */
+	public void removeValueSetDefinition(String valueSetDefinitionURI);
 }
