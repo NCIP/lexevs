@@ -969,7 +969,12 @@ public class RadLex2LGDynamicMapHolders {
         try {
             String property = RadLex2LGUtils.toNMToken(slot.getName());
 
-            if (!properties_.contains(property))
+            boolean isContain = false;
+            for (int i = 0; i < properties_.size(); i++) {
+                if (((String)properties_.get(i)).equalsIgnoreCase(property) == true)
+                    isContain = true;
+            }
+            if (isContain == false)
                 properties_.add(property);
 
             Property pc = new Property();
