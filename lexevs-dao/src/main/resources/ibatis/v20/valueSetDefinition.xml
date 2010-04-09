@@ -32,6 +32,10 @@
 		<result property="status" column="status" />
 		<result property="effectiveDate" column="effectiveDate" />
 		<result property="expirationDate" column="expirationDate" />
+		<result property="codingSchemeReference" resultMap="ValueSetDefinition.codingSchemeReferenceResult" />
+		<result property="valueSetDefinitionReference" resultMap="ValueSetDefinition.valueSetDefinitionReferenceResult" />
+		<result property="entityReference" resultMap="ValueSetDefinition.entityReferenceResult" />
+		<result property="propertyReference" resultMap="ValueSetDefinition.propertyReferenceResult" />
 	</resultMap>
 	
 	<resultMap  id="codingSchemeReferenceResult" class="codingSchemeReference">
@@ -54,6 +58,7 @@
 	<resultMap  id="propertyReferenceResult" class="propertyReference">
 		<result property="codingScheme" column="propertyRefCodingScheme"/>
 		<result property="propertyName" column="propertyName"/>
+		<result property="propertyMatchValue" resultMap="ValueSetDefinition.propertyMatchValueResult"/>
 	</resultMap>
 	
 	<resultMap  id="propertyMatchValueResult" class="propertyMatchValue">
@@ -99,6 +104,37 @@
 			valueSetDefinition
 		WHERE
 			valueSetDefURI = #param1#
+	</select>
+	
+	<select id="getDefinitionEntryByValueSetGuid" 
+		resultMap="definitionEntryResult" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		SELECT
+			ruleOrder,
+			operator,
+			codingSchemeReference,
+			valueSetDefReference,
+			entityCode,
+			entityCodeNamespace,
+			leafOnly,
+			referenceAssociation,
+			targetToSource,
+			transitiveClosure,
+			propertyRefCodingScheme,
+			propertyName,
+			propertyMatchValue,
+			matchAlgorithm,
+			format,
+			isActive,
+			owner,
+			status,
+			effectiveDate,
+			expirationDate,
+			entryStateGuid
+		FROM
+			vsdEntry
+		WHERE
+			valueSetDefGuid = #param1#
 	</select>
 	
 	<insert id="insertValueSetDefinition" 
@@ -200,6 +236,6 @@
 		DELETE FROM
 			vsdEntry
 		WHERE
-			valueSetDefinitionGuid = #param1#
+			valueSetDefGuid = #param1#
 	</delete>
 </sqlMap>
