@@ -192,6 +192,13 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * @throws LBException
 	 */
 	public List<URI> listValueSetDefinitions(String valueSetDefinitionName) throws LBException;
+	
+	/**
+	 * Lists all the value set definition URIs that are loaded in the system.
+	 * 
+	 * @return list of value set definition URIs
+	 */
+	public List<String> listValueSetDefinitionURIs();
 
 	/**
 	 * Return the URI's of all unnamed value set definition(s).

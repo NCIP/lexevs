@@ -114,7 +114,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	public void loadPickList(PickListDefinition pldef, URI systemReleaseURI, Mappings mappings)
 			throws LBException {
 		getLogger().logMethod(new Object[] { pldef, systemReleaseURI});
-		this.databaseServiceManager.getPickListDefinitionService().insertPickListDefinition(pldef);
+		this.databaseServiceManager.getPickListDefinitionService().insertPickListDefinition(systemReleaseURI != null ? systemReleaseURI.toString():null, pldef);
 //		try {			
 //			getPickListDefinitionService().insert(pldef, systemReleaseURI, mappings);
 //		} catch (ObjectAlreadyExistsException e) {

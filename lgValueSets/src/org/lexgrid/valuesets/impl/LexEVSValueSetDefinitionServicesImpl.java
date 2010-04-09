@@ -53,6 +53,7 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
@@ -91,9 +92,10 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	 */
 	private static final long serialVersionUID = 4995582014921448463L;
 	
+	private DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
 	private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
 	private Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
-	private ValueSetDefinitionService vsds_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueDomainService();
+	private ValueSetDefinitionService vsds_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 
 
 	public LexEVSValueSetDefinitionServicesImpl() {
@@ -125,7 +127,8 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		if (definition != null)
 		{
 			md_.info("Loading value set definition : " + definition.getValueSetDefinitionURI());
-			this.vsds_.insertValueSetDefinition(definition);
+			this.databaseServiceManager.getValueSetDefinitionService().insertValueSetDefinition(definition, systemReleaseURI);
+			
 //			getVDService().insert(vddef, systemReleaseURI, mappings);
 		}
 		md_.info("Finished loading value set definition");
@@ -349,7 +352,17 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		getLogger().logMethod(new Object[] { valueSetDefinitionName });
         return this.vsds_.getValueSetDefinitionURISForName(valueSetDefinitionName);        
     }
-
+    
+    /**
+	 * Lists all the value set definition URIs that are loaded in the system.
+	 * 
+	 * @return list of value set definition URIs
+	 */
+    @Override
+	public List<String> listValueSetDefinitionURIs(){
+		getLogger().logMethod(new Object[]{});
+		return this.vsds_.listValueSetDefinitionURIs();
+	}
 	
 	@Override
 	public List<URI> getAllValueSetDefinitionsWithNoName() throws LBException {
@@ -447,13 +460,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	@Override
 	public void removeValueSetDefinition(URI valueSetDefinitionURI)
 			throws LBException {
-		//TODO - sod
-//		try {
-//			getServiceHelper().getValueDomainServices().remove(valueDomainURI);
-//		} catch (FindException e) {
-//			md_.fatal("Failed during removing value domain : " + valueDomainURI, e);
-//			throw new LBException("Failed during removing value domain : " + valueDomainURI, e);
-//		}
+		this.vsds_.removeValueSetDefinition(valueSetDefinitionURI.toString());
 	}
 	
 	@Override
