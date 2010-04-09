@@ -241,6 +241,8 @@ public class ProtegeOwl2LG {
                     emfRelationsContainer_Roles);
             initSupportedDatatypeProperties();
             initSupportedObjectProperties();
+            initSupportedAssociationAnnotationProperties();
+
 
             // If we are streaming the LexGrid model to database, write
             // the coding scheme metadata as defined so far.
@@ -298,6 +300,7 @@ public class ProtegeOwl2LG {
     // //////////// CORE METHODS /////////////////////
     // //////////////////////////////////////////////
 
+    
     /**
      * Create and populate the EMF representation of the coding scheme.
      * 
@@ -313,36 +316,185 @@ public class ProtegeOwl2LG {
                 + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
 
         // Step 1:
-        // Iterate through object classes and generate EMF concepts and
-        // associations ...
+        // Iterate through object classes and generate EMF concepts
         // Resolve all concepts before working on relations, since we need to
         // ensure all concept codes are correctly resolved (sometimes buried
         // in class definition) before setting source and target references.
 
         messages_.info("Processing OWL Classes.....");
-        processConcepts(snap);
+        processAllConceptsAndProperties(snap);
 
-        // Step 2: Process the OWL Object properties. Essentially, determine
+        // Step 2: Process OWL individuals. Essentially, determine to which
+        // classes these instances belong to, as well as, relations between
+        // the individuals themselves (e.g., differentFrom)?
+
+        messages_.info("Processing OWL Individuals.....");
+        processAllInstanceAndProperties(snap);
+
+        // Step 3: Process all the concept relations
+        processAllConceptsRelations();
+
+        // Step 4: Process all the instance relations
+        processAllInstanceRelations();
+
+        // Step 5: Process the OWL Object properties. Essentially, determine
         // the domain and ranges for the properties and relationships to other
         // properties.
 
         messages_.info("Processing OWL Object Properties.....");
         processOWLObjectProperties(snap);
 
-        // Step 3: Process the OWL Datatype properties. Essentially, determine
+        // Step 6: Process the OWL Datatype properties. Essentially, determine
         // the domain and data ranges for the properties and relationships to
         // other properties.
 
         messages_.info("Processing OWL Datatype Properties.....");
         processOWLDatatypeProperties(snap);
 
-        // Step 4: Process OWL individuals. Essentially, determine to which
-        // classes these instances belong to, as well as, relations between
-        // the individuals themselves (e.g., differentFrom)?
-
-        messages_.info("Processing OWL Individuals.....");
-        processInstances(snap);
     }
+
+    /**
+     * This method is responsible for processing of all the OWL concepts.
+     * 
+     */
+    protected void processAllConceptsAndProperties(Snapshot snap) {
+        int count = 0;
+
+        // The idea is to iterate through all the OWL classes, and register them
+        // as well as find out any associations or restrictions they have to
+        // other OWL classes (including anonymous ones).
+        messages_.info("Processing concepts: ");
+        for (Iterator namedClasses = owlModel_.getUserDefinedRDFSNamedClasses().iterator(); namedClasses.hasNext();) {
+            RDFSNamedClass namedClass = (RDFSNamedClass) namedClasses.next();
+            resolveConcept(namedClass);
+            count++;
+            if (count % 5000 == 0) {
+                messages_.info("OWL classes processed: " + count);
+            }
+        }
+        messages_.info("Total OWL classes processed: " + count);
+        // Now, process all the relationships/associations the
+        // concept has with other concepts. Also, process all
+        // the restrictions the concept has.
+        messages_.info("Concepts converted to EMF");
+        snap = SimpleMemUsageReporter.snapshot();
+        messages_.info("Read Time : " + SimpleMemUsageReporter.formatTimeDiff(snap.getTimeDelta(null))
+                + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage()) + " Heap Delta:"
+                + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
+
+        // If we found at least one, register the supported entity type.
+        if (count > 0) {
+            String name = EntityTypes.CONCEPT.name();
+            emfSupportedMappings_.registerSupportedEntityType(name, null, name, false);
+        }
+       
+    }
+
+    protected void processAllConceptsRelations() {
+        messages_.info("Processing concept relationships ...");
+
+        for (Iterator namedClasses = owlModel_.getUserDefinedRDFSNamedClasses().iterator(); namedClasses.hasNext();) {
+            RDFSNamedClass namedClass = (RDFSNamedClass) namedClasses.next();
+            String emfConceptCode = resolveConceptID(namedClass);
+            if (emfConceptCode != null) {
+                AssociationSource source = CreateUtils.createAssociationSource(emfConceptCode, entityCode2NameSpace_
+                        .get(emfConceptCode));
+                resolveEquivalentClassRelations(source, namedClass);
+                resolveSubClassOfRelations(source, namedClass);
+                resolveDisjointWithRelations(source, namedClass);
+                resolveComplementOfRelations(source, namedClass);
+                resolveOWLObjectPropertyRelations(source, namedClass);
+                resolveAnnotationPropertyRelations(source, namedClass);
+                //resolveDatatypePropertyRelations(source, namedClass);
+            }
+        }
+
+    }
+
+    /**
+     * Process the instance information in the ontology.
+     * 
+     */
+    protected void processAllInstanceAndProperties(Snapshot snap) {
+        snap = SimpleMemUsageReporter.snapshot();
+        messages_.info("Read Time : " + SimpleMemUsageReporter.formatTimeDiff(snap.getTimeDelta(null))
+                + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage()) + " Heap Delta:"
+                + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
+        messages_.info("Processing OWL Individuals ...");
+
+        int count = 0;
+        owlInstanceName2code_ = new HashMap();
+
+        // The idea is to iterate through all the OWL individuals, and register
+        // them
+        // as well as find out additional associations (e.g,. From)
+        for (Iterator individuals = owlModel_.getOWLIndividuals().iterator(); individuals.hasNext();) {
+            OWLIndividual individual = (OWLIndividual) individuals.next();
+            Instance emfInstance = resolveIndividual(individual);
+            if (emfInstance != null) {
+                addEntity(emfInstance);
+            }
+            if (count % 1000 == 0)
+                messages_.info("OWL individuals processed: " + count);
+            count++;
+        }
+        messages_.info("Total OWL individuals processed: " + count);
+        // Now, process all the relationships/associations the
+        // concept has with other concepts. Also, process all
+        // the restrictions the concept has.
+        messages_.info("Instances converted to EMF");
+        snap = SimpleMemUsageReporter.snapshot();
+        messages_.info("Read Time : " + SimpleMemUsageReporter.formatTimeDiff(snap.getTimeDelta(null))
+                + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage()) + " Heap Delta:"
+                + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
+
+        // If we found at least one, register the supported entity type.
+        if (!owlInstanceName2code_.isEmpty()) {
+            String name = EntityTypes.INSTANCE.name();            
+            emfSupportedMappings_.registerSupportedEntityType(name, null, name, false);
+        }
+    } // end of the method.
+
+    protected void processAllInstanceRelations() {
+
+        // Process the associations (e.g.,
+        // rdf:type, DifferentFrom, SameAs, ObjectProperties)
+        for (Iterator individuals = owlModel_.getOWLIndividuals().iterator(); individuals.hasNext();) {
+            OWLIndividual individual = (OWLIndividual) individuals.next();
+            String nameSpace = getNameSpace(individual.getNamespace());
+            String emfCode = resolveInstanceID(individual);
+            if (emfCode != null) {
+                AssociationSource source = CreateUtils.createAssociationSource(emfCode, nameSpace);
+                resolveRdfTypeRelations(source, individual);
+                resolveDifferentFromRelations(source, individual);
+                resolveSameAsRelations(source, individual);
+                resolveOWLObjectPropertyRelations(source, individual);
+                resolveAnnotationPropertyRelations(source, individual);
+                //resolveDatatypePropertyRelations(source, individual);
+            }
+        }
+
+        // Updated on 07/29/2008:
+        // Process OWL:AllDifferent, which is not the same
+        // as processing OWL:differentFrom. We need a separate logic
+        // for this (e.g., Pizza ontology uses OWL:AllDifferent). Since
+        // we need to create an association. Cui Tao suggested that we
+        // stick in the browser text, and she will do custom processing. So,
+        // the AssociationSource will be the browser text, and the
+        // associationTarget will be null.
+        for (Iterator diffIndi = owlModel_.getOWLAllDifferents().iterator(); diffIndi.hasNext();) {
+            OWLAllDifferent allDifferent = (OWLAllDifferent) diffIndi.next();
+            String nameSpace = getNameSpace(allDifferent.getNamespace());
+            AssociationSource source = CreateUtils.createAssociationSource(allDifferent.getBrowserText(), nameSpace);
+            String nameSpaceTarget = getNameSpace(allDifferent.getNamespace());
+            AssociationTarget target = CreateUtils.createAssociationTarget(allDifferent.getBrowserText(),
+                    nameSpaceTarget);
+            relateAssociationSourceTarget(assocManager.getAllDifferent(), source, target);
+        }
+
+    }    
+    
+    
 
     /**
      * This method is responsible for processing of all the OWL concepts.
@@ -1294,6 +1446,39 @@ public class ProtegeOwl2LG {
     }
 
     /**
+     * Create an association for the annotation properties that have a
+     * OWLNamedClass or OWLIndividual as RHS
+     * 
+     */
+    protected void resolveAnnotationPropertyRelations(AssociationSource source, RDFResource rdfResource) {
+        for (Iterator rdfProps = rdfResource.getRDFProperties().iterator(); rdfProps.hasNext();) {
+            RDFProperty rdfProp = (RDFProperty) rdfProps.next();
+            if (rdfProp.isAnnotationProperty()) {
+                // Lookup the LexGrid association; ignore if this property does
+                // not match a defined association ...
+                String relationName = getRDFResourceLocalName(rdfProp);
+
+                // Determine the targets ...
+                Collection propVals = rdfResource.getPropertyValues(rdfProp);
+                if (propVals != null) {
+                    for (Iterator vals = propVals.iterator(); vals.hasNext();) {
+                        Object val = vals.next();
+                        if (val instanceof OWLNamedClass) {
+                            AssociationWrapper emfAssoc = assocManager.getAssociation(relationName);
+                            relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, emfAssoc, source,
+                                    (OWLNamedClass) val);
+                        } else if (val instanceof OWLIndividual) {
+                            AssociationWrapper emfAssoc = assocManager.getAssociation(relationName);
+                            relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE, emfAssoc, source,
+                                    (OWLIndividual) val);
+                        }
+                    }
+                }
+            }
+        }
+    }    
+    
+    /**
      * Instantiate and return a new EMF property based on the provided values.
      * 
      * @param emfClass
@@ -1532,6 +1717,34 @@ public class ProtegeOwl2LG {
         return emfClass.getEntityCode();
     }
 
+    /**
+     * Create an association for the datatype properties when the preference is
+     * both or association
+     * 
+     */
+    protected void resolveDatatypePropertyRelations(AssociationSource source, RDFResource rdfResource) {
+        if (prefManager.getDataTypePropertySwitch().equals("both")
+                || prefManager.getDataTypePropertySwitch().equals("association")) {
+            for (Iterator rdfProps = rdfResource.getRDFProperties().iterator(); rdfProps.hasNext();) {
+                RDFProperty rdfProp = (RDFProperty) rdfProps.next();
+                if (rdfProp instanceof OWLDatatypeProperty) {
+                    String propertyName = getRDFResourceLocalName(rdfProp);
+                    // Interpret RDF property value(s) ...
+                    for (Iterator values = rdfResource.getPropertyValues(rdfProp).iterator(); values.hasNext();) {
+                        Object value = values.next();
+                        String resolvedText = resolveRDFText(rdfResource, value);
+
+                        AssociationWrapper emfAssoc = assocManager.getAssociation(propertyName);
+                        if (emfAssoc != null) {
+                            AssociationData data = CreateUtils.createAssociationTextData(resolvedText);
+                            relateAssociationSourceData(emfAssoc, source, data);
+                        }
+                    }
+                }
+            }
+        }
+
+    }    
     /**
      * 
      * @param restriction
@@ -2148,6 +2361,84 @@ public class ProtegeOwl2LG {
         }
     }
 
+    /**
+     * We need to find which annotation properties have a OWLNamedClass or
+     * OWLIndividual as the RHS and treat them as an association. This is being
+     * added as per Harold's request to deal with Cecil's bug
+     */
+    protected void initSupportedAssociationAnnotationProperties() {
+        for (Iterator namedClasses = owlModel_.getUserDefinedRDFSNamedClasses().iterator(); namedClasses.hasNext();) {
+            RDFSNamedClass rdfResource = (RDFSNamedClass) namedClasses.next();
+            addAnnotationPropertyAssociations(rdfResource);
+        }
+        for (Iterator individuals = owlModel_.getOWLIndividuals().iterator(); individuals.hasNext();) {
+            OWLIndividual individual = (OWLIndividual) individuals.next();
+            addAnnotationPropertyAssociations(individual);
+        }
+
+    }
+
+    /**
+     * Create an association for annotation properties that have an
+     * OWLNamedClass or OWLIndividual as their target.
+     * 
+     * @param rdfResource
+     */
+    protected void addAnnotationPropertyAssociations(RDFResource rdfResource) {
+        for (Iterator rdfProps = rdfResource.getRDFProperties().iterator(); rdfProps.hasNext();) {
+            RDFProperty rdfProp = (RDFProperty) rdfProps.next();
+            if (rdfProp.isAnnotationProperty()) {
+
+                String relationName = getRDFResourceLocalName(rdfProp);
+                Collection propVals = rdfResource.getPropertyValues(rdfProp);
+                if (propVals != null) {
+                    for (Iterator vals = propVals.iterator(); vals.hasNext();) {
+                        Object val = vals.next();
+                        if (val instanceof OWLNamedClass) {
+                            AssociationWrapper emfAssoc = assocManager.getAssociation(relationName);
+                            if (emfAssoc == null) {
+                                emfAssoc = addAssociation(rdfProp);
+                            }
+
+                        } else if (val instanceof OWLIndividual) {
+                            AssociationWrapper emfAssoc = assocManager.getAssociation(relationName);
+                            if (emfAssoc == null) {
+                                emfAssoc = addAssociation(rdfProp);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    protected AssociationWrapper addAssociation(RDFProperty rdfProp) {
+        AssociationWrapper assoc = new AssociationWrapper();
+        String propertyName = getRDFResourceLocalName(rdfProp);
+        assoc.setEntityCode(propertyName);
+        String label = resolveLabel(rdfProp);
+        assoc.setAssociationName(label);
+        assoc.setForwardName(getAssociationLabel(label, true));        
+        String nameSpace = getNameSpace(rdfProp.getNamespace());
+        assoc.setEntityCodeNamespace(nameSpace);
+        // Register as role or association and, if applicable,
+        // create a target of owl:AnnotationProperty.
+        if (rdfProp.isAnnotationProperty()) {
+            assoc = assocManager.addAssociation(emfRelationsContainer_Assoc, assoc);
+        } else {
+            assoc = assocManager.addAssociation(emfRelationsContainer_Roles, assoc);
+        }
+
+        // Add to supported associations ...
+
+        emfSupportedMappings_.registerSupportedAssociation(propertyName, rdfProp.getNamespace() + propertyName, label,
+                false);
+        return assoc;
+
+    }
+    
     /**
      * Initialize and return the root node for the subclass hierarchy.
      * 
