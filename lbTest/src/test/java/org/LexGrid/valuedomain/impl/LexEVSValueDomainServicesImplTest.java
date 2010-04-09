@@ -45,6 +45,7 @@ import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedDataType;
 import org.LexGrid.naming.SupportedPropertyQualifier;
 import org.LexGrid.naming.SupportedSource;
+import org.LexGrid.valueSets.CodingSchemeReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
@@ -113,6 +114,19 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		System.out.println("vsd.isActive : " + vsd.getIsActive());
 		
 		System.out.println("vsd>deCnt : " + vsd.getDefinitionEntryCount());
+	}
+	
+	@Test
+	public void testGetCodingSchemesInValueSetDefinition() throws LBException, URISyntaxException {
+		System.out.println("in testGetCodingSchemesInValueSetDefinition");
+		
+		AbsoluteCodingSchemeVersionReferenceList acsList = getValueSetDefinitionService().getCodingSchemesInValueSetDefinition(new URI("TEST:VSD:URI"));
+		
+		for (AbsoluteCodingSchemeVersionReference acs : acsList.getAbsoluteCodingSchemeVersionReference())
+		{
+			System.out.println("acs csURN: " + acs.getCodingSchemeURN());
+			System.out.println("acs csVersion: " + acs.getCodingSchemeVersion());
+		}		
 	}
 	
 //	@Test
@@ -467,7 +481,27 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 //		uris = getValueSetDefinitionService().listValueSetDefinitions(null);
 //		assertTrue(uris.size() > 0);
 	}
-
+	
+	@Test
+	public void testListValueSetURIForName() throws LBException {
+		System.out.println("in testListValueSetURIForName");
+		
+		List<String> uris = getValueSetDefinitionService().getAllValueSetDefinitionsWithNoName();
+		
+		for (String uri : uris)
+		{
+			System.out.println("NONAME uri : " + uri);
+		}
+		
+		uris = getValueSetDefinitionService().listValueSetDefinitions("TESTVSDNAME");
+		
+		for (String uri : uris)
+		{
+			System.out.println("With Name uri : " + uri);
+		}
+	}
+	
+	
 //	@Test
 //	public void testResolveValueDomain() throws LBException, URISyntaxException {
 //		AbsoluteCodingSchemeVersionReferenceList csvList = new AbsoluteCodingSchemeVersionReferenceList();
@@ -552,17 +586,16 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 //		assertTrue(getValueSetDefinitionService().isValueSetDefinition("VD005", "Automobiles", Constructors.createCodingSchemeVersionOrTag(null, "2.0")));
 //	}
 	
-	@Test
-	public void testRemoveValueSetDefinition() throws LBException, URISyntaxException{
-		getValueSetDefinitionService().removeValueSetDefinition(new URI("TEST:VSD:URI"));
-	}
+//	@Test
+//	public void testRemoveValueSetDefinition() throws LBException, URISyntaxException{
+//		getValueSetDefinitionService().removeValueSetDefinition(new URI("TEST:VSD:URI"));
+//	}
 	
 	
 	
 	private LexEVSValueSetDefinitionServices getValueSetDefinitionService(){
 		if (vds_ == null) {
-			LexEVSValueSetDefinitionServicesImpl valueDomainService = new LexEVSValueSetDefinitionServicesImpl();
-			vds_ = valueDomainService;
+			vds_ = new LexEVSValueSetDefinitionServicesImpl();
 		}
 		return vds_;
 	}
