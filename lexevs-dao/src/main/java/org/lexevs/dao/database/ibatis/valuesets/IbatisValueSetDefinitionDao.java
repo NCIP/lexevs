@@ -18,10 +18,13 @@
  */
 package org.lexevs.dao.database.ibatis.valuesets;
 
+import java.net.URI;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
@@ -49,6 +52,8 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	public static String INSERT_DEFINITION_ENTRY_SQL = VALUESETDEFINITION_NAMESPACE + "insertDefinitionEntry";
 	
 	public static String GET_VALUESET_DEFINITION_URIS_SQL = VALUESETDEFINITION_NAMESPACE + "getValueSetDefinitionURIs";
+	
+	public static String GET_VALUESET_DEFINITION_URI_FOR_VALUESET_NAME_SQL = VALUESETDEFINITION_NAMESPACE + "getValueSetDefinitionURIForValueSetName";
 	
 	public static String GET_VALUESET_DEFINITION_GUID_BY_VALUESET_DEFINITION_URI_SQL = VALUESETDEFINITION_NAMESPACE + "getValueSetDefinitionGuidByValueSetDefinitionURI";
 	
@@ -97,6 +102,27 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		this.getSqlMapClientTemplate().queryForObject(GET_VALUESET_DEFINITION_GUID_BY_VALUESET_DEFINITION_URI_SQL, 
 			new PrefixedParameter(null, valueSetDefinitionURI));
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getAllValueSetDefinitionsWithNoName() throws LBException {
+		return this.getSqlMapClientTemplate().queryForList(GET_VALUESET_DEFINITION_URI_FOR_VALUESET_NAME_SQL,
+				new PrefixedParameter(null, " "));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getValueSetDefinitionURIsForName(String valueSetDefinitionName)
+			throws LBException {
+		if (valueSetDefinitionName == null)
+			return getValueSetDefinitionURIs();		
+		else if (StringUtils.isBlank(valueSetDefinitionName))
+			return getAllValueSetDefinitionsWithNoName();
+		else
+			return this.getSqlMapClientTemplate().queryForList(GET_VALUESET_DEFINITION_URI_FOR_VALUESET_NAME_SQL,
+					new PrefixedParameter(null, valueSetDefinitionName));
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao#insertValueSetDefinition(java.lang.String, org.LexGrid.valueDomains.ValueSetDefinition)
@@ -222,6 +248,4 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	
 }

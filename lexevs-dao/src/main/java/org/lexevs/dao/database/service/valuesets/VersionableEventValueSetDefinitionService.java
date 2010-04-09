@@ -21,6 +21,7 @@ package org.lexevs.dao.database.service.valuesets;
 import java.net.URI;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.lexevs.dao.database.access.valuesets.PickListDao;
@@ -39,9 +40,8 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#getValueSetDefinitionURISForName(java.lang.String)
 	 */
 	@Override
-	public List<URI> getValueSetDefinitionURISForName(String valueSetDefinitionName) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+	public List<String> getValueSetDefinitionURISForName(String valueSetDefinitionName) throws LBException {
+		return this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetDefinitionURIsForName(valueSetDefinitionName);
 	}
 
 	/* (non-Javadoc)
@@ -69,19 +69,29 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	@Override
 	public void insertValueSetDefinitions(ValueSetDefinitions valueSetDefinitions,
 			String systemReleaseUri) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+		
+		for (ValueSetDefinition vsd : valueSetDefinitions.getValueSetDefinitionAsReference())
+		{
+			insertValueSetDefinition(vsd, systemReleaseUri);
+		}
 	}
 
 	@Override
 	public List<String> listValueSetDefinitionURIs() {
 		return this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetDefinitionURIs();
 	}
+	
+
+
+	@Override
+	public List<String> getAllValueSetDefinitionsWithNoName()
+			throws LBException {
+		return this.getDaoManager().getCurrentValueSetDefinitionDao().getAllValueSetDefinitionsWithNoName();
+	}
 
 	@Override
 	public void removeValueSetDefinition(String valueSetDefinitionURI) {
 		this.getDaoManager().getCurrentValueSetDefinitionDao().removeValueSetDefinitionByValueSetDefinitionURI(valueSetDefinitionURI);
 	}
-
 	
 }

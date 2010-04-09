@@ -18,8 +18,10 @@
  */
 package org.lexevs.dao.database.access.valuesets;
 
+import java.net.URI;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
@@ -64,6 +66,28 @@ public interface ValueSetDefinitionDao extends LexGridSchemaVersionAwareDao {
 	 * @return List of value set definition URIs
 	 */
 	public List<String> getValueSetDefinitionURIs();
+	
+	/**
+	 * Return the URI's for the value set definition(s) for the supplied
+	 * value set definition name. If the name is null, returns everything. If the name is not
+	 * null, returns the value set definition(s) that have the assigned name. 
+	 * 
+	 * Note: plural because there is no guarantee of valueSetDefinition uniqueness. If the name is the
+	 * empty string "", returns all unnamed valueSetDefinitions.
+	 * 
+	 * @param valueSetDefinitionName
+	 * @return value domain URI's
+	 * @throws LBException
+	 */
+	public List<String> getValueSetDefinitionURIsForName(String valueSetDefinitionName) throws LBException;
+	
+	/**
+	 * Return the URI's of all unnamed value set definition(s).
+	 * 
+	 * @return value set definition URI's
+	 * @throws LBException
+	 */
+	public List<String> getAllValueSetDefinitionsWithNoName()  throws LBException;
 	
 	/**
 	 * Insert value set definition entry.

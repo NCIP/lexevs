@@ -56,7 +56,7 @@ public interface ValueSetDefinitionService {
 	 * @return list of matching URIs
 	 * @throws LBException
 	 */
-	public List<URI> getValueSetDefinitionURISForName(String valueSetDefinitionName) throws LBException;
+	public List<String> getValueSetDefinitionURISForName(String valueSetDefinitionName) throws LBException;
 	
 	/**
 	 * Gets the value set definition by uri.
@@ -73,6 +73,14 @@ public interface ValueSetDefinitionService {
 	 * @return list of value set definition URIs
 	 */
 	public List<String> listValueSetDefinitionURIs();
+	
+	/**
+	 * Return the URI's of all unnamed value set definition(s).
+	 * 
+	 * @return value set definition URI's
+	 * @throws LBException
+	 */
+	public List<String> getAllValueSetDefinitionsWithNoName()  throws LBException;
 	
 	/**
 	 * Delete value set definition by value set definition URI.
