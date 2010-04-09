@@ -19,6 +19,8 @@
 package org.LexGrid.valuedomain.test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -32,11 +34,15 @@ import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.valueSets.DefinitionEntry;
+import org.LexGrid.valueSets.EntityReference;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListEntry;
 import org.LexGrid.valueSets.PickListEntryExclusion;
 import org.LexGrid.valueSets.PickListEntryNode;
 import org.LexGrid.valueSets.PickListEntryNodeChoice;
+import org.LexGrid.valueSets.ValueSetDefinition;
+import org.LexGrid.valueSets.types.DefinitionOperator;
 import org.junit.Test;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
@@ -120,76 +126,101 @@ public class LoadTestDataTest extends TestCase {
 //				LBConstants.KnownTags.PRODUCTION.toString());
 //	}
 	
-	@Test
-	public void testLoadPickList() throws LBException {
-		PickListDefinition plDef = new PickListDefinition();
-		plDef.setPickListId("TESTPL1");
-		plDef.setRepresentsValueSetDefinition("TESTVSD");
-		plDef.setDefaultEntityCodeNamespace("DefaultECNS");
-		plDef.setDefaultLanguage("defaultLanguage");
-		plDef.setDefaultSortOrder("defaultSortOrder");
-		plDef.setCompleteSet(true);
-		
-		PickListEntryNode plEntryNode = new PickListEntryNode();
-		plEntryNode.setPickListEntryId("plEntryNode1");
-		PickListEntry plEntry = new PickListEntry();
-		plEntry.setEntityCode("entityCode");
-		plEntry.setPickText("pickText");
-		
-		PickListEntryNodeChoice plChoice = new PickListEntryNodeChoice();
-		plChoice.setInclusionEntry(plEntry);
-		plEntryNode.setPickListEntryNodeChoice(plChoice);
-		
-		plDef.addPickListEntryNode(plEntryNode);
-		
-		getPickListService().loadPickList(plDef, null, null);
-		
-		plDef = new PickListDefinition();
-		plDef.setPickListId("TESTPL2");
-		plDef.setRepresentsValueSetDefinition("TESTVSD 2");
-		plDef.setDefaultEntityCodeNamespace("DefaultECNS 2");
-		plDef.setDefaultLanguage("defaultLanguage 2");
-		plDef.setDefaultSortOrder("defaultSortOrder 2");
-		plDef.setCompleteSet(true);
-		
-		plEntryNode = new PickListEntryNode();
-		plEntryNode.setPickListEntryId("plEntryNode1");
-		plEntry = new PickListEntry();
-		plEntry.setEntityCode("entityCode 2");
-		plEntry.setPickText("pickText 2");
-		
-		plChoice = new PickListEntryNodeChoice();
-		plChoice.setInclusionEntry(plEntry);
-		plEntryNode.setPickListEntryNodeChoice(plChoice);
-		
-		plDef.addPickListEntryNode(plEntryNode);
-		
-		plEntryNode = new PickListEntryNode();
-		plEntryNode.setPickListEntryId("plEntryNode2");
-		PickListEntryExclusion plExclusion = new PickListEntryExclusion();
-		plExclusion.setEntityCode("excludeEntityCoded");
-		plExclusion.setEntityCodeNamespace("excludeentityCodeNamespace");
-		
-		plChoice = new PickListEntryNodeChoice();
-		plChoice.setExclusionEntry(plExclusion);
-		
-		plEntryNode.setPickListEntryNodeChoice(plChoice);
-		
-		plDef.addPickListEntryNode(plEntryNode);
-		
-		
-		getPickListService().loadPickList(plDef, null, null);
-//		getPickListService().loadPickList("resources/testData/valueDomain/pickListTestData.xml", true);
-	}
+//	@Test
+//	public void testLoadPickList() throws LBException {
+//		PickListDefinition plDef = new PickListDefinition();
+//		plDef.setPickListId("TESTPL1");
+//		plDef.setRepresentsValueSetDefinition("TESTVSD");
+//		plDef.setDefaultEntityCodeNamespace("DefaultECNS");
+//		plDef.setDefaultLanguage("defaultLanguage");
+//		plDef.setDefaultSortOrder("defaultSortOrder");
+//		plDef.setCompleteSet(true);
+//		
+//		PickListEntryNode plEntryNode = new PickListEntryNode();
+//		plEntryNode.setPickListEntryId("plEntryNode1");
+//		PickListEntry plEntry = new PickListEntry();
+//		plEntry.setEntityCode("entityCode");
+//		plEntry.setPickText("pickText");
+//		
+//		PickListEntryNodeChoice plChoice = new PickListEntryNodeChoice();
+//		plChoice.setInclusionEntry(plEntry);
+//		plEntryNode.setPickListEntryNodeChoice(plChoice);
+//		
+//		plDef.addPickListEntryNode(plEntryNode);
+//		
+//		getPickListService().loadPickList(plDef, null, null);
+//		
+//		plDef = new PickListDefinition();
+//		plDef.setPickListId("TESTPL2");
+//		plDef.setRepresentsValueSetDefinition("TESTVSD 2");
+//		plDef.setDefaultEntityCodeNamespace("DefaultECNS 2");
+//		plDef.setDefaultLanguage("defaultLanguage 2");
+//		plDef.setDefaultSortOrder("defaultSortOrder 2");
+//		plDef.setCompleteSet(true);
+//		
+//		plEntryNode = new PickListEntryNode();
+//		plEntryNode.setPickListEntryId("plEntryNode1");
+//		plEntry = new PickListEntry();
+//		plEntry.setEntityCode("entityCode 2");
+//		plEntry.setPickText("pickText 2");
+//		
+//		plChoice = new PickListEntryNodeChoice();
+//		plChoice.setInclusionEntry(plEntry);
+//		plEntryNode.setPickListEntryNodeChoice(plChoice);
+//		
+//		plDef.addPickListEntryNode(plEntryNode);
+//		
+//		plEntryNode = new PickListEntryNode();
+//		plEntryNode.setPickListEntryId("plEntryNode2");
+//		PickListEntryExclusion plExclusion = new PickListEntryExclusion();
+//		plExclusion.setEntityCode("excludeEntityCoded");
+//		plExclusion.setEntityCodeNamespace("excludeentityCodeNamespace");
+//		
+//		plChoice = new PickListEntryNodeChoice();
+//		plChoice.setExclusionEntry(plExclusion);
+//		
+//		plEntryNode.setPickListEntryNodeChoice(plChoice);
+//		
+//		plDef.addPickListEntryNode(plEntryNode);
+//		
+//		
+//		getPickListService().loadPickList(plDef, null, null);
+////		getPickListService().loadPickList("resources/testData/valueDomain/pickListTestData.xml", true);
+//	}
 	
-	@Test
-	public void testRemovePickListDefinitionByPickListId() throws LBException {
-//		getPickListService().removePickList("TESTPL1");
-//		getPickListService().removePickList("TESTPL2");
-	}
+//	@Test
+//	public void testRemovePickListDefinitionByPickListId() throws LBException {
+////		getPickListService().removePickList("TESTPL1");
+////		getPickListService().removePickList("TESTPL2");
+//	}
 	
 	@Test
 	public void testLoadValueDomain() throws Exception {
+		ValueSetDefinition vsd = new ValueSetDefinition();
+		vsd.setValueSetDefinitionURI("TEST:VSD:URI");
+		vsd.setValueSetDefinitionName("TESTVSDNAME");
+		vsd.setConceptDomain("conceptDomain");
+		vsd.setDefaultCodingScheme("defaultCodingScheme");
+		vsd.setIsActive(true);
+		vsd.setOwner("owner");
+		
+		EntityReference er = new EntityReference();
+		er.setEntityCode("entityCode");
+		er.setEntityCodeNamespace("entityCodeNamespace");
+		er.setLeafOnly(false);
+		er.setReferenceAssociation("referenceAssociation");
+		er.setTargetToSource(true);
+		er.setTransitiveClosure(true);
+		
+		DefinitionEntry de = new DefinitionEntry();
+		de.setEntityReference(er);
+		de.setRuleOrder(Long.valueOf("1"));
+		de.setOperator(DefinitionOperator.OR);
+		
+		vsd.addDefinitionEntry(de);
+		
+		getValueDomainService().loadValueSetDefinition(vsd, "systemReleaseURI", null);
+		
 //		getValueDomainService().loadValueDomain("resources/testData/valueDomain/vdTestData.xml", true);
 	}
 

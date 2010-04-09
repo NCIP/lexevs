@@ -29,13 +29,12 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
-import org.LexGrid.emf.valueDomains.PickListDefinition;
-import org.LexGrid.managedobj.RemoveException;
+import org.LexGrid.valueSets.PickListDefinition;
 import org.junit.Test;
-import org.lexgrid.valuedomain.LexEVSPickListServices;
-import org.lexgrid.valuedomain.LexEVSValueDomainServices;
-import org.lexgrid.valuedomain.impl.LexEVSPickListServicesImpl;
-import org.lexgrid.valuedomain.impl.LexEVSValueDomainServicesImpl;
+import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
+import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
+import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
+import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 /**
  * This test removes the terminologies loaded by the JUnit tests.
@@ -45,8 +44,8 @@ import org.lexgrid.valuedomain.impl.LexEVSValueDomainServicesImpl;
  */
 public class CleanUpTest extends TestCase {
     
-	private LexEVSValueDomainServices vds_;
-	private LexEVSPickListServices pls_;
+	private LexEVSValueSetDefinitionServices vds_;
+	private LexEVSPickListDefinitionServices pls_;
 	
 	public void testRemoveAutombiles() throws LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
@@ -93,23 +92,23 @@ public class CleanUpTest extends TestCase {
     }
     
     @Test
-	public void testRemoveValueDomain() throws LBException, URISyntaxException, RemoveException {
-		getValueDomainService().removeValueDomain(new URI("SRITEST:AUTO:EveryThing"));
+	public void testRemoveValueDomain() throws LBException, URISyntaxException {
+		getValueDomainService().removeValueSetDefinition(new URI("SRITEST:AUTO:EveryThing"));
 	}
 	
 	@Test
-	public void testRemoveAllTestValueDomains() throws LBException, RemoveException {
-		URI[] uris = getValueDomainService().listValueDomains(null);
-		assertTrue(uris.length > 0);
+	public void testRemoveAllTestValueDomains() throws LBException {
+		List<URI> uris = getValueDomainService().listValueSetDefinitions(null);
+		assertTrue(uris.size() > 0);
 		
 		for (URI uri : uris)
 		{
 			if (uri.toString().startsWith("SRITEST:"))
-				getValueDomainService().removeValueDomain(uri);
+				getValueDomainService().removeValueSetDefinition(uri);
 		}
 		
 		// check if we missed any test valueDomains
-		uris = getValueDomainService().listValueDomains(null);
+		uris = getValueDomainService().listValueSetDefinitions(null);
 		
 		for (URI uri : uris)
 		{
@@ -124,7 +123,7 @@ public class CleanUpTest extends TestCase {
 	 * @throws RemoveException 
 	 */
 	@Test
-	public void testRemovePickList() throws RemoveException {
+	public void testRemovePickList() {
 		try {
 			getPickListService().removePickList("SRITEST:AUTO:DomesticAutoMakers");
 		} catch (LBException e) {
@@ -149,7 +148,7 @@ public class CleanUpTest extends TestCase {
 	 * @throws RemoveException 
 	 */
 	@Test
-	public void testRemoveAllTestPickLists() throws LBException, RemoveException {
+	public void testRemoveAllTestPickLists() throws LBException {
 		List<String> pickListIds = getPickListService().listPickListIds();
 		for (String pickListId : pickListIds)
 		{
@@ -171,14 +170,10 @@ public class CleanUpTest extends TestCase {
 	@Test
 	public void testDropValueDomainTables() throws LBException {
 		List<String> pickListIds = getPickListService().listPickListIds();
-		URI[] uris = getValueDomainService().listValueDomains(null);
-		if (pickListIds.size() == 0 && uris.length == 0)
+		List<URI> uris = getValueDomainService().listValueSetDefinitions(null);
+		if (pickListIds.size() == 0 && uris.size() == 0)
 		{
-			try {
-				getValueDomainService().dropValueDomainTables();
-			} catch (RemoveException e) {
-				assertFalse("Can not delete valueDomain tables when value domain or pick list entries exists.", true);
-			}
+			getValueDomainService().dropValueDomainTables();
 			assertTrue(true);
 		}
 		else
@@ -187,16 +182,16 @@ public class CleanUpTest extends TestCase {
 		}
 	}
 	
-	private LexEVSValueDomainServices getValueDomainService(){
+	private LexEVSValueSetDefinitionServices getValueDomainService(){
 		if (vds_ == null) {
-			vds_ = new LexEVSValueDomainServicesImpl();
+			vds_ = new LexEVSValueSetDefinitionServicesImpl();
 		}
 		return vds_;
 	}
 	
-	private LexEVSPickListServices getPickListService(){
+	private LexEVSPickListDefinitionServices getPickListService(){
 		if (pls_ == null) {
-			pls_ = new LexEVSPickListServicesImpl();
+			pls_ = new LexEVSPickListDefinitionServicesImpl();
 		}
 		return pls_;
 	}

@@ -487,7 +487,7 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 	@Test
 	public void testGetPickListDefinitionForPickListId() throws LBException, URISyntaxException {
 		System.out.println("In testGetPickListDefinitionForPickListId");
-		PickListDefinition plDef = getPickListService().getPickListDefinitionById("TESTPL1");
+		PickListDefinition plDef = getPickListService().getPickListDefinitionById("TESTPL2");
 		
 		System.out.println("pickList id" + plDef.getPickListId());
 		
