@@ -44,6 +44,7 @@ public class OBO2LGConstants {
     public static final String ASSOCIATION_UNION_OF = "union_of";
     public static final String ASSOCIATION_INVERSE_OF = "inverse_of";
     public static final String ASSOCIATION_PART_OF = "part_of";
+    public static final String ASSOCIATION_OBO_REL_PART_OF = "OBO_REL:part_of";
     public static final String ASSOCIATION_HAS_PART = "has_part";
     public static final String ASSOCIATION_PART_OF_ISFORWARDNAVIGABLE = "false";
     public static final String ASSOCIATION_DEVELOPS_FROM = "develops_from";
