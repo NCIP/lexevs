@@ -97,20 +97,20 @@ public class CleanUpTest extends TestCase {
 	}
 	
 	@Test
-	public void testRemoveAllTestValueDomains() throws LBException {
-		List<URI> uris = getValueDomainService().listValueSetDefinitions(null);
+	public void testRemoveAllTestValueDomains() throws LBException, URISyntaxException {
+		List<String> uris = getValueDomainService().listValueSetDefinitions(null);
 		assertTrue(uris.size() > 0);
 		
-		for (URI uri : uris)
+		for (String uri : uris)
 		{
-			if (uri.toString().startsWith("SRITEST:"))
-				getValueDomainService().removeValueSetDefinition(uri);
+			if (uri.startsWith("SRITEST:"))
+				getValueDomainService().removeValueSetDefinition(new URI(uri));
 		}
 		
 		// check if we missed any test valueDomains
 		uris = getValueDomainService().listValueSetDefinitions(null);
 		
-		for (URI uri : uris)
+		for (String uri : uris)
 		{
 			if (uri.toString().startsWith("SRITEST:"))
 				assertFalse("Not all test value domains were deleted.",true);
@@ -170,7 +170,7 @@ public class CleanUpTest extends TestCase {
 	@Test
 	public void testDropValueDomainTables() throws LBException {
 		List<String> pickListIds = getPickListService().listPickListIds();
-		List<URI> uris = getValueDomainService().listValueSetDefinitions(null);
+		List<String> uris = getValueDomainService().listValueSetDefinitions(null);
 		if (pickListIds.size() == 0 && uris.size() == 0)
 		{
 			getValueDomainService().dropValueDomainTables();
