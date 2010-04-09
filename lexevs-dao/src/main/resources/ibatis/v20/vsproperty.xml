@@ -44,12 +44,12 @@
 	
 	<resultMap id="commentResult" class="comment" extends="propertyResult" />
 	
-	<select id="getPropertyId" resultClass="string" remapResults="true"
+	<select id="getPropertyGuid" resultClass="string" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
   		SELECT
-  			propertyGuid
+  			vsPropertyGuid
   		FROM
-  			vsproperty
+  			vsProperty
   		WHERE
 			referenceGuid = #param1#
 		AND
@@ -114,7 +114,7 @@
   	  	<include refid="selectPropertyFragment"/>
   				
   		LEFT JOIN
-  			vspropertyMultiAttrib qualifier
+  			vsPropertyMultiAttrib qualifier
   		ON
   		(
   			property.propertyGuid = qualifier.propertyGuid	
@@ -125,7 +125,7 @@
   		)
   			
   		LEFT JOIN
-  			vspropertyMultiAttrib usageContext
+  			vsPropertyMultiAttrib usageContext
   		ON
   		(
   			property.propertyGuid = usageContext.propertyGuid	
@@ -136,7 +136,7 @@
   		)
   			
   		LEFT JOIN
-  			vspropertyMultiAttrib source
+  			vsPropertyMultiAttrib source
   		ON
   		(
   			property.propertyGuid = source.propertyGuid		
@@ -151,7 +151,7 @@
   	  	<include refid="selectPropertyFragment"/>
   				
   		LEFT JOIN
-  			vspropertyMultiAttrib qualifier
+  			vsPropertyMultiAttrib qualifier
   		ON
   		(
   			property.propertyGuid = qualifier.propertyGuid	  			
@@ -160,7 +160,7 @@
   		)
   			
   		LEFT JOIN
-  			vspropertyMultiAttrib usageContext
+  			vsPropertyMultiAttrib usageContext
   		ON
   		(
   			property.propertyGuid = usageContext.propertyGuid	
@@ -169,7 +169,7 @@
   		)
   			
   		LEFT JOIN
-  			vspropertyMultiAttrib source
+  			vsPropertyMultiAttrib source
   		ON
   		(
   			property.propertyGuid = source.propertyGuid		
@@ -200,16 +200,16 @@
 
 	<delete id="deletePickListDefinitionPropertiesByPickListGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			vsproperty
+			vsProperty
 		WHERE
 			referenceType = #param1#
 		AND 
 			referenceGuid = #param2#
 	</delete>
 	
-	<delete id="deletePickListDEntryPropertiesByPickListGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deletePickListEntryPropertiesByPickListGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			vsproperty
+			vsProperty
 		WHERE
 			referenceType = #param1#
 		AND 
@@ -224,10 +224,36 @@
 			)
 	</delete>
 	
+	<delete id="deleteValueSetDefinitionPropertiesByValueSetGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			vsProperty
+		WHERE
+			referenceType = #param1#
+		AND 
+			referenceGuid = #param2#
+	</delete>
+	
+	<delete id="deleteDefinitionEntryPropertiesByValueSetGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			vsProperty
+		WHERE
+			referenceType = #param1#
+		AND 
+			referenceGuid 
+		IN	(
+			SELECT 
+				vsdEntryGuid
+			FROM
+				vsdEntry
+			WHERE
+				valueSetDefGuid = #param2#
+			)
+	</delete>
+	
 	
      <insert id="insertProperty" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
-		INSERT INTO vsproperty (
-			propertyGuid,
+		INSERT INTO vsProperty (
+			vsPropertyGuid,
 			referenceGuid,
 			referenceType,
 			propertyId,
@@ -297,7 +323,7 @@
   <update id="updatePropertyById"
   	parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
   		UPDATE 
-			vsproperty property
+			vsProperty property
 		SET 
    		  <dynamic prepend=" ">
    		  	<isNotNull prepend="," property="property.propertyType">
@@ -357,7 +383,7 @@
 			</isNotNull>
 		  </dynamic>
 		 WHERE
-		 	property.propertyGuid = #id#
+		 	property.vsPropertyGuid = #id#
   </update>
     
 </sqlMap>
