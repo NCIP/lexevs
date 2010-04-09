@@ -46,6 +46,7 @@ import org.LexGrid.managedobj.jdbc.JDBCConnectionDescriptor;
 import org.LexGrid.persistence.sql.SingletonVariables;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.lexgrid.valuesets.helper.VSDConstants;
 
 import edu.mayo.informatics.lexgrid.convert.utility.MessageRedirector;
 

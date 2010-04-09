@@ -69,6 +69,7 @@ import org.LexGrid.persistence.sql.SingletonVariables;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.lexgrid.valuesets.helper.VSDConstants;
 
 import edu.mayo.informatics.lexgrid.convert.utility.MessageRedirector;
 

@@ -61,7 +61,7 @@ import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntry;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntryList;
 import org.lexgrid.valuesets.helper.PLEntryNodeSortUtil;
-import org.lexgrid.valuesets.persistence.VSDServiceHelper;
+import org.lexgrid.valuesets.helper.VSDServiceHelper;
 import org.lexgrid.valuesets.persistence.VSDXMLread;
 
 /**

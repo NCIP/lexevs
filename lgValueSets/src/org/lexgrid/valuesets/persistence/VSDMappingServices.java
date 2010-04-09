@@ -61,6 +61,7 @@ import org.LexGrid.managedobj.jdbc.JDBCBaseService;
 import org.LexGrid.persistence.sql.SingletonVariables;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
+import org.lexgrid.valuesets.helper.VSDConstants;
 
 /**
  * <pre>

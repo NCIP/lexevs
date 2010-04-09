@@ -49,6 +49,7 @@ import org.LexGrid.managedobj.ServiceInitException;
 import org.LexGrid.managedobj.jdbc.JDBCBaseService;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
+import org.lexgrid.valuesets.helper.VSDConstants;
 
 /**
  * <pre>

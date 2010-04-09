@@ -62,9 +62,9 @@ import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
+import org.lexgrid.valuesets.helper.VSDServiceHelper;
 import org.lexgrid.valuesets.persistence.VSDMappingServices;
 import org.lexgrid.valuesets.persistence.VSDSServices;
-import org.lexgrid.valuesets.persistence.VSDServiceHelper;
 import org.lexgrid.valuesets.persistence.VSDServices;
 import org.lexgrid.valuesets.persistence.VSDXMLread;
 
@@ -347,7 +347,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
     }
     
     @Override
-	public List<URI> listValueSetDefinitions(String valueSetDefinitionName)
+	public List<String> listValueSetDefinitions(String valueSetDefinitionName)
 			throws LBException {
 		getLogger().logMethod(new Object[] { valueSetDefinitionName });
         return this.vsds_.getValueSetDefinitionURISForName(valueSetDefinitionName);        
@@ -365,7 +365,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	}
 	
 	@Override
-	public List<URI> getAllValueSetDefinitionsWithNoName() throws LBException {
+	public List<String> getAllValueSetDefinitionsWithNoName() throws LBException {
 		getLogger().logMethod(new Object[]{});
 		return this.vsds_.getValueSetDefinitionURISForName(" ");
 	}

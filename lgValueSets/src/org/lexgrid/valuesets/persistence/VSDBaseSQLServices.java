@@ -34,6 +34,7 @@ import org.LexGrid.util.sql.GenericSQLModifier;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.log4j.Logger;
+import org.lexgrid.valuesets.helper.VSDConstants;
 
 /**
  * <pre>

@@ -47,6 +47,7 @@ import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.lexgrid.valuesets.helper.VSDConstants;
 
 import edu.mayo.informatics.lexgrid.convert.utility.MessageRedirector;
 
