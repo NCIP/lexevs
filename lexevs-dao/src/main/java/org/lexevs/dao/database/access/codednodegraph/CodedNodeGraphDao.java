@@ -18,9 +18,10 @@
  */
 package org.lexevs.dao.database.access.codednodegraph;
 
+import java.util.List;
+
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
-
-
 
 /**
  * The Interface CodedNodeGraphDao.
@@ -29,5 +30,38 @@ import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
  */
 public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 	
-	  
+	public enum TripleNode {SUBJECT, OBJECT}
+	
+	public List<String> getTripleUidsContainingSubject(
+			String codingSchemeUid,
+			String associationPredicateUid,
+			String subjectEntityCode,
+			String subjectEntityCodeNamespace, 
+			int start, 
+			int pageSize);
+	
+	public int getTripleUidsContainingSubjectCount(
+			String codingSchemeUid,
+			String associationPredicateUid,
+			String subjectEntityCode,
+			String subjectEntityCodeNamespace);
+	
+	public List<String> getTripleUidsContainingObject(
+			String codingSchemeUid,
+			String associationPredicateUid,
+			String objectEntityCode,
+			String objectEntityCodeNamespace, 
+			int start, 
+			int pageSize);
+	
+	public int getTripleUidsContainingObjectCount(
+			String codingSchemeUid,
+			String associationPredicateUid,
+			String objectEntityCode,
+			String objectEntityCodeNamespace);
+	
+	public AssociatedConcept getAssociatedConceptFromUid(
+			String codingSchemeUid,
+			String tripleUid,
+			TripleNode node);
 }

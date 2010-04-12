@@ -25,6 +25,7 @@ import junit.framework.Assert;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.lexevs.dao.database.access.association.AssociationDao;
+import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
@@ -64,6 +65,9 @@ public class DaoManager {
 	
 	/** The versions daos. */
 	private List<VersionsDao> versionsDaos;
+	
+	/** The versions daos. */
+	private List<CodedNodeGraphDao> codedNodeGraphDaos;
 	
 	/** The registry. */
 	private Registry registry;
@@ -108,6 +112,10 @@ public class DaoManager {
 	 */
 	public EntityDao getEntityDao(String codingSchemeUri, String version){
 		return this.doGetDao(codingSchemeUri, version, this.getEntityDaos());
+	}
+	
+	public CodedNodeGraphDao getCodedNodeGraphDao(String codingSchemeUri, String version){
+		return this.doGetDao(codingSchemeUri, version, this.getCodedNodeGraphDaos());
 	}
 	
 	/**
@@ -373,5 +381,13 @@ public class DaoManager {
 	 */
 	public ValueSetDefinitionDao getCurrentValueSetDefinitionDao(){
 		return this.getCorrectDaoForSchemaVersion(this.getValueSetDefinitionDaos(), CURRENT_VERSION);
+	}
+
+	public List<CodedNodeGraphDao> getCodedNodeGraphDaos() {
+		return codedNodeGraphDaos;
+	}
+
+	public void setCodedNodeGraphDaos(List<CodedNodeGraphDao> codedNodeGraphDaos) {
+		this.codedNodeGraphDaos = codedNodeGraphDaos;
 	}
 }

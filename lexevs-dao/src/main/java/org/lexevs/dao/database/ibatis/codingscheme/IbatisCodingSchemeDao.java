@@ -162,6 +162,10 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		scheme.setMappings(
 				this.getMappings(codingSchemeId));
 		
+		for(String relationsUid : associationDao.getRelationsIdsForCodingSchemeId(codingSchemeId)){
+			scheme.addRelations(associationDao.getRelationsByUid(codingSchemeId, relationsUid));
+		}
+
 		return scheme;
 	}
 	

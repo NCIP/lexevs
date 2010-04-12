@@ -98,6 +98,11 @@
 				<ref bean="ibatisPropertyDao"/>
 			</list>
 		</property>
+		<property name="codedNodeGraphDaos">
+			<list>
+				<ref bean="ibatisCodedNodeGraphDao"/>
+			</list>
+		</property>		
 		<property name="pickListDaos">
 			<list>
 				<ref bean="ibatisPickListDao"/>
@@ -117,6 +122,9 @@
 		<property name="ibatisPropertyDao" ref="ibatisPropertyDao"/>
 		<property name="ibatisAssociationDao" ref="ibatisAssociationDao"/>
 	</bean>
+	
+	<bean id="ibatisCodedNodeGraphDao"
+		class="org.lexevs.dao.database.ibatis.codednodegraph.IbatisCodedNodeGraphDao" parent="abstractIbatisDao"/>
 	
 	<bean id="ibatisAssociationDao"
 		class="org.lexevs.dao.database.ibatis.association.IbatisAssociationDao" parent="abstractIbatisDao">

@@ -65,7 +65,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
-	private static String ASSOCIATION_NAMESPACE = "Association.";
+	public static String ASSOCIATION_NAMESPACE = "Association.";
 	
 	/** The INSER t_ relation s_ sql. */
 	private static String INSERT_RELATIONS_SQL = ASSOCIATION_NAMESPACE + "insertRelations";
@@ -107,6 +107,10 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	private static String DELETE_ASSOCIATION_QUALS_FOR_CODINGSCHEME_ID_SQL = ASSOCIATION_NAMESPACE + "deleteAssocQualsByCodingSchemeId";
 	
+	private static String GET_ASSOCIATION_PREDICATE_FOR_ID_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateForId";
+	
+	private static String GET_RELATIONS_FOR__ID_SQL = ASSOCIATION_NAMESPACE + "getRelationsForId";
+
 	/** The ibatis versions dao. */
 	private IbatisVersionsDao ibatisVersionsDao;
 	
@@ -557,6 +561,43 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				contextBean);
 	}
 	
+	
+	
+	@Override
+	public AssociationPredicate getAssociationPredicateByUid(String codingSchemeId,
+			String associationPredicateUid) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		PrefixedParameter bean = new PrefixedParameter();
+		bean.setPrefix(prefix);
+		bean.setParam1(associationPredicateUid);
+		
+		AssociationPredicate predicate = (AssociationPredicate) this.getSqlMapClientTemplate().queryForObject(
+				GET_ASSOCIATION_PREDICATE_FOR_ID_SQL, 
+				bean);
+		
+		return predicate;
+	}
+
+	@Override
+	public Relations getRelationsByUid(String codingSchemeId,
+			String relationsUid) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		PrefixedParameterTuple bean = new PrefixedParameterTuple();
+		bean.setPrefix(prefix);
+		bean.setParam1(codingSchemeId);
+		bean.setParam2(relationsUid);
+		
+		Relations relations = (Relations) this.getSqlMapClientTemplate().queryForObject(GET_RELATIONS_FOR__ID_SQL, bean);
+	
+		for(String predicateId : this.getAssociationPredicateIdsForRelationsId(codingSchemeId, relationsUid)) {
+			relations.addAssociationPredicate(getAssociationPredicateByUid(codingSchemeId, predicateId));
+		}
+		
+		return relations;
+	}
+
 	/**
 	 * Gets the key for association instance id.
 	 * 
@@ -627,5 +668,4 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public EntityDao getEntityDao() {
 		return entityDao;
 	}
-
 }

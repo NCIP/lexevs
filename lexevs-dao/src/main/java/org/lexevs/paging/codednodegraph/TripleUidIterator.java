@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao.IndividualDaoCallback;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
-import org.lexevs.dao.database.service.association.AssociationService.Direction;
+import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.paging.AbstractPageableIterator;
 
 public class TripleUidIterator extends AbstractPageableIterator<String>{
@@ -14,15 +14,15 @@ public class TripleUidIterator extends AbstractPageableIterator<String>{
 	private String associationPredicateUid;
 	private String entityCode;
 	private String entityCodeNamespace;
-	private Direction direction;
-	
+	private TripleNode tripleNode;
+
 	public TripleUidIterator(
 			CodedNodeGraphDao codedNodeGraphDao, 
 			String codingSchemeUid, 
 			String associationPredicateUid, 
 			String entityCode,
 			String entityCodeNamespace,
-			Direction direction,
+			TripleNode tripleNode,
 			int pageSize) {
 		super(pageSize);
 		this.codedNodeGraphDao = codedNodeGraphDao;
@@ -30,23 +30,32 @@ public class TripleUidIterator extends AbstractPageableIterator<String>{
 		this.associationPredicateUid = associationPredicateUid;
 		this.entityCode = entityCode;
 		this.entityCodeNamespace = entityCodeNamespace;
-		this.direction = direction;
+		this.tripleNode = tripleNode;
 	}
 	@Override
 	protected List<String> doPage(final int currentPosition, final int pageSize) {
-		
+
 		return codedNodeGraphDao.executeInTransaction(new IndividualDaoCallback<List<String>>(){
 
 			@Override
 			public List<String> execute() {
-				return codedNodeGraphDao.getTripleUids(
-						codingSchemeUid, 
-						associationPredicateUid, 
-						entityCode,
-						entityCodeNamespace,
-						direction,
-						currentPosition, 
-						pageSize);
+				if(tripleNode.equals(TripleNode.SUBJECT)) {
+					return codedNodeGraphDao.getTripleUidsContainingSubject(
+							codingSchemeUid, 
+							associationPredicateUid, 
+							entityCode,
+							entityCodeNamespace,
+							currentPosition, 
+							pageSize);
+				} else {
+					return codedNodeGraphDao.getTripleUidsContainingObject(
+							codingSchemeUid, 
+							associationPredicateUid, 
+							entityCode,
+							entityCodeNamespace,
+							currentPosition, 
+							pageSize);
+				}
 			}
 		});
 	}

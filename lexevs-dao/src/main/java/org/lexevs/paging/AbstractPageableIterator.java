@@ -8,7 +8,7 @@ import org.springframework.util.Assert;
 
 public abstract class AbstractPageableIterator<T> implements Iterator<T> {
 
-	private static int DEFAULT_PAGE_SIZE = 20;
+	private static int DEFAULT_PAGE_SIZE = 100;
 	
 	private List<T> cache = new ArrayList<T>();
 	
@@ -67,7 +67,6 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T> {
 	
 	protected boolean isPageNeeded() {
 		boolean page = globalPosition >  ( ( currentPage * pageSize) - 1 );
-		System.out.println(page);
 		return page;
 	}
 	
