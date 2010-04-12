@@ -81,6 +81,7 @@ import org.LexGrid.LexBIG.Impl.loaders.RadLexProtegeFramesLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.TextLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.ApproxNumOfConceptsPostProcessor;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.SupportedAttributePostProcessor;
+import org.LexGrid.LexBIG.Impl.pagedgraph.PagingCodedNodeGraphImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -118,6 +119,7 @@ public class LexBIGServiceImpl implements LexBIGService {
     private DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
     private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
     private Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
+    private CodedNodeGraphFactory codedNodeGraphFactory = new CodedNodeGraphFactory();
 
     private LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -342,24 +344,8 @@ public class LexBIGServiceImpl implements LexBIGService {
     public CodedNodeGraph getNodeGraph(String codingScheme, CodingSchemeVersionOrTag tagOrVersion, String relationContainerName)
             throws LBParameterException, LBInvocationException, LBResourceUnavailableException {
         getLogger().logMethod(new Object[] { codingScheme, tagOrVersion, relationContainerName });
-        String version = null;
-        if (tagOrVersion == null || tagOrVersion.getVersion() == null || tagOrVersion.getVersion().length() == 0) {
-            version = systemResourceService.getInternalVersionStringForTag(codingScheme,
-                    (tagOrVersion == null ? null : tagOrVersion.getTag()));
-        } else {
-            version = tagOrVersion.getVersion();
-        }
-
-        try {
-            return new CodedNodeGraphImpl(codingScheme, version, relationContainerName);
-        } catch (LBParameterException e) {
-            throw e;
-        } catch (LBResourceUnavailableException e) {
-            throw e;
-        } catch (Exception e) {
-            String id = getLogger().error("There was an unexpected error", e);
-            throw new LBInvocationException("There was an unexpected error", id);
-        }
+   
+        return codedNodeGraphFactory.getCodedNodeGraph(codingScheme, tagOrVersion, relationContainerName);
     }
 
     /*
