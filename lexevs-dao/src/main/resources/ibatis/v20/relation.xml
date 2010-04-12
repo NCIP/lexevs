@@ -2,6 +2,17 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap namespace="Association">
+
+	<typeAlias alias="associationPredicate" type="org.LexGrid.relations.AssociationPredicate" />
+	<typeAlias alias="relations" type="org.LexGrid.relations.Relations" />
+	
+	<resultMap id="associationPredicateResult" class="associationPredicate">
+		<result property="associationName" column="associationName" />
+	</resultMap>
+	
+	<resultMap id="relationsResult" class="relations">
+		<result property="containerName" column="containerName" />
+	</resultMap>
 	
      <insert id="insertRelations" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertRelationsBean">
 		INSERT INTO $prefix$relation (
@@ -124,5 +135,41 @@
    		WHERE
 			associationPredicateGuid = 
 			#param1#
+   </select> 
+   
+   <select id="getAssociationPredicateForId" remapResults="true"
+   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
+   	resultMap="associationPredicateResult">
+   		SELECT
+   			associationName
+   		FROM
+   			$prefix$associationPredicate
+   		WHERE
+			associationPredicateGuid = 
+			#param1#
+   </select> 
+   
+   <select id="getRelationsForId" remapResults="true"
+   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+   	resultMap="relationsResult">
+   		SELECT
+   			containerName,
+   			isMapping,
+   			sourceCodingScheme,
+   			sourceCodingSchemeVersion,
+   			targetCodingScheme,
+   			targetCodingSchemeVersion,
+   			description,
+   			isActive,
+   			owner,
+   			status,
+   			effectiveDate,
+   			expirationDate
+   		FROM
+   			$prefix$relation
+   		WHERE
+			codingSchemeGuid = #param1#
+		AND
+			relationGuid = #param2#
    </select> 
 </sqlMap>

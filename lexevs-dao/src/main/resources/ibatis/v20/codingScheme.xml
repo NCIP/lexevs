@@ -130,6 +130,10 @@
 
      </select>
      
+     <select id="test" resultClass="java.util.HashMap">
+     	SELECT * from codingScheme
+     </select>
+     
     <select id="getCodingSchemeSummaryByUriAndVersion" 
     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
     	resultMap="codingSchemeSummaryResult"

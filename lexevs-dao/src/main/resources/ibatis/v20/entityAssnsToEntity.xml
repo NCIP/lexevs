@@ -4,6 +4,7 @@
 <sqlMap namespace="Association">
 
 	<typeAlias alias="triple" type="org.lexevs.dao.database.access.association.model.Triple"/>
+	<typeAlias alias="associatedConcept" type="org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept"/>
 
 	<resultMap id="tripleResult" class="triple">
 		<result property="sourceEntityCode" column="sourceEntityCode" />
@@ -12,6 +13,46 @@
 		<result property="targetEntityNamespace" column="targetEntityCodeNamespace" />
 		<result property="associationPredicateId" column="associationPredicateGuid" />
 	</resultMap>
+	
+	<resultMap id="associatedConceptResult" class="associatedConcept">
+		<result property="code" column="entityCode" />
+		<result property="codeNamespace" column="entityCodeNamespace" />
+		<result property="entityDescription.content" column="description" />
+		<result property="codingSchemeURI" column="description" />
+		<result property="codingSchemeVersion" column="description" />
+	</resultMap>
+	
+	<select id="getAssociatedConcpetFromEntityAssnsToEntityUid" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		remapResults="true" resultMap="Association.associatedConceptResult">
+		SELECT
+			<isEqual property="param2" compareValue="SUBJECT">
+				eate.sourceEntityCode as entityCode,
+				eate.sourceEntityCodeNamespace as entityCodeNamespace
+			</isEqual>
+			<isEqual property="param2" compareValue="OBJECT">
+				eate.targetEntityCode as entityCode,
+				eate.targetEntityCodeNamespace as entityCodeNamespace
+			</isEqual>
+		FROM
+			$prefix$entityAssnsToEntity eate
+		LEFT JOIN
+			$prefix$entity entity
+		ON (
+			<isEqual property="param2" compareValue="SUBJECT">
+				eate.sourceEntityCode = entity.entityCode
+				AND
+				eate.sourceEntityCodeNamespace = entity.entityCodeNamespace
+			</isEqual>
+			<isEqual property="param2" compareValue="OBJECT">
+				eate.targetEntityCode = entity.entityCode
+				AND
+				eate.targetEntityCodeNamespace = entity.entityCodeNamespace
+			</isEqual>
+			)
+		WHERE
+			eate.entityAssnsGuid = #param1#
+	</select>
 
 	<select id="getAccociationInstanceKey" remapResults="true" resultClass="string">
 		SELECT
@@ -117,5 +158,56 @@
 			#targetEntityCodeNamespace#
 		)
   </insert>
+  
+  <sql id="getEntityAssnsToEntityUidsFragment">
+  		FROM
+			$prefix$entityAssnsToEntity eate
+		INNER JOIN
+			$prefix$associationPredicate ap
+		ON 
+			(ap.associationPredicateGuid = eate.associationPredicateGuid)
+		INNER JOIN
+			 $prefix$relation rel
+		ON 
+			(rel.relationGuid = ap.relationGuid)
+		LEFT JOIN
+			$prefix$entityAssnQuals quals
+		ON
+			(eate.entityAssnsGuid = quals.referenceGuid)
+		WHERE
+			rel.codingSchemeGuid = #codingSchemeUid#
+		AND
+			ap.associationPredicateGuid = #associationPredicateUid#
+		AND
+			<isEqual property="tripleNode" compareValue="SUBJECT"> 
+				eate.sourceEntityCode = #entityCode#
+				AND
+				eate.sourceEntityCodeNamespace = #entityCodeNamespace#
+			</isEqual>
+			<isEqual property="tripleNode" compareValue="OBJECT"> 
+				eate.targetEntityCode = #entityCode#
+				AND
+				eate.targetEntityCodeNamespace = #entityCodeNamespace#
+			</isEqual>
+  
+  
+  
+  </sql>
+  
+  	<select id="getEntityAssnsToEntityUids"
+				parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsBean"
+				resultClass="string">
+		SELECT DISTINCT 
+			(eate.entityAssnsGuid)
+		<include refid="getEntityAssnsToEntityUidsFragment"/>
+	</select>
+	
+	<select id="getEntityAssnsToEntityUidsCount"
+				parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsBean"
+				resultClass="int">
+		SELECT COUNT(DISTINCT 
+			(eate.entityAssnsGuid))
+		<include refid="getEntityAssnsToEntityUidsFragment"/>
+	</select>
     
 </sqlMap>

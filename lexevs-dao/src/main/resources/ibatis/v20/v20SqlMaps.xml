@@ -22,6 +22,6 @@
     <sqlMap resource="ibatis/v20/picklist.xml"/>
     <sqlMap resource="ibatis/v20/valueSetDefinition.xml"/>
     <sqlMap resource="ibatis/v20/vsproperty.xml"/>
-    <sqlMap resource="ibatis/v20/vspropertyMultiAttri.xml"/>
+    <sqlMap resource="ibatis/v20/vsPropertyMultiAttrib.xml"/>
     <sqlMap resource="ibatis/v20/associationEntity.xml"/>
 </sqlMapConfig>
