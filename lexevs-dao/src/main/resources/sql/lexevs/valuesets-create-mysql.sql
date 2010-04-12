@@ -82,7 +82,6 @@ CREATE TABLE vsMultiAttrib
 	referenceGuid VARCHAR(36) NOT NULL,
 	referenceType VARCHAR(50),
 	attributeType VARCHAR(30) NOT NULL,
-	attributeId VARCHAR(50),
 	attributeValue VARCHAR(250) NOT NULL,
 	subRef VARCHAR(250),
 	role VARCHAR(250),

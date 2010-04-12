@@ -432,8 +432,12 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 		bean.setId(qualifierGuid);
 		bean.setPropertyId(propertyGuid);
 		bean.setAttributeId(propertyQualifier.getPropertyQualifierName());
-		bean.setAttributeValue(propertyQualifier.getValue().getContent());
+		if (propertyQualifier.getValue() != null)
+		{
+			bean.setAttributeValue(propertyQualifier.getValue().getContent());
+		}
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_QUALIFIER);
+		
 		bean.setEntryStateId(entryStateGuid);
 
 		return bean;

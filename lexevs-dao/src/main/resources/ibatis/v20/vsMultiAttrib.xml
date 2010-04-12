@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="VSMultiAttrib">
+
+	<resultMap id="sourceResult" class="org.LexGrid.commonTypes.Source">
+		<result property="content" column="attributeValue" />
+		<result property="subRef" column="subRef" />
+		<result property="role" column="role" />
+	</resultMap>
+
+
+	<resultMap id="localNameResult" class="string">
+		<result property="java.lang.String" column="localNameValue" />
+	</resultMap>
+	
+	<select id="getSourceListByParentGuidandType" remapResults="true"
+			parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+			resultMap="sourceResult">
+		SELECT 
+			attributeValue,
+			subRef,
+			role
+		FROM 
+			vsMultiAttrib
+		WHERE
+			referenceGuid = #param1#
+		AND
+			referenceType = #param2#
+		AND
+			attributeType = 'Source'
+			
+	</select>
+	
+	<select id="getContextListByParentGuidandType" remapResults="true"
+			parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+			resultMap="sourceResult">
+		SELECT 
+			attributeValue,
+			subRef,
+			role
+		FROM 
+			vsMultiAttrib
+		WHERE
+			referenceGuid = #param1#
+		AND
+			referenceType = #param2#
+		AND
+			attributeType = 'Context'
+			
+	</select>
+	
+	<insert id="insertMultiAttrib" 
+		parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean">
+		INSERT INTO vsMultiAttrib (
+			vsMultiAttribGuid,
+			referenceGuid,
+			referenceType,
+			attributeType,
+			attributeValue,
+			subRef,
+			role,
+			entryStateGuid
+		) VALUES (
+			#id#,
+			#referenceGuid#,
+			#referenceType#,
+			#attributeType#,
+			#attributeValue#,
+			#subRef#,
+			#role#,
+			#entryStateId#
+		)
+	</insert>
+
+	<delete id="deleteSourceByParentGuidAndType"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			vsMultiAttrib
+		WHERE
+			referenceGuid = #param1#
+		AND
+			referenceType = #param2#
+		AND 
+			attributeType = 'Source'
+	</delete>
+	
+	<delete id="deleteContextByParentGuidAndType"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			vsMultiAttrib
+		WHERE
+			referenceGuid = #param1#
+		AND
+			referenceType = #param2#
+		AND 
+			attributeType = 'Context'
+	</delete>
+	
+	<delete id="deletePickListEntryContextByPickListGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			vsMultiAttrib
+		WHERE
+			referenceType = #param1#
+		AND 
+			attributeType = 'Context'
+		AND 
+			referenceGuid 
+		IN	(
+			SELECT 
+				vsPLEntryGuid
+			FROM
+				vsPLEntry
+			WHERE
+				vsPickListGuid = #param2#
+			)
+	</delete>
+
+</sqlMap>

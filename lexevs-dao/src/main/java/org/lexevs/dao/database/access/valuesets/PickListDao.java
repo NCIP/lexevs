@@ -21,6 +21,7 @@ package org.lexevs.dao.database.access.valuesets;
 import java.util.List;
 
 import org.LexGrid.valueSets.PickListDefinition;
+import org.LexGrid.valueSets.PickListEntryNode;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
 /**
@@ -86,12 +87,12 @@ public interface PickListDao extends LexGridSchemaVersionAwareDao {
 	/**
 	 * Insert pick list entry.
 	 * 
-	 * @param pickListGuid the pick list guid
-	 * @param definition the definition
+	 * @param pickListGuid the pick list definition GUID
+	 * @param entryNode the pick list entry node
 	 * 
 	 * @return the string
 	 */
-	public String insertPickListEntry(String pickListGuid, PickListDefinition definition);
+	public String insertPickListEntry(String pickListGuid, PickListEntryNode entryNode);
 	
 	/**
 	 * Delete pick list definition by pick list id.

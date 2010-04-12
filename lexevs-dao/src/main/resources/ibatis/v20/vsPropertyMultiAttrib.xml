@@ -64,5 +64,22 @@
 			#entryStateId#
 		)
 	</insert>
+	
+<!--	<delete id="deletePropertyMultiAttrib" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">-->
+<!--		DELETE FROM-->
+<!--			vsPropertyMultiAttrib-->
+<!--		WHERE-->
+<!--			referenceType = #param1#-->
+<!--		AND -->
+<!--			referenceGuid -->
+<!--		IN	(-->
+<!--			SELECT -->
+<!--				vsdEntryGuid-->
+<!--			FROM-->
+<!--				vsdEntry-->
+<!--			WHERE-->
+<!--				valueSetDefGuid = #param2#-->
+<!--			)-->
+<!--	</delete>-->
 
 </sqlMap>
