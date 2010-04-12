@@ -20,6 +20,7 @@ package org.lexevs.dao.database.access.entity;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationEntity;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
@@ -52,6 +53,8 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	 * @return the entity by code and namespace
 	 */
 	public Entity getEntityByCodeAndNamespace(String codingSchemeId, String entityCode, String entityCodeNamespace);
+	
+	public ResolvedConceptReference getResolvedCodedNodeReferenceByCodeAndNamespace(String codingSchemeId, String entityCode, String entityCodeNamespace);
 	
 	public Entity getEntityById(String codingSchemeId, String entityId);
 	

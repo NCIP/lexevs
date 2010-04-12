@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.PropertyLink;
@@ -69,6 +70,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	
 	/** The GE t_ entit y_ b y_ cod e_ an d_ namespac e_ sql. */
 	public static String GET_ENTITY_BY_CODE_AND_NAMESPACE_SQL = ENTITY_NAMESPACE + "getEntityByCodeAndNamespace";
+	
+	public static String GET_RESOLVED_CODED_NODE_REFERENCE_BY_CODE_AND_NAMESPACE_SQL = ENTITY_NAMESPACE + "getResolvedCodedNodeReferenceByCodeAndNamespace";
 	
 	public static String GET_ENTITY_BY_ID_AND_REVISION_ID_SQL = ENTITY_NAMESPACE + "getEntityByIdAndRevisionId";
 	
@@ -117,6 +120,21 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		return doGetEntity(prefix, codingSchemeId, entityId);
 	}
 	
+	@Override
+	public ResolvedConceptReference getResolvedCodedNodeReferenceByCodeAndNamespace(
+			String codingSchemeId, String entityCode, String entityCodeNamespace) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		PrefixedParameterTriple triple = 
+			new PrefixedParameterTriple(prefix, codingSchemeId, entityCode, entityCodeNamespace);
+		
+		
+		return
+			(ResolvedConceptReference) 
+				this.getSqlMapClientTemplate().queryForObject(GET_RESOLVED_CODED_NODE_REFERENCE_BY_CODE_AND_NAMESPACE_SQL, triple);
+
+	}
+
 	public Entity getEntityById(String codingSchemeId, String entityId){
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		

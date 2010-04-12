@@ -20,6 +20,7 @@ package org.lexevs.dao.database.service.entity;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationEntity;
 
@@ -93,6 +94,12 @@ public interface EntityService {
 			String version, 
 			int start,
 			int pageSize);
+	
+	public ResolvedConceptReference getResolvedCodedNodeReference(
+			String codingSchemeUri, 
+			String version, 
+			String entityCode,
+			String entityCodeNamespace);
 
 	/**
 	 * Insert batch entities.

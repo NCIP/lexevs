@@ -6,6 +6,17 @@
 	<typeAlias alias="entity" type="org.LexGrid.concepts.Entity" />
 	<typeAlias alias="associationEntity" type="org.LexGrid.relations.AssociationEntity" />
 	<typeAlias alias="propertyLink" type="org.LexGrid.concepts.PropertyLink" />
+	<typeAlias alias="resolvedCodedNodeReference" type="org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference" />
+	
+	<resultMap id="resolvedCodedNodeReferenceResult" class="resolvedCodedNodeReference">
+		<result property="code" column="entityCode" />
+		<result property="codeNamespace" column="entityCodeNamespace" />
+		<result property="entityDescription.content" column="description" />
+		<result property="codingSchemeURI" column="codingSchemeURI" />
+		<result property="codingSchemeVersion" column="representsVersion" />
+		<result property="codingSchemeName" column="codingSchemeName" />
+	</resultMap>
+
 
 	<resultMap id="entityResult" class="entity" groupBy="entityCode,entityCodeNamespace">
 		<result property="entityCode" column="entityCode" />
@@ -37,6 +48,33 @@
 		<result property="targetProperty" column="targetPropId" />
 		<result property="propertyLink" column="link" />
 	</resultMap>
+	
+		
+	<select id="getResolvedCodedNodeReferenceByCodeAndNamespace" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
+		resultMap="resolvedCodedNodeReferenceResult"
+		remapResults="true">
+		SELECT
+			entity.entityCode,
+			entity.entityCodeNamespace,
+			entity.description,
+			codingScheme.codingSchemeURI,
+			codingScheme.representsVersion,
+			codingScheme.codingSchemeName
+		FROM
+			$prefix$entity entity
+		LEFT JOIN
+			$prefix$codingScheme codingScheme
+		ON (entity.codingSchemeGuid = codingScheme.codingSchemeGuid)
+		WHERE
+			entity.codingSchemeGuid = #param1#
+		AND
+			entity.entityCode = #param2#
+		<isNotNull property="param3">
+		AND
+			entity.entityCodeNamespace = #param3#
+		</isNotNull>
+	</select>
 	
 	<select id="getPropertyLinksByEntityId"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"

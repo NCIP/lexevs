@@ -20,6 +20,8 @@ package org.lexevs.dao.database.service.entity;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedCodedNodeReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationEntity;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
@@ -132,6 +134,20 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		
 		return this.getDaoManager().
 			getEntityDao(codingSchemeUri, version).getEntityByCodeAndNamespace(codingSchemeId, entityCode, entityCodeNamespace);
+	}
+
+	@Override
+	@Transactional
+	public ResolvedConceptReference getResolvedCodedNodeReference(
+			String codingSchemeUri, String version, String entityCode,
+			String entityCodeNamespace) {
+		String codingSchemeId = this.getDaoManager().
+		getCodingSchemeDao(codingSchemeUri, version).
+		getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
+
+		return this.getDaoManager().
+			getEntityDao(codingSchemeUri, version).
+				getResolvedCodedNodeReferenceByCodeAndNamespace(codingSchemeId, entityCode, entityCodeNamespace);
 	}
 
 	/* (non-Javadoc)

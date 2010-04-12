@@ -21,6 +21,7 @@ package org.lexevs.dao.database.sqlimplementedmethods.entity;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationEntity;
 import org.lexevs.dao.database.access.entity.EntityDao;
@@ -183,6 +184,14 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 
 		@Override
 		public void updateEntity(String codingSchemeId, AssociationEntity entity) {
+			// TODO Auto-generated method stub (IMPLEMENT!)
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public ResolvedConceptReference getResolvedCodedNodeReferenceByCodeAndNamespace(
+				String codingSchemeId, String entityCode,
+				String entityCodeNamespace) {
 			// TODO Auto-generated method stub (IMPLEMENT!)
 			throw new UnsupportedOperationException();
 		}
