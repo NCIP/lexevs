@@ -399,7 +399,7 @@ public class CodedNodeGraphImpl implements CodedNodeGraph, Cloneable {
 
             // Add others as assigned ...
             for (int i = 1; i < relationContainerNames_.length; i++)
-                for (Iterator<ConceptReference> refs = SQLImplementedMethods.listCodeRelationships(sourceCode,
+                for (Iterator<? extends ConceptReference> refs = SQLImplementedMethods.listCodeRelationships(sourceCode,
                         targetCode, directOnly, pendingOperations_, internalCodingSchemeName, internalVersion,
                         relationContainerNames_[i]).iterateConceptReference(); refs.hasNext();)
                     crl.addConceptReference(refs.next());
@@ -741,14 +741,14 @@ public class CodedNodeGraphImpl implements CodedNodeGraph, Cloneable {
             int newDistance = distance - 1;
             ResolvedConceptReferenceList rList = resolveAsList(sourceCode, true, false, 1, 1, null, null, null, null,
                     0, false);
-            for (Iterator<ResolvedConceptReference> rListI = rList.iterateResolvedConceptReference(); rListI.hasNext();) {
-                for (Iterator<Association> assocI = rListI.next().getSourceOf().iterateAssociation(); assocI.hasNext();) {
-                    for (Iterator<AssociatedConcept> assConI = assocI.next().getAssociatedConcepts()
+            for (Iterator<? extends ResolvedConceptReference> rListI = rList.iterateResolvedConceptReference(); rListI.hasNext();) {
+                for (Iterator<? extends Association> assocI = rListI.next().getSourceOf().iterateAssociation(); assocI.hasNext();) {
+                    for (Iterator<? extends AssociatedConcept> assConI = assocI.next().getAssociatedConcepts()
                             .iterateAssociatedConcept(); assConI.hasNext();) {
                         AssociatedConcept assCon = assConI.next();
                         ConceptReference src = Constructors.createConceptReference(assCon.getConceptCode(), assCon
                                 .getCodingSchemeName());
-                        for (Iterator<ConceptReference> refs = listCodeRelationships(src, targetCode, newDistance)
+                        for (Iterator<? extends ConceptReference> refs = listCodeRelationships(src, targetCode, newDistance)
                                 .iterateConceptReference(); refs.hasNext();)
                             crl.addConceptReference(refs.next());
                     }
