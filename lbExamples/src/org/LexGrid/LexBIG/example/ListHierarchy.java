@@ -181,7 +181,7 @@ public class ListHierarchy {
                 for (int i = 0; i < assocList.getAssociationCount(); i++) {
                     Association assoc = assocList.getAssociation(i);
                     AssociatedConceptList nodes = assoc.getAssociatedConcepts();
-                    for (Iterator<AssociatedConcept> subsumed = nodes.iterateAssociatedConcept(); subsumed.hasNext();) {
+                    for (Iterator<? extends AssociatedConcept> subsumed = nodes.iterateAssociatedConcept(); subsumed.hasNext();) {
                         printHierarchyBranch(lbscm, scheme, csvt, hierarchyID, subsumed.next(), currentDepth + 1,
                                 maxDepth, assoc.getDirectionalName());
                     }

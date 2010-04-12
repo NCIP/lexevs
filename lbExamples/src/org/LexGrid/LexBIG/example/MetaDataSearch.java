@@ -72,7 +72,7 @@ public class MetaDataSearch {
             int i = 0;
             AbsoluteCodingSchemeVersionReference ref = null;
 
-            for (Enumeration<AbsoluteCodingSchemeVersionReference> items = al
+            for (Enumeration<? extends AbsoluteCodingSchemeVersionReference> items = al
                     .enumerateAbsoluteCodingSchemeVersionReference(); items.hasMoreElements();) {
                 ref = items.nextElement();
                 String csurn = ref.getCodingSchemeURN();
@@ -104,7 +104,7 @@ public class MetaDataSearch {
         System.out.println("Search String: " + searchString);
         System.out.println();
 
-        for (Enumeration<MetadataProperty> items = mdpl.enumerateMetadataProperty(); items.hasMoreElements();) {
+        for (Enumeration<? extends MetadataProperty> items = mdpl.enumerateMetadataProperty(); items.hasMoreElements();) {
             MetadataProperty mdp = items.nextElement();
             i++;
 

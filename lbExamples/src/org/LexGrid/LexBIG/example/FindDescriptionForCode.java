@@ -86,7 +86,7 @@ public class FindDescriptionForCode {
                 Util.displayMessage("\tCode Description.... : "
                         + (rcr.getEntityDescription() != null ? rcr.getEntityDescription().getContent() : ""));
                 String typeString = "";
-                for (Iterator<String> types = rcr.iterateEntityType(); types.hasNext();)
+                for (Iterator<? extends String> types = rcr.iterateEntityType(); types.hasNext();)
                     typeString += (types.next() + (types.hasNext() ? "," : ""));
                 Util.displayMessage("\tCode Entity Types... : " + typeString);
             }

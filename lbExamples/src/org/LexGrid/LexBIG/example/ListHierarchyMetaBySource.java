@@ -152,7 +152,7 @@ public class ListHierarchyMetaBySource {
      */
     protected void printChain(LexBIGServiceConvenienceMethods lbscm, String scheme, String sab,
             CodingSchemeVersionOrTag csvt, ResolvedConceptReferenceList rootNodes, int maxDepth) throws LBException {
-        for (Iterator<ResolvedConceptReference> nodes = rootNodes.iterateResolvedConceptReference(); nodes.hasNext();)
+        for (Iterator<? extends ResolvedConceptReference> nodes = rootNodes.iterateResolvedConceptReference(); nodes.hasNext();)
             printChainForNode(lbscm, scheme, sab, csvt, nodes.next(), 0, maxDepth, null);
     }
 
@@ -189,7 +189,7 @@ public class ListHierarchyMetaBySource {
             for (int i = 0; i < aList.getAssociationCount(); i++) {
                 Association assoc = aList.getAssociation(i);
                 AssociatedConceptList acList = assoc.getAssociatedConcepts();
-                for (Iterator<AssociatedConcept> nodes = acList.iterateAssociatedConcept(); nodes.hasNext();) {
+                for (Iterator<? extends AssociatedConcept> nodes = acList.iterateAssociatedConcept(); nodes.hasNext();) {
                     printChainForNode(lbscm, scheme, sab, csvt, nodes.next(), currentDepth + 1, maxDepth, assoc
                             .getDirectionalName());
                 }

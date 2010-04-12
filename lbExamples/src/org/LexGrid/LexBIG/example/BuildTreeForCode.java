@@ -171,7 +171,7 @@ public class BuildTreeForCode {
             // printout. For every backbone node, one level of children is
             // printed, along with an indication of whether those nodes can
             // be expanded.
-            for (Iterator<Association> paths = pathsFromRoot.iterateAssociation(); paths.hasNext();) {
+            for (Iterator<? extends Association> paths = pathsFromRoot.iterateAssociation(); paths.hasNext();) {
                 addPathFromRoot(ti, lbsvc, lbscm, scheme, csvt, paths.next(), associationsToNavigate,
                         associationsNavigatedFwd, codesToDescriptions);
                 pathsResolved++;

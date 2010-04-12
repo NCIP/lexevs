@@ -145,7 +145,7 @@ public class ProfileScheme {
         if (urn != null && ver != null) {
             urn = urn.trim();
             ver = ver.trim();
-            Enumeration<CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
+            Enumeration<? extends CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
                     .enumerateCodingSchemeRendering();
             while (schemes.hasMoreElements() && css == null) {
                 CodingSchemeSummary summary = schemes.nextElement().getCodingSchemeSummary();
@@ -467,7 +467,7 @@ public class ProfileScheme {
                 }
 
                 // Recurse through all child nodes.
-                for (Iterator<AssociatedConcept> subsumed = conceptList.iterateAssociatedConcept(); subsumed.hasNext();) {
+                for (Iterator<? extends AssociatedConcept> subsumed = conceptList.iterateAssociatedConcept(); subsumed.hasNext();) {
                     AssociatedConcept childConcept = subsumed.next();
 
                     // Recurse to determine depth of sub-branch for this child.

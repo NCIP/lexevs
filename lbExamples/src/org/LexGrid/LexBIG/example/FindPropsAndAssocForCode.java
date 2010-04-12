@@ -148,7 +148,7 @@ public class FindPropsAndAssocForCode {
 
         // Analyze the result ...
         if (matches.getResolvedConceptReferenceCount() > 0) {
-            Enumeration<ResolvedConceptReference> refEnum = matches.enumerateResolvedConceptReference();
+            Enumeration<? extends ResolvedConceptReference> refEnum = matches.enumerateResolvedConceptReference();
 
             while (refEnum.hasMoreElements()) {
                 ResolvedConceptReference ref = refEnum.nextElement();
@@ -193,7 +193,7 @@ public class FindPropsAndAssocForCode {
 
         // Analyze the result ...
         if (matches.getResolvedConceptReferenceCount() > 0) {
-            Enumeration<ResolvedConceptReference> refEnum = matches.enumerateResolvedConceptReference();
+            Enumeration<? extends ResolvedConceptReference> refEnum = matches.enumerateResolvedConceptReference();
 
             while (refEnum.hasMoreElements()) {
                 ResolvedConceptReference ref = refEnum.nextElement();
