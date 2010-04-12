@@ -47,7 +47,7 @@ public class SchemeXml {
 	private final String RELATION_BEGIN = "<relations containerName=\"colorsRelation\"> <lgRel:associationPredicate	associationName=\"PAR\">";
 	private final String RELATION_END = "</lgRel:associationPredicate>	</relations>";
 	
-	private final int COUNT = 1000000;
+	private final int COUNT = 60000;
 	private final int PAGE = 1000;
 	
 	private File file;
