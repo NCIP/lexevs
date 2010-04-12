@@ -51,11 +51,18 @@
 	<bean id="ibatisPickListDao"
 		class="org.lexevs.dao.database.ibatis.valuesets.IbatisPickListDao" parent="abstractIbatisDao">
 		<property name="versionsDao" ref="ibatisVersionsDao"/>
+		<property name="vsPropertyDao" ref="ibatisVSPropertyDao"/>
 	</bean>
 	
 	<bean id="ibatisValueSetDefinitionDao"
 		class="org.lexevs.dao.database.ibatis.valuesets.IbatisValueSetDefinitionDao" parent="abstractIbatisDao">
 		<property name="versionsDao" ref="ibatisVersionsDao"/>
+		<property name="vsPropertyDao" ref="ibatisVSPropertyDao"/>
+	</bean>
+	
+	<bean id="ibatisVSPropertyDao"
+		class="org.lexevs.dao.database.ibatis.valuesets.IbatisVSPropertyDao" parent="abstractIbatisDao">
+		<property name="ibatisVersionsDao" ref="ibatisVersionsDao"/>
 	</bean>
 	
 	<bean id="abstractSqlInterfaceDao" abstract="true">
@@ -113,6 +120,11 @@
 				<ref bean="ibatisValueSetDefinitionDao"/>
 			</list>
 		</property>
+		<property name="vsPropertyDaos">
+			<list>
+				<ref bean="ibatisVSPropertyDao"/>
+			</list>
+		</property>
 		<property name="registry" ref="registry"/>
 	</bean>
 	
@@ -144,6 +156,7 @@
 		<property name="associationService" ref="associationService"/>
 		<property name="pickListDefinitionService" ref="pickListDefinitionService"/>
 		<property name="valueSetDefinitionService" ref="valueSetDefinitionService"/>
+		<property name="vsPropertyService" ref="vsPropertyService"/>
 		<property name="daoCallbackService" ref="daoManagerDaoCallbackService"/>
 	</bean>
 	
@@ -198,6 +211,11 @@
 	
 	<bean id="valueSetDefinitionService" 
 		class="org.lexevs.dao.database.service.valuesets.VersionableEventValueSetDefinitionService"
+		parent="abstractService">
+	</bean>
+	
+	<bean id="vsPropertyService" 
+		class="org.lexevs.dao.database.service.valuesets.VersionableEventVSPropertyService"
 		parent="abstractService">
 	</bean>
 		
