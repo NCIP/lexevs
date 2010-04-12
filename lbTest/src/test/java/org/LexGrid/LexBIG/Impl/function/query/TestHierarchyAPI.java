@@ -437,7 +437,7 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
     
     
     int findMatchingConcept(String code, ConceptReferenceList crl) {
-        Iterator<ConceptReference> i= crl.iterateConceptReference();
+        Iterator<? extends ConceptReference> i= crl.iterateConceptReference();
         while (i.hasNext()) {
             ConceptReference cr= i.next();
             if (code.equals(cr.getConceptCode())) {

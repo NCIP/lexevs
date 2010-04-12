@@ -58,7 +58,7 @@ public class TestUtil {
 
         LexBIGService lbSvc = ServiceHolder.instance().getLexBIGService();
         CodingSchemeRenderingList csrl = lbSvc.getSupportedCodingSchemes();
-        Enumeration<CodingSchemeRendering> csrlEnum = csrl.enumerateCodingSchemeRendering();
+        Enumeration<? extends CodingSchemeRendering> csrlEnum = csrl.enumerateCodingSchemeRendering();
         while (csrlEnum.hasMoreElements() && !verified) {
             CodingSchemeRendering csr = csrlEnum.nextElement();
             CodingSchemeSummary css = csr.getCodingSchemeSummary();

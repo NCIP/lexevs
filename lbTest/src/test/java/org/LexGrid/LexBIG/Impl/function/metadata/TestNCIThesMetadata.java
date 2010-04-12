@@ -55,7 +55,7 @@ public class TestNCIThesMetadata extends LexBIGServiceTestCase {
         smd.restrictToCodingScheme(acsvr);
 
         MetadataPropertyList mdpl = smd.resolve();
-        Iterator<MetadataProperty> metaItr = mdpl.iterateMetadataProperty();
+        Iterator<? extends MetadataProperty> metaItr = mdpl.iterateMetadataProperty();
         assertTrue("Did not find the Metadata for the Coding Scheme", metaItr.hasNext());
 
         // Look through the Metadata and make sure its returning the coding
