@@ -32,6 +32,9 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 
 /**
  * The Class PagingCodedNodeGraphImpl.
@@ -51,6 +54,8 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
     
     /** The version. */
     private String version;
+    
+    private LgLoggerIF logger = LoggerFactory.getLogger();
     
     /**
      * Instantiates a new paging coded node graph impl.
@@ -140,13 +145,23 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
             boolean resolveBackward, int resolveCodedEntryDepth, int resolveAssociationDepth,
             LocalNameList propertyNames, PropertyType[] propertyTypes, SortOptionList sortOptions,
             LocalNameList filterOptions, int maxToReturn) throws LBInvocationException, LBParameterException {
-
+        logger.warn("Paged Graph is currently an incomplete implementation. Graph functionality will be implemented incrementally.");
         
-        ResolvedConceptReference ref = new ResolvedConceptReference();
-        ref.setCode(graphFocus.getCode());
+        ResolvedConceptReference focus;
+        
+        if(graphFocus != null) {
+            focus =
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
+                getEntityService().
+                getResolvedCodedNodeReference(codingSchemeUri, version, graphFocus.getCode(), graphFocus.getCodeNamespace());
+        } else {
+            throw new RuntimeException("Cannot handle resolving from roots yet...");
+        }
+
+        focus.setCode(graphFocus.getCode());
         
         if(resolveForward) {
-            ref.setSourceOf(builder.buildSourceOfAssociationList(
+            focus.setSourceOf(builder.buildSourceOfAssociationList(
                     this.codingSchemeUri,
                     this.version, 
                     graphFocus.getCode(),
@@ -154,7 +169,7 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
         }
         
         if(resolveBackward) {
-            ref.setTargetOf(builder.buildTargetOfAssociationList(
+            focus.setTargetOf(builder.buildTargetOfAssociationList(
                     this.codingSchemeUri,
                     this.version, 
                     graphFocus.getCode(),
@@ -162,7 +177,7 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
         }
         
         ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
-        returnList.addResolvedConceptReference(ref);
+        returnList.addResolvedConceptReference(focus);
     
         return returnList;
     }
