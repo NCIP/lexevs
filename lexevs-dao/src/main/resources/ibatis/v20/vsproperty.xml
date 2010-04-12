@@ -117,7 +117,7 @@
   			vsPropertyMultiAttrib qualifier
   		ON
   		(
-  			property.propertyGuid = qualifier.propertyGuid	
+  			property.vspropertyGuid = qualifier.vspropertyGuid	
   			AND		
   			qualifier.attributeType = 'qualifier'		
   			AND	
@@ -128,7 +128,7 @@
   			vsPropertyMultiAttrib usageContext
   		ON
   		(
-  			property.propertyGuid = usageContext.propertyGuid	
+  			property.vspropertyGuid = usageContext.vspropertyGuid	
   			AND 			
   			usageContext.attributeType = 'usageContext' 			
   			AND 			
@@ -139,7 +139,7 @@
   			vsPropertyMultiAttrib source
   		ON
   		(
-  			property.propertyGuid = source.propertyGuid		
+  			property.vspropertyGuid = source.vspropertyGuid		
   			AND	
   			source.attributeType = 'source'	
   			AND	
@@ -154,7 +154,7 @@
   			vsPropertyMultiAttrib qualifier
   		ON
   		(
-  			property.propertyGuid = qualifier.propertyGuid	  			
+  			property.vspropertyGuid = qualifier.vspropertyGuid	  			
   			AND 			
   			qualifier.attributeType = 'qualifier'
   		)
@@ -163,7 +163,7 @@
   			vsPropertyMultiAttrib usageContext
   		ON
   		(
-  			property.propertyGuid = usageContext.propertyGuid	
+  			property.vspropertyGuid = usageContext.vspropertyGuid	
   			AND		
   			usageContext.attributeType = 'usageContext'
   		)
@@ -172,7 +172,7 @@
   			vsPropertyMultiAttrib source
   		ON
   		(
-  			property.propertyGuid = source.propertyGuid		
+  			property.vspropertyGuid = source.vspropertyGuid		
   			AND	
   			source.attributeType = 'source'
   		)		

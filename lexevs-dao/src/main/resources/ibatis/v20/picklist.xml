@@ -72,6 +72,19 @@
 			pickListDef.pickListId = #param1#
 	</select>
 	
+	<select id="getPickListEntryNodeGuidByPickListIdAndPLEntryId" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+		resultClass="string">
+		SELECT
+			vsPLEntryGuid
+		FROM
+			vsPLEntry
+		WHERE
+			vsPickListGuid = #param1#
+		AND
+			plEntryId = #param2#
+	</select>
+	
 	<select id="getPickListDefinitionByPickListId" 
 		resultMap="pickListDefinitionResult" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
