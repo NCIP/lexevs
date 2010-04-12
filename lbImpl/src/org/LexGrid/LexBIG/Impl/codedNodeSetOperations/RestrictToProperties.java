@@ -58,7 +58,7 @@ public class RestrictToProperties implements Restriction, Operation {
             LBInvocationException {
         try {
             if (sourceList != null) {
-                Enumeration<String> sources = sourceList.enumerateEntry();
+                Enumeration<? extends String> sources = sourceList.enumerateEntry();
                 while (sources.hasMoreElements()) {
                     SQLImplementedMethods.validateSource(internalCodeSystemName, internalVersionString,
                             sources.nextElement());
@@ -67,7 +67,7 @@ public class RestrictToProperties implements Restriction, Operation {
             sourceList_ = sourceList;
 
             if (qualifierList != null) {
-                Enumeration<NameAndValue> qualifiers = qualifierList.enumerateNameAndValue();
+                Enumeration<? extends NameAndValue> qualifiers = qualifierList.enumerateNameAndValue();
                 while (qualifiers.hasMoreElements()) {
                     SQLImplementedMethods.validatePropertyQualifier(internalCodeSystemName, internalVersionString,
                             (qualifiers.nextElement()).getName());
@@ -76,7 +76,7 @@ public class RestrictToProperties implements Restriction, Operation {
             qualifierList_ = qualifierList;
 
             if (contextList_ != null) {
-                Enumeration<String> contexts = contextList.enumerateEntry();
+                Enumeration<? extends String> contexts = contextList.enumerateEntry();
                 while (contexts.hasMoreElements()) {
                     SQLImplementedMethods.validateContext(internalCodeSystemName, internalVersionString,
                             contexts.nextElement());
@@ -106,7 +106,7 @@ public class RestrictToProperties implements Restriction, Operation {
             }
 
             if (propertyList != null) {
-                Enumeration<String> items = propertyList.enumerateEntry();
+                Enumeration<? extends String> items = propertyList.enumerateEntry();
                 while (items.hasMoreElements()) {
                     // this will throw the necessary exceptions
                     SQLImplementedMethods.validateProperty(internalCodeSystemName, internalVersionString, items

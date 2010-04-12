@@ -119,7 +119,7 @@ public class RestrictToMatchingProperties extends RestrictToProperties implement
             boolean containsConceptClause = false;
 
             if (propertyList != null) {
-                Enumeration<String> items = propertyList.enumerateEntry();
+                Enumeration<? extends String> items = propertyList.enumerateEntry();
                 while (items.hasMoreElements()) {
                     String item = items.nextElement();
                     if (item.equalsIgnoreCase("conceptCode")) {
