@@ -30,6 +30,7 @@ import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.valuesets.PickListDao;
+import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
@@ -62,6 +63,9 @@ public class DaoManager {
 	
 	/** The value set definition daos. */
 	private List<ValueSetDefinitionDao> valueSetDefinitionDaos;
+	
+	/** The vsProperty daos. */
+	private List<VSPropertyDao> vsPropertyDaos;
 	
 	/** The versions daos. */
 	private List<VersionsDao> versionsDaos;
@@ -377,7 +381,7 @@ public class DaoManager {
 	/**
 	 * Gets the current value set definition dao.
 	 * 
-	 * @return the current value set dafinition dao
+	 * @return the current value set definition dao
 	 */
 	public ValueSetDefinitionDao getCurrentValueSetDefinitionDao(){
 		return this.getCorrectDaoForSchemaVersion(this.getValueSetDefinitionDaos(), CURRENT_VERSION);
@@ -389,5 +393,28 @@ public class DaoManager {
 
 	public void setCodedNodeGraphDaos(List<CodedNodeGraphDao> codedNodeGraphDaos) {
 		this.codedNodeGraphDaos = codedNodeGraphDaos;
+	}
+
+	/**
+	 * @return the vsPropertyDaos
+	 */
+	public List<VSPropertyDao> getVsPropertyDaos() {
+		return vsPropertyDaos;
+	}
+
+	/**
+	 * @param vsPropertyDaos the vsPropertyDaos to set
+	 */
+	public void setVsPropertyDaos(List<VSPropertyDao> vsPropertyDaos) {
+		this.vsPropertyDaos = vsPropertyDaos;
+	}
+	
+	/**
+	 * Gets the current value set property dao.
+	 * 
+	 * @return the current value set property dao
+	 */
+	public VSPropertyDao getCurrentVsPropertyDao(){
+		return this.getCorrectDaoForSchemaVersion(this.getVsPropertyDaos(), CURRENT_VERSION);
 	}
 }
