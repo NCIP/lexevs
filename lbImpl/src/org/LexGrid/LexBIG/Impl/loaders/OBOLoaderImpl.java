@@ -32,9 +32,6 @@ import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.jdom.input.SAXBuilder;
-import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
-import org.lexevs.locator.LexEvsServiceLocator;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.obo1_2.OBO2LGMain;
 import edu.mayo.informatics.lexgrid.convert.directConversions.obo1_2.OBOFormatValidator;
