@@ -148,7 +148,7 @@ public class IbatisPickListDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("insert into vdPickList (vdPickListGuid, pickListId, representsvaluedomain) values ('pl1', 'id1', 'vd')");
 		template.execute("insert into vdPickList (vdPickListGuid, pickListId, representsvaluedomain) values ('pl2', 'id2', 'vd')");
 		
-		String guid = this.ibatisPickListDao.getGuidFromPickListId("id2");
+		String guid = this.ibatisPickListDao.getPickListGuidFromPickListId("id2");
 		
 		assertEquals("pl2", guid);
 	}
