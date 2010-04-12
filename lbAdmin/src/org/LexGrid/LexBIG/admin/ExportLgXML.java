@@ -115,7 +115,7 @@ public class ExportLgXML {
             if (urn != null && ver != null) {
                 urn = urn.trim();
                 ver = ver.trim();
-                Enumeration<CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
+                Enumeration<? extends CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
                         .enumerateCodingSchemeRendering();
                 while (schemes.hasMoreElements() && css == null) {
                     CodingSchemeSummary summary = schemes.nextElement().getCodingSchemeSummary();

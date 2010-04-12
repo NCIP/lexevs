@@ -281,7 +281,7 @@ public class Util {
                     urn = urn.trim();
                     ver = ver.trim();
                     LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-                    Enumeration<CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
+                    Enumeration<? extends CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
                             .enumerateCodingSchemeRendering();
                     while (schemes.hasMoreElements() && rendering == null) {
                         CodingSchemeRendering csrtemp = schemes.nextElement();

@@ -102,7 +102,7 @@ public class RebuildIndex {
             urn = urn.trim();
             ver = ver.trim();
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-            Enumeration<CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
+            Enumeration<? extends CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
             .enumerateCodingSchemeRendering();
             while (schemes.hasMoreElements() && css == null) {
                 CodingSchemeSummary summary = schemes.nextElement().getCodingSchemeSummary();

@@ -105,7 +105,7 @@ public class RemoveIndex {
                 urn = urn.trim();
                 ver = ver.trim();
                 LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-                Enumeration<CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
+                Enumeration<? extends CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
                         .enumerateCodingSchemeRendering();
                 while (schemes.hasMoreElements() && css == null) {
                     CodingSchemeSummary summary = schemes.nextElement().getCodingSchemeSummary();
@@ -131,7 +131,7 @@ public class RemoveIndex {
             LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
             ExtensionDescriptionList indexes = lbsm.getIndexExtensions();
             Index match = null;
-            Enumeration<ExtensionDescription> indexEnum = indexes.enumerateExtensionDescription();
+            Enumeration<? extends ExtensionDescription> indexEnum = indexes.enumerateExtensionDescription();
             while (indexEnum.hasMoreElements() && match == null) {
                 Index ext = (Index) indexEnum.nextElement();
                 if (indexName.equalsIgnoreCase(ext.getName()))

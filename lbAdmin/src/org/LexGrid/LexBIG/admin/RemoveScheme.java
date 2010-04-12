@@ -103,7 +103,7 @@ public class RemoveScheme {
             if (urn != null && ver != null) {
                 urn = urn.trim();
                 ver = ver.trim();
-                Enumeration<CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
+                Enumeration<? extends CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
                         .enumerateCodingSchemeRendering();
                 while (schemes.hasMoreElements() && css == null) {
                     CodingSchemeRendering rendering = schemes.nextElement();
