@@ -27,9 +27,11 @@ import org.LexGrid.valueSets.PickListEntryNode;
 import org.LexGrid.valueSets.PickListEntryNodeChoice;
 import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.valuesets.PickListDao;
+import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdatePickListEntryBean;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertPickListDefinitionBean;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.PickListEntryNodeBean;
@@ -60,6 +62,8 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	/** The GE t_ picklis t_ gui d_ b y_ picklisti d_ sql. */
 	public static String GET_PICKLIST_GUID_BY_PICKLISTID_SQL = PICKLIST_NAMESPACE + "getPickListGuidByPickListId";
 	
+	public static String GET_PICKLIST_ENTRYNODEGUID_BY_PICKLISTID_AND_PLENTRYID_SQL = PICKLIST_NAMESPACE + "getPickListEntryNodeIdByPickListGuidAndPLEntryId";
+	
 	/** The GE t_ picklis t_ definitio n_ b y_ picklisti d_ sql. */
 	public static String GET_PICKLIST_DEFINITION_BY_PICKLISTID_SQL = PICKLIST_NAMESPACE + "getPickListDefinitionByPickListId";
 	
@@ -74,6 +78,8 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	/** The versions dao. */
 	private VersionsDao versionsDao;
 	
+	private VSPropertyDao vsPropertyDao;
+	
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.picklist.PickListDao#getPickListDefinitionById(java.lang.String)
@@ -87,7 +93,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		
 		if (plDef != null)
 		{
-			String plDefGuid = getGuidFromPickListId(pickListId);
+			String plDefGuid = getPickListGuidFromPickListId(pickListId);
 			
 			List<PickListEntryNodeBean> plEntryNodeBeans = (List<PickListEntryNodeBean>) this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_ENTRYNODE_BEAN_BY_PICKLIST_GUID_SQL, 
 				new PrefixedParameter(null, plDefGuid));
@@ -126,7 +132,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	 * @see org.lexevs.dao.database.access.picklist.PickListDao#getGuidFromPickListId(java.lang.String)
 	 */
 	@Override
-	public String getGuidFromPickListId(String pickListId) {
+	public String getPickListGuidFromPickListId(String pickListId) {
 		return (String) 
 		this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_GUID_BY_PICKLISTID_SQL, 
 			new PrefixedParameter(null, pickListId));
@@ -263,6 +269,30 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		// remove pick list definition
 		this.getSqlMapClientTemplate().
 			delete(REMOVE_PICKLIST_DEFINITION_BY_PICKLISTID_SQL, new PrefixedParameter(null, pickListDefinitionId));	
+	}
+
+	@Override
+	public String getPickListEntryNodeGuidByPickListIdAndPLEntryId(
+			String pickListDefinitionId, String plEntryId) {
+		String pickListGuid = (String) this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_GUID_BY_PICKLISTID_SQL, new PrefixedParameter(null, pickListDefinitionId));
+		
+		return (String) 
+		this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_ENTRYNODEGUID_BY_PICKLISTID_AND_PLENTRYID_SQL, 
+			new PrefixedParameterTuple(null, pickListGuid, plEntryId));
+	}
+
+	/**
+	 * @return the vsPropertyDao
+	 */
+	public VSPropertyDao getVsPropertyDao() {
+		return vsPropertyDao;
+	}
+
+	/**
+	 * @param vsPropertyDao the vsPropertyDao to set
+	 */
+	public void setVsPropertyDao(VSPropertyDao vsPropertyDao) {
+		this.vsPropertyDao = vsPropertyDao;
 	}
 
 	

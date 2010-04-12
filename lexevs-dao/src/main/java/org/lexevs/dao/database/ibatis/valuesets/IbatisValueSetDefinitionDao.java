@@ -22,11 +22,15 @@ import java.net.URI;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cache.annotation.ClearCache;
+import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
+import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
@@ -68,6 +72,8 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	/** The versions dao. */
 	private VersionsDao versionsDao;
 	
+	private VSPropertyDao vsPropertyDao;
+	
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao#getValueSetDefinitionByURI(java.lang.String)
@@ -89,6 +95,14 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			if (des != null)
 				vsd.setDefinitionEntry(des);			
 			
+			List<Property> props = vsPropertyDao.getAllPropertiesOfParent(vsdGuid, ReferenceType.VALUESETDEFINITION);
+			
+			if (props != null)				
+			{
+				Properties properties = new Properties();
+				properties.getPropertyAsReference().addAll(props);
+				vsd.setProperties(properties);
+			}
 		}
 		return vsd;
 	}
@@ -182,6 +196,14 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			this.getSqlMapClientTemplate().insert(INSERT_DEFINITION_ENTRY_SQL, vsdEntryBean);
 		}
 		
+		if (definition.getProperties() != null)
+		{
+			for (Property property : definition.getProperties().getPropertyAsReference())
+			{
+				this.vsPropertyDao.insertProperty(valueSetDefinitionGuid, ReferenceType.VALUESETDEFINITION, property);
+			}
+		}
+		
 		return valueSetDefinitionGuid;
 	}
 	
@@ -237,6 +259,9 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		// remove definition entries
 		this.getSqlMapClientTemplate().delete(REMOVE_DEFINITION_ENTRY_BY_VALUESET_DEFINITION_GUID_SQL, new PrefixedParameter(null, valueSetDefGuid));
 		
+		// remove value set properties
+		this.vsPropertyDao.deleteAllValueSetDefinitionProperties(valueSetDefGuid);
+		
 		// remove value set definition
 		this.getSqlMapClientTemplate().
 			delete(REMOVE_VALUESET_DEFINITION_BY_VALUESET_DEFINITION_URI_SQL, new PrefixedParameter(null, valueSetDefinitionURI));	
@@ -247,5 +272,19 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			ValueSetDefinition definition) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/**
+	 * @return the vsPropertyDao
+	 */
+	public VSPropertyDao getVsPropertyDao() {
+		return vsPropertyDao;
+	}
+
+	/**
+	 * @param vsPropertyDao the vsPropertyDao to set
+	 */
+	public void setVsPropertyDao(VSPropertyDao vsPropertyDao) {
+		this.vsPropertyDao = vsPropertyDao;
 	}
 }

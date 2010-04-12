@@ -26,6 +26,7 @@ import org.lexevs.dao.database.service.error.ErrorCallbackDatabaseServiceFactory
 import org.lexevs.dao.database.service.error.ErrorCallbackListener;
 import org.lexevs.dao.database.service.property.PropertyService;
 import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
+import org.lexevs.dao.database.service.valuesets.VSPropertyService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 
 /**
@@ -55,6 +56,9 @@ public class DatabaseServiceManager {
 	
 	/** The value set definition service. */
 	private ValueSetDefinitionService valueSetDefinitionService;
+	
+	/** The vsproperty service. */
+	private VSPropertyService vsPropertyService;
 	
 	private DaoCallbackService daoCallbackService;
 	
@@ -179,6 +183,20 @@ public class DatabaseServiceManager {
 	public void setValueSetDefinitionService(
 			ValueSetDefinitionService valueSetDefinitionService) {
 		this.valueSetDefinitionService = valueSetDefinitionService;
+	}
+
+	/**
+	 * @return the vsPropertyService
+	 */
+	public VSPropertyService getVsPropertyService() {
+		return vsPropertyService;
+	}
+
+	/**
+	 * @param vsPropertyService the vsPropertyService to set
+	 */
+	public void setVsPropertyService(VSPropertyService vsPropertyService) {
+		this.vsPropertyService = vsPropertyService;
 	}
 }
 

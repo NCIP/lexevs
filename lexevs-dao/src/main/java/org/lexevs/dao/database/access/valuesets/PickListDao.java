@@ -54,7 +54,17 @@ public interface PickListDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @return the guid from pick list id
 	 */
-	public String getGuidFromPickListId(String pickListId);
+	public String getPickListGuidFromPickListId(String pickListId);
+	
+	
+	/**
+	 * Returns the plEntryGUID for pickListId and pickListEntryId.
+	 * 
+	 * @param pickListId
+	 * @param plEntryId
+	 * @return the plEntryGuid
+	 */
+	public String getPickListEntryNodeGuidByPickListIdAndPLEntryId(String pickListId, String plEntryId);
 	
 	/**
 	 * Insert pick list definition.
