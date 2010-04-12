@@ -314,7 +314,11 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 		
 		if(foundEntries.size() == 1){
 			RegistryEntry entry = foundEntries.get(0);
-			if(entry.getTag().equals(tag)){
+			if(tag != null) {
+				if(entry.getTag().equals(tag)){
+					return entry.getResourceVersion();
+				}
+			} else {
 				return entry.getResourceVersion();
 			}
 		}

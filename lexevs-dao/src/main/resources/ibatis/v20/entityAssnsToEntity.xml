@@ -18,14 +18,19 @@
 		<result property="code" column="entityCode" />
 		<result property="codeNamespace" column="entityCodeNamespace" />
 		<result property="entityDescription.content" column="description" />
-		<result property="codingSchemeURI" column="description" />
-		<result property="codingSchemeVersion" column="description" />
+		<result property="codingSchemeURI" column="codingSchemeURI" />
+		<result property="codingSchemeVersion" column="representsVersion" />
+		<result property="codingSchemeName" column="codingSchemeName" />
 	</resultMap>
 	
 	<select id="getAssociatedConcpetFromEntityAssnsToEntityUid" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
 		remapResults="true" resultMap="Association.associatedConceptResult">
 		SELECT
+			entity.description,
+			codingScheme.codingSchemeURI,
+			codingScheme.representsVersion,
+			codingScheme.codingSchemeName,
 			<isEqual property="param2" compareValue="SUBJECT">
 				eate.sourceEntityCode as entityCode,
 				eate.sourceEntityCodeNamespace as entityCodeNamespace
@@ -50,6 +55,9 @@
 				eate.targetEntityCodeNamespace = entity.entityCodeNamespace
 			</isEqual>
 			)
+		LEFT JOIN
+			$prefix$codingScheme codingScheme
+		ON (entity.codingSchemeGuid = codingScheme.codingSchemeGuid)
 		WHERE
 			eate.entityAssnsGuid = #param1#
 	</select>
