@@ -37,6 +37,9 @@ public class InsertOrUpdateURIMapBean extends IdableParameterBean{
 	/** The uri map. */
 	private URIMap uriMap;
 	
+	/** Parent object type */
+	private String referenceType;
+	
 	/**
 	 * Sets the supported attribute tag.
 	 * 
@@ -89,5 +92,19 @@ public class InsertOrUpdateURIMapBean extends IdableParameterBean{
 	 */
 	public String getCodingSchemeId() {
 		return codingSchemeId;
+	}
+
+	/**
+	 * @return the referenceType
+	 */
+	public String getReferenceType() {
+		return referenceType;
+	}
+
+	/**
+	 * @param referenceType the referenceType to set
+	 */
+	public void setReferenceType(String referenceType) {
+		this.referenceType = referenceType;
 	}
 }
