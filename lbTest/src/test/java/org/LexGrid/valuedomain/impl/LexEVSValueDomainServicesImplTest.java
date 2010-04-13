@@ -20,40 +20,24 @@ package org.LexGrid.valuedomain.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
-import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
-import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.LBConstants;
-import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.commonTypes.Property;
-import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
-import org.LexGrid.naming.Mappings;
-import org.LexGrid.naming.SupportedAssociation;
-import org.LexGrid.naming.SupportedDataType;
-import org.LexGrid.naming.SupportedPropertyQualifier;
-import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.valueSets.CodingSchemeReference;
+import org.LexGrid.valueSets.DefinitionEntry;
+import org.LexGrid.valueSets.EntityReference;
+import org.LexGrid.valueSets.PropertyMatchValue;
+import org.LexGrid.valueSets.PropertyReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
-import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.types.ChangeType;
-import org.apache.commons.lang.StringUtils;
+import org.LexGrid.valueSets.ValueSetDefinitionReference;
 import org.junit.Test;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
-import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
-import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 /**
@@ -113,7 +97,76 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		System.out.println("vsd.status : " + vsd.getStatus());
 		System.out.println("vsd.isActive : " + vsd.getIsActive());
 		
-		System.out.println("vsd>deCnt : " + vsd.getDefinitionEntryCount());
+		if (vsd.getProperties() != null)
+		{
+			for (Property prop : vsd.getProperties().getPropertyAsReference())
+			{
+				System.out.println("vsd prop id : " + prop.getPropertyId());
+				System.out.println("vsd prop name : " + prop.getPropertyName());
+				System.out.println("vsd prop status : " + prop.getStatus());
+				System.out.println("vsd prop active? : " + prop.isIsActive());
+				System.out.println("vsd prop value : " + prop.getValue().getContent());
+				System.out.println("vsd prop value datatype : " + prop.getValue().getDataType());
+				System.out.println("vsd prop owner : " + prop.getOwner());
+			}
+		}
+		
+		System.out.println("vsd>deCnt : " + vsd.getDefinitionEntryCount());		
+		
+		for (DefinitionEntry de : vsd.getDefinitionEntryAsReference())
+		{
+			CodingSchemeReference csr = de.getCodingSchemeReference();
+			if (csr != null)
+			{
+				System.out.println("csr csName: " + csr.getCodingScheme());
+			}
+			
+			ValueSetDefinitionReference vsdr = de.getValueSetDefinitionReference();
+			if (vsdr != null)
+			{
+				System.out.println("vsdr vsdURI : " + vsdr.getValueSetDefinitionURI());				
+			}
+			
+			EntityReference er = de.getEntityReference();
+			if (er != null)
+			{
+				System.out.println("er ec : " + er.getEntityCode());
+				System.out.println("er ecns : " + er.getEntityCodeNamespace());
+				System.out.println("er refAssn : " + er.getReferenceAssociation());
+				System.out.println("er leafOnly : " + er.getLeafOnly());
+				System.out.println("er targetToSource : " + er.getTargetToSource());
+				System.out.println("er transitiveClosure : " + er.getTransitiveClosure());
+			}
+			
+			PropertyReference pr = de.getPropertyReference();
+			if (pr != null)
+			{
+				System.out.println("pr propName : " + pr.getPropertyName());
+				System.out.println("pr csName : " + pr.getCodingScheme());
+				
+				PropertyMatchValue pmv = pr.getPropertyMatchValue();
+				if (pmv != null)
+				{
+					System.out.println("pr pmv match value : " + pmv.getContent());
+					System.out.println("pr pmv match value datatype: " + pmv.getDataType());
+					System.out.println("pr pmv match algorithm : " + pmv.getMatchAlgorithm());
+				}
+			}
+		}
+		
+		for (Source src : vsd.getSourceAsReference())
+		{
+			System.out.println("vsd src : " + src.getContent());
+			System.out.println("vsd src role : " + src.getRole());
+			System.out.println("vsd src subref : " + src.getSubRef());
+		}
+		
+		List<String> contextList = vsd.getRepresentsRealmOrContextAsReference();
+		
+		for (String context : contextList)
+		{
+			System.out.println("vsd context : " + context);
+		}
 	}
 	
 	@Test

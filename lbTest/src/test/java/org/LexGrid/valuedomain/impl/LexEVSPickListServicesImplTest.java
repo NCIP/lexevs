@@ -487,9 +487,22 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 	@Test
 	public void testGetPickListDefinitionForPickListId() throws LBException, URISyntaxException {
 		System.out.println("In testGetPickListDefinitionForPickListId");
-		PickListDefinition plDef = getPickListService().getPickListDefinitionById("TESTPL2");
-		
+		PickListDefinition plDef = getPickListService().getPickListDefinitionById("TESTPL1");
 		System.out.println("pickList id" + plDef.getPickListId());
+		
+		if (plDef.getProperties() != null)
+		{
+			for (Property prop : plDef.getProperties().getPropertyAsReference())
+			{
+				System.out.println("TESTPL1 - property id : " + prop.getPropertyId());
+				System.out.println("TESTPL1 - property name : " + prop.getPropertyName());
+				System.out.println("TESTPL1 - property value : " + prop.getValue().getContent());
+				System.out.println("TESTPL1 - property datatype : " + prop.getValue().getDataType());
+				System.out.println("TESTPL1 - property owner : " + prop.getOwner());
+				System.out.println("TESTPL1 - property status : " + prop.getStatus());
+				System.out.println("TESTPL1 - property isActive : " + prop.isIsActive());
+			}
+		}
 		
 		for (PickListEntryNode plEntryNode : plDef.getPickListEntryNodeAsReference())
 		{
@@ -507,6 +520,20 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 			{
 				System.out.println("plExclusion entityCode : " + plExclusion.getEntityCode());
 				System.out.println("plExclusion entityCodeNS : " + plExclusion.getEntityCodeNamespace());
+			}
+			
+			if (plEntryNode.getProperties() != null)
+			{
+				for (Property prop : plEntryNode.getProperties().getPropertyAsReference())
+				{
+					System.out.println("TESTPL1 entry - property id : " + prop.getPropertyId());
+					System.out.println("TESTPL1 entry - property name : " + prop.getPropertyName());
+					System.out.println("TESTPL1 entry - property value : " + prop.getValue().getContent());
+					System.out.println("TESTPL1 entry - property datatype : " + prop.getValue().getDataType());
+					System.out.println("TESTPL1 entry - property owner : " + prop.getOwner());
+					System.out.println("TESTPL1 entry - property status : " + prop.getStatus());
+					System.out.println("TESTPL1 entry - property isActive : " + prop.isIsActive());
+				}
 			}
 		}		
 	}
