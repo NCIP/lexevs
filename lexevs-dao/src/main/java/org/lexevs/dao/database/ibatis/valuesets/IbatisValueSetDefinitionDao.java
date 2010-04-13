@@ -451,6 +451,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		bean.setPrefix(prefix);
 		bean.setSupportedAttributeTag(supportedAttributeTag);
 		bean.setCodingSchemeId(referenceGuid);
+		bean.setReferenceType(ReferenceType.VALUESETDEFINITION.name());
 		bean.setUriMap(uriMap);
 		bean.setId(uriMapId);
 		
@@ -460,7 +461,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	public void deleteValueSetDefinitionMappings(String referenceGuid) {
 		this.getSqlMapClientTemplate().delete(
 				DELETE_URIMAPS_BY_REFERENCE_GUID_SQL, 
-				new PrefixedParameter(null, referenceGuid));
+				new PrefixedParameterTuple(null, referenceGuid, ReferenceType.VALUESETDEFINITION.name()));
 	}
 	
 	/**
