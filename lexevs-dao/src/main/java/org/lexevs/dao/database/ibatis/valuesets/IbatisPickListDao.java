@@ -186,7 +186,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 					new PrefixedParameterTuple(null, plDefGuid, ReferenceType.PICKLISTDEFINITION.name())); 
 			
 			if (contextList != null)
-				plDef.setDefaultPickContext((String[])sourceList.toArray());
+				plDef.setDefaultPickContext(contextList);
 			
 			
 		}

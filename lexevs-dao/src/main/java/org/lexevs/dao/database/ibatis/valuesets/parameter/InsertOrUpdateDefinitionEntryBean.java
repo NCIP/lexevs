@@ -36,10 +36,10 @@ public class InsertOrUpdateDefinitionEntryBean extends IdableParameterBean {
 	private String valueSetDefReference;
 	private String entityCode;				
 	private String entityCodeNamespace;
-	private boolean leafOnly;
+	private Boolean leafOnly;
 	private String referenceAssociation;
-	private boolean targetToSource;
-	private boolean transitiveClosure;
+	private Boolean targetToSource;
+	private Boolean transitiveClosure;
 	private String propertyRefCodingScheme;
 	private String propertyName;
 	private String propertyMatchValue;
@@ -133,14 +133,14 @@ public class InsertOrUpdateDefinitionEntryBean extends IdableParameterBean {
 	/**
 	 * @return the leafOnly
 	 */
-	public boolean isLeafOnly() {
+	public Boolean isLeafOnly() {
 		return leafOnly;
 	}
 
 	/**
 	 * @param leafOnly the leafOnly to set
 	 */
-	public void setLeafOnly(boolean leafOnly) {
+	public void setLeafOnly(Boolean leafOnly) {
 		this.leafOnly = leafOnly;
 	}
 
@@ -161,28 +161,28 @@ public class InsertOrUpdateDefinitionEntryBean extends IdableParameterBean {
 	/**
 	 * @return the targetToSource
 	 */
-	public boolean isTargetToSource() {
+	public Boolean isTargetToSource() {
 		return targetToSource;
 	}
 
 	/**
 	 * @param targetToSource the targetToSource to set
 	 */
-	public void setTargetToSource(boolean targetToSource) {
+	public void setTargetToSource(Boolean targetToSource) {
 		this.targetToSource = targetToSource;
 	}
 
 	/**
 	 * @return the transitiveClosure
 	 */
-	public boolean isTransitiveClosure() {
+	public Boolean isTransitiveClosure() {
 		return transitiveClosure;
 	}
 
 	/**
 	 * @param transitiveClosure the transitiveClosure to set
 	 */
-	public void setTransitiveClosure(boolean transitiveClosure) {
+	public void setTransitiveClosure(Boolean transitiveClosure) {
 		this.transitiveClosure = transitiveClosure;
 	}
 

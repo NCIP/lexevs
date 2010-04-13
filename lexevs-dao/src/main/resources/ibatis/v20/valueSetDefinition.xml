@@ -146,6 +146,8 @@
 			vsdEntry
 		WHERE
 			valueSetDefGuid = #param1#
+		ORDER BY
+			ruleOrder
 	</select>
 	
 	<insert id="insertValueSetDefinition" 
@@ -218,10 +220,30 @@
 				#valueSetDefReference#,
 				#entityCode#,				
 				#entityCodeNamespace#,
-				#leafOnly#,
+				
+				<isPropertyAvailable property="leafOnly">
+					#leafOnly#,
+				</isPropertyAvailable>
+				<isNotPropertyAvailable property="leafOnly">
+					null,
+				</isNotPropertyAvailable>
+				
 				#referenceAssociation#,
-				#targetToSource#,
-				#transitiveClosure#,
+				
+				<isPropertyAvailable property="targetToSource">
+					#targetToSource#,
+				</isPropertyAvailable>
+				<isNotPropertyAvailable property="targetToSource">
+					null,
+				</isNotPropertyAvailable>
+				
+				<isPropertyAvailable property="transitiveClosure">
+					#transitiveClosure#,
+				</isPropertyAvailable>
+				<isNotPropertyAvailable property="transitiveClosure">
+					null,
+				</isNotPropertyAvailable>
+				
 				#propertyRefCodingScheme#,
 				#propertyName#,
 				#propertyMatchValue#,

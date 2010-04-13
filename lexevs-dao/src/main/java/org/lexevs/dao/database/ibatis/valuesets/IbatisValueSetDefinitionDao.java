@@ -18,12 +18,18 @@
  */
 package org.lexevs.dao.database.ibatis.valuesets;
 
-import java.net.URI;
+import java.lang.reflect.Field;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Source;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.URIMap;
+import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.lang.StringUtils;
@@ -32,12 +38,19 @@ import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.access.versions.VersionsDao;
+import org.lexevs.dao.database.constants.classifier.mapping.ClassToStringMappingClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
+import org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateDefinitionEntryBean;
+import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.springframework.orm.ibatis.SqlMapClientCallback;
+
+import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 /**
  * The Class IbatisValueSetDefinitionDao.
@@ -50,6 +63,12 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
 	public static String VALUESETDEFINITION_NAMESPACE = "ValueSetDefinition.";
+	
+	public static String VS_MULTIATTRIB_NAMESPACE = "VSMultiAttrib.";
+	
+	public static String VS_MAPPING_NAMESPACE = "VSMapping.";
+	
+	private static String SUPPORTED_ATTRIB_GETTER_PREFIX = "_supported";
 	
 	public static String INSERT_VALUESET_DEFINITION_SQL = VALUESETDEFINITION_NAMESPACE + "insertValueSetDefinition";
 	
@@ -69,11 +88,35 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	
 	public static String REMOVE_DEFINITION_ENTRY_BY_VALUESET_DEFINITION_GUID_SQL = VALUESETDEFINITION_NAMESPACE + "removeDefinitionEntryByValueSetDefinitionGuid";
 	
+	public static String GET_SOURCE_LIST_BY_PARENT_GUID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "getSourceListByParentGuidandType";
+	
+	public static String GET_CONTEXT_LIST_BY_PARENT_GUID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "getContextListByParentGuidandType";
+	
+	public static String INSERT_MULTI_ATTRIB_SQL = VS_MULTIATTRIB_NAMESPACE + "insertMultiAttrib";
+	
+	public static String DELETE_SOURCE_BY_PARENT_GUID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "deleteSourceByParentGuidAndType";
+	
+	public static String DELETE_CONTEXT_BY_PARENT_GUID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "deleteContextByParentGuidAndType";
+	
+	public static String DELETE_PICKLIST_ENTRY_CONTEXT_BY_PICKLIST_GUID_SQL = VS_MULTIATTRIB_NAMESPACE + "deletePickListEntryContextByPickListGuid";
+	
+	public static String GET_URIMAPS_BY_REFERENCE_GUID_SQL = VS_MAPPING_NAMESPACE + "getURIMaps";
+	
+	public static String GET_URIMAPS_BY_REFERENCE_GUID_LOCALNAME_AND_TYPE_SQL = VS_MAPPING_NAMESPACE + "getURIMapByLocalNameAndType";
+	
+	public static String INSERT_URIMAPS_SQL = VS_MAPPING_NAMESPACE + "insertURIMap";
+	
+	public static String UPDATE_URIMAPS_BY_LOCALID_SQL = VS_MAPPING_NAMESPACE + "updateUriMapByLocalId";
+	
+	public static String DELETE_URIMAPS_BY_REFERENCE_GUID_SQL = VS_MAPPING_NAMESPACE + "deleteMappingsByReferenceGuid";
+	
 	/** The versions dao. */
 	private VersionsDao versionsDao;
 	
 	private VSPropertyDao vsPropertyDao;
 	
+	/** The class to string mapping classifier. */
+	private ClassToStringMappingClassifier classToStringMappingClassifier = new ClassToStringMappingClassifier();
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao#getValueSetDefinitionByURI(java.lang.String)
@@ -103,6 +146,21 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 				properties.getPropertyAsReference().addAll(props);
 				vsd.setProperties(properties);
 			}
+			
+			// Get value set definition source list
+			List<Source> sourceList = this.getSqlMapClientTemplate().queryForList(GET_SOURCE_LIST_BY_PARENT_GUID_AND_TYPE_SQL, 
+					new PrefixedParameterTuple(null, vsdGuid, ReferenceType.VALUESETDEFINITION.name())); 
+			
+			if (sourceList != null)
+				vsd.setSource(sourceList);
+			
+			// Get realm or context list
+			List<String> contextList = this.getSqlMapClientTemplate().queryForList(GET_CONTEXT_LIST_BY_PARENT_GUID_AND_TYPE_SQL, 
+					new PrefixedParameterTuple(null, vsdGuid, ReferenceType.VALUESETDEFINITION.name())); 
+			
+			if (contextList != null)
+				vsd.setRepresentsRealmOrContext(contextList);
+			
 		}
 		return vsd;
 	}
@@ -157,45 +215,13 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		// insert into value set definition table
 		this.getSqlMapClientTemplate().insert(INSERT_VALUESET_DEFINITION_SQL, vsDefBean);
 		
-		InsertOrUpdateDefinitionEntryBean vsdEntryBean = null;
+		// insert definition entry
 		for (DefinitionEntry vsdEntry : definition.getDefinitionEntryAsReference()) 
 		{
-			String vsdEntryGuid = this.createUniqueId();
-			vsdEntryBean = new InsertOrUpdateDefinitionEntryBean();
-			vsdEntryBean.setId(vsdEntryGuid);
-			vsdEntryBean.setDefinitionEntry(vsdEntry);
-			vsdEntryBean.setValueSetDefGuid(valueSetDefinitionGuid);
-			
-			if (vsdEntry.getCodingSchemeReference() != null)
-			{
-				vsdEntryBean.setCodingSchemeReference(vsdEntry.getCodingSchemeReference().getCodingScheme());
-			}
-			
-			else if (vsdEntry.getValueSetDefinitionReference() != null)
-			{
-				vsdEntryBean.setValueSetDefReference(vsdEntry.getValueSetDefinitionReference().getValueSetDefinitionURI());
-			}
-			else if (vsdEntry.getEntityReference() != null)
-			{
-				vsdEntryBean.setEntityCode(vsdEntry.getEntityReference().getEntityCode());
-				vsdEntryBean.setEntityCodeNamespace(vsdEntry.getEntityReference().getEntityCodeNamespace());
-				vsdEntryBean.setLeafOnly(vsdEntry.getEntityReference().getLeafOnly());
-				vsdEntryBean.setReferenceAssociation(vsdEntry.getEntityReference().getReferenceAssociation());
-				vsdEntryBean.setTargetToSource(vsdEntry.getEntityReference().getTargetToSource());
-				vsdEntryBean.setTransitiveClosure(vsdEntry.getEntityReference().getTransitiveClosure());
-			}
-			else if (vsdEntry.getPropertyReference() != null)
-			{
-				vsdEntryBean.setPropertyName(vsdEntry.getPropertyReference().getPropertyName());
-				vsdEntryBean.setPropertyRefCodingScheme(vsdEntry.getPropertyReference().getCodingScheme());
-				vsdEntryBean.setPropertyMatchValue(vsdEntry.getPropertyReference().getPropertyMatchValue().getContent());
-				vsdEntryBean.setFormat(vsdEntry.getPropertyReference().getPropertyMatchValue().getDataType());
-			}			
-			
-			// insert into vsdEntry table
-			this.getSqlMapClientTemplate().insert(INSERT_DEFINITION_ENTRY_SQL, vsdEntryBean);
+			insertDefinitionEntry(valueSetDefinitionGuid, vsdEntry);
 		}
 		
+		// insert value set definition properties
 		if (definition.getProperties() != null)
 		{
 			for (Property property : definition.getProperties().getPropertyAsReference())
@@ -203,6 +229,41 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 				this.vsPropertyDao.insertProperty(valueSetDefinitionGuid, ReferenceType.VALUESETDEFINITION, property);
 			}
 		}
+		
+		// insert realm or context list
+		for (String context : definition.getRepresentsRealmOrContextAsReference())
+		{
+			InsertOrUpdateValueSetsMultiAttribBean insertOrUpdateValueSetsMultiAttribBean = new InsertOrUpdateValueSetsMultiAttribBean();
+			insertOrUpdateValueSetsMultiAttribBean.setId(this.createUniqueId());
+			insertOrUpdateValueSetsMultiAttribBean.setReferenceGuid(valueSetDefinitionGuid);
+			insertOrUpdateValueSetsMultiAttribBean.setReferenceType(ReferenceType.VALUESETDEFINITION.name());
+			insertOrUpdateValueSetsMultiAttribBean.setAttributeType(SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT);
+			insertOrUpdateValueSetsMultiAttribBean.setAttributeValue(context);
+			insertOrUpdateValueSetsMultiAttribBean.setRole(null);
+			insertOrUpdateValueSetsMultiAttribBean.setSubRef(null);
+			insertOrUpdateValueSetsMultiAttribBean.setEntryStateId(this.createUniqueId());
+			
+			this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
+		}
+		
+		// insert value set definition source list
+		for (Source source : definition.getSourceAsReference())
+		{
+			InsertOrUpdateValueSetsMultiAttribBean insertOrUpdateValueSetsMultiAttribBean = new InsertOrUpdateValueSetsMultiAttribBean();
+			insertOrUpdateValueSetsMultiAttribBean.setId(this.createUniqueId());
+			insertOrUpdateValueSetsMultiAttribBean.setReferenceGuid(valueSetDefinitionGuid);
+			insertOrUpdateValueSetsMultiAttribBean.setReferenceType(ReferenceType.VALUESETDEFINITION.name());
+			insertOrUpdateValueSetsMultiAttribBean.setAttributeType(SQLTableConstants.TBLCOLVAL_SUPPTAG_SOURCE);
+			insertOrUpdateValueSetsMultiAttribBean.setAttributeValue(source.getContent());
+			insertOrUpdateValueSetsMultiAttribBean.setRole(source.getRole());
+			insertOrUpdateValueSetsMultiAttribBean.setSubRef(source.getSubRef());
+			insertOrUpdateValueSetsMultiAttribBean.setEntryStateId(this.createUniqueId());
+			
+			this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
+		}
+		
+		// insert value set definition mappings
+		insertMappings(valueSetDefinitionGuid, definition.getMappings());
 		
 		return valueSetDefinitionGuid;
 	}
@@ -262,6 +323,15 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		// remove value set properties
 		this.vsPropertyDao.deleteAllValueSetDefinitionProperties(valueSetDefGuid);
 		
+		// remove value set definition mappings
+		deleteValueSetDefinitionMappings(valueSetDefGuid);
+		
+		// remove value set definition source list
+		this.getSqlMapClientTemplate().delete(DELETE_SOURCE_BY_PARENT_GUID_AND_TYPE_SQL, new PrefixedParameterTuple(null, valueSetDefGuid, ReferenceType.VALUESETDEFINITION.name()));
+		
+		// remove realm or context list
+		this.getSqlMapClientTemplate().delete(DELETE_CONTEXT_BY_PARENT_GUID_AND_TYPE_SQL, new PrefixedParameterTuple(null, valueSetDefGuid, ReferenceType.VALUESETDEFINITION.name()));
+		
 		// remove value set definition
 		this.getSqlMapClientTemplate().
 			delete(REMOVE_VALUESET_DEFINITION_BY_VALUESET_DEFINITION_URI_SQL, new PrefixedParameter(null, valueSetDefinitionURI));	
@@ -269,11 +339,130 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 
 	@Override
 	public String insertDefinitionEntry(String valueSetDefinitionGuid,
-			ValueSetDefinition definition) {
-		// TODO Auto-generated method stub
-		return null;
+			DefinitionEntry vsdEntry) {
+		String vsdEntryGuid = this.createUniqueId();
+		
+		InsertOrUpdateDefinitionEntryBean vsdEntryBean = new InsertOrUpdateDefinitionEntryBean();
+		vsdEntryBean.setId(vsdEntryGuid);
+		vsdEntryBean.setDefinitionEntry(vsdEntry);
+		vsdEntryBean.setValueSetDefGuid(valueSetDefinitionGuid);
+		
+		if (vsdEntry.getCodingSchemeReference() != null)
+		{
+			vsdEntryBean.setCodingSchemeReference(vsdEntry.getCodingSchemeReference().getCodingScheme());
+		}
+		
+		else if (vsdEntry.getValueSetDefinitionReference() != null)
+		{
+			vsdEntryBean.setValueSetDefReference(vsdEntry.getValueSetDefinitionReference().getValueSetDefinitionURI());
+		}
+		else if (vsdEntry.getEntityReference() != null)
+		{
+			vsdEntryBean.setEntityCode(vsdEntry.getEntityReference().getEntityCode());
+			vsdEntryBean.setEntityCodeNamespace(vsdEntry.getEntityReference().getEntityCodeNamespace());
+			vsdEntryBean.setLeafOnly(vsdEntry.getEntityReference().getLeafOnly());
+			vsdEntryBean.setReferenceAssociation(vsdEntry.getEntityReference().getReferenceAssociation());
+			vsdEntryBean.setTargetToSource(vsdEntry.getEntityReference().getTargetToSource());
+			vsdEntryBean.setTransitiveClosure(vsdEntry.getEntityReference().getTransitiveClosure());
+		}
+		else if (vsdEntry.getPropertyReference() != null)
+		{
+			vsdEntryBean.setPropertyName(vsdEntry.getPropertyReference().getPropertyName());
+			vsdEntryBean.setPropertyRefCodingScheme(vsdEntry.getPropertyReference().getCodingScheme());
+			if (vsdEntry.getPropertyReference().getPropertyMatchValue() != null)
+			{
+				vsdEntryBean.setPropertyMatchValue(vsdEntry.getPropertyReference().getPropertyMatchValue().getContent());
+				vsdEntryBean.setFormat(vsdEntry.getPropertyReference().getPropertyMatchValue().getDataType());
+				vsdEntryBean.setMatchAlgorithm(vsdEntry.getPropertyReference().getPropertyMatchValue().getMatchAlgorithm());
+			}
+		}			
+		
+		// insert into vsdEntry table
+		this.getSqlMapClientTemplate().insert(INSERT_DEFINITION_ENTRY_SQL, vsdEntryBean);
+		
+		return vsdEntryGuid;
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	public void insertMappings(String referenceGuid, Mappings mappings){
+		if(mappings == null){
+			return;
+		}
+		for(Field field : mappings.getClass().getDeclaredFields()){
+			if(field.getName().startsWith(SUPPORTED_ATTRIB_GETTER_PREFIX)){
+				field.setAccessible(true);
+				try {
+					List<URIMap> urimapList = (List<URIMap>) field.get(mappings);
+					this.insertURIMap(referenceGuid, urimapList);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				} 
+			}
+		}
+	}
+	
+	public void insertURIMap(final String referenceGuid,
+			final List<URIMap> urimapList) {
+		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+	
+			public Object doInSqlMapClient(SqlMapExecutor executor)
+			throws SQLException {
+				executor.startBatch();
+				for(URIMap uriMap : urimapList){
+					String uriMapId = UUID.randomUUID().toString();
+					
+					executor.insert(INSERT_URIMAPS_SQL, 
+							buildInsertOrUpdateURIMapBean(
+									null,
+									uriMapId, 
+									referenceGuid,
+									classToStringMappingClassifier.classify(uriMap.getClass()),
+									uriMap));
+				}
+				return executor.executeBatch();
+			}	
+		});		
+	}
+	
+	public void insertURIMap(String referenceGuid, URIMap uriMap) {
+		String uriMapId = this.createUniqueId();
+		this.getSqlMapClientTemplate().insert(
+				INSERT_URIMAPS_SQL, buildInsertOrUpdateURIMapBean(
+									null,
+									uriMapId, 
+									referenceGuid,
+									classToStringMappingClassifier.classify(uriMap.getClass()),
+									uriMap));
+	}
+	
+	/**
+	 * Builds the insert uri map bean.
+	 * 
+	 * @param prefix the prefix
+	 * @param uriMapId the uri map id
+	 * @param codingSchemeId the coding scheme id
+	 * @param supportedAttributeTag the supported attribute tag
+	 * @param uriMap the uri map
+	 * 
+	 * @return the insert uri map bean
+	 */
+	protected InsertOrUpdateURIMapBean buildInsertOrUpdateURIMapBean(String prefix, String uriMapId, String referenceGuid, String supportedAttributeTag, URIMap uriMap){
+		InsertOrUpdateURIMapBean bean = new InsertOrUpdateURIMapBean();
+		bean.setPrefix(prefix);
+		bean.setSupportedAttributeTag(supportedAttributeTag);
+		bean.setCodingSchemeId(referenceGuid);
+		bean.setUriMap(uriMap);
+		bean.setId(uriMapId);
+		
+		return bean;
+	}
+	
+	public void deleteValueSetDefinitionMappings(String referenceGuid) {
+		this.getSqlMapClientTemplate().delete(
+				DELETE_URIMAPS_BY_REFERENCE_GUID_SQL, 
+				new PrefixedParameter(null, referenceGuid));
+	}
+	
 	/**
 	 * @return the vsPropertyDao
 	 */

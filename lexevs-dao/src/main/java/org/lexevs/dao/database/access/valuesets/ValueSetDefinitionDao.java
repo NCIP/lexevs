@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
@@ -93,11 +94,11 @@ public interface ValueSetDefinitionDao extends LexGridSchemaVersionAwareDao {
 	 * Insert value set definition entry.
 	 * 
 	 * @param valueSetDefinitionGuid the value set definition GUID
-	 * @param definition the definition
+	 * @param definitionEntry the Value Set definitionEntry
 	 * 
 	 * @return the string
 	 */
-	public String insertDefinitionEntry(String valueSetDefinitionGuid, ValueSetDefinition definition);
+	public String insertDefinitionEntry(String valueSetDefinitionGuid, DefinitionEntry definitionEntry);
 	
 	/**
 	 * Delete value set definition by value set definition URI.

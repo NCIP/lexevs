@@ -34,11 +34,9 @@
 	
 	<select id="getContextListByParentGuidandType" remapResults="true"
 			parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-			resultMap="sourceResult">
+			resultClass="string">
 		SELECT 
-			attributeValue,
-			subRef,
-			role
+			attributeValue
 		FROM 
 			vsMultiAttrib
 		WHERE

@@ -95,7 +95,7 @@
 			pickListDef.defaultEntityCodeNamespace,
 			pickListDef.defaultLanguage,
 			pickListDef.defaultSortOrder,
-			pickListDef.description,
+			pickListDef.description,			
 			pickListDef.isActive,
 			pickListDef.owner,
 			pickListDef.status,
@@ -175,7 +175,14 @@
 				#pickListDefinition.defaultSortOrder#,
 				#pickListDefinition.entityDescription.content#,
 				#systemReleaseId#,
-				#pickListDefinition.isActive#,
+				
+				<isPropertyAvailable property="pickListDefinition.isActive">
+					#pickListDefinition.isActive#,
+				</isPropertyAvailable>
+				<isNotPropertyAvailable property="pickListDefinition.isActive">
+					null,
+				</isNotPropertyAvailable>				
+				
 				#pickListDefinition.owner#,
 				#pickListDefinition.status#,
 				#pickListDefinition.effectiveDate#,
@@ -212,12 +219,39 @@
 				#entityCodeNamespace#,
 				#entityCode#,
 				#entryOrder#,
-				#isDefault#,
-				#matchIfNoContext#,
+				
+				<isPropertyAvailable property="isDefault">
+					#isDefault#,
+				</isPropertyAvailable>
+				<isNotPropertyAvailable property="isDefault">
+					null,
+				</isNotPropertyAvailable>
+				
+				<isPropertyAvailable property="matchIfNoContext">
+					#matchIfNoContext#,
+				</isPropertyAvailable>
+				<isNotPropertyAvailable property="matchIfNoContext">
+					null,
+				</isNotPropertyAvailable>
+				
 				#propertyId#,
-				#include#,
+				
+				<isPropertyAvailable property="include">
+					#include#,
+				</isPropertyAvailable>
+				<isNotPropertyAvailable property="include">
+					null,
+				</isNotPropertyAvailable>
+				
 				#pickText#,
-				#pickListEntryNode.isActive#,
+				
+				<isPropertyAvailable property="pickListEntryNode.isActive">
+					#pickListEntryNode.isActive#,
+				</isPropertyAvailable>
+				<isNotPropertyAvailable property="pickListEntryNode.isActive">
+					null,
+				</isNotPropertyAvailable>
+				
 				#pickListEntryNode.owner#,
 				#pickListEntryNode.status#,
 				#pickListEntryNode.effectiveDate#,

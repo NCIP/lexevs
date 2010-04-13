@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="VSMapping">
+
+	<typeAlias alias="uriMap" type="org.LexGrid.naming.URIMap" />
+	<typeAlias alias="supportedAssociation" type="org.LexGrid.naming.SupportedAssociation" />
+	<typeAlias alias="supportedAssociationQualifier" type="org.LexGrid.naming.SupportedAssociationQualifier" />
+	<typeAlias alias="supportedCodingScheme" type="org.LexGrid.naming.SupportedCodingScheme" />
+	<typeAlias alias="supportedConceptDomain" type="org.LexGrid.naming.SupportedConceptDomain" />
+	<typeAlias alias="supportedContainerName" type="org.LexGrid.naming.SupportedContainerName" />
+	<typeAlias alias="supportedContext" type="org.LexGrid.naming.SupportedContext" />
+	<typeAlias alias="supportedDataType" type="org.LexGrid.naming.SupportedDataType" />
+	<typeAlias alias="supportedDegreeOfFidelity" type="org.LexGrid.naming.SupportedDegreeOfFidelity" />
+	<typeAlias alias="supportedEntityType" type="org.LexGrid.naming.SupportedEntityType" />
+	<typeAlias alias="supportedHierarchy" type="org.LexGrid.naming.SupportedHierarchy" />
+	<typeAlias alias="supportedLanguage" type="org.LexGrid.naming.SupportedLanguage" />
+	<typeAlias alias="supportedNamespace" type="org.LexGrid.naming.SupportedNamespace" />
+	<typeAlias alias="supportedProperty" type="org.LexGrid.naming.SupportedProperty" />
+	<typeAlias alias="supportedPropertyLink" type="org.LexGrid.naming.SupportedPropertyLink" />
+	<typeAlias alias="supportedPropertyQualifier" type="org.LexGrid.naming.SupportedPropertyQualifier" />
+	<typeAlias alias="supportedPropertyQualifierType" type="org.LexGrid.naming.SupportedPropertyQualifierType" />
+	<typeAlias alias="supportedPropertyType" type="org.LexGrid.naming.SupportedPropertyType" />
+	<typeAlias alias="supportedRepresentationalForm" type="org.LexGrid.naming.SupportedRepresentationalForm" />
+	<typeAlias alias="supportedSortOrder" type="org.LexGrid.naming.SupportedSortOrder" />
+	<typeAlias alias="supportedSource" type="org.LexGrid.naming.SupportedSource" />
+	<typeAlias alias="supportedSourceRole" type="org.LexGrid.naming.SupportedSourceRole" />
+	<typeAlias alias="supportedStatus" type="org.LexGrid.naming.SupportedStatus" />
+
+	<resultMap id="uriMapResult" class="uriMap">
+		<result property="localId" column="id" />
+		<result property="uri" column="uri" />
+		<result property="content" column="idValue" />
+		<discriminator javaType="string" column="supportedAttributeTag">
+			<subMap value="Association" resultMap="supportedAssociationResult" />
+			<subMap value="AssociationQualifier" resultMap="supportedAssociationQualifierResult" />
+			<subMap value="CodingScheme" resultMap="supportedCodingSchemeResult" />
+			<subMap value="ConceptDomain" resultMap="supportedConceptDomainResult" />
+			<subMap value="ContainerName" resultMap="supportedContainerNameResult" />
+			<subMap value="Context" resultMap="supportedContextResult" />
+			<subMap value="DataType" resultMap="supportedDataTypeResult" />
+			<subMap value="DegreeOfFidelity" resultMap="supportedDegreeOfFidelityResult" />
+			<subMap value="EntityType" resultMap="supportedEntityTypeResult" />
+			<subMap value="Hierarchy" resultMap="supportedHierarchyResult" />
+			<subMap value="Language" resultMap="supportedLanguageResult" />
+			<subMap value="Namespace" resultMap="supportedNamespaceResult" />
+			<subMap value="Property" resultMap="supportedPropertyResult" />
+			<subMap value="PropertyLink" resultMap="supportedPropertyLinkResult" />
+			<subMap value="PropertyQualifier" resultMap="supportedPropertyQualifierResult" />
+			<subMap value="PropertyQualifierType" resultMap="supportedPropertyQualifierTypeResult" />
+			<subMap value="PropertyType" resultMap="supportedPropertyTypeResult" />
+			<subMap value="RepresentationalForm" resultMap="supportedRepresentationalFormResult" />
+			<subMap value="SortOrder" resultMap="supportedSortOrderResult" />
+			<subMap value="Source" resultMap="supportedSourceResult" />
+			<subMap value="SourceRole" resultMap="supportedSourceRoleResult" />
+			<subMap value="Status" resultMap="supportedStatusResult" />
+		</discriminator>
+	</resultMap>
+	
+	<resultMap id="supportedCodingSchemeResult" class="supportedCodingScheme" extends="uriMapResult">
+		<result property="isImported" column="isImported" />	
+	</resultMap>
+
+	<resultMap id="supportedAssociationResult" class="supportedAssociation"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedAssociationQualifierResult" class="supportedAssociationQualifier"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedCodingSchemeResult" class="supportedCodingScheme"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedConceptDomainResult" class="supportedConceptDomain"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedContainerNameResult" class="supportedContainerName"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedContextResult" class="supportedContext"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedDataTypeResult" class="supportedDataType"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedDegreeOfFidelityResult" class="supportedDegreeOfFidelity"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedEntityTypeResult" class="supportedEntityType"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedHierarchyResult" class="supportedHierarchy"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedLanguageResult" class="supportedLanguage"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedNamespaceResult" class="supportedNamespace"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedPropertyResult" class="supportedProperty"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedPropertyLinkResult" class="supportedPropertyLink"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedPropertyQualifierResult" class="supportedPropertyQualifier"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedPropertyQualifierTypeResult" class="supportedPropertyQualifierType"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedPropertyTypeResult" class="supportedPropertyType"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedRepresentationalFormResult" class="supportedRepresentationalForm"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedSortOrderResult" class="supportedSortOrder"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedSourceResult" class="supportedSource"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedSourceRoleResult" class="supportedSourceRole"
+		extends="uriMapResult">
+	</resultMap>
+	<resultMap id="supportedStatusResult" class="supportedStatus"
+		extends="uriMapResult">
+	</resultMap>
+	
+	<sql id="getUriMapFragment">
+		SELECT
+	 		supportedAttributeTag,
+	 		id,
+	 		uri,
+	 		idValue,
+	 		rootCode,
+	 		isForwardNavigable,
+	 		isImported,
+	 		equivalentCodingScheme,
+	 		assemblyRule
+	 	FROM
+	 		vsSupportedAttrib urimap
+	</sql>
+	
+	 <select id="getURIMaps" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="uriMapResult">
+	 	<include refid="getUriMapFragment"/>
+	 	WHERE
+	 		urimap.referenceGuid = #param1#
+	 </select>
+	 
+	 <select id="getURIMapByLocalNameAndType" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="uriMapResult">
+	 	<include refid="getUriMapFragment"/>
+	 	WHERE
+	 		urimap.referenceGuid = #param1#
+	 	AND
+	 		urimap.supportedAttributeTag = #param2#
+	 	AND
+	 		urimap.id = #param3#
+	 </select>
+	 
+	 <select id="getURIMapCountByLocalNameAndType" remapResults="true"
+	 	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultClass="int">
+	 	SELECT
+	 		COUNT(*)
+	 	FROM
+	 		vsSupportedAttrib urimap
+	 	WHERE
+	 		urimap.referenceGuid = #param1#
+	 	AND
+	 		urimap.id = #param2#
+	 	AND
+	 		urimap.supportedAttributeTag = #param3#
+	 </select>
+
+     <insert id="insertURIMap" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean">
+		INSERT INTO vsSupportedAttrib (
+			vsSuppAttribGuid,
+			referenceGuid,
+			supportedAttributeTag,
+			id,
+			uri,
+			idValue,
+			rootCode,
+			isForwardNavigable,
+			isImported,
+			equivalentCodingScheme,
+			assemblyRule
+		) VALUES (
+			#id#, 
+			#codingSchemeId#,
+			#supportedAttributeTag#, 
+			#uriMap.localId#, 
+			#uriMap.uri#,
+			#uriMap.content#
+			
+			<isPropertyAvailable prepend="," property="uriMap.rootCode">
+				#uriMap.rootCode#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="uriMap.rootCode">
+				null
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable prepend="," property="uriMap.isForwardNavigable">
+				#uriMap.isForwardNavigable#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="uriMap.isForwardNavigable">
+				null
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable prepend="," property="uriMap.isImported">
+				#uriMap.isImported#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="uriMap.isImported">
+				null
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable prepend="," property="uriMap.equivalentCodingScheme">
+				#uriMap.equivalentCodingScheme#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="uriMap.equivalentCodingScheme">
+				null
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable prepend="," property="uriMap.assemblyRule">
+				#uriMap.assemblyRule#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="uriMap.assemblyRule">
+				null
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable prepend="," property="uriMap.conceptDomainCodingScheme">
+				#uriMap.conceptDomainCodingScheme#
+			</isPropertyAvailable>
+		)
+  </insert>
+
+	<update id="updateUriMapByLocalId"
+		parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean">
+		UPDATE
+			vsSupportedAttrib vssupportedattrib
+		SET
+		
+		<dynamic prepend=" ">
+			<isNotNull prepend="," property="uriMap.uri">
+				uri = #uriMap.uri#
+			</isNotNull>
+			
+			<isNotNull prepend="," property="uriMap.localId">
+				id = #uriMap.localId#
+			</isNotNull>
+		
+			<isPropertyAvailable property="uriMap.rootCode">
+				<isNotNull prepend="," property="uriMap.rootCode">
+					rootCode = #uriMap.rootCode#
+				</isNotNull>
+			</isPropertyAvailable>	
+			
+			<isPropertyAvailable property="uriMap.isForwardNavigable">
+				<isNotNull prepend="," property="uriMap.isForwardNavigable">
+					isForwardNavigable = #uriMap.isForwardNavigable#
+				</isNotNull>
+			</isPropertyAvailable>
+			
+			<isPropertyAvailable property="uriMap.isImported">
+				<isNotNull prepend="," property="uriMap.isImported">
+					isImported = #uriMap.isImported#
+				</isNotNull>
+			</isPropertyAvailable>
+			
+			<isPropertyAvailable property="uriMap.equivalentCodingScheme">
+				<isNotNull prepend="," property="uriMap.equivalentCodingScheme">
+					equivalentCodingScheme = #uriMap.equivalentCodingScheme#
+				</isNotNull>
+			</isPropertyAvailable>	
+			
+			<isPropertyAvailable property="uriMap.assemblyRule">
+				<isNotNull prepend="," property="uriMap.assemblyRule">
+					assemblyRule = #uriMap.assemblyRule#
+				</isNotNull>
+			</isPropertyAvailable>
+			
+			<isPropertyAvailable property="uriMap.conceptDomainCodingScheme">
+				<isNotNull prepend="," property="uriMap.conceptDomainCodingScheme">
+					conceptDomainCodingScheme =#uriMap.conceptDomainCodingScheme#
+				</isNotNull>
+			</isPropertyAvailable>
+		</dynamic>
+		
+		WHERE
+			vssupportedattrib.referenceGuid = #codingSchemeId#
+		AND
+			vssupportedattrib.supportedAttributeTag = #supportedAttributeTag#
+		AND
+			vssupportedattrib.id = #uriMap.localId#	
+	</update>
+	
+	
+	<delete id="deleteMappingsByReferenceGuid"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			vsSupportedAttrib
+		WHERE
+			referenceGuid = #param1#
+	</delete>
+    
+</sqlMap>
