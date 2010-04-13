@@ -80,7 +80,7 @@ CREATE TABLE vsMultiAttrib
 (
 	vsMultiAttribGuid VARCHAR(36) NOT NULL,
 	referenceGuid VARCHAR(36) NOT NULL,
-	referenceType VARCHAR(50),
+	referenceType VARCHAR(50) NOT NULL,
 	attributeType VARCHAR(30) NOT NULL,
 	attributeValue VARCHAR(250) NOT NULL,
 	subRef VARCHAR(250),
@@ -191,7 +191,8 @@ CREATE TABLE vsPropertyMultiAttrib
 CREATE TABLE vsSupportedAttrib
 (
 	vsSuppAttribGuid VARCHAR(36) NOT NULL,
-	referenceGuid VARCHAR(36),
+	referenceGuid VARCHAR(36) NOT NULL,
+	referenceType VARCHAR(50) NOT NULL,
 	supportedAttributeTag VARCHAR(30) NOT NULL,
 	id VARCHAR(250) NOT NULL,
 	uri VARCHAR(250),

@@ -143,20 +143,24 @@
 	 		vsSupportedAttrib urimap
 	</sql>
 	
-	 <select id="getURIMaps" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="uriMapResult">
+	 <select id="getURIMaps" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
 	 		urimap.referenceGuid = #param1#
+	 	AND
+	 		urimap.referenceType = #param2#
 	 </select>
 	 
-	 <select id="getURIMapByLocalNameAndType" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="uriMapResult">
+	 <select id="getURIMapByLocalNameAndType" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterQuad" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
 	 		urimap.referenceGuid = #param1#
 	 	AND
-	 		urimap.supportedAttributeTag = #param2#
+	 		urimap.referenceType = #param2#
 	 	AND
-	 		urimap.id = #param3#
+	 		urimap.supportedAttributeTag = #param3#
+	 	AND
+	 		urimap.id = #param4#
 	 </select>
 	 
 	 <select id="getURIMapCountByLocalNameAndType" remapResults="true"
@@ -177,6 +181,7 @@
 		INSERT INTO vsSupportedAttrib (
 			vsSuppAttribGuid,
 			referenceGuid,
+			referenceType,
 			supportedAttributeTag,
 			id,
 			uri,
@@ -189,6 +194,7 @@
 		) VALUES (
 			#id#, 
 			#codingSchemeId#,
+			#referenceType#,
 			#supportedAttributeTag#, 
 			#uriMap.localId#, 
 			#uriMap.uri#,
@@ -290,6 +296,8 @@
 		WHERE
 			vssupportedattrib.referenceGuid = #codingSchemeId#
 		AND
+			vssupportedattrib.referenceType = #referenceType#
+		AND
 			vssupportedattrib.supportedAttributeTag = #supportedAttributeTag#
 		AND
 			vssupportedattrib.id = #uriMap.localId#	
@@ -297,11 +305,13 @@
 	
 	
 	<delete id="deleteMappingsByReferenceGuid"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
 			vsSupportedAttrib
 		WHERE
 			referenceGuid = #param1#
+		AND
+			referenceType = #param2#
 	</delete>
     
 </sqlMap>
