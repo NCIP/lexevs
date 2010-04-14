@@ -22,13 +22,19 @@ import java.util.ArrayList;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.Relations;
+import org.LexGrid.valueSets.PickListDefinition;
+import org.LexGrid.valueSets.ValueSetDefinition;
+import org.LexGrid.versions.Revision;
+import org.LexGrid.versions.SystemRelease;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.association.AssociationService;
@@ -39,6 +45,8 @@ import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallbac
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.dao.database.service.property.PropertyService;
+import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
+import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
@@ -58,7 +66,10 @@ public class XMLDaoServiceAdaptor {
     VersionableEventAssociationService assocServiceForPred = null;
     DaoCallbackService daoCallbackService;
     PropertyService propertyService = null;
-
+    PickListDefinitionService pickListService;
+    ValueSetDefinitionService valueSetService;
+    // LexEVSPickListDefinitionServices pLservices;
+ // LexEVSValueDefinitionServices vSservices;
     /**
      * constructor initializes all DAO services
      */
@@ -73,6 +84,8 @@ public class XMLDaoServiceAdaptor {
         assocServiceForPred = (VersionableEventAssociationService) assocService;
         daoCallbackService = dbManager.getDaoCallbackService();
         propertyService = dbManager.getPropertyService();
+        pickListService = dbManager.getPickListDefinitionService();
+        valueSetService = dbManager.getValueDomainService();
     }
 
     /**
@@ -157,7 +170,28 @@ public class XMLDaoServiceAdaptor {
             Property property) {
         propertyService.insertEntityProperty(codingSchemeUri, version, entityCode, entityCodeNamespace, property);
     }
+    public void storeRevision(String codingSchemeUri, String version, String revsionId,
+            Revision revision) {
+        //revisionService.insertRevision(codingSchemeUri, version, revisionId,  revision);
+    }
+    
+    public void storeSystemRelease(String codingSchemeUri, String version,
+            SystemRelease release) {
+        //revisionService.insertRevision(codingSchemeUri, version, release );
+    }
+    
+    public void storeValueSet(ValueSetDefinition valueSet, String systemReleaseURI, Mappings mappings) {
+try {
+    valueSetService.insertValueSetDefinition(valueSet);
+} catch (LBException e) {
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+}
+             }
+    public void storePickList(PickListDefinition picklist, String systemReleaseURI, Mappings mappings) {
 
+   pickListService.insertPickListDefinition(picklist);
+    }
     /**
      * Activate a given coding scheme
      * @param urn
