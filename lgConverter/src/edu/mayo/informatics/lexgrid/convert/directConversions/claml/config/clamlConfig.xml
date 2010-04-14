@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+  <aop:config>
+    <aop:aspect id="loggingAspect" ref="simpleLogger">
+      <aop:before
+        method="logTwoStrings"
+        pointcut="execution(* *(..)) and args(s1,s2)"/>
+      <aop:after-returning
+        method="logOneString"
+        returning="s"
+        pointcut="execution(* *(..))"/>
+    </aop:aspect>
+  </aop:config>
+
+  <bean id="ClaML2EMF" class="edu.mayo.informatics.lexgrid.convert.emfConversions.claml.ClaML2EMF"/>
+
+</beans>
