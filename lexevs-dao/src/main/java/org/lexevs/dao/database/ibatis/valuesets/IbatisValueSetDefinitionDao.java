@@ -20,6 +20,7 @@ package org.lexevs.dao.database.ibatis.valuesets;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,10 +29,12 @@ import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
@@ -161,6 +164,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			if (contextList != null)
 				vsd.setRepresentsRealmOrContext(contextList);
 			
+			vsd.setMappings(getMappings(vsdGuid));
 		}
 		return vsd;
 	}
@@ -195,20 +199,17 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 					new PrefixedParameter(null, valueSetDefinitionName));
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao#insertValueSetDefinition(java.lang.String, org.LexGrid.valueDomains.ValueSetDefinition)
-	 */
 	@Override
-	public String insertValueSetDefinition(String systemReleaseUri,
-			ValueSetDefinition definition) {
+	public String insertValueSetDefinition(String systemReleaseURI,
+			ValueSetDefinition vsdef, Mappings mappings) {
+		
 		String valueSetDefinitionGuid = this.createUniqueId();
 		
-		String systemReleaseId = this.versionsDao.getSystemReleaseIdByUri(systemReleaseUri);
+		String systemReleaseId = this.versionsDao.getSystemReleaseIdByUri(systemReleaseURI);
 		
 		InsertValueSetDefinitionBean vsDefBean = new InsertValueSetDefinitionBean();
 		vsDefBean.setId(valueSetDefinitionGuid);
-		vsDefBean.setValueSetDefinition(definition);
+		vsDefBean.setValueSetDefinition(vsdef);
 		vsDefBean.setPrefix(getPrefix());
 		vsDefBean.setSystemReleaseId(systemReleaseId);
 		
@@ -216,22 +217,22 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		this.getSqlMapClientTemplate().insert(INSERT_VALUESET_DEFINITION_SQL, vsDefBean);
 		
 		// insert definition entry
-		for (DefinitionEntry vsdEntry : definition.getDefinitionEntryAsReference()) 
+		for (DefinitionEntry vsdEntry : vsdef.getDefinitionEntryAsReference()) 
 		{
 			insertDefinitionEntry(valueSetDefinitionGuid, vsdEntry);
 		}
 		
 		// insert value set definition properties
-		if (definition.getProperties() != null)
+		if (vsdef.getProperties() != null)
 		{
-			for (Property property : definition.getProperties().getPropertyAsReference())
+			for (Property property : vsdef.getProperties().getPropertyAsReference())
 			{
 				this.vsPropertyDao.insertProperty(valueSetDefinitionGuid, ReferenceType.VALUESETDEFINITION, property);
 			}
 		}
 		
 		// insert realm or context list
-		for (String context : definition.getRepresentsRealmOrContextAsReference())
+		for (String context : vsdef.getRepresentsRealmOrContextAsReference())
 		{
 			InsertOrUpdateValueSetsMultiAttribBean insertOrUpdateValueSetsMultiAttribBean = new InsertOrUpdateValueSetsMultiAttribBean();
 			insertOrUpdateValueSetsMultiAttribBean.setId(this.createUniqueId());
@@ -247,7 +248,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		}
 		
 		// insert value set definition source list
-		for (Source source : definition.getSourceAsReference())
+		for (Source source : vsdef.getSourceAsReference())
 		{
 			InsertOrUpdateValueSetsMultiAttribBean insertOrUpdateValueSetsMultiAttribBean = new InsertOrUpdateValueSetsMultiAttribBean();
 			insertOrUpdateValueSetsMultiAttribBean.setId(this.createUniqueId());
@@ -263,9 +264,34 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		}
 		
 		// insert value set definition mappings
-		insertMappings(valueSetDefinitionGuid, definition.getMappings());
+		if (mappings != null)
+			insertMappings(valueSetDefinitionGuid, mappings);
 		
-		return valueSetDefinitionGuid;
+		if (vsdef.getMappings() != null)
+			insertMappings(valueSetDefinitionGuid, vsdef.getMappings());
+		
+		return valueSetDefinitionGuid;		
+	}
+
+	@Override
+	public void insertValueSetDefinitions(String systemReleaseURI,
+			ValueSetDefinitions vsdefs, Mappings mappings) {
+
+		for (ValueSetDefinition vsdef : vsdefs.getValueSetDefinitionAsReference())
+		{
+			insertValueSetDefinition(systemReleaseURI, vsdef, mappings);
+		}
+		
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao#insertValueSetDefinition(java.lang.String, org.LexGrid.valueDomains.ValueSetDefinition)
+	 */
+	@Override
+	public String insertValueSetDefinition(String systemReleaseUri,
+			ValueSetDefinition definition) {
+		
+		return insertValueSetDefinition(systemReleaseUri, definition, null);
 	}
 	
 	/* (non-Javadoc)
@@ -384,6 +410,21 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	}
 	
 	@SuppressWarnings("unchecked")
+	private Mappings getMappings(String referenceGuid) {
+		Mappings mappings = new Mappings();
+		
+		List<URIMap> uriMaps = this.getSqlMapClientTemplate().queryForList(	
+				GET_URIMAPS_BY_REFERENCE_GUID_SQL, 
+				new PrefixedParameterTuple(null, referenceGuid, ReferenceType.VALUESETDEFINITION.name()));
+		
+		for(URIMap uriMap : uriMaps) {
+			DaoUtility.insertIntoMappings(mappings, uriMap);
+		}
+		
+		return mappings;
+	}
+	
+	@SuppressWarnings("unchecked")
 	public void insertMappings(String referenceGuid, Mappings mappings){
 		if(mappings == null){
 			return;
@@ -455,6 +496,20 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		bean.setUriMap(uriMap);
 		bean.setId(uriMapId);
 		
+		if (uriMap instanceof SupportedHierarchy)
+		{
+			String associations = null;
+			List<String> associationList = ((SupportedHierarchy) uriMap).getAssociationNamesAsReference();
+			if (associationList != null) {
+				for (int i = 0; i < associationList.size(); i++) {
+					String assoc = (String) associationList.get(i);
+					associations = i == 0 ? assoc : (associations += ("," + assoc));
+				}
+				bean.setAssociationNames(associations);
+			}
+		}
+		
+		
 		return bean;
 	}
 	
@@ -477,4 +532,6 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	public void setVsPropertyDao(VSPropertyDao vsPropertyDao) {
 		this.vsPropertyDao = vsPropertyDao;
 	}
+
+	
 }

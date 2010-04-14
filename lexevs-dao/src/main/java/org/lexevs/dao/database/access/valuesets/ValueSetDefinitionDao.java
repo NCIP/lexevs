@@ -18,12 +18,13 @@
  */
 package org.lexevs.dao.database.access.valuesets;
 
-import java.net.URI;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
 /**
@@ -60,6 +61,24 @@ public interface ValueSetDefinitionDao extends LexGridSchemaVersionAwareDao {
 	 * @return the string
 	 */
 	public String insertValueSetDefinition(String systemReleaseUri, ValueSetDefinition definition);
+	
+	/**
+	 * Inserts value set definition and its mappings.
+	 * 
+	 * @param systemReleaseURI system release URI
+	 * @param vsdef value set definition
+	 * @param mappings the mappings
+	 */
+	public String insertValueSetDefinition(String systemReleaseURI, ValueSetDefinition vsdef, Mappings mappings);
+	
+	/**
+	 * Inserts value set definitions and its mappings.
+	 * 
+	 * @param systemReleaseURI system release URI
+	 * @param vsdefs value set definitions 
+	 * @param mappings the mappings
+	 */
+	public void insertValueSetDefinitions(String systemReleaseURI, ValueSetDefinitions vsdefs, Mappings mappings);
 
 	/**
 	 * Gets the value set definition URIs.

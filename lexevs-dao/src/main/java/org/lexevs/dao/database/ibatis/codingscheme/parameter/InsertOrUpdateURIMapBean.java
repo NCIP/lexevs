@@ -40,6 +40,8 @@ public class InsertOrUpdateURIMapBean extends IdableParameterBean{
 	/** Parent object type */
 	private String referenceType;
 	
+	private String associationNames;
+	
 	/**
 	 * Sets the supported attribute tag.
 	 * 
@@ -106,5 +108,19 @@ public class InsertOrUpdateURIMapBean extends IdableParameterBean{
 	 */
 	public void setReferenceType(String referenceType) {
 		this.referenceType = referenceType;
+	}
+
+	/**
+	 * @return the associationNames
+	 */
+	public String getAssociationNames() {
+		return associationNames;
+	}
+
+	/**
+	 * @param associationNames the associationNames to set
+	 */
+	public void setAssociationNames(String associationNames) {
+		this.associationNames = associationNames;
 	}
 }
