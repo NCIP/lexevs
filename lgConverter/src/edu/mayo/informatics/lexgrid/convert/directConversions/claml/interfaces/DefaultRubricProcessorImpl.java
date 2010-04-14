@@ -165,7 +165,7 @@ public class DefaultRubricProcessorImpl implements RubricProcessor{
 		String association = property.getPropertyName();
 
 		try {
-			List associations = (List)RelationsUtil.
+			List<AssociationPredicate> associations = RelationsUtil.
 			resolveAssociationPredicates(this.schemeCS_, association);
 			
 			//If the Association isn't found as a supported association, warn and return.
