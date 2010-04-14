@@ -43,6 +43,7 @@ import org.LexGrid.commonTypes.Text;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.EntityReference;
@@ -268,122 +269,132 @@ public class LoadTestDataTest extends TestCase {
 //		getPickListService().removePickList("TESTPL2");
 //	}
 //	
-	@Test
-	public void testRemoveValueSetDefinitionByURI() throws LBException {
-		try {
-			getValueDomainService().removeValueSetDefinition(new URI("TEST:VSD:URI"));
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 //	@Test
-//	public void testLoadValueDomain() throws Exception {
-//		ValueSetDefinition vsd = new ValueSetDefinition();
-//		vsd.setValueSetDefinitionURI("TEST:VSD:URI");
-//		vsd.setValueSetDefinitionName("TESTVSDNAME");
-//		vsd.setConceptDomain("conceptDomain");
-//		vsd.setDefaultCodingScheme("defaultCodingScheme");
-//		vsd.setIsActive(true);
-//		vsd.setOwner("owner");
-//		
-//		List<Source> srcList = new ArrayList<Source>();
-//		Source src = new Source();
-//		src.setContent("TESTVSD1 - content 1");
-//		src.setRole("testvsd1 - role 1");
-//		src.setSubRef("testvsd1 - subRef 1");
-//		srcList.add(src);
-//		
-//		src = new Source();
-//		src.setContent("TESTVSD1 - content 2");
-//		src.setRole("testvsd1 - role 2");
-//		src.setSubRef("testvsd1 - subRef 2");
-//		srcList.add(src);
-//		
-//		vsd.setSource(srcList);
-//		
-//		List<String> context = new ArrayList<String>();
-//		context.add("TESTVSD1 - Context 1");
-//		context.add("TESTVSD1 - Context 2");
-//		context.add("TESTVSD1 - Context 3");
-//		vsd.setRepresentsRealmOrContext(context);		
-//		
-//		Property prop = new Property();
-//		prop.setPropertyId("vsd1propertyId");
-//		prop.setPropertyName("propertyName");
-//		prop.setIsActive(true);
-//		prop.setLanguage("language");
-//		prop.setOwner("owner");
-//		prop.setStatus("status");
-//		Text text = new Text();
-//		text.setContent("propValue");
-//		text.setDataType("dataType");
-//		prop.setValue(text);
-//		
-//		Properties props = new Properties();
-//		
-//		props.addProperty(prop);
-//		vsd.setProperties(props);
-//		
-//		EntityReference er = new EntityReference();
-//		er.setEntityCode("entityCode");
-//		er.setEntityCodeNamespace("entityCodeNamespace");
-//		er.setLeafOnly(false);
-//		er.setReferenceAssociation("referenceAssociation");
-//		er.setTargetToSource(true);
-//		er.setTransitiveClosure(true);
-//		
-//		DefinitionEntry de = new DefinitionEntry();
-//		de.setEntityReference(er);
-//		de.setRuleOrder(Long.valueOf("1"));
-//		de.setOperator(DefinitionOperator.OR);
-//		
-//		vsd.addDefinitionEntry(de);
-//		
-//		PropertyReference pr = new PropertyReference();
-//		PropertyMatchValue pmv = new PropertyMatchValue();
-//		pr.setCodingScheme("codingScheme");
-//		pr.setPropertyName("propertyName");
-//		pmv.setContent("propertyMatchvalueString");
-//		pmv.setDataType("PMVdataType");
-//		pmv.setMatchAlgorithm("matchAlgorithm used");
-//		pr.setPropertyMatchValue(pmv);
-//		
-//		de = new DefinitionEntry();
-//		de.setRuleOrder(Long.valueOf("2"));
-//		de.setOperator(DefinitionOperator.OR);
-//		de.setPropertyReference(pr);
-//		
-//		vsd.addDefinitionEntry(de);
-//		
-//		
-//		Mappings mappings = new Mappings();
-//		SupportedAssociation sa = new SupportedAssociation();
-//		sa.setUri("sauri");
-//		sa.setLocalId("sa id");
-//		sa.setContent("sa content");
-//		mappings.addSupportedAssociation(sa);
-//		
-//		SupportedCodingScheme scs = new SupportedCodingScheme();
-//		scs.setContent("scs content");
-//		scs.setIsImported(false);
-//		scs.setLocalId("scs localId");
-//		scs.setUri("scs uri");
-//		mappings.addSupportedCodingScheme(scs);
-//		
-//		SupportedNamespace sn = new SupportedNamespace();
-//		sn.setContent("sn content");
-//		sn.setEquivalentCodingScheme("sn equivalentCodingScheme");
-//		sn.setLocalId("sn localId");
-//		sn.setUri("sn uri");
-//		mappings.addSupportedNamespace(sn);
-//		
-//		vsd.setMappings(mappings);
-//		getValueDomainService().loadValueSetDefinition(vsd, "systemReleaseURI", null);
-//		
-////		getValueDomainService().loadValueDomain("resources/testData/valueDomain/vdTestData.xml", true);
+//	public void testRemoveValueSetDefinitionByURI() throws LBException {
+//		try {
+//			getValueDomainService().removeValueSetDefinition(new URI("TEST:VSD:URI"));
+//		} catch (URISyntaxException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 //	}
+	
+	@Test
+	public void testLoadValueDomain() throws Exception {
+		ValueSetDefinition vsd = new ValueSetDefinition();
+		vsd.setValueSetDefinitionURI("TEST:VSD:URI");
+		vsd.setValueSetDefinitionName("TESTVSDNAME");
+		vsd.setConceptDomain("conceptDomain");
+		vsd.setDefaultCodingScheme("defaultCodingScheme");
+		vsd.setIsActive(true);
+		vsd.setOwner("owner");
+		
+		List<Source> srcList = new ArrayList<Source>();
+		Source src = new Source();
+		src.setContent("TESTVSD1 - content 1");
+		src.setRole("testvsd1 - role 1");
+		src.setSubRef("testvsd1 - subRef 1");
+		srcList.add(src);
+		
+		src = new Source();
+		src.setContent("TESTVSD1 - content 2");
+		src.setRole("testvsd1 - role 2");
+		src.setSubRef("testvsd1 - subRef 2");
+		srcList.add(src);
+		
+		vsd.setSource(srcList);
+		
+		List<String> context = new ArrayList<String>();
+		context.add("TESTVSD1 - Context 1");
+		context.add("TESTVSD1 - Context 2");
+		context.add("TESTVSD1 - Context 3");
+		vsd.setRepresentsRealmOrContext(context);		
+		
+		Property prop = new Property();
+		prop.setPropertyId("vsd1propertyId");
+		prop.setPropertyName("propertyName");
+		prop.setIsActive(true);
+		prop.setLanguage("language");
+		prop.setOwner("owner");
+		prop.setStatus("status");
+		Text text = new Text();
+		text.setContent("propValue");
+		text.setDataType("dataType");
+		prop.setValue(text);
+		
+		Properties props = new Properties();
+		
+		props.addProperty(prop);
+		vsd.setProperties(props);
+		
+		EntityReference er = new EntityReference();
+		er.setEntityCode("entityCode");
+		er.setEntityCodeNamespace("entityCodeNamespace");
+		er.setLeafOnly(false);
+		er.setReferenceAssociation("referenceAssociation");
+		er.setTargetToSource(true);
+		er.setTransitiveClosure(true);
+		
+		DefinitionEntry de = new DefinitionEntry();
+		de.setEntityReference(er);
+		de.setRuleOrder(Long.valueOf("1"));
+		de.setOperator(DefinitionOperator.OR);
+		
+		vsd.addDefinitionEntry(de);
+		
+		PropertyReference pr = new PropertyReference();
+		PropertyMatchValue pmv = new PropertyMatchValue();
+		pr.setCodingScheme("codingScheme");
+		pr.setPropertyName("propertyName");
+		pmv.setContent("propertyMatchvalueString");
+		pmv.setDataType("PMVdataType");
+		pmv.setMatchAlgorithm("matchAlgorithm used");
+		pr.setPropertyMatchValue(pmv);
+		
+		de = new DefinitionEntry();
+		de.setRuleOrder(Long.valueOf("2"));
+		de.setOperator(DefinitionOperator.OR);
+		de.setPropertyReference(pr);
+		
+		vsd.addDefinitionEntry(de);
+		
+		
+		Mappings mappings = new Mappings();
+		SupportedAssociation sa = new SupportedAssociation();
+		sa.setUri("sauri");
+		sa.setLocalId("sa id");
+		sa.setContent("sa content");
+		mappings.addSupportedAssociation(sa);
+		
+		SupportedCodingScheme scs = new SupportedCodingScheme();
+		scs.setContent("scs content");
+		scs.setIsImported(false);
+		scs.setLocalId("scs localId");
+		scs.setUri("scs uri");
+		mappings.addSupportedCodingScheme(scs);
+		
+		SupportedNamespace sn = new SupportedNamespace();
+		sn.setContent("sn content");
+		sn.setEquivalentCodingScheme("sn equivalentCodingScheme");
+		sn.setLocalId("sn localId");
+		sn.setUri("sn uri");
+		mappings.addSupportedNamespace(sn);
+		
+		SupportedHierarchy sh = new SupportedHierarchy();
+		sh.setContent("sh content");
+		sh.setAssociationNames(new String[] {"sh assn name1", "sh assn name2", "sh assn name3"});
+		sh.setIsForwardNavigable(true);
+		sh.setLocalId("sh localId");
+		sh.setRootCode("sh rootCode");
+		sh.setUri("sh uri");
+		mappings.addSupportedHierarchy(sh);
+		
+		
+		vsd.setMappings(mappings);
+		getValueDomainService().loadValueSetDefinition(vsd, "systemReleaseURI", null);
+		
+//		getValueDomainService().loadValueDomain("resources/testData/valueDomain/vdTestData.xml", true);
+	}
 
 	private LexEVSValueSetDefinitionServices getValueDomainService(){
 		if (vds_ == null) {

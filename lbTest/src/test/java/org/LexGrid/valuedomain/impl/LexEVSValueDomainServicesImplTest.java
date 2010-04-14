@@ -18,6 +18,8 @@
  */
 package org.LexGrid.valuedomain.impl;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -29,6 +31,11 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
+import org.LexGrid.naming.SupportedAssociation;
+import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedHierarchy;
+import org.LexGrid.naming.SupportedNamespace;
+import org.LexGrid.naming.URIMap;
 import org.LexGrid.valueSets.CodingSchemeReference;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.EntityReference;
@@ -36,6 +43,9 @@ import org.LexGrid.valueSets.PropertyMatchValue;
 import org.LexGrid.valueSets.PropertyReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitionReference;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.ValidationException;
 import org.junit.Test;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
@@ -167,6 +177,63 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		{
 			System.out.println("vsd context : " + context);
 		}
+		
+		if (vsd.getMappings() != null)
+		{
+			for (SupportedAssociation sa : vsd.getMappings().getSupportedAssociation())
+			{
+				System.out.println("sa uri : " + sa.getUri());
+				System.out.println("sa localId : " + sa.getLocalId());
+				System.out.println("sa content : " + sa.getContent());
+			}
+			
+			for (SupportedCodingScheme scs : vsd.getMappings().getSupportedCodingScheme())
+			{
+				System.out.println("scs uri : " + scs.getUri());
+				System.out.println("scs localId : " + scs.getLocalId());
+				System.out.println("scs content : " + scs.getContent());
+				System.out.println("scs isimported : " + scs.getIsImported());
+			}
+			
+			for (SupportedNamespace sn : vsd.getMappings().getSupportedNamespace())
+			{
+				System.out.println("sn uri : " + sn.getUri());
+				System.out.println("sn localId : " + sn.getLocalId());
+				System.out.println("sn content : " + sn.getContent());
+				System.out.println("sn EquivalentCodingScheme : " + sn.getEquivalentCodingScheme());
+			}
+			
+			for (SupportedHierarchy sh : vsd.getMappings().getSupportedHierarchy())
+			{
+				System.out.println("sh uri : " + sh.getUri());
+				System.out.println("sh localId : " + sh.getLocalId());
+				System.out.println("sh content : " + sh.getContent());
+				System.out.println("sh rootCode : " + sh.getRootCode());
+				for (String assn : sh.getAssociationNamesAsReference())
+				{
+					System.out.println("sh assn : " + assn);
+				}
+			}
+		}
+		
+		
+		// testing marshalling
+		// Create a File to marshal to
+//		FileWriter writer;
+//		try {
+//			writer = new FileWriter("c:/test.xml");
+//			// Marshal the person object
+//			Marshaller.marshal(vsd, writer);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (MarshalException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (ValidationException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 	@Test
