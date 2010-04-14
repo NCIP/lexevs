@@ -136,10 +136,10 @@ SOURCE_OF, /** The TARGE t_ of. */
                         daoManager.getCodedNodeGraphDao(codingSchemeUri, version);
                     
                     String codingSchemeUid = codingSchemeDao.
-                        getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
+                        getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
                     
                     List<String> relationsUids = associationDao.
-                        getRelationsIdsForCodingSchemeId(codingSchemeUid);
+                        getRelationsUIdsForCodingSchemeUId(codingSchemeUid);
                     
                     for(String relationUid : relationsUids){
                         List<String> associationPredicateUids = associationDao.
