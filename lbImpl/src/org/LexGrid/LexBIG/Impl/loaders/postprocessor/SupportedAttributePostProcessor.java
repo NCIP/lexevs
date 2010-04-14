@@ -78,14 +78,14 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
 
             public List<String> execute(DaoManager daoManager) {
                 CodingSchemeDao csDao = daoManager.getCodingSchemeDao(uri, version);
-                String csId = csDao.getCodingSchemeIdByUriAndVersion(uri, version);
+                String csId = csDao.getCodingSchemeUIdByUriAndVersion(uri, version);
 
                 AssociationDao associationDao = daoManager.getAssociationDao(uri, version);
 
                 List<String> associationNames = new ArrayList<String>();
 
                 for(String relationsId :
-                    associationDao.getRelationsIdsForCodingSchemeId(csId)){
+                    associationDao.getRelationsUIdsForCodingSchemeUId(csId)){
                     for(String associationPredicateId :
                         associationDao.getAssociationPredicateIdsForRelationsId(csId, relationsId)) {
                         associationNames.add(
@@ -109,7 +109,7 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
 
             public List<String> execute(DaoManager daoManager) {
                CodingSchemeDao csDao = daoManager.getCodingSchemeDao(uri, version);
-               String csId = csDao.getCodingSchemeIdByUriAndVersion(uri, version);
+               String csId = csDao.getCodingSchemeUIdByUriAndVersion(uri, version);
                
                return daoManager.getCodingSchemeDao(uri, version).getDistinctFormatsOfCodingScheme(csId);
             }  
@@ -128,7 +128,7 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
 
             public List<String> execute(DaoManager daoManager) {
                CodingSchemeDao csDao = daoManager.getCodingSchemeDao(uri, version);
-               String csId = csDao.getCodingSchemeIdByUriAndVersion(uri, version);
+               String csId = csDao.getCodingSchemeUIdByUriAndVersion(uri, version);
                
                return daoManager.getCodingSchemeDao(uri, version).getDistinctLanguagesOfCodingScheme(csId);
             }  
@@ -147,7 +147,7 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
 
             public List<String> execute(DaoManager daoManager) {
                CodingSchemeDao csDao = daoManager.getCodingSchemeDao(uri, version);
-               String csId = csDao.getCodingSchemeIdByUriAndVersion(uri, version);
+               String csId = csDao.getCodingSchemeUIdByUriAndVersion(uri, version);
                
                return daoManager.getCodingSchemeDao(uri, version).getDistinctEntityTypesOfCodingScheme(csId);
             }  
@@ -166,7 +166,7 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
 
             public List<String> execute(DaoManager daoManager) {
                CodingSchemeDao csDao = daoManager.getCodingSchemeDao(uri, version);
-               String csId = csDao.getCodingSchemeIdByUriAndVersion(uri, version);
+               String csId = csDao.getCodingSchemeUIdByUriAndVersion(uri, version);
                
                return daoManager.getCodingSchemeDao(uri, version).getDistinctPropertyNamesOfCodingScheme(csId);
             }  

@@ -48,6 +48,11 @@ public class ApproxNumOfConceptsPostProcessor extends AbstractExtendable impleme
         
         codingScheme.setApproxNumConcepts(entities);
         
-        codingSchemeService.updateCodingScheme(uri, version, codingScheme);  
+        try {
+            codingSchemeService.updateCodingScheme(codingScheme);
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }  
     }
 }
