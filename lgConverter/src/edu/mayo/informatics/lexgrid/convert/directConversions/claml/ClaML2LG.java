@@ -63,6 +63,7 @@ public class ClaML2LG {
 			clamlXML_ = reader.readClaMLXML(clamlXML_URI, config);
 			
 			CodingScheme clamlCS = new CodingScheme();
+			clamlCS.setEntities(new Entities());
 			
 			clamlCS = buildCodingScheme(clamlCS);
 			clamlCS = buildMappings(clamlCS);
@@ -376,21 +377,19 @@ public class ClaML2LG {
 		}
 				
 		private CodingScheme buildConcepts(CodingScheme clamlCS){
-			Entities concepts = new Entities();
 			
 			//Add all of the <Class> elements as concepts
 			List<org.LexGrid.LexBIG.claml.Class> classList = clamlXML_.getClazz();
 			for(org.LexGrid.LexBIG.claml.Class clamlClass : classList){
 				//add the Concept
 				Concept concept = processConcept(clamlCS, clamlClass);
-
-				concepts.addEntity(concept);
+				clamlCS.getEntities().addEntity(concept);
 	
 				//process its modifiers
 				List<Concept> modifiedConcepts = processModifiedConcepts(concept, clamlClass, clamlCS);
 
 				for (Concept c : modifiedConcepts) {
-				    concepts.addEntity(c);
+				    clamlCS.getEntities().addEntity(c);
 				}
 			}
 					
@@ -399,11 +398,8 @@ public class ClaML2LG {
 			List<ModifierClass> modifierClasList = clamlXML_.getModifierClass();
 			for(ModifierClass clamlModifierClass : modifierClasList){
 				Concept concept = processModifier(clamlCS, clamlModifierClass);
-				
-				concepts.addEntity(concept);
+				clamlCS.getEntities().addEntity(concept);
 			}
-			
-			clamlCS.setEntities(concepts);
 			
 			return clamlCS;
 		}
