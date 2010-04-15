@@ -23,9 +23,11 @@ import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.types.EntityTypes;
 import org.LexGrid.concepts.Concept;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
@@ -71,6 +73,11 @@ public class ClaML2LG {
 			clamlCS = buildConcepts(clamlCS);
 			clamlCS = processModifiers(clamlCS);
 			
+			for (Entity en : clamlCS.getEntities().getEntity()) {
+			    if (en.getEntityType().length == 0)
+			        System.out.println("test");
+			}
+			
 			return clamlCS;
 		}
 		
@@ -98,6 +105,7 @@ public class ClaML2LG {
 			assocEn.setForwardName(forwardName);
 			assocEn.setReverseName(reverseName);
 			assocEn.setIsTransitive(true);
+			assocEn.addEntityType(EntityTypes.ASSOCIATION.toString());
 //			assoc.setInverse(reverseName);
 //			assoc.setIsReverseFunctional(true);
 //			assoc.setIsSymmetric(true);
@@ -227,6 +235,8 @@ public class ClaML2LG {
 				
 				//Set the Concept code with ClaML 'code' -- <Modifier code="S20V90_4">
 				conceptCS.setEntityCode(clamlModifier.getCode());	
+				
+				conceptCS.addEntityType(EntityTypes.CONCEPT.toString());
 				
 				//Process the Rubrics
 				RubricProcessor rubricProcessor = new DefaultRubricProcessorImpl(clamlXML_, clamlCS, conceptCS, config_, messages_);
@@ -383,12 +393,14 @@ public class ClaML2LG {
 			for(org.LexGrid.LexBIG.claml.Class clamlClass : classList){
 				//add the Concept
 				Concept concept = processConcept(clamlCS, clamlClass);
+				
 				clamlCS.getEntities().addEntity(concept);
 	
 				//process its modifiers
 				List<Concept> modifiedConcepts = processModifiedConcepts(concept, clamlClass, clamlCS);
 
 				for (Concept c : modifiedConcepts) {
+				    
 				    clamlCS.getEntities().addEntity(c);
 				}
 			}
@@ -447,6 +459,7 @@ public class ClaML2LG {
 			clone.setStatus(concept.getStatus());
 			clone.setEntityDescription(concept.getEntityDescription());
 			clone.setEntityCode(concept.getEntityCode());
+			clone.setEntityType(concept.getEntityType());
 			clone.setIsActive(concept.getIsActive());
 			clone.setIsAnonymous(concept.getIsAnonymous());
 			clone.setIsDefined(concept.getIsDefined());
@@ -547,7 +560,7 @@ public class ClaML2LG {
 			}
 			
 			EntityDescription ed = new EntityDescription();
-			ed.setContent(modifiedConcept.getEntityDescription() + ", " + pres.getValue().getContent());
+			ed.setContent(modifiedConcept.getEntityDescription().getContent() + ", " + pres.getValue().getContent());
 			modifiedConcept.setEntityDescription(ed);
 			
 			this.processAssociation(clamlCS, config_.getSubclassAssoc(), concept.getEntityCode(), modifiedConcept.getEntityCode());
@@ -611,6 +624,8 @@ public class ClaML2LG {
 			//Set the Concept code with ClaML 'code' -- <Class code="I47" kind="category">
 			concept.setEntityCode(clamlClass.getCode());
 			
+			concept.addEntityType(EntityTypes.CONCEPT.toString());
+			
 			//Process the Concept's Properties
 			concept = processConceptProperties(schemeCS, concept, clamlClass);
 			
@@ -670,6 +685,8 @@ public class ClaML2LG {
 			
 			//Set the Concept code with ClaML 'code' -- <Class code="I47" kind="category">
 			concept.setEntityCode(modifier.getModifier() + modifier.getCode());
+			
+			concept.addEntityType(EntityTypes.CONCEPT.toString());
 			
 			//Process the Concept's Properties
 			concept = processModifierProperties(schemeCS, concept, modifier);
