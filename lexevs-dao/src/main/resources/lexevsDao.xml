@@ -125,6 +125,21 @@
 				<ref bean="ibatisVSPropertyDao"/>
 			</list>
 		</property>
+		<property name="versionsDaos">
+			<list>
+				<ref bean="ibatisVersionsDao" />
+			</list>
+		</property>
+		<property name="systemReleaseDaos">
+			<list>
+				<ref bean="ibatisSystemReleaseDao" />
+			</list>
+		</property>
+		<property name="revisionDaos">
+			<list>
+				<ref bean="ibatisRevisionDao" />
+			</list>
+		</property>
 		<property name="registry" ref="registry"/>
 	</bean>
 	
@@ -147,8 +162,18 @@
     
     <bean id="ibatisVersionsDao"
 		class="org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao" parent="abstractIbatisDao">
+		<property name="ibatisRevisionDao" ref="ibatisRevisionDao"/>
 	</bean>
-		
+	
+    <bean id="ibatisSystemReleaseDao"
+		class="org.lexevs.dao.database.ibatis.systemRelease.IbatisSystemReleaseDao" parent="abstractIbatisDao">
+	</bean>
+
+	<bean id="ibatisRevisionDao"
+		class="org.lexevs.dao.database.ibatis.revision.IbatisRevisionDao" parent="abstractIbatisDao">
+		<property name="systemReleaseDao" ref="ibatisSystemReleaseDao"/>
+	</bean>
+
 	<bean id="databaseServiceManager" class="org.lexevs.dao.database.service.DatabaseServiceManager">
 		<property name="codingSchemeService" ref="codingSchemeService"/>
 		<property name="propertyService" ref="propertyService"/>
@@ -168,6 +193,12 @@
 		class="org.lexevs.dao.database.service.daocallback.DaoManagerDaoCallbackService"
 		parent="abstractService" />
 	
+	<bean id="authoringService" 
+		class="org.lexevs.dao.database.service.version.VersionableEventAuthoringService"
+		parent="abstractService">
+		<property name="codingSchemeService" ref="codingSchemeService"/>
+	</bean>
+	
 	<bean id="codingSchemeService" 
 		class="org.lexevs.dao.database.service.codingscheme.VersionableEventCodingSchemeService"
 		parent="abstractService">
@@ -177,6 +208,9 @@
 				<bean class="org.lexevs.dao.database.service.listener.SystemResourceRefreshingListener"/>	
 			</list>
 		</property>
+		<property name="propertyService" ref="propertyService"/>
+		<property name="entityService" ref="entityService"/>
+		<property name="associationService" ref="associationService"/>
 	</bean>
 		
 	<bean id="propertyService" 
@@ -198,6 +232,7 @@
 				<bean class="org.lexevs.dao.database.service.listener.HistoryTableReplicatingListener"/>
 			</list>
 		</property>
+		<property name="propertyService" ref="propertyService"/>
 	</bean>
 	
 	<bean id="associationService" 
