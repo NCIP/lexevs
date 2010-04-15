@@ -24,7 +24,6 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.versions.EntryState;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
-import org.lexevs.dao.database.service.version.VersionService;
 
 /**
  * The Interface CodingSchemeService.
