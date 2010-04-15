@@ -21,10 +21,10 @@ public class DatabaseServiceEntityKeyResolver implements EntityKeyResolver {
 
 			public String execute(DaoManager daoManager) {
 				String codingSchemeId = daoManager.
-					getCodingSchemeDao(uri, version).getCodingSchemeIdByUriAndVersion(uri, version);
+					getCodingSchemeDao(uri, version).getCodingSchemeUIdByUriAndVersion(uri, version);
 				
 				String entityId =
-					daoManager.getEntityDao(uri, version).getEntityId(codingSchemeId, entityCode, entityCodeNamespace);
+					daoManager.getEntityDao(uri, version).getEntityUId(codingSchemeId, entityCode, entityCodeNamespace);
 				
 				return entityId;
 			}	

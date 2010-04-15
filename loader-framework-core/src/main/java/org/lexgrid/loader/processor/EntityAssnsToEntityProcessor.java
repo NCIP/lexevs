@@ -161,10 +161,10 @@ public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcesso
 
 			public Object execute(DaoManager daoManager) {
 				String codingSchemeId = 
-					daoManager.getCodingSchemeDao(uri, version).getCodingSchemeIdByUriAndVersion(uri, version);
+					daoManager.getCodingSchemeDao(uri, version).getCodingSchemeUIdByUriAndVersion(uri, version);
 				
 				String entityId = 
-					daoManager.getEntityDao(uri, version).getEntityId(codingSchemeId, code, namespace);
+					daoManager.getEntityDao(uri, version).getEntityUId(codingSchemeId, code, namespace);
 				
 				daoManager.getPropertyDao(uri, version).insertPropertyLink(codingSchemeId, entityId, propertyLink);
 				

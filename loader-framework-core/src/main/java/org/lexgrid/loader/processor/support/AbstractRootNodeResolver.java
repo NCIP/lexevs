@@ -65,7 +65,7 @@ public abstract class AbstractRootNodeResolver implements RootNodeResolver<Paren
 
 			public String execute(DaoManager daoManager) {
 				return 
-					daoManager.getCurrentCodingSchemeDao().getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
+					daoManager.getCurrentCodingSchemeDao().getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 			}
 		});
 	}

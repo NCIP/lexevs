@@ -28,7 +28,7 @@ public class EntityPropertyWriter extends AbstractParentIdHolderWriter<Property>
 					String codingSchemeIdInDb = daoManager.getCodingSchemeDao(
 							codingSchemeId.getUri(), 
 							codingSchemeId.getVersion()).
-							getCodingSchemeIdByUriAndVersion(
+							getCodingSchemeUIdByUriAndVersion(
 									codingSchemeId.getUri(), 
 									codingSchemeId.getVersion());
 					

@@ -111,7 +111,7 @@ public class MrstyListProcessor extends AbstractParameterPassingDoubleListProces
 
 			public String execute(DaoManager daoManager) {
 				return 
-					daoManager.getCurrentEntityDao().getEntityId(codingSchemeId, entityCode, entityCodeNamespace);
+					daoManager.getCurrentEntityDao().getEntityUId(codingSchemeId, entityCode, entityCodeNamespace);
 			}
 			
 		});
@@ -123,7 +123,7 @@ public class MrstyListProcessor extends AbstractParameterPassingDoubleListProces
 
 			public String execute(DaoManager daoManager) {
 				return 
-					daoManager.getCurrentCodingSchemeDao().getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
+					daoManager.getCurrentCodingSchemeDao().getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 			}
 		});
 	}

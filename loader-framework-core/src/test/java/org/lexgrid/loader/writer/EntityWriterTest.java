@@ -44,7 +44,7 @@ public class EntityWriterTest extends LoaderFrameworkCoreTestBase {
 		cs.setCodingSchemeURI(test.getCodingSchemeUri());
 		cs.setRepresentsVersion(test.getCodingSchemeVersion());
 		
-		codingSchemeService.insertCodingScheme(cs);
+		codingSchemeService.insertCodingScheme(cs, null);
 		
 		CodingSchemeIdHolder<Entity> holder = new CodingSchemeIdHolder<Entity>();
 		holder.setCodingSchemeIdSetter(new TestCodingSchemeIdSetter());

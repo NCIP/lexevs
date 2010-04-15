@@ -30,7 +30,7 @@ public class AssociationSourceWriter extends AbstractParentIdHolderWriter<Associ
 				String codingSchemeIdInDb = daoManager.getCodingSchemeDao(
 						codingSchemeId.getUri(), 
 						codingSchemeId.getVersion()).
-						getCodingSchemeIdByUriAndVersion(
+						getCodingSchemeUIdByUriAndVersion(
 								codingSchemeId.getUri(), 
 								codingSchemeId.getVersion());
 				daoManager.getAssociationDao(
