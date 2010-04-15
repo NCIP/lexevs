@@ -13,8 +13,8 @@
 			isNavigable,
 			isTransitive
 		) VALUES (
-			#id#, 
-			#entityId#,
+			#uid#, 
+			#entityUId#,
 			#associationEntity.forwardName#,
 			#associationEntity.reverseName#,
 			#associationEntity.isNavigable#,

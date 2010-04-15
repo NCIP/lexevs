@@ -166,7 +166,7 @@
 				expirationDate,
 				entryStateGuid
 			) VALUES (
-				#id#,
+				#uid#,
 				#pickListDefinition.pickListId#,
 				#pickListDefinition.representsValueSetDefinition#,
 				#pickListDefinition.completeSet#,
@@ -174,7 +174,7 @@
 				#pickListDefinition.defaultLanguage#,
 				#pickListDefinition.defaultSortOrder#,
 				#pickListDefinition.entityDescription.content#,
-				#systemReleaseId#,
+				#systemReleaseUId#,
 				
 				<isPropertyAvailable property="pickListDefinition.isActive">
 					#pickListDefinition.isActive#,
@@ -187,7 +187,7 @@
 				#pickListDefinition.status#,
 				#pickListDefinition.effectiveDate#,
 				#pickListDefinition.expirationDate#,
-				#entryStateId#	
+				#entryStateUId#	
 			)
      </insert>
      
@@ -213,8 +213,8 @@
 				expirationDate,
 				entryStateGuid
 			) VALUES (
-				#id#,
-				#pickListGuid#,
+				#uid#,
+				#pickListUId#,
 				#pickListEntryNode.pickListEntryId#,
 				#entityCodeNamespace#,
 				#entityCode#,
@@ -256,7 +256,7 @@
 				#pickListEntryNode.status#,
 				#pickListEntryNode.effectiveDate#,
 				#pickListEntryNode.expirationDate#,
-				#entryStateId#	
+				#entryStateUId#	
 			)
      </insert>
 

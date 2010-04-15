@@ -168,19 +168,19 @@
 				expirationDate,
 				entryStateGuid
 			) VALUES (
-				#id#,
+				#uid#,
 				#valueSetDefinition.valueSetDefinitionURI#,
 				#valueSetDefinition.valueSetDefinitionName#,
 				#valueSetDefinition.defaultCodingScheme#,
 				#valueSetDefinition.conceptDomain#,
 				#valueSetDefinition.entityDescription.content#,
-				#systemReleaseId#,
+				#systemReleaseUId#,
 				#valueSetDefinition.isActive#,
 				#valueSetDefinition.owner#,
 				#valueSetDefinition.status#,
 				#valueSetDefinition.effectiveDate#,
 				#valueSetDefinition.expirationDate#,
-				#entryStateId#	
+				#entryStateUId#	
 			)
      </insert>
      
@@ -212,8 +212,8 @@
 				expirationDate,
 				entryStateGuid
 			) VALUES (
-				#id#,
-				#valueSetDefGuid#,
+				#uid#,
+				#valueSetDefUId#,
 				#definitionEntry.ruleOrder#,
 				#definitionEntry.operator#,
 				#codingSchemeReference#,
@@ -254,7 +254,7 @@
 				#definitionEntry.status#,
 				#definitionEntry.effectiveDate#,
 				#definitionEntry.expirationDate#,
-				#entryStateId#	
+				#entryStateUId#	
 			)
      </insert>
 

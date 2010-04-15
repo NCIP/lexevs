@@ -237,8 +237,8 @@
 			expirationDate,
 			entryStateGuid
 		) VALUES (
-			#id#, 
-			#entityId#,
+			#uid#, 
+			#entityUId#,
 			#referenceType#, 
 			#property.propertyId#, 
 			#property.propertyType#,
@@ -280,7 +280,7 @@
 			#property.status#,
 			#property.effectiveDate#,
 			#property.expirationDate#,
-			#entryStateId#
+			#entryStateUId#
 		)
   </insert>
   

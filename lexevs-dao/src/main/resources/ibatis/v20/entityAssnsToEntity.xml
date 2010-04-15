@@ -131,8 +131,8 @@
 			expirationDate,
 			entryStateGuid
 		) VALUES (
-			#id#, 
-			#associationPredicateId#,
+			#uid#, 
+			#associationPredicateUId#,
 			#associationSource.sourceEntityCode#, 
 			#associationSource.sourceEntityCodeNamespace#, 
 			#associationTarget.targetEntityCode#, 
@@ -145,7 +145,7 @@
 			#associationTarget.status#,
 			#associationTarget.effectiveDate#,
 			#associationTarget.expirationDate#,
-			#entryStateId#
+			#entryStateUId#
 		)
   </insert>
   
@@ -158,8 +158,8 @@
 			targetEntityCode,
 			targetEntityCodeNamespace
 		) VALUES (
-			#id#, 
-			#associationPredicateId#,
+			#uid#, 
+			#associationPredicateUId#,
 			#sourceEntityCode#, 
 			#sourceEntityCodeNamespace#, 
 			#targetEntityCode#, 

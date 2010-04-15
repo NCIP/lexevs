@@ -5,6 +5,7 @@
 
 	<typeAlias alias="codingScheme" type="org.LexGrid.codingSchemes.CodingScheme" />
 	<typeAlias alias="codingSchemeSummary" type="org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary" />
+	<typeAlias alias="codingSchemeBean" type="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean" />
 
 	<resultMap id="codingSchemeResult" class="codingScheme" groupBy="codingSchemeName,representsVersion">
 		<result property="codingSchemeName" column="codingSchemeName" />
@@ -27,6 +28,25 @@
 		<result property="representsVersion" column="representsVersion" />
 		<result property="formalName" column="formalName" />
 		<result property="codingSchemeDescription.content" column="description" />
+	</resultMap>
+	
+	<resultMap id="codingSchemeMetaDataResult" class="codingSchemeBean">
+		<result property="uid" column="codingSchemeGuid" />
+		<result property="codingScheme.codingSchemeName" column="codingSchemeName" />
+		<result property="codingScheme.codingSchemeURI" column="codingSchemeURI" />
+		<result property="codingScheme.representsVersion" column="representsVersion" />
+		<result property="codingScheme.formalName" column="formalName" />
+		<result property="codingScheme.defaultLanguage" column="defaultLanguage" />
+		<result property="codingScheme.approxNumConcepts" column="approxNumConcepts" />
+		<result property="codingScheme.entityDescription.content" column="description" />
+		<result property="codingScheme.copyright.content" column="copyright" />	
+		<result property="codingScheme.isActive" column="isActive" />
+		<result property="codingScheme.owner" column="owner" />
+		<result property="codingScheme.status" column="status" />
+		<result property="codingScheme.effectiveDate" column="effectiveDate" />
+		<result property="codingScheme.expirationDate" column="expirationDate" />
+		<result property="releaseUId" column="releaseGuid" />
+		<result property="entryStateUId" column="entryStateGuid" />
 	</resultMap>
 	
 	<delete id="deleteCodingSchemeById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
@@ -119,7 +139,7 @@
 	</sql>
 	
 	
-	<select id="getCodingSchemeById" 
+	<select id="getCodingSchemeByUId" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
 		resultMap="CodingScheme.codingSchemeResult"
 		remapResults="true">
@@ -128,6 +148,18 @@
 		WHERE
 			cs.codingSchemeGuid = #param1#
 
+     </select>
+     
+     <select id="getCodingSchemeMetaDataByUId" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultMap="codingSchemeMetaDataResult"
+		remapResults="true">
+		SELECT 
+			* 
+		FROM
+			$prefix$codingScheme cs
+		WHERE
+			cs.codingSchemeGuid = #param1#
      </select>
      
      <select id="test" resultClass="java.util.HashMap">
@@ -216,7 +248,7 @@
 			isCurrentRelease = #isCurrentRelease#
      </select>
    
-	<update id="updateCodingSchemeById" 
+	<update id="updateCodingSchemeByUId" 
 		parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
 		UPDATE 
 			$prefix$codingScheme
@@ -225,14 +257,14 @@
    		  <dynamic prepend=" ">
 			<isNotNull prepend="," property="codingScheme.codingSchemeName">
 				codingSchemeName = #codingScheme.codingSchemeName#
-			</isNotNull>
+			</isNotNull><!--
 			<isNotNull prepend="," property="codingScheme.codingSchemeURI">
 				codingSchemeUri = #codingScheme.codingSchemeURI#
 			</isNotNull>
 			<isNotNull prepend="," property="codingScheme.representsVersion">
 				representsVersion = #codingScheme.representsVersion#
 			</isNotNull>
-			<isNotNull prepend="," property="codingScheme.formalName">
+			--><isNotNull prepend="," property="codingScheme.formalName">
 				formalName = #codingScheme.formalName#
 			</isNotNull>
 			<isNotNull prepend="," property="codingScheme.approxNumConcepts">
@@ -250,7 +282,35 @@
 		</dynamic>
 
 		WHERE 
-			codingSchemeGuid = #id#
+			codingSchemeGuid = #uid#
+ 	</update>
+ 	
+ 		<update id="updateCodingSchemeVerAttribByUId" 
+		parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
+		UPDATE 
+			$prefix$codingScheme
+		SET 
+			
+   		  <dynamic prepend=" ">
+			<isNotNull prepend="," property="codingScheme.isActive">
+				isActive = #codingScheme.isActive#
+			</isNotNull>
+			<isNotNull prepend="," property="codingScheme.owner">
+				owner = #codingScheme.owner#
+			</isNotNull>
+			<isNotNull prepend="," property="codingScheme.status">
+				status = #codingScheme.status#
+			</isNotNull>
+			<isNotNull prepend="," property="codingScheme.effectiveDate">
+				effectiveDate = #codingScheme.effectiveDate#
+			</isNotNull>
+			<isNotNull prepend="," property="codingScheme.expirationDate">
+				expirationDate = #codingScheme.expirationDate#
+			</isNotNull>
+		</dynamic>
+
+		WHERE 
+			codingSchemeGuid = #uid#
  	</update>
 
 	<insert id="insertCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
@@ -270,9 +330,10 @@
 			status,
 			effectiveDate,
 			expirationDate,
+			releaseGuid,
 			entryStateGuid
 		) VALUES (
-			#id#, 
+			#uid#, 
 			#codingScheme.codingSchemeName#, 
 			#codingScheme.codingSchemeURI#, 
 			#codingScheme.representsVersion#,
@@ -286,7 +347,8 @@
 			#codingScheme.status#,
 			#codingScheme.effectiveDate#,
 			#codingScheme.expirationDate#,
-			#entryStateId#
+			#releaseUId#,
+			#entryStateUId#
 		)
   </insert>
   
@@ -424,5 +486,15 @@
 			propQual.attributeId
 		<include refid="distinctPropQualFragment"/>
      </select>
-    
+     
+     <select id="checkCodingSchemeExists" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultClass="string">
+		SELECT 
+			count(1) 
+		FROM 
+			$prefix$codingScheme cs 
+		WHERE 
+			cs.codingSchemeGuid = #param1#
+     </select>    
 </sqlMap>

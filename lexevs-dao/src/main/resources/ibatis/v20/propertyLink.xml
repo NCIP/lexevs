@@ -11,10 +11,10 @@
      		link,
      		targetPropertyGuid
      	) VALUES (
-     		#id#,
-     		#sourcePropertyId#,
+     		#uid#,
+     		#sourcePropertyUId#,
      		#link#,
-     		#targetPropertyId#
+     		#targetPropertyUId#
      	)
      </insert>
 

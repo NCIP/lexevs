@@ -10,8 +10,8 @@
 			qualifierName,
 			qualifierValue
 		) VALUES (
-			#id#, 
-			#associationTargetId#,
+			#uid#, 
+			#associationTargetUId#,
 			#qualifierName#, 
 			#qualifierValue#
 		)

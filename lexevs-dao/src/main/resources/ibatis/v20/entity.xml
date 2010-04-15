@@ -7,6 +7,7 @@
 	<typeAlias alias="associationEntity" type="org.LexGrid.relations.AssociationEntity" />
 	<typeAlias alias="propertyLink" type="org.LexGrid.concepts.PropertyLink" />
 	<typeAlias alias="resolvedCodedNodeReference" type="org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference" />
+	<typeAlias alias="insertOrUpdateEntityBean" type="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean" />
 	
 	<resultMap id="resolvedCodedNodeReferenceResult" class="resolvedCodedNodeReference">
 		<result property="code" column="entityCode" />
@@ -36,6 +37,23 @@
 		</discriminator>
 	</resultMap>
 	
+	<resultMap id="entityAttributes" class="insertOrUpdateEntityBean">
+		<result property="uid" column="entityGuid" />
+		<result property="codingSchemeUId" column="codingSchemeGuid" />
+		<result property="entity.entityCode" column="entityCode" />
+		<result property="entity.entityCodeNamespace" column="entityCodeNamespace" />
+		<result property="entity.isDefined" column="isDefined" />
+		<result property="entity.isAnonymous" column="isAnonymous" />
+		<result property="entity.entityDescription.content" column="description" />
+		<result property="entity.isActive" column="isActive" />
+		<result property="entity.owner" column="owner" />
+		<result property="entity.status" column="status" />
+		<result property="entity.effectiveDate" column="effectiveDate" />
+		<result property="entity.expirationDate" column="expirationDate" />
+		<result property="entity.entityType" resultMap="Entity.entityTypeResult"/>
+		<result property="entryStateUId" column="entryStateGuid" />
+	</resultMap>
+	
 	<resultMap id="associationEntityResult" class="associationEntity" extends="entityResult">
 		<result property="forwardName" column="forwardName" />
 		<result property="reverseName" column="reverseName" />
@@ -48,7 +66,6 @@
 		<result property="targetProperty" column="targetPropId" />
 		<result property="propertyLink" column="link" />
 	</resultMap>
-	
 		
 	<select id="getResolvedCodedNodeReferenceByCodeAndNamespace" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
@@ -228,6 +245,16 @@
 			entryState.revisionGuid = #param2#
      </select>
      
+     <select id="getEntityAttributesByEntityUId" 
+    	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
+    	resultMap="entityAttributes"
+    	remapResults="true">
+		SELECT * FROM
+			$prefix$entity
+		WHERE
+			entity.entityGuid = #param1#		
+     </select>
+     
      <select id="getAllEntitiesOfCodingScheme" 
      	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
      	resultMap="Entity.entityResult">
@@ -253,7 +280,7 @@
 			expirationDate,
 			entryStateGuid
 		) VALUES (
-			#id#, 
+			#uid#, 
 			#codingSchemeId#,
 			#entity.entityCode#, 
 			#entity.entityCodeNamespace#, 
@@ -265,21 +292,15 @@
 			#entity.status#,
 			#entity.effectiveDate#,
 			#entity.expirationDate#,
-			#entryStateId#
+			#entryStateUId#
 		)
   </insert>
   
-  <update id="updateEntityById" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean">
+  <update id="updateEntityByUId" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean">
 		UPDATE 
 			$prefix$entity entity
 		SET 
    		  <dynamic prepend=" ">
-			<isNotNull prepend="," property="entity.entityCode">
-				entityCode = #entity.entityCode#
-			</isNotNull>
-			<isNotNull prepend="," property="entity.entityCodeNamespace">
-				entityCodeNamespace = #entity.entityCodeNamespace#
-			</isNotNull>
 			<isNotNull prepend="," property="entity.isDefined">
 				isDefined = #entity.isDefined#
 			</isNotNull>
@@ -289,8 +310,23 @@
 			<isNotNull prepend="," property="entity.entityDescription.content">
 				description = #entity.entityDescription.content#
 			</isNotNull>
+		</dynamic>
+
+		WHERE 
+			entity.entityGuid = #uid#
+		AND
+			entity.codingSchemeGuid = #codingSchemeUId#
+ 	</update>
+
+	<update id="updateEntityVerAttribByUId"
+		parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean">
+		UPDATE
+			$prefix$entity entity
+		SET
+		<dynamic prepend=" ">
 			<isNotNull prepend="," property="entity.isActive">
-				isActive = #entity.isActive#
+				isActive =
+				#entity.isActive#
 			</isNotNull>
 			<isNotNull prepend="," property="entity.owner">
 				owner = #entity.owner#
@@ -299,17 +335,19 @@
 				status = #entity.status#
 			</isNotNull>
 			<isNotNull prepend="," property="entity.effectiveDate">
-				effectiveDate = #entity.effectiveDate#
+				effectiveDate =
+				#entity.effectiveDate#
 			</isNotNull>
 			<isNotNull prepend="," property="entity.expirationDate">
-				expirationDate = #entity.expirationDate#
+				expirationDate =
+				#entity.expirationDate#
 			</isNotNull>
 		</dynamic>
 
-		WHERE 
-			entity.entityGuid = #id#
+		WHERE
+			entity.entityGuid = #uid#
 		AND
-			entity.codingSchemeGuid = #codingSchemeId#
- 	</update>
+			entity.codingSchemeGuid = #codingSchemeUId#
+	</update>
     
 </sqlMap>

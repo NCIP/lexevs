@@ -60,14 +60,14 @@
 			role,
 			entryStateGuid
 		) VALUES (
-			#id#,
-			#referenceGuid#,
+			#uid#,
+			#referenceUId#,
 			#referenceType#,
 			#attributeType#,
 			#attributeValue#,
 			#subRef#,
 			#role#,
-			#entryStateId#
+			#entryStateUId#
 		)
 	</insert>
 

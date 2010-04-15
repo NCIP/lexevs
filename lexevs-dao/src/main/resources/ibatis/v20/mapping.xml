@@ -187,8 +187,8 @@
 			equivalentCodingScheme,
 			assemblyRule
 		) VALUES (
-			#id#, 
-			#codingSchemeId#,
+			#uid#, 
+			#codingSchemeUId#,
 			#supportedAttributeTag#, 
 			#uriMap.localId#, 
 			#uriMap.uri#,

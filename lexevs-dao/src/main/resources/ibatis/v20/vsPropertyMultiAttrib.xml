@@ -54,14 +54,14 @@
 			role,
 			entryStateGuid
 		) VALUES (
-			#id#,
-			#propertyId#,
+			#uid#,
+			#propertyUId#,
 			#attributeType#,
 			#attributeId#,
 			#attributeValue#,
 			#subRef#,
 			#role#,
-			#entryStateId#
+			#entryStateUId#
 		)
 	</insert>
 	

@@ -10,7 +10,7 @@
 		<result property="prevRevision" column="previousRevisionId" />
 	</resultMap>
 	
-	<select id="getSystemReleaseIdByUri" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+	<select id="getSystemReleaseGuidByUri" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
 		SELECT
 			releaseGuid
 		FROM
@@ -32,6 +32,15 @@
 		
      </select>
 
+	<select id="getRevisionGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+		SELECT			
+			revisionGuid
+		FROM
+			$prefix$revision
+		WHERE
+			revisionId = #param1#
+     </select>
+     
 	<update id="updateEntryStateById" parameterClass="map">
 		UPDATE entryState
 		SET 
@@ -39,6 +48,52 @@
 		where
 			entryStateId = #id#
  	</update>
+ 	
+ 	<insert id="insertSystemRelease" parameterClass="org.lexevs.dao.database.ibatis.versions.parameter.InsertSystemReleaseBean">
+		INSERT INTO $prefix$systemRelease (
+			releaseGuid,
+			releaseURI,
+			releaseId,
+			releaseDate,
+			basedOnRelease,
+			releaseAgency,
+			description
+			)
+		VALUES (
+			#releaseUId#,
+			#systemRelease.releaseURI#,
+			#systemRelease.releaseId#,
+			#systemRelease.releaseDate#,
+			#systemRelease.basedOnRelease#,
+			#systemRelease.releaseAgency#,
+			#systemRelease.entityDescription.content#
+			)
+ 	</insert>
+ 	
+ 	<insert id="insertRevision" parameterClass="org.lexevs.dao.database.ibatis.versions.parameter.InsertRevisionBean">
+		INSERT INTO $prefix$revision (
+			revisionGuid,
+			releaseGuid,			
+			revisionId,
+			changeAgent,
+			revisionDate,
+			revAppliedDate,
+			editOrder,
+			changeInstructions,
+			description
+			)
+		VALUES (
+			#revisionGuid#,
+			#releaseGuid#,
+			#revision.revisionId#,
+			#revision.changeAgent#,
+			#revision.revisionDate#,
+			#revAppliedDate#,
+			#revision.editOrder#,
+			#revision.changeInstructions#,
+			#revision.entityDescription.content#
+			)
+ 	</insert>
  	
  	<insert id="insertEntryState" parameterClass="org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean">
 		INSERT INTO $prefix$entryState (
@@ -52,16 +107,35 @@
 			prevEntryStateGuid
 			)
 		VALUES (
-			#entryStateId#,
-			#entryId#,
+			#entryStateUId#,
+			#entryUId#,
 			#entryType#,
 			#entryState.changeType#,
 			#entryState.relativeOrder#,
-			#entryState.containingRevision#,
-			#entryState.prevRevision#,
-			#previousEntryStateId#
+			#revisionUId#,
+			#prevRevisionUId#,
+			#previousEntryStateUId#
 			)
  	</insert>
- 
+ 	
+ 	<select id="getRevisionGuidFromId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+   		SELECT
+   			revisionGuid
+   		FROM
+   			$prefix$revision
+		WHERE
+			revisionId = #param1#
+   </select>
+
+	<select id="checkEntryStateExists" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultClass="string">
+		SELECT
+			count(1)
+		FROM
+			$prefix$entryState es
+		WHERE
+			es.entryStateGuid = #param1#
+     </select>
     
 </sqlMap>

@@ -55,13 +55,13 @@
 			role,
 			entryStateGuid
 		) VALUES (
-			#id#,
-			#codingSchemeId#,
+			#uid#,
+			#codingSchemeUId#,
 			#attributeType#,
 			#attributeValue#,
 			#subRef#,
 			#role#,
-			#entryStateId#
+			#entryStateUId#
 		)
 	</insert>
 
