@@ -197,7 +197,7 @@
 			assemblyRule
 		) VALUES (
 			#id#, 
-			#codingSchemeId#,
+			#codingSchemeUId#,
 			#referenceType#,
 			#supportedAttributeTag#, 
 			#uriMap.localId#, 
@@ -260,7 +260,13 @@
 			<isNotNull prepend="," property="uriMap.localId">
 				id = #uriMap.localId#
 			</isNotNull>
-		
+			
+			<isPropertyAvailable property="associationNames">
+				<isNotNull prepend="," property="associationNames">
+					associationNames = #associationNames#
+				</isNotNull>
+			</isPropertyAvailable>
+			
 			<isPropertyAvailable property="uriMap.rootCode">
 				<isNotNull prepend="," property="uriMap.rootCode">
 					rootCode = #uriMap.rootCode#
@@ -299,7 +305,7 @@
 		</dynamic>
 		
 		WHERE
-			vssupportedattrib.referenceGuid = #codingSchemeId#
+			vssupportedattrib.referenceGuid = #codingSchemeUId#
 		AND
 			vssupportedattrib.referenceType = #referenceType#
 		AND

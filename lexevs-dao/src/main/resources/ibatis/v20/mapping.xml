@@ -26,6 +26,7 @@
 	<typeAlias alias="supportedSource" type="org.LexGrid.naming.SupportedSource" />
 	<typeAlias alias="supportedSourceRole" type="org.LexGrid.naming.SupportedSourceRole" />
 	<typeAlias alias="supportedStatus" type="org.LexGrid.naming.SupportedStatus" />
+	<typeAlias alias="StringArrayTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.StringArrayTypeHandler"/>
 
 	<resultMap id="uriMapResult" class="uriMap">
 		<result property="localId" column="id" />
@@ -57,18 +58,14 @@
 		</discriminator>
 	</resultMap>
 	
-	<resultMap id="supportedCodingSchemeResult" class="supportedCodingScheme" extends="uriMapResult">
-		<result property="isImported" column="isImported" />	
-	</resultMap>
-
 	<resultMap id="supportedAssociationResult" class="supportedAssociation"
 		extends="uriMapResult">
 	</resultMap>
 	<resultMap id="supportedAssociationQualifierResult" class="supportedAssociationQualifier"
 		extends="uriMapResult">
 	</resultMap>
-	<resultMap id="supportedCodingSchemeResult" class="supportedCodingScheme"
-		extends="uriMapResult">
+	<resultMap id="supportedCodingSchemeResult" class="supportedCodingScheme" extends="uriMapResult">
+		<result property="isImported" column="isImported" />	
 	</resultMap>
 	<resultMap id="supportedConceptDomainResult" class="supportedConceptDomain"
 		extends="uriMapResult">
@@ -90,6 +87,9 @@
 	</resultMap>
 	<resultMap id="supportedHierarchyResult" class="supportedHierarchy"
 		extends="uriMapResult">
+		<result property="associationNames" column="associationNames" typeHandler="StringArrayTypeHandler"/>
+		<result property="rootCode" column="rootCode" />
+		<result property="isForwardNavigable" column="isForwardNavigable"/>
 	</resultMap>
 	<resultMap id="supportedLanguageResult" class="supportedLanguage"
 		extends="uriMapResult">
@@ -120,6 +120,7 @@
 	</resultMap>
 	<resultMap id="supportedSourceResult" class="supportedSource"
 		extends="uriMapResult">
+		<result property="assemblyRule" column="assemblyRule"/>
 	</resultMap>
 	<resultMap id="supportedSourceRoleResult" class="supportedSourceRole"
 		extends="uriMapResult">
@@ -134,6 +135,7 @@
 	 		id,
 	 		uri,
 	 		idValue,
+	 		associationNames,
 	 		rootCode,
 	 		isForwardNavigable,
 	 		isImported,
@@ -181,6 +183,7 @@
 			id,
 			uri,
 			idValue,
+			associationNames,
 			rootCode,
 			isForwardNavigable,
 			isImported,
@@ -192,7 +195,8 @@
 			#supportedAttributeTag#, 
 			#uriMap.localId#, 
 			#uriMap.uri#,
-			#uriMap.content#
+			#uriMap.content#,
+			#associationNames#
 			
 			<isPropertyAvailable prepend="," property="uriMap.rootCode">
 				#uriMap.rootCode#
@@ -249,7 +253,13 @@
 			<isNotNull prepend="," property="uriMap.localId">
 				id = #uriMap.localId#
 			</isNotNull>
-		
+			
+			<isPropertyAvailable property="associationNames">
+				<isNotNull prepend="," property="associationNames">
+					associationNames = #associationNames#
+				</isNotNull>
+			</isPropertyAvailable>
+			
 			<isPropertyAvailable property="uriMap.rootCode">
 				<isNotNull prepend="," property="uriMap.rootCode">
 					rootCode = #uriMap.rootCode#
@@ -288,7 +298,7 @@
 		</dynamic>
 		
 		WHERE
-			cssupportedattrib.codingSchemeGuid = #codingSchemeId#
+			cssupportedattrib.codingSchemeGuid = #codingSchemeUId#
 		AND
 			cssupportedattrib.supportedAttributeTag = #supportedAttributeTag#
 		AND

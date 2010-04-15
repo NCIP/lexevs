@@ -281,7 +281,7 @@
 			entryStateGuid
 		) VALUES (
 			#uid#, 
-			#codingSchemeId#,
+			#codingSchemeUId#,
 			#entity.entityCode#, 
 			#entity.entityCodeNamespace#, 
 			#entity.isDefined#,

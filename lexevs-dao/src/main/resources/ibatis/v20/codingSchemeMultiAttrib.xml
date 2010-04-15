@@ -81,7 +81,7 @@
 		</dynamic>
 		
 		WHERE
-			csMultiAttrib.codingSchemeGuid = #codingSchemeId#
+			csMultiAttrib.codingSchemeGuid = #codingSchemeUId#
 		AND
 			csMultiAttrib.attributeType = #attributeType#
 		AND
