@@ -95,7 +95,7 @@ public class XMLDaoServiceAdaptor {
      * @throws CodingSchemeAlreadyLoadedException
      */
     public void storeCodingScheme(CodingScheme scheme) throws CodingSchemeAlreadyLoadedException {
-        codingSchemeService.insertCodingScheme(scheme);
+        codingSchemeService.insertCodingScheme(scheme, null);
     }
 
     /**
@@ -146,7 +146,7 @@ public class XMLDaoServiceAdaptor {
         daoCallbackService.executeInDaoLayer(new DaoCallback<Object>() {
 
             public Object execute(DaoManager daoManager) {
-                String codingSchemeId = daoManager.getCurrentCodingSchemeDao().getCodingSchemeIdByUriAndVersion(uri,
+                String codingSchemeId = daoManager.getCurrentCodingSchemeDao().getCodingSchemeUIdByUriAndVersion(uri,
                         version);
                 String relationsId = daoManager.getCurrentAssociationDao()
                         .getRelationsId(codingSchemeId, relationsName);
