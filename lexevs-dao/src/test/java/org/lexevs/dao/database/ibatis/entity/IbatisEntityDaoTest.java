@@ -81,7 +81,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		cs.setDefaultLanguage("lang");
 		cs.setApproxNumConcepts(22l);
 		
-		csId = ibatisCodingSchemeDao.insertCodingScheme(cs, true);
+		csId = ibatisCodingSchemeDao.insertCodingScheme(cs, null, true);
 	}
 	
 	/**

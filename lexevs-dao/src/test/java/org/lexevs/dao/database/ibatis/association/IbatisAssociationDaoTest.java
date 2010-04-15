@@ -476,7 +476,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				"values ('rel-guid2', 'cs-guid', 'c-name2')");
 		
 		List<String> relationsIds = 
-			ibatisAssociationDao.getRelationsIdsForCodingSchemeId("cs-guid");
+			ibatisAssociationDao.getRelationsUIdsForCodingSchemeUId("cs-guid");
 		
 		assertEquals(2, relationsIds.size());
 		

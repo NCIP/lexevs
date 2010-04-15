@@ -122,5 +122,12 @@ public class StaticPrefixResolver implements PrefixResolver {
 		return historyPrefix;
 	}
 
+	@Override
+	public String resolvePrefixForHistoryCodingScheme(String codingSchemeId) {
+		String prefix = this.resolvePrefixForCodingScheme(codingSchemeId);
+
+		return prefix + "h_";
+	}
+
 	
 }

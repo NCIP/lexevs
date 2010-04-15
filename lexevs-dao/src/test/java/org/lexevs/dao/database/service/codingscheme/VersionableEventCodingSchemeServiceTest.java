@@ -80,7 +80,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		scheme.setCodingSchemeURI("uri");
 		scheme.setRepresentsVersion("v1");
 		
-		service.insertCodingScheme(scheme);
+		service.insertCodingScheme(scheme, null);
 	}
 	
 	/**
@@ -99,7 +99,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		
 		scheme.addLocalName("localName");
 		
-		service.insertCodingScheme(scheme);
+		service.insertCodingScheme(scheme, null);
 	}
 	
 	/**
@@ -131,7 +131,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		
 		scheme.getEntities().addEntity(entity);
 		
-		service.insertCodingScheme(scheme);
+		service.insertCodingScheme(scheme, null);
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		assertEquals(1, template.queryForInt("Select count(*) from codingScheme"));
@@ -216,7 +216,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		rel.addAssociationPredicate(pred);
 		pred.addSource(source);
 		
-		service.insertCodingScheme(scheme);
+		service.insertCodingScheme(scheme, null);
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		assertEquals(1, template.queryForInt("Select count(*) from codingScheme"));
@@ -258,7 +258,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		source.setLocalId("someId");
 		cs.getMappings().addSupportedSource(source);
 		
-		service.updateCodingScheme("csuri", "csversion", cs);
+		service.updateCodingScheme(cs);
 		
 		assertEquals(2, template.queryForInt("Select count(*) from cssupportedattrib"));
 	}
@@ -290,7 +290,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		
 		cs.getMappings().addSupportedCodingScheme(scs);
 		
-		service.updateCodingScheme("csuri", "csversion", cs);
+		service.updateCodingScheme(cs);
 		
 		assertEquals(1, template.queryForInt("Select count(*) from cssupportedattrib"));
 	}
@@ -311,7 +311,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		
 		CodingSchemeService service = databaseServiceManager.getCodingSchemeService(callback);
 		
-		service.insertCodingScheme(scheme);
+		service.insertCodingScheme(scheme, null);
 		
 		List<DatabaseError> errors = callback.errors;
 		

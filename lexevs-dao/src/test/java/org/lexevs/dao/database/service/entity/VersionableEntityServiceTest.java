@@ -62,7 +62,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		scheme.setCodingSchemeURI("uri");
 		scheme.setRepresentsVersion("v1");
 		
-		codingSchemeservice.insertCodingScheme(scheme);
+		codingSchemeservice.insertCodingScheme(scheme, null);
 		
 		CodingScheme cs = codingSchemeservice.getCodingSchemeByUriAndVersion("uri", "v1");
 		System.out.println(cs);
@@ -85,7 +85,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		scheme.setCodingSchemeURI("uri");
 		scheme.setRepresentsVersion("v1");
 		
-		codingSchemeservice.insertCodingScheme(scheme);
+		codingSchemeservice.insertCodingScheme(scheme, null);
 		
 		CodingScheme cs = codingSchemeservice.getCodingSchemeByUriAndVersion("uri", "v1");
 		System.out.println(cs);
@@ -126,7 +126,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		scheme.setCodingSchemeURI("uri");
 		scheme.setRepresentsVersion("v1");
 		
-		codingSchemeservice.insertCodingScheme(scheme);
+		codingSchemeservice.insertCodingScheme(scheme, null);
 		
 		Entity entity = new Entity();
 		entity.setEntityCode("c1");
