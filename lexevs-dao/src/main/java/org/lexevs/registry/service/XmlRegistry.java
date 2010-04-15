@@ -1515,6 +1515,11 @@ public class XmlRegistry implements Registry {
 		
 		return returnList;
 	}
+	
+	public List<RegistryEntry> getAllRegistryEntriesOfTypeAndURI(ResourceType type, String uri) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#getEntriesForUri(java.lang.String)

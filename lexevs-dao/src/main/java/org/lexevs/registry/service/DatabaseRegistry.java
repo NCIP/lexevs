@@ -94,6 +94,15 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 		
 		return returnList;
 	}
+	
+	@Transactional
+	public List<RegistryEntry> getAllRegistryEntriesOfTypeAndURI(ResourceType type, String uri) {
+		List<RegistryEntry> returnList = new ArrayList<RegistryEntry>();
+		
+		returnList.addAll(registryDao.getAllRegistryEntriesOfTypeAndURI(type, uri));
+		
+		return returnList;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#getEntriesForUri(java.lang.String)

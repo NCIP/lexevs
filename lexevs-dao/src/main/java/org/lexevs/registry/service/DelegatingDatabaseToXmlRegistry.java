@@ -26,6 +26,8 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry.ResourceType;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class DelegatingDatabaseToXmlRegistry.
@@ -65,6 +67,15 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 		List<RegistryEntry> allEntries = new ArrayList<RegistryEntry>();
 		allEntries.addAll(this.databaseRegistry.getAllRegistryEntriesOfType(type));
 		allEntries.addAll(this.xmlRegistry.getAllRegistryEntriesOfType(type));
+		
+		return allEntries;
+	}
+	
+	@Transactional
+	public List<RegistryEntry> getAllRegistryEntriesOfTypeAndURI(ResourceType type, String uri) {
+		List<RegistryEntry> allEntries = new ArrayList<RegistryEntry>();
+		allEntries.addAll(this.databaseRegistry.getAllRegistryEntriesOfTypeAndURI(type, uri));
+		allEntries.addAll(this.xmlRegistry.getAllRegistryEntriesOfTypeAndURI(type, uri));
 		
 		return allEntries;
 	}

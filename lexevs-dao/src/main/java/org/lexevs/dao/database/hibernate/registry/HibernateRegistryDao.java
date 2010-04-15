@@ -145,6 +145,13 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		return this.getHibernateTemplate().findByExample(entry);
 	}
 	
+	public List<RegistryEntry> getAllRegistryEntriesOfTypeAndURI(ResourceType type, String uri) {
+		RegistryEntry entry = new RegistryEntry();
+		entry.setResourceType(type);
+		entry.setResourceUri(uri);
+		return this.getHibernateTemplate().findByExample(entry);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.registry.RegistryDao#getAllRegistryEntries()
 	 */

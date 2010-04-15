@@ -42,6 +42,16 @@ public interface RegistryDao {
 	public List<RegistryEntry> getAllRegistryEntriesOfType(ResourceType type);
 	
 	/**
+	 * Gets the all registry entries of type and URI.
+	 * 
+	 * @param type the resource type
+	 * @param uri the resource URI
+	 * 
+	 * @return the all registry entries of type and URI
+	 */
+	public List<RegistryEntry> getAllRegistryEntriesOfTypeAndURI(ResourceType type, String URI);
+	
+	/**
 	 * Gets the all registry entries.
 	 * 
 	 * @return the all registry entries
