@@ -103,7 +103,7 @@ public class LexGridLoaderImpl extends BaseLoader implements LexGrid_Loader {
     protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
         StreamingXMLToSQL loader = new StreamingXMLToSQL();
         
-        CodingScheme codingScheme = loader.load(
+        CodingScheme[] codingScheme = loader.load(
                 this.getResourceUri(), 
                 this.getLogger(), 
                 this.getOptions().getBooleanOption(LexGridLoaderImpl.FORCE_VALIDATION).getOptionValue());
