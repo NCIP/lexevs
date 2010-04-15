@@ -52,18 +52,28 @@ public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 	/**
 	 * Insert entry state.
 	 * 
-	 * @param codingSchemeId the coding scheme id
-	 * @param entryStateId the entry state id
-	 * @param entryId the entry id
+	 * @param entryUId the entry id
 	 * @param entryType the entry type
-	 * @param previousEntryStateId the previous entry state id
+	 * @param previousEntryStateUId the previous entry state id
 	 * @param entryState the entry state
 	 */
 	public void insertEntryState(
-			String entryStateId, 
-			String entryId,
+			String entryUId,
 			String entryType,
-			String previousEntryStateId,
+			String previousEntryStateUId,
+			EntryState entryState);
+	
+	/**
+	 * Insert entry state.
+	 * 
+	 * @param entryStateUId
+	 * @param entryUId the entry id
+	 * @param entryType the entry type
+	 * @param previousEntryStateUId the previous entry state id
+	 * @param entryState the entry state
+	 */
+	public void insertEntryState( String entryStateUId,
+			String entryUId, String entryType, String previousEntryStateUId,
 			EntryState entryState);
 	
 	/**

@@ -76,7 +76,7 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 		/* (non-Javadoc)
 		 * @see org.lexevs.dao.database.access.entity.EntityDao#getEntityId(java.lang.String, java.lang.String, java.lang.String)
 		 */
-		public String getEntityId(String codingSchemeId, String entityCode,
+		public String getEntityUId(String codingSchemeId, String entityCode,
 				String entityCodeNamespace) {
 			// TODO Auto-generated method stub (IMPLEMENT!)
 			throw new UnsupportedOperationException();
@@ -177,7 +177,7 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 		}
 
 		@Override
-		public Entity getEntityById(String codingSchemeId, String entityId) {
+		public Entity getEntityByUId(String codingSchemeId, String entityId) {
 			// TODO Auto-generated method stub (IMPLEMENT!)
 			throw new UnsupportedOperationException();
 		}
@@ -194,5 +194,12 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 				String entityCodeNamespace) {
 			// TODO Auto-generated method stub (IMPLEMENT!)
 			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void updateEntityVersionableAttrib(String codingSchemeUId,
+				String entityUId, Entity entity) {
+			// TODO Auto-generated method stub
+			
 		}
 }

@@ -160,7 +160,7 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 		if(! isSingleTableMode() ){
 			lexEvsDatabaseOperations.dropTables(uri, version);
 		} else {
-			this.databaseServiceManager.getCodingSchemeService().destroyCodingScheme(uri, version);
+			this.databaseServiceManager.getCodingSchemeService().removeCodingScheme(uri, version);
 		}
 		
 		RegistryEntry entry = registry.getCodingSchemeEntry(ref);

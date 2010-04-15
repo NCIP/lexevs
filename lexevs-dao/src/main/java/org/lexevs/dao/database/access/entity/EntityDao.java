@@ -46,82 +46,85 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	/**
 	 * Gets the entity by code and namespace.
 	 * 
-	 * @param codingSchemeId the coding scheme id
+	 * @param codingSchemeUId the coding scheme id
 	 * @param entityCode the entity code
 	 * @param entityCodeNamespace the entity code namespace
 	 * 
 	 * @return the entity by code and namespace
 	 */
-	public Entity getEntityByCodeAndNamespace(String codingSchemeId, String entityCode, String entityCodeNamespace);
+	public Entity getEntityByCodeAndNamespace(String codingSchemeUId, String entityCode, String entityCodeNamespace);
 	
-	public ResolvedConceptReference getResolvedCodedNodeReferenceByCodeAndNamespace(String codingSchemeId, String entityCode, String entityCodeNamespace);
+	public ResolvedConceptReference getResolvedCodedNodeReferenceByCodeAndNamespace(String codingSchemeUId, String entityCode, String entityCodeNamespace);
 	
-	public Entity getEntityById(String codingSchemeId, String entityId);
+	public Entity getEntityByUId(String codingSchemeUId, String entityUId);
 	
-	public Entity getHistoryEntityByRevision(String codingSchemeId, String entityId, String revisionId);
+	public Entity getHistoryEntityByRevision(String codingSchemeUId, String entityUId, String revisionUId);
 	
 	/**
 	 * Gets the entity id.
 	 * 
-	 * @param codingSchemeId the coding scheme id
+	 * @param codingSchemeUId the coding scheme id
 	 * @param entityCode the entity code
 	 * @param entityCodeNamespace the entity code namespace
 	 * 
 	 * @return the entity id
 	 */
-	public String getEntityId(String codingSchemeId, String entityCode, String entityCodeNamespace);
+	public String getEntityUId(String codingSchemeUId, String entityCode, String entityCodeNamespace);
 	
 	/**
 	 * Insert entity.
 	 * 
-	 * @param codingSchemeId the coding scheme id
+	 * @param codingSchemeUId the coding scheme id
 	 * @param entity the entity
 	 * 
 	 * @return the string
 	 */
-	public String insertEntity(String codingSchemeId, Entity entity, boolean cascade);
+	public String insertEntity(String codingSchemeUId, Entity entity, boolean cascade);
 	
 	/**
 	 * Insert history entity.
 	 * 
-	 * @param codingSchemeId the coding scheme id
+	 * @param codingSchemeUId the coding scheme id
 	 * @param entity the entity
 	 * 
 	 * @return the string
 	 */
-	public String insertHistoryEntity(String codingSchemeId, String entityId, Entity entity);
+	public String insertHistoryEntity(String codingSchemeUId, String entityUId, Entity entity);
 	
 	/**
 	 * Update entity.
 	 * 
-	 * @param codingSchemeId the coding scheme id
+	 * @param codingSchemeUId the coding scheme id
 	 * @param entity the entity
 	 */
-	public void updateEntity(String codingSchemeId, Entity entity);
+	public void updateEntity(String codingSchemeUId, Entity entity);
 	
-	public void updateEntity(String codingSchemeId,
+	public void updateEntity(String codingSchemeUId,
 			AssociationEntity entity);
 	
 	/**
 	 * Gets the entity count.
 	 * 
-	 * @param codingSchemeId the coding scheme id
+	 * @param codingSchemeUId the coding scheme id
 	 * 
 	 * @return the entity count
 	 */
-	public int getEntityCount(String codingSchemeId);
+	public int getEntityCount(String codingSchemeUId);
 	
 	/**
 	 * Gets the all entities of coding scheme.
 	 * 
-	 * @param codingSchemeId the coding scheme id
+	 * @param codingSchemeUId the coding scheme id
 	 * @param start the start
 	 * @param pageSize the page size
 	 * 
 	 * @return the all entities of coding scheme
 	 */
-	public List<? extends Entity> getAllEntitiesOfCodingScheme(String codingSchemeId, int start, int pageSize);
+	public List<? extends Entity> getAllEntitiesOfCodingScheme(String codingSchemeUId, int start, int pageSize);
 
-	public String insertEntity(String codingSchemeId, AssociationEntity entity, boolean cascade);
+	public String insertEntity(String codingSchemeUId, AssociationEntity entity, boolean cascade);
+
+	void updateEntityVersionableAttrib(String codingSchemeUId,
+			String entityUId, Entity entity);
 
 }

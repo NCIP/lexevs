@@ -208,10 +208,10 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		String systemReleaseId = this.versionsDao.getSystemReleaseIdByUri(systemReleaseURI);
 		
 		InsertValueSetDefinitionBean vsDefBean = new InsertValueSetDefinitionBean();
-		vsDefBean.setId(valueSetDefinitionGuid);
+		vsDefBean.setUId(valueSetDefinitionGuid);
 		vsDefBean.setValueSetDefinition(vsdef);
 		vsDefBean.setPrefix(getPrefix());
-		vsDefBean.setSystemReleaseId(systemReleaseId);
+		vsDefBean.setSystemReleaseUId(systemReleaseId);
 		
 		// insert into value set definition table
 		this.getSqlMapClientTemplate().insert(INSERT_VALUESET_DEFINITION_SQL, vsDefBean);
@@ -235,14 +235,14 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		for (String context : vsdef.getRepresentsRealmOrContextAsReference())
 		{
 			InsertOrUpdateValueSetsMultiAttribBean insertOrUpdateValueSetsMultiAttribBean = new InsertOrUpdateValueSetsMultiAttribBean();
-			insertOrUpdateValueSetsMultiAttribBean.setId(this.createUniqueId());
-			insertOrUpdateValueSetsMultiAttribBean.setReferenceGuid(valueSetDefinitionGuid);
+			insertOrUpdateValueSetsMultiAttribBean.setUId(this.createUniqueId());
+			insertOrUpdateValueSetsMultiAttribBean.setReferenceUId(valueSetDefinitionGuid);
 			insertOrUpdateValueSetsMultiAttribBean.setReferenceType(ReferenceType.VALUESETDEFINITION.name());
 			insertOrUpdateValueSetsMultiAttribBean.setAttributeType(SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT);
 			insertOrUpdateValueSetsMultiAttribBean.setAttributeValue(context);
 			insertOrUpdateValueSetsMultiAttribBean.setRole(null);
 			insertOrUpdateValueSetsMultiAttribBean.setSubRef(null);
-			insertOrUpdateValueSetsMultiAttribBean.setEntryStateId(this.createUniqueId());
+			insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(this.createUniqueId());
 			
 			this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
 		}
@@ -251,14 +251,14 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		for (Source source : vsdef.getSourceAsReference())
 		{
 			InsertOrUpdateValueSetsMultiAttribBean insertOrUpdateValueSetsMultiAttribBean = new InsertOrUpdateValueSetsMultiAttribBean();
-			insertOrUpdateValueSetsMultiAttribBean.setId(this.createUniqueId());
-			insertOrUpdateValueSetsMultiAttribBean.setReferenceGuid(valueSetDefinitionGuid);
+			insertOrUpdateValueSetsMultiAttribBean.setUId(this.createUniqueId());
+			insertOrUpdateValueSetsMultiAttribBean.setReferenceUId(valueSetDefinitionGuid);
 			insertOrUpdateValueSetsMultiAttribBean.setReferenceType(ReferenceType.VALUESETDEFINITION.name());
 			insertOrUpdateValueSetsMultiAttribBean.setAttributeType(SQLTableConstants.TBLCOLVAL_SUPPTAG_SOURCE);
 			insertOrUpdateValueSetsMultiAttribBean.setAttributeValue(source.getContent());
 			insertOrUpdateValueSetsMultiAttribBean.setRole(source.getRole());
 			insertOrUpdateValueSetsMultiAttribBean.setSubRef(source.getSubRef());
-			insertOrUpdateValueSetsMultiAttribBean.setEntryStateId(this.createUniqueId());
+			insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(this.createUniqueId());
 			
 			this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
 		}
@@ -369,9 +369,9 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		String vsdEntryGuid = this.createUniqueId();
 		
 		InsertOrUpdateDefinitionEntryBean vsdEntryBean = new InsertOrUpdateDefinitionEntryBean();
-		vsdEntryBean.setId(vsdEntryGuid);
+		vsdEntryBean.setUId(vsdEntryGuid);
 		vsdEntryBean.setDefinitionEntry(vsdEntry);
-		vsdEntryBean.setValueSetDefGuid(valueSetDefinitionGuid);
+		vsdEntryBean.setValueSetDefUId(valueSetDefinitionGuid);
 		
 		if (vsdEntry.getCodingSchemeReference() != null)
 		{
@@ -491,10 +491,10 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		InsertOrUpdateURIMapBean bean = new InsertOrUpdateURIMapBean();
 		bean.setPrefix(prefix);
 		bean.setSupportedAttributeTag(supportedAttributeTag);
-		bean.setCodingSchemeId(referenceGuid);
+		bean.setCodingSchemeUId(referenceGuid);
 		bean.setReferenceType(ReferenceType.VALUESETDEFINITION.name());
 		bean.setUriMap(uriMap);
-		bean.setId(uriMapId);
+		bean.setUId(uriMapId);
 		
 		if (uriMap instanceof SupportedHierarchy)
 		{

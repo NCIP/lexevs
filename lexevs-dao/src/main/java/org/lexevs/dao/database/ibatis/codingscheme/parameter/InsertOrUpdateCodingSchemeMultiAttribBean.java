@@ -28,7 +28,7 @@ import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 public class InsertOrUpdateCodingSchemeMultiAttribBean extends IdableParameterBean {
 
 	/** The coding scheme id. */
-	private String codingSchemeId;
+	private String codingSchemeUId;
 	
 	/** The attribute type. */
 	private String attributeType;
@@ -117,10 +117,10 @@ public class InsertOrUpdateCodingSchemeMultiAttribBean extends IdableParameterBe
 	/**
 	 * Sets the coding scheme id.
 	 * 
-	 * @param codingSchemeId the new coding scheme id
+	 * @param codingSchemeUId the new coding scheme id
 	 */
-	public void setCodingSchemeId(String codingSchemeId) {
-		this.codingSchemeId = codingSchemeId;
+	public void setCodingSchemeUId(String codingSchemeUId) {
+		this.codingSchemeUId = codingSchemeUId;
 	}
 	
 	/**
@@ -128,8 +128,8 @@ public class InsertOrUpdateCodingSchemeMultiAttribBean extends IdableParameterBe
 	 * 
 	 * @return the coding scheme id
 	 */
-	public String getCodingSchemeId() {
-		return codingSchemeId;
+	public String getCodingSchemeUId() {
+		return codingSchemeUId;
 	}
 }
 

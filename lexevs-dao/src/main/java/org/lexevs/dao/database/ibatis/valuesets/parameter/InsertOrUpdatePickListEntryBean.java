@@ -32,7 +32,7 @@ public class InsertOrUpdatePickListEntryBean extends IdableParameterBean {
 	private PickListEntryNode pickListEntryNode;
 	
 	/** The pickListGuid. */
-	private String pickListGuid;
+	private String pickListUId;
 	
 	private String entityCodeNamespace;
 	
@@ -69,15 +69,15 @@ public class InsertOrUpdatePickListEntryBean extends IdableParameterBean {
 	/**
 	 * @return the pickListGuid
 	 */
-	public String getPickListGuid() {
-		return pickListGuid;
+	public String getPickListUId() {
+		return pickListUId;
 	}
 
 	/**
-	 * @param pickListGuid the pickListGuid to set
+	 * @param pickListUId the pickListGuid to set
 	 */
-	public void setPickListGuid(String pickListGuid) {
-		this.pickListGuid = pickListGuid;
+	public void setPickListUId(String pickListUId) {
+		this.pickListUId = pickListUId;
 	}
 
 	/**

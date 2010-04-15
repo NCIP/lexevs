@@ -39,6 +39,9 @@ public class CodingSchemeUpdateEvent {
 	/** The updated coding scheme. */
 	private CodingScheme updatedCodingScheme;
 	
+	/** coding scheme uid*/
+	private String codingSchemeUId = null;
+	
 	/**
 	 * Instantiates a new coding scheme update event.
 	 * 
@@ -53,6 +56,14 @@ public class CodingSchemeUpdateEvent {
 		this.entryStateId = entryStateId;
 		this.originalCodingScheme = originalCodingScheme;
 		this.updatedCodingScheme = updatedCodingScheme;
+	}
+	
+	/**
+	 * 
+	 * @param codingSchemeUId
+	 */
+	public CodingSchemeUpdateEvent(String codingSchemeUId) {
+		this.codingSchemeUId = codingSchemeUId;
 	}
 
 	/**
@@ -125,5 +136,13 @@ public class CodingSchemeUpdateEvent {
 	 */
 	public String getEntryStateId() {
 		return entryStateId;
+	}
+
+	public String getCodingSchemeUId() {
+		return codingSchemeUId;
+	}
+
+	public void setCodingSchemeUId(String codingSchemeUId) {
+		this.codingSchemeUId = codingSchemeUId;
 	}
 }

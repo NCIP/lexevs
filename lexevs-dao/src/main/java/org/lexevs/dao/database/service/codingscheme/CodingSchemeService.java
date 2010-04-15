@@ -19,10 +19,12 @@
 package org.lexevs.dao.database.service.codingscheme;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.versions.EntryState;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+import org.lexevs.dao.database.service.version.VersionService;
 
 /**
  * The Interface CodingSchemeService.
@@ -64,7 +66,7 @@ public interface CodingSchemeService {
 	 * @param codingSchemeUri the coding scheme uri
 	 * @param codingSchemeVersion the coding scheme version
 	 */
-	public void destroyCodingScheme(
+	public void removeCodingScheme(
 			String codingSchemeUri, String codingSchemeVersion);
 	
 	/**
@@ -75,19 +77,15 @@ public interface CodingSchemeService {
 	 * @throws CodingSchemeAlreadyLoadedException the coding scheme already loaded exception
 	 */
 	public void insertCodingScheme(
-			CodingScheme scheme) throws CodingSchemeAlreadyLoadedException;
+			CodingScheme scheme, String releaseURI) throws CodingSchemeAlreadyLoadedException;
 	
 	/**
 	 * Update coding scheme.
 	 * 
-	 * @param codingSchemeUri the coding scheme uri
-	 * @param codingSchemeVersion the coding scheme version
 	 * @param codingScheme the coding scheme
+	 * @throws LBException 
 	 */
-	public void updateCodingScheme(
-			String codingSchemeUri, 
-			String codingSchemeVersion,
-			CodingScheme codingScheme);
+	public void updateCodingScheme(CodingScheme codingScheme) throws LBException;
 	
 	/**
 	 * Insert uri map.
@@ -129,4 +127,17 @@ public interface CodingSchemeService {
 	public <T extends URIMap> boolean
 		 validatedSupportedAttribute(String codingSchemeUri, String codingSchemeVersion, String localId, Class<T> attributeClass);
 
+	/**
+	 * revise the codingScheme.
+	 * 
+	 * @param revisedCodingScheme
+	 * @throws LBException
+	 */
+	public void revise(CodingScheme revisedCodingScheme, String releaseURI) throws LBException;
+
+	public void insertVersionableChanges(CodingScheme revisedCodingScheme) throws LBException;
+
+	public void insertDependentChanges(CodingScheme revisedCodingScheme) throws LBException;
+
+	public void removeCodingScheme(CodingScheme revisedCodingScheme);
 }

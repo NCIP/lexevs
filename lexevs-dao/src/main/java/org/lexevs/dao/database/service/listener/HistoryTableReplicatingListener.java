@@ -54,10 +54,10 @@ public class HistoryTableReplicatingListener extends DefaultServiceEventListener
 				String version = event.getCodingSchemeVersion();
 				
 				CodingSchemeDao codingSchemeDao = daoManager.getCodingSchemeDao(uri, version);
-				String codingSchemeId = codingSchemeDao.getCodingSchemeIdByUriAndVersion(uri, version);
+				String codingSchemeId = codingSchemeDao.getCodingSchemeUIdByUriAndVersion(uri, version);
 					
 				EntityDao entityDao = daoManager.getEntityDao(uri, version);
-				String entityId = entityDao.getEntityId(
+				String entityId = entityDao.getEntityUId(
 						codingSchemeId, 
 						event.getOriginalEntity().getEntityCode(),
 						event.getOriginalEntity().getEntityCodeNamespace());

@@ -31,8 +31,8 @@ public class InsertOrUpdateEntityBean extends IdableParameterBean {
 	/** The entity. */
 	private Entity entity;
 	
-	/** The coding scheme id. */
-	private String codingSchemeId;
+	/** The coding scheme uid. */
+	private String codingSchemeUId;
 	
 	private String entityTypeTablePrefix;
 	
@@ -59,8 +59,8 @@ public class InsertOrUpdateEntityBean extends IdableParameterBean {
 	 * 
 	 * @return the coding scheme id
 	 */
-	public String getCodingSchemeId() {
-		return codingSchemeId;
+	public String getCodingSchemeUId() {
+		return codingSchemeUId;
 	}
 	
 	/**
@@ -68,8 +68,8 @@ public class InsertOrUpdateEntityBean extends IdableParameterBean {
 	 * 
 	 * @param codingSchemeId the new coding scheme id
 	 */
-	public void setCodingSchemeId(String codingSchemeId) {
-		this.codingSchemeId = codingSchemeId;
+	public void setCodingSchemeUId(String codingSchemeUId) {
+		this.codingSchemeUId = codingSchemeUId;
 	}
 
 	public void setEntityTypeTablePrefix(String entityTypeTablePrefix) {

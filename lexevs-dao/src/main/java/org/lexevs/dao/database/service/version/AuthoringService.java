@@ -16,46 +16,30 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.lexevs.dao.database.ibatis.codingscheme.parameter;
+package org.lexevs.dao.database.service.version;
 
-import org.LexGrid.codingSchemes.CodingScheme;
-import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
+import org.LexGrid.versions.Revision;
+import org.LexGrid.versions.SystemRelease;
 
 /**
- * The Class InsertOrUpdateCodingSchemeBean.
+ * The Interface VersionService.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class InsertOrUpdateCodingSchemeBean extends IdableParameterBean{
+public interface AuthoringService {
+
+	/**
+	 * Load system release.
+	 * 
+	 * @param systemRelease the system release
+	 */
+	public void loadSystemRelease(SystemRelease systemRelease);
 	
-	/** The coding scheme. */
-	private CodingScheme codingScheme;
-
-	/** The system release uid*/
-	private String releaseUId = null;
 	/**
-	 * Sets the coding scheme.
+	 * Revise.
 	 * 
-	 * @param codingScheme the new coding scheme
+	 * @param revision the revision
+	 * @param systemReleaseURI
 	 */
-	public void setCodingScheme(CodingScheme codingScheme) {
-		this.codingScheme = codingScheme;
-	}
-
-	/**
-	 * Gets the coding scheme.
-	 * 
-	 * @return the coding scheme
-	 */
-	public CodingScheme getCodingScheme() {
-		return codingScheme;
-	}
-
-	public String getReleaseUId() {
-		return releaseUId;
-	}
-
-	public void setReleaseUId(String releaseUId) {
-		this.releaseUId = releaseUId;
-	}
+	public void loadRevision(Revision revision, String systemReleaseURI);
 }

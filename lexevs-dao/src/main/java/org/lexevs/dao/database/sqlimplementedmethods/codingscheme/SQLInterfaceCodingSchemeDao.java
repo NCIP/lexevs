@@ -63,7 +63,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeById(java.lang.String)
 	 */
-	public CodingScheme getCodingSchemeById(String codingSchemeId) {
+	public CodingScheme getCodingSchemeByUId(String codingSchemeUId) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -100,7 +100,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeIdByNameAndVersion(java.lang.String, java.lang.String)
 	 */
-	public String getCodingSchemeIdByNameAndVersion(String codingSchemeName,
+	public String getCodingSchemeUIdByNameAndVersion(String codingSchemeName,
 			String version) {
 		throw new UnsupportedOperationException();
 	}
@@ -108,7 +108,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeIdByUriAndVersion(java.lang.String, java.lang.String)
 	 */
-	public String getCodingSchemeIdByUriAndVersion(String codingSchemeUri,
+	public String getCodingSchemeUIdByUriAndVersion(String codingSchemeUri,
 			String version) {
 		return resolveCodingSchemeKey(codingSchemeUri, version);
 	}
@@ -179,7 +179,8 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
 	 */
-	public String insertCodingScheme(CodingScheme cs, boolean cascade) {
+	@Override
+	public String insertCodingScheme(CodingScheme cs, String releaseUId, boolean cascade) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -282,7 +283,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#deleteCodingSchemeById(java.lang.String)
 	 */
-	public void deleteCodingSchemeById(String codingSchemeId) {
+	public void removeCodingSchemeByUId(String codingSchemeId) {
 		throw new UnsupportedOperationException();
 		
 	}
@@ -410,18 +411,25 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertHistoryCodingScheme(java.lang.String, org.LexGrid.codingSchemes.CodingScheme)
 	 */
-	@Override
-	public void insertHistoryCodingScheme(String codingSchemeId,
+/*	@Override
+	public void insertHistoryCodingScheme(String codingSchemeUId, String releaseUId, String entryStateUId,
 			CodingScheme codingScheme) {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
-	}
+	}*/
 
 	@Override
 	public CodingScheme getHistoryCodingSchemeByRevision(String codingSchemeId,
 			String revisionId) {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
+	}
+	@Override
+	public void insertCodingSchemeDependentChanges(String codingSchemeId,
+			CodingScheme codingScheme) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+		
 	}
 
 	@Override
@@ -453,5 +461,22 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	public void deleteCodingSchemeSources(String codingSchemeId) {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean codingSchemeExists(String codingSchemeUId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String insertHistoryCodingScheme(String codingSchemeUId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void updateCodingSchemeVersionableAttrib(String codingSchemeId,
+			CodingScheme codingScheme) {
+		// TODO Auto-generated method stub
+		
 	}
 }

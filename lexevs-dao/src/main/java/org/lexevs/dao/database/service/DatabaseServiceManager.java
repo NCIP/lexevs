@@ -28,6 +28,7 @@ import org.lexevs.dao.database.service.property.PropertyService;
 import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
 import org.lexevs.dao.database.service.valuesets.VSPropertyService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
+import org.lexevs.dao.database.service.version.AuthoringService;
 
 /**
  * The Class DatabaseServiceManager.
@@ -59,6 +60,9 @@ public class DatabaseServiceManager {
 	
 	/** The vsproperty service. */
 	private VSPropertyService vsPropertyService;
+	
+	/** The authoring service. */
+	private AuthoringService authoringService;
 	
 	private DaoCallbackService daoCallbackService;
 	
@@ -160,6 +164,13 @@ public class DatabaseServiceManager {
 
 	public DaoCallbackService getDaoCallbackService() {
 		return daoCallbackService;
+	}
+	public AuthoringService getAuthoringService() {
+		return authoringService;
+	}
+
+	public void setAuthoringService(AuthoringService authoringService) {
+		this.authoringService = authoringService;
 	}
 
 	public void setPickListDefinitionService(PickListDefinitionService pickListDefinitionService) {

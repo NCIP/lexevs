@@ -26,6 +26,7 @@ package org.lexevs.dao.database.prefix;
  */
 public interface PrefixResolver {
 
+	public static String historyPrefix = "h_";
 	/**
 	 * Resolve default prefix.
 	 * 
@@ -51,6 +52,15 @@ public interface PrefixResolver {
 	 * @return the string
 	 */
 	public String resolvePrefixForCodingScheme(String codingSchemeId);
+	
+	/**
+	 * Resolve prefix for history coding scheme.
+	 * 
+	 * @param codingSchemeId the coding scheme id
+	 * 
+	 * @return the string
+	 */
+	public String resolvePrefixForHistoryCodingScheme(String codingSchemeId);
 	
 	/**
 	 * Gets the next coding scheme prefix.

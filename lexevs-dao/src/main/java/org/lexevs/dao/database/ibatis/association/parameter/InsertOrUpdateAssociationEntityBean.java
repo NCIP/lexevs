@@ -28,7 +28,7 @@ import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
  */
 public class InsertOrUpdateAssociationEntityBean extends IdableParameterBean {
 	
-	private String entityId;
+	private String entityUId;
 
 	private AssociationEntity associationEntity;
 
@@ -40,11 +40,11 @@ public class InsertOrUpdateAssociationEntityBean extends IdableParameterBean {
 		return associationEntity;
 	}
 
-	public void setEntityId(String entityId) {
-		this.entityId = entityId;
+	public void setEntityUId(String entityUId) {
+		this.entityUId = entityUId;
 	}
 
-	public String getEntityId() {
-		return entityId;
+	public String getEntityUId() {
+		return entityUId;
 	}
 }

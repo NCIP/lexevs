@@ -405,9 +405,9 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 			String entryStateGuid, ReferenceType type, Property property){
 		InsertOrUpdatePropertyBean bean = new InsertOrUpdatePropertyBean();
 		bean.setReferenceType(type.name());
-		bean.setEntityId(parentGuid);
-		bean.setId(propertyGuid);
-		bean.setEntryStateId(entryStateGuid);
+		bean.setEntityUId(parentGuid);
+		bean.setUId(propertyGuid);
+		bean.setEntryStateUId(entryStateGuid);
 		bean.setProperty(property);
 		
 		return bean;
@@ -429,8 +429,8 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 			String entryStateGuid,
 			PropertyQualifier propertyQualifier){
 		InsertPropertyMultiAttribBean bean = new InsertPropertyMultiAttribBean();
-		bean.setId(qualifierGuid);
-		bean.setPropertyId(propertyGuid);
+		bean.setUId(qualifierGuid);
+		bean.setPropertyUId(propertyGuid);
 		bean.setAttributeId(propertyQualifier.getPropertyQualifierName());
 		if (propertyQualifier.getValue() != null)
 		{
@@ -438,7 +438,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 		}
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_QUALIFIER);
 		
-		bean.setEntryStateId(entryStateGuid);
+		bean.setEntryStateUId(entryStateGuid);
 
 		return bean;
 	}
@@ -456,12 +456,12 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	protected InsertPropertyMultiAttribBean buildInsertPropertyUsageContextBean(String propertyGuid, 
 			String qualifierGuid, String entryStateGuid, String usageContext){
 		InsertPropertyMultiAttribBean bean = new InsertPropertyMultiAttribBean();
-		bean.setId(qualifierGuid);
-		bean.setPropertyId(propertyGuid);
+		bean.setUId(qualifierGuid);
+		bean.setPropertyUId(propertyGuid);
 		bean.setAttributeId(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
 		bean.setAttributeValue(usageContext);
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
-		bean.setEntryStateId(entryStateGuid);
+		bean.setEntryStateUId(entryStateGuid);
 
 		return bean;
 	}
@@ -479,14 +479,14 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	protected InsertPropertyMultiAttribBean buildInsertPropertySourceBean(
 			String propertyGuid, String sourceId, String entryStateId, Source source){
 		InsertPropertyMultiAttribBean bean = new InsertPropertyMultiAttribBean();
-		bean.setId(sourceId);
-		bean.setPropertyId(propertyGuid);
+		bean.setUId(sourceId);
+		bean.setPropertyUId(propertyGuid);
 		bean.setAttributeId(SQLTableConstants.TBLCOLVAL_SOURCE);
 		bean.setAttributeValue(source.getContent());
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_SOURCE);
 		bean.setRole(source.getRole());
 		bean.setSubRef(source.getSubRef());
-		bean.setEntryStateId(entryStateId);
+		bean.setEntryStateUId(entryStateId);
 
 		return bean;
 	}

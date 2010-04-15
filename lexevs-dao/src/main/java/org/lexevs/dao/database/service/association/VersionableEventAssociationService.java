@@ -21,6 +21,7 @@ package org.lexevs.dao.database.service.association;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.Relations;
@@ -46,7 +47,7 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 			String associationPredicateName,
 			AssociationSource source){
 		String codingSchemeId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri, version).
-			getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
+			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 		
 		String relationsId = this.getDaoManager().getAssociationDao(codingSchemeUri, version).
 			getRelationsId(codingSchemeId, relationContainerName);
@@ -65,7 +66,7 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 	public void insertRelation(String codingSchemeUri, String version,
 			Relations relation) {
 		String codingSchemeId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri, version).
-			getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
+			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 		
 		this.doInsertRelation(codingSchemeUri, version, codingSchemeId, relation);
 	}
@@ -82,7 +83,7 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 	public void insertAssociationPredicate(
 			String codingSchemeUri, String version, String relationsName, AssociationPredicate predicate) {
 		String codingSchemeId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri, version).
-			getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
+			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 		
 		AssociationDao associationDao = this.getDaoManager().getAssociationDao(codingSchemeUri, version);
 		String relationId = associationDao.getRelationsId(codingSchemeUri, relationsName);
@@ -144,5 +145,29 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 				codingSchemeId, 
 				predicateId, 
 				sources);
+	}
+
+	@Override
+	public void reviseRelation(String codingSchemeUri, String version,
+			Relations relation) throws LBException {
+
+		AssociationPredicate[] assnPredicateList = relation
+				.getAssociationPredicate();
+
+		for (int j = 0; j < assnPredicateList.length; j++) {
+			AssociationSource[] assnSource = assnPredicateList[j].getSource();
+
+			for (int k = 0; k < assnSource.length; k++) {
+				this.reviseAssociationSource(codingSchemeUri,
+						version, assnSource[k]);
+			}
+		}
+	}
+
+	@Override
+	public void reviseAssociationSource(String codingSchemeUri, String version,
+			AssociationSource source) throws LBException {
+		// TODO Auto-generated method stub
+		
 	}
 }

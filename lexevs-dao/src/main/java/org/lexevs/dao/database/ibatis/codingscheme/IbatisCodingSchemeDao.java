@@ -31,12 +31,15 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
+import org.lexevs.dao.database.access.systemRelease.SystemReleaseDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.constants.classifier.mapping.ClassToStringMappingClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
@@ -77,7 +80,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	private static String INSERT_CODING_SCHEME_SQL = CODING_SCHEME_NAMESPACE + "insertCodingScheme";
 	
 	/** The GE t_ codin g_ schem e_ b y_ i d_ sql. */
-	private static String GET_CODING_SCHEME_BY_ID_SQL = CODING_SCHEME_NAMESPACE + "getCodingSchemeById";
+	private static String GET_CODING_SCHEME_BY_ID_SQL = CODING_SCHEME_NAMESPACE + "getCodingSchemeByUId";
 	
 	/** The GE t_ codin g_ schem e_ summar y_ b y_ ur i_ an d_ versio n_ sql. */
 	private static String GET_CODING_SCHEME_SUMMARY_BY_URI_AND_VERSION_SQL = CODING_SCHEME_NAMESPACE + "getCodingSchemeSummaryByUriAndVersion";
@@ -89,7 +92,10 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	private static String GET_CODING_SCHEME_ID_BY_URI_AND_VERSION_SQL = CODING_SCHEME_NAMESPACE + "getCodingSchemeIdByUriAndVersion";
 	
 	/** The UPDAT e_ codin g_ schem e_ b y_ i d_ sql. */
-	private static String UPDATE_CODING_SCHEME_BY_ID_SQL = CODING_SCHEME_NAMESPACE + "updateCodingSchemeById";
+	private static String UPDATE_CODING_SCHEME_BY_ID_SQL = CODING_SCHEME_NAMESPACE + "updateCodingSchemeByUId";
+	
+	/** update codingScheme versionableAttrib. */
+	private static String UPDATE_CODING_SCHEME_VER_ATTRIB_BY_ID_SQL = CODING_SCHEME_NAMESPACE + "updateCodingSchemeVerAttribByUId";
 	
 	/** The INSER t_ codin g_ schem e_ multiattri b_ sql. */
 	private static String INSERT_CODING_SCHEME_MULTIATTRIB_SQL = CODING_SCHEME_NAMESPACE + "insertCodingSchemeMultiAttrib";
@@ -137,11 +143,19 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	
 	private static String DELETE_MAPPINGS_BY_CODINGSCHEME_ID_SQL = CODING_SCHEME_NAMESPACE + "deleteMappingsByCodingSchemeId";
 	
+	/** query to see if codingScheme exists.  */
+	private static String CHECK_CODINGSCHEME_EXISTS = CODING_SCHEME_NAMESPACE + "checkCodingSchemeExists";
+	
+	private static String GET_CODINGSCHEME_METADATA_BY_UID = CODING_SCHEME_NAMESPACE + "getCodingSchemeMetaDataByUId";
+
 	/** The class to string mapping classifier. */
 	private ClassToStringMappingClassifier classToStringMappingClassifier = new ClassToStringMappingClassifier();
 	
 	/** The versions dao. */
 	private VersionsDao versionsDao;
+	
+	/** The systemRelease dao*/
+	private SystemReleaseDao systemReleaseDao = null;
 	
 	/** The entity dao. */
 	private EntityDao entityDao;
@@ -152,18 +166,18 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeById(java.lang.String)
 	 */
 	@CacheMethod
-	public CodingScheme getCodingSchemeById(String codingSchemeId) {
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+	public CodingScheme getCodingSchemeByUId(String codingSchemeUId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
 		CodingScheme scheme = 
 			(CodingScheme) this.getSqlMapClientTemplate().queryForObject(
-				GET_CODING_SCHEME_BY_ID_SQL, new PrefixedParameter(prefix, codingSchemeId));
+				GET_CODING_SCHEME_BY_ID_SQL, new PrefixedParameter(prefix, codingSchemeUId));
 
 		scheme.setMappings(
-				this.getMappings(codingSchemeId));
+				this.getMappings(codingSchemeUId));
 		
-		for(String relationsUid : associationDao.getRelationsIdsForCodingSchemeId(codingSchemeId)){
-			scheme.addRelations(associationDao.getRelationsByUid(codingSchemeId, relationsUid));
+		for(String relationsUid : associationDao.getRelationsUIdsForCodingSchemeUId(codingSchemeUId)){
+			scheme.addRelations(associationDao.getRelationsByUid(codingSchemeUId, relationsUid));
 		}
 
 		return scheme;
@@ -174,8 +188,8 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	 */
 	public CodingScheme getCodingSchemeByUriAndVersion(String codingSchemeUri,
 			String version) {
-		String codingSchemeId = this.getCodingSchemeIdByUriAndVersion(codingSchemeUri, version);
-		return this.getCodingSchemeById(codingSchemeId);
+		String codingSchemeUId = this.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+		return this.getCodingSchemeByUId(codingSchemeUId);
 	}
 
 
@@ -183,8 +197,8 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeByNameAndVersion(java.lang.String, java.lang.String)
 	 */
 	public CodingScheme getCodingSchemeByNameAndVersion(String codingSchemeName, String representsVersion){
-		String codingSchemeId = this.getCodingSchemeIdByNameAndVersion(codingSchemeName, representsVersion);
-		return this.getCodingSchemeById(codingSchemeId);
+		String codingSchemeUId = this.getCodingSchemeUIdByNameAndVersion(codingSchemeName, representsVersion);
+		return this.getCodingSchemeByUId(codingSchemeUId);
 	}
 
 	/**
@@ -222,12 +236,12 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeByRevision(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public CodingScheme getHistoryCodingSchemeByRevision(String codingSchemeId, String revisionId) {
+	public CodingScheme getHistoryCodingSchemeByRevision(String codingSchemeUId, String revisionId) {
 		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
 		
-		PrefixedParameterTuple param = new PrefixedParameterTuple(prefix, codingSchemeId, revisionId);
+		PrefixedParameterTuple param = new PrefixedParameterTuple(prefix, codingSchemeUId, revisionId);
 		
-		String actualTableSetPrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		String actualTableSetPrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
 		param.setActualTableSetPrefix(actualTableSetPrefix);
 		
@@ -251,95 +265,96 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertHistoryCodingScheme(java.lang.String, org.LexGrid.codingSchemes.CodingScheme)
 	 */
+/*	@Override
 	public void insertHistoryCodingScheme(
-			String codingSchemeId, 
+			String codingSchemeUId, String releaseUId, String entryStateUId,
 			CodingScheme codingScheme) {
 		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
 
 		this.doInsertCodingScheme(
-				codingSchemeId, 
+				codingSchemeUId, 
 				prefix, 
-				codingScheme,
+				codingScheme, releaseUId, entryStateUId,
 				true);
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#deleteCodingSchemeById(java.lang.String)
 	 */
 	@ClearCache
-	public void deleteCodingSchemeById(String codingSchemeId) {
+	public void removeCodingSchemeByUId(String codingSchemeUId) {
 		String prefix = 
-			this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+			this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		this.getSqlMapClientTemplate().
-			delete(REMOVE_CODING_SCHEME_BY_ID_SQL, new PrefixedParameter(prefix, codingSchemeId));	
+			delete(REMOVE_CODING_SCHEME_BY_ID_SQL, new PrefixedParameter(prefix, codingSchemeUId));	
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
 	 */
 	public String insertCodingScheme(
-			CodingScheme codingScheme,
+			CodingScheme codingScheme, String releaseUId,
 			boolean cascade) {
-		String codingSchemeId = this.createUniqueId();
+		String codingSchemeUId = this.createUniqueId();
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingScheme.getCodingSchemeURI(),
 				codingScheme.getRepresentsVersion());
+		String entryStateUId = this.createUniqueId();
 		
 		return this.doInsertCodingScheme(
-				codingSchemeId, 
+				codingSchemeUId, 
 				prefix, 
-				codingScheme,
+				codingScheme, releaseUId, entryStateUId,
 				cascade);
 	}
 	
 	/**
 	 * Do insert coding scheme.
 	 * 
-	 * @param codingSchemeId the coding scheme id
+	 * @param codingSchemeUId the coding scheme id
 	 * @param prefix the prefix
 	 * @param codingScheme the coding scheme
 	 * 
 	 * @return the string
 	 */
 	protected String doInsertCodingScheme(
-			String codingSchemeId, 
+			String codingSchemeUId, 
 			String prefix, 
-			CodingScheme codingScheme,
+			CodingScheme codingScheme, String releaseUId, String entryStateUId,
 			boolean cascade) {
-		String entryStateId = this.createUniqueId();
-		
+
 		this.getSqlMapClientTemplate().insert(INSERT_CODING_SCHEME_SQL, 
 				this.buildInsertCodingSchemeBean(
 						prefix,
-						codingSchemeId, entryStateId, codingScheme));	
+						codingSchemeUId, releaseUId, entryStateUId, codingScheme));	
 		
-		String previousRevisionId = null;
+		/*String previousRevisionId = null;
 		if(codingScheme.getEntryState() != null && 
 				codingScheme.getEntryState().getPrevRevision() != null &&
 				!codingScheme.getEntryState().getPrevRevision().isEmpty()) {
 			previousRevisionId = codingScheme.getEntryState().getPrevRevision();
-		}
+		}*/
 		
 		versionsDao.insertEntryState(
-				entryStateId, codingSchemeId, "CodingScheme", previousRevisionId, codingScheme.getEntryState());
+				codingSchemeUId, "CodingScheme", null, codingScheme.getEntryState());
 		
 		for(Source source : codingScheme.getSource()){
-			String sourceId = this.createUniqueId();
-			this.doInsertCodingSchemeSource(prefix, codingSchemeId, sourceId, entryStateId, source);
+			String sourceUId = this.createUniqueId();
+			this.doInsertCodingSchemeSource(prefix, codingSchemeUId, sourceUId, entryStateUId, source);
 		}
 		
 		for(String localName : codingScheme.getLocalName()){
-			String localNameId = this.createUniqueId();
-			this.doInsertCodingSchemeLocalName(prefix, codingSchemeId, localNameId, entryStateId, localName);
+			String localNameUId = this.createUniqueId();
+			this.doInsertCodingSchemeLocalName(prefix, codingSchemeUId, localNameUId, entryStateUId, localName);
 		}
 		
-		this.insertMappings(codingSchemeId, codingScheme.getMappings());
+		this.insertMappings(codingSchemeUId, codingScheme.getMappings());
 		
 		if(cascade) {
 			if(codingScheme.getEntities() != null) {
 				this.entityDao.insertBatchEntities(
-						codingSchemeId, 
+						codingSchemeUId, 
 						Arrays.asList(codingScheme.getEntities().getEntity()), 
 						cascade);
 			}
@@ -347,28 +362,40 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 			for(Relations relations : codingScheme.getRelations()) {
 				this.associationDao.
 					insertRelations(
-							codingSchemeId, 
+							codingSchemeUId, 
 							relations,
 							cascade);
 			}
 		}
-		return codingSchemeId;
+		return codingSchemeUId;
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#updateCodingScheme(java.lang.String, org.LexGrid.codingSchemes.CodingScheme)
 	 */
-	public void updateCodingScheme(String codingSchemeId, CodingScheme codingScheme) {
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+	public void updateCodingScheme(String codingSchemeUId, CodingScheme codingScheme) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
 		InsertOrUpdateCodingSchemeBean bean = new InsertOrUpdateCodingSchemeBean();
 		bean.setPrefix(prefix);
 		bean.setCodingScheme(codingScheme);
-		bean.setId(codingSchemeId);
+		bean.setUId(codingSchemeUId);
 		
 		this.getSqlMapClientTemplate().update(UPDATE_CODING_SCHEME_BY_ID_SQL, bean);
 	}
 
+	@Override
+	public void updateCodingSchemeVersionableAttrib(String codingSchemeUId, CodingScheme codingScheme) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		InsertOrUpdateCodingSchemeBean bean = new InsertOrUpdateCodingSchemeBean();
+		bean.setPrefix(prefix);
+		bean.setCodingScheme(codingScheme);
+		bean.setUId(codingSchemeUId);
+		
+		this.getSqlMapClientTemplate().update(UPDATE_CODING_SCHEME_VER_ATTRIB_BY_ID_SQL, bean);
+	}
+	
 	/**
 	 * Update coding scheme.
 	 * 
@@ -384,7 +411,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeIdByNameAndVersion(java.lang.String, java.lang.String)
 	 */
 	@CacheMethod
-	public String getCodingSchemeIdByNameAndVersion(String codingSchemeName, String version) {
+	public String getCodingSchemeUIdByNameAndVersion(String codingSchemeName, String version) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeName, version);
 		return (String) this.getSqlMapClientTemplate().queryForObject(GET_CODING_SCHEME_ID_BY_NAME_AND_VERSION_SQL,
 				new PrefixedParameterTuple(prefix, codingSchemeName, version));
@@ -394,7 +421,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeIdByUriAndVersion(java.lang.String, java.lang.String)
 	 */
 	@CacheMethod
-	public String getCodingSchemeIdByUriAndVersion(String codingSchemeUri, String version) {
+	public String getCodingSchemeUIdByUriAndVersion(String codingSchemeUri, String version) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version);
 		return (String) this.getSqlMapClientTemplate().queryForObject(GET_CODING_SCHEME_ID_BY_URI_AND_VERSION_SQL,
 				new PrefixedParameterTuple(prefix, codingSchemeUri, version));
@@ -679,9 +706,9 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		InsertOrUpdateURIMapBean bean = new InsertOrUpdateURIMapBean();
 		bean.setPrefix(prefix);
 		bean.setSupportedAttributeTag(supportedAttributeTag);
-		bean.setCodingSchemeId(codingSchemeId);
+		bean.setCodingSchemeUId(codingSchemeId);
 		bean.setUriMap(uriMap);
-		bean.setId(uriMapId);
+		bean.setUId(uriMapId);
 		
 		return bean;
 	}
@@ -699,13 +726,13 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	protected InsertOrUpdateCodingSchemeMultiAttribBean buildInsertOrUpdateSourceBean(String prefix, String sourceId, String codingSchemeId, String entryStateId, Source source){
 		InsertOrUpdateCodingSchemeMultiAttribBean bean = new InsertOrUpdateCodingSchemeMultiAttribBean();
 		bean.setPrefix(prefix);
-		bean.setCodingSchemeId(codingSchemeId);
-		bean.setId(sourceId);
+		bean.setCodingSchemeUId(codingSchemeId);
+		bean.setUId(sourceId);
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_SOURCE);
 		bean.setAttributeValue(source.getContent());
 		bean.setSubRef(source.getSubRef());
 		bean.setRole(source.getRole());
-		bean.setEntryStateId(entryStateId);
+		bean.setEntryStateUId(entryStateId);
 		
 		return bean;
 	}
@@ -723,11 +750,11 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	protected InsertOrUpdateCodingSchemeMultiAttribBean buildInsertLocalNameBean(String prefix, String localNameId, String codingSchemeId, String entryStateId, String localName){
 		InsertOrUpdateCodingSchemeMultiAttribBean bean = new InsertOrUpdateCodingSchemeMultiAttribBean();
 		bean.setPrefix(prefix);
-		bean.setCodingSchemeId(codingSchemeId);
-		bean.setId(localNameId);
+		bean.setCodingSchemeUId(codingSchemeId);
+		bean.setUId(localNameId);
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_LOCALNAME);
 		bean.setAttributeValue(localName);
-		bean.setEntryStateId(entryStateId);
+		bean.setEntryStateUId(entryStateId);
 
 		return bean;
 	}
@@ -736,20 +763,28 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	 * Builds the insert coding scheme bean.
 	 * 
 	 * @param prefix the prefix
-	 * @param codingSchemeId the coding scheme id
-	 * @param entryStateId the entry state id
+	 * @param codingSchemeUId the coding scheme id
+	 * @param entryStateUId the entry state id
 	 * @param codingScheme the coding scheme
 	 * 
 	 * @return the insert or update coding scheme bean
 	 */
-	protected InsertOrUpdateCodingSchemeBean buildInsertCodingSchemeBean(String prefix, String codingSchemeId, String entryStateId, CodingScheme codingScheme){
+	protected InsertOrUpdateCodingSchemeBean buildInsertCodingSchemeBean(String prefix, String codingSchemeUId, String releaseUId, String entryStateUId, CodingScheme codingScheme){
 		InsertOrUpdateCodingSchemeBean bean = new InsertOrUpdateCodingSchemeBean();
 		bean.setPrefix(prefix);
 		bean.setCodingScheme(codingScheme);
-		bean.setId(codingSchemeId);
-		bean.setEntryStateId(entryStateId);
+		bean.setReleaseUId(releaseUId);
+		bean.setUId(codingSchemeUId);
+		bean.setEntryStateUId(entryStateUId);
 		
 		return bean;
+	}
+	
+	@Override
+	public void insertCodingSchemeDependentChanges(String codingSchemeId,
+			CodingScheme codingScheme) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	/* (non-Javadoc)
@@ -802,5 +837,59 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 
 	public void setAssociationDao(AssociationDao associationDao) {
 		this.associationDao = associationDao;
+	}
+
+	public SystemReleaseDao getSystemReleaseDao() {
+		return systemReleaseDao;
+	}
+
+	public void setSystemReleaseDao(SystemReleaseDao systemReleaseDao) {
+		this.systemReleaseDao = systemReleaseDao;
+	}
+
+	@Override
+	public String insertHistoryCodingScheme(String codingSchemeUId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		InsertOrUpdateCodingSchemeBean codingSchemeData = (InsertOrUpdateCodingSchemeBean) this
+				.getSqlMapClientTemplate().queryForObject(GET_CODINGSCHEME_METADATA_BY_UID,
+						new PrefixedParameter(prefix, codingSchemeUId));
+
+		prefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
+		
+		this.getSqlMapClientTemplate().insert(
+				INSERT_CODING_SCHEME_SQL,
+				this.buildInsertCodingSchemeBean(prefix, codingSchemeUId,
+						codingSchemeData.getReleaseUId(), codingSchemeData
+								.getEntryStateUId(), codingSchemeData
+								.getCodingScheme()));
+		
+		if (!entryStateExists(prefix, codingSchemeData.getEntryStateUId())) {
+
+			EntryState entryState = new EntryState();
+
+			entryState.setChangeType(ChangeType.NEW);
+			entryState.setRelativeOrder(0L);
+
+			versionsDao
+					.insertEntryState(codingSchemeData.getEntryStateUId(),
+							codingSchemeData.getUId(), "CodingScheme", null,
+							entryState);
+		}
+		
+		return codingSchemeData.getEntryStateUId();
+	}
+
+	@Override
+	public boolean codingSchemeExists(String codingSchemeUId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		String count = (String) this.getSqlMapClientTemplate().queryForObject(
+				CHECK_CODINGSCHEME_EXISTS, 
+				new PrefixedParameter(prefix, codingSchemeUId));
+		
+		if( count != null &&  new Integer(count).intValue() > 0 )
+			return true;
+		
+		return false;
 	}
 }

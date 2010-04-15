@@ -30,7 +30,7 @@ import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 public class InsertAssociationSourceBean extends IdableParameterBean{
 	
 	/** The association predicate id. */
-	private String associationPredicateId;
+	private String associationPredicateUId;
 	
 	/** The association source. */
 	private AssociationSource associationSource;
@@ -43,17 +43,17 @@ public class InsertAssociationSourceBean extends IdableParameterBean{
 	 * 
 	 * @return the association predicate id
 	 */
-	public String getAssociationPredicateId() {
-		return associationPredicateId;
+	public String getAssociationPredicateUId() {
+		return associationPredicateUId;
 	}
 	
 	/**
 	 * Sets the association predicate id.
 	 * 
-	 * @param associationPredicateId the new association predicate id
+	 * @param associationPredicateUId the new association predicate id
 	 */
-	public void setAssociationPredicateId(String associationPredicateId) {
-		this.associationPredicateId = associationPredicateId;
+	public void setAssociationPredicateUId(String associationPredicateUId) {
+		this.associationPredicateUId = associationPredicateUId;
 	}
 	
 	/**

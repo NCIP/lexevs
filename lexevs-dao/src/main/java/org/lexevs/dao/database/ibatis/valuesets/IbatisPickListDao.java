@@ -219,9 +219,9 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		{
 			InsertOrUpdatePickListEntryBean plEntryBean = new InsertOrUpdatePickListEntryBean();		
 			plEntryGuid = this.createUniqueId();
-			plEntryBean.setId(plEntryGuid);
+			plEntryBean.setUId(plEntryGuid);
 			plEntryBean.setPickListEntryNode(entryNode);
-			plEntryBean.setPickListGuid(pickListGuid);
+			plEntryBean.setPickListUId(pickListGuid);
 			
 			PickListEntry plEntry = entryNode.getPickListEntryNodeChoice().getInclusionEntry();
 			PickListEntryExclusion plExclusion = entryNode.getPickListEntryNodeChoice().getExclusionEntry();
@@ -243,14 +243,14 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 				for (String pickContext : plEntry.getPickContextAsReference())
 				{
 					insertOrUpdateValueSetsMultiAttribBean = new InsertOrUpdateValueSetsMultiAttribBean();
-					insertOrUpdateValueSetsMultiAttribBean.setId(this.createUniqueId());
-					insertOrUpdateValueSetsMultiAttribBean.setReferenceGuid(plEntryGuid);
+					insertOrUpdateValueSetsMultiAttribBean.setUId(this.createUniqueId());
+					insertOrUpdateValueSetsMultiAttribBean.setReferenceUId(plEntryGuid);
 					insertOrUpdateValueSetsMultiAttribBean.setReferenceType(ReferenceType.PICKLISTENTRY.name());
 					insertOrUpdateValueSetsMultiAttribBean.setAttributeType(SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT);
 					insertOrUpdateValueSetsMultiAttribBean.setAttributeValue(pickContext);
 					insertOrUpdateValueSetsMultiAttribBean.setRole(null);
 					insertOrUpdateValueSetsMultiAttribBean.setSubRef(null);
-					insertOrUpdateValueSetsMultiAttribBean.setEntryStateId(this.createUniqueId());
+					insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(this.createUniqueId());
 					
 					if (contextList == null)
 						contextList = new ArrayList<InsertOrUpdateValueSetsMultiAttribBean>();
@@ -301,10 +301,10 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		String systemReleaseId = this.versionsDao.getSystemReleaseIdByUri(systemReleaseUri);
 		
 		InsertPickListDefinitionBean plDefBean = new InsertPickListDefinitionBean();
-		plDefBean.setId(pickListGuid);
+		plDefBean.setUId(pickListGuid);
 		plDefBean.setPickListDefinition(definition);
 		plDefBean.setPrefix(getPrefix());
-		plDefBean.setSystemReleaseId(systemReleaseId);
+		plDefBean.setSystemReleaseUId(systemReleaseId);
 		this.getSqlMapClientTemplate().insert(INSERT_PICKLIST_DEFINITION_SQL, plDefBean);
 		
 		// insert pickListDefinition properties
@@ -326,14 +326,14 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		for (String pickContext : definition.getDefaultPickContextAsReference())
 		{
 			InsertOrUpdateValueSetsMultiAttribBean insertOrUpdateValueSetsMultiAttribBean = new InsertOrUpdateValueSetsMultiAttribBean();
-			insertOrUpdateValueSetsMultiAttribBean.setId(this.createUniqueId());
-			insertOrUpdateValueSetsMultiAttribBean.setReferenceGuid(pickListGuid);
+			insertOrUpdateValueSetsMultiAttribBean.setUId(this.createUniqueId());
+			insertOrUpdateValueSetsMultiAttribBean.setReferenceUId(pickListGuid);
 			insertOrUpdateValueSetsMultiAttribBean.setReferenceType(ReferenceType.PICKLISTDEFINITION.name());
 			insertOrUpdateValueSetsMultiAttribBean.setAttributeType(SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT);
 			insertOrUpdateValueSetsMultiAttribBean.setAttributeValue(pickContext);
 			insertOrUpdateValueSetsMultiAttribBean.setRole(null);
 			insertOrUpdateValueSetsMultiAttribBean.setSubRef(null);
-			insertOrUpdateValueSetsMultiAttribBean.setEntryStateId(this.createUniqueId());
+			insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(this.createUniqueId());
 			
 			this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
 		}
@@ -342,14 +342,14 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		for (Source source : definition.getSourceAsReference())
 		{
 			InsertOrUpdateValueSetsMultiAttribBean insertOrUpdateValueSetsMultiAttribBean = new InsertOrUpdateValueSetsMultiAttribBean();
-			insertOrUpdateValueSetsMultiAttribBean.setId(this.createUniqueId());
-			insertOrUpdateValueSetsMultiAttribBean.setReferenceGuid(pickListGuid);
+			insertOrUpdateValueSetsMultiAttribBean.setUId(this.createUniqueId());
+			insertOrUpdateValueSetsMultiAttribBean.setReferenceUId(pickListGuid);
 			insertOrUpdateValueSetsMultiAttribBean.setReferenceType(ReferenceType.PICKLISTDEFINITION.name());
 			insertOrUpdateValueSetsMultiAttribBean.setAttributeType(SQLTableConstants.TBLCOLVAL_SUPPTAG_SOURCE);
 			insertOrUpdateValueSetsMultiAttribBean.setAttributeValue(source.getContent());
 			insertOrUpdateValueSetsMultiAttribBean.setRole(source.getRole());
 			insertOrUpdateValueSetsMultiAttribBean.setSubRef(source.getSubRef());
-			insertOrUpdateValueSetsMultiAttribBean.setEntryStateId(this.createUniqueId());
+			insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(this.createUniqueId());
 			
 			this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
 		}

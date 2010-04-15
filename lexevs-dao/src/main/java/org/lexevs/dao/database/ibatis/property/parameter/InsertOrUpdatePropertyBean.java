@@ -32,7 +32,7 @@ public class InsertOrUpdatePropertyBean extends IdableParameterBean {
 	private Property property;
 	
 	/** The entity id. */
-	private String entityId;
+	private String entityUId;
 	
 	/** The reference type. */
 	private String referenceType;
@@ -60,17 +60,17 @@ public class InsertOrUpdatePropertyBean extends IdableParameterBean {
 	 * 
 	 * @return the entity id
 	 */
-	public String getEntityId() {
-		return entityId;
+	public String getEntityUId() {
+		return entityUId;
 	}
 	
 	/**
 	 * Sets the entity id.
 	 * 
-	 * @param entityId the new entity id
+	 * @param entityUId the new entity id
 	 */
-	public void setEntityId(String entityId) {
-		this.entityId = entityId;
+	public void setEntityUId(String entityUId) {
+		this.entityUId = entityUId;
 	}
 	
 	/**

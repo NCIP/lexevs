@@ -20,6 +20,7 @@ package org.lexevs.dao.database.service.entity;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationEntity;
@@ -131,4 +132,7 @@ public interface EntityService {
 			String codingSchemeUri, 
 			String version,
 			AssociationEntity entity);
+	
+	public void revise(String codingSchemeUri, String version,
+			Entity revisedEntity) throws LBException;
 }

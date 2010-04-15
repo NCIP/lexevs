@@ -21,6 +21,7 @@ package org.lexevs.dao.database.ibatis;
 import org.lexevs.dao.database.access.AbstractBaseDao;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.batch.SqlMapClientTemplateInserter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +38,12 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	
 	/** The non batch template inserter. */
 	private IbatisInserter nonBatchTemplateInserter;
+	
+	/** The VERSION s_ namespace. */
+	public static String VERSIONS_NAMESPACE = "Versions.";
+	
+	/** query to see if entrystate exists.  */
+	private static String CHECK_ENTRYSTATE_EXISTS = VERSIONS_NAMESPACE + "checkEntryStateExists";
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
@@ -90,6 +97,25 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	 */
 	public IbatisInserter getNonBatchTemplateInserter() {
 		return nonBatchTemplateInserter;
+	}
+	
+	/**
+	 * Method finds if the given entryState already exists. 
+	 * Returns true if entryState exists or else returns false.
+	 * 
+	 * @param entryStateUId
+	 * @return boolean
+	 */
+	public boolean entryStateExists(String prefix, String entryStateUId) {
+		
+		String count = (String) this.getSqlMapClientTemplate().queryForObject(
+				CHECK_ENTRYSTATE_EXISTS, 
+				new PrefixedParameter(prefix, entryStateUId));
+		
+		if( count != null &&  new Integer(count).intValue() > 0 )
+			return true;
+		
+		return false;
 	}
 	
 	

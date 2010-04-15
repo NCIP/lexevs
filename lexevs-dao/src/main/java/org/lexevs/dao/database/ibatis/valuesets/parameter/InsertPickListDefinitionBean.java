@@ -32,7 +32,7 @@ public class InsertPickListDefinitionBean extends IdableParameterBean {
 	private PickListDefinition pickListDefinition;
 	
 	/** The system release id. */
-	private String systemReleaseId;
+	private String systemReleaseUId;
 
 	/**
 	 * Sets the pick list definition.
@@ -55,10 +55,10 @@ public class InsertPickListDefinitionBean extends IdableParameterBean {
 	/**
 	 * Sets the system release id.
 	 * 
-	 * @param systemReleaseId the new system release id
+	 * @param systemReleaseUId the new system release id
 	 */
-	public void setSystemReleaseId(String systemReleaseId) {
-		this.systemReleaseId = systemReleaseId;
+	public void setSystemReleaseUId(String systemReleaseUId) {
+		this.systemReleaseUId = systemReleaseUId;
 	}
 
 	/**
@@ -66,8 +66,8 @@ public class InsertPickListDefinitionBean extends IdableParameterBean {
 	 * 
 	 * @return the system release id
 	 */
-	public String getSystemReleaseId() {
-		return systemReleaseId;
+	public String getSystemReleaseUId() {
+		return systemReleaseUId;
 	}
 }
 

@@ -26,10 +26,10 @@ package org.lexevs.dao.database.ibatis.parameter;
 public class IdableParameterBean extends PrefixedTableParameterBean {
 
 	/** The id. */
-	private String id;
+	private String uid;
 	
 	/** The entry state id. */
-	private String entryStateId;
+	private String entryStateUId;
 	
 	/**
 	 * Instantiates a new idable parameter bean.
@@ -42,13 +42,13 @@ public class IdableParameterBean extends PrefixedTableParameterBean {
 	 * Instantiates a new idable parameter bean.
 	 * 
 	 * @param prefix the prefix
-	 * @param id the id
-	 * @param entryStateId the entry state id
+	 * @param uid the id
+	 * @param entryStateUId the entry state id
 	 */
-	public IdableParameterBean(String prefix, String id, String entryStateId) {
+	public IdableParameterBean(String prefix, String uid, String entryStateUId) {
 		super(prefix);
-		this.id = id;
-		this.entryStateId = entryStateId;
+		this.uid = uid;
+		this.entryStateUId = entryStateUId;
 	}
 	
 	/**
@@ -56,8 +56,8 @@ public class IdableParameterBean extends PrefixedTableParameterBean {
 	 * 
 	 * @return the id
 	 */
-	public String getId() {
-		return id;
+	public String getUId() {
+		return uid;
 	}
 	
 	/**
@@ -65,8 +65,8 @@ public class IdableParameterBean extends PrefixedTableParameterBean {
 	 * 
 	 * @param id the new id
 	 */
-	public void setId(String id) {
-		this.id = id;
+	public void setUId(String id) {
+		this.uid = id;
 	}
 	
 	/**
@@ -74,16 +74,16 @@ public class IdableParameterBean extends PrefixedTableParameterBean {
 	 * 
 	 * @return the entry state id
 	 */
-	public String getEntryStateId() {
-		return entryStateId;
+	public String getEntryStateUId() {
+		return entryStateUId;
 	}
 	
 	/**
 	 * Sets the entry state id.
 	 * 
-	 * @param entryStateId the new entry state id
+	 * @param entryStateUId the new entry state id
 	 */
-	public void setEntryStateId(String entryStateId) {
-		this.entryStateId = entryStateId;
+	public void setEntryStateUId(String entryStateUId) {
+		this.entryStateUId = entryStateUId;
 	}
 }

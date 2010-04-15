@@ -169,7 +169,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<String> getRelationsIdsForCodingSchemeId(String codingSchemeId) {
+	public List<String> getRelationsUIdsForCodingSchemeUId(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		return this.getSqlMapClientTemplate().queryForList(
@@ -196,7 +196,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			queryForObject(GET_ASSOCIATIONENTITY_ID_FOR_ASSOCIATION_PREDICATE_NAME_SQL, 
 					new PrefixedParameter(prefix, associationPredicateId));
 		
-		return (AssociationEntity) entityDao.getEntityById(codingSchemeId, associationEntityId);
+		return (AssociationEntity) entityDao.getEntityByUId(codingSchemeId, associationEntityId);
 	}
 	
 	public String getAssociationPredicateNameForId(String codingSchemeId, String associationPredicateId) {
@@ -233,9 +233,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		String entryStateId = this.createUniqueId();
 		
 		InsertRelationsBean bean = new InsertRelationsBean();
-		bean.setEntryStateId(entryStateId);
-		bean.setId(relationsId);
-		bean.setCodingSchemeId(codingSchemeId);
+		bean.setEntryStateUId(entryStateId);
+		bean.setUId(relationsId);
+		bean.setCodingSchemeUId(codingSchemeId);
 		bean.setRelations(relations);
 		bean.setPrefix(prefix);
 		
@@ -263,8 +263,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 		InsertOrUpdateAssociationEntityBean bean = new InsertOrUpdateAssociationEntityBean();
 		bean.setPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId));
-		bean.setEntityId(entityId);
-		bean.setId(associationEntityId);
+		bean.setEntityUId(entityId);
+		bean.setUId(associationEntityId);
 		bean.setAssociationEntity(associationEntity);
 		
 		inserter.insert(INSERT_ASSOCIATIONENTITY_SQL, bean);	
@@ -284,7 +284,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			AssociationEntity entity) {
 		InsertOrUpdateAssociationEntityBean bean = new InsertOrUpdateAssociationEntityBean();
 		bean.setPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId));
-		bean.setEntityId(entityId);
+		bean.setEntityUId(entityId);
 		bean.setAssociationEntity(entity);
 		
 		this.getSqlMapClientTemplate().update(
@@ -305,8 +305,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		InsertAssociationPredicateBean bean = new InsertAssociationPredicateBean();
 		bean.setPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId));
 		bean.setAssociationPredicate(associationPredicate);
-		bean.setId(id);
-		bean.setRelationId(relationId);
+		bean.setUId(id);
+		bean.setRelationUId(relationId);
 		
 		this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_PREDICATE_SQL, bean);
 		
@@ -409,8 +409,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 		InsertTransitiveClosureBean bean = new InsertTransitiveClosureBean();
 		bean.setPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId));
-		bean.setId(id);
-		bean.setAssociationPredicateId(associationPredicateId);
+		bean.setUId(id);
+		bean.setAssociationPredicateUId(associationPredicateId);
 		bean.setSourceEntityCode(sourceEntityCode);
 		bean.setSourceEntityCodeNamespace(sourceEntityCodeNamespace);
 		bean.setTargetEntityCode(targetEntityCode);
@@ -494,11 +494,11 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			
 			InsertAssociationSourceBean bean = new InsertAssociationSourceBean();
 			bean.setPrefix(prefix);
-			bean.setAssociationPredicateId(associationPredicateId);
+			bean.setAssociationPredicateUId(associationPredicateId);
 			bean.setAssociationSource(source);
 			bean.setAssociationTarget(target);
-			bean.setEntryStateId(entryStateId);
-			bean.setId(associationTargetId);
+			bean.setEntryStateUId(entryStateId);
+			bean.setUId(associationTargetId);
 			inserter.insert(INSERT_ENTITY_ASSNS_TO_ENTITY_SQL, bean);
 			
 			ibatisVersionsDao.insertEntryState(codingSchemeId, entryStateId, associationTargetId, "associationSource", null, target.getEntryState(), inserter);
@@ -507,8 +507,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				String qualId = this.createUniqueId();
 				
 				InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
-				qualBean.setAssociationTargetId(associationTargetId);
-				qualBean.setId(qualId);
+				qualBean.setAssociationTargetUId(associationTargetId);
+				qualBean.setUId(qualId);
 				qualBean.setPrefix(prefix);
 				qualBean.setQualifierName(qual.getAssociationQualifier());
 				
@@ -525,8 +525,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				String contextId = this.createUniqueId();
 				
 				InsertAssociationQualificationOrUsageContextBean contextBean = new InsertAssociationQualificationOrUsageContextBean();
-				contextBean.setAssociationTargetId(associationTargetId);
-				contextBean.setId(contextId);
+				contextBean.setAssociationTargetUId(associationTargetId);
+				contextBean.setUId(contextId);
 				contextBean.setPrefix(prefix);
 				contextBean.setQualifierName(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
 				contextBean.setQualifierValue(context);
@@ -550,8 +550,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		String qualId = this.createUniqueId();
 		
 		InsertAssociationQualificationOrUsageContextBean contextBean = new InsertAssociationQualificationOrUsageContextBean();
-		contextBean.setAssociationTargetId(associationTargetId);
-		contextBean.setId(qualId);
+		contextBean.setAssociationTargetUId(associationTargetId);
+		contextBean.setUId(qualId);
 		contextBean.setPrefix(prefix);
 		contextBean.setQualifierName(qualifier.getAssociationQualifier());
 		contextBean.setQualifierValue(qualifier.getQualifierText().getContent());

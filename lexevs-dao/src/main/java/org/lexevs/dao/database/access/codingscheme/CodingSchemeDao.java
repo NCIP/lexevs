@@ -37,11 +37,11 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	/**
 	 * Gets the coding scheme by id.
 	 * 
-	 * @param codingSchemeId the coding scheme id
+	 * @param codingSchemeUId the coding scheme id
 	 * 
 	 * @return the coding scheme by id
 	 */
-	public CodingScheme getCodingSchemeById(String codingSchemeId);
+	public CodingScheme getCodingSchemeByUId(String codingSchemeUId);
 
 	/**
 	 * Insert coding scheme.
@@ -50,15 +50,18 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @return the string
 	 */
-	public String insertCodingScheme(CodingScheme cs, boolean cascade);
+	public String insertCodingScheme(CodingScheme cs, String releaseUId, boolean cascade);
 	
 	/**
 	 * Insert history coding scheme.
 	 * 
-	 * @param codingSchemeId the coding scheme id
+	 * @param codingSchemeUId the coding scheme unique id
+	 * @param releaseUId the system release unique id
+	 * @param entryStateUId the entryState unique id
 	 * @param codingScheme the coding scheme
 	 */
-	public void insertHistoryCodingScheme(String codingSchemeId, CodingScheme codingScheme);
+	/*public void insertHistoryCodingScheme(String codingSchemeUId,
+			String releaseUId, String entryStateUId, CodingScheme codingScheme);*/
 	
 	/**
 	 * Gets the coding scheme by name and version.
@@ -110,6 +113,14 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	public void updateCodingScheme(String codingSchemeId, CodingScheme codingScheme);
 	
 	/**
+	 * Update coding scheme versionable attributes.
+	 * 
+	 * @param codingSchemeId the coding scheme id
+	 * @param codingScheme the coding scheme
+	 */
+	public void updateCodingSchemeVersionableAttrib(String codingSchemeId, CodingScheme codingScheme);
+	
+	/**
 	 * Gets the coding scheme id by name and version.
 	 * 
 	 * @param codingSchemeName the coding scheme name
@@ -117,7 +128,7 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @return the coding scheme id by name and version
 	 */
-	public String getCodingSchemeIdByNameAndVersion(String codingSchemeName, String version);
+	public String getCodingSchemeUIdByNameAndVersion(String codingSchemeName, String version);
 	
 	/**
 	 * Gets the coding scheme id by uri and version.
@@ -127,7 +138,7 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @return the coding scheme id by uri and version
 	 */
-	public String getCodingSchemeIdByUriAndVersion(String codingSchemeUri, String version);
+	public String getCodingSchemeUIdByUriAndVersion(String codingSchemeUri, String version);
 	
 	/**
 	 * Gets the entry state id.
@@ -144,7 +155,7 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @param codingSchemeId the coding scheme id
 	 */
-	public void deleteCodingSchemeById(String codingSchemeId);
+	public void removeCodingSchemeByUId(String codingSchemeId);
 	
 	/**
 	 * Insert coding scheme source.
@@ -293,4 +304,28 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	 * @return the distinct languages of coding scheme
 	 */
 	public List<String> getDistinctLanguagesOfCodingScheme(String codingSchemeId);
+	
+	/**
+	 * Methods loads Dependent changes belonging to the CodingScheme.
+	 * 
+	 * @param codingSchemeId the coding scheme id
+	 * 
+	 * @param codingScheme revised codingscheme object.
+	 */
+	public void insertCodingSchemeDependentChanges(String codingSchemeId, CodingScheme codingScheme);
+
+	/**
+	 * Method pushes the codingScheme metadata details to history.
+	 * @param codingSchemeUId
+	 */
+	public String insertHistoryCodingScheme(String codingSchemeUId);
+
+	/**
+	 * Method finds if the given codingScheme already exists. 
+	 * Returns true if codingScheme exists or else returns false.
+	 * 
+	 * @param codingSchemeUId
+	 * @return boolean
+	 */
+	public boolean codingSchemeExists(String codingSchemeUId);	
 }

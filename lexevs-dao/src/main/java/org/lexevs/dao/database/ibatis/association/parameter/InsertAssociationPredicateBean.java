@@ -32,7 +32,7 @@ public class InsertAssociationPredicateBean extends IdableParameterBean {
 	private AssociationPredicate associationPredicate;
 	
 	/** The relation id. */
-	private String relationId;
+	private String relationUId;
 	
 	/**
 	 * Gets the association predicate.
@@ -57,16 +57,16 @@ public class InsertAssociationPredicateBean extends IdableParameterBean {
 	 * 
 	 * @return the relation id
 	 */
-	public String getRelationId() {
-		return relationId;
+	public String getRelationUId() {
+		return relationUId;
 	}
 	
 	/**
 	 * Sets the relation id.
 	 * 
-	 * @param relationId the new relation id
+	 * @param relationUId the new relation id
 	 */
-	public void setRelationId(String relationId) {
-		this.relationId = relationId;
+	public void setRelationUId(String relationUId) {
+		this.relationUId = relationUId;
 	}
 }

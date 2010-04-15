@@ -28,7 +28,7 @@ import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 public class InsertAssociationQualificationOrUsageContextBean extends IdableParameterBean {
 
 	/** The association target id. */
-	private String associationTargetId;
+	private String associationTargetUId;
 	
 	/** The qualifier name. */
 	private String qualifierName;
@@ -41,17 +41,17 @@ public class InsertAssociationQualificationOrUsageContextBean extends IdablePara
 	 * 
 	 * @return the association target id
 	 */
-	public String getAssociationTargetId() {
-		return associationTargetId;
+	public String getAssociationTargetUId() {
+		return associationTargetUId;
 	}
 	
 	/**
 	 * Sets the association target id.
 	 * 
-	 * @param associationTargetId the new association target id
+	 * @param associationTargetUId the new association target id
 	 */
-	public void setAssociationTargetId(String associationTargetId) {
-		this.associationTargetId = associationTargetId;
+	public void setAssociationTargetUId(String associationTargetUId) {
+		this.associationTargetUId = associationTargetUId;
 	}
 	
 	/**

@@ -495,9 +495,9 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		final InsertPropertyLinkBean bean = new InsertPropertyLinkBean();
 		bean.setPrefix(prefix);
 		bean.setLink(link);
-		bean.setId(propertyLinkId);
-		bean.setSourcePropertyId(sourcePropertyId);
-		bean.setTargetPropertyId(targetPropertyId);
+		bean.setUId(propertyLinkId);
+		bean.setSourcePropertyUId(sourcePropertyId);
+		bean.setTargetPropertyUId(targetPropertyId);
 		
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
 			
@@ -570,9 +570,9 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		InsertOrUpdatePropertyBean bean = new InsertOrUpdatePropertyBean();
 		bean.setPrefix(prefix);
 		bean.setReferenceType(this.propertyTypeClassifier.classify(type));
-		bean.setEntityId(entityId);
-		bean.setId(propertyId);
-		bean.setEntryStateId(entryStateId);
+		bean.setEntityUId(entityId);
+		bean.setUId(propertyId);
+		bean.setEntryStateUId(entryStateId);
 		bean.setProperty(property);
 		
 		return bean;
@@ -596,12 +596,12 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			PropertyQualifier propertyQualifier){
 		InsertPropertyMultiAttribBean bean = new InsertPropertyMultiAttribBean();
 		bean.setPrefix(prefix);
-		bean.setId(qualifierId);
-		bean.setPropertyId(propertyId);
+		bean.setUId(qualifierId);
+		bean.setPropertyUId(propertyId);
 		bean.setAttributeId(propertyQualifier.getPropertyQualifierName());
-		bean.setAttributeValue(propertyQualifier.getValue().getContent());
+		bean.setAttributeValue(propertyQualifier.getValue() != null ? propertyQualifier.getValue().getContent(): null);
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_QUALIFIER);
-		bean.setEntryStateId(entryStateId);
+		bean.setEntryStateUId(entryStateId);
 
 		return bean;
 	}
@@ -620,12 +620,12 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			String qualifierId, String entryStateId, String usageContext){
 		InsertPropertyMultiAttribBean bean = new InsertPropertyMultiAttribBean();
 		bean.setPrefix(prefix);
-		bean.setId(qualifierId);
-		bean.setPropertyId(propertyId);
+		bean.setUId(qualifierId);
+		bean.setPropertyUId(propertyId);
 		bean.setAttributeId(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
 		bean.setAttributeValue(usageContext);
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
-		bean.setEntryStateId(entryStateId);
+		bean.setEntryStateUId(entryStateId);
 
 		return bean;
 	}
@@ -644,14 +644,14 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			String prefix, String propertyId, String sourceId, String entryStateId, Source source){
 		InsertPropertyMultiAttribBean bean = new InsertPropertyMultiAttribBean();
 		bean.setPrefix(prefix);
-		bean.setId(sourceId);
-		bean.setPropertyId(propertyId);
+		bean.setUId(sourceId);
+		bean.setPropertyUId(propertyId);
 		bean.setAttributeId(SQLTableConstants.TBLCOLVAL_SOURCE);
 		bean.setAttributeValue(source.getContent());
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_SOURCE);
 		bean.setRole(source.getRole());
 		bean.setSubRef(source.getSubRef());
-		bean.setEntryStateId(entryStateId);
+		bean.setEntryStateUId(entryStateId);
 
 		return bean;
 	}

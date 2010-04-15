@@ -28,7 +28,7 @@ import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 public class InsertOrUpdateValueSetsMultiAttribBean extends IdableParameterBean {
 
 	/** The reference GUID. */
-	private String referenceGuid;
+	private String referenceUId;
 	
 	/** The reference type. */
 	private String referenceType;
@@ -48,15 +48,15 @@ public class InsertOrUpdateValueSetsMultiAttribBean extends IdableParameterBean 
 	/**
 	 * @return the referenceGuid
 	 */
-	public String getReferenceGuid() {
-		return referenceGuid;
+	public String getReferenceUId() {
+		return referenceUId;
 	}
 
 	/**
-	 * @param referenceGuid the referenceGuid to set
+	 * @param referenceUId the referenceGuid to set
 	 */
-	public void setReferenceGuid(String referenceGuid) {
-		this.referenceGuid = referenceGuid;
+	public void setReferenceUId(String referenceUId) {
+		this.referenceUId = referenceUId;
 	}
 
 	/**

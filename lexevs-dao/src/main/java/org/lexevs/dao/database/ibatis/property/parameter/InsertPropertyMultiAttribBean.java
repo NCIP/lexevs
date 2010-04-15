@@ -28,7 +28,7 @@ import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 public class InsertPropertyMultiAttribBean extends IdableParameterBean {
 
 	/** The property id. */
-	private String propertyId;
+	private String propertyUId;
 	
 	/** The attribute type. */
 	private String attributeType;
@@ -50,17 +50,17 @@ public class InsertPropertyMultiAttribBean extends IdableParameterBean {
 	 * 
 	 * @return the property id
 	 */
-	public String getPropertyId() {
-		return propertyId;
+	public String getPropertyUId() {
+		return propertyUId;
 	}
 	
 	/**
 	 * Sets the property id.
 	 * 
-	 * @param propertyId the new property id
+	 * @param propertyUId the new property id
 	 */
-	public void setPropertyId(String propertyId) {
-		this.propertyId = propertyId;
+	public void setPropertyUId(String propertyUId) {
+		this.propertyUId = propertyUId;
 	}
 	
 	/**

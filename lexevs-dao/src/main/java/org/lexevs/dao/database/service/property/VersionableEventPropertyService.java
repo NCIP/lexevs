@@ -21,7 +21,14 @@ package org.lexevs.dao.database.service.property;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Versionable;
+import org.LexGrid.concepts.Entity;
+import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
@@ -46,7 +53,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService imp
 			String entityCodeNamespace,
 			List<Property> items) {
 		String codingSchemeId = this.getCodingSchemeId(codingSchemeUri, version);
-		String entityId = this.getDaoManager().getEntityDao(codingSchemeUri, version).getEntityId(codingSchemeId, entityCode, entityCodeNamespace);
+		String entityId = this.getDaoManager().getEntityDao(codingSchemeUri, version).getEntityUId(codingSchemeId, entityCode, entityCodeNamespace);
 		
 		this.getDaoManager().getPropertyDao(codingSchemeUri, version).
 		insertBatchProperties(
@@ -66,7 +73,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService imp
 			String entityCodeNamespace, 
 			Property property) {
 		String codingSchemeId = this.getCodingSchemeId(codingSchemeUri, version);
-		String entityId = this.getDaoManager().getEntityDao(codingSchemeUri, version).getEntityId(codingSchemeId, entityCode, entityCodeNamespace);
+		String entityId = this.getDaoManager().getEntityDao(codingSchemeUri, version).getEntityUId(codingSchemeId, entityCode, entityCodeNamespace);
 		
 		this.getDaoManager().getPropertyDao(codingSchemeUri, version).
 			insertProperty(codingSchemeId, entityId, PropertyType.ENTITY, property);	
@@ -80,7 +87,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService imp
 			String entityCode, String entityCodeNamespace, String propertyId,
 			Property property) {
 		String codingSchemeId = this.getCodingSchemeId(codingSchemeUri, version);
-		String entityId = this.getDaoManager().getEntityDao(codingSchemeUri, version).getEntityId(codingSchemeId, entityCode, entityCodeNamespace);
+		String entityId = this.getDaoManager().getEntityDao(codingSchemeUri, version).getEntityUId(codingSchemeId, entityCode, entityCodeNamespace);
 		
 		this.getDaoManager().
 			getPropertyDao(codingSchemeUri, version).
@@ -111,5 +118,40 @@ public class VersionableEventPropertyService extends AbstractDatabaseService imp
 			returnList.add(new PropertyBatchInsertItem(parentId, prop));
 		}
 		return returnList;
+	}
+	
+	public void revise(String codingSchemeUri, String version, Property property) throws LBException {
+		
+		if( property == null) 
+			throw new LBParameterException("Property object is not supplied.");
+		
+		EntryState entryState = property.getEntryState();
+
+		if (entryState == null) {
+			throw new LBRevisionException("EntryState can't be null.");
+		}
+
+		String revisionId = entryState.getContainingRevision();
+		ChangeType changeType = entryState.getChangeType();
+
+		if (revisionId != null && changeType != null) {
+
+			/*if (changeType == ChangeType.NEW) {
+
+				this.insertEntity(codingSchemeUri, version, revisedProperty);
+			} else if (changeType == ChangeType.REMOVE) {
+
+				this.removeEntity(codingSchemeUri, version, revisedProperty);
+			} else if (changeType == ChangeType.MODIFY) {
+
+				this.updateEntity(codingSchemeUri, version, revisedProperty);
+			} else if (changeType == ChangeType.DEPENDENT) {
+				
+				this.insertDependentChanges(codingSchemeUri, version, revisedProperty);
+			} else if (changeType == ChangeType.VERSIONABLE) {
+
+				this.insertVersionableChanges(codingSchemeUri, version, revisedProperty);
+			}*/
+		}
 	}
 }

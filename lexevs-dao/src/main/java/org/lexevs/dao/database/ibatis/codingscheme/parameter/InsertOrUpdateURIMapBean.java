@@ -29,7 +29,7 @@ import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 public class InsertOrUpdateURIMapBean extends IdableParameterBean{
 
 	/** The coding scheme id. */
-	private String codingSchemeId;
+	private String codingSchemeUId;
 	
 	/** The supported attribute tag. */
 	private String supportedAttributeTag;
@@ -81,10 +81,10 @@ public class InsertOrUpdateURIMapBean extends IdableParameterBean{
 	/**
 	 * Sets the coding scheme id.
 	 * 
-	 * @param codingSchemeId the new coding scheme id
+	 * @param codingSchemeUId the new coding scheme id
 	 */
-	public void setCodingSchemeId(String codingSchemeId) {
-		this.codingSchemeId = codingSchemeId;
+	public void setCodingSchemeUId(String codingSchemeUId) {
+		this.codingSchemeUId = codingSchemeUId;
 	}
 
 	/**
@@ -92,8 +92,8 @@ public class InsertOrUpdateURIMapBean extends IdableParameterBean{
 	 * 
 	 * @return the coding scheme id
 	 */
-	public String getCodingSchemeId() {
-		return codingSchemeId;
+	public String getCodingSchemeUId() {
+		return codingSchemeUId;
 	}
 
 	/**

@@ -28,33 +28,33 @@ import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 public class InsertPropertyLinkBean extends IdableParameterBean {
 
 	/** The entity id. */
-	private String entityId;
+	private String entityUId;
 	
 	/** The link. */
 	private String link;
 	
 	/** The source property id. */
-	private String sourcePropertyId;
+	private String sourcePropertyUId;
 	
 	/** The target property id. */
-	private String targetPropertyId;
+	private String targetPropertyUId;
 	
 	/**
 	 * Gets the entity id.
 	 * 
 	 * @return the entity id
 	 */
-	public String getEntityId() {
-		return entityId;
+	public String getEntityUId() {
+		return entityUId;
 	}
 	
 	/**
 	 * Sets the entity id.
 	 * 
-	 * @param entityId the new entity id
+	 * @param entityUId the new entity id
 	 */
-	public void setEntityId(String entityId) {
-		this.entityId = entityId;
+	public void setEntityUId(String entityUId) {
+		this.entityUId = entityUId;
 	}
 	
 	/**
@@ -80,17 +80,17 @@ public class InsertPropertyLinkBean extends IdableParameterBean {
 	 * 
 	 * @return the source property id
 	 */
-	public String getSourcePropertyId() {
-		return sourcePropertyId;
+	public String getSourcePropertyUId() {
+		return sourcePropertyUId;
 	}
 	
 	/**
 	 * Sets the source property id.
 	 * 
-	 * @param sourcePropertyId the new source property id
+	 * @param sourcePropertyUId the new source property id
 	 */
-	public void setSourcePropertyId(String sourcePropertyId) {
-		this.sourcePropertyId = sourcePropertyId;
+	public void setSourcePropertyUId(String sourcePropertyUId) {
+		this.sourcePropertyUId = sourcePropertyUId;
 	}
 	
 	/**
@@ -98,17 +98,17 @@ public class InsertPropertyLinkBean extends IdableParameterBean {
 	 * 
 	 * @return the target property id
 	 */
-	public String getTargetPropertyId() {
-		return targetPropertyId;
+	public String getTargetPropertyUId() {
+		return targetPropertyUId;
 	}
 	
 	/**
 	 * Sets the target property id.
 	 * 
-	 * @param targetPropertyId the new target property id
+	 * @param targetPropertyUId the new target property id
 	 */
-	public void setTargetPropertyId(String targetPropertyId) {
-		this.targetPropertyId = targetPropertyId;
+	public void setTargetPropertyUId(String targetPropertyUId) {
+		this.targetPropertyUId = targetPropertyUId;
 	}
 }
 

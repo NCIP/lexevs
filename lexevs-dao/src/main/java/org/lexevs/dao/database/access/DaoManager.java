@@ -29,6 +29,8 @@ import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
+import org.lexevs.dao.database.access.revision.RevisionDao;
+import org.lexevs.dao.database.access.systemRelease.SystemReleaseDao;
 import org.lexevs.dao.database.access.valuesets.PickListDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
@@ -69,6 +71,12 @@ public class DaoManager {
 	
 	/** The versions daos. */
 	private List<VersionsDao> versionsDaos;
+
+	/** the system release daos */
+	private List<SystemReleaseDao> systemReleaseDaos = null;
+
+	/** the revision daos*/
+	private List<RevisionDao> revisionDaos = null;
 	
 	/** The versions daos. */
 	private List<CodedNodeGraphDao> codedNodeGraphDaos;
@@ -165,6 +173,14 @@ public class DaoManager {
 	 */
 	public AssociationDao getAssociationDao(String codingSchemeUri, String version){
 		return this.doGetDao(codingSchemeUri, version, this.getAssociationDaos());
+	}
+	
+	public SystemReleaseDao getSystemReleaseDao(){
+		return this.getSystemReleaseDaos().get(0);
+	}
+	
+	public RevisionDao getRevisionDao(){
+		return this.getRevisionDaos().get(0);
 	}
 	
 	/**
@@ -361,6 +377,32 @@ public class DaoManager {
 	 */
 	public PickListDao getCurrentPickListDefinitionDao(){
 		return this.getCorrectDaoForSchemaVersion(this.getPickListDaos(), CURRENT_VERSION);
+	}
+	
+	public void setSystemReleaseDaos(List<SystemReleaseDao> systemReleaseDaos) {
+		this.systemReleaseDaos = systemReleaseDaos;
+	}
+
+	/**
+	 * Gets the systemRelease daos.
+	 * 
+	 * @return the systemRelease daos
+	 */
+	public List<SystemReleaseDao> getSystemReleaseDaos() {
+		return systemReleaseDaos;
+	}
+
+	/**
+	 * Gets the revision daos.
+	 * 
+	 * @return the revision daos
+	 */
+	public List<RevisionDao> getRevisionDaos() {
+		return revisionDaos;
+	}
+
+	public void setRevisionDaos(List<RevisionDao> revisionDaos) {
+		this.revisionDaos = revisionDaos;
 	}
 
 	/**

@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.Relations;
 
@@ -55,4 +56,26 @@ public interface AssociationService {
 			String relationContainerName,
 			String associationPredicateName,
 			AssociationSource source);
+	
+	/**
+	 * version API to revise relations.
+	 * 
+	 * @param codingSchemeUri
+	 * @param version
+	 * @param relation
+	 * @throws LBException
+	 */
+	public void reviseRelation(String codingSchemeUri, String version,
+			Relations relation) throws LBException;
+
+	/**
+	 * version API to revise association source.
+	 * 
+	 * @param codingSchemeUri
+	 * @param version
+	 * @param source
+	 * @throws LBException
+	 */
+	public void reviseAssociationSource(String codingSchemeUri, String version,
+			AssociationSource source) throws LBException;
 }

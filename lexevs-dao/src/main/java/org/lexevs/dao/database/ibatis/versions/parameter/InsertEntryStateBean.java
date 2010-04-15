@@ -29,33 +29,39 @@ import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 public class InsertEntryStateBean extends IdableParameterBean {
 
 	/** The entry id. */
-	private String entryId;
+	private String entryUId;
 	
 	/** The entry type. */
 	private String entryType;
 	
 	/** The previous entry state id. */
-	private String previousEntryStateId;
+	private String previousEntryStateUId;
 	
 	/** The entry state. */
 	private EntryState entryState;
+	
+	/** revision guid*/
+	private String revisionUId = null;
+	
+	/** prev revision guid*/
+	private String prevRevisionUId = null;
 	
 	/**
 	 * Gets the entry id.
 	 * 
 	 * @return the entry id
 	 */
-	public String getEntryId() {
-		return entryId;
+	public String getEntryUId() {
+		return entryUId;
 	}
 	
 	/**
 	 * Sets the entry id.
 	 * 
-	 * @param entryId the new entry id
+	 * @param entryUId the new entry id
 	 */
-	public void setEntryId(String entryId) {
-		this.entryId = entryId;
+	public void setEntryUId(String entryUId) {
+		this.entryUId = entryUId;
 	}
 	
 	/**
@@ -81,17 +87,17 @@ public class InsertEntryStateBean extends IdableParameterBean {
 	 * 
 	 * @return the previous entry state id
 	 */
-	public String getPreviousEntryStateId() {
-		return previousEntryStateId;
+	public String getPreviousEntryStateUId() {
+		return previousEntryStateUId;
 	}
 	
 	/**
 	 * Sets the previous entry state id.
 	 * 
-	 * @param previousEntryStateId the new previous entry state id
+	 * @param previousEntryStateUId the new previous entry state id
 	 */
-	public void setPreviousEntryStateId(String previousEntryStateId) {
-		this.previousEntryStateId = previousEntryStateId;
+	public void setPreviousEntryStateUId(String previousEntryStateUId) {
+		this.previousEntryStateUId = previousEntryStateUId;
 	}
 	
 	/**
@@ -110,6 +116,22 @@ public class InsertEntryStateBean extends IdableParameterBean {
 	 */
 	public EntryState getEntryState() {
 		return entryState;
+	}
+
+	public String getRevisionUId() {
+		return revisionUId;
+	}
+
+	public void setRevisionUId(String revisionUId) {
+		this.revisionUId = revisionUId;
+	}
+
+	public String getPrevRevisionUId() {
+		return prevRevisionUId;
+	}
+
+	public void setPrevRevisionUId(String prevRevisionUId) {
+		this.prevRevisionUId = prevRevisionUId;
 	}
 	
 	

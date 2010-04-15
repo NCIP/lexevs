@@ -31,7 +31,7 @@ public class InsertOrUpdateDefinitionEntryBean extends IdableParameterBean {
 	/** The pick list entry node. */
 	private DefinitionEntry definitionEntry;
 	
-	private String valueSetDefGuid;
+	private String valueSetDefUId;
 	private String codingSchemeReference;
 	private String valueSetDefReference;
 	private String entityCode;				
@@ -63,15 +63,15 @@ public class InsertOrUpdateDefinitionEntryBean extends IdableParameterBean {
 	/**
 	 * @return the valueSetDefGuid
 	 */
-	public String getValueSetDefGuid() {
-		return valueSetDefGuid;
+	public String getValueSetDefUId() {
+		return valueSetDefUId;
 	}
 
 	/**
-	 * @param valueSetDefGuid the valueSetDefGuid to set
+	 * @param valueSetDefUId the valueSetDefGuid to set
 	 */
-	public void setValueSetDefGuid(String valueSetDefGuid) {
-		this.valueSetDefGuid = valueSetDefGuid;
+	public void setValueSetDefUId(String valueSetDefUId) {
+		this.valueSetDefUId = valueSetDefUId;
 	}
 
 	/**

@@ -96,7 +96,7 @@ public class DefaultPrefixResolver implements PrefixResolver {
 				public String execute(DaoManager daoManager) {
 					for(RegistryEntry entry : registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)){
 						String foundCodingSchemeId = daoManager.getCurrentCodingSchemeDao().
-							getCodingSchemeIdByUriAndVersion(entry.getResourceUri(), entry.getResourceVersion());
+							getCodingSchemeUIdByUriAndVersion(entry.getResourceUri(), entry.getResourceVersion());
 						
 						if(foundCodingSchemeId.equals(codingSchemeId)) {
 							return entry.getPrefix();
@@ -110,6 +110,16 @@ public class DefaultPrefixResolver implements PrefixResolver {
 		return this.resolveDefaultPrefix() + prefix;
 	}
 
+	@CacheMethod
+	public String resolvePrefixForHistoryCodingScheme(final String codingSchemeId) {
+
+		String prefix = this.resolvePrefixForCodingScheme(codingSchemeId);
+		
+		prefix += historyPrefix;
+		
+		return prefix ;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.prefix.PrefixResolver#getNextCodingSchemePrefix()
 	 */

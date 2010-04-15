@@ -27,6 +27,7 @@ import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.revision.IbatisRevisionDao;
 import org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
@@ -52,6 +53,9 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	
 	/** The GE t_ syste m_ releas e_ i d_ b y_ uri. */
 	public static String GET_SYSTEM_RELEASE_ID_BY_URI = VERSIONS_NAMESPACE + "getSystemReleaseIdByUri";
+	
+	/** ibatis revision dao*/
+	private IbatisRevisionDao ibatisRevisionDao = null;
 	
 
 	/* (non-Javadoc)
@@ -138,46 +142,78 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.versions.VersionsDao#insertEntryState(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.versions.EntryState)
 	 */
-	public void insertEntryState(String entryStateId,
-			String entryId, String entryType, String previousEntryStateId,
+	public void insertEntryState(
+			String entryUId, String entryType, String previousEntryStateUId,
 			EntryState entryState) {
+		
+		String entryStateUId = this.createUniqueId();
+		
 		this.insertEntryState(
 				this.getPrefixResolver().resolveDefaultPrefix(), 
-				entryStateId, 
-				entryId, 
+				entryStateUId, 
+				entryUId, 
 				entryType, 
-				previousEntryStateId, 
+				previousEntryStateUId, 
 				entryState, 
 				this.getNonBatchTemplateInserter());
 	}
 	
-
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.versions.VersionsDao#insertEntryState(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.versions.EntryState)
+	 */
+	public void insertEntryState( String entryStateUId,
+			String entryUId, String entryType, String previousEntryStateUId,
+			EntryState entryState) {
+		
+		this.insertEntryState(
+				this.getPrefixResolver().resolveDefaultPrefix(), 
+				entryStateUId, 
+				entryUId, 
+				entryType, 
+				previousEntryStateUId, 
+				entryState, 
+				this.getNonBatchTemplateInserter());
+	}
+	
 	/**
 	 * Builds the insert entry state bean.
 	 * 
 	 * @param prefix the prefix
-	 * @param entryStateId the entry state id
-	 * @param entryId the entry id
+	 * @param entryStateUId the entry state id
+	 * @param entryUId the entry id
 	 * @param entryType the entry type
-	 * @param previousEntryStateId the previous entry state id
+	 * @param previousEntryStateUId the previous entry state id
 	 * @param entryState the entry state
 	 * 
 	 * @return the insert entry state bean
 	 */
 	protected InsertEntryStateBean buildInsertEntryStateBean(
 			String prefix, 
-			String entryStateId, 
-			String entryId, 
+			String entryStateUId, 
+			String entryUId, 
 			String entryType,
-			String previousEntryStateId,
+			String previousEntryStateUId,
 			EntryState entryState){
+		
+		String revisionUId = null;		
+		String prevRevisionUId = null;
+		
+		if (entryState != null) {
+			revisionUId = ibatisRevisionDao
+					.getRevisionUIdById(entryState.getContainingRevision());
+			prevRevisionUId = ibatisRevisionDao
+					.getRevisionUIdById(entryState.getPrevRevision());
+		}
+		
 		InsertEntryStateBean bean = new InsertEntryStateBean();
 		bean.setPrefix(prefix);
-		bean.setEntryId(entryId);
+		bean.setEntryUId(entryUId);
 		bean.setEntryState(entryState);
 		bean.setEntryType(entryType);
-		bean.setEntryStateId(entryStateId);
-		bean.setPreviousEntryStateId(previousEntryStateId);
+		bean.setEntryStateUId(entryStateUId);
+		bean.setPreviousEntryStateUId(previousEntryStateUId);
+		bean.setRevisionUId(revisionUId);
+		bean.setPrevRevisionUId(prevRevisionUId);
 		
 		return bean;
 	}
@@ -188,5 +224,9 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
 		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
+	}
+
+	public void setIbatisRevisionDao(IbatisRevisionDao ibatisRevisionDao) {
+		this.ibatisRevisionDao = ibatisRevisionDao;
 	}
 }
