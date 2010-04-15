@@ -85,7 +85,7 @@ public class XMLDaoServiceAdaptor {
         daoCallbackService = dbManager.getDaoCallbackService();
         propertyService = dbManager.getPropertyService();
         pickListService = dbManager.getPickListDefinitionService();
-        valueSetService = dbManager.getValueDomainService();
+        valueSetService = dbManager.getValueSetDefinitionService();
     }
 
     /**
@@ -181,17 +181,18 @@ public class XMLDaoServiceAdaptor {
     }
     
     public void storeValueSet(ValueSetDefinition valueSet, String systemReleaseURI, Mappings mappings) {
-try {
-    valueSetService.insertValueSetDefinition(valueSet);
-} catch (LBException e) {
-    // TODO Auto-generated catch block
-    e.printStackTrace();
-}
-             }
-    public void storePickList(PickListDefinition picklist, String systemReleaseURI, Mappings mappings) {
-
-   pickListService.insertPickListDefinition(picklist);
+        try {
+            valueSetService.insertValueSetDefinition(valueSet, systemReleaseURI, mappings);
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
+    
+    public void storePickList(PickListDefinition picklist, String systemReleaseURI, Mappings mappings) {
+        pickListService.insertPickListDefinition(picklist, systemReleaseURI, mappings);
+    }
+    
     /**
      * Activate a given coding scheme
      * @param urn
