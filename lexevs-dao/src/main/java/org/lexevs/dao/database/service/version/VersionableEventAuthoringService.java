@@ -20,10 +20,10 @@ package org.lexevs.dao.database.service.version;
 
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.codingSchemes.CodingSchemes;
-import org.LexGrid.valueDomains.PickListDefinition;
-import org.LexGrid.valueDomains.PickLists;
-import org.LexGrid.valueDomains.ValueDomainDefinition;
-import org.LexGrid.valueDomains.ValueDomains;
+import org.LexGrid.valueSets.PickListDefinition;
+import org.LexGrid.valueSets.PickListDefinitions;
+import org.LexGrid.valueSets.ValueSetDefinition;
+import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.EditHistory;
 import org.LexGrid.versions.Revision;
@@ -90,16 +90,16 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 			}
 		}
 		
-		ValueDomains valueDomains = systemRelease.getValueDomains();
-		if( valueDomains != null ) {
-//				valueSetDefService.insertValueSetDefinitions(valueDomains, systemRelease.getReleaseURI());
+		ValueSetDefinitions valueSetDefinitions = systemRelease.getValueSetDefinitions();
+		if( valueSetDefinitions != null ) {
+				valueSetDefService.insertValueSetDefinitions(valueSetDefinitions, systemRelease.getReleaseURI());
 		}
 
-		PickLists pickLists = systemRelease.getPickLists();
+		PickListDefinitions pickLists = systemRelease.getPickListDefinitions();
 		if( pickLists != null ) {
 			PickListDefinition[] pickListDefList = pickLists.getPickListDefinition();
 			for (int i = 0; i < pickListDefList.length; i++) {
-//				pickListDefService.insertPickListDefinition(systemRelease.getReleaseURI(), pickListDefList[i]);
+				pickListDefService.insertPickListDefinition(systemRelease.getReleaseURI(), pickListDefList[i]);
 			}
 		}
 
@@ -154,10 +154,10 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 
 					// Process ValueDomain Definition revisions
 					try {
-						ValueDomainDefinition valueDomain = cEntry
-								.getChangedValueDomainDefinitionEntry();
-						if (valueDomain != null) {
-							loadValueDomain(valueDomain);
+						ValueSetDefinition valueSetDefinition = cEntry
+								.getChangedValueSetDefinitionEntry();
+						if (valueSetDefinition != null) {
+							loadValueSetDefinition(valueSetDefinition);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -183,7 +183,7 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 		codingSchemeService.revise(codingScheme, releaseURI);
 	}
 
-	private void loadValueDomain(ValueDomainDefinition valueDomain)
+	private void loadValueSetDefinition(ValueSetDefinition valueSetDefinition)
 			throws Exception {
 		// Method not implemented
 	}
