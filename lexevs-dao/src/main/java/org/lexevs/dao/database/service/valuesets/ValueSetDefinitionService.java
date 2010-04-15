@@ -37,14 +37,6 @@ public interface ValueSetDefinitionService {
 	 * Insert value set definition into the system. 
 	 * @param definition the definition
 	 * @param systemReleaseUri the system release uri
-	 * @throws LBException
-	 */
-	public void insertValueSetDefinition(ValueSetDefinition definition, String systemReleaseUri) throws LBException;
-	
-	/**
-	 * Insert value set definition into the system. 
-	 * @param definition the definition
-	 * @param systemReleaseUri the system release uri
 	 * @param mappings Supported Attribute mappings to be applied to the value set definition
 	 * @throws LBException
 	 */

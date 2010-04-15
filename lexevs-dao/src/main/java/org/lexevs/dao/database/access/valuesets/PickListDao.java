@@ -20,6 +20,7 @@ package org.lexevs.dao.database.access.valuesets;
 
 import java.util.List;
 
+import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListEntryNode;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
@@ -75,7 +76,7 @@ public interface PickListDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @return the string
 	 */
-	public String insertPickListDefinition(String systemReleaseUri, PickListDefinition definition);
+	public String insertPickListDefinition(PickListDefinition definition, String systemReleaseUri, Mappings mappings);
 
 	/**
 	 * Gets the pick list ids.

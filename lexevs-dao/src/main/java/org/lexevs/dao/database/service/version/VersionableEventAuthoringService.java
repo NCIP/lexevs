@@ -21,6 +21,7 @@ package org.lexevs.dao.database.service.version;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.codingSchemes.CodingSchemes;
+import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListDefinitions;
 import org.LexGrid.valueSets.ValueSetDefinition;
@@ -104,8 +105,9 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 		PickListDefinitions pickLists = systemRelease.getPickListDefinitions();
 		if( pickLists != null ) {
 			PickListDefinition[] pickListDefList = pickLists.getPickListDefinition();
+			Mappings mappings = pickLists.getMappings();
 			for (int i = 0; i < pickListDefList.length; i++) {
-				pickListDefService.insertPickListDefinition(systemRelease.getReleaseURI(), pickListDefList[i]);
+				pickListDefService.insertPickListDefinition(pickListDefList[i], systemRelease.getReleaseURI(), mappings);
 			}
 		}
 

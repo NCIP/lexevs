@@ -21,7 +21,9 @@ package org.lexevs.dao.database.service.valuesets;
 import java.util.List;
 import java.util.Map;
 
+import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
+import org.LexGrid.valueSets.PickListDefinitions;
 
 /**
  * The Interface PickListService.
@@ -58,10 +60,19 @@ public interface PickListDefinitionService {
 	/**
 	 * Insert pick list definition.
 	 * 
-	 * @param systemReleaseUri the system release uri
 	 * @param definition the definition
+	 * @param systemReleaseUri the system release uri
+	 * @param mappings SupportedAttribute mappings of pick list definition
 	 */
-	public void insertPickListDefinition(String systemReleaseUri, PickListDefinition definition);
+	public void insertPickListDefinition(PickListDefinition definition, String systemReleaseUri, Mappings mappings);
+	
+	/**
+	 * Insert pick list definitions.
+	 * 
+	 * @param definitions the pick list definitions
+	 * @param systemReleaseUri the system release uri
+	 */
+	public void insertPickListDefinitions(PickListDefinitions definitions, String systemReleaseUri);
 
 	/**
 	 * List pick list ids.

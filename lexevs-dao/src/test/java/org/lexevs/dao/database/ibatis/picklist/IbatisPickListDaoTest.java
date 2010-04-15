@@ -86,7 +86,7 @@ public class IbatisPickListDaoTest extends LexEvsDbUnitTestBase {
 		def.addSource(source);
 		def.setStatus("testing");
 		
-		ibatisPickListDao.insertPickListDefinition("releaseuri", def);
+		ibatisPickListDao.insertPickListDefinition(def, "releaseuri", null);
 		
 		
 		int count = template.queryForInt("Select count(*) from vdpicklist");

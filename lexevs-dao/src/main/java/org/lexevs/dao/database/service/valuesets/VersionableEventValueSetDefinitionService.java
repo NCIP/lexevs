@@ -52,15 +52,6 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 		return this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetDefinitionByURI(uri.toString());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#insertValueSetDefinition(org.LexGrid.valuesets.ValueSetDefinition, java.lang.String)
-	 */
-	@Override
-	@Transactional
-	public void insertValueSetDefinition(ValueSetDefinition definition, String systemReleaseUri) throws LBException {
-		insertValueSetDefinition(definition, systemReleaseUri, null);
-	}
-	
 	@Override
 	public void insertValueSetDefinition(ValueSetDefinition definition,
 			String systemReleaseUri, Mappings mappings) throws LBException {
@@ -78,9 +69,10 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	public void insertValueSetDefinitions(ValueSetDefinitions valueSetDefinitions,
 			String systemReleaseUri) throws LBException {
 		
+		Mappings mappings = valueSetDefinitions.getMappings();
 		for (ValueSetDefinition vsd : valueSetDefinitions.getValueSetDefinitionAsReference())
 		{
-			insertValueSetDefinition(vsd, systemReleaseUri);
+			insertValueSetDefinition(vsd, systemReleaseUri, mappings);
 		}
 	}
 

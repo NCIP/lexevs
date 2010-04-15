@@ -6,7 +6,9 @@ package org.lexevs.dao.database.service.valuesets;
 import java.util.List;
 import java.util.Map;
 
+import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
+import org.LexGrid.valueSets.PickListDefinitions;
 import org.lexevs.dao.database.access.valuesets.PickListDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,10 +66,25 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 	 */
 	@Transactional
 //	@DatabaseErrorIdentifier(errorCode=INSERT_PICKLIST_ERROR)
-	public void insertPickListDefinition(String systemReleaseUri, PickListDefinition definition) {
+	public void insertPickListDefinition(PickListDefinition definition, String systemReleaseUri, Mappings mappings) {
 		PickListDao plDao = this.getDaoManager().getCurrentPickListDefinitionDao();
 	
-		plDao.insertPickListDefinition(systemReleaseUri, definition);
+		plDao.insertPickListDefinition(definition, systemReleaseUri, mappings);
+		
+//		this.fireCodingSchemeInsertEvent(definition);
+	}
+	
+	@Transactional
+//	@DatabaseErrorIdentifier(errorCode=INSERT_PICKLIST_ERROR)
+	public void insertPickListDefinitions(PickListDefinitions definitions, String systemReleaseUri) {
+		PickListDao plDao = this.getDaoManager().getCurrentPickListDefinitionDao();
+		
+		Mappings mappings = definitions.getMappings();
+		
+		for (PickListDefinition definition : definitions.getPickListDefinitionAsReference())
+		{
+			plDao.insertPickListDefinition(definition, systemReleaseUri, mappings);
+		}
 		
 //		this.fireCodingSchemeInsertEvent(definition);
 	}
@@ -89,4 +106,5 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 		
 		plDao.removePickListDefinitionByPickListId(pickListId);
 	}
+	
 }

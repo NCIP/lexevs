@@ -18,12 +18,18 @@
  */
 package org.lexevs.dao.database.ibatis.valuesets;
 
+import java.lang.reflect.Field;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedHierarchy;
+import org.LexGrid.naming.URIMap;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListEntry;
@@ -35,7 +41,9 @@ import org.lexevs.dao.database.access.valuesets.PickListDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.access.versions.VersionsDao;
+import org.lexevs.dao.database.constants.classifier.mapping.ClassToStringMappingClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
+import org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdatePickListEntryBean;
@@ -44,6 +52,9 @@ import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertPickListDefiniti
 import org.lexevs.dao.database.ibatis.valuesets.parameter.PickListEntryNodeBean;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.springframework.orm.ibatis.SqlMapClientCallback;
+
+import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 /**
  * The Class IbatisPickListDao.
@@ -59,6 +70,10 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	public static String PICKLIST_NAMESPACE = "PickList.";
 	
 	public static String VS_MULTIATTRIB_NAMESPACE = "VSMultiAttrib.";
+	
+	public static String VS_MAPPING_NAMESPACE = "VSMapping.";
+	
+	private static String SUPPORTED_ATTRIB_GETTER_PREFIX = "_supported";
 	
 	/** The INSER t_ picklis t_ definitio n_ sql. */
 	public static String INSERT_PICKLIST_DEFINITION_SQL = PICKLIST_NAMESPACE + "insertPickListDefinition";
@@ -95,6 +110,19 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	public static String DELETE_CONTEXT_BY_PARENT_GUID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "deleteContextByParentGuidAndType";
 	
 	public static String DELETE_PICKLIST_ENTRY_CONTEXT_BY_PICKLIST_GUID_SQL = VS_MULTIATTRIB_NAMESPACE + "deletePickListEntryContextByPickListGuid";
+	
+	public static String GET_URIMAPS_BY_REFERENCE_GUID_SQL = VS_MAPPING_NAMESPACE + "getURIMaps";
+	
+	public static String GET_URIMAPS_BY_REFERENCE_GUID_LOCALNAME_AND_TYPE_SQL = VS_MAPPING_NAMESPACE + "getURIMapByLocalNameAndType";
+	
+	public static String INSERT_URIMAPS_SQL = VS_MAPPING_NAMESPACE + "insertURIMap";
+	
+	public static String UPDATE_URIMAPS_BY_LOCALID_SQL = VS_MAPPING_NAMESPACE + "updateUriMapByLocalId";
+	
+	public static String DELETE_URIMAPS_BY_REFERENCE_GUID_SQL = VS_MAPPING_NAMESPACE + "deleteMappingsByReferenceGuid";
+	
+	/** The class to string mapping classifier. */
+	private ClassToStringMappingClassifier classToStringMappingClassifier = new ClassToStringMappingClassifier();
 	
 	/** The versions dao. */
 	private VersionsDao versionsDao;
@@ -189,6 +217,8 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 				plDef.setDefaultPickContext(contextList);
 			
 			
+			// get mappings
+			plDef.setMappings(getMappings(plDefGuid));
 		}
 		return plDef;
 	}
@@ -290,12 +320,8 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		return plEntryGuid;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.access.picklist.PickListDao#insertPickListDefinition(java.lang.String, org.LexGrid.valueDomains.PickListDefinition)
-	 */
 	@Override
-	public String insertPickListDefinition(String systemReleaseUri,
-			PickListDefinition definition) {
+	public String insertPickListDefinition(PickListDefinition definition, String systemReleaseUri, Mappings mappings) {
 		String pickListGuid = this.createUniqueId();
 		
 		String systemReleaseId = this.versionsDao.getSystemReleaseIdByUri(systemReleaseUri);
@@ -353,6 +379,14 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 			
 			this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
 		}
+		
+		// insert pick list definition mappings
+		if (mappings != null)
+			insertMappings(pickListGuid, mappings);
+		
+		if (definition.getMappings() != null)
+			insertMappings(pickListGuid, definition.getMappings());
+		
 		return pickListGuid;
 	}
 	
@@ -423,6 +457,9 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		// remove pick list definition default context
 		this.getSqlMapClientTemplate().delete(DELETE_CONTEXT_BY_PARENT_GUID_AND_TYPE_SQL, new PrefixedParameterTuple(null, pickListGuid, ReferenceType.PICKLISTDEFINITION.name()));
 		
+		// remove pick list definition mappings
+		deletePickListDefinitionMappings(pickListGuid);
+		
 		// remove pick list definition
 		this.getSqlMapClientTemplate().
 			delete(REMOVE_PICKLIST_DEFINITION_BY_PICKLISTID_SQL, new PrefixedParameter(null, pickListDefinitionId));	
@@ -438,6 +475,116 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 			new PrefixedParameterTuple(null, pickListGuid, plEntryId));
 	}
 
+	@SuppressWarnings("unchecked")
+	private Mappings getMappings(String referenceGuid) {
+		Mappings mappings = new Mappings();
+		
+		List<URIMap> uriMaps = this.getSqlMapClientTemplate().queryForList(	
+				GET_URIMAPS_BY_REFERENCE_GUID_SQL, 
+				new PrefixedParameterTuple(null, referenceGuid, ReferenceType.PICKLISTDEFINITION.name()));
+		
+		for(URIMap uriMap : uriMaps) {
+			DaoUtility.insertIntoMappings(mappings, uriMap);
+		}
+		
+		return mappings;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void insertMappings(String referenceGuid, Mappings mappings){
+		if(mappings == null){
+			return;
+		}
+		for(Field field : mappings.getClass().getDeclaredFields()){
+			if(field.getName().startsWith(SUPPORTED_ATTRIB_GETTER_PREFIX)){
+				field.setAccessible(true);
+				try {
+					List<URIMap> urimapList = (List<URIMap>) field.get(mappings);
+					this.insertURIMap(referenceGuid, urimapList);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				} 
+			}
+		}
+	}
+	
+	public void insertURIMap(final String referenceGuid,
+			final List<URIMap> urimapList) {
+		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+	
+			public Object doInSqlMapClient(SqlMapExecutor executor)
+			throws SQLException {
+				executor.startBatch();
+				for(URIMap uriMap : urimapList){
+					String uriMapId = UUID.randomUUID().toString();
+					
+					executor.insert(INSERT_URIMAPS_SQL, 
+							buildInsertOrUpdateURIMapBean(
+									null,
+									uriMapId, 
+									referenceGuid,
+									classToStringMappingClassifier.classify(uriMap.getClass()),
+									uriMap));
+				}
+				return executor.executeBatch();
+			}	
+		});		
+	}
+	
+	public void insertURIMap(String referenceGuid, URIMap uriMap) {
+		String uriMapId = this.createUniqueId();
+		this.getSqlMapClientTemplate().insert(
+				INSERT_URIMAPS_SQL, buildInsertOrUpdateURIMapBean(
+									null,
+									uriMapId, 
+									referenceGuid,
+									classToStringMappingClassifier.classify(uriMap.getClass()),
+									uriMap));
+	}
+	
+	/**
+	 * Builds the insert uri map bean.
+	 * 
+	 * @param prefix the prefix
+	 * @param uriMapId the uri map id
+	 * @param codingSchemeId the coding scheme id
+	 * @param supportedAttributeTag the supported attribute tag
+	 * @param uriMap the uri map
+	 * 
+	 * @return the insert uri map bean
+	 */
+	protected InsertOrUpdateURIMapBean buildInsertOrUpdateURIMapBean(String prefix, String uriMapId, String referenceGuid, String supportedAttributeTag, URIMap uriMap){
+		InsertOrUpdateURIMapBean bean = new InsertOrUpdateURIMapBean();
+		bean.setPrefix(prefix);
+		bean.setSupportedAttributeTag(supportedAttributeTag);
+		bean.setCodingSchemeUId(referenceGuid);
+		bean.setReferenceType(ReferenceType.PICKLISTDEFINITION.name());
+		bean.setUriMap(uriMap);
+		bean.setUId(uriMapId);
+		
+		if (uriMap instanceof SupportedHierarchy)
+		{
+			String associations = null;
+			List<String> associationList = ((SupportedHierarchy) uriMap).getAssociationNamesAsReference();
+			if (associationList != null) {
+				for (int i = 0; i < associationList.size(); i++) {
+					String assoc = (String) associationList.get(i);
+					associations = i == 0 ? assoc : (associations += ("," + assoc));
+				}
+				bean.setAssociationNames(associations);
+			}
+		}
+		
+		
+		return bean;
+	}
+	
+	public void deletePickListDefinitionMappings(String referenceGuid) {
+		this.getSqlMapClientTemplate().delete(
+				DELETE_URIMAPS_BY_REFERENCE_GUID_SQL, 
+				new PrefixedParameterTuple(null, referenceGuid, ReferenceType.PICKLISTDEFINITION.name()));
+	}
+	
 	/**
 	 * @return the vsPropertyDao
 	 */
