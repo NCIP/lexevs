@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
 
@@ -41,12 +42,21 @@ public interface ValueSetDefinitionService {
 	public void insertValueSetDefinition(ValueSetDefinition definition, String systemReleaseUri) throws LBException;
 	
 	/**
+	 * Insert value set definition into the system. 
+	 * @param definition the definition
+	 * @param systemReleaseUri the system release uri
+	 * @param mappings Supported Attribute mappings to be applied to the value set definition
+	 * @throws LBException
+	 */
+	public void insertValueSetDefinition(ValueSetDefinition definition, String systemReleaseUri, Mappings mappings) throws LBException;
+	
+	/**
 	 * Insert value set definitions.
 	 * 
 	 * @param valueSetDefinitions the value set definitions
 	 * @param systemReleaseUri the system release uri
 	 */
-	public void insertValueSetDefinitions(ValueSetDefinitions valueSetDefinitions, String systemReleaseUri);
+	public void insertValueSetDefinitions(ValueSetDefinitions valueSetDefinitions, String systemReleaseUri) throws LBException;
 	
 	/**
 	 * Return all value set definition URIs that match the supplied key

@@ -22,9 +22,9 @@ import java.net.URI;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
-import org.lexevs.dao.database.access.valuesets.PickListDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,18 +57,26 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	 */
 	@Override
 	@Transactional
-	public void insertValueSetDefinition(ValueSetDefinition definition, String systemReleaseUri) {
+	public void insertValueSetDefinition(ValueSetDefinition definition, String systemReleaseUri) throws LBException {
+		insertValueSetDefinition(definition, systemReleaseUri, null);
+	}
+	
+	@Override
+	public void insertValueSetDefinition(ValueSetDefinition definition,
+			String systemReleaseUri, Mappings mappings) throws LBException {
+		
 		ValueSetDefinitionDao vsdDao = this.getDaoManager().getCurrentValueSetDefinitionDao();
 		
-		vsdDao.insertValueSetDefinition(systemReleaseUri, definition);
+		vsdDao.insertValueSetDefinition(systemReleaseUri, definition, mappings);
 	}
+	
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#insertValueDomains(org.LexGrid.valueDomains.ValueDomains, java.lang.String)
 	 */
 	@Override
 	public void insertValueSetDefinitions(ValueSetDefinitions valueSetDefinitions,
-			String systemReleaseUri) {
+			String systemReleaseUri) throws LBException {
 		
 		for (ValueSetDefinition vsd : valueSetDefinitions.getValueSetDefinitionAsReference())
 		{
@@ -93,5 +101,6 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	public void removeValueSetDefinition(String valueSetDefinitionURI) {
 		this.getDaoManager().getCurrentValueSetDefinitionDao().removeValueSetDefinitionByValueSetDefinitionURI(valueSetDefinitionURI);
 	}
+
 	
 }
