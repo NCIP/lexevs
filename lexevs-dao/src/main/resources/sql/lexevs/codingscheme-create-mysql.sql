@@ -88,6 +88,7 @@ CREATE TABLE @PREFIX@csSupportedAttrib
 	id VARCHAR(250) NOT NULL,
 	uri VARCHAR(250),
 	idValue VARCHAR(250),
+	associationNames VARCHAR(250),
 	rootCode VARCHAR(250),
 	isForwardNavigable CHAR(1),
 	isImported CHAR(1),

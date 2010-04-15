@@ -55,6 +55,7 @@ CREATE TABLE @PREFIX@csSupportedAttrib (
 	id varchar(250) NOT NULL,
 	uri varchar(250),
 	idValue varchar(250),
+	associationNames varchar(250),	
 	rootCode varchar(250),
 	isForwardNavigable char(1),
 	isImported char(1),
