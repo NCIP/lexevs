@@ -1,5 +1,7 @@
 package org.LexGrid.LexBIG.Impl.loaders;
 
+import java.net.URI;
+
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Load.ClaML_Loader;
@@ -45,12 +47,12 @@ public class ClaMLLoaderImpl extends BaseLoader implements ClaML_Loader{
         return temp;
     }
 
-    public void validate() throws LBException {
+    public void validate(URI source, int validationLevel) throws LBException {
         // TODO Auto-generated method stub
         
     }
 
-    public void load() throws LBException {
+    public void load(String path, boolean stopOnErrors, boolean async) throws LBException {
         // TODO Auto-generated method stub
         
     }
