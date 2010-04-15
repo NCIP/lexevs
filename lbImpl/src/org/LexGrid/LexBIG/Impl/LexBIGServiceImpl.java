@@ -72,6 +72,7 @@ import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistorySQLQueries;
 import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistoryServiceImpl;
 import org.LexGrid.LexBIG.Impl.History.UMLSHistoryServiceImpl;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
+import org.LexGrid.LexBIG.Impl.loaders.ClaMLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MetaDataLoaderImpl;
@@ -552,6 +553,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         new MetaDataLoaderImpl().register();
         new RadLexProtegeFramesLoaderImpl().register();
         new HL7LoaderImpl().register();
+        new ClaMLLoaderImpl().register();
         
         /*
         //Meta Batch Loader Extension
