@@ -112,7 +112,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     protected boolean inUse = false;
     private CachingMessageDirectorIF md_;
     private LoadStatus status_;
-   
+    
     private OptionHolder options_;
     private CodingSchemeManifest codingSchemeManifest_;
     private LoaderPreferences loaderPreferences_;
@@ -123,6 +123,43 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     private boolean doIndexing = true;
     private boolean doComputeTransitiveClosure = true;
     private boolean doRegister = true;
+    
+  
+    
+    public OptionHolder getOptions_() {
+        return options_;
+    }
+    public LoadStatus getStatus_() {
+        return status_;
+    }
+
+    public void setStatus_(LoadStatus status) {
+        status_ = status;
+    }
+
+    public boolean isInUse() {
+        return inUse;
+    }
+
+    public void setInUse(boolean inUse) {
+        this.inUse = inUse;
+    }
+
+    public CachingMessageDirectorIF getMd_() {
+        return md_;
+    }
+
+    public void setMd_(CachingMessageDirectorIF md) {
+        md_ = md;
+    }
+
+    public void setManifestUtil(ManifestUtil manifestUtil) {
+        this.manifestUtil = manifestUtil;
+    }
+
+    public void setCodingSchemeReferences(AbsoluteCodingSchemeVersionReference[] codingSchemeReferences) {
+        this.codingSchemeReferences = codingSchemeReferences;
+    }
 
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
