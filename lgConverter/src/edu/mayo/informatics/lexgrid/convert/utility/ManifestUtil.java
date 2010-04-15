@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.LexOnt.CsmfAssociationDefinition;
@@ -253,7 +254,12 @@ public class ManifestUtil {
         this.doApplyCommonManifestElements(manifest, codingScheme);
         this.postLoadAssociationDefinitions(codingScheme, manifest.getAssociationDefinitions());
 
-        codingSchemeService.updateCodingScheme(uri, version, codingScheme);
+        try {
+            codingSchemeService.updateCodingScheme(codingScheme);
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     
     protected AssociationEntity findAssociationEntityInDatabase(String uri, String version, String code, String namespace) {

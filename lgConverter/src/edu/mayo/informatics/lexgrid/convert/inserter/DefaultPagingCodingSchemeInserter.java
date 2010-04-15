@@ -95,7 +95,7 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
             public Object execute(DaoManager daoManager) {
                 daoManager.getCurrentCodingSchemeDao().
                     insertCodingScheme(
-                            codingScheme,
+                            codingScheme, null,
                             false);
 
                 return null;
@@ -290,7 +290,7 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
 
             public String execute(DaoManager daoManager) {
                 return 
-                    daoManager.getCurrentCodingSchemeDao().getCodingSchemeIdByUriAndVersion(uri, version);
+                    daoManager.getCurrentCodingSchemeDao().getCodingSchemeUIdByUriAndVersion(uri, version);
             }
         });
     }

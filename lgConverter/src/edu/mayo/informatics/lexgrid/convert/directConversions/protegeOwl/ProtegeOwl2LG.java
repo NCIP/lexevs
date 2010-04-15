@@ -247,7 +247,7 @@ public class ProtegeOwl2LG {
             // If we are streaming the LexGrid model to database, write
             // the coding scheme metadata as defined so far.
             if (memoryProfile_ != ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
-                databaseServiceManager.getCodingSchemeService().insertCodingScheme(emfScheme_);
+                databaseServiceManager.getCodingSchemeService().insertCodingScheme(emfScheme_, null);
             }
 
             // Populate the EMF coding scheme from the OWL model
@@ -272,7 +272,7 @@ public class ProtegeOwl2LG {
 
                     public Object execute(DaoManager daoManager) {
                         String codingSchemeId = 
-                            daoManager.getCodingSchemeDao(uri, version).getCodingSchemeIdByUriAndVersion(uri, version);
+                            daoManager.getCodingSchemeDao(uri, version).getCodingSchemeUIdByUriAndVersion(uri, version);
                         
                         daoManager.getCodingSchemeDao(uri, version).insertMappings(codingSchemeId, emfScheme_.getMappings());
                         
