@@ -855,16 +855,16 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 				.getSqlMapClientTemplate().queryForObject(GET_CODINGSCHEME_METADATA_BY_UID,
 						new PrefixedParameter(prefix, codingSchemeUId));
 
-		prefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
+		String historyPrefix = this.getPrefixResolver().resolveHistoryPrefix();
 		
 		this.getSqlMapClientTemplate().insert(
 				INSERT_CODING_SCHEME_SQL,
-				this.buildInsertCodingSchemeBean(prefix, codingSchemeUId,
+				this.buildInsertCodingSchemeBean(historyPrefix, codingSchemeUId,
 						codingSchemeData.getReleaseUId(), codingSchemeData
 								.getEntryStateUId(), codingSchemeData
 								.getCodingScheme()));
 		
-		if (!entryStateExists(prefix, codingSchemeData.getEntryStateUId())) {
+		if (!entryStateExists(historyPrefix, codingSchemeData.getEntryStateUId())) {
 
 			EntryState entryState = new EntryState();
 
