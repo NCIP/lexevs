@@ -30,10 +30,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -47,6 +51,9 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.LexGrid.commonTypes.Text;
+import org.LexGrid.concepts.Entity;
+import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListEntry;
@@ -62,7 +69,6 @@ import org.lexgrid.valuesets.dto.ResolvedPickListEntry;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntryList;
 import org.lexgrid.valuesets.helper.PLEntryNodeSortUtil;
 import org.lexgrid.valuesets.helper.VSDServiceHelper;
-import org.lexgrid.valuesets.persistence.VSDXMLread;
 
 /**
  * Implements LexEVSPickListSerives.
@@ -135,10 +141,11 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	 */
 	public void loadPickList(InputStream inputStream, boolean failOnAllErrors)
 			throws LBException {
-		getLogger().logMethod(new Object[] { inputStream });
-		VSDXMLread vdXML = new VSDXMLread(inputStream, md_, failOnAllErrors);
-
-		internalLoadPickList(vdXML);
+		//TODO
+//		getLogger().logMethod(new Object[] { inputStream });
+//		VSDXMLread vdXML = new VSDXMLread(inputStream, md_, failOnAllErrors);
+//
+//		internalLoadPickList(vdXML);
 	}
 
 	/* (non-Javadoc)
@@ -147,22 +154,25 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	public void loadPickList(String xmlFileLocation, boolean failOnAllErrors)
 			throws LBException {
 		getLogger().logMethod(new Object[] { xmlFileLocation });
-		VSDXMLread vdXML = null;
-		try {
-			vdXML = new VSDXMLread(getStringFromURI(new URI(xmlFileLocation)), null, md_,failOnAllErrors);
-		} catch (URISyntaxException e) {
-			throw new LBException("Failed loading XML.", e);
-		}
-
-		internalLoadPickList(vdXML);
+		
+		// TODO
+//		VSDXMLread vdXML = null;
+//		try {
+//			vdXML = new VSDXMLread(getStringFromURI(new URI(xmlFileLocation)), null, md_,failOnAllErrors);
+//		} catch (URISyntaxException e) {
+//			throw new LBException("Failed loading XML.", e);
+//		}
+//
+//		internalLoadPickList(vdXML);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#validate(java.net.URI, int)
 	 */
 	public void validate(URI uri, int v1) throws LBParameterException{
-		VSDXMLread vdXML = new VSDXMLread(uri.toString(), null, md_, true);
-		vdXML.validate(uri, v1);
+		//TODO
+//		VSDXMLread vdXML = new VSDXMLread(uri.toString(), null, md_, true);
+//		vdXML.validate(uri, v1);
 	}
 	
 	/**
@@ -170,8 +180,8 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	 * @param vdXML
 	 * @throws Exception
 	 */
-	private void internalLoadPickList(VSDXMLread vdXML) throws LBException {
-		getLogger().logMethod(new Object[] { vdXML });
+//	private void internalLoadPickList(VSDXMLread vdXML) throws LBException {
+//		getLogger().logMethod(new Object[] { vdXML });
 //		try {
 //			PickListDefinition[] plDefs = vdXML.readAllPickLists();
 //			SystemRelease systemRelease = vdXML.getSystemRelease();
@@ -199,7 +209,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 //		{
 //			throw new LBException("Problem loading PickLists", e);
 //		}
-	}
+//	}
 
 	
 	/* (non-Javadoc)
@@ -661,6 +671,65 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 //		}
 //		return sh_;
 //	}
+	
+	private String getPickListName(String pickListId) throws LBException {
+		
+		String pickListName = null;
+		LexBIGService lbSvc = LexBIGServiceImpl.defaultInstance();
+		
+		CodingSchemeRenderingList suppCodingSchemes = lbSvc
+				.getSupportedCodingSchemes();
+
+		CodingSchemeRendering[] csRendering = suppCodingSchemes
+				.getCodingSchemeRendering();
+
+		for (int i = 0; i < csRendering.length; i++) {
+			CodingSchemeSummary csSummary = csRendering[i]
+					.getCodingSchemeSummary();
+
+			String csName = csSummary.getLocalName();
+			String version = csSummary.getRepresentsVersion();
+
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion(version);
+
+			CodedNodeSet codeSet = lbSvc.getCodingSchemeConcepts(csName,
+					versionOrTag);
+
+			codeSet.restrictToCodes(Constructors
+					.createConceptReferenceList(pickListId));
+
+			ResolvedConceptReferenceList conceptRef = codeSet
+					.resolveToList(null, null, null, -1);
+
+			if (conceptRef.getResolvedConceptReferenceCount() > 0) {
+				Entity entity = conceptRef.getResolvedConceptReference(0)
+						.getEntity();
+
+				if (entity != null) {
+					if (entity.getEntityDescription() != null)
+						pickListName = entity.getEntityDescription()
+								.getContent();
+
+					if (pickListName == null) {
+						Presentation[] allProps = entity.getPresentation();
+
+						for (int j = 0; j < allProps.length; j++) {
+							if (allProps[j].getIsPreferred()) {
+	
+								Text value = allProps[j].getValue();
+								if (value != null)
+									pickListName = value.getContent();
+							}
+						}
+					}
+				}
+				break;
+			}
+		}
+
+		return pickListName;
+	}
 	
 	private String getStringFromURI(URI uri) throws LBParameterException {
         if ("file".equals(uri.getScheme()))

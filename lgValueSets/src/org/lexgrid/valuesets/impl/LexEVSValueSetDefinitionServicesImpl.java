@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -57,16 +58,10 @@ import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.registry.service.Registry;
-import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 import org.lexgrid.valuesets.helper.VSDServiceHelper;
-import org.lexgrid.valuesets.persistence.VSDMappingServices;
-import org.lexgrid.valuesets.persistence.VSDSServices;
-import org.lexgrid.valuesets.persistence.VSDServices;
-import org.lexgrid.valuesets.persistence.VSDXMLread;
 
 /**
  * Implementation of Value Set Definition for LexGrid.
@@ -77,9 +72,9 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 
 	// Associated service ...
 	private LexBIGService lbs_;
-	private VSDSServices vdss_;
-	private VSDServices vds_;
-	private VSDMappingServices mapS_;
+//	private VSDSServices vdss_;
+//	private VSDServices vds_;
+//	private VSDMappingServices mapS_;
 	private VSDServiceHelper sh_;
 	protected MessageDirector md_;
 	protected LoadStatus status_;
@@ -93,8 +88,8 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	private static final long serialVersionUID = 4995582014921448463L;
 	
 	private DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
-	private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
-	private Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
+//	private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+//	private Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
 	private ValueSetDefinitionService vsds_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 
 
@@ -137,24 +132,26 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	@Override
 	public void loadValueSetDefinition(InputStream inputStream,
 			boolean failOnAllErrors) throws LBException {
-		getLogger().logMethod(new Object[] { inputStream });
-		VSDXMLread vdXML = new VSDXMLread(inputStream, md_, failOnAllErrors);
-
-		internalLoadVD(vdXML);
+		//TODO
+//		getLogger().logMethod(new Object[] { inputStream });
+//		VSDXMLread vdXML = new VSDXMLread(inputStream, md_, failOnAllErrors);
+//
+//		internalLoadVD(vdXML);
 	}
 	
 	@Override
 	public void loadValueSetDefinition(String xmlFileLocation,
 			boolean failOnAllErrors) throws LBException {
-		getLogger().logMethod(new Object[] { xmlFileLocation });
-		VSDXMLread vdXML;
-		try {
-			vdXML = new VSDXMLread(getStringFromURI(new URI(xmlFileLocation)), null, md_,failOnAllErrors);
-		} catch (URISyntaxException e) {
-			throw new LBException("Failed loading XML.", e);
-		}
-		
-		internalLoadVD(vdXML);
+		//TODO
+//		getLogger().logMethod(new Object[] { xmlFileLocation });
+//		VSDXMLread vdXML;
+//		try {
+//			vdXML = new VSDXMLread(getStringFromURI(new URI(xmlFileLocation)), null, md_,failOnAllErrors);
+//		} catch (URISyntaxException e) {
+//			throw new LBException("Failed loading XML.", e);
+//		}
+//		
+//		internalLoadVD(vdXML);
 	}
 
 	/**
@@ -162,8 +159,8 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	 * @param vdXML
 	 * @throws Exception
 	 */
-	private void internalLoadVD(VSDXMLread vdXML) throws LBException {
-		getLogger().logMethod(new Object[] { vdXML });
+//	private void internalLoadVD(VSDXMLread vdXML) throws LBException {
+//		getLogger().logMethod(new Object[] { vdXML });
 		
 //		try 
 //		{
@@ -208,14 +205,15 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 //		{
 //			throw new LBException("Problem loading valueDomain." + e.getStackTrace());
 //		}
-	}
+//	}
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#validate(java.net.URI, int)
 	 */
 	public void validate(URI uri, int validationLevel) throws LBParameterException{
-		VSDXMLread vdXML = new VSDXMLread(uri.toString(), null, md_, true);
-		vdXML.validate(uri, validationLevel);
+		//TODO
+//		VSDXMLread vdXML = new VSDXMLread(uri.toString(), null, md_, true);
+//		vdXML.validate(uri, validationLevel);
 	}
 	
 	@Override
@@ -455,6 +453,48 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 			return true;
 		}
 		return false;
+	}
+	
+	public Map<String, String> getReferencedPLDefinitions(String entityCode,
+			String entityCodeNameSpace, String propertyId, Boolean extractPickListName) {
+
+		Map<String, String> refPLDef = new HashMap<String, String>();
+
+		//TODO
+//		String pickListId = result
+//					.getString(SQLTableConstants.TBLCOL_PICKLISTID);
+//		String pickListName = null;
+//
+//		if (pickListId != null) {
+//					
+//			if( extractPickListName )
+//				pickListName = getPickListName(pickListId);
+//					
+//			refPLDef.put(pickListId, pickListName);
+//		}
+		
+		return refPLDef;
+	}
+	
+	public Map<String, String> getReferencedPLDefinitions(
+			String valueSet, Boolean extractPickListName) {
+
+		Map<String, String> refPLDef = new HashMap<String, String>();
+		
+		// TODO
+//		String pickListId = result
+//				.getString(SQLTableConstants.TBLCOL_PICKLISTID);
+//		String pickListName = null;
+//
+//		if (pickListId != null) {
+//				
+//			if( extractPickListName )
+//				pickListName = getPickListName(pickListId);
+//				
+//			refPLDef.put(pickListId, pickListName);
+//		}
+		
+		return refPLDef;
 	}
 	
 	@Override
