@@ -18,9 +18,7 @@
  */
 package org.lexevs.system.service;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +34,7 @@ import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
+import org.lexevs.registry.setup.LexEvsDatabaseSchemaSetup;
 import org.lexevs.system.service.LexEvsResourceManagingService.CodingSchemeAliasHolder;
 
 /**
@@ -127,6 +126,10 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		replay(csService);
 		
+		LexEvsDatabaseSchemaSetup setup = createNiceMock(LexEvsDatabaseSchemaSetup.class);
+		replay(setup);
+		service.setLexEvsDatabaseSchemaSetup(setup);
+		
 		service.setDatabaseServiceManager(manager);
 		service.setRegistry(registryMock);
 		service.initialize();
@@ -174,6 +177,10 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		replay(csService);
 		
+		LexEvsDatabaseSchemaSetup setup = createNiceMock(LexEvsDatabaseSchemaSetup.class);
+		replay(setup);
+		service.setLexEvsDatabaseSchemaSetup(setup);
+		
 		service.setRegistry(registryMock);
 		service.setDatabaseServiceManager(manager);
 		service.initialize();
@@ -220,6 +227,10 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		replay(registryMock, csService);	
 		
+		LexEvsDatabaseSchemaSetup setup = createNiceMock(LexEvsDatabaseSchemaSetup.class);
+		replay(setup);
+		service.setLexEvsDatabaseSchemaSetup(setup);
+		
 		service.setRegistry(registryMock);
 		service.setDatabaseServiceManager(manager);
 		service.initialize();
@@ -264,7 +275,11 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		manager.setCodingSchemeService(csService);
 		
-		replay(csService, registryMock);	
+		replay(csService, registryMock);
+		
+		LexEvsDatabaseSchemaSetup setup = createNiceMock(LexEvsDatabaseSchemaSetup.class);
+		replay(setup);
+		service.setLexEvsDatabaseSchemaSetup(setup);
 		
 		service.setRegistry(registryMock);
 		service.setDatabaseServiceManager(manager);
@@ -313,6 +328,10 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		replay(csService, registryMock);	
 		
+		LexEvsDatabaseSchemaSetup setup = createNiceMock(LexEvsDatabaseSchemaSetup.class);
+		replay(setup);
+		service.setLexEvsDatabaseSchemaSetup(setup);
+		
 		service.setRegistry(registryMock);
 		
 		service.setDatabaseServiceManager(manager);
@@ -360,6 +379,10 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		manager.setCodingSchemeService(csService);
 		
 		replay(csService, registryMock);	
+		
+		LexEvsDatabaseSchemaSetup setup = createNiceMock(LexEvsDatabaseSchemaSetup.class);
+		replay(setup);
+		service.setLexEvsDatabaseSchemaSetup(setup);
 		
 		service.setRegistry(registryMock);
 		service.setDatabaseServiceManager(manager);
@@ -415,6 +438,10 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		replay(csService, registryMock);	
 		service.setRegistry(registryMock);
+		
+		LexEvsDatabaseSchemaSetup setup = createNiceMock(LexEvsDatabaseSchemaSetup.class);
+		replay(setup);
+		service.setLexEvsDatabaseSchemaSetup(setup);
 		
 		service.setDatabaseServiceManager(manager);
 		service.setRegistry(registryMock);
