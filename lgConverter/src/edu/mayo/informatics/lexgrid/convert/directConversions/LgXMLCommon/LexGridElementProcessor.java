@@ -18,6 +18,8 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
+import java.util.ArrayList;
+
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
@@ -36,6 +38,22 @@ import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedExcept
  *
  */
 public class LexGridElementProcessor {
+    
+    private static ArrayList<CodingScheme> codingSchemes = new ArrayList<CodingScheme>();
+    private static  CodingScheme[] cs = null;
+    
+    
+    public static CodingScheme[] getCodingSchemes() {
+        return cs;
+    }
+
+    public static CodingScheme[] setAndRetrieveCodingSchemes() {
+        cs = new CodingScheme[codingSchemes.size()];
+        for (int i = 0; i < codingSchemes.size(); i++) {
+            cs[i] = codingSchemes.get(i);
+        }
+        return cs;
+    }
 
     /**
      * @param service
@@ -45,6 +63,7 @@ public class LexGridElementProcessor {
     public static void processCodingSchemeMetadata(XMLDaoServiceAdaptor service, Object parent, Object child) {
         CodingScheme scheme = (CodingScheme) parent;
         try {
+            codingSchemes.add(scheme);
             service.storeCodingScheme(scheme);
         } catch (CodingSchemeAlreadyLoadedException e) {
             e.printStackTrace();

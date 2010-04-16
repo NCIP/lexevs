@@ -18,6 +18,7 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.versions.SystemRelease;
@@ -40,7 +41,7 @@ public class LgSystemReleaseListener implements UnmarshalListener {
     private SystemRelease systemRelease = new SystemRelease();
     private AssociationPredicate currentPredicate = new AssociationPredicate();
     private XMLDaoServiceAdaptor serviceAdaptor = null;
-
+    private CodingScheme[] codingSchemes = null;
     /**
      * 
      */
@@ -108,10 +109,25 @@ public class LgSystemReleaseListener implements UnmarshalListener {
      * @see org.castor.xml.UnmarshalListener#unmarshalled(java.lang.Object, java.lang.Object)
      */
     public void unmarshalled(Object target, Object parent) {
+        
+        //TODO Debugging code.  Remove before shipping
         System.out.println("Unmarshalled target: "
                 + (target != null ? target.getClass().getSimpleName() : "target is null"));
         System.out.println("parent of Unmarshalled target: "
                 + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
+        
+        if(target instanceof CodingScheme && parent == null){
+            setCodingSchemes(LexGridElementProcessor.getCodingSchemes());
+        }
+    }
+
+
+    public CodingScheme[] getCodingSchemes() {
+        return codingSchemes;
+    }
+
+    public void setCodingSchemes(CodingScheme[] codingSchemes) {
+        this.codingSchemes = codingSchemes;
     }
 
     /* (non-Javadoc)
@@ -119,6 +135,7 @@ public class LgSystemReleaseListener implements UnmarshalListener {
      */
     public void fieldAdded(String fieldName, Object parent, Object child) {
 
+        //TODO Debugging code.  Remove before shipping
         System.out.println("fieldName:" + fieldName);
         System.out.println("parent: " + parent.getClass().getSimpleName());
         System.out.println("child: " + child.getClass().getSimpleName());

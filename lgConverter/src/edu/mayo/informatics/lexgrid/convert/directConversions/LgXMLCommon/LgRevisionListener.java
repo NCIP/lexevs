@@ -18,8 +18,10 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationPredicate;
+import org.LexGrid.versions.Revision;
 import org.castor.xml.UnmarshalListener;
 import org.mayo.edu.lgModel.LexGridBase;
 
@@ -35,6 +37,15 @@ public class LgRevisionListener implements UnmarshalListener {
     private boolean isRevisionLoaded = false;
     private boolean isPropertiesPresent = false;
     private AssociationPredicate currentPredicate = new AssociationPredicate();
+    private CodingScheme[] codingSchemes = null;
+
+    public CodingScheme[] getCodingSchemes() {
+        return codingSchemes;
+    }
+
+    public void setCodingSchemes(CodingScheme[] codingSchemes) {
+        this.codingSchemes = codingSchemes;
+    }
 
     private XMLDaoServiceAdaptor serviceAdaptor = null;
 
@@ -60,14 +71,14 @@ public class LgRevisionListener implements UnmarshalListener {
     /**
      * @return
      */
-    public boolean isPropertiesPresent() {
+   boolean isPropertiesPresent() {
         return isPropertiesPresent;
     }
 
     /**
      * @param isPropertiesPresent
      */
-    public void setPropertiesPresent(boolean isPropertiesPresent) {
+    void setPropertiesPresent(boolean isPropertiesPresent) {
         this.isPropertiesPresent = isPropertiesPresent;
     }
 
@@ -75,7 +86,7 @@ public class LgRevisionListener implements UnmarshalListener {
      * @param e
      * @return
      */
-    private boolean isPredicateLoaded(AssociationPredicate e) {
+    boolean isPredicateLoaded(AssociationPredicate e) {
         if (currentPredicate.equals(e))
             return true;
         else {
@@ -105,10 +116,16 @@ public class LgRevisionListener implements UnmarshalListener {
      * @see org.castor.xml.UnmarshalListener#unmarshalled(java.lang.Object, java.lang.Object)
      */
     public void unmarshalled(Object target, Object parent) {
+        
+        //TODO Debugging code.  Remove before shipping
         System.out.println("Unmarshalled target: "
                 + (target != null ? target.getClass().getSimpleName() : "target is null"));
         System.out.println("parent of Unmarshalled target: "
                 + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
+        
+        if(target instanceof Revision && parent == null){
+            setCodingSchemes(LexGridElementProcessor.setAndRetrieveCodingSchemes());
+        }
     }
 
     /* (non-Javadoc)
@@ -116,9 +133,11 @@ public class LgRevisionListener implements UnmarshalListener {
      */
     public void fieldAdded(String fieldName, Object parent, Object child) {
 
+        //TODO Debugging code.  Remove before shipping
         System.out.println("fieldName:" + fieldName);
         System.out.println("parent: " + parent.getClass().getSimpleName());
         System.out.println("child: " + child.getClass().getSimpleName());
+        
         if (!isRevisionLoaded && UnMarshallingLogic.isRevisionWithFirstChild(parent, child)) {
             LexGridElementProcessor.processRevisionMetadata(serviceAdaptor, parent, child);
             isRevisionLoaded = true;
@@ -141,6 +160,7 @@ public class LgRevisionListener implements UnmarshalListener {
                     .isPredicateLoaded((AssociationPredicate) parent), serviceAdaptor, parent, child);
             nassociations++;
         }
+        
     }
 
 }

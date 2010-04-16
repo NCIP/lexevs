@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -32,6 +33,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 import org.exolab.castor.xml.MarshalException;
@@ -64,12 +66,11 @@ public class LexGridXMLProcessor {
      * @return
      * @throws CodingSchemeAlreadyLoadedException
      */
-    public org.LexGrid.codingSchemes.CodingScheme loadCodingScheme(String path, LgMessageDirectorIF messages,
+    public org.LexGrid.codingSchemes.CodingScheme[] loadCodingScheme(String path, LgMessageDirectorIF messages,
             boolean validateXML) throws CodingSchemeAlreadyLoadedException {
         BufferedReader in = null;
         Unmarshaller umr = null;
-        XMLDaoServiceAdaptor service = new XMLDaoServiceAdaptor();
-        CodingScheme cs = null;
+        CodingScheme[] cs = null;
 
         try {
 
@@ -84,15 +85,13 @@ public class LexGridXMLProcessor {
             listener.setPropertiesPresent(setPropertiesFlag(path));
             umr.setUnmarshalListener(listener);
             umr.setClass(CodingScheme.class);
-            cs = (CodingScheme) umr.unmarshal(in);
-            service.activateScheme(cs.getCodingSchemeURI(), cs.getRepresentsVersion());
+            cs = new CodingScheme[]{(CodingScheme) umr.unmarshal(in)};
+            //service.activateScheme(cs.getCodingSchemeURI(), cs.getRepresentsVersion());
             in.close();
 
         } catch (MarshalException e) {
             e.printStackTrace();
         } catch (ValidationException e) {
-            e.printStackTrace();
-        } catch (LBParameterException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -108,13 +107,12 @@ public class LexGridXMLProcessor {
      * @return
      * @throws CodingSchemeAlreadyLoadedException
      */
-    public org.LexGrid.codingSchemes.CodingScheme loadRevision(String path, LgMessageDirectorIF messages,
+    public org.LexGrid.codingSchemes.CodingScheme[] loadRevision(String path, LgMessageDirectorIF messages,
             boolean validateXML) throws CodingSchemeAlreadyLoadedException {
         BufferedReader in = null;
         Unmarshaller umr = null;
-        XMLDaoServiceAdaptor service = new XMLDaoServiceAdaptor();
         Revision rev = null;
-        CodingScheme cs = null;
+        CodingScheme[] cs = null;
 
         try {
 
@@ -130,15 +128,12 @@ public class LexGridXMLProcessor {
             umr.setUnmarshalListener(listener);
             umr.setClass(Revision.class);
             rev = (Revision) umr.unmarshal(in);
-            cs = rev.getChangedEntry(0).getChangedCodingSchemeEntry();
-            service.activateScheme(cs.getCodingSchemeURI(), cs.getRepresentsVersion());
+            cs = listener.getCodingSchemes();
             in.close();
 
         } catch (MarshalException e) {
             e.printStackTrace();
         } catch (ValidationException e) {
-            e.printStackTrace();
-        } catch (LBParameterException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -154,18 +149,18 @@ public class LexGridXMLProcessor {
      * @return
      * @throws CodingSchemeAlreadyLoadedException
      */
-    public org.LexGrid.codingSchemes.CodingScheme loadSystemRelease(String path, LgMessageDirectorIF messages,
+    public org.LexGrid.codingSchemes.CodingScheme[] loadSystemRelease(String path, LgMessageDirectorIF messages,
             boolean validateXML) throws CodingSchemeAlreadyLoadedException {
         BufferedReader in = null;
         Unmarshaller umr = null;
         XMLDaoServiceAdaptor service = new XMLDaoServiceAdaptor();
-        CodingScheme cs = null;
+        CodingScheme[] cs = null;
 
         try {
 
             in = new BufferedReader(new FileReader(path));
             umr = new Unmarshaller();
-            LexGridUnmarshalListener listener = new LexGridUnmarshalListener();
+            LgSystemReleaseListener listener = new LgSystemReleaseListener();
             // default is true -- no need to set the validation flag if the user
             // wants to validate.
             if (!validateXML) {
@@ -177,15 +172,13 @@ public class LexGridXMLProcessor {
             SystemRelease release = (SystemRelease) umr.unmarshal(in);
             // Won't be returning a release with a coding scheme in it. Need to
             // find another way.
-            cs = release.getCodingSchemes().getCodingScheme(0);
-            service.activateScheme(cs.getCodingSchemeURI(), cs.getRepresentsVersion());
+            cs = listener.getCodingSchemes();
+           // service.activateScheme(cs.getCodingSchemeURI(), cs.getRepresentsVersion());
             in.close();
 
         } catch (MarshalException e) {
             e.printStackTrace();
         } catch (ValidationException e) {
-            e.printStackTrace();
-        } catch (LBParameterException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -198,7 +191,7 @@ public class LexGridXMLProcessor {
      * @param path
      * @return int representation of the Entry Point Type
      */
-    private int getEntryPointType(String path) {
+    public int getEntryPointType(String path) {
         BufferedReader in = null;
         XMLStreamReader xmlStreamReader;
 
@@ -242,6 +235,7 @@ public class LexGridXMLProcessor {
      * @param path
      * @return boolean indicating if a coding scheme contains a property
      */
+    //TODO Remove or modify print statements for logging.
     private boolean setPropertiesFlag(String path) {
         BufferedReader in = null;
         boolean propsPresent = false;
@@ -256,12 +250,12 @@ public class LexGridXMLProcessor {
                     .next()) {
 
                 if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("properties")) {
-                    System.out.println(xmlStreamReader.getLocalName());
+                   System.out.println(xmlStreamReader.getLocalName());
                     propsPresent = true;
                     break;
                 }
                 if (event == XMLStreamConstants.START_ELEMENT)
-                    System.out.println("Printing local name from stax: " + xmlStreamReader.getLocalName());
+                   System.out.println("Printing local name from stax: " + xmlStreamReader.getLocalName());
             }
             xmlStreamReader.close();
             in.close();
