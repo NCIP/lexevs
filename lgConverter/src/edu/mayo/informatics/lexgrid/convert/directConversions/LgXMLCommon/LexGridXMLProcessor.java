@@ -58,6 +58,9 @@ public class LexGridXMLProcessor {
     private static final int CS_ENTRY_POINT_TYPE = 1;
     private static final int REV_ENTRY_POINT_TYPE = 2;
     private static final int SR_ENTRY_POINT_TYPE = 3;
+    
+    public static final String NO_SCHEME_URL = "http://no.scheme.found";
+    public static final String NO_SCHEME_VERSION = "0.0";
 
     /**
      * @param path
@@ -111,7 +114,6 @@ public class LexGridXMLProcessor {
             boolean validateXML) throws CodingSchemeAlreadyLoadedException {
         BufferedReader in = null;
         Unmarshaller umr = null;
-        Revision rev = null;
         CodingScheme[] cs = null;
 
         try {
@@ -127,8 +129,16 @@ public class LexGridXMLProcessor {
             listener.setPropertiesPresent(setPropertiesFlag(path));
             umr.setUnmarshalListener(listener);
             umr.setClass(Revision.class);
-            rev = (Revision) umr.unmarshal(in);
-            cs = listener.getCodingSchemes();
+            umr.unmarshal(in);
+            if(isCodingSchemePresent(path)){
+                cs = listener.getCodingSchemes();
+                }
+                else{
+                    CodingScheme scheme = new CodingScheme();
+                    scheme.setCodingSchemeURI(NO_SCHEME_URL);
+                    scheme.setRepresentsVersion(NO_SCHEME_VERSION);
+                    cs = new CodingScheme[]{scheme};
+                }
             in.close();
 
         } catch (MarshalException e) {
@@ -153,7 +163,6 @@ public class LexGridXMLProcessor {
             boolean validateXML) throws CodingSchemeAlreadyLoadedException {
         BufferedReader in = null;
         Unmarshaller umr = null;
-        XMLDaoServiceAdaptor service = new XMLDaoServiceAdaptor();
         CodingScheme[] cs = null;
 
         try {
@@ -169,10 +178,16 @@ public class LexGridXMLProcessor {
             listener.setPropertiesPresent(setPropertiesFlag(path));
             umr.setUnmarshalListener(listener);
             umr.setClass(SystemRelease.class);
-            SystemRelease release = (SystemRelease) umr.unmarshal(in);
-            // Won't be returning a release with a coding scheme in it. Need to
-            // find another way.
+            umr.unmarshal(in);
+            if(isCodingSchemePresent(path)){
             cs = listener.getCodingSchemes();
+            }
+            else{
+                CodingScheme scheme = new CodingScheme();
+                scheme.setCodingSchemeURI(NO_SCHEME_URL);
+                scheme.setRepresentsVersion(NO_SCHEME_VERSION);
+                cs = new CodingScheme[]{scheme};
+            }
            // service.activateScheme(cs.getCodingSchemeURI(), cs.getRepresentsVersion());
             in.close();
 
@@ -271,6 +286,41 @@ public class LexGridXMLProcessor {
         return propsPresent;
     }
 
+    
+   private boolean isCodingSchemePresent(String path) {
+        BufferedReader in = null;
+        boolean schemePresent = false;
+        XMLStreamReader xmlStreamReader;
+
+        try {
+            in = new BufferedReader(new FileReader(path));
+
+            xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
+
+            for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
+                    .next()) {
+
+                if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("codingScheme")) {
+                   System.out.println(xmlStreamReader.getLocalName());
+                    schemePresent = true;
+                    break;
+                }
+                if (event == XMLStreamConstants.START_ELEMENT)
+                   System.out.println("Printing local name from stax: " + xmlStreamReader.getLocalName());
+            }
+            xmlStreamReader.close();
+            in.close();
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+        } catch (FactoryConfigurationError e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return schemePresent;
+    }
     /**
      * @param args
      */
@@ -279,7 +329,7 @@ public class LexGridXMLProcessor {
         System.out.println("Parsing content from " + args[0] + "...");
 
         try {
-            System.out.println("entry point type: " + new LexGridXMLProcessor().getEntryPointType(args[0]));
+            System.out.println("Coding Scheme Present? : " + new LexGridXMLProcessor().isCodingSchemePresent(args[0]));
         } catch (FactoryConfigurationError e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

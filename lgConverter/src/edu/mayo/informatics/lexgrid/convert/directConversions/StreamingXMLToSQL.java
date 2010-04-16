@@ -18,14 +18,12 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon.LexGridXMLProcessor;
-import edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon.XMLUnmarshaller;
 import org.LexGrid.codingSchemes.CodingScheme;
 
 /**
@@ -57,8 +55,6 @@ public class StreamingXMLToSQL {
             case 3:  codingScheme = processor.loadSystemRelease(fileLocation.getPath(), messages_, isXMLValid); break;
             default: messageDirector.info("No Valid LexGrid XML entry point found at " + fileLocation.getPath()); break;
         }
-
-        //codingScheme = new XMLUnmarshaller().load(fileLocation.getPath(), messages_, isXMLValid);
 
         return codingScheme;
     }
