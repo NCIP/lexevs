@@ -127,7 +127,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		if (definition != null)
 		{
 			md_.info("Loading value set definition : " + definition.getValueSetDefinitionURI());
-			this.databaseServiceManager.getValueSetDefinitionService().insertValueSetDefinition(definition, systemReleaseURI);
+			this.databaseServiceManager.getValueSetDefinitionService().insertValueSetDefinition(definition, systemReleaseURI, mappings);
 			
 //			getVDService().insert(vddef, systemReleaseURI, mappings);
 		}
