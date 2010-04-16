@@ -48,6 +48,8 @@ public class StringArrayTypeHandler implements TypeHandlerCallback{
         if (dbResult != null)
         {
         	result = dbResult.toString().trim().split(",");
+        } else {
+        	result = new String[0];
         }
 
         return result;
