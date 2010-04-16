@@ -88,14 +88,21 @@ public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcesso
 		if(sourceCode.equals(targetCode) && sourceNamespace.equals(targetNamespace)) {
 			if(selfReferencingAssociationPolicy.equals(SelfReferencingAssociationPolicy.AS_PROPERTY_LINKS) ||
 					selfReferencingAssociationPolicy.equals(SelfReferencingAssociationPolicy.BOTH)){
-				this.insertPropertyLink(
-						sourceCode, 
-						sourceNamespace, 
-						rel, 
-						sourcePropertyIdResolver.getPropertyId(item), 
-						targetPropertyIdResolver.getPropertyId(item));
+				String sourcePropertyId = sourcePropertyIdResolver.getPropertyId(item);
+				String targetPropertyId = targetPropertyIdResolver.getPropertyId(item);
+
+				if(StringUtils.isBlank(sourcePropertyId) || StringUtils.isBlank(targetPropertyId)) {
+
+					this.insertPropertyLink(
+							sourceCode, 
+							sourceNamespace, 
+							rel, 
+							sourcePropertyIdResolver.getPropertyId(item), 
+							targetPropertyIdResolver.getPropertyId(item));
+
+				}
 			}
-			
+
 			if(selfReferencingAssociationPolicy.equals(SelfReferencingAssociationPolicy.AS_PROPERTY_LINKS) ||
 					selfReferencingAssociationPolicy.equals(SelfReferencingAssociationPolicy.IGNORE)){
 				return null;
