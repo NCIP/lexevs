@@ -92,7 +92,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	
 	public static String GET_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL = PROPERTY_NAMESPACE + "getPropertyMultiAttribById";
 	
-	public static String UPDATE_PROPERTY_BY_ID_SQL = PROPERTY_NAMESPACE + "updatePropertyById";
+	public static String UPDATE_PROPERTY_BY_UID_SQL = PROPERTY_NAMESPACE + "updatePropertyByUid";
 	
 	PropertyMultiAttributeClassifier propertyMultiAttributeClassifier = new PropertyMultiAttributeClassifier();
 	
@@ -315,7 +315,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				property.getPropertyId());
 		
 		this.getSqlMapClientTemplate().update(
-				UPDATE_PROPERTY_BY_ID_SQL, 
+				UPDATE_PROPERTY_BY_UID_SQL, 
 				this.buildInsertPropertyBean(
 						prefix, 
 						null, 
