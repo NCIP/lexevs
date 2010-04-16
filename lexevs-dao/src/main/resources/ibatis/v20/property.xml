@@ -284,7 +284,7 @@
 		)
   </insert>
   
-  <update id="updatePropertyById"
+  <update id="updatePropertyByUid"
   	parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
   		UPDATE 
 			$prefix$property property
@@ -347,7 +347,7 @@
 			</isNotNull>
 		  </dynamic>
 		 WHERE
-		 	property.propertyGuid = #id#
+		 	property.propertyGuid = #uid#
   </update>
     
 </sqlMap>
