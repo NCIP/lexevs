@@ -52,7 +52,6 @@ import org.LexGrid.annotations.LgAdminFunction;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
-import org.LexGrid.concepts.Concept;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedProperty;
