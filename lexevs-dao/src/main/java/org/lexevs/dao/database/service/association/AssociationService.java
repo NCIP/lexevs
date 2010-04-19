@@ -18,10 +18,6 @@
  */
 package org.lexevs.dao.database.service.association;
 
-import java.util.List;
-
-import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
-import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.Relations;
