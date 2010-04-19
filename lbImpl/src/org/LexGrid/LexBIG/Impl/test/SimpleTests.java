@@ -607,7 +607,7 @@ public class SimpleTests {
                 ConvenienceMethods.createProductionTag());
 
         for (int i = 1; i < csr.length; i++) {
-            if (csr[i].getRenderingDetail().getVersionStatus().getType() == CodingSchemeVersionStatus.ACTIVE_TYPE) {
+            if (csr[i].getRenderingDetail().getVersionStatus().equals(CodingSchemeVersionStatus.ACTIVE)) {
                 master.union(lbs.getCodingSchemeConcepts(csr[i].getCodingSchemeSummary().getCodingSchemeURI(),
                         ConvenienceMethods.createProductionTag()));
             }

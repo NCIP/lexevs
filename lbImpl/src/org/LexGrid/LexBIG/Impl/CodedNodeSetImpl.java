@@ -905,7 +905,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
                 SortContext[] temp = sd.getRestrictToContext();
                 for (int i = 0; i < temp.length; i++) {
-                    if (temp[i].getType() == context.getType()) {
+                    if (temp[i].equals(context)) {
                         return true;
                     }
                 }

@@ -450,7 +450,7 @@ public class LexBIGServiceImpl implements LexBIGService {
             } else {
                 SortContext[] temp = cur.getRestrictToContext();
                 for (int j = 0; j < temp.length; j++) {
-                    if (temp[j].getType() == context.getType()) {
+                    if (temp[j].equals(context)) {
                         result.addSortDescription(cur);
                         break;
                     }
