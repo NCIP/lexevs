@@ -199,7 +199,7 @@ public class]]></replacevalue>
 			<replacevalue>this.setCode(conceptCode);</replacevalue>
 		</replace>
 		<replace dir="${core}" token="this._referencedEntry;">
-			<replacevalue>this.getEntity() instanceof org.LexGrid.concepts.Concept ? (org.LexGrid.concepts.Concept) this.getEntity() : null;</replacevalue>
+			<replacevalue>this.getEntity() instanceof org.LexGrid.concepts.Entity ? (org.LexGrid.concepts.Entity) this.getEntity() : null;</replacevalue>
 		</replace>
 		<replace dir="${core}" token="this._referencedEntry = referencedEntry;">
 			<replacevalue>this.setEntity(referencedEntry);</replacevalue>
