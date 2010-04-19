@@ -18,37 +18,23 @@
  */
 package org.LexGrid.valuedomain.impl;
 
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
-import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.commonTypes.Property;
-import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedCodingScheme;
-import org.LexGrid.naming.SupportedDataType;
-import org.LexGrid.naming.SupportedLanguage;
+import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.SupportedNamespace;
-import org.LexGrid.naming.SupportedProperty;
-import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListEntry;
 import org.LexGrid.valueSets.PickListEntryExclusion;
 import org.LexGrid.valueSets.PickListEntryNode;
-import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
-import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
-import org.lexgrid.valuesets.dto.ResolvedPickListEntry;
-import org.lexgrid.valuesets.dto.ResolvedPickListEntryList;
 import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
 
 /**
@@ -59,7 +45,6 @@ import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
 public class LexEVSPickListServicesImplTest extends TestCase{
 	
 	private LexEVSPickListDefinitionServices pls_;
-	private LexEVSValueSetDefinitionServices vds_;
 	
 	/**
 	 * Test method for {@link org.lexgrid.valuedomain.impl.LexEVSPickListServicesImpl#getPickListDefinitionById(java.lang.String)}.
@@ -536,6 +521,57 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 				}
 			}
 		}		
+		
+		if (plDef.getMappings() != null)
+		{
+			for (SupportedAssociation sa : plDef.getMappings().getSupportedAssociation())
+			{
+				System.out.println("sa uri : " + sa.getUri());
+				System.out.println("sa localId : " + sa.getLocalId());
+				System.out.println("sa content : " + sa.getContent());
+			}
+			
+			for (SupportedCodingScheme scs : plDef.getMappings().getSupportedCodingScheme())
+			{
+				System.out.println("scs uri : " + scs.getUri());
+				System.out.println("scs localId : " + scs.getLocalId());
+				System.out.println("scs content : " + scs.getContent());
+				System.out.println("scs isimported : " + scs.getIsImported());
+			}
+			
+			for (SupportedNamespace sn : plDef.getMappings().getSupportedNamespace())
+			{
+				System.out.println("sn uri : " + sn.getUri());
+				System.out.println("sn localId : " + sn.getLocalId());
+				System.out.println("sn content : " + sn.getContent());
+				System.out.println("sn EquivalentCodingScheme : " + sn.getEquivalentCodingScheme());
+			}
+			
+			for (SupportedHierarchy sh : plDef.getMappings().getSupportedHierarchy())
+			{
+				System.out.println("sh uri : " + sh.getUri());
+				System.out.println("sh localId : " + sh.getLocalId());
+				System.out.println("sh content : " + sh.getContent());
+				System.out.println("sh rootCode : " + sh.getRootCode());
+				for (String assn : sh.getAssociationNamesAsReference())
+				{
+					System.out.println("sh assn : " + assn);
+				}
+			}
+		}
+	}
+	
+	@Test
+	public void testGetPickListIdByEntityReference() throws LBException{
+		System.out.println("in testGetPickListIdByEntityReference");
+		
+		Map<String, String> plRefs = getPickListService().getReferencedPLDefinitions("entityCode 2", null, null, false);
+		
+		System.out.println("is plRef null? " + (plRefs == null));
+//		for (String plId : plRefs.keySet())
+//		{
+//			System.out.println("pl ids : " + plId);
+//		}
 	}
 
 	/**

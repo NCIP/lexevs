@@ -28,7 +28,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.concepts.Comment;
-import org.LexGrid.concepts.Concept;
+import org.LexGrid.concepts.Entity;
 
 /**
  * This class should be used as a place to write JUnit tests which show a bug,
@@ -67,7 +67,7 @@ public class GForge20651 extends LexBIGServiceTestCase {
         ResolvedConceptReferenceList rcrl= cns.resolveToList(null, null, null, -1);
         if (rcrl.getResolvedConceptReferenceCount() > 0) {
             ResolvedConceptReference rcr[]= rcrl.getResolvedConceptReference();
-            Concept concept= rcr[0].getReferencedEntry();
+            Entity concept= rcr[0].getReferencedEntry();
             Comment comments[] = concept.getComment();
             assertNotNull(comments);
             assertTrue(comments.length > 0);
