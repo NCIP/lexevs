@@ -415,7 +415,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 			"values ('csguid', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into cssupportedattrib " +
-			"values ('cssaguid', 'csguid', 'CodingScheme', 'id', 'uri', null, null, null, null, null, null)");
+			"values ('cssaguid', 'csguid', 'CodingScheme', 'id', 'uri', null, null, null, null, null, null, null, null, null, null, null)");
 		
 		
 		SupportedCodingScheme scs = new SupportedCodingScheme();
@@ -451,10 +451,10 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 			"values ('csguid', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into cssupportedattrib " +
-			"values ('cssaguid1', 'csguid', 'CodingScheme', 'id1', 'uri1', null, null, null, null, null, null)");
+			"values ('cssaguid1', 'csguid', 'CodingScheme', 'id1', 'uri1', null, null, null, null, null, null, null, null, null, null, null)");
 		
 		template.execute("Insert into cssupportedattrib " +
-			"values ('cssaguid2', 'csguid', 'CodingScheme', 'id2', 'uri2', null, null, null, null, null, null)");
+			"values ('cssaguid2', 'csguid', 'CodingScheme', 'id2', 'uri2', null, null, null, null, null, null, null, null, null, null, null)");
 
 		assertEquals(2, template.queryForInt("Select count(*) from cssupportedattrib"));
 		
