@@ -182,7 +182,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 				assertEquals(rs.getString(4), "cs");
 				assertEquals(rs.getString(5), "uri://test");
 				assertEquals(rs.getString(6), "supported cs");
-				assertEquals(rs.getBoolean(9), true);
+				assertEquals(true, rs.getBoolean(10));
 
 				return true;
 			}
@@ -216,7 +216,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 				assertEquals(rs.getString(4), "cs");
 				assertEquals(rs.getString(5), "uri://test");
 				assertEquals(rs.getString(6), "supported cs");
-				assertEquals(rs.getBoolean(9), true);
+				assertEquals(rs.getBoolean(10), true);
 
 				return true;
 			}
@@ -432,7 +432,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				
 				assertEquals("changedUri", rs.getString(5));
-				assertTrue(rs.getBoolean(9));
+				assertTrue(rs.getBoolean(10));
 
 				return true;
 			}
