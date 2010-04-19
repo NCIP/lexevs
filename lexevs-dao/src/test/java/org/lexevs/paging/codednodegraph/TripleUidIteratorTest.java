@@ -24,9 +24,10 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
-import org.lexevs.dao.database.ibatis.codednodegraph.IbatisCodedNodeGraphDao;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
+import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.utility.RegistryUtility;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
@@ -35,13 +36,19 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+
 @TransactionConfiguration
 public class TripleUidIteratorTest extends LexEvsDbUnitTestBase {
 	
+	@Resource
+	private Registry registry;
+	
 	@Test
-	public void testGetTripleUids() throws SQLException{
+	public void testGetTripleUids() throws Exception{
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
+		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
+		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
 		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
 
