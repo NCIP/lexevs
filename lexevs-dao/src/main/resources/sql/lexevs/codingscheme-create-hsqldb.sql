@@ -12,7 +12,6 @@ CREATE TABLE @PREFIX@associationEntity (
 CREATE TABLE @PREFIX@associationPredicate ( 
 	associationPredicateGuid varchar(36) NOT NULL,
 	relationGuid varchar(36) NOT NULL,
-	associationEntityGuid varchar(36),
 	associationName varchar(100)
 )
 ;
@@ -60,7 +59,11 @@ CREATE TABLE @PREFIX@csSupportedAttrib (
 	isForwardNavigable char(1),
 	isImported char(1),
 	equivalentCodingScheme varchar(250),
-	assemblyRule varchar(250)
+	assemblyRule varchar(250),
+	assnCodingScheme VARCHAR(250),
+	assnNamespace VARCHAR(250),
+	assnEntityCode VARCHAR(200),
+	propertyType VARCHAR(50)
 )
 ;
 
@@ -77,7 +80,11 @@ CREATE TABLE @PREFIX@entity (
 	status varchar(50),
 	effectiveDate timestamp,
 	expirationDate timestamp,
-	entryStateGuid varchar(36)
+	entryStateGuid varchar(36),
+	forwardName VARCHAR(100),
+	reverseName VARCHAR(100),
+	isNavigable CHAR(1),
+	isTransitive CHAR(1)
 )
 ;
 
