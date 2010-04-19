@@ -52,7 +52,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	public static String GET_ENTRY_STATE_BY_ID_SQL = VERSIONS_NAMESPACE + "insertEntryState";
 	
 	/** The GE t_ syste m_ releas e_ i d_ b y_ uri. */
-	public static String GET_SYSTEM_RELEASE_ID_BY_URI = VERSIONS_NAMESPACE + "getSystemReleaseIdByUri";
+	public static String GET_SYSTEM_RELEASE_ID_BY_URI = VERSIONS_NAMESPACE + "getSystemReleaseGuidByUri";
 	
 	/** ibatis revision dao*/
 	private IbatisRevisionDao ibatisRevisionDao = null;

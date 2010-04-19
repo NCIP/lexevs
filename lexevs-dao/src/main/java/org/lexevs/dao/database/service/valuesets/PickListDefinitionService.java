@@ -19,8 +19,8 @@
 package org.lexevs.dao.database.service.valuesets;
 
 import java.util.List;
-import java.util.Map;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListDefinitions;
@@ -51,6 +51,17 @@ public interface PickListDefinitionService {
 	public List<String> getPickListDefinitionIdForValueSetDefinitionUri(String valueSetDefUri);
 	
 	/**
+	 * 
+	 * @param entityCode
+	 * @param entityCodeNameSpace
+	 * @param propertyId
+	 * @param extractPickListName
+	 * @return
+	 * @throws LBException
+	 */
+	public List<String> getPickListDefinitionIdForEntityReference(String entityCode, String entityCodeNameSpace, String propertyId);
+	
+	/**
 	 * Removes the pick list definition by pick list id.
 	 * 
 	 * @param pickListId the pick list id
@@ -79,30 +90,6 @@ public interface PickListDefinitionService {
 	 * 
 	 * @return the list< string>
 	 */
-	public List<String> listPickListIds() ;
+	public List<String> listPickListIds() ;	
 	
-	/**
-	 * Gets the referenced pl definitions.
-	 * 
-	 * @param entityCode the entity code
-	 * @param entityCodeNameSpace the entity code name space
-	 * @param propertyId the property id
-	 * @param extractPickListName the extract pick list name
-	 * 
-	 * @return the referenced pl definitions
-	 */
-	public Map<String, String> getReferencedPLDefinitions(String entityCode,
-			String entityCodeNameSpace, String propertyId,
-			Boolean extractPickListName);
-	
-	/**
-	 * Gets the referenced pl definitions.
-	 * 
-	 * @param valueSet the value set
-	 * @param extractPickListName the extract pick list name
-	 * 
-	 * @return the referenced pl definitions
-	 */
-	public Map<String, String> getReferencedPLDefinitions(
-			String valueSet, Boolean extractPickListName);	
 }

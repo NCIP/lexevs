@@ -45,6 +45,7 @@ import org.lexevs.dao.database.constants.classifier.mapping.ClassToStringMapping
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdatePickListEntryBean;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean;
@@ -94,6 +95,10 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	public static String GET_PICKLIST_DEFINITION_ID_FOR_VALUESET_DEFINITION_URI_SQL = PICKLIST_NAMESPACE + "getPickListDefinitionIdForValueSetDefinitionUri";
 	
 	public static String GET_PICKLIST_ENTRYNODE_BEAN_BY_PICKLIST_GUID_SQL = PICKLIST_NAMESPACE + "getPickListEntryNodeBeanByPickListGuid";
+	
+	public static String GET_PICKLIST_DEFINITION_ID_FOR_ENTITYCODE_ENTITYCODENAMESPACE_SQL = PICKLIST_NAMESPACE + "getPickListDefinitionIdForEntityCodeAndEntityNamespace";
+	
+	public static String GET_PICKLIST_DEFINITION_ID_FOR_ENTITYCODE_ENTITYCODENAMESPACE_PROPERTYID_SQL = PICKLIST_NAMESPACE + "getPickListDefinitionIdForEntityCodeEntityNamespaceAndPropertyId";
 	
 	public static String REMOVE_PICKLIST_DEFINITION_BY_PICKLISTID_SQL = PICKLIST_NAMESPACE + "removePickListDefinitionByPickListId";
 	
@@ -597,6 +602,21 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	 */
 	public void setVsPropertyDao(VSPropertyDao vsPropertyDao) {
 		this.vsPropertyDao = vsPropertyDao;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getPickListDefinitionIdForEntityReference(
+			String entityCode, String entityCodeNameSpace, String propertyId) {
+		List<String> pickListIds = null;
+		if (propertyId != null)			
+			pickListIds =  (List<String>) this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_DEFINITION_ID_FOR_ENTITYCODE_ENTITYCODENAMESPACE_PROPERTYID_SQL,
+					new PrefixedParameterTriple(null, entityCode, entityCodeNameSpace, propertyId));
+		else
+			pickListIds =  this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_DEFINITION_ID_FOR_ENTITYCODE_ENTITYCODENAMESPACE_SQL,
+					new PrefixedParameterTuple(null, entityCode, entityCodeNameSpace));
+		
+		return pickListIds;
 	}
 
 	

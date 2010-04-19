@@ -4,7 +4,6 @@
 package org.lexevs.dao.database.service.valuesets;
 
 import java.util.List;
-import java.util.Map;
 
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
@@ -40,27 +39,12 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 		return this.getDaoManager().getCurrentPickListDefinitionDao().getPickListDefinitionIdForValueSetDefinitionURI(valueSetDefURI);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#getReferencedPLDefinitions(java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean)
-	 */
 	@Override
-	public Map<String, String> getReferencedPLDefinitions(String entityCode,
-			String entityCodeNameSpace, String propertyId,
-			Boolean extractPickListName) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<String> getPickListDefinitionIdForEntityReference(
+			String entityCode, String entityCodeNameSpace, String propertyId) {
+		return this.getDaoManager().getCurrentPickListDefinitionDao().getPickListDefinitionIdForEntityReference(entityCode, entityCodeNameSpace, propertyId);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#getReferencedPLDefinitions(java.lang.String, java.lang.Boolean)
-	 */
-	@Override
-	public Map<String, String> getReferencedPLDefinitions(String valueSet,
-			Boolean extractPickListName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#insertPickListDefinition(org.LexGrid.valueSets.PickListDefinition)
 	 */

@@ -20,6 +20,7 @@ package org.lexevs.dao.database.access.valuesets;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListEntryNode;
@@ -68,6 +69,17 @@ public interface PickListDao extends LexGridSchemaVersionAwareDao {
 	 */
 	public String getPickListEntryNodeGuidByPickListIdAndPLEntryId(String pickListId, String plEntryId);
 	
+	/**
+	 * 
+	 * @param entityCode
+	 * @param entityCodeNameSpace
+	 * @param propertyId
+	 * @param extractPickListName
+	 * @return
+	 * @throws LBException
+	 */
+	public List<String> getPickListDefinitionIdForEntityReference(String entityCode, String entityCodeNameSpace, String propertyId);
+
 	/**
 	 * Insert pick list definition.
 	 * 
