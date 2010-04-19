@@ -427,20 +427,12 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				batchInserter.startBatch();
 				
 				for(Entity entity : entities){
-					String entityId = doInsertEntity(
+					doInsertEntity(
 							prefix, 
 							codingSchemeId, 
 							entity, 
 							batchInserter,
 							cascade);
-//					if(entity instanceof AssociationEntity) {
-//						ibatisAssociationDao.
-//							insertAssociationEntity(
-//									codingSchemeId, 
-//									entityId, 
-//									(AssociationEntity)entity, 
-//									batchInserter);
-//					}
 				}
 				
 				batchInserter.executeBatch();
