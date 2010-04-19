@@ -87,7 +87,7 @@ public class UMLSHistoryServiceTest extends TestCase {
                 .getLoader(org.LexGrid.LexBIG.Impl.loaders.UMLSHistoryLoaderImpl.name);
         loader.load((new File("resources/testData/sampleNciMetaHistory")).toURI(), false, true, false);
 
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
     }
 
@@ -223,7 +223,7 @@ public class UMLSHistoryServiceTest extends TestCase {
         assertTrue(nce[6].getEditDate().getTime() == Long.parseLong("1159678800000"));
         assertTrue(nce[6].getReferencecode().equals("C0700017"));
         assertTrue(nce[6].getReferencename().equals("Not Available."));
-        assertTrue(nce[6].getEditaction().getType() == ChangeType.MERGE_TYPE);
+        assertTrue(nce[6].getEditaction().equals(ChangeType.MERGE));
 
         csv = new CodingSchemeVersion();
         csv.setVersion("200610");
@@ -234,7 +234,7 @@ public class UMLSHistoryServiceTest extends TestCase {
         assertTrue(nce[0].getConceptcode().equals("C0004029"));
         assertTrue(nce[0].getEditDate().getTime() == Long.parseLong("1159678800000"));
         assertTrue(nce[0].getReferencecode().equals("C0017641"));
-        assertTrue(nce[0].getEditaction().getType() == ChangeType.MERGE_TYPE);
+        assertTrue(nce[0].getEditaction().equals(ChangeType.MERGE));
     }
 
     public void testGetEditActionList2() throws LBException {
@@ -265,7 +265,7 @@ public class UMLSHistoryServiceTest extends TestCase {
         assertTrue(nce[1].getConceptcode().equals("C0390269"));
         assertTrue(nce[1].getEditDate().getTime() == Long.parseLong("1146459600000"));
         assertTrue(nce[1].getReferencecode().equals("C1608803"));
-        assertTrue(nce[1].getEditaction().getType() == ChangeType.MERGE_TYPE);
+        assertTrue(nce[1].getEditaction().equals(ChangeType.MERGE));
 
         nce = hs.getEditActionList(Constructors.createConceptReference("C1608803", ""), begin, null).getEntry();
         assertTrue(nce.length == 3);
@@ -273,7 +273,7 @@ public class UMLSHistoryServiceTest extends TestCase {
         assertTrue(nce[0].getConceptcode().equals("C0390267"));
         assertTrue(nce[0].getEditDate().getTime() == Long.parseLong("1146459600000"));
         assertTrue(nce[0].getReferencecode().equals("C1608803"));
-        assertTrue(nce[0].getEditaction().getType() == ChangeType.RETIRE_TYPE);
+        assertTrue(nce[0].getEditaction().equals(ChangeType.RETIRE));
 
         nce = hs.getEditActionList(Constructors.createConceptReference("C1608803", ""), begin, end).getEntry();
         assertTrue(nce.length == 2);
@@ -281,7 +281,7 @@ public class UMLSHistoryServiceTest extends TestCase {
         assertTrue(nce[1].getConceptcode().equals("C0390269"));
         assertTrue(nce[1].getEditDate().getTime() == Long.parseLong("1146459600000"));
         assertTrue(nce[1].getReferencecode().equals("C1608803"));
-        assertTrue(nce[1].getEditaction().getType() == ChangeType.MERGE_TYPE);
+        assertTrue(nce[1].getEditaction().equals(ChangeType.MERGE));
     }
 
     public void testGetEditActionList3() throws LBException, URISyntaxException {
@@ -295,7 +295,7 @@ public class UMLSHistoryServiceTest extends TestCase {
         assertTrue(nce[509].getConceptcode().equals("C0596235"));
         assertTrue(nce[509].getEditDate().getTime() == Long.parseLong("1170309600000"));
         assertTrue(nce[509].getReferencecode().equals("C0373561"));
-        assertTrue(nce[509].getEditaction().getType() == ChangeType.MERGE_TYPE);
+        assertTrue(nce[509].getEditaction().equals(ChangeType.MERGE));
 
         nce = hs.getEditActionList(Constructors.createConceptReference("C0359583", null),
                 new URI(HistoryService.metaURN + ":" + sRelease200702_)).getEntry();
@@ -304,7 +304,7 @@ public class UMLSHistoryServiceTest extends TestCase {
         assertTrue(nce[0].getConceptcode().equals("C0359583"));
         assertTrue(nce[0].getEditDate().getTime() == Long.parseLong("1170309600000"));
         assertTrue(nce[0].getReferencecode().equals("C0242295"));
-        assertTrue(nce[0].getEditaction().getType() == ChangeType.RETIRE_TYPE);
+        assertTrue(nce[0].getEditaction().equals(ChangeType.RETIRE));
     }
 
     public void testDeleteLoadedMetaHistory() throws LBException {
