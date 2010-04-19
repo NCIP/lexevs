@@ -2,31 +2,13 @@ SET FOREIGN_KEY_CHECKS=0;
 
 
 
-CREATE TABLE @PREFIX@associationEntity
-(
-	associationEntityGuid VARCHAR(36) NOT NULL,
-	entityGuid VARCHAR(36) NOT NULL,
-	forwardName VARCHAR(100),
-	reverseName VARCHAR(100),
-	isNavigable CHAR(1),
-	isTransitive CHAR(1),
-	entryStateGuid VARCHAR(36),
-	PRIMARY KEY (associationEntityGuid),
-	KEY (entityGuid)
-) 
-TYPE=INNODB
-;
-
-
 CREATE TABLE @PREFIX@associationPredicate
 (
 	associationPredicateGuid VARCHAR(36) NOT NULL,
 	relationGuid VARCHAR(36) NOT NULL,
-	associationEntityGuid VARCHAR(36),
 	associationName VARCHAR(100),
 	PRIMARY KEY (associationPredicateGuid),
 	UNIQUE UQ_association(relationGuid, associationName),
-	KEY (associationEntityGuid),
 	KEY (relationGuid)
 ) 
 TYPE=INNODB
@@ -94,6 +76,10 @@ CREATE TABLE @PREFIX@csSupportedAttrib
 	isImported CHAR(1),
 	equivalentCodingScheme VARCHAR(250),
 	assemblyRule VARCHAR(250),
+	assnCodingScheme VARCHAR(250),
+	assnNamespace VARCHAR(250),
+	assnEntityCode VARCHAR(200),
+	propertyType VARCHAR(50),
 	PRIMARY KEY (csSuppAttribGuid),
 	UNIQUE UQ_mapping(codingSchemeGuid, supportedAttributeTag, id),
 	KEY (codingSchemeGuid)
@@ -117,6 +103,10 @@ CREATE TABLE @PREFIX@entity
 	effectiveDate DATETIME,
 	expirationDate DATETIME,
 	entryStateGuid VARCHAR(36),
+	forwardName VARCHAR(100),
+	reverseName VARCHAR(100),
+	isNavigable CHAR(1),
+	isTransitive CHAR(1),
 	PRIMARY KEY (entityGuid),
 	UNIQUE UQ_entity(codingSchemeGuid, entityCode, entityCodeNamespace),
 	KEY (codingSchemeGuid),
@@ -328,15 +318,6 @@ TYPE=INNODB
 
 SET FOREIGN_KEY_CHECKS=1;
 
-
-ALTER TABLE @PREFIX@associationEntity ADD CONSTRAINT @PREFIX@FK_associationEntity_entity 
-	FOREIGN KEY (entityGuid) REFERENCES @PREFIX@entity (entityGuid)
-	ON DELETE CASCADE
-;
-
-ALTER TABLE @PREFIX@associationPredicate ADD CONSTRAINT @PREFIX@FK_associationPr_associationEn 
-	FOREIGN KEY (associationEntityGuid) REFERENCES @PREFIX@entity (entityGuid)
-;
 
 ALTER TABLE @PREFIX@associationPredicate ADD CONSTRAINT @PREFIX@FK_associationPredica_relation 
 	FOREIGN KEY (relationGuid) REFERENCES @PREFIX@relation (relationGuid)
