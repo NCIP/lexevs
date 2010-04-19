@@ -174,12 +174,20 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 		this.readCodingSchemeAliasesFromServer();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.system.service.SystemResourceService#removeNonCodingSchemeResourceFromSystem(java.lang.String)
-	 */
 	@ClearCache
-	public void removeNonCodingSchemeResourceFromSystem(String uri) {
-		throw new UnsupportedOperationException();
+	public void removeValueSetDefinitionResourceFromSystem(String valueSetDefinitionURI, String version) throws LBParameterException {
+		RegistryEntry entry = RegistryUtility.valueSetDefinitionToRegistryEntry(valueSetDefinitionURI, version);
+		entry.setPrefix(null);
+		
+		this.getRegistry().removeEntry(entry);
+	}
+	
+	@ClearCache
+	public void removePickListDefinitionResourceFromSystem(String pickListId, String version) throws LBParameterException {
+		RegistryEntry entry = RegistryUtility.pickListDefinitionToRegistryEntry(pickListId, version);
+		entry.setPrefix(null);
+		
+		this.getRegistry().removeEntry(entry);
 	}
 
 	/* (non-Javadoc)
@@ -358,12 +366,30 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 	 * @see org.lexevs.system.service.SystemResourceService#containsCodingSchemeResource(java.lang.String, java.lang.String)
 	 */
 	public boolean containsCodingSchemeResource(String uri, String version)
-	throws LBParameterException {
+		throws LBParameterException {
 		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
 		ref.setCodingSchemeURN(uri);
 		ref.setCodingSchemeVersion(version);
 		
 		return registry.containsCodingSchemeEntry(ref);
+	}
+	
+	public boolean containsValueSetDefinitionResource(String uri, String version)
+		throws LBParameterException {
+		List<RegistryEntry> reList = registry.getAllRegistryEntriesOfTypeAndURI(ResourceType.VALUESET_DEFINITION, uri);
+		if (reList != null && reList.size() > 0)
+			return true;
+		
+		return false;
+	}
+	
+	public boolean containsPickListDefinitionResource(String pickListId, String version)
+		throws LBParameterException {
+		List<RegistryEntry> reList = registry.getAllRegistryEntriesOfTypeAndURI(ResourceType.PICKLIST_DEFINITION, pickListId);
+		if (reList != null && reList.size() > 0)
+			return true;
+		
+		return false;
 	}
 	
 	/* (non-Javadoc)
@@ -429,6 +455,34 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 		
 		String prefix = createNewTablesForLoad();
 		entry.setPrefix(prefix);
+		try {
+			this.getRegistry().addNewItem(entry);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@ClearCache
+	public void addValueSetDefinitionResourceToSystem(String uri, String version)
+			throws LBParameterException {
+		RegistryEntry entry = RegistryUtility.valueSetDefinitionToRegistryEntry(uri, version);
+		entry.setStatus(CodingSchemeVersionStatus.PENDING.toString());
+		
+		entry.setPrefix(null);
+		try {
+			this.getRegistry().addNewItem(entry);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@ClearCache
+	public void addPickListDefinitionResourceToSystem(String uri, String version)
+			throws LBParameterException {
+		RegistryEntry entry = RegistryUtility.pickListDefinitionToRegistryEntry(uri, version);
+		entry.setStatus(CodingSchemeVersionStatus.PENDING.toString());
+		
+		entry.setPrefix(null);
 		try {
 			this.getRegistry().addNewItem(entry);
 		} catch (Exception e) {

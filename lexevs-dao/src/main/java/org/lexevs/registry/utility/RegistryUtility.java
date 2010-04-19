@@ -74,4 +74,50 @@ public class RegistryUtility {
 		
 		return entry;
 	}
+	
+	/**
+	 * Value Set Definition to registry entry.
+	 * 
+	 * @param uri the uri
+	 * @param version the version
+	 * 
+	 * @return the registry entry
+	 */
+	public static RegistryEntry valueSetDefinitionToRegistryEntry(String uri, String version){
+		RegistryEntry entry = new RegistryEntry();
+		entry.setResourceType(ResourceType.VALUESET_DEFINITION);
+		entry.setDbSchemaDescription(DatabaseConstants.CURRENT_LEXGRID_SCHEMA_DESCRIPTION);
+		entry.setDbSchemaVersion(DatabaseConstants.CURRENT_LEXGRID_SCHEMA_VERSION);
+		entry.setResourceUri(uri);
+		entry.setResourceVersion(version);
+		entry.setLastUpdateDate(new Timestamp(new Date().getTime()));
+		
+		//TODO: Fix this for multiple sets of tables
+		entry.setPrefix("");
+		
+		return entry;
+	}
+	
+	/**
+	 * Pick List Definition to registry entry.
+	 * 
+	 * @param uri the uri
+	 * @param version the version
+	 * 
+	 * @return the registry entry
+	 */
+	public static RegistryEntry pickListDefinitionToRegistryEntry(String uri, String version){
+		RegistryEntry entry = new RegistryEntry();
+		entry.setResourceType(ResourceType.PICKLIST_DEFINITION);
+		entry.setDbSchemaDescription(DatabaseConstants.CURRENT_LEXGRID_SCHEMA_DESCRIPTION);
+		entry.setDbSchemaVersion(DatabaseConstants.CURRENT_LEXGRID_SCHEMA_VERSION);
+		entry.setResourceUri(uri);
+		entry.setResourceVersion(version);
+		entry.setLastUpdateDate(new Timestamp(new Date().getTime()));
+		
+		//TODO: Fix this for multiple sets of tables
+		entry.setPrefix("");
+		
+		return entry;
+	}
 }

@@ -55,7 +55,6 @@ import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.WriteLockManager;
-import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.XmlRegistry;
 import org.lexevs.registry.service.Registry.KnownTags;
 import org.lexevs.registry.service.XmlRegistry.DBEntry;
@@ -1472,6 +1471,18 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 		ref.setCodingSchemeVersion(version);
 		return this.getRegistry().containsCodingSchemeEntry(ref);
 	}
+	
+	public boolean containsValueSetDefinitionResource(String uri, String version)
+		throws LBParameterException {		
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+	
+	public boolean containsPickListDefinitionResource(String uri, String version)
+		throws LBParameterException {		
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#containsNonCodingSchemeResource(java.lang.String)
@@ -1527,6 +1538,20 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 		} catch (LBInvocationException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	@Override
+	public void removeValueSetDefinitionResourceFromSystem(String uri, String version)
+			throws LBParameterException {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public void removePickListDefinitionResourceFromSystem(String uri, String version)
+			throws LBParameterException {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -1607,6 +1632,20 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 	 */
 	@Override
 	public void addCodingSchemeResourceToSystem(String uri, String version)
+			throws LBParameterException {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public void addValueSetDefinitionResourceToSystem(String uri, String version)
+			throws LBParameterException {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public void addPickListDefinitionResourceToSystem(String uri, String version)
 			throws LBParameterException {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();

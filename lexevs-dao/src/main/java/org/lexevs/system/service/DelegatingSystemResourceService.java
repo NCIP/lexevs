@@ -47,6 +47,16 @@ public class DelegatingSystemResourceService implements SystemResourceService {
 		delegateSystemResourceService.containsCodingSchemeResource(uri, version);
 	}
 	
+	public boolean containsValueSetDefinitionResource(String uri, String version)
+		throws LBParameterException {
+		return primarySystemResourceService.containsValueSetDefinitionResource(uri, version);
+	}
+	
+	public boolean containsPickListDefinitionResource(String pickListId, String version)
+		throws LBParameterException {
+		return primarySystemResourceService.containsPickListDefinitionResource(pickListId, version);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#containsNonCodingSchemeResource(java.lang.String)
 	 */
@@ -120,6 +130,26 @@ public class DelegatingSystemResourceService implements SystemResourceService {
 		}
 		
 	}
+	
+	public void removeValueSetDefinitionResourceFromSystem(String uri, String version)
+		throws LBParameterException {
+		if(primarySystemResourceService.containsValueSetDefinitionResource(uri, version)){
+			primarySystemResourceService.removeValueSetDefinitionResourceFromSystem(uri, version);
+		} else {
+			throw new LBParameterException("Could not find value set definition : " + uri + " - " + version);
+		}
+	
+	}
+	
+	public void removePickListDefinitionResourceFromSystem(String pickListId, String version)
+	throws LBParameterException {
+	if(primarySystemResourceService.containsPickListDefinitionResource(pickListId, version)){
+		primarySystemResourceService.removePickListDefinitionResourceFromSystem(pickListId, version);
+	} else {
+		throw new LBParameterException("Could not find pick list definition : " + pickListId + " - " + version);
+	}
+
+}
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#removeNonCodingSchemeResourceFromSystem(java.lang.String)
@@ -199,6 +229,16 @@ public class DelegatingSystemResourceService implements SystemResourceService {
 	public void addCodingSchemeResourceToSystem(String uri, String version)
 		throws LBParameterException {
 		primarySystemResourceService.addCodingSchemeResourceToSystem(uri, version);
+	}
+	
+	public void addValueSetDefinitionResourceToSystem(String uri, String version)
+		throws LBParameterException {
+		primarySystemResourceService.addValueSetDefinitionResourceToSystem(uri, version);
+	}
+	
+	public void addPickListDefinitionResourceToSystem(String uri, String version)
+		throws LBParameterException {
+		primarySystemResourceService.addPickListDefinitionResourceToSystem(uri, version);
 	}
 
 	/* (non-Javadoc)

@@ -21,7 +21,6 @@ package org.lexevs.system.service;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.utility.MyClassLoader;
 
@@ -61,6 +60,26 @@ public interface SystemResourceService {
 	public void addCodingSchemeResourceToSystem(String uri, String version) throws LBParameterException;
 	
 	/**
+	 * Adds the value set definition resource to system.
+	 * 
+	 * @param uri the uri
+	 * @param version the version
+	 * 
+	 * @throws LBParameterException the LB parameter exception
+	 */
+	public void addValueSetDefinitionResourceToSystem(String uri, String version) throws LBParameterException;
+	
+	/**
+	 * Adds the pick list resource to system.
+	 * 
+	 * @param uri the uri
+	 * @param version the version
+	 * 
+	 * @throws LBParameterException the LB parameter exception
+	 */
+	public void addPickListDefinitionResourceToSystem(String uri, String version) throws LBParameterException;
+	
+	/**
 	 * Adds the coding scheme resource to system.
 	 * 
 	 * @param codingScheme the coding scheme
@@ -80,13 +99,24 @@ public interface SystemResourceService {
 	public void removeCodingSchemeResourceFromSystem(String uri, String version) throws LBParameterException;
 	
 	/**
-	 * Removes the non coding scheme resource from system.
+	 * Removes the value set definition resource from system.
 	 * 
-	 * @param uri the uri
+	 * @param uri the value set URI
+	 * @param version the version
 	 * 
 	 * @throws LBParameterException the LB parameter exception
 	 */
-	public void removeNonCodingSchemeResourceFromSystem(String uri) throws LBParameterException;;
+	public void removeValueSetDefinitionResourceFromSystem(String valueSetDefinitionURI, String version) throws LBParameterException;
+	
+	/**
+	 * Removes the pick list definition resource from system.
+	 * 
+	 * @param pickListId the pick list definition ID
+	 * @param version the version
+	 * 
+	 * @throws LBParameterException the LB parameter exception
+	 */
+	public void removePickListDefinitionResourceFromSystem(String pickListId, String version) throws LBParameterException;
 	
 	/**
 	 * Gets the internal version string for tag.
@@ -134,6 +164,30 @@ public interface SystemResourceService {
 	 * @throws LBParameterException the LB parameter exception
 	 */
 	public boolean containsCodingSchemeResource(String uri, String version) throws LBParameterException;
+	
+	/**
+	 * Contains value set definition resource.
+	 * 
+	 * @param uri the value set definition URI
+	 * @param version the version
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws LBParameterException the LB parameter exception
+	 */
+	public boolean containsValueSetDefinitionResource(String uri, String version) throws LBParameterException;
+	
+	/**
+	 * Contains pick list definition resource.
+	 * 
+	 * @param pickListId the pick list definition ID
+	 * @param version the version
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws LBParameterException the LB parameter exception
+	 */
+	public boolean containsPickListDefinitionResource(String pickListId, String version) throws LBParameterException;
 	
 	/**
 	 * Contains non coding scheme resource.

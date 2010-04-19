@@ -27,7 +27,6 @@ import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class VersionableEventValueSetDefinitionService.

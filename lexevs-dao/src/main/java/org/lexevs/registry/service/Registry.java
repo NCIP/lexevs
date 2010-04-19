@@ -38,11 +38,16 @@ public interface Registry {
 	 * 
 	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
 	 */
-	public enum ResourceType {/** The CODIN g_ scheme. */
-CODING_SCHEME, /** The VALU e_ domain. */
- VALUE_DOMAIN, /** The PICKLIST. */
- PICKLIST, /** The NC i_ history. */
- NCI_HISTORY}
+	public enum ResourceType {
+		/** The CODIN g_ scheme. */
+		CODING_SCHEME, 
+		/** The VALU e_ domain. */
+		VALUESET_DEFINITION, 
+		/** The PICKLIST. */
+		PICKLIST_DEFINITION, 
+		/** The NC i_ history. */
+		NCI_HISTORY
+	}
 	
 	/**
 	 * The Enum KnownTags.
