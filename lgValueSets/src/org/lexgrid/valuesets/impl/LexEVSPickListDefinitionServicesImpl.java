@@ -18,12 +18,12 @@
  */
 package org.lexgrid.valuesets.impl;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +37,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
@@ -65,8 +66,10 @@ import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
+import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntry;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntryList;
+import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 import org.lexgrid.valuesets.helper.PLEntryNodeSortUtil;
 import org.lexgrid.valuesets.helper.VSDServiceHelper;
 
@@ -94,8 +97,6 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	private static final String version_ = "2.0";
 	
 	private DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
-//    private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
-//    private Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
 	
 	
 	public LexEVSPickListDefinitionServicesImpl() {
@@ -121,19 +122,6 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 			throws LBException {
 		getLogger().logMethod(new Object[] { pldef, systemReleaseURI});
 		this.databaseServiceManager.getPickListDefinitionService().insertPickListDefinition(pldef, systemReleaseURI != null ? systemReleaseURI.toString():null, mappings);
-//		try {			
-//			getPickListDefinitionService().insert(pldef, systemReleaseURI, mappings);
-//		} catch (ObjectAlreadyExistsException e) {
-//			md_.fatal("Failed loading PickListDefinition : " + pldef.getPickListId(), e);
-//			throw new LBException(e.getMessage());
-//		} catch (InsertException e) {
-//			md_.fatal("Failed loading PickListDefinition : " + pldef.getPickListId(), e);
-//			throw new LBException(e.getMessage());
-//		} catch (ServiceInitException e) {
-//			md_.fatal("Failed loading PickListDefinition : " + pldef.getPickListId(), e);
-//			throw new LBException(e.getMessage());
-//		}
-
 	}
 
 	/* (non-Javadoc)
@@ -230,14 +218,11 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#getPickListValueSetDefinition(java.lang.String)
 	 */
 	public URI getPickListValueSetDefinition(String pickListId) throws LBException {
-		System.out.println("in impl, plId supplied : " + pickListId);
-		
 		URI valueDomainURI = null;
 		
 		try {
 			PickListDefinition pickList = getPickListDefinitionById(pickListId);
 			
-			System.out.println("pickList object + id : " + pickList.getPickListId());
 			if (pickList != null)
 				valueDomainURI = new URI(pickList.getRepresentsValueSetDefinition()); // TODO need to change representsValueDomain from String to URI in XML schema
 		} catch (URISyntaxException e) {
@@ -422,7 +407,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
         if (pickList != null)
         {
             String defaultCS = pickList.getDefaultEntityCodeNamespace();
-            String defaultLang = pickList.getDefaultLanguage();
+//            String defaultLang = pickList.getDefaultLanguage();
             
             boolean completeDomain = pickList.isCompleteSet();
             
@@ -520,37 +505,36 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
     private ResolvedPickListEntryList internalResolvePickListForTerm(String valueDomainURI, boolean sortByText) throws LBException {
         
         ResolvedPickListEntryList plList = new ResolvedPickListEntryList();
-      //TODO implement below stuff - sod
-//        LexEVSValueSetDefinitionServices vds = new LexEVSValueSetDefinitionServicesImpl();
-//        
-//        ResolvedValueSetDefinition rvdDef;
+        LexEVSValueSetDefinitionServices vds = new LexEVSValueSetDefinitionServicesImpl();
         
-//        try {
-//            rvdDef = vds.resolveValueDomain(new URI(valueDomainURI), null, null);
-//        } catch (URISyntaxException e) {
-//            throw new LBException("Problem with ValueDomain URI", e);
-//        }
+        ResolvedValueSetDefinition rvdDef;
         
-//        ResolvedConceptReferencesIterator rcrItr = rvdDef.getResolvedConceptReferenceIterator();
-//        
-//        while (rcrItr.hasNext())
-//        {
-//            ResolvedConceptReference rcr = rcrItr.next();
-//            ResolvedPickListEntry rpl = new ResolvedPickListEntry();
-//            rpl.setEntityCode(rcr.getCode());
-//            rpl.setEntityCodeNamespace(rcr.getCodeNamespace());
-//            Entity entity = rcr.getEntity();
-//            Presentation[] presentations = entity.getPresentation();
-//            for (Presentation pres : presentations)
-//            {
-//                if (pres.isIsPreferred())
-//                {
-//                    rpl.setPickText(pres.getValue().getContent());
-//                    rpl.setPropertyId(pres.getPropertyId());
-//                    plList.addResolvedPickListEntry(rpl);
-//                }               
-//            }
-//        }
+        try {
+            rvdDef = vds.resolveValueSetDefinition(new URI(valueDomainURI), null, null);
+        } catch (URISyntaxException e) {
+            throw new LBException("Problem with ValueDomain URI", e);
+        }
+        
+        ResolvedConceptReferencesIterator rcrItr = rvdDef.getResolvedConceptReferenceIterator();
+        
+        while (rcrItr.hasNext())
+        {
+            ResolvedConceptReference rcr = rcrItr.next();
+            ResolvedPickListEntry rpl = new ResolvedPickListEntry();
+            rpl.setEntityCode(rcr.getCode());
+            rpl.setEntityCodeNamespace(rcr.getCodeNamespace());
+            Entity entity = rcr.getEntity();
+            Presentation[] presentations = entity.getPresentation();
+            for (Presentation pres : presentations)
+            {
+                if (pres.isIsPreferred())
+                {
+                    rpl.setPickText(pres.getValue().getContent());
+                    rpl.setPropertyId(pres.getPropertyId());
+                    plList.addResolvedPickListEntry(rpl);
+                }               
+            }
+        }
         
         return plList;
     }
@@ -566,15 +550,40 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	public Map<String, String> getReferencedPLDefinitions(String entityCode,
 			String entityCodeNameSpace, String propertyId,
 			Boolean extractPickListName) throws LBException {
-		return getPickListService().getReferencedPLDefinitions(entityCode,
-				entityCodeNameSpace, propertyId, extractPickListName);
+		Map<String, String> refPLDef = null;
+		List<String> plIds = getPickListService().getPickListDefinitionIdForEntityReference(entityCode,
+				entityCodeNameSpace, propertyId);
+		
+		if (plIds != null && plIds.size() > 0)
+		{
+			refPLDef = new HashMap<String, String>();
+			
+			for (String plId : plIds)
+			{
+				refPLDef.put(plId, extractPickListName ? getPickListName(plId) : null);
+			}
+		}		
+		
+		return refPLDef;
 	}
 
-	public Map<String, String> getReferencedPLDefinitions(
-			String valueSet, Boolean extractPickListName)
+	public Map<String, String> getReferencedPLDefinitions(String valueSet, Boolean extractPickListName)
 			throws LBException {
-		return getPickListService().getReferencedPLDefinitions(valueSet,
-				extractPickListName);
+		Map<String, String> refPLDef = null;
+		
+		List<String> plIds = getPickListService().getPickListDefinitionIdForValueSetDefinitionUri(valueSet);
+		
+		if (plIds != null && plIds.size() > 0)
+		{
+			refPLDef = new HashMap<String, String>();
+			
+			for (String plId : plIds)
+			{
+				refPLDef.put(plId, extractPickListName ? getPickListName(plId) : null);
+			}
+		}		
+		
+		return refPLDef;
 	}
 	
 	/*
@@ -649,43 +658,16 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		return pls_;
 	}
 	
-//	private PickListsServices getPickListsService() throws ServiceInitException, LBException {
-//		if (plss_ == null)
-//			plss_ = getServiceHelper().getPickListsService();
-//		return plss_;
-//	}
-
-//	private VSDServiceHelper getServiceHelper(){
-//		if (sh_ == null)
-//		{
-//			try {
-//				sh_ = new VSDServiceHelper(sv.getAutoLoadDBURL(), sv.getAutoLoadDBDriver(), sv.getAutoLoadDBUsername(),
-//						sv.getAutoLoadDBPassword(), sv.getAutoLoadDBPrefix(), true, md_);
-//			} catch (LBParameterException e) {
-//				md_.fatal("Problem getting ServiceHelper", e);
-//				e.printStackTrace();
-//			} catch (LBInvocationException e) {
-//				md_.fatal("Problem getting ServiceHelper", e);
-//				e.printStackTrace();
-//			}
-//		}
-//		return sh_;
-//	}
-	
 	private String getPickListName(String pickListId) throws LBException {
 		
 		String pickListName = null;
 		LexBIGService lbSvc = LexBIGServiceImpl.defaultInstance();
 		
-		CodingSchemeRenderingList suppCodingSchemes = lbSvc
-				.getSupportedCodingSchemes();
+		CodingSchemeRenderingList suppCodingSchemes = lbSvc.getSupportedCodingSchemes();
 
-		CodingSchemeRendering[] csRendering = suppCodingSchemes
-				.getCodingSchemeRendering();
+		CodingSchemeRendering[] csRendering = suppCodingSchemes.getCodingSchemeRendering();
 
-		for (int i = 0; i < csRendering.length; i++) {
-			CodingSchemeSummary csSummary = csRendering[i]
-					.getCodingSchemeSummary();
+		for (int i = 0; i < csRendering.length; i++) {CodingSchemeSummary csSummary = csRendering[i].getCodingSchemeSummary();
 
 			String csName = csSummary.getLocalName();
 			String version = csSummary.getRepresentsVersion();
@@ -693,23 +675,19 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
 			versionOrTag.setVersion(version);
 
-			CodedNodeSet codeSet = lbSvc.getCodingSchemeConcepts(csName,
-					versionOrTag);
+			CodedNodeSet codeSet = lbSvc.getCodingSchemeConcepts(csName, versionOrTag);
 
-			codeSet.restrictToCodes(Constructors
-					.createConceptReferenceList(pickListId));
+			codeSet.restrictToCodes(Constructors.createConceptReferenceList(pickListId));
 
 			ResolvedConceptReferenceList conceptRef = codeSet
 					.resolveToList(null, null, null, -1);
 
 			if (conceptRef.getResolvedConceptReferenceCount() > 0) {
-				Entity entity = conceptRef.getResolvedConceptReference(0)
-						.getEntity();
+				Entity entity = conceptRef.getResolvedConceptReference(0).getEntity();
 
 				if (entity != null) {
 					if (entity.getEntityDescription() != null)
-						pickListName = entity.getEntityDescription()
-								.getContent();
+						pickListName = entity.getEntityDescription().getContent();
 
 					if (pickListName == null) {
 						Presentation[] allProps = entity.getPresentation();
@@ -731,14 +709,14 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		return pickListName;
 	}
 	
-	private String getStringFromURI(URI uri) throws LBParameterException {
-        if ("file".equals(uri.getScheme()))
-
-        {
-            File temp = new File(uri);
-            return temp.getAbsolutePath();
-        } 
-        
-        return uri.toString();
-    }
+//	private String getStringFromURI(URI uri) throws LBParameterException {
+//        if ("file".equals(uri.getScheme()))
+//
+//        {
+//            File temp = new File(uri);
+//            return temp.getAbsolutePath();
+//        } 
+//        
+//        return uri.toString();
+//    }
 }

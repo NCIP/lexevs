@@ -183,12 +183,15 @@ public interface LexEVSPickListDefinitionServices extends Serializable {
 	public void validate(URI uri, int valicationLevel) throws LBParameterException;
 	
 	/**
+	 * Return the map set of pick list id and pick list name that references given entityCode, namespace and optionally propertyId
 	 * 
-	 * @param entityCode
-	 * @param entityCodeNameSpace
-	 * @param propertyId
-	 * @param extractPickListName
-	 * @return
+	 * @param entityCode referenced entityCode
+	 * @param entityCodeNameSpace referenced entityCodeNamespace
+	 * @param propertyId Optional propertyId
+	 * @param extractPickListName true means pick list name will be extracted in the map set.
+	 * 
+	 * @return Mapset of pick list id and pick list name
+	 * 
 	 * @throws LBException
 	 */
 	public Map<String, String> getReferencedPLDefinitions(String entityCode,
@@ -196,10 +199,13 @@ public interface LexEVSPickListDefinitionServices extends Serializable {
 			Boolean extractPickListName) throws LBException ;
 
 	/**
+	 * Return the map set of pick list id and pick list name that references value set definition URI
 	 * 
-	 * @param valueSet
-	 * @param extractPickListName
-	 * @return
+	 * @param valueSet URI of value set definition
+	 * @param extractPickListName true means pick list name will be extracted in the map set
+	 * 
+	 * @return Mapset of pick list id and pick list name
+	 * 
 	 * @throws LBException
 	 */
 	public Map<String, String> getReferencedPLDefinitions(
