@@ -65,6 +65,7 @@ import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
+import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntry;
@@ -121,7 +122,23 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	public void loadPickList(PickListDefinition pldef, URI systemReleaseURI, Mappings mappings)
 			throws LBException {
 		getLogger().logMethod(new Object[] { pldef, systemReleaseURI});
-		this.databaseServiceManager.getPickListDefinitionService().insertPickListDefinition(pldef, systemReleaseURI != null ? systemReleaseURI.toString():null, mappings);
+		SystemResourceService service = LexEvsServiceLocator.getInstance().getSystemResourceService();
+		
+		if (pldef != null)
+		{
+			String pickListId = pldef.getPickListId();
+			if (service.containsPickListDefinitionResource(pickListId, null))
+			{
+				md_.info("Pick List definition with ID : " + pickListId + " ALREADY LOADED.");
+				System.out.println("Pick List definition with ID : " + pickListId + " ALREADY LOADED.");
+				return;
+			}
+			
+			md_.info("Loading Pick List Definition with ID : " + pickListId);
+			service.addPickListDefinitionResourceToSystem(pldef.getPickListId(), null);
+			this.databaseServiceManager.getPickListDefinitionService().insertPickListDefinition(pldef, systemReleaseURI != null ? systemReleaseURI.toString():null, mappings);
+			md_.info("Finished loading Pick list Definition ID : " + pickListId);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -544,7 +561,15 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	 */
 	public void removePickList(String pickListId) throws LBException{
 		getLogger().logMethod(new Object[] { pickListId });
-		this.databaseServiceManager.getPickListDefinitionService().removePickListDefinitionByPickListId(pickListId);
+		if (pickListId != null)
+		{
+			System.out.println("removing pick list definition : " + pickListId);
+			SystemResourceService service = LexEvsServiceLocator.getInstance().getSystemResourceService();
+			this.databaseServiceManager.getPickListDefinitionService().removePickListDefinitionByPickListId(pickListId);
+			service.removePickListDefinitionResourceFromSystem(pickListId, null);
+			System.out.println("DONE removing pick list definition : " + pickListId);
+		}
+		
 	}
 	
 	public Map<String, String> getReferencedPLDefinitions(String entityCode,

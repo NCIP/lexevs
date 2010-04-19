@@ -58,6 +58,7 @@ import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
+import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
@@ -72,9 +73,6 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 
 	// Associated service ...
 	private LexBIGService lbs_;
-//	private VSDSServices vdss_;
-//	private VSDServices vds_;
-//	private VSDMappingServices mapS_;
 	private VSDServiceHelper sh_;
 	protected MessageDirector md_;
 	protected LoadStatus status_;
@@ -88,8 +86,6 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	private static final long serialVersionUID = 4995582014921448463L;
 	
 	private DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
-//	private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
-//	private Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
 	private ValueSetDefinitionService vsds_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 
 
@@ -119,14 +115,22 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	public void loadValueSetDefinition(ValueSetDefinition definition, String systemReleaseURI, Mappings mappings)
 			throws LBException {
 		getLogger().logMethod(new Object[] { definition });
+		SystemResourceService service = LexEvsServiceLocator.getInstance().getSystemResourceService();
 		if (definition != null)
 		{
-			md_.info("Loading value set definition : " + definition.getValueSetDefinitionURI());
-			this.databaseServiceManager.getValueSetDefinitionService().insertValueSetDefinition(definition, systemReleaseURI, mappings);
+			String uri = definition.getValueSetDefinitionURI();
+			if (service.containsValueSetDefinitionResource(uri, null))
+			{
+				md_.info("Value Set definition with URI : " + uri + " ALREADY LOADED.");
+				System.out.println("Value Set definition with URI : " + uri + " ALREADY LOADED.");
+				return;
+			}
 			
-//			getVDService().insert(vddef, systemReleaseURI, mappings);
-		}
-		md_.info("Finished loading value set definition");
+			md_.info("Loading value set definition : " + uri);
+			service.addValueSetDefinitionResourceToSystem(uri, null);
+			this.databaseServiceManager.getValueSetDefinitionService().insertValueSetDefinition(definition, systemReleaseURI, mappings);
+			md_.info("Finished loading value set definition URI : " + uri);
+		}		
 	}
 	
 	@Override
@@ -224,6 +228,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         return isEntityInValueSet(entityCode, null, valueSetDefinitionURI, null, versionTag);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public AbsoluteCodingSchemeVersionReference isEntityInValueSet(
 			String entityCode, URI entityCodeNamespace,
@@ -435,6 +440,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		return csList;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean isValueSetDefinition(String entityCode,
 			String codingSchemeName, CodingSchemeVersionOrTag csvt)
@@ -500,7 +506,14 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	@Override
 	public void removeValueSetDefinition(URI valueSetDefinitionURI)
 			throws LBException {
-		this.vsds_.removeValueSetDefinition(valueSetDefinitionURI.toString());
+		if (valueSetDefinitionURI != null)
+		{
+			System.out.println("removing value set definition : " + valueSetDefinitionURI);
+			SystemResourceService service = LexEvsServiceLocator.getInstance().getSystemResourceService();
+			this.vsds_.removeValueSetDefinition(valueSetDefinitionURI.toString());
+			service.removeValueSetDefinitionResourceFromSystem(valueSetDefinitionURI.toString(), null);
+			System.out.println("DONE removing value set definition : " + valueSetDefinitionURI);
+		}
 	}
 	
 	@Override
