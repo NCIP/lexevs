@@ -2,22 +2,6 @@ SET FOREIGN_KEY_CHECKS=0;
 
 
 
-CREATE TABLE @PREFIX@h_associationEntity
-(
-	associationEntityGuid VARCHAR(36) NOT NULL,
-	entityGuid VARCHAR(36) NOT NULL,
-	forwardName VARCHAR(100),
-	reverseName VARCHAR(100),
-	isNavigable CHAR(1),
-	isTransitive CHAR(1),
-	isTranslationAssociation CHAR(1),
-	entryStateGuid VARCHAR(36) NOT NULL,
-	PRIMARY KEY (entryStateGuid),
-	KEY (entityGuid)
-) 
-;
-
-
 CREATE TABLE @PREFIX@h_codingScheme
 (
 	codingSchemeGuid VARCHAR(36) NOT NULL,
@@ -73,6 +57,10 @@ CREATE TABLE @PREFIX@h_entity
 	effectiveDate TIMESTAMP,
 	expirationDate TIMESTAMP,
 	entryStateGuid VARCHAR(36) NOT NULL,
+	forwardName VARCHAR(100),
+	reverseName VARCHAR(100),
+	isNavigable CHAR(1),
+	isTransitive CHAR(1),
 	PRIMARY KEY (entryStateGuid),
 	INDEX idx_h_entity (codingSchemeGuid ASC, entityCode ASC),
 	INDEX idx_h_entityNS (codingSchemeGuid ASC, entityCode ASC, entityCodeNamespace ASC)
