@@ -418,8 +418,8 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				"values ('rel-guid', 'cs-guid', 'c-name')");
 		
 		template.execute("insert into " +
-				"associationpredicate (associationPredicateGuid, relationGuid, associationEntityGuid, associationName) values " +
-				"('ap-guid', 'rel-guid', 'eguid', 'apName')");
+				"associationpredicate (associationPredicateGuid, relationGuid, associationName) values " +
+				"('ap-guid', 'rel-guid', 'apName')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
 			"values ('eguid', 'association')");
@@ -444,8 +444,8 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				"values ('rel-guid', 'cs-guid', 'c-name')");
 		
 		template.execute("insert into " +
-				"associationpredicate (associationPredicateGuid, relationGuid, associationEntityGuid, associationName) values " +
-				"('ap-guid1', 'rel-guid', null, 'apName1')");
+				"associationpredicate (associationPredicateGuid, relationGuid, associationName) values " +
+				"('ap-guid1', 'rel-guid', 'apName1')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid, relationGuid, associationEntityGuid, associationName) values " +
@@ -511,8 +511,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				
 				assertNotNull(rs.getString(1));
 				assertEquals(rs.getString(2), "rel-guid");
-				// TODO: assertEquals(rs.getString(3), "s-code");
-				assertEquals(rs.getString(4), "assoc-name");
+				assertEquals(rs.getString(3), "assoc-name");
 					
 				return true;
 			}
