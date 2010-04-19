@@ -241,7 +241,8 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 			"values ('csguid', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into cssupportedattrib " +
-			"values ('cssaguid', 'csguid', 'CodingScheme', 'id', 'uri', null, null, null, null, null, null)");
+			"values ('cssaguid', 'csguid', 'CodingScheme', 'id', 'uri', " +
+			"null, null, null, null, null, null, null, null, null, null, null)");
 		
 		RegistryEntry entry = new RegistryEntry();
 		entry.setResourceType(ResourceType.CODING_SCHEME);
@@ -272,7 +273,8 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 			"values ('csguid', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into cssupportedattrib " +
-			"values ('cssaguid', 'csguid', 'CodingScheme', 'id', 'uri', null, null, null, null, null, null)");
+			"values ('cssaguid', 'csguid', 'CodingScheme', 'id', 'uri', " +
+			"null, null, null, null, null, null, null, null, null, null, null)");
 		
 		RegistryEntry entry = new RegistryEntry();
 		entry.setResourceType(ResourceType.CODING_SCHEME);
