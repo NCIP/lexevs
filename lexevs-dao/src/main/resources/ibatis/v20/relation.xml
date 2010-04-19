@@ -54,12 +54,10 @@
    		INSERT INTO $prefix$associationPredicate (
    			associationPredicateGuid,
    			relationGuid,
-   			associationEntityGuid,
    			associationName
    		) VALUES (
    			#uid#,
    			#relationUId#,
-   			null,
    			#associationPredicate.associationName#
    		)
    </insert>
@@ -90,18 +88,7 @@
 			#param1#
    </select>
    
-   <select id="getAssociationEntityIdForAssociationPredicateName" remapResults="true"
-   		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
-   		SELECT
-   			associationEntityGuid
-   		FROM
-   			$prefix$associationPredicate
-		WHERE
-			associationPredicateGuid = 
-			#param1#
-   </select>
-   
-    <select id="getRelationsKey" 
+   <select id="getRelationsKey" 
     	remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
    		SELECT
    			relationGuid
