@@ -24,8 +24,10 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder.AssociationDirection;
-import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.paging.AbstractPageableIterator;
 import org.lexevs.paging.codednodegraph.TripleUidIterator;
 
@@ -39,14 +41,13 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	/** The triple uid iterator. */
 	private Iterator<String> tripleUidIterator;
 	
-	/** The coded node graph dao. */
-	private CodedNodeGraphDao codedNodeGraphDao;
-	
 	/** The direction. */
 	private AssociationDirection direction;
 	
 	/** The coding scheme uid. */
-	private String codingSchemeUid;
+	private String codingSchemeUri;
+	
+	private String codingSchemeVersion;
 	
 	/**
 	 * Instantiates a new associated concept iterator.
@@ -60,26 +61,30 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	 * @param pageSize the page size
 	 */
 	public AssociatedConceptIterator(
-	        CodedNodeGraphDao codedNodeGraphDao, 
-            String codingSchemeUid, 
-            String associationPredicateUid, 
+            String codingSchemeUri, 
+            String codingSchemeVersion, 
+            String relationsContainerName,
+            String associationPredicateName, 
             String entityCode,
             String entityCodeNamespace,
+            GraphQuery graphQuery,
             AssociationDirection direction,
             int pageSize){
 		super(pageSize);
 		tripleUidIterator = new 
 		    TripleUidIterator(
-		    		codedNodeGraphDao, 
-		    		codingSchemeUid, 
-		    		associationPredicateUid, 
-		    		entityCode, 
-		    		entityCodeNamespace, 
+		    		codingSchemeUri, 
+		    		codingSchemeVersion, 
+		    		relationsContainerName,
+		            associationPredicateName, 
+		            entityCode, 
+	                entityCodeNamespace, 
+		    		graphQuery,
 		    		getTripleUidIteratorNode(direction), 
 		    		pageSize);
-		this.codedNodeGraphDao = codedNodeGraphDao;
+		this.codingSchemeUri = codingSchemeUri;
+		this.codingSchemeVersion = codingSchemeVersion;
 		this.direction = direction;
-		this.codingSchemeUid = codingSchemeUid;
 	}
 
     /* (non-Javadoc)
@@ -87,17 +92,29 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
      */
     @Override
     protected List<AssociatedConcept> doPage(int currentPosition, int pageSize) {
+        CodedNodeGraphService codedNodeGraphSerivce =
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
+        
         List<AssociatedConcept> returnList = new ArrayList<AssociatedConcept>();
         
         int count = 0;
         while(this.tripleUidIterator.hasNext() && count < pageSize) {
             String tripleUid = tripleUidIterator.next();
-            returnList.add(
-                    this.codedNodeGraphDao.
-                        getAssociatedConceptFromUid(
-                                codingSchemeUid, 
-                                tripleUid, 
-                                getAssociatedConceptNode(direction)));
+            if(direction.equals(AssociationDirection.SOURCE_OF)) {
+                returnList.add(
+                        codedNodeGraphSerivce.
+                        getAssociatedConceptFromUidTarget(
+                                codingSchemeUri, 
+                                codingSchemeVersion,
+                                tripleUid));
+            } else {
+                returnList.add(
+                        codedNodeGraphSerivce.
+                        getAssociatedConceptFromUidSource(
+                                codingSchemeUri, 
+                                codingSchemeVersion,
+                                tripleUid));
+            }
             count++;
         }
         

@@ -27,7 +27,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder.AssociationDirection;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.AssociatedConceptIterator;
-import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 
 /**
  * The Class LazyLoadableAssociatedConceptList.
@@ -38,15 +38,17 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -434490124369412627L;
-
-    /** The coded node graph dao. */
-    private CodedNodeGraphDao codedNodeGraphDao;
     
+    private GraphQuery graphQuery;
     /** The coding scheme uid. */
-    private String codingSchemeUid; 
+    private String codingSchemeUri; 
+    
+    private String codingSchemeVersion;
+    
+    private String relationsContainerName; 
     
     /** The association predicate uid. */
-    private String associationPredicateUid; 
+    private String associationPredicateName; 
     
     /** The entity code. */
     private String entityCode;
@@ -77,19 +79,24 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
      */
     public LazyLoadableAssociatedConceptList(
             int count,
-            CodedNodeGraphDao codedNodeGraphDao,
-            String codingSchemeUid, 
-            String associationPredicateUid, 
+            String codingSchemeUri, 
+            String codingSchemeVersion, 
+            String relationsContainerName,
+            String associationPredicateName, 
             String entityCode,
             String entityCodeNamespace, 
-            AssociationDirection direction, int pageSize) {
+            GraphQuery graphQuery,
+            AssociationDirection direction,
+            int pageSize) {
         super();
         this.count = count;
-        this.codedNodeGraphDao = codedNodeGraphDao;
-        this.codingSchemeUid = codingSchemeUid;
-        this.associationPredicateUid = associationPredicateUid;
+        this.codingSchemeUri = codingSchemeUri;
+        this.codingSchemeVersion = codingSchemeVersion;
+        this.associationPredicateName = associationPredicateName;
+        this.relationsContainerName = relationsContainerName;
         this.entityCode = entityCode;
         this.entityCodeNamespace = entityCodeNamespace;
+        this.graphQuery = graphQuery;
         this.direction = direction;
         this.pageSize = pageSize;
     }
@@ -173,12 +180,14 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
 	@Override
 	public Iterator<AssociatedConcept> iterateAssociatedConcept() {
 	    return new AssociatedConceptIterator(
-	            this.codedNodeGraphDao, 
-	            this.codingSchemeUid,
-	            this.associationPredicateUid, 
+	            this.codingSchemeUri,
+	            this.codingSchemeVersion, 
+	            this.relationsContainerName,
+	            this.associationPredicateName,
 	            this.entityCode,
 	            this.entityCodeNamespace,
-	            direction,
+	            this.graphQuery,
+	            this.direction,
 	            this.pageSize);
 	}
 
