@@ -60,6 +60,9 @@
 	
 	<resultMap id="supportedAssociationResult" class="supportedAssociation"
 		extends="uriMapResult">
+		<result property="codingScheme" column="assnCodingScheme" />
+		<result property="entityCodeNamespace" column="assnNamespace" />
+		<result property="entityCode" column="assnEntityCode" />
 	</resultMap>
 	<resultMap id="supportedAssociationQualifierResult" class="supportedAssociationQualifier"
 		extends="uriMapResult">
@@ -99,6 +102,7 @@
 	</resultMap>
 	<resultMap id="supportedPropertyResult" class="supportedProperty"
 		extends="uriMapResult">
+		<result property="propertyType" column="propertyType" />
 	</resultMap>
 	<resultMap id="supportedPropertyLinkResult" class="supportedPropertyLink"
 		extends="uriMapResult">
@@ -140,7 +144,11 @@
 	 		isForwardNavigable,
 	 		isImported,
 	 		equivalentCodingScheme,
-	 		assemblyRule
+	 		assemblyRule,
+	 		assnCodingScheme,
+	 		assnNamespace,
+	 		assnEntityCode,
+	 		propertyType
 	 	FROM
 	 		$prefix$csSupportedAttrib urimap
 	</sql>
@@ -188,7 +196,11 @@
 			isForwardNavigable,
 			isImported,
 			equivalentCodingScheme,
-			assemblyRule
+			assemblyRule,
+			assnCodingScheme,
+	 		assnNamespace,
+	 		assnEntityCode,
+	 		propertyType
 		) VALUES (
 			#uid#, 
 			#codingSchemeUId#,
@@ -233,9 +245,33 @@
 				null
 			</isNotPropertyAvailable>
 			
-			<isPropertyAvailable prepend="," property="uriMap.conceptDomainCodingScheme">
-				#uriMap.conceptDomainCodingScheme#
+			<isPropertyAvailable prepend="," property="uriMap.codingScheme">
+				#uriMap.assnCodingScheme#
 			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="uriMap.codingScheme">
+				null
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable prepend="," property="uriMap.entityCodeNamespace">
+				#uriMap.entityCodeNamespace#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="uriMap.entityCodeNamespace">
+				null
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable prepend="," property="uriMap.entityCode">
+				#uriMap.entityCode#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="uriMap.entityCode">
+				null
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable prepend="," property="uriMap.propertyType">
+				#uriMap.propertyType#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="uriMap.propertyType">
+				null
+			</isNotPropertyAvailable>
 		)
   </insert>
 
@@ -290,9 +326,27 @@
 				</isNotNull>
 			</isPropertyAvailable>
 			
-			<isPropertyAvailable property="uriMap.conceptDomainCodingScheme">
-				<isNotNull prepend="," property="uriMap.conceptDomainCodingScheme">
-					conceptDomainCodingScheme =#uriMap.conceptDomainCodingScheme#
+			<isPropertyAvailable property="uriMap.codingScheme">
+				<isNotNull prepend="," property="uriMap.codingScheme">
+					assnCodingScheme =#uriMap.codingScheme#
+				</isNotNull>
+			</isPropertyAvailable>
+			
+			<isPropertyAvailable property="uriMap.entityCodeNamespace">
+				<isNotNull prepend="," property="uriMap.entityCodeNamespace">
+					assnNamespace =#uriMap.entityCodeNamespace#
+				</isNotNull>
+			</isPropertyAvailable>
+			
+			<isPropertyAvailable property="uriMap.entityCode">
+				<isNotNull prepend="," property="uriMap.entityCode">
+					assnEntityCode =#uriMap.entityCode#
+				</isNotNull>
+			</isPropertyAvailable>
+			
+			<isPropertyAvailable property="uriMap.propertyType">
+				<isNotNull prepend="," property="uriMap.propertyType">
+					propertyType =#uriMap.propertyType#
 				</isNotNull>
 			</isPropertyAvailable>
 		</dynamic>
