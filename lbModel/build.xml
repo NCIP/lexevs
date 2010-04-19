@@ -24,7 +24,7 @@
 	<target name="init">
 		<path id="classpath">
 			<fileset dir="${lgSharedLibs.dir}/castor/">
-				<include name="castor-1.2*.jar"/>
+				<include name="castor-*.jar"/>
 			</fileset>
 			<fileset dir="${lgSharedLibs.dir}/apache/" >  
 				<include name="commons/commons-logging*.jar"/>
