@@ -72,7 +72,6 @@ import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Comment;
-import org.LexGrid.concepts.Concept;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
@@ -109,7 +108,7 @@ public class SQLImplementedMethods {
             throws UnexpectedInternalError, MissingResourceException {
   
         try {   
-            Concept concept = new Concept();
+            Entity concept = new Entity();
             concept.setEntityCode(code);
 
             SQLInterface si = ResourceManager.instance().getSQLInterface(internalCodingSchemeName,
