@@ -246,7 +246,7 @@
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="uriMap.codingScheme">
-				#uriMap.assnCodingScheme#
+				#uriMap.codingScheme#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="uriMap.codingScheme">
 				null
