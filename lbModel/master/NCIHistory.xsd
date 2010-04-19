@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:NCIHistory="http://LexGrid.org/schema/2009/01/LexGrid/NCIChangeTypes"
-xmlns:lgBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/builtins"
-xmlns:lgCommon="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes"
+<xs:schema xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIChangeTypes"
+xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins"
+xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
 xmlns:xs="http://www.w3.org/2001/XMLSchema"
 elementFormDefault="qualified"
-targetNamespace="http://LexGrid.org/schema/2009/01/LexGrid/NCIChangeTypes">
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/builtins.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes.xsd"/>
+targetNamespace="http://LexGrid.org/schema/2010/01/LexGrid/NCIChangeTypes">
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/builtins.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes.xsd"/>
 	<!-- ================================================= -->
 	<!-- Package: <<XSDschema>> NCIChangeTypes  -->
 	<!-- ================================================= -->

@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<xs:schema xmlns:lbCore="http://LexGrid.org/schema/LexBIG/2009/01/Core" xmlns:lbColl="http://LexGrid.org/schema/LexBIG/2009/01/Collections" xmlns:lgBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/builtins" xmlns:lgCommon="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" xmlns:lgNaming="http://LexGrid.org/schema/2009/01/LexGrid/naming" xmlns:lgCon="http://LexGrid.org/schema/2009/01/LexGrid/concepts" xmlns:lgValueDomains="http://LexGrid.org/schema/2009/01/LexGrid/valueDomains" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://LexGrid.org/schema/LexBIG/2009/01/Core" elementFormDefault="qualified">
-	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/Collections" schemaLocation="Collections.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/builtins.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/concepts" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/concepts.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/naming" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/naming.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/valueDomains" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/valueDomains.xsd"/>
+<xs:schema xmlns:lbCore="http://LexGrid.org/schema/LexBIG/2010/01/Core" 
+	xmlns:lbColl="http://LexGrid.org/schema/LexBIG/2010/01/Collections" 
+	xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins" 
+	xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" 
+	xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming" 
+	xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts" 
+	xmlns:lgValueDomains="http://LexGrid.org/schema/2010/01/LexGrid/valueSets" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://LexGrid.org/schema/LexBIG/2010/01/Core" elementFormDefault="qualified">
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2010/01/Collections" schemaLocation="Collections.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/builtins.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/concepts" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/concepts.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/naming" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/naming.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/valueSetss" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/valueSets.xsd"/>
 	<!-- ================================================= -->
 	<!-- Package: <<XSDschema>> Core	   				   -->
 	<!-- ================================================= -->
@@ -205,7 +213,7 @@
 		<xs:complexContent>
 			<xs:extension base="lbCore:ResolvedCodedNodeReference">
 				<xs:sequence>
-					<xs:element name="referencedEntry" type="lgCon:concept" minOccurs="0">
+					<xs:element name="referencedEntry" type="lgCon:entity" minOccurs="0">
 						<xs:annotation>
 							<xs:documentation>The resolved concept, if present.
 							Alias for ResolvedCodedNodeReference:entity</xs:documentation>

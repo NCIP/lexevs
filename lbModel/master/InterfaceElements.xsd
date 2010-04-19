@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<xs:schema xmlns:lbColl="http://LexGrid.org/schema/LexBIG/2009/01/Collections" xmlns:lbCore="http://LexGrid.org/schema/LexBIG/2009/01/Core" xmlns:lbIfe="http://LexGrid.org/schema/LexBIG/2009/01/InterfaceElements" xmlns:lgBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/builtins" xmlns:lgCommon="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" xmlns:lgNaming="http://LexGrid.org/schema/2009/01/LexGrid/naming" xmlns:lgCon="http://LexGrid.org/schema/2009/01/LexGrid/concepts" xmlns:lgVer="http://LexGrid.org/schema/2009/01/LexGrid/versions" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://LexGrid.org/schema/LexBIG/2009/01/InterfaceElements" elementFormDefault="qualified">
+<xs:schema xmlns:lbColl="http://LexGrid.org/schema/LexBIG/2010/01/Collections" 
+	xmlns:lbCore="http://LexGrid.org/schema/LexBIG/2010/01/Core" 
+	xmlns:lbIfe="http://LexGrid.org/schema/LexBIG/2010/01/InterfaceElements" 
+	xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins" 
+	xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" 
+	xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming" 
+	xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts" 
+	xmlns:lgVer="http://LexGrid.org/schema/2010/01/LexGrid/versions" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://LexGrid.org/schema/LexBIG/2010/01/InterfaceElements" elementFormDefault="qualified">
 	<!-- ================================================= -->
 	<!-- Package: <<XSDschema>> InterfaceElements		   -->
 	<!-- ================================================= -->
 	<xs:annotation>
 		<xs:documentation>XML fragments that are used as parameters to and from interfaces</xs:documentation>
 	</xs:annotation>
-	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/Core" schemaLocation="Core.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/Collections" schemaLocation="Collections.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/builtins.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/concepts" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/concepts.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/naming" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/naming.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/versions" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/versions.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2010/01/Core" schemaLocation="Core.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2010/01/Collections" schemaLocation="Collections.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/builtins.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/concepts" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/concepts.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/naming" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/naming.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/versions" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/versions.xsd"/>
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- Class: ProcessState						   			-->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

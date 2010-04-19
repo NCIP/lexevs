@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<xs:schema xmlns:lbColl="http://LexGrid.org/schema/LexBIG/2009/01/Collections" xmlns:lbCore="http://LexGrid.org/schema/LexBIG/2009/01/Core" xmlns:lbIfe="http://LexGrid.org/schema/LexBIG/2009/01/InterfaceElements" xmlns:lgBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/builtins" xmlns:lgCS="http://LexGrid.org/schema/2009/01/LexGrid/codingSchemes" xmlns:lgCommon="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" xmlns:lgNCI="http://LexGrid.org/schema/2009/01/LexGrid/NCIChangeTypes" xmlns:lgVer="http://LexGrid.org/schema/2009/01/LexGrid/versions" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://LexGrid.org/schema/LexBIG/2009/01/TerminologyServiceMetadata" targetNamespace="http://LexGrid.org/schema/LexBIG/2009/01/Collections" elementFormDefault="qualified">
+<xs:schema xmlns:lbColl="http://LexGrid.org/schema/LexBIG/2010/01/Collections" 
+	xmlns:lbCore="http://LexGrid.org/schema/LexBIG/2010/01/Core" 
+	xmlns:lbIfe="http://LexGrid.org/schema/LexBIG/2010/01/InterfaceElements" 
+	xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins" 
+	xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes" 
+	xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" 
+	xmlns:lgNCI="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" 
+	xmlns:lgVer="http://LexGrid.org/schema/2010/01/LexGrid/versions" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:ns1="http://LexGrid.org/schema/LexBIG/2009/01/TerminologyServiceMetadata" 
+	targetNamespace="http://LexGrid.org/schema/LexBIG/2010/01/Collections" elementFormDefault="qualified">
 	<!-- ================================================= -->
 	<!-- Package: <<XSDschema>> Collections	   			   -->
 	<!-- ================================================= -->
 	<xs:annotation>
-		<xs:documentation>The collections schema contains named sets of things.  It doesn't really need to be displayed as a graphic, as it always follows the same pattern.  The only variation is the cardinatlity of the child.</xs:documentation>
+		<xs:documentation>The collections schema contains named sets of things.  It doesn't really need to be displayed as a graphic, as it always follows the same pattern.  The only variation is the cardinality of the child.</xs:documentation>
 	</xs:annotation>
-	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/InterfaceElements" schemaLocation="InterfaceElements.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/Core" schemaLocation="Core.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/builtins.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/codingSchemes" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/codingSchemes.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/versions" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/versions.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/NCIChangeTypes" schemaLocation="NCIHistory.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2010/01/InterfaceElements" schemaLocation="InterfaceElements.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2010/01/Core" schemaLocation="Core.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/builtins.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/versions" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/versions.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory.xsd"/>
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- Class: CodingSchemeSummary						   -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
