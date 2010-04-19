@@ -25,6 +25,7 @@ import javax.annotation.Resource;
 import org.junit.Test;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.ibatis.codednodegraph.IbatisCodedNodeGraphDao;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -36,10 +37,6 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
  */
 @TransactionConfiguration
 public class TripleUidIteratorTest extends LexEvsDbUnitTestBase {
-	
-	/** The ibatis association dao. */
-	@Resource
-	private IbatisCodedNodeGraphDao ibatisCodedNodeGraphDao;
 	
 	@Test
 	public void testGetTripleUids() throws SQLException{
@@ -54,8 +51,8 @@ public class TripleUidIteratorTest extends LexEvsDbUnitTestBase {
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'aname')");
 		
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -75,9 +72,7 @@ public class TripleUidIteratorTest extends LexEvsDbUnitTestBase {
 				" 't-ns1'," +
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
-	
-	
-		TripleUidIterator itr = new TripleUidIterator(ibatisCodedNodeGraphDao, "cs-guid", "ap-guid", "s-code", "s-ns", TripleNode.SUBJECT, 5);
+		TripleUidIterator itr = new TripleUidIterator("csuri", "csversion", "c-name", "aname", "s-code", "s-ns", new GraphQuery(), TripleNode.SUBJECT, 5);
 		
 		assertTrue(itr.hasNext());
 		assertEquals(itr.next(), "eae-guid1");
