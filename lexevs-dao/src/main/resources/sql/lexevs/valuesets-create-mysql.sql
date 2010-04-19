@@ -203,6 +203,10 @@ CREATE TABLE vsSupportedAttrib
 	isImported CHAR(1),
 	equivalentCodingScheme VARCHAR(250),
 	assemblyRule VARCHAR(250),
+	assnCodingScheme VARCHAR(250),
+	assnNamespace VARCHAR(250),
+	assnEntityCode VARCHAR(200),
+	propertyType VARCHAR(50),
 	PRIMARY KEY (vsSuppAttribGuid),
 	UNIQUE UQ_vsMapping(referenceGuid, supportedAttributeTag, id),
 	INDEX idx_saReferenceGuid (referenceGuid ASC)
