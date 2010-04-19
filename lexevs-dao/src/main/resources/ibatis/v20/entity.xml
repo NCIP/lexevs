@@ -8,6 +8,7 @@
 	<typeAlias alias="propertyLink" type="org.LexGrid.concepts.PropertyLink" />
 	<typeAlias alias="resolvedCodedNodeReference" type="org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference" />
 	<typeAlias alias="insertOrUpdateEntityBean" type="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean" />
+	<typeAlias alias="InsertOrUpdateAssociationEntityBean" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean" />
 	
 	<resultMap id="resolvedCodedNodeReferenceResult" class="resolvedCodedNodeReference">
 		<result property="code" column="entityCode" />
@@ -138,12 +139,12 @@
 			entity.status,
 			entity.effectiveDate,
 			entity.expirationDate,
-			entityType.entityType,
-			 
-			associationEntity.forwardName,
-			associationEntity.reverseName,
-			associationEntity.isNavigable,
-			associationEntity.isTransitive,
+			entity.forwardName,
+			entity.reverseName,
+			entity.isNavigable,
+			entity.isTransitive,
+			
+			entityType.entityType,			 
 			
 			entryState.changeType,
   			entryState.relativeOrder,
@@ -161,12 +162,6 @@
 			entity.entityGuid =
 			entityType.entityGuid	
 			 
-		LEFT JOIN
-			$prefix$associationEntity associationEntity
-		ON
-			entity.entityGuid =
-			associationEntity.entityGuid
-			 	
 		LEFT JOIN
 			$actualTableSetPrefix$entryState entryState
 		ON
@@ -272,13 +267,17 @@
 			entityCodeNamespace,
 			isDefined,
 			isAnonymous,
-			isActive,
 			description,
+			isActive,			
 			owner,
 			status,
 			effectiveDate,
 			expirationDate,
-			entryStateGuid
+			entryStateGuid,
+			forwardName,
+			reverseName,
+			isNavigable,
+			isTransitive
 		) VALUES (
 			#uid#, 
 			#codingSchemeUId#,
@@ -286,13 +285,41 @@
 			#entity.entityCodeNamespace#, 
 			#entity.isDefined#,
 			#entity.isAnonymous#,
-			#entity.isActive#,
 			#entity.entityDescription.content#,
+			#entity.isActive#,
 			#entity.owner#,
 			#entity.status#,
 			#entity.effectiveDate#,
 			#entity.expirationDate#,
 			#entryStateUId#
+			
+			<isPropertyAvailable prepend="," property="entity.forwardName">
+				#entity.forwardName#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="entity.forwardName">
+				null
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable prepend="," property="entity.reverseName">
+				#entity.reverseName#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="entity.reverseName">
+				null
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable prepend="," property="entity.isNavigable">
+				#entity.isNavigable#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="entity.isNavigable">
+				null
+			</isNotPropertyAvailable>
+			
+			<isPropertyAvailable prepend="," property="entity.isTransitive">
+				#entity.isTransitive#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable prepend="," property="entity.isTransitive">
+				null
+			</isNotPropertyAvailable>
 		)
   </insert>
   
