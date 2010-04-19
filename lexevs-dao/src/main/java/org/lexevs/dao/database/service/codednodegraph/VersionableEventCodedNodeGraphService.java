@@ -161,10 +161,14 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 	}
 
 	@Override
-	public int getTripleUidsContainingSubjectCount(String codingSchemeUri,
-			String codingSchemeVersion, String relationsContainerName,
-			String associationPredicateName, String subjectEntityCode,
-			String subjectEntityCodeNamespace, GraphQuery query) {
+	public int getTripleUidsContainingSubjectCount(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			String relationsContainerName,
+			String associationPredicateName, 
+			String subjectEntityCode,
+			String subjectEntityCodeNamespace, 
+			GraphQuery query) {
 		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
 		
 		String associationPredicateUid = this.
@@ -195,13 +199,10 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 		AssociationDao associationDao =
 			this.getDaoManager().getAssociationDao(
 				uri, version);
-		String relationsUid = associationDao.
-			getRelationsId(codingSchemeUid, relationsContainerName);
 		
 		return associationDao.
-			getAssociationPredicateId(
+			getAssociationPredicateUid(
 					codingSchemeUid, 
-					relationsUid, 
 					associationPredicateName);
 	}
 }

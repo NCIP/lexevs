@@ -20,7 +20,6 @@ package org.lexevs.dao.database.service.association;
 
 import java.util.List;
 
-import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
@@ -47,15 +46,12 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 			String associationPredicateName,
 			AssociationSource source){
 		String codingSchemeId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri, version).
-			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);;
 		
-		String relationsId = this.getDaoManager().getAssociationDao(codingSchemeUri, version).
-			getRelationsId(codingSchemeId, relationContainerName);
+		String associationPredicateUid = this.getDaoManager().getAssociationDao(codingSchemeUri, version).
+			getAssociationPredicateUid(codingSchemeId, associationPredicateName);
 		
-		String associationPredicateId = this.getDaoManager().getAssociationDao(codingSchemeUri, version).
-			getAssociationPredicateId(codingSchemeId, relationsId, associationPredicateName);
-		
-		this.doInsertAssociationSource(codingSchemeUri, version, codingSchemeId, associationPredicateId, 
+		this.doInsertAssociationSource(codingSchemeUri, version, codingSchemeId, associationPredicateUid, 
 				DaoUtility.createList(AssociationSource.class, source));
 	}
 
