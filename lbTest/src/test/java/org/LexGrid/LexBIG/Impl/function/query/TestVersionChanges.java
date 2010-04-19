@@ -52,7 +52,7 @@ public class TestVersionChanges extends LexBIGServiceTestCase {
         assertTrue(nce[0].getEditDate().getTime() == Long.parseLong("1133935200000"));
         assertTrue(nce[0].getReferencecode() == null || nce[0].getReferencecode().equals(""));
         assertTrue(nce[0].getReferencename().equals("Current Dental Terminology 2005"));
-        assertTrue(nce[0].getEditaction().getType() == ChangeType.MODIFY_TYPE);
+        assertTrue(nce[0].getEditaction().equals(ChangeType.MODIFY));
 
     }
 }
