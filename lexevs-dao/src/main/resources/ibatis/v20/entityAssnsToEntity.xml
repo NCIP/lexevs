@@ -4,7 +4,8 @@
 <sqlMap namespace="Association">
 
 	<typeAlias alias="triple" type="org.lexevs.dao.database.access.association.model.Triple"/>
-	<typeAlias alias="associatedConcept" type="org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept"/>
+	<typeAlias alias="associatedConcept" type="org.lexevs.dao.database.ibatis.codednodegraph.model.QualifierAddingAssociatedConcept"/>
+	<typeAlias alias="associationQualification" type="org.LexGrid.LexBIG.DataModel.Core.NameAndValue"/>
 
 	<resultMap id="tripleResult" class="triple">
 		<result property="sourceEntityCode" column="sourceEntityCode" />
@@ -14,13 +15,19 @@
 		<result property="associationPredicateId" column="associationPredicateGuid" />
 	</resultMap>
 	
-	<resultMap id="associatedConceptResult" class="associatedConcept">
+	<resultMap id="associatedConceptResult" class="associatedConcept" groupBy="code,codeNamespace">
 		<result property="code" column="entityCode" />
 		<result property="codeNamespace" column="entityCodeNamespace" />
 		<result property="entityDescription.content" column="description" />
 		<result property="codingSchemeURI" column="codingSchemeURI" />
 		<result property="codingSchemeVersion" column="representsVersion" />
 		<result property="codingSchemeName" column="codingSchemeName" />
+		<result property="associationQualification" resultMap="Association.associationQualificationResult"/>
+	</resultMap>
+
+	<resultMap id="associationQualificationResult" class="associationQualification">
+		<result property="name" column="qualifierName" />
+		<result property="content" column="qualifierValue" />
 	</resultMap>
 	
 	<select id="getAssociatedConcpetFromEntityAssnsToEntityUid" 
@@ -33,12 +40,14 @@
 			codingScheme.codingSchemeName,
 			<isEqual property="param2" compareValue="SUBJECT">
 				eate.sourceEntityCode as entityCode,
-				eate.sourceEntityCodeNamespace as entityCodeNamespace
+				eate.sourceEntityCodeNamespace as entityCodeNamespace,
 			</isEqual>
 			<isEqual property="param2" compareValue="OBJECT">
 				eate.targetEntityCode as entityCode,
-				eate.targetEntityCodeNamespace as entityCodeNamespace
+				eate.targetEntityCodeNamespace as entityCodeNamespace,
 			</isEqual>
+			quals.qualifierName,
+			quals.qualifierValue
 		FROM
 			$prefix$entityAssnsToEntity eate
 		LEFT JOIN
@@ -58,6 +67,11 @@
 		LEFT JOIN
 			$prefix$codingScheme codingScheme
 		ON (entity.codingSchemeGuid = codingScheme.codingSchemeGuid)
+		
+		LEFT JOIN
+			$prefix$entityAssnQuals quals
+		ON (eate.entityAssnsGuid = quals.referenceGuid)
+		
 		WHERE
 			eate.entityAssnsGuid = #param1#
 	</select>
@@ -168,24 +182,37 @@
   </insert>
   
   <sql id="getEntityAssnsToEntityUidsFragment">
-  		FROM
-			$prefix$entityAssnsToEntity eate
-		INNER JOIN
-			$prefix$associationPredicate ap
-		ON 
-			(ap.associationPredicateGuid = eate.associationPredicateGuid)
-		INNER JOIN
-			 $prefix$relation rel
-		ON 
-			(rel.relationGuid = ap.relationGuid)
-		LEFT JOIN
-			$prefix$entityAssnQuals quals
-		ON
-			(eate.entityAssnsGuid = quals.referenceGuid)
-		WHERE
-			rel.codingSchemeGuid = #codingSchemeUid#
-		AND
-			ap.associationPredicateGuid = #associationPredicateUid#
+	FROM
+		$prefix$entityAssnsToEntity eate
+	INNER JOIN
+		$prefix$associationPredicate ap
+	ON
+		(ap.associationPredicateGuid = eate.associationPredicateGuid)
+	INNER JOIN
+		$prefix$relation rel
+	ON
+		(rel.relationGuid = ap.relationGuid)
+	LEFT JOIN
+		$prefix$entityAssnQuals quals
+	ON
+		(eate.entityAssnsGuid = quals.referenceGuid)
+	WHERE
+		rel.codingSchemeGuid = #codingSchemeUid#
+	AND
+		ap.associationPredicateGuid = #associationPredicateUid#
+
+	<isNotEmpty property="associationQualifiers" prepend="AND">
+		<iterate property="associationQualifiers" conjunction="AND">
+			(
+			quals.qualifierName = #associationQualifiers[].qualifierName#
+			<isNotEmpty property="associationQualifiers[].qualifierValue">
+				AND
+				quals.qualifierValue = #associationQualifiers[].qualifierValue#
+			</isNotEmpty>
+			)
+		</iterate>
+	</isNotEmpty>
+	
 		AND
 			<isEqual property="tripleNode" compareValue="SUBJECT"> 
 				eate.sourceEntityCode = #entityCode#
@@ -197,9 +224,6 @@
 				AND
 				eate.targetEntityCodeNamespace = #entityCodeNamespace#
 			</isEqual>
-  
-  
-  
   </sql>
   
   	<select id="getEntityAssnsToEntityUids"
