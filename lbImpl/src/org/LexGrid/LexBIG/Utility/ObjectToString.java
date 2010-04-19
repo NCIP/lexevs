@@ -87,9 +87,11 @@ import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.SupportedNamespace;
+import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.relations.AssociatableElement;
@@ -1154,6 +1156,16 @@ public class ObjectToString {
                 .append(toString(o.getSupportedStatus(), indent + sp8));
     }
     
+    protected static void append(StringBuffer buff, String indent, SupportedAssociation o) {
+        append(buff, indent, (URIMap) o);
+        buff.append(getBreakAndIndent())
+            .append("AssociationEntity CodingScheme: ").append(o.getCodingScheme());       
+        buff.append(getBreakAndIndent())
+            .append("AssociationEntity EntityCodeNamespace: ").append(o.getEntityCodeNamespace());
+        buff.append(getBreakAndIndent())
+        .append("AssociationEntity EntityCode: ").append(o.getEntityCode());
+    }
+    
     protected static void append(StringBuffer buff, String indent, SupportedCodingScheme o) {
         append(buff, indent, (URIMap) o);
         buff.append(getBreakAndIndent())
@@ -1175,6 +1187,12 @@ public class ObjectToString {
         append(buff, indent, (URIMap) o);
         buff.append(getBreakAndIndent())
             .append("Equivalent Coding Scheme: ").append(o.getEquivalentCodingScheme());       
+    }
+    
+    protected static void append(StringBuffer buff, String indent, SupportedProperty o) {
+        append(buff, indent, (URIMap) o);
+        buff.append(getBreakAndIndent())
+            .append("Property type: ").append(o.getPropertyType());       
     }
     
     protected static void append(StringBuffer buff, String indent, SupportedSource o) {
