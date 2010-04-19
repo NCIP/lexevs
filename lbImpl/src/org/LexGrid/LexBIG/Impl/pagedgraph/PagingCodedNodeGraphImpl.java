@@ -29,6 +29,8 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
+import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
+import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
@@ -47,13 +49,18 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
     private static final long serialVersionUID = -1153282485482789848L;
     
     /** The builder. */
-    private AssociationListBuilder builder = new AssociationListBuilder();
+    private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
+    
+    /** The builder. */
+    private GraphQueryBuilder graphQueryBuilder = new DefaultGraphQueryBuilder();
     
     /** The coding scheme uri. */
     private String codingSchemeUri;
     
     /** The version. */
     private String version;
+    
+    private String relationsContainerName;
     
     private LgLoggerIF logger = LoggerFactory.getLogger();
     
@@ -63,9 +70,13 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
      * @param codingSchemeUri the coding scheme uri
      * @param version the version
      */
-    public PagingCodedNodeGraphImpl(String codingSchemeUri, String version){
+    public PagingCodedNodeGraphImpl(
+            String codingSchemeUri, 
+            String version,
+            String relationsContainerName){
         this.codingSchemeUri = codingSchemeUri;
         this.version = version;
+        this.relationsContainerName = relationsContainerName;
     }
     
     /* (non-Javadoc)
@@ -141,11 +152,24 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#resolveAsList(org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean, boolean, int, int, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType[], org.LexGrid.LexBIG.DataModel.Collections.SortOptionList, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, int)
      */
     @Override
-    public ResolvedConceptReferenceList resolveAsList(ConceptReference graphFocus, boolean resolveForward,
-            boolean resolveBackward, int resolveCodedEntryDepth, int resolveAssociationDepth,
-            LocalNameList propertyNames, PropertyType[] propertyTypes, SortOptionList sortOptions,
-            LocalNameList filterOptions, int maxToReturn) throws LBInvocationException, LBParameterException {
+    public ResolvedConceptReferenceList resolveAsList(
+    		ConceptReference graphFocus, 
+    		boolean resolveForward,
+            boolean resolveBackward, 
+            int resolveCodedEntryDepth, 
+            int resolveAssociationDepth,
+            LocalNameList propertyNames, 
+            PropertyType[] propertyTypes, 
+            SortOptionList sortOptions,
+            LocalNameList filterOptions, 
+            int maxToReturn) throws LBInvocationException, LBParameterException {
         logger.warn("Paged Graph is currently an incomplete implementation. Graph functionality will be implemented incrementally.");
+        
+        if (graphFocus == null && resolveForward && resolveBackward) {
+            throw new LBParameterException(
+                    "If you do not provide a focus node, you must choose resolve forward or resolve reverse, not both."
+                            + "  Choose resolve forward to start at root nodes.  Choose resolve reverse to start at tail nodes.");
+        }
         
         ResolvedConceptReference focus;
         
@@ -161,19 +185,29 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
         focus.setCode(graphFocus.getCode());
         
         if(resolveForward) {
-            focus.setSourceOf(builder.buildSourceOfAssociationList(
+            focus.setSourceOf(
+            		associationListBuilder.buildSourceOfAssociationList(
                     this.codingSchemeUri,
                     this.version, 
                     graphFocus.getCode(),
-                    graphFocus.getCodeNamespace()));
+                    graphFocus.getCodeNamespace(),
+                    relationsContainerName,
+                    resolveAssociationDepth, 
+                    resolveCodedEntryDepth,
+                    this.graphQueryBuilder.getQuery()));
         }
         
         if(resolveBackward) {
-            focus.setTargetOf(builder.buildTargetOfAssociationList(
+            focus.setTargetOf(
+            		associationListBuilder.buildTargetOfAssociationList(
                     this.codingSchemeUri,
                     this.version, 
                     graphFocus.getCode(),
-                    graphFocus.getCodeNamespace()));
+                    graphFocus.getCodeNamespace(),
+                    relationsContainerName,
+                    resolveAssociationDepth, 
+                    resolveCodedEntryDepth,
+                    this.graphQueryBuilder.getQuery()));
         }
         
         ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
@@ -200,8 +234,8 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
     @Override
     public CodedNodeGraph restrictToAssociations(NameAndValueList association, NameAndValueList associationQualifiers)
             throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        this.graphQueryBuilder.restrictToAssociations(association, associationQualifiers);
+        return this;
     }
 
     /* (non-Javadoc)

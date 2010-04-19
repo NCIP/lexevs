@@ -68,7 +68,7 @@ public class CodedNodeGraphFactory {
         }
         
         if(entry.getDbSchemaVersion().equals(VERSION_20)){
-             return new PagingCodedNodeGraphImpl(uri, version);
+             return new PagingCodedNodeGraphImpl(uri, version, relationContainerName);
         }
         
         throw new LBParameterException("Could not create a CodedNodeGraph for CodingScheme: " + codingScheme);

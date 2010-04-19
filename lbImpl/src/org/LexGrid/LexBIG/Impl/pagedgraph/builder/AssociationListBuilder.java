@@ -24,13 +24,12 @@ import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.Impl.pagedgraph.model.LazyLoadableAssociatedConceptList;
-import org.lexevs.dao.database.access.DaoManager;
-import org.lexevs.dao.database.access.association.AssociationDao;
-import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
-import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 /**
  * The Class AssociationListBuilder.
@@ -47,9 +46,9 @@ public class AssociationListBuilder {
      * 
      * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
      */
-    public enum AssociationDirection {/** The SOURC e_ of. */
-SOURCE_OF, /** The TARGE t_ of. */
- TARGET_OF}
+    public enum AssociationDirection {
+        SOURCE_OF,
+        TARGET_OF}
     
     /** The database service manager. */
     private DatabaseServiceManager databaseServiceManager =
@@ -66,15 +65,23 @@ SOURCE_OF, /** The TARGE t_ of. */
      * @return the association list
      */
     public AssociationList buildSourceOfAssociationList(
-            final String codingSchemeUri,
-            final String version,
-            final String entityCode,
-            final String entityCodeNamespace) {
+            String codingSchemeUri,
+            String version,
+            String entityCode,
+            String entityCodeNamespace,
+            String relationsContainerName,
+            int resolveAssociationDepth,
+            int resolveCodedEntryDepth,
+            GraphQuery graphQuery) {
         return this.doBuildAssociationList(
                 codingSchemeUri, 
                 version, 
                 entityCode, 
                 entityCodeNamespace, 
+                relationsContainerName,
+                resolveAssociationDepth,
+                resolveCodedEntryDepth,
+                graphQuery,
                 AssociationDirection.SOURCE_OF);
     }
     
@@ -89,15 +96,23 @@ SOURCE_OF, /** The TARGE t_ of. */
      * @return the association list
      */
     public AssociationList buildTargetOfAssociationList(
-                final String codingSchemeUri,
-                final String version,
-                final String entityCode,
-                final String entityCodeNamespace) {
+                String codingSchemeUri,
+                String version,
+                String entityCode,
+                String entityCodeNamespace,
+                String relationsContainerName,
+                int resolveAssociationDepth,
+                int resolveCodedEntryDepth,
+                GraphQuery graphQuery) {
         return this.doBuildAssociationList(
                 codingSchemeUri, 
                 version, 
                 entityCode, 
                 entityCodeNamespace, 
+                relationsContainerName,
+                resolveAssociationDepth,
+                resolveCodedEntryDepth,
+                graphQuery,
                 AssociationDirection.TARGET_OF); }
     
     
@@ -113,88 +128,91 @@ SOURCE_OF, /** The TARGE t_ of. */
      * @return the association list
      */
     protected AssociationList doBuildAssociationList(
-                final String codingSchemeUri,
-                final String version,
-                final String entityCode,
-                final String entityCodeNamespace,
-                final AssociationDirection direction) {
+            String codingSchemeUri,
+            String version,
+            String entityCode,
+            String entityCodeNamespace,
+            String relationsContainerName,
+            int resolveAssociationDepth,
+            int resolveCodedEntryDepth,
+            GraphQuery graphQuery,
+            AssociationDirection direction) {
+        Assert.notNull(graphQuery, "Must pass in a GraphQuery.");
 
-        return databaseServiceManager.getDaoCallbackService().
-            executeInDaoLayer(new DaoCallback<AssociationList>() {
+        CodedNodeGraphService codedNodeGraphService =
+            databaseServiceManager.getCodedNodeGraphService();
+        
+        List<String> associationPredicateNames;
+        if(CollectionUtils.isEmpty(graphQuery.getRestrictToAssociations())) {
+            associationPredicateNames = getAssociationPredicateNames(
+                codingSchemeUri,
+                version);
+        } else {
+            associationPredicateNames = graphQuery.getRestrictToAssociations();
+        }
 
-                @Override
-                public AssociationList execute(DaoManager daoManager) {
-                    AssociationList returnList = new AssociationList();
-                    
-                    CodingSchemeDao codingSchemeDao = 
-                        daoManager.getCodingSchemeDao(codingSchemeUri, version);
-                    
-                    AssociationDao associationDao = 
-                        daoManager.getAssociationDao(codingSchemeUri, version);
-                    
-                    CodedNodeGraphDao codedNodeGraphDao = 
-                        daoManager.getCodedNodeGraphDao(codingSchemeUri, version);
-                    
-                    String codingSchemeUid = codingSchemeDao.
-                        getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
-                    
-                    List<String> relationsUids = associationDao.
-                        getRelationsUIdsForCodingSchemeUId(codingSchemeUid);
-                    
-                    for(String relationUid : relationsUids){
-                        List<String> associationPredicateUids = associationDao.
-                            getAssociationPredicateIdsForRelationsId(codingSchemeUid, relationUid);
-                  
-                        for(String associationPredicateUid : associationPredicateUids) {
-                           int tripleUidsCount;
-                           if(direction.equals(AssociationDirection.SOURCE_OF)) {
-                               tripleUidsCount = codedNodeGraphDao.getTripleUidsContainingSubjectCount(
-                                        codingSchemeUid, 
-                                        associationPredicateUid, 
-                                        entityCode, 
-                                        entityCodeNamespace);
-                           } else {
-                               tripleUidsCount = codedNodeGraphDao.getTripleUidsContainingObjectCount(
-                                       codingSchemeUid, 
-                                       associationPredicateUid, 
-                                       entityCode, 
-                                       entityCodeNamespace);   
-                           }
-                           
-                           if(tripleUidsCount > 0) {
-                               Association association = new Association();
-                               
-                               String associationName = associationDao.
-                                   getAssociationPredicateNameForId(
-                                           codingSchemeUid, 
-                                           associationPredicateUid);
+        AssociationList returnList = new AssociationList();
 
-                               association.setAssociationName(associationName);
-                               
-                               AssociatedConceptList associatedConceptList =
-                                   new LazyLoadableAssociatedConceptList(
-                                           tripleUidsCount,
-                                           codedNodeGraphDao, 
-                                           codingSchemeUid, 
-                                           associationPredicateUid, 
-                                           entityCode, 
-                                           entityCodeNamespace, 
-                                           direction,
-                                           associatedConceptPageSize);
-                               
-                               association.setAssociatedConcepts(associatedConceptList);
-                               
-                               returnList.addAssociation(association);
-                               
-                               
-                           }
-                        }
-                        
-                    }
-                    return returnList;
-                }
-            
-        });
+        for(String associationPredicateName : associationPredicateNames) {
+            int tripleUidsCount;
+            if(direction.equals(AssociationDirection.SOURCE_OF)) {
+                tripleUidsCount = codedNodeGraphService.getTripleUidsContainingSubjectCount(
+                        codingSchemeUri, 
+                        version, 
+                        relationsContainerName, 
+                        associationPredicateName, 
+                        entityCode, 
+                        entityCodeNamespace, 
+                        graphQuery);
+            } else {
+                tripleUidsCount = codedNodeGraphService.getTripleUidsContainingObjectCount(
+                        codingSchemeUri, 
+                        version, 
+                        relationsContainerName, 
+                        associationPredicateName, 
+                        entityCode, 
+                        entityCodeNamespace, 
+                        graphQuery);
+            }
+
+            if(tripleUidsCount > 0) {
+                Association association = new Association();
+
+                association.setAssociationName(associationPredicateName);
+
+                AssociatedConceptList associatedConceptList =
+                    new LazyLoadableAssociatedConceptList(
+                            tripleUidsCount,
+                            codingSchemeUri,
+                            version,
+                            relationsContainerName,
+                            associationPredicateName, 
+                            entityCode, 
+                            entityCodeNamespace, 
+                            graphQuery,
+                            direction,
+                            associatedConceptPageSize);
+
+                association.setAssociatedConcepts(associatedConceptList);
+
+                returnList.addAssociation(association);
+
+
+            }
+
+        }
+        return returnList;
+    }
+
+    protected List<String> getAssociationPredicateNames(
+            String codingSchemeUri, 
+            String codingSchemeVersion) {
+        CodedNodeGraphService codedNodeGraphService =
+            databaseServiceManager.getCodedNodeGraphService();
+        
+        return codedNodeGraphService.getAssociationPredicateNamesForCodingScheme(
+                codingSchemeUri,
+                codingSchemeVersion);
     }
 
     /**
