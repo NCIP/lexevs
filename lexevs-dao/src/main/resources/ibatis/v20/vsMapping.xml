@@ -196,7 +196,7 @@
 			equivalentCodingScheme,
 			assemblyRule
 		) VALUES (
-			#id#, 
+			#uid#, 
 			#codingSchemeUId#,
 			#referenceType#,
 			#supportedAttributeTag#, 

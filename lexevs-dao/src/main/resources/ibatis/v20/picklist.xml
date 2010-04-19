@@ -146,6 +146,40 @@
 			pickListDef.representsValueSetDefinition = #param1#
 	</select>
 	
+	<select id="getPickListDefinitionIdForEntityCodeAndEntityNamespace" 
+		resultClass="string" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		SELECT
+			pickListDef.pickListId
+		FROM
+			vsPickList pickListDef,
+			vsPLEntry plEntry
+		WHERE
+			plEntry.entityCode = #param1#
+		AND
+			plEntry.entityCode = #param2#
+		AND
+			plEntry.vsPickListGuid = pickListDef.vsPickListGuid
+	</select>
+	
+	<select id="getPickListDefinitionIdForEntityCodeEntityNamespaceAndPropertyId" 
+		resultClass="string" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
+		SELECT
+			pickListDef.pickListId
+		FROM
+			vsPickList pickListDef,
+			vsPLEntry plEntry
+		WHERE
+			plEntry.entityCode = #param1#
+		AND
+			plEntry.entityCode = #param2#
+		AND
+			plEntry.propertyId = #param3#
+		AND
+			plEntry.vsPickListGuid = pickListDef.vsPickListGuid
+	</select>
+	
 	<insert id="insertPickListDefinition" 
 		parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertPickListDefinitionBean">
 		INSERT INTO vsPickList
