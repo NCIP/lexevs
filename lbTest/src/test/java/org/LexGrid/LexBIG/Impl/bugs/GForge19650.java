@@ -95,7 +95,7 @@ public class GForge19650 extends LexBIGServiceTestCase {
             Thread.sleep(500);
         }
 
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState() == ProcessState.COMPLETED);
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
