@@ -67,7 +67,7 @@ public class LoadTestDataTest extends TestCase {
             Thread.sleep(500);
         }
 
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
@@ -84,7 +84,7 @@ public class LoadTestDataTest extends TestCase {
         loader.load(new File("resources/testData/German Made Parts.xml").toURI(), true, false);
 
         assertTrue(loader.getStatus().getEndTime() != null);
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
@@ -102,7 +102,7 @@ public class LoadTestDataTest extends TestCase {
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(500);
         }
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
@@ -123,7 +123,7 @@ public class LoadTestDataTest extends TestCase {
             Thread.sleep(500);
         }
 
-        assertTrue(hloader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(hloader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(hloader.getStatus().getErrorsLogged().booleanValue());
     }
 
@@ -141,7 +141,7 @@ public class LoadTestDataTest extends TestCase {
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(500);
         }
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
@@ -167,7 +167,7 @@ public class LoadTestDataTest extends TestCase {
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(1000);
         }
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
@@ -188,7 +188,7 @@ public class LoadTestDataTest extends TestCase {
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(1000);
         }
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
@@ -207,7 +207,7 @@ public class LoadTestDataTest extends TestCase {
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(1000);
         }
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
@@ -225,7 +225,7 @@ public class LoadTestDataTest extends TestCase {
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(1000);
         }
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
@@ -253,7 +253,7 @@ public class LoadTestDataTest extends TestCase {
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(500);
         }
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
@@ -266,7 +266,7 @@ public class LoadTestDataTest extends TestCase {
 
         loader.loadMeta(new File("resources/testData/SAMPLEMETA").toURI());
 
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
@@ -289,7 +289,7 @@ public class LoadTestDataTest extends TestCase {
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(1000);
         }
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
@@ -311,7 +311,7 @@ public class LoadTestDataTest extends TestCase {
         while (metaLoader.getStatus().getEndTime() == null) {
             Thread.sleep(500);
         }
-        assertTrue(metaLoader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(metaLoader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(metaLoader.getStatus().getErrorsLogged().booleanValue());
     }
 
@@ -328,7 +328,7 @@ public class LoadTestDataTest extends TestCase {
         while (metaLoader.getStatus().getEndTime() == null) {
             Thread.sleep(500);
         }
-        assertTrue(metaLoader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(metaLoader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(metaLoader.getStatus().getErrorsLogged().booleanValue());
     }
     
@@ -343,7 +343,7 @@ public class LoadTestDataTest extends TestCase {
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(500);
         }
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
