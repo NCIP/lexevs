@@ -1,7 +1,10 @@
 package org.lexevs.dao.database.ibatis.association.parameter;
 
+import java.util.List;
+
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 
 public class GetEntityAssnUidsBean extends PrefixedTableParameterBean {
 	
@@ -9,6 +12,7 @@ public class GetEntityAssnUidsBean extends PrefixedTableParameterBean {
 	private String associationPredicateUid;
 	private String entityCode;
 	private String entityCodeNamespace;
+	private List<QualifierNameValuePair> associationQualifiers;
 	private TripleNode tripleNode;
 	
 	public String getEntityCode() {
@@ -41,5 +45,11 @@ public class GetEntityAssnUidsBean extends PrefixedTableParameterBean {
 	}
 	public TripleNode getTripleNode() {
 		return tripleNode;
+	}
+	public void setAssociationQualifiers(List<QualifierNameValuePair> associationQualifiers) {
+		this.associationQualifiers = associationQualifiers;
+	}
+	public List<QualifierNameValuePair> getAssociationQualifiers() {
+		return associationQualifiers;
 	}
 }

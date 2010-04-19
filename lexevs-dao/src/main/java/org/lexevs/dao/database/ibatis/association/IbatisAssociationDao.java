@@ -93,7 +93,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private static String GET_RELATIONS_KEY_SQL = ASSOCIATION_NAMESPACE + "getRelationsKey";
 	
 	/** The GE t_ associatio n_ predicat e_ ke y_ sql. */
-	private static String GET_ASSOCIATION_PREDICATE_KEY_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateKey";
+	private static String GET_ASSOCIATION_PREDICATE_UID_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateUid";
 	
 	private static String GET_ASSOCIATION_PREDICATE_NAME_FOR_ID_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateNameForId";
 	
@@ -108,6 +108,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private static String DELETE_ASSOCIATION_QUALS_FOR_CODINGSCHEME_ID_SQL = ASSOCIATION_NAMESPACE + "deleteAssocQualsByCodingSchemeId";
 	
 	private static String GET_ASSOCIATION_PREDICATE_FOR_ID_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateForId";
+	
+	private static String GET_ASSOCIATION_PREDICATE_UID_FOR_DIRECTIONAL_NAME_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateUidForDirectionalName";
 	
 	private static String GET_RELATIONS_FOR__ID_SQL = ASSOCIATION_NAMESPACE + "getRelationsForId";
 
@@ -137,15 +139,29 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#getAssociationPredicateId(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public String getAssociationPredicateId(String codingSchemeId,
-			String relationContainerId, String associationPredicateName) {
+	public String getAssociationPredicateUid(String codingSchemeId, String associationPredicateName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		return
 			(String) 
-				this.getSqlMapClientTemplate().queryForObject(GET_ASSOCIATION_PREDICATE_KEY_SQL, new PrefixedParameterTuple(
-						prefix, relationContainerId, associationPredicateName));
+				this.getSqlMapClientTemplate().queryForObject(GET_ASSOCIATION_PREDICATE_UID_SQL, new PrefixedParameter(
+						prefix, associationPredicateName));
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getAssociationPredicateUidsForDirectionalName(
+			String codingSchemeId, String directionalName) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		PrefixedParameterTuple tuple = new PrefixedParameterTuple();
+		tuple.setPrefix(prefix);
+		tuple.setParam1(codingSchemeId);
+		tuple.setParam2(directionalName);
+		
+		return this.getSqlMapClientTemplate()
+			.queryForList(GET_ASSOCIATION_PREDICATE_UID_FOR_DIRECTIONAL_NAME_SQL, tuple);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#getRelationsId(java.lang.String, java.lang.String)
 	 */
