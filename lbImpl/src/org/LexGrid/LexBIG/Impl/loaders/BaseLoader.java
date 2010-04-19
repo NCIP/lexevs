@@ -21,7 +21,6 @@ package org.LexGrid.LexBIG.Impl.loaders;
 import java.io.File;
 import java.net.URI;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +28,6 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.Core.types.LogLevel;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -41,7 +39,6 @@ import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
@@ -55,13 +52,10 @@ import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
-import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 import org.lexevs.registry.WriteLockManager;
-import org.lexevs.system.ResourceManager;
-import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
@@ -287,7 +281,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                 status_.setState(ProcessState.FAILED);
                 md_.fatal("Failed while running the conversion", e);
             } finally {
-                if (status_.getState() == null || status_.getState().getType() != ProcessState.COMPLETED_TYPE) {
+                if (status_.getState() == null || status_.getState().equals(ProcessState.COMPLETED)) {
                     status_.setState(ProcessState.FAILED);
 
                     try {
