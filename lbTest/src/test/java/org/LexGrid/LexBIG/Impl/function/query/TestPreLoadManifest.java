@@ -81,7 +81,7 @@ public class TestPreLoadManifest extends LexBIGServiceTestCase {
         OBO_Loader loader = (OBO_Loader) lbsm.getLoader("OBOLoader");
         loader.setCodingSchemeManifestURI(new File("resources/testData/fungal_anatomy-Manifest.xml").toURI());
         loader.load(new File("resources/testData/fungal_anatomy.obo").toURI(), null, true, false);
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
     }
 
@@ -96,7 +96,7 @@ public class TestPreLoadManifest extends LexBIGServiceTestCase {
         CodingSchemeManifest csm = createOBOCodingSchemeManifest("02");
         loader.setCodingSchemeManifest(csm);
         loader.load(new File("resources/testData/fungal_anatomy.obo").toURI(), null, true, false);
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
     }
@@ -112,7 +112,7 @@ public class TestPreLoadManifest extends LexBIGServiceTestCase {
         CodingSchemeManifest csm = createOBOCodingSchemeManifest("03");
         loader.setCodingSchemeManifest(csm);
         loader.load(new File("resources/testData/fungal_anatomy.obo").toURI(), null, true, false);
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
         activateCodingScheme(loader, lbsm);
 
@@ -164,7 +164,7 @@ public class TestPreLoadManifest extends LexBIGServiceTestCase {
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(1000);
         }
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
         AbsoluteCodingSchemeVersionReference acsv= loader.getCodingSchemeReferences()[0];
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);

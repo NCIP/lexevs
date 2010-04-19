@@ -91,7 +91,7 @@ public class TestPostLoadManifest extends LexBIGServiceTestCase {
         loader.setCodingSchemeManifestURI(new File(PIZZAMANIFESTFILE).toURI());
         loader.load(new File(PIZZAONTOFILE).toURI(), true, false);
 
-        assertTrue(loader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         MetaData_Loader mdLoader = (MetaData_Loader) lbsm.getLoader(METADATALOADER);
@@ -105,7 +105,7 @@ public class TestPostLoadManifest extends LexBIGServiceTestCase {
            fail(e.getMessage());
         }
 
-        assertTrue(mdLoader.getStatus().getState().getType() == ProcessState.COMPLETED_TYPE);
+        assertTrue(mdLoader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(mdLoader.getStatus().getErrorsLogged().booleanValue());
     }
 
