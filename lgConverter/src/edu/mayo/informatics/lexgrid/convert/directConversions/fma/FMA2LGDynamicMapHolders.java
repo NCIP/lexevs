@@ -31,9 +31,10 @@ import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Comment;
 import org.LexGrid.commonTypes.EntityDescription;
-import org.LexGrid.concepts.Concept;
+import org.LexGrid.commonTypes.types.EntityTypes;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedProperty;
@@ -277,7 +278,8 @@ public class FMA2LGDynamicMapHolders {
                     propertyCounter = 0;
                     conceptList_.add(conceptCode);
 
-                    Concept con = new Concept();
+                    Entity con = new Entity();
+                    con.setEntityType(new String[]{EntityTypes.CONCEPT.name()});
                     con.setEntityCode(conceptCode);
 
                     String description = getEntityDescriptionFromObj(concept);
@@ -322,7 +324,7 @@ public class FMA2LGDynamicMapHolders {
                                         String clsNm = getConceptCodeFromCls(owner);
                                         if ((!clsNm.equals("67361")) && (!clsNm.equals("Concept name"))
                                                 && (!clsNm.equals("ConceptName"))) {
-                                            Concept con = getConceptFromVector(clsNm);
+                                            Entity con = getConceptFromVector(clsNm);
 
                                             if (con != null)
                                                 processSlots(cnInst, con, true);
@@ -343,7 +345,7 @@ public class FMA2LGDynamicMapHolders {
         return stored;
     }
 
-    private void addEntityDescriptionAsPresentation(Concept con) {
+    private void addEntityDescriptionAsPresentation(Entity con) {
         Presentation tp = new Presentation();
         Text txt = new Text();
         txt.setContent(con.getEntityDescription().getContent());
@@ -370,16 +372,16 @@ public class FMA2LGDynamicMapHolders {
      * return con; }
      */
 
-    private Concept getConceptFromVector(String name) {
+    private Entity getConceptFromVector(String name) {
         try {
             if (allConcepts_.getEntity() != null) {
                 Iterator itr = Arrays.asList(allConcepts_.getEntity()).iterator();
                 while (itr.hasNext()) {
                     Object ob = itr.next();
 
-                    if ((ob != null) && (ob instanceof Concept)) {
-                        if (((Concept) ob).getEntityCode().equals(name))
-                            return ((Concept) ob);
+                    if ((ob != null) && (ob instanceof Entity)) {
+                        if (((Entity) ob).getEntityCode().equals(name))
+                            return ((Entity) ob);
                     }
                 }
             }
@@ -398,7 +400,7 @@ public class FMA2LGDynamicMapHolders {
         return num;
     }
 
-    private void processSlots(Object concept, Concept con, boolean restricted) {
+    private void processSlots(Object concept, Entity con, boolean restricted) {
         Collection slots = null;
 
         if (concept instanceof Cls) {
@@ -480,7 +482,7 @@ public class FMA2LGDynamicMapHolders {
         return type;
     }
 
-    private void processRestrictedSlot(Object concept, Concept con, Slot slot) {
+    private void processRestrictedSlot(Object concept, Entity con, Slot slot) {
 
         if ((concept != null) && (con != null) && (slot != null)) {
             String slotName = slot.getName();
@@ -552,7 +554,7 @@ public class FMA2LGDynamicMapHolders {
         }
     }
 
-    private void addSlotDetailsToConcept(Object concept, Concept con, Slot slot, String slotType) {
+    private void addSlotDetailsToConcept(Object concept, Entity con, Slot slot, String slotType) {
         if (slot == null)
             return;
         String slotName = slot.getName();
@@ -743,7 +745,7 @@ public class FMA2LGDynamicMapHolders {
         return description;
     }
 
-    private void addPresentationAttribute(Object concept, Concept con, Slot slot) {
+    private void addPresentationAttribute(Object concept, Entity con, Slot slot) {
         try {
             if ((concept == null) || (slot == null) || (con == null))
                 return;
@@ -793,7 +795,7 @@ public class FMA2LGDynamicMapHolders {
         }
     }
 
-    private void modifyPresentationAttribute(Concept con, String conceptName, String slotName, String value) {
+    private void modifyPresentationAttribute(Entity con, String conceptName, String slotName, String value) {
         try {
             if ((con == null) || (FMA2LGUtils.isNull(conceptName)) || (FMA2LGUtils.isNull(slotName))
                     || (FMA2LGUtils.isNull(value)))
@@ -979,7 +981,7 @@ public class FMA2LGDynamicMapHolders {
         }
     }
 
-    private void addPropertyAttribute(Object concept, Concept con, Slot slot) {
+    private void addPropertyAttribute(Object concept, Entity con, Slot slot) {
         try {
             String property = FMA2LGUtils.toNMToken(slot.getName());
             if (!properties_.contains(property))
@@ -1006,7 +1008,7 @@ public class FMA2LGDynamicMapHolders {
         }
     }
 
-    private void addAssociationAttribute(Object concept, Concept con, Slot slot) {
+    private void addAssociationAttribute(Object concept, Entity con, Slot slot) {
         try {
             if ((concept == null) || (slot == null) || (con == null))
                 return;

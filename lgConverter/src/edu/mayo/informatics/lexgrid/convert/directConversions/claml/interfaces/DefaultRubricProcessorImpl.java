@@ -19,8 +19,8 @@ import org.LexGrid.LexBIG.claml.UsageKind;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
-import org.LexGrid.concepts.Concept;
 import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
@@ -35,12 +35,12 @@ public class DefaultRubricProcessorImpl implements RubricProcessor{
 
 	ClaML clamlXML_;
 	CodingScheme schemeCS_;
-	Concept conceptCS_;
+	Entity conceptCS_;
 	LgMessageDirectorIF messages_;
 	ClaMLConfig config_;
 	
 	
-	public DefaultRubricProcessorImpl(ClaML clamlXML, CodingScheme schemeCS, Concept conceptCS, ClaMLConfig config, LgMessageDirectorIF messages){
+	public DefaultRubricProcessorImpl(ClaML clamlXML, CodingScheme schemeCS, Entity conceptCS, ClaMLConfig config, LgMessageDirectorIF messages){
 		this.clamlXML_ = clamlXML;
 		this.schemeCS_ = schemeCS;
 		this.conceptCS_ = conceptCS;

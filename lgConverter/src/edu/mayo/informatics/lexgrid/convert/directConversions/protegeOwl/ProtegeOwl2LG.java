@@ -47,11 +47,9 @@ import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.types.EntityTypes;
 import org.LexGrid.commonTypes.types.PropertyTypes;
-import org.LexGrid.concepts.Concept;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
-import org.LexGrid.concepts.Instance;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.custom.concepts.EntityFactory;
 import org.LexGrid.custom.relations.RelationsUtil;
@@ -430,7 +428,7 @@ public class ProtegeOwl2LG {
         // as well as find out additional associations (e.g,. From)
         for (Iterator individuals = owlModel_.getOWLIndividuals().iterator(); individuals.hasNext();) {
             OWLIndividual individual = (OWLIndividual) individuals.next();
-            Instance emfInstance = resolveIndividual(individual);
+            Entity emfInstance = resolveIndividual(individual);
             if (emfInstance != null) {
                 addEntity(emfInstance);
             }
@@ -567,7 +565,7 @@ public class ProtegeOwl2LG {
         // as well as find out additional associations (e.g,. From)
         for (Iterator individuals = owlModel_.getOWLIndividuals().iterator(); individuals.hasNext();) {
             OWLIndividual individual = (OWLIndividual) individuals.next();            
-            Instance emfInstance = resolveIndividual(individual);
+            Entity emfInstance = resolveIndividual(individual);
             if (emfInstance != null) {
                 addEntity(emfInstance);
             }
@@ -690,7 +688,7 @@ public class ProtegeOwl2LG {
             // handled
             // later in the code(Refer to his email dated: 01/14/2009).
             if (prefManager.isProcessConceptsForObjectProperties()) {
-                Concept concept = resolveConcept(prop);
+                Entity concept = resolveConcept(prop);
             }
 
             // ///////////////////////////////////
@@ -854,7 +852,7 @@ public class ProtegeOwl2LG {
      *            The resource to evaluate.
      * @return The resolved concept; null if a new concept was not generated.
      */
-    protected Concept resolveConcept(RDFResource rdfResource) {
+    protected Entity resolveConcept(RDFResource rdfResource) {
 
         String rdfName = getRDFResourceLocalName(rdfResource);
         if (isNoopNamespace(rdfName))
@@ -867,7 +865,8 @@ public class ProtegeOwl2LG {
 
         // Create the raw EMF concept and assign label as initial description,
         // which may be overridden later by preferred text.
-        Concept emfConcept = EntityFactory.createConcept();
+        Entity emfConcept = new Entity();
+        emfConcept.setEntityType(new String[]{EntityTypes.CONCEPT.name()});
         EntityDescription ed = new EntityDescription();
         ed.setContent(label);
         emfConcept.setEntityDescription(ed);
@@ -1255,7 +1254,7 @@ public class ProtegeOwl2LG {
     /**
      * Defines an EMF instance.
      */
-    protected Instance resolveIndividual(RDFResource rdfResource) {
+    protected Entity resolveIndividual(RDFResource rdfResource) {
         String rdfName = getRDFResourceLocalName(rdfResource);
 
         if (isNoopNamespace(rdfName))
@@ -1266,7 +1265,8 @@ public class ProtegeOwl2LG {
         // Create the raw EMF individual and assign label as initial
         // description,
         // which may be overridden later by preferred text.
-        Instance emfInstance = EntityFactory.createInstance();
+        Entity emfInstance = new Entity();
+        emfInstance.setEntityType(new String[]{EntityTypes.INSTANCE.name()});
         EntityDescription ed = new EntityDescription();
         ed.setContent(label);
         emfInstance.setEntityDescription(ed);
@@ -1303,7 +1303,7 @@ public class ProtegeOwl2LG {
      * @param emfInstance
      * @param rdfResource
      */
-    protected void resolveIndividualProperties(Instance emfInstance, RDFResource rdfResource) {
+    protected void resolveIndividualProperties(Entity emfInstance, RDFResource rdfResource) {
 
         // Temporary container for EMF properties.
         // Note: The EMF object does not enforce order. However, the XSD models
@@ -1606,7 +1606,8 @@ public class ProtegeOwl2LG {
             return code;
         }
 
-        Concept emfClass = EntityFactory.createConcept();
+        Entity emfClass = new Entity();
+        emfClass.setEntityType(new String[]{EntityTypes.CONCEPT.name()});
         emfClass.setEntityCode(code);
         emfClass.setIsAnonymous(Boolean.TRUE);
         
@@ -2444,8 +2445,9 @@ public class ProtegeOwl2LG {
      * 
      * @return Concept
      */
-    protected Concept initSubtypeRoot() {
-        Concept topThing = EntityFactory.createConcept();
+    protected Entity initSubtypeRoot() {
+        Entity topThing = new Entity();
+        topThing.setEntityType(new String[]{EntityTypes.CONCEPT.name()});
         topThing.setEntityCode(ProtegeOwl2LGConstants.ROOT_CODE);
         topThing.setEntityCodeNamespace(this.getNameSpace(null));
         EntityDescription ed = new EntityDescription();
@@ -2736,7 +2738,7 @@ public class ProtegeOwl2LG {
             }
         }
         entityCode2NameSpace_.put(emfEntity.getEntityCode(), emfEntity.getEntityCodeNamespace());
-        if (emfEntity instanceof Concept)
+        if (emfEntity instanceof Entity)
             conceptCount_++;
     }
 

@@ -30,10 +30,11 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
+import org.LexGrid.commonTypes.types.EntityTypes;
 import org.LexGrid.concepts.Comment;
-import org.LexGrid.concepts.Concept;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedProperty;
@@ -105,8 +106,8 @@ public class RadLex2LGDynamicMapHolders {
 
     private LgMessageDirectorIF messages_ = null;
     
-    private Hashtable<String, Concept> attributeConcepts = new Hashtable<String, Concept>();
-    private Hashtable<String, org.LexGrid.concepts.Instance> attributeInstances = new Hashtable<String, org.LexGrid.concepts.Instance>();
+    private Hashtable<String, Entity> attributeConcepts = new Hashtable<String, Entity>();
+    private Hashtable<String, Entity> attributeInstances = new Hashtable<String, Entity>();
 
     /** ****************************** */
 
@@ -290,7 +291,7 @@ public class RadLex2LGDynamicMapHolders {
                         
                         if (isRadlexAttribute)
                         {
-                            org.LexGrid.concepts.Instance inst = null;
+                            Entity inst = null;
                             String iCode = getConceptCodeFromObj(rlCls);
                             
                             if (!RadLex2LGUtils.isNull(iCode))
@@ -327,7 +328,7 @@ public class RadLex2LGDynamicMapHolders {
                                 //System.out.println("Eligible for processing: " + sltNm);
                                 
                                 // creating the class for this slot
-                                Concept slotLGConcept = null;
+                                Entity slotLGConcept = null;
                                 if (attributeConcepts.containsKey(sltNm))
                                     slotLGConcept = attributeConcepts.get(sltNm);
                                 else
@@ -390,13 +391,14 @@ public class RadLex2LGDynamicMapHolders {
                 
                 if (!conceptList_.contains(conceptCode)) 
                 {
-                    Concept con = null;
+                    Entity con = null;
                     // if (!isRadLexSynonymCls)
                     // {
                     propertyCounter = 0;
                     conceptList_.add(conceptCode);
 
-                    con = EntityFactory.createConcept();
+                    con = new Entity();
+                    con.setEntityType(new String[]{EntityTypes.CONCEPT.name()});
                     con.setEntityCode(conceptCode);
 
                     String description = getEntityDescriptionFromObj(concept);
@@ -434,14 +436,15 @@ public class RadLex2LGDynamicMapHolders {
         return stored;
     }
 
-    private Concept createCoceptFromSlot(Slot slot)
+    private Entity createCoceptFromSlot(Slot slot)
     {
         String code = getConceptCodeFromObj(slot);
-        Concept con = null;
+        Entity con = null;
         propertyCounter = 0;
         conceptList_.add(code);
 
-        con = EntityFactory.createConcept();
+        con = new Entity();
+        con.setEntityType(new String[]{EntityTypes.CONCEPT.name()});
         con.setEntityCode(code);
 
         String description = getEntityDescriptionFromObj(slot);
@@ -466,14 +469,15 @@ public class RadLex2LGDynamicMapHolders {
         return con;
     }
 
-    private org.LexGrid.concepts.Instance createInstanceFromProtegeCls(Cls pCls)
+    private Entity createInstanceFromProtegeCls(Cls pCls)
     {
         String code = getConceptCodeFromObj(pCls);
-        org.LexGrid.concepts.Instance inst = null;
+        Entity inst = null;
         propertyCounter = 0;
         conceptList_.add(code);
 
-        inst = new org.LexGrid.concepts.Instance();
+        inst = new Entity();
+        inst.setEntityType(new String[]{EntityTypes.INSTANCE.name()});
         inst.setEntityCode(code);
 
         String description = getEntityDescriptionFromObj(pCls);
@@ -508,7 +512,7 @@ public class RadLex2LGDynamicMapHolders {
         return num;
     }
 
-    private void processSlots(Object concept, Concept con, boolean restricted) {
+    private void processSlots(Object concept, Entity con, boolean restricted) {
         Collection slots = null;
 
         if (concept instanceof Cls) {
@@ -620,7 +624,7 @@ public class RadLex2LGDynamicMapHolders {
         }
     }
 
-    private void addSlotDetailsToConcept(Object concept, Concept con, Slot slot, String slotType) {
+    private void addSlotDetailsToConcept(Object concept, Entity con, Slot slot, String slotType) {
         if (slot == null)
             return;
         String slotName = slot.getName();
@@ -838,7 +842,7 @@ public class RadLex2LGDynamicMapHolders {
         return description;
     }
 
-    private void addPresentationToConcept(Concept con, String value, String slotName, String code) {
+    private void addPresentationToConcept(Entity con, String value, String slotName, String code) {
         boolean foundSome = false;
         List tps = Arrays.asList(con.getPresentation());
         if ((tps != null) && (tps.size() > 0)) {
@@ -892,7 +896,7 @@ public class RadLex2LGDynamicMapHolders {
         }
     }
 
-    private void addPresentationAttribute(Object concept, Concept con, Slot slot) {
+    private void addPresentationAttribute(Object concept, Entity con, Slot slot) {
         String ConceptName = null;
         try {
             if ((concept == null) || (slot == null) || (con == null))
@@ -965,7 +969,7 @@ public class RadLex2LGDynamicMapHolders {
         }
     }
 
-    private void addPropertyAttribute(Object concept, Concept con, Slot slot) {
+    private void addPropertyAttribute(Object concept, Entity con, Slot slot) {
         try {
             String property = RadLex2LGUtils.toNMToken(slot.getName());
 
@@ -997,7 +1001,7 @@ public class RadLex2LGDynamicMapHolders {
         }
     }
 
-    private void addAssociationBetweenSourcesAndInstances(String sourceCode, org.LexGrid.concepts.Instance inst, String relation)
+    private void addAssociationBetweenSourcesAndInstances(String sourceCode, Entity inst, String relation)
     {
         AssociationPredicate assocClass = null;
         AssociationEntity assocEntityClass = null;
@@ -1085,7 +1089,7 @@ public class RadLex2LGDynamicMapHolders {
         }
     }
     
-    private void addAssociationAttribute(Object concept, Concept con, Slot slot) {
+    private void addAssociationAttribute(Object concept, Entity con, Slot slot) {
         try {
             String inverseRelation = null;
 

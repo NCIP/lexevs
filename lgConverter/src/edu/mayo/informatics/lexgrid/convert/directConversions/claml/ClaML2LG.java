@@ -24,7 +24,6 @@ import org.LexGrid.commonTypes.Text;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.types.EntityTypes;
-import org.LexGrid.concepts.Concept;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
@@ -231,7 +230,7 @@ public class ClaML2LG {
 			//TODO verify this...
 			List<Modifier> modifierList = clamlXML_.getModifier();
 			for(Modifier clamlModifier : modifierList){
-				Concept conceptCS = new Concept();
+				Entity conceptCS = new Entity();
 				
 				//Set the Concept code with ClaML 'code' -- <Modifier code="S20V90_4">
 				conceptCS.setEntityCode(clamlModifier.getCode());	
@@ -323,7 +322,7 @@ public class ClaML2LG {
 			return clamlCS;
 		}
 
-		private Concept processConceptProperties(CodingScheme schemeCS, Concept conceptCS, org.LexGrid.LexBIG.claml.Class clamlClass){
+		private Entity processConceptProperties(CodingScheme schemeCS, Entity conceptCS, org.LexGrid.LexBIG.claml.Class clamlClass){
 			RubricProcessor rubricProcessor = new DefaultRubricProcessorImpl(clamlXML_, schemeCS, conceptCS, config_, messages_);
 
 			List<Rubric> rubricList = clamlClass.getRubric();
@@ -349,7 +348,7 @@ public class ClaML2LG {
 			return conceptCS;
 		}
 		
-		private Concept processModifierProperties(CodingScheme schemeCS, Concept conceptCS, ModifierClass clamlClass){
+		private Entity processModifierProperties(CodingScheme schemeCS, Entity conceptCS, ModifierClass clamlClass){
 			RubricProcessor rubricProcessor = new DefaultRubricProcessorImpl(clamlXML_, schemeCS, conceptCS, config_, messages_);
 
 			List<Rubric> rubricList = clamlClass.getRubric();
@@ -374,7 +373,7 @@ public class ClaML2LG {
 			return conceptCS;
 		}
 		
-		private Presentation createDefaultPresentation(Concept conceptCS){
+		private Presentation createDefaultPresentation(Entity conceptCS){
 			Presentation presentation = new Presentation();
 			
 			Text text = new Text();
@@ -392,14 +391,14 @@ public class ClaML2LG {
 			List<org.LexGrid.LexBIG.claml.Class> classList = clamlXML_.getClazz();
 			for(org.LexGrid.LexBIG.claml.Class clamlClass : classList){
 				//add the Concept
-				Concept concept = processConcept(clamlCS, clamlClass);
+			    Entity concept = processConcept(clamlCS, clamlClass);
 				
 				clamlCS.getEntities().addEntity(concept);
 	
 				//process its modifiers
-				List<Concept> modifiedConcepts = processModifiedConcepts(concept, clamlClass, clamlCS);
+				List<Entity> modifiedConcepts = processModifiedConcepts(concept, clamlClass, clamlCS);
 
-				for (Concept c : modifiedConcepts) {
+				for (Entity c : modifiedConcepts) {
 				    
 				    clamlCS.getEntities().addEntity(c);
 				}
@@ -409,15 +408,15 @@ public class ClaML2LG {
 			//TODO verify this...
 			List<ModifierClass> modifierClasList = clamlXML_.getModifierClass();
 			for(ModifierClass clamlModifierClass : modifierClasList){
-				Concept concept = processModifier(clamlCS, clamlModifierClass);
+			    Entity concept = processModifier(clamlCS, clamlModifierClass);
 				clamlCS.getEntities().addEntity(concept);
 			}
 			
 			return clamlCS;
 		}
 
-		private List<Concept> processModifiedConcepts(Concept concept, org.LexGrid.LexBIG.claml.Class clamlClass, CodingScheme clamlCS){
-			List<Concept> returnList = new ArrayList<Concept>();
+		private List<Entity> processModifiedConcepts(Entity concept, org.LexGrid.LexBIG.claml.Class clamlClass, CodingScheme clamlCS){
+			List<Entity> returnList = new ArrayList<Entity>();
 			List<ModifiedBy> modifiedBy = clamlClass.getModifiedBy();
 			for(ModifiedBy modified : modifiedBy){
 			
@@ -453,8 +452,8 @@ public class ClaML2LG {
 			return false;
 		}
 		
-		private Concept cloneConcept(Concept concept){
-			Concept clone = new Concept();
+		private Entity cloneConcept(Entity concept){
+		    Entity clone = new Entity();
 
 			clone.setStatus(concept.getStatus());
 			clone.setEntityDescription(concept.getEntityDescription());
@@ -541,8 +540,8 @@ public class ClaML2LG {
 			return prop;
 		}
 		
-		private Concept modifyConcept(Concept concept, ModifierClass modifierClass, CodingScheme clamlCS){
-			Concept modifiedConcept = cloneConcept(concept);	
+		private Entity modifyConcept(Entity concept, ModifierClass modifierClass, CodingScheme clamlCS){
+		    Entity modifiedConcept = cloneConcept(concept);	
 
 			modifiedConcept.setEntityCode(concept.getEntityCode() + appendDotOnModifierCode(modifierClass.getCode()));
 			
@@ -618,8 +617,8 @@ public class ClaML2LG {
 			throw new NameNotFoundException("Could not find a Meta Element with value: " + attributeName);
 		}
 		
-		private Concept processConcept(CodingScheme schemeCS, org.LexGrid.LexBIG.claml.Class clamlClass){
-			Concept concept = new Concept();
+		private Entity processConcept(CodingScheme schemeCS, org.LexGrid.LexBIG.claml.Class clamlClass){
+		    Entity concept = new Entity();
 			
 			//Set the Concept code with ClaML 'code' -- <Class code="I47" kind="category">
 			concept.setEntityCode(clamlClass.getCode());
@@ -680,8 +679,8 @@ public class ClaML2LG {
 			return concept;
 		}
 		
-		private Concept processModifier(CodingScheme schemeCS, ModifierClass modifier){
-			Concept concept = new Concept();
+		private Entity processModifier(CodingScheme schemeCS, ModifierClass modifier){
+		    Entity concept = new Entity();
 			
 			//Set the Concept code with ClaML 'code' -- <Class code="I47" kind="category">
 			concept.setEntityCode(modifier.getModifier() + modifier.getCode());

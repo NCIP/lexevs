@@ -37,7 +37,7 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
-import org.LexGrid.concepts.Concept;
+import org.LexGrid.commonTypes.types.EntityTypes;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
@@ -401,7 +401,8 @@ public class HL7MapToLexGrid {
         // process the concept data
         messages_.info("Processing concepts");
         for (int j = 0; j < conceptsList.size(); j++) {
-            Entity concept = EntityFactory.createConcept();
+            Entity concept =new Entity();
+            concept.setEntityType(new String[]{EntityTypes.CONCEPT.name()});
             HL7ConceptContainer conceptContainer = (HL7ConceptContainer) conceptsList.get(new Integer(j));
             String uniqueInternalId = conceptContainer.getInternalId();
             concept.setEntityCode(conceptContainer.getConceptCode());
@@ -425,7 +426,7 @@ public class HL7MapToLexGrid {
         ResultSet isTopNode = null;
         try {
             // Create an "@" top node.
-            Concept rootNode = new Concept();
+            Entity rootNode = new Entity();
 
             // Create and set the concept code for "@"
             String topNodeDesignation = "@";

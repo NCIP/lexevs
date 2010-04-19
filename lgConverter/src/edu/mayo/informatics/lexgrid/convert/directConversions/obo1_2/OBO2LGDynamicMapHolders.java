@@ -35,8 +35,8 @@ import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
+import org.LexGrid.commonTypes.types.EntityTypes;
 import org.LexGrid.concepts.Comment;
-import org.LexGrid.concepts.Concept;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
@@ -175,7 +175,8 @@ public class OBO2LGDynamicMapHolders {
                     && ((!OBO2LGUtils.isNull(oboTerm.getId())) || (!OBO2LGUtils.isNull(oboTerm.getName())))) {
                 propertyCounter = 0;
 
-                Concept concept = EntityFactory.createConcept();
+                Entity concept = new Entity();
+                concept.setEntityType(new String[] {EntityTypes.CONCEPT.name()});
                 concept.setEntityCodeNamespace(csclass.getCodingSchemeName());
 
                 if (!OBO2LGUtils.isNull(oboTerm.getId()))
@@ -358,7 +359,7 @@ public class OBO2LGDynamicMapHolders {
         return abb;
     }
 
-    private void addPropertyAttribute(String value, Concept concept, String propertyName) {
+    private void addPropertyAttribute(String value, Entity concept, String propertyName) {
         if (OBO2LGUtils.isNull(value))
             return;
 
@@ -367,7 +368,7 @@ public class OBO2LGDynamicMapHolders {
         addPropertyAttribute(values, concept, propertyName);
     }
 
-    private String addPropertyAttribute(Collection<String> values, Concept concept, String propertyName) {
+    private String addPropertyAttribute(Collection<String> values, Entity concept, String propertyName) {
         String propertyID = null;
         try {
             if ((values != null) && (!values.isEmpty())) {
@@ -395,13 +396,13 @@ public class OBO2LGDynamicMapHolders {
         return propertyID;
     }
 
-    private boolean processSpecialAssociationLikeOWL(Concept concept, String relation_name, Collection<String> targets) {
+    private boolean processSpecialAssociationLikeOWL(Entity concept, String relation_name, Collection<String> targets) {
         boolean processed = false;
         List<String> special_relationNames = Arrays.asList(OBO2LGConstants.BUILT_IN_SPECIAL_ASSOCIATIONS);
         if (special_relationNames.contains(relation_name)) {
             processed = true;
 
-            Concept anon_eq = createAnonymousConcept("(" + relation_name + ")");
+            Entity anon_eq = createAnonymousConcept("(" + relation_name + ")");
             addAssociation(concept, "equivalentClass", null, null, null, anon_eq);
 
             Iterator<String> itr = targets.iterator();
@@ -421,14 +422,14 @@ public class OBO2LGDynamicMapHolders {
         return processed;
     }
 
-    void processAnonListTarget(Concept anon_concept, String target) {
+    void processAnonListTarget(Entity anon_concept, String target) {
         String[] result = target.split("\\s");
         if (result.length == 1) {
             addAssociation(anon_concept, "hasElement", null, null, null, result[0]);
         }
         if (result.length == 2) {
             String entityDescription = "(Restriction)\nsomeValuesFrom : " + result[1] + "\nonProperty : " + result[0];
-            Concept anon_restriction = createAnonymousConcept(entityDescription);
+            Entity anon_restriction = createAnonymousConcept(entityDescription);
             addAssociation(anon_concept, "hasElement", null, null, null, anon_restriction);
             addAssociation(anon_restriction, result[0], result[0], null, "someValuesFrom", result[1]);
 
@@ -436,8 +437,9 @@ public class OBO2LGDynamicMapHolders {
 
     }
 
-    private Concept createAnonymousConcept(String entityDescription) {
-        Concept concept = EntityFactory.createConcept();
+    private Entity createAnonymousConcept(String entityDescription) {
+        Entity concept = new Entity();
+        concept.setEntityType(new String[] {EntityTypes.CONCEPT.name()});
         String conceptCode = OBO2LGConstants.ANONYMOUS_TEXTPRESENTATION + (++anonymousCounter);
         if (entityDescription == null) {
             entityDescription = conceptCode;
@@ -460,13 +462,13 @@ public class OBO2LGDynamicMapHolders {
         return concept;
     }
 
-    private void addAssociation(Concept source, String association_name, String association_forwardname,
-            String association_reversename, String association_qualifier, Concept target) {
+    private void addAssociation(Entity source, String association_name, String association_forwardname,
+            String association_reversename, String association_qualifier, Entity target) {
         addAssociation(source, association_name, association_forwardname, association_reversename,
                 association_qualifier, target.getEntityCode());
     }
 
-    private void addAssociation(Concept source, String association_name, String association_forwardname,
+    private void addAssociation(Entity source, String association_name, String association_forwardname,
             String association_reversename, String association_qualifier, String target_code) {
         if (source == null || association_name == null || target_code == null) {
             return;
@@ -551,7 +553,7 @@ public class OBO2LGDynamicMapHolders {
 
     }
 
-    private void addAssociationAttribute(Concept concept, OBORelation oboRelation, Collection<String> targets) {
+    private void addAssociationAttribute(Entity concept, OBORelation oboRelation, Collection<String> targets) {
         try {
             if ((oboRelation == null) || (concept == null) || (targets == null))
                 return;
@@ -630,7 +632,7 @@ public class OBO2LGDynamicMapHolders {
         }
     }
 
-    private AssociationSource getOrCreateAssociationInstance(AssociationPredicate assocPredicate, Concept concept) {
+    private AssociationSource getOrCreateAssociationInstance(AssociationPredicate assocPredicate, Entity concept) {
         String assocNameAndCode = assocPredicate.getAssociationName() + "::" + concept.getEntityCode();
         if (assocName_SrcCodeStr2assocSrcMap.containsKey(assocNameAndCode)) {
             return assocName_SrcCodeStr2assocSrcMap.get(assocNameAndCode);
