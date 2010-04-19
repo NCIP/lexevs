@@ -50,8 +50,7 @@ public class TestUtil {
      * @return true if scheme exists with given status; false otherwise.
      * @throws LBInvocationException
      */
-@SuppressWarnings("unchecked")
-    public static synchronized boolean verifyScheme(String localName, String urn, String version, int status)
+    public static synchronized boolean verifyScheme(String localName, String urn, String version, CodingSchemeVersionStatus status)
             throws LBInvocationException {
         // Verify vocabulary is loaded and active ...
         boolean verified = false;
@@ -66,7 +65,7 @@ public class TestUtil {
             if ((localName == null || localName.equalsIgnoreCase(css.getLocalName()))
                     && (urn == null || urn.equalsIgnoreCase(css.getCodingSchemeURI()))
                     && (version == null || version.equalsIgnoreCase(css.getRepresentsVersion()))
-                    && (status < 0 || status == rd.getVersionStatus().getType())) {
+                    && (status == null || status.equals(rd.getVersionStatus()))) {
                 verified = true;
                 break;
             }
@@ -91,7 +90,7 @@ public class TestUtil {
         lbsm.activateCodingSchemeVersion(ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(urn, version));
 
         // Verify vocabulary is active ...
-        result = verifyScheme(null, urn, version, CodingSchemeVersionStatus.ACTIVE_TYPE);
+        result = verifyScheme(null, urn, version, CodingSchemeVersionStatus.ACTIVE);
 
         return result;
     }
@@ -112,7 +111,7 @@ public class TestUtil {
                 null);
 
         // Verify vocabulary is active ...
-        result = verifyScheme(null, urn, version, CodingSchemeVersionStatus.INACTIVE_TYPE);
+        result = verifyScheme(null, urn, version, CodingSchemeVersionStatus.INACTIVE);
 
         return result;
 
@@ -133,7 +132,7 @@ public class TestUtil {
         lbsm.removeCodingSchemeVersion(ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(urn, version));
 
         // Verify vocabulary is active ...
-        result = !verifyScheme(null, urn, version, -1);
+        result = !verifyScheme(null, urn, version, null);
 
         return result;
     }
