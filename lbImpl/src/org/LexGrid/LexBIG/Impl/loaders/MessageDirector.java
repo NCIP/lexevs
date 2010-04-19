@@ -63,7 +63,7 @@ public class MessageDirector implements LgMessageDirectorIF {
     public LogEntry[] getLogEntries(LogLevel level) {
         ArrayList<LogEntry> result = new ArrayList<LogEntry>();
         for (int i = 0; i < messages_.size(); i++) {
-            if (level == null || messages_.get(i).getEntryLevel().getType() == level.getType()) {
+            if (level == null || messages_.get(i).getEntryLevel().equals(level)) {
                 result.add(messages_.get(i));
             }
         }

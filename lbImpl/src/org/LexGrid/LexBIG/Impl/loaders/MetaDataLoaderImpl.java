@@ -181,7 +181,7 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
                 getLogger().fatal("Failed while running the conversion", e);
 
             } finally {
-                if (getStatus().getState() == null || getStatus().getState().getType() != ProcessState.COMPLETED_TYPE) {
+                if (getStatus().getState() == null || getStatus().getState().equals(ProcessState.COMPLETED)) {
                     getStatus().setState(ProcessState.FAILED);
                 }
                 getStatus().setEndTime(new Date(System.currentTimeMillis()));
@@ -382,7 +382,7 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
                 message_.fatal("Load failed due to exception." + e.getMessage());
 
             } finally {
-                if (getStatus().getState() == null || getStatus().getState().getType() != ProcessState.COMPLETED_TYPE) {
+                if (getStatus().getState() == null || getStatus().getState().equals(ProcessState.COMPLETED)) {
                     getStatus().setState(ProcessState.FAILED);
                 }
                 getStatus().setEndTime(new Date(System.currentTimeMillis()));
