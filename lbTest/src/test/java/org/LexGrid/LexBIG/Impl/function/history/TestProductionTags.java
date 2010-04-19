@@ -81,9 +81,9 @@ public void testProductionTags01() throws InterruptedException, LBException {
             Thread.sleep(500);
         }
 
-        if (TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, updatedVersion, CodingSchemeVersionStatus.INACTIVE_TYPE))
+        if (TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, updatedVersion, CodingSchemeVersionStatus.INACTIVE))
             assertTrue(TestUtil.activateScheme(AUTO_URN, updatedVersion));
-        assertTrue(TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, updatedVersion, CodingSchemeVersionStatus.ACTIVE_TYPE));
+        assertTrue(TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, updatedVersion, CodingSchemeVersionStatus.ACTIVE));
 
     }
 
@@ -127,7 +127,7 @@ public void testProductionTags01() throws InterruptedException, LBException {
         // ");
         CodedNodeSet cns;
 
-        if (TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, AUTO_VERSION, CodingSchemeVersionStatus.INACTIVE_TYPE))
+        if (TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, AUTO_VERSION, CodingSchemeVersionStatus.INACTIVE))
             assertTrue(TestUtil.activateScheme(AUTO_URN, AUTO_VERSION));
         CodingSchemeVersionOrTag production = new CodingSchemeVersionOrTag();
         production.setTag(LBConstants.KnownTags.PRODUCTION.toString());
@@ -302,7 +302,7 @@ public void testProductionTags01() throws InterruptedException, LBException {
         // info("08 Perform concept lookup by coding scheme name/tag; verify that 'Chrysler' is included ");
         CodedNodeSet cns;
 
-        if (TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, updatedVersion, CodingSchemeVersionStatus.INACTIVE_TYPE))
+        if (TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, updatedVersion, CodingSchemeVersionStatus.INACTIVE))
             assertTrue(TestUtil.activateScheme(AUTO_URN, updatedVersion));
         CodingSchemeVersionOrTag production = new CodingSchemeVersionOrTag();
         production.setTag(LBConstants.KnownTags.PRODUCTION.toString());
@@ -511,7 +511,7 @@ public void testProductionTags01() throws InterruptedException, LBException {
      */
     public void testProductionTags15() throws LBInvocationException, LBException {
         // info("15 Deactivate/Remove version 1.1 (see deactivate/remove methods on TestUtil as reference)");
-        if (TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, updatedVersion, CodingSchemeVersionStatus.ACTIVE_TYPE))
+        if (TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, updatedVersion, CodingSchemeVersionStatus.ACTIVE))
             assertTrue(TestUtil.deactivateScheme(AUTO_URN, updatedVersion));
         assertTrue(TestUtil.removeScheme(AUTO_URN, updatedVersion));
 
