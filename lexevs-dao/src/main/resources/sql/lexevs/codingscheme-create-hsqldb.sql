@@ -393,10 +393,6 @@ ALTER TABLE @PREFIX@associationEntity ADD CONSTRAINT FK_associationEntity_entity
 ON DELETE CASCADE
 ;
 
-ALTER TABLE @PREFIX@associationPredicate ADD CONSTRAINT @PREFIX@FK_associationPr_associationEn 
-	FOREIGN KEY (associationEntityGuid) REFERENCES @PREFIX@entity (entityGuid)
-;
-
 ALTER TABLE @PREFIX@associationPredicate ADD CONSTRAINT @PREFIX@FK_associationPredica_relation 
 	FOREIGN KEY (relationGuid) REFERENCES @PREFIX@relation (relationGuid)
 ON DELETE CASCADE
