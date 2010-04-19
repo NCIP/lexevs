@@ -62,20 +62,30 @@
    		)
    </insert>
    
-   <select id="getAssociationPredicateKey" remapResults="true"
-   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
+   <select id="getAssociationPredicateUid" remapResults="true"
+   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
    		SELECT
    			associationPredicateGuid
    		FROM
    			$prefix$associationPredicate
 		WHERE
-			relationGuid = 
-			#param1#
-		AND
-			associationName = 
-			#param2#
-   			
+			associationName = #param1#
    </select>
+   
+   	<select id="getAssociationPredicatNamesFromCodingSchemeUid"
+		remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
+		resultClass="String">
+		SELECT
+			associationPredicate.associationName
+		FROM
+			$prefix$associationPredicate associationPredicate
+		INNER JOIN
+			$prefix$relation relation
+		ON 
+			(relation.relationGuid = associationPredicate.relationGuid)
+		WHERE
+			relation.codingSchemeGuid = #param1#
+	</select>
    
   	<select id="getAssociationPredicateKeysForRelationsId" remapResults="true"
   		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
