@@ -18,6 +18,8 @@
  */
 package org.LexGrid.valuedomain.test;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +31,13 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
+import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.SupportedNamespace;
+import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.EntityReference;
 import org.LexGrid.valueSets.PickListDefinition;
@@ -45,6 +49,8 @@ import org.LexGrid.valueSets.PropertyMatchValue;
 import org.LexGrid.valueSets.PropertyReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.types.DefinitionOperator;
+import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
@@ -138,6 +144,13 @@ public class LoadTestDataTest extends TestCase {
 		plDef.setDefaultSortOrder("defaultSortOrder");
 		plDef.setCompleteSet(true);
 		
+		EntryState es = new EntryState();
+		es.setChangeType(ChangeType.NEW);
+		es.setContainingRevision("R2");
+		es.setRelativeOrder(Long.valueOf("1"));
+		
+		plDef.setEntryState(es);
+		
 		Properties properties = new Properties();
 		Property property = new Property();
 		property.setPropertyId("TESTPL1 - PROPERTYID");
@@ -166,6 +179,13 @@ public class LoadTestDataTest extends TestCase {
 		source.setSubRef("TESTPL1 - PROPERTY subrEF");
 		sources.add(source);
 		property.setSource(sources);
+		
+		es = new EntryState();
+		es.setChangeType(ChangeType.NEW);
+		es.setContainingRevision("R2");
+		es.setRelativeOrder(Long.valueOf("1"));
+		
+		property.setEntryState(es);
 		
 		properties.addProperty(property);
 		
@@ -196,6 +216,12 @@ public class LoadTestDataTest extends TestCase {
 		plChoice.setInclusionEntry(plEntry);
 		plEntryNode.setPickListEntryNodeChoice(plChoice);
 		
+		es = new EntryState();
+		es.setChangeType(ChangeType.NEW);
+		es.setContainingRevision("R2");
+		es.setRelativeOrder(Long.valueOf("1"));
+		plEntryNode.setEntryState(es);
+		
 		properties = new Properties();
 		property = new Property();
 		property.setPropertyId("plEntryNode1 - PROPERTYID");
@@ -207,7 +233,16 @@ public class LoadTestDataTest extends TestCase {
 		property.setValue(text);
 		property.setIsActive(true);
 		property.setStatus("plEntryNode1 - status");
+		
+		es = new EntryState();
+		es.setChangeType(ChangeType.NEW);
+		es.setContainingRevision("R2");
+		es.setRelativeOrder(Long.valueOf("1"));
+		
+		property.setEntryState(es);
+		
 		properties.addProperty(property);
+		
 		plEntryNode.setProperties(properties);
 		
 		plDef.addPickListEntryNode(plEntryNode);
@@ -252,6 +287,9 @@ public class LoadTestDataTest extends TestCase {
 		sa.setUri("sauri");
 		sa.setLocalId("sa id");
 		sa.setContent("sa content");
+		sa.setCodingScheme("assncodingScheme");
+		sa.setEntityCodeNamespace("assnentityCodeNamespace");
+		sa.setEntityCode("assnentityCode");
 		mappings.addSupportedAssociation(sa);
 		
 		SupportedCodingScheme scs = new SupportedCodingScheme();
@@ -276,6 +314,13 @@ public class LoadTestDataTest extends TestCase {
 		sh.setRootCode("sh rootCode");
 		sh.setUri("sh uri");
 		mappings.addSupportedHierarchy(sh);
+		
+		SupportedProperty sp = new SupportedProperty();
+		sp.setContent("sp content");
+		sp.setLocalId("sp localId");
+		sp.setPropertyType(PropertyTypes.PROPERTY);
+		sp.setUri("sp uri");
+		mappings.addSupportedProperty(sp);
 		
 		plDef.setMappings(mappings);
 		
@@ -308,6 +353,13 @@ public class LoadTestDataTest extends TestCase {
 		vsd.setDefaultCodingScheme("defaultCodingScheme");
 		vsd.setIsActive(true);
 		vsd.setOwner("owner");
+		
+		EntryState es = new EntryState();
+		es.setChangeType(ChangeType.NEW);
+		es.setContainingRevision("R1");
+		es.setRelativeOrder(Long.valueOf("1"));
+		
+		vsd.setEntryState(es);
 		
 		List<Source> srcList = new ArrayList<Source>();
 		Source src = new Source();
@@ -342,6 +394,12 @@ public class LoadTestDataTest extends TestCase {
 		text.setDataType("dataType");
 		prop.setValue(text);
 		
+		es = new EntryState();
+		es.setChangeType(ChangeType.NEW);
+		es.setContainingRevision("R1");
+		es.setRelativeOrder(Long.valueOf("1"));
+		prop.setEntryState(es);
+		
 		Properties props = new Properties();
 		
 		props.addProperty(prop);
@@ -360,6 +418,12 @@ public class LoadTestDataTest extends TestCase {
 		de.setRuleOrder(Long.valueOf("1"));
 		de.setOperator(DefinitionOperator.OR);
 		
+		es = new EntryState();
+		es.setChangeType(ChangeType.NEW);
+		es.setContainingRevision("R1");
+		es.setRelativeOrder(Long.valueOf("1"));
+		de.setEntryState(es);
+		
 		vsd.addDefinitionEntry(de);
 		
 		PropertyReference pr = new PropertyReference();
@@ -376,6 +440,13 @@ public class LoadTestDataTest extends TestCase {
 		de.setOperator(DefinitionOperator.OR);
 		de.setPropertyReference(pr);
 		
+		es = new EntryState();
+		es.setChangeType(ChangeType.NEW);
+		es.setContainingRevision("R1");
+		es.setRelativeOrder(Long.valueOf("1"));
+		
+		de.setEntryState(es);
+		
 		vsd.addDefinitionEntry(de);
 		
 		
@@ -384,6 +455,7 @@ public class LoadTestDataTest extends TestCase {
 		sa.setUri("sauri");
 		sa.setLocalId("sa id");
 		sa.setContent("sa content");
+		sa.setEntityCode("sa entityCode");
 		mappings.addSupportedAssociation(sa);
 		
 		SupportedCodingScheme scs = new SupportedCodingScheme();
@@ -409,6 +481,12 @@ public class LoadTestDataTest extends TestCase {
 		sh.setUri("sh uri");
 		mappings.addSupportedHierarchy(sh);
 		
+		SupportedProperty sp = new SupportedProperty();
+		sp.setContent("sp content");
+		sp.setLocalId("sp localId");
+		sp.setPropertyType(PropertyTypes.PROPERTY);
+		sp.setUri("sp uri");
+		mappings.addSupportedProperty(sp);
 		
 		vsd.setMappings(mappings);
 		getValueDomainService().loadValueSetDefinition(vsd, "systemReleaseURI", null);

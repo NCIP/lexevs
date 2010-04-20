@@ -18,8 +18,6 @@
  */
 package org.LexGrid.valuedomain.impl;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -35,7 +33,7 @@ import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.SupportedNamespace;
-import org.LexGrid.naming.URIMap;
+import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.valueSets.CodingSchemeReference;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.EntityReference;
@@ -43,9 +41,6 @@ import org.LexGrid.valueSets.PropertyMatchValue;
 import org.LexGrid.valueSets.PropertyReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitionReference;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.ValidationException;
 import org.junit.Test;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
@@ -185,6 +180,9 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 				System.out.println("sa uri : " + sa.getUri());
 				System.out.println("sa localId : " + sa.getLocalId());
 				System.out.println("sa content : " + sa.getContent());
+				System.out.println("sa CS : " + sa.getCodingScheme());
+				System.out.println("sa ECNS : " + sa.getEntityCodeNamespace());
+				System.out.println("sa EC : " + sa.getEntityCode());
 			}
 			
 			for (SupportedCodingScheme scs : vsd.getMappings().getSupportedCodingScheme())
@@ -213,6 +211,14 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 				{
 					System.out.println("sh assn : " + assn);
 				}
+			}
+			
+			for (SupportedProperty sp : vsd.getMappings().getSupportedProperty())
+			{
+				System.out.println("sp uri : " + sp.getUri());
+				System.out.println("sp localId : " + sp.getLocalId());
+				System.out.println("sp content : " + sp.getContent());
+				System.out.println("sp propertyType : " + sp.getPropertyType());
 			}
 		}
 		
