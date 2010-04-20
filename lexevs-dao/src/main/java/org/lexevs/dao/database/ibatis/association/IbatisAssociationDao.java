@@ -97,8 +97,6 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	private static String GET_ASSOCIATION_PREDICATE_NAME_FOR_ID_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateNameForId";
 	
-	private static String GET_ASSOCIATIONENTITY_ID_FOR_ASSOCIATION_PREDICATE_NAME_SQL = ASSOCIATION_NAMESPACE + "getAssociationEntityIdForAssociationPredicateName";
-	
 	private static String GET_RELATIONS_IDS_FOR_CODINGSCHEME_ID_SQL = ASSOCIATION_NAMESPACE + "getRelationsKeysForCodingSchemeId";
 	
 	private static String GET_ASSOCIATION_PREDICATE_IDS_FOR_RELATIONS_ID_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateKeysForRelationsId";
@@ -200,19 +198,6 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		this.getSqlMapClientTemplate().delete(
 				DELETE_ASSOCIATION_QUALS_FOR_CODINGSCHEME_ID_SQL,
 				new PrefixedParameter(prefix, codingSchemeId));
-	}
-	
-	@Override
-	public AssociationEntity getAssociationEntityForAssociationPredicateId(
-			String codingSchemeId, String relationContainerId,
-			String associationPredicateId) {
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-
-		String associationEntityId =  (String) this.getSqlMapClientTemplate().
-			queryForObject(GET_ASSOCIATIONENTITY_ID_FOR_ASSOCIATION_PREDICATE_NAME_SQL, 
-					new PrefixedParameter(prefix, associationPredicateId));
-		
-		return (AssociationEntity) entityDao.getEntityByUId(codingSchemeId, associationEntityId);
 	}
 	
 	public String getAssociationPredicateNameForId(String codingSchemeId, String associationPredicateId) {
