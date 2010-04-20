@@ -438,6 +438,10 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     public LoadStatus getStatus() {
         return status_;
     }
+    
+    public void setStatus(LoadStatus status){
+        status_ = status;
+    }
 
     public LogEntry[] getLog(LogLevel level) {
         if (md_ == null) {
