@@ -64,6 +64,14 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
     
     /** The count. */
     private int count;
+    
+    private int resolveForwardAssociationDepth;
+    private int resolveBackwardAssociationDepth;
+    
+    private int resolveCodedEntryDepth;
+    
+    private boolean resolveForward;
+    private boolean resolveBackward;
 
     /**
      * Instantiates a new lazy loadable associated concept list.
@@ -85,6 +93,11 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
             String associationPredicateName, 
             String entityCode,
             String entityCodeNamespace, 
+            boolean resolveForward,
+            boolean resolveBackward,
+            int resolveForwardAssociationDepth,
+            int resolveBackwardAssociationDepth,
+            int resolveCodedEntryDepth,
             GraphQuery graphQuery,
             AssociationDirection direction,
             int pageSize) {
@@ -96,9 +109,14 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
         this.relationsContainerName = relationsContainerName;
         this.entityCode = entityCode;
         this.entityCodeNamespace = entityCodeNamespace;
+        this.resolveForwardAssociationDepth = resolveForwardAssociationDepth;
+        this.resolveBackwardAssociationDepth = resolveBackwardAssociationDepth;
+        this.resolveCodedEntryDepth = resolveCodedEntryDepth;
         this.graphQuery = graphQuery;
         this.direction = direction;
         this.pageSize = pageSize;
+        this.resolveForward = resolveForward;
+        this.resolveBackward = resolveBackward;
     }
 
     /* (non-Javadoc)
@@ -186,6 +204,11 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
 	            this.associationPredicateName,
 	            this.entityCode,
 	            this.entityCodeNamespace,
+	            this.resolveForward,
+	            this.resolveBackward,
+	            this.resolveForwardAssociationDepth,
+	            this.resolveBackwardAssociationDepth,
+	            this.resolveCodedEntryDepth,
 	            this.graphQuery,
 	            this.direction,
 	            this.pageSize);
@@ -231,7 +254,5 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
 			AssociatedConcept vAssociatedConcept)
 			throws IndexOutOfBoundsException {
 		throw new UnsupportedOperationException();
-	}
-
-	
+	}	
 }

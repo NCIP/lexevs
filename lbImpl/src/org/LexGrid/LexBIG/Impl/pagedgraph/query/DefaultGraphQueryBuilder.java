@@ -23,6 +23,7 @@ import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 import org.springframework.util.StringUtils;
@@ -54,26 +55,31 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
      */
     @Override
     public void restrictToAssociations(NameAndValueList association, NameAndValueList associationQualifiers)
-            throws LBInvocationException, LBParameterException {
-        for(NameAndValue nameAndValue : association.getNameAndValue()) {
-            //TODO: resolve URIs
-            if(StringUtils.hasText(nameAndValue.getContent())){
-                throw new UnsupportedOperationException();
+        throws LBInvocationException, LBParameterException {
+
+        if(association != null) {
+            for(NameAndValue nameAndValue : association.getNameAndValue()) {
+                //TODO: resolve URIs
+                if(StringUtils.hasText(nameAndValue.getContent())){
+                    throw new UnsupportedOperationException();
+                }
+                graphQuery.getRestrictToAssociations().add(nameAndValue.getName());
+
             }
-            graphQuery.getRestrictToAssociations().add(nameAndValue.getName());
-           
         }
-        for(NameAndValue nameAndValue : associationQualifiers.getNameAndValue()) {
-            String qualName = nameAndValue.getName();
-            String qualValue = nameAndValue.getContent();
-            
-            if(StringUtils.hasText(qualValue) && !StringUtils.hasText(qualName)) {
-                throw new LBParameterException("When applying a Qualifier Restriction onto an Association," +
-                		" you must not specify a Qualifier VALUE without a Qualifier NAME");
+        if(associationQualifiers != null) {
+            for(NameAndValue nameAndValue : associationQualifiers.getNameAndValue()) {
+                String qualName = nameAndValue.getName();
+                String qualValue = nameAndValue.getContent();
+
+                if(StringUtils.hasText(qualValue) && !StringUtils.hasText(qualName)) {
+                    throw new LBParameterException("When applying a Qualifier Restriction onto an Association," +
+                    " you must not specify a Qualifier VALUE without a Qualifier NAME");
+                }
+
+                graphQuery.getRestrictToAssociationsQualifiers().add(new QualifierNameValuePair(qualName, qualValue));
+
             }
-            
-            graphQuery.getRestrictToAssociationsQualifiers().add(new QualifierNameValuePair(qualName, qualValue));
-           
         }
     }
 

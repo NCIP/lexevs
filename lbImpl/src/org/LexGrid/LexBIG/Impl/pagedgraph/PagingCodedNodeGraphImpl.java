@@ -29,6 +29,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
+import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
@@ -50,6 +51,8 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
     
     /** The builder. */
     private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
+    
+    private CycleDetectingCallback cycleDetectingCallback = new CycleDetectingCallback();
     
     /** The builder. */
     private GraphQueryBuilder graphQueryBuilder = new DefaultGraphQueryBuilder();
@@ -181,18 +184,19 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
         } else {
             throw new RuntimeException("Cannot handle resolving from roots yet...");
         }
-
-        focus.setCode(graphFocus.getCode());
         
         if(resolveForward) {
             focus.setSourceOf(
             		associationListBuilder.buildSourceOfAssociationList(
                     this.codingSchemeUri,
                     this.version, 
-                    graphFocus.getCode(),
-                    graphFocus.getCodeNamespace(),
+                    focus.getCode(),
+                    focus.getCodeNamespace(),
                     relationsContainerName,
+                    resolveForward,
+                    resolveBackward,
                     resolveAssociationDepth, 
+                    resolveAssociationDepth,
                     resolveCodedEntryDepth,
                     this.graphQueryBuilder.getQuery()));
         }
@@ -202,10 +206,13 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
             		associationListBuilder.buildTargetOfAssociationList(
                     this.codingSchemeUri,
                     this.version, 
-                    graphFocus.getCode(),
-                    graphFocus.getCodeNamespace(),
+                    focus.getCode(),
+                    focus.getCodeNamespace(),
                     relationsContainerName,
+                    resolveForward,
+                    resolveBackward,
                     resolveAssociationDepth, 
+                    resolveAssociationDepth,
                     resolveCodedEntryDepth,
                     this.graphQueryBuilder.getQuery()));
         }
@@ -319,8 +326,7 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
      */
     @Override
     public CodedNodeGraph union(CodedNodeGraph graph) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        return new UnionGraph(this, graph);
     }
 
 }

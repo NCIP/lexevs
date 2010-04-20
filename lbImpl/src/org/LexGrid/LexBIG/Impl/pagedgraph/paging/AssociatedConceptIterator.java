@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder.AssociationDirection;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
@@ -37,6 +38,8 @@ import org.lexevs.paging.codednodegraph.TripleUidIterator;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class AssociatedConceptIterator extends AbstractPageableIterator<AssociatedConcept> {
+    
+    private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
 
 	/** The triple uid iterator. */
 	private Iterator<String> tripleUidIterator;
@@ -48,6 +51,18 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	private String codingSchemeUri;
 	
 	private String codingSchemeVersion;
+	
+	private int resolveForwardAssociationDepth;
+	private int resolveBackwardAssociationDepth;
+	
+    private int resolveCodedEntryDepth;
+    
+    private String relationsContainerName;
+    
+    private GraphQuery graphQuery;
+    
+    private boolean resolveForward;
+    private boolean resolveBackward;
 	
 	/**
 	 * Instantiates a new associated concept iterator.
@@ -67,6 +82,11 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
             String associationPredicateName, 
             String entityCode,
             String entityCodeNamespace,
+            boolean resolveForward,
+            boolean resolveBackward,
+            int resolveForwardAssociationDepth,
+            int resolveBackwardAssociationDepth,
+            int resolveCodedEntryDepth,
             GraphQuery graphQuery,
             AssociationDirection direction,
             int pageSize){
@@ -84,7 +104,54 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 		    		pageSize);
 		this.codingSchemeUri = codingSchemeUri;
 		this.codingSchemeVersion = codingSchemeVersion;
+		this.relationsContainerName = relationsContainerName;
 		this.direction = direction;
+		this.resolveForwardAssociationDepth = resolveForwardAssociationDepth;
+		this.resolveBackwardAssociationDepth = resolveBackwardAssociationDepth;
+		this.resolveCodedEntryDepth = resolveCodedEntryDepth;
+		this.resolveForward = resolveForward;
+		this.resolveBackward = resolveBackward;
+		this.graphQuery = graphQuery;
+	}
+	
+	@Override
+	public AssociatedConcept next() {
+	    AssociatedConcept associatedConcept = super.next();
+
+	    if(resolveForwardAssociationDepth > 0) {
+	        if(resolveForward) {
+	            associatedConcept.setSourceOf(
+	                    associationListBuilder.buildTargetOfAssociationList(
+	                            codingSchemeUri, 
+	                            codingSchemeVersion, 
+	                            associatedConcept.getCode(), 
+	                            associatedConcept.getCodeNamespace(), 
+	                            relationsContainerName, 
+	                            resolveForward,
+	                            resolveBackward,
+	                            resolveForwardAssociationDepth - 1,
+	                            resolveBackwardAssociationDepth, 
+	                            resolveCodedEntryDepth - 1, 
+	                            graphQuery));
+	        }
+	        if(resolveBackward) {
+	            associatedConcept.setTargetOf(
+	                    associationListBuilder.buildSourceOfAssociationList(
+	                            codingSchemeUri, 
+	                            codingSchemeVersion, 
+	                            associatedConcept.getCode(), 
+	                            associatedConcept.getCodeNamespace(), 
+	                            relationsContainerName, 
+	                            resolveForward,
+	                            resolveBackward,
+	                            resolveForwardAssociationDepth,
+                                resolveBackwardAssociationDepth - 1, 
+	                            resolveCodedEntryDepth - 1, 
+	                            graphQuery));
+	        }
+	    }
+
+	    return associatedConcept;
 	}
 
     /* (non-Javadoc)

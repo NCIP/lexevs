@@ -70,7 +70,10 @@ public class AssociationListBuilder {
             String entityCode,
             String entityCodeNamespace,
             String relationsContainerName,
-            int resolveAssociationDepth,
+            boolean resolveForward,
+            boolean resolveBackward,
+            int resolveForwardAssociationDepth,
+            int resolveBackwardAssociationDepth,
             int resolveCodedEntryDepth,
             GraphQuery graphQuery) {
         return this.doBuildAssociationList(
@@ -79,7 +82,10 @@ public class AssociationListBuilder {
                 entityCode, 
                 entityCodeNamespace, 
                 relationsContainerName,
-                resolveAssociationDepth,
+                resolveForward,
+                resolveBackward,
+                resolveForwardAssociationDepth,
+                resolveBackwardAssociationDepth,
                 resolveCodedEntryDepth,
                 graphQuery,
                 AssociationDirection.SOURCE_OF);
@@ -101,7 +107,10 @@ public class AssociationListBuilder {
                 String entityCode,
                 String entityCodeNamespace,
                 String relationsContainerName,
-                int resolveAssociationDepth,
+                boolean resolveForward,
+                boolean resolveBackward,
+                int resolveForwardAssociationDepth,
+                int resolveBackwardAssociationDepth,
                 int resolveCodedEntryDepth,
                 GraphQuery graphQuery) {
         return this.doBuildAssociationList(
@@ -110,7 +119,10 @@ public class AssociationListBuilder {
                 entityCode, 
                 entityCodeNamespace, 
                 relationsContainerName,
-                resolveAssociationDepth,
+                resolveForward,
+                resolveBackward,
+                resolveForwardAssociationDepth,
+                resolveBackwardAssociationDepth,
                 resolveCodedEntryDepth,
                 graphQuery,
                 AssociationDirection.TARGET_OF); }
@@ -133,7 +145,10 @@ public class AssociationListBuilder {
             String entityCode,
             String entityCodeNamespace,
             String relationsContainerName,
-            int resolveAssociationDepth,
+            boolean resolveForward,
+            boolean resolveBackward,
+            int resolveForwardAssociationDepth,
+            int resolveBackwardAssociationDepth,
             int resolveCodedEntryDepth,
             GraphQuery graphQuery,
             AssociationDirection direction) {
@@ -189,6 +204,11 @@ public class AssociationListBuilder {
                             associationPredicateName, 
                             entityCode, 
                             entityCodeNamespace, 
+                            resolveForward,
+                            resolveBackward,
+                            resolveForwardAssociationDepth,
+                            resolveBackwardAssociationDepth,
+                            resolveCodedEntryDepth,
                             graphQuery,
                             direction,
                             associatedConceptPageSize);
@@ -196,12 +216,15 @@ public class AssociationListBuilder {
                 association.setAssociatedConcepts(associatedConceptList);
 
                 returnList.addAssociation(association);
-
-
             }
 
         }
-        return returnList;
+        
+        if(returnList.getAssociationCount() == 0) {
+            return null;
+        } else {
+            return returnList;
+        }
     }
 
     protected List<String> getAssociationPredicateNames(
