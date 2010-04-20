@@ -25,6 +25,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder.AssociationDirection;
+import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
@@ -63,6 +64,10 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
     
     private boolean resolveForward;
     private boolean resolveBackward;
+    
+    private CycleDetectingCallback cycleDetectingCallback;
+    
+    private String associationPredicateName;
 	
 	/**
 	 * Instantiates a new associated concept iterator.
@@ -88,6 +93,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
             int resolveBackwardAssociationDepth,
             int resolveCodedEntryDepth,
             GraphQuery graphQuery,
+            CycleDetectingCallback cycleDetectingCallback,
             AssociationDirection direction,
             int pageSize){
 		super(pageSize);
@@ -112,16 +118,22 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 		this.resolveForward = resolveForward;
 		this.resolveBackward = resolveBackward;
 		this.graphQuery = graphQuery;
+		this.cycleDetectingCallback = cycleDetectingCallback;
+		this.associationPredicateName = associationPredicateName;
 	}
 	
 	@Override
 	public AssociatedConcept next() {
 	    AssociatedConcept associatedConcept = super.next();
 
-	    if(resolveForwardAssociationDepth > 0) {
+	    if(this.cycleDetectingCallback.isAssociatedConceptAlreadyInGraph(associationPredicateName, associatedConcept)) {
+	        return cycleDetectingCallback.getAssociatedConceptInGraph(associationPredicateName, associatedConcept);
+	    }
+
+	    if(shouldResolveNextLevel(resolveForwardAssociationDepth)) {
 	        if(resolveForward) {
 	            associatedConcept.setSourceOf(
-	                    associationListBuilder.buildTargetOfAssociationList(
+	                    associationListBuilder.buildSourceOfAssociationList(
 	                            codingSchemeUri, 
 	                            codingSchemeVersion, 
 	                            associatedConcept.getCode(), 
@@ -132,11 +144,15 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	                            resolveForwardAssociationDepth - 1,
 	                            resolveBackwardAssociationDepth, 
 	                            resolveCodedEntryDepth - 1, 
-	                            graphQuery));
+	                            graphQuery,
+	                            cycleDetectingCallback));
 	        }
+	    }
+
+	    if(shouldResolveNextLevel(resolveBackwardAssociationDepth)) {
 	        if(resolveBackward) {
 	            associatedConcept.setTargetOf(
-	                    associationListBuilder.buildSourceOfAssociationList(
+	                    associationListBuilder.buildTargetOfAssociationList(
 	                            codingSchemeUri, 
 	                            codingSchemeVersion, 
 	                            associatedConcept.getCode(), 
@@ -145,13 +161,20 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	                            resolveForward,
 	                            resolveBackward,
 	                            resolveForwardAssociationDepth,
-                                resolveBackwardAssociationDepth - 1, 
+	                            resolveBackwardAssociationDepth - 1, 
 	                            resolveCodedEntryDepth - 1, 
-	                            graphQuery));
+	                            graphQuery,
+	                            cycleDetectingCallback));
 	        }
 	    }
 
+	    cycleDetectingCallback.addAssociatedConceptToGraph(associationPredicateName, associatedConcept);
+	    
 	    return associatedConcept;
+	}
+	
+	private boolean shouldResolveNextLevel(int depth) {
+	    return ! (depth == 0);
 	}
 
     /* (non-Javadoc)

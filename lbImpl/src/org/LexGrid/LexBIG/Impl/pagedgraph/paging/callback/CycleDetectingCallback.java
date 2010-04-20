@@ -10,13 +10,15 @@ public class CycleDetectingCallback {
     private Map<AssociatedConceptKey,AssociatedConcept> associatedConceptMap = 
         new HashMap<AssociatedConceptKey,AssociatedConcept>();
 
-    public AssociatedConcept onNextAssociatedConcept(String associationName, AssociatedConcept associatedConcept) {
+    public AssociatedConcept getAssociatedConceptInGraph(String associationName, AssociatedConcept associatedConcept) {
         AssociatedConceptKey key = toAssociatedConceptKey(associationName, associatedConcept);
-        if(! associatedConceptMap.containsKey(key)) {
-            associatedConceptMap.put(key, associatedConcept);
-        }
         
         return associatedConceptMap.get(key);
+    }
+    
+    public void addAssociatedConceptToGraph(String associationName, AssociatedConcept associatedConcept) {
+        AssociatedConceptKey key = toAssociatedConceptKey(associationName, associatedConcept);
+        associatedConceptMap.put(key, associatedConcept);
     }
     
     public boolean isAssociatedConceptAlreadyInGraph(String associationName, AssociatedConcept associatedConcept) {

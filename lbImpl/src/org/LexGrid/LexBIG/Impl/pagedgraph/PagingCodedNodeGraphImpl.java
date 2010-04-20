@@ -182,7 +182,11 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
                 getEntityService().
                 getResolvedCodedNodeReference(codingSchemeUri, version, graphFocus.getCode(), graphFocus.getCodeNamespace());
         } else {
-            throw new RuntimeException("Cannot handle resolving from roots yet...");
+            focus = new ResolvedConceptReference();
+            focus.setCode(resolveForward ? "@" : "@@");
+            focus.setCodeNamespace(
+                    LexEvsServiceLocator.getInstance().getSystemResourceService().
+                        getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, version));
         }
         
         if(resolveForward) {
@@ -198,7 +202,8 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
                     resolveAssociationDepth, 
                     resolveAssociationDepth,
                     resolveCodedEntryDepth,
-                    this.graphQueryBuilder.getQuery()));
+                    this.graphQueryBuilder.getQuery(),
+                    cycleDetectingCallback));
         }
         
         if(resolveBackward) {
@@ -214,7 +219,8 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
                     resolveAssociationDepth, 
                     resolveAssociationDepth,
                     resolveCodedEntryDepth,
-                    this.graphQueryBuilder.getQuery()));
+                    this.graphQueryBuilder.getQuery(),
+                    cycleDetectingCallback));
         }
         
         ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();

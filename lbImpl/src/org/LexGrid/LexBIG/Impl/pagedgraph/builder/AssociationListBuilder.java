@@ -24,6 +24,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.Impl.pagedgraph.model.LazyLoadableAssociatedConceptList;
+import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
@@ -75,7 +76,8 @@ public class AssociationListBuilder {
             int resolveForwardAssociationDepth,
             int resolveBackwardAssociationDepth,
             int resolveCodedEntryDepth,
-            GraphQuery graphQuery) {
+            GraphQuery graphQuery,
+            CycleDetectingCallback cycleDetectingCallback) {
         return this.doBuildAssociationList(
                 codingSchemeUri, 
                 version, 
@@ -88,6 +90,7 @@ public class AssociationListBuilder {
                 resolveBackwardAssociationDepth,
                 resolveCodedEntryDepth,
                 graphQuery,
+                cycleDetectingCallback,
                 AssociationDirection.SOURCE_OF);
     }
     
@@ -112,7 +115,8 @@ public class AssociationListBuilder {
                 int resolveForwardAssociationDepth,
                 int resolveBackwardAssociationDepth,
                 int resolveCodedEntryDepth,
-                GraphQuery graphQuery) {
+                GraphQuery graphQuery,
+                CycleDetectingCallback cycleDetectingCallback) {
         return this.doBuildAssociationList(
                 codingSchemeUri, 
                 version, 
@@ -125,6 +129,7 @@ public class AssociationListBuilder {
                 resolveBackwardAssociationDepth,
                 resolveCodedEntryDepth,
                 graphQuery,
+                cycleDetectingCallback,
                 AssociationDirection.TARGET_OF); }
     
     
@@ -151,6 +156,7 @@ public class AssociationListBuilder {
             int resolveBackwardAssociationDepth,
             int resolveCodedEntryDepth,
             GraphQuery graphQuery,
+            CycleDetectingCallback cycleDetectingCallback,
             AssociationDirection direction) {
         Assert.notNull(graphQuery, "Must pass in a GraphQuery.");
 
@@ -210,6 +216,7 @@ public class AssociationListBuilder {
                             resolveBackwardAssociationDepth,
                             resolveCodedEntryDepth,
                             graphQuery,
+                            cycleDetectingCallback,
                             direction,
                             associatedConceptPageSize);
 

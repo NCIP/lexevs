@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.junit.Test;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
@@ -94,7 +95,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query);
+                    query, null);
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
@@ -157,7 +158,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query);
+                    query, null);
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
@@ -237,7 +238,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query);
+                    query, null);
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
@@ -318,7 +319,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query);
+                    query, null);
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
@@ -400,7 +401,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query);
+                    query, null);
         
         assertNull(list);
     }
@@ -479,7 +480,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query);
+                    query, null);
         
         assertNull(list);
     }
@@ -531,7 +532,91 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    new GraphQuery());
+                    new GraphQuery(), new CycleDetectingCallback());
+        
+        assertNotNull(list);
+        assertEquals(1, list.getAssociationCount());
+        assertEquals("assocName", list.getAssociation(0).getAssociationName());
+   
+        assertNotNull(list.getAssociation(0).getAssociatedConcepts());
+        
+        assertNotNull(list.getAssociation(0).getAssociatedConcepts().iterateAssociatedConcept());
+        
+        Iterator<? extends AssociatedConcept> itr = 
+            list.getAssociation(0).getAssociatedConcepts().iterateAssociatedConcept();
+    
+        assertTrue(itr.hasNext());
+   
+        AssociatedConcept assocConcept = itr.next();
+        
+        assertEquals("t-code1", assocConcept.getCode());
+        
+        assertTrue(itr.hasNext());
+        
+        assocConcept = itr.next();
+        
+        assertEquals("t-code2", assocConcept.getCode());
+        
+        assertFalse(itr.hasNext());
+    }
+    
+    @Test
+    public void testResolveGraphToClosure() throws Exception {
+        JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+        registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("uri", "version"));
+        
+        template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+        "values ('cs-guid', 'csname', 'uri', 'version')");
+
+        template.execute("insert into " +
+                "relation (relationGuid, codingSchemeGuid, containerName) " +
+        "values ('rel-guid', 'cs-guid', 'c-name')");
+        
+        template.execute("insert into " +
+                "associationpredicate (associationPredicateGuid," +
+                "relationGuid, associationName) values " +
+        "('ap-guid', 'rel-guid', 'assocName')");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid1'," +
+                " 'ap-guid'," +
+                " 's-code', " +
+                " 's-ns'," +
+                " 't-code1'," +
+                " 't-ns1'," +
+        " 'ai-id1', null, null, null, null, null, null, null, null)");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid2'," +
+                " 'ap-guid'," +
+                " 't-code1', " +
+                " 't-ns1'," +
+                " 't-code2'," +
+                " 't-ns2'," +
+        " 'ai-id2', null, null, null, null, null, null, null, null)");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid3'," +
+                " 'ap-guid'," +
+                " 't-code2', " +
+                " 't-ns2'," +
+                " 't-code3'," +
+                " 't-ns3'," +
+        " 'ai-id3', null, null, null, null, null, null, null, null)");
+    
+        AssociationListBuilder builder = new AssociationListBuilder();
+        builder.setDatabaseServiceManager(manager);
+        
+        AssociationList list =
+            builder.buildSourceOfAssociationList(
+                    "uri", "version", "s-code", "s-ns", null, 
+                    true,
+                    true,
+                    -1,
+                    -1, 
+                    -1,
+                    new GraphQuery(), new CycleDetectingCallback());
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
