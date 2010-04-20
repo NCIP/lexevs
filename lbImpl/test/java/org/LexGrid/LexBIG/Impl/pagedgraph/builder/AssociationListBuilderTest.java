@@ -402,8 +402,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     query);
         
-        assertNotNull(list);
-        assertEquals(0, list.getAssociationCount());
+        assertNull(list);
     }
     
     @Test
@@ -482,8 +481,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     query);
         
-        assertNotNull(list);
-        assertEquals(0, list.getAssociationCount());
+        assertNull(list);
     }
     
     @Test
