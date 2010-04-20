@@ -42,10 +42,7 @@ public class LexGridElementProcessor {
     private static ArrayList<CodingScheme> codingSchemes = new ArrayList<CodingScheme>();
     private static  CodingScheme[] cs = null;
     
-    
-    public static CodingScheme[] getCodingSchemes() {
-        return cs;
-    }
+
 
     public static CodingScheme[] setAndRetrieveCodingSchemes() {
         cs = new CodingScheme[codingSchemes.size()];
@@ -80,6 +77,7 @@ public class LexGridElementProcessor {
         Entities entities = (Entities) parent;
         CodingScheme c = (CodingScheme) entities.getParent();
         service.storeEntity(e, c);
+        entities.removeEntity(e);
     }
 
     /**
