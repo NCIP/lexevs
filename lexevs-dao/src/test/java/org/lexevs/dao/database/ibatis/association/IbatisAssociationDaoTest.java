@@ -400,37 +400,6 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals(0, template.queryForInt("select count(*) from entityassnquals"));
 	}
 	
-	@Test
-	@Transactional
-	public void testGetAssociationEntityForAssociationPredicateId() throws SQLException {
-		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('cs-guid', 'csname', 'csuri', 'csversion')");
-		
-		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'cs-guid', 'ecode', 'ens')");
-
-		template.execute("Insert into associationentity (associationEntityGuid, entityGuid, forwardName, reverseName, isNavigable, isTransitive) " +
-			"values ('aeguid', 'eguid', 'afn', 'arn', 'true', 'false')");
-	
-		template.execute("insert into " +
-				"relation (relationGuid, codingSchemeGuid, containerName) " +
-				"values ('rel-guid', 'cs-guid', 'c-name')");
-		
-		template.execute("insert into " +
-				"associationpredicate (associationPredicateGuid, relationGuid, associationName) values " +
-				"('ap-guid', 'rel-guid', 'apName')");
-		
-		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid', 'association')");
-		
-		
-		AssociationEntity assocEntity = 
-			ibatisAssociationDao.getAssociationEntityForAssociationPredicateId("cs-guid", "rel-guid", "ap-guid");
-		
-		assertNotNull(assocEntity);
-
-	}
 	
 	@Test
 	@Transactional
@@ -448,8 +417,8 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				"('ap-guid1', 'rel-guid', 'apName1')");
 		
 		template.execute("insert into " +
-				"associationpredicate (associationPredicateGuid, relationGuid, associationEntityGuid, associationName) values " +
-				"('ap-guid2', 'rel-guid', null, 'apName2')");
+				"associationpredicate (associationPredicateGuid, relationGuid, associationName) values " +
+				"('ap-guid2', 'rel-guid', 'apName2')");
 		
 		List<String> assocPredIds = 
 			ibatisAssociationDao.getAssociationPredicateIdsForRelationsId("cs-guid", "rel-guid");
