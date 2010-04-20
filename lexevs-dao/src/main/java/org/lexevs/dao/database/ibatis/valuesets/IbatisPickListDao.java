@@ -36,8 +36,10 @@ import org.LexGrid.valueSets.PickListEntry;
 import org.LexGrid.valueSets.PickListEntryExclusion;
 import org.LexGrid.valueSets.PickListEntryNode;
 import org.LexGrid.valueSets.PickListEntryNodeChoice;
+import org.LexGrid.versions.EntryState;
 import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.valuesets.PickListDao;
+import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.access.versions.VersionsDao;
@@ -134,6 +136,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	
 	private VSPropertyDao vsPropertyDao;
 	
+	private VSEntryStateDao vsEntryStateDao;
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.picklist.PickListDao#getPickListDefinitionById(java.lang.String)
@@ -248,15 +251,29 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	
 	@Override
 	public String insertPickListEntry(String pickListGuid, PickListEntryNode entryNode) {
-		String plEntryGuid = null;
+		if (entryNode == null)
+			return null;
+		
+		String plEntryGuid = this.createUniqueId();
+		String vsEntryStateGuid = this.createUniqueId();
+		
 		InsertOrUpdateValueSetsMultiAttribBean insertOrUpdateValueSetsMultiAttribBean = null;
 		if (entryNode != null && entryNode.getPickListEntryNodeChoice() != null)
 		{
-			InsertOrUpdatePickListEntryBean plEntryBean = new InsertOrUpdatePickListEntryBean();		
-			plEntryGuid = this.createUniqueId();
+			EntryState entryState = entryNode.getEntryState();
+			
+			if (entryState != null)
+			{
+				this.vsEntryStateDao.insertEntryState(vsEntryStateGuid, plEntryGuid, 
+						ReferenceType.PICKLISTENTRY.name(), null, entryState);
+			}
+			
+			InsertOrUpdatePickListEntryBean plEntryBean = new InsertOrUpdatePickListEntryBean();	
+			
 			plEntryBean.setUId(plEntryGuid);
 			plEntryBean.setPickListEntryNode(entryNode);
 			plEntryBean.setPickListUId(pickListGuid);
+			plEntryBean.setEntryStateUId(vsEntryStateGuid);
 			
 			PickListEntry plEntry = entryNode.getPickListEntryNodeChoice().getInclusionEntry();
 			PickListEntryExclusion plExclusion = entryNode.getPickListEntryNodeChoice().getExclusionEntry();
@@ -327,15 +344,28 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 
 	@Override
 	public String insertPickListDefinition(PickListDefinition definition, String systemReleaseUri, Mappings mappings) {
+		if (definition == null)
+			return null;
+		
 		String pickListGuid = this.createUniqueId();
+		String vsEntryStateGuid = this.createUniqueId();
 		
 		String systemReleaseId = this.versionsDao.getSystemReleaseIdByUri(systemReleaseUri);
+		EntryState entryState = definition.getEntryState();
+		
+		if (entryState != null)
+		{
+			this.vsEntryStateDao.insertEntryState(vsEntryStateGuid, pickListGuid, 
+					ReferenceType.PICKLISTDEFINITION.name(), null, entryState);
+		}
 		
 		InsertPickListDefinitionBean plDefBean = new InsertPickListDefinitionBean();
 		plDefBean.setUId(pickListGuid);
 		plDefBean.setPickListDefinition(definition);
 		plDefBean.setPrefix(getPrefix());
 		plDefBean.setSystemReleaseUId(systemReleaseId);
+		plDefBean.setEntryStateUId(vsEntryStateGuid);
+		
 		this.getSqlMapClientTemplate().insert(INSERT_PICKLIST_DEFINITION_SQL, plDefBean);
 		
 		// insert pickListDefinition properties
@@ -617,6 +647,20 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 					new PrefixedParameterTuple(null, entityCode, entityCodeNameSpace));
 		
 		return pickListIds;
+	}
+
+	/**
+	 * @return the vsEntryStateDao
+	 */
+	public VSEntryStateDao getVsEntryStateDao() {
+		return vsEntryStateDao;
+	}
+
+	/**
+	 * @param vsEntryStateDao the vsEntryStateDao to set
+	 */
+	public void setVsEntryStateDao(VSEntryStateDao vsEntryStateDao) {
+		this.vsEntryStateDao = vsEntryStateDao;
 	}
 
 	

@@ -32,6 +32,7 @@ import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.revision.RevisionDao;
 import org.lexevs.dao.database.access.systemRelease.SystemReleaseDao;
 import org.lexevs.dao.database.access.valuesets.PickListDao;
+import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
@@ -68,6 +69,9 @@ public class DaoManager {
 	
 	/** The vsProperty daos. */
 	private List<VSPropertyDao> vsPropertyDaos;
+	
+	/** The vsEntryState daos. */
+	private List<VSEntryStateDao> vsEntryStateDaos;
 	
 	/** The versions daos. */
 	private List<VersionsDao> versionsDaos;
@@ -458,5 +462,28 @@ public class DaoManager {
 	 */
 	public VSPropertyDao getCurrentVsPropertyDao(){
 		return this.getCorrectDaoForSchemaVersion(this.getVsPropertyDaos(), CURRENT_VERSION);
+	}
+	
+	/**
+	 * @return the vsEntryStateDaos
+	 */
+	public List<VSEntryStateDao> getVsEntryStateDaos() {
+		return vsEntryStateDaos;
+	}
+
+	/**
+	 * @param vsEntryStateDaos the vsEntryStateDaos to set
+	 */
+	public void setVsEntryStateDaos(List<VSEntryStateDao> vsEntryStateDaos) {
+		this.vsEntryStateDaos = vsEntryStateDaos;
+	}
+	
+	/**
+	 * Gets the current value set EntryState dao.
+	 * 
+	 * @return the current value set EntryState dao
+	 */
+	public VSEntryStateDao getCurrentVsEntryStateDao(){
+		return this.getCorrectDaoForSchemaVersion(this.getVsEntryStateDaos(), CURRENT_VERSION);
 	}
 }

@@ -25,7 +25,9 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.LexGrid.versions.EntryState;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 import org.lexevs.dao.database.constants.classifier.property.PropertyMultiAttributeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
@@ -82,6 +84,8 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	
 	/** The ibatis versions dao. */
 	private IbatisVersionsDao ibatisVersionsDao;
+	
+	private VSEntryStateDao vsEntryStateDao;
 
 	public String insertProperty(String parentGuid, 
 			ReferenceType type, 
@@ -156,16 +160,21 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 			ReferenceType type, 
 			Property property, 
 			IbatisInserter inserter) {
+		
 		String entryStateId = this.createUniqueId();
 		
 		if(StringUtils.isBlank(property.getPropertyType())){
 			property.setPropertyType(
 					getPropertyTypeString(property));
 		}
-		//TODO - implement entrystate below:
-//		this.ibatisVersionsDao.insertEntryState(
-//				this.getPrefixResolver().resolveDefaultPrefix(),
-//				entryStateId, propertyGuid, "Property", null, property.getEntryState(), inserter);
+		
+		EntryState entryState = property.getEntryState();
+		
+		if (entryState != null)
+		{
+			this.vsEntryStateDao.insertEntryState(entryStateId, propertyGuid, 
+					type.name(), null, entryState);
+		}
 		
 		inserter.insert(INSERT_PROPERTY_SQL,
 				buildInsertPropertyBean(
@@ -516,5 +525,19 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	 */
 	public void setIbatisVersionsDao(IbatisVersionsDao ibatisVersionsDao) {
 		this.ibatisVersionsDao = ibatisVersionsDao;
+	}
+
+	/**
+	 * @return the vsEntryStateDao
+	 */
+	public VSEntryStateDao getVsEntryStateDao() {
+		return vsEntryStateDao;
+	}
+
+	/**
+	 * @param vsEntryStateDao the vsEntryStateDao to set
+	 */
+	public void setVsEntryStateDao(VSEntryStateDao vsEntryStateDao) {
+		this.vsEntryStateDao = vsEntryStateDao;
 	}
 }

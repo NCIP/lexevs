@@ -34,8 +34,10 @@ import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
+import org.LexGrid.versions.EntryState;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cache.annotation.ClearCache;
+import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
@@ -116,6 +118,8 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	private VersionsDao versionsDao;
 	
 	private VSPropertyDao vsPropertyDao;
+	
+	private VSEntryStateDao vsEntryStateDao;
 	
 	/** The class to string mapping classifier. */
 	private ClassToStringMappingClassifier classToStringMappingClassifier = new ClassToStringMappingClassifier();
@@ -203,14 +207,24 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			ValueSetDefinition vsdef, Mappings mappings) {
 		
 		String valueSetDefinitionGuid = this.createUniqueId();
+		String vsEntryStateGuid = this.createUniqueId();
 		
 		String systemReleaseId = this.versionsDao.getSystemReleaseIdByUri(systemReleaseURI);
+		
+		EntryState entryState = vsdef.getEntryState();
+		
+		if (entryState != null)
+		{
+			this.vsEntryStateDao.insertEntryState(vsEntryStateGuid, valueSetDefinitionGuid, 
+					ReferenceType.VALUESETDEFINITION.name(), null, entryState);
+		}
 		
 		InsertValueSetDefinitionBean vsDefBean = new InsertValueSetDefinitionBean();
 		vsDefBean.setUId(valueSetDefinitionGuid);
 		vsDefBean.setValueSetDefinition(vsdef);
-		vsDefBean.setPrefix(getPrefix());
+		vsDefBean.setPrefix(null);
 		vsDefBean.setSystemReleaseUId(systemReleaseId);
+		vsDefBean.setEntryStateUId(vsEntryStateGuid);
 		
 		// insert into value set definition table
 		this.getSqlMapClientTemplate().insert(INSERT_VALUESET_DEFINITION_SQL, vsDefBean);
@@ -366,6 +380,15 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	public String insertDefinitionEntry(String valueSetDefinitionGuid,
 			DefinitionEntry vsdEntry) {
 		String vsdEntryGuid = this.createUniqueId();
+		String vsEntryStateGuid = this.createUniqueId();
+		
+		EntryState entryState = vsdEntry.getEntryState();
+		
+		if (entryState != null)
+		{
+			this.vsEntryStateDao.insertEntryState(vsEntryStateGuid, vsdEntryGuid, 
+					ReferenceType.DEFINITIONENTRY.name(), null, entryState);
+		}
 		
 		InsertOrUpdateDefinitionEntryBean vsdEntryBean = new InsertOrUpdateDefinitionEntryBean();
 		vsdEntryBean.setUId(vsdEntryGuid);
@@ -530,6 +553,20 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	 */
 	public void setVsPropertyDao(VSPropertyDao vsPropertyDao) {
 		this.vsPropertyDao = vsPropertyDao;
+	}
+
+	/**
+	 * @return the vsEntryStateDao
+	 */
+	public VSEntryStateDao getVsEntryStateDao() {
+		return vsEntryStateDao;
+	}
+
+	/**
+	 * @param vsEntryStateDao the vsEntryStateDao to set
+	 */
+	public void setVsEntryStateDao(VSEntryStateDao vsEntryStateDao) {
+		this.vsEntryStateDao = vsEntryStateDao;
 	}
 
 	
