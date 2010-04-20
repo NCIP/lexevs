@@ -120,7 +120,7 @@ public class LoadLgXML {
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
             LexBIGServiceManager lbsm = lbs.getServiceManager(null);
             LexGrid_Loader loader = (LexGrid_Loader) lbsm
-                    .getLoader(org.LexGrid.LexBIG.Impl.loaders.LexGridLoaderImpl.name);
+                    .getLoader(org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl.name);
 
             // Perform the requested load or validate action ...
             if (vl >= 0) {
