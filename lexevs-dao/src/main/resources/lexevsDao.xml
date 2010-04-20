@@ -51,18 +51,26 @@
 	<bean id="ibatisPickListDao"
 		class="org.lexevs.dao.database.ibatis.valuesets.IbatisPickListDao" parent="abstractIbatisDao">
 		<property name="versionsDao" ref="ibatisVersionsDao"/>
+		<property name="vsEntryStateDao" ref="ibatisVSEntryStateDao"/>
 		<property name="vsPropertyDao" ref="ibatisVSPropertyDao"/>
 	</bean>
 	
 	<bean id="ibatisValueSetDefinitionDao"
 		class="org.lexevs.dao.database.ibatis.valuesets.IbatisValueSetDefinitionDao" parent="abstractIbatisDao">
 		<property name="versionsDao" ref="ibatisVersionsDao"/>
+		<property name="vsEntryStateDao" ref="ibatisVSEntryStateDao"/>
 		<property name="vsPropertyDao" ref="ibatisVSPropertyDao"/>
 	</bean>
 	
 	<bean id="ibatisVSPropertyDao"
 		class="org.lexevs.dao.database.ibatis.valuesets.IbatisVSPropertyDao" parent="abstractIbatisDao">
 		<property name="ibatisVersionsDao" ref="ibatisVersionsDao"/>
+		<property name="vsEntryStateDao" ref="ibatisVSEntryStateDao"/>
+	</bean>
+	
+	<bean id="ibatisVSEntryStateDao"
+		class="org.lexevs.dao.database.ibatis.valuesets.IbatisVSEntryStateDao" parent="abstractIbatisDao">
+		<property name="ibatisRevisionDao" ref="ibatisRevisionDao"/>
 	</bean>
 	
 	<bean id="abstractSqlInterfaceDao" abstract="true">
@@ -123,6 +131,11 @@
 		<property name="vsPropertyDaos">
 			<list>
 				<ref bean="ibatisVSPropertyDao"/>
+			</list>
+		</property>
+		<property name="vsEntryStateDaos">
+			<list>
+				<ref bean="ibatisVSEntryStateDao"/>
 			</list>
 		</property>
 		<property name="versionsDaos">
@@ -253,7 +266,7 @@
 		class="org.lexevs.dao.database.service.valuesets.VersionableEventVSPropertyService"
 		parent="abstractService">
 	</bean>
-		
+	
 	<bean id="indexedEntityBuilder" class="org.lexevs.dao.index.model.compass.v20.IndexedEntityBuilder">
 		<property name="compass" ref="compass"/>
 	</bean>
