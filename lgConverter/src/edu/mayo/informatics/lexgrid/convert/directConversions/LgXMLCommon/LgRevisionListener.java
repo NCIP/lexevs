@@ -21,6 +21,7 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationPredicate;
+import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.Revision;
 import org.castor.xml.UnmarshalListener;
 import org.mayo.edu.lgModel.LexGridBase;
