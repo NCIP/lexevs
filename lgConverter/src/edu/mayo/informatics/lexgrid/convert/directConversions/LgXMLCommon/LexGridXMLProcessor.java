@@ -285,7 +285,7 @@ public class LexGridXMLProcessor {
         }
         return propsPresent;
     }
-
+    
     
    private boolean isCodingSchemePresent(String path) {
         BufferedReader in = null;
@@ -300,7 +300,9 @@ public class LexGridXMLProcessor {
             for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
                     .next()) {
 
-                if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("codingScheme")) {
+                if (event == XMLStreamConstants.START_ELEMENT && 
+                        (xmlStreamReader.getLocalName().equals("codingScheme") || 
+                                xmlStreamReader.getLocalName().equals("changedCodingSchemeEntry"))) {
                    System.out.println(xmlStreamReader.getLocalName());
                     schemePresent = true;
                     break;
