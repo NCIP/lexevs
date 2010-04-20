@@ -26,6 +26,8 @@ import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.junit.Test;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.utility.RegistryUtility;
@@ -78,12 +80,410 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
         AssociationListBuilder builder = new AssociationListBuilder();
         builder.setDatabaseServiceManager(manager);
         
+        GraphQuery query = new GraphQuery();
+        
         AssociationList list =
-            builder.buildSourceOfAssociationList("uri", "version", "s-code", "s-ns");
+            builder.buildSourceOfAssociationList(
+                    "uri", 
+                    "version", 
+                    "s-code", 
+                    "s-ns", 
+                    null, 
+                    true,
+                    true,
+                    -1,
+                    -1, 
+                    -1,
+                    query);
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
         assertEquals("assocName", list.getAssociation(0).getAssociationName());
+    }
+    
+    @Test
+    public void testAssociationsWithAssociationRestriction() throws Exception {
+        JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+        registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("uri", "version"));
+        
+        template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+        "values ('cs-guid', 'csname', 'uri', 'version')");
+
+        template.execute("insert into " +
+                "relation (relationGuid, codingSchemeGuid, containerName) " +
+        "values ('rel-guid', 'cs-guid', 'c-name')");
+        
+        template.execute("insert into " +
+                "associationpredicate (associationPredicateGuid," +
+                "relationGuid, associationName) values " +
+        "('ap-guid', 'rel-guid', 'assocName')");
+        
+        template.execute("insert into " +
+                "associationpredicate (associationPredicateGuid," +
+                "relationGuid, associationName) values " +
+        "('ap-guid2', 'rel-guid', 'assocName2')");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid1'," +
+                " 'ap-guid'," +
+                " 's-code', " +
+                " 's-ns'," +
+                " 't-code1'," +
+                " 't-ns1'," +
+        " 'ai-id', null, null, null, null, null, null, null, null)");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid2'," +
+                " 'ap-guid2'," +
+                " 's-code', " +
+                " 's-ns'," +
+                " 't-code2'," +
+                " 't-ns2'," +
+        " 'ai-id', null, null, null, null, null, null, null, null)");
+    
+        AssociationListBuilder builder = new AssociationListBuilder();
+        builder.setDatabaseServiceManager(manager);
+        
+        GraphQuery query = new GraphQuery();
+        query.getRestrictToAssociations().add("assocName2");
+        
+        AssociationList list =
+            builder.buildSourceOfAssociationList(
+                    "uri", "version", "s-code", "s-ns", 
+                    null, 
+                    true,
+                    true,
+                    -1,
+                    -1, 
+                    -1,
+                    query);
+        
+        assertNotNull(list);
+        assertEquals(1, list.getAssociationCount());
+        assertEquals("assocName2", list.getAssociation(0).getAssociationName());
+    }
+    
+    @Test
+    public void testAssociationsWithAssociationAndQualifierRestriction() throws Exception {
+        JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+        registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("uri", "version"));
+        
+        template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+        "values ('cs-guid', 'csname', 'uri', 'version')");
+
+        template.execute("insert into " +
+                "relation (relationGuid, codingSchemeGuid, containerName) " +
+        "values ('rel-guid', 'cs-guid', 'c-name')");
+        
+        template.execute("insert into " +
+                "associationpredicate (associationPredicateGuid," +
+                "relationGuid, associationName) values " +
+        "('ap-guid', 'rel-guid', 'assocName')");
+        
+        template.execute("insert into " +
+                "associationpredicate (associationPredicateGuid," +
+                "relationGuid, associationName) values " +
+        "('ap-guid2', 'rel-guid', 'assocName2')");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid1'," +
+                " 'ap-guid'," +
+                " 's-code', " +
+                " 's-ns'," +
+                " 't-code1'," +
+                " 't-ns1'," +
+        " 'ai-id', null, null, null, null, null, null, null, null)");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid2'," +
+                " 'ap-guid2'," +
+                " 's-code', " +
+                " 's-ns'," +
+                " 't-code2'," +
+                " 't-ns2'," +
+        " 'ai-id', null, null, null, null, null, null, null, null)");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid3'," +
+                " 'ap-guid2'," +
+                " 's-code', " +
+                " 's-ns'," +
+                " 't-code2'," +
+                " 't-ns2'," +
+        " 'ai-id', null, null, null, null, null, null, null, null)");
+        
+        template.execute("insert into " +
+                "entityassnquals values ( " +
+                "'eaeq-guid', " +
+                "'eae-guid3'," +
+                "'qualName'," +
+                "'qualValue'," +
+                "null )");
+    
+        AssociationListBuilder builder = new AssociationListBuilder();
+        builder.setDatabaseServiceManager(manager);
+        
+        GraphQuery query = new GraphQuery();
+        query.getRestrictToAssociations().add("assocName2");
+        query.getRestrictToAssociationsQualifiers().add(new QualifierNameValuePair("qualName", null));
+        
+        AssociationList list =
+            builder.buildSourceOfAssociationList(
+                    "uri", "version", "s-code", "s-ns", null,
+                    true,
+                    true,
+                    -1,
+                    -1, 
+                    -1,
+                    query);
+        
+        assertNotNull(list);
+        assertEquals(1, list.getAssociationCount());
+        assertEquals("assocName2", list.getAssociation(0).getAssociationName());
+        assertEquals(1, list.getAssociation()[0].getAssociatedConcepts().getAssociatedConceptCount());
+    }
+    
+    @Test
+    public void testAssociationsWithAssociationAndQualifierNameAndValueRestriction() throws Exception {
+        JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+        registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("uri", "version"));
+        
+        template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+        "values ('cs-guid', 'csname', 'uri', 'version')");
+
+        template.execute("insert into " +
+                "relation (relationGuid, codingSchemeGuid, containerName) " +
+        "values ('rel-guid', 'cs-guid', 'c-name')");
+        
+        template.execute("insert into " +
+                "associationpredicate (associationPredicateGuid," +
+                "relationGuid, associationName) values " +
+        "('ap-guid', 'rel-guid', 'assocName')");
+        
+        template.execute("insert into " +
+                "associationpredicate (associationPredicateGuid," +
+                "relationGuid, associationName) values " +
+        "('ap-guid2', 'rel-guid', 'assocName2')");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid1'," +
+                " 'ap-guid'," +
+                " 's-code', " +
+                " 's-ns'," +
+                " 't-code1'," +
+                " 't-ns1'," +
+        " 'ai-id', null, null, null, null, null, null, null, null)");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid2'," +
+                " 'ap-guid2'," +
+                " 's-code', " +
+                " 's-ns'," +
+                " 't-code2'," +
+                " 't-ns2'," +
+        " 'ai-id', null, null, null, null, null, null, null, null)");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid3'," +
+                " 'ap-guid2'," +
+                " 's-code', " +
+                " 's-ns'," +
+                " 't-code2'," +
+                " 't-ns2'," +
+        " 'ai-id', null, null, null, null, null, null, null, null)");
+        
+        template.execute("insert into " +
+                "entityassnquals values ( " +
+                "'eaeq-guid', " +
+                "'eae-guid3'," +
+                "'qualName'," +
+                "'qualValue'," +
+                "null )");
+    
+        AssociationListBuilder builder = new AssociationListBuilder();
+        builder.setDatabaseServiceManager(manager);
+        
+        GraphQuery query = new GraphQuery();
+        query.getRestrictToAssociations().add("assocName2");
+        query.getRestrictToAssociationsQualifiers().add(new QualifierNameValuePair("qualName", "qualValue"));
+        
+        AssociationList list =
+            builder.buildSourceOfAssociationList(
+                    "uri", "version", "s-code", "s-ns", 
+                    null, true,
+                    true,
+                    -1,
+                    -1, 
+                    -1,
+                    query);
+        
+        assertNotNull(list);
+        assertEquals(1, list.getAssociationCount());
+        assertEquals("assocName2", list.getAssociation(0).getAssociationName());
+        assertEquals(1, list.getAssociation()[0].getAssociatedConcepts().getAssociatedConceptCount());
+    }
+    
+    @Test
+    public void testAssociationsWithAssociationAndBadQualifierRestriction() throws Exception {
+        JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+        registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("uri", "version"));
+        
+        template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+        "values ('cs-guid', 'csname', 'uri', 'version')");
+
+        template.execute("insert into " +
+                "relation (relationGuid, codingSchemeGuid, containerName) " +
+        "values ('rel-guid', 'cs-guid', 'c-name')");
+        
+        template.execute("insert into " +
+                "associationpredicate (associationPredicateGuid," +
+                "relationGuid, associationName) values " +
+        "('ap-guid', 'rel-guid', 'assocName')");
+        
+        template.execute("insert into " +
+                "associationpredicate (associationPredicateGuid," +
+                "relationGuid, associationName) values " +
+        "('ap-guid2', 'rel-guid', 'assocName2')");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid1'," +
+                " 'ap-guid'," +
+                " 's-code', " +
+                " 's-ns'," +
+                " 't-code1'," +
+                " 't-ns1'," +
+        " 'ai-id', null, null, null, null, null, null, null, null)");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid2'," +
+                " 'ap-guid2'," +
+                " 's-code', " +
+                " 's-ns'," +
+                " 't-code2'," +
+                " 't-ns2'," +
+        " 'ai-id', null, null, null, null, null, null, null, null)");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid3'," +
+                " 'ap-guid2'," +
+                " 's-code', " +
+                " 's-ns'," +
+                " 't-code2'," +
+                " 't-ns2'," +
+        " 'ai-id', null, null, null, null, null, null, null, null)");
+        
+        template.execute("insert into " +
+                "entityassnquals values ( " +
+                "'eaeq-guid', " +
+                "'eae-guid3'," +
+                "'qualName'," +
+                "'qualValue'," +
+                "null )");
+    
+        AssociationListBuilder builder = new AssociationListBuilder();
+        builder.setDatabaseServiceManager(manager);
+        
+        GraphQuery query = new GraphQuery();
+        query.getRestrictToAssociations().add("assocName2");
+        query.getRestrictToAssociationsQualifiers().add(new QualifierNameValuePair("qualNameBAD", null));
+        
+        AssociationList list =
+            builder.buildSourceOfAssociationList(
+                    "uri", "version", "s-code", "s-ns", 
+                    null, 
+                    true,
+                    true,
+                    -1,
+                    -1, 
+                    -1,
+                    query);
+        
+        assertNotNull(list);
+        assertEquals(0, list.getAssociationCount());
+    }
+    
+    @Test
+    public void testAssociationsWithAssociationAndBadQualifierNameAndValueRestriction() throws Exception {
+        JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+        registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("uri", "version"));
+        
+        template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+        "values ('cs-guid', 'csname', 'uri', 'version')");
+
+        template.execute("insert into " +
+                "relation (relationGuid, codingSchemeGuid, containerName) " +
+        "values ('rel-guid', 'cs-guid', 'c-name')");
+        
+        template.execute("insert into " +
+                "associationpredicate (associationPredicateGuid," +
+                "relationGuid, associationName) values " +
+        "('ap-guid', 'rel-guid', 'assocName')");
+        
+        template.execute("insert into " +
+                "associationpredicate (associationPredicateGuid," +
+                "relationGuid, associationName) values " +
+        "('ap-guid2', 'rel-guid', 'assocName2')");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid1'," +
+                " 'ap-guid'," +
+                " 's-code', " +
+                " 's-ns'," +
+                " 't-code1'," +
+                " 't-ns1'," +
+        " 'ai-id', null, null, null, null, null, null, null, null)");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid2'," +
+                " 'ap-guid2'," +
+                " 's-code', " +
+                " 's-ns'," +
+                " 't-code2'," +
+                " 't-ns2'," +
+        " 'ai-id', null, null, null, null, null, null, null, null)");
+        
+        template.execute("insert into entityassnstoentity" +
+                " values ('eae-guid3'," +
+                " 'ap-guid2'," +
+                " 's-code', " +
+                " 's-ns'," +
+                " 't-code2'," +
+                " 't-ns2'," +
+        " 'ai-id', null, null, null, null, null, null, null, null)");
+        
+        template.execute("insert into " +
+                "entityassnquals values ( " +
+                "'eaeq-guid', " +
+                "'eae-guid3'," +
+                "'qualName'," +
+                "'qualValue'," +
+                "null )");
+    
+        AssociationListBuilder builder = new AssociationListBuilder();
+        builder.setDatabaseServiceManager(manager);
+        
+        GraphQuery query = new GraphQuery();
+        query.getRestrictToAssociations().add("assocName2");
+        query.getRestrictToAssociationsQualifiers().add(new QualifierNameValuePair("qualName", "BAD_VALUE"));
+        
+        AssociationList list =
+            builder.buildSourceOfAssociationList(
+                    "uri", "version", "s-code", "s-ns", 
+                    null, 
+                    true,
+                    true,
+                    -1,
+                    -1, 
+                    -1,
+                    query);
+        
+        assertNotNull(list);
+        assertEquals(0, list.getAssociationCount());
     }
     
     @Test
@@ -126,7 +526,14 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
         builder.setDatabaseServiceManager(manager);
         
         AssociationList list =
-            builder.buildSourceOfAssociationList("uri", "version", "s-code", "s-ns");
+            builder.buildSourceOfAssociationList(
+                    "uri", "version", "s-code", "s-ns", null, 
+                    true,
+                    true,
+                    -1,
+                    -1, 
+                    -1,
+                    new GraphQuery());
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
