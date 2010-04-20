@@ -8,6 +8,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader;
@@ -31,18 +32,19 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
     public final static String name = "LexGrid_Loader";
     private final static String description = "This loader loads LexGrid XML files into the LexGrid database.";
     
-    public final static String FORCE_NO_VALIDATION = "Do not Validate";
+    public final static String VALIDATE = "Validate";
     private static boolean validate = true;
     
     public LexGridMultiLoaderImpl() {
        super();
     }
     public void LexGridMultiLoaderbaseLoad(boolean async)throws LBInvocationException {
-        setStatus_(new LoadStatus());
+        
+        setStatus(new LoadStatus());
 
-        getStatus_().setState(ProcessState.PROCESSING);
-        getStatus_().setStartTime(new Date(System.currentTimeMillis()));
-        setMd_(new CachingMessageDirectorImpl( new MessageDirector(getName(), getStatus_())));
+        getStatus().setState(ProcessState.PROCESSING);
+        getStatus().setStartTime(new Date(System.currentTimeMillis()));
+        setMd_(new CachingMessageDirectorImpl( new MessageDirector(getName(), getStatus())));
 
         if (async) {
             Thread conversion = new Thread(new DoConversion());
@@ -57,13 +59,18 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
     public void validate(URI uri, int validationLevel) throws LBParameterException {
         throw new UnsupportedOperationException();
     }
-
+    
+    public void load(URI source, boolean stopOnErrors, boolean async) throws LBException {
+        // TODO Auto-generated method stub
+        
+    }
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader#load(java.net.URI, boolean, boolean)
      */
-    public void load(URI uri, boolean stopOnErrors, boolean async) throws LBParameterException, LBInvocationException {
+    public void load(URI uri) {
         setResourceUri(uri);
         try {
+           boolean async = this.getOptions().getBooleanOption(ASYNC_OPTION).getOptionValue();
             LexGridMultiLoaderbaseLoad(async);
         } catch (LBInvocationException e) {
             throw new RuntimeException(e);
@@ -75,7 +82,7 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
      */
     @Override
     protected OptionHolder declareAllowedOptions(OptionHolder holder) {
-        BooleanOption forceValidation = new BooleanOption(LexGridMultiLoaderImpl.FORCE_NO_VALIDATION, validate);
+        BooleanOption forceValidation = new BooleanOption(LexGridMultiLoaderImpl.VALIDATE, validate);
         holder.getBooleanOptions().add(forceValidation);
         return holder;
     }
@@ -90,7 +97,7 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
         CodingScheme[] codingScheme = loader.load(
                 this.getResourceUri(), 
                 this.getLogger(), 
-                this.getOptions().getBooleanOption(LexGridMultiLoaderImpl.FORCE_NO_VALIDATION).getOptionValue());
+                this.getOptions().getBooleanOption(LexGridMultiLoaderImpl.VALIDATE).getOptionValue());
    
         this.getStatus().setState(ProcessState.COMPLETED);
         this.getStatus().setErrorsLogged(false);
@@ -131,7 +138,7 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
                     codingSchemeNames[i] = loadedCodingSchemes[i].getUrn();
                 }
 
-                if (getStatus_().getErrorsLogged() != null && !getStatus_().getErrorsLogged().booleanValue()) {
+                if (getStatus().getErrorsLogged() != null && !getStatus().getErrorsLogged().booleanValue()) {
 
                     getMd_().info("Finished loading the DB");
                     Snapshot snap = SimpleMemUsageReporter.snapshot();
@@ -144,7 +151,7 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
                         register(loadedCodingSchemes);
                     }
                     
-                    doPostProcessing(getOptions_(), getCodingSchemeReferences());
+                    doPostProcessing(getOptions(), getCodingSchemeReferences());
                     
                     doTransitiveAndIndex(getCodingSchemeReferences());
 
@@ -154,7 +161,7 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
                             + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage())
                             + " Heap Delta:" + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
 
-                    getStatus_().setState(ProcessState.COMPLETED);
+                    getStatus().setState(ProcessState.COMPLETED);
                     getMd_().info("Load process completed without error");
                     
                     //Register again (to set as INACTIVE)
@@ -165,14 +172,14 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
                 }
                 
             } catch (CodingSchemeAlreadyLoadedException e) {
-                getStatus_().setState(ProcessState.FAILED);
+                getStatus().setState(ProcessState.FAILED);
                 getMd_().fatal(e.getMessage());
             } catch (Exception e) {
-                getStatus_().setState(ProcessState.FAILED);
+                getStatus().setState(ProcessState.FAILED);
                 getMd_().fatal("Failed while running the conversion", e);
             } finally {
-                if (getStatus_().getState() == null || getStatus_().getState().equals(ProcessState.COMPLETED)) {
-                    getStatus_().setState(ProcessState.FAILED);
+                if (getStatus().getState() == null || getStatus().getState().equals(ProcessState.COMPLETED)) {
+                    getStatus().setState(ProcessState.FAILED);
 
                     try {
                         if (locks != null) {
@@ -197,7 +204,7 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
                     }
 
                 }
-                getStatus_().setEndTime(new Date(System.currentTimeMillis()));
+                getStatus().setEndTime(new Date(System.currentTimeMillis()));
                 inUse = false;
             }
 
@@ -229,7 +236,7 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
      */
     public static void main(String[] args){
         LexGridMultiLoaderImpl loader = new LexGridMultiLoaderImpl();
-        loader.addBooleanOptionValue(LexGridMultiLoaderImpl.FORCE_NO_VALIDATION, validate);
+        loader.addBooleanOptionValue(LexGridMultiLoaderImpl.VALIDATE, validate);
         URI uri = null;
         try {
             uri = new URI(args[0]);
@@ -239,5 +246,6 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
         }
         loader.load(uri);
     }
+
 
 }
