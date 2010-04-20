@@ -17,7 +17,7 @@
     <changeAgent>user</changeAgent>
     <changeInstructions>entirely new service entry</changeInstructions>
     <changedEntry>
-        <changedCodingSchemeEntry codingSchemeName="Automobiles" codingSchemeURI="urn:oid:11.11.0.1" representsVersion="1.0" >
+        <changedCodingSchemeEntry approxNumConcepts="5" codingSchemeName="Automobiles" defaultLanguage="en" formalName="autos" codingSchemeURI="urn:oid:11.11.0.1" representsVersion="1.0">
   <lgCommon:entityDescription>Description of Automobiles</lgCommon:entityDescription>
             <lgCS:localName>11.11.0.1</lgCS:localName>
             <lgCS:localName>Automobiles</lgCS:localName>
