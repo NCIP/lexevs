@@ -74,7 +74,7 @@ import org.LexGrid.LexBIG.Impl.History.UMLSHistoryServiceImpl;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.Impl.loaders.ClaMLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
-import org.LexGrid.LexBIG.Impl.loaders.LexGridLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MetaDataLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OBOLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
@@ -547,7 +547,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         //NCIMetaThesaurusLoaderImpl.register();
         //NCIHistoryLoaderImpl.register();
         //UMLSHistoryLoaderImpl.register();
-        new LexGridLoaderImpl().register();
+        new LexGridMultiLoaderImpl().register();
         new OWLLoaderImpl().register();
         new OBOLoaderImpl().register();
         new MetaDataLoaderImpl().register();
