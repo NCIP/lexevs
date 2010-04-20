@@ -19,6 +19,7 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.codingSchemes.CodingSchemes;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.versions.SystemRelease;
@@ -116,8 +117,8 @@ public class LgSystemReleaseListener implements UnmarshalListener {
         System.out.println("parent of Unmarshalled target: "
                 + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
         
-        if(target instanceof CodingScheme && parent == null){
-            setCodingSchemes(LexGridElementProcessor.getCodingSchemes());
+        if(target instanceof CodingScheme && parent instanceof CodingSchemes){
+            setCodingSchemes(LexGridElementProcessor.setAndRetrieveCodingSchemes());
         }
     }
 
