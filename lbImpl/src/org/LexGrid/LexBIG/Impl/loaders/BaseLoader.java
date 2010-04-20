@@ -118,47 +118,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     private boolean doComputeTransitiveClosure = true;
     private boolean doRegister = true;
     
-  
-    
-    public OptionHolder getOptions_() {
-        return options_;
-    }
-    public LoadStatus getStatus_() {
-        return status_;
-    }
-
-    public void setStatus_(LoadStatus status) {
-        status_ = status;
-    }
-
-    public boolean isInUse() {
-        return inUse;
-    }
-
-    public void setInUse(boolean inUse) {
-        this.inUse = inUse;
-    }
-
-    public CachingMessageDirectorIF getMd_() {
-        return md_;
-    }
-
-    public void setMd_(CachingMessageDirectorIF md) {
-        md_ = md;
-    }
-
-    public void setManifestUtil(ManifestUtil manifestUtil) {
-        this.manifestUtil = manifestUtil;
-    }
-
-    public void setCodingSchemeReferences(AbsoluteCodingSchemeVersionReference[] codingSchemeReferences) {
-        this.codingSchemeReferences = codingSchemeReferences;
-    }
-
-    protected LgLoggerIF getLogger() {
-        return LoggerFactory.getLogger();
-    }
-    
+ 
     public BaseLoader(){
         OptionHolder holder = new DefaultOptionHolder();
         URIOption manifiestOption = new URIOption(MANIFEST_FILE_OPTION);
@@ -188,6 +148,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         this.options_= this.declareAllowedOptions(holder);
     }
 
+    
     protected void baseLoad(boolean async) throws LBInvocationException {
        status_ = new LoadStatus();
 
@@ -203,7 +164,30 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         }
     }
 
-   
+
+    public boolean isInUse() {
+        return inUse;
+    }
+    public CachingMessageDirectorIF getMd_() {
+        return md_;
+    }
+
+    public void setMd_(CachingMessageDirectorIF md) {
+        md_ = md;
+    }
+
+    public void setManifestUtil(ManifestUtil manifestUtil) {
+        this.manifestUtil = manifestUtil;
+    }
+
+    public void setCodingSchemeReferences(AbsoluteCodingSchemeVersionReference[] codingSchemeReferences) {
+        this.codingSchemeReferences = codingSchemeReferences;
+    }
+
+    protected LgLoggerIF getLogger() {
+        return LoggerFactory.getLogger();
+    }
+    
 
     /*
      * A loader class can only safely do one thing at a time.
