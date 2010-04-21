@@ -187,7 +187,39 @@
 	 	AND
 	 		urimap.supportedAttributeTag = #param3#
 	 </select>
-
+	
+	 <select id="getValueSetDefinitionURIForSupportedTagAndValue" 
+		resultClass="string" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		SELECT 
+			vsd.valueSetDefURI
+		FROM 
+			valuesetdefinition vsd, 
+			vssupportedattrib vss
+		WHERE 
+			vss.supportedAttributeTag = #param1#
+		AND 
+			vsd.valueSetDefGuid = vss.referenceGuid
+		AND 
+			(vss.id = #param2# OR vss.uri = #param2# OR vss.idValue = #param2#)
+	 </select>
+	 
+	 <select id="getPickListIdForSupportedTagAndValue" 
+		resultClass="string" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		SELECT 
+			pld.pickListId
+		FROM 
+			vsPickList pld, 
+			vssupportedattrib vss
+		WHERE 
+			vss.supportedAttributeTag = #param1#
+		AND 
+			pld.vsPickListGuid = vss.referenceGuid
+		AND 
+			(vss.id = #param2# OR vss.uri = #param2# OR vss.idValue = #param2#)
+	 </select>
+	
      <insert id="insertURIMap" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean">
 		INSERT INTO vsSupportedAttrib (
 			vsSuppAttribGuid,
