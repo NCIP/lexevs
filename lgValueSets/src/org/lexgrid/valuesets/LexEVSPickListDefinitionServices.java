@@ -212,5 +212,14 @@ public interface LexEVSPickListDefinitionServices extends Serializable {
 			String valueSet, Boolean extractPickListName)
 			throws LBException;
 
+	/**
+	 * Returns all the pickListIds that contain supplied supported tag and value.
+	 * 
+	 * @param supportedTag like SupportedCodingScheme, SupportedAssociation etc.
+	 * @param value value to look for
+	 * @return list of pickListIds that contains supportedTag with value.
+	 */
+	public List<String> getPickListIdsForSupportedTagAndValue(String supportedTag, String value);
+	
 	public LogEntry[] getLogEntries();
 }

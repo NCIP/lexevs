@@ -651,6 +651,27 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 //		md_.info("Completed exporting value domain definition : " + valueDomainURI);
 	}
 
+	@Override
+	public List<String> getValueSetDefinitionURIsForSupportedTagAndValue(
+			String supportedTag, String value) {
+		getLogger().logMethod(new Object[]{supportedTag, value});
+		return this.vsds_.getValueSetDefinitionURIForSupportedTagAndValue(supportedTag, value);
+	}
+
+	@Override
+	public List<String> getValueSetDefinitionURIsWithCodingScheme(
+			String codingSchemename) {
+		getLogger().logMethod(new Object[]{codingSchemename});
+		return this.vsds_.getValueSetDefinitionURIForSupportedTagAndValue(SQLTableConstants.TBLCOLVAL_SUPPTAG_CODINGSCHEME, codingSchemename);
+	}
+
+	@Override
+	public List<String> getValueSetDefinitionURIsWithConceptDomain(
+			String conceptDomain) {
+		getLogger().logMethod(new Object[]{conceptDomain});
+		return this.vsds_.getValueSetDefinitionURIForSupportedTagAndValue(SQLTableConstants.TBLCOLVAL_SUPPTAG_CONCEPTDOMAIN, conceptDomain);
+	}
+
 	
 
 	

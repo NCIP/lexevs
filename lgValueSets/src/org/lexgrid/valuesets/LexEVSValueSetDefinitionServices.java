@@ -270,4 +270,32 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	public void dropValueDomainTables() throws LBException;
 	
 	public LogEntry[] getLogEntries();
+	
+	/**
+	 * Returns list of Value Set Definition URIs that contain supplied SupportedAttribute Tag and Value.
+	 * 
+	 * @param supportedTag SupportedAttribute tag like SupportedCodingScheme, SupportedConceptDomain etc.
+	 * @param value value of the supportedAttribute
+	 * 
+	 * @return list of URIs
+	 */
+	public List<String> getValueSetDefinitionURIsForSupportedTagAndValue(String supportedTag, String value);
+	
+	/**
+	 * Returns list of Value Set Definition URIs that references supplied coding scheme.
+	 * 
+	 * @param codingSchemename name of the coding scheme
+	 * 
+	 * @return list of URIs
+	 */
+	public List<String> getValueSetDefinitionURIsWithCodingScheme(String codingSchemename);
+	
+	/**
+	 * Returns list of Value Set Definition URIs that references supplied concept domain.
+	 * 
+	 * @param conceptDomain name/id of the conceptDomain
+	 * 
+	 * @return list of URIs
+	 */
+	public List<String> getValueSetDefinitionURIsWithConceptDomain(String conceptDomain);
 }

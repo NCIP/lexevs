@@ -733,6 +733,12 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 
 		return pickListName;
 	}
+
+	@Override
+	public List<String> getPickListIdsForSupportedTagAndValue(
+			String supportedTag, String value) {
+		return this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionIdForSupportedTagAndValue(supportedTag, value);
+	}
 	
 //	private String getStringFromURI(URI uri) throws LBParameterException {
 //        if ("file".equals(uri.getScheme()))
