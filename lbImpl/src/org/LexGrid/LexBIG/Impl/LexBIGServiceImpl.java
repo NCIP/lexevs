@@ -44,6 +44,7 @@ import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.LexBIGServiceConvenienceMethodsImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.ContainsSearch;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.DoubleMetaphoneSearch;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.ExactMatchSearch;
@@ -82,7 +83,6 @@ import org.LexGrid.LexBIG.Impl.loaders.RadLexProtegeFramesLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.TextLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.ApproxNumOfConceptsPostProcessor;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.SupportedAttributePostProcessor;
-import org.LexGrid.LexBIG.Impl.pagedgraph.PagingCodedNodeGraphImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -589,7 +589,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         // Generic Extensions
         new SupportedAttributePostProcessor().register();
         new ApproxNumOfConceptsPostProcessor().register();
-        //LexBIGServiceConvenienceMethodsImpl.register();
+        LexBIGServiceConvenienceMethodsImpl.register();
  
     }
 
