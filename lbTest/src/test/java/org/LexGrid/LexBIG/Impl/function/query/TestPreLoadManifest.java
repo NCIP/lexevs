@@ -30,7 +30,7 @@ import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
-import org.LexGrid.LexBIG.Impl.loaders.LexGridLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -218,7 +218,7 @@ public class TestPreLoadManifest extends LexBIGServiceTestCase {
         try {
             lbsm = new LexBIGServiceImpl().getServiceManager(null);
 
-            LexGridLoaderImpl loader = (LexGridLoaderImpl) lbsm.getLoader("LexGridLoader");
+            LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGridLoader");
 
             loader.setCodingSchemeManifestURI(new File("resources/testData/pizza-Manifest.xml").toURI());
             loader.load(new File("resources/testData/pizza.xml").toURI(), true, true);

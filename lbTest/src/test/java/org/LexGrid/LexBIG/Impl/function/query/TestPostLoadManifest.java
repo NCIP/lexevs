@@ -26,7 +26,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
-import org.LexGrid.LexBIG.Impl.loaders.LexGridLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
@@ -86,7 +86,7 @@ public class TestPostLoadManifest extends LexBIGServiceTestCase {
      * @throws LBException
      */
     public void testPostLoadManifestWithPizza() throws InterruptedException, LBException {
-        LexGridLoaderImpl loader = (LexGridLoaderImpl) lbsm.getLoader(XMLLOADER);
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader(XMLLOADER);
 
         loader.setCodingSchemeManifestURI(new File(PIZZAMANIFESTFILE).toURI());
         loader.load(new File(PIZZAONTOFILE).toURI(), true, false);
