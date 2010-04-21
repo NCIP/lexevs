@@ -90,5 +90,11 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 		
 		plDao.removePickListDefinitionByPickListId(pickListId);
 	}
+
+	@Override
+	public List<String> getPickListDefinitionIdForSupportedTagAndValue(
+			String supportedTag, String value) {
+		return this.getDaoManager().getCurrentPickListDefinitionDao().getPickListDefinitionIdForSupportedTagAndValue(supportedTag, value);
+	}
 	
 }

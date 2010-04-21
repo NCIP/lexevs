@@ -108,6 +108,8 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	
 	public static String GET_URIMAPS_BY_REFERENCE_GUID_LOCALNAME_AND_TYPE_SQL = VS_MAPPING_NAMESPACE + "getURIMapByLocalNameAndType";
 	
+	public static String GET_VALUESETDEFINITIONURI_FOR_SUPPORTED_TAG_AND_VALUE_SQL = VS_MAPPING_NAMESPACE + "getValueSetDefinitionURIForSupportedTagAndValue";
+	
 	public static String INSERT_URIMAPS_SQL = VS_MAPPING_NAMESPACE + "insertURIMap";
 	
 	public static String UPDATE_URIMAPS_BY_LOCALID_SQL = VS_MAPPING_NAMESPACE + "updateUriMapByLocalId";
@@ -567,6 +569,14 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	 */
 	public void setVsEntryStateDao(VSEntryStateDao vsEntryStateDao) {
 		this.vsEntryStateDao = vsEntryStateDao;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getValueSetDefinitionURIForSupportedTagAndValue(
+			String supportedTag, String value) {
+		return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_VALUESETDEFINITIONURI_FOR_SUPPORTED_TAG_AND_VALUE_SQL,
+				new PrefixedParameterTuple(null, supportedTag, value));
 	}
 
 	

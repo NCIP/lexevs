@@ -79,7 +79,16 @@ public interface PickListDao extends LexGridSchemaVersionAwareDao {
 	 * @throws LBException
 	 */
 	public List<String> getPickListDefinitionIdForEntityReference(String entityCode, String entityCodeNameSpace, String propertyId);
-
+	
+	/**
+	 * Returns all the pickListIds that contain supplied supported tag and value.
+	 * 
+	 * @param supportedTag like SupportedCodingScheme, SupportedAssociation etc.
+	 * @param value value to look for
+	 * @return list of pickListIds that contains supportedTag with value.
+	 */
+	public List<String> getPickListDefinitionIdForSupportedTagAndValue(String supportedTag, String value);
+	
 	/**
 	 * Insert pick list definition.
 	 * 

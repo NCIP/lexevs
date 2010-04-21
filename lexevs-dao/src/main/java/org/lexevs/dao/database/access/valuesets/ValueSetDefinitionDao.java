@@ -53,6 +53,15 @@ public interface ValueSetDefinitionDao extends LexGridSchemaVersionAwareDao {
 	public String getGuidFromvalueSetDefinitionURI(String valueSetDefinitionURI);
 	
 	/**
+	 * Returns all the value set definition URIs that contain supplied supported tag and value.
+	 * 
+	 * @param supportedTag like SupportedCodingScheme, SupportedAssociation etc.
+	 * @param value value to look for
+	 * @return list of value set definition URIs that contains supportedTag with value.
+	 */
+	public List<String> getValueSetDefinitionURIForSupportedTagAndValue(String supportedTag, String value);
+	
+	/**
 	 * Insert value set definition.
 	 * 
 	 * @param systemReleaseUri the system release URI

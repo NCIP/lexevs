@@ -122,6 +122,8 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	
 	public static String GET_URIMAPS_BY_REFERENCE_GUID_LOCALNAME_AND_TYPE_SQL = VS_MAPPING_NAMESPACE + "getURIMapByLocalNameAndType";
 	
+	public static String GET_PICKLISTID_FOR_SUPPORTED_TAG_AND_VALUE_SQL = VS_MAPPING_NAMESPACE + "getPickListIdForSupportedTagAndValue";
+	
 	public static String INSERT_URIMAPS_SQL = VS_MAPPING_NAMESPACE + "insertURIMap";
 	
 	public static String UPDATE_URIMAPS_BY_LOCALID_SQL = VS_MAPPING_NAMESPACE + "updateUriMapByLocalId";
@@ -661,6 +663,14 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	 */
 	public void setVsEntryStateDao(VSEntryStateDao vsEntryStateDao) {
 		this.vsEntryStateDao = vsEntryStateDao;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getPickListDefinitionIdForSupportedTagAndValue(
+			String supportedTag, String value) {
+		return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_PICKLISTID_FOR_SUPPORTED_TAG_AND_VALUE_SQL,
+				new PrefixedParameterTuple(null, supportedTag, value));
 	}
 
 	

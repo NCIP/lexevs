@@ -62,6 +62,15 @@ public interface PickListDefinitionService {
 	public List<String> getPickListDefinitionIdForEntityReference(String entityCode, String entityCodeNameSpace, String propertyId);
 	
 	/**
+	 * Returns list of pick list definition IDs that contains supplied Supported Attribute Tag and Value.
+	 * 
+	 * @param supportedTag SupportedAttribute tag like SupportedCodingScheme, SupportedAssociation etc.
+	 * @param value value of the supportedAttribute
+	 * @return list of picklistIds
+	 */
+	public List<String> getPickListDefinitionIdForSupportedTagAndValue(String supportedTag, String value);
+	
+	/**
 	 * Removes the pick list definition by pick list id.
 	 * 
 	 * @param pickListId the pick list id
