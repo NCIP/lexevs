@@ -18,11 +18,14 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
+import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
@@ -156,9 +159,9 @@ public class UnionGraph implements CodedNodeGraph {
         ResolvedConceptReference ref1 = list1.getResolvedConceptReference(0);
         ResolvedConceptReference ref2 = list2.getResolvedConceptReference(0);
         
-        returnList.addResolvedConceptReference(
-                this.unionReference(
-                        ref1, ref2));
+        this.unionReference(ref1, ref2);
+        
+        returnList.addResolvedConceptReference(ref1);
         
         return returnList;
     }
@@ -296,20 +299,96 @@ public class UnionGraph implements CodedNodeGraph {
      * @return the resolved concept reference
      */
     protected ResolvedConceptReference unionReference(ResolvedConceptReference ref1, ResolvedConceptReference ref2) {
-        ResolvedConceptReference returnRef = ref1;
+        ref1.setSourceOf(unionAssociationList(ref1.getSourceOf(), ref2.getSourceOf()));
+        ref2.setTargetOf(unionAssociationList(ref1.getTargetOf(), ref2.getTargetOf()));
+       
+        return ref1;
+    }
+    
+    protected AssociatedConcept unionReference(AssociatedConcept ref1, AssociatedConcept ref2) {
+        ref1.setSourceOf(unionAssociationList(ref1.getSourceOf(), ref2.getSourceOf()));
+        ref2.setTargetOf(unionAssociationList(ref1.getTargetOf(), ref2.getTargetOf()));
+       
+        return ref1;
+    }
+    
+    protected AssociationList unionAssociationList(AssociationList list1, AssociationList list2) {
+        AssociationList returnList = new AssociationList();
         
-        if(ref2.getSourceOf() != null) {
-            for(Association assoc : ref2.getSourceOf().getAssociation()) {
-                returnRef.getSourceOf().addAssociation(assoc);
+        if(list1 != null) {
+            for(Association association : list1.getAssociation()) {
+                
+                Association unionedAssociation = getAssociationForName(association.getAssociationName(), list2);
+                
+                if(unionedAssociation != null) {
+                    returnList.addAssociation(unionAssociation(association, unionedAssociation));
+                }  else {
+                    returnList.addAssociation(association);
+                }
+            }
+        }
+        if(list2 != null) {
+            for(Association association : list2.getAssociation()) {
+                Association unionedAssociation = getAssociationForName(association.getAssociationName(), list1);
+                
+                if(unionedAssociation == null) {
+                    returnList.addAssociation(association);
+                }
             }
         }
         
-        if(ref2.getTargetOf() != null) {
-            for(Association assoc : ref2.getTargetOf().getAssociation()) {
-                returnRef.getTargetOf().addAssociation(assoc);
+        if(returnList.getAssociationCount() == 0) {
+            return null;
+        } else {
+            return returnList;
+        }
+    }
+    
+    protected Association unionAssociation(Association assoc1, Association assoc2) {
+        AssociatedConceptList list = new AssociatedConceptList();
+        
+        AssociatedConcept[] associatedConcepts1 = assoc1.getAssociatedConcepts().getAssociatedConcept();
+        AssociatedConcept[] associatedConcepts2 = assoc1.getAssociatedConcepts().getAssociatedConcept();
+        
+        for(AssociatedConcept concept : associatedConcepts1) {
+            AssociatedConcept foundConcept = getAssociatedConcept(concept, associatedConcepts2);
+            if(foundConcept != null) {
+                
+                list.addAssociatedConcept(
+                        unionReference(concept, foundConcept));
             }
         }
-
-        return returnRef;
+        
+        for(AssociatedConcept concept : associatedConcepts2) {
+            AssociatedConcept foundConcept = getAssociatedConcept(concept, associatedConcepts1);
+            if(foundConcept == null) {
+                list.addAssociatedConcept(concept);
+            }
+        }  
+        
+        assoc1.setAssociatedConcepts(list);
+        
+        return assoc1;
+    }
+    
+    protected AssociatedConcept getAssociatedConcept(AssociatedConcept searchConcept, AssociatedConcept[] list) {
+        for(AssociatedConcept concept : list) {
+            if(concept.getCode().equals(searchConcept.getCode()) &&
+                    concept.getCodeNamespace().equals(searchConcept.getCodeNamespace())){
+                return concept;
+            }
+        }
+        return null;
+    }
+    
+    protected Association getAssociationForName(String associationName, AssociationList list) {
+        if(list == null) {return null;}
+        
+        for(Association association : list.getAssociation()) {
+            if(association.getAssociationName().equals(associationName)) {
+                return association;
+            }
+        }
+        return null;
     }
 }
