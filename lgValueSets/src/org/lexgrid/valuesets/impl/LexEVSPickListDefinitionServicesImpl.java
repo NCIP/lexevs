@@ -119,7 +119,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	/* (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#loadPickList(org.LexGrid.valueSets.PickListDefinition, java.lang.String)
 	 */
-	public void loadPickList(PickListDefinition pldef, URI systemReleaseURI, Mappings mappings)
+	public void loadPickList(PickListDefinition pldef, String systemReleaseURI, Mappings mappings)
 			throws LBException {
 		getLogger().logMethod(new Object[] { pldef, systemReleaseURI});
 		SystemResourceService service = LexEvsServiceLocator.getInstance().getSystemResourceService();

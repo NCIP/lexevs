@@ -228,7 +228,6 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         return isEntityInValueSet(entityCode, null, valueSetDefinitionURI, null, versionTag);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public AbsoluteCodingSchemeVersionReference isEntityInValueSet(
 			String entityCode, URI entityCodeNamespace,
@@ -440,7 +439,6 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		return csList;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean isValueSetDefinition(String entityCode,
 			String codingSchemeName, CodingSchemeVersionOrTag csvt)

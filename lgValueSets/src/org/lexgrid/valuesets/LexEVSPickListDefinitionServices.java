@@ -92,7 +92,7 @@ public interface LexEVSPickListDefinitionServices extends Serializable {
 	 * @param mappings
 	 * @throws LBException
 	 */
-	public void loadPickList(PickListDefinition pldef, URI systemReleaseURI, Mappings mappings) throws LBException;
+	public void loadPickList(PickListDefinition pldef, String systemReleaseURI, Mappings mappings) throws LBException;
 	
 	/**
 	 * Loads pick list by reading XML file location supplied
