@@ -19,6 +19,7 @@
 package org.LexGrid.valuedomain.impl;
 
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -593,6 +594,17 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 //		}
 //		
 //		pickListIds.clear();
+	}
+	
+	@Test
+	public void testGetPickListIdsForSupportedTagAndValue(){
+		System.out.println("in testGetPickListIdsForSupportedTagAndValue");
+		List<String> pickListIds = getPickListService().getPickListIdsForSupportedTagAndValue("codingScheme", "scs uri");
+		
+		for (String pickListId : pickListIds)
+		{
+			System.out.println("pick list with supported cs 'scs uri' : " + pickListId);
+		}
 	}
 	
 	/**

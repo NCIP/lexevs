@@ -627,6 +627,17 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		}
 	}
 	
+	@Test
+	public void testGetValueSetURIsForSupportedTagAndValue(){
+		System.out.println("in testGetValueSetURIsForSupportedTagAndValue");
+		List<String> uris = getValueSetDefinitionService().getValueSetDefinitionURIsForSupportedTagAndValue("codingScheme", "scs uri");
+		
+		for (String uri : uris)
+		{
+			System.out.println("vsd uri with cs 'scs uri' : " + uri);
+		}
+	}
+	
 	
 //	@Test
 //	public void testResolveValueDomain() throws LBException, URISyntaxException {
