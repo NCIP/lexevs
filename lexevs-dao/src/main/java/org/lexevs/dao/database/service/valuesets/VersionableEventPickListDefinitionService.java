@@ -5,11 +5,15 @@ package org.lexevs.dao.database.service.valuesets;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListDefinitions;
 import org.lexevs.dao.database.access.valuesets.PickListDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.system.service.SystemResourceService;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -50,9 +54,20 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 	 */
 	@Transactional
 //	@DatabaseErrorIdentifier(errorCode=INSERT_PICKLIST_ERROR)
-	public void insertPickListDefinition(PickListDefinition definition, String systemReleaseUri, Mappings mappings) {
+	public void insertPickListDefinition(PickListDefinition definition, String systemReleaseUri, Mappings mappings) throws LBParameterException, LBException {
+		SystemResourceService service = LexEvsServiceLocator.getInstance().getSystemResourceService();
+		
+		String pickListId = definition.getPickListId();
+		if (service.containsPickListDefinitionResource(pickListId, null))
+		{
+			throw new LBException("Pick List definition with ID : " + pickListId + " ALREADY LOADED.");
+		}
+		
+		// Register picklist id
+		service.addPickListDefinitionResourceToSystem(definition.getPickListId(), null);
+		
 		PickListDao plDao = this.getDaoManager().getCurrentPickListDefinitionDao();
-	
+		// load pick list definition
 		plDao.insertPickListDefinition(definition, systemReleaseUri, mappings);
 		
 //		this.fireCodingSchemeInsertEvent(definition);

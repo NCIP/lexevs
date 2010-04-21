@@ -21,6 +21,7 @@ package org.lexevs.dao.database.service.valuesets;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListDefinitions;
@@ -84,7 +85,7 @@ public interface PickListDefinitionService {
 	 * @param systemReleaseUri the system release uri
 	 * @param mappings SupportedAttribute mappings of pick list definition
 	 */
-	public void insertPickListDefinition(PickListDefinition definition, String systemReleaseUri, Mappings mappings);
+	public void insertPickListDefinition(PickListDefinition definition, String systemReleaseUri, Mappings mappings) throws LBParameterException, LBException;
 	
 	/**
 	 * Insert pick list definitions.

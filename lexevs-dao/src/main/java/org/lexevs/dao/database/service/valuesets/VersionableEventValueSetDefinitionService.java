@@ -27,6 +27,8 @@ import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.system.service.SystemResourceService;
 
 /**
  * The Class VersionableEventValueSetDefinitionService.
@@ -55,8 +57,20 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	public void insertValueSetDefinition(ValueSetDefinition definition,
 			String systemReleaseUri, Mappings mappings) throws LBException {
 		
-		ValueSetDefinitionDao vsdDao = this.getDaoManager().getCurrentValueSetDefinitionDao();
+		SystemResourceService service = LexEvsServiceLocator.getInstance().getSystemResourceService();
+		String uri = definition.getValueSetDefinitionURI();
 		
+		// STOP if value set definition already loaded
+		if (service.containsValueSetDefinitionResource(uri, null))
+		{
+			throw new LBException("Value Set definition with URI : " + uri + " ALREADY LOADED.");
+		}
+		
+		// Register the value set definition uri
+		service.addValueSetDefinitionResourceToSystem(uri, null);
+		
+		ValueSetDefinitionDao vsdDao = this.getDaoManager().getCurrentValueSetDefinitionDao();
+		// load value set definition
 		vsdDao.insertValueSetDefinition(systemReleaseUri, definition, mappings);
 	}
 	
