@@ -68,8 +68,6 @@ public class XMLDaoServiceAdaptor {
     PropertyService propertyService = null;
     PickListDefinitionService pickListService;
     ValueSetDefinitionService valueSetService;
-    // LexEVSPickListDefinitionServices pLservices;
- // LexEVSValueDefinitionServices vSservices;
     /**
      * constructor initializes all DAO services
      */
