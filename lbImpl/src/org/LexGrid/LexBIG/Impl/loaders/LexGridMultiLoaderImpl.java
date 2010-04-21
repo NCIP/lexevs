@@ -178,7 +178,7 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
                 getStatus().setState(ProcessState.FAILED);
                 getMd_().fatal("Failed while running the conversion", e);
             } finally {
-                if (getStatus().getState() == null || getStatus().getState().equals(ProcessState.COMPLETED)) {
+                if (getStatus().getState() == null || !getStatus().getState().equals(ProcessState.COMPLETED)) {
                     getStatus().setState(ProcessState.FAILED);
 
                     try {
