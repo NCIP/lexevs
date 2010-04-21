@@ -189,7 +189,7 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
                         getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, version));
         }
         
-        if(resolveForward) {
+        if(resolveForward && shouldResolveNextLevel(resolveAssociationDepth)) {
             focus.setSourceOf(
             		associationListBuilder.buildSourceOfAssociationList(
                     this.codingSchemeUri,
@@ -199,14 +199,14 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
                     relationsContainerName,
                     resolveForward,
                     resolveBackward,
-                    resolveAssociationDepth, 
+                    resolveAssociationDepth - 1, 
                     resolveAssociationDepth,
                     resolveCodedEntryDepth,
                     this.graphQueryBuilder.getQuery(),
                     cycleDetectingCallback));
         }
         
-        if(resolveBackward) {
+        if(resolveBackward && shouldResolveNextLevel(resolveAssociationDepth)) {
             focus.setTargetOf(
             		associationListBuilder.buildTargetOfAssociationList(
                     this.codingSchemeUri,
@@ -217,7 +217,7 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
                     resolveForward,
                     resolveBackward,
                     resolveAssociationDepth, 
-                    resolveAssociationDepth,
+                    resolveAssociationDepth - 1,
                     resolveCodedEntryDepth,
                     this.graphQueryBuilder.getQuery(),
                     cycleDetectingCallback));
@@ -227,6 +227,10 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
         returnList.addResolvedConceptReference(focus);
     
         return returnList;
+    }
+    
+    private boolean shouldResolveNextLevel(int depth) {
+        return ! (depth == 0);
     }
 
     /* (non-Javadoc)
