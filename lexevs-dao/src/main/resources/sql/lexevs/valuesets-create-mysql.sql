@@ -159,7 +159,7 @@ CREATE TABLE vsProperty
 	degreeOfFidelity VARCHAR(50),
 	representationalForm VARCHAR(50),
 	propertyValue TEXT NOT NULL,
-	isActive CHAR(1) NOT NULL,
+	isActive CHAR(1),
 	owner VARCHAR(250),
 	status VARCHAR(50),
 	effectiveDate TIMESTAMP,
