@@ -33,7 +33,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.function.TestUtil;
-import org.LexGrid.LexBIG.Impl.loaders.LexGridLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -73,7 +73,7 @@ public void testProductionTags01() throws InterruptedException, LBException {
 
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
-        LexGridLoaderImpl loader = (LexGridLoaderImpl) lbsm.getLoader("LexGridLoader");
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGridLoader");
 
         loader.load(new File("resources/testData/Automobiles2.xml").toURI(), true, true);
 
