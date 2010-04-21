@@ -636,11 +636,12 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
         
         assertEquals("t-code1", assocConcept.getCode());
         
-        assertTrue(itr.hasNext());
+        assertFalse(itr.hasNext());
         
-        assocConcept = itr.next();
+        assertEquals(1, assocConcept.getSourceOf().getAssociationCount());
         
-        assertEquals("t-code2", assocConcept.getCode());
+        assertEquals("t-code2", assocConcept.getSourceOf().
+                getAssociation(0).getAssociatedConcepts().getAssociatedConcept(0).getCode());
         
         assertFalse(itr.hasNext());
     }
