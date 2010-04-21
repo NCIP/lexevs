@@ -122,20 +122,11 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	public void loadPickList(PickListDefinition pldef, String systemReleaseURI, Mappings mappings)
 			throws LBException {
 		getLogger().logMethod(new Object[] { pldef, systemReleaseURI});
-		SystemResourceService service = LexEvsServiceLocator.getInstance().getSystemResourceService();
 		
 		if (pldef != null)
 		{
 			String pickListId = pldef.getPickListId();
-			if (service.containsPickListDefinitionResource(pickListId, null))
-			{
-				md_.info("Pick List definition with ID : " + pickListId + " ALREADY LOADED.");
-				System.out.println("Pick List definition with ID : " + pickListId + " ALREADY LOADED.");
-				return;
-			}
-			
-			md_.info("Loading Pick List Definition with ID : " + pickListId);
-			service.addPickListDefinitionResourceToSystem(pldef.getPickListId(), null);
+			md_.info("Loading Pick List Definition with ID : " + pickListId);			
 			this.databaseServiceManager.getPickListDefinitionService().insertPickListDefinition(pldef, systemReleaseURI != null ? systemReleaseURI.toString():null, mappings);
 			md_.info("Finished loading Pick list Definition ID : " + pickListId);
 		}

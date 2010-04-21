@@ -115,19 +115,10 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	public void loadValueSetDefinition(ValueSetDefinition definition, String systemReleaseURI, Mappings mappings)
 			throws LBException {
 		getLogger().logMethod(new Object[] { definition });
-		SystemResourceService service = LexEvsServiceLocator.getInstance().getSystemResourceService();
 		if (definition != null)
 		{
 			String uri = definition.getValueSetDefinitionURI();
-			if (service.containsValueSetDefinitionResource(uri, null))
-			{
-				md_.info("Value Set definition with URI : " + uri + " ALREADY LOADED.");
-				System.out.println("Value Set definition with URI : " + uri + " ALREADY LOADED.");
-				return;
-			}
-			
 			md_.info("Loading value set definition : " + uri);
-			service.addValueSetDefinitionResourceToSystem(uri, null);
 			this.databaseServiceManager.getValueSetDefinitionService().insertValueSetDefinition(definition, systemReleaseURI, mappings);
 			md_.info("Finished loading value set definition URI : " + uri);
 		}		
