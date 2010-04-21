@@ -72,11 +72,7 @@ public class ClaML2LG {
 			clamlCS = buildConcepts(clamlCS);
 			clamlCS = processModifiers(clamlCS);
 			
-			for (Entity en : clamlCS.getEntities().getEntity()) {
-			    if (en.getEntityType().length == 0)
-			        System.out.println("test");
-			}
-			
+		
 			return clamlCS;
 		}
 		
