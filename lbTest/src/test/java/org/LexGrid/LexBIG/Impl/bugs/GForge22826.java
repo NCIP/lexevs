@@ -11,7 +11,7 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.loaders.LexGridLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -99,7 +99,7 @@ public class GForge22826 extends TestCase {
         lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(
                 null);
 
-        LexGridLoaderImpl loader = (LexGridLoaderImpl) lbsm
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm
                 .getLoader("LexGridLoader");
 
         loader.load(new File("resources/testData/Automobiles.xml").toURI(),

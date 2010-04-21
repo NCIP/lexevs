@@ -28,7 +28,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Export.LexGrid_Exporter;
 import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
-import org.LexGrid.LexBIG.Impl.loaders.LexGridLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
@@ -86,7 +86,7 @@ public class GForge19650 extends LexBIGServiceTestCase {
     
     public void testLoadExportedAutombiles() throws LBParameterException, LBInvocationException, InterruptedException,
     LBException {
-        LexGridLoaderImpl loader = (LexGridLoaderImpl) lbsm.getLoader("LexGridLoader");
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGridLoader");
         loader.setCodingSchemeManifestURI(new File(AUTO_EXPORT_MANIFEST).toURI());
         
         loader.load(new File(AUTO_EXPORT_FILE).toURI(), true, true);
