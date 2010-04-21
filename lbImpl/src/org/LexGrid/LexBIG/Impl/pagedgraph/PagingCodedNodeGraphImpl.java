@@ -55,7 +55,6 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
     
     //Implementation to return either the full reference or a stub upon detecting a cycle
     //private CycleDetectingCallback cycleDetectingCallback = new ReferenceReturningCycleDetectingCallback();
-    /** The cycle detecting callback. */
     private CycleDetectingCallback cycleDetectingCallback = new StubReturningCycleDetectingCallback();
     
     /** The builder. */
