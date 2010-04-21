@@ -1,102 +1,59 @@
+/*
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 
-public class CycleDetectingCallback {
-    
-    private Map<AssociatedConceptKey,AssociatedConcept> associatedConceptMap = 
-        new HashMap<AssociatedConceptKey,AssociatedConcept>();
+/**
+ * The Interface CycleDetectingCallback.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
+public interface CycleDetectingCallback {
 
-    public AssociatedConcept getAssociatedConceptInGraph(String associationName, AssociatedConcept associatedConcept) {
-        AssociatedConceptKey key = toAssociatedConceptKey(associationName, associatedConcept);
-        
-        return associatedConceptMap.get(key);
-    }
-    
-    public void addAssociatedConceptToGraph(String associationName, AssociatedConcept associatedConcept) {
-        AssociatedConceptKey key = toAssociatedConceptKey(associationName, associatedConcept);
-        associatedConceptMap.put(key, associatedConcept);
-    }
-    
-    public boolean isAssociatedConceptAlreadyInGraph(String associationName, AssociatedConcept associatedConcept) {
-        AssociatedConceptKey key = toAssociatedConceptKey(associationName, associatedConcept);
-        
-        return associatedConceptMap.containsKey(key);
-    }
-    
-    private AssociatedConceptKey toAssociatedConceptKey(String associationName, AssociatedConcept associatedConcept) {
-        return new AssociatedConceptKey(
-                associatedConcept.getCode(), 
-                associatedConcept.getCodeNamespace(), 
-                associationName);  
-    }
-    
-    private static class AssociatedConceptKey {
-        private String code;
-        private String namespace;
-        private String associationName;
+    /**
+     * Gets the associated concept in graph.
+     * 
+     * @param associationName the association name
+     * @param associatedConcept the associated concept
+     * 
+     * @return the associated concept in graph
+     */
+    public AssociatedConcept getAssociatedConceptInGraph(String associationName,
+            AssociatedConcept associatedConcept);
 
-        public AssociatedConceptKey(String code, String namespace, String associationName) {
-            super();
-            this.code = code;
-            this.namespace = namespace;
-            this.associationName = associationName;
-        }
-        public String getCode() {
-            return code;
-        }
-        public void setCode(String code) {
-            this.code = code;
-        }
-        public String getNamespace() {
-            return namespace;
-        }
-        public void setNamespace(String namespace) {
-            this.namespace = namespace;
-        }
-        public String getAssociationName() {
-            return associationName;
-        }
-        public void setAssociationName(String associationName) {
-            this.associationName = associationName;
-        }
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((associationName == null) ? 0 : associationName.hashCode());
-            result = prime * result + ((code == null) ? 0 : code.hashCode());
-            result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
-            return result;
-        }
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            AssociatedConceptKey other = (AssociatedConceptKey) obj;
-            if (associationName == null) {
-                if (other.associationName != null)
-                    return false;
-            } else if (!associationName.equals(other.associationName))
-                return false;
-            if (code == null) {
-                if (other.code != null)
-                    return false;
-            } else if (!code.equals(other.code))
-                return false;
-            if (namespace == null) {
-                if (other.namespace != null)
-                    return false;
-            } else if (!namespace.equals(other.namespace))
-                return false;
-            return true;
-        }
-    }
+    /**
+     * Adds the associated concept to graph.
+     * 
+     * @param associationName the association name
+     * @param associatedConcept the associated concept
+     */
+    public void addAssociatedConceptToGraph(String associationName, AssociatedConcept associatedConcept);
+
+    /**
+     * Checks if is associated concept already in graph.
+     * 
+     * @param associationName the association name
+     * @param associatedConcept the associated concept
+     * 
+     * @return true, if is associated concept already in graph
+     */
+    public boolean isAssociatedConceptAlreadyInGraph(String associationName,
+            AssociatedConcept associatedConcept);
 }

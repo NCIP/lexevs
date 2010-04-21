@@ -30,6 +30,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
+import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
@@ -52,7 +53,10 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
     /** The builder. */
     private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
     
-    private CycleDetectingCallback cycleDetectingCallback = new CycleDetectingCallback();
+    //Implementation to return either the full reference or a stub upon detecting a cycle
+    //private CycleDetectingCallback cycleDetectingCallback = new ReferenceReturningCycleDetectingCallback();
+    /** The cycle detecting callback. */
+    private CycleDetectingCallback cycleDetectingCallback = new StubReturningCycleDetectingCallback();
     
     /** The builder. */
     private GraphQueryBuilder graphQueryBuilder = new DefaultGraphQueryBuilder();
@@ -63,8 +67,10 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
     /** The version. */
     private String version;
     
+    /** The relations container name. */
     private String relationsContainerName;
     
+    /** The logger. */
     private LgLoggerIF logger = LoggerFactory.getLogger();
     
     /**
@@ -72,6 +78,7 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
      * 
      * @param codingSchemeUri the coding scheme uri
      * @param version the version
+     * @param relationsContainerName the relations container name
      */
     public PagingCodedNodeGraphImpl(
             String codingSchemeUri, 
@@ -229,6 +236,13 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
         return returnList;
     }
     
+    /**
+     * Should resolve next level.
+     * 
+     * @param depth the depth
+     * 
+     * @return true, if successful
+     */
     private boolean shouldResolveNextLevel(int depth) {
         return ! (depth == 0);
     }

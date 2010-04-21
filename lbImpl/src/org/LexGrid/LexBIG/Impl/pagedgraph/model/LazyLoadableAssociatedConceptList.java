@@ -40,12 +40,16 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -434490124369412627L;
     
+    /** The graph query. */
     private GraphQuery graphQuery;
+    
     /** The coding scheme uid. */
     private String codingSchemeUri; 
     
+    /** The coding scheme version. */
     private String codingSchemeVersion;
     
+    /** The relations container name. */
     private String relationsContainerName; 
     
     /** The association predicate uid. */
@@ -66,27 +70,43 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
     /** The count. */
     private int count;
     
+    /** The resolve forward association depth. */
     private int resolveForwardAssociationDepth;
+    
+    /** The resolve backward association depth. */
     private int resolveBackwardAssociationDepth;
     
+    /** The resolve coded entry depth. */
     private int resolveCodedEntryDepth;
     
+    /** The resolve forward. */
     private boolean resolveForward;
+    
+    /** The resolve backward. */
     private boolean resolveBackward;
     
+    /** The cycle detecting callback. */
     private CycleDetectingCallback cycleDetectingCallback;
 
     /**
      * Instantiates a new lazy loadable associated concept list.
      * 
      * @param count the count
-     * @param codedNodeGraphDao the coded node graph dao
-     * @param codingSchemeUid the coding scheme uid
-     * @param associationPredicateUid the association predicate uid
      * @param entityCode the entity code
      * @param entityCodeNamespace the entity code namespace
      * @param direction the direction
      * @param pageSize the page size
+     * @param codingSchemeUri the coding scheme uri
+     * @param codingSchemeVersion the coding scheme version
+     * @param relationsContainerName the relations container name
+     * @param associationPredicateName the association predicate name
+     * @param resolveForward the resolve forward
+     * @param resolveBackward the resolve backward
+     * @param resolveForwardAssociationDepth the resolve forward association depth
+     * @param resolveBackwardAssociationDepth the resolve backward association depth
+     * @param resolveCodedEntryDepth the resolve coded entry depth
+     * @param graphQuery the graph query
+     * @param cycleDetectingCallback the cycle detecting callback
      */
     public LazyLoadableAssociatedConceptList(
             int count,

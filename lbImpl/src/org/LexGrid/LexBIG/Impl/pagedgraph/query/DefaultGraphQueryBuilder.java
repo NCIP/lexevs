@@ -23,7 +23,6 @@ import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
-import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 import org.springframework.util.StringUtils;
@@ -38,6 +37,9 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
     /** The graph query. */
     private GraphQuery graphQuery = new GraphQuery();
 
+    /**
+     * Instantiates a new default graph query builder.
+     */
     public DefaultGraphQueryBuilder(){
         super();
     }

@@ -56,6 +56,7 @@ public interface GraphQueryBuilder {
      * 
      * @throws LBInvocationException,LBParameterException      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
+     * @throws LBInvocationException the LB invocation exception
      */
     void restrictToAssociations(
             NameAndValueList association,
@@ -104,6 +105,7 @@ public interface GraphQueryBuilder {
      * 
      * @throws LBInvocationException,LBParameterException      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
+     * @throws LBInvocationException the LB invocation exception
      */
     void restrictToCodes(CodedNodeSet codes)
             throws LBInvocationException,LBParameterException;
@@ -120,6 +122,7 @@ public interface GraphQueryBuilder {
      * 
      * @throws LBInvocationException,LBParameterException      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
+     * @throws LBInvocationException the LB invocation exception
      */
     void restrictToCodeSystem(String codingScheme)
             throws LBInvocationException,LBParameterException;
@@ -134,6 +137,7 @@ public interface GraphQueryBuilder {
      * 
      * @throws LBInvocationException,LBParameterException      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
+     * @throws LBInvocationException the LB invocation exception
      */
     void restrictToSourceCodes(CodedNodeSet codes)
             throws LBInvocationException,LBParameterException;
@@ -148,6 +152,7 @@ public interface GraphQueryBuilder {
      * 
      * @throws LBInvocationException,LBParameterException      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
+     * @throws LBInvocationException the LB invocation exception
      */
     void restrictToSourceCodeSystem(String codingScheme)
             throws LBInvocationException,LBParameterException;
@@ -162,6 +167,7 @@ public interface GraphQueryBuilder {
      * 
      * @throws LBInvocationException,LBParameterException      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
+     * @throws LBInvocationException the LB invocation exception
      */
     void restrictToTargetCodes(CodedNodeSet codes)
             throws LBInvocationException,LBParameterException;
@@ -176,6 +182,7 @@ public interface GraphQueryBuilder {
      * 
      * @throws LBInvocationException,LBParameterException      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
+     * @throws LBInvocationException the LB invocation exception
      */
     void restrictToTargetCodeSystem(String codingScheme)
             throws LBInvocationException,LBParameterException;

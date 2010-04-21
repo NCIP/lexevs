@@ -40,6 +40,7 @@ import org.lexevs.paging.codednodegraph.TripleUidIterator;
  */
 public class AssociatedConceptIterator extends AbstractPageableIterator<AssociatedConcept> {
     
+    /** The association list builder. */
     private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
 
 	/** The triple uid iterator. */
@@ -51,34 +52,54 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	/** The coding scheme uid. */
 	private String codingSchemeUri;
 	
+	/** The coding scheme version. */
 	private String codingSchemeVersion;
 	
+	/** The resolve forward association depth. */
 	private int resolveForwardAssociationDepth;
+	
+	/** The resolve backward association depth. */
 	private int resolveBackwardAssociationDepth;
 	
+    /** The resolve coded entry depth. */
     private int resolveCodedEntryDepth;
     
+    /** The relations container name. */
     private String relationsContainerName;
     
+    /** The graph query. */
     private GraphQuery graphQuery;
     
+    /** The resolve forward. */
     private boolean resolveForward;
+    
+    /** The resolve backward. */
     private boolean resolveBackward;
     
+    /** The cycle detecting callback. */
     private CycleDetectingCallback cycleDetectingCallback;
     
+    /** The association predicate name. */
     private String associationPredicateName;
 	
 	/**
 	 * Instantiates a new associated concept iterator.
 	 * 
-	 * @param codedNodeGraphDao the coded node graph dao
-	 * @param codingSchemeUid the coding scheme uid
-	 * @param associationPredicateUid the association predicate uid
 	 * @param entityCode the entity code
 	 * @param entityCodeNamespace the entity code namespace
 	 * @param direction the direction
 	 * @param pageSize the page size
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param codingSchemeVersion the coding scheme version
+	 * @param relationsContainerName the relations container name
+	 * @param associationPredicateName the association predicate name
+	 * @param resolveForward the resolve forward
+	 * @param resolveBackward the resolve backward
+	 * @param resolveForwardAssociationDepth the resolve forward association depth
+	 * @param resolveBackwardAssociationDepth the resolve backward association depth
+	 * @param resolveCodedEntryDepth the resolve coded entry depth
+	 * @param graphQuery the graph query
+	 * @param cycleDetectingCallback the cycle detecting callback
 	 */
 	public AssociatedConceptIterator(
             String codingSchemeUri, 
@@ -122,6 +143,9 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 		this.associationPredicateName = associationPredicateName;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.paging.AbstractPageableIterator#next()
+	 */
 	@Override
 	public AssociatedConcept next() {
 	    AssociatedConcept associatedConcept = super.next();
@@ -173,6 +197,13 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	    return associatedConcept;
 	}
 	
+	/**
+	 * Should resolve next level.
+	 * 
+	 * @param depth the depth
+	 * 
+	 * @return true, if successful
+	 */
 	private boolean shouldResolveNextLevel(int depth) {
 	    return ! (depth == 0);
 	}

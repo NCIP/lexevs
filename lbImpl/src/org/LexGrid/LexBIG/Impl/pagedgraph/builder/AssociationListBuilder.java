@@ -48,7 +48,11 @@ public class AssociationListBuilder {
      * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
      */
     public enum AssociationDirection {
+        
+        /** The SOURC e_ of. */
         SOURCE_OF,
+        
+        /** The TARGE t_ of. */
         TARGET_OF}
     
     /** The database service manager. */
@@ -62,6 +66,14 @@ public class AssociationListBuilder {
      * @param version the version
      * @param entityCode the entity code
      * @param entityCodeNamespace the entity code namespace
+     * @param relationsContainerName the relations container name
+     * @param resolveForward the resolve forward
+     * @param resolveBackward the resolve backward
+     * @param resolveForwardAssociationDepth the resolve forward association depth
+     * @param resolveBackwardAssociationDepth the resolve backward association depth
+     * @param resolveCodedEntryDepth the resolve coded entry depth
+     * @param graphQuery the graph query
+     * @param cycleDetectingCallback the cycle detecting callback
      * 
      * @return the association list
      */
@@ -101,6 +113,14 @@ public class AssociationListBuilder {
      * @param version the version
      * @param entityCode the entity code
      * @param entityCodeNamespace the entity code namespace
+     * @param relationsContainerName the relations container name
+     * @param resolveForward the resolve forward
+     * @param resolveBackward the resolve backward
+     * @param resolveForwardAssociationDepth the resolve forward association depth
+     * @param resolveBackwardAssociationDepth the resolve backward association depth
+     * @param resolveCodedEntryDepth the resolve coded entry depth
+     * @param graphQuery the graph query
+     * @param cycleDetectingCallback the cycle detecting callback
      * 
      * @return the association list
      */
@@ -141,6 +161,14 @@ public class AssociationListBuilder {
      * @param entityCode the entity code
      * @param entityCodeNamespace the entity code namespace
      * @param direction the direction
+     * @param relationsContainerName the relations container name
+     * @param resolveForward the resolve forward
+     * @param resolveBackward the resolve backward
+     * @param resolveForwardAssociationDepth the resolve forward association depth
+     * @param resolveBackwardAssociationDepth the resolve backward association depth
+     * @param resolveCodedEntryDepth the resolve coded entry depth
+     * @param graphQuery the graph query
+     * @param cycleDetectingCallback the cycle detecting callback
      * 
      * @return the association list
      */
@@ -234,6 +262,14 @@ public class AssociationListBuilder {
         }
     }
 
+    /**
+     * Gets the association predicate names.
+     * 
+     * @param codingSchemeUri the coding scheme uri
+     * @param codingSchemeVersion the coding scheme version
+     * 
+     * @return the association predicate names
+     */
     protected List<String> getAssociationPredicateNames(
             String codingSchemeUri, 
             String codingSchemeVersion) {
