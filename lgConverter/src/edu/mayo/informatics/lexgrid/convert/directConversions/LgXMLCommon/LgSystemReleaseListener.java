@@ -18,6 +18,8 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.codingSchemes.CodingSchemes;
 import org.LexGrid.naming.Mappings;
@@ -174,8 +176,16 @@ public class LgSystemReleaseListener implements UnmarshalListener {
             currentPickListMappings = LexGridElementProcessor.processPickListMappings(serviceAdaptor, parent, child);
         }
         if (UnMarshallingLogic.isPickListDefinition(parent, child)) {
-            LexGridElementProcessor.processPickListDefinition(serviceAdaptor, child, currentPickListMappings,
-                    systemRelease.getReleaseURI());
+            try {
+                LexGridElementProcessor.processPickListDefinition(serviceAdaptor, child, currentPickListMappings,
+                        systemRelease.getReleaseURI());
+            } catch (LBParameterException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (LBException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
 
     }

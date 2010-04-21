@@ -189,7 +189,7 @@ public class XMLDaoServiceAdaptor {
         }
     }
     
-    public void storePickList(PickListDefinition picklist, String systemReleaseURI, Mappings mappings) {
+    public void storePickList(PickListDefinition picklist, String systemReleaseURI, Mappings mappings) throws LBParameterException, LBException {
         pickListService.insertPickListDefinition(picklist, systemReleaseURI, mappings);
     }
     

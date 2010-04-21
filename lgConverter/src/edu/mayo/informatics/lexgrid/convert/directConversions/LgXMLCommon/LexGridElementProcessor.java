@@ -20,6 +20,8 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
 import java.util.ArrayList;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
@@ -173,9 +175,11 @@ public class LexGridElementProcessor {
      * @param child
      * @param mappings
      * @param systemReleaseURI
+     * @throws LBException 
+     * @throws LBParameterException 
      */
     public static void processPickListDefinition(XMLDaoServiceAdaptor service, Object child, Mappings mappings,
-            String systemReleaseURI) {
+            String systemReleaseURI) throws LBParameterException, LBException {
         PickListDefinition picklist = (PickListDefinition) child;
         service.storePickList(picklist, systemReleaseURI, mappings);
     }
