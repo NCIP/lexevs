@@ -61,6 +61,12 @@ public class ScriptFactory implements InitializingBean, FactoryBean{
 	/** The database type. */
 	private DatabaseType databaseType;
 	
+	private static String MYSQL_NAME = "mysql";
+	private static String ORACLE_NAME = "oracle";
+	private static String POSTGRES_NAME = "postgresql";
+	private static String HSQL_NAME = "hsqldb";
+	private static String DB2_NAME = "db2";
+	
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.FactoryBean#getObject()
 	 */
@@ -92,15 +98,15 @@ public class ScriptFactory implements InitializingBean, FactoryBean{
 		
 		String dbType = null;
 		if(databaseType.equals(DatabaseType.MYSQL)){
-			dbType = "mysql";
+			dbType = MYSQL_NAME;
 		} else if (databaseType.equals(DatabaseType.HSQL)){
-			dbType = "hsqldb";
+			dbType = HSQL_NAME;
 		} else if (databaseType.equals(DatabaseType.ORACLE)){
-			dbType = "oracle";
+			dbType = ORACLE_NAME;
 		} else if (databaseType.equals(DatabaseType.DB2)){
-			dbType = "db2";
+			dbType = DB2_NAME;
 		} else if (databaseType.equals(DatabaseType.POSTGRES)){
-			dbType = "postgresql";
+			dbType = POSTGRES_NAME;
 		} else {
 			throw new RuntimeException("Database: " + databaseType.toString() + " is not supported.");
 		}
