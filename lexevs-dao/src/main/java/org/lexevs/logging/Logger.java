@@ -46,7 +46,7 @@ import org.lexevs.system.constants.SystemVariables;
 public class Logger implements LgLoggerIF {
     
     /** The gui log_. */
-    private org.apache.log4j.Logger fatal_, error_, warn_, info_, debug_, loadLog_, apiLog_, sqlLog_, guiLog_;
+    private org.apache.log4j.Logger fatal_, error_, warn_, info_, debug_, loadLog_, apiLog_, sqlLog_, guiLog_, vsGUILog_;
 
     /** The log message id_. */
     private int logMessageId_ = 1;
@@ -104,6 +104,10 @@ public class Logger implements LgLoggerIF {
         guiLog_ = LogManager.getLogger("LB_GUI_LOGGER");
         guiLog_.setAdditivity(false);
         guiLog_.addAppender(simpleAppender);
+        
+        vsGUILog_ = LogManager.getLogger("LB_VSGUI_LOGGER");
+        vsGUILog_.setAdditivity(false);
+        vsGUILog_.addAppender(simpleAppender);
 
         // The root logger by default has a console appender - only let it write
         // warnings or worse.
