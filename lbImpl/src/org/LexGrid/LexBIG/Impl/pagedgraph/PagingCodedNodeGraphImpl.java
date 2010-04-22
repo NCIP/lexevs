@@ -26,17 +26,20 @@ import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
-import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.ReferenceReturningCycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
@@ -59,7 +62,7 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
     private CycleDetectingCallback cycleDetectingCallback = new StubReturningCycleDetectingCallback();
     
     /** The builder. */
-    private GraphQueryBuilder graphQueryBuilder = new DefaultGraphQueryBuilder();
+    private GraphQueryBuilder graphQueryBuilder;
     
     /** The coding scheme uri. */
     private String codingSchemeUri;
@@ -87,6 +90,8 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
         this.codingSchemeUri = codingSchemeUri;
         this.version = version;
         this.relationsContainerName = relationsContainerName;
+        
+        graphQueryBuilder = new DefaultGraphQueryBuilder(codingSchemeUri, version);
     }
     
     /* (non-Javadoc)
@@ -274,8 +279,8 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
      */
     @Override
     public CodedNodeGraph restrictToCodeSystem(String codingScheme) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        this.graphQueryBuilder.restrictToCodeSystem(codingScheme);
+        return this;
     }
 
     /* (non-Javadoc)
@@ -283,8 +288,8 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
      */
     @Override
     public CodedNodeGraph restrictToCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        this.graphQueryBuilder.restrictToCodes(codes);
+        return this;
     }
 
     /* (non-Javadoc)
@@ -293,8 +298,8 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
     @Override
     public CodedNodeGraph restrictToDirectionalNames(NameAndValueList directionalNames,
             NameAndValueList associationQualifiers) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+       this.graphQueryBuilder.restrictToDirectionalNames(directionalNames, associationQualifiers);
+       return this;
     }
 
     /* (non-Javadoc)
@@ -303,8 +308,8 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
     @Override
     public CodedNodeGraph restrictToSourceCodeSystem(String codingScheme) throws LBInvocationException,
             LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        this.graphQueryBuilder.restrictToSourceCodeSystem(codingScheme);
+        return this;
     }
 
     /* (non-Javadoc)
@@ -312,8 +317,8 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
      */
     @Override
     public CodedNodeGraph restrictToSourceCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        this.graphQueryBuilder.restrictToSourceCodes(codes);
+        return this;
     }
 
     /* (non-Javadoc)
@@ -322,8 +327,8 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
     @Override
     public CodedNodeGraph restrictToTargetCodeSystem(String codingScheme) throws LBInvocationException,
             LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        this.graphQueryBuilder.restrictToTargetCodeSystem(codingScheme);
+        return this;
     }
 
     /* (non-Javadoc)
@@ -331,8 +336,8 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
      */
     @Override
     public CodedNodeGraph restrictToTargetCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        this.graphQueryBuilder.restrictToTargetCodes(codes);
+        return this;
     }
 
     /* (non-Javadoc)
@@ -352,5 +357,4 @@ public class PagingCodedNodeGraphImpl implements CodedNodeGraph {
     public CodedNodeGraph union(CodedNodeGraph graph) throws LBInvocationException, LBParameterException {
         return new UnionGraph(this, graph);
     }
-
 }

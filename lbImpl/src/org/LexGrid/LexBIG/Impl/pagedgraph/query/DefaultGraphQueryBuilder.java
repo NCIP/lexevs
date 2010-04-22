@@ -20,9 +20,13 @@ package org.LexGrid.LexBIG.Impl.pagedgraph.query;
 
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 import org.springframework.util.StringUtils;
@@ -37,11 +41,19 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
     /** The graph query. */
     private GraphQuery graphQuery = new GraphQuery();
 
+    /** The coding scheme uri. */
+    private String codingSchemeUri;
+    
+    /** The version. */
+    private String version;
+    
     /**
      * Instantiates a new default graph query builder.
      */
-    public DefaultGraphQueryBuilder(){
+    public DefaultGraphQueryBuilder(String codingSchemeUri, String version){
         super();
+        this.codingSchemeUri = codingSchemeUri;
+        this.version = version;
     }
     
     /* (non-Javadoc)
@@ -109,7 +121,29 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
     @Override
     public void restrictToDirectionalNames(NameAndValueList directionalNames,
             NameAndValueList associationQualifiers) throws LBInvocationException, LBParameterException {
+        LexBIGServiceConvenienceMethods lbscm = 
+            (LexBIGServiceConvenienceMethods) 
+                LexBIGServiceImpl.defaultInstance().getGenericExtension("LexBIGServiceConvenienceMethods");
         
+        for(NameAndValue nameAndValue : directionalNames.getNameAndValue()) {
+            String directionalName = nameAndValue.getName();
+            
+            try {
+                String[] associationNames = lbscm.getAssociationNameForDirectionalName(
+                        codingSchemeUri, 
+                        Constructors.createCodingSchemeVersionOrTagFromVersion(version), 
+                        directionalName);
+                
+                if(associationNames != null);
+                
+                for(String associationName : associationNames) {
+                    this.getQuery().getRestrictToAssociations().add(associationName);
+                }
+                
+            } catch (LBException e) {
+               throw new RuntimeException(e);
+            }
+        }
     }
 
     /* (non-Javadoc)
