@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Comment;
@@ -92,6 +93,14 @@ public class DaoUtility {
 			returnList.add(item);
 		}
 		return returnList;
+	}
+	
+	public static String getEntityDescriptionText(EntityDescription ed) {
+		if(ed == null) {
+			return "";
+		} else {
+			return ed.getContent();
+		}
 	}
 	
 	/**
