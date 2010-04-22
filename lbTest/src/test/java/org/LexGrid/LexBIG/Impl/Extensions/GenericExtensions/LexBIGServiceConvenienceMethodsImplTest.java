@@ -46,6 +46,11 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
         return testID;
     }
     
+    public void testGetAssociationForwardName() throws LBException {
+    	String forwardName = lbscm.getAssociationForwardName("hasSubtype", AUTO_SCHEME, null);
+    	assertEquals("GoingForward", forwardName);
+    }
+    
     public void testThreadSafeCodingSchemeCaches() throws Throwable {
         Map cache = lbscm.getCache_CodingSchemes();
         runCacheThreadSaveTest(cache);       
@@ -76,22 +81,14 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
         runCacheThreadSaveTest(cache);      
     }
     
-    /*
-     * Using this test Association:
-     * 
-     * <lgRel:association associationName="differentEntityCodeAssoc" 
-     * entityCode="A1" forwardName="differentEntityCodeAssocForward" 
-     * isNavigable="true" isTransitive="false" 
-     * reverseName="differentEntityCodeAssocReverse">
-     */
     public void testGetAssociationNameFromAssociationCode() throws Exception {
-    	String assocName = lbscm.getAssociationNameFromAssociationCode(AUTO_SCHEME, null, "A1");
-    	assertTrue(assocName.equals("differentEntityCodeAssoc"));
+    	String assocName = lbscm.getAssociationNameFromAssociationCode(AUTO_SCHEME, null, "AssocEntity");
+    	assertTrue(assocName.equals("hasSubtype"));
     }
     
     public void testGetAssociationCodeFromAssociationName() throws Exception {
-    	String assocCode = lbscm.getAssociationCodeFromAssociationName(AUTO_SCHEME, null, "differentEntityCodeAssoc");
-    	assertTrue(assocCode.equals("A1"));
+    	String assocCode = lbscm.getAssociationCodeFromAssociationName(AUTO_SCHEME, null, "hasSubtype");
+    	assertTrue(assocCode.equals("AssocEntity"));
     }
     
     public void testGetAssociationNameFromAssociationCodeWrong() throws Exception {
@@ -112,16 +109,6 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
 			return;
 		}
 		fail("Should have thrown an exception.");
-    }
-    
-    public void testGetAssociationNameFromAssociationCodeSameCodeAndName() throws Exception {
-    	String assocName = lbscm.getAssociationNameFromAssociationCode(AUTO_SCHEME, null, "hasSubtype");
-    	assertTrue(assocName.equals("hasSubtype"));
-    }
-    
-    public void testGetAssociationCodeFromAssociationNameSameCodeAndName() throws Exception {
-    	String assocCode = lbscm.getAssociationCodeFromAssociationName(AUTO_SCHEME, null, "hasSubtype");
-    	assertTrue(assocCode.equals("hasSubtype"));
     }
     
     protected void runCacheThreadSaveTest(Map cache) throws Throwable {
