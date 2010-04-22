@@ -40,7 +40,7 @@ public class DaoUtilityTest {
 		DaoUtility.updateBean(updates, original);
 		
 		assertEquals("changedRole", original.getRole());
-		assertEquals("content", original.getContent());
+		assertEquals("Known failure - fix pending.", "content", original.getContent());
 		assertEquals("subref", original.getSubRef());
 	}
 	
