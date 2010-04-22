@@ -8,11 +8,6 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 	
 	<import resource="classpath:lexevsCache.xml"/>
-	
-<!--	 <bean id="entityCompassDao" class="org.lexevs.dao.index.compass.CompassEntityDao">-->
-<!--     	 <property name="compass" ref="compass" />-->
-<!--     	 <property name="compassSearchHelper" ref="compassSearchHelper" />-->
-<!--   	</bean>-->
   
 	 <bean id="sqlMap"
           class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
@@ -196,21 +191,26 @@
 		<property name="valueSetDefinitionService" ref="valueSetDefinitionService"/>
 		<property name="vsPropertyService" ref="vsPropertyService"/>
 		<property name="daoCallbackService" ref="daoManagerDaoCallbackService"/>
+		<property name="codedNodeGraphService" ref="codedNodeGraphService"/>
 	</bean>
 	
-	<bean id="abstractService" abstract="true">
+	<bean id="abstractService" class="org.lexevs.dao.database.service.event.DatabaseServiceEventSupport"
+		abstract="true">
 		<property name="daoManager" ref="daoManager"/>
+		<property name="logger" ref="loggerFactory"/>
+		<property name="myClassLoader" ref="myClassLoader"/>
 	</bean>
 	
 	<bean id="daoManagerDaoCallbackService" 
-		class="org.lexevs.dao.database.service.daocallback.DaoManagerDaoCallbackService"
-		parent="abstractService" />
-	
-	<bean id="authoringService" 
-		class="org.lexevs.dao.database.service.version.VersionableEventAuthoringService"
-		parent="abstractService">
-		<property name="codingSchemeService" ref="codingSchemeService"/>
+		class="org.lexevs.dao.database.service.daocallback.DaoManagerDaoCallbackService">
+		<property name="daoManager" ref="daoManager"/>
 	</bean>
+	
+<!--	<bean id="authoringService" -->
+<!--		class="org.lexevs.dao.database.service.version.VersionableEventAuthoringService"-->
+<!--		parent="abstractService">-->
+<!--		<property name="codingSchemeService" ref="codingSchemeService"/>-->
+<!--	</bean>-->
 	
 	<bean id="codingSchemeService" 
 		class="org.lexevs.dao.database.service.codingscheme.VersionableEventCodingSchemeService"
@@ -247,6 +247,10 @@
 		</property>
 		<property name="propertyService" ref="propertyService"/>
 	</bean>
+	
+	<bean id="codedNodeGraphService"
+		class="org.lexevs.dao.database.service.codednodegraph.VersionableEventCodedNodeGraphService"
+		parent="abstractService"/>
 	
 	<bean id="associationService" 
 		class="org.lexevs.dao.database.service.association.VersionableEventAssociationService"
