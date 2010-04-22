@@ -41,7 +41,9 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -137,6 +139,15 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	@Override
 	public void loadValueSetDefinition(String xmlFileLocation,
 			boolean failOnAllErrors) throws LBException {
+		LexGrid_Loader loader = new LexGridMultiLoaderImpl();
+        try {
+        	md_.info("Loading value set definitions from file : " + xmlFileLocation);
+			loader.load(new URI(xmlFileLocation));
+			md_.info("Finished loading value set definitions");
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//TODO
 //		getLogger().logMethod(new Object[] { xmlFileLocation });
 //		VSDXMLread vdXML;
