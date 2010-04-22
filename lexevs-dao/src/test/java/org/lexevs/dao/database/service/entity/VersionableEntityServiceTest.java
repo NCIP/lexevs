@@ -110,7 +110,11 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		
 		entity.getEntityDescription().setContent("post-update");
 		
-		service.updateEntity("uri", "v1", entity);
+		try {
+			service.updateEntity("uri", "v1", entity);
+		} catch (Exception e) {
+			fail("Expected -- throwing Exception on update with no Entity Type.");
+		}
 
 		Entity moddedEntity = service.getEntity("uri", "v1", "c1", "ns");
 		
