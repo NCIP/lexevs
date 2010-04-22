@@ -28,6 +28,7 @@ import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.apache.commons.lang.ClassUtils;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
@@ -54,19 +55,6 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_ERROR)
 	public void insertEntity(String codingSchemeUri, String version,
 			Entity entity) {
-		String codingSchemeId = this.getDaoManager().
-			getCodingSchemeDao(codingSchemeUri, version).
-			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
-		
-		this.getDaoManager().
-			getEntityDao(codingSchemeUri, version).
-				insertEntity(codingSchemeId, entity, true);
-	}
-	
-	@Transactional
-	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_ERROR)
-	public void insertEntity(String codingSchemeUri, String version,
-			AssociationEntity entity) {
 		String codingSchemeId = this.getDaoManager().
 			getCodingSchemeDao(codingSchemeUri, version).
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
@@ -212,6 +200,23 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		
 		return this.getDaoManager().
 			getEntityDao(codingSchemeUri, version).getEntityByCodeAndNamespace(codingSchemeId, entityCode, entityCodeNamespace);
+	}
+	
+	@Transactional
+	public AssociationEntity getAssociationEntity(String codingSchemeUri, String version,
+			String entityCode, String entityCodeNamespace) {
+		Entity associationEntity = this.getEntity(codingSchemeUri, version, entityCode, entityCodeNamespace);
+		
+		if(associationEntity == null) {return null;}
+		
+		boolean isAssociationEntity = 
+			ClassUtils.isAssignable(associationEntity.getClass(), AssociationEntity.class);
+		
+		if(isAssociationEntity) {
+			return (AssociationEntity)associationEntity;
+		} else {
+			throw new IllegalArgumentException("Code: " + entityCode + " Namespace: " + entityCodeNamespace + " is not an AssociationEntity.");
+		}
 	}
 
 	@Override

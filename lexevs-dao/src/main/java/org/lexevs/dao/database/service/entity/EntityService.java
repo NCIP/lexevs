@@ -47,11 +47,6 @@ public interface EntityService {
 			String version, 
 			Entity entity);
 	
-	public void insertEntity(
-			String codingSchemeUri, 
-			String version,
-			AssociationEntity entity);
-	
 	/**
 	 * Gets the entity count.
 	 * 
@@ -75,6 +70,12 @@ public interface EntityService {
 	 * @return the entity
 	 */
 	public Entity getEntity(
+			String codingSchemeUri, 
+			String version, 
+			String entityCode,
+			String entityCodeNamespace);
+	
+	public Entity getAssociationEntity(
 			String codingSchemeUri, 
 			String version, 
 			String entityCode,
@@ -127,11 +128,6 @@ public interface EntityService {
 			String codingSchemeUri, 
 			String version,
 			Entity entity);
-	
-	public void updateEntity(
-			String codingSchemeUri, 
-			String version,
-			AssociationEntity entity);
 	
 	public void revise(String codingSchemeUri, String version,
 			Entity revisedEntity) throws LBException;
