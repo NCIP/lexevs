@@ -615,10 +615,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 	
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
 			"values ('eguid', 'csguid', 'ecode', 'ens')");
-		
-		template.execute("Insert into associationentity (associationEntityGuid, entityGuid, forwardName, reverseName, isNavigable, isTransitive) " +
-			"values ('aeguid', 'eguid', 'afn', 'arn', 'true', 'false')");
-		
+	
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
 			"values ('eguid', 'association')");
 			
@@ -639,9 +636,6 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 	
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
 			"values ('eguid', 'csguid', 'ecode', 'ens')");
-		
-		template.execute("Insert into associationentity (associationEntityGuid, entityGuid, forwardName, reverseName, isNavigable, isTransitive) " +
-			"values ('aeguid', 'eguid', 'afn', 'arn', 'true', 'false')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
 			"values ('eguid', 'instance')");
@@ -737,9 +731,6 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
 			"values ('eguid', 'csguid', 'ecode', 'ens')");
 		
-		template.execute("Insert into associationentity (associationEntityGuid, entityGuid, forwardName, reverseName, isNavigable, isTransitive) " +
-			"values ('aeguid', 'eguid', 'afn', 'arn', 'true', 'false')");
-
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
 			"values ('eguid', 'association')");
 			
