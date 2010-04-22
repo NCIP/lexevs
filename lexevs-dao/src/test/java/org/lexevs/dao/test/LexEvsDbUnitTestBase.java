@@ -76,6 +76,14 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
         System.setProperty("LG_CONFIG_FILE", "src/test/resources/lbconfig.props");
     }
 
+    @Test
+    public void checkSetUp(){
+    	assertNotNull(dataSource);
+    	assertNotNull(prefixResolver);
+    	assertNotNull(lexEvsDatabaseOperations);
+    	assertNotNull(methodCachingProxy);
+    }
+    
 	/* (non-Javadoc)
 	 * @see org.dbunit.DatabaseTestCase#setUp()
 	 */
