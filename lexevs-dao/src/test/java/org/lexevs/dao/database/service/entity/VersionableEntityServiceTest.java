@@ -27,10 +27,14 @@ import junit.framework.Assert;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.relations.AssociationEntity;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
+import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.utility.RegistryUtility;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * The Class VersionableEntityServiceTest.
@@ -46,6 +50,9 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 	/** The coding schemeservice. */
 	@Resource
 	private CodingSchemeService codingSchemeservice;
+	
+	@Resource
+	private Registry registry;
 
 	
 	/**
@@ -110,6 +117,59 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		Assert.assertEquals("post-update", moddedEntity.getEntityDescription().getContent());
 		
 		service.setDatabaseServiceEventListeners(listeners);
+	}
+	
+	@Test
+	public void getAssociationEntity() throws Exception{
+		List<DatabaseServiceEventListener> listeners = service.getDatabaseServiceEventListeners();
+		service.getDatabaseServiceEventListeners().clear();
+
+		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
+
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+	
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, forwardName, reverseName, isNavigable, isTransitive) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens', 'forwardName', 'reverseName', true, true)");
+			
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('eguid', 'association')");
+		
+		AssociationEntity entity = service.getAssociationEntity("csuri", "csversion", "ecode", "ens");
+		assertNotNull(entity);
+		
+		assertEquals(entity.getEntityCode(), "ecode");
+		assertEquals(entity.getEntityCodeNamespace(), "ens");
+		assertEquals(entity.getForwardName(), "forwardName");
+		assertEquals(entity.getReverseName(), "reverseName");
+		assertTrue(entity.getIsNavigable());
+		assertTrue(entity.getIsTransitive());
+		
+		service.setDatabaseServiceEventListeners(listeners);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void getAssociationEntityWithWrongType() throws Exception{
+		List<DatabaseServiceEventListener> listeners = service.getDatabaseServiceEventListeners();
+		service.getDatabaseServiceEventListeners().clear();
+
+		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
+
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		service.setDatabaseServiceEventListeners(listeners);
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+	
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('eguid', 'someOtherType')");
+		
+		AssociationEntity entity = service.getAssociationEntity("csuri", "csversion", "ecode", "ens");	
 	}
 	
 	/**

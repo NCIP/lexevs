@@ -224,8 +224,13 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 				assertTrue(rs.getString(10).equals("testing"));
 				assertTrue(rs.getTimestamp(11).equals(effectiveDate));
 				assertTrue(rs.getTimestamp(12).equals(expirationDate));
-				
 				String entryStateId = rs.getString(13);
+				assertEquals("aForwardName", rs.getString(14));
+				assertEquals("aReverseName", rs.getString(15));
+				assertEquals(true, rs.getBoolean(16));
+				assertEquals(true, rs.getBoolean(17));
+				
+				
 				
 				String[] keys = new String[]{id, entryStateId};
 				return keys;
@@ -256,20 +261,6 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				assertEquals(rs.getString(1), id);
 				assertEquals(rs.getString(2), "type");
-				
-				return null;
-			}
-		});
-		
-		template.queryForObject("Select * from associationentity", new RowMapper(){
-
-			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
-				assertNotNull(rs.getString(1));
-				assertEquals(rs.getString(2), keys[0]);
-				assertEquals(rs.getString(3), "aForwardName");
-				assertEquals(rs.getString(4), "aReverseName");
-				assertEquals(true, rs.getBoolean(5));
-				assertEquals(true, rs.getBoolean(6));
 				
 				return null;
 			}
