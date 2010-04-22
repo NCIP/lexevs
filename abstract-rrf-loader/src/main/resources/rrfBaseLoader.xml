@@ -218,6 +218,7 @@
 		<beans:property name="scriptType" value="create"/>
 		<beans:property name="databaseType" ref="databaseTypeFactory"/>
 		<beans:property name="creationScriptPrefix" value="sql/staging/mrconsoStaging-schema-"/>
+		<beans:property name="oracleName" value="oracle10g"/>
 	</beans:bean>
 	
 	 
