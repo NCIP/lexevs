@@ -18,11 +18,13 @@
  */
 package org.lexevs.dao.index.indexer;
 
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
@@ -84,8 +86,13 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 					entity.getEntityCodeNamespace(),
 					indexName);
 			
+			if(entity.getAllProperties().length == 0) {
+				entity.addPresentation(
+						getDefaultPresentation(entity));
+			}
 			for(Property prop : entity.getAllProperties()) {
 				this.indexEntity(codingSchemeUri, codingSchemeVersion, entity, prop, indexName);
+
 			}
 			
 			this.addEntityBoundryDocument(
@@ -99,6 +106,17 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	protected Presentation getDefaultPresentation(Entity entity) {
+		Presentation defaultPresentation = new Presentation();
+		defaultPresentation.setPropertyType(PropertyType.PRESENTATION.toString());
+		defaultPresentation.setPropertyName(PropertyType.PRESENTATION.toString());
+		defaultPresentation.setValue(
+				DaoUtility.createText(
+						DaoUtility.getEntityDescriptionText(entity.getEntityDescription())));
+		
+		return defaultPresentation;
 	}
 
 	/**
@@ -136,7 +154,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 			}
 			repForm = pres.getRepresentationalForm();
 		}
-		
+
 		this.addEntity(
 				systemResourceService.
 					getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, codingSchemeVersion), 
