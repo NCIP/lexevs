@@ -178,13 +178,8 @@ public class XMLDaoServiceAdaptor {
         //revisionService.insertRevision(codingSchemeUri, version, release );
     }
     
-    public void storeValueSet(ValueSetDefinition valueSet, String systemReleaseURI, Mappings mappings) {
-        try {
-            valueSetService.insertValueSetDefinition(valueSet, systemReleaseURI, mappings);
-        } catch (LBException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    public void storeValueSet(ValueSetDefinition valueSet, String systemReleaseURI, Mappings mappings) throws LBException {
+        valueSetService.insertValueSetDefinition(valueSet, systemReleaseURI, mappings);
     }
     
     public void storePickList(PickListDefinition picklist, String systemReleaseURI, Mappings mappings) throws LBParameterException, LBException {

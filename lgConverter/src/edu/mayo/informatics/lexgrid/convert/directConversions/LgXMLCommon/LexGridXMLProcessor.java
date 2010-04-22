@@ -22,7 +22,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -30,25 +29,20 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
-import org.lexevs.logging.Logger;
 
 /**
  * @author <A HREF="mailto:scott.bauer@mayo.edu">Scott Bauer </A>
  * 
  */
 public class LexGridXMLProcessor {
-
-    private static LgMessageDirectorIF messages_;
 
     private static final String CODING_SCHEME_ENTRY_POINT = "codingScheme";
     private static final String REVISION_ENTRY_POINT = "revision";
@@ -176,6 +170,7 @@ public class LexGridXMLProcessor {
                 umr.setValidation(validateXML);
             }
             listener.setPropertiesPresent(setPropertiesFlag(path));
+            listener.setMessages_(messages);
             umr.setUnmarshalListener(listener);
             umr.setClass(SystemRelease.class);
             umr.unmarshal(in);
@@ -327,7 +322,6 @@ public class LexGridXMLProcessor {
      * @param args
      */
     public static void main(String[] args) {
-        messages_ = new Logger();
         System.out.println("Parsing content from " + args[0] + "...");
 
         try {

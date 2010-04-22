@@ -20,10 +20,13 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.codingSchemes.CodingSchemes;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationPredicate;
+import org.LexGrid.valueSets.PickListDefinition;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.SystemRelease;
 import org.castor.xml.UnmarshalListener;
 import org.mayo.edu.lgModel.LexGridBase;
@@ -45,6 +48,8 @@ public class LgSystemReleaseListener implements UnmarshalListener {
     private AssociationPredicate currentPredicate = new AssociationPredicate();
     private XMLDaoServiceAdaptor serviceAdaptor = null;
     private CodingScheme[] codingSchemes = null;
+    private LgMessageDirectorIF messages_;
+    
     /**
      * 
      */
@@ -142,7 +147,7 @@ public class LgSystemReleaseListener implements UnmarshalListener {
         System.out.println("fieldName:" + fieldName);
         System.out.println("parent: " + parent.getClass().getSimpleName());
         System.out.println("child: " + child.getClass().getSimpleName());
-
+        
         if (!isSystemReleaseSet && UnMarshallingLogic.isSytemRelease(parent, child)) {
             systemRelease = LexGridElementProcessor.processSystemReleaseMetadata(parent);
             isSystemReleaseSet = true;
@@ -169,25 +174,48 @@ public class LgSystemReleaseListener implements UnmarshalListener {
             currentValueSetMappings = LexGridElementProcessor.processValueSetMappings(serviceAdaptor, parent, child);
         }
         if (UnMarshallingLogic.isValueSet(parent, child)) {
-            LexGridElementProcessor.processValueSet(serviceAdaptor, parent, child, currentValueSetMappings,
-                    systemRelease.getReleaseURI());
+            String vsdURI = ((ValueSetDefinition) child).getValueSetDefinitionURI();
+            messages_.info("Loading value set definition uri : " + vsdURI);
+            try {
+                LexGridElementProcessor.processValueSet(serviceAdaptor, parent, child, currentValueSetMappings,
+                        systemRelease.getReleaseURI());
+            } catch (LBException e) {
+                messages_.error("Error loading VSD : " + vsdURI, e);
+                e.printStackTrace();                
+            }
         }
         if (UnMarshallingLogic.isPickListMappings(parent, child)) {
             currentPickListMappings = LexGridElementProcessor.processPickListMappings(serviceAdaptor, parent, child);
         }
         if (UnMarshallingLogic.isPickListDefinition(parent, child)) {
-            try {
+            String pickListId = ((PickListDefinition) child).getPickListId();
+            try {                
+                messages_.info("Loading pick list definition id : " + pickListId);
                 LexGridElementProcessor.processPickListDefinition(serviceAdaptor, child, currentPickListMappings,
                         systemRelease.getReleaseURI());
             } catch (LBParameterException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                messages_.error("Error loading PickList : " + pickListId, e);
+                e.printStackTrace();  
             } catch (LBException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                messages_.error("Error loading PickList : " + pickListId, e);
+                e.printStackTrace();  
             }
         }
 
+    }
+
+    /**
+     * @return the messages_
+     */
+    public LgMessageDirectorIF getMessages_() {
+        return messages_;
+    }
+
+    /**
+     * @param messages the messages_ to set
+     */
+    public void setMessages_(LgMessageDirectorIF messages) {
+        messages_ = messages;
     }
 
 }

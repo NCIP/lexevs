@@ -141,9 +141,10 @@ public class LexGridElementProcessor {
      * @param child
      * @param mappings
      * @param systemReleaseURI
+     * @throws LBException 
      */
     public static void processValueSet(XMLDaoServiceAdaptor service, Object parent, Object child, Mappings mappings,
-            String systemReleaseURI) {
+            String systemReleaseURI) throws LBException {
         ValueSetDefinition valueSet = (ValueSetDefinition) child;
         service.storeValueSet(valueSet, systemReleaseURI, mappings);
     }
