@@ -168,14 +168,7 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 			// TODO Auto-generated method stub (IMPLEMENT!)
 			throw new UnsupportedOperationException();
 		}
-
-		@Override
-		public String insertEntity(String codingSchemeId,
-				AssociationEntity entity, boolean cascade) {
-			// TODO Auto-generated method stub (IMPLEMENT!)
-			throw new UnsupportedOperationException();
-		}
-
+		
 		@Override
 		public Entity getEntityByUId(String codingSchemeId, String entityId) {
 			// TODO Auto-generated method stub (IMPLEMENT!)
