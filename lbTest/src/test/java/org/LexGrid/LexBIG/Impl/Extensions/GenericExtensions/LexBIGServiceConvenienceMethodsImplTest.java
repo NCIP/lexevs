@@ -91,6 +91,18 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	assertTrue(assocCode.equals("AssocEntity"));
     }
     
+    public void testGetAssociationNameForDirectionalNameReverseName() throws Exception {
+    	String[] assocNames = lbscm.getAssociationNameForDirectionalName(AUTO_SCHEME, null, "GoingForward");
+    	assertEquals(1, assocNames.length);
+    	assertEquals("hasSubtype", assocNames[0]);
+    }
+    
+    public void testGetAssociationNameForDirectionalNameForwardName() throws Exception {
+    	String[] assocNames = lbscm.getAssociationNameForDirectionalName(AUTO_SCHEME, null, "GoingBackward");
+    	assertEquals(1, assocNames.length);
+    	assertEquals("hasSubtype", assocNames[0]);
+    }
+    
     public void testGetAssociationNameFromAssociationCodeWrong() throws Exception {
     	try {
 			lbscm.getAssociationNameFromAssociationCode(AUTO_SCHEME, null, "A1WRONG");
