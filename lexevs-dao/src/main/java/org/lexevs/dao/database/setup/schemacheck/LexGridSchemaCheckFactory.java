@@ -63,6 +63,10 @@ public class LexGridSchemaCheckFactory implements FactoryBean, InitializingBean 
 			schemaCheck = new CountBasedLexGridSchemaCheck(dataSource, systemVariables);
 		}
 		
+		if(databaseType.equals(DatabaseType.ORACLE)){
+			schemaCheck = new CountBasedLexGridSchemaCheck(dataSource, systemVariables);
+		}
+		
 		//TODO: Add Oracle, DB2, etc
 		
 		Assert.notNull(schemaCheck);
