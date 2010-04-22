@@ -20,6 +20,9 @@
 	 	<beans:property name="concurrencyLimit" value="150"/> 
 	</beans:bean>
 	
+	<beans:bean id="syncTaskExecutor" 
+		class="org.springframework.core.task.SyncTaskExecutor"> 
+	</beans:bean>
 	<!--
 	<beans:bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" destroy-method="shutdown">
 		<beans:property name="maxPoolSize" value="100" />
@@ -79,6 +82,7 @@
 		<beans:property name="scriptType" value="create"/>
 		<beans:property name="databaseType" ref="databaseTypeFactory"/>
 		<beans:property name="creationScriptPrefix" value="org\springframework\batch\core\schema-"/>
+		<beans:property name="oracleName" value="oracle10g"/>
 	</beans:bean>
 	
 	<beans:bean id="jobRepositoryDropScriptFactory"
@@ -86,6 +90,7 @@
 		<beans:property name="scriptType" value="drop"/>
 		<beans:property name="databaseType" ref="databaseTypeFactory"/>	
 		<beans:property name="dropScriptPrefix" value="org\springframework\batch\core\schema-drop-"/>
+		<beans:property name="oracleName" value="oracle10g"/>
 	</beans:bean>
 		
 	<beans:bean id="jobRepositoryManager" parent="loggingBean"
