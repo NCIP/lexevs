@@ -76,6 +76,7 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.exceptions.InternalException;
@@ -444,6 +445,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         getLogger().logMethod(
                 new Object[] { sortByProperty, filterOptions, restrictToProperties, restrictToPropertyTypes,
                         resolveObjects, new Integer(maxToReturn) });
+        LexEvsServiceLocator serviceLocator = LexEvsServiceLocator.getInstance();
+        
         // Currently, the supported sortByProperties are:
         // matchToQuery, code, codeSystem, entityDescription, conceptStatus,
         // isActive.  However - matchToQuery can not be combined with entityDescription,
@@ -479,9 +482,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                                 + " results skipped");
             }
 
-            if (max > ResourceManager.instance().getSystemVariables().getMaxResultSize()) {
+            if (max > serviceLocator.getSystemResourceService().getSystemVariables().getMaxResultSize()) {
                 throw new LBParameterException("The number of results exceeded the system limit of "
-                        + ResourceManager.instance().getSystemVariables().getMaxResultSize()
+                        + serviceLocator.getSystemResourceService().getSystemVariables().getMaxResultSize()
                         + ".  You will need to set the maxToReturn flag, or use the iterator resolve method.");
             }
 
@@ -495,8 +498,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                 CodeToReturn code = codeToReturnItr.next();
                 ResolvedConceptReference rcr = new ResolvedConceptReference();
                 rcr.setCodingSchemeName(
-                     ResourceManager.instance()
-                        .getExternalCodingSchemeNameForUserCodingSchemeNameOrId(code.getUri(), code.getVersion()));
+                        serviceLocator.getSystemResourceService().
+                            getInternalCodingSchemeNameForUserCodingSchemeName(code.getUri(), code.getVersion()));
                 rcr.setCodingSchemeURI(code.getUri());
                 rcr.setCodingSchemeVersion(code.getVersion());
                 rcr.setCode(code.getCode());
@@ -507,23 +510,16 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                 rcr.setEntityType(code.getEntityTypes());
                 
                 // Only attach the fully resolved object if instructed...
-                try {
-                    if (resolveObjects) {
-                        // Resolve and assign the item to the coded node reference.
-                        Entity resolvedEntity = buildCodedEntry(
-                            ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(code.getUri(), code.getVersion()),
+                if (resolveObjects) {
+                    // Resolve and assign the item to the coded node reference.
+                    Entity resolvedEntity = buildCodedEntry(
+                            code.getUri(), 
                             code.getVersion(),
                             code.getCode(),
                             code.getNamespace(),
                             restrictToProperties,
                             restrictToPropertyTypes);
-                        rcr.setEntity(resolvedEntity);
-                    }
-                } catch (LBParameterException e) {
-                    // this should only happen when the codedNodeSet was
-                    // constructed from a graph, and if a source or target concept
-                    // in the graph is not available in the system.
-                    rcr.setEntity(null);
+                    rcr.setEntity(resolvedEntity);
                 }
 
                 // these (two) stay null by design
@@ -597,16 +593,12 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     /*
      * method to turn a CodedNodeHolder into an Entity object.
      */
-    private Entity buildCodedEntry(String internalCodingSchemeName, String internalVersionString, String code, String namespace,
+    private Entity buildCodedEntry(String uri, String version, String code, String namespace,
             LocalNameList restrictToProperties, PropertyType[] restrictToPropertyTypes) throws LBInvocationException {
-        try {
-            // RestrictionImplementations.buildCodedEntry(codingSchemeName,
-            // version, conceptCode);
-            return SQLImplementedMethods.buildCodedEntry(internalCodingSchemeName, internalVersionString, code, namespace,
-                    restrictToProperties, restrictToPropertyTypes);
-        } catch (InternalException e) {
-            throw new LBInvocationException("Unexpected Internal Error", e.getLogId());
-        }
+        
+            EntityService entityService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
+            
+            return entityService.getEntity(uri, version, code, namespace);
     }
 
     /**
