@@ -122,8 +122,6 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	 */
 	public List<? extends Entity> getAllEntitiesOfCodingScheme(String codingSchemeUId, int start, int pageSize);
 
-	public String insertEntity(String codingSchemeUId, AssociationEntity entity, boolean cascade);
-
 	void updateEntityVersionableAttrib(String codingSchemeUId,
 			String entityUId, Entity entity);
 

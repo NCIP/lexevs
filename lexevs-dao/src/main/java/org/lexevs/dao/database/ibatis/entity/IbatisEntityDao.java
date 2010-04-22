@@ -255,22 +255,6 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				cascade);
 	}
 	
-	@Override
-	public String insertEntity(String codingSchemeId, AssociationEntity entity,
-			boolean cascade) {
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		String entityId = this.doInsertEntity(
-				prefix, 
-				codingSchemeId, 
-				entity, 
-				this.getNonBatchTemplateInserter(), 
-				cascade);
-		
-		ibatisAssociationDao.insertAssociationEntity(codingSchemeId, entityId, entity);
-		
-		return entityId;
-	}
-	
 	/**
 	 * Insert entity.
 	 * 
