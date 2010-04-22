@@ -36,11 +36,8 @@ public class ScriptFactory implements InitializingBean, FactoryBean{
 	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
 	 */
 	public enum ScriptType {
-		
-		/** The create. */
 		create, 
- /** The create. */
-		drop    /** The drop. */
+		drop 
 		};
 	
 	/** The creation script prefix. */
@@ -67,6 +64,12 @@ public class ScriptFactory implements InitializingBean, FactoryBean{
 	private static String HSQL_NAME = "hsqldb";
 	private static String DB2_NAME = "db2";
 	
+	private String oracleName = ORACLE_NAME;
+	private String mysqlName = MYSQL_NAME;
+	private String postgreSqlName = POSTGRES_NAME;
+	private String hsqlName = HSQL_NAME;
+	private String db2Name = DB2_NAME;
+
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.FactoryBean#getObject()
 	 */
@@ -98,15 +101,15 @@ public class ScriptFactory implements InitializingBean, FactoryBean{
 		
 		String dbType = null;
 		if(databaseType.equals(DatabaseType.MYSQL)){
-			dbType = MYSQL_NAME;
+			dbType = mysqlName;
 		} else if (databaseType.equals(DatabaseType.HSQL)){
-			dbType = HSQL_NAME;
+			dbType = hsqlName;
 		} else if (databaseType.equals(DatabaseType.ORACLE)){
-			dbType = ORACLE_NAME;
+			dbType = oracleName;
 		} else if (databaseType.equals(DatabaseType.DB2)){
-			dbType = DB2_NAME;
+			dbType = db2Name;
 		} else if (databaseType.equals(DatabaseType.POSTGRES)){
-			dbType = POSTGRES_NAME;
+			dbType = postgreSqlName;
 		} else {
 			throw new RuntimeException("Database: " + databaseType.toString() + " is not supported.");
 		}
@@ -208,5 +211,45 @@ public class ScriptFactory implements InitializingBean, FactoryBean{
 	 */
 	public void setScriptsuffix(String scriptsuffix) {
 		this.scriptsuffix = scriptsuffix;
+	}
+	
+	public String getOracleName() {
+		return oracleName;
+	}
+
+	public void setOracleName(String oracleName) {
+		this.oracleName = oracleName;
+	}
+
+	public String getMysqlName() {
+		return mysqlName;
+	}
+
+	public void setMysqlName(String mysqlName) {
+		this.mysqlName = mysqlName;
+	}
+
+	public String getPostgreSqlName() {
+		return postgreSqlName;
+	}
+
+	public void setPostgreSqlName(String postgreSqlName) {
+		this.postgreSqlName = postgreSqlName;
+	}
+
+	public String getHsqlName() {
+		return hsqlName;
+	}
+
+	public void setHsqlName(String hsqlName) {
+		this.hsqlName = hsqlName;
+	}
+
+	public String getDb2Name() {
+		return db2Name;
+	}
+
+	public void setDb2Name(String db2Name) {
+		this.db2Name = db2Name;
 	}
 }
