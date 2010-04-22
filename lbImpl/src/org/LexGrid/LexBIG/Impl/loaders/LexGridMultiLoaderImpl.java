@@ -95,12 +95,10 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
         StreamingXMLToSQL loader = new StreamingXMLToSQL();
         
         CodingScheme[] codingScheme = loader.load(
-                this.getResourceUri(), 
-                this.getLogger(), 
+                this.getResourceUri(),
+                this.getMd_(),
                 this.getOptions().getBooleanOption(LexGridMultiLoaderImpl.VALIDATE).getOptionValue());
    
-        this.getStatus().setState(ProcessState.COMPLETED);
-        this.getStatus().setErrorsLogged(false);
         return this.constructVersionPairsFromCodingSchemes(codingScheme);
     }
 
@@ -130,7 +128,22 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
                 
                 //Must be loading a value domain or picklist if this condition is true ... exit
                 if(loadedCodingSchemes[0].getUrn()== LexGridXMLProcessor.NO_SCHEME_URL 
-                        &&  loadedCodingSchemes[0].getVersion()== LexGridXMLProcessor.NO_SCHEME_VERSION){return;}
+                        &&  loadedCodingSchemes[0].getVersion()== LexGridXMLProcessor.NO_SCHEME_VERSION){
+                    
+                    if (getStatus().getErrorsLogged() != null && !getStatus().getErrorsLogged().booleanValue()) {
+
+                        getMd_().info("Finished loading the DB");
+                        Snapshot snap = SimpleMemUsageReporter.snapshot();
+                        getMd_().info("Read Time : " + SimpleMemUsageReporter.formatTimeDiff(snap.getTimeDelta(null))
+                                + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage())
+                                + " Heap Delta:" + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
+
+                        getStatus().setState(ProcessState.COMPLETED);
+                        getMd_().info("Load process completed without error");
+                    }
+                    return;
+                }
+                
                 setCodingSchemeReferences(urnVersionPairToAbsoluteCodingSchemeVersionReference(loadedCodingSchemes));
 
                 String[] codingSchemeNames = new String[loadedCodingSchemes.length];
