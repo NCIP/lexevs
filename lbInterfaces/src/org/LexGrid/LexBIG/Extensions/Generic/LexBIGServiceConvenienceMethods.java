@@ -744,6 +744,21 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	public boolean isReverseName(String codingScheme,
 			CodingSchemeVersionOrTag versionOrTag, String directionalName)
 			throws LBException;
+	
+	/**
+	 * Gets the association names that contain a directional name.
+	 * 
+	 * @param codingScheme
+	 *            The local name or URN of the coding scheme.
+	 * @param versionOrTag
+	 *            The assigned tag/label or absolute version identifier of the
+	 *            coding scheme.
+	 * @param directionalName
+	 *            The directionalName string
+	 * @throws LBException
+	 */
+	public String[] getAssociationNameForDirectionalName(String codingScheme,
+	            CodingSchemeVersionOrTag versionOrTag, String directionalName) throws LBException;
 
 	/**
 	 * Return a representation of the association between the concepts with the

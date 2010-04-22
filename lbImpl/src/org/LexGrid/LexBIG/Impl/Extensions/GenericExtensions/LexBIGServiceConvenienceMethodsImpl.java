@@ -352,6 +352,40 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         
         throw new LBParameterException("Cound not find an AssociationName for EntityCode: " + entityCode);
     }
+    
+    @LgClientSideSafe
+    public String[] getAssociationNameForDirectionalName(String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag, String directionalName) throws LBException {
+        List<String> returnList = new ArrayList<String>();
+        
+        CodingScheme resolvedCodingScheme = this.getCodingScheme(codingScheme, versionOrTag);
+        
+        for(SupportedAssociation supportedAssociation :
+            resolvedCodingScheme.getMappings().getSupportedAssociation()) {
+            
+            String forwardName = this.doGetAssociationDirectionalName(
+                    codingScheme, 
+                    versionOrTag, 
+                    supportedAssociation.getLocalId(), 
+                    DirectionalName.FORWARD);
+            
+            //check the forward name
+            if(directionalName.equals(forwardName)) {
+                returnList.add(supportedAssociation.getLocalId());
+            } else {
+                //if not, check the reverse name
+                String reverseName = this.doGetAssociationDirectionalName(
+                        codingScheme, 
+                        versionOrTag, 
+                        supportedAssociation.getLocalId(), 
+                        DirectionalName.REVERSE);
+                if(directionalName.equals(reverseName)) {
+                    returnList.add(supportedAssociation.getLocalId());
+                } 
+            }
+        }
+        return returnList.toArray(new String[returnList.size()]);
+    }
 
     @LgClientSideSafe
     public String getAssociationForwardName(String associationName, String codingScheme,
@@ -418,7 +452,10 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                         containingCodingScheme));
 
         ResolvedConceptReferenceList list = cns.resolveToList(null, null, null, -1);
-        Assert.state(list.getResolvedConceptReferenceCount() == 1);
+        
+        if(list.getResolvedConceptReferenceCount() == 0) {
+            return null;
+        }
 
         AssociationEntity associationEntity = 
             (AssociationEntity)list.getResolvedConceptReference(0).getEntity();
