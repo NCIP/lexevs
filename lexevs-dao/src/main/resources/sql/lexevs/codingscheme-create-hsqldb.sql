@@ -1,13 +1,3 @@
-CREATE TABLE @PREFIX@associationEntity ( 
-	associationEntityGuid varchar(36) NOT NULL,
-	entityGuid varchar(36) NOT NULL,
-	forwardName varchar(100),
-	reverseName varchar(100),
-	isNavigable char(1),
-	isTransitive char(1),
-	entryStateGuid varchar(36)
-)
-;
 
 CREATE TABLE @PREFIX@associationPredicate ( 
 	associationPredicateGuid varchar(36) NOT NULL,
@@ -224,12 +214,6 @@ CREATE TABLE @PREFIX@relation (
 )
 ;
 
-
-ALTER TABLE @PREFIX@associationEntity ADD CONSTRAINT PK_associationEntity 
-	PRIMARY KEY (associationEntityGuid)
-;
-
-
 ALTER TABLE @PREFIX@associationPredicate ADD CONSTRAINT PK_associationPredicate 
 	PRIMARY KEY (associationPredicateGuid)
 ;
@@ -386,11 +370,6 @@ ALTER TABLE @PREFIX@propertyMultiAttrib
 
 ALTER TABLE @PREFIX@relation
 	ADD CONSTRAINT UQ_relation_containerName UNIQUE (containerName)
-;
-
-ALTER TABLE @PREFIX@associationEntity ADD CONSTRAINT FK_associationEntity_entity 
-	FOREIGN KEY (entityGuid) REFERENCES @PREFIX@entity (entityGuid)
-ON DELETE CASCADE
 ;
 
 ALTER TABLE @PREFIX@associationPredicate ADD CONSTRAINT @PREFIX@FK_associationPredica_relation 
