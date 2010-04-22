@@ -48,74 +48,70 @@
 		</step>
 
 
-		<step id="loadHardcodedValues" next="doLoad" parent="listenerStep">
+		<step id="loadHardcodedValues" next="umlsLoadEntity" parent="listenerStep">
 			<tasklet ref="introspectiveHardcodedValuesTasklet" />
 		</step>
 
-		<split id="doLoad">
+		<step id="umlsLoadEntity" parent="listenerStep" next="doLoad">
+			<tasklet>
+				<chunk reader="mrconsoStagedReader" processor="umlsEntityListProcessor"
+					writer="entityWriter" commit-interval="100">
+				</chunk>
+			</tasklet>
+		</step>
+
+		<split id="doLoad" task-executor="taskExecutor">
+
 			<flow>
-				<step id="umlsLoadEntity" parent="listenerStep">
+				<step id="umlsLoadEntityAssnsToEntity" parent="listenerStep">
 					<tasklet>
-						<chunk reader="mrconsoStagedReader" processor="umlsEntityListProcessor"
-							writer="entityWriter" commit-interval="100">
+						<chunk reader="umlsForwardRelationNameMrrelSkippingReader"
+							processor="umlsRootNodeAddingEntityAssocToEntityListProcessor"
+							writer="associationSourceListWriter" commit-interval="100">
 						</chunk>
 					</tasklet>
 				</step>
-			</flow>
 
+			</flow>
 			<flow>
-				<split id="loadPropertiesAndAssociations" task-executor="taskExecutor">
+				<split id="loadPropertiesAndIndex">
 					<flow>
-						<step id="umlsLoadEntityAssnsToEntity" parent="listenerStep">
-							<tasklet>
-								<chunk reader="umlsForwardRelationNameMrrelSkippingReader"
-									processor="umlsRootNodeAddingEntityAssocToEntityListProcessor"
-									writer="associationSourceListWriter" commit-interval="100">
-								</chunk>
-							</tasklet>
-						</step>
-					
-					</flow>	
-					<flow>
-						<split id="loadPropertiesAndIndex">
+						<split id="loadProperties" task-executor="taskExecutor">
 							<flow>
-								<split id="loadProperties" task-executor="taskExecutor">
-									<flow>
-										<step id="umlsLoadMrstyProperties" parent="listenerStep">
-											<tasklet>
-												<chunk reader="mrstyGroupReader" processor="umlsMrstyListProcessor"
-													writer="entityPropertyListWriter" commit-interval="100">
-													<streams>
-														<stream ref="mrstyReader" />
-													</streams>
-												</chunk>
-											</tasklet>
-										</step>
-									</flow>
-									<flow>
-										<step id="umlsLoadDefinitionProperties" parent="listenerStep">
-											<tasklet>
-												<chunk reader="mrdefReader" processor="umlsDefinitionPropertyProcessor"
-													writer="entityPropertyWriter" commit-interval="100">
-													<streams>
-														<stream ref="mrdefReader" />
-													</streams>
-												</chunk>
-											</tasklet>
-										</step>
-									</flow>
-								</split>
+								<step id="umlsLoadMrstyProperties" parent="listenerStep">
+									<tasklet>
+										<chunk reader="mrstyGroupReader" processor="umlsMrstyListProcessor"
+											writer="entityPropertyListWriter" commit-interval="100">
+											<streams>
+												<stream ref="mrstyReader" />
+											</streams>
+										</chunk>
+									</tasklet>
+								</step>
 							</flow>
 							<flow>
-								<step id="index" parent="listenerStep">
-									<tasklet ref="indexingTasklet" />
+								<step id="umlsLoadDefinitionProperties" parent="listenerStep">
+									<tasklet>
+										<chunk reader="mrdefReader" processor="umlsDefinitionPropertyProcessor"
+											writer="entityPropertyWriter" commit-interval="100">
+											<streams>
+												<stream ref="mrdefReader" />
+											</streams>
+										</chunk>
+									</tasklet>
 								</step>
 							</flow>
 						</split>
 					</flow>
+					<flow>
+						<step id="index" parent="listenerStep">
+							<tasklet ref="indexingTasklet" />
+						</step>
+					</flow>
 				</split>
 			</flow>
 		</split>
+
 	</job>
 	
 	<!-- Partitioning -->
@@ -532,7 +528,7 @@
 	<beans:bean id="umlsCuiPropertyResolver"
 		class="org.lexgrid.loader.umls.processor.support.UmlsCuiPropertyResolver">
 		<beans:property name="individualIdSetter">
-			<beans:bean class="org.lexgrid.loader.data.property.NoopIndividualIdSetter"/>
+			<beans:bean class="org.lexgrid.loader.data.property.RandomGuidIndividualIdSetter"/>
 		</beans:property>
 		<beans:property name="entityCodeResolver">
 			<beans:bean
