@@ -30,6 +30,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
@@ -479,4 +480,11 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public List<SupportedProperty> getPropertyUriMapForPropertyType(
+			String codingSchemeId, String propertyType) {
+		throw new UnsupportedOperationException();
+	}
+
 }

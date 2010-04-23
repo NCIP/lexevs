@@ -18,9 +18,12 @@
  */
 package org.lexevs.dao.database.service.codingscheme;
 
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.versions.EntryState;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
@@ -125,6 +128,17 @@ public interface CodingSchemeService {
 	 */
 	public <T extends URIMap> boolean
 		 validatedSupportedAttribute(String codingSchemeUri, String codingSchemeVersion, String localId, Class<T> attributeClass);
+	
+	/**
+	 * Gets the property URI map that matches the propertyType.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param codingSchemeVersion the coding scheme version
+	 * @param propertyType type of property
+	 * 
+	 * @return the uri map
+	 */
+	public List<SupportedProperty> getSupportedPropertyForPropertyType(String codingSchemeUri, String codingSchemeVersion, String propertyType);
 
 	/**
 	 * revise the codingScheme.

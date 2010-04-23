@@ -24,6 +24,7 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.URIMap;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
@@ -183,6 +184,16 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	 * @return the uri map
 	 */
 	public <T extends URIMap> T getUriMap(String codingSchemeId, String localId, Class<T> uriMap);
+	
+	/**
+	 * Gets the property URI map that matches the propertyType.
+	 * 
+	 * @param codingSchemeId the coding scheme id
+	 * @param propertyType type of property
+	 * 
+	 * @return the uri map
+	 */
+	public List<SupportedProperty> getPropertyUriMapForPropertyType(String codingSchemeId, String propertyType);
 	
 	/**
 	 * Validate supported attribute.

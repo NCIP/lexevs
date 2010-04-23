@@ -18,6 +18,8 @@
  */
 package org.lexevs.dao.database.service.codingscheme;
 
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -25,6 +27,7 @@ import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.EntryState;
@@ -347,5 +350,16 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 
 	public void setPropertyService(PropertyService propertyService) {
 		this.propertyService = propertyService;
+	}
+
+	@Override
+	public List<SupportedProperty> getSupportedPropertyForPropertyType(
+			String codingSchemeUri, String codingSchemeVersion, String propertyType) {
+		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, codingSchemeVersion);
+		
+		String codingSchemeId = codingSchemeDao.
+		getCodingSchemeUIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
+		
+		return (List<SupportedProperty>) codingSchemeDao.getPropertyUriMapForPropertyType(codingSchemeId, propertyType);
 	}
 }

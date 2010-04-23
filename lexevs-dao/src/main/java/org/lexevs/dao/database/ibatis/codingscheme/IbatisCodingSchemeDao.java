@@ -28,6 +28,7 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -132,6 +133,8 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	
 	/** The GE t_ urima p_ coun t_ b y_ localnam e_ an d_ typ e_ sql. */
 	private static String GET_URIMAP_COUNT_BY_LOCALNAME_AND_TYPE_SQL = CODING_SCHEME_NAMESPACE + "getURIMapCountByLocalNameAndType";
+	
+	private static String GET_PROPERTY_URIMAP_FOR_PROPERTYTYPE_SQL = CODING_SCHEME_NAMESPACE + "getPropertyURIMapByPropertyType";
 	
 	private static String GET_CODING_SCHEME_BY_ID_AND_REVISION_GUID_SQL = CODING_SCHEME_NAMESPACE + "getCodingSchemeByIdAndRevisionId";
 	
@@ -891,5 +894,15 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 			return true;
 		
 		return false;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SupportedProperty> getPropertyUriMapForPropertyType(
+			String codingSchemeId, String propertyType) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		return (List<SupportedProperty>) this.getSqlMapClientTemplate().queryForList(	
+				GET_PROPERTY_URIMAP_FOR_PROPERTYTYPE_SQL, 
+				new PrefixedParameterTriple(prefix, codingSchemeId, SQLTableConstants.TBLCOLVAL_SUPPTAG_PROPERTY, propertyType));
 	}
 }
