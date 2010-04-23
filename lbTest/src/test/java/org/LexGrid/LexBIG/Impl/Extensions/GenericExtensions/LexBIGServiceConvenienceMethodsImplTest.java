@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions;
 
+import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.groboutils.junit.v1.MultiThreadedTestRunner;
@@ -28,6 +29,8 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.commonTypes.types.PropertyTypes;
+import org.LexGrid.naming.SupportedProperty;
 
 public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCase {
     final static String testID = "LexBIGServiceConvenienceMethodsImplTest";
@@ -121,6 +124,19 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
 			return;
 		}
 		fail("Should have thrown an exception.");
+    }
+    
+    /**
+     * fix for gForge # 24699. Identify supportedProperty by propertyType.
+     * @throws Exception
+     */
+    public void testGetSupportedPropertiesOfTypePresentation() throws Exception {
+    	List<SupportedProperty> props = lbscm.getSupportedPropertiesOfTypePresentation(AUTO_SCHEME, null);
+    	assertTrue(props.size() >= 1);
+    	for (SupportedProperty sp : props)
+    	{
+    		assertTrue(sp.getPropertyType().name().equalsIgnoreCase(PropertyTypes.PRESENTATION.name()));
+    	}
     }
     
     protected void runCacheThreadSaveTest(Map cache) throws Throwable {
