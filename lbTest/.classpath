@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="/lgSharedLibraries/apache/ant/ant-launcher-1.7.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgValueSets"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
