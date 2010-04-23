@@ -20,20 +20,16 @@ package org.LexGrid.LexBIG.Impl.pagedgraph;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
-import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
-import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
-import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.springframework.util.Assert;
 
@@ -42,16 +38,10 @@ import org.springframework.util.Assert;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class UnionGraph implements CodedNodeGraph {
+public class UnionGraph extends AbstractMultiGraph {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 8545723123536546421L;
-
-    /** The graph1. */
-    private CodedNodeGraph graph1;
-    
-    /** The graph2. */
-    private CodedNodeGraph graph2;
     
     /**
      * Instantiates a new union graph.
@@ -60,93 +50,23 @@ public class UnionGraph implements CodedNodeGraph {
      * @param graph2 the graph2
      */
     public UnionGraph(CodedNodeGraph graph1, CodedNodeGraph graph2) {
-        this.graph1 = graph1;
-        this.graph2 = graph2;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#areCodesRelated(org.LexGrid.LexBIG.DataModel.Core.NameAndValue, org.LexGrid.LexBIG.DataModel.Core.ConceptReference, org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean)
-     */
-    @Override
-    public Boolean areCodesRelated(NameAndValue association, ConceptReference sourceCode, ConceptReference targetCode,
-            boolean directOnly) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#intersect(org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph)
-     */
-    @Override
-    public CodedNodeGraph intersect(CodedNodeGraph graph) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#isCodeInGraph(org.LexGrid.LexBIG.DataModel.Core.ConceptReference)
-     */
-    @Override
-    public Boolean isCodeInGraph(ConceptReference code) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#listCodeRelationships(org.LexGrid.LexBIG.DataModel.Core.ConceptReference, org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean)
-     */
-    @Override
-    public ConceptReferenceList listCodeRelationships(ConceptReference sourceCode, ConceptReference targetCode,
-            boolean directOnly) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#listCodeRelationships(org.LexGrid.LexBIG.DataModel.Core.ConceptReference, org.LexGrid.LexBIG.DataModel.Core.ConceptReference, int)
-     */
-    @Override
-    public ConceptReferenceList listCodeRelationships(ConceptReference sourceCode, ConceptReference targetCode,
-            int distance) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#resolveAsList(org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean, boolean, int, int, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType[], org.LexGrid.LexBIG.DataModel.Collections.SortOptionList, int)
-     */
-    @Override
-    public ResolvedConceptReferenceList resolveAsList(ConceptReference graphFocus, boolean resolveForward,
-            boolean resolveBackward, int resolveCodedEntryDepth, int resolveAssociationDepth,
-            LocalNameList propertyNames, PropertyType[] propertyTypes, SortOptionList sortOptions, int maxToReturn)
-            throws LBInvocationException, LBParameterException {
-        return this.resolveAsList(
-                graphFocus, 
-                resolveForward, 
-                resolveBackward, 
-                resolveCodedEntryDepth, 
-                resolveAssociationDepth, 
-                propertyNames, 
-                propertyTypes, 
-                sortOptions, 
-                null, 
-                maxToReturn);
+        super(graph1,graph2);
     }
 
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#resolveAsList(org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean, boolean, int, int, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType[], org.LexGrid.LexBIG.DataModel.Collections.SortOptionList, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, int)
      */
     @Override
-    public ResolvedConceptReferenceList resolveAsList(ConceptReference graphFocus, boolean resolveForward,
+    public ResolvedConceptReferenceList doResolveAsList(ConceptReference graphFocus, boolean resolveForward,
             boolean resolveBackward, int resolveCodedEntryDepth, int resolveAssociationDepth,
             LocalNameList propertyNames, PropertyType[] propertyTypes, SortOptionList sortOptions,
-            LocalNameList filterOptions, int maxToReturn) throws LBInvocationException, LBParameterException {
-        ResolvedConceptReferenceList list1 = this.graph1.resolveAsList(
+            LocalNameList filterOptions, int maxToReturn, boolean keepLastAssociationLevelUnresolved) throws LBInvocationException, LBParameterException {
+        ResolvedConceptReferenceList list1 = this.getGraph1().resolveAsList(
                 graphFocus, resolveForward, resolveBackward, 
                 resolveCodedEntryDepth, resolveAssociationDepth, propertyNames, 
                 propertyTypes, sortOptions, maxToReturn);
         
-        ResolvedConceptReferenceList list2 = this.graph2.resolveAsList(
+        ResolvedConceptReferenceList list2 = this.getGraph2().resolveAsList(
                 graphFocus, resolveForward, resolveBackward, 
                 resolveCodedEntryDepth, resolveAssociationDepth, propertyNames, 
                 propertyTypes, sortOptions, maxToReturn);
@@ -165,130 +85,6 @@ public class UnionGraph implements CodedNodeGraph {
         
         return returnList;
     }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#resolveAsList(org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean, boolean, int, int, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType[], org.LexGrid.LexBIG.DataModel.Collections.SortOptionList, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, int, boolean)
-     */
-    @Override
-    public ResolvedConceptReferenceList resolveAsList(ConceptReference graphFocus, boolean resolveForward,
-            boolean resolveBackward, int resolveCodedEntryDepth, int resolveAssociationDepth,
-            LocalNameList propertyNames, PropertyType[] propertyTypes, SortOptionList sortOptions,
-            LocalNameList filterOptions, int maxToReturn, boolean keepLastAssociationLevelUnresolved)
-            throws LBInvocationException, LBParameterException {
-        throw new UnsupportedOperationException();
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#restrictToAssociations(org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList, org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList)
-     */
-    @Override
-    public CodedNodeGraph restrictToAssociations(NameAndValueList association, NameAndValueList associationQualifiers)
-            throws LBInvocationException, LBParameterException {
-       this.graph1.restrictToAssociations(association, associationQualifiers);
-       this.graph2.restrictToAssociations(association, associationQualifiers);  
-       
-       return this;
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#restrictToCodeSystem(java.lang.String)
-     */
-    @Override
-    public CodedNodeGraph restrictToCodeSystem(String codingScheme) throws LBInvocationException, LBParameterException {
-        this.graph1.restrictToCodeSystem(codingScheme);
-        this.graph2.restrictToCodeSystem(codingScheme);  
-        
-        return this;
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#restrictToCodes(org.LexGrid.LexBIG.LexBIGService.CodedNodeSet)
-     */
-    @Override
-    public CodedNodeGraph restrictToCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
-        this.graph1.restrictToCodes(codes);
-        this.graph2.restrictToCodes(codes);
-        
-        return this;
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#restrictToDirectionalNames(org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList, org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList)
-     */
-    @Override
-    public CodedNodeGraph restrictToDirectionalNames(NameAndValueList directionalNames,
-            NameAndValueList associationQualifiers) throws LBInvocationException, LBParameterException {
-        this.graph1.restrictToDirectionalNames(directionalNames, associationQualifiers);
-        this.graph2.restrictToDirectionalNames(directionalNames, associationQualifiers);
-        
-        return this;
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#restrictToSourceCodeSystem(java.lang.String)
-     */
-    @Override
-    public CodedNodeGraph restrictToSourceCodeSystem(String codingScheme) throws LBInvocationException,
-            LBParameterException {
-       this.graph1.restrictToSourceCodeSystem(codingScheme);
-       this.graph2.restrictToSourceCodeSystem(codingScheme);
-       
-       return this;
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#restrictToSourceCodes(org.LexGrid.LexBIG.LexBIGService.CodedNodeSet)
-     */
-    @Override
-    public CodedNodeGraph restrictToSourceCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
-        this.graph1.restrictToSourceCodes(codes);
-        this.graph2.restrictToSourceCodes(codes);
-        
-        return this;
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#restrictToTargetCodeSystem(java.lang.String)
-     */
-    @Override
-    public CodedNodeGraph restrictToTargetCodeSystem(String codingScheme) throws LBInvocationException,
-            LBParameterException {
-       this.graph1.restrictToTargetCodeSystem(codingScheme);
-       this.graph2.restrictToTargetCodeSystem(codingScheme);
-       
-       return this;
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#restrictToTargetCodes(org.LexGrid.LexBIG.LexBIGService.CodedNodeSet)
-     */
-    @Override
-    public CodedNodeGraph restrictToTargetCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
-        this.graph1.restrictToTargetCodes(codes);
-        this.graph2.restrictToTargetCodes(codes);
-        
-        return this;
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#toNodeList(org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean, boolean, int, int)
-     */
-    @Override
-    public CodedNodeSet toNodeList(ConceptReference graphFocus, boolean resolveForward, boolean resolveBackward,
-            int resolveAssociationDepth, int maxToReturn) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#union(org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph)
-     */
-    @Override
-    public CodedNodeGraph union(CodedNodeGraph graph) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
-    }
-
     
     /**
      * Union reference.
