@@ -18,16 +18,23 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph.query;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 import org.springframework.util.StringUtils;
 
@@ -111,8 +118,32 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
      */
     @Override
     public void restrictToCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        List<CodeNamespacePair> foundCodes = 
+            getCodesFromCodedNodeSet(codes);
+        
+        this.graphQuery.getRestrictToSourceCodes().addAll(foundCodes);
+        this.graphQuery.getRestrictToTargetCodes().addAll(foundCodes);
+    }
+
+    protected List<CodeNamespacePair> getCodesFromCodedNodeSet(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
+        List<CodeNamespacePair> returnList = 
+            new ArrayList<CodeNamespacePair>();
+        
+        
+        ResolvedConceptReferencesIterator itr = codes.resolve(null, null, null, null, false);
+        try {
+            while(itr.hasNext()) {
+                ResolvedConceptReference ref = itr.next();
+                returnList.add(
+                            new CodeNamespacePair(
+                                    ref.getCode(),
+                                    ref.getCodeNamespace()));
+            }
+        } catch (LBResourceUnavailableException e) {
+            throw new RuntimeException(e);
+        }
+        
+        return returnList;
     }
 
     /* (non-Javadoc)
@@ -161,8 +192,10 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
      */
     @Override
     public void restrictToSourceCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        List<CodeNamespacePair> foundCodes = 
+            getCodesFromCodedNodeSet(codes);
+        
+        this.graphQuery.getRestrictToSourceCodes().addAll(foundCodes);
     }
 
     /* (non-Javadoc)
@@ -180,8 +213,9 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
      */
     @Override
     public void restrictToTargetCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
-    }
-
+        List<CodeNamespacePair> foundCodes = 
+            getCodesFromCodedNodeSet(codes);
+        
+        this.graphQuery.getRestrictToTargetCodes().addAll(foundCodes);
+   }
 }
