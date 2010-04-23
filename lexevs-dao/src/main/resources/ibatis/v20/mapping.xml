@@ -169,6 +169,16 @@
 	 		urimap.id = #param3#
 	 </select>
 	 
+	 <select id="getPropertyURIMapByPropertyType" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="uriMapResult">
+	 	<include refid="getUriMapFragment"/>
+	 	WHERE
+	 		urimap.codingSchemeGuid = #param1#
+	 	AND
+	 		urimap.supportedAttributeTag = #param2#
+	 	AND
+	 		urimap.propertyType = #param3#
+	 </select>
+	 
 	 <select id="getURIMapCountByLocalNameAndType" remapResults="true"
 	 	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultClass="int">
 	 	SELECT
@@ -267,7 +277,7 @@
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="uriMap.propertyType">
-				#uriMap.propertyType#
+				#uriMap.propertyType.name#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="uriMap.propertyType">
 				null
