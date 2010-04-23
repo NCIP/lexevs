@@ -69,14 +69,18 @@ import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.types.EntityTypes;
+import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedHierarchy;
+import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.relations.AssociationEntity;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.connection.IndexInterface;
 import org.lexevs.exceptions.MissingResourceException;
@@ -86,6 +90,7 @@ import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.constants.SystemVariables;
+import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
 import edu.mayo.informatics.lexgrid.convert.indexer.SQLEntityIndexer;
@@ -105,6 +110,11 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     private final static String description_ = "Useful methods that are implemented by calling a combination of base service methods.";
     private final static String version_ = "1.0";
     private final static String provider_ = "MAYO";
+    
+    private LexEvsServiceLocator locator_ = null;
+    private DatabaseServiceManager dbManager_ = null;
+    private CodingSchemeService codingSchemeService_ = null;
+    private SystemResourceService systemService_ = null;
 
     public LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -124,6 +134,10 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     private enum DirectionalName {FORWARD,REVERSE}
 
     public LexBIGServiceConvenienceMethodsImpl() {
+        locator_ = LexEvsServiceLocator.getInstance();
+        dbManager_ = locator_.getDatabaseServiceManager();
+        codingSchemeService_ = dbManager_.getCodingSchemeService();
+        systemService_ = locator_.getSystemResourceService();
     }
 
     public static void register() throws LBParameterException, LBException {
@@ -2124,6 +2138,73 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             throw new LBException(e.getMessage(), e);
         }
 
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<SupportedProperty> getSupportedPropertiesOfTypeComment(String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag) throws LBException {
+        String internalCodingSchemeName = null;
+        String version = null;
+        if (versionOrTag == null) {
+            version = systemService_.getInternalVersionStringForTag(codingScheme, null);
+        } else {
+            version = versionOrTag.getVersion();
+        }
+
+        internalCodingSchemeName = systemService_.getInternalCodingSchemeNameForUserCodingSchemeName(
+                codingScheme, version);
+        
+        return (List<SupportedProperty>) codingSchemeService_.getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.COMMENT.name());
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<SupportedProperty> getSupportedPropertiesOfTypeDefinition(String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag) throws LBException {
+        String internalCodingSchemeName = null;
+        String version = null;
+        if (versionOrTag == null) {
+            version = systemService_.getInternalVersionStringForTag(codingScheme, null);
+        } else {
+            version = versionOrTag.getVersion();
+        }
+
+        internalCodingSchemeName = systemService_.getInternalCodingSchemeNameForUserCodingSchemeName(
+                codingScheme, version);
+        
+        return (List<SupportedProperty>) codingSchemeService_.getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.DEFINITION.name());
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<SupportedProperty> getSupportedPropertiesOfTypePresentation(String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag) throws LBException {
+        String internalCodingSchemeName = null;
+        String version = null;
+        if (versionOrTag == null) {
+            version = systemService_.getInternalVersionStringForTag(codingScheme, null);
+        } else {
+            version = versionOrTag.getVersion();
+        }
+
+        internalCodingSchemeName = systemService_.getUriForUserCodingSchemeName(codingScheme);
+        
+        return (List<SupportedProperty>) codingSchemeService_.getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.PRESENTATION.name());
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<SupportedProperty> getSupportedPropertiesOfTypeProperty(String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag) throws LBException {
+        String internalCodingSchemeName = null;
+        String version = null;
+        if (versionOrTag == null) {
+            version = systemService_.getInternalVersionStringForTag(codingScheme, null);
+        } else {
+            version = versionOrTag.getVersion();
+        }
+
+        internalCodingSchemeName = systemService_.getInternalCodingSchemeNameForUserCodingSchemeName(
+                codingScheme, version);
+        
+        return (List<SupportedProperty>) codingSchemeService_.getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.PROPERTY.name());
     }
     
     
