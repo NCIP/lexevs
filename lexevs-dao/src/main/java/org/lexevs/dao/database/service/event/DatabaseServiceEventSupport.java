@@ -21,24 +21,57 @@ package org.lexevs.dao.database.service.event;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
+import org.LexGrid.LexBIG.Extensions.Load.Loader;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.apache.commons.lang.ClassUtils;
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PostCodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PreCodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+import org.lexevs.system.utility.MyClassLoader;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * The Class DatabaseServiceEventSupport.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class DatabaseServiceEventSupport {
+public class DatabaseServiceEventSupport implements InitializingBean {
 
 	/** The database service event listeners. */
 	private List<DatabaseServiceEventListener> databaseServiceEventListeners = new ArrayList<DatabaseServiceEventListener>();
 
+	private MyClassLoader myClassLoader;
+	
+	private LgLoggerIF logger;
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		for(ExtensionDescription ed :
+			myClassLoader.getExtensionDescriptions()){
+
+			Class<?> extensionBaseClass;
+			try {
+				extensionBaseClass = Class.forName(ed.getExtensionBaseClass(), true, myClassLoader);
+			} catch (ClassNotFoundException e1) {
+				getLogger().warn("Extension: " + ed.getName() + " cannot be loaded, " +
+						"class: " + ed.getExtensionClass() + " could not be found.");
+				continue;
+			}
+
+			if(ClassUtils.isAssignable(extensionBaseClass, DatabaseServiceEventListener.class)){
+				this.getDatabaseServiceEventListeners().add(
+						(DatabaseServiceEventListener)
+						Class.forName(ed.getExtensionClass(), true, myClassLoader).newInstance()
+						);
+			}
+		}
+	}
+	
 	/**
 	 * Fire coding scheme update event.
 	 * 
@@ -129,4 +162,19 @@ public class DatabaseServiceEventSupport {
 		this.databaseServiceEventListeners = databaseServiceEventListeners;
 	}
 
+	public void setMyClassLoader(MyClassLoader myClassLoader) {
+		this.myClassLoader = myClassLoader;
+	}
+
+	public MyClassLoader getMyClassLoader() {
+		return myClassLoader;
+	}
+
+	public LgLoggerIF getLogger() {
+		return logger;
+	}
+
+	public void setLogger(LgLoggerIF logger) {
+		this.logger = logger;
+	}
 }
