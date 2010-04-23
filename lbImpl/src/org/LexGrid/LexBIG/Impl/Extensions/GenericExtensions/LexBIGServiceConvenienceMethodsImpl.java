@@ -86,7 +86,6 @@ import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.constants.SystemVariables;
-import org.springframework.util.Assert;
 
 import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
 import edu.mayo.informatics.lexgrid.convert.indexer.SQLEntityIndexer;
@@ -107,7 +106,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     private final static String version_ = "1.0";
     private final static String provider_ = "MAYO";
 
-    protected static LgLoggerIF getLogger() {
+    public LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
 
@@ -128,7 +127,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     }
 
     public static void register() throws LBParameterException, LBException {
-        getLogger().logMethod(new Object[] {});
         ExtensionDescription temp = new ExtensionDescription();
         temp.setExtensionBaseClass(LexBIGServiceConvenienceMethodsImpl.class.getInterfaces()[0].getName());
         temp.setExtensionClass(LexBIGServiceConvenienceMethodsImpl.class.getName());
@@ -390,8 +388,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     @LgClientSideSafe
     public String getAssociationForwardName(String associationName, String codingScheme,
             CodingSchemeVersionOrTag versionOrTag) throws LBException {
-        getLogger().logMethod(new Object[] { associationName, codingScheme, versionOrTag });
-
+       
         return doGetAssociationDirectionalName(codingScheme, versionOrTag, associationName, DirectionalName.FORWARD);
     }
     
@@ -1044,7 +1041,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             throws LBException {
 
         Object[] params = new Object[] { codingScheme, versionOrTag };
-        getLogger().logMethod(params);
 
         // Check and re-use cached value if present ...
         Object key = getCacheKey(params);
