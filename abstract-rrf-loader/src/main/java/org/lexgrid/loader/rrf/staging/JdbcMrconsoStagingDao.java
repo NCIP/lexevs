@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+O * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -21,8 +21,9 @@ package org.lexgrid.loader.rrf.staging;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.ArrayList;
 
+import org.lexevs.cache.annotation.CacheMethod;
+import org.lexevs.cache.annotation.Cacheable;
 import org.lexgrid.loader.logging.StatusTrackingLogger;
 import org.lexgrid.loader.rrf.data.codingscheme.MrsabUtility;
 import org.lexgrid.loader.rrf.staging.model.CodeSabPair;
@@ -37,6 +38,7 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Cacheable(cacheName = "JdbcMrconsoStagingDao", cacheSize=10000)
 public class JdbcMrconsoStagingDao extends JdbcDaoSupport implements MrconsoStagingDao {
 	
 	/** The log. */
@@ -79,6 +81,7 @@ public class JdbcMrconsoStagingDao extends JdbcDaoSupport implements MrconsoStag
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.rrf.staging.MrconsoStagingDao#getCodeAndSab(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public CodeSabPair getCodeAndSab(String cui, String aui){
 		try {
 			return (CodeSabPair)getJdbcTemplate().queryForObject(setPlaceholders(getCodeFromCuiAndAui), new Object[] { cui, aui }, new RowMapper(){
@@ -104,6 +107,7 @@ public class JdbcMrconsoStagingDao extends JdbcDaoSupport implements MrconsoStag
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.rrf.staging.MrconsoStagingDao#getCodes(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public List<String> getCodes(String cui, String sab){
 		try {
 			return (List<String>)getJdbcTemplate().queryForList(setPlaceholders(getCodesFromCuiAndSab), new Object[] { cui, sab }, String.class);
@@ -116,6 +120,7 @@ public class JdbcMrconsoStagingDao extends JdbcDaoSupport implements MrconsoStag
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.rrf.staging.MrconsoStagingDao#getCodeFromAui(java.lang.String)
 	 */
+	@CacheMethod
 	public String getCodeFromAui(String aui){
 		try {
 			return (String)getJdbcTemplate().queryForObject(setPlaceholders(getCodeFromAui), new Object[] { aui }, String.class);
@@ -128,6 +133,7 @@ public class JdbcMrconsoStagingDao extends JdbcDaoSupport implements MrconsoStag
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.rrf.staging.MrconsoStagingDao#getCodeFromAui(java.lang.String)
 	 */
+	@CacheMethod
 	public List<String> getCodesFromCui(String cui){
 		try {
 			return (List<String>)getJdbcTemplate().queryForList(setPlaceholders(getCodesFromCui), new Object[] { cui }, String.class);
@@ -140,6 +146,7 @@ public class JdbcMrconsoStagingDao extends JdbcDaoSupport implements MrconsoStag
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.rrf.staging.MrconsoStagingDao#getCuiFromAuiAndSab(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public String getCuiFromAuiAndSab(String aui, String sab) {
 		try {
 			return (String)getJdbcTemplate().queryForObject(setPlaceholders(getCuiFromAuiAndSab), new Object[] { aui, sab }, String.class);
@@ -152,6 +159,7 @@ public class JdbcMrconsoStagingDao extends JdbcDaoSupport implements MrconsoStag
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.rrf.staging.MrconsoStagingDao#getCuiFromAuiAndSab(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public String getCuiFromAui(String aui) {
 		try {
 			return (String)getJdbcTemplate().queryForObject(setPlaceholders(getCuiFromAui), new Object[] { aui }, String.class);
@@ -164,6 +172,7 @@ public class JdbcMrconsoStagingDao extends JdbcDaoSupport implements MrconsoStag
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.rrf.staging.MrconsoStagingDao#getCodeAndCodingScheme(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public CodeCodingSchemePair getCodeAndCodingScheme(String cui, String aui) {
 		CodeSabPair codeSab = getCodeAndSab(cui, aui);
 		CodeCodingSchemePair codeCodingScheme = new CodeCodingSchemePair();
@@ -172,6 +181,7 @@ public class JdbcMrconsoStagingDao extends JdbcDaoSupport implements MrconsoStag
 		return codeCodingScheme;
 	}
 
+	@CacheMethod
 	public List<String> getCuisFromCode(String code) {
 		return (List<String>)getJdbcTemplate().queryForList(setPlaceholders(getCuisFromCode), new Object[] { code }, String.class);
 	}
