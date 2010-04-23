@@ -716,11 +716,7 @@ ALTER TABLE @PREFIX@propertyMultiAttrib
 ;
 
 ALTER TABLE @PREFIX@relation
-	ADD CONSTRAINT UQ_relation_codingSchemeGuid UNIQUE (codingSchemeGuid)
-;
-
-ALTER TABLE @PREFIX@relation
-	ADD CONSTRAINT UQ_relation_containerName UNIQUE (containerName)
+	ADD CONSTRAINT UQ_relation_containerName UNIQUE (codingSchemeGuid,containerName)
 ;
 
 
