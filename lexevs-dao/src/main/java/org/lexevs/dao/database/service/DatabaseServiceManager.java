@@ -19,6 +19,7 @@
 package org.lexevs.dao.database.service;
 
 import org.lexevs.dao.database.service.association.AssociationService;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
 import org.lexevs.dao.database.service.entity.EntityService;
@@ -28,7 +29,7 @@ import org.lexevs.dao.database.service.property.PropertyService;
 import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
 import org.lexevs.dao.database.service.valuesets.VSPropertyService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
-import org.lexevs.dao.database.service.version.AuthoringService;
+//import org.lexevs.dao.database.service.version.AuthoringService;
 
 /**
  * The Class DatabaseServiceManager.
@@ -62,7 +63,9 @@ public class DatabaseServiceManager {
 	private VSPropertyService vsPropertyService;
 	
 	/** The authoring service. */
-	private AuthoringService authoringService;
+	//private AuthoringService authoringService;
+	
+	private CodedNodeGraphService codedNodeGraphService;
 	
 	private DaoCallbackService daoCallbackService;
 	
@@ -165,6 +168,7 @@ public class DatabaseServiceManager {
 	public DaoCallbackService getDaoCallbackService() {
 		return daoCallbackService;
 	}
+	/*
 	public AuthoringService getAuthoringService() {
 		return authoringService;
 	}
@@ -172,6 +176,7 @@ public class DatabaseServiceManager {
 	public void setAuthoringService(AuthoringService authoringService) {
 		this.authoringService = authoringService;
 	}
+	*/
 
 	public void setPickListDefinitionService(PickListDefinitionService pickListDefinitionService) {
 		this.pickListDefinitionService = pickListDefinitionService;
@@ -208,6 +213,14 @@ public class DatabaseServiceManager {
 	 */
 	public void setVsPropertyService(VSPropertyService vsPropertyService) {
 		this.vsPropertyService = vsPropertyService;
+	}
+
+	public void setCodedNodeGraphService(CodedNodeGraphService codedNodeGraphService) {
+		this.codedNodeGraphService = codedNodeGraphService;
+	}
+
+	public CodedNodeGraphService getCodedNodeGraphService() {
+		return codedNodeGraphService;
 	}
 }
 
