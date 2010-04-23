@@ -34,6 +34,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.naming.SupportedHierarchy;
+import org.LexGrid.naming.SupportedProperty;
 
 /**
  * Convenience methods to be implemented as a generic extension of the LexBIG
@@ -836,6 +837,58 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 
 	public SupportedHierarchy[] getSupportedHierarchies(String codingScheme,
 			CodingSchemeVersionOrTag versionOrTag, String hierarchyId)
+			throws LBException;
+	
+	/**
+	 * Returns an list of properties supported with propertyType of 'presentation'.
+	 * 
+	 * @param codingScheme
+	 * @param versionOrTag
+	 * @return SupportedProperty
+	 * @throws LBException
+	 */
+
+	public List<SupportedProperty> getSupportedPropertiesOfTypePresentation(String codingScheme,
+			CodingSchemeVersionOrTag versionOrTag)
+			throws LBException;
+	
+	/**
+	 * Returns an list of properties supported with propertyType of 'comment'.
+	 * 
+	 * @param codingScheme
+	 * @param versionOrTag
+	 * @return SupportedProperty
+	 * @throws LBException
+	 */
+
+	public List<SupportedProperty> getSupportedPropertiesOfTypeComment(String codingScheme,
+			CodingSchemeVersionOrTag versionOrTag)
+			throws LBException;
+	
+	/**
+	 * Returns an list of properties supported with propertyType of 'definition'.
+	 * 
+	 * @param codingScheme
+	 * @param versionOrTag
+	 * @return SupportedProperty
+	 * @throws LBException
+	 */
+
+	public List<SupportedProperty> getSupportedPropertiesOfTypeDefinition(String codingScheme,
+			CodingSchemeVersionOrTag versionOrTag)
+			throws LBException;
+	
+	/**
+	 * Returns an list of properties supported with propertyType of 'property'.
+	 * 
+	 * @param codingScheme
+	 * @param versionOrTag
+	 * @return SupportedProperty
+	 * @throws LBException
+	 */
+
+	public List<SupportedProperty> getSupportedPropertiesOfTypeProperty(String codingScheme,
+			CodingSchemeVersionOrTag versionOrTag)
 			throws LBException;
 
 	/**
