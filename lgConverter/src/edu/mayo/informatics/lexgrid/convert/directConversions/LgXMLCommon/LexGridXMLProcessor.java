@@ -37,6 +37,7 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+import org.lexevs.logging.Logger;
 
 /**
  * @author <A HREF="mailto:scott.bauer@mayo.edu">Scott Bauer </A>
@@ -79,7 +80,7 @@ public class LexGridXMLProcessor {
             if (!validateXML) {
                 umr.setValidation(validateXML);
             }
-            listener.setPropertiesPresent(setPropertiesFlag(path));
+            listener.setPropertiesPresent(setPropertiesFlag(path, messages));
             umr.setUnmarshalListener(listener);
             umr.setClass(CodingScheme.class);
             cs = new CodingScheme[]{(CodingScheme) umr.unmarshal(in)};
@@ -87,10 +88,13 @@ public class LexGridXMLProcessor {
             in.close();
 
         } catch (MarshalException e) {
+            messages.error("the Coding Scheme Listener detected a reading or writing problem");
             e.printStackTrace();
         } catch (ValidationException e) {
+            messages.error("Unmarshaller detected invalid xml at: " + path);
             e.printStackTrace();
         } catch (IOException e) {
+            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
             e.printStackTrace();
         }
         return cs;
@@ -120,11 +124,11 @@ public class LexGridXMLProcessor {
             if (!validateXML) {
                 umr.setValidation(validateXML);
             }
-            listener.setPropertiesPresent(setPropertiesFlag(path));
+            listener.setPropertiesPresent(setPropertiesFlag(path, messages));
             umr.setUnmarshalListener(listener);
             umr.setClass(Revision.class);
             umr.unmarshal(in);
-            if(isCodingSchemePresent(path)){
+            if(isCodingSchemePresent(path, messages)){
                 cs = listener.getCodingSchemes();
                 }
                 else{
@@ -136,12 +140,15 @@ public class LexGridXMLProcessor {
             in.close();
 
         } catch (MarshalException e) {
+            messages.error("the Revision Listener detected a reading or writing problem");
             e.printStackTrace();
         } catch (ValidationException e) {
+            messages.error("Unmarshaller detected invalid xml at: " + path);
             e.printStackTrace();
         } catch (IOException e) {
+            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
             e.printStackTrace();
-        }
+            }
         return cs;
 
     }
@@ -169,12 +176,12 @@ public class LexGridXMLProcessor {
             if (!validateXML) {
                 umr.setValidation(validateXML);
             }
-            listener.setPropertiesPresent(setPropertiesFlag(path));
+            listener.setPropertiesPresent(setPropertiesFlag(path, messages));
             listener.setMessages_(messages);
             umr.setUnmarshalListener(listener);
             umr.setClass(SystemRelease.class);
             umr.unmarshal(in);
-            if(isCodingSchemePresent(path)){
+            if(isCodingSchemePresent(path, messages)){
             cs = listener.getCodingSchemes();
             }
             else{
@@ -187,12 +194,15 @@ public class LexGridXMLProcessor {
             in.close();
 
         } catch (MarshalException e) {
+            messages.error("the System Release Listener detected a reading or writing problem");
             e.printStackTrace();
         } catch (ValidationException e) {
+            messages.error("Unmarshaller detected invalid xml at: " + path);
             e.printStackTrace();
         } catch (IOException e) {
+            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
             e.printStackTrace();
-        }
+            }
         return cs;
 
     }
@@ -201,7 +211,7 @@ public class LexGridXMLProcessor {
      * @param path
      * @return int representation of the Entry Point Type
      */
-    public int getEntryPointType(String path) {
+    public int getEntryPointType(String path,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         XMLStreamReader xmlStreamReader;
 
@@ -224,17 +234,17 @@ public class LexGridXMLProcessor {
             }
             in.close();
             xmlStreamReader.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (XMLStreamException e) {
-            // TODO Auto-generated catch block
+            messages.error("While streaming file at " + path + "an error occured");
             e.printStackTrace();
         } catch (FactoryConfigurationError e) {
-            // TODO Auto-generated catch block
+            messages.error("While streaming file at " + path + "an streaming xml configuration error occured");
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+            messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
             e.printStackTrace();
         }
 
@@ -246,7 +256,7 @@ public class LexGridXMLProcessor {
      * @return boolean indicating if a coding scheme contains a property
      */
     //TODO Remove or modify print statements for logging.
-    private boolean setPropertiesFlag(String path) {
+    private boolean setPropertiesFlag(String path,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         boolean propsPresent = false;
         XMLStreamReader xmlStreamReader;
@@ -270,19 +280,23 @@ public class LexGridXMLProcessor {
             xmlStreamReader.close();
             in.close();
         } catch (XMLStreamException e) {
+            messages.error("While streaming file at " + path + "an error occured");
             e.printStackTrace();
         } catch (FactoryConfigurationError e) {
+            messages.error("While streaming file at " + path + "an streaming xml configuration error occured");
             e.printStackTrace();
         } catch (FileNotFoundException e) {
+            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
             e.printStackTrace();
         } catch (IOException e) {
+            messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
             e.printStackTrace();
         }
         return propsPresent;
     }
     
     
-   private boolean isCodingSchemePresent(String path) {
+   private boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         boolean schemePresent = false;
         XMLStreamReader xmlStreamReader;
@@ -308,12 +322,16 @@ public class LexGridXMLProcessor {
             xmlStreamReader.close();
             in.close();
         } catch (XMLStreamException e) {
+            messages.error("While streaming file at " + path + "an error occured");
             e.printStackTrace();
         } catch (FactoryConfigurationError e) {
+            messages.error("While streaming file at " + path + "an streaming xml configuration error occured");
             e.printStackTrace();
         } catch (FileNotFoundException e) {
+            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
             e.printStackTrace();
         } catch (IOException e) {
+            messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
             e.printStackTrace();
         }
         return schemePresent;
@@ -323,9 +341,9 @@ public class LexGridXMLProcessor {
      */
     public static void main(String[] args) {
         System.out.println("Parsing content from " + args[0] + "...");
-
+        LgMessageDirectorIF messages = new Logger();
         try {
-            System.out.println("Coding Scheme Present? : " + new LexGridXMLProcessor().isCodingSchemePresent(args[0]));
+            System.out.println("Coding Scheme Present? : " + new LexGridXMLProcessor().isCodingSchemePresent(args[0], messages));
         } catch (FactoryConfigurationError e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

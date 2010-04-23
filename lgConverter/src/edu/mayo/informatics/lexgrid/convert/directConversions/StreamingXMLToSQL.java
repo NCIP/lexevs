@@ -47,7 +47,7 @@ public class StreamingXMLToSQL {
             boolean isXMLValid) throws CodingSchemeAlreadyLoadedException {
         messages_ = messageDirector;
         LexGridXMLProcessor processor = new LexGridXMLProcessor();
-        int entryPoint = processor.getEntryPointType(fileLocation.getPath());
+        int entryPoint = processor.getEntryPointType(fileLocation.getPath(),  messageDirector);
 
         switch (entryPoint) {
             case 1:  codingScheme = processor.loadCodingScheme(fileLocation.getPath(), messages_, isXMLValid); break;
