@@ -20,6 +20,7 @@ package org.lexevs.dao.database.prefix;
 
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.dao.database.access.DaoManager;
@@ -47,6 +48,8 @@ public class DefaultPrefixResolver implements PrefixResolver {
 	
 	/** The history prefix. */
 	private String historyPrefix = "h_";
+	
+	private static String BLANK_PREFIX = "";
 	
 	private DatabaseServiceManager databaseServiceManager;
 	
@@ -77,6 +80,8 @@ public class DefaultPrefixResolver implements PrefixResolver {
 			
 			String entryPrefix = entry.getPrefix();
 			
+			entryPrefix = allowForNullPrefixValue(entryPrefix);
+			
 			return resolveDefaultPrefix() + entryPrefix;
 
 		} catch (LBParameterException e) {
@@ -106,8 +111,17 @@ public class DefaultPrefixResolver implements PrefixResolver {
 				}
 
 			});
+		
+		prefix = allowForNullPrefixValue(prefix);
 
 		return this.resolveDefaultPrefix() + prefix;
+	}
+
+	private String allowForNullPrefixValue(String prefix) {
+		if(StringUtils.isBlank(prefix)) {
+			prefix = BLANK_PREFIX;
+		}
+		return prefix;
 	}
 
 	@CacheMethod
