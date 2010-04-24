@@ -1,47 +1,78 @@
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions;
 
-import static org.junit.Assert.*;
+import junit.framework.Assert;
 
+import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.naming.Mappings;
-import org.LexGrid.naming.SupportedProperty;
+import org.LexGrid.naming.SupportedAssociation;
+import org.LexGrid.relations.AssociationEntity;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
 public class LexBIGServiceConvenienceMethodsImplTest {
 
     @Test
-    public void getSupportedPropertiesOfTypeTest() throws LBException{
-        LexBIGServiceConvenienceMethodsImpl lbscm = new LexBIGServiceConvenienceMethodsImpl();
-        
-        LexBIGService lbs = EasyMock.createMock(LexBIGService.class);
+    public void getAssociationForwardNameTest() throws LBException{
+        LexBIGService lbs = 
+            EasyMock.createMock(LexBIGService.class);
+    
+        CodedNodeSet cns = EasyMock.createNiceMock(CodedNodeSet.class);
         
         CodingScheme cs = new CodingScheme();
+        cs.setCodingSchemeName("test");
         cs.setMappings(new Mappings());
         
-        SupportedProperty prop1 = new SupportedProperty();
-        prop1.setLocalId("prop1");
-        prop1.setPropertyType(PropertyTypes.PRESENTATION);
+        SupportedAssociation sa = new SupportedAssociation();
+        sa.setLocalId("assocName");
+        sa.setEntityCode("a code");
+        sa.setEntityCodeNamespace("a ns");
         
-        SupportedProperty prop2 = new SupportedProperty();
-        prop2.setLocalId("prop2");
-        prop2.setPropertyType(PropertyTypes.DEFINITION);
-        
-        cs.getMappings().addSupportedProperty(prop1);
-        cs.getMappings().addSupportedProperty(prop2);
+        cs.getMappings().addSupportedAssociation(sa);
         
         EasyMock.expect(lbs.resolveCodingScheme("test", null)).andReturn(cs);
         
-        EasyMock.replay(lbs);
+        EasyMock.expect(
+                lbs.getNodeSet(
+                        EasyMock.eq("test"), 
+                        (CodingSchemeVersionOrTag)EasyMock.isNull(), 
+                        (LocalNameList) EasyMock.anyObject())).
+                            andReturn(cns);
         
+        EasyMock.expect(cns.restrictToCodes(
+                (ConceptReferenceList)EasyMock.anyObject())).andReturn(cns);
+        
+        ResolvedConceptReferenceList refList =
+            new ResolvedConceptReferenceList();
+        
+        ResolvedConceptReference ref =
+            new ResolvedConceptReference();
+        
+        AssociationEntity ae = new AssociationEntity();
+        ae.setForwardName("some forward name");
+        ref.setEntity(ae);
+        
+        refList.addResolvedConceptReference(ref);
+        
+        EasyMock.expect(cns.resolveToList(null, null, null, -1)).andReturn(refList);
+        
+        EasyMock.replay(lbs,cns);
+        
+        LexBIGServiceConvenienceMethodsImpl lbscm =
+            new LexBIGServiceConvenienceMethodsImpl();
+    
         lbscm.setLexBIGService(lbs);
         
-        SupportedProperty[] props = lbscm.getSupportedPropertiesOfType("test", null, PropertyTypes.PRESENTATION);
+        String forwardName =
+            lbscm.getAssociationForwardName("assocName", "test", null);
         
-        assertEquals(1, props.length);
-        assertEquals("prop1", props[0].getLocalId());
+        Assert.assertEquals("some forward name", forwardName);
     }
 }
