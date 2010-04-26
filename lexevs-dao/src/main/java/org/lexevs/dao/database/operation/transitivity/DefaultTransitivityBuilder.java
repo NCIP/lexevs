@@ -159,7 +159,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 		});
 	}
 
-	private List<Node> getDistinctSourceTriples(
+	protected List<Node> getDistinctSourceTriples(
 			final String codingSchemeUri, 
 			final String version, 
 			final String associationPredicateUid) {
@@ -171,7 +171,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 				getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 
 				return daoManager.getCodedNodeGraphDao(codingSchemeUri, version).
-				getDistinctSourceNodesForAssociationPredicate(codingSchemeUid, associationPredicateUid);
+					getDistinctSourceNodesForAssociationPredicate(codingSchemeUid, associationPredicateUid);
 			}
 
 		});
