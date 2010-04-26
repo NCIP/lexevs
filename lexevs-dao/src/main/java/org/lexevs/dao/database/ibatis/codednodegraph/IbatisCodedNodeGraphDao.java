@@ -193,7 +193,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		
 		PrefixedParameter bean = new PrefixedParameter();
 		bean.setPrefix(prefix);
-		bean.setParam1(codingSchemeUid);
+		bean.setParam1(associationPredicateUid);
 		
 		return this.getSqlMapClientTemplate().
 			queryForList(GET_DISTINCT_SOURCE_NODES_SQL, 
