@@ -430,6 +430,7 @@
    		<property name="dataSource" ref="dataSource"/>
    		<property name="databaseType" ref="databaseTypeFactory"/>
    		<property name="transactionManager" ref="transactionManager"/>
+   		<property name="transitivityBuilder" ref="defaultTransitivityBuilder"/>
    	 </bean>
    	 
    	<bean id="lexevsHistoryCreateScript"
