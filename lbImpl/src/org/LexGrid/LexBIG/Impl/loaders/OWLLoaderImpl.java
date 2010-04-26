@@ -99,70 +99,14 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
         }
     }
 
-    public void loadNCI(URI uri, URI manifest, boolean memorySafe, boolean stopOnErrors, boolean async)
-            throws LBParameterException, LBInvocationException {
-        setInUse();
-        try {
-            NCIOwl nciowl = new NCIOwl(getStringFromURI(uri), manifest);
-            nciowl.setCodingSchemeManifest(this.getCodingSchemeManifest());
-            nciowl.setLoaderPreferences(this.getLoaderPreferences());
-        } catch (Exception e) {
-            inUse = false;
-            throw new LBParameterException("The NCIOwl file path appears to be invalid - " + e);
-        }
-
-        getStatus().setLoadSource(getStringFromURI(uri));
-        baseLoad(async);
-    }
-
-    public void loadNCIThes(URI uri, URI manifest, boolean memorySafe, boolean stopOnErrors, boolean async)
-            throws LBParameterException, LBInvocationException {
-        loadNCI(uri, manifest, memorySafe, stopOnErrors, async);
-    }
-
     public void load(URI source, URI codingSchemeManifestURI, int memorySafe, boolean stopOnErrors, boolean async)
             throws LBException {
-        setInUse();
-        try {
-            Owl owl = new Owl(source, codingSchemeManifestURI);
-            // Only if the manifest uri is provided, ie the uri is not null, then setCodingSchemeManifestURI.
-            if (codingSchemeManifestURI != null ) {
-                setCodingSchemeManifestURI(codingSchemeManifestURI);
-            }
-            owl.setCodingSchemeManifest(this.getCodingSchemeManifest());
-            owl.setLoaderPreferences(this.getLoaderPreferences());
-        } catch (Exception e) {
-            inUse = false;
-            throw new LBParameterException("The Owl file path appears to be invalid - " + e);
-        }
-
-        getStatus().setLoadSource(getStringFromURI(source));
-        baseLoad(async);
-    }
-
-    public void validateNCI(URI source, URI manifest, int validationLevel) throws LBException {
-        try {
-            setInUse();
-            try {
-               //in_ = new NCIOwl(getStringFromURI(source), manifest);
-               //in_.testConnection();
-            } catch (Exception e) {
-                throw new LBParameterException("The NCI OWL file path appears to be invalid - " + e);
-            }
-            // Verify content ...
-
-            if (validationLevel == 0) {
-                SAXParserFactory.newInstance().newSAXParser().parse(new File(source), new DefaultHandler());
-            } else if (validationLevel == 1) {
-                // TODO add support back for owl validation
-                throw new IllegalArgumentException("Unsupported validation level");
-            } else
-                throw new IllegalArgumentException("Unsupported validation level");
-        } catch (Exception e) {
-            throw new LBParameterException(e.toString());
-        } finally {
-            inUse = false;
-        }
+        this.setCodingSchemeManifestURI(codingSchemeManifestURI);
+        this.getOptions().getIntegerOption(Option.getNameForType(Option.MEMORY_SAFE)).setOptionValue(memorySafe);
+        this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
+        this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
+        
+        this.load(source);  
     }
 
     @Override
@@ -192,10 +136,6 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void validateNCIThes(URI source, URI manifest, int validationLevel) throws LBException {
-        validateNCI(source, manifest, validationLevel);
     }
 
     public void finalize() throws Throwable {
