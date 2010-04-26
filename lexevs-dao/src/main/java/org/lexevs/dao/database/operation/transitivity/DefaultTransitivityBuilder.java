@@ -381,6 +381,11 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 						SupportedAssociation supportedAssociation = getSupportedAssociationWithName(mappings, associationName);
 
+						//if there's no supported association, skip.
+						if(supportedAssociation == null) {
+							continue;
+						}
+						
 				        String containingCodingScheme = supportedAssociation.getCodingScheme();
 				        String containingEntityCode = supportedAssociation.getEntityCode();
 				        String containingEntityCodeNamespace = supportedAssociation.getEntityCodeNamespace();
