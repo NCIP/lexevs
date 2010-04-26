@@ -23,7 +23,7 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 	
 	@Resource
 	private LexEvsResourceManagingService lexEvsResourceManagingService;
-	/*
+
 	@Test
 	public void getRegistryEntryForCodingSchemeName() throws Exception {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
@@ -260,7 +260,7 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 		
 		assertEquals(1, count);
 	}
-	*/
+	
 	@Test
 	public void testTwoLevel() throws Exception {
 
