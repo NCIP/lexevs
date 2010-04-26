@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.util.Assert;
 
-public abstract class AbstractPageableIterator<T> implements Iterator<T> {
+public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterable<T> {
 
 	private static int DEFAULT_PAGE_SIZE = 100;
 	
@@ -23,6 +23,11 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T> {
 		this(DEFAULT_PAGE_SIZE);
 	}
 	
+	@Override
+	public Iterator<T> iterator() {
+		return this;
+	}
+
 	public AbstractPageableIterator(int pageSize){
 		Assert.isTrue(pageSize > 0, "Cannot specify a Page Size less than 0.");
 		this.pageSize = pageSize;
