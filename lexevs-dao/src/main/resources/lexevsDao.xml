@@ -25,6 +25,14 @@
 <!--    <bean id="sqlMapPrefixPropertiesFactory" class="org.lexevs.dao.database.ibatis.sqlmap.SqlMapPrefixPropertiesFactory">-->
 <!--    	<property name="systemVariables" ref="systemVariables"/>-->
 <!--    </bean>-->
+
+	<bean id="defaultTransitivityBuilder" 
+		class="org.lexevs.dao.database.operation.transitivity.DefaultTransitivityBuilder">
+		<property name="databaseServiceManager" ref="databaseServiceManager"/>
+		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
+		<property name="logger" ref="loggerFactory"/>
+		<property name="registry" ref="registry"/>
+	</bean>
     
     <bean id="abstractIbatisDao" abstract="true">
     	<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"/>
