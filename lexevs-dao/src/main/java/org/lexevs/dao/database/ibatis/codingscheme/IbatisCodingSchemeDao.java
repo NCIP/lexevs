@@ -20,6 +20,7 @@ package org.lexevs.dao.database.ibatis.codingscheme;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +28,7 @@ import java.util.UUID;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Source;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.URIMap;
@@ -356,9 +358,13 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		
 		if(cascade) {
 			if(codingScheme.getEntities() != null) {
+				List<Entity> entities = new ArrayList<Entity>();
+				entities.addAll(Arrays.asList(codingScheme.getEntities().getEntity()));
+				entities.addAll(Arrays.asList(codingScheme.getEntities().getAssociationEntity()));
+				
 				this.entityDao.insertBatchEntities(
 						codingSchemeUId, 
-						Arrays.asList(codingScheme.getEntities().getEntity()), 
+						entities, 
 						cascade);
 			}
 			
