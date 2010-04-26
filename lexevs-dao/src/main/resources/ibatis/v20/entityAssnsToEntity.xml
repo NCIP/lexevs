@@ -3,10 +3,16 @@
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap namespace="Association">
 
+	<typeAlias alias="node" type="org.lexevs.dao.database.access.association.model.Node"/>
 	<typeAlias alias="triple" type="org.lexevs.dao.database.access.association.model.Triple"/>
 	<typeAlias alias="associatedConcept" type="org.lexevs.dao.database.ibatis.codednodegraph.model.QualifierAddingAssociatedConcept"/>
 	<typeAlias alias="associationQualification" type="org.LexGrid.LexBIG.DataModel.Core.NameAndValue"/>
 
+	<resultMap id="nodeResult" class="node">
+		<result property="entityCode" column="entityCode" />
+		<result property="entityCodeNamespace" column="entityCodeNamespace" />
+	</resultMap>
+	
 	<resultMap id="tripleResult" class="triple">
 		<result property="sourceEntityCode" column="sourceEntityCode" />
 		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace" />
@@ -240,6 +246,36 @@
 		SELECT COUNT(DISTINCT 
 			(eate.entityAssnsGuid))
 		<include refid="getEntityAssnsToEntityUidsFragment"/>
+	</select>
+	
+	<select id="getDistinctSources" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		remapResults="true" 
+		resultMap="nodeResult">
+		SELECT DISTINCT
+			sourceEntityCode AS entityCode,
+			sourceEntityCodeNamespace AS entityCodeNamespace
+		FROM 
+			$prefix$entityAssnsToEntity
+		WHERE
+			associationPredicateGuid = #param1#
+	</select>
+	
+	<select id="getTargetsOfSource" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
+		remapResults="true" 
+		resultMap="nodeResult">
+		SELECT
+			targetEntityCode AS entityCode,
+			targetEntityCodeNamespace AS entityCodeNamespace
+		FROM 
+			$prefix$entityAssnsToEntity
+		WHERE
+			associationPredicateGuid = #param1#
+		AND
+			sourceEntityCode = #param2#
+		AND
+			sourceEntityCodeNamespace = #param3#		
 	</select>
     
 </sqlMap>
