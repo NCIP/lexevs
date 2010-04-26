@@ -27,16 +27,10 @@ import org.LexGrid.LexBIG.DataModel.Core.types.LogLevel;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExportStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
-import org.lexevs.dao.database.connection.SQLInterface;
-import org.lexevs.exceptions.MissingResourceException;
-import org.lexevs.system.ResourceManager;
 
-import edu.mayo.informatics.lexgrid.convert.formats.OptionHolder;
-import edu.mayo.informatics.lexgrid.convert.formats.OutputFormatInterface;
-import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.LexGridSQL;
-import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
+import edu.mayo.informatics.lexgrid.convert.options.DefaultOptionHolder;
 
 /**
  * Base class with common methods for exporters.
@@ -44,21 +38,24 @@ import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-public class BaseExporter {
+public abstract class BaseExporter {
     boolean inUse = false;
     public String name_;
     public static String version_ = edu.mayo.informatics.lexgrid.convert.utility.Constants.version;
     public String description_;
     public String provider_ = "MAYO";
 
-    MessageDirector md_;
-    ExportStatus status_;
+    private MessageDirector md_;
+    private ExportStatus status_;
+    
+    private URI resourceUri;
+    private AbsoluteCodingSchemeVersionReference source;
 
-    LexGridSQL in_;
-    OutputFormatInterface out_;
-
-    OptionHolder options_ = new OptionHolder();
-    String internalCodeSystemName_;
+    private OptionHolder holder = new DefaultOptionHolder();
+    
+    protected BaseExporter() {
+        this.holder = this.declareAllowedOptions(holder);
+    }
 
     protected void baseExport(boolean async) {
         status_.setState(ProcessState.PROCESSING);
@@ -75,51 +72,48 @@ public class BaseExporter {
 
     private class DoConversion implements Runnable {
         public void run() {
-            throw new UnsupportedOperationException(); //TODO  Need to implement new 6.0 exporter 
-//            
-//            try {
-//                @SuppressWarnings("unused")
-//                URNVersionPair[] loadedCodingSchemes = ConversionLauncher.startConversion(in_, out_,
-//                        new String[] { internalCodeSystemName_ }, options_, md_);
-//                loadedCodingSchemes = ConversionLauncher
-//                        .finishConversion(in_, out_, loadedCodingSchemes, options_, md_);
-//                status_.setState(ProcessState.COMPLETED);
-//                md_.info("Export process completed without error");
-//            } catch (Exception e) {
-//                status_.setState(ProcessState.FAILED);
-//                md_.fatal("Failed while running the export", e);
-//            } finally {
-//                if (status_.getState() == null || status_.getState().getType() != ProcessState.COMPLETED_TYPE) {
-//                    status_.setState(ProcessState.FAILED);
-//                }
-//                status_.setEndTime(new Date(System.currentTimeMillis()));
-//                inUse = false;
-//            }
-
+            
+            try {
+                doExport();
+                status_.setState(ProcessState.COMPLETED);
+                md_.info("Export process completed without error");
+            } catch (Exception e) {
+                status_.setState(ProcessState.FAILED);
+                md_.fatal("Failed while running the export", e);
+            } finally {
+                if (status_.getState() == null || !status_.getState().equals(ProcessState.COMPLETED)) {
+                    status_.setState(ProcessState.FAILED);
+                }
+                status_.setEndTime(new Date(System.currentTimeMillis()));
+                inUse = false;
+            }
         }
     }
+    
+    protected abstract void doExport() throws Exception;
+    
+    protected abstract OptionHolder declareAllowedOptions(OptionHolder holder);
+    
+    public void export(AbsoluteCodingSchemeVersionReference source, URI destination) {
+        try {
+            setInUse();
+            this.setResourceUri(destination);
+            this.setSource(source);
+        } catch (LBInvocationException e) {
+           throw new RuntimeException(e);
+        }
+        baseExport(true);
+    }
 
-    protected void setInUse() throws LBInvocationException {
+    private void setInUse() throws LBInvocationException {
         if (inUse) {
             throw new LBInvocationException(
                     "This loader is already in use.  Construct a new loader to do two operations at the same time", "");
         }
         inUse = true;
     }
-
-    protected void setupInput(AbsoluteCodingSchemeVersionReference source) throws LBParameterException,
-            MissingResourceException {
-        internalCodeSystemName_ = ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(
-                source.getCodingSchemeURN(), source.getCodingSchemeVersion());
-
-        SQLInterface si = ResourceManager.instance().getSQLInterface(internalCodeSystemName_,
-                source.getCodingSchemeVersion());
-
-        //TODO: Do we need the ConnectionDescriptor anymore? If so, for what?
-        //JDBCConnectionDescriptor jcd = si.getConnectionDescriptor();
-
-        //in_ = new LexGridSQL(jcd.getDbUid(), jcd.getDbPwd(), jcd.getDbUrl(), jcd.getDbDriver(), si.getTablePrefix());
-    }
+    
+    
 
     public ExportStatus getStatus() {
         return status_;
@@ -160,5 +154,21 @@ public class BaseExporter {
         } catch (Exception e) {
             return new URI[] {};
         }
+    }
+
+    public void setResourceUri(URI resourceUri) {
+        this.resourceUri = resourceUri;
+    }
+
+    public URI getResourceUri() {
+        return resourceUri;
+    }
+
+    public void setSource(AbsoluteCodingSchemeVersionReference source) {
+        this.source = source;
+    }
+
+    public AbsoluteCodingSchemeVersionReference getSource() {
+        return source;
     }
 }

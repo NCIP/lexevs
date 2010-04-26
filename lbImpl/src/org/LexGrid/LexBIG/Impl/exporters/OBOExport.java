@@ -18,24 +18,15 @@
  */
 package org.LexGrid.LexBIG.Impl.exporters;
 
-import java.io.File;
 import java.net.URI;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExportStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Export.OBO_Exporter;
+import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
-import org.lexevs.exceptions.MissingResourceException;
-import org.lexevs.system.ResourceManager;
-
-import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
-import edu.mayo.informatics.lexgrid.convert.formats.Option;
-import edu.mayo.informatics.lexgrid.convert.formats.outputFormats.OBOOut;
 
 /**
  * Exporter for OBO files.
@@ -49,9 +40,6 @@ public class OBOExport extends BaseExporter implements OBO_Exporter {
     public final static String name = "OBOExport";
     private final static String description = "This loader exports OBO files";
 
-    protected LgLoggerIF getLogger() {
-        return ResourceManager.instance().getLogger();
-    }
 
     public OBOExport() {
         super.name_ = OBOExport.name;
@@ -76,34 +64,21 @@ public class OBOExport extends BaseExporter implements OBO_Exporter {
 
     public void export(AbsoluteCodingSchemeVersionReference source, URI destination, boolean overwrite,
             boolean stopOnErrors, boolean async) throws LBException {
-        setInUse();
-
-        try {
-            setupInput(source);
-            out_ = new OBOOut(new File(destination).getAbsolutePath());
-            out_.testConnection();
-
-            options_.add(new Option(Option.SQL_FETCH_SIZE, "5000"));
-
-            options_.add(new Option(Option.OVERWRITE, new Boolean(overwrite)));
-            options_.add(new Option(Option.FAIL_ON_ERROR, new Boolean(stopOnErrors)));
-
-            status_ = new ExportStatus();
-            status_.setDestination(source.toString());
-            baseExport(async);
-        } catch (ConnectionFailure e) {
-            inUse = false;
-            throw new LBParameterException("The OBO file path appears to be invalid - " + e);
-        } catch (MissingResourceException e) {
-            inUse = false;
-            String id = getLogger().error("Problem getting sql info for export", e);
-            throw new LBInvocationException(
-                    "There was an unexpected problem getting the SQL information for exporting", id);
-        }
+        //
     }
 
     public String getOBOVersion() {
         return "1.2";
 
+    }
+
+    @Override
+    protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+        return holder;
+    }
+
+    @Override
+    protected void doExport() throws Exception {
+        //
     }
 }
