@@ -62,18 +62,6 @@ public interface OWL_Loader extends Loader {
 			throws LBException;
 
 	/**
-	 * @deprecated use load() instead
-	 */
-	public void loadNCI(URI source, URI manifest, boolean memorySafe, boolean stopOnErrors, boolean async)
-			throws LBException;
-
-	/**
-	 * @deprecated use load() instead
-	 */
-	public void loadNCIThes(URI source, URI manifest, boolean memorySafe, boolean stopOnErrors, boolean async)
-			throws LBException;
-
-	/**
 	 * Validate content for a candidate resource without performing a load.
 	 * <p>
 	 * Returns without exception if validation succeeds.
@@ -92,17 +80,4 @@ public interface OWL_Loader extends Loader {
 	 */
 	public void validate(URI source, URI manifest, int validationLevel)
 			throws LBException;
-
-	/**
-	 * @deprecated use validate() instead
-	 */
-	public void validateNCI(URI source, URI manifest, int validationLevel)
-			throws LBException;
-
-	/**
-	 * @deprecated use validate() instead
-	 */
-	public void validateNCIThes(URI source, URI manifest, int validationLevel)
-			throws LBException;
-
 }
