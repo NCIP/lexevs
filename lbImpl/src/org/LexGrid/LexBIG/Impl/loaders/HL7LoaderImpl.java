@@ -18,6 +18,8 @@
  */
 package org.LexGrid.LexBIG.Impl.loaders;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -83,66 +85,14 @@ public class HL7LoaderImpl extends BaseLoader implements HL7_Loader {
     public void load(String dbName, boolean stopOnErrors, boolean async) throws LBParameterException,
             LBInvocationException {
 
-        if (!System.getProperties().getProperty("os.name").contains("Windows")) {
-            throw new LBInvocationException(
-                    "This loader loads from MS Access and as a result can only be run from Microsoft Windows", "");
-        }
-        if (dbName.startsWith("/")) {
-            dbName = dbName.substring(1);
-        } else if (dbName.startsWith("file")) {
-            dbName = dbName.substring(6);
-        }
-
-        Connection c = null;
-        PreparedStatement getCodingSchemeInfo = null;
-        ResultSet results = null;
-        String codingSchemeName = null;
-        String representsVersion = null;
-
-        // Get the coding scheme information
-        // and close the connection to Access to keep it happy.
+        this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
+        this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(async);
+        
         try {
-
-            // Conditional to take care path problems for MS ACCESS
-            if (dbName.contains("%20"))
-                dbName = URLDecoder.decode(dbName, "UTF-8");
-            c = DBUtility.connectToDatabase(MSACCESS_SERVER + dbName.toString(), MSACCESS_DRIVER, null, null);
-            getCodingSchemeInfo = c.prepareStatement("SELECT modelID, versionNumber FROM Model");
-            results = getCodingSchemeInfo.executeQuery();
-            results.next();
-            codingSchemeName = results.getString(1);
-            representsVersion = results.getString(2);
-            if (representsVersion == null) {
-                representsVersion = SQLTableConstants.TBLCOLVAL_MISSING;
-            }
-            hl7CodingSchemes.add(new URNVersionPair(codingSchemeName, representsVersion));
-            urns.add(HL72LGConstants.DEFAULT_URN);
-
-        } catch (Exception e) {
-
-            getLogger().warn(
-                    "Failed to get Coding scheme " + codingSchemeName == null ? "unkown" : codingSchemeName
-                            + " from HL7 RIM database", e);
-            e.printStackTrace();
-        } finally {
-            if (c != null) {
-                try {
-                    results.close();
-                    c.close();
-                } catch (SQLException e) {
-                    // noop
-                }
-            }
+            this.load(new URI(dbName));
+        } catch (URISyntaxException e) {
+           throw new LBParameterException(e.getMessage());
         }
-
-        getStatus().setLoadSource("Provided SQL database " + dbName.toString());
-        getStatus().setState(ProcessState.PROCESSING);
-        getStatus().setStartTime(new Date(System.currentTimeMillis()));
-
-        setInUse();
-
-        baseLoad(async);
-
     }
 
     public void validate(String dbName, int validationLevel) throws LBException {
