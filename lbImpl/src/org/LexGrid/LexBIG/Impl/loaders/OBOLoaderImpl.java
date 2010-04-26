@@ -117,7 +117,10 @@ public class OBOLoaderImpl extends BaseLoader implements OBO_Loader {
 
     public void load(URI uri, URI metaSource, boolean stopOnErrors, boolean async) throws LBParameterException,
             LBInvocationException {
-       //
+        this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
+        this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
+        
+        this.load(uri);
     }
 
     @Override
