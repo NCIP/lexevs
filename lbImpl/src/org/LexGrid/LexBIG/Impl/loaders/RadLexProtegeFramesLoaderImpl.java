@@ -74,7 +74,10 @@ public class RadLexProtegeFramesLoaderImpl extends BaseLoader implements RadlexP
     }
 
     public void load(URI uri, boolean stopOnErrors, boolean async) throws LBParameterException, LBInvocationException {
-       //
+        this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
+        this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
+        
+        this.load(uri);
     }
 
     public void finalize() throws Throwable {
