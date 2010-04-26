@@ -32,7 +32,6 @@ import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Operation;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
 import org.LexGrid.LexBIG.Impl.dataAccess.IndexQueryParserFactory;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.naming.SupportedProperty;
@@ -43,9 +42,7 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.lexevs.dao.database.constants.classifier.mapping.StringToClassMappingClassifier;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
-import org.lexevs.exceptions.InternalException;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.service.SystemResourceService;
 
@@ -72,8 +69,6 @@ public class RestrictToMatchingProperties extends RestrictToProperties implement
     private SystemResourceService systemResourceService =
         LexEvsServiceLocator.getInstance().getSystemResourceService();
     
-    private StringToClassMappingClassifier stringToClassMappingClassifier = new StringToClassMappingClassifier();
-
     @LgClientSideSafe
     public String getLanguage() {
         return this.language_;
