@@ -21,9 +21,12 @@ package org.lexevs.dao.database.ibatis.versions;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.annotation.Resource;
+
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
+import org.lexevs.dao.database.service.codingscheme.VersionableEventCodingSchemeService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -44,11 +47,15 @@ public class IbatisVersionsDaoTest extends LexEvsDbUnitTestBase {
 	@Autowired
 	private IbatisVersionsDao ibatisVersionsDao;
 	
+	@Resource
+	private VersionableEventCodingSchemeService codingSchemeService;
+	
 	/**
 	 * Insert entry state.
 	 */
 	@Test
 	public void insertEntryState(){
+		System.out.println(codingSchemeService.getDatabaseServiceEventListeners().size());
 		EntryState es = new EntryState();
 		es.setChangeType(ChangeType.REMOVE);
 		es.setRelativeOrder(24l);
