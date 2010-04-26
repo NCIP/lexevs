@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
@@ -240,6 +241,7 @@ public class ProtegeOwl2LG {
             initSupportedDatatypeProperties();
             initSupportedObjectProperties();
             initSupportedAssociationAnnotationProperties();
+            initAssociationEntities();
 
 
             // If we are streaming the LexGrid model to database, write
@@ -2253,6 +2255,16 @@ public class ProtegeOwl2LG {
         // generic property class if not mapped above.
         owlDatatypeName2emfPropClass_.put(propertyName, emfClass);
     }
+    
+    protected void initAssociationEntities() {
+        Map<String,AssociationWrapper> associations = this.assocManager.getAllAssociations();
+        for(Entry<String,AssociationWrapper> association : associations.entrySet()) {
+            AssociationEntity associationEntity = association.getValue().getAssociationEntity();
+            if(associationEntity != null) {
+                this.addEntity(association.getValue().getAssociationEntity());
+            }
+        }
+    }
 
     /**
      * This method determines the various data types that are used in the
@@ -2729,6 +2741,26 @@ public class ProtegeOwl2LG {
         }
         if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
             emfScheme_.getEntities().addEntity(emfEntity);
+        } else {
+            try {
+                writeEntity(emfEntity);
+            } catch (Exception e) {
+                // Exception logged by SQLReadWrite
+                return;
+            }
+        }
+        entityCode2NameSpace_.put(emfEntity.getEntityCode(), emfEntity.getEntityCodeNamespace());
+        if (emfEntity instanceof Entity)
+            conceptCount_++;
+    }
+    
+    protected void addEntity(AssociationEntity emfEntity) {
+        if (isEntityCodeRegistered(emfEntity.getEntityCode())) {
+            messages_.info("Entity " + emfEntity.getEntityCode() + " already exists.");
+            return;
+        }
+        if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
+            emfScheme_.getEntities().addAssociationEntity(emfEntity);
         } else {
             try {
                 writeEntity(emfEntity);
