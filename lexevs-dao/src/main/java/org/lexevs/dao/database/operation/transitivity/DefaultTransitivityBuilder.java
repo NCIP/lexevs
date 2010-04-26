@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.relations.AssociationEntity;
@@ -59,12 +60,12 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 				if (!sourceEC.equals("@") && !targetEC.equals("@@"))
 				{
-					StringTriple sourceCode = new StringTriple();                            
-					sourceCode.a = sourceECNS;
-					sourceCode.c = sourceEC;
-					StringTriple targetCode = new StringTriple();                            
-					targetCode.a = targetECNS;
-					targetCode.c = targetEC;
+					StringTuple sourceCode = new StringTuple();                            
+					sourceCode.namespace = sourceECNS;
+					sourceCode.code = sourceEC;
+					StringTuple targetCode = new StringTuple();                            
+					targetCode.namespace = targetECNS;
+					targetCode.code = targetEC;
 
 					insertIntoTransitiveClosure(
 							codingSchemeUri, 
@@ -82,7 +83,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 			List<Node> distinctSourceTriples = getDistinctSourceTriples(codingSchemeUri, version, associationPredicateId);
 
-			ArrayList<StringTriple> sourceCodes = new ArrayList<StringTriple>();
+			ArrayList<StringTuple> sourceCodes = new ArrayList<StringTuple>();
 			sourceECNS = null;
 			sourceEC = null;
 			targetECNS = null;
@@ -92,10 +93,10 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 				sourceEC = sourceNode.getEntityCode();
 				if (!sourceEC.equals("@"))
 				{
-					StringTriple temp = new StringTriple();
+					StringTuple temp = new StringTuple();
 
-					temp.a = sourceECNS;
-					temp.c = sourceEC;
+					temp.namespace = sourceECNS;
+					temp.code = sourceEC;
 					sourceCodes.add(temp);
 				}
 
@@ -113,7 +114,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 							sourceNode.getEntityCode(),
 							sourceNode.getEntityCodeNamespace());
 
-					ArrayList<StringTriple> targetCodes = new ArrayList<StringTriple>();
+					ArrayList<StringTuple> targetCodes = new ArrayList<StringTuple>();
 					sourceECNS = null;
 					sourceEC = null;
 					targetECNS = null;
@@ -123,9 +124,9 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 						targetEC = targetNode.getEntityCode();
 						if (!targetEC.equals("@@"))
 						{
-							StringTriple temp = new StringTriple();
-							temp.a = targetECNS;
-							temp.c = targetEC;    
+							StringTuple temp = new StringTuple();
+							temp.namespace = targetECNS;
+							temp.code = targetEC;    
 							targetCodes.add(temp);
 						}
 					}
@@ -178,15 +179,15 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 			String codingSchemeUri, 
 			String codingSchemeVersion, 
 			String associationPredicateUid, 
-			StringTriple sourceCode,
-			ArrayList<StringTriple> targetCodes, 
+			StringTuple sourceCode,
+			ArrayList<StringTuple> targetCodes, 
 			LRUMap insertedCache) {
 		// The next target of each of the passed in targetCodes needs to be
 		// added to the transitive table.
 
 		for (int i = 0; i < targetCodes.size(); i++) {
 
-			ArrayList<StringTriple> targetTargets = new ArrayList<StringTriple>();
+			ArrayList<StringTuple> targetTargets = new ArrayList<StringTuple>();
 			String targetECNS = null;
 			String targetEC = null;
 
@@ -194,16 +195,16 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 					codingSchemeUri, 
 					codingSchemeVersion, 
 					associationPredicateUid, 
-					targetCodes.get(i).c, 
-					targetCodes.get(i).a);
+					targetCodes.get(i).code, 
+					targetCodes.get(i).namespace);
 			for(Node targetNode : targetNodes) {
 				targetECNS = targetNode.getEntityCodeNamespace();
 				targetEC =  targetNode.getEntityCode();
 				if (!targetEC.equals("@@"))
 				{
-					StringTriple temp = new StringTriple();
-					temp.a = targetECNS;
-					temp.c = targetEC;
+					StringTuple temp = new StringTuple();
+					temp.namespace = targetECNS;
+					temp.code = targetEC;
 
 					targetTargets.add(temp);
 				}
@@ -214,8 +215,8 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 			// exist, and if there isn't an entry in the regular table already
 
 			for (int j = 0; j < targetTargets.size(); j++) {
-				if (sourceCode.a.equals(targetTargets.get(j).a)
-						&& sourceCode.c.equals(targetTargets.get(j).c)) {
+				if (sourceCode.namespace.equals(targetTargets.get(j).namespace)
+						&& sourceCode.code.equals(targetTargets.get(j).code)) {
 					// if they equal each other, there is something wrong with
 					// the code system. But I don't
 					// want to fail.. so skip it.
@@ -242,10 +243,10 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 			// Now, need to recurse.
 			while (targetTargets.size() > 0) {
-				if (sourceCode.a.equals( targetTargets.get(0).a)
+				if (sourceCode.namespace.equals( targetTargets.get(0).namespace)
 						// && sourceCode.b.equals((
 						// targetTargets.get(0)).b)
-						&& sourceCode.c.equals( targetTargets.get(0).c)) {
+						&& sourceCode.code.equals( targetTargets.get(0).code)) {
 					// if they equal each other, there is something wrong with
 					// the code system. But I don't
 					// want to fail.. so skip it.
@@ -254,7 +255,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 				}
 
 				// need to pass in an array list - put the current item in one.
-				ArrayList<StringTriple> temp = new ArrayList<StringTriple>();
+				ArrayList<StringTuple> temp = new ArrayList<StringTuple>();
 				temp.add(targetTargets.get(0));
 				// remove it, since we will be done with it after this.
 				targetTargets.remove(0);
@@ -267,10 +268,10 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 			String codingSchemeUri, 
 			String codingSchemeVersion,
 			String associationPredicateId, 
-			StringTriple sourceCode, 
-			StringTriple targetCode, 
+			StringTuple sourceCode, 
+			StringTuple targetCode, 
 			LRUMap insertedCache) {
-		String key = sourceCode.a + ":" + sourceCode.c + ":" + targetCode.a + ":" + targetCode.c;
+		String key = sourceCode.code + ":" + sourceCode.namespace + ":" + targetCode.code + ":" + targetCode.namespace;
 
 		boolean iInserted = false;
 
@@ -284,10 +285,10 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 			this.insertIntoTransitiveClosure(
 					codingSchemeUri, 
 					codingSchemeVersion, 
-					sourceCode.a,
-					sourceCode.c,
-					targetCode.a, 
-					targetCode.c, 
+					sourceCode.code,
+					sourceCode.namespace,
+					targetCode.code, 
+					targetCode.namespace, 
 					associationPredicateId);
 
 		}
@@ -323,10 +324,9 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 		});
 	}
 
-	private class StringTriple {
-		String a;
-		String b;
-		String c;
+	private class StringTuple {
+		String code;
+		String namespace;
 	}
 
 	protected List<Triple> getTriples(
@@ -364,8 +364,10 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 				String codingSchemeId = codingSchemeDao.
 				getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+				
+				CodingScheme cs = codingSchemeDao.getCodingSchemeByUriAndVersion(codingSchemeUri, version);
 
-				Mappings mappings = codingSchemeDao.getMappings(codingSchemeId);;
+				Mappings mappings = cs.getMappings();
 
 				List<String> relationsIds = associationDao
 				.getRelationsUIdsForCodingSchemeUId(codingSchemeId);
@@ -377,14 +379,30 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 					for(String associationPredicateId : associatinPredicateIds) {
 						String associationName = associationDao.getAssociationPredicateNameForId(codingSchemeId, associationPredicateId);
 
-						SupportedAssociation sa = getSupportedAssociationWithName(mappings, associationName);
+						SupportedAssociation supportedAssociation = getSupportedAssociationWithName(mappings, associationName);
 
-						RegistryEntry entry = getRegistryEntryForCodingSchemeName(sa.getCodingScheme());
+				        String containingCodingScheme = supportedAssociation.getCodingScheme();
+				        String containingEntityCode = supportedAssociation.getEntityCode();
+				        String containingEntityCodeNamespace = supportedAssociation.getEntityCodeNamespace();
 
-						String entityCode = sa.getEntityCode();
-						String namespace = sa.getEntityCodeNamespace();
+				        //if there's no entityCode, assume the AssociationName
+				        if(StringUtils.isBlank(containingEntityCode)){
+				            containingEntityCode = supportedAssociation.getLocalId();
+				        }
 
-						boolean isTransitive = isTransitive(entry.getResourceUri(), entry.getResourceVersion(), entityCode, namespace);
+				        //if there's no codingSchemeName, assume local
+				        if(StringUtils.isBlank(containingCodingScheme)){
+				            containingCodingScheme = cs.getCodingSchemeName();
+				        }
+
+				        //if there's no entityCodeNamespace, assume default
+				        if(StringUtils.isBlank(containingEntityCodeNamespace)){
+				            containingEntityCodeNamespace = cs.getCodingSchemeName();
+				        }
+				        
+				        RegistryEntry entry = getRegistryEntryForCodingSchemeName(containingCodingScheme);
+
+						boolean isTransitive = isTransitive(entry.getResourceUri(), entry.getResourceVersion(), containingEntityCode, containingEntityCodeNamespace);
 
 						if(isTransitive) {
 							transitivePredicateIds.add(associationPredicateId);
