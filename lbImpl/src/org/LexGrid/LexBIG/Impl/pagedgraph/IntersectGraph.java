@@ -56,7 +56,7 @@ public class IntersectGraph extends AbstractMultiGraph {
             LocalNameList propertyNames, PropertyType[] propertyTypes, SortOptionList sortOptions,
             LocalNameList filterOptions, int maxToReturn, boolean keepLastAssociationLevelUnresolved)
             throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
+        //  TODO Auto-generated method stub (IMPLEMENT!)
         throw new UnsupportedOperationException();
     }
 }
