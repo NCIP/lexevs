@@ -20,6 +20,7 @@ package org.LexGrid.LexBIG.Extensions.Export;
 
 import java.net.URI;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
 import org.LexGrid.LexBIG.DataModel.Core.types.LogLevel;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExportStatus;
@@ -58,5 +59,14 @@ public interface Exporter extends Extendable, StatusReporter {
 	 * null if no operation has been attempted.
 	 */
 	public ExportStatus getStatus();
+	
+	/**
+	 * Export a CodingScheme resource to a URI destination.
+	 * 
+	 * @param source the source
+	 * @param destination the destination
+	 */
+	public void export(AbsoluteCodingSchemeVersionReference source,
+			URI destination);
 
 }
