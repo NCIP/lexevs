@@ -141,8 +141,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		return
 			(String) 
-				this.getSqlMapClientTemplate().queryForObject(GET_ASSOCIATION_PREDICATE_UID_SQL, new PrefixedParameter(
-						prefix, associationPredicateName));
+				this.getSqlMapClientTemplate().queryForObject(GET_ASSOCIATION_PREDICATE_UID_SQL, new PrefixedParameterTuple(
+						prefix, codingSchemeId, associationPredicateName));
 	}
 	
 	@SuppressWarnings("unchecked")
