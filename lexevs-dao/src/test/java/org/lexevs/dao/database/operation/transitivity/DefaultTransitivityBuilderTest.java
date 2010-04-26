@@ -1,5 +1,7 @@
 package org.lexevs.dao.database.operation.transitivity;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -12,6 +14,7 @@ import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.utility.RegistryUtility;
 import org.lexevs.system.service.LexEvsResourceManagingService;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 
@@ -259,6 +262,21 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 		int count = template.queryForInt("select count(*) from entityassnstoentitytr");
 		
 		assertEquals(1, count);
+		
+		assertTrue((Boolean)template.queryForObject("Select * from entityassnstoentitytr", new RowMapper(){
+
+			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
+				
+				assertNotNull(rs.getString(1));
+				assertEquals(rs.getString(2), "ap-guid");
+				assertEquals(rs.getString(3), "s-code");
+				assertEquals(rs.getString(4), "s-ns");
+				assertEquals(rs.getString(5), "t-code1");
+				assertEquals(rs.getString(6), "t-ns1");
+
+				return true;
+			}
+		}));
 	}
 	
 	@Test
