@@ -2,7 +2,6 @@ package org.lexevs.dao.database.operation.transitivity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
@@ -70,11 +69,9 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 					insertIntoTransitiveClosure(
 							codingSchemeUri, 
 							version, 
-							sourceEC, 
-							sourceECNS,
-							targetEC, 
-							targetECNS,
 							associationPredicateId, 
+							sourceCode,
+							targetCode,
 							insertedCache);
 				}
 			}  
@@ -197,8 +194,8 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 					codingSchemeUri, 
 					codingSchemeVersion, 
 					associationPredicateUid, 
-					targetCodes.get(i).a, 
-					targetCodes.get(i).c);
+					targetCodes.get(i).c, 
+					targetCodes.get(i).a);
 			for(Node targetNode : targetNodes) {
 				targetECNS = targetNode.getEntityCodeNamespace();
 				targetEC =  targetNode.getEntityCode();
@@ -266,8 +263,13 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 		}
 	}
 
-	private boolean insertIntoTransitiveClosure(String codingSchemeUri, String codingSchemeVersion,
-			String associationPredicateId, StringTriple sourceCode, StringTriple targetCode, LRUMap insertedCache) {
+	private boolean insertIntoTransitiveClosure(
+			String codingSchemeUri, 
+			String codingSchemeVersion,
+			String associationPredicateId, 
+			StringTriple sourceCode, 
+			StringTriple targetCode, 
+			LRUMap insertedCache) {
 		String key = sourceCode.a + ":" + sourceCode.c + ":" + targetCode.a + ":" + targetCode.c;
 
 		boolean iInserted = false;
@@ -279,6 +281,14 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 			insertedCache.put(key, null);
 			iInserted = true;
+			this.insertIntoTransitiveClosure(
+					codingSchemeUri, 
+					codingSchemeVersion, 
+					sourceCode.a,
+					sourceCode.c,
+					targetCode.a, 
+					targetCode.c, 
+					associationPredicateId);
 
 		}
 		return iInserted;
@@ -291,8 +301,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 			final String sourceNamespace,
 			final String targetCode, 
 			final String targetNamespace, 
-			final String associationPredicateId,
-			Map cache) {
+			final String associationPredicateId) {
 		this.databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<Object>(){
 
 			@Override
