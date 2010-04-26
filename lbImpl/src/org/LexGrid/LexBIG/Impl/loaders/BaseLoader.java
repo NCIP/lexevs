@@ -211,8 +211,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     }
 
     private class DoConversion implements Runnable {
- 
-        @SuppressWarnings("null")
+
         public void run() {
             URNVersionPair[] locks = null;
             try {          
@@ -313,7 +312,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
 
     protected void doTransitiveAndIndex(AbsoluteCodingSchemeVersionReference[] references) throws Exception {
         if(doComputeTransitiveClosure) {
-           // doTransitiveTable(codingSchemes, sci);
+          doTransitiveTable(references);
         }
         if(doIndexing) {
             doIndex(references);
@@ -361,30 +360,23 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
 
     }
 
-    protected void doTransitiveTable(String[] codingSchemes, SQLConnectionInfo sci) throws Exception {
-        Snapshot snap1 = SimpleMemUsageReporter.snapshot();
-        md_.info("Loading transitive expansion table");
-        Connection c = null;
-        try {
-            c = DBUtility.connectToDatabase(sci.server, sci.driver, sci.username, sci.password);
-            SQLTableUtilities stu = new SQLTableUtilities(c, sci.prefix);
-            for (int i = 0; i < codingSchemes.length; i++) {
-                stu.computeTransitivityTable(codingSchemes[i], md_);
-                //There are memory issues with the new transitive closure implementation...Doesn't scale for large ontologies.               
-                //TransitiveClosure tc= new TransitiveClosure(c, stu, codingSchemes[i],md_);
-                //tc.computeTransitivityTable();
-            }
-        } finally {
-            if (c != null) {
-                c.close();
-            }
-        }
-        Snapshot snap2 = SimpleMemUsageReporter.snapshot();
-        md_.info("Finished building transitive expansion.   Time taken: "
-                + SimpleMemUsageReporter.formatTimeDiff(snap2.getTimeDelta(snap1)) + "   Heap usage: "
-                + SimpleMemUsageReporter.formatMemStat(snap2.getHeapUsage()) + "   Heap delta: "
-                + SimpleMemUsageReporter.formatMemStat(snap2.getHeapUsageDelta(snap1)));
+    protected void doTransitiveTable(AbsoluteCodingSchemeVersionReference[] references) throws Exception {
 
+        for(AbsoluteCodingSchemeVersionReference reference : references) {
+            Snapshot snap1 = SimpleMemUsageReporter.snapshot();
+            md_.info("Loading transitive expansion table");
+
+            LexEvsServiceLocator.getInstance().
+                getLexEvsDatabaseOperations().computeTransitiveTable(
+                    reference.getCodingSchemeURN(), 
+                    reference.getCodingSchemeVersion());
+
+            Snapshot snap2 = SimpleMemUsageReporter.snapshot();
+            md_.info("Finished building transitive expansion.   Time taken: "
+                    + SimpleMemUsageReporter.formatTimeDiff(snap2.getTimeDelta(snap1)) + "   Heap usage: "
+                    + SimpleMemUsageReporter.formatMemStat(snap2.getHeapUsage()) + "   Heap delta: "
+                    + SimpleMemUsageReporter.formatMemStat(snap2.getHeapUsageDelta(snap1)));
+        }
     }
 
     protected void register(URNVersionPair[] loadedCodingSchemes) throws Exception {
