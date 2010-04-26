@@ -3,11 +3,13 @@ package org.lexevs.dao.database.ibatis.codednodegraph;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
 import org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
@@ -22,6 +24,9 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	private static String GET_ENTITY_ASSNSTOENTITY_UID_COUNT_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getEntityAssnsToEntityUidsCount";
 	private static String GET_ASSOCIATEDCONCEPT_FROM_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getAssociatedConcpetFromEntityAssnsToEntityUid";
 	private static String GET_ASSOCIATION_PREDICATE_NAMES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getAssociationPredicatNamesFromCodingSchemeUid";
+	private static String GET_DISTINCT_SOURCE_NODES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getDistinctSources";
+	private static String GET_TARGET_NODES_OF_SOURCE_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTargetsOfSource";
+	
 	@Override
 	public int getTripleUidsContainingObjectCount(
 			String codingSchemeUid,
@@ -180,4 +185,36 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 					bean);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Node> getDistinctSourceNodesForAssociationPredicate(
+			String codingSchemeUid, String associationPredicateUid) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
+		
+		PrefixedParameter bean = new PrefixedParameter();
+		bean.setPrefix(prefix);
+		bean.setParam1(codingSchemeUid);
+		
+		return this.getSqlMapClientTemplate().
+			queryForList(GET_DISTINCT_SOURCE_NODES_SQL, 
+				bean);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Node> getTargetNodesForSource(String codingSchemeUid,
+			String associationPredicateUid, String sourceEntityCode,
+			String sourceEntityCodeNamespace) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
+		
+		PrefixedParameterTriple bean = new PrefixedParameterTriple();
+		bean.setPrefix(prefix);
+		bean.setParam1(associationPredicateUid);
+		bean.setParam2(sourceEntityCode);
+		bean.setParam3(sourceEntityCodeNamespace);
+		
+		return this.getSqlMapClientTemplate().
+			queryForList(GET_TARGET_NODES_OF_SOURCE_SQL, 
+				bean);
+	}
 }
