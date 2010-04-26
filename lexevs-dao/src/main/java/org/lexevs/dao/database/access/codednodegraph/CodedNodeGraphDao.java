@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
+import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 
 /**
@@ -72,4 +73,14 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 	
 	public List<String> getAssociationPredicateNamesForCodingSchemeUid(
 			String codingSchemeUid);
+	
+	public List<Node> getDistinctSourceNodesForAssociationPredicate(
+			String codingSchemeUid, 
+			String associationPredicateUid);
+	
+	public List<Node> getTargetNodesForSource(
+			String codingSchemeUid, 
+			String associationPredicateUid, 
+			String sourceEntityCode, 
+			String sourceEntityCodeNamespace);
 }
