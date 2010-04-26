@@ -19,6 +19,7 @@
 package org.lexevs.dao.database.ibatis.codednodegraph;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -26,6 +27,7 @@ import javax.annotation.Resource;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.junit.Test;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -76,7 +78,15 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				" 't-ns2'," +
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 	
-		List<String> uids = ibatisCodedNodeGraphDao.getTripleUidsContainingSubject("cs-guid", "ap-guid", "s-code", "s-ns", 0, -1);
+		List<String> uids = ibatisCodedNodeGraphDao.
+			getTripleUidsContainingSubject(
+					"cs-guid", 
+					"ap-guid", 
+					"s-code", 
+					"s-ns", 
+					null,
+					0, 
+					-1);
 		
 		assertEquals(2, uids.size());
 		assertTrue(uids.contains("eae-guid1"));
@@ -117,7 +127,9 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				" 't-ns2'," +
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 	
-		int uids = ibatisCodedNodeGraphDao.getTripleUidsContainingSubjectCount("cs-guid", "ap-guid", "s-code", "s-ns");
+		int uids = ibatisCodedNodeGraphDao.
+			getTripleUidsContainingSubjectCount(
+					"cs-guid", "ap-guid", "s-code", "s-ns", null);
 		
 		assertEquals(2, uids);
 	}
@@ -156,7 +168,9 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				" 't-ns2'," +
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 	
-		int uids = ibatisCodedNodeGraphDao.getTripleUidsContainingObjectCount("cs-guid", "ap-guid", "t-code1", "t-ns1");
+		int uids = ibatisCodedNodeGraphDao.
+			getTripleUidsContainingObjectCount(
+					"cs-guid", "ap-guid", "t-code1", "t-ns1", null);
 		
 		assertEquals(1, uids);
 	}
@@ -232,5 +246,209 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		assertEquals("t-code",associatedConcept.getCode());
 		assertEquals("t-ns",associatedConcept.getCodeNamespace());
+	}
+	
+	@Test
+	public void testGetTripleUidsContainingSubjectCountWithQualifierName() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid) values " +
+		"('ap-guid', 'rel-guid')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid1'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid2'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+	
+		template.execute("insert into " +
+				"entityassnquals values ( " +
+				"'eae-quals-guid', " +
+				"'eae-guid1'," +
+				"'qualName'," +
+				"'qualValue'," +
+				"null )");
+		List<QualifierNameValuePair> list = new ArrayList<QualifierNameValuePair>();
+		list.add(new QualifierNameValuePair("qualName", null));
+		
+		int uids = ibatisCodedNodeGraphDao.
+			getTripleUidsContainingSubjectCount(
+					"cs-guid", "ap-guid", "s-code", "s-ns", list);
+		
+		assertEquals(1, uids);
+	}
+	
+	@Test
+	public void testGetTripleUidsContainingSubjectCountWithBadQualifierName() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid) values " +
+		"('ap-guid', 'rel-guid')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid1'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid2'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+	
+		template.execute("insert into " +
+				"entityassnquals values ( " +
+				"'eae-quals-guid', " +
+				"'eae-guid1'," +
+				"'qualName'," +
+				"'qualValue'," +
+				"null )");
+		List<QualifierNameValuePair> list = new ArrayList<QualifierNameValuePair>();
+		list.add(new QualifierNameValuePair("BAD_qualName", null));
+		
+		int uids = ibatisCodedNodeGraphDao.
+			getTripleUidsContainingSubjectCount(
+					"cs-guid", "ap-guid", "s-code", "s-ns", list);
+		
+		assertEquals(0, uids);
+	}
+	
+	@Test
+	public void testGetTripleUidsContainingSubjectCountWithQualifierNameAndValue() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid) values " +
+		"('ap-guid', 'rel-guid')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid1'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid2'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+	
+		template.execute("insert into " +
+				"entityassnquals values ( " +
+				"'eae-quals-guid', " +
+				"'eae-guid1'," +
+				"'qualName'," +
+				"'qualValue'," +
+				"null )");
+		List<QualifierNameValuePair> list = new ArrayList<QualifierNameValuePair>();
+		list.add(new QualifierNameValuePair("qualName", "qualValue"));
+		
+		int uids = ibatisCodedNodeGraphDao.
+			getTripleUidsContainingSubjectCount(
+					"cs-guid", "ap-guid", "s-code", "s-ns", list);
+		
+		assertEquals(1, uids);
+	}
+	
+	@Test
+	public void testGetTripleUidsContainingSubjectCountWithQualifierNameAndBadValue() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid) values " +
+		"('ap-guid', 'rel-guid')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid1'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid2'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+	
+		template.execute("insert into " +
+				"entityassnquals values ( " +
+				"'eae-quals-guid', " +
+				"'eae-guid1'," +
+				"'qualName'," +
+				"'qualValue'," +
+				"null )");
+		List<QualifierNameValuePair> list = new ArrayList<QualifierNameValuePair>();
+		list.add(new QualifierNameValuePair("qualName", "BAD_qualValue"));
+		
+		int uids = ibatisCodedNodeGraphDao.
+			getTripleUidsContainingSubjectCount(
+					"cs-guid", "ap-guid", "s-code", "s-ns", list);
+		
+		assertEquals(0, uids);
 	}
 }
