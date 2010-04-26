@@ -61,8 +61,10 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
     }
     
     public void load(URI source, boolean stopOnErrors, boolean async) throws LBException {
-        // TODO Auto-generated method stub
+        this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
+        this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
         
+        this.load(source);
     }
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader#load(java.net.URI, boolean, boolean)
