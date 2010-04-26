@@ -26,7 +26,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.LexGrid.commonTypes.EntityDescription;
-import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
