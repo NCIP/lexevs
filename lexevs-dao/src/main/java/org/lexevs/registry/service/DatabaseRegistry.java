@@ -26,6 +26,9 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.lexevs.cache.annotation.CacheMethod;
+import org.lexevs.cache.annotation.Cacheable;
+import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.dao.database.prefix.NextDatabasePrefixGenerator;
 import org.lexevs.registry.event.RegistryEventSupport;
@@ -37,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Cacheable(cacheName="DatabaseRegistry", cacheSize = 100)
 public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	
 	/** The registry dao. */
@@ -54,6 +58,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	 * @throws LBParameterException the LB parameter exception
 	 */
 	@Transactional
+	@ClearCache
 	public void activate(AbsoluteCodingSchemeVersionReference codingScheme)
 			throws LBInvocationException, LBParameterException {
 		RegistryEntry entry = registryDao.getRegistryEntryForUriAndVersion(
@@ -69,6 +74,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	 * @see org.lexevs.registry.service.Registry#addNewItem(org.lexevs.registry.model.RegistryEntry)
 	 */
 	@Transactional
+	@ClearCache
 	public void addNewItem(RegistryEntry entry)
 			throws Exception {
 		
@@ -79,6 +85,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	 * @see org.lexevs.registry.service.Registry#getAllRegistryEntries()
 	 */
 	@Transactional
+	@CacheMethod
 	public List<RegistryEntry> getAllRegistryEntries() {
 		return registryDao.getAllRegistryEntries();
 	}
@@ -87,6 +94,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	 * @see org.lexevs.registry.service.Registry#getAllRegistryEntriesOfType(org.lexevs.registry.service.Registry.ResourceType)
 	 */
 	@Transactional
+	@CacheMethod
 	public List<RegistryEntry> getAllRegistryEntriesOfType(ResourceType type) {
 		List<RegistryEntry> returnList = new ArrayList<RegistryEntry>();
 		
@@ -96,6 +104,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	}
 	
 	@Transactional
+	@CacheMethod
 	public List<RegistryEntry> getAllRegistryEntriesOfTypeAndURI(ResourceType type, String uri) {
 		List<RegistryEntry> returnList = new ArrayList<RegistryEntry>();
 		
@@ -108,6 +117,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	 * @see org.lexevs.registry.service.Registry#getEntriesForUri(java.lang.String)
 	 */
 	@Transactional
+	@CacheMethod
 	public List<RegistryEntry> getEntriesForUri(String uri)
 			throws LBParameterException {
 		return 
@@ -138,14 +148,14 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	 * @see org.lexevs.registry.service.Registry#getNextHistoryIdentifier()
 	 */
 	public String getNextHistoryIdentifier() throws LBInvocationException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#containsCodingSchemeEntry(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
 	@Transactional
+	@CacheMethod
 	public boolean containsCodingSchemeEntry(
 			AbsoluteCodingSchemeVersionReference codingScheme) {
 		try {
@@ -162,6 +172,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	 * @see org.lexevs.registry.service.Registry#updateEntry(org.lexevs.registry.model.RegistryEntry)
 	 */
 	@Transactional
+	@ClearCache
 	public void updateEntry(
 			RegistryEntry entry){
 		this.registryDao.updateRegistryEntry(entry);
@@ -171,6 +182,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	 * @see org.lexevs.registry.service.Registry#getCodingSchemeEntry(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
 	@Transactional
+	@CacheMethod
 	public RegistryEntry getCodingSchemeEntry(
 			AbsoluteCodingSchemeVersionReference codingScheme)
 			throws LBParameterException {
@@ -183,14 +195,14 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	 */
 	public RegistryEntry getNonCodingSchemeEntry(String uri)
 			throws LBParameterException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#removeEntry(org.lexevs.registry.model.RegistryEntry)
 	 */
 	@Transactional
+	@ClearCache
 	public void removeEntry(RegistryEntry entry) throws LBParameterException {
 		registryDao.deleteRegistryEntry(entry);	
 	}
@@ -199,8 +211,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	 * @see org.lexevs.registry.service.Registry#containsNonCodingSchemeEntry(java.lang.String)
 	 */
 	public boolean containsNonCodingSchemeEntry(String uri) {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException();
 	}
 	
 	/**
