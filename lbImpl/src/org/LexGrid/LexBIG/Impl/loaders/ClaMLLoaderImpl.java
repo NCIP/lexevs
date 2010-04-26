@@ -1,6 +1,7 @@
 package org.LexGrid.LexBIG.Impl.loaders;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -52,9 +53,14 @@ public class ClaMLLoaderImpl extends BaseLoader implements ClaML_Loader{
         
     }
 
-    public void load(String path, boolean stopOnErrors, boolean async) throws LBException {
-        // TODO Auto-generated method stub
+    public void load(String resource, boolean stopOnErrors, boolean async) throws LBException {
+        this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
+        this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
         
+        try {
+            this.load(new URI(resource));
+        } catch (URISyntaxException e) {
+           throw new LBException(e.getMessage());
+        }   
     }
-
 }
