@@ -75,7 +75,7 @@ public interface EntityService {
 			String entityCode,
 			String entityCodeNamespace);
 	
-	public Entity getAssociationEntity(
+	public AssociationEntity getAssociationEntity(
 			String codingSchemeUri, 
 			String version, 
 			String entityCode,
