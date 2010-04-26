@@ -1485,16 +1485,24 @@ public class XmlRegistry implements Registry {
 	 * @see org.lexevs.registry.service.Registry#addNewItem(org.lexevs.registry.model.RegistryEntry)
 	 */
 	public void addNewItem(RegistryEntry entry) throws Exception {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("No adding to XML Registry is allowed.");
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#getAllRegistryEntries()
 	 */
 	public List<RegistryEntry> getAllRegistryEntries() {
-		// TODO Auto-generated method stub
-		return null;
+		List<RegistryEntry> returnList = new ArrayList<RegistryEntry>();
+
+		for(DBEntry entry : this.getDBEntries()){
+			returnList.add(RegistryEntry.toRegistryEntry(entry));
+		}
+
+		for(HistoryEntry entry : this.getHistoryEntries()){
+			returnList.add(RegistryEntry.toRegistryEntry(entry));
+		}
+
+		return returnList;
 	}
 
 	/* (non-Javadoc)
@@ -1515,10 +1523,25 @@ public class XmlRegistry implements Registry {
 		
 		return returnList;
 	}
-	
+
 	public List<RegistryEntry> getAllRegistryEntriesOfTypeAndURI(ResourceType type, String uri) {
-		// TODO Auto-generated method stub
-		return null;
+		List<RegistryEntry> returnList = new ArrayList<RegistryEntry>();
+
+		if(type.equals(ResourceType.CODING_SCHEME)){
+			for(DBEntry entry : this.getDBEntries()){
+				if(entry.urn.equals(uri)) {
+					returnList.add(RegistryEntry.toRegistryEntry(entry));
+				}
+			}
+		} else if(type.equals(ResourceType.NCI_HISTORY)){
+
+			for(HistoryEntry entry : this.getHistoryEntries()){
+				if(entry.urn.equals(uri)) {
+					returnList.add(RegistryEntry.toRegistryEntry(entry));
+				}
+			}
+		}
+		return returnList;
 	}
 
 	/* (non-Javadoc)
@@ -1526,8 +1549,20 @@ public class XmlRegistry implements Registry {
 	 */
 	public List<RegistryEntry> getEntriesForUri(String uri)
 			throws LBParameterException {
-		// TODO Auto-generated method stub
-		return null;
+		List<RegistryEntry> returnList = new ArrayList<RegistryEntry>();
+		
+		for(DBEntry entry : this.getDBEntries()){
+			if(entry.urn.equals(uri)) {
+				returnList.add(RegistryEntry.toRegistryEntry(entry));
+			}
+		}
+
+		for(HistoryEntry entry : this.getHistoryEntries()){
+			if(entry.urn.equals(uri)) {
+				returnList.add(RegistryEntry.toRegistryEntry(entry));
+			}
+		}
+		return returnList;
 	}
 
 	/* (non-Javadoc)
@@ -1579,8 +1614,7 @@ public class XmlRegistry implements Registry {
 	 * @see org.lexevs.registry.service.Registry#removeEntry(org.lexevs.registry.model.RegistryEntry)
 	 */
 	public void removeEntry(RegistryEntry entry) throws LBParameterException {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("No editing to XML Registry is allowed.");
 	}
 
 	/* (non-Javadoc)
