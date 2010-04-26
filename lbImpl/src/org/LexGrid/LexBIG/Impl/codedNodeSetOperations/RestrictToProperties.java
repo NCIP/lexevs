@@ -27,10 +27,14 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Operation;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.annotations.LgClientSideSafe;
-import org.lexevs.exceptions.InternalException;
+import org.LexGrid.naming.SupportedContext;
+import org.LexGrid.naming.SupportedProperty;
+import org.LexGrid.naming.SupportedPropertyQualifier;
+import org.LexGrid.naming.SupportedSource;
+import org.LexGrid.naming.URIMap;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
  * Holder for the RestrictToProperties operation.
@@ -60,8 +64,11 @@ public class RestrictToProperties implements Restriction, Operation {
             if (sourceList != null) {
                 Enumeration<? extends String> sources = sourceList.enumerateEntry();
                 while (sources.hasMoreElements()) {
-                    SQLImplementedMethods.validateSource(internalCodeSystemName, internalVersionString,
-                            sources.nextElement());
+                    this.validateSupportedAttribute(
+                            internalCodeSystemName, 
+                            internalVersionString, 
+                            sources.nextElement(), 
+                            SupportedSource.class);
                 }
             }
             sourceList_ = sourceList;
@@ -69,8 +76,11 @@ public class RestrictToProperties implements Restriction, Operation {
             if (qualifierList != null) {
                 Enumeration<? extends NameAndValue> qualifiers = qualifierList.enumerateNameAndValue();
                 while (qualifiers.hasMoreElements()) {
-                    SQLImplementedMethods.validatePropertyQualifier(internalCodeSystemName, internalVersionString,
-                            (qualifiers.nextElement()).getName());
+                    this.validateSupportedAttribute(
+                            internalCodeSystemName, 
+                            internalVersionString, 
+                            qualifiers.nextElement().getName(), 
+                            SupportedPropertyQualifier.class);
                 }
             }
             qualifierList_ = qualifierList;
@@ -78,18 +88,18 @@ public class RestrictToProperties implements Restriction, Operation {
             if (contextList_ != null) {
                 Enumeration<? extends String> contexts = contextList.enumerateEntry();
                 while (contexts.hasMoreElements()) {
-                    SQLImplementedMethods.validateContext(internalCodeSystemName, internalVersionString,
-                            contexts.nextElement());
+                    this.validateSupportedAttribute(
+                            internalCodeSystemName, 
+                            internalVersionString, 
+                            contexts.nextElement(), 
+                            SupportedContext.class);
                 }
             }
 
             contextList_ = contextList;
         } catch (LBParameterException e) {
             throw e;
-        } catch (InternalException e) {
-            throw new LBInvocationException("There was an unexpected error while validating the parameters.", e
-                    .getLogId());
-        }
+        } 
     }
 
     public RestrictToProperties(LocalNameList propertyList, PropertyType[] propertyTypes, LocalNameList sourceList,
@@ -109,8 +119,11 @@ public class RestrictToProperties implements Restriction, Operation {
                 Enumeration<? extends String> items = propertyList.enumerateEntry();
                 while (items.hasMoreElements()) {
                     // this will throw the necessary exceptions
-                    SQLImplementedMethods.validateProperty(internalCodeSystemName, internalVersionString, items
-                            .nextElement());
+                    this.validateSupportedAttribute(
+                            internalCodeSystemName, 
+                            internalVersionString, 
+                            items.nextElement(), 
+                            SupportedProperty.class);
                 }
                 propertyList_ = propertyList;
             }
@@ -118,11 +131,22 @@ public class RestrictToProperties implements Restriction, Operation {
             propertyTypes_ = propertyTypes;
         } catch (LBParameterException e) {
             throw e;
-        } catch (InternalException e) {
-            throw new LBInvocationException("There was an unexpected error while validating the parameters.", e
-                    .getLogId());
+        } 
+    }
+    
+    protected void validateSupportedAttribute(
+            String internalCodeSystemName, 
+            String internalVersionString, 
+            String localId, Class<? extends URIMap> supportedAttributeClass) throws LBParameterException {
+        String uri = 
+            LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName);
+        
+        boolean isValid = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
+            getCodingSchemeService().validatedSupportedAttribute(uri, internalVersionString, localId, supportedAttributeClass);
+        
+        if(!isValid) {
+            throw new LBParameterException("Attribute with Id: " + localId + " is not valid, or is not registered as a " + supportedAttributeClass.getSimpleName());
         }
-
     }
 
     /**
