@@ -17,5 +17,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/protege/protege-owl.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/protege/protege.jar"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-test-2.5.6.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
