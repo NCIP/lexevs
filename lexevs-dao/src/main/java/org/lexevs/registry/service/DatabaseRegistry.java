@@ -29,6 +29,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
+import org.lexevs.cache.annotation.ParameterKey;
 import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.dao.database.prefix.NextDatabasePrefixGenerator;
 import org.lexevs.registry.event.RegistryEventSupport;
@@ -157,6 +158,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	@Transactional
 	@CacheMethod
 	public boolean containsCodingSchemeEntry(
+			@ParameterKey(field = { "_codingSchemeURN" , "_codingSchemeVersion"}) 
 			AbsoluteCodingSchemeVersionReference codingScheme) {
 		try {
 			RegistryEntry entry = registryDao.getRegistryEntryForUriAndVersion(
@@ -184,6 +186,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	@Transactional
 	@CacheMethod
 	public RegistryEntry getCodingSchemeEntry(
+			@ParameterKey(field = { "_codingSchemeURN" , "_codingSchemeVersion"}) 
 			AbsoluteCodingSchemeVersionReference codingScheme)
 			throws LBParameterException {
 		return registryDao.getRegistryEntryForUriAndVersion(codingScheme.getCodingSchemeURN(), codingScheme.getCodingSchemeVersion());

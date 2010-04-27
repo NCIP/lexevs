@@ -55,7 +55,7 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	public List<RegistryEntry> getAllRegistryEntries() {
 		List<RegistryEntry> allEntries = new ArrayList<RegistryEntry>();
 		allEntries.addAll(this.databaseRegistry.getAllRegistryEntries());
-		//allEntries.addAll(this.xmlRegistry.getAllRegistryEntries());
+		allEntries.addAll(this.xmlRegistry.getAllRegistryEntries());
 		
 		return allEntries;
 	}
@@ -85,16 +85,26 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	 */
 	public List<RegistryEntry> getEntriesForUri(String uri)
 			throws LBParameterException {
-		// TODO Auto-generated method stub
-		return null;
+		List<RegistryEntry> allEntries = new ArrayList<RegistryEntry>();
+		
+		allEntries.addAll(this.databaseRegistry.getEntriesForUri(uri));
+		allEntries.addAll(this.xmlRegistry.getEntriesForUri(uri));
+		
+		return allEntries;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#getLastUpdateTime()
 	 */
 	public Date getLastUpdateTime() {
-		// TODO Auto-generated method stub
-		return null;
+		Date date1 = databaseRegistry.getLastUpdateTime();
+		Date date2 = xmlRegistry.getLastUpdateTime();
+		
+		if(date1.after(date2)) {
+			return date1;
+		} else {
+			return date2;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -108,8 +118,7 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	 * @see org.lexevs.registry.service.Registry#getNextHistoryIdentifier()
 	 */
 	public String getNextHistoryIdentifier() throws LBInvocationException {
-		// TODO Auto-generated method stub
-		return null;
+		return databaseRegistry.getNextHistoryIdentifier();
 	}
 
 	/* (non-Javadoc)
@@ -152,16 +161,14 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	 */
 	public RegistryEntry getNonCodingSchemeEntry(String uri)
 			throws LBParameterException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#removeEntry(org.lexevs.registry.model.RegistryEntry)
 	 */
 	public void removeEntry(RegistryEntry entry) throws LBParameterException {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 	
 	/* (non-Javadoc)
