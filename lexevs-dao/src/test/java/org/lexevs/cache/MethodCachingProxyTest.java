@@ -20,6 +20,7 @@ package org.lexevs.cache;
 
 import javax.annotation.Resource;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.cache.annotation.Cacheable;
@@ -57,6 +58,25 @@ public class MethodCachingProxyTest extends LexEvsDbUnitTestBase {
 	@Before
 	public void clearCache(){
 		testCacheProxy.getCaches().clear();
+	}
+	
+	@Test
+	public void testComplexObject(){
+		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+		ref.setCodingSchemeURN("uri");
+		ref.setCodingSchemeVersion("version");
+		
+		testCacheBean.getValueOfCompositeObject(ref);
+		
+		assertEquals(1, testCacheProxy.getCaches().get("testCache").size());
+		
+		AbsoluteCodingSchemeVersionReference ref2 = new AbsoluteCodingSchemeVersionReference();
+		ref2.setCodingSchemeURN("uri");
+		ref2.setCodingSchemeVersion("version");
+		
+		testCacheBean.getValueOfCompositeObject(ref2);
+		
+		assertEquals(1, testCacheProxy.getCaches().get("testCache").size());	
 	}
 	
 	/**
