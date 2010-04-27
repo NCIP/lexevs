@@ -141,7 +141,6 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#getAssociationPredicateId(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	@CacheMethod
 	public String getAssociationPredicateUid(String codingSchemeUid, String relationsContainerName, String associationPredicateName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		return
