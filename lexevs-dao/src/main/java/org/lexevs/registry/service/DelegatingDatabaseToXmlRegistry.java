@@ -36,7 +36,6 @@ import org.lexevs.registry.model.RegistryEntry;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@Cacheable(cacheName="DelegatingDatabaseToXmlRegistry", cacheSize = 100)
 public class DelegatingDatabaseToXmlRegistry implements Registry {
 	
 	/** The database registry. */
@@ -55,7 +54,6 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#getAllRegistryEntries()
 	 */
-	@CacheMethod
 	public List<RegistryEntry> getAllRegistryEntries() {
 		List<RegistryEntry> allEntries = new ArrayList<RegistryEntry>();
 		allEntries.addAll(this.databaseRegistry.getAllRegistryEntries());
@@ -67,7 +65,6 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#getAllRegistryEntriesOfType(org.lexevs.registry.service.Registry.ResourceType)
 	 */
-	@CacheMethod
 	public List<RegistryEntry> getAllRegistryEntriesOfType(ResourceType type) {
 		List<RegistryEntry> allEntries = new ArrayList<RegistryEntry>();
 		allEntries.addAll(this.databaseRegistry.getAllRegistryEntriesOfType(type));
@@ -76,7 +73,6 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 		return allEntries;
 	}
 	
-	@CacheMethod
 	public List<RegistryEntry> getAllRegistryEntriesOfTypeAndURI(ResourceType type, String uri) {
 		List<RegistryEntry> allEntries = new ArrayList<RegistryEntry>();
 		allEntries.addAll(this.databaseRegistry.getAllRegistryEntriesOfTypeAndURI(type, uri));
@@ -88,7 +84,6 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#getEntriesForUri(java.lang.String)
 	 */
-	@CacheMethod
 	public List<RegistryEntry> getEntriesForUri(String uri)
 			throws LBParameterException {
 		List<RegistryEntry> allEntries = new ArrayList<RegistryEntry>();
@@ -130,7 +125,6 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#containsCodingSchemeEntry(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
-	@CacheMethod
 	public boolean containsCodingSchemeEntry(
 			@ParameterKey(field = { "_codingSchemeURN" , "_codingSchemeVersion"}) 
 			AbsoluteCodingSchemeVersionReference codingScheme) {
@@ -142,7 +136,6 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#containsNonCodingSchemeEntry(java.lang.String)
 	 */
-	@CacheMethod
 	public boolean containsNonCodingSchemeEntry(String uri) {
 		return databaseRegistry.containsNonCodingSchemeEntry(uri) ||
 			xmlRegistry.containsNonCodingSchemeEntry(uri);
@@ -151,9 +144,7 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#getCodingSchemeEntry(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
-	@CacheMethod
 	public RegistryEntry getCodingSchemeEntry(
-			@ParameterKey(field = { "_codingSchemeURN" , "_codingSchemeVersion"}) 
 			AbsoluteCodingSchemeVersionReference codingScheme)
 			throws LBParameterException {
 		if(this.databaseRegistry.containsCodingSchemeEntry(codingScheme)){
@@ -186,7 +177,6 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#updateEntry(org.lexevs.registry.model.RegistryEntry)
 	 */
-	@ClearCache
 	public void updateEntry(RegistryEntry entry) throws LBParameterException {
 		if(entry.getResourceType().equals(ResourceType.CODING_SCHEME)) {
 			
@@ -217,7 +207,6 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	 * 
 	 * @throws LBParameterException the LB parameter exception
 	 */
-	@ClearCache
 	public void updateCodingSchemeEntryTag(
 			AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
 			throws LBParameterException {
