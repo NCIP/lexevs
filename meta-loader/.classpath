@@ -12,7 +12,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/args4j/args4j-2.0.12.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/hibernate/hibernate-core-3.3.1.GA.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-oxm-1.5.7.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-xml-1.5.7.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/junit/junit-4.4.jar"/>
