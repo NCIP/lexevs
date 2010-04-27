@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
+import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.service.Registry;
@@ -41,7 +42,9 @@ public class DefaultLexEVSPropertiesFactory extends PropertiesFactory implements
 	 * @see org.lexgrid.loader.properties.ConnectionPropertiesFactory#getPropertiesForNewLoad()
 	 */
 	public Properties getPropertiesForNewLoad() {	
-		String prefix = lexEvsDatabaseOperations.getPrefixResolver().getNextCodingSchemePrefix();
+		PrefixResolver prefixResolver = lexEvsDatabaseOperations.getPrefixResolver();
+		String prefix = prefixResolver.resolveDefaultPrefix() +
+			prefixResolver.getNextCodingSchemePrefix();
 		return getProperties(prefix);		
 	}
 		
