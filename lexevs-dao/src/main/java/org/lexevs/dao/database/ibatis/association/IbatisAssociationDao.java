@@ -377,7 +377,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				batchInserter.startBatch();
 				
 				for(AssociationSource source : batch) {
-					insertAssociationSource(codingSchemeId, associationPredicateId, source);
+					insertAssociationSource(codingSchemeId, associationPredicateId, source, batchInserter);
 				}
 				
 				batchInserter.executeBatch();
