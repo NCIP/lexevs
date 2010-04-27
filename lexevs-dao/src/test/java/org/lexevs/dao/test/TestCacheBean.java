@@ -18,9 +18,11 @@
  */
 package org.lexevs.dao.test;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
+import org.lexevs.cache.annotation.ParameterKey;
 
 /**
  * The Class TestCacheBean.
@@ -43,6 +45,13 @@ public class TestCacheBean {
 			String arg1, 
 			String arg2){
 		return arg1 + arg2;
+	}
+	
+	@CacheMethod
+	public String getValueOfCompositeObject(
+			@ParameterKey(field = { "_codingSchemeURN" , "_codingSchemeVersion"}) 
+			AbsoluteCodingSchemeVersionReference ref){
+		return ref.getCodingSchemeURN() + ref.getCodingSchemeVersion();
 	}
 	
 	/**
