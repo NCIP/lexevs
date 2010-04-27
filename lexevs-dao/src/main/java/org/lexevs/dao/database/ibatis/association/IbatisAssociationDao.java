@@ -29,6 +29,8 @@ import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.lexevs.cache.annotation.CacheMethod;
+import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchInsertItem;
@@ -46,6 +48,7 @@ import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
@@ -60,6 +63,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Cacheable(cacheName = "IbatisAssociationDao", cacheSize=100)
 public class IbatisAssociationDao extends AbstractIbatisDao implements AssociationDao {
 
 	/** The supported datebase version. */
@@ -137,12 +141,13 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#getAssociationPredicateId(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public String getAssociationPredicateUid(String codingSchemeId, String associationPredicateName) {
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+	@CacheMethod
+	public String getAssociationPredicateUid(String codingSchemeUid, String relationsContainerName, String associationPredicateName) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		return
 			(String) 
-				this.getSqlMapClientTemplate().queryForObject(GET_ASSOCIATION_PREDICATE_UID_SQL, new PrefixedParameterTuple(
-						prefix, codingSchemeId, associationPredicateName));
+				this.getSqlMapClientTemplate().queryForObject(GET_ASSOCIATION_PREDICATE_UID_SQL, new PrefixedParameterTriple(
+						prefix, codingSchemeUid, relationsContainerName, associationPredicateName));
 	}
 	
 	@SuppressWarnings("unchecked")

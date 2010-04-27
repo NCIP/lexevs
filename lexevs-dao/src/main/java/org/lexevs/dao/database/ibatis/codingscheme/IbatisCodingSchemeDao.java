@@ -191,6 +191,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeByUriAndVersion(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public CodingScheme getCodingSchemeByUriAndVersion(String codingSchemeUri,
 			String version) {
 		String codingSchemeUId = this.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
@@ -213,6 +214,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	 * @param version the version
 	 * @param source the source
 	 */
+	@ClearCache
 	public void deleteCodingSchemeSources(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
@@ -222,6 +224,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		
 	}
 	
+	@ClearCache
 	public void deleteCodingSchemeLocalNames(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
@@ -230,6 +233,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 				new PrefixedParameterTuple(prefix, codingSchemeId, SQLTableConstants.TBLCOLVAL_LOCALNAME));
 	}
 	
+	@ClearCache
 	public void deleteCodingSchemeMappings(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
@@ -258,6 +262,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeSummaryByUriAndVersion(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public CodingSchemeSummary getCodingSchemeSummaryByUriAndVersion(
 			String codingSchemeUri, String version) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version);
@@ -382,6 +387,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#updateCodingScheme(java.lang.String, org.LexGrid.codingSchemes.CodingScheme)
 	 */
+	@ClearCache
 	public void updateCodingScheme(String codingSchemeUId, CodingScheme codingScheme) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
@@ -394,6 +400,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	}
 
 	@Override
+	@ClearCache
 	public void updateCodingSchemeVersionableAttrib(String codingSchemeUId, CodingScheme codingScheme) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
@@ -447,12 +454,14 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertCodingSchemeSource(java.lang.String, org.LexGrid.commonTypes.Source)
 	 */
+	@ClearCache
 	public void insertCodingSchemeSource(String codingSchemeId, Source source) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		String sourceId = this.createUniqueId();
 		this.doInsertCodingSchemeSource(prefix, codingSchemeId, sourceId, null, source);
 	}
 	
+	@ClearCache
 	public void insertOrUpdateCodingSchemeSource(String codingSchemeId, Source source) {
 		Assert.notNull(source);
 		Assert.hasText(source.getContent());
@@ -477,6 +486,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertCodingSchemeLocalName(java.lang.String, java.lang.String)
 	 */
+	@ClearCache
 	public void insertCodingSchemeLocalName(String codingSchemeId,
 			String localName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -491,6 +501,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	
 
 	@Override
+	@ClearCache
 	public void insertOrUpdateURIMap(String codingSchemeId, URIMap uriMap) {
 		int rows = this.getSqlMapClientTemplate().update(
 				UPDATE_URIMAP_BY_LOCALID_SQL, 
@@ -509,6 +520,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertURIMap(java.lang.String, org.LexGrid.naming.URIMap)
 	 */
+	@ClearCache
 	public void insertURIMap(String codingSchemeId, URIMap uriMap) {
 		String uriMapId = this.createUniqueId();
 		this.getSqlMapClientTemplate().insert(
@@ -523,6 +535,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertURIMap(java.lang.String, java.util.List)
 	 */
+	@ClearCache
 	public void insertURIMap(final String codingSchemeId,
 			final List<URIMap> supportedProperties) {
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
@@ -550,6 +563,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertMappings(java.lang.String, org.LexGrid.naming.Mappings)
 	 */
 	@SuppressWarnings("unchecked")
+	@ClearCache
 	public void insertMappings(String codingSchemeId, Mappings mappings){
 		if(mappings == null){
 			return;
