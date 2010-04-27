@@ -25,6 +25,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.Relations;
@@ -113,6 +114,18 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
         List<Entity> batch = new ArrayList<Entity>();
         
         String codingSchemeId = getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+        
+        for(AssociationEntity associationEntity : entities.getAssociationEntity()) {
+            batch.add(associationEntity);
+            if(batch.size() >= this.entityPageSize) {
+                try {
+                    this.insertEntityBatch(codingSchemeId, batch);
+                } catch (LoadValidationException e) {
+                    errors.add(e.getLoadValidationError());
+                }
+                batch.clear();
+            }
+        }
         
         for(Entity entity : entities.getEntity()) {
             batch.add(entity);
