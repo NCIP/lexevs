@@ -11,7 +11,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/loader-framework-core"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/easymock/easymock-2.5.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/hibernate/hibernate-core-3.3.1.GA.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/args4j/args4j-2.0.12.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
