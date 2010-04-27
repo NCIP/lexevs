@@ -20,7 +20,6 @@ package org.lexevs.dao.database.access.association;
 
 import java.util.List;
 
-import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
@@ -70,10 +69,11 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	 * @param codingSchemeId the coding scheme id
 	 * @param relationContainerId the relation container id
 	 * @param associationPredicateName the association predicate name
+	 * @param associationPredicateName 
 	 * 
 	 * @return the association predicate id
 	 */
-	public String getAssociationPredicateUid(String codingSchemeId, String associationPredicateName);
+	public String getAssociationPredicateUid(String codingSchemeUid, String relationsContainerName, String associationPredicateName);
 
 	public String getAssociationPredicateNameForId(String codingSchemeId, String associationPredicateId);
 	
