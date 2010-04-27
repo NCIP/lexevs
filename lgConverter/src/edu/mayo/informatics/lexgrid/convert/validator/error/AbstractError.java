@@ -18,6 +18,10 @@
  */
 package edu.mayo.informatics.lexgrid.convert.validator.error;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.lexevs.dao.database.service.error.DefaultDatabaseError;
 
 /**
@@ -51,6 +55,21 @@ public abstract class AbstractError extends DefaultDatabaseError implements Load
         sb.append("\nDescription: " + this.getErrorDescription() );
         sb.append("\n -- Caused By Object with Description: ");
         sb.append("\n --- " + this.getErrorObjectDescription());
+        sb.append("\nException (if any)");
+        if(super.getErrorException() != null) {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            super.getErrorException().printStackTrace(pw);
+            pw.flush();
+            sw.flush();
+            sb.append(sw.getBuffer());
+            pw.close();
+            try {
+                sw.close();
+            } catch (IOException e) {
+                //
+            }
+        }
         
         return sb.toString();
     }
