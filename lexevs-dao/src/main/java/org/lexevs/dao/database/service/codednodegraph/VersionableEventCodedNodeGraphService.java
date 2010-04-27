@@ -203,6 +203,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 		return associationDao.
 			getAssociationPredicateUid(
 					codingSchemeUid, 
+					relationsContainerName,
 					associationPredicateName);
 	}
 }
