@@ -52,7 +52,7 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 		String codingSchemeId = codingSchemeDao.
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 		
-		String relationUid = associationDao.getRelationsId(codingSchemeUri, relationContainerName);
+		String relationUid = associationDao.getRelationsId(codingSchemeId, relationContainerName);
 		
 		String associationPredicateUid = this.getDaoManager().getAssociationDao(codingSchemeUri, version).
 			getAssociationPredicateUid(codingSchemeId, relationUid, associationPredicateName);
