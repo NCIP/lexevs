@@ -8,6 +8,8 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.Node;
+import org.lexevs.dao.database.ibatis.codingscheme.IbatisCodingSchemeDao;
+import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
@@ -15,6 +17,7 @@ import org.lexevs.registry.utility.RegistryUtility;
 import org.lexevs.system.service.LexEvsResourceManagingService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 
@@ -26,6 +29,12 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 	
 	@Resource
 	private LexEvsResourceManagingService lexEvsResourceManagingService;
+	
+	@Resource
+	private IbatisCodingSchemeDao ibatisCodingSchemeDao;
+	
+	@Resource
+	private CodingSchemeService codingSchemeService;
 
 	@Test
 	public void getRegistryEntryForCodingSchemeName() throws Exception {
@@ -111,8 +120,9 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 		
 		assertEquals(1, nodes.size());
 	}
-	
+
 	@Test
+	@Transactional
 	public void getTransitiveAssociationPredicateIds() throws Exception {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
@@ -140,7 +150,7 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
 				"values ('eguid', 'association')");
-		
+
 		List<String> transitiveAssocs = 
 			defaultTransitivityBuilder.getTransitiveAssociationPredicateIds("csuri", "csversion");
 		

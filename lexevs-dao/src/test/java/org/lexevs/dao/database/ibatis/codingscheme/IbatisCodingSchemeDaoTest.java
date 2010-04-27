@@ -615,6 +615,22 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		
 		assertNotNull(es);
 	}
+
+	@Test
+	public void testGetMappings() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnEntityCode, assnNamespace) " +
+		"values ('cssa-guid', 'cs-guid', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
+		
+		Mappings mappings = ibatisCodingSchemeDao.getMappings("cs-guid");
+		
+		assertNotNull(mappings);
+		assertEquals(1, mappings.getSupportedAssociationCount());
+	}
 	
 	/**
 	 * Test get coding scheme id by uri and version.
