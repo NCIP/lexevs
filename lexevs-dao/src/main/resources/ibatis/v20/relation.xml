@@ -74,8 +74,10 @@
 			(relation.relationGuid = associationPredicate.relationGuid)
 		WHERE
 			relation.codingSchemeGuid = #param1#
+		<isNotNull property="param2">
 		AND
 			relation.containerName = #param2#
+		</isNotNull>
 		AND
 			associationPredicate.associationName = #param3#
    </select>
