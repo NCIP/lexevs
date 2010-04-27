@@ -1,6 +1,7 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.protegeOwl;
 
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.custom.concepts.EntityFactory;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 
@@ -21,7 +22,7 @@ public class AssociationWrapper {
     
     public AssociationWrapper(){
         ap = new AssociationPredicate();
-        ae = new AssociationEntity();
+        ae = EntityFactory.createAssociation();
     }
     
     public AssociationPredicate getAssociationPredicate() {
