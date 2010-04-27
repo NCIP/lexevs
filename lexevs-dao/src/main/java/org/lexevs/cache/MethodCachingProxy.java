@@ -18,8 +18,12 @@
  */
 package org.lexevs.cache;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
@@ -27,9 +31,12 @@ import org.apache.commons.collections.map.LRUMap;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.lexevs.cache.annotation.Cacheable;
+import org.lexevs.cache.annotation.ParameterKey;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.util.ReflectionUtils;
 
 
 /**
@@ -98,11 +105,17 @@ public class MethodCachingProxy implements InitializingBean {
 	@Around("@within(org.lexevs.cache.annotation.Cacheable) && " +
 			"@annotation(org.lexevs.cache.annotation.CacheMethod)")
 	public Object cacheMethod(ProceedingJoinPoint pjp) throws Throwable {
+		MethodSignature sig = (MethodSignature)pjp.getSignature();
+
+		Annotation[][] parameterAnnotations = sig.getMethod().getParameterAnnotations();
+		
 		String key = this.getKeyFromMethod(pjp.getThis().getClass().getName(),
 					pjp.getSignature().getName(),
-					pjp.getArgs());
+					pjp.getArgs(), 
+					parameterAnnotations);
 		
 		Cacheable cacheableAnnotation = AnnotationUtils.findAnnotation(pjp.getTarget().getClass(), Cacheable.class);
+	
 		Map<String,Object> cache = this.getCacheFromName(
 				cacheableAnnotation.cacheName(),
 				cacheableAnnotation.cacheSize());
@@ -141,19 +154,73 @@ public class MethodCachingProxy implements InitializingBean {
 	 * @param className the class name
 	 * @param signature the signature
 	 * @param arguments the arguments
+	 * @param parameterAnnotations 
 	 * 
 	 * @return the key from method
 	 */
-	protected String getKeyFromMethod(String className, String signature, Object[] arguments){
+	protected String getKeyFromMethod(
+			String className, 
+			String signature, 
+			Object[] arguments, 
+			Annotation[][] parameterAnnotations){
 		StringBuffer sb = new StringBuffer();
 		sb.append(className);
 		sb.append(signature);
-		for(Object arg : arguments){
-			if(arg == null) {
-				sb.append(NULL_VALUE);
-			} else {
-				sb.append(arg.toString());
+		for(int i=0;i<arguments.length;i++){
+			Object arg = arguments[i];
+			
+			Annotation[] annotations = parameterAnnotations[i];
+			
+			ParameterKey parameterKey = getParameterKeyAnnotation(annotations);
+			
+			sb.append(getArgumentKey(arg, parameterKey));
+		}
+		return sb.toString();
+	}
+	
+	private ParameterKey getParameterKeyAnnotation(Annotation[] annotations) {
+		List<ParameterKey> returnList = new ArrayList<ParameterKey>();
+		
+		for(Annotation annotation : annotations) {
+			if(annotation instanceof ParameterKey) {
+				returnList.add((ParameterKey)annotation);
 			}
+		}
+		if(returnList.size() > 1) {
+			throw new RuntimeException("Only one ParameterKey annotation allowed per Parameter.");
+		}
+		
+		if(returnList.size() == 1) {
+			return returnList.get(0);
+		} else {
+			return null;
+		}
+	}
+	
+	protected String getArgumentKey(Object argument, ParameterKey key) {
+		if(key != null) {
+			StringBuffer sb = new StringBuffer();
+			String[] fields = key.field();
+			for(String fieldName : fields) {
+				Field field = 
+					ReflectionUtils.findField(argument.getClass(), fieldName);
+				field.setAccessible(true);
+				
+				Object fieldArg = ReflectionUtils.getField(field, argument);
+				sb.append(getArgumentKey(fieldArg));
+			}
+			return sb.toString();
+		} else {
+			return getArgumentKey(argument);
+		}
+	}
+	
+	protected String getArgumentKey(Object argument) {
+		StringBuffer sb = new StringBuffer();
+		if(argument == null) {
+			sb.append(NULL_VALUE);
+		} else {
+			sb.append(argument.hashCode());
 		}
 		return sb.toString();
 	}
