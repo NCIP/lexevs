@@ -383,7 +383,11 @@ public class VSDServiceHelper {
 	    }
 	    AbsoluteCodingSchemeVersionReference resVersion = resolveCSVersion(entityCodeCodingScheme, vdd.getMappings(), versionTag, refVersions);
 	    CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-	    versionOrTag.setVersion(resVersion.getCodingSchemeVersion());	    
+	    try{
+	    	versionOrTag.setVersion(resVersion.getCodingSchemeVersion());
+	    }catch(NullPointerException e){
+	    	throw new LBException("Coding Scheme not found in the system");
+	    }
 	    ConceptReference cr = ConvenienceMethods.createConceptReference(entityRef.getEntityCode(), resVersion.getCodingSchemeURN());
 	    // Option 1: A single entity code
 	    if (StringUtils.isEmpty(entityRef.getReferenceAssociation()) ) {
