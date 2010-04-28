@@ -457,7 +457,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 
 			public Object doInSqlMapClient(SqlMapExecutor executor)
 					throws SQLException {
-				IbatisBatchInserter batchInserter = new SqlMapExecutorBatchInserter(executor);
+				IbatisBatchInserter batchInserter = getBatchTemplateInserter(executor);
 				
 				batchInserter.startBatch();
 				

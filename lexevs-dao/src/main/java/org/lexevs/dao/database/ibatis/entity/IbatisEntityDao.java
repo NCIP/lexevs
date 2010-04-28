@@ -37,7 +37,6 @@ import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
 import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
-import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
 import org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
@@ -404,7 +403,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 
 			public Object doInSqlMapClient(SqlMapExecutor executor)
 					throws SQLException {
-				IbatisBatchInserter batchInserter = new SqlMapExecutorBatchInserter(executor);
+				IbatisBatchInserter batchInserter = getBatchTemplateInserter(executor);
 				
 				batchInserter.startBatch();
 				

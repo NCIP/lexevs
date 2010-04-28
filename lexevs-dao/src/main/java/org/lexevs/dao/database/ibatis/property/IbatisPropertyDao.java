@@ -34,7 +34,6 @@ import org.lexevs.dao.database.constants.classifier.property.PropertyTypeClassif
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
-import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean;
@@ -112,7 +111,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 
 			public Object doInSqlMapClient(SqlMapExecutor executor)
 					throws SQLException {
-				IbatisBatchInserter inserter = new SqlMapExecutorBatchInserter(executor);
+				IbatisBatchInserter inserter = getBatchTemplateInserter(executor);
 				
 				inserter.startBatch();
 				
