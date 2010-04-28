@@ -19,12 +19,17 @@
 package org.lexevs.dao.database.ibatis;
 
 import org.lexevs.dao.database.access.AbstractBaseDao;
+import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
+import org.lexevs.dao.database.ibatis.batch.OrderingBatchInserterDecorator;
 import org.lexevs.dao.database.ibatis.batch.SqlMapClientTemplateInserter;
+import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 /**
  * The Class AbstractIbatisDao.
@@ -79,6 +84,11 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	 */
 	public SqlMapClientTemplate getSqlMapClientTemplate() {
 		return sqlMapClientTemplate;
+	}
+	
+	public IbatisBatchInserter getBatchTemplateInserter(SqlMapExecutor executor) {
+		return new OrderingBatchInserterDecorator(
+					new SqlMapExecutorBatchInserter(executor));
 	}
 
 	/**
