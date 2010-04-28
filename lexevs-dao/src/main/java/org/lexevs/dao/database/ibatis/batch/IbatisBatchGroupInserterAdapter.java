@@ -18,44 +18,39 @@
  */
 package org.lexevs.dao.database.ibatis.batch;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
- * The Class OrderingBatchInserterDecorator.
+ * The Class IbatisBatchGroupInserterAdapter.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class OrderingBatchInserterDecorator implements IbatisBatchInserter {
-
-	/** The delegate. */
-	private IbatisBatchInserter delegate;
+public class IbatisBatchGroupInserterAdapter implements IbatisBatchGroupInserter{
 	
-	/** The statement map. */
-	private Map<String,List<Object>> statementMap = new HashMap<String,List<Object>>();
+	/** The delegate. */
+	private IbatisInserter delegate;
 	
 	/**
-	 * Instantiates a new ordering batch inserter decorator.
+	 * Instantiates a new ibatis batch group inserter adapter.
 	 * 
 	 * @param delegate the delegate
 	 */
-	public OrderingBatchInserterDecorator(IbatisBatchInserter delegate){
+	public IbatisBatchGroupInserterAdapter(IbatisInserter delegate){
 		this.delegate = delegate;
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.ibatis.batch.IbatisBatchGroupInserter#insert(java.lang.String, java.lang.Object, java.lang.String)
+	 */
+	@Override
+	public void insert(String sql, Object parameter, String batchGroup) {
+		delegate.insert(sql, parameter);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter#executeBatch()
 	 */
 	@Override
 	public void executeBatch() {
-		for(String sql : statementMap.keySet()) {
-			for(Object argument : statementMap.get(sql)){
-				delegate.insert(sql, argument);
-			}
-		}
-		delegate.executeBatch();
+		throw new UnsupportedOperationException("Batch inserts not allowed for IbatisBatchGroupInserterAdapter");
 	}
 
 	/* (non-Javadoc)
@@ -63,7 +58,7 @@ public class OrderingBatchInserterDecorator implements IbatisBatchInserter {
 	 */
 	@Override
 	public void startBatch() {
-		delegate.startBatch();
+		throw new UnsupportedOperationException("Batch inserts not allowed for IbatisBatchGroupInserterAdapter");
 	}
 
 	/* (non-Javadoc)
@@ -71,10 +66,6 @@ public class OrderingBatchInserterDecorator implements IbatisBatchInserter {
 	 */
 	@Override
 	public void insert(String sql, Object parameter) {
-		if(!this.statementMap.containsKey(sql)) {
-			this.statementMap.put(sql, new ArrayList<Object>());
-		}
-		
-		this.statementMap.get(sql).add(parameter);
+		delegate.insert(sql, parameter);
 	}
 }

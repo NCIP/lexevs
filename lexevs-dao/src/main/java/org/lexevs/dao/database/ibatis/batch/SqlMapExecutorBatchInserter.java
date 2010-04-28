@@ -93,6 +93,4 @@ public class SqlMapExecutorBatchInserter implements IbatisBatchInserter {
 	public void setSqlMapExecutor(SqlMapExecutor sqlMapExecutor) {
 		this.sqlMapExecutor = sqlMapExecutor;
 	}
-	
-	
 }
