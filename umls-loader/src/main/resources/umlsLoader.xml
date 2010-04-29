@@ -55,7 +55,7 @@
 		<step id="umlsLoadEntity" parent="listenerStep" next="doLoad">
 			<tasklet>
 				<chunk reader="mrconsoStagedReader" processor="umlsEntityListProcessor"
-					writer="entityWriter" commit-interval="100">
+					writer="entityWriter" commit-interval="1000">
 				</chunk>
 			</tasklet>
 		</step>
@@ -67,7 +67,7 @@
 					<tasklet>
 						<chunk reader="umlsForwardRelationNameMrrelSkippingReader"
 							processor="umlsRootNodeAddingEntityAssocToEntityListProcessor"
-							writer="associationSourceListWriter" commit-interval="100">
+							writer="associationSourceListWriter" commit-interval="1000">
 						</chunk>
 					</tasklet>
 				</step>
@@ -81,7 +81,7 @@
 								<step id="umlsLoadMrstyProperties" parent="listenerStep">
 									<tasklet>
 										<chunk reader="mrstyGroupReader" processor="umlsMrstyListProcessor"
-											writer="entityPropertyListWriter" commit-interval="100">
+											writer="entityPropertyListWriter" commit-interval="1000">
 											<streams>
 												<stream ref="mrstyReader" />
 											</streams>
@@ -93,7 +93,7 @@
 								<step id="umlsLoadDefinitionProperties" parent="listenerStep">
 									<tasklet>
 										<chunk reader="mrdefReader" processor="umlsDefinitionPropertyProcessor"
-											writer="entityPropertyWriter" commit-interval="100">
+											writer="entityPropertyWriter" commit-interval="1000">
 											<streams>
 												<stream ref="mrdefReader" />
 											</streams>
