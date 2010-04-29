@@ -19,6 +19,7 @@
 package org.lexevs.dao.database.ibatis.valuesets;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.commonTypes.Property;
@@ -36,6 +37,7 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean;
+import org.lexevs.dao.database.ibatis.valuesets.parameter.VSPropertyBean;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
@@ -111,11 +113,36 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	
 	@SuppressWarnings("unchecked")
 	public List<Property> getAllPropertiesOfParent(String parentGuid, ReferenceType type) {
-		return this.getSqlMapClientTemplate().queryForList(GET_ALL_PROPERTIES_OF_PARENT_SQL, 
+		List<Property> propertyList = new ArrayList<Property>();
+		List<VSPropertyBean> propertyBeanList = this.getSqlMapClientTemplate().queryForList(GET_ALL_PROPERTIES_OF_PARENT_SQL, 
 				new PrefixedParameterTuple(
 						null,
 						type.name(),
 						parentGuid));
+		
+		for (VSPropertyBean propertyBean : propertyBeanList)
+		{
+			Property prop = propertyBean.getProperty();
+			
+			List<Object> multiAttribs =  this.getSqlMapClientTemplate().queryForList(GET_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL, 
+					new PrefixedParameterTuple(
+							null,
+							propertyBean.getVsPropertyGuid(),
+							null));
+			
+			for (Object multiAttrib : multiAttribs)
+			{
+				if (multiAttrib instanceof Source)
+					prop.addSource((Source)multiAttrib);
+				else if (multiAttrib instanceof PropertyQualifier)
+					prop.addPropertyQualifier((PropertyQualifier)multiAttrib);
+				else if (multiAttrib instanceof String)
+					prop.addUsageContext((String)multiAttrib);
+			}
+			propertyList.add(prop);
+		}
+		
+		return propertyList;
 	}
 	
 	@SuppressWarnings("unchecked")
