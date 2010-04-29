@@ -24,11 +24,13 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.util.sql.GenericSQLModifier;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.lexevs.dao.database.type.DatabaseType;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 
 /**
@@ -79,6 +81,14 @@ public class SQLInterface {
             throw new RuntimeException("Problem setting up the SQLInterface", e);
         }
     }
+    
+    public SQLInterface(String codingSchemeUri, String version) {
+    	this(
+    			LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().getDataSource(), 
+    			LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().getDatabaseType(), 
+    			LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().
+    			getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version));
+     }
     
     /**
      * Gets the sQL table utilities.
