@@ -3,45 +3,44 @@
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap namespace="VSProperty">
 
-<!--	<resultMap id="multiAttribResult" class="string">-->
-<!--		<discriminator javaType="string" column="attributeType">-->
-<!--			<subMap value="source" resultMap="sourceResult" />-->
-<!--			<subMap value="qualifier" resultMap="qualifierResult" />-->
-<!--			<subMap value="usageContext" resultMap="usageContextResult"/>-->
-<!--		</discriminator>-->
-<!--	</resultMap>-->
+	<resultMap id="multiAttribResult" class="string">		
+		<discriminator javaType="string" column="attributeType">
+			<subMap value="source" resultMap="sourceResult" />
+			<subMap value="qualifier" resultMap="qualifierResult" />
+			<subMap value="usageContext" resultMap="usageContextResult"/>
+		</discriminator>
+	</resultMap>
 	
 	<resultMap id="usageContextResult" class="string">
-		<result property="java.lang.String" column="usageContextAttributeId" />
+		<result property="java.lang.String" column="attributeValue" />
 	</resultMap>
 	
 	<resultMap id="sourceResult" class="org.LexGrid.commonTypes.Source">
-		<result property="content" column="sourceAttributeId"/>
-		<result property="subRef" column="sourceSubRef" />
-		<result property="role" column="sourceRole" />
+		<result property="content" column="attributeValue"/>
+		<result property="subRef" column="subRef" />
+		<result property="role" column="role" />
 	</resultMap>
 	
 	<resultMap id="qualifierResult" class="org.LexGrid.commonTypes.PropertyQualifier">
-		<result property="propertyQualifierName" column="qualifierAttributeId" />
-		<result property="propertyQualifierType" column="qualifierAttributeType" />
-		<result property="value.content" column="qualifierAttributeValue" />
+		<result property="propertyQualifierName" column="attributeId" />
+		<result property="propertyQualifierType" column="attributeType" />
+		<result property="value.content" column="attributeValue" />
 	</resultMap>
 	
-<!--	<select id="getPropertyMultiAttribById" -->
-<!--		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"-->
-<!--		resultMap="Property.multiAttribResult">-->
-<!--		SELECT -->
-<!--			attributeType,-->
-<!--			attributeValue,-->
-<!--			subRef,-->
-<!--			role-->
-<!--		FROM -->
-<!--			$prefix$propertyMultiAttrib-->
-<!--		WHERE-->
-<!--			propertyGuid = #param1#	-->
-<!--		AND-->
-<!--			attributeType = #param2#	-->
-<!--	</select>-->
+	<select id="getPropertyMultiAttribById" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultMap="VSProperty.multiAttribResult">
+		SELECT 
+			attributeType,
+			attributeId,
+			attributeValue,
+			subRef,
+			role
+		FROM 
+			vsPropertyMultiAttrib
+		WHERE
+			vsPropertyGuid = #param1#
+	</select>
 
 	<insert id="insertPropertyMultiAttrib" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">
 		INSERT INTO vsPropertyMultiAttrib (

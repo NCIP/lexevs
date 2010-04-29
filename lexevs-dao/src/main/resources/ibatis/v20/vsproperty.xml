@@ -8,6 +8,11 @@
 	<typeAlias alias="definition" type="org.LexGrid.concepts.Definition"/>
 	<typeAlias alias="comment" type="org.LexGrid.concepts.Comment"/>
 
+	<resultMap id="vsPropertyBean" class="org.lexevs.dao.database.ibatis.valuesets.parameter.VSPropertyBean" >
+		<result property="vsPropertyGuid" column="vsPropertyGuid"/>
+		<result property="property" resultMap="VSProperty.propertyResult"/>
+	</resultMap>
+	
 	<resultMap id="propertyResult" class="property" groupBy="propertyId">
 		<result property="propertyName" column="propertyName" />	
 		<result property="propertyId" column="propertyId" />
@@ -20,9 +25,6 @@
 		<result property="status" column="status" />
 		<result property="effectiveDate" column="effectiveDate" />
 		<result property="expirationDate" column="expirationDate" />
-		<result property="_sourceList" resultMap="VSProperty.sourceResult"/>
-		<result property="_propertyQualifierList" resultMap="VSProperty.qualifierResult"/>
-		<result property="_usageContextList" resultMap="VSProperty.usageContextResult"/>
 		<result property="entryState" resultMap="Versions.entryStateResult" />
 		<discriminator javaType="string" column="propertyType">
 			<subMap value="presentation" resultMap="presentationResult" />
@@ -53,11 +55,12 @@
   		WHERE
 			referenceGuid = #param1#
 		AND
-			propertyId = #param2#
+			referenceType = #param2#
   	</select>
   	
   	<sql id="selectPropertyFragment">
   		SELECT
+  			property.vsPropertyGuid,
   			property.referenceType,
   			property.propertyId,
   			property.propertyType,
@@ -79,18 +82,7 @@
   			entryState.relativeOrder,
   			
   			currentRevision.revisionId currentRevisionId,
-  			previousRevision.revisionId previousRevisionId,
-  			
-  			usageContext.attributeId usageContextAttributeId,
-  			
-  			source.attributeId sourceAttributeId,
-  			source.subRef sourceSubRef,
-  			source.role sourceRole,
-  			
-  			qualifier.attributeType qualifierAttributeType,
-  			qualifier.attributeId qualifierAttributeId,
-  			qualifier.attributeValue qualifierAttributeValue
-  			
+  			previousRevision.revisionId previousRevisionId  			
   		FROM
   			vsproperty property
   		LEFT JOIN
@@ -151,36 +143,14 @@
   	  	<include refid="selectPropertyFragment"/>
   				
   		LEFT JOIN
-  			vsPropertyMultiAttrib qualifier
+  			vsPropertyMultiAttrib multiAttrib
   		ON
-  		(
-  			property.vspropertyGuid = qualifier.vspropertyGuid	  			
-  			AND 			
-  			qualifier.attributeType = 'qualifier'
-  		)
-  			
-  		LEFT JOIN
-  			vsPropertyMultiAttrib usageContext
-  		ON
-  		(
-  			property.vspropertyGuid = usageContext.vspropertyGuid	
-  			AND		
-  			usageContext.attributeType = 'usageContext'
-  		)
-  			
-  		LEFT JOIN
-  			vsPropertyMultiAttrib source
-  		ON
-  		(
-  			property.vspropertyGuid = source.vspropertyGuid		
-  			AND	
-  			source.attributeType = 'source'
-  		)		
+	  		property.vspropertyGuid = multiAttrib.vspropertyGuid
   	</sql>
 
   	<select id="getPropertiesByParent" remapResults="true"
-  		resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
-		<include refid="getPropertyFragment"/>
+  		resultMap="vsPropertyBean" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		<include refid="selectPropertyFragment"/>
   		WHERE
 			property.referenceType = #param1#
 		AND 
