@@ -35,7 +35,8 @@ import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
-import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
+import org.lexevs.dao.database.ibatis.batch.IbatisBatchGroupInserter;
+import org.lexevs.dao.database.ibatis.batch.IbatisBatchGroupInserterAdapter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
@@ -250,7 +251,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				prefix, 
 				codingSchemeId, 
 				entity, 
-				this.getNonBatchTemplateInserter(), 
+				new IbatisBatchGroupInserterAdapter(this.getNonBatchTemplateInserter()), 
 				cascade);
 	}
 	
@@ -267,15 +268,15 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			String prefix, 
 			String codingSchemeId, 
 			Entity entity, 
-			IbatisInserter inserter,
+			IbatisBatchGroupInserter inserter,
 			boolean cascade) {
 		Map<String,String> propertyIdToGuidMap = new HashMap<String,String>();
 		
 		String entityId = this.createUniqueId();
 		String entryStateId = this.createUniqueId();
 		
-		this.ibatisVersionsDao.insertEntryState(entryStateId, 
-				entityId, "Entity", null, entity.getEntryState());
+		this.ibatisVersionsDao.insertEntryState(
+				prefix, entryStateId, entityId, "Entity", null, entity.getEntryState(), inserter);
 		
 		inserter.insert(INSERT_ENTITY_SQL, 
 				buildInsertEntityParamaterBean(
@@ -403,7 +404,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 
 			public Object doInSqlMapClient(SqlMapExecutor executor)
 					throws SQLException {
-				IbatisBatchInserter batchInserter = getBatchTemplateInserter(executor);
+				IbatisBatchGroupInserter batchInserter = getBatchTemplateInserter(executor);
 				
 				batchInserter.startBatch();
 				
