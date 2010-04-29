@@ -19,9 +19,9 @@
 package org.lexevs.dao.database.ibatis;
 
 import org.lexevs.dao.database.access.AbstractBaseDao;
-import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
+import org.lexevs.dao.database.ibatis.batch.IbatisBatchGroupInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
-import org.lexevs.dao.database.ibatis.batch.OrderingBatchInserterDecorator;
+import org.lexevs.dao.database.ibatis.batch.InOrderOrderingBatchInserterDecorator;
 import org.lexevs.dao.database.ibatis.batch.SqlMapClientTemplateInserter;
 import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
@@ -86,8 +86,8 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 		return sqlMapClientTemplate;
 	}
 	
-	public IbatisBatchInserter getBatchTemplateInserter(SqlMapExecutor executor) {
-		return new OrderingBatchInserterDecorator(
+	public IbatisBatchGroupInserter getBatchTemplateInserter(SqlMapExecutor executor) {
+		return new InOrderOrderingBatchInserterDecorator(
 					new SqlMapExecutorBatchInserter(executor));
 	}
 
