@@ -32,6 +32,8 @@ import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 import org.lexevs.dao.database.constants.classifier.property.PropertyMultiAttributeClassifier;
 import org.lexevs.dao.database.constants.classifier.property.PropertyTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
+import org.lexevs.dao.database.ibatis.batch.IbatisBatchGroupInserter;
+import org.lexevs.dao.database.ibatis.batch.IbatisBatchGroupInserterAdapter;
 import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
@@ -237,6 +239,16 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		return DaoUtility.propertyTypeToStringMap.get(propertyType);
 	}
 	
+	protected String doInsertProperty(
+			String prefix,
+			String entityCodeId, 
+			String propertyId,
+			PropertyType type, 
+			Property property, 
+			IbatisInserter inserter) {
+		return this.doInsertProperty(prefix, entityCodeId, propertyId, type, property, new IbatisBatchGroupInserterAdapter(inserter));
+	}
+	
 	/**
 	 * Insert property.
 	 * 
@@ -254,18 +266,18 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			String propertyId,
 			PropertyType type, 
 			Property property, 
-			IbatisInserter inserter) {
+			IbatisBatchGroupInserter inserter) {
 		String entryStateId = this.createUniqueId();
 		
 		if(StringUtils.isBlank(property.getPropertyType())){
 			property.setPropertyType(
 					getPropertyTypeString(property));
 		}
-		
+
 		this.ibatisVersionsDao.insertEntryState(
 				this.getPrefixResolver().resolveDefaultPrefix(),
 				entryStateId, propertyId, "Property", null, property.getEntryState(), inserter);
-		
+
 		inserter.insert(INSERT_PROPERTY_SQL,
 				buildInsertPropertyBean(
 						prefix,
@@ -274,8 +286,8 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						entryStateId,
 						type,
 						property
-						));
-		
+				),property.getClass().getName());
+
 		for(Source source : property.getSource()) {
 			String propertySourceId = this.createUniqueId();
 			this.doInsertPropertySource(prefix, propertyId, propertySourceId, entryStateId, source, inserter);
@@ -290,7 +302,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			String propertyQualifierId = this.createUniqueId();
 			this.doInsertPropertyQualifier(prefix, propertyId, propertyQualifierId, entryStateId, qual, inserter);
 		}
-		
+	
 		return propertyId;
 		
 	}
