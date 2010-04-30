@@ -37,6 +37,8 @@ import org.LexGrid.valueSets.PickListEntryExclusion;
 import org.LexGrid.valueSets.PickListEntryNode;
 import org.LexGrid.valueSets.PickListEntryNodeChoice;
 import org.LexGrid.versions.EntryState;
+import org.lexevs.cache.annotation.CacheMethod;
+import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.valuesets.PickListDao;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
@@ -64,6 +66,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Cacheable(cacheName = "IbatisPickListDao")
 public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao {
 	
 	/** The supported datebase version. */
@@ -145,6 +148,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public PickListDefinition getPickListDefinitionById(String pickListId) {
 		PickListDefinition plDef = (PickListDefinition) 
 			this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_DEFINITION_BY_PICKLISTID_SQL, 
@@ -237,6 +241,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	 * @see org.lexevs.dao.database.access.picklist.PickListDao#getGuidFromPickListId(java.lang.String)
 	 */
 	@Override
+	@CacheMethod
 	public String getPickListGuidFromPickListId(String pickListId) {
 		return (String) 
 		this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_GUID_BY_PICKLISTID_SQL, 
@@ -245,6 +250,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	
 	@Override
 	@SuppressWarnings("unchecked")
+	@CacheMethod
 	public List<String> getPickListDefinitionIdForValueSetDefinitionURI(
 			String valueSetDefURI) {
 		return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_DEFINITION_ID_FOR_VALUESET_DEFINITION_URI_SQL, 
@@ -503,6 +509,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	}
 
 	@Override
+	@CacheMethod
 	public String getPickListEntryNodeGuidByPickListIdAndPLEntryId(
 			String pickListDefinitionId, String plEntryId) {
 		String pickListGuid = (String) this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_GUID_BY_PICKLISTID_SQL, new PrefixedParameter(null, pickListDefinitionId));
@@ -617,6 +624,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		return bean;
 	}
 	
+	@ClearCache
 	public void deletePickListDefinitionMappings(String referenceGuid) {
 		this.getSqlMapClientTemplate().delete(
 				DELETE_URIMAPS_BY_REFERENCE_GUID_SQL, 
@@ -639,6 +647,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<String> getPickListDefinitionIdForEntityReference(
 			String entityCode, String entityCodeNameSpace, String propertyId) {
 		List<String> pickListIds = null;
@@ -668,6 +677,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<String> getPickListDefinitionIdForSupportedTagAndValue(
 			String supportedTag, String value) {
 		return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_PICKLISTID_FOR_SUPPORTED_TAG_AND_VALUE_SQL,

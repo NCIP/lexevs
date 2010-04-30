@@ -36,6 +36,8 @@ import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.LexGrid.versions.EntryState;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.cache.annotation.CacheMethod;
+import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
@@ -61,6 +63,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  * 
  * @author <a href="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</a>
  */
+@Cacheable(cacheName = "IbatisValueSetDefinitionDao")
 public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements ValueSetDefinitionDao {
 	
 	/** The supported datebase version. */
@@ -131,6 +134,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public ValueSetDefinition getValueSetDefinitionByURI(String valueSetDefinitionURI) {
 		ValueSetDefinition vsd = (ValueSetDefinition) 
 			this.getSqlMapClientTemplate().queryForObject(GET_VALUESET_DEFINITION_BY_VALUESET_DEFINITION_URI_SQL, 
@@ -178,6 +182,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	 * @see org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao#getGuidFromvalueSetDefinitionURI(java.lang.String)
 	 */
 	@Override
+	@CacheMethod
 	public String getGuidFromvalueSetDefinitionURI(String valueSetDefinitionURI) {
 		return (String) 
 		this.getSqlMapClientTemplate().queryForObject(GET_VALUESET_DEFINITION_GUID_BY_VALUESET_DEFINITION_URI_SQL, 
@@ -186,6 +191,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<String> getAllValueSetDefinitionsWithNoName() throws LBException {
 		return this.getSqlMapClientTemplate().queryForList(GET_VALUESET_DEFINITION_URI_FOR_VALUESET_NAME_SQL,
 				new PrefixedParameter(null, " "));
@@ -193,6 +199,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<String> getValueSetDefinitionURIsForName(String valueSetDefinitionName)
 			throws LBException {
 		if (valueSetDefinitionName == null)
@@ -538,6 +545,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		return bean;
 	}
 	
+	@ClearCache
 	public void deleteValueSetDefinitionMappings(String referenceGuid) {
 		this.getSqlMapClientTemplate().delete(
 				DELETE_URIMAPS_BY_REFERENCE_GUID_SQL, 
@@ -574,6 +582,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<String> getValueSetDefinitionURIForSupportedTagAndValue(
 			String supportedTag, String value) {
 		return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_VALUESETDEFINITIONURI_FOR_SUPPORTED_TAG_AND_VALUE_SQL,
