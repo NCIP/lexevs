@@ -78,6 +78,14 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 		
 		return allEntries;
 	}
+	
+	public List<RegistryEntry> getAllRegistryEntriesOfTypeURIAndVersion(ResourceType type, String uri, String version) {
+		List<RegistryEntry> allEntries = new ArrayList<RegistryEntry>();
+		allEntries.addAll(this.databaseRegistry.getAllRegistryEntriesOfTypeURIAndVersion(type, uri, version));
+		allEntries.addAll(this.xmlRegistry.getAllRegistryEntriesOfTypeURIAndVersion(type, uri, version));
+		
+		return allEntries;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#getEntriesForUri(java.lang.String)

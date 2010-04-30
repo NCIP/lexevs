@@ -176,18 +176,20 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 
 	@ClearCache
 	public void removeValueSetDefinitionResourceFromSystem(String valueSetDefinitionURI, String version) throws LBParameterException {
-		RegistryEntry entry = RegistryUtility.valueSetDefinitionToRegistryEntry(valueSetDefinitionURI, version);
-		entry.setPrefix(null);
-		
-		this.getRegistry().removeEntry(entry);
+		List<RegistryEntry> entryList = this.getRegistry().getAllRegistryEntriesOfTypeURIAndVersion(ResourceType.VALUESET_DEFINITION, valueSetDefinitionURI, version);
+		for (RegistryEntry entry : entryList)
+		{
+			this.getRegistry().removeEntry(entry);
+		}
 	}
 	
 	@ClearCache
 	public void removePickListDefinitionResourceFromSystem(String pickListId, String version) throws LBParameterException {
-		RegistryEntry entry = RegistryUtility.pickListDefinitionToRegistryEntry(pickListId, version);
-		entry.setPrefix(null);
-		
-		this.getRegistry().removeEntry(entry);
+		List<RegistryEntry> entryList = this.getRegistry().getAllRegistryEntriesOfTypeURIAndVersion(ResourceType.PICKLIST_DEFINITION, pickListId, version);
+		for (RegistryEntry entry : entryList)
+		{
+			this.getRegistry().removeEntry(entry);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -376,7 +378,7 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 	
 	public boolean containsValueSetDefinitionResource(String uri, String version)
 		throws LBParameterException {
-		List<RegistryEntry> reList = registry.getAllRegistryEntriesOfTypeAndURI(ResourceType.VALUESET_DEFINITION, uri);
+		List<RegistryEntry> reList = registry.getAllRegistryEntriesOfTypeURIAndVersion(ResourceType.VALUESET_DEFINITION, uri, version);
 		if (reList != null && reList.size() > 0)
 			return true;
 		
@@ -385,7 +387,7 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 	
 	public boolean containsPickListDefinitionResource(String pickListId, String version)
 		throws LBParameterException {
-		List<RegistryEntry> reList = registry.getAllRegistryEntriesOfTypeAndURI(ResourceType.PICKLIST_DEFINITION, pickListId);
+		List<RegistryEntry> reList = registry.getAllRegistryEntriesOfTypeURIAndVersion(ResourceType.PICKLIST_DEFINITION, pickListId, version);
 		if (reList != null && reList.size() > 0)
 			return true;
 		

@@ -119,7 +119,7 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		} 
 		return entries.get(0);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.registry.RegistryDao#updateRegistryEntry(org.lexevs.registry.model.RegistryEntry)
 	 */
@@ -149,6 +149,14 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		RegistryEntry entry = new RegistryEntry();
 		entry.setResourceType(type);
 		entry.setResourceUri(uri);
+		return this.getHibernateTemplate().findByExample(entry);
+	}
+	
+	public List<RegistryEntry> getAllRegistryEntriesOfTypeURIAndVersion(ResourceType type, String uri, String version) {
+		RegistryEntry entry = new RegistryEntry();
+		entry.setResourceType(type);
+		entry.setResourceUri(uri);
+		entry.setResourceVersion(version);
 		return this.getHibernateTemplate().findByExample(entry);
 	}
 	

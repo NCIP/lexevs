@@ -1543,6 +1543,26 @@ public class XmlRegistry implements Registry {
 		}
 		return returnList;
 	}
+	
+	public List<RegistryEntry> getAllRegistryEntriesOfTypeURIAndVersion(ResourceType type, String uri, String version) {
+		List<RegistryEntry> returnList = new ArrayList<RegistryEntry>();
+
+		if(type.equals(ResourceType.CODING_SCHEME)){
+			for(DBEntry entry : this.getDBEntries()){
+				if(entry.urn.equals(uri) && entry.version.equals(version)) {
+					returnList.add(RegistryEntry.toRegistryEntry(entry));
+				}
+			}
+		} else if(type.equals(ResourceType.NCI_HISTORY)){
+
+			for(HistoryEntry entry : this.getHistoryEntries()){
+				if(entry.urn.equals(uri)) {
+					returnList.add(RegistryEntry.toRegistryEntry(entry));
+				}
+			}
+		}
+		return returnList;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#getEntriesForUri(java.lang.String)

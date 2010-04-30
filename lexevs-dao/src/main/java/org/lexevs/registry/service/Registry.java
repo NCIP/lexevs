@@ -146,6 +146,16 @@ PRODUCTION};
 	 * @return the all registry entries of type and URI
 	 */
 	public List<RegistryEntry> getAllRegistryEntriesOfTypeAndURI(ResourceType type, String uri);
+	
+	/**
+	 * Gets the all registry entries of type, URI and version.
+	 * 
+	 * @param type the resource type
+	 * @param uri the resource uri
+	 * @param version the verion
+	 * @return the all registry entries of type and URI
+	 */
+	public List<RegistryEntry> getAllRegistryEntriesOfTypeURIAndVersion(ResourceType type, String uri, String version);
 
 	/**
 	 * Gets the last update time.
