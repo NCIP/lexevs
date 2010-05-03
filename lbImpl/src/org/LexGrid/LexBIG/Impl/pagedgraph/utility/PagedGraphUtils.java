@@ -19,7 +19,9 @@
 package org.LexGrid.LexBIG.Impl.pagedgraph.utility;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodedNodeReference;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.apache.commons.lang.ArrayUtils;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 
 /**
  * The Class PagedGraphUtils.
@@ -43,5 +45,12 @@ public class PagedGraphUtils {
         ref1.getCodeNamespace().equals(ref2.getCodeNamespace())
         &&
         ArrayUtils.isEquals(ref1.getEntityType(), ref2.getEntityType());
+    }
+    
+    public static ConceptReference codeNamespacePairToConceptReference(CodeNamespacePair pair) {
+        ConceptReference ref = new ConceptReference();
+        ref.setCode(pair.getCode());
+        ref.setCodeNamespace(pair.getNamespace());
+        return ref;
     }
 }

@@ -18,10 +18,13 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph;
 
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedCodedNodeReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -29,8 +32,11 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
+import org.LexGrid.LexBIG.Impl.pagedgraph.utility.PagedGraphUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.springframework.util.CollectionUtils;
 
 /**
  * The Class PagingCodedNodeGraphImpl.
@@ -95,21 +101,56 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                             + "  Choose resolve forward to start at root nodes.  Choose resolve reverse to start at tail nodes.");
         }
         
-        ResolvedConceptReference focus;
+        ResolvedConceptReference focus = null;
         
         if(graphFocus != null) {
             focus =
-            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
+                LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
                 getEntityService().
                 getResolvedCodedNodeReference(codingSchemeUri, version, graphFocus.getCode(), graphFocus.getCodeNamespace());
+            if(focus == null) {
+               focus = new ResolvedConceptReference();
+               focus.setCode(graphFocus.getCode());
+               focus.setCodeNamespace(graphFocus.getCodeNamespace());
+               focus.setCodingSchemeName(graphFocus.getCodingSchemeName());
+            }
         } else {
-            focus = new ResolvedConceptReference();
-            focus.setCode(resolveForward ? "@" : "@@");
-            focus.setCodeNamespace(
-                    LexEvsServiceLocator.getInstance().getSystemResourceService().
-                        getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, version));
+            List<CodeNamespacePair> codes = 
+                resolveForward ? graphQueryBuilder.getQuery().getRestrictToSourceCodes() :
+                    graphQueryBuilder.getQuery().getRestrictToTargetCodes();
+                
+                if(CollectionUtils.isEmpty(graphQueryBuilder.getQuery().getRestrictToSourceCodes())) {
+                    CodeNamespacePair root = new CodeNamespacePair(
+                            resolveForward ? "@" : "@@",
+                                    LexEvsServiceLocator.getInstance().getSystemResourceService().
+                                    getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, version));
+                    codes.add(root);
+                }
+
+                ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
+
+                for(CodeNamespacePair pair : codes) {
+
+                    for(ResolvedConceptReference ref :
+                        this.doResolveAsList(
+                                PagedGraphUtils.codeNamespacePairToConceptReference(pair), 
+                                resolveForward, 
+                                resolveBackward, 
+                                resolveCodedEntryDepth, 
+                                resolveAssociationDepth, 
+                                propertyNames, 
+                                propertyTypes,
+                                sortOptions, 
+                                filterOptions, 
+                                maxToReturn, 
+                                keepLastAssociationLevelUnresolved).getResolvedConceptReference()) {
+
+                        returnList.addResolvedConceptReference(ref);    
+                    }
+                }
+                return returnList;
         }
-        
+
         if(resolveForward && shouldResolveNextLevel(resolveAssociationDepth)) {
             focus.setSourceOf(
             		associationListBuilder.buildSourceOfAssociationList(
