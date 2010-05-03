@@ -1,5 +1,6 @@
 package org.lexevs.dao.database.ibatis.codednodegraph;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
@@ -15,6 +16,7 @@ import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.springframework.util.CollectionUtils;
 
 public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedNodeGraphDao {
 	
@@ -173,6 +175,9 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	@Override
 	public List<AssociatedConcept> getAssociatedConceptsFromUid(
 			String codingSchemeUid, List<String> tripleUids, TripleNode tripleNode) {
+		if(CollectionUtils.isEmpty(tripleUids)) {
+			return new ArrayList<AssociatedConcept>();
+		}
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
 		PrefixedParameterCollection bean = new PrefixedParameterCollection();
