@@ -162,8 +162,9 @@ public abstract class AbstractCodedNodeGraph implements CodedNodeGraph {
      */
     @Override
     public Boolean isCodeInGraph(ConceptReference code) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        ResolvedConceptReferenceList list = 
+            this.doResolveAsList(code, true, true, 0, 0, null, null, null, null, 1, false);
+        return (list != null && list.getResolvedConceptReferenceCount() > 0);
     }
 
     /* (non-Javadoc)
