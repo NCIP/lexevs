@@ -10,6 +10,7 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.relations.AssociationEntity;
 import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.AssociationDao;
@@ -433,7 +434,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 		AssociationEntity associationEntity = 
 			this.databaseServiceManager.getEntityService().
 			getAssociationEntity(codingSchemeUri, version, code, namespace);
-		return (associationEntity != null && associationEntity.getIsTransitive());
+		return (associationEntity != null && BooleanUtils.toBoolean(associationEntity.getIsTransitive()));
 	}
 
 	protected RegistryEntry getRegistryEntryForCodingSchemeName(String codingSchemeName) {
