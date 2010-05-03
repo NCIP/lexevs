@@ -24,7 +24,6 @@ import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
-import org.LexGrid.LexBIG.DataModel.Core.ResolvedCodedNodeReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -34,6 +33,8 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDete
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.utility.PagedGraphUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.util.CollectionUtils;
@@ -114,6 +115,12 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                focus.setCodeNamespace(graphFocus.getCodeNamespace());
                focus.setCodingSchemeName(graphFocus.getCodingSchemeName());
             }
+            boolean isValidFocus = this.checkFocus(focus, resolveForward, resolveBackward);
+            
+            if(! isValidFocus) {
+                return null;
+            }
+            
         } else {
             List<CodeNamespacePair> codes = 
                 resolveForward ? graphQueryBuilder.getQuery().getRestrictToSourceCodes() :
@@ -190,7 +197,35 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
     
         return returnList;
     }
-    
+
+    protected boolean checkFocus(ConceptReference focus,  boolean resolveForward, boolean resolveBackward) {
+        CodedNodeGraphService service = 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
+        int count = 0;
+        if(resolveForward) {
+           count += service.
+            getTripleUidsContainingSubjectCount(
+                    this.getCodingSchemeUri(), 
+                    this.getVersion(), 
+                    this.getRelationsContainerName(), 
+                    null, 
+                    focus.getCode(), 
+                    focus.getCodeNamespace(), 
+                    this.getGraphQueryBuilder().getQuery());
+        } 
+        if(resolveBackward) {
+            count += service.
+            getTripleUidsContainingObjectCount(
+                    this.getCodingSchemeUri(), 
+                    this.getVersion(), 
+                    this.getRelationsContainerName(), 
+                    null, 
+                    focus.getCode(), 
+                    focus.getCodeNamespace(), 
+                    this.getGraphQueryBuilder().getQuery());
+        }
+        return count > 0;
+    }
     /**
      * Should resolve next level.
      * 
