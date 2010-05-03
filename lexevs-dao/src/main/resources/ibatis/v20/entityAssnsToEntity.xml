@@ -234,6 +234,7 @@
 			</isEqual>
 			
 		<isNotEmpty property="mustHaveCodes" prepend="AND">
+		(
 			<iterate property="mustHaveCodes" conjunction="OR">
 				<isEqual property="tripleNode" compareValue="SUBJECT"> 
 				(
@@ -250,6 +251,7 @@
 				)
 				</isEqual>
 			</iterate>
+		)
 		</isNotEmpty>
   </sql>
   
