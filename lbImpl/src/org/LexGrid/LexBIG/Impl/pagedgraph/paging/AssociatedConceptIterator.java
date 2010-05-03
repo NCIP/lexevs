@@ -218,25 +218,29 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
         
         List<AssociatedConcept> returnList = new ArrayList<AssociatedConcept>();
         
+        List<String> uids = new ArrayList<String>();
+        
         int count = 0;
         while(this.tripleUidIterator.hasNext() && count < pageSize) {
             String tripleUid = tripleUidIterator.next();
-            if(direction.equals(AssociationDirection.SOURCE_OF)) {
-                returnList.add(
-                        codedNodeGraphSerivce.
-                        getAssociatedConceptFromUidTarget(
-                                codingSchemeUri, 
-                                codingSchemeVersion,
-                                tripleUid));
-            } else {
-                returnList.add(
-                        codedNodeGraphSerivce.
-                        getAssociatedConceptFromUidSource(
-                                codingSchemeUri, 
-                                codingSchemeVersion,
-                                tripleUid));
-            }
+            uids.add(tripleUid);
             count++;
+        }
+        
+        if(direction.equals(AssociationDirection.SOURCE_OF)) {
+            returnList.addAll(
+                    codedNodeGraphSerivce.
+                    getAssociatedConceptsFromUidTarget(
+                            codingSchemeUri, 
+                            codingSchemeVersion,
+                            uids));
+        } else {
+            returnList.addAll(
+                    codedNodeGraphSerivce.
+                    getAssociatedConceptsFromUidSource(
+                            codingSchemeUri, 
+                            codingSchemeVersion,
+                            uids));
         }
         
         return returnList;
