@@ -84,9 +84,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
 			getTripleUidsContainingObject(
 					codingSchemeUid, 
+					associationPredicateUid,
 					objectEntityCode, 
 					objectEntityCodeNamespace, 
-					associationPredicateUid,
 					query.getRestrictToAssociationsQualifiers(),
 					query.getRestrictToSourceCodes(),
 					start, 
