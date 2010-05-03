@@ -52,10 +52,20 @@ public interface CodedNodeGraphService {
 			String codingSchemeVersion,
 			String tripleUid);
 	
+	public List<AssociatedConcept> getAssociatedConceptsFromUidSource(
+			String codingSchemeUri,
+			String codingSchemeVersion,
+			List<String> tripleUid);
+	
 	public AssociatedConcept getAssociatedConceptFromUidTarget(
 			String codingSchemeUri,
 			String codingSchemeVersion,
 			String tripleUid);
+	
+	public List<AssociatedConcept> getAssociatedConceptsFromUidTarget(
+			String codingSchemeUri,
+			String codingSchemeVersion,
+			List<String> tripleUid);
 	
 	public List<String> getAssociationPredicateNamesForCodingScheme(
 			String codingSchemeUri,

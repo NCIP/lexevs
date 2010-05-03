@@ -173,7 +173,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 	}
 
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
-		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
+		return DaoUtility.createNonTypedList(supportedDatebaseVersion);
 	}
 
 	public void setIbatisRevisionDao(IbatisRevisionDao ibatisRevisionDao) {

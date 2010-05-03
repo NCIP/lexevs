@@ -134,7 +134,7 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 		 */
 		@Override
 		public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
-			return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
+			return DaoUtility.createNonTypedList(supportedDatebaseVersion);
 		}
 
 		/* (non-Javadoc)

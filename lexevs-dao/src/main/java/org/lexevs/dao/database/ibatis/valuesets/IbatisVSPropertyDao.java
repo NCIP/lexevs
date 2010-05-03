@@ -532,7 +532,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	 */
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
-		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
+		return DaoUtility.createNonTypedList(supportedDatebaseVersion);
 	}
 
 	/**

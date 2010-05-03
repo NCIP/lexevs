@@ -339,7 +339,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	 */
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
-		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
+		return DaoUtility.createNonTypedList(supportedDatebaseVersion);
 	}
 
 	/**

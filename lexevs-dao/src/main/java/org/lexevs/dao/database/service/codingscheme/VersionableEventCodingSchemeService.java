@@ -185,19 +185,21 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		
 		String codingSchemeUId = codingSchemeDao.
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
-		
-//		if( codingSchemeDao.codingSchemeExists(codingSchemeUId) ) {
+	/*	
+		if( codingSchemeDao.codingSchemeExists(codingSchemeUId) ) {
 			
 			String prevEntryStateUId = codingSchemeDao.insertHistoryCodingScheme(codingSchemeUId);
-			
+			*/
 			codingSchemeDao.
 				updateCodingScheme(codingSchemeUId, codingScheme);	
-			
+			/*
 			versionsDao.insertEntryState(codingSchemeUId, "CodingScheme",
 					prevEntryStateUId, codingScheme.getEntryState());
-//		}
-		
+		}
+	
 		this.insertDependentChanges(codingScheme);
+		*/
+			this.fireCodingSchemeUpdateEvent(null, null, codingScheme, codingScheme);
 	}
 
 	/* (non-Javadoc)

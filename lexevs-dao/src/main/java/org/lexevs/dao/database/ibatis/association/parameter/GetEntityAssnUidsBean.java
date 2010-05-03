@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 
 public class GetEntityAssnUidsBean extends PrefixedTableParameterBean {
@@ -13,6 +14,8 @@ public class GetEntityAssnUidsBean extends PrefixedTableParameterBean {
 	private String entityCode;
 	private String entityCodeNamespace;
 	private List<QualifierNameValuePair> associationQualifiers;
+	private List<CodeNamespacePair> mustHaveCodes;
+	
 	private TripleNode tripleNode;
 	
 	public String getEntityCode() {
@@ -51,5 +54,11 @@ public class GetEntityAssnUidsBean extends PrefixedTableParameterBean {
 	}
 	public List<QualifierNameValuePair> getAssociationQualifiers() {
 		return associationQualifiers;
+	}
+	public void setMustHaveCodes(List<CodeNamespacePair> mustHaveCodes) {
+		this.mustHaveCodes = mustHaveCodes;
+	}
+	public List<CodeNamespacePair> getMustHaveCodes() {
+		return mustHaveCodes;
 	}
 }

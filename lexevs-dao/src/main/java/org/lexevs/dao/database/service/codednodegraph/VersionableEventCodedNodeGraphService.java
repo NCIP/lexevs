@@ -25,6 +25,7 @@ import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -40,13 +41,10 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			String codingSchemeUri, 
 			String codingSchemeVersion,
 			String tripleUid) {
-		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
-		
-		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
-			getAssociatedConceptFromUid(
-					codingSchemeUid, 
-					tripleUid, 
-					TripleNode.SUBJECT);
+		return this.getAssociatedConceptsFromUidSource(
+				codingSchemeUri, 
+				codingSchemeVersion, 
+				DaoUtility.createNonTypedList(tripleUid)).get(0);
 	}
 	
 	@Override
@@ -55,13 +53,10 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			String codingSchemeUri, 
 			String codingSchemeVersion,
 			String tripleUid) {
-		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
-		
-		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
-			getAssociatedConceptFromUid(
-					codingSchemeUid, 
-					tripleUid, 
-					TripleNode.OBJECT);
+		return this.getAssociatedConceptsFromUidTarget(
+				codingSchemeUri, 
+				codingSchemeVersion, 
+				DaoUtility.createNonTypedList(tripleUid)).get(0);
 	}
 
 	@Override
@@ -93,11 +88,13 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					objectEntityCodeNamespace, 
 					associationPredicateUid,
 					query.getRestrictToAssociationsQualifiers(),
+					query.getRestrictToSourceCodes(),
 					start, 
 					pageSize);
 	}
 
 	@Override
+	@Transactional
 	public List<String> getAssociationPredicateNamesForCodingScheme(
 			String codingSchemeUri, String codingSchemeVersion) {
 		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
@@ -108,6 +105,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 	}
 
 	@Override
+	@Transactional
 	public int getTripleUidsContainingObjectCount(String codingSchemeUri,
 			String codingSchemeVersion, String relationsContainerName,
 			String associationPredicateName, String objectEntityCode,
@@ -129,10 +127,12 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					associationPredicateUid, 
 					objectEntityCode, 
 					objectEntityCodeNamespace, 
-					query.getRestrictToAssociationsQualifiers());
+					query.getRestrictToAssociationsQualifiers(),
+					query.getRestrictToSourceCodes());
 	}
 
 	@Override
+	@Transactional
 	public List<String> getTripleUidsContainingSubject(String codingSchemeUri,
 			String codingSchemeVersion, String relationsContainerName,
 			String associationPredicateName, String subjectEntityCode,
@@ -156,11 +156,13 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					subjectEntityCode, 
 					subjectEntityCodeNamespace, 
 					query.getRestrictToAssociationsQualifiers(),
+					query.getRestrictToTargetCodes(),
 					start,
 					pageSize);
 	}
 
 	@Override
+	@Transactional
 	public int getTripleUidsContainingSubjectCount(
 			String codingSchemeUri,
 			String codingSchemeVersion, 
@@ -186,7 +188,8 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					associationPredicateUid, 
 					subjectEntityCode, 
 					subjectEntityCodeNamespace, 
-					query.getRestrictToAssociationsQualifiers());
+					query.getRestrictToAssociationsQualifiers(),
+					query.getRestrictToTargetCodes());
 	}
 
 	@Transactional
@@ -205,5 +208,33 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					codingSchemeUid, 
 					relationsContainerName,
 					associationPredicateName);
+	}
+
+	@Override
+	@Transactional
+	public List<AssociatedConcept> getAssociatedConceptsFromUidSource(
+			String codingSchemeUri, String codingSchemeVersion,
+			List<String> tripleUids) {
+		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+		
+		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
+			getAssociatedConceptsFromUid(
+					codingSchemeUid, 
+					tripleUids, 
+					TripleNode.SUBJECT);
+	}
+
+	@Override
+	@Transactional
+	public List<AssociatedConcept> getAssociatedConceptsFromUidTarget(
+			String codingSchemeUri, String codingSchemeVersion,
+			List<String> tripleUids) {
+		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+		
+		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
+			getAssociatedConceptsFromUid(
+					codingSchemeUid, 
+					tripleUids, 
+					TripleNode.OBJECT);
 	}
 }

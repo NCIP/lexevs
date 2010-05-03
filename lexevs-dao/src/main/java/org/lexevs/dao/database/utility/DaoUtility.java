@@ -95,6 +95,14 @@ public class DaoUtility {
 		return returnList;
 	}
 	
+	public static <T> List<T> createNonTypedList(T... items){
+		List<T> returnList = new ArrayList<T>();
+		for(T item : items) {
+			returnList.add(item);
+		}
+		return returnList;
+	}
+	
 	public static String getEntityDescriptionText(EntityDescription ed) {
 		if(ed == null) {
 			return "";

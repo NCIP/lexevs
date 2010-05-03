@@ -84,7 +84,7 @@ public class SIMCodedNodeSetDao extends AbstractBaseDao implements CodedNodeSetD
 	 */
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
-		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
+		return DaoUtility.createNonTypedList(supportedDatebaseVersion);
 	}
 
 	/* (non-Javadoc)

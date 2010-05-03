@@ -10,7 +10,9 @@ public class QualifierAddingAssociatedConcept extends AssociatedConcept {
 
 	private static final long serialVersionUID = 4411803013641184558L;
 	
-	List<?> associationQualification;
+	private String guid;
+	
+	private List<?> associationQualification;
 	
 	public void setAssociationQualification(NameAndValue qualification) {
 		if(qualification != null) {

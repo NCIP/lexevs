@@ -9,9 +9,10 @@ import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
 import org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
-import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 import org.lexevs.dao.database.utility.DaoUtility;
 
@@ -33,13 +34,15 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String associationPredicateUid,
 			String objectEntityCode,
 			String objectEntityCodeNamespace,
-			List<QualifierNameValuePair> associationQualifiers) {
+			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveSubjectCodes) {
 		return this.doGetTripleUidsCount(
 				codingSchemeUid, 
 				associationPredicateUid, 
 				objectEntityCode, 
 				objectEntityCodeNamespace, 
 				associationQualifiers,
+				mustHaveSubjectCodes,
 				TripleNode.OBJECT);
 	}
 
@@ -49,13 +52,15 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String associationPredicateUid,
 			String subjectEntityCode, 
 			String subjectEntityCodeNamespace,
-			List<QualifierNameValuePair> associationQualifiers){
+			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveObjectCodes){
 		return this.doGetTripleUidsCount(
 				codingSchemeUid, 
 				associationPredicateUid, 
 				subjectEntityCode, 
 				subjectEntityCodeNamespace, 
 				associationQualifiers,
+				mustHaveObjectCodes,
 				TripleNode.SUBJECT);
 	}
 
@@ -65,6 +70,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String entityCode,
 			String entityCodeNamespace, 
 			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveCodes,
 			TripleNode tripleNode) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
@@ -75,6 +81,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		bean.setEntityCode(entityCode);
 		bean.setEntityCodeNamespace(entityCodeNamespace);
 		bean.setAssociationQualifiers(associationQualifiers);
+		bean.setMustHaveCodes(mustHaveCodes);
 		bean.setTripleNode(tripleNode);
 		
 		return (Integer) this.getSqlMapClientTemplate().
@@ -88,6 +95,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String entityCode,
 			String entityCodeNamespace, 
 			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveObjectCodes,
 			int start, 
 			int pageSize){
 		return this.doGetTripleUids(
@@ -96,7 +104,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 				entityCode, 
 				entityCodeNamespace, 
 				associationQualifiers,
-				TripleNode.SUBJECT, 
+				mustHaveObjectCodes,
+				TripleNode.SUBJECT,
 				start, 
 				pageSize);		
 	}
@@ -108,6 +117,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String entityCode,
 			String entityCodeNamespace,
 			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveSubjectCodes,
 			int start, 
 			int pageSize){
 		return this.doGetTripleUids(
@@ -116,6 +126,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 				entityCode, 
 				entityCodeNamespace,
 				associationQualifiers,
+				mustHaveSubjectCodes,
 				TripleNode.OBJECT, 
 				start, 
 				pageSize);
@@ -129,6 +140,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String entityCode,
 			String entityCodeNamespace,
 			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveCodes,
 			TripleNode tripleNode,
 			int start, 
 			int pageSize){
@@ -142,31 +154,33 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		bean.setEntityCode(entityCode);
 		bean.setEntityCodeNamespace(entityCodeNamespace);
 		bean.setAssociationQualifiers(associationQualifiers);
+		bean.setMustHaveCodes(mustHaveCodes);
 		bean.setTripleNode(tripleNode);
 		
 		if(pageSize < 0) {
 			pageSize = Integer.MAX_VALUE;
 		}
 		return this.getSqlMapClientTemplate().
-			queryForList(GET_ENTITY_ASSNSTOENTITY_UID_SQL, bean);
+			queryForList(GET_ENTITY_ASSNSTOENTITY_UID_SQL, bean, start, pageSize);
 	}
 
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
-		return DaoUtility.createList(LexGridSchemaVersion.class, this.supportedDatebaseVersion);
+		return DaoUtility.createNonTypedList(this.supportedDatebaseVersion);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public AssociatedConcept getAssociatedConceptFromUid(
-			String codingSchemeUid, String tripleUid, TripleNode tripleNode) {
+	public List<AssociatedConcept> getAssociatedConceptsFromUid(
+			String codingSchemeUid, List<String> tripleUids, TripleNode tripleNode) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
-		PrefixedParameterTuple bean = new PrefixedParameterTuple();
+		PrefixedParameterCollection bean = new PrefixedParameterCollection();
 		bean.setPrefix(prefix);
-		bean.setParam1(tripleUid);
-		bean.setParam2(tripleNode.toString());
+		bean.setParam1(tripleNode.toString());
+		bean.setParam2(tripleUids);
 		
-		return (AssociatedConcept) this.getSqlMapClientTemplate().queryForObject(
+		return this.getSqlMapClientTemplate().queryForList(
 				GET_ASSOCIATEDCONCEPT_FROM_ASSNSTOENTITY_UID_SQL, bean);
 	}
 

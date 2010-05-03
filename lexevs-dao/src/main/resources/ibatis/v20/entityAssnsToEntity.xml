@@ -21,7 +21,8 @@
 		<result property="associationPredicateId" column="associationPredicateGuid" />
 	</resultMap>
 	
-	<resultMap id="associatedConceptResult" class="associatedConcept" groupBy="code,codeNamespace">
+	<resultMap id="associatedConceptResult" class="associatedConcept" groupBy="guid">
+		<result property="guid" column="entityAssnsGuid" />
 		<result property="code" column="entityCode" />
 		<result property="codeNamespace" column="entityCodeNamespace" />
 		<result property="entityDescription.content" column="description" />
@@ -37,18 +38,19 @@
 	</resultMap>
 	
 	<select id="getAssociatedConcpetFromEntityAssnsToEntityUid" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection"
 		remapResults="true" resultMap="Association.associatedConceptResult">
 		SELECT
+			eate.entityAssnsGuid,
 			entity.description,
 			codingScheme.codingSchemeURI,
 			codingScheme.representsVersion,
 			codingScheme.codingSchemeName,
-			<isEqual property="param2" compareValue="SUBJECT">
+			<isEqual property="param1" compareValue="SUBJECT">
 				eate.sourceEntityCode as entityCode,
 				eate.sourceEntityCodeNamespace as entityCodeNamespace,
 			</isEqual>
-			<isEqual property="param2" compareValue="OBJECT">
+			<isEqual property="param1" compareValue="OBJECT">
 				eate.targetEntityCode as entityCode,
 				eate.targetEntityCodeNamespace as entityCodeNamespace,
 			</isEqual>
@@ -59,12 +61,12 @@
 		LEFT JOIN
 			$prefix$entity entity
 		ON (
-			<isEqual property="param2" compareValue="SUBJECT">
+			<isEqual property="param1" compareValue="SUBJECT">
 				eate.sourceEntityCode = entity.entityCode
 				AND
 				eate.sourceEntityCodeNamespace = entity.entityCodeNamespace
 			</isEqual>
-			<isEqual property="param2" compareValue="OBJECT">
+			<isEqual property="param1" compareValue="OBJECT">
 				eate.targetEntityCode = entity.entityCode
 				AND
 				eate.targetEntityCodeNamespace = entity.entityCodeNamespace
@@ -79,7 +81,7 @@
 		ON (eate.entityAssnsGuid = quals.referenceGuid)
 		
 		WHERE
-			eate.entityAssnsGuid = #param1#
+			eate.entityAssnsGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
 	</select>
 
 	<select id="getAccociationInstanceKey" remapResults="true" resultClass="string">
@@ -230,6 +232,25 @@
 				AND
 				eate.targetEntityCodeNamespace = #entityCodeNamespace#
 			</isEqual>
+			
+		<isNotEmpty property="mustHaveCodes" prepend="AND">
+			<iterate property="mustHaveCodes" conjunction="OR">
+				<isEqual property="tripleNode" compareValue="SUBJECT"> 
+				(
+					eate.targetEntityCode = #mustHaveCodes[].code#
+					AND
+					eate.targetEntityCodeNamespace = #mustHaveCodes[].namespace#
+				)
+				</isEqual>
+				<isEqual property="tripleNode" compareValue="OBJECT"> 
+				(
+					eate.sourceEntityCode = #mustHaveCodes[].code#
+					AND
+					eate.sourceEntityCodeNamespace = #mustHaveCodes[].namespace#
+				)
+				</isEqual>
+			</iterate>
+		</isNotEmpty>
   </sql>
   
   	<select id="getEntityAssnsToEntityUids"
