@@ -30,6 +30,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 
 /**
@@ -72,6 +73,15 @@ public class UnionGraph extends AbstractMultiGraph {
 
 
         return this.unionReferenceList(list1, list2);
+    }
+    
+    @Override
+    public CodedNodeSet toNodeList(ConceptReference graphFocus, boolean resolveForward, boolean resolveBackward,
+            int resolveAssociationDepth, int maxToReturn) throws LBInvocationException, LBParameterException {
+        CodedNodeSet cns1 = getGraph1().toNodeList(graphFocus, resolveForward, resolveBackward, resolveAssociationDepth, maxToReturn);
+        CodedNodeSet cns2 = getGraph2().toNodeList(graphFocus, resolveForward, resolveBackward, resolveAssociationDepth, maxToReturn);
+        
+        return cns1.union(cns2);    
     }
     
     protected ResolvedConceptReferenceList unionReferenceList(

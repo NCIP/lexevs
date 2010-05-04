@@ -25,6 +25,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 
 /**
@@ -58,5 +59,16 @@ public class IntersectGraph extends AbstractMultiGraph {
             throws LBInvocationException, LBParameterException {
         //  TODO Auto-generated method stub (IMPLEMENT!)
         throw new UnsupportedOperationException();
+    }
+    
+    
+
+    @Override
+    public CodedNodeSet toNodeList(ConceptReference graphFocus, boolean resolveForward, boolean resolveBackward,
+            int resolveAssociationDepth, int maxToReturn) throws LBInvocationException, LBParameterException {
+        CodedNodeSet cns1 = getGraph1().toNodeList(graphFocus, resolveForward, resolveBackward, resolveAssociationDepth, maxToReturn);
+        CodedNodeSet cns2 = getGraph2().toNodeList(graphFocus, resolveForward, resolveBackward, resolveAssociationDepth, maxToReturn);
+        
+        return cns1.intersect(cns2);    
     }
 }

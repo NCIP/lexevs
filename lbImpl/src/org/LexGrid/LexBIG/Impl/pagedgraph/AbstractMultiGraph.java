@@ -144,16 +144,6 @@ public abstract class AbstractMultiGraph extends AbstractCodedNodeGraph {
         return this;
     }
     
-    
-
-    @Override
-    public CodedNodeSet toNodeList(ConceptReference graphFocus, boolean resolveForward, boolean resolveBackward,
-            int resolveAssociationDepth, int maxToReturn) throws LBInvocationException, LBParameterException {
-        CodedNodeSet cns1 = graph1.toNodeList(graphFocus, resolveForward, resolveBackward, resolveAssociationDepth, maxToReturn);
-        CodedNodeSet cns2 = graph2.toNodeList(graphFocus, resolveForward, resolveBackward, resolveAssociationDepth, maxToReturn);
-        
-        return cns1.union(cns2);    
-    }
 
     /**
      * Gets the graph1.
