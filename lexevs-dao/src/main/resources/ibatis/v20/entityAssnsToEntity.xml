@@ -206,9 +206,11 @@
 		(eate.entityAssnsGuid = quals.referenceGuid)
 	WHERE
 		rel.codingSchemeGuid = #codingSchemeUid#
-	AND
+		
+	<isNotNull property="associationPredicateUid" prepend="AND">
 		ap.associationPredicateGuid = #associationPredicateUid#
-
+	</isNotNull>
+	
 	<isNotEmpty property="associationQualifiers" prepend="AND">
 		<iterate property="associationQualifiers" conjunction="AND">
 			(
