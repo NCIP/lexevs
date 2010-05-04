@@ -33,9 +33,13 @@ import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.naming.SupportedAssociation;
+import org.LexGrid.naming.SupportedAssociationQualifier;
+import org.LexGrid.naming.URIMap;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.util.StringUtils;
 
 /**
@@ -53,6 +57,13 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
     
     /** The version. */
     private String version;
+    
+    public DefaultGraphQueryBuilder(String codingSchemeUri, String version, GraphQuery query){
+        super();
+        this.codingSchemeUri = codingSchemeUri;
+        this.version = version;
+        this.graphQuery = query;
+    }
     
     /**
      * Instantiates a new default graph query builder.
@@ -84,7 +95,10 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
                 if(StringUtils.hasText(nameAndValue.getContent())){
                     throw new UnsupportedOperationException();
                 }
-                graphQuery.getRestrictToAssociations().add(nameAndValue.getName());
+                String localId = nameAndValue.getName();
+                validate(localId, SupportedAssociation.class);
+                
+                graphQuery.getRestrictToAssociations().add(localId);
 
             }
         }
@@ -92,6 +106,8 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
             for(NameAndValue nameAndValue : associationQualifiers.getNameAndValue()) {
                 String qualName = nameAndValue.getName();
                 String qualValue = nameAndValue.getContent();
+                
+                validate(qualName, SupportedAssociationQualifier.class);
 
                 if(StringUtils.hasText(qualValue) && !StringUtils.hasText(qualName)) {
                     throw new LBParameterException("When applying a Qualifier Restriction onto an Association," +
@@ -218,4 +234,25 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
         
         this.graphQuery.getRestrictToTargetCodes().addAll(foundCodes);
    }
+    
+    protected void validate(String localId, Class<? extends URIMap> clazz) throws LBParameterException {
+        if(! this.isValid(localId, clazz)) {
+            throwLBParmeterException(localId);
+        }
+    }
+    
+    protected void throwLBParmeterException(String localId) throws LBParameterException {
+        throw new LBParameterException(localId + " is not a valid Parameter.");
+    }
+    
+    protected boolean isValid(String localId, Class<? extends URIMap> clazz) {
+        return LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().
+            getCodingSchemeService().
+            validatedSupportedAttribute(
+                    this.codingSchemeUri, 
+                    this.version, 
+                    localId, 
+                    clazz);
+    }
 }

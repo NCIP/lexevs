@@ -27,6 +27,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -37,6 +38,10 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
  * The Class AbstractQueryBuildingCodedNodeGraph.
@@ -77,8 +82,67 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         
         graphQueryBuilder = new DefaultGraphQueryBuilder(codingSchemeUri, version);
     }
- 
+    
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#areCodesRelated(org.LexGrid.LexBIG.DataModel.Core.NameAndValue, org.LexGrid.LexBIG.DataModel.Core.ConceptReference, org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean)
+     */
+    @Override
+    public Boolean areCodesRelated(NameAndValue association, ConceptReference sourceCode, ConceptReference targetCode,
+            boolean directOnly) throws LBInvocationException, LBParameterException {
+       boolean areRelatedForward = this.doGetAreCodesRelated(sourceCode, targetCode, association);
+       
+       if(areRelatedForward) {return true;}
+       
+       boolean areRelatedBackward = this.doGetAreCodesRelated(targetCode, sourceCode, association);
+       
+       if(areRelatedBackward) {return true;}
+       
+       return false;  
+    }
+    
+    protected boolean doGetAreCodesRelated(
+            ConceptReference sourceCode, 
+            ConceptReference targetCode, 
+            NameAndValue association) throws LBParameterException, LBInvocationException {
 
+        GraphQueryBuilder builder = new DefaultGraphQueryBuilder(this.codingSchemeUri, this.version, getClonedGraphQuery());
+        
+        NameAndValueList nvl = new NameAndValueList();
+        nvl.addNameAndValue(association);
+        
+        builder.restrictToAssociations(nvl, null);
+        builder.getQuery().getRestrictToTargetCodes().add(new CodeNamespacePair(targetCode.getCode(), targetCode.getCodeNamespace()));
+        
+        CodedNodeGraphService service = LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().
+            getCodedNodeGraphService();
+        
+        int subjectCount = service.getTripleUidsContainingSubjectCount(
+                codingSchemeUri, 
+                version, 
+                relationsContainerName, 
+                null, 
+                sourceCode.getCode(), 
+                sourceCode.getCodeNamespace(), 
+                builder.getQuery());
+        
+        builder = new DefaultGraphQueryBuilder(this.codingSchemeUri, this.version, getClonedGraphQuery());
+
+        builder.restrictToAssociations(nvl, null);
+        builder.getQuery().getRestrictToSourceCodes().add(new CodeNamespacePair(sourceCode.getCode(), sourceCode.getCodeNamespace()));
+    
+        int objectCount = service.getTripleUidsContainingObjectCount(
+                codingSchemeUri, 
+                version, 
+                relationsContainerName, 
+                null, 
+                targetCode.getCode(), 
+                targetCode.getCodeNamespace(), 
+                builder.getQuery());
+        
+        return (subjectCount + objectCount) > 0;
+    }
+ 
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#restrictToAssociations(org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList, org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList)
      */
@@ -294,5 +358,13 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
      */
     public void setRelationsContainerName(String relationsContainerName) {
         this.relationsContainerName = relationsContainerName;
+    }
+    
+    private GraphQuery getClonedGraphQuery() {
+        try {
+            return this.graphQueryBuilder.getQuery().clone();
+        } catch (CloneNotSupportedException e) {
+           throw new RuntimeException(e);
+        }
     }
 }

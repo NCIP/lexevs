@@ -51,6 +51,7 @@ public abstract class AbstractMultiGraph extends AbstractCodedNodeGraph {
         this.graph2 = graph2;
     }
 
+
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#restrictToAssociations(org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList, org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList)
      */

@@ -26,6 +26,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -51,6 +52,15 @@ public class IntersectGraph extends AbstractMultiGraph {
      */
     public IntersectGraph(CodedNodeGraph graph1, CodedNodeGraph graph2) {
         super(graph1, graph2);
+    }
+
+    @Override
+    public Boolean areCodesRelated(NameAndValue association, ConceptReference sourceCode, ConceptReference targetCode,
+            boolean directOnly) throws LBInvocationException, LBParameterException {
+        boolean relatedGraph1 = this.getGraph1().areCodesRelated(association, sourceCode, targetCode, directOnly);
+        boolean relatedGraph2 = this.getGraph1().areCodesRelated(association, sourceCode, targetCode, directOnly);
+    
+        return relatedGraph1 && relatedGraph2;
     }
 
     /* (non-Javadoc)
