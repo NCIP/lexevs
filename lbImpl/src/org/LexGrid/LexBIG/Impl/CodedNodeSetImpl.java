@@ -55,7 +55,6 @@ import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Operation;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.SetOperation;
 import org.LexGrid.LexBIG.Impl.dataAccess.RestrictionImplementations;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.LexGrid.LexBIG.Impl.helpers.ResolvedConceptReferencesIteratorImpl;
@@ -69,17 +68,16 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.concepts.Entity;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
-import org.lexevs.exceptions.InternalException;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.ResourceManager;
@@ -497,11 +495,13 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                 // Always assign the basics...
                 CodeToReturn code = codeToReturnItr.next();
                 ResolvedConceptReference rcr = new ResolvedConceptReference();
-                rcr.setCodingSchemeName(
-                        serviceLocator.getSystemResourceService().
+                if(StringUtils.isNotBlank(code.getUri()) || StringUtils.isNotBlank(code.getVersion())) {
+                    rcr.setCodingSchemeName(
+                            serviceLocator.getSystemResourceService().
                             getInternalCodingSchemeNameForUserCodingSchemeName(code.getUri(), code.getVersion()));
-                rcr.setCodingSchemeURI(code.getUri());
-                rcr.setCodingSchemeVersion(code.getVersion());
+                    rcr.setCodingSchemeURI(code.getUri());
+                    rcr.setCodingSchemeVersion(code.getVersion());
+                }
                 rcr.setCode(code.getCode());
                 rcr.setCodeNamespace(code.getNamespace());
                 EntityDescription ed = new EntityDescription();
@@ -595,7 +595,13 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      */
     private Entity buildCodedEntry(String uri, String version, String code, String namespace,
             LocalNameList restrictToProperties, PropertyType[] restrictToPropertyTypes) throws LBInvocationException {
-        
+            if(StringUtils.isBlank(uri) ||
+                    StringUtils.isBlank(version) || 
+                    StringUtils.isBlank(code) ||
+                    StringUtils.isBlank(namespace)) {
+                return null;
+            }
+            
             EntityService entityService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
             
             return entityService.getEntity(uri, version, code, namespace);
@@ -782,6 +788,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      */
     private void toBruteForceMode(String internalCodeSystemName, String internalVersionString)
     throws LBInvocationException, LBParameterException {
+        if(this.codesToInclude_ != null) {return;}
+        
         List<BooleanQuery> queries = new ArrayList<BooleanQuery>();
         queries.addAll(combinedQuery);
         
