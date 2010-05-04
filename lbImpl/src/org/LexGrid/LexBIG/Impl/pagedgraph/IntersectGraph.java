@@ -18,10 +18,15 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
+import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
@@ -57,8 +62,18 @@ public class IntersectGraph extends AbstractMultiGraph {
             LocalNameList propertyNames, PropertyType[] propertyTypes, SortOptionList sortOptions,
             LocalNameList filterOptions, int maxToReturn, boolean keepLastAssociationLevelUnresolved)
             throws LBInvocationException, LBParameterException {
-        //  TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        ResolvedConceptReferenceList list1 = this.getGraph1().resolveAsList(
+                graphFocus, resolveForward, resolveBackward, 
+                resolveCodedEntryDepth, resolveAssociationDepth, propertyNames, 
+                propertyTypes, sortOptions, maxToReturn);
+        
+        ResolvedConceptReferenceList list2 = this.getGraph2().resolveAsList(
+                graphFocus, resolveForward, resolveBackward, 
+                resolveCodedEntryDepth, resolveAssociationDepth, propertyNames, 
+                propertyTypes, sortOptions, maxToReturn);
+
+
+        return this.intersectReferenceList(list1, list2);
     }
     
     
@@ -70,5 +85,107 @@ public class IntersectGraph extends AbstractMultiGraph {
         CodedNodeSet cns2 = getGraph2().toNodeList(graphFocus, resolveForward, resolveBackward, resolveAssociationDepth, maxToReturn);
         
         return cns1.intersect(cns2);    
+    }
+    
+    protected ResolvedConceptReferenceList intersectReferenceList(
+            ResolvedConceptReferenceList list1, 
+            ResolvedConceptReferenceList list2) {
+        ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
+        if(list1 == null) { list1 = new ResolvedConceptReferenceList(); }
+        if(list2 == null) { list2 = new ResolvedConceptReferenceList(); }
+        
+        for(ResolvedConceptReference ref : list1.getResolvedConceptReference()) {
+            ResolvedConceptReference foundRef =
+                this.getAssociatedConcept(ref, list2.getResolvedConceptReference());
+            if(foundRef != null) {
+                returnList.addResolvedConceptReference(this.intersectReference(ref, foundRef));
+            }
+        }
+
+        return returnList;
+    }
+    
+    /**
+     * Union reference.
+     * 
+     * @param ref1 the ref1
+     * @param ref2 the ref2
+     * 
+     * @return the resolved concept reference
+     */
+    protected ResolvedConceptReference intersectReference(ResolvedConceptReference ref1, ResolvedConceptReference ref2) {
+        ref1.setSourceOf(intersectAssociationList(ref1.getSourceOf(), ref2.getSourceOf()));
+        ref2.setTargetOf(intersectAssociationList(ref1.getTargetOf(), ref2.getTargetOf()));
+       
+        return ref1;
+    }
+    
+    protected AssociatedConcept intersectReference(AssociatedConcept ref1, AssociatedConcept ref2) {
+        ref1.setSourceOf(intersectAssociationList(ref1.getSourceOf(), ref2.getSourceOf()));
+        ref2.setTargetOf(intersectAssociationList(ref1.getTargetOf(), ref2.getTargetOf()));
+       
+        return ref1;
+    }
+    
+    protected AssociationList intersectAssociationList(AssociationList list1, AssociationList list2) {
+        AssociationList returnList = new AssociationList();
+        
+        if(list1 != null) {
+            for(Association association : list1.getAssociation()) {
+                
+                Association intersectedAssociation = getAssociationForName(association.getAssociationName(), list2);
+                
+                if(intersectedAssociation != null) {
+                    returnList.addAssociation(intersectAssociation(association, intersectedAssociation));
+                } 
+            }
+        }
+        
+        if(returnList.getAssociationCount() == 0) {
+            return null;
+        } else {
+            return returnList;
+        }
+    }
+    
+    protected Association intersectAssociation(Association assoc1, Association assoc2) {
+        AssociatedConceptList list = new AssociatedConceptList();
+        
+        AssociatedConcept[] associatedConcepts1 = assoc1.getAssociatedConcepts().getAssociatedConcept();
+        AssociatedConcept[] associatedConcepts2 = assoc1.getAssociatedConcepts().getAssociatedConcept();
+        
+        for(AssociatedConcept concept : associatedConcepts1) {
+            AssociatedConcept foundConcept = getAssociatedConcept(concept, associatedConcepts2);
+            if(foundConcept != null) {
+                
+                list.addAssociatedConcept(
+                        intersectReference(concept, foundConcept));
+            }
+        }
+
+        assoc1.setAssociatedConcepts(list);
+        
+        return assoc1;
+    }
+    
+    protected <T extends ConceptReference> T getAssociatedConcept(T searchConcept, T[] list) {
+        for(T concept : list) {
+            if(concept.getCode().equals(searchConcept.getCode()) &&
+                    concept.getCodeNamespace().equals(searchConcept.getCodeNamespace())){
+                return concept;
+            }
+        }
+        return null;
+    }
+    
+    protected Association getAssociationForName(String associationName, AssociationList list) {
+        if(list == null) {return null;}
+        
+        for(Association association : list.getAssociation()) {
+            if(association.getAssociationName().equals(associationName)) {
+                return association;
+            }
+        }
+        return null;
     }
 }
