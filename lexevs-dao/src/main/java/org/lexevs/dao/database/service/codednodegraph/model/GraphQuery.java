@@ -3,7 +3,7 @@ package org.lexevs.dao.database.service.codednodegraph.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GraphQuery {
+public class GraphQuery implements Cloneable {
 
     private List<CodeNamespacePair> restrictToSourceCodes = new ArrayList<CodeNamespacePair>();
     private List<CodeNamespacePair> restrictToTargetCodes = new ArrayList<CodeNamespacePair>();
@@ -184,5 +184,19 @@ public class GraphQuery {
             return true;
         }   
     }
+
+	@Override
+	public GraphQuery clone() throws CloneNotSupportedException {
+		GraphQuery query = new GraphQuery();
+		query.setRestrictToAssociations(new ArrayList<String>(this.restrictToAssociations));
+		query.setRestrictToAssociationsQualifiers(new ArrayList<QualifierNameValuePair>(this.restrictToAssociationsQualifiers));
+		query.setRestrictToCodeSystem(new ArrayList<String>(this.restrictToCodeSystem));
+		query.setRestrictToSourceCodes(new ArrayList<CodeNamespacePair>(this.restrictToSourceCodes));
+		query.setRestrictToSourceCodeSystem(new ArrayList<String>(this.restrictToSourceCodeSystem));
+		query.setRestrictToTargetCodes(new ArrayList<CodeNamespacePair>(this.restrictToTargetCodes));
+		query.setRestrictToTargetCodeSystem(new ArrayList<String>(this.restrictToTargetCodeSystem));
+		
+		return query;
+	} 
 }
 
