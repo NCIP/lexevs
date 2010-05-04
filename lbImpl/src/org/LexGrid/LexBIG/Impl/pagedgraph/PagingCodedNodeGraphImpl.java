@@ -218,28 +218,27 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         CodedNodeGraphService service = 
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
         int count = 0;
-        //if(resolveForward) {
-           count += service.
-            getTripleUidsContainingSubjectCount(
-                    this.getCodingSchemeUri(), 
-                    this.getVersion(), 
-                    this.getRelationsContainerName(), 
-                    null, 
-                    focus.getCode(), 
-                    focus.getCodeNamespace(), 
-                    new GraphQuery());
-       // } 
-        //if(resolveBackward) {
-            count += service.
-            getTripleUidsContainingObjectCount(
-                    this.getCodingSchemeUri(), 
-                    this.getVersion(), 
-                    this.getRelationsContainerName(), 
-                    null, 
-                    focus.getCode(), 
-                    focus.getCodeNamespace(), 
-                    new GraphQuery());
-       // }
+
+        count += service.
+        getTripleUidsContainingSubjectCount(
+                this.getCodingSchemeUri(), 
+                this.getVersion(), 
+                this.getRelationsContainerName(), 
+                null, 
+                focus.getCode(), 
+                focus.getCodeNamespace(), 
+                new GraphQuery());
+
+        count += service.
+        getTripleUidsContainingObjectCount(
+                this.getCodingSchemeUri(), 
+                this.getVersion(), 
+                this.getRelationsContainerName(), 
+                null, 
+                focus.getCode(), 
+                focus.getCodeNamespace(), 
+                new GraphQuery());
+
         return count > 0;
     }
     /**
