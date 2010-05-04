@@ -18,13 +18,25 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.Association;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
+import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.Utility.Constructors;
 
 /**
  * The Class AbstractQueryBuildingCodedNodeGraph.
@@ -141,6 +153,75 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
     public CodedNodeGraph restrictToTargetCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
         this.graphQueryBuilder.restrictToTargetCodes(codes);
         return this;
+    }
+    
+    @Override
+    public CodedNodeSet toNodeList(ConceptReference graphFocus, boolean resolveForward, boolean resolveBackward,
+            int resolveAssociationDepth, int maxToReturn) throws LBInvocationException, LBParameterException {
+        ResolvedConceptReferenceList list = 
+            this.doResolveAsList(
+                graphFocus, 
+                resolveForward, 
+                resolveBackward, 
+                0, 
+                resolveAssociationDepth,
+                null, null, null, null, maxToReturn, false);
+        
+        ConceptReferenceList codeList = this.traverseGraph(list, resolveForward, resolveBackward);
+
+        try {
+            CodedNodeSet cns = new CodedNodeSetImpl(
+                    this.getCodingSchemeUri(), 
+                    Constructors.createCodingSchemeVersionOrTagFromVersion(this.getVersion()), null);
+            
+            cns = cns.restrictToCodes(codeList);
+            
+            return cns;
+        } catch (LBResourceUnavailableException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    private ConceptReferenceList traverseGraph(ResolvedConceptReferenceList list, boolean resolveForward, boolean resolveBackward){
+        List<ConceptReference> returnList = new ArrayList<ConceptReference>();
+        
+        for(ResolvedConceptReference ref : list.getResolvedConceptReference()) {
+            returnList.addAll(traverseGraph(ref, resolveForward, resolveBackward));
+        }
+        
+        ConceptReferenceList refList = new ConceptReferenceList();
+        refList.setConceptReference(returnList.toArray(new ConceptReference[returnList.size()] ));
+        
+        return refList;
+    }
+    
+    private List<ConceptReference> traverseGraph(ResolvedConceptReference ref, boolean resolveForward, boolean resolveBackward){
+        List<ConceptReference> returnList = new ArrayList<ConceptReference>();
+        returnList.add(ref);
+        
+        if(resolveForward) {
+            if(ref.getSourceOf() != null) {
+                for(Association assoc : ref.getSourceOf().getAssociation()) {
+                    for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()) {
+                        returnList.addAll(
+                                this.traverseGraph(ac, resolveForward, resolveBackward));
+                    }
+                }
+            }
+        }
+        
+        if(resolveBackward) {
+            if(ref.getTargetOf() != null) {
+                for(Association assoc : ref.getSourceOf().getAssociation()) {
+                    for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()) {
+                        returnList.addAll(
+                                this.traverseGraph(ac, resolveForward, resolveBackward));
+                    }
+                }
+            }
+        }
+        
+        return returnList;
     }
 
     /**
