@@ -18,18 +18,29 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
+import org.LexGrid.LexBIG.Impl.helpers.AdditiveCodeHolder;
+import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
+import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.logging.LoggerFactory;
 
 /**
@@ -122,21 +133,90 @@ public abstract class AbstractCodedNodeGraph implements CodedNodeGraph {
             throws LBInvocationException, LBParameterException;
     
     /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#areCodesRelated(org.LexGrid.LexBIG.DataModel.Core.NameAndValue, org.LexGrid.LexBIG.DataModel.Core.ConceptReference, org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean)
-     */
-    @Override
-    public Boolean areCodesRelated(NameAndValue association, ConceptReference sourceCode, ConceptReference targetCode,
-            boolean directOnly) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
-    }
-    
-    /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#toNodeList(org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean, boolean, int, int)
      */
     @Override
     public CodedNodeSet toNodeList(ConceptReference graphFocus, boolean resolveForward, boolean resolveBackward,
             int resolveAssociationDepth, int maxToReturn) throws LBInvocationException, LBParameterException {
+        ResolvedConceptReferenceList list = 
+            this.doResolveAsList(
+                graphFocus, 
+                resolveForward, 
+                resolveBackward, 
+                0, 
+                resolveAssociationDepth,
+                null, null, null, null, maxToReturn, false);
+        
+        AdditiveCodeHolder holder = new DefaultCodeHolder();
+        
+        List<CodeToReturn> codeList = this.traverseGraph(list, resolveForward, resolveBackward);
+        
+        for(CodeToReturn code : codeList) {
+            holder.add(code);
+        }
+
+        return new CodedNodeSetImpl(
+                holder, null, null);
+    }
+    
+    private List<CodeToReturn> traverseGraph(ResolvedConceptReferenceList list, boolean resolveForward, boolean resolveBackward){
+        List<CodeToReturn> returnList = new ArrayList<CodeToReturn>();
+        
+        for(ResolvedConceptReference ref : list.getResolvedConceptReference()) {
+            returnList.addAll(traverseGraph(ref, resolveForward, resolveBackward));
+        }
+        
+        return returnList;
+    }
+    
+    private List<CodeToReturn> traverseGraph(ResolvedConceptReference ref, boolean resolveForward, boolean resolveBackward){
+        List<CodeToReturn> returnList = new ArrayList<CodeToReturn>();
+        returnList.add(toCodeToReturn(ref));
+        
+        if(resolveForward) {
+            if(ref.getSourceOf() != null) {
+                for(Association assoc : ref.getSourceOf().getAssociation()) {
+                    for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()) {
+                        returnList.addAll(
+                                this.traverseGraph(ac, resolveForward, resolveBackward));
+                    }
+                }
+            }
+        }
+        
+        if(resolveBackward) {
+            if(ref.getTargetOf() != null) {
+                for(Association assoc : ref.getSourceOf().getAssociation()) {
+                    for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()) {
+                        returnList.addAll(
+                                this.traverseGraph(ac, resolveForward, resolveBackward));
+                    }
+                }
+            }
+        }
+        
+        return returnList;
+    }
+    
+    
+    private CodeToReturn toCodeToReturn(ResolvedConceptReference ref) {
+
+        return new CodeToReturn(
+                ref.getCode(),
+                DaoUtility.getEntityDescriptionText(ref.getEntityDescription()),
+                ref.getCodingSchemeURI(),
+                ref.getCodingSchemeVersion(),
+                0,
+                ref.getCodeNamespace(),
+                ref.getEntityType());
+    }
+    
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#areCodesRelated(org.LexGrid.LexBIG.DataModel.Core.NameAndValue, org.LexGrid.LexBIG.DataModel.Core.ConceptReference, org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean)
+     */
+    @Override
+    public Boolean areCodesRelated(NameAndValue association, ConceptReference sourceCode, ConceptReference targetCode,
+            boolean directOnly) throws LBInvocationException, LBParameterException {
         // TODO Auto-generated method stub (IMPLEMENT!)
         throw new UnsupportedOperationException();
     }

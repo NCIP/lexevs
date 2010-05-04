@@ -23,6 +23,8 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -45,6 +47,9 @@ import org.springframework.util.CollectionUtils;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGraph {
+    
+    public static String ROOT = "@";
+    public static String TAIL = "@@";
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -1153282485482789848L;
@@ -128,7 +133,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                 
                 if(CollectionUtils.isEmpty(graphQueryBuilder.getQuery().getRestrictToSourceCodes())) {
                     CodeNamespacePair root = new CodeNamespacePair(
-                            resolveForward ? "@" : "@@",
+                            resolveForward ? ROOT : TAIL,
                                     LexEvsServiceLocator.getInstance().getSystemResourceService().
                                     getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, version));
                     codes.add(root);
@@ -153,19 +158,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     
                     if(list != null) {
 
-                        for(ResolvedConceptReference ref :
-                            this.doResolveAsList(
-                                    PagedGraphUtils.codeNamespacePairToConceptReference(pair), 
-                                    resolveForward, 
-                                    resolveBackward, 
-                                    resolveCodedEntryDepth, 
-                                    resolveAssociationDepth, 
-                                    propertyNames, 
-                                    propertyTypes,
-                                    sortOptions, 
-                                    filterOptions, 
-                                    maxToReturn, 
-                                    keepLastAssociationLevelUnresolved).getResolvedConceptReference()) {
+                        for(ResolvedConceptReference ref : list.getResolvedConceptReference()) {
 
                             returnList.addResolvedConceptReference(ref);    
                         }
@@ -209,8 +202,35 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         }
         
         ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
-        returnList.addResolvedConceptReference(focus);
+        
+        if(! this.isRootOrTail(focus)) {
+            returnList.addResolvedConceptReference(focus);
+        } else {
+            returnList = flattenRootList(focus);
+        }
     
+        return returnList;
+    }
+    
+    private ResolvedConceptReferenceList flattenRootList(ResolvedConceptReference root) {
+        ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
+        
+        if(root.getSourceOf() != null) {
+            for(Association assoc : root.getSourceOf().getAssociation()) {
+                for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()) {
+                    returnList.addResolvedConceptReference(ac);
+                }
+            }
+        }
+        
+        if(root.getTargetOf() != null) {
+            for(Association assoc : root.getTargetOf().getAssociation()) {
+                for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()) {
+                    returnList.addResolvedConceptReference(ac);
+                }
+            }
+        }
+        
         return returnList;
     }
 
@@ -240,6 +260,10 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                 new GraphQuery());
 
         return count > 0;
+    }
+    
+    private boolean isRootOrTail(ResolvedConceptReference ref) {
+        return (ref.getCode().equals(ROOT) || ref.getCode().equals(TAIL));
     }
     /**
      * Should resolve next level.
