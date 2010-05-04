@@ -443,7 +443,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
         //if there's no entityCodeNamespace, assume default
         if(StringUtils.isBlank(containingEntityCodeNamespace)){
-            containingEntityCodeNamespace = codingScheme;
+            containingEntityCodeNamespace = resolvedCodingScheme.getCodingSchemeName();
         }
         
         CodingSchemeVersionOrTag versionOrTagToUse = null;
@@ -458,8 +458,8 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
         cns = cns.restrictToCodes(
                 Constructors.createConceptReferenceList(
-                        supportedAssociation.getEntityCode(), 
-                        supportedAssociation.getEntityCodeNamespace(), 
+                        containingEntityCode, 
+                        containingEntityCodeNamespace, 
                         containingCodingScheme));
 
         ResolvedConceptReferenceList list = cns.resolveToList(null, null, null, -1);
