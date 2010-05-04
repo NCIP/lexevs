@@ -33,8 +33,8 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDete
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.utility.PagedGraphUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
-import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.util.CollectionUtils;
@@ -137,22 +137,38 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                 ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
 
                 for(CodeNamespacePair pair : codes) {
+                    
+                    ResolvedConceptReferenceList list = this.doResolveAsList(
+                            PagedGraphUtils.codeNamespacePairToConceptReference(pair), 
+                            resolveForward, 
+                            resolveBackward, 
+                            resolveCodedEntryDepth, 
+                            resolveAssociationDepth, 
+                            propertyNames, 
+                            propertyTypes,
+                            sortOptions, 
+                            filterOptions, 
+                            maxToReturn, 
+                            keepLastAssociationLevelUnresolved);
+                    
+                    if(list != null) {
 
-                    for(ResolvedConceptReference ref :
-                        this.doResolveAsList(
-                                PagedGraphUtils.codeNamespacePairToConceptReference(pair), 
-                                resolveForward, 
-                                resolveBackward, 
-                                resolveCodedEntryDepth, 
-                                resolveAssociationDepth, 
-                                propertyNames, 
-                                propertyTypes,
-                                sortOptions, 
-                                filterOptions, 
-                                maxToReturn, 
-                                keepLastAssociationLevelUnresolved).getResolvedConceptReference()) {
+                        for(ResolvedConceptReference ref :
+                            this.doResolveAsList(
+                                    PagedGraphUtils.codeNamespacePairToConceptReference(pair), 
+                                    resolveForward, 
+                                    resolveBackward, 
+                                    resolveCodedEntryDepth, 
+                                    resolveAssociationDepth, 
+                                    propertyNames, 
+                                    propertyTypes,
+                                    sortOptions, 
+                                    filterOptions, 
+                                    maxToReturn, 
+                                    keepLastAssociationLevelUnresolved).getResolvedConceptReference()) {
 
-                        returnList.addResolvedConceptReference(ref);    
+                            returnList.addResolvedConceptReference(ref);    
+                        }
                     }
                 }
                 return returnList;
@@ -202,7 +218,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         CodedNodeGraphService service = 
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
         int count = 0;
-        if(resolveForward) {
+        //if(resolveForward) {
            count += service.
             getTripleUidsContainingSubjectCount(
                     this.getCodingSchemeUri(), 
@@ -211,9 +227,9 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     null, 
                     focus.getCode(), 
                     focus.getCodeNamespace(), 
-                    this.getGraphQueryBuilder().getQuery());
-        } 
-        if(resolveBackward) {
+                    new GraphQuery());
+       // } 
+        //if(resolveBackward) {
             count += service.
             getTripleUidsContainingObjectCount(
                     this.getCodingSchemeUri(), 
@@ -222,8 +238,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     null, 
                     focus.getCode(), 
                     focus.getCodeNamespace(), 
-                    this.getGraphQueryBuilder().getQuery());
-        }
+                    new GraphQuery());
+       // }
         return count > 0;
     }
     /**

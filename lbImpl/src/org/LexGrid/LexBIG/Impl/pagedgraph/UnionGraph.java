@@ -29,9 +29,9 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Impl.pagedgraph.utility.PagedGraphUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
-import org.springframework.util.Assert;
 
 /**
  * The Class UnionGraph.
@@ -70,18 +70,35 @@ public class UnionGraph extends AbstractMultiGraph {
                 graphFocus, resolveForward, resolveBackward, 
                 resolveCodedEntryDepth, resolveAssociationDepth, propertyNames, 
                 propertyTypes, sortOptions, maxToReturn);
-        
-        Assert.state(list1.getResolvedConceptReferenceCount() == 1);
-        Assert.state(list2.getResolvedConceptReferenceCount() == 1);
-        
+
+
+        return this.unionReferenceList(list1, list2);
+    }
+    
+    protected ResolvedConceptReferenceList unionReferenceList(
+            ResolvedConceptReferenceList list1, 
+            ResolvedConceptReferenceList list2) {
         ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
+        if(list1 == null) { list1 = new ResolvedConceptReferenceList(); }
+        if(list2 == null) { list2 = new ResolvedConceptReferenceList(); }
         
-        ResolvedConceptReference ref1 = list1.getResolvedConceptReference(0);
-        ResolvedConceptReference ref2 = list2.getResolvedConceptReference(0);
+        for(ResolvedConceptReference ref : list1.getResolvedConceptReference()) {
+            ResolvedConceptReference foundRef =
+                this.getAssociatedConcept(ref, list2.getResolvedConceptReference());
+            if(foundRef != null) {
+                returnList.addResolvedConceptReference(this.unionReference(ref, foundRef));
+            } else {
+                returnList.addResolvedConceptReference(ref);
+            }
+        }
         
-        this.unionReference(ref1, ref2);
-        
-        returnList.addResolvedConceptReference(ref1);
+        for(ResolvedConceptReference ref : list2.getResolvedConceptReference()) {
+            ResolvedConceptReference foundRef =
+                this.getAssociatedConcept(ref, list1.getResolvedConceptReference());
+            if(foundRef == null) {
+                returnList.addResolvedConceptReference(ref);
+            }
+        }
         
         return returnList;
     }
@@ -167,8 +184,8 @@ public class UnionGraph extends AbstractMultiGraph {
         return assoc1;
     }
     
-    protected AssociatedConcept getAssociatedConcept(AssociatedConcept searchConcept, AssociatedConcept[] list) {
-        for(AssociatedConcept concept : list) {
+    protected <T extends ConceptReference> T getAssociatedConcept(T searchConcept, T[] list) {
+        for(T concept : list) {
             if(concept.getCode().equals(searchConcept.getCode()) &&
                     concept.getCodeNamespace().equals(searchConcept.getCodeNamespace())){
                 return concept;
