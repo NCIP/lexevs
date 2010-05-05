@@ -80,7 +80,6 @@ import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.system.ResourceManager;
 import org.lexevs.system.service.SystemResourceService;
 
 /**
@@ -230,10 +229,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
             // The code is not validated any further, as we don't know what
             // version to validate against.
+            String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(code.getCodingSchemeName());
 
-            String urn = ResourceManager.instance().getURNForExternalCodingSchemeName(code.getCodingSchemeName());
-
-            CodeToReturn temp = new CodeToReturn(code.getConceptCode(), null, urn, null);
+            CodeToReturn temp = new CodeToReturn(code.getConceptCode(), null, uri, null);
 
             return new Boolean(codesToInclude_.contains(temp));
         } catch (LBInvocationException e) {
