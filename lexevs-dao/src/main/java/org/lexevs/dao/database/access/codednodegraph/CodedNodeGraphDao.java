@@ -21,6 +21,7 @@ package org.lexevs.dao.database.access.codednodegraph;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
@@ -40,6 +41,7 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			String associationPredicateUid,
 			String subjectEntityCode,
 			String subjectEntityCodeNamespace, 
+			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveObjectCodes,
 			int start, 
@@ -50,6 +52,7 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			String associationPredicateUid,
 			String subjectEntityCode,
 			String subjectEntityCodeNamespace,
+			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveObjectCodes);
 	
@@ -58,6 +61,7 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			String associationPredicateUid,
 			String objectEntityCode,
 			String objectEntityCodeNamespace, 
+			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveSubjectCodes,
 			int start, 
@@ -68,10 +72,14 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			String associationPredicateUid,
 			String objectEntityCode,
 			String objectEntityCodeNamespace,
+			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveSubjectCodes);
 	
 	public List<AssociatedConcept> getAssociatedConceptsFromUid(
+			String codingSchemeUid, List<String> tripleUids, TripleNode tripleNode);
+	
+	public List<ConceptReference> getConceptReferencesFromUid(
 			String codingSchemeUid, List<String> tripleUids, TripleNode tripleNode);
 	
 	public List<String> getAssociationPredicateNamesForCodingSchemeUid(
