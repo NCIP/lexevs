@@ -76,7 +76,7 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 *         1 = Verify document is valid
 	 * @throws LBParameterException
 	 */
-	public void validate(URI uri, int validationLevel) throws LBParameterException;
+	public void validate(URI uri, int validationLevel) throws LBException;
 	
 	/**
      * Determine whether the supplied entity code is a valid entity code somewhere in the supplied value set definition. 

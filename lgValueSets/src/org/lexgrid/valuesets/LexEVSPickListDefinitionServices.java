@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntryList;
@@ -178,9 +177,9 @@ public interface LexEVSPickListDefinitionServices extends Serializable {
 	 *         Supported levels of validation include:
 	 *         0 = Verify document is well-formed
 	 *         1 = Verify document is valid
-	 * @throws LBParameterException
+	 * @throws LBException
 	 */
-	public void validate(URI uri, int valicationLevel) throws LBParameterException;
+	public void validate(URI uri, int valicationLevel) throws LBException;
 	
 	/**
 	 * Return the map set of pick list id and pick list name that references given entityCode, namespace and optionally propertyId
