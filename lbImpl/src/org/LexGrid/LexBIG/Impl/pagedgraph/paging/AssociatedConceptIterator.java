@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder.AssociationDirection;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
@@ -70,6 +72,8 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
     /** The graph query. */
     private GraphQuery graphQuery;
     
+    private SortOptionList sortAlgorithms;
+    
     /** The resolve forward. */
     private boolean resolveForward;
     
@@ -114,6 +118,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
             int resolveBackwardAssociationDepth,
             int resolveCodedEntryDepth,
             GraphQuery graphQuery,
+            SortOptionList sortAlgorithms,
             CycleDetectingCallback cycleDetectingCallback,
             AssociationDirection direction,
             int pageSize){
@@ -141,6 +146,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 		this.graphQuery = graphQuery;
 		this.cycleDetectingCallback = cycleDetectingCallback;
 		this.associationPredicateName = associationPredicateName;
+		this.sortAlgorithms = sortAlgorithms;
 	}
 	
 	/* (non-Javadoc)
@@ -169,6 +175,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	                            resolveBackwardAssociationDepth, 
 	                            resolveCodedEntryDepth - 1, 
 	                            graphQuery,
+	                            sortAlgorithms,
 	                            cycleDetectingCallback));
 	        }
 	    }
@@ -188,6 +195,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	                            resolveBackwardAssociationDepth - 1, 
 	                            resolveCodedEntryDepth - 1, 
 	                            graphQuery,
+	                            sortAlgorithms,
 	                            cycleDetectingCallback));
 	        }
 	    }

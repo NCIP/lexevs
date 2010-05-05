@@ -29,6 +29,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
@@ -178,6 +179,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     resolveAssociationDepth,
                     resolveCodedEntryDepth,
                     graphQueryBuilder.getQuery(),
+                    sortOptions,
                     cycleDetectingCallback));
         }
         
@@ -195,6 +197,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     resolveAssociationDepth - 1,
                     resolveCodedEntryDepth,
                     graphQueryBuilder.getQuery(),
+                    sortOptions,
                     cycleDetectingCallback));
         }
         
@@ -208,7 +211,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
     
         return returnList;
     }
-    
+
     private ResolvedConceptReferenceList flattenRootList(ResolvedConceptReference root) {
         ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
         

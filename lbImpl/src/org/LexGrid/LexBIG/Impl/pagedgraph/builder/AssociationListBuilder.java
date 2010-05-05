@@ -18,11 +18,17 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph.builder;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
+import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Query.Sort;
+import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparator;
 import org.LexGrid.LexBIG.Impl.pagedgraph.model.LazyLoadableAssociatedConceptList;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
@@ -89,6 +95,7 @@ public class AssociationListBuilder {
             int resolveBackwardAssociationDepth,
             int resolveCodedEntryDepth,
             GraphQuery graphQuery,
+            SortOptionList sortAlgorithms,
             CycleDetectingCallback cycleDetectingCallback) {
         return this.doBuildAssociationList(
                 codingSchemeUri, 
@@ -102,6 +109,7 @@ public class AssociationListBuilder {
                 resolveBackwardAssociationDepth,
                 resolveCodedEntryDepth,
                 graphQuery,
+                sortAlgorithms,
                 cycleDetectingCallback,
                 AssociationDirection.SOURCE_OF);
     }
@@ -136,6 +144,7 @@ public class AssociationListBuilder {
                 int resolveBackwardAssociationDepth,
                 int resolveCodedEntryDepth,
                 GraphQuery graphQuery,
+                SortOptionList sortAlgorithms,
                 CycleDetectingCallback cycleDetectingCallback) {
         return this.doBuildAssociationList(
                 codingSchemeUri, 
@@ -149,6 +158,7 @@ public class AssociationListBuilder {
                 resolveBackwardAssociationDepth,
                 resolveCodedEntryDepth,
                 graphQuery,
+                sortAlgorithms,
                 cycleDetectingCallback,
                 AssociationDirection.TARGET_OF); }
     
@@ -184,6 +194,7 @@ public class AssociationListBuilder {
             int resolveBackwardAssociationDepth,
             int resolveCodedEntryDepth,
             GraphQuery graphQuery,
+            SortOptionList sortAlgorithms,
             CycleDetectingCallback cycleDetectingCallback,
             AssociationDirection direction) {
         Assert.notNull(graphQuery, "Must pass in a GraphQuery.");
@@ -244,6 +255,7 @@ public class AssociationListBuilder {
                             resolveBackwardAssociationDepth,
                             resolveCodedEntryDepth,
                             graphQuery,
+                            sortAlgorithms,
                             cycleDetectingCallback,
                             direction,
                             associatedConceptPageSize);
@@ -253,6 +265,16 @@ public class AssociationListBuilder {
                 returnList.addAssociation(association);
             }
 
+        }
+        
+        if(ResultComparator.isSortOptionListValid(sortAlgorithms)) {
+            ResultComparator<Association> comparator = 
+                    new ResultComparator<Association>(sortAlgorithms, Association.class);
+            
+            Association[] array = returnList.getAssociation();
+            Arrays.sort(array, comparator);
+            
+            returnList.setAssociation(array);
         }
         
         if(returnList.getAssociationCount() == 0) {

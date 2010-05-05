@@ -24,7 +24,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
+import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder.AssociationDirection;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.AssociatedConceptIterator;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
@@ -87,6 +89,8 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
     
     /** The cycle detecting callback. */
     private CycleDetectingCallback cycleDetectingCallback;
+    
+    private SortOptionList sortAlgorithms;
 
     /**
      * Instantiates a new lazy loadable associated concept list.
@@ -122,6 +126,7 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
             int resolveBackwardAssociationDepth,
             int resolveCodedEntryDepth,
             GraphQuery graphQuery,
+            SortOptionList sortAlgorithms,
             CycleDetectingCallback cycleDetectingCallback,
             AssociationDirection direction,
             int pageSize) {
@@ -142,6 +147,7 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
         this.resolveForward = resolveForward;
         this.resolveBackward = resolveBackward;
         this.cycleDetectingCallback = cycleDetectingCallback;
+        this.sortAlgorithms = sortAlgorithms;
     }
 
     /* (non-Javadoc)
@@ -235,6 +241,7 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
 	            this.resolveBackwardAssociationDepth,
 	            this.resolveCodedEntryDepth,
 	            this.graphQuery,
+	            this.sortAlgorithms,
 	            this.cycleDetectingCallback,
 	            this.direction,
 	            this.pageSize);
