@@ -14,11 +14,14 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.AssociationDao;
+import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchInsertItem;
 import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 import org.lexevs.paging.AbstractPageableIterator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
@@ -35,8 +38,21 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 	private Registry registry;
 
 	private LgLoggerIF logger;
+	
+	public static void main(String[] args) {
+		DefaultTransitivityBuilder builder = new DefaultTransitivityBuilder();
+		builder.setLogger(LoggerFactory.getLogger());
+		builder.setRegistry(LexEvsServiceLocator.getInstance().getRegistry());
+		builder.setDatabaseServiceManager(LexEvsServiceLocator.getInstance().getDatabaseServiceManager());
+		builder.setSystemResourceService(LexEvsServiceLocator.getInstance().getSystemResourceService());
+		
+		builder.computeTransitivityTable("urn:lsid:bioontology.org:BrendaTissue.txt", "UNASSIGNED");
+		
+	}
 
 	public void computeTransitivityTable(String codingSchemeUri, String version) {
+		
+		BatchInsertController batchController = new BatchInsertController(codingSchemeUri, version);
 
 		List<String> transitiveAssociations = this.getTransitiveAssociationPredicateIds(codingSchemeUri, version);
 
@@ -68,13 +84,12 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 					targetCode.namespace = targetECNS;
 					targetCode.code = targetEC;
 
-					insertIntoTransitiveClosure(
-							codingSchemeUri, 
-							version, 
+					insertIntoTransitiveClosure( 
 							associationPredicateId, 
 							sourceCode,
 							targetCode,
-							insertedCache);
+							insertedCache,
+							batchController);
 				}
 			}  
 
@@ -100,43 +115,46 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 					temp.code = sourceEC;
 					sourceCodes.add(temp);
 				}
+			}
 
-				// Now I have all of the top source codes for this
-				// relationship. Need to recurse down the
-				// tree
-				// adding nodes to the transitive table as necessary.
+			// Now I have all of the top source codes for this
+			// relationship. Need to recurse down the
+			// tree
+			// adding nodes to the transitive table as necessary.
 
-				for (int j = 0; j < sourceCodes.size(); j++) {
+			for (int j = 0; j < sourceCodes.size(); j++) {
 
-					List<Node> targetNodes = getTargetTriples(
-							codingSchemeUri, 
-							version, 
-							associationPredicateId,
-							sourceNode.getEntityCode(),
-							sourceNode.getEntityCodeNamespace());
+				List<Node> targetNodes = getTargetTriples(
+						codingSchemeUri, 
+						version, 
+						associationPredicateId,
+						sourceCodes.get(j).code,
+						sourceCodes.get(j).namespace);
 
-					ArrayList<StringTuple> targetCodes = new ArrayList<StringTuple>();
-					sourceECNS = null;
-					sourceEC = null;
-					targetECNS = null;
-					targetEC = null;
-					for(Node targetNode : targetNodes) {
-						targetECNS = targetNode.getEntityCodeNamespace();
-						targetEC = targetNode.getEntityCode();
-						if (!targetEC.equals("@@"))
-						{
-							StringTuple temp = new StringTuple();
-							temp.namespace = targetECNS;
-							temp.code = targetEC;    
-							targetCodes.add(temp);
-						}
+				ArrayList<StringTuple> targetCodes = new ArrayList<StringTuple>();
+				sourceECNS = null;
+				sourceEC = null;
+				targetECNS = null;
+				targetEC = null;
+				for(Node targetNode : targetNodes) {
+					targetECNS = targetNode.getEntityCodeNamespace();
+					targetEC = targetNode.getEntityCode();
+					if (!targetEC.equals("@@"))
+					{
+						StringTuple temp = new StringTuple();
+						temp.namespace = targetECNS;
+						temp.code = targetEC;    
+						targetCodes.add(temp);
 					}
-
-					processTransitive(codingSchemeUri, version, associationPredicateId,
-							sourceCodes.get(j), targetCodes, insertedCache);
 				}
+
+				processTransitive(codingSchemeUri, version, associationPredicateId,
+						sourceCodes.get(j), targetCodes, insertedCache, batchController);
 			}
 		}
+
+
+		batchController.flush();
 	}
 
 	private List<Node> getTargetTriples(
@@ -149,10 +167,10 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 			@Override
 			public List<Node> execute(DaoManager daoManager) {
-				String codingSchemeUid = daoManager.getCodingSchemeDao(codingSchemeUri, version).
+				String codingSchemeUid = daoManager.getCurrentCodingSchemeDao().
 				getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 
-				return daoManager.getCodedNodeGraphDao(codingSchemeUri, version).
+				return daoManager.getCurrentCodedNodeGraphDao().
 				getTargetNodesForSource(codingSchemeUid, associationPredicateUid, sourceEntityCode, sourceEntityCodeNamespace);
 			}
 		});
@@ -166,10 +184,10 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 			@Override
 			public List<Node> execute(DaoManager daoManager) {
-				String codingSchemeUid = daoManager.getCodingSchemeDao(codingSchemeUri, version).
+				String codingSchemeUid = daoManager.getCurrentCodingSchemeDao().
 				getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 
-				return daoManager.getCodedNodeGraphDao(codingSchemeUri, version).
+				return daoManager.getCurrentCodedNodeGraphDao().
 					getDistinctSourceNodesForAssociationPredicate(codingSchemeUid, associationPredicateUid);
 			}
 
@@ -182,7 +200,8 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 			String associationPredicateUid, 
 			StringTuple sourceCode,
 			ArrayList<StringTuple> targetCodes, 
-			LRUMap insertedCache) {
+			LRUMap insertedCache,
+			BatchInsertController batchInsertController) {
 		// The next target of each of the passed in targetCodes needs to be
 		// added to the transitive table.
 
@@ -226,12 +245,11 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 				}
 
 				boolean iInserted = insertIntoTransitiveClosure(
-						codingSchemeUri, 
-						codingSchemeVersion, 
 						associationPredicateUid, 
 						sourceCode, 
 						targetTargets.get(j), 
-						insertedCache);               
+						insertedCache,
+						batchInsertController);               
 				if (!iInserted) {
 					// If I didn't insert it into the transitive table, it was
 					// already there
@@ -260,22 +278,21 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 				temp.add(targetTargets.get(0));
 				// remove it, since we will be done with it after this.
 				targetTargets.remove(0);
-				processTransitive(codingSchemeUri, codingSchemeVersion, associationPredicateUid, sourceCode, temp, insertedCache);
+				processTransitive(codingSchemeUri, codingSchemeVersion, associationPredicateUid, sourceCode, temp, insertedCache, batchInsertController);
 			}
 		}
 	}
 
 	private boolean insertIntoTransitiveClosure(
-			String codingSchemeUri, 
-			String codingSchemeVersion,
 			String associationPredicateId, 
 			StringTuple sourceCode, 
 			StringTuple targetCode, 
-			LRUMap insertedCache) {
+			LRUMap insertedCache,
+			BatchInsertController batchInsertController) {
 		String key = sourceCode.code + ":" + sourceCode.namespace + ":" + targetCode.code + ":" + targetCode.namespace;
 
 		boolean iInserted = false;
-
+	
 		if (!insertedCache.containsKey(key)) {
 			// if it is not loaded in the main table, or already loaded
 			// in the transitive table
@@ -283,9 +300,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 			insertedCache.put(key, null);
 			iInserted = true;
-			this.insertIntoTransitiveClosure(
-					codingSchemeUri, 
-					codingSchemeVersion, 
+			batchInsertController.insertIntoTransitiveClosure( 
 					sourceCode.code,
 					sourceCode.namespace,
 					targetCode.code, 
@@ -294,35 +309,6 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 		}
 		return iInserted;
-	}
-
-	protected void insertIntoTransitiveClosure(
-			final String codingSchemeUri, 
-			final String version, 
-			final String sourceCode,
-			final String sourceNamespace,
-			final String targetCode, 
-			final String targetNamespace, 
-			final String associationPredicateId) {
-		this.databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<Object>(){
-
-			@Override
-			public Object execute(DaoManager daoManager) {
-				String codingSchemeId = daoManager.getCodingSchemeDao(codingSchemeUri, version).
-				getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
-
-				daoManager.getAssociationDao(codingSchemeUri, version).
-				insertIntoTransitiveClosure(
-						codingSchemeId, 
-						associationPredicateId, 
-						sourceCode, 
-						sourceNamespace, 
-						targetCode, 
-						targetNamespace);
-				return null;
-			}
-
-		});
 	}
 
 	private class StringTuple {
@@ -340,10 +326,10 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 			@Override
 			public List<Triple> execute(DaoManager daoManager) {
-				String codingSchemeId = daoManager.getCodingSchemeDao(codingSchemeUri, version).
+				String codingSchemeId = daoManager.getCurrentCodingSchemeDao().
 				getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 
-				return daoManager.getAssociationDao(codingSchemeUri, version).
+				return daoManager.getCurrentAssociationDao().
 				getAllTriplesOfCodingScheme(codingSchemeId, associationPredicateId, start, pageSize);
 			}
 
@@ -360,8 +346,8 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 			public List<String> execute(DaoManager daoManager) {
 				List<String> transitivePredicateIds = new ArrayList<String>();
 
-				CodingSchemeDao codingSchemeDao = daoManager.getCodingSchemeDao(codingSchemeUri, version);
-				AssociationDao associationDao = daoManager.getAssociationDao(codingSchemeUri, version);			
+				CodingSchemeDao codingSchemeDao = daoManager.getCurrentCodingSchemeDao();
+				AssociationDao associationDao = daoManager.getCurrentAssociationDao();			
 
 				String codingSchemeId = codingSchemeDao.
 				getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
@@ -513,5 +499,59 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 			return getTriples(codingSchemeUri, version, associationPredicateId, currentPosition, pageSize);
 		}
 
+	}
+	
+	private class BatchInsertController {
+		
+		private int batchSize = 5000;
+		
+		private String codingSchemeUid;
+		
+		private List<TransitiveClosureBatchInsertItem> batch = new ArrayList<TransitiveClosureBatchInsertItem>();
+		
+		private BatchInsertController(final String codingSchemeUri, final String version) {
+			codingSchemeUid = databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>(){
+
+				@Override
+				public String execute(DaoManager daoManager) {
+					return daoManager.getCurrentCodingSchemeDao().
+					getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+				}
+			});
+		}
+		
+		private void insertIntoTransitiveClosure(
+			final String sourceCode,
+			final String sourceNamespace,
+			final String targetCode, 
+			final String targetNamespace, 
+			final String associationPredicateId) {
+			
+			TransitiveClosureBatchInsertItem item = new TransitiveClosureBatchInsertItem();
+			item.setSourceEntityCode(sourceCode);
+			item.setSourceEntityCodeNamespace(sourceNamespace);
+			item.setTargetEntityCode(targetCode);
+			item.setTargetEntityCodeNamespace(targetNamespace);
+			item.setAssociationPredicateId(associationPredicateId);
+			
+			batch.add(item);
+			
+			if(batch.size() >= batchSize) {
+				flush();
+			}
+		}	
+		
+		private void flush() {
+			databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<Object>(){
+
+				@Override
+				public String execute(DaoManager daoManager) {
+					daoManager.getCurrentAssociationDao().
+						insertBatchTransitiveClosure(codingSchemeUid, batch);
+					return null;
+				}
+			});
+			batch.clear();
+		}
 	}
 }
