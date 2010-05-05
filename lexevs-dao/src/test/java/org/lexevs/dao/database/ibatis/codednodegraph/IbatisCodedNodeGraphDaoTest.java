@@ -88,6 +88,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 					"s-ns", 
 					null,
 					null,
+					null,
 					0, 
 					-1);
 		
@@ -132,7 +133,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		int uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
-					"cs-guid", "ap-guid", "s-code", "s-ns", null, null);
+					"cs-guid", "ap-guid", "s-code", "s-ns", null, null, null);
 		
 		assertEquals(2, uids);
 	}
@@ -173,7 +174,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		int uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingObjectCount(
-					"cs-guid", "ap-guid", "t-code1", "t-ns1", null, null);
+					"cs-guid", "ap-guid", "t-code1", "t-ns1", null, null, null);
 		
 		assertEquals(1, uids);
 	}
@@ -314,7 +315,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		int uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
-					"cs-guid", "ap-guid", "s-code", "s-ns", list, null);
+					"cs-guid", "ap-guid", "s-code", "s-ns", null, list, null);
 		
 		assertEquals(1, uids);
 	}
@@ -365,7 +366,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		int uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
-					"cs-guid", "ap-guid", "s-code", "s-ns", list, null);
+					"cs-guid", "ap-guid", "s-code", "s-ns", null, list, null);
 		
 		assertEquals(0, uids);
 	}
@@ -416,7 +417,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		int uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
-					"cs-guid", "ap-guid", "s-code", "s-ns", list, null);
+					"cs-guid", "ap-guid", "s-code", "s-ns", null, list, null);
 		
 		assertEquals(1, uids);
 	}
@@ -467,7 +468,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		int uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
-					"cs-guid", "ap-guid", "s-code", "s-ns", list, null);
+					"cs-guid", "ap-guid", "s-code", "s-ns", null, list, null);
 		
 		assertEquals(0, uids);
 	}
@@ -518,7 +519,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		int uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
-					"cs-guid", "ap-guid", "s-code", "s-ns", null, DaoUtility.createNonTypedList(pair));
+					"cs-guid", "ap-guid", "s-code", "s-ns", null, null, DaoUtility.createNonTypedList(pair));
 		
 		assertEquals(1, uids);
 	}
