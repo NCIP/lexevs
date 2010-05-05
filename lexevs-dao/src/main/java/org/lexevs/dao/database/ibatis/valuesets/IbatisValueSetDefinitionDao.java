@@ -144,6 +144,8 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		{
 			String vsdGuid = getGuidFromvalueSetDefinitionURI(valueSetDefinitionURI);
 			
+			vsd.setEntryState(vsEntryStateDao.getEntryStateByUId(vsdGuid));
+			
 			List<DefinitionEntry> des = this.getSqlMapClientTemplate().queryForList(GET_DEFINITION_ENTRY_BY_VALUESET_DEFINITION_GUID_SQL,
 					new PrefixedParameter(null, vsdGuid));
 			
@@ -587,6 +589,15 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			String supportedTag, String value) {
 		return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_VALUESETDEFINITIONURI_FOR_SUPPORTED_TAG_AND_VALUE_SQL,
 				new PrefixedParameterTuple(null, supportedTag, value));
+	}
+
+	@Override
+	public void insertDefinitionEntry(ValueSetDefinition vsdef,
+			DefinitionEntry definitionEntry) {
+		String vsdGUID = getGuidFromvalueSetDefinitionURI(vsdef.getValueSetDefinitionURI());
+		if (vsdGUID != null)
+			insertDefinitionEntry(vsdGUID, definitionEntry);
+		
 	}
 
 	

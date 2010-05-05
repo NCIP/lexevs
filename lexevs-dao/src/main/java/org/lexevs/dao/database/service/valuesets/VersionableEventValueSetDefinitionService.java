@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
@@ -111,6 +112,13 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	public List<String> getValueSetDefinitionURIForSupportedTagAndValue(
 			String supportedTag, String value) {
 		return this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetDefinitionURIForSupportedTagAndValue(supportedTag, value);
+	}
+
+	@Override
+	public void insertDefinitionEntry(ValueSetDefinition valueSetDefinition,
+			DefinitionEntry definitionEntry) throws LBException {
+		this.getDaoManager().getCurrentValueSetDefinitionDao().insertDefinitionEntry(valueSetDefinition, definitionEntry);
+		
 	}
 
 	

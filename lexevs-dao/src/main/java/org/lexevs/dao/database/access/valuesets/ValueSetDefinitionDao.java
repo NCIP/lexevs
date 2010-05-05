@@ -88,6 +88,14 @@ public interface ValueSetDefinitionDao extends LexGridSchemaVersionAwareDao {
 	 * @param mappings the mappings
 	 */
 	public void insertValueSetDefinitions(String systemReleaseURI, ValueSetDefinitions vsdefs, Mappings mappings);
+	
+	/**
+	 * Insert value set definition entry.
+	 * 
+	 * @param vsdef value set definition this definition entry belongs to.
+	 * @param definitionEntry definition entry itself.
+	 */
+	public void insertDefinitionEntry(ValueSetDefinition vsdef, DefinitionEntry definitionEntry);
 
 	/**
 	 * Gets the value set definition URIs.

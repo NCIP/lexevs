@@ -48,20 +48,6 @@ public interface VSEntryStateDao extends LexGridSchemaVersionAwareDao {
 	/**
 	 * Insert entry state.
 	 * 
-	 * @param entryUId the entry resource UID
-	 * @param entryType the entry type
-	 * @param previousEntryStateUId the previous entry state UID
-	 * @param entryState the entry state
-	 */
-	public void insertEntryState(
-			String entryUId,
-			String entryType,
-			String previousEntryStateUId,
-			EntryState entryState);
-	
-	/**
-	 * Insert entry state.
-	 * 
 	 * @param entryStateUId
 	 * @param entryUId the entry id
 	 * @param entryType the entry type

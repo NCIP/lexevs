@@ -21,6 +21,7 @@ package org.lexevs.dao.database.ibatis.valuesets;
 import java.util.List;
 
 import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.Revision;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
@@ -99,28 +100,11 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 		
 	}
 	
-	public void insertEntryState(
-			String entryUId, String entryType, String previousEntryStateUId,
-			EntryState entryState) {
-		
-		String entryStateUId = this.createUniqueId();
-		
-		this.insertEntryState(
-				null, 
-				entryStateUId, 
-				entryUId, 
-				entryType, 
-				previousEntryStateUId, 
-				entryState, 
-				this.getNonBatchTemplateInserter());
-	}
-	
 	public void insertEntryState( String entryStateUId,
 			String entryUId, String entryType, String previousEntryStateUId,
 			EntryState entryState) {
-		
 		this.insertEntryState(
-				null, 
+				this.getPrefixResolver().resolveDefaultPrefix(), 
 				entryStateUId, 
 				entryUId, 
 				entryType, 
@@ -155,7 +139,15 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 		if (entryState != null) {
 			revisionUId = ibatisRevisionDao
 					.getRevisionUIdById(entryState.getContainingRevision());
-			prevRevisionUId = ibatisRevisionDao
+			if (revisionUId == null)
+			{
+				Revision revision = new Revision();
+				revision.setRevisionId(entryState.getContainingRevision());
+				revisionUId = ibatisRevisionDao.insertRevisionEntry(revision, null);
+				
+			}
+			if (entryState.getPrevRevision() != null)
+				prevRevisionUId = ibatisRevisionDao
 					.getRevisionUIdById(entryState.getPrevRevision());
 		}
 		
