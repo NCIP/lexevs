@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.util.Date;
-import java.util.Enumeration;
 
+import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExportStatus;
@@ -256,10 +256,10 @@ public class Util {
                     urn = urn.trim();
                     ver = ver.trim();
                     LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-                    Enumeration<CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
-                            .enumerateCodingSchemeRendering();
-                    while (schemes.hasMoreElements() && rendering == null) {
-                        CodingSchemeRendering csrtemp = schemes.nextElement();
+                    
+                    CodingSchemeRenderingList schemes = lbs.getSupportedCodingSchemes();
+                    for (int i = 0; i < schemes.getCodingSchemeRenderingCount() && rendering == null; i++) {
+                        CodingSchemeRendering csrtemp = schemes.getCodingSchemeRendering(i);
                         CodingSchemeSummary csstemp = csrtemp.getCodingSchemeSummary();
                         if (urn.equalsIgnoreCase(csstemp.getCodingSchemeURI())
                                 && ver.equalsIgnoreCase(csstemp.getRepresentsVersion())) {
