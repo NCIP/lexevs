@@ -89,16 +89,22 @@ public class EntityBatchInsertError extends AbstractError{
         /** The batch. */
         public List<Entity> batch;
         
+        public String codingSchemeUri;
+        
+        public String codingSchemeVersion;
+        
         /**
          * Instantiates a new entity batch insert error item.
          * 
          * @param codingSchemeId the coding scheme id
          * @param batch the batch
          */
-        public EntityBatchInsertErrorItem(String codingSchemeId, List<Entity> batch) {
+        public EntityBatchInsertErrorItem(String codingSchemeUri, String codingSchemeVersion, String codingSchemeId, List<Entity> batch) {
             super();
             this.codingSchemeId = codingSchemeId;
             this.batch = batch;
+            this.codingSchemeUri = codingSchemeUri;
+            this.codingSchemeVersion = codingSchemeVersion;
         }
         
         /**
@@ -135,6 +141,22 @@ public class EntityBatchInsertError extends AbstractError{
          */
         public void setBatch(List<Entity> batch) {
             this.batch = batch;
+        }
+
+        public String getCodingSchemeUri() {
+            return codingSchemeUri;
+        }
+
+        public void setCodingSchemeUri(String codingSchemeUri) {
+            this.codingSchemeUri = codingSchemeUri;
+        }
+
+        public String getCodingSchemeVersion() {
+            return codingSchemeVersion;
+        }
+
+        public void setCodingSchemeVersion(String codingSchemeVersion) {
+            this.codingSchemeVersion = codingSchemeVersion;
         }  
     }
 }

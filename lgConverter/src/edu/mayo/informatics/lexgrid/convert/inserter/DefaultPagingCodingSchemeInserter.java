@@ -119,7 +119,7 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
             batch.add(associationEntity);
             if(batch.size() >= this.entityPageSize) {
                 try {
-                    this.insertEntityBatch(codingSchemeId, batch);
+                    this.insertEntityBatch(codingSchemeUri, codingSchemeVersion, codingSchemeId, batch);
                 } catch (LoadValidationException e) {
                     errors.add(e.getLoadValidationError());
                 }
@@ -131,7 +131,7 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
             batch.add(entity);
             if(batch.size() >= this.entityPageSize) {
                 try {
-                    this.insertEntityBatch(codingSchemeId, batch);
+                    this.insertEntityBatch(codingSchemeUri, codingSchemeVersion, codingSchemeId, batch);
                 } catch (LoadValidationException e) {
                     errors.add(e.getLoadValidationError());
                 }
@@ -141,7 +141,7 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
         
         if(batch.size() > 0) {
             try {
-                insertEntityBatch(codingSchemeId, batch);
+                insertEntityBatch(codingSchemeUri, codingSchemeVersion, codingSchemeId, batch);
             } catch (LoadValidationException e) {
                 errors.add(e.getLoadValidationError());
             }
@@ -192,7 +192,7 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
      * @param codingSchemeId the coding scheme id
      * @param batch the batch
      */
-    protected void insertEntityBatch(final String codingSchemeId, final List<Entity> batch) throws LoadValidationException {
+    protected void insertEntityBatch(String codingSchemeUri, String codingSchemeVersion, final String codingSchemeId, final List<Entity> batch) throws LoadValidationException {
         try {
             super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>() {
 
@@ -208,7 +208,7 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
                 }
             });
         } catch (Exception e) {
-            EntityBatchInsertErrorItem errorItem = new EntityBatchInsertErrorItem(codingSchemeId, batch);
+            EntityBatchInsertErrorItem errorItem = new EntityBatchInsertErrorItem(codingSchemeUri, codingSchemeVersion, codingSchemeId, new ArrayList<Entity>(batch));
             
             throw new LoadValidationException(new EntityBatchInsertError(errorItem, e));
         }
@@ -235,7 +235,7 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
                 }
             });
         } catch (Exception e) {
-            AssociationSourceBatchInsertErrorItem errorItem = new AssociationSourceBatchInsertErrorItem(codingSchemeId, batch);
+            AssociationSourceBatchInsertErrorItem errorItem = new AssociationSourceBatchInsertErrorItem(codingSchemeId, new ArrayList<AssociationSourceBatchInsertItem>(batch));
         
             throw new LoadValidationException(new AssociationSourceBatchInsertError(errorItem, e));
         }
