@@ -122,7 +122,7 @@ public class LexGridElementProcessor {
                 + "e.getEntityCodeNamespace(), revision));");
         System.out.println("id: " + revision.getRevisionId());
         System.out.println("description: " + revision.getEntityDescription().getContent());
-        System.out.println("change agent: " + revision.getChangeAgent(0));
+        System.out.println("change agent: " + revision.getChangeAgent());
         System.out.println("change instructions: " + revision.getChangeInstructions().getContent());
     }
 
