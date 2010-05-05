@@ -14,6 +14,7 @@ public class GetEntityAssnUidsBean extends PrefixedTableParameterBean {
 	private String entityCode;
 	private String entityCodeNamespace;
 	private List<QualifierNameValuePair> associationQualifiers;
+	private List<String> associations;
 	private List<CodeNamespacePair> mustHaveCodes;
 	
 	private TripleNode tripleNode;
@@ -60,5 +61,11 @@ public class GetEntityAssnUidsBean extends PrefixedTableParameterBean {
 	}
 	public List<CodeNamespacePair> getMustHaveCodes() {
 		return mustHaveCodes;
+	}
+	public void setAssociations(List<String> associations) {
+		this.associations = associations;
+	}
+	public List<String> getAssociations() {
+		return associations;
 	}
 }
