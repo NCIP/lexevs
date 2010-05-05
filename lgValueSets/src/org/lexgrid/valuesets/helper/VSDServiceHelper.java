@@ -39,6 +39,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
@@ -49,6 +50,8 @@ import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.EntityReference;
+import org.LexGrid.valueSets.PropertyMatchValue;
+import org.LexGrid.valueSets.PropertyReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.types.DefinitionOperator;
 import org.apache.commons.lang.StringUtils;
@@ -178,6 +181,8 @@ public class VSDServiceHelper {
 				    if(!StringUtils.isEmpty(entityNamespaceName)) {
 				        csName = getCodingSchemeNameForNamespaceName(vdDef.getMappings(), entityNamespaceName);
 				    }
+				} else if (de.getPropertyReference() != null) {
+                    csName = de.getPropertyReference().getCodingScheme();
 				} else if (de.getValueSetDefinitionReference() != null) {
                     try {
                         csRefs.addAll(getCodingSchemeURIs(vsds_.getValueSetDefinitionByUri(new URI(de.getValueSetDefinitionReference().getValueSetDefinitionURI()))));
@@ -316,15 +321,18 @@ public class VSDServiceHelper {
                         product = getCodedNodeSetForValueDomain(innerVdd, refVersions, versionTag);   
 		        } else if(vdDef.getEntityReference() != null) {
 		            product = getNodeSetForEntityReference(vdd, vdDef.getEntityReference(), refVersions, versionTag);
+		        } else if (vdDef.getPropertyReference() != null) {
+		        	product = getNodeSetForPropertyReference(vdd, vdDef.getPropertyReference(), refVersions, versionTag);
 		        }
+		        	
 		        if(product != null) {
     		        if (vdDef.getOperator() != null)
     		        {
     		        	if (vdDef.getOperator().value().equals(DefinitionOperator.OR.value())) 
     		        		finalNodeSet = finalNodeSet == null? product : finalNodeSet.union(product);
-    		        	if (vdDef.getOperator().value().equals(DefinitionOperator.AND.value()))
+    		        	else if (vdDef.getOperator().value().equals(DefinitionOperator.AND.value()))
     		        		finalNodeSet = finalNodeSet == null? null : finalNodeSet.intersect(product);
-    		        	if (vdDef.getOperator().value().equals(DefinitionOperator.SUBTRACT.value()))
+    		        	else if (vdDef.getOperator().value().equals(DefinitionOperator.SUBTRACT.value()))
     		        		finalNodeSet = finalNodeSet == null? null : finalNodeSet.difference(product);
     		        }
 		        } else {
@@ -406,6 +414,44 @@ public class VSDServiceHelper {
 	}
 	
 	/**
+	 * Return a coded node set that represents the supplied property reference
+	 * @param vdd - containing value set definition
+	 * @param propertyRef - property reference to resolve
+	 * @param refVersions - fixed versions to resolve against
+	 * @param versionTag - version tag to resolve elsewise
+	 * @return corresponding coded node set
+	 * @throws LBException
+	 */
+	protected CodedNodeSet getNodeSetForPropertyReference(
+	        ValueSetDefinition vdd, PropertyReference propertyRef, HashMap<String, String> refVersions, String versionTag) 
+    throws LBException {
+	    
+	    AbsoluteCodingSchemeVersionReference resVersion = resolveCSVersion(propertyRef.getCodingScheme(), vdd.getMappings(), versionTag, refVersions);
+	    CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+	    try{
+	    	versionOrTag.setVersion(resVersion.getCodingSchemeVersion());
+	    }catch(NullPointerException e){
+	    	throw new LBException("Coding Scheme not found in the system");
+	    }
+	    String propertyMatchValue = null;
+	    String matchAlgorithm = null;
+	    
+	    CodedNodeSet cns = getLexBIGService().getNodeSet(propertyRef.getCodingScheme(), versionOrTag, null);
+	    
+	    PropertyMatchValue pmv = propertyRef.getPropertyMatchValue();
+	    if (pmv != null)
+	    {
+	    	propertyMatchValue = pmv.getContent();
+	    	matchAlgorithm = pmv.getMatchAlgorithm();
+	    }
+	    cns.restrictToMatchingProperties(
+	    		propertyRef.getPropertyName() != null ? Constructors.createLocalNameList(propertyRef.getPropertyName()): null, 
+	    				new PropertyType[] { PropertyType.PRESENTATION }, propertyMatchValue, matchAlgorithm, null);
+	     
+	    return cns;
+	}
+	
+	/**
      * Return the leaf nodes for the supplied graph.  As the graph to be traversed could be quite large, this is
      * done breadth first and non-recursively.  With apologies to Walt Whitman
      * 
@@ -478,14 +524,9 @@ public class VSDServiceHelper {
             AbsoluteCodingSchemeVersionReferenceList serviceCsVersions = getAbsoluteCodingSchemeVersionReference(null);
             for(AbsoluteCodingSchemeVersionReference suppliedVer : suppliedCsVersions.getAbsoluteCodingSchemeVersionReference()) {
             	
-//            	String externalVersionId = rm_.getUriForUserCodingSchemeName(
-//                        rm_.getInternalCodingSchemeNameForUserCodingSchemeName(suppliedVer.getCodingSchemeURN(), suppliedVer.getCodingSchemeVersion()));
             	String externalVersionId = rm_.getUriForUserCodingSchemeName(
                         rm_.getUriForUserCodingSchemeName(suppliedVer.getCodingSchemeURN()));
             	
-            	//TODO - verify if the above (externalversionId) behaves the same as the one below - sod
-//                String externalVersionId = rm_.getURNForInternalCodingSchemeName(
-//                        rm_.getInternalVersionStringForTag(codingSchemeName, tag)ExternalCodingSchemeNameForUserCodingSchemeNameOrId(suppliedVer.getCodingSchemeURN(), suppliedVer.getCodingSchemeVersion()));
                 // TODO - implement a content equality operator so we can use "contains" vs. an inner iterator
                 for(AbsoluteCodingSchemeVersionReference serviceVer : serviceCsVersions.getAbsoluteCodingSchemeVersionReference()) {
                     if(StringUtils.equalsIgnoreCase(externalVersionId, serviceVer.getCodingSchemeURN()) &&

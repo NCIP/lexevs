@@ -226,9 +226,10 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
                 CodedNodeSet resolvedSet = rvdcns.getCodedNodeSet();
                 while(csUsedIter.hasNext()) {
                     AbsoluteCodingSchemeVersionReference csUsed = csUsedIter.next();
+                    String csLocalName = LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalCodingSchemeNameForUserCodingSchemeName(csUsed.getCodingSchemeURN(), csUsed.getCodingSchemeVersion());
                     ConceptReference cr = entityCodeNamespaceString == null? 
-                            Constructors.createConceptReference(entityCode, csUsed.getCodingSchemeURN()) :
-                            Constructors.createConceptReference(entityCode, entityCodeNamespaceString, csUsed.getCodingSchemeURN());
+                            Constructors.createConceptReference(entityCode, csLocalName) :
+                            Constructors.createConceptReference(entityCode, entityCodeNamespaceString, csLocalName);
                     if(resolvedSet.isCodeInSet(cr))
                         return csUsed;
                 }
@@ -443,7 +444,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 			String entityCodeNameSpace, String propertyId, Boolean extractPickListName) {
 
 		Map<String, String> refPLDef = new HashMap<String, String>();
-
+		
 		//TODO
 //		String pickListId = result
 //					.getString(SQLTableConstants.TBLCOL_PICKLISTID);
