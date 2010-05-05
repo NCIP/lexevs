@@ -287,6 +287,52 @@
 			)
 		</isNotEmpty>
 	</sql>
+	
+	<select id="getRootEntityAssnsToEntityUids"
+				parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection"
+				remapResults="true"
+				resultClass="string">
+		SELECT 
+			eate1.entityAssnsGuid
+		FROM
+			$prefix$entityAssnsToEntity eate1
+		LEFT JOIN
+			$prefix$entityAssnsToEntity eate2
+		ON (
+			eate1.sourceEntityCode = eate2.targetEntityCode
+			AND
+			eate2.associationPredicateGuid = eate2.associationPredicateGuid
+			)
+		WHERE
+			eate2.entityAssnsGuid IS NULL	
+			
+			<isNotEmpty property="param2" prepend="AND">
+				eate1.associationPredicateGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
+			</isNotEmpty>				
+	</select>
+	
+	<select id="getTailEntityAssnsToEntityUids"
+				parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection"
+				remapResults="true"
+				resultClass="string">
+		SELECT 
+			eate1.entityAssnsGuid
+		FROM
+			$prefix$entityAssnsToEntity eate1
+		LEFT JOIN
+			$prefix$entityAssnsToEntity eate2
+		ON (
+			eate1.targetEntityCode = eate2.sourceEntityCode
+			AND
+			eate2.associationPredicateGuid = eate2.associationPredicateGuid
+			)
+		WHERE
+			eate2.entityAssnsGuid IS NULL	
+			
+			<isNotEmpty property="param2" prepend="AND">
+				eate1.associationPredicateGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
+			</isNotEmpty>				
+	</select>
   
   	<select id="getEntityAssnsToEntityUids"
 				parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsBean"
