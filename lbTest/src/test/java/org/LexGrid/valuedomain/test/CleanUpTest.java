@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
@@ -48,7 +49,7 @@ public class CleanUpTest extends TestCase {
 	private LexEVSPickListDefinitionServices pls_;
 	
 	public void testRemoveAutombiles() throws LBException {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 
         AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
                 "urn:oid:11.11.0.1", "1.0");
@@ -59,10 +60,10 @@ public class CleanUpTest extends TestCase {
     }
 	
 	public void testRemoveAutombilesV2() throws LBException {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
-
+        LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+        
         AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
-                "urn:oid:11.11.0.1", "2.0");
+                "urn:oid:11.11.0.1", "1.1");
 
         lbsm.deactivateCodingSchemeVersion(a, null);
 
@@ -70,7 +71,7 @@ public class CleanUpTest extends TestCase {
     }
 	
 	public void testRemoveGermanMadeParts() throws LBException {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 
         AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
                 "urn:oid:11.11.0.2", "2.0");
@@ -81,7 +82,7 @@ public class CleanUpTest extends TestCase {
     }
 
     public void testRemoveObo() throws LBException {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 
         AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
                 "urn:lsid:bioontology.org:fungal_anatomy", "UNASSIGNED");
@@ -184,14 +185,14 @@ public class CleanUpTest extends TestCase {
 	
 	private LexEVSValueSetDefinitionServices getValueDomainService(){
 		if (vds_ == null) {
-			vds_ = new LexEVSValueSetDefinitionServicesImpl();
+			vds_ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
 		}
 		return vds_;
 	}
 	
 	private LexEVSPickListDefinitionServices getPickListService(){
 		if (pls_ == null) {
-			pls_ = new LexEVSPickListDefinitionServicesImpl();
+			pls_ = LexEVSPickListDefinitionServicesImpl.defaultInstance();
 		}
 		return pls_;
 	}
