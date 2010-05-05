@@ -33,11 +33,12 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
-import org.LexGrid.LexBIG.Impl.pagedgraph.utility.PagedGraphUtils;
+import org.LexGrid.LexBIG.Impl.pagedgraph.root.NullFocusRootsResolver;
+import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver;
+import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver.ResolveDirection;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
-import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.util.CollectionUtils;
 
@@ -47,9 +48,6 @@ import org.springframework.util.CollectionUtils;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGraph {
-    
-    public static String ROOT = "@";
-    public static String TAIL = "@@";
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -1153282485482789848L;
@@ -61,7 +59,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
     //private CycleDetectingCallback cycleDetectingCallback = new ReferenceReturningCycleDetectingCallback();
     private CycleDetectingCallback cycleDetectingCallback = new StubReturningCycleDetectingCallback();
    
-    
+    private RootsResolver rootsResolver = new NullFocusRootsResolver();
     /**
      * Instantiates a new paging coded node graph impl.
      * 
@@ -127,24 +125,23 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
             }
             
         } else {
-            List<CodeNamespacePair> codes = 
-                resolveForward ? graphQueryBuilder.getQuery().getRestrictToSourceCodes() :
-                    graphQueryBuilder.getQuery().getRestrictToTargetCodes();
-                
-                if(CollectionUtils.isEmpty(graphQueryBuilder.getQuery().getRestrictToSourceCodes())) {
-                    CodeNamespacePair root = new CodeNamespacePair(
-                            resolveForward ? ROOT : TAIL,
-                                    LexEvsServiceLocator.getInstance().getSystemResourceService().
-                                    getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, version));
-                    codes.add(root);
-                }
+            List<ConceptReference> codes = 
+                rootsResolver.resolveRoots(
+                        codingSchemeUri, 
+                        version, 
+                        this.getDirection(resolveForward, resolveBackward), 
+                        graphQueryBuilder.getQuery());
 
                 ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
 
-                for(CodeNamespacePair pair : codes) {
+                for(ConceptReference root : codes) {
+                    
+                    if(this.rootsResolver.isRootOrTail(root) && resolveAssociationDepth >= 0) {
+                        resolveAssociationDepth++;
+                    }
                     
                     ResolvedConceptReferenceList list = this.doResolveAsList(
-                            PagedGraphUtils.codeNamespacePairToConceptReference(pair), 
+                            root, 
                             resolveForward, 
                             resolveBackward, 
                             resolveCodedEntryDepth, 
@@ -203,7 +200,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         
         ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
         
-        if(! this.isRootOrTail(focus)) {
+        if(! this.rootsResolver.isRootOrTail(focus)) {
             returnList.addResolvedConceptReference(focus);
         } else {
             returnList = flattenRootList(focus);
@@ -258,13 +255,52 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                 focus.getCode(), 
                 focus.getCodeNamespace(), 
                 new GraphQuery());
+        
+        List<ConceptReference> sourceCodes = 
+            this.getGraphQueryBuilder().getQuery().getRestrictToSourceCodes();
+        
+        List<ConceptReference> targetCodes = 
+            this.getGraphQueryBuilder().getQuery().getRestrictToTargetCodes();
+        
+        boolean sourceOrTargetCheck = true;
+        
+        if(! CollectionUtils.isEmpty(sourceCodes) && resolveForward) {
+            sourceOrTargetCheck = sourceOrTargetCheck && containsConceptReference(focus, sourceCodes);
+        }
+        
+        if(! CollectionUtils.isEmpty(targetCodes) && resolveBackward) {
+            sourceOrTargetCheck = sourceOrTargetCheck && containsConceptReference(focus, targetCodes);
+        }
 
-        return count > 0;
+        return count > 0 && sourceOrTargetCheck;
     }
     
-    private boolean isRootOrTail(ResolvedConceptReference ref) {
-        return (ref.getCode().equals(ROOT) || ref.getCode().equals(TAIL));
+    private static boolean containsConceptReference(ConceptReference ref, List<ConceptReference> list) {
+        for(ConceptReference conceptRef : list) {
+            if(ref.getCode().equals(conceptRef.getCode()) &&
+                    ref.getCodeNamespace().equals(conceptRef.getCodeNamespace())){
+                return true;
+            }
+        }
+        return false;
     }
+    
+    private ResolveDirection getDirection(boolean resolveForward, boolean resolveBackward) {
+        if(resolveForward && resolveBackward) {
+            throw new RuntimeException();
+        }
+        
+        if(!resolveForward && !resolveBackward) {
+            throw new RuntimeException();
+        }
+        
+        if(resolveForward) {
+            return ResolveDirection.FORWARD;
+        } else {
+            return ResolveDirection.BACKWARD;
+        }
+    }
+    
     /**
      * Should resolve next level.
      * 

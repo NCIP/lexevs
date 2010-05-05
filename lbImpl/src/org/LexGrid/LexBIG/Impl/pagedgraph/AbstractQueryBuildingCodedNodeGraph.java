@@ -40,7 +40,6 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
-import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
@@ -111,7 +110,7 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         nvl.addNameAndValue(association);
         
         builder.restrictToAssociations(nvl, null);
-        builder.getQuery().getRestrictToTargetCodes().add(new CodeNamespacePair(targetCode.getCode(), targetCode.getCodeNamespace()));
+        builder.getQuery().getRestrictToTargetCodes().add(Constructors.createConceptReference(targetCode.getCode(), targetCode.getCodeNamespace(), null));
         
         CodedNodeGraphService service = LexEvsServiceLocator.getInstance().
             getDatabaseServiceManager().
@@ -129,7 +128,7 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         builder = new DefaultGraphQueryBuilder(this.codingSchemeUri, this.version, getClonedGraphQuery());
 
         builder.restrictToAssociations(nvl, null);
-        builder.getQuery().getRestrictToSourceCodes().add(new CodeNamespacePair(sourceCode.getCode(), sourceCode.getCodeNamespace()));
+        builder.getQuery().getRestrictToSourceCodes().add(Constructors.createConceptReference(sourceCode.getCode(), sourceCode.getCodeNamespace(), null));
     
         int objectCount = service.getTripleUidsContainingObjectCount(
                 codingSchemeUri, 

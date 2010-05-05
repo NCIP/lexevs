@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -134,16 +135,16 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
      */
     @Override
     public void restrictToCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
-        List<CodeNamespacePair> foundCodes = 
+        List<ConceptReference> foundCodes = 
             getCodesFromCodedNodeSet(codes);
         
         this.graphQuery.getRestrictToSourceCodes().addAll(foundCodes);
         this.graphQuery.getRestrictToTargetCodes().addAll(foundCodes);
     }
 
-    protected List<CodeNamespacePair> getCodesFromCodedNodeSet(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
-        List<CodeNamespacePair> returnList = 
-            new ArrayList<CodeNamespacePair>();
+    protected List<ConceptReference> getCodesFromCodedNodeSet(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
+        List<ConceptReference> returnList = 
+            new ArrayList<ConceptReference>();
         
         
         ResolvedConceptReferencesIterator itr = codes.resolve(null, null, null, null, false);
@@ -151,12 +152,14 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
             while(itr.hasNext()) {
                 ResolvedConceptReference ref = itr.next();
                 returnList.add(
-                            new CodeNamespacePair(
-                                    ref.getCode(),
-                                    ref.getCodeNamespace()));
+                            ref);
             }
         } catch (LBResourceUnavailableException e) {
             throw new RuntimeException(e);
+        }
+        
+        if(returnList.size() == 0) {
+            returnList.add(new InvalidMatchCodeNamspacePair());
         }
         
         return returnList;
@@ -208,7 +211,7 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
      */
     @Override
     public void restrictToSourceCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
-        List<CodeNamespacePair> foundCodes = 
+        List<ConceptReference> foundCodes = 
             getCodesFromCodedNodeSet(codes);
         
         this.graphQuery.getRestrictToSourceCodes().addAll(foundCodes);
@@ -229,7 +232,7 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
      */
     @Override
     public void restrictToTargetCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
-        List<CodeNamespacePair> foundCodes = 
+        List<ConceptReference> foundCodes = 
             getCodesFromCodedNodeSet(codes);
         
         this.graphQuery.getRestrictToTargetCodes().addAll(foundCodes);
@@ -254,5 +257,16 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
                     this.version, 
                     localId, 
                     clazz);
+    }
+    
+    private static class InvalidMatchCodeNamspacePair extends ConceptReference {
+
+        private static String INVALID_CODE = "__INVALID__CODE__NO__MATCH__";
+        private static String INVALID_NAMESPACE = "__INVALID__NAMESPACE__NO__MATCH__";
+        
+        public InvalidMatchCodeNamspacePair() {
+            this.setCode(INVALID_CODE);
+            this.setCodeNamespace(INVALID_NAMESPACE);
+        }
     }
 }
