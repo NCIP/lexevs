@@ -21,8 +21,6 @@ package edu.mayo.informatics.lexgrid.convert.inserter;
 import java.util.ArrayList;
 import java.util.List;
 
-import lexevs.bootcamp.utility.PrintUtility;
-
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.relations.Relations;
@@ -42,7 +40,7 @@ public abstract class AbstractPagingCodingSchemeInserter extends AbstractCodingS
      * @see edu.mayo.informatics.lexgrid.convert.inserter.AbstractCodingSchemeInserter#insertCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
      */
     public List<ResolvedLoadValidationError> insertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
-        PrintUtility.print(codingScheme);
+ 
         List<LoadValidationError> errors = new ArrayList<LoadValidationError>();
         
         errors.addAll(loadNonPagedItems(codingScheme));
