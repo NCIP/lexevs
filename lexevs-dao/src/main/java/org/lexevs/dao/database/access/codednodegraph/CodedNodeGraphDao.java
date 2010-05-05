@@ -95,11 +95,11 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			String sourceEntityCode, 
 			String sourceEntityCodeNamespace);
 	
-	public List<String> getTailNodes(
+	public List<ConceptReference> getTailNodes(
 			String codingSchemeUid,
 			List<String> associationPredicateUids);
 	
-	public List<String> getRootNodes(
+	public List<ConceptReference> getRootNodes(
 			String codingSchemeUid,
 			List<String> associationPredicateUids);
 }
