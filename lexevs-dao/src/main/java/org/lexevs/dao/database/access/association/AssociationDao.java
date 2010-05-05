@@ -26,6 +26,7 @@ import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.Relations;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
+import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchInsertItem;
 import org.lexevs.dao.database.access.association.model.Triple;
 
 /**
@@ -155,4 +156,7 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 			String sourceEntityCodeNamesapce, 
 			String targetEntityCode, 
 			String targetEntityCodeNamespace);
+	
+	public void insertBatchTransitiveClosure(final String codingSchemeId,
+			final List<TransitiveClosureBatchInsertItem> batch);
 }
