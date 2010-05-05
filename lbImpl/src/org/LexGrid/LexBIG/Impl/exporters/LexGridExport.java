@@ -31,6 +31,8 @@ import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 
+import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
+
 /**
  * Exporter for OBO files.
  * 
@@ -71,11 +73,15 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
     
     protected void doExport() {
             //
+        System.out.println("===DEBUG===DEBUG=== doExport");
+        URI myUri = super.getResourceUri();
+        AbsoluteCodingSchemeVersionReference acsvr = super.getSource();
     }
 
     public void export(AbsoluteCodingSchemeVersionReference source, URI destination, boolean overwrite,
             boolean stopOnErrors, boolean async) throws LBException {
             //
+        System.out.println("===DEBUG===DEBUG=== export");
     }
 
     public URI getSchemaURL() {
@@ -90,9 +96,18 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
     public String getSchemaVersion() {
         return "2005/01";
     }
-
+    
     @Override
     protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+       holder.getResourceUriAllowedFileTypes().add("xml");
+       holder.setIsResourceUriFolder(false);
+       holder.getBooleanOptions().add(new BooleanOption("force"));
+
         return holder;
+    }
+
+    @Override
+    public OptionHolder getOptions() {
+        return super.getOptions();
     }
 }
