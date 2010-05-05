@@ -25,6 +25,7 @@ import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
 import org.LexGrid.LexBIG.DataModel.Core.types.LogLevel;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExportStatus;
 import org.LexGrid.LexBIG.Extensions.Extendable;
+import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Utility.logging.StatusReporter;
 
 /**
@@ -33,6 +34,8 @@ import org.LexGrid.LexBIG.Utility.logging.StatusReporter;
  */
 public interface Exporter extends Extendable, StatusReporter {
 
+	public OptionHolder getOptions();
+	
 	/**
 	 * Clears any associated log entries.
 	 */
