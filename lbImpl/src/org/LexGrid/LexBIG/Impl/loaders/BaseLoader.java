@@ -63,6 +63,7 @@ import edu.mayo.informatics.lexgrid.convert.formats.Option;
 import edu.mayo.informatics.lexgrid.convert.inserter.CodingSchemeInserter;
 import edu.mayo.informatics.lexgrid.convert.inserter.DefaultPagingCodingSchemeInserter;
 import edu.mayo.informatics.lexgrid.convert.inserter.PreValidatingInserterDecorator;
+import edu.mayo.informatics.lexgrid.convert.inserter.resolution.EntityBatchInsertResolver;
 import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 import edu.mayo.informatics.lexgrid.convert.options.DefaultOptionHolder;
 import edu.mayo.informatics.lexgrid.convert.options.StringArrayOption;
@@ -400,17 +401,27 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     
     protected void persistCodingSchemeToDatabase(CodingSchemeInserter inserter, CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
         List<ResolvedLoadValidationError> errors = inserter.insertCodingScheme(codingScheme);
+       
         for(ResolvedLoadValidationError error : errors) {
             this.getMessageDirector().info(error.toString());
         }
     }
 
     protected CodingSchemeInserter createDefaultInserter() {
-        return
+     
+        DefaultPagingCodingSchemeInserter defaultInserter = 
             new DefaultPagingCodingSchemeInserter();
+         
+        ResolverProcessor resolverProcessor = new DefaultResolverProcessor();
+        resolverProcessor.addResolver(new EntityBatchInsertResolver());
+        
+        defaultInserter.setResolverProcessor(resolverProcessor);
+        
+        return defaultInserter;
     }
     
     protected CodingSchemeInserter createDefaultInserter(CodingScheme codingScheme) {
+
         PreValidatingInserterDecorator decorator = 
             new 
             PreValidatingInserterDecorator(
