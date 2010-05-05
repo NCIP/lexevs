@@ -119,6 +119,15 @@ public class DaoManager {
 	}
 	
 	/**
+	 * Gets the current codednodegraph dao.
+	 * 
+	 * @return the current association dao
+	 */
+	public CodedNodeGraphDao getCurrentCodedNodeGraphDao(){
+		return this.getCorrectDaoForSchemaVersion(this.codedNodeGraphDaos, CURRENT_VERSION);
+	}
+	
+	/**
 	 * Gets the entity dao.
 	 * 
 	 * @param codingSchemeUri the coding scheme uri
