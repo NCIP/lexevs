@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
@@ -26,6 +27,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	private static String GET_ENTITY_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getEntityAssnsToEntityUids";
 	private static String GET_ENTITY_ASSNSTOENTITY_UID_COUNT_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getEntityAssnsToEntityUidsCount";
 	private static String GET_ASSOCIATEDCONCEPT_FROM_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getAssociatedConcpetFromEntityAssnsToEntityUid";
+	private static String GET_CONCEPTREFERENCE_FROM_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getConceptReferenceFromEntityAssnsToEntityUid";
 	private static String GET_ASSOCIATION_PREDICATE_NAMES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getAssociationPredicatNamesFromCodingSchemeUid";
 	private static String GET_DISTINCT_SOURCE_NODES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getDistinctSources";
 	private static String GET_TARGET_NODES_OF_SOURCE_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTargetsOfSource";
@@ -36,6 +38,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String associationPredicateUid,
 			String objectEntityCode,
 			String objectEntityCodeNamespace,
+			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveSubjectCodes) {
 		return this.doGetTripleUidsCount(
@@ -43,6 +46,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 				associationPredicateUid, 
 				objectEntityCode, 
 				objectEntityCodeNamespace, 
+				associationNames,
 				associationQualifiers,
 				mustHaveSubjectCodes,
 				TripleNode.OBJECT);
@@ -54,6 +58,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String associationPredicateUid,
 			String subjectEntityCode, 
 			String subjectEntityCodeNamespace,
+			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveObjectCodes){
 		return this.doGetTripleUidsCount(
@@ -61,6 +66,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 				associationPredicateUid, 
 				subjectEntityCode, 
 				subjectEntityCodeNamespace, 
+				associationNames,
 				associationQualifiers,
 				mustHaveObjectCodes,
 				TripleNode.SUBJECT);
@@ -71,6 +77,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String associationPredicateUid, 
 			String entityCode,
 			String entityCodeNamespace, 
+			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveCodes,
 			TripleNode tripleNode) {
@@ -96,6 +103,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String associationPredicateUid,
 			String entityCode,
 			String entityCodeNamespace, 
+			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveObjectCodes,
 			int start, 
@@ -118,6 +126,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String associationPredicateUid,
 			String entityCode,
 			String entityCodeNamespace,
+			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveSubjectCodes,
 			int start, 
@@ -169,6 +178,25 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
 		return DaoUtility.createNonTypedList(this.supportedDatebaseVersion);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<ConceptReference> getConceptReferencesFromUid(
+			String codingSchemeUid, List<String> tripleUids,
+			TripleNode tripleNode) {
+		if(CollectionUtils.isEmpty(tripleUids)) {
+			return new ArrayList<ConceptReference>();
+		}
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
+		
+		PrefixedParameterCollection bean = new PrefixedParameterCollection();
+		bean.setPrefix(prefix);
+		bean.setParam1(tripleNode.toString());
+		bean.setParam2(tripleUids);
+		
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_CONCEPTREFERENCE_FROM_ASSNSTOENTITY_UID_SQL, bean);
 	}
 
 	@SuppressWarnings("unchecked")
