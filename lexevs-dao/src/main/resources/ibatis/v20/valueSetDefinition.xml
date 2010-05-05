@@ -10,6 +10,7 @@
 	<typeAlias alias="valueSetDefinitionReference" type="org.LexGrid.valueSets.ValueSetDefinitionReference" />
 	<typeAlias alias="propertyReference" type="org.LexGrid.valueSets.PropertyReference" />
 	<typeAlias alias="propertyMatchValue" type="org.LexGrid.valueSets.PropertyMatchValue" />
+	<typeAlias alias="valueSetDefinitionBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean"/>
 	
 	<resultMap id="valueSetDefinitionResult" class="valueSetDefinition">
 		<result property="valueSetDefinitionURI" column="valueSetDefURI" />
@@ -22,6 +23,22 @@
 		<result property="status" column="status" />
 		<result property="effectiveDate" column="effectiveDate" />
 		<result property="expirationDate" column="expirationDate" />
+	</resultMap>
+	
+	<resultMap id="valueSetDefinitionMetaDataResult" class="valueSetDefinitionBean">
+		<result property="uid" column="valueSetDefGuid" />
+		<result property="valueSetDefinition.valueSetDefinitionURI" column="valueSetDefURI" />
+		<result property="valueSetDefinition.valueSetDefinitionName" column="valueSetDefName" />
+		<result property="valueSetDefinition.defaultCodingScheme" column="defaultCodingScheme" />
+		<result property="valueSetDefinition.conceptDomain" column="conceptDomain" />
+		<result property="valueSetDefinition.entityDescription.content" column="description" />
+		<result property="systemReleaseUId" column="releaseGuid" />
+		<result property="valueSetDefinition.isActive" column="isActive" />
+		<result property="valueSetDefinition.owner" column="owner" />
+		<result property="valueSetDefinition.status" column="status" />
+		<result property="valueSetDefinition.effectiveDate" column="effectiveDate" />
+		<result property="valueSetDefinition.expirationDate" column="expirationDate" />
+		<result property="entryStateUId" column="entryStateGuid" />
 	</resultMap>
 	
 	<resultMap  id="definitionEntryResult" class="definitionEntry">
@@ -100,6 +117,16 @@
 			status,
 			effectiveDate,
 			expirationDate
+		FROM
+			valueSetDefinition
+		WHERE
+			valueSetDefURI = #param1#
+	</select>
+	
+	<select id="getValueSetDefinitionMetaDataByValueSetURI" 
+		resultMap="valueSetDefinitionMetaDataResult" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		SELECT *
 		FROM
 			valueSetDefinition
 		WHERE

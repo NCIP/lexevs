@@ -70,6 +70,7 @@ CREATE TABLE @PREFIX@vsMultiAttrib
 	attributeValue     VARCHAR2(250) NOT NULL,
 	subRef             VARCHAR2(250),
 	role               VARCHAR2(250),
+	qualifierType 	   VARCHAR2(250),
 	entryStateGuid     VARCHAR2(36)
 )
 ;

@@ -89,6 +89,8 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	
 	public static String GET_VALUESET_DEFINITION_BY_VALUESET_DEFINITION_URI_SQL = VALUESETDEFINITION_NAMESPACE + "getValueSetDefinitionByValueSetURI";
 	
+	public static String GET_VALUESET_DEFINITION_METADATA_BY_VALUESET_DEFINITION_URI_SQL = VALUESETDEFINITION_NAMESPACE + "getValueSetDefinitionMetaDataByValueSetURI";
+	
 	public static String GET_DEFINITION_ENTRY_BY_VALUESET_DEFINITION_GUID_SQL = VALUESETDEFINITION_NAMESPACE + "getDefinitionEntryByValueSetGuid";
 	
 	public static String REMOVE_VALUESET_DEFINITION_BY_VALUESET_DEFINITION_URI_SQL = VALUESETDEFINITION_NAMESPACE + "removevalueSetDefinitionByValueSetDefinitionURI";
@@ -136,15 +138,18 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	@Override
 	@CacheMethod
 	public ValueSetDefinition getValueSetDefinitionByURI(String valueSetDefinitionURI) {
-		ValueSetDefinition vsd = (ValueSetDefinition) 
-			this.getSqlMapClientTemplate().queryForObject(GET_VALUESET_DEFINITION_BY_VALUESET_DEFINITION_URI_SQL, 
+		InsertValueSetDefinitionBean vsdBean = (InsertValueSetDefinitionBean) 
+			this.getSqlMapClientTemplate().queryForObject(GET_VALUESET_DEFINITION_METADATA_BY_VALUESET_DEFINITION_URI_SQL, 
 				new PrefixedParameter(null, valueSetDefinitionURI));
 		
-		if (vsd != null)
+		ValueSetDefinition vsd = null;
+		if (vsdBean != null)
 		{
-			String vsdGuid = getGuidFromvalueSetDefinitionURI(valueSetDefinitionURI);
+			vsd = vsdBean.getValueSetDefinition();
 			
-			vsd.setEntryState(vsEntryStateDao.getEntryStateByUId(vsdGuid));
+			String vsdGuid = vsdBean.getUId();
+			
+			vsd.setEntryState(vsEntryStateDao.getEntryStateByUId(vsdBean.getEntryStateUId()));
 			
 			List<DefinitionEntry> des = this.getSqlMapClientTemplate().queryForList(GET_DEFINITION_ENTRY_BY_VALUESET_DEFINITION_GUID_SQL,
 					new PrefixedParameter(null, vsdGuid));

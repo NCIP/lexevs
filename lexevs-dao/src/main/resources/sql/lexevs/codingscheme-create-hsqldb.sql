@@ -191,6 +191,7 @@ CREATE TABLE @PREFIX@propertyMultiAttrib (
 	attributeValue varchar(250),
 	subRef varchar(250),
 	role varchar(250),
+	qualifierType varchar(250),
 	entryStateGuid varchar(36)
 )
 ;

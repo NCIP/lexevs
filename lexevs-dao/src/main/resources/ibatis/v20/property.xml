@@ -89,7 +89,8 @@
   			
   			qualifier.attributeType qualifierAttributeType,
   			qualifier.attributeId qualifierAttributeId,
-  			qualifier.attributeValue qualifierAttributeValue
+  			qualifier.attributeValue qualifierAttributeValue,
+  			qualifier.qualifierType qualifierType
   			
   		FROM
   			$prefix$property property

@@ -12,15 +12,15 @@
 	
 	<select id="getEntryStateByUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Versions.entryStateResult">
 		SELECT
-			es.changeType,
-			es.relativeOrder,
-			cr.revisionId,
-			pr.revisionId
+			es.changeType changeType,
+			es.relativeOrder relativeOrder,
+			cr.revisionId currentRevisionId,
+			pr.revisionId previousRevisionId
 		FROM
 			vsEntryState es
-		LEFT JOIN #prefix#revision cr ON
+		LEFT JOIN $prefix$revision cr ON
 			es.revisionGuid = cr.revisionGuid
-		LEFT JOIN #prefix#revision pr ON
+		LEFT JOIN $prefix$revision pr ON
 			es.prevRevisionGuid = pr.revisionGuid
 		WHERE
 			entryStateGuid = #param1#		

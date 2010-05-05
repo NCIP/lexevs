@@ -23,7 +23,7 @@
 	
 	<resultMap id="qualifierResult" class="org.LexGrid.commonTypes.PropertyQualifier">
 		<result property="propertyQualifierName" column="attributeId" />
-		<result property="propertyQualifierType" column="attributeType" />
+		<result property="propertyQualifierType" column="qualifierType" />
 		<result property="value.content" column="attributeValue" />
 	</resultMap>
 	
@@ -35,7 +35,8 @@
 			attributeId,
 			attributeValue,
 			subRef,
-			role
+			role,
+			qualifierType
 		FROM 
 			vsPropertyMultiAttrib
 		WHERE
@@ -51,6 +52,7 @@
 			attributeValue,
 			subRef,
 			role,
+			qualifierType,
 			entryStateGuid
 		) VALUES (
 			#uid#,
@@ -60,6 +62,7 @@
 			#attributeValue#,
 			#subRef#,
 			#role#,
+			#qualifierType#,
 			#entryStateUId#
 		)
 	</insert>

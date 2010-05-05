@@ -612,6 +612,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		bean.setAttributeId(propertyQualifier.getPropertyQualifierName());
 		bean.setAttributeValue(propertyQualifier.getValue() != null ? propertyQualifier.getValue().getContent(): null);
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_QUALIFIER);
+		bean.setQualifierType(propertyQualifier.getPropertyQualifierType());
 		bean.setEntryStateUId(entryStateId);
 
 		return bean;

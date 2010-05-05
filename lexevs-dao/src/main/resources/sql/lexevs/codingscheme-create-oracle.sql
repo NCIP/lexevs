@@ -475,7 +475,8 @@ CREATE TABLE @PREFIX@propertyMultiAttrib
 	attributeId          VARCHAR2(50),    --  Name of the property qualifier. In case of source and usage context value will be null. 
 	attributeValue       VARCHAR2(250),    --  Value of the multi attributes. 
 	subRef               VARCHAR2(250),    --  The page, subheading, id or other localized information within the source. Used to make a source reference more precise.  
-	role                 VARCHAR2(250),    --  The role or purpose of the source for this particular resource (e.g. author, distributor). 
+	role                 VARCHAR2(250),    --  The role or purpose of the source for this particular resource (e.g. author, distributor).
+	qualifierType 		 VARCHAR2(250),	   --  The qualifier type of a property.	 
 	entryStateGuid       VARCHAR2(36)    --  Holds the reference to the entry state. 
 )
 ;

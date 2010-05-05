@@ -178,6 +178,7 @@ CREATE TABLE @PREFIX@h_propertyMultiAttrib
 	attributeValue VARCHAR(250),
 	subRef VARCHAR(250),
 	role VARCHAR(250),
+	qualifierType VARCHAR(250),
 	entryStateGuid VARCHAR(36) NOT NULL,
 	PRIMARY KEY (entryStateGuid),
 	INDEX idx_h_propertyMultiAttrib (propertyGuid ASC)

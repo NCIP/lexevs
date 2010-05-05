@@ -181,6 +181,7 @@ CREATE TABLE vsPropertyMultiAttrib
 	attributeValue VARCHAR(250) NOT NULL,
 	subRef VARCHAR(250),
 	role VARCHAR(250),
+	qualifierType VARCHAR(250),
 	entryStateGuid VARCHAR(36),
 	PRIMARY KEY (vsPropMultiAttribGuid),
 	INDEX idx_vsPropertyGuid (vsPropertyGuid ASC)

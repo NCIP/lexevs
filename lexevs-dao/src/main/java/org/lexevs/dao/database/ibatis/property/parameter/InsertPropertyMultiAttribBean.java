@@ -45,6 +45,9 @@ public class InsertPropertyMultiAttribBean extends IdableParameterBean {
 	/** The role. */
 	private String role;
 	
+	/** qualifier type of a property */
+	private String qualifierType;
+	
 	/**
 	 * Gets the property id.
 	 * 
@@ -151,6 +154,20 @@ public class InsertPropertyMultiAttribBean extends IdableParameterBean {
 	 */
 	public String getAttributeId() {
 		return attributeId;
+	}
+
+	/**
+	 * @return the qualifierType
+	 */
+	public String getQualifierType() {
+		return qualifierType;
+	}
+
+	/**
+	 * @param qualifierType the qualifierType to set
+	 */
+	public void setQualifierType(String qualifierType) {
+		this.qualifierType = qualifierType;
 	}
 }
 

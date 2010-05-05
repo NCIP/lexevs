@@ -48,7 +48,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 	public static String INSERT_ENTRY_STATE_SQL = VERSIONS_NAMESPACE + "insertEntryState";
 	
 	/** The GE t_ entr y_ stat e_ b y_ i d_ sql. */
-	public static String GET_ENTRY_STATE_BY_ID_SQL = VERSIONS_NAMESPACE + "insertEntryState";
+	public static String GET_ENTRY_STATE_BY_ID_SQL = VERSIONS_NAMESPACE + "getEntryStateByUId";
 	
 	/** ibatis revision dao*/
 	private IbatisRevisionDao ibatisRevisionDao = null;
@@ -56,7 +56,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 
 	public EntryState getEntryStateByUId(String entryStateUId) {
 		return (EntryState) this.getSqlMapClientTemplate().queryForObject(GET_ENTRY_STATE_BY_ID_SQL, 
-			new PrefixedParameter(null, entryStateUId));
+			new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), entryStateUId));
 	}
 	
 	public void updateEntryState(String id, EntryState entryState) {
@@ -147,8 +147,16 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 				
 			}
 			if (entryState.getPrevRevision() != null)
+			{
 				prevRevisionUId = ibatisRevisionDao
 					.getRevisionUIdById(entryState.getPrevRevision());
+				if (prevRevisionUId == null)
+				{
+					Revision revision = new Revision();
+					revision.setRevisionId(entryState.getPrevRevision());
+					prevRevisionUId = ibatisRevisionDao.insertRevisionEntry(revision, null);					
+				}
+			}
 		}
 		
 		InsertEntryStateBean bean = new InsertEntryStateBean();

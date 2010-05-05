@@ -257,6 +257,7 @@ CREATE TABLE @PREFIX@h_propertyMultiAttrib
 	attributeValue       VARCHAR2(250),    --  The source, usageContext, or qualifier name - must come from a SupportedXXX value 
 	subRef               VARCHAR2(250),
 	role                 VARCHAR2(250),
+	qualifierType 	     VARCHAR2(250),    -- Qualifier type of a property. 
 	entryStateGuid       VARCHAR2(36) NOT NULL
 )
 ;

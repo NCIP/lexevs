@@ -138,6 +138,7 @@ CREATE TABLE vdPropertyMultiAttrib (
 	attributeValue varchar(250) NOT NULL,
 	subRef varchar(250),
 	role varchar(250),
+	qualifierType varchar(250),
 	entryStateGuid varchar(36)
 )
 ;
