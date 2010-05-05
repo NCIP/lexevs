@@ -7,7 +7,7 @@
 	<typeAlias alias="triple" type="org.lexevs.dao.database.access.association.model.Triple"/>
 	<typeAlias alias="associatedConcept" type="org.lexevs.dao.database.ibatis.codednodegraph.model.QualifierAddingAssociatedConcept"/>
 	<typeAlias alias="associationQualification" type="org.LexGrid.LexBIG.DataModel.Core.NameAndValue"/>
-
+	
 	<resultMap id="nodeResult" class="node">
 		<result property="entityCode" column="entityCode" />
 		<result property="entityCodeNamespace" column="entityCodeNamespace" />
@@ -36,6 +36,28 @@
 		<result property="name" column="qualifierName" />
 		<result property="content" column="qualifierValue" />
 	</resultMap>
+	
+	<select id="getConceptReferenceFromEntityAssnsToEntityUid" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection"
+		remapResults="true" resultMap="Entity.conceptReferenceResult">
+		SELECT
+
+			<isEqual property="param1" compareValue="SUBJECT">
+				eate.sourceEntityCode as entityCode,
+				eate.sourceEntityCodeNamespace as entityCodeNamespace
+			</isEqual>
+			<isEqual property="param1" compareValue="OBJECT">
+				eate.targetEntityCode as entityCode,
+				eate.targetEntityCodeNamespace as entityCodeNamespace
+			</isEqual>
+			
+		FROM
+			$prefix$entityAssnsToEntity eate
+		
+		WHERE
+			eate.entityAssnsGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
+	</select>
+	
 	
 	<select id="getAssociatedConcpetFromEntityAssnsToEntityUid" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection"
@@ -188,74 +210,83 @@
 			#targetEntityCodeNamespace#
 		)
   </insert>
-  
-  <sql id="getEntityAssnsToEntityUidsFragment">
-	FROM
-		$prefix$entityAssnsToEntity eate
-	INNER JOIN
-		$prefix$associationPredicate ap
-	ON
-		(ap.associationPredicateGuid = eate.associationPredicateGuid)
-	INNER JOIN
-		$prefix$relation rel
-	ON
-		(rel.relationGuid = ap.relationGuid)
-	LEFT JOIN
-		$prefix$entityAssnQuals quals
-	ON
-		(eate.entityAssnsGuid = quals.referenceGuid)
-	WHERE
-		rel.codingSchemeGuid = #codingSchemeUid#
-		
-	<isNotNull property="associationPredicateUid" prepend="AND">
-		ap.associationPredicateGuid = #associationPredicateUid#
-	</isNotNull>
-	
-	<isNotEmpty property="associationQualifiers" prepend="AND">
-		<iterate property="associationQualifiers" conjunction="AND">
+
+	<sql id="getEntityAssnsToEntityUidsFragment">
+		FROM
+			$prefix$entityAssnsToEntity eate
+		INNER JOIN
+			$prefix$associationPredicate ap
+		ON
+			(ap.associationPredicateGuid = eate.associationPredicateGuid)
+		INNER JOIN
+			$prefix$relation rel
+		ON
+			(rel.relationGuid = ap.relationGuid)
+		LEFT JOIN
+			$prefix$entityAssnQuals quals
+		ON
+			(eate.entityAssnsGuid = quals.referenceGuid)
+		WHERE
+			rel.codingSchemeGuid = #codingSchemeUid#
+
+		<isNotNull property="associationPredicateUid" prepend="AND">
+			ap.associationPredicateGuid = #associationPredicateUid#
+		</isNotNull>
+
+		<isNotEmpty property="associationQualifiers" prepend="AND">
 			(
-			quals.qualifierName = #associationQualifiers[].qualifierName#
-			<isNotEmpty property="associationQualifiers[].qualifierValue">
-				AND
-				quals.qualifierValue = #associationQualifiers[].qualifierValue#
-			</isNotEmpty>
-			)
-		</iterate>
-	</isNotEmpty>
-	
-		AND
-			<isEqual property="tripleNode" compareValue="SUBJECT"> 
-				eate.sourceEntityCode = #entityCode#
-				AND
-				eate.sourceEntityCodeNamespace = #entityCodeNamespace#
-			</isEqual>
-			<isEqual property="tripleNode" compareValue="OBJECT"> 
-				eate.targetEntityCode = #entityCode#
-				AND
-				eate.targetEntityCodeNamespace = #entityCodeNamespace#
-			</isEqual>
-			
-		<isNotEmpty property="mustHaveCodes" prepend="AND">
-		(
-			<iterate property="mustHaveCodes" conjunction="OR">
-				<isEqual property="tripleNode" compareValue="SUBJECT"> 
+			<iterate property="associationQualifiers" conjunction="AND">
 				(
+				quals.qualifierName = #associationQualifiers[].qualifierName#
+				<isNotEmpty property="associationQualifiers[].qualifierValue">
+					AND
+					quals.qualifierValue = #associationQualifiers[].qualifierValue#
+			</isNotEmpty>
+				)
+			</iterate>
+			)
+		</isNotEmpty>
+
+		<isNotEmpty property="associations" prepend="AND">
+			(
+			<iterate property="associations" conjunction="OR">
+				ap.associationName = #associations[]#
+			</iterate>
+			)
+		</isNotEmpty>
+
+		<isEqual property="tripleNode" compareValue="SUBJECT" prepend="AND">
+			eate.sourceEntityCode = #entityCode#
+			AND
+			eate.sourceEntityCodeNamespace = #entityCodeNamespace#
+			</isEqual>
+		<isEqual property="tripleNode" compareValue="OBJECT" prepend="AND">
+			eate.targetEntityCode = #entityCode#
+			AND
+			eate.targetEntityCodeNamespace = #entityCodeNamespace#
+			</isEqual>
+
+		<isNotEmpty property="mustHaveCodes" prepend="AND">
+			(
+			<iterate property="mustHaveCodes" conjunction="OR">
+				<isEqual property="tripleNode" compareValue="SUBJECT">
+					(
 					eate.targetEntityCode = #mustHaveCodes[].code#
 					AND
 					eate.targetEntityCodeNamespace = #mustHaveCodes[].namespace#
-				)
+					)
 				</isEqual>
-				<isEqual property="tripleNode" compareValue="OBJECT"> 
-				(
+				<isEqual property="tripleNode" compareValue="OBJECT">
+					(
 					eate.sourceEntityCode = #mustHaveCodes[].code#
 					AND
 					eate.sourceEntityCodeNamespace = #mustHaveCodes[].namespace#
-				)
+					)
 				</isEqual>
 			</iterate>
-		)
+			)
 		</isNotEmpty>
-  </sql>
+	</sql>
   
   	<select id="getEntityAssnsToEntityUids"
 				parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsBean"

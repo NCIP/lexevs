@@ -7,16 +7,21 @@
 	<typeAlias alias="associationEntity" type="org.LexGrid.relations.AssociationEntity" />
 	<typeAlias alias="propertyLink" type="org.LexGrid.concepts.PropertyLink" />
 	<typeAlias alias="resolvedCodedNodeReference" type="org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference" />
+	<typeAlias alias="conceptReference" type="org.LexGrid.LexBIG.DataModel.Core.onceptReference" />
 	<typeAlias alias="insertOrUpdateEntityBean" type="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean" />
 	<typeAlias alias="InsertOrUpdateAssociationEntityBean" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean" />
 	
-	<resultMap id="resolvedCodedNodeReferenceResult" class="resolvedCodedNodeReference">
+	<resultMap id="conceptReferenceResult" class="resolvedCodedNodeReference">
 		<result property="code" column="entityCode" />
 		<result property="codeNamespace" column="entityCodeNamespace" />
+<!--		<result property="codingSchemeName" column="codingSchemeName" />-->
+	</resultMap>
+	
+	<resultMap id="resolvedCodedNodeReferenceResult" 
+		class="resolvedCodedNodeReference" extends="conceptReferenceResult">
 		<result property="entityDescription.content" column="description" />
 		<result property="codingSchemeURI" column="codingSchemeURI" />
 		<result property="codingSchemeVersion" column="representsVersion" />
-		<result property="codingSchemeName" column="codingSchemeName" />
 	</resultMap>
 
 
