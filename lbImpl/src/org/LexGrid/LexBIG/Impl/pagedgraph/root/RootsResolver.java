@@ -12,6 +12,7 @@ public interface RootsResolver {
     public List<ConceptReference> resolveRoots(
             String codingSchemeUri, 
             String codingSchemeVersion, 
+            String relationsContainerName,
             ResolveDirection direction,
             GraphQuery query);
     

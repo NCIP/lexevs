@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
-import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.AbstractEndNode.Root;
+import org.LexGrid.LexBIG.Impl.pagedgraph.root.AbstractEndNode.Tail;
 import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
@@ -18,6 +18,7 @@ public class NullFocusRootsResolver implements RootsResolver {
     public List<ConceptReference> resolveRoots(
             String codingSchemeUri, 
             String codingSchemeVersion, 
+            String relationsContainerName,
             ResolveDirection direction,
             GraphQuery query) {
         List<ConceptReference> returnList = new ArrayList<ConceptReference>();
@@ -31,7 +32,27 @@ public class NullFocusRootsResolver implements RootsResolver {
                 return this.getRelatedSourceCodes(codingSchemeUri, codingSchemeVersion, query);
             }
             
+            if(CollectionUtils.isNotEmpty(query.getRestrictToAssociations())) {
+                return this.getRoots(codingSchemeUri, codingSchemeVersion, relationsContainerName, query.getRestrictToAssociations());
+            }
+            
             return DaoUtility.createList(ConceptReference.class, new Root(codingSchemeUri, codingSchemeVersion));
+        }
+        
+        if(direction.equals(ResolveDirection.BACKWARD)) {
+            if(CollectionUtils.isNotEmpty(query.getRestrictToTargetCodes())) {
+                return query.getRestrictToTargetCodes();
+            }
+            
+            if(CollectionUtils.isNotEmpty(query.getRestrictToSourceCodes())) {
+                return this.getRelatedTargetCodes(codingSchemeUri, codingSchemeVersion, query);
+            }
+            
+            if(CollectionUtils.isNotEmpty(query.getRestrictToAssociations())) {
+                return this.getTails(codingSchemeUri, codingSchemeVersion, relationsContainerName, query.getRestrictToAssociations());
+            }
+            
+            return DaoUtility.createList(ConceptReference.class, new Tail(codingSchemeUri, codingSchemeVersion));
         }
         
         return returnList;
@@ -96,6 +117,32 @@ public class NullFocusRootsResolver implements RootsResolver {
         
         return service.getConceptReferencesFromUidSource(codingSchemeUri, codingSchemeVersion, uids);
     }
-
-
+    
+    protected List<ConceptReference> getRoots(
+            String  codingSchemeUri, 
+            String codingSchemeVersion,
+            String relationsContainerName,
+            List<String> associationNames){
+        
+        CodedNodeGraphService service =
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
+        
+        List<ConceptReference> roots = 
+            service.getRootConceptReferences(codingSchemeUri, codingSchemeVersion, relationsContainerName, associationNames);
+        
+        return roots;
+    }
+    
+    protected List<ConceptReference> getTails(
+            String  codingSchemeUri, 
+            String codingSchemeVersion,
+            String relationsContainerName,
+            List<String> associationNames){
+        
+        CodedNodeGraphService service =
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
+        
+        return 
+            service.getRootConceptReferences(codingSchemeUri, codingSchemeVersion, relationsContainerName, associationNames);
+    }
 }
