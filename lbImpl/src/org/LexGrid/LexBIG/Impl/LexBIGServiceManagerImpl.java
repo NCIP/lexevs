@@ -213,14 +213,14 @@ public class LexBIGServiceManagerImpl implements LexBIGServiceManager {
             ExtensionDescription ed = ExtensionRegistryImpl.instance().getExportExtension(name);
 
             if (ed == null) {
-                throw new LBParameterException("No loader is available for ", "loaderName", name);
+                throw new LBParameterException("No exporter is available for ", "exporterName", name);
             }
             return (Exporter) temp.loadClass(ed.getExtensionClass()).newInstance();
         }
 
         catch (Exception e) {
-            String id = getLogger().error("Error getting loader " + name, e);
-            throw new LBInvocationException("Unexpected error getting loader for " + name, id);
+            String id = getLogger().error("Error getting exporter " + name, e);
+            throw new LBInvocationException("Unexpected error getting exporter for " + name, id);
         }
     }
 
