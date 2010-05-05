@@ -3,29 +3,31 @@ package org.lexevs.dao.database.service.codednodegraph.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+
 public class GraphQuery implements Cloneable {
 
-    private List<CodeNamespacePair> restrictToSourceCodes = new ArrayList<CodeNamespacePair>();
-    private List<CodeNamespacePair> restrictToTargetCodes = new ArrayList<CodeNamespacePair>();
+    private List<ConceptReference> restrictToSourceCodes = new ArrayList<ConceptReference>();
+    private List<ConceptReference> restrictToTargetCodes = new ArrayList<ConceptReference>();
     private List<String> restrictToAssociations = new ArrayList<String>();
     private List<QualifierNameValuePair> restrictToAssociationsQualifiers = new ArrayList<QualifierNameValuePair>();
     private List<String> restrictToCodeSystem = new ArrayList<String>();
     private List<String> restrictToSourceCodeSystem = new ArrayList<String>();
     private List<String> restrictToTargetCodeSystem = new ArrayList<String>();
  
-    public List<CodeNamespacePair> getRestrictToSourceCodes() {
+    public List<ConceptReference> getRestrictToSourceCodes() {
         return restrictToSourceCodes;
     }
 
-    public void setRestrictToSourceCodes(List<CodeNamespacePair> restrictToSourceCodes) {
+    public void setRestrictToSourceCodes(List<ConceptReference> restrictToSourceCodes) {
         this.restrictToSourceCodes = restrictToSourceCodes;
     }
 
-    public List<CodeNamespacePair> getRestrictToTargetCodes() {
+    public List<ConceptReference> getRestrictToTargetCodes() {
         return restrictToTargetCodes;
     }
 
-    public void setRestrictToTargetCodes(List<CodeNamespacePair> restrictToTargetCodes) {
+    public void setRestrictToTargetCodes(List<ConceptReference> restrictToTargetCodes) {
         this.restrictToTargetCodes = restrictToTargetCodes;
     }
 
@@ -191,9 +193,9 @@ public class GraphQuery implements Cloneable {
 		query.setRestrictToAssociations(new ArrayList<String>(this.restrictToAssociations));
 		query.setRestrictToAssociationsQualifiers(new ArrayList<QualifierNameValuePair>(this.restrictToAssociationsQualifiers));
 		query.setRestrictToCodeSystem(new ArrayList<String>(this.restrictToCodeSystem));
-		query.setRestrictToSourceCodes(new ArrayList<CodeNamespacePair>(this.restrictToSourceCodes));
+		query.setRestrictToSourceCodes(new ArrayList<ConceptReference>(this.restrictToSourceCodes));
 		query.setRestrictToSourceCodeSystem(new ArrayList<String>(this.restrictToSourceCodeSystem));
-		query.setRestrictToTargetCodes(new ArrayList<CodeNamespacePair>(this.restrictToTargetCodes));
+		query.setRestrictToTargetCodes(new ArrayList<ConceptReference>(this.restrictToTargetCodes));
 		query.setRestrictToTargetCodeSystem(new ArrayList<String>(this.restrictToTargetCodeSystem));
 		
 		return query;

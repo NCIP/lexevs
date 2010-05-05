@@ -3,6 +3,7 @@ package org.lexevs.dao.database.service.codednodegraph;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 
 public interface CodedNodeGraphService {
@@ -57,12 +58,22 @@ public interface CodedNodeGraphService {
 			String codingSchemeVersion,
 			List<String> tripleUid);
 	
+	public List<ConceptReference> getConceptReferencesFromUidSource(
+			String codingSchemeUri,
+			String codingSchemeVersion,
+			List<String> tripleUid);
+	
 	public AssociatedConcept getAssociatedConceptFromUidTarget(
 			String codingSchemeUri,
 			String codingSchemeVersion,
 			String tripleUid);
 	
 	public List<AssociatedConcept> getAssociatedConceptsFromUidTarget(
+			String codingSchemeUri,
+			String codingSchemeVersion,
+			List<String> tripleUid);
+	
+	public List<ConceptReference> getConceptReferencesFromUidTarget(
 			String codingSchemeUri,
 			String codingSchemeVersion,
 			List<String> tripleUid);

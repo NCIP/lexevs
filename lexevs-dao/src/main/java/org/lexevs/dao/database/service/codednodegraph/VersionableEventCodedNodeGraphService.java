@@ -21,6 +21,7 @@ package org.lexevs.dao.database.service.codednodegraph;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
@@ -87,8 +88,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					associationPredicateUid,
 					objectEntityCode, 
 					objectEntityCodeNamespace, 
+					query.getRestrictToAssociations(),
 					query.getRestrictToAssociationsQualifiers(),
-					query.getRestrictToSourceCodes(),
+					DaoUtility.toCodeNamespacePair(query.getRestrictToSourceCodes()),
 					start, 
 					pageSize);
 	}
@@ -127,8 +129,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					associationPredicateUid, 
 					objectEntityCode, 
 					objectEntityCodeNamespace, 
+					query.getRestrictToAssociations(),
 					query.getRestrictToAssociationsQualifiers(),
-					query.getRestrictToSourceCodes());
+					DaoUtility.toCodeNamespacePair(query.getRestrictToSourceCodes()));
 	}
 
 	@Override
@@ -155,8 +158,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					associationPredicateUid, 
 					subjectEntityCode, 
 					subjectEntityCodeNamespace, 
+					query.getRestrictToAssociations(),
 					query.getRestrictToAssociationsQualifiers(),
-					query.getRestrictToTargetCodes(),
+					DaoUtility.toCodeNamespacePair(query.getRestrictToTargetCodes()),
 					start,
 					pageSize);
 	}
@@ -188,8 +192,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					associationPredicateUid, 
 					subjectEntityCode, 
 					subjectEntityCodeNamespace, 
+					query.getRestrictToAssociations(),
 					query.getRestrictToAssociationsQualifiers(),
-					query.getRestrictToTargetCodes());
+					DaoUtility.toCodeNamespacePair(query.getRestrictToTargetCodes()));
 	}
 
 	@Transactional
@@ -237,4 +242,32 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					tripleUids, 
 					TripleNode.OBJECT);
 	}
+
+	@Override
+	public List<ConceptReference> getConceptReferencesFromUidSource(
+			String codingSchemeUri, String codingSchemeVersion,
+			List<String> tripleUids) {
+		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+
+		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
+		getConceptReferencesFromUid(
+				codingSchemeUid, 
+				tripleUids, 
+				TripleNode.SUBJECT);
+	}
+
+	@Override
+	public List<ConceptReference> getConceptReferencesFromUidTarget(
+			String codingSchemeUri, String codingSchemeVersion,
+			List<String> tripleUids) {
+		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+
+		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
+		getConceptReferencesFromUid(
+				codingSchemeUid, 
+				tripleUids, 
+				TripleNode.OBJECT);
+	}
+	
+	
 }
