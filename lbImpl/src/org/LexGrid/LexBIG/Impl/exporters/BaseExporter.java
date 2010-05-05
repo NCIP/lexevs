@@ -25,6 +25,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
 import org.LexGrid.LexBIG.DataModel.Core.types.LogLevel;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExportStatus;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
@@ -58,6 +59,7 @@ public abstract class BaseExporter {
     }
 
     protected void baseExport(boolean async) {
+        status_ = new ExportStatus();
         status_.setState(ProcessState.PROCESSING);
         status_.setStartTime(new Date(System.currentTimeMillis()));
         md_ = new MessageDirector(getName(), status_);
@@ -171,4 +173,9 @@ public abstract class BaseExporter {
     public AbsoluteCodingSchemeVersionReference getSource() {
         return source;
     }
+    
+    public OptionHolder getOptions() {
+        return holder;
+    }
+    
 }
