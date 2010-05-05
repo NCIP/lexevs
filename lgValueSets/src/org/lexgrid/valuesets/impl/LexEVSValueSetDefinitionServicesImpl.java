@@ -41,12 +41,12 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
@@ -82,15 +82,47 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	private static final String desc_ = "Implements LexGrid Value Set Definition services.";
 	private static final String provider_ = "Mayo Clinic";
 	private static final String version_ = "2.0";
-	/**
-	 * 
-	 */
+	
+	private static LexEVSValueSetDefinitionServicesImpl valueSetService_ = null;
+
 	private static final long serialVersionUID = 4995582014921448463L;
 	
 	private DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
 	private ValueSetDefinitionService vsds_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 
 
+	/**
+     * Returns a default singleton instance of the service.
+     * <p>
+     * Note: This is the recommended method of acquiring the service, since it
+     * will allow the application to run without change in distributed LexBIG
+     * environments (in which case the default instance is actually a
+     * distributed service). However, use of the public constructor is supported
+     * to preserve backward compatibility.
+     * 
+     * @return LexEVSValueSetDefinitionServicesImpl
+     */
+    public static LexEVSValueSetDefinitionServicesImpl defaultInstance() {
+        if (valueSetService_ == null)
+            valueSetService_ = new LexEVSValueSetDefinitionServicesImpl();
+        return valueSetService_;
+    }
+
+    /**
+     * Assigns the default singleton instance of the service.
+     * <p>
+     * Note: While this method is public, it is generally not intended to be
+     * part of the externalized API. It is made public so that the runtime
+     * system has the ability to assign the default instance when running in
+     * distributed LexBIG environments, etc.
+     * 
+     * @param LexEVSValueSetDefinitionServicesImpl
+     *            the default instance.
+     */
+    public static void setDefaultInstance(LexEVSValueSetDefinitionServicesImpl defaultInstance) {
+    	valueSetService_ = defaultInstance;
+    }
+    
 	public LexEVSValueSetDefinitionServicesImpl() {
 		getStatus().setState(ProcessState.PROCESSING);
 		getStatus().setStartTime(new Date(System.currentTimeMillis()));
@@ -129,97 +161,43 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	@Override
 	public void loadValueSetDefinition(InputStream inputStream,
 			boolean failOnAllErrors) throws LBException {
-		//TODO
-//		getLogger().logMethod(new Object[] { inputStream });
-//		VSDXMLread vdXML = new VSDXMLread(inputStream, md_, failOnAllErrors);
-//
-//		internalLoadVD(vdXML);
+		throw new LBException("Method not implemented");
 	}
 	
 	@Override
 	public void loadValueSetDefinition(String xmlFileLocation,
 			boolean failOnAllErrors) throws LBException {
-		LexGrid_Loader loader = new LexGridMultiLoaderImpl();
-        try {
-        	md_.info("Loading value set definitions from file : " + xmlFileLocation);
-			loader.load(new URI(xmlFileLocation));
-			md_.info("Finished loading value set definitions");
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//TODO
-//		getLogger().logMethod(new Object[] { xmlFileLocation });
-//		VSDXMLread vdXML;
-//		try {
-//			vdXML = new VSDXMLread(getStringFromURI(new URI(xmlFileLocation)), null, md_,failOnAllErrors);
-//		} catch (URISyntaxException e) {
-//			throw new LBException("Failed loading XML.", e);
-//		}
-//		
-//		internalLoadVD(vdXML);
+		md_.info("Loading value set definitions from file : " + xmlFileLocation);
+		
+		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm
+                .getLoader("LexGrid_Loader");
+        
+        // load non-async - this should block
+        loader.load(new File(xmlFileLocation).toURI(), true, false);
+        
+        while (loader.getStatus().getEndTime() == null) {
+            try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+
+		md_.info("Finished loading value set definitions");
 	}
 
-	/**
-	 * Common method that will be used for loading value domain to database.
-	 * @param vdXML
-	 * @throws Exception
-	 */
-//	private void internalLoadVD(VSDXMLread vdXML) throws LBException {
-//		getLogger().logMethod(new Object[] { vdXML });
-		
-//		try 
-//		{
-//			ValueSetDefinition[] vdDefs = vdXML.readAllValueDomains();
-//			SystemRelease systemRelease = vdXML.getSystemRelease();
-//			
-//			String releaseURI = null;
-//			
-//			if (systemRelease != null)
-//			{
-//				releaseURI = systemRelease.getReleaseURI();
-//				
-//				md_.info("Loading System Release : " + releaseURI);
-//				
-//				SystemReleaseServices releaseService = (SystemReleaseServices) getVDService().getNestedService(SystemReleaseImpl.class);
-//				releaseService.insert(systemRelease);
-//				
-//				md_.info("Finished Loading System Release : " + releaseURI);
-//			}
-//			
-//			md_.info("Loading Value Domain Definitions");
-//			for (ValueSetDefinition vddef : vdDefs) {
-//				loadValueDomain(vddef, releaseURI, vdXML.getVdMappings());			
-//			}
-//			md_.info("Finished Loading Value Domain Definitions");
-//			
-//			md_.info("Load Process Complete.");
-//		} 
-//		catch (ServiceInitException e)
-//		{
-//			throw new LBException("Problem loading valueDomain." + e.getStackTrace());
-//		} 
-//		catch (ObjectAlreadyExistsException e) 
-//		{
-//			throw new LBException("Problem loading valueDomain." + e.getStackTrace());
-//		} 
-//		catch (InsertException e) 
-//		{
-//			throw new LBException("Problem loading valueDomain." + e.getStackTrace());
-//		} 
-//		catch (Exception e) 
-//		{
-//			throw new LBException("Problem loading valueDomain." + e.getStackTrace());
-//		}
-//	}
-	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#validate(java.net.URI, int)
 	 */
-	public void validate(URI uri, int validationLevel) throws LBParameterException{
-		//TODO
-//		VSDXMLread vdXML = new VSDXMLread(uri.toString(), null, md_, true);
-//		vdXML.validate(uri, validationLevel);
+	public void validate(URI uri, int validationLevel) throws LBException{
+		LexBIGServiceManager lbsm;
+		lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+		LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm
+            	.getLoader("LexGrid_Loader");
+		loader.validate(uri, validationLevel);
 	}
 	
 	@Override
@@ -244,7 +222,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         if (vdDef != null) {
             ResolvedValueSetCodedNodeSet rvdcns = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vdDef, csVersionList, versionTag);            
             if (rvdcns != null && rvdcns.getCodedNodeSet() != null && rvdcns.getCodingSchemeVersionRefList() != null) {
-                Iterator<AbsoluteCodingSchemeVersionReference> csUsedIter = rvdcns.getCodingSchemeVersionRefList().iterateAbsoluteCodingSchemeVersionReference();
+                Iterator<? extends AbsoluteCodingSchemeVersionReference> csUsedIter = rvdcns.getCodingSchemeVersionRefList().iterateAbsoluteCodingSchemeVersionReference();
                 CodedNodeSet resolvedSet = rvdcns.getCodedNodeSet();
                 while(csUsedIter.hasNext()) {
                     AbsoluteCodingSchemeVersionReference csUsed = csUsedIter.next();
@@ -453,7 +431,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		CodedNodeSet cns = getLexBIGService().getNodeSet(codingSchemeName, csvt, lnl);
 		cns.restrictToCodes(Constructors.createConceptReferenceList(entityCode));
 		
-		Iterator<ResolvedConceptReference> rcrIter = cns.resolveToList(null, null, null, null, 1).iterateResolvedConceptReference();
+		Iterator<? extends ResolvedConceptReference> rcrIter = cns.resolveToList(null, null, null, null, 1).iterateResolvedConceptReference();
 		// If there were entities after resolving the codedNodeSet; the supplied domainId is a valueDomain
 		if (rcrIter.hasNext()) {
 			return true;

@@ -18,6 +18,7 @@
  */
 package org.lexgrid.valuesets.impl;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -42,11 +43,12 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
@@ -97,9 +99,42 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	private static final String provider_ = "Mayo Clinic";
 	private static final String version_ = "2.0";
 	
+	private static LexEVSPickListDefinitionServicesImpl pickListService_ = null;
+	
 	private DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
 	
-	
+	/**
+     * Returns a default singleton instance of the service.
+     * <p>
+     * Note: This is the recommended method of acquiring the service, since it
+     * will allow the application to run without change in distributed LexBIG
+     * environments (in which case the default instance is actually a
+     * distributed service). However, use of the public constructor is supported
+     * to preserve backward compatibility.
+     * 
+     * @return LexEVSPickListDefinitionServicesImpl
+     */
+    public static LexEVSPickListDefinitionServicesImpl defaultInstance() {
+        if (pickListService_ == null)
+        	pickListService_ = new LexEVSPickListDefinitionServicesImpl();
+        return pickListService_;
+    }
+
+    /**
+     * Assigns the default singleton instance of the service.
+     * <p>
+     * Note: While this method is public, it is generally not intended to be
+     * part of the externalized API. It is made public so that the runtime
+     * system has the ability to assign the default instance when running in
+     * distributed LexBIG environments, etc.
+     * 
+     * @param LexEVSPickListDefinitionServicesImpl
+     *            the default instance.
+     */
+    public static void setDefaultInstance(LexEVSPickListDefinitionServicesImpl defaultInstance) {
+    	pickListService_ = defaultInstance;
+    }
+    
 	public LexEVSPickListDefinitionServicesImpl() {
 		getStatus().setState(ProcessState.PROCESSING);
 		getStatus().setStartTime(new Date(System.currentTimeMillis()));
@@ -137,11 +172,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	 */
 	public void loadPickList(InputStream inputStream, boolean failOnAllErrors)
 			throws LBException {
-		//TODO
-//		getLogger().logMethod(new Object[] { inputStream });
-//		VSDXMLread vdXML = new VSDXMLread(inputStream, md_, failOnAllErrors);
-//
-//		internalLoadPickList(vdXML);
+		throw new LBException("Method not implemented");
 	}
 
 	/* (non-Javadoc)
@@ -150,63 +181,37 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	public void loadPickList(String xmlFileLocation, boolean failOnAllErrors)
 			throws LBException {
 		getLogger().logMethod(new Object[] { xmlFileLocation });
-		
-		// TODO
-//		VSDXMLread vdXML = null;
-//		try {
-//			vdXML = new VSDXMLread(getStringFromURI(new URI(xmlFileLocation)), null, md_,failOnAllErrors);
-//		} catch (URISyntaxException e) {
-//			throw new LBException("Failed loading XML.", e);
-//		}
-//
-//		internalLoadPickList(vdXML);
+		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm
+                .getLoader("LexGrid_Loader");
+        
+        md_.info("Loading pick list definitions from file : " + xmlFileLocation);
+        // load non-async - this should block
+        loader.load(new File(xmlFileLocation).toURI(), true, false);
+        
+        while (loader.getStatus().getEndTime() == null) {
+            try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        
+        md_.info("Finished loading pick list definitions");
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#validate(java.net.URI, int)
 	 */
-	public void validate(URI uri, int v1) throws LBParameterException{
-		//TODO
-//		VSDXMLread vdXML = new VSDXMLread(uri.toString(), null, md_, true);
-//		vdXML.validate(uri, v1);
+	public void validate(URI uri, int v1) throws LBException{
+		LexBIGServiceManager lbsm;
+		lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+		LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm
+            	.getLoader("LexGrid_Loader");
+		loader.validate(uri, v1);
 	}
-	
-	/**
-	 * Common method that will be used for loading pick lists to database.
-	 * @param vdXML
-	 * @throws Exception
-	 */
-//	private void internalLoadPickList(VSDXMLread vdXML) throws LBException {
-//		getLogger().logMethod(new Object[] { vdXML });
-//		try {
-//			PickListDefinition[] plDefs = vdXML.readAllPickLists();
-//			SystemRelease systemRelease = vdXML.getSystemRelease();
-//			
-//			String releaseURI = null;
-//			
-//			if (systemRelease != null)
-//			{
-//				releaseURI = systemRelease.getReleaseURI();
-//				md_.info("Loading SystemRelease : " + releaseURI);
-//				SystemReleaseServices releaseService = (SystemReleaseServices) getPickListDefinitionService().getNestedService(SystemReleaseImpl.class);
-//				releaseService.insert(systemRelease);
-//				md_.info("Finished Loading SystemRelease : " + releaseURI);
-//			}
-//			
-//			md_.info("Loading PickListDefinitions");
-//			for (PickListDefinition pldef : plDefs) {
-//				loadPickList(pldef, new URI(releaseURI), vdXML.getVdMappings());			
-//			}
-//			md_.info("Finished Loading PickListDefinitions");
-//			
-//			md_.info("Load Process Complete.");
-//		} 
-//		catch (Exception e)
-//		{
-//			throw new LBException("Problem loading PickLists", e);
-//		}
-//	}
-
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#getPickListDefinitionById(java.lang.String)

@@ -73,7 +73,6 @@ public class VSDServiceHelper {
 	private LexBIGService lbs_;
 	private SystemResourceService rm_;
 	
-	private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
 	private ValueSetDefinitionService vsds_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 
 	/**
@@ -236,7 +235,7 @@ public class VSDServiceHelper {
 		
 		if (StringUtils.isEmpty(version)) {
 			// check if supplied version for the coding scheme is loaded
-			csName = systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeName, version);
+			csName = rm_.getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeName, version);
 			if (StringUtils.isNotEmpty(csName)) {
 				return true;
 			}
@@ -434,7 +433,7 @@ public class VSDServiceHelper {
        
         while(probes.getConceptReferenceCount() > 0) {
             ConceptReferenceList newProbes = new ConceptReferenceList();
-            Iterator<ConceptReference> cri = probes.iterateConceptReference();
+            Iterator<? extends ConceptReference> cri = probes.iterateConceptReference();
             while(cri.hasNext()) {
                 ConceptReference probe = cri.next();
                 // Never look at a node more than once. 
@@ -479,12 +478,14 @@ public class VSDServiceHelper {
             AbsoluteCodingSchemeVersionReferenceList serviceCsVersions = getAbsoluteCodingSchemeVersionReference(null);
             for(AbsoluteCodingSchemeVersionReference suppliedVer : suppliedCsVersions.getAbsoluteCodingSchemeVersionReference()) {
             	
+//            	String externalVersionId = rm_.getUriForUserCodingSchemeName(
+//                        rm_.getInternalCodingSchemeNameForUserCodingSchemeName(suppliedVer.getCodingSchemeURN(), suppliedVer.getCodingSchemeVersion()));
             	String externalVersionId = rm_.getUriForUserCodingSchemeName(
-                        rm_.getInternalCodingSchemeNameForUserCodingSchemeName(suppliedVer.getCodingSchemeURN(), suppliedVer.getCodingSchemeVersion()));
+                        rm_.getUriForUserCodingSchemeName(suppliedVer.getCodingSchemeURN()));
             	
             	//TODO - verify if the above (externalversionId) behaves the same as the one below - sod
 //                String externalVersionId = rm_.getURNForInternalCodingSchemeName(
-//                        rm_.getExternalCodingSchemeNameForUserCodingSchemeNameOrId(suppliedVer.getCodingSchemeURN(), suppliedVer.getCodingSchemeVersion()));
+//                        rm_.getInternalVersionStringForTag(codingSchemeName, tag)ExternalCodingSchemeNameForUserCodingSchemeNameOrId(suppliedVer.getCodingSchemeURN(), suppliedVer.getCodingSchemeVersion()));
                 // TODO - implement a content equality operator so we can use "contains" vs. an inner iterator
                 for(AbsoluteCodingSchemeVersionReference serviceVer : serviceCsVersions.getAbsoluteCodingSchemeVersionReference()) {
                     if(StringUtils.equalsIgnoreCase(externalVersionId, serviceVer.getCodingSchemeURN()) &&
@@ -607,7 +608,7 @@ public class VSDServiceHelper {
      */
     protected CodedNodeSet conceptReferenceListToCodedNodeSet(ConceptReferenceList crl, ValueSetDefinition vdd, HashMap<String,String> refVersions, String versionTag) throws LBException {
         HashMap<String, ConceptReferenceList> csConcepts = new HashMap<String, ConceptReferenceList>();
-        Iterator<ConceptReference> crli = crl.iterateConceptReference();
+        Iterator<? extends ConceptReference> crli = crl.iterateConceptReference();
         
         CodedNodeSet mergedNodeSet = null;
         
