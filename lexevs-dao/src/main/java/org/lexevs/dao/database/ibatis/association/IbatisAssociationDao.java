@@ -400,8 +400,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	 * 
 	 * @return the string
 	 */
-	public String insertIntoTransitiveClosure(
-			String codingSchemeId,
+	protected String doInsertIntoTransitiveClosure(
+			String prefix,
 			String associationPredicateId, 
 			String sourceEntityCode,
 			String sourceEntityCodeNamespace, 
@@ -412,7 +412,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		String id = this.createUniqueId();
 		
 		InsertTransitiveClosureBean bean = new InsertTransitiveClosureBean();
-		bean.setPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId));
+		bean.setPrefix(prefix);
 		bean.setUId(id);
 		bean.setAssociationPredicateUId(associationPredicateId);
 		bean.setSourceEntityCode(sourceEntityCode);
@@ -420,7 +420,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setTargetEntityCode(targetEntityCode);
 		bean.setTargetEntityCodeNamespace(targetEntityCodeNamespace);
 		
-		this.getSqlMapClientTemplate().insert(INSERT_TRANSITIVE_CLOSURE_SQL, bean);
+		executor.insert(INSERT_TRANSITIVE_CLOSURE_SQL, bean);
 		
 		return id;
 		
@@ -435,8 +435,10 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String sourceEntityCodeNamespace, String targetEntityCode,
 			String targetEntityCodeNamespace) {
 		
-		return this.insertIntoTransitiveClosure(codingSchemeId,
-				associationPredicateId, 
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		return this.doInsertIntoTransitiveClosure(codingSchemeId,
+				prefix, 
 				sourceEntityCode,
 				sourceEntityCodeNamespace, 
 				targetEntityCode,
@@ -453,6 +455,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public void insertBatchTransitiveClosure(final String codingSchemeId,
 			final List<TransitiveClosureBatchInsertItem> batch) {
 		
+		final String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
 
 			public Object doInSqlMapClient(SqlMapExecutor executor)
@@ -462,12 +466,14 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				batchInserter.startBatch();
 				
 				for(TransitiveClosureBatchInsertItem item : batch){
-					insertIntoTransitiveClosure(codingSchemeId,
+					doInsertIntoTransitiveClosure(
+							prefix,
 							item.getAssociationPredicateId(), 
 							item.getSourceEntityCode(),
 							item.getSourceEntityCodeNamespace(), 
 							item.getTargetEntityCode(),
-							item.getTargetEntityCodeNamespace());
+							item.getTargetEntityCodeNamespace(),
+							batchInserter);
 				}
 
 				batchInserter.executeBatch();
