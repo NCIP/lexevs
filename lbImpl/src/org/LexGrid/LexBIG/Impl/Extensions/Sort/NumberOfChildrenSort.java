@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.Impl.Extensions.Sort;
 import java.util.Comparator;
 import java.util.Map;
 
+import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortDescription;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.SortContext;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -63,7 +64,8 @@ public class NumberOfChildrenSort extends AbstractSort {
     
     @Override
     public void registerComparators(Map<Class, Comparator> classToComparatorsMap) {
-        classToComparatorsMap.put(GAssociation.class, new NumberOfChildrenSort.GAssociationNumberOfChildrenSort());  
+        classToComparatorsMap.put(GAssociation.class, new NumberOfChildrenSort.GAssociationNumberOfChildrenSort());
+        classToComparatorsMap.put(Association.class, new NumberOfChildrenSort.AssociationNumberOfChildrenSort());  
     }
  
     @LgClientSideSafe
@@ -72,6 +74,15 @@ public class NumberOfChildrenSort extends AbstractSort {
         @LgClientSideSafe
         public int compare(GAssociation o1, GAssociation o2) {
             return o1.getChildCount() - o2.getChildCount();
+        }
+    }
+    
+    @LgClientSideSafe
+    private class AssociationNumberOfChildrenSort implements Comparator<Association>{ 
+       
+        @LgClientSideSafe
+        public int compare(Association o1, Association o2) {
+            return o1.getAssociatedConcepts().getAssociatedConceptCount() - o2.getAssociatedConcepts().getAssociatedConceptCount();
         }
     }
 }
