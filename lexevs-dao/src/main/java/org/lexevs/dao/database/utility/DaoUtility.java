@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
@@ -39,6 +40,7 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
@@ -99,6 +101,14 @@ public class DaoUtility {
 		List<T> returnList = new ArrayList<T>();
 		for(T item : items) {
 			returnList.add(item);
+		}
+		return returnList;
+	}
+	
+	public static List<CodeNamespacePair> toCodeNamespacePair(List<ConceptReference> list){
+		List<CodeNamespacePair> returnList = new ArrayList<CodeNamespacePair>();
+		for(ConceptReference ref : list) {
+			returnList.add(new CodeNamespacePair(ref.getCode(), ref.getCodeNamespace()));
 		}
 		return returnList;
 	}
