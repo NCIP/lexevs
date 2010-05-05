@@ -129,7 +129,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
             List<ConceptReference> codes = 
                 rootsResolver.resolveRoots(
                         codingSchemeUri, 
-                        version, 
+                        version,
+                        this.getRelationsContainerName(),
                         this.getDirection(resolveForward, resolveBackward), 
                         graphQueryBuilder.getQuery());
 
