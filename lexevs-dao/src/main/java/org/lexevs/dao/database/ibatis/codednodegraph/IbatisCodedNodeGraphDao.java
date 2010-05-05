@@ -31,6 +31,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	private static String GET_ASSOCIATION_PREDICATE_NAMES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getAssociationPredicatNamesFromCodingSchemeUid";
 	private static String GET_DISTINCT_SOURCE_NODES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getDistinctSources";
 	private static String GET_TARGET_NODES_OF_SOURCE_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTargetsOfSource";
+	private static String GET_TAIL_ENTITY_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTailEntityAssnsToEntityUids";
+	private static String GET_ROOT_ENTITY_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getRootEntityAssnsToEntityUids";
 	
 	@Override
 	public int getTripleUidsContainingObjectCount(
@@ -263,5 +265,33 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		return this.getSqlMapClientTemplate().
 			queryForList(GET_TARGET_NODES_OF_SOURCE_SQL, 
 				bean);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getRootNodes(String codingSchemeUid,
+			List<String> associationPredicateUids) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
+		
+		PrefixedParameterCollection bean = new PrefixedParameterCollection();
+		bean.setPrefix(prefix);
+		bean.setParam2(associationPredicateUids);
+		
+		return this.getSqlMapClientTemplate().
+			queryForList(GET_ROOT_ENTITY_ASSNSTOENTITY_UID_SQL, bean);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getTailNodes(String codingSchemeUid,
+			List<String> associationPredicateUids) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
+		
+		PrefixedParameterCollection bean = new PrefixedParameterCollection();
+		bean.setPrefix(prefix);
+		bean.setParam2(associationPredicateUids);
+		
+		return this.getSqlMapClientTemplate().
+			queryForList(GET_TAIL_ENTITY_ASSNSTOENTITY_UID_SQL, bean);
 	}
 }
