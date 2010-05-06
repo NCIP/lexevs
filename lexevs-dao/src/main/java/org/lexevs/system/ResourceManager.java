@@ -60,6 +60,7 @@ import org.lexevs.registry.service.Registry.KnownTags;
 import org.lexevs.registry.service.XmlRegistry.DBEntry;
 import org.lexevs.registry.service.XmlRegistry.HistoryEntry;
 import org.lexevs.system.constants.SystemVariables;
+import org.lexevs.system.event.SystemEventListener;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 import org.lexevs.system.utility.MyClassLoader;
@@ -1667,5 +1668,11 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 	
 	public void refresh() {
 		//no-op
+	}
+
+	@Override
+	public void addSystemEventListeners(SystemEventListener listener) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
 	}
 }

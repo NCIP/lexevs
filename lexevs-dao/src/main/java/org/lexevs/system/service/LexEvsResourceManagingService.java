@@ -25,6 +25,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.cache.annotation.CacheMethod;
@@ -41,6 +42,8 @@ import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.registry.setup.LexEvsDatabaseSchemaSetup;
 import org.lexevs.registry.utility.RegistryUtility;
 import org.lexevs.system.constants.SystemVariables;
+import org.lexevs.system.event.SystemEventListener;
+import org.lexevs.system.event.SystemEventSupport;
 import org.lexevs.system.utility.MyClassLoader;
 
 /**
@@ -49,7 +52,9 @@ import org.lexevs.system.utility.MyClassLoader;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 @Cacheable(cacheName = "DelegatingResourceManagingService")
-public class LexEvsResourceManagingService extends AbstractLoggingBean implements SystemResourceService {
+public class LexEvsResourceManagingService extends SystemEventSupport implements SystemResourceService {
+
+	private LgLoggerIF logger;
 
 	/** The registry. */
 	private Registry registry;
@@ -153,6 +158,8 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 	 */
 	@ClearCache
 	public void removeCodingSchemeResourceFromSystem(String uri, String version) throws LBParameterException {
+		this.fireRemoveCodingSchemeResourceFromSystemEvent(uri, version);
+		
 		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
 		ref.setCodingSchemeURN(uri);
 		ref.setCodingSchemeVersion(version);
@@ -501,6 +508,11 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 	protected boolean isSingleTableMode(){
 		return systemVariables.isSingleTableMode();
 	}
+	
+	@Override
+	public void addSystemEventListeners(SystemEventListener listener) {
+		super.getSystemEventListeners().add(listener);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#getClassLoader()
@@ -635,6 +647,14 @@ public class LexEvsResourceManagingService extends AbstractLoggingBean implement
 		return lexEvsDatabaseSchemaSetup;
 	}
 
+
+	public LgLoggerIF getLogger() {
+		return logger;
+	}
+
+	public void setLogger(LgLoggerIF logger) {
+		this.logger = logger;
+	}
 	/**
 	 * The Class CodingSchemeAliasHolder.
 	 * 

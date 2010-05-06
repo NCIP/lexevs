@@ -23,6 +23,8 @@ import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.system.constants.SystemVariables;
+import org.lexevs.system.event.SystemEventListener;
+import org.lexevs.system.event.SystemEventSupport;
 import org.lexevs.system.utility.MyClassLoader;
 
 /**
@@ -30,7 +32,7 @@ import org.lexevs.system.utility.MyClassLoader;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class DelegatingSystemResourceService implements SystemResourceService {
+public class DelegatingSystemResourceService extends SystemEventSupport implements SystemResourceService {
 	
 	/** The primary system resource service. */
 	private SystemResourceService primarySystemResourceService;
@@ -317,5 +319,10 @@ public class DelegatingSystemResourceService implements SystemResourceService {
 	public void refresh() {
 		primarySystemResourceService.refresh();
 		delegateSystemResourceService.refresh();
+	}
+
+	@Override
+	public void addSystemEventListeners(SystemEventListener listener) {
+		primarySystemResourceService.addSystemEventListeners(listener);
 	}
 }

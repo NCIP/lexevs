@@ -22,6 +22,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.system.constants.SystemVariables;
+import org.lexevs.system.event.SystemEventListener;
 import org.lexevs.system.utility.MyClassLoader;
 
 /**
@@ -241,6 +242,8 @@ public interface SystemResourceService {
 	public void updateNonCodingSchemeResourceStatus(String uri, CodingSchemeVersionStatus status) throws LBParameterException;
 
 	public SystemVariables getSystemVariables();
+	
+	public void addSystemEventListeners(SystemEventListener listener);
 }
 
 
