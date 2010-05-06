@@ -12,7 +12,7 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
 
 	<beans:import resource="rrfReaders.xml"/>
-	<beans:import resource="baseLoader.xml"/>
+	<beans:import resource="rrfBaseLoaderStaging.xml"/>
 	
 	<beans:bean class="org.springframework.batch.core.scope.StepScope" />
 	
@@ -212,14 +212,5 @@
 			<beans:ref bean="dataSource"/>
 		</beans:property>
 	</beans:bean>
-	
-	<beans:bean id="mrconsoStagingCreateScriptFactory"
-		class="org.lexevs.dao.database.setup.script.ScriptFactory">
-		<beans:property name="scriptType" value="create"/>
-		<beans:property name="databaseType" ref="databaseTypeFactory"/>
-		<beans:property name="creationScriptPrefix" value="sql/staging/mrconsoStaging-schema-"/>
-		<beans:property name="oracleName" value="oracle10g"/>
-	</beans:bean>
-	
 	 
 </beans:beans>
