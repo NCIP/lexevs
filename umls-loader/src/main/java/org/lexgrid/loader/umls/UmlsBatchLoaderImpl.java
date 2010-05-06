@@ -87,13 +87,11 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.umls.UmlsBatchLoader#removeLoad(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void removeLoad(URI rrfDir, String sab, String uri, String version) throws Exception {
+	public void removeLoad(String uri, String version) throws Exception {
 		Properties connectionProps = connectionPropertiesFactory.getPropertiesForExistingLoad(uri, version);
-		connectionProps.put("sab", sab);
-		connectionProps.put("rrfDir", rrfDir.toString());
 		connectionProps.put("retry", "true");
 		
-		DynamicPropertyApplicationContext ctx = new DynamicPropertyApplicationContext("umlsLoader.xml", connectionProps);
+		DynamicPropertyApplicationContext ctx = new DynamicPropertyApplicationContext("umlsLoaderStaging.xml", connectionProps);
 		
 		JobRepositoryManager jobRepositoryManager = (JobRepositoryManager)ctx.getBean("jobRepositoryManager");
 		jobRepositoryManager.dropJobRepositoryDatabases();
