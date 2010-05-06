@@ -965,33 +965,29 @@ public class XmlRegistry implements Registry {
      */
     public XmlRegistry(String pathToRegistryFile) throws Exception {
 
-        try {
-            file_ = new File(pathToRegistryFile);
-            entries_ = new ArrayList<DBEntry>();
-            historyEntries_ = new ArrayList<HistoryEntry>();
-            urnVersionToEntryMap_ = new Hashtable<String, DBEntry>();
-            urnTagToVersionMap_ = new Hashtable<String, String>();
+    	try {
+    		file_ = new File(pathToRegistryFile);
+    		entries_ = new ArrayList<DBEntry>();
+    		historyEntries_ = new ArrayList<HistoryEntry>();
+    		urnVersionToEntryMap_ = new Hashtable<String, DBEntry>();
+    		urnTagToVersionMap_ = new Hashtable<String, String>();
 
-            WriteLockManager.instance(file_).lockLockFile();
-            try {
-                if (file_.exists()) {
+    		if (file_.exists()) {
+    			WriteLockManager.instance(file_).lockLockFile();
+    			readFile();
+    			WriteLockManager.instance().releaseLockFile();
+    		} else {
 
-                    readFile();
-                } else {
-                	
-                	//Don't create a new XML Registry file...
-                	//If there isn't one already, we don't need it.
-                    getLogger().debug(
-                            "There is no XML Registry file -- this instance of LexEVS supports ONLY a Database Registry.");
-                }
-            } finally {
-                WriteLockManager.instance().releaseLockFile();
-            }
-        }
+    			//Don't create a new XML Registry file...
+    			//If there isn't one already, we don't need it.
+    			getLogger().debug(
+    			"There is no XML Registry file -- this instance of LexEVS supports ONLY a Database Registry.");
+    		}
+    	}
 
-        catch (IOException e) {
-            throw new Exception("Could not create a file to store the registration information.", e);
-        }
+    	catch (IOException e) {
+    		throw new Exception("Could not create a file to store the registration information.", e);
+    	}
     }
 
     /**
