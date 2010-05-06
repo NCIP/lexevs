@@ -21,7 +21,6 @@ package org.lexevs.dao.database.ibatis.valuesets;
 import java.util.List;
 
 import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.Revision;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
@@ -77,7 +76,12 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 	public void insertEntryState(String prefix, String entryStateId,
 			String entryId, String entryType, String previousEntryStateId,
 			EntryState entryState, IbatisInserter ibatisInserter){
-		buildInsertEntryStateBean(
+		
+		if(entryState == null){
+			return;
+		}
+		
+		InsertEntryStateBean esBean = buildInsertEntryStateBean(
 				prefix,
 				entryStateId, 
 				entryId,
@@ -85,18 +89,10 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 				previousEntryStateId,
 				entryState);
 		
-		if(entryState == null){
+		if (esBean == null)
 			return;
-		}
 		
-		ibatisInserter.insert(INSERT_ENTRY_STATE_SQL, 
-				buildInsertEntryStateBean(
-						prefix,
-						entryStateId, 
-						entryId,
-						entryType,
-						previousEntryStateId,
-						entryState));	
+		ibatisInserter.insert(INSERT_ENTRY_STATE_SQL, esBean);	
 		
 	}
 	
@@ -141,9 +137,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 					.getRevisionUIdById(entryState.getContainingRevision());
 			if (revisionUId == null)
 			{
-				Revision revision = new Revision();
-				revision.setRevisionId(entryState.getContainingRevision());
-				revisionUId = ibatisRevisionDao.insertRevisionEntry(revision, null);
+				return null;
 				
 			}
 			if (entryState.getPrevRevision() != null)
@@ -152,9 +146,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 					.getRevisionUIdById(entryState.getPrevRevision());
 				if (prevRevisionUId == null)
 				{
-					Revision revision = new Revision();
-					revision.setRevisionId(entryState.getPrevRevision());
-					prevRevisionUId = ibatisRevisionDao.insertRevisionEntry(revision, null);					
+					return null;					
 				}
 			}
 		}
