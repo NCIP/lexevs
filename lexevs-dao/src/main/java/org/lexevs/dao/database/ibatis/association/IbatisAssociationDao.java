@@ -71,18 +71,18 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public static String ASSOCIATION_NAMESPACE = "Association.";
 	
 	/** The INSER t_ relation s_ sql. */
-	private static String INSERT_RELATIONS_SQL = ASSOCIATION_NAMESPACE + "insertRelations";
+	public static String INSERT_RELATIONS_SQL = ASSOCIATION_NAMESPACE + "insertRelations";
 	
 	/** The INSER t_ entit y_ assn s_ t o_ entit y_ sql. */
-	private static String INSERT_ENTITY_ASSNS_TO_ENTITY_SQL = ASSOCIATION_NAMESPACE + "insertEntityAssnsToEntity";
+	public static String INSERT_ENTITY_ASSNS_TO_ENTITY_SQL = ASSOCIATION_NAMESPACE + "insertEntityAssnsToEntity";
 	
 	/** The INSER t_ associatio n_ qua l_ o r_ contex t_ sql. */
-	private static String INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL = ASSOCIATION_NAMESPACE + "insertAssociationQualificationOrUsageContext";
+	public static String INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL = ASSOCIATION_NAMESPACE + "insertAssociationQualificationOrUsageContext";
 	
 	/** The INSER t_ associatio n_ predicat e_ sql. */
-	private static String INSERT_ASSOCIATION_PREDICATE_SQL = ASSOCIATION_NAMESPACE + "insertAssociationPredicate";
+	public static String INSERT_ASSOCIATION_PREDICATE_SQL = ASSOCIATION_NAMESPACE + "insertAssociationPredicate";
 	
-	private static String INSERT_ASSOCIATIONENTITY_SQL = ASSOCIATION_NAMESPACE + "insertAssociationEntity";
+	public static String INSERT_ASSOCIATIONENTITY_SQL = ASSOCIATION_NAMESPACE + "insertAssociationEntity";
 	
 	private static String UPDATE_ASSOCIATIONENTITY_FOR_ENTITY_ID_SQL = ASSOCIATION_NAMESPACE + "updateAssociationEntityForEntityId";
 	
