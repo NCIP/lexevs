@@ -303,7 +303,7 @@
 		ON (
 			eate1.sourceEntityCode = eate2.targetEntityCode
 			AND
-			eate2.associationPredicateGuid = eate2.associationPredicateGuid
+			eate1.associationPredicateGuid = eate2.associationPredicateGuid
 			)
 		WHERE
 			eate2.entityAssnsGuid IS NULL	
@@ -327,7 +327,7 @@
 		ON (
 			eate1.targetEntityCode = eate2.sourceEntityCode
 			AND
-			eate2.associationPredicateGuid = eate2.associationPredicateGuid
+			eate1.associationPredicateGuid = eate2.associationPredicateGuid
 			)
 		WHERE
 			eate2.entityAssnsGuid IS NULL	
