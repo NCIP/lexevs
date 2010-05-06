@@ -102,6 +102,7 @@ import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.ResourceManager;
+import org.lexevs.system.event.SystemEventListener;
 import org.lexevs.system.service.SystemResourceService;
 
 /**
@@ -579,6 +580,20 @@ public class LexBIGServiceImpl implements LexBIGService {
         umls.setVersion(UmlsBatchLoader.VERSION);
         try {
             ExtensionRegistryImpl.instance().registerLoadExtension(umls);
+            
+            LexEvsServiceLocator.getInstance().getSystemResourceService().addSystemEventListeners(new SystemEventListener() {
+                //register a listener to clean up all the batch stuff on delete
+                public void onRemoveCodingSchemeResourceFromSystemEvent(String uri,
+                        String version) {
+                    try {
+                        UmlsBatchLoader umlsLoader = (UmlsBatchLoader) getServiceManager(null).getLoader(UmlsBatchLoader.NAME);
+                        umlsLoader.removeLoad(uri, version);
+                    } catch (Exception e) {
+                        //if its not there, just skip it.
+                    }
+                }
+            });
+
         } catch (Exception e) {
             getLogger().warn(umls.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
         }
