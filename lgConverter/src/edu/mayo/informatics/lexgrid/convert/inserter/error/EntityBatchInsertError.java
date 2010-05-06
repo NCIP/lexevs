@@ -56,9 +56,10 @@ public class EntityBatchInsertError extends AbstractError{
     @Override
     protected String getErrorObjectDescription() {
         StringBuffer sb = new StringBuffer();
-        sb.append("CodingScheme Id: " + ((EntityBatchInsertErrorItem)this.getErrorObject()).getCodingSchemeId());
-        sb.append("Batch Size: " + ((EntityBatchInsertErrorItem)this.getErrorObject()).getBatch().size());
-        
+        sb.append("\n");
+        sb.append("\nCodingScheme Id: " + ((EntityBatchInsertErrorItem)this.getErrorObject()).getCodingSchemeId());
+        sb.append("\nBatch Size: " + ((EntityBatchInsertErrorItem)this.getErrorObject()).getBatch().size());
+        sb.append("\n");
         return sb.toString();
     }
 
