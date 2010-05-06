@@ -280,20 +280,13 @@ public class AllTestsNormalConfig {
         
         TestSuite codedNodeGraphSuite = new TestSuite("CodedNodeGraph Tests");
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToAssociationsTest.class);
-        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToAssociationsVersion17Test.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToDirectionalNamesTest.class);
-        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToDirectionalNamesVersion17Test.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToSourceCodesTest.class);
-        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToSourceCodesVersion17Test.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToTargetCodesTest.class);
-        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToTargetCodesVersion17Test.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.ResolveToListTest.class);
-        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.ResolveToListVersion17Test.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.SortGraphTest.class);
-        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.SortGraphVersion17Test.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.ToNodeListTest.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.IntersectionTest.class);
-        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.IntersectionVersion17Test.class);
         mainSuite.addTest(codedNodeGraphSuite);
 
         TestSuite functionalTests = new TestSuite("Functional Tests");
@@ -387,7 +380,7 @@ public class AllTestsNormalConfig {
         mainSuite.addTestSuite(CleanUpTest.class);
        
         //ValueDomain tests
-        mainSuite.addTest(org.LexGrid.valuedomain.test.VDAllTests.suite());
+        //mainSuite.addTest(org.LexGrid.valuedomain.test.VDAllTests.suite());
 
         // $JUnit-END$
 
