@@ -28,20 +28,33 @@ import java.util.Map;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class InOrderOrderingBatchInserterDecorator implements IbatisBatchGroupInserter {
+public class InOrderOrderingBatchInserterDecorator implements IbatisBatchInserter {
 
 	/** The delegate. */
 	private IbatisBatchInserter delegate;
 	
+	private BatchOrderClassifier batchOrderClassifier;
+	
 	/** The statement map. */
-	private Map<BatchGroupKey,List<Object>> statementMap = new LinkedHashMap<BatchGroupKey,List<Object>>();
+	private Map<Integer,List<SqlParameterPair>> statementMap = new LinkedHashMap<Integer,List<SqlParameterPair>>();
 	/**
 	 * Instantiates a new ordering batch inserter decorator.
 	 * 
 	 * @param delegate the delegate
 	 */
 	public InOrderOrderingBatchInserterDecorator(IbatisBatchInserter delegate){
+		this(delegate, new BatchOrderClassifier());
+	}
+	
+	public InOrderOrderingBatchInserterDecorator(
+			IbatisBatchInserter delegate,
+			BatchOrderClassifier batchOrderClassifier){
 		this.delegate = delegate;
+		this.batchOrderClassifier = batchOrderClassifier;
+		
+		for(Integer groupNumber : this.batchOrderClassifier.getOrderedGroups()) {
+			statementMap.put(groupNumber, new ArrayList<SqlParameterPair>());
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -49,9 +62,10 @@ public class InOrderOrderingBatchInserterDecorator implements IbatisBatchGroupIn
 	 */
 	@Override
 	public void executeBatch() {
-		for(BatchGroupKey key : statementMap.keySet()) {
-			for(Object argument : statementMap.get(key)){
-				delegate.insert(key.getSql(), argument);
+		
+		for(Integer group : statementMap.keySet()) {
+			for(SqlParameterPair pair : statementMap.get(group)){
+				delegate.insert(pair.getSql(), pair.getParameter());
 			}
 		}
 		delegate.executeBatch();
@@ -70,81 +84,36 @@ public class InOrderOrderingBatchInserterDecorator implements IbatisBatchGroupIn
 	 */
 	@Override
 	public void insert(String sql, Object parameter) {
-		this.insert(sql, parameter, sql);
+		Integer groupNumber = this.batchOrderClassifier.classify(sql);
+		this.statementMap.get(groupNumber).add(
+				new SqlParameterPair(sql,parameter));
 	}
 
-	@Override
-	public void insert(String sql, Object parameter, String batchGroup) {
-		BatchGroupKey key = new BatchGroupKey(sql, batchGroup);
-		if(!this.statementMap.containsKey(key)) {
-			this.statementMap.put(key, new ArrayList<Object>());
-		}
-		statementMap.get(key).add(parameter);
-	}
-	
-	private class BatchGroupKey {
+	private class SqlParameterPair {
 		private String sql;
-		private String batchGroup;
+		private Object parameter;
 		
-		public BatchGroupKey(String sql, String batchGroup) {
+		public SqlParameterPair(String sql, Object parameter) {
 			super();
 			this.sql = sql;
-			this.batchGroup = batchGroup;
+			this.parameter = parameter;
 		}
-
 		public String getSql() {
 			return sql;
 		}
-
 		public void setSql(String sql) {
 			this.sql = sql;
 		}
-
-		public String getBatchGroup() {
-			return batchGroup;
+		public Object getParameter() {
+			return parameter;
 		}
-
-		public void setBatchGroup(String batchGroup) {
-			this.batchGroup = batchGroup;
+		public void setParameter(Object parameter) {
+			this.parameter = parameter;
 		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + getOuterType().hashCode();
-			result = prime * result
-					+ ((batchGroup == null) ? 0 : batchGroup.hashCode());
-			result = prime * result + ((sql == null) ? 0 : sql.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			BatchGroupKey other = (BatchGroupKey) obj;
-			if (!getOuterType().equals(other.getOuterType()))
-				return false;
-			if (batchGroup == null) {
-				if (other.batchGroup != null)
-					return false;
-			} else if (!batchGroup.equals(other.batchGroup))
-				return false;
-			if (sql == null) {
-				if (other.sql != null)
-					return false;
-			} else if (!sql.equals(other.sql))
-				return false;
-			return true;
-		}
-
-		private InOrderOrderingBatchInserterDecorator getOuterType() {
-			return InOrderOrderingBatchInserterDecorator.this;
-		}
+		
+		
 	}
+
+	
+
 }

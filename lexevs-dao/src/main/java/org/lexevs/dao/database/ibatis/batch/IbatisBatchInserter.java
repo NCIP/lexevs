@@ -34,4 +34,5 @@ public interface IbatisBatchInserter extends IbatisInserter {
 	 * Execute batch.
 	 */
 	public void executeBatch();
+	
 }
