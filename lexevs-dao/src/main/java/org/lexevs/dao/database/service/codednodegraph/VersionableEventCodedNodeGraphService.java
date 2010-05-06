@@ -246,6 +246,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 	}
 
 	@Override
+	@Transactional
 	public List<ConceptReference> getConceptReferencesFromUidSource(
 			String codingSchemeUri, String codingSchemeVersion,
 			List<String> tripleUids) {
@@ -272,6 +273,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 	}
 
 	@Override
+	@Transactional
 	public List<ConceptReference> getRootConceptReferences(String codingSchemeUri,
 			String codingSchemeVersion, String relationsContainerName,
 			List<String> associationPredicateNames) {
