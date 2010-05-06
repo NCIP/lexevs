@@ -23,12 +23,13 @@ import java.net.URI;
 import java.util.Properties;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.lexevs.dao.database.spring.DynamicPropertyApplicationContext;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.system.service.SystemResourceService;
+import org.lexevs.system.event.SystemEventListener;
 import org.lexgrid.loader.AbstractSpringBatchLoader;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.properties.ConnectionPropertiesFactory;
@@ -49,8 +50,6 @@ public class UmlsBatchLoaderImpl extends AbstractSpringBatchLoader implements Um
 
 /** The connection properties factory. */
 private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLexEVSPropertiesFactory();
-
-	private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
 
 	public static String SAB_OPTION = "SAB";
 	
@@ -87,19 +86,25 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.umls.UmlsBatchLoader#removeLoad(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void removeLoad(String uri, String version) throws Exception {
+	public void removeLoad(String uri, String version) throws LBParameterException  {
 		Properties connectionProps = connectionPropertiesFactory.getPropertiesForExistingLoad(uri, version);
 		connectionProps.put("retry", "true");
 		
 		DynamicPropertyApplicationContext ctx = new DynamicPropertyApplicationContext("umlsLoaderStaging.xml", connectionProps);
 		
 		JobRepositoryManager jobRepositoryManager = (JobRepositoryManager)ctx.getBean("jobRepositoryManager");
-		jobRepositoryManager.dropJobRepositoryDatabases();
+		try {
+			jobRepositoryManager.dropJobRepositoryDatabases();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 		
 		StagingManager stagingManager = (StagingManager)ctx.getBean("umlsStagingManager");
-		stagingManager.dropAllStagingDatabases();		
-		
-		systemResourceService.removeCodingSchemeResourceFromSystem(uri, version);
+		try {
+			stagingManager.dropAllStagingDatabases();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}		
 	}
     
     @Override
