@@ -87,7 +87,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private static String UPDATE_ASSOCIATIONENTITY_FOR_ENTITY_ID_SQL = ASSOCIATION_NAMESPACE + "updateAssociationEntityForEntityId";
 	
 	/** The INSER t_ transitiv e_ closur e_ sql. */
-	private static String INSERT_TRANSITIVE_CLOSURE_SQL = ASSOCIATION_NAMESPACE + "insertTransitiveClosure";
+	public static String INSERT_TRANSITIVE_CLOSURE_SQL = ASSOCIATION_NAMESPACE + "insertTransitiveClosure";
 	
 	/** The GE t_ associatio n_ instanc e_ ke y_ sql. */
 	private static String GET_ASSOCIATION_INSTANCE_KEY_SQL = ASSOCIATION_NAMESPACE + "getAccociationInstanceKey";

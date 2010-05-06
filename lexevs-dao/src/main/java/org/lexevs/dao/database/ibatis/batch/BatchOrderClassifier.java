@@ -35,7 +35,8 @@ public class BatchOrderClassifier implements Classifier<String,Integer>{
 		orderedGroups.put(GROUP_TWO, DaoUtility.createNonTypedList(
 				
 				IbatisPropertyDao.INSERT_PROPERTY_SQL,
-				IbatisEntityDao.INSERT_ENTITY_TYPE_SQL
+				IbatisEntityDao.INSERT_ENTITY_TYPE_SQL,
+				IbatisAssociationDao.INSERT_ENTITY_ASSNS_TO_ENTITY_SQL
 				
 		));
 		
@@ -45,7 +46,9 @@ public class BatchOrderClassifier implements Classifier<String,Integer>{
 				IbatisPropertyDao.INSERT_PROPERTY_SOURCE_SQL,
 				IbatisPropertyDao.INSERT_PROPERTY_USAGECONTEXT_SQL,
 				IbatisPropertyDao.INSERT_PROPERTYLINK_SQL,
-				IbatisVersionsDao.INSERT_ENTRY_STATE_SQL
+				IbatisVersionsDao.INSERT_ENTRY_STATE_SQL,
+				IbatisAssociationDao.INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL,
+				IbatisAssociationDao.INSERT_TRANSITIVE_CLOSURE_SQL
 				
 		));
 	}
