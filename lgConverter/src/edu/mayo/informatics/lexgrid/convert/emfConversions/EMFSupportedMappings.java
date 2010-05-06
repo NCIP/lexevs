@@ -237,12 +237,19 @@ public class EMFSupportedMappings {
      * @return The item registered for the given local id.
      */
     public SupportedAssociation registerSupportedAssociation(String localId, String uri, String value, boolean overwrite) {
+       return this.registerSupportedAssociation(localId, uri, value, null, null, overwrite);
+    }
+    
+    public SupportedAssociation registerSupportedAssociation(String localId, String uri, String value, 
+            String entityCode, String entityNamespace, boolean overwrite) {
         Map<String, SupportedAssociation> registry = getSupportedAssociations();
         String key = localId.toLowerCase();
         SupportedAssociation emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
             emfObj = new SupportedAssociation();
             setBaseAttributes(emfObj, localId, uri, value);
+            emfObj.setEntityCode(entityCode);
+            emfObj.setEntityCodeNamespace(entityNamespace);
             registry.put(key, emfObj);
         }
         return emfObj;
