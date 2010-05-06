@@ -790,27 +790,25 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         
         List<BooleanQuery> queries = new ArrayList<BooleanQuery>();
         queries.addAll(combinedQuery);
-        
-        if(commonQuery.clauses().size() == 0){
-            IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
-            EntityIndexService entityService = indexServiceManager.getEntityIndexService();
-            
-            SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
-            String uri = resourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
-            
-            AbsoluteCodingSchemeVersionReference ref =
-                Constructors.createAbsoluteCodingSchemeVersionReference(
+
+        IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
+        EntityIndexService entityService = indexServiceManager.getEntityIndexService();
+
+        SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+        String uri = resourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
+
+        AbsoluteCodingSchemeVersionReference ref =
+            Constructors.createAbsoluteCodingSchemeVersionReference(
                     uri, internalVersionString);
-            
-            commonQuery.add(new BooleanClause(entityService.getMatchAllDocsQuery(ref), Occur.MUST));
-            commonQuery.add(new TermQuery(new Term("codeBoundry", "T")), Occur.MUST_NOT);
-        }
+
+        commonQuery.add(new BooleanClause(entityService.getMatchAllDocsQuery(ref), Occur.MUST));
+        commonQuery.add(new TermQuery(new Term("codeBoundry", "T")), Occur.MUST_NOT);
 
         if(queries.size() == 0){
             queries.add(commonQuery);
         } else {
             for(BooleanQuery query : queries){
-               query.add(commonQuery, Occur.MUST);
+                query.add(commonQuery, Occur.MUST);
             }
         }
         
