@@ -138,11 +138,6 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 	protected JobParameters buildJobParameters(Properties props){	
 		JobParametersBuilder builder = new JobParametersBuilder();
 		builder.addString(PropertiesFactory.PREFIX, props.getProperty(PropertiesFactory.PREFIX));
-		//builder.addString(PropertiesFactory.DATABASE, props.getProperty(PropertiesFactory.DATABASE));
-		//builder.addString(PropertiesFactory.URL, props.getProperty(PropertiesFactory.URL));
-		//builder.addString(PropertiesFactory.DRIVER, props.getProperty(PropertiesFactory.DRIVER));
-		//builder.addString(PropertiesFactory.USERNAME, props.getProperty(PropertiesFactory.USERNAME));
-		//builder.addString(PropertiesFactory.PASSWORD, props.getProperty(PropertiesFactory.PASSWORD));
 		
 		return builder.toJobParameters();	
 	}
