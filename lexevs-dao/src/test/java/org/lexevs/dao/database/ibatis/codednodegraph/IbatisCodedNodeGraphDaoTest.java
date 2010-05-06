@@ -25,6 +25,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.junit.Test;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
@@ -559,11 +560,11 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<String> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", null);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", null);
 
 		assertEquals(1, uids.size());
 
-		assertEquals("eae-guid1", uids.get(0));
+		assertEquals("s-code", uids.get(0).getCode());
 	}
 	
 	@Test
@@ -601,11 +602,11 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<String> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", DaoUtility.createNonTypedList("ap-guid"));
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", DaoUtility.createNonTypedList("ap-guid"));
 
 		assertEquals(1, uids.size());
 
-		assertEquals("eae-guid1", uids.get(0));
+		assertEquals("s-code", uids.get(0).getCode());
 	}
 	
 	@Test
@@ -643,7 +644,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<String> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", DaoUtility.createNonTypedList("INVALID"));
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", DaoUtility.createNonTypedList("INVALID"));
 
 		assertEquals(0, uids.size());
 	}
@@ -683,11 +684,11 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<String> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", DaoUtility.createNonTypedList("INVALID", "ap-guid"));
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", DaoUtility.createNonTypedList("INVALID", "ap-guid"));
 
 		assertEquals(1, uids.size());
 
-		assertEquals("eae-guid1", uids.get(0));
+		assertEquals("s-code", uids.get(0).getCode());
 	}
 	
 	@Test
@@ -725,11 +726,11 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<String> uids = ibatisCodedNodeGraphDao.getTailNodes("cs-guid", null);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("cs-guid", null);
 
 		assertEquals(1, uids.size());
 
-		assertEquals("eae-guid2", uids.get(0));
+		assertEquals("t-code2", uids.get(0).getCode());
 	}
 	
 	@Test
@@ -767,11 +768,11 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<String> uids = ibatisCodedNodeGraphDao.getTailNodes("cs-guid", DaoUtility.createNonTypedList("ap-guid"));
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("cs-guid", DaoUtility.createNonTypedList("ap-guid"));
 
 		assertEquals(1, uids.size());
 
-		assertEquals("eae-guid2", uids.get(0));
+		assertEquals("t-code2", uids.get(0).getCode());
 	}
 	
 	@Test
@@ -809,7 +810,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<String> uids = ibatisCodedNodeGraphDao.getTailNodes("cs-guid", DaoUtility.createNonTypedList("INVALID"));
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("cs-guid", DaoUtility.createNonTypedList("INVALID"));
 
 		assertEquals(0, uids.size());
 	}
@@ -849,10 +850,10 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<String> uids = ibatisCodedNodeGraphDao.getTailNodes("cs-guid", DaoUtility.createNonTypedList("INVALID", "ap-guid"));
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("cs-guid", DaoUtility.createNonTypedList("INVALID", "ap-guid"));
 
 		assertEquals(1, uids.size());
 
-		assertEquals("eae-guid2", uids.get(0));
+		assertEquals("t-code2", uids.get(0).getCode());
 	}
 }
