@@ -43,7 +43,7 @@ import org.lexevs.registry.service.XmlRegistry.HistoryEntry;
  */
 @Entity
 @Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "registry")
-//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class RegistryEntry {
 	
 	/** The id. */

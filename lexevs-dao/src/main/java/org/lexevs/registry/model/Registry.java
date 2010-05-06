@@ -37,7 +37,7 @@ import org.lexevs.dao.database.constants.DatabaseConstants;
  */
 @Entity
 @Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "registryMetaData")
-//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Registry implements Serializable {
 
 	/** The Constant serialVersionUID. */
