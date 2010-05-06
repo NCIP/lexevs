@@ -24,7 +24,6 @@ import java.io.File;
 
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
@@ -77,7 +76,7 @@ public class UmlsBatchLoaderTest extends BaseTestRrf {
 		JobExecution job = loader.getJobExecution();
 		assertTrue(job.getExitStatus().equals(ExitStatus.FAILED));
 
-		loader.removeLoad(new File(RRF_FAIL_DIRECTORY).toURI(), LoadUmlsForIntegration.UMLS_SAB, LoadUmlsForIntegration.UMLS_URN, LoadUmlsForIntegration.UMLS_VERSION);
+		loader.removeLoad(LoadUmlsForIntegration.UMLS_URN, LoadUmlsForIntegration.UMLS_VERSION);
 	}	
 	
 	/**
