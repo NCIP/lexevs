@@ -33,8 +33,10 @@ public class ErrorResolutionReport {
      */
     public enum ResolutionStatus
     { 
- /** The RESOLVED. */
- RESOLVED, 
+        /** The RESOLVED. */
+        RESOLVED, 
+
+        PARTIALLY_RESOLVED, 
         
         /** The RESOLUTIO n_ failed. */
         RESOLUTION_FAILED, 
