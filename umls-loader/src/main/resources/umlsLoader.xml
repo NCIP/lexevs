@@ -12,6 +12,7 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
 
 	<beans:import resource="classpath:rrfBaseLoader.xml" />
+	<beans:import resource="classpath:umlsLoaderStaging.xml" />
 
 	<beans:bean class="org.springframework.batch.core.scope.StepScope" />
 
@@ -165,16 +166,6 @@
 <!--	</step>-->
 	
 	<!-- End Partitioning -->
-
-	<beans:bean id="umlsStagingManager" parent="stagingManager">
-		<beans:property name="registeredStagingDatabases">
-			<beans:map>
-				<beans:entry key="${prefix}mrconsoStaging">
-					<beans:ref bean="mrconsoStagingCreateScriptFactory" />
-				</beans:entry>
-			</beans:map>
-		</beans:property>
-	</beans:bean>
 
 	<beans:bean id="cleanupListener" parent="abstractCleanupListener"
 	class="org.lexgrid.loader.listener.CleanupListener">
