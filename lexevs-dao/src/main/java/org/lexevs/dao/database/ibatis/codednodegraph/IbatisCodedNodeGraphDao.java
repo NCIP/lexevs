@@ -269,7 +269,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<String> getRootNodes(String codingSchemeUid,
+	public List<ConceptReference> getRootNodes(String codingSchemeUid,
 			List<String> associationPredicateUids) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
@@ -281,9 +281,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			queryForList(GET_ROOT_ENTITY_ASSNSTOENTITY_UID_SQL, bean);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<String> getTailNodes(String codingSchemeUid,
+	public List<ConceptReference> getTailNodes(String codingSchemeUid,
 			List<String> associationPredicateUids) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		

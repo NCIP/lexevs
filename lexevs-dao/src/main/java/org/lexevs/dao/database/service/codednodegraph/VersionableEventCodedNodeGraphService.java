@@ -18,10 +18,12 @@
  */
 package org.lexevs.dao.database.service.codednodegraph;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
@@ -268,6 +270,68 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 				tripleUids, 
 				TripleNode.OBJECT);
 	}
-	
-	
+
+	@Override
+	public List<ConceptReference> getRootConceptReferences(String codingSchemeUri,
+			String codingSchemeVersion, String relationsContainerName,
+			List<String> associationPredicateNames) {
+
+		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+
+		List<String> associationPredicateUids = 
+			getAssociationPredicateUids(
+					codingSchemeUri, 
+					codingSchemeVersion,
+					codingSchemeUid,
+					relationsContainerName, 
+					associationPredicateNames);
+		
+		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
+			getRootNodes(codingSchemeUid, associationPredicateUids);
+	}
+
+	private List<String> getAssociationPredicateUids(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			String codingSchemeUid,
+			String relationsContainerName,
+			List<String> associationPredicateNames) {
+		
+		List<String> associationPredicateUids = new ArrayList<String>();
+		
+		if(CollectionUtils.isNotEmpty(associationPredicateNames)) {
+			for(String predicate : associationPredicateNames) {
+				associationPredicateUids.add(
+						this.getAssociationPredicateUid(
+								codingSchemeUri, 
+								codingSchemeVersion, 
+								codingSchemeUid, 
+								relationsContainerName, 
+								predicate));
+			}
+		}
+		
+		return associationPredicateUids;
+	}
+
+	@Override
+	public List<ConceptReference> getTailConceptReferences(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			String relationsContainerName,
+			List<String> associationPredicateNames) {
+
+		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+
+		List<String> associationPredicateUids = 
+			getAssociationPredicateUids(
+					codingSchemeUri, 
+					codingSchemeVersion,
+					codingSchemeUid,
+					relationsContainerName, 
+					associationPredicateNames);
+		
+		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
+			getTailNodes(codingSchemeUid, associationPredicateUids);
+	}
 }

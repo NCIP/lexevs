@@ -7,6 +7,18 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 
 public interface CodedNodeGraphService {
+
+	public List<ConceptReference> getRootConceptReferences(
+			String codingSchemeUri,
+			String codingSchemeVersion,
+			String relationsContainerName,
+			List<String> associationPredicateNames);
+	
+	public List<ConceptReference> getTailConceptReferences(
+			String codingSchemeUri,
+			String codingSchemeVersion,
+			String relationsContainerName,
+			List<String> associationPredicateNames);
 	
 	public List<String> getTripleUidsContainingSubject(
 			String codingSchemeUri,
@@ -81,5 +93,7 @@ public interface CodedNodeGraphService {
 	public List<String> getAssociationPredicateNamesForCodingScheme(
 			String codingSchemeUri,
 			String codingSchemeVersion);
-	
 }
+
+
+
