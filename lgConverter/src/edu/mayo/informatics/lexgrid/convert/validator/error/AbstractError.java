@@ -33,6 +33,8 @@ public abstract class AbstractError extends DefaultDatabaseError implements Load
     
     /** The severity. */
     private Severity severity = Severity.UNKNOWN;
+    
+    private boolean debug = false;
   
     protected AbstractError(Object errorObject) {
         this(null, errorObject, null);
@@ -55,19 +57,25 @@ public abstract class AbstractError extends DefaultDatabaseError implements Load
         sb.append("\nDescription: " + this.getErrorDescription() );
         sb.append("\n -- Caused By Object with Description: ");
         sb.append("\n --- " + this.getErrorObjectDescription());
-        sb.append("\nException (if any)");
+        sb.append("\nException Message (if any):");
+        sb.append("\n");
         if(super.getErrorException() != null) {
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            super.getErrorException().printStackTrace(pw);
-            pw.flush();
-            sw.flush();
-            sb.append(sw.getBuffer());
-            pw.close();
-            try {
-                sw.close();
-            } catch (IOException e) {
-                //
+            sb.append(super.getErrorException().getMessage());
+            if(debug) {
+                sb.append("\n");
+                sb.append("\n");
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                super.getErrorException().printStackTrace(pw);
+                pw.flush();
+                sw.flush();
+                sb.append(sw.getBuffer());
+                pw.close();
+                try {
+                    sw.close();
+                } catch (IOException e) {
+                    //
+                }
             }
         }
         
@@ -103,4 +111,13 @@ public abstract class AbstractError extends DefaultDatabaseError implements Load
     public void setSeverity(Severity severity) {
         this.severity = severity;
     }
+    
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+
 }
