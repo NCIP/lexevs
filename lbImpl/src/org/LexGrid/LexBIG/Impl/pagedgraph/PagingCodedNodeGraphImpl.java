@@ -122,7 +122,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
             boolean isValidFocus = this.checkFocus(focus, resolveForward, resolveBackward);
             
             if(! isValidFocus) {
-                return null;
+                return new ResolvedConceptReferenceList();
             }
             
         } else {
