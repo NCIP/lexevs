@@ -42,7 +42,7 @@ public class RestrictToDirectionalNamesTest extends BaseCodedNodeGraphTest {
      * @throws LBParameterException the LB parameter exception
      */
     public void testOneDirectionalNameNullQualifiers() throws LBInvocationException, LBParameterException{
-        cng.restrictToDirectionalNames(Constructors.createNameAndValueList("uses"), 
+        cng = cng.restrictToDirectionalNames(Constructors.createNameAndValueList("uses"), 
                 null);
         
         ResolvedConceptReference[] rcr = 
@@ -64,7 +64,7 @@ public class RestrictToDirectionalNamesTest extends BaseCodedNodeGraphTest {
         
         assertTrue(assocs.length == 1);
         
-        assertTrue(assocs[0].getAssociationName().equals("uses"));
+        assertEquals("uses", assocs[0].getAssociationName());
         
         AssociatedConcept[] assocCons = assocs[0].getAssociatedConcepts().getAssociatedConcept();
         
@@ -128,7 +128,7 @@ public class RestrictToDirectionalNamesTest extends BaseCodedNodeGraphTest {
         
         Association[] assocs = ref.getSourceOf().getAssociation();
         
-        assertTrue(assocs.length == 2);
+        assertEquals(2,assocs.length);
         assertTrue(associationListContains(assocs, "uses"));
         assertTrue(associationListContains(assocs, "hasSubtype"));
 

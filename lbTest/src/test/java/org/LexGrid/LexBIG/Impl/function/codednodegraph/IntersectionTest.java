@@ -41,17 +41,17 @@ public class IntersectionTest extends BaseCodedNodeGraphTest {
             lbs.getNodeGraph(AUTO_SCHEME, null, null);
         
         CodedNodeSet cns1 = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns1.restrictToCodes(Constructors.createConceptReferenceList("005", AUTO_SCHEME));
+        cns1.restrictToCodes(Constructors.createConceptReferenceList(new String[] {"005", "A0001", "Chevy"}));
  
-        cngIntersect1.restrictToTargetCodes(cns1);
+        cngIntersect1.restrictToSourceCodes(cns1);
 
         CodedNodeGraph cngIntersect2 = 
             lbs.getNodeGraph(AUTO_SCHEME, null, null);
         
         CodedNodeSet cns2 = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns2.restrictToCodes(Constructors.createConceptReferenceList("GM", AUTO_SCHEME));
+        cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] {"GM","Ford","005"}));
             
-        cngIntersect2.restrictToTargetCodes(cns2);
+        cngIntersect2.restrictToSourceCodes(cns2);
  
         CodedNodeGraph cngIntersect = cngIntersect2.intersect(cngIntersect1);
         
@@ -71,11 +71,7 @@ public class IntersectionTest extends BaseCodedNodeGraphTest {
         ResolvedConceptReference ref = rcr[0];
         
         assertTrue(ref.getCode().equals("005"));
-        
-        AssociatedConcept[] concepts = ref.getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConcept();
-        
-        assertTrue(associatedConceptListContains(concepts, "GM"));
-        assertFalse(associatedConceptListContains(concepts, "Ford"));
+       
     }
     
     /**

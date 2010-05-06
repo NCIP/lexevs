@@ -82,7 +82,7 @@ public class RestrictToSourceCodesTest extends BaseCodedNodeGraphTest {
 
        assertTrue("Length: " + rcr.length, rcr.length == 1);
 
-       resolvedConceptListContains(rcr, "005");  
+       assertTrue(resolvedConceptListContains(rcr, "005"));  
        
        assertTrue("Length: " + rcr[0].getSourceOf().getAssociation(), 
                rcr[0].getSourceOf().getAssociation().length == 1);
