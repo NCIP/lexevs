@@ -24,7 +24,6 @@ import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
-import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
 import org.junit.Test;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
@@ -96,7 +95,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query, null);
+                    query, null, null);
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
@@ -159,7 +158,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query, null);
+                    query, null, null);
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
@@ -239,7 +238,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query, null);
+                    query, null, null);
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
@@ -320,7 +319,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query, null);
+                    query, null, null);
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
@@ -402,7 +401,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query, null);
+                    query, null, null);
         
         assertNull(list);
     }
@@ -481,7 +480,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query, null);
+                    query, null, null);
         
         assertNull(list);
     }
@@ -533,7 +532,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    new GraphQuery(), new StubReturningCycleDetectingCallback());
+                    new GraphQuery(), null, new StubReturningCycleDetectingCallback());
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
@@ -617,7 +616,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    new GraphQuery(), new StubReturningCycleDetectingCallback());
+                    new GraphQuery(), null, new StubReturningCycleDetectingCallback());
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
