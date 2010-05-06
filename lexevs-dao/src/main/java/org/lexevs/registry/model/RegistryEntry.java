@@ -28,6 +28,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.lexevs.dao.database.constants.DatabaseConstants;
 import org.lexevs.registry.service.Registry.ResourceType;
@@ -41,6 +43,7 @@ import org.lexevs.registry.service.XmlRegistry.HistoryEntry;
  */
 @Entity
 @Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "registry")
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class RegistryEntry {
 	
 	/** The id. */

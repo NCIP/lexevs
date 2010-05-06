@@ -55,8 +55,8 @@ public interface Registry {
 	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
 	 */
 	public enum KnownTags {
-/** The PRODUCTION. */
-PRODUCTION};
+			/** The PRODUCTION. */
+			PRODUCTION};
 
 	/**
 	 * Gets the entries for uri.

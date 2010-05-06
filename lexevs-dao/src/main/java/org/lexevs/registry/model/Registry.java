@@ -26,6 +26,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.lexevs.dao.database.constants.DatabaseConstants;
 
 /**
@@ -35,6 +37,7 @@ import org.lexevs.dao.database.constants.DatabaseConstants;
  */
 @Entity
 @Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "registryMetaData")
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Registry implements Serializable {
 
 	/** The Constant serialVersionUID. */
