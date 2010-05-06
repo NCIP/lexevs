@@ -4,6 +4,13 @@
 
         <hibernate-configuration>
           <session-factory>
+          	<property name="hibernate.jdbc.batch_size">100</property>
+			<property name="hibernate.jdbc.fetch_size">100</property>
+			<property name="hibernate.cache.use_second_level_cache">true</property>
+			<property name="hibernate.jdbc.batch_versioned_data">true</property>
+			<property name="hibernate.show_sql">false</property>
+			<property name="hibernate.format_sql">false</property>
+			
             <mapping class="org.lexevs.registry.model.Registry"/>
             <mapping class="org.lexevs.registry.model.RegistryEntry"/>
           </session-factory>
