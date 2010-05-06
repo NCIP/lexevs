@@ -51,15 +51,11 @@ public class DefaultLexEVSPropertiesFactory extends PropertiesFactory implements
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.properties.ConnectionPropertiesFactory#getPropertiesForExistingLoad(java.lang.String, java.lang.String)
 	 */
-	public Properties getPropertiesForExistingLoad(String codingSchemeUri, String version) {		
+	public Properties getPropertiesForExistingLoad(String codingSchemeUri, String version) throws LBParameterException {		
 
-		try {
 			String 
 				prefix = registry.getCodingSchemeEntry(DaoUtility.createAbsoluteCodingSchemeVersionReference(codingSchemeUri, version)).getStagingPrefix();
 			return getProperties(prefix);
-		} catch (LBParameterException e) {
-			throw new RuntimeException(e);
-		}
-		
+	
 	}
 }
