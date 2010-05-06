@@ -35,8 +35,7 @@ import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
-import org.lexevs.dao.database.ibatis.batch.IbatisBatchGroupInserter;
-import org.lexevs.dao.database.ibatis.batch.IbatisBatchGroupInserterAdapter;
+import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
@@ -251,7 +250,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				prefix, 
 				codingSchemeId, 
 				entity, 
-				new IbatisBatchGroupInserterAdapter(this.getNonBatchTemplateInserter()), 
+				this.getNonBatchTemplateInserter(), 
 				cascade);
 	}
 	
@@ -268,7 +267,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			String prefix, 
 			String codingSchemeId, 
 			Entity entity, 
-			IbatisBatchGroupInserter inserter,
+			IbatisInserter inserter,
 			boolean cascade) {
 		Map<String,String> propertyIdToGuidMap = new HashMap<String,String>();
 		
@@ -285,7 +284,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 						codingSchemeId, entityId, entryStateId, entity));
 
 		for(String entityType : entity.getEntityType()){
-			inserter.insert(INSERT_ENTITY_TYPE_SQL, 
+			inserter.insert(INSERT_ENTITY_TYPE_SQL,
 					new PrefixedParameterTuple(prefix, entityId, entityType));
 		}
 			
@@ -404,7 +403,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 
 			public Object doInSqlMapClient(SqlMapExecutor executor)
 					throws SQLException {
-				IbatisBatchGroupInserter batchInserter = getBatchTemplateInserter(executor);
+				IbatisBatchInserter batchInserter = getBatchTemplateInserter(executor);
 				
 				batchInserter.startBatch();
 				
