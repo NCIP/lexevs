@@ -20,8 +20,6 @@ package org.lexgrid.loader.properties.impl;
 
 import java.util.Properties;
 
-import org.lexevs.dao.database.connection.SQLConnectionInfo;
-
 /**
  * A factory for creating Properties objects given a SQLConnection from LexEVS
  */
