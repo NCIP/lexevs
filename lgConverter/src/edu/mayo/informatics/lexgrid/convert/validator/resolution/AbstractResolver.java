@@ -55,17 +55,10 @@ public abstract class AbstractResolver<T> implements Resolver {
     @SuppressWarnings("unchecked")
     public ResolvedLoadValidationError resolveError(LoadValidationError error) {
         
-        boolean resolved = doResolveError( (T) error.getErrorObject() );
-        
-        ResolutionStatus status;
-        String details;
-        if(resolved) {
-            status = ResolutionStatus.RESOLVED;
-            details = this.getResolutionDetails();
-        } else {
-            status = ResolutionStatus.RESOLUTION_FAILED;
-            details = this.getUnresolvedDetails();
-        }
+        ResolutionStatus status = doResolveError( (T) error.getErrorObject() );
+
+        String details = this.getResolutionDetails();
+      
         ErrorResolutionReport report = new ErrorResolutionReport(
                 status,
                 details);
@@ -80,7 +73,7 @@ public abstract class AbstractResolver<T> implements Resolver {
      * 
      * @return true, if successful
      */
-    public abstract boolean doResolveError(T errorObject);
+    public abstract ResolutionStatus doResolveError(T errorObject);
     
     /**
      * Gets the resolution details.

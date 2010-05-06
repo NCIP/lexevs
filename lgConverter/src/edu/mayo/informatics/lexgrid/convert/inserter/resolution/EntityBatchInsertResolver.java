@@ -10,6 +10,7 @@ import org.lexevs.locator.LexEvsServiceLocator;
 import edu.mayo.informatics.lexgrid.convert.inserter.error.EntityBatchInsertError;
 import edu.mayo.informatics.lexgrid.convert.inserter.error.EntityBatchInsertError.EntityBatchInsertErrorItem;
 import edu.mayo.informatics.lexgrid.convert.validator.resolution.AbstractResolver;
+import edu.mayo.informatics.lexgrid.convert.validator.resolution.ErrorResolutionReport.ResolutionStatus;
 
 public class EntityBatchInsertResolver extends AbstractResolver<EntityBatchInsertErrorItem>{
 
@@ -21,7 +22,7 @@ public class EntityBatchInsertResolver extends AbstractResolver<EntityBatchInser
     }
 
     @Override
-    public boolean doResolveError(EntityBatchInsertErrorItem errorObject) {
+    public ResolutionStatus doResolveError(EntityBatchInsertErrorItem errorObject) {
     
         List<Entity> entities = errorObject.getBatch();
         for(Entity entity : entities) {
@@ -35,19 +36,28 @@ public class EntityBatchInsertResolver extends AbstractResolver<EntityBatchInser
             }            
         }
         
-        return true;
+        if(this.errors.size() > 0 && this.errors.size() < errorObject.getBatch().size()) {
+            return ResolutionStatus.PARTIALLY_RESOLVED;
+        } 
+        if(this.errors.size() == 0) {
+            return ResolutionStatus.RESOLVED;
+        }
+        return ResolutionStatus.RESOLUTION_FAILED;
     }
 
     @Override
     public String getResolutionDetails() {
         StringBuffer sb = new StringBuffer();
         sb.append("\nAttempted to insert Entities individually.");
-        
+        sb.append("\n");
         if(this.errors.size() > 0) {
             sb.append("\nRemaining Entities in Error:");
             for(EntityExceptionPair pair : this.errors) {
-                sb.append("\nEntity Code: " + pair.getEntity().getEntityCode());
-                sb.append("\nException Message: " + pair.getException().getCause().getMessage());
+                sb.append("\n - Entity Code: " + pair.getEntity().getEntityCode());
+                sb.append("\n - Exception Message: ");
+                sb.append("\n" + pair.getException().getCause().getMessage());
+                sb.append("\n");
+                sb.append("\n");
             }
         } else {
             sb.append("\nAll Entities individually inserted successfully.");

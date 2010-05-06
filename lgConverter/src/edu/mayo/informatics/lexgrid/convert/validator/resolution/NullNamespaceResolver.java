@@ -27,6 +27,7 @@ import org.LexGrid.relations.AssociationTarget;
 import org.lexevs.dao.database.utility.DaoUtility;
 
 import edu.mayo.informatics.lexgrid.convert.validator.error.NullNamespaceError;
+import edu.mayo.informatics.lexgrid.convert.validator.resolution.ErrorResolutionReport.ResolutionStatus;
 
 /**
  * The Class NullNamespaceResolver.
@@ -71,18 +72,18 @@ public class NullNamespaceResolver extends AbstractResolver<Object> {
      * @see edu.mayo.informatics.lexgrid.convert.validator.resolution.AbstractResolver#doResolveError(java.lang.Object)
      */
     @Override
-    public boolean doResolveError(Object errorObject) {
+    public ResolutionStatus doResolveError(Object errorObject) {
         if(errorObject instanceof Entity) {
             ((Entity)errorObject).setEntityCodeNamespace(this.defaultNamespace);
-            return true;
+            return ResolutionStatus.RESOLVED;
         } else if(errorObject instanceof AssociationSource) {
             ((AssociationSource)errorObject).setSourceEntityCodeNamespace(this.defaultNamespace);
-            return true;
+            return ResolutionStatus.RESOLVED;
         } else if(errorObject instanceof AssociationTarget) {
             ((AssociationTarget)errorObject).setTargetEntityCodeNamespace(this.defaultNamespace);
-            return true;
+            return ResolutionStatus.RESOLVED;
         } else {
-            return false;
+            return ResolutionStatus.NOT_ADDRESSED;
         }
     }
 
