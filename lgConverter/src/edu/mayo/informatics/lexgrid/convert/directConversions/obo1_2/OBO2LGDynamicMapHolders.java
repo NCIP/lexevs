@@ -336,7 +336,9 @@ public class OBO2LGDynamicMapHolders {
 
                     Source s = new Source();
                     s.setContent(srcVal);
-                    s.setSubRef(dbxref.getSubrefAndDescription());
+                    if (StringUtils.isNotBlank(dbxref.getSubrefAndDescription())) {
+                      s.setSubRef(dbxref.getSubrefAndDescription());
+                    }
                     prop.getSourceAsReference().add(s);
 
                     if (abb == null) {
@@ -441,6 +443,7 @@ public class OBO2LGDynamicMapHolders {
         Entity concept = new Entity();
         concept.setEntityType(new String[] {EntityTypes.CONCEPT.name()});
         String conceptCode = OBO2LGConstants.ANONYMOUS_TEXTPRESENTATION + (++anonymousCounter);
+        concept.setEntityCodeNamespace(cs.getCodingSchemeName());
         if (entityDescription == null) {
             entityDescription = conceptCode;
         }
@@ -700,7 +703,6 @@ public class OBO2LGDynamicMapHolders {
             }
             SupportedAssociation suppAss = new SupportedAssociation();
             suppAss.setUri(OBO2LGUtils.getWithOBOURN("-multi-assn-@-root-"));
-            // suppAss.setLocalName(OBO2EMFUtils.toNMToken(prpCode));
             suppAss.setLocalId("-multi-assn-@-root-");
             suppAssoc.add(suppAss);
         } catch (Exception ex) {

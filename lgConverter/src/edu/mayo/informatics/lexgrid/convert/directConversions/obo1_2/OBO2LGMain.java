@@ -18,12 +18,15 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.obo1_2;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.net.URI;
 import java.util.Collection;
 
 import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
+import org.lexevs.logging.messaging.impl.CommandLineMessageDirector;
 
 import edu.mayo.informatics.resourcereader.core.IF.ResourceContents;
 import edu.mayo.informatics.resourcereader.core.IF.ResourceManifest;
@@ -135,4 +138,28 @@ public class OBO2LGMain {
         return null;
     }
 
+    public static void main(String args[]) {
+        try {
+
+            // URI.create("http://www.co-ode.org/ontologies/amino-acid/2006/05/18/amino-acid.owl");
+             URI physicalURI = URI.create("file:///s:/ontologies/obo/cell.obo");
+             //URI physicalURI = URI.create("file:///C:/lexevs_v6/lbTest/resources/testData/cell.obo");
+             OBO2LGMain moem = new OBO2LGMain();
+             CachingMessageDirectorIF message= new CachingMessageDirectorImpl(new CommandLineMessageDirector());
+            CodingScheme codingScheme = moem.map(physicalURI, null, message);
+
+            URI output_filename = URI.create("file:///c:/temp/cell.xml");
+            File file = new File(output_filename);
+            // file.createNewFile();
+            FileWriter out = new FileWriter(file);            
+            codingScheme.marshal(out);
+//            XmlContentWriter xmlContentWriter = new XmlContentWriter();
+//            xmlContentWriter.marshalToXml(codingScheme, output_filename);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }    
+    
+    
 }
