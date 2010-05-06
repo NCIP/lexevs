@@ -281,6 +281,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			queryForList(GET_ROOT_ENTITY_ASSNSTOENTITY_UID_SQL, bean);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<ConceptReference> getTailNodes(String codingSchemeUid,
 			List<String> associationPredicateUids) {
