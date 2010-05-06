@@ -23,6 +23,7 @@ import java.util.Properties;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.support.AbstractXmlApplicationContext;
+import org.springframework.core.Ordered;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -48,12 +49,13 @@ public class DynamicPropertyApplicationContext extends AbstractXmlApplicationCon
 	public DynamicPropertyApplicationContext(String configLocation, Properties properties)
 			throws BeansException {
 		super(null);	
-		
+
 		this.configResources = new Resource[1];
 		
 		this.configResources[0] = new ClassPathResource(configLocation);
 
 		PropertyPlaceholderConfigurer beanConfigurer = new PropertyPlaceholderConfigurer();
+		beanConfigurer.setOrder(Ordered.HIGHEST_PRECEDENCE);
 		beanConfigurer.setIgnoreUnresolvablePlaceholders(true);
 		beanConfigurer.setProperties(properties);
 
