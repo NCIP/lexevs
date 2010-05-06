@@ -59,7 +59,7 @@ public class LoadTestDataTest extends TestCase {
             LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
-        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGridLoader");
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
 
         loader.load(new File("resources/testData/Automobiles.xml").toURI(), true, true);
 
@@ -78,10 +78,10 @@ public class LoadTestDataTest extends TestCase {
     public void testLoadGermanMadeParts() throws LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
-        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGridLoader");
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
 
         // load non-async - this should block
-        loader.load(new File("resources/testData/German Made Parts.xml").toURI(), true, false);
+        loader.load(new File("resources/testData/German_Made_Parts.xml").toURI(), true, false);
 
         assertTrue(loader.getStatus().getEndTime() != null);
         assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
