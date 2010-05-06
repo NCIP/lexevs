@@ -183,7 +183,12 @@ public class AssociationManager {
         aw.setIsTransitive(Boolean.FALSE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
-        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2LGConstants.ASSOC_ALLDIFFERENT_URI, code,
+        emfSupportedMappings_.registerSupportedAssociation(
+                code, 
+                ProtegeOwl2LGConstants.ASSOC_ALLDIFFERENT_URI, 
+                code,
+                code,
+                OWLNames.OWL_PREFIX,
                 false);
         return aw;
     }
@@ -205,7 +210,12 @@ public class AssociationManager {
         aw.setIsTransitive(Boolean.FALSE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
-        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2LGConstants.ASSOC_COMPLEMENTOF_URI, code,
+        emfSupportedMappings_.registerSupportedAssociation(
+                code, 
+                ProtegeOwl2LGConstants.ASSOC_COMPLEMENTOF_URI, 
+                code,
+                code,
+                OWLNames.OWL_PREFIX,
                 false);
         return aw;
     }
@@ -223,7 +233,12 @@ public class AssociationManager {
         aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX); // rdfs:domain
         aw.setForwardName(code);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
-        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2LGConstants.ASSOC_DATATYPE_URI, code,
+        emfSupportedMappings_.registerSupportedAssociation(
+                code, 
+                ProtegeOwl2LGConstants.ASSOC_DATATYPE_URI, 
+                code,
+                code,
+                RDFSNames.RDFS_PREFIX,
                 false);
         return aw;
     }
@@ -242,7 +257,12 @@ public class AssociationManager {
         aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX); // rdfs:domain
         aw.setForwardName(code);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
-        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2LGConstants.ASSOC_DATATYPEVALUE_URI, code,
+        emfSupportedMappings_.registerSupportedAssociation(
+                code, 
+                ProtegeOwl2LGConstants.ASSOC_DATATYPEVALUE_URI, 
+                code,
+                code,
+                RDFSNames.RDFS_PREFIX,
                 false);
         return aw;
     }
@@ -264,7 +284,12 @@ public class AssociationManager {
         aw.setIsTransitive(Boolean.FALSE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
-        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2LGConstants.ASSOC_DIFFERENTFROM_URI, code,
+        emfSupportedMappings_.registerSupportedAssociation(
+                code, 
+                ProtegeOwl2LGConstants.ASSOC_DIFFERENTFROM_URI, 
+                code,
+                code,
+                OWLNames.OWL_PREFIX,
                 false);
         return aw;
     }
@@ -286,7 +311,12 @@ public class AssociationManager {
         aw.setIsTransitive(Boolean.FALSE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
-        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2LGConstants.ASSOC_DISJOINTWITH_URI, code,
+        emfSupportedMappings_.registerSupportedAssociation(
+                code, 
+                ProtegeOwl2LGConstants.ASSOC_DISJOINTWITH_URI, 
+                code,
+                code,
+                OWLNames.OWL_PREFIX,
                 false);
         return aw;
     }
@@ -306,7 +336,13 @@ public class AssociationManager {
         aw.setIsTransitive(Boolean.FALSE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
-        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2LGConstants.ASSOC_DOMAIN_URI, code, false);
+        emfSupportedMappings_.registerSupportedAssociation(
+                code, 
+                ProtegeOwl2LGConstants.ASSOC_DOMAIN_URI, 
+                code, 
+                code,
+                RDFSNames.RDFS_PREFIX,
+                false);
         return aw;
     }
 
@@ -327,8 +363,13 @@ public class AssociationManager {
         aw.setIsTransitive(Boolean.TRUE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
-        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2LGConstants.ASSOC_EQUIVALENTCLASS_URI,
-                code, false);
+        emfSupportedMappings_.registerSupportedAssociation(
+                code, 
+                ProtegeOwl2LGConstants.ASSOC_EQUIVALENTCLASS_URI,
+                code, 
+                code,
+                OWLNames.OWL_PREFIX,
+                false);
         return aw;
     }
 
@@ -349,8 +390,13 @@ public class AssociationManager {
         aw.setIsTransitive(Boolean.TRUE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
-        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2LGConstants.ASSOC_EQUIVALENTPROPERTY_URI,
-                code, false);
+        emfSupportedMappings_.registerSupportedAssociation(
+                code, 
+                ProtegeOwl2LGConstants.ASSOC_EQUIVALENTPROPERTY_URI,
+                code, 
+                code,
+                OWLNames.OWL_PREFIX,
+                false);
         return aw;
     }
 
@@ -368,7 +414,12 @@ public class AssociationManager {
         aw.setEntityCodeNamespace(RDFNames.RDF_PREFIX); // rdf:type
         aw.setForwardName(code);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
-        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2LGConstants.ASSOC_TYPE_URI, code,
+        emfSupportedMappings_.registerSupportedAssociation(
+                code, 
+                ProtegeOwl2LGConstants.ASSOC_TYPE_URI, 
+                code,
+                code,
+                RDFNames.RDF_PREFIX,
                 false);
         return aw;
     }
@@ -388,7 +439,12 @@ public class AssociationManager {
         aw.setForwardName(code);
         aw.setReverseName(code);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
-        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2LGConstants.ASSOC_INVERSEOF_URI, code,
+        emfSupportedMappings_.registerSupportedAssociation(
+                code, 
+                ProtegeOwl2LGConstants.ASSOC_INVERSEOF_URI, 
+                code,
+                code,
+                OWLNames.OWL_PREFIX,
                 false);
         return aw;
     }
@@ -429,7 +485,13 @@ public class AssociationManager {
         aw.setIsTransitive(Boolean.FALSE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
-        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2LGConstants.ASSOC_RANGE_URI, code, false);
+        emfSupportedMappings_.registerSupportedAssociation(
+                code, 
+                ProtegeOwl2LGConstants.ASSOC_RANGE_URI, 
+                code, 
+                code,
+                RDFSNames.RDFS_PREFIX,
+                false);
         return aw;
     }
 
@@ -450,7 +512,13 @@ public class AssociationManager {
         aw.setIsTransitive(Boolean.TRUE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(emfRelationsContainer_Assoc, aw);
-        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2LGConstants.ASSOC_SAMEAS_URI, code, false);
+        emfSupportedMappings_.registerSupportedAssociation(
+                code, 
+                ProtegeOwl2LGConstants.ASSOC_SAMEAS_URI, 
+                code, 
+                code,
+                OWLNames.OWL_PREFIX,
+                false);
         return aw;
     }
 
@@ -470,7 +538,12 @@ public class AssociationManager {
         aw.setIsTransitive(Boolean.TRUE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(emfRelationsContainer_Roles, aw);
-        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2LGConstants.ASSOC_SUBCLASSOF_URI, code,
+        emfSupportedMappings_.registerSupportedAssociation(
+                code, 
+                ProtegeOwl2LGConstants.ASSOC_SUBCLASSOF_URI, 
+                code,
+                code,
+                RDFSNames.RDFS_PREFIX,
                 false);
         return aw;
     }
@@ -490,7 +563,12 @@ public class AssociationManager {
         aw.setForwardName(code);
         aw.setIsTransitive(Boolean.TRUE);
         aw = addAssociation(emfRelationsContainer_Roles, aw);
-        emfSupportedMappings_.registerSupportedAssociation(code, ProtegeOwl2LGConstants.ASSOC_SUBPROPERTYOF_URI, code,
+        emfSupportedMappings_.registerSupportedAssociation(
+                code, 
+                ProtegeOwl2LGConstants.ASSOC_SUBPROPERTYOF_URI, 
+                code,
+                code,
+                RDFSNames.RDFS_PREFIX,
                 false);
         return aw;
     }
