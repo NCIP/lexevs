@@ -20,7 +20,9 @@ package org.lexevs.system.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
@@ -35,9 +37,9 @@ import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
-import org.lexevs.logging.AbstractLoggingBean;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.service.Registry.KnownTags;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.registry.setup.LexEvsDatabaseSchemaSetup;
 import org.lexevs.registry.utility.RegistryUtility;
@@ -45,6 +47,7 @@ import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.event.SystemEventListener;
 import org.lexevs.system.event.SystemEventSupport;
 import org.lexevs.system.utility.MyClassLoader;
+import org.springframework.util.StringUtils;
 
 /**
  * The Class LexEvsResourceManagingService.
@@ -263,8 +266,8 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	 * 
 	 * @return the uri for coding scheme name
 	 */
-	protected List<String> getUriForCodingSchemeName(String codingSchemeName){
-		List<String> returnList = new ArrayList<String>();
+	protected Set<String> getUrisForCodingSchemeName(String codingSchemeName){
+		Set<String> returnList = new HashSet<String>();
 
 		for(CodingSchemeAliasHolder alias : this.aliasHolder){
 			if( hasAlias(alias, codingSchemeName)){
@@ -279,18 +282,16 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	 */
 	public String getUriForUserCodingSchemeName(String codingSchemeName)
 	throws LBParameterException {
-			List<String> uris = getUriForCodingSchemeName(codingSchemeName);
-			if(uris == null || uris.size() == 0){
-				throw new LBParameterException("No URI found for Coding Scheme Name: " + codingSchemeName);
-			}
-			
-			String uri = uris.get(0);
-			for(int i=1;i<uris.size();i++){
-				if(! uris.get(i).equals(uri)){
-					throw new LBParameterException("Found multiple URIs for Coding Scheme Name: " + codingSchemeName);
-				}
-			}
-			return uri;
+		Set<String> uris = getUrisForCodingSchemeName(codingSchemeName);
+		if(uris == null || uris.size() == 0){
+			throw new LBParameterException("No URI found for Coding Scheme Name: " + codingSchemeName);
+		}
+
+		if(uris.size() > 1){
+			throw new LBParameterException("Found multiple URIs for Coding Scheme Name: " + codingSchemeName);
+		}
+
+		return uris.iterator().next();
 	}
 
 	/* (non-Javadoc)
@@ -300,7 +301,11 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	public String getInternalVersionStringForTag(String codingSchemeName,
 			String tag) throws LBParameterException {
 		
-		List<String> uris = getUriForCodingSchemeName(codingSchemeName);
+		if(! StringUtils.hasText(tag)){
+			tag = KnownTags.PRODUCTION.toString();
+		}
+		
+		Set<String> uris = getUrisForCodingSchemeName(codingSchemeName);
 		
 		List<RegistryEntry> foundEntries = new ArrayList<RegistryEntry>();
 		for(String uri : uris){
@@ -355,8 +360,8 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	 */
 	protected List<RegistryEntry> getTaggedEntries(List<RegistryEntry> entries, String tag){
 		List<RegistryEntry> foundEntries = new ArrayList<RegistryEntry>();
-		for(RegistryEntry entry : foundEntries){
-			if(entry.getTag().equals(tag)){
+		for(RegistryEntry entry : entries){
+			if(entry.getTag() != null && entry.getTag().equals(tag)){
 				foundEntries.add(entry);
 			}
 		}
