@@ -67,5 +67,5 @@ public interface UmlsBatchLoader extends SpringBatchLoader {
 	 * 
 	 * @throws Exception the exception
 	 */
-	public void removeLoad(URI rrfDir, String sab, String uri, String version) throws Exception;
+	public void removeLoad(String uri, String version) throws Exception;
 }
