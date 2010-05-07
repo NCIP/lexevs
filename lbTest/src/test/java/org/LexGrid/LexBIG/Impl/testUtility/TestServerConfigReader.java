@@ -37,8 +37,9 @@ import org.LexGrid.util.config.PropertiesUtility;
 public class TestServerConfigReader {
     private static Properties loadPropsFile() throws FileNotFoundException, IOException {
         PropertiesUtility.systemVariable = "LG_CONFIG_FILE";
-        String location = PropertiesUtility.locatePropFile("config" + System.getProperty("file.separator")
-                + "testConfig.props", TestServerConfigReader.class.getName());
+//        String location = PropertiesUtility.locatePropFile("resources/config" + System.getProperty("file.separator")
+//                + "lbConfig.props", TestServerConfigReader.class.getName());
+        String location = "C:/workspaceLexEVS/lexevs-dao/resources/config/lbconfig.props";
         Properties props = new Properties();
 
         props.load(new FileInputStream(new File(location)));

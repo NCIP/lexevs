@@ -20,7 +20,7 @@
             <lgNaming:supportedCodingScheme localId="fungal_anatomy" uri="urn:lsid:bioontology.org:fungal_anatomy">fungal_anatomy</lgNaming:supportedCodingScheme>
             <lgNaming:supportedCodingScheme localId="ExpendableParts" uri="urn:oid:11.11.0.50">Expendable Parts</lgNaming:supportedCodingScheme>
             <lgNaming:supportedCodingScheme localId="GermanMadeParts" uri="urn:oid:11.11.0.2">German Made Parts</lgNaming:supportedCodingScheme>      
-            <lgNaming:supportedDataType localId="testhtml">test/html</lgNaming:supportedDataType>
+            <lgNaming:supportedDataType localId="texthtml">text/html</lgNaming:supportedDataType>
             <lgNaming:supportedDataType localId="textplain">text/plain</lgNaming:supportedDataType>    
             <lgNaming:supportedHierarchy localId="is_a" associationNames="hasSubtype" isForwardNavigable="true" rootCode="@">hasSubtype</lgNaming:supportedHierarchy>    
             <lgNaming:supportedLanguage localId="en" uri="www.en.org/orsomething">en</lgNaming:supportedLanguage>
@@ -29,7 +29,7 @@
             <lgNaming:supportedNamespace localId="GermanMadePartsNamespace" uri="urn:oid:11.11.0.2" equivalentCodingScheme="GermanMadeParts">German Made Parts</lgNaming:supportedNamespace>
             <lgNaming:supportedProperty localId="definition">definition</lgNaming:supportedProperty>
             <lgNaming:supportedProperty localId="textualPresentation">textualPresentation</lgNaming:supportedProperty>
-            <lgNaming:supportedSource localId="lexgrid.org">lexgrid.org</lgNaming:supportedSource>
+            <lgNaming:supportedSource localId="lexgrid.org" assemblyRule="rule1" uri="http://informatics.mayo.edu">lexgrid.org</lgNaming:supportedSource>
             <lgNaming:supportedSource localId="_111101">11.11.0.1</lgNaming:supportedSource>
         </lgVD:mappings>
         <lgVD:pickListDefinition pickListId="SRITEST:AUTO:DomesticAutoMakers" representsValueSetDefinition="SRITEST:AUTO:DomesticAutoMakers" isActive="true" defaultEntityCodeNamespace="Automobiles" defaultLanguage="en" completeSet="false">
