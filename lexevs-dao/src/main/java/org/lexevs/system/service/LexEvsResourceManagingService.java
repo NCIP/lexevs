@@ -30,6 +30,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
@@ -39,7 +40,6 @@ import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
-import org.lexevs.registry.service.Registry.KnownTags;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.registry.setup.LexEvsDatabaseSchemaSetup;
 import org.lexevs.registry.utility.RegistryUtility;
@@ -47,7 +47,6 @@ import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.event.SystemEventListener;
 import org.lexevs.system.event.SystemEventSupport;
 import org.lexevs.system.utility.MyClassLoader;
-import org.springframework.util.StringUtils;
 
 /**
  * The Class LexEvsResourceManagingService.
@@ -301,10 +300,6 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	public String getInternalVersionStringForTag(String codingSchemeName,
 			String tag) throws LBParameterException {
 		
-		if(! StringUtils.hasText(tag)){
-			tag = KnownTags.PRODUCTION.toString();
-		}
-		
 		Set<String> uris = getUrisForCodingSchemeName(codingSchemeName);
 		
 		List<RegistryEntry> foundEntries = new ArrayList<RegistryEntry>();
@@ -361,7 +356,8 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	protected List<RegistryEntry> getTaggedEntries(List<RegistryEntry> entries, String tag){
 		List<RegistryEntry> foundEntries = new ArrayList<RegistryEntry>();
 		for(RegistryEntry entry : entries){
-			if(entry.getTag() != null && entry.getTag().equals(tag)){
+		
+			if(StringUtils.equals(entry.getTag(), tag)){
 				foundEntries.add(entry);
 			}
 		}
