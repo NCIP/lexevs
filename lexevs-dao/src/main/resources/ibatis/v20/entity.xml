@@ -224,14 +224,31 @@
      </select>
      
 	<select id="getEntityByCodeAndNamespace" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" 
 		resultMap="Entity.entityResult"
 		remapResults="true">
 		<include refid="getEntityFragment"/>
 		WHERE
-			entityCode = #param1#
+			codingSchemeGuid = #param1#
 		AND
-			entity.entityCodeNamespace = #param2#
+			entityCode = #param2#
+		AND
+			entity.entityCodeNamespace = #param3#
+     </select>
+     
+     <select id="getAssociationEntityByCodeAndNamespace" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" 
+		resultMap="Entity.associationEntityResult"
+		remapResults="true">
+		<include refid="getEntityFragment"/>
+		WHERE
+			codingSchemeGuid = #param1#
+		AND
+			entityCode = #param2#
+		AND
+			entity.entityCodeNamespace = #param3#
+		AND
+			entityType.entityType = 'association'
      </select>
      
     <select id="getEntityByIdAndRevisionId" 
