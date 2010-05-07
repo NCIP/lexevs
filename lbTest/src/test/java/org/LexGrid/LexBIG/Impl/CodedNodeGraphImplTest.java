@@ -171,14 +171,14 @@ public class CodedNodeGraphImplTest extends TestCase {
         cng2.restrictToTargetCodes(cm.createCodedNodeSet(new String[] { "Ford" }, "Automobiles", null));
 
         // intersect them
-        cng.intersect(cng2);
+        CodedNodeGraph cng3 = cng.intersect(cng2);
 
         // result should only contain 005 -> Ford
         // result should be 005 -> Ford -> Jaguar
-        ResolvedConceptReference[] rcr = cng.resolveAsList(null, true, false, -1, -1, null, null, null, 50)
+        ResolvedConceptReference[] rcr = cng3.resolveAsList(null, true, false, -1, -1, null, null, null, 50)
                 .getResolvedConceptReference();
-
-        assertTrue(rcr.length == 1);
+        
+        assertEquals(1, rcr.length);
         // top node
         assertTrue(rcr[0].getConceptCode().equals("005"));
 
@@ -189,8 +189,8 @@ public class CodedNodeGraphImplTest extends TestCase {
         Association[] assn = rcr[0].getSourceOf().getAssociation();
         assertTrue(assn.length == 1);
         AssociatedConcept[] ac = assn[0].getAssociatedConcepts().getAssociatedConcept();
-        assertTrue(ac.length == 1);
-        assertTrue(ac[0].getConceptCode().equals("Ford"));
+        assertEquals(1,ac.length);
+        assertEquals("Ford", ac[0].getConceptCode());
 
         // no more below it
         assertTrue(ac[0].getSourceOf() == null);
