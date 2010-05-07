@@ -37,6 +37,7 @@ import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedAssociationQualifier;
+import org.apache.commons.lang.ArrayUtils;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 import org.springframework.util.StringUtils;
@@ -184,11 +185,12 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
                         Constructors.createCodingSchemeVersionOrTagFromVersion(version), 
                         directionalName);
                 
-                if(associationNames != null);
-                
-                for(String associationName : associationNames) {
-                    this.getQuery().getRestrictToAssociations().add(associationName);
+                if(ArrayUtils.isEmpty(associationNames)) {
+                    throw new LBParameterException("Directional Name:" + directionalName + 
+                            " is not a valid Directional Name.");
                 }
+
+                this.restrictToAssociations(Constructors.createNameAndValueList(associationNames), associationQualifiers);
                 
             } catch (LBException e) {
                throw new RuntimeException(e);
