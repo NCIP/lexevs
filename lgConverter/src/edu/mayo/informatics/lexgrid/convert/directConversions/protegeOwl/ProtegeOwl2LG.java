@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.net.URI;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,6 +36,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
@@ -64,11 +64,11 @@ import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.locator.LexEvsServiceLocator;
 
@@ -2204,7 +2204,7 @@ public class ProtegeOwl2LG {
 
                     // Add to supported associations ...
                     emfSupportedMappings_.registerSupportedAssociation(propertyName,
-                            prop.getNamespace() + propertyName, propertyName, false);
+                            prop.getNamespace() + propertyName, propertyName, propertyName, nameSpace, true);
 
                     // Add the information that this is an datatype
                     // association, and not an objectType property.
@@ -2351,7 +2351,7 @@ public class ProtegeOwl2LG {
             // Add to supported associations ...
 
             emfSupportedMappings_.registerSupportedAssociation(propertyName, owlProp.getNamespace() + propertyName,
-                    label, false);
+                    label, propertyName, nameSpace, true);
 
             // Update 05/13/2008: I am adding this, even though
             // mostly supportedProperties
@@ -2446,8 +2446,12 @@ public class ProtegeOwl2LG {
 
         // Add to supported associations ...
 
-        emfSupportedMappings_.registerSupportedAssociation(propertyName, rdfProp.getNamespace() + propertyName, label,
-                false);
+        emfSupportedMappings_.registerSupportedAssociation(propertyName, 
+                rdfProp.getNamespace() + propertyName, 
+                label,
+                propertyName,
+                nameSpace,
+                true);
         return assoc;
 
     }
@@ -2881,7 +2885,7 @@ public class ProtegeOwl2LG {
                         wrapper.getRelationsContainerName(), assoc.getAssociationName(), source);
 
         } catch (Exception e) {
-            this.messages_.error("Error Inserting AssociationSource.", e);
+            this.messages_.warn("Error Inserting AssociationSource.", e);
         } finally {
             assoc.removeSource(source);
             if (target != null)
@@ -2893,26 +2897,14 @@ public class ProtegeOwl2LG {
         if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
             emfScheme_.setApproxNumConcepts(new Long(emfScheme_.getEntities().getEntity().length));
         } else {
-            attributeMap_ = new HashMap<String, Object>();
-            attributeMap_.put(SQLTableConstants.TBLCOL_APPROXNUMCONCEPTS, new Integer(conceptCount_));
-            whereClause_ = new StringBuffer();
-            whereClause_.append(SQLTableConstants.TBLCOL_CODINGSCHEMEURI + " = ");
-            whereClause_.append("\'");
-            whereClause_.append(emfScheme_.getCodingSchemeURI());
-            whereClause_.append("\'");
-            whereClause_.append(" AND ");
-            whereClause_.append(SQLTableConstants.TBLCOL_REPRESENTSVERSION + " = ");
-            whereClause_.append("\'");
-            whereClause_.append(emfScheme_.getRepresentsVersion());
-            whereClause_.append("\'");
+            CodingSchemeService service = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
+            emfScheme_.setApproxNumConcepts(new Long(conceptCount_));
             try {
-                sqlTableUtil_.updateRow(SQLTableConstants.TBL_CODING_SCHEME, attributeMap_, whereClause_.toString(),
-                        dbType_);
-            } catch (SQLException e) {
-                messages_.error("Error occurred updating the concept count : ", e);
+                service.updateCodingScheme(emfScheme_);
+            } catch (Exception e) {
+                this.messages_.warn("Failed to update the Approximate Number of Concepts.");
             }
         }
-
     }
 
 } // end of the class
