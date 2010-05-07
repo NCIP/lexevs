@@ -25,12 +25,16 @@ public abstract class AbstractEndNode extends ConceptReference {
     }
     
     public static class Root extends AbstractEndNode {
+        private static final long serialVersionUID = 9146396838103778981L;
+
         protected Root(String uri, String version) {
             super(uri, version, ROOT);
         }  
     }
     
     public static class Tail extends AbstractEndNode {
+        private static final long serialVersionUID = -7014931215754506298L;
+
         protected Tail(String uri, String version) {
             super(uri, version, TAIL);
         }  
