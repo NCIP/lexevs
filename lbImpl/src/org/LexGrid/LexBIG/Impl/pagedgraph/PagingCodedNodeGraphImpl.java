@@ -29,7 +29,6 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
@@ -67,11 +66,12 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
      * @param codingSchemeUri the coding scheme uri
      * @param version the version
      * @param relationsContainerName the relations container name
+     * @throws LBParameterException 
      */
     public PagingCodedNodeGraphImpl(
             String codingSchemeUri, 
             String version,
-            String relationsContainerName){
+            String relationsContainerName) throws LBParameterException{
         super(codingSchemeUri, version, relationsContainerName);
     }
     
@@ -80,7 +80,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#resolveAsList(org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean, boolean, int, int, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType[], org.LexGrid.LexBIG.DataModel.Collections.SortOptionList, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, int)
      */
     @Override
-    public ResolvedConceptReferenceList doResolveAsList(
+    public ResolvedConceptReferenceList doResolveAsValidatedParameterList(
     		ConceptReference graphFocus, 
     		boolean resolveForward,
             boolean resolveBackward, 
