@@ -100,10 +100,17 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	 */
 	public String getInternalVersionStringForTag(String codingSchemeName,
 			String tag) throws LBParameterException {
+		LBParameterException exception;
+
 		try {
 			return primarySystemResourceService.getInternalVersionStringForTag(codingSchemeName, tag);
-		} catch (Exception e) {
-			return delegateSystemResourceService.getInternalVersionStringForTag(codingSchemeName, tag);
+		} catch (LBParameterException e) {
+			exception = e;
+			try {
+				return delegateSystemResourceService.getInternalVersionStringForTag(codingSchemeName, tag);
+			} catch (LBParameterException e1) {
+				throw exception;
+			}
 		}
 	}
 	
@@ -111,10 +118,16 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	 * @see org.lexevs.system.service.SystemResourceService#getUriForUserCodingSchemeName(java.lang.String)
 	 */
 	public String getUriForUserCodingSchemeName(String codingSchemeName) throws LBParameterException {
+		LBParameterException exception;
 		try {
 			return primarySystemResourceService.getUriForUserCodingSchemeName(codingSchemeName);
-		} catch (Exception e) {
-			return delegateSystemResourceService.getUriForUserCodingSchemeName(codingSchemeName);
+		} catch (LBParameterException e) {
+			exception = e;
+			try {
+				return delegateSystemResourceService.getUriForUserCodingSchemeName(codingSchemeName);
+			} catch (LBParameterException e1) {
+				throw exception;
+			}
 		}
 	}
 	
