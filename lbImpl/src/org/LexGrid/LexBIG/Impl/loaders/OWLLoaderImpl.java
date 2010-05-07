@@ -130,7 +130,10 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
 
             CodingScheme owlScheme = owlLoader.map();
 
-            this.persistCodingSchemeToDatabase(owlScheme);
+            if(this.getOptions().getIntegerOption(Option.getNameForType(Option.MEMORY_SAFE)).getOptionValue().equals(
+                    ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY)) {
+                this.persistCodingSchemeToDatabase(owlScheme);
+            }
             
             return this.constructVersionPairsFromCodingSchemes(owlScheme);
         } catch (Exception e) {
