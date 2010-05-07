@@ -437,8 +437,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		return this.doInsertIntoTransitiveClosure(codingSchemeId,
-				prefix, 
+		return this.doInsertIntoTransitiveClosure(prefix,
+				associationPredicateId, 
 				sourceEntityCode,
 				sourceEntityCodeNamespace, 
 				targetEntityCode,
