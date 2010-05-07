@@ -29,7 +29,8 @@
 		<lgNaming:supportedAssociationQualifier uri="www.something.com" localId="hasEngine">hasEngine</lgNaming:supportedAssociationQualifier>
 		<lgNaming:supportedCodingScheme uri="urn:oid:11.11.0.1" localId="Automobiles">Automobiles</lgNaming:supportedCodingScheme>
 		<lgNaming:supportedCodingScheme uri="urn:oid:11.11.0.50" localId="ExpendableParts">Expendable Parts</lgNaming:supportedCodingScheme>
-		<lgNaming:supportedCodingScheme uri="urn:oid:11.11.0.2" localId="GermanMadeParts">German Made Parts</lgNaming:supportedCodingScheme>		
+		<lgNaming:supportedCodingScheme uri="urn:oid:11.11.0.2" localId="GermanMadeParts">German Made Parts</lgNaming:supportedCodingScheme>
+		<lgNaming:supportedContainerName localId="relations">relations</lgNaming:supportedContainerName>  		
 		<lgNaming:supportedDataType localId="testhtml">test/html</lgNaming:supportedDataType>
 		<lgNaming:supportedDataType localId="textplain">text/plain</lgNaming:supportedDataType>		
 		<lgNaming:supportedLanguage  uri="www.en.org/orsomething" localId="en">en</lgNaming:supportedLanguage>		
@@ -163,7 +164,20 @@
 				<lgCommon:value>Truck</lgCommon:value>
 			</lgCon:presentation>
 		</lgCon:entity>
+		
+		 <lgCon:associationEntity entityCode="AssocEntity" entityCodeNamespace="Automobiles"
+    		forwardName="GoingForward" reverseName="GoingBackward" isTransitive="true" isNavigable="true">
+    		<lgCommon:entityDescription>An AssociationEntity</lgCommon:entityDescription>
+    		<lgCon:entityType>association</lgCon:entityType>
+    	</lgCon:associationEntity>
+    
+   		<lgCon:associationEntity entityCode="uses" entityCodeNamespace="Automobiles"
+    		forwardName="uses">
+    		<lgCommon:entityDescription>uses</lgCommon:entityDescription>
+    		<lgCon:entityType>association</lgCon:entityType>
+    	</lgCon:associationEntity>
 	</entities>
+
 	<relations containerName="asD">
 		<lgCommon:entityDescription>asD</lgCommon:entityDescription>
 		<lgRel:associationPredicate associationName="hasSubtype">
