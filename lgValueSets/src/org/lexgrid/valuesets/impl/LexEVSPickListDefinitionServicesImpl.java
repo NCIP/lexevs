@@ -43,6 +43,8 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
@@ -72,6 +74,7 @@ import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntry;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntryList;
+import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 import org.lexgrid.valuesets.helper.PLEntryNodeSortUtil;
 import org.lexgrid.valuesets.helper.VSDServiceHelper;
@@ -321,7 +324,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 			if (crList.getConceptReferenceCount() > 0)
 			{
 				//TODO not sure about this.. should we get the coding scheme version from the user ?
-				AbsoluteCodingSchemeVersionReferenceList acsvrList = sh_.getAbsoluteCodingSchemeVersionReference(defaultCS);
+				AbsoluteCodingSchemeVersionReferenceList acsvrList = getServiceHelper().getAbsoluteCodingSchemeVersionReference(defaultCS);
 				CodingSchemeVersionOrTag csvt = null;
 				
 				if (acsvrList.getAbsoluteCodingSchemeVersionReferenceCount() > 0)
@@ -369,39 +372,38 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		
 		ResolvedPickListEntryList plList = new ResolvedPickListEntryList();
 		
-		//TODO implement the below stuff - sod
-//		LexEVSValueSetDefinitionServices vds = new LexEVSValueSetDefinitionServicesImpl();
-//		
-//		ResolvedValueSetCodedNodeSet rvdCNS;
+		LexEVSValueSetDefinitionServices vds = new LexEVSValueSetDefinitionServicesImpl();
 		
-//		try {
-//			rvdCNS = vds.getValueDomainEntitiesForTerm(term, matchAlgorithm, new URI(valueDomainURI), null, null);
-//		} catch (URISyntaxException e) {
-//			throw new LBException("Problem with ValueDomain URI", e);
-//		}
-//		
-//		CodedNodeSet cns = rvdCNS.getCodedNodeSet();
-//		
-//		ResolvedConceptReferencesIterator rcrItr = cns.resolve(null, null, null, null, true);
-//		
-//		while (rcrItr.hasNext())
-//		{
-//			ResolvedConceptReference rcr = rcrItr.next();
-//			ResolvedPickListEntry rpl = new ResolvedPickListEntry();
-//			rpl.setEntityCode(rcr.getCode());
-//			rpl.setEntityCodeNamespace(rcr.getCodeNamespace());
-//			Entity entity = rcr.getEntity();
-//			Presentation[] presentations = entity.getPresentation();
-//			for (Presentation pres : presentations)
-//			{
-//				if (pres.isIsPreferred())
-//				{
-//					rpl.setPickText(pres.getValue().getContent());
-//					rpl.setPropertyId(pres.getPropertyId());
-//					plList.addResolvedPickListEntry(rpl);
-//				}				
-//			}
-//		}
+		ResolvedValueSetCodedNodeSet rvdCNS;
+		
+		try {
+			rvdCNS = vds.getValueSetDefinitionEntitiesForTerm(term, matchAlgorithm, new URI(valueDomainURI), null, null);
+		} catch (URISyntaxException e) {
+			throw new LBException("Problem with ValueDomain URI", e);
+		}
+		
+		CodedNodeSet cns = rvdCNS.getCodedNodeSet();
+		
+		ResolvedConceptReferencesIterator rcrItr = cns.resolve(null, null, null, null, true);
+		
+		while (rcrItr.hasNext())
+		{
+			ResolvedConceptReference rcr = rcrItr.next();
+			ResolvedPickListEntry rpl = new ResolvedPickListEntry();
+			rpl.setEntityCode(rcr.getCode());
+			rpl.setEntityCodeNamespace(rcr.getCodeNamespace());
+			Entity entity = rcr.getEntity();
+			Presentation[] presentations = entity.getPresentation();
+			for (Presentation pres : presentations)
+			{
+				if (pres.isIsPreferred())
+				{
+					rpl.setPickText(pres.getValue().getContent());
+					rpl.setPropertyId(pres.getPropertyId());
+					plList.addResolvedPickListEntry(rpl);
+				}				
+			}
+		}
 		
 		return plList;
 	}
@@ -735,7 +737,22 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 			String supportedTag, String value) {
 		return this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionIdForSupportedTagAndValue(supportedTag, value);
 	}
-	
+
+	public VSDServiceHelper getServiceHelper(){
+		if (sh_ == null)
+		{
+			try {
+				sh_ = new VSDServiceHelper(true, md_);
+			} catch (LBParameterException e) {
+				md_.fatal("Problem getting ServiceHelper", e);
+				e.printStackTrace();
+			} catch (LBInvocationException e) {
+				md_.fatal("Problem getting ServiceHelper", e);
+				e.printStackTrace();
+			}
+		}
+		return sh_;
+	}
 //	private String getStringFromURI(URI uri) throws LBParameterException {
 //        if ("file".equals(uri.getScheme()))
 //
