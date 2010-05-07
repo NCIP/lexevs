@@ -245,7 +245,7 @@ CREATE TABLE @PREFIX@property
 	degreeOfFidelity VARCHAR(50),
 	representationalForm VARCHAR(50),
 	propertyValue TEXT NOT NULL,
-	isActive CHAR(1),
+	isActive CHAR(1) DEFAULT 1,
 	owner VARCHAR(250),
 	status VARCHAR(50),
 	effectiveDate DATETIME,
