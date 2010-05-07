@@ -397,7 +397,7 @@ CREATE TABLE @PREFIX@property
 	degreeOfFidelity      VARCHAR2(50),    --  A local identifier that states how closely a term approximates the intended meaning of an entry code. degreeOfFidelity must match a local id of a supportedDegreeOfFidelity in the corresponding mappings section. 
 	representationalForm  VARCHAR2(50),    --  A local identifier that states how the term represents the concept (abbrev, acronym, etc.) representationalForm must match a local id of a representationalForm in the corresponding mappings section. 
 	propertyValue         CLOB NOT NULL,    --  The value of the property associated with this particular resource.  Note that "text" may be any type, including a URI, html fragment, etc. 
-	isActive              CHAR(1),    --  Boolean value to indicate the given property is active or not. 
+	isActive              CHAR(1) DEFAULT 1,    --  Boolean value to indicate the given property is active or not. 
 	owner                 VARCHAR2(250),    --  The owner of the resource. The specific semantics of owner is defined by the busniess rules of the implementor, including the rules of the owner field is absent. 
 	status                VARCHAR2(50),    --  The status code associated with the particular resource. The semantics and business rules of entryStatus are defined by the containing system, but there needs to be a mapping into isActive above. 
 	effectiveDate         TIMESTAMP,    --  The date and time that this resource is considered to be active.  To be considered active, isActive must be true, and the temporal context of the operation must be greater than effectiveDate.  If omitted, all temporal contexts are considered to be valid. 
