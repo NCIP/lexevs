@@ -22,8 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
@@ -37,7 +39,11 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.ServiceUtility;
+import org.LexGrid.naming.SupportedContainerName;
+import org.LexGrid.naming.SupportedProperty;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -70,15 +76,18 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
      * @param codingSchemeUri the coding scheme uri
      * @param version the version
      * @param relationsContainerName the relations container name
+     * @throws LBParameterException 
      */
     public AbstractQueryBuildingCodedNodeGraph(
             String codingSchemeUri, 
             String version,
-            String relationsContainerName) {
+            String relationsContainerName) throws LBParameterException {
+        ServiceUtility.validateParameter(codingSchemeUri, version, relationsContainerName, SupportedContainerName.class);
+        
         this.codingSchemeUri = codingSchemeUri;
         this.version = version;
         this.relationsContainerName = relationsContainerName;
-        
+  
         graphQueryBuilder = new DefaultGraphQueryBuilder(codingSchemeUri, version);
     }
     
@@ -99,6 +108,30 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
        return false;  
     }
     
+    
+    
+    @Override
+    public ResolvedConceptReferenceList doResolveAsList(ConceptReference graphFocus, boolean resolveForward,
+            boolean resolveBackward, int resolveCodedEntryDepth, int resolveAssociationDepth,
+            LocalNameList propertyNames, PropertyType[] propertyTypes, SortOptionList sortOptions,
+            LocalNameList filterOptions, int maxToReturn, boolean keepLastAssociationLevelUnresolved)
+            throws LBInvocationException, LBParameterException {
+        
+        ServiceUtility.validateParameter(this.getCodingSchemeUri(), this.getVersion(), propertyNames, SupportedProperty.class);
+        
+        return this.doResolveAsValidatedParameterList(
+                graphFocus, resolveForward, resolveBackward, 
+                resolveCodedEntryDepth, resolveAssociationDepth, 
+                propertyNames, propertyTypes, sortOptions, 
+                filterOptions, maxToReturn, keepLastAssociationLevelUnresolved);
+    }
+    
+    protected abstract ResolvedConceptReferenceList doResolveAsValidatedParameterList(ConceptReference graphFocus, boolean resolveForward,
+            boolean resolveBackward, int resolveCodedEntryDepth, int resolveAssociationDepth,
+            LocalNameList propertyNames, PropertyType[] propertyTypes, SortOptionList sortOptions,
+            LocalNameList filterOptions, int maxToReturn, boolean keepLastAssociationLevelUnresolved)
+            throws LBInvocationException, LBParameterException;
+
     protected boolean doGetAreCodesRelated(
             ConceptReference sourceCode, 
             ConceptReference targetCode, 
