@@ -40,6 +40,7 @@ import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.service.Registry.KnownTags;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.registry.setup.LexEvsDatabaseSchemaSetup;
 import org.lexevs.registry.utility.RegistryUtility;
@@ -321,9 +322,14 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 			}
 			
 			if(taggedEntries.size() > 1){
-				 throw new LBParameterException("Multiple Coding Schemes were found for the values you provided: ",
-		                 SQLTableConstants.TBLCOL_CODINGSCHEMENAME + ", " + SQLTableConstants.TBLCOL_VERSION,
-		                 codingSchemeName + ", " + tag);
+				
+				try {
+					return this.getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeName, KnownTags.PRODUCTION.toString());
+				} catch (LBParameterException e) {
+					 throw new LBParameterException("Multiple Coding Schemes were found for the values you provided: ",
+			                 SQLTableConstants.TBLCOL_CODINGSCHEMENAME + ", " + SQLTableConstants.TBLCOL_VERSION,
+			                 codingSchemeName + ", " + tag);
+				}
 			}
 			
 			return taggedEntries.get(0).getResourceVersion();
