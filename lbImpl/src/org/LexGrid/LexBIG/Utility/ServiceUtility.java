@@ -20,6 +20,8 @@ package org.LexGrid.LexBIG.Utility;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.naming.URIMap;
+import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.service.SystemResourceService;
 
@@ -53,5 +55,14 @@ public class ServiceUtility {
         }
         
         return version;
+    }
+    
+    public static void validateParameter(String codingSchemeUri, String codingSchemeVersion, String localId, Class<? extends URIMap> supportedAttributeClass) throws LBParameterException {
+        CodingSchemeService codingSchemeService = 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
+        
+        if(! codingSchemeService.validatedSupportedAttribute(codingSchemeUri, codingSchemeVersion, localId, supportedAttributeClass)) {
+            throw new LBParameterException(localId + " is not a valid Parameter.");
+        }
     }
 }
