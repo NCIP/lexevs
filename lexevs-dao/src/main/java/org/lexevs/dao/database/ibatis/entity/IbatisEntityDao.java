@@ -72,6 +72,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	/** The GE t_ entit y_ b y_ cod e_ an d_ namespac e_ sql. */
 	public static String GET_ENTITY_BY_CODE_AND_NAMESPACE_SQL = ENTITY_NAMESPACE + "getEntityByCodeAndNamespace";
 	
+	public static String GET_ASSOCIATION_ENTITY_BY_CODE_AND_NAMESPACE_SQL = ENTITY_NAMESPACE + "getAssociationEntityByCodeAndNamespace";
+	
 	public static String GET_RESOLVED_CODED_NODE_REFERENCE_BY_CODE_AND_NAMESPACE_SQL = ENTITY_NAMESPACE + "getResolvedCodedNodeReferenceByCodeAndNamespace";
 	
 	public static String GET_ENTITY_BY_ID_AND_REVISION_ID_SQL = ENTITY_NAMESPACE + "getEntityByIdAndRevisionId";
@@ -122,10 +124,32 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		String entityId = this.getEntityUId(codingSchemeId, entityCode, entityCodeNamespace);
+		
+		Entity entity = (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_ID_SQL, 
+				new PrefixedParameterTuple(prefix, entityId, codingSchemeId));
 
-		return doGetEntity(prefix, codingSchemeId, entityId);
+		return addEntityAttributes(
+				prefix, 
+				codingSchemeId, 
+				entityId,
+				entity);
 	}
 	
+	
+	public AssociationEntity getAssociationEntityByCodeAndNamespace(String codingSchemeId, String entityCode, String entityCodeNamespace){
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		String entityId = this.getEntityUId(codingSchemeId, entityCode, entityCodeNamespace);
+		
+		AssociationEntity entity = (AssociationEntity) this.getSqlMapClientTemplate().queryForObject(GET_ASSOCIATION_ENTITY_BY_CODE_AND_NAMESPACE_SQL, 
+				new PrefixedParameterTriple(prefix, codingSchemeId, entityCode, entityCodeNamespace));
+
+		return addEntityAttributes(
+				prefix, 
+				codingSchemeId, 
+				entityId,
+				entity);
+	}
 	@Override
 	public ResolvedConceptReference getResolvedCodedNodeReferenceByCodeAndNamespace(
 			String codingSchemeId, String entityCode, String entityCodeNamespace) {
@@ -144,7 +168,14 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	public Entity getEntityByUId(String codingSchemeId, String entityId){
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		return doGetEntity(prefix, codingSchemeId, entityId);
+		Entity entity = (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_ID_SQL, 
+				new PrefixedParameterTuple(prefix, entityId, codingSchemeId));
+		
+		return addEntityAttributes(
+				prefix, 
+				codingSchemeId, 
+				entityId,
+				entity);
 	}
 	
 	@Override
@@ -161,12 +192,15 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				tuple);
 	}
 	
-	protected Entity doGetEntity(String prefix, String codingSchemeId, String entityId) {
-		Entity entity = (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_ID_SQL, 
-				new PrefixedParameterTuple(prefix, entityId, codingSchemeId));
-		
-		if(entity == null) {return null;}
-			
+	protected <T extends Entity> T addEntityAttributes(
+			String prefix, 
+			String codingSchemeId, 
+			String entityId,
+			T entity) {
+		if(entity == null) {
+			return null;
+		}
+	
 		entity.addAnyProperties(
 				ibatisPropertyDao.getAllPropertiesOfParent(codingSchemeId, entityId, PropertyType.ENTITY));
 		
