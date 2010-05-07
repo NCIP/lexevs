@@ -166,7 +166,7 @@ CREATE TABLE @PREFIX@property (
 	degreeOfFidelity varchar(50),
 	representationalForm varchar(50),
 	propertyValue varchar NOT NULL,
-	isActive char(1),
+	isActive char(1) DEFAULT 1,
 	owner varchar(250),
 	status varchar(50),
 	effectiveDate timestamp,
