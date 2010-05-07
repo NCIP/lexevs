@@ -74,24 +74,16 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
      */
-    public void testOneAssociationNameNullQualifiersNoMatch() throws LBInvocationException, LBParameterException{
-        cng.restrictToAssociations(Constructors.createNameAndValueList("NOT_A_MATCH"), 
-                null);
-        
-        ResolvedConceptReference[] rcr = 
-            cng.resolveAsList(Constructors.createConceptReference("A0001", LexBIGServiceTestCase.AUTO_SCHEME), 
-                    true, 
-                    false, 
-                    -1, 
-                    -1, 
-                    null, 
-                    null, 
-                    null, 
-                    -1).getResolvedConceptReference();
-     
-        assertTrue(rcr.length == 1);
-        
-        assertTrue(rcr[0].getSourceOf() == null);
+    public void testOneAssociationNameNullQualifiersNoMatch(){
+        try {
+			cng.restrictToAssociations(Constructors.createNameAndValueList("NOT_A_MATCH"), 
+			        null);
+		} catch (LBInvocationException e) {
+			fail();
+		} catch (LBParameterException e) {
+			return;
+		}
+        fail();
     }
     
     /**
@@ -135,7 +127,7 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
         System.arraycopy(assocCons1, 0, all, 0, assocCons1.length);
         System.arraycopy(assocCons2, 0, all, assocCons1.length, assocCons2.length);
         
-        assertTrue(all.length == 5);
+        assertEquals(5, all.length);
         
         assertTrue(associatedConceptListContains(all, "Batteries"));
         assertTrue(associatedConceptListContains(all, "Tires"));
