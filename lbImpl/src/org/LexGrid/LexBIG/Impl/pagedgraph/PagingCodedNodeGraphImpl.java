@@ -32,10 +32,12 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
+import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.NullFocusRootsResolver;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver.ResolveDirection;
+import org.LexGrid.LexBIG.Impl.pagedgraph.utility.PagedGraphUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -238,9 +240,13 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
  
         boolean hasReferenceToSourceCodeRestriction = hasReferenceToSourceCodeRestriction(focus);
         boolean hasReferenceToTargetCodeRestriction = hasReferenceToTargetCodeRestriction(focus);
-        
-        return hasReferenceToSourceCodeRestriction && hasReferenceToTargetCodeRestriction;
-        
+        boolean isInvalidMatchConceptReference = isNotInvalidMatchConceptReference(focus);
+     
+        return hasReferenceToSourceCodeRestriction && hasReferenceToTargetCodeRestriction && isInvalidMatchConceptReference;  
+    }
+    
+    private boolean isNotInvalidMatchConceptReference(ConceptReference focus) {
+        return !PagedGraphUtils.areCodedNodeReferencesEquals(focus, DefaultGraphQueryBuilder.INVALID_MATCH_CONCEPT_REFERENCE);
     }
     
     private boolean hasReferenceToTargetCodeRestriction(ConceptReference focus) {

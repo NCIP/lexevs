@@ -48,6 +48,8 @@ import org.springframework.util.StringUtils;
  */
 public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
     
+    public static ConceptReference INVALID_MATCH_CONCEPT_REFERENCE = new InvalidMatchCodeNamspacePair();
+    
     /** The graph query. */
     private GraphQuery graphQuery = new GraphQuery();
 
@@ -236,8 +238,10 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
         this.graphQuery.getRestrictToTargetCodes().addAll(foundCodes);
     }
 
-    private static class InvalidMatchCodeNamspacePair extends ConceptReference {
+    public static class InvalidMatchCodeNamspacePair extends ConceptReference {
 
+        private static final long serialVersionUID = -1839064867996817910L;
+        
         private static String INVALID_CODE = "__INVALID__CODE__NO__MATCH__";
         private static String INVALID_NAMESPACE = "__INVALID__NAMESPACE__NO__MATCH__";
 
