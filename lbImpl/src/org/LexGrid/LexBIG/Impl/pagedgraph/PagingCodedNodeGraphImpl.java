@@ -238,9 +238,9 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
     protected boolean checkFocus(ConceptReference focus,  boolean resolveForward, boolean resolveBackward) {
         CodedNodeGraphService service = 
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
-        int count = 0;
+        
 
-        count += service.
+        int sourceCount = service.
         getTripleUidsContainingSubjectCount(
                 this.getCodingSchemeUri(), 
                 this.getVersion(), 
@@ -248,9 +248,9 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                 null, 
                 focus.getCode(), 
                 focus.getCodeNamespace(), 
-                new GraphQuery());
+                this.getGraphQueryBuilder().getQuery());
 
-        count += service.
+        int targetCount = service.
         getTripleUidsContainingObjectCount(
                 this.getCodingSchemeUri(), 
                 this.getVersion(), 
@@ -258,7 +258,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                 null, 
                 focus.getCode(), 
                 focus.getCodeNamespace(), 
-                new GraphQuery());
+                this.getGraphQueryBuilder().getQuery());
         
         List<ConceptReference> sourceCodes = 
             this.getGraphQueryBuilder().getQuery().getRestrictToSourceCodes();
@@ -266,17 +266,18 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         List<ConceptReference> targetCodes = 
             this.getGraphQueryBuilder().getQuery().getRestrictToTargetCodes();
         
-        boolean sourceOrTargetCheck = true;
+        boolean sourceCheck = true;
+        boolean targetCheck = true;
         
         if(! CollectionUtils.isEmpty(sourceCodes) && resolveForward) {
-            sourceOrTargetCheck = sourceOrTargetCheck && containsConceptReference(focus, sourceCodes);
+            sourceCheck = containsConceptReference(focus, sourceCodes);
         }
         
         if(! CollectionUtils.isEmpty(targetCodes) && resolveBackward) {
-            sourceOrTargetCheck = sourceOrTargetCheck && containsConceptReference(focus, targetCodes);
+            targetCheck = containsConceptReference(focus, targetCodes);
         }
 
-        return count > 0 && sourceOrTargetCheck;
+        return sourceCount + targetCount > 0 && (sourceCheck && targetCheck);
     }
     
     private static boolean containsConceptReference(ConceptReference ref, List<ConceptReference> list) {
