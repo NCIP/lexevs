@@ -205,18 +205,13 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	@Transactional
 	public AssociationEntity getAssociationEntity(String codingSchemeUri, String version,
 			String entityCode, String entityCodeNamespace) {
-		Entity associationEntity = this.getEntity(codingSchemeUri, version, entityCode, entityCodeNamespace);
 		
-		if(associationEntity == null) {return null;}
+		String codingSchemeId = this.getDaoManager().
+			getCodingSchemeDao(codingSchemeUri, version).
+			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 		
-		boolean isAssociationEntity = 
-			ClassUtils.isAssignable(associationEntity.getClass(), AssociationEntity.class);
-		
-		if(isAssociationEntity) {
-			return (AssociationEntity)associationEntity;
-		} else {
-			throw new IllegalArgumentException("Code: " + entityCode + " Namespace: " + entityCodeNamespace + " is not an AssociationEntity.");
-		}
+		return this.getDaoManager().
+			getEntityDao(codingSchemeUri, version).getAssociationEntityByCodeAndNamespace(codingSchemeId, entityCode, entityCodeNamespace);
 	}
 
 	@Override

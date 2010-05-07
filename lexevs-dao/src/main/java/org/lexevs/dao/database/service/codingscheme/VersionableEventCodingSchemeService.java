@@ -25,6 +25,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.Source;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedProperty;
@@ -42,6 +43,7 @@ import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.dao.database.service.property.PropertyService;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -175,30 +177,40 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	@Override
 	public void updateCodingScheme(
 			CodingScheme codingScheme) throws LBException {
-		
 		String codingSchemeUri = codingScheme.getCodingSchemeURI();
 		String codingSchemeVersion = codingScheme.getRepresentsVersion();
 		
 		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, codingSchemeVersion);
 		
-		VersionsDao versionsDao = getDaoManager().getVersionsDao(codingSchemeUri, codingSchemeVersion);
-		
-		String codingSchemeUId = codingSchemeDao.
+		String codingSchemeId = codingSchemeDao.
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
-	/*	
-		if( codingSchemeDao.codingSchemeExists(codingSchemeUId) ) {
-			
-			String prevEntryStateUId = codingSchemeDao.insertHistoryCodingScheme(codingSchemeUId);
-			*/
-			codingSchemeDao.
-				updateCodingScheme(codingSchemeUId, codingScheme);	
-			/*
-			versionsDao.insertEntryState(codingSchemeUId, "CodingScheme",
-					prevEntryStateUId, codingScheme.getEntryState());
+		
+		codingSchemeDao.
+			updateCodingScheme(codingSchemeId, codingScheme);	
+		
+		codingSchemeDao.deleteCodingSchemeMappings(codingSchemeId);
+		
+		if(codingScheme.getMappings() != null) {
+			for(URIMap uriMap : DaoUtility.getAllURIMappings(codingScheme.getMappings())){
+				codingSchemeDao.insertOrUpdateURIMap(codingSchemeId, uriMap);
+			}
 		}
-	
-		this.insertDependentChanges(codingScheme);
-		*/
+		
+		codingSchemeDao.deleteCodingSchemeLocalNames(codingSchemeId);
+		
+		if(codingScheme.getLocalName() != null) {
+			for(String localName : codingScheme.getLocalName()) {
+				codingSchemeDao.insertCodingSchemeLocalName(codingSchemeId, localName);
+			}
+		}
+		
+		codingSchemeDao.deleteCodingSchemeSources(codingSchemeId);
+		
+		if(codingScheme.getSource() != null) {
+			for(Source source : codingScheme.getSource()) {
+				codingSchemeDao.insertOrUpdateCodingSchemeSource(codingSchemeId, source);
+			}
+		}
 			this.fireCodingSchemeUpdateEvent(null, null, codingScheme, codingScheme);
 	}
 

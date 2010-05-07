@@ -195,4 +195,12 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 			// TODO Auto-generated method stub
 			
 		}
+
+		@Override
+		public AssociationEntity getAssociationEntityByCodeAndNamespace(
+				String codingSchemeUId, String entityCode,
+				String entityCodeNamespace) {
+			// TODO Auto-generated method stub (IMPLEMENT!)
+			throw new UnsupportedOperationException();
+		}
 }
