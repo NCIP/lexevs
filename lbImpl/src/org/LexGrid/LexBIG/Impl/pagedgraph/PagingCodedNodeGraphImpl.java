@@ -38,7 +38,6 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver.ResolveDirection;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
-import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.util.CollectionUtils;
 
@@ -236,12 +235,28 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
     }
 
     protected boolean checkFocus(ConceptReference focus,  boolean resolveForward, boolean resolveBackward) {
+ 
+        boolean hasReferenceToSourceCodeRestriction = hasReferenceToSourceCodeRestriction(focus);
+        boolean hasReferenceToTargetCodeRestriction = hasReferenceToTargetCodeRestriction(focus);
+        
+        return hasReferenceToSourceCodeRestriction && hasReferenceToTargetCodeRestriction;
+        
+    }
+    
+    private boolean hasReferenceToTargetCodeRestriction(ConceptReference focus) {
+        List<ConceptReference>  restrictToTargetCodes = this.getGraphQueryBuilder().getQuery().getRestrictToTargetCodes();
+        if(CollectionUtils.isEmpty(restrictToTargetCodes)) {
+            return true;
+        }
+        if(containsConceptReference(focus, restrictToTargetCodes)) {
+            return true;
+        }
+        
         CodedNodeGraphService service = 
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
         
-
-        int sourceCount = service.
-        getTripleUidsContainingSubjectCount(
+        return 0 <
+        service.getTripleUidsContainingSubjectCount(
                 this.getCodingSchemeUri(), 
                 this.getVersion(), 
                 this.getRelationsContainerName(), 
@@ -249,9 +264,22 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                 focus.getCode(), 
                 focus.getCodeNamespace(), 
                 this.getGraphQueryBuilder().getQuery());
-
-        int targetCount = service.
-        getTripleUidsContainingObjectCount(
+    }
+    
+    private boolean hasReferenceToSourceCodeRestriction(ConceptReference focus) {
+        List<ConceptReference>  restrictToSourceCodes = this.getGraphQueryBuilder().getQuery().getRestrictToSourceCodes(); 
+        if(CollectionUtils.isEmpty(restrictToSourceCodes)) {
+            return true;
+        }
+        if(containsConceptReference(focus, restrictToSourceCodes)) {
+            return true;
+        }
+        
+        CodedNodeGraphService service = 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
+        
+        return 0 <
+        service.getTripleUidsContainingObjectCount(
                 this.getCodingSchemeUri(), 
                 this.getVersion(), 
                 this.getRelationsContainerName(), 
@@ -259,25 +287,6 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                 focus.getCode(), 
                 focus.getCodeNamespace(), 
                 this.getGraphQueryBuilder().getQuery());
-        
-        List<ConceptReference> sourceCodes = 
-            this.getGraphQueryBuilder().getQuery().getRestrictToSourceCodes();
-        
-        List<ConceptReference> targetCodes = 
-            this.getGraphQueryBuilder().getQuery().getRestrictToTargetCodes();
-        
-        boolean sourceCheck = true;
-        boolean targetCheck = true;
-        
-        if(! CollectionUtils.isEmpty(sourceCodes) && resolveForward) {
-            sourceCheck = containsConceptReference(focus, sourceCodes);
-        }
-        
-        if(! CollectionUtils.isEmpty(targetCodes) && resolveBackward) {
-            targetCheck = containsConceptReference(focus, targetCodes);
-        }
-
-        return sourceCount + targetCount > 0 && (sourceCheck && targetCheck);
     }
     
     private static boolean containsConceptReference(ConceptReference ref, List<ConceptReference> list) {
