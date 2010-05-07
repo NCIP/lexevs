@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.Utility;
 
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.naming.URIMap;
@@ -55,6 +56,12 @@ public class ServiceUtility {
         }
         
         return version;
+    }
+    
+    public static void validateParameter(String codingSchemeUri, String codingSchemeVersion, LocalNameList list, Class<? extends URIMap> supportedAttributeClass) throws LBParameterException {
+        for(String localName : list.getEntry()) {
+            validateParameter(codingSchemeUri,codingSchemeVersion, localName, supportedAttributeClass);
+        }
     }
     
     public static void validateParameter(String codingSchemeUri, String codingSchemeVersion, String localId, Class<? extends URIMap> supportedAttributeClass) throws LBParameterException {
