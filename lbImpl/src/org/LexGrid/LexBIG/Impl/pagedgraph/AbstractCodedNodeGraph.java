@@ -23,7 +23,6 @@ import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
-import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
@@ -91,6 +90,7 @@ public abstract class AbstractCodedNodeGraph implements CodedNodeGraph {
             LocalNameList propertyNames, PropertyType[] propertyTypes, SortOptionList sortOptions,
             LocalNameList filterOptions, int maxToReturn, boolean keepLastAssociationLevelUnresolved)
             throws LBInvocationException, LBParameterException{
+ 
         return this.doResolveAsList(graphFocus, resolveForward, resolveBackward, resolveCodedEntryDepth, resolveAssociationDepth, propertyNames, propertyTypes, sortOptions, filterOptions, maxToReturn, keepLastAssociationLevelUnresolved);   
     }
 
