@@ -153,8 +153,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		
 		service.setDatabaseServiceEventListeners(listeners);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
 	public void getAssociationEntityWithWrongType() throws Exception{
 		List<DatabaseServiceEventListener> listeners = service.getDatabaseServiceEventListeners();
 		service.getDatabaseServiceEventListeners().clear();
@@ -174,6 +173,8 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 			"values ('eguid', 'someOtherType')");
 		
 		AssociationEntity entity = service.getAssociationEntity("csuri", "csversion", "ecode", "ens");	
+		
+		assertNull(entity);
 	}
 	
 	/**
