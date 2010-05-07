@@ -290,7 +290,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 			if (plEntry != null)
 			{
 				plEntryBean.setInclude(true);
-				plEntryBean.setEntityCode(plEntry.getEntityCodeNamespace());
+				plEntryBean.setEntityCodeNamespace(plEntry.getEntityCodeNamespace());
 				plEntryBean.setEntityCode(plEntry.getEntityCode());
 				plEntryBean.setDefault(plEntry.isIsDefault() == null? false : plEntry.isIsDefault());
 				plEntryBean.setEntryOrder(plEntry.getEntryOrder() == null? 0 : plEntry.getEntryOrder());
@@ -321,7 +321,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 			else if (plExclusion != null)
 			{
 				plEntryBean.setInclude(false);
-				plEntryBean.setEntityCode(plExclusion.getEntityCodeNamespace());
+				plEntryBean.setEntityCodeNamespace(plExclusion.getEntityCodeNamespace());
 				plEntryBean.setEntityCode(plExclusion.getEntityCode());
 			}
 			
