@@ -27,8 +27,7 @@
   <copyright>Copyright by Mayo Clinic.</copyright>
   
   <mappings>
-    <lgNaming:supportedAssociation localId="hasSubtype" uri="urn:oid:1.3.6.1.4.1.2114.108.1.8.1"
-    	codingScheme="Automobiles" entityCode="AssocEntity" entityCodeNamespace="Automobiles">hasSubtype</lgNaming:supportedAssociation>
+    <lgNaming:supportedAssociation localId="hasSubtype" uri="urn:oid:1.3.6.1.4.1.2114.108.1.8.1">hasSubtype</lgNaming:supportedAssociation>
     <lgNaming:supportedAssociation localId="uses" uri="urn:oid:11.11.0.1">uses</lgNaming:supportedAssociation>
     <lgNaming:supportedAssociation localId="A1" uri="http://A1.org">A1</lgNaming:supportedAssociation>
     <lgNaming:supportedAssociationQualifier localId="hasEngine" uri="www.something.com">hasEngine</lgNaming:supportedAssociationQualifier>
@@ -252,8 +251,14 @@
     	<lgCon:entityType>association</lgCon:entityType>
     </lgCon:associationEntity>
     
-    <lgCon:associationEntity entityCode="uses" entityCodeNamespace="Automobiles"
-    	forwardName="uses">
+    <lgCon:associationEntity entityCode="hasSubtype" entityCodeNamespace="Automobiles"
+    	forwardName="hasSubtype" reverseName="isA">
+    	<lgCommon:entityDescription>hasSubtype</lgCommon:entityDescription>
+    	<lgCon:entityType>association</lgCon:entityType>
+    </lgCon:associationEntity>
+    
+     <lgCon:associationEntity entityCode="uses" entityCodeNamespace="Automobiles"
+    	forwardName="uses" reverseName="usedBy">
     	<lgCommon:entityDescription>uses</lgCommon:entityDescription>
     	<lgCon:entityType>association</lgCon:entityType>
     </lgCon:associationEntity>
