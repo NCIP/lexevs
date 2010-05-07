@@ -120,7 +120,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                focus.setCodeNamespace(graphFocus.getCodeNamespace());
                focus.setCodingSchemeName(graphFocus.getCodingSchemeName());
             }
-            boolean isValidFocus = this.checkFocus(focus, resolveForward, resolveBackward);
+            boolean isValidFocus = this.checkFocus(focus);
             
             if(! isValidFocus) {
                 return new ResolvedConceptReferenceList();
@@ -236,7 +236,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         return returnList;
     }
 
-    protected boolean checkFocus(ConceptReference focus,  boolean resolveForward, boolean resolveBackward) {
+    protected boolean checkFocus(ConceptReference focus) {
  
         boolean hasReferenceToSourceCodeRestriction = hasReferenceToSourceCodeRestriction(focus);
         boolean hasReferenceToTargetCodeRestriction = hasReferenceToTargetCodeRestriction(focus);
