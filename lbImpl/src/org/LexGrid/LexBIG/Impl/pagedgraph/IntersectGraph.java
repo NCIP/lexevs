@@ -162,7 +162,7 @@ public class IntersectGraph extends AbstractMultiGraph {
         AssociatedConceptList list = new AssociatedConceptList();
         
         AssociatedConcept[] associatedConcepts1 = assoc1.getAssociatedConcepts().getAssociatedConcept();
-        AssociatedConcept[] associatedConcepts2 = assoc1.getAssociatedConcepts().getAssociatedConcept();
+        AssociatedConcept[] associatedConcepts2 = assoc2.getAssociatedConcepts().getAssociatedConcept();
         
         for(AssociatedConcept concept : associatedConcepts1) {
             AssociatedConcept foundConcept = getAssociatedConcept(concept, associatedConcepts2);
