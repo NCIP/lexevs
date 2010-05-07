@@ -22,9 +22,11 @@ import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.naming.URIMap;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.service.SystemResourceService;
+import org.springframework.util.CollectionUtils;
 
 /**
  * The Class ServiceUtility.
@@ -59,12 +61,18 @@ public class ServiceUtility {
     }
     
     public static void validateParameter(String codingSchemeUri, String codingSchemeVersion, LocalNameList list, Class<? extends URIMap> supportedAttributeClass) throws LBParameterException {
+        if(list == null) {
+            return;
+        }
         for(String localName : list.getEntry()) {
             validateParameter(codingSchemeUri,codingSchemeVersion, localName, supportedAttributeClass);
         }
     }
     
     public static void validateParameter(String codingSchemeUri, String codingSchemeVersion, String localId, Class<? extends URIMap> supportedAttributeClass) throws LBParameterException {
+        if(StringUtils.isBlank(localId)) {
+            return;
+        }
         CodingSchemeService codingSchemeService = 
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
         
