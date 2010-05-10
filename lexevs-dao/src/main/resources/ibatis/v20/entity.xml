@@ -120,9 +120,7 @@
 		LEFT JOIN
 			$prefix$entity entity
 		ON (
-			  targetProperty.referenceGuid = entity.entityGuid
-        	AND
-        	  sourceProperty.referenceGuid = entity.entityGuid
+			  targetProperty.referenceGuid = sourceProperty.referenceGuid
         	)
 		WHERE
 			entity.codingSchemeGuid = #param1#
