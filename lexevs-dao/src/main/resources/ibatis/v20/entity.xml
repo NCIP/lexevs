@@ -68,6 +68,7 @@
 	</resultMap>
 	
 	<resultMap id="propertyLinkResult" class="propertyLink">
+		<result property="parent" column="entityGuid" />
 		<result property="sourceProperty" column="sourcePropId" />
 		<result property="targetProperty" column="targetPropId" />
 		<result property="propertyLink" column="link" />
@@ -99,10 +100,11 @@
 		</isNotNull>
 	</select>
 	
-	<select id="getPropertyLinksByEntityId"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+	<select id="getPropertyLinksByEntityUids"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection"
 		resultMap="Entity.propertyLinkResult" remapResults="true">
 		SELECT
+			entity.entityGuid,
 		  	sourceProperty.propertyId sourcePropId,
   			targetProperty.propertyId targetPropId,
   			propertyLinks.link
@@ -125,7 +127,7 @@
 		WHERE
 			entity.codingSchemeGuid = #param1#
 		AND
-			entity.entityGuid = #param2#
+			entity.entityGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
 	</select>
 	
 	<sql id="getEntityFragment">

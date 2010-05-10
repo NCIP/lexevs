@@ -49,6 +49,7 @@ import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
 
@@ -100,7 +101,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	
 	public static String UPDATE_ENTITY_BY_UID_SQL = ENTITY_NAMESPACE + "updateEntityByUId";
 	
-	public static String GET_PROPERTY_LINKS_BY_ENTITY_ID_SQL = ENTITY_NAMESPACE + "getPropertyLinksByEntityId";
+	public static String GET_PROPERTY_LINKS_BY_ENTITY_UIDS_SQL = ENTITY_NAMESPACE + "getPropertyLinksByEntityUids";
 	
 	public static String GET_ENTITY_ATTRIBUTES_BY_UID_SQL = ENTITY_NAMESPACE + "getEntityAttributesByEntityUId";
 	
@@ -125,18 +126,10 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	 * @see org.lexevs.dao.database.access.entity.EntityDao#getEntityByCodeAndNamespace(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public Entity getEntityByCodeAndNamespace(String codingSchemeId, String entityCode, String entityCodeNamespace){
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		
+	
 		String entityId = this.getEntityUId(codingSchemeId, entityCode, entityCodeNamespace);
 		
-		Entity entity = (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_ID_SQL, 
-				new PrefixedParameterTuple(prefix, entityId, codingSchemeId));
-
-		return addEntityAttributes(
-				prefix, 
-				codingSchemeId, 
-				entityId,
-				entity);
+		return this.getEntityByUId(codingSchemeId, entityId);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -148,6 +141,14 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		Map<String,Entity> entities = (Map<String,Entity>) this.getSqlMapClientTemplate().queryForMap(GET_ENTITIES_BY_UIDS_SQL, 
 				new PrefixedParameterCollection(prefix, codingSchemeId, entityUids), "id");
 		
+		for(Property prop : this.ibatisPropertyDao.getPropertiesOfParents(codingSchemeId, entityUids)){
+			entities.get(prop.getParent()).addAnyProperty(prop);
+		}
+		
+		for(PropertyLink propertyLink : this.doGetPropertyLinks(prefix, codingSchemeId, entityUids)) {
+			entities.get(propertyLink.getParent()).addPropertyLink(propertyLink);
+		}
+
 		return new ArrayList<Entity>(entities.values());
 	}
 
@@ -181,16 +182,15 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	}
 
 	public Entity getEntityByUId(String codingSchemeId, String entityId){
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		Entity entity = (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_ID_SQL, 
-				new PrefixedParameterTuple(prefix, entityId, codingSchemeId));
+		List<Entity> entities = this.getEntities(codingSchemeId, DaoUtility.createNonTypedList(entityId));
 		
-		return addEntityAttributes(
-				prefix, 
-				codingSchemeId, 
-				entityId,
-				entity);
+		if(CollectionUtils.isEmpty(entities)) {
+			return null;
+		} if(entities.size() > 1){
+			throw new RuntimeException("Too many entities returned.");
+		}
+		return entities.get(0);
 	}
 	
 	@Override
@@ -207,7 +207,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				tuple);
 	}
 	
-	protected <T extends Entity> T addEntityAttributes(
+		protected <T extends Entity> T addEntityAttributes(
 			String prefix, 
 			String codingSchemeId, 
 			String entityId,
@@ -220,16 +220,16 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				ibatisPropertyDao.getAllPropertiesOfParent(codingSchemeId, entityId, PropertyType.ENTITY));
 		
 		entity.setPropertyLink(
-				doGetPropertyLinks(prefix, codingSchemeId, entityId));
+				doGetPropertyLinks(prefix, codingSchemeId, DaoUtility.createNonTypedList(entityId)));
 		
 		return entity;
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected List<PropertyLink> doGetPropertyLinks(String prefix, String codingSchemeId, String entityId){
+	protected List<PropertyLink> doGetPropertyLinks(String prefix, String codingSchemeId, List<String> entityUids){
 		return this.getSqlMapClientTemplate().
-			queryForList(GET_PROPERTY_LINKS_BY_ENTITY_ID_SQL, 
-				new PrefixedParameterTuple(prefix, codingSchemeId, entityId));
+			queryForList(GET_PROPERTY_LINKS_BY_ENTITY_UIDS_SQL, 
+				new PrefixedParameterCollection(prefix, codingSchemeId, entityUids));
 	}
 
 	/* (non-Javadoc)

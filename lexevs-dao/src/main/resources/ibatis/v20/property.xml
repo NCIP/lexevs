@@ -9,6 +9,7 @@
 	<typeAlias alias="comment" type="org.LexGrid.concepts.Comment"/>
 
 	<resultMap id="propertyResult" class="property" groupBy="propertyId">
+		<result property="parent" column="referenceGuid" />	
 		<result property="propertyName" column="propertyName" />	
 		<result property="propertyId" column="propertyId" />
 		<result property="propertyType" column="propertyType" />
@@ -58,6 +59,7 @@
   	
   	<sql id="selectPropertyFragment">
   		SELECT
+  			property.referenceGuid,
   			property.referenceType,
   			property.propertyId,
   			property.propertyType,
