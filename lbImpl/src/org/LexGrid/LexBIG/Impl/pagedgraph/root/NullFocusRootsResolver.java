@@ -32,11 +32,7 @@ public class NullFocusRootsResolver implements RootsResolver {
                 return this.getRelatedSourceCodes(codingSchemeUri, codingSchemeVersion, query);
             }
             
-            if(CollectionUtils.isNotEmpty(query.getRestrictToAssociations())) {
-                return this.getRoots(codingSchemeUri, codingSchemeVersion, relationsContainerName, query.getRestrictToAssociations());
-            }
-            
-            return DaoUtility.createList(ConceptReference.class, new Root(codingSchemeUri, codingSchemeVersion));
+           return this.getRoots(codingSchemeUri, codingSchemeVersion, relationsContainerName, query.getRestrictToAssociations());
         }
         
         if(direction.equals(ResolveDirection.BACKWARD)) {
@@ -48,18 +44,16 @@ public class NullFocusRootsResolver implements RootsResolver {
                 return this.getRelatedTargetCodes(codingSchemeUri, codingSchemeVersion, query);
             }
             
-            if(CollectionUtils.isNotEmpty(query.getRestrictToAssociations())) {
-                return this.getTails(codingSchemeUri, codingSchemeVersion, relationsContainerName, query.getRestrictToAssociations());
-            }
-            
-            return DaoUtility.createList(ConceptReference.class, new Tail(codingSchemeUri, codingSchemeVersion));
+            return this.getTails(codingSchemeUri, codingSchemeVersion, relationsContainerName, query.getRestrictToAssociations());
         }
         
         return returnList;
     }
     
     public boolean isRootOrTail(ConceptReference ref) {
-        return (ref.getCode().equals(AbstractEndNode.ROOT) || ref.getCode().equals(AbstractEndNode.TAIL));
+        boolean isRootOrTail = (ref.getCode().equals(AbstractEndNode.ROOT) || ref.getCode().equals(AbstractEndNode.TAIL));
+        
+        return isRootOrTail;
     }
     
     protected List<ConceptReference> getRelatedTargetCodes(
@@ -143,6 +137,6 @@ public class NullFocusRootsResolver implements RootsResolver {
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
         
         return 
-            service.getRootConceptReferences(codingSchemeUri, codingSchemeVersion, relationsContainerName, associationNames);
+            service.getTailConceptReferences(codingSchemeUri, codingSchemeVersion, relationsContainerName, associationNames);
     }
 }
