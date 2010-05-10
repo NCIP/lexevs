@@ -185,7 +185,7 @@ public class RestrictToDirectionalNamesTest extends BaseCodedNodeGraphTest {
         
         AssociatedConcept[] assocCons = assocs[0].getAssociatedConcepts().getAssociatedConcept();
         
-        assertTrue(assocCons.length == 1);
+        assertEquals(1,assocCons.length);
         
         assertTrue(associatedConceptListContains(assocCons, "C0001")); 
     }
