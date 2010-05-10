@@ -25,6 +25,7 @@ import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.valueSets.PickListDefinition;
@@ -64,7 +65,7 @@ public class UnMarshallingLogic {
      * @return
      */
     public static boolean isCodingSchemeEntity(Object parent, Object child) {
-        return child instanceof Entity && parent instanceof Entities;
+        return child instanceof Entity && parent instanceof Entities || child instanceof AssociationEntity && parent instanceof Entities;
     }
 
     /**
