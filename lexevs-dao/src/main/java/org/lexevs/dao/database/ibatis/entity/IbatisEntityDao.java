@@ -19,6 +19,7 @@
 package org.lexevs.dao.database.ibatis.entity;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,7 @@ import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.property.IbatisPropertyDao;
@@ -94,6 +96,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	
 	public static String GET_ENTITY_BY_ID_SQL = ENTITY_NAMESPACE + "getEntityById";
 	
+	public static String GET_ENTITIES_BY_UIDS_SQL = ENTITY_NAMESPACE + "getEntitiesByUids";
+	
 	public static String UPDATE_ENTITY_BY_UID_SQL = ENTITY_NAMESPACE + "updateEntityByUId";
 	
 	public static String GET_PROPERTY_LINKS_BY_ENTITY_ID_SQL = ENTITY_NAMESPACE + "getPropertyLinksByEntityId";
@@ -134,8 +138,19 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				entityId,
 				entity);
 	}
-	
-	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Entity> getEntities(String codingSchemeId,
+			List<String> entityUids) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		Map<String,Entity> entities = (Map<String,Entity>) this.getSqlMapClientTemplate().queryForMap(GET_ENTITIES_BY_UIDS_SQL, 
+				new PrefixedParameterCollection(prefix, codingSchemeId, entityUids), "id");
+		
+		return new ArrayList<Entity>(entities.values());
+	}
+
 	public AssociationEntity getAssociationEntityByCodeAndNamespace(String codingSchemeId, String entityCode, String entityCodeNamespace){
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
