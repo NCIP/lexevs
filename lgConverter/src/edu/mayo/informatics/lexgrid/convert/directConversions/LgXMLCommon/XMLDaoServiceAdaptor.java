@@ -61,13 +61,16 @@ public class XMLDaoServiceAdaptor {
     EntityService entityService = null;
     CodingSchemeService codingSchemeService = null;
     AssociationService assocService = null;
-    ArrayList<AssociationPredicate> associationList = null;
-    ArrayList<Relations> relationList = null;;
     VersionableEventAssociationService assocServiceForPred = null;
     DaoCallbackService daoCallbackService;
     PropertyService propertyService = null;
     PickListDefinitionService pickListService;
     ValueSetDefinitionService valueSetService;
+    
+    ArrayList<AssociationPredicate> associationList = null;
+    ArrayList<Relations> relationList = null;;
+    
+
     /**
      * constructor initializes all DAO services
      */
