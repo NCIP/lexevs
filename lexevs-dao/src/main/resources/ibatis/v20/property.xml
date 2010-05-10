@@ -178,6 +178,15 @@
   			source.attributeType = 'source'
   		)		
   	</sql>
+  	
+  	<select id="getPropertiesByParentUids" remapResults="true"
+  		resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection">
+		<include refid="getPropertyFragment"/>
+  		WHERE
+			property.referenceType = #param1#
+		AND
+			property.referenceGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
+  	</select>
 
   	<select id="getPropertiesByParent" remapResults="true"
   		resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">

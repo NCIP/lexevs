@@ -34,6 +34,7 @@ import org.lexevs.dao.database.constants.classifier.property.PropertyTypeClassif
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean;
@@ -82,7 +83,9 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	public static String INSERT_PROPERTYLINK_SQL = PROPERTY_NAMESPACE + "insertPropertyLink";
 	
 	/** The GE t_ al l_ propertie s_ o f_ paren t_ sql. */
-	public static String GET_ALL_PROPERTIES_OF_PARENT_SQL =PROPERTY_NAMESPACE +  "getPropertiesByParent";
+	public static String GET_ALL_PROPERTIES_OF_PARENT_SQL = PROPERTY_NAMESPACE +  "getPropertiesByParent";
+	
+	public static String GET_PROPERTIES_OF_PARENT_UIDS_SQL = PROPERTY_NAMESPACE +  "getPropertiesByParentUids";
 
 	public static String GET_ALL_PROPERTIES_OF_PARENT_BY_REVISION_SQL = PROPERTY_NAMESPACE + "getPropertiesByParentAndRevisionId";
 	
@@ -193,6 +196,19 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				this.getNonBatchTemplateInserter());	
 	}
 	
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Property> getPropertiesOfParents(String codingSchemeId,
+			List<String> parentUids) {
+		return this.getSqlMapClientTemplate().queryForList(GET_PROPERTIES_OF_PARENT_UIDS_SQL, 
+				new PrefixedParameterCollection(
+						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+						this.propertyTypeClassifier.classify(PropertyType.ENTITY),
+						parentUids));
+	}
+
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#getAllPropertiesOfParent(java.lang.String, java.lang.String, org.lexevs.dao.database.access.property.PropertyDao.PropertyType)
 	 */
