@@ -471,7 +471,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 	 */
 	@Test
 	@Transactional
-	public void tesEntityresentations() {
+	public void testEntityPresentations() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
 				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
@@ -491,6 +491,30 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		Presentation pres = entity.getPresentation()[0];
 		
 		assertNotNull(pres);
+	}
+	
+	/**
+	 * Test lazy load presentations.
+	 */
+	@Test
+	@Transactional
+	public void testGetAllEntitiesByUids() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid2', 'csguid', 'ecode2', 'ens2')");
+		
+		List<Entity> entities = ibatisEntityDao.getEntities("csguid", DaoUtility.createNonTypedList("eguid","eguid2"));
+		
+		assertEquals(2, entities.size());
 	}
 	
 	/**
