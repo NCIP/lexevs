@@ -145,7 +145,7 @@ public class SQLTableConstants {
     public static final String ENTRY_STATE_TYPE_PICKLIST = "pickList";
     public static final String ENTRY_STATE_TYPE_PICKLISTENTRY = "plEntry";
     public static final String ENTRY_STATE_TYPE_PROPERTY = "property";
-    public static final String ENTRY_STATE_TYPE_VALUEDOMAIN = "valueDomain";    
+    public static final String ENTRY_STATE_TYPE_VALUEDOMAIN = "valueSetDefinition";    
     public static final String ENTRY_STATE_TYPE_VALUEDOMAINENTRY = "vdEntry";
 
     private Hashtable insertStatements = new Hashtable();
