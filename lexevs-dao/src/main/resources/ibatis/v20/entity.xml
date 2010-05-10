@@ -3,8 +3,8 @@
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap namespace="Entity">
 
-	<typeAlias alias="entity" type="org.LexGrid.concepts.Entity" />
-	<typeAlias alias="associationEntity" type="org.LexGrid.relations.AssociationEntity" />
+	<typeAlias alias="entity" type="org.lexevs.dao.database.ibatis.entity.model.IdableEntity" />
+	<typeAlias alias="associationEntity" type="org.lexevs.dao.database.ibatis.entity.model.IdableAssociationEntity" />
 	<typeAlias alias="propertyLink" type="org.LexGrid.concepts.PropertyLink" />
 	<typeAlias alias="resolvedCodedNodeReference" type="org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference" />
 	<typeAlias alias="conceptReference" type="org.LexGrid.LexBIG.DataModel.Core.onceptReference" />
@@ -24,8 +24,8 @@
 		<result property="codingSchemeVersion" column="representsVersion" />
 	</resultMap>
 
-
 	<resultMap id="entityResult" class="entity" groupBy="entityCode,entityCodeNamespace">
+		<result property="id" column="entityGuid" />
 		<result property="entityCode" column="entityCode" />
 		<result property="entityCodeNamespace" column="entityCodeNamespace" />
 		<result property="isDefined" column="isDefined" />
@@ -210,6 +210,18 @@
 			entity.entityCode = #param2#
 		AND
 			entity.entityCodeNamespace = #param3#
+     </select>
+     
+     <select id="getEntitiesByUids" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection" 
+		resultMap="Entity.entityResult"
+     	remapResults="true">
+		<include refid="getEntityFragment"/>
+		
+		WHERE
+			entity.codingSchemeGuid = #param1#
+		AND
+			entity.entityGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
      </select>
      
      <select id="getEntityById" 
