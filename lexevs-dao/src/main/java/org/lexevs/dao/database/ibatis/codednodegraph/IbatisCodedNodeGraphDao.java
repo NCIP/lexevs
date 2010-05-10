@@ -275,6 +275,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		
 		PrefixedParameterCollection bean = new PrefixedParameterCollection();
 		bean.setPrefix(prefix);
+		bean.setParam1(codingSchemeUid);
 		bean.setParam2(associationPredicateUids);
 		
 		return this.getSqlMapClientTemplate().
@@ -289,6 +290,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		
 		PrefixedParameterCollection bean = new PrefixedParameterCollection();
 		bean.setPrefix(prefix);
+		bean.setParam1(codingSchemeUid);
 		bean.setParam2(associationPredicateUids);
 		
 		return this.getSqlMapClientTemplate().
