@@ -487,4 +487,144 @@ public class RegistryEntry {
 	public String getStagingPrefix() {
 		return stagingPrefix;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((activationDate == null) ? 0 : activationDate.hashCode());
+		result = prime * result
+				+ ((baseRevision == null) ? 0 : baseRevision.hashCode());
+		result = prime * result + ((dbName == null) ? 0 : dbName.hashCode());
+		result = prime
+				* result
+				+ ((dbSchemaDescription == null) ? 0 : dbSchemaDescription
+						.hashCode());
+		result = prime * result
+				+ ((dbSchemaVersion == null) ? 0 : dbSchemaVersion.hashCode());
+		result = prime * result + ((dbUri == null) ? 0 : dbUri.hashCode());
+		result = prime
+				* result
+				+ ((deactivationDate == null) ? 0 : deactivationDate.hashCode());
+		result = prime * result
+				+ ((fixedAtRevision == null) ? 0 : fixedAtRevision.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + (isLocked ? 1231 : 1237);
+		result = prime * result
+				+ ((lastUpdateDate == null) ? 0 : lastUpdateDate.hashCode());
+		result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
+		result = prime * result
+				+ ((resourceType == null) ? 0 : resourceType.hashCode());
+		result = prime * result
+				+ ((resourceUri == null) ? 0 : resourceUri.hashCode());
+		result = prime * result
+				+ ((resourceVersion == null) ? 0 : resourceVersion.hashCode());
+		result = prime * result
+				+ ((stagingPrefix == null) ? 0 : stagingPrefix.hashCode());
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((tag == null) ? 0 : tag.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RegistryEntry other = (RegistryEntry) obj;
+		if (activationDate == null) {
+			if (other.activationDate != null)
+				return false;
+		} else if (!activationDate.equals(other.activationDate))
+			return false;
+		if (baseRevision == null) {
+			if (other.baseRevision != null)
+				return false;
+		} else if (!baseRevision.equals(other.baseRevision))
+			return false;
+		if (dbName == null) {
+			if (other.dbName != null)
+				return false;
+		} else if (!dbName.equals(other.dbName))
+			return false;
+		if (dbSchemaDescription == null) {
+			if (other.dbSchemaDescription != null)
+				return false;
+		} else if (!dbSchemaDescription.equals(other.dbSchemaDescription))
+			return false;
+		if (dbSchemaVersion == null) {
+			if (other.dbSchemaVersion != null)
+				return false;
+		} else if (!dbSchemaVersion.equals(other.dbSchemaVersion))
+			return false;
+		if (dbUri == null) {
+			if (other.dbUri != null)
+				return false;
+		} else if (!dbUri.equals(other.dbUri))
+			return false;
+		if (deactivationDate == null) {
+			if (other.deactivationDate != null)
+				return false;
+		} else if (!deactivationDate.equals(other.deactivationDate))
+			return false;
+		if (fixedAtRevision == null) {
+			if (other.fixedAtRevision != null)
+				return false;
+		} else if (!fixedAtRevision.equals(other.fixedAtRevision))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (isLocked != other.isLocked)
+			return false;
+		if (lastUpdateDate == null) {
+			if (other.lastUpdateDate != null)
+				return false;
+		} else if (!lastUpdateDate.equals(other.lastUpdateDate))
+			return false;
+		if (prefix == null) {
+			if (other.prefix != null)
+				return false;
+		} else if (!prefix.equals(other.prefix))
+			return false;
+		if (resourceType == null) {
+			if (other.resourceType != null)
+				return false;
+		} else if (!resourceType.equals(other.resourceType))
+			return false;
+		if (resourceUri == null) {
+			if (other.resourceUri != null)
+				return false;
+		} else if (!resourceUri.equals(other.resourceUri))
+			return false;
+		if (resourceVersion == null) {
+			if (other.resourceVersion != null)
+				return false;
+		} else if (!resourceVersion.equals(other.resourceVersion))
+			return false;
+		if (stagingPrefix == null) {
+			if (other.stagingPrefix != null)
+				return false;
+		} else if (!stagingPrefix.equals(other.stagingPrefix))
+			return false;
+		if (status == null) {
+			if (other.status != null)
+				return false;
+		} else if (!status.equals(other.status))
+			return false;
+		if (tag == null) {
+			if (other.tag != null)
+				return false;
+		} else if (!tag.equals(other.tag))
+			return false;
+		return true;
+	}
+	
+	
 }

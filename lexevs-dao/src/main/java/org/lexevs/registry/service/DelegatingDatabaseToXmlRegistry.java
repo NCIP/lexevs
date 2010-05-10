@@ -25,6 +25,8 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.lexevs.cache.annotation.CacheMethod;
+import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.cache.annotation.ParameterKey;
 import org.lexevs.registry.model.RegistryEntry;
@@ -34,6 +36,7 @@ import org.lexevs.registry.model.RegistryEntry;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Cacheable(cacheName="DelegatingDatabaseToXmlRegistry", cacheSize=100)
 public class DelegatingDatabaseToXmlRegistry implements Registry {
 	
 	/** The database registry. */
@@ -150,7 +153,9 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#getCodingSchemeEntry(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
+	@CacheMethod
 	public RegistryEntry getCodingSchemeEntry(
+			@ParameterKey(field = { "_codingSchemeURN", "_codingSchemeVersion" })
 			AbsoluteCodingSchemeVersionReference codingScheme)
 			throws LBParameterException {
 		if(this.databaseRegistry.containsCodingSchemeEntry(codingScheme)){
@@ -183,6 +188,7 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#updateEntry(org.lexevs.registry.model.RegistryEntry)
 	 */
+	@ClearCache
 	public void updateEntry(RegistryEntry entry) throws LBParameterException {
 		if(entry.getResourceType().equals(ResourceType.CODING_SCHEME)) {
 			
@@ -213,6 +219,7 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	 * 
 	 * @throws LBParameterException the LB parameter exception
 	 */
+	@ClearCache
 	public void updateCodingSchemeEntryTag(
 			AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
 			throws LBParameterException {
