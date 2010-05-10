@@ -308,7 +308,7 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         
         if(resolveBackward) {
             if(ref.getTargetOf() != null) {
-                for(Association assoc : ref.getSourceOf().getAssociation()) {
+                for(Association assoc : ref.getTargetOf().getAssociation()) {
                     for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()) {
                         returnList.addAll(
                                 this.traverseGraph(ac, resolveForward, resolveBackward));
