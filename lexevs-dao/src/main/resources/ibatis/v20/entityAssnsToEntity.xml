@@ -298,19 +298,36 @@
 			eate1.sourceEntityCodeNamespace AS entityCodeNamespace
 		FROM
 			$prefix$entityAssnsToEntity eate1
+		INNER JOIN
+			$prefix$associationPredicate ap
+		ON (ap.associationPredicateGuid = eate1.associationPredicateGuid)
+		
+		INNER JOIN
+			$prefix$relation rel
+		ON (rel.relationGuid = ap.relationGuid)
+		
 		LEFT JOIN
 			$prefix$entityAssnsToEntity eate2
 		ON (
 			eate1.sourceEntityCode = eate2.targetEntityCode
-			AND
-			eate1.associationPredicateGuid = eate2.associationPredicateGuid
+			<isNotEmpty property="param2" prepend="AND">
+				eate1.associationPredicateGuid = eate2.associationPredicateGuid
+			</isNotEmpty>
 			)
 		WHERE
+			(
 			eate2.entityAssnsGuid IS NULL	
-			
+		OR
+			eate2.sourceEntityCode = '@'
+			)
+		AND
+			eate1.sourceEntityCode != '@'
+
 			<isNotEmpty property="param2" prepend="AND">
 				eate1.associationPredicateGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
-			</isNotEmpty>				
+			</isNotEmpty>	
+		AND
+			rel.codingSchemeGuid = #param1#			
 	</select>
 	
 	<select id="getTailEntityAssnsToEntityUids"
@@ -322,19 +339,36 @@
 			eate1.targetEntityCodeNamespace AS entityCodeNamespace
 		FROM
 			$prefix$entityAssnsToEntity eate1
+		INNER JOIN
+			$prefix$associationPredicate ap
+		ON (ap.associationPredicateGuid = eate1.associationPredicateGuid)
+		
+		INNER JOIN
+			$prefix$relation rel
+		ON (rel.relationGuid = ap.relationGuid)
+			
 		LEFT JOIN
 			$prefix$entityAssnsToEntity eate2
 		ON (
 			eate1.targetEntityCode = eate2.sourceEntityCode
-			AND
-			eate1.associationPredicateGuid = eate2.associationPredicateGuid
+			<isNotEmpty property="param2" prepend="AND">
+				eate1.associationPredicateGuid = eate2.associationPredicateGuid
+			</isNotEmpty>
 			)
 		WHERE
+			(
 			eate2.entityAssnsGuid IS NULL	
+		OR
+			eate2.targetEntityCode = '@@'
+			)
+		AND
+			eate1.targetEntityCode != '@@'
 			
 			<isNotEmpty property="param2" prepend="AND">
 				eate1.associationPredicateGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
-			</isNotEmpty>				
+			</isNotEmpty>	
+		AND
+			rel.codingSchemeGuid = #param1#			
 	</select>
   
   	<select id="getEntityAssnsToEntityUids"
