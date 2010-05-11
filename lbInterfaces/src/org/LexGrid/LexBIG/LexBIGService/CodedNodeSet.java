@@ -46,7 +46,7 @@ public interface CodedNodeSet extends Serializable {
     	
     	private String value;
     	
-    	PropertyType(String value){
+    	private PropertyType(String value){
     		this.value = value;
     	}
 
