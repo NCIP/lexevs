@@ -19,12 +19,12 @@
 package org.lexevs.dao.database.ibatis;
 
 import org.lexevs.dao.database.access.AbstractBaseDao;
-import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
-import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.batch.InOrderOrderingBatchInserterDecorator;
 import org.lexevs.dao.database.ibatis.batch.SqlMapClientTemplateInserter;
 import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.inserter.BatchInserter;
+import org.lexevs.dao.database.inserter.Inserter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +42,7 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	private SqlMapClientTemplate sqlMapClientTemplate;
 	
 	/** The non batch template inserter. */
-	private IbatisInserter nonBatchTemplateInserter;
+	private Inserter nonBatchTemplateInserter;
 	
 	/** The VERSION s_ namespace. */
 	public static String VERSIONS_NAMESPACE = "Versions.";
@@ -91,7 +91,7 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 		return sqlMapClientTemplate;
 	}
 	
-	public IbatisBatchInserter getBatchTemplateInserter(SqlMapExecutor executor) {
+	public BatchInserter getBatchTemplateInserter(SqlMapExecutor executor) {
 		return new InOrderOrderingBatchInserterDecorator(
 					new SqlMapExecutorBatchInserter(executor));
 	}
@@ -101,7 +101,7 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	 * 
 	 * @param nonBatchTemplateInserter the new non batch template inserter
 	 */
-	public void setNonBatchTemplateInserter(IbatisInserter nonBatchTemplateInserter) {
+	public void setNonBatchTemplateInserter(Inserter nonBatchTemplateInserter) {
 		this.nonBatchTemplateInserter = nonBatchTemplateInserter;
 	}
 
@@ -110,7 +110,7 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	 * 
 	 * @return the non batch template inserter
 	 */
-	public IbatisInserter getNonBatchTemplateInserter() {
+	public Inserter getNonBatchTemplateInserter() {
 		return nonBatchTemplateInserter;
 	}
 	

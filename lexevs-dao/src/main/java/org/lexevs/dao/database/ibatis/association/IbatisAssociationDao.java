@@ -49,12 +49,12 @@ import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQua
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateRelationsBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertTransitiveClosureBean;
-import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
-import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
+import org.lexevs.dao.database.inserter.BatchInserter;
+import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
@@ -333,7 +333,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String codingSchemeId,
 			String entityId,
 			AssociationEntity associationEntity,
-			IbatisInserter inserter){
+			Inserter inserter){
 		
 		String associationEntityId = this.createUniqueId();
 		
@@ -405,7 +405,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 			public Object doInSqlMapClient(SqlMapExecutor executor)
 					throws SQLException {
-				IbatisBatchInserter batchInserter = getBatchTemplateInserter(executor);
+				BatchInserter batchInserter = getBatchTemplateInserter(executor);
 				
 				batchInserter.startBatch();
 				
@@ -444,7 +444,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			
 			public Object doInSqlMapClient(SqlMapExecutor executor)
 					throws SQLException {
-				IbatisBatchInserter batchInserter = getBatchTemplateInserter(executor);
+				BatchInserter batchInserter = getBatchTemplateInserter(executor);
 				
 				batchInserter.startBatch();
 				
@@ -479,7 +479,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String sourceEntityCodeNamespace, 
 			String targetEntityCode,
 			String targetEntityCodeNamespace, 
-			IbatisInserter executor) {
+			Inserter executor) {
 		
 		String id = this.createUniqueId();
 		
@@ -533,7 +533,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 
 			public Object doInSqlMapClient(SqlMapExecutor executor)
 					throws SQLException {
-				IbatisBatchInserter batchInserter = getBatchTemplateInserter(executor);
+				BatchInserter batchInserter = getBatchTemplateInserter(executor);
 				
 				batchInserter.startBatch();
 				
@@ -566,7 +566,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	 */
 	public void insertAssociationSource(String codingSchemeUId,
 			String associationPredicateUId, AssociationSource source,
-			IbatisInserter inserter) {
+			Inserter inserter) {
 		Assert
 				.isTrue(
 						source.getTarget().length > 0
@@ -702,7 +702,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	protected String doInsertHistoryRelation(String codingSchemeUId, 
 			String relationUId,
 			Relations relation, 
-			IbatisInserter inserter,
+			Inserter inserter,
 			boolean cascade) {
 		
 		String historyPrefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);

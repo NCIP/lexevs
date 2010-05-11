@@ -23,15 +23,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.lexevs.dao.database.inserter.BatchInserter;
+
 /**
  * The Class OrderingBatchInserterDecorator.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class InOrderOrderingBatchInserterDecorator implements IbatisBatchInserter {
+public class InOrderOrderingBatchInserterDecorator implements BatchInserter {
 
 	/** The delegate. */
-	private IbatisBatchInserter delegate;
+	private BatchInserter delegate;
 	
 	private BatchOrderClassifier batchOrderClassifier;
 	
@@ -42,12 +44,12 @@ public class InOrderOrderingBatchInserterDecorator implements IbatisBatchInserte
 	 * 
 	 * @param delegate the delegate
 	 */
-	public InOrderOrderingBatchInserterDecorator(IbatisBatchInserter delegate){
+	public InOrderOrderingBatchInserterDecorator(BatchInserter delegate){
 		this(delegate, new BatchOrderClassifier());
 	}
 	
 	public InOrderOrderingBatchInserterDecorator(
-			IbatisBatchInserter delegate,
+			BatchInserter delegate,
 			BatchOrderClassifier batchOrderClassifier){
 		this.delegate = delegate;
 		this.batchOrderClassifier = batchOrderClassifier;
@@ -58,7 +60,7 @@ public class InOrderOrderingBatchInserterDecorator implements IbatisBatchInserte
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter#executeBatch()
+	 * @see org.lexevs.dao.database.ibatis.batch.BatchInserter#executeBatch()
 	 */
 	@Override
 	public void executeBatch() {
@@ -72,7 +74,7 @@ public class InOrderOrderingBatchInserterDecorator implements IbatisBatchInserte
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter#startBatch()
+	 * @see org.lexevs.dao.database.ibatis.batch.BatchInserter#startBatch()
 	 */
 	@Override
 	public void startBatch() {
@@ -80,7 +82,7 @@ public class InOrderOrderingBatchInserterDecorator implements IbatisBatchInserte
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.ibatis.batch.IbatisInserter#insert(java.lang.String, java.lang.Object)
+	 * @see org.lexevs.dao.database.ibatis.batch.Inserter#insert(java.lang.String, java.lang.Object)
 	 */
 	@Override
 	public void insert(String sql, Object parameter) {

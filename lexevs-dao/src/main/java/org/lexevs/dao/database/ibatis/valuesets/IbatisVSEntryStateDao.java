@@ -24,11 +24,11 @@ import org.LexGrid.versions.EntryState;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
-import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.revision.IbatisRevisionDao;
 import org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean;
+import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 
@@ -83,11 +83,11 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 	 * @param entryType the entry type
 	 * @param previousEntryStateId the previous entry state id
 	 * @param entryState the entry state
-	 * @param ibatisInserter the ibatis inserter
+	 * @param inserter the ibatis inserter
 	 */
 	public void insertEntryState(String prefix, String entryStateId,
 			String entryId, String entryType, String previousEntryStateId,
-			EntryState entryState, IbatisInserter ibatisInserter){
+			EntryState entryState, Inserter inserter){
 		
 		if(entryState == null){
 			return;
@@ -104,7 +104,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 		if (esBean == null)
 			return;
 		
-		ibatisInserter.insert(INSERT_ENTRY_STATE_SQL, esBean);	
+		inserter.insert(INSERT_ENTRY_STATE_SQL, esBean);	
 		
 	}
 	

@@ -33,7 +33,6 @@ import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.constants.classifier.property.PropertyMultiAttributeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
-import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
@@ -41,6 +40,7 @@ import org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyB
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.VSPropertyBean;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
+import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
@@ -223,7 +223,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 			String propertyGuid,
 			ReferenceType type, 
 			Property property, 
-			IbatisInserter inserter) {
+			Inserter inserter) {
 		
 		String entryStateId = this.createUniqueId();
 		
@@ -321,7 +321,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 			final String propertyQualifierGuid, 
 			final String entryStateGuid,
 			final PropertyQualifier propertyQualifier, 
-			final IbatisInserter inserter) {
+			final Inserter inserter) {
 
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
 
@@ -366,7 +366,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 			final String propertySourceGuid, 
 			final String entryStateId,
 			final Source source, 
-			final IbatisInserter inserter) {
+			final Inserter inserter) {
 		final String sourceId = this.createUniqueId();	
 
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
@@ -397,7 +397,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 			final String propertyUsageContextGuid, 
 			final String entryStateGuid,
 			final String usageContext, 
-			final IbatisInserter inserter) {
+			final Inserter inserter) {
 		
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
 

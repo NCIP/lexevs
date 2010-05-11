@@ -15,9 +15,9 @@ import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClass
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationDataBean;
-import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
+import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 
@@ -106,7 +106,7 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 		String entryStateUId = this.createUniqueId();
 
 		InsertOrUpdateAssociationDataBean bean = new InsertOrUpdateAssociationDataBean();
-		IbatisInserter inserter = this.getNonBatchTemplateInserter();
+		Inserter inserter = this.getNonBatchTemplateInserter();
 
 		bean.setPrefix(prefix);
 		bean.setUId(associationDataUId);

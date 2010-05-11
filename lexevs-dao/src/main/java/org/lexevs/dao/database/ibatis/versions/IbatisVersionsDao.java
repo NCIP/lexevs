@@ -27,11 +27,11 @@ import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
-import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.revision.IbatisRevisionDao;
 import org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean;
+import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.batch.classify.Classifier;
@@ -158,12 +158,12 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	 *            the previous entry state id
 	 * @param entryState
 	 *            the entry state
-	 * @param ibatisInserter
+	 * @param inserter
 	 *            the ibatis inserter
 	 */
 	public void insertEntryState(String prefix, String entryStateUId,
 			String entryUId, String entryType, String previousEntryStateUId,
-			EntryState entryState, IbatisInserter ibatisInserter) {
+			EntryState entryState, Inserter inserter) {
 		InsertEntryStateBean insertEntryStateBean = buildInsertEntryStateBean(
 				prefix, entryStateUId, entryUId, entryType,
 				previousEntryStateUId, entryState);
@@ -172,7 +172,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 			return;
 		}
 
-		ibatisInserter.insert(INSERT_ENTRY_STATE_SQL, insertEntryStateBean);
+		inserter.insert(INSERT_ENTRY_STATE_SQL, insertEntryStateBean);
 
 	}
 

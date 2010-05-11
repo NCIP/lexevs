@@ -36,8 +36,6 @@ import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClass
 import org.lexevs.dao.database.constants.classifier.property.PropertyMultiAttributeClassifier;
 import org.lexevs.dao.database.constants.classifier.property.PropertyTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
-import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
-import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
@@ -46,6 +44,8 @@ import org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyB
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyLinkBean;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
+import org.lexevs.dao.database.inserter.BatchInserter;
+import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.batch.classify.Classifier;
@@ -139,7 +139,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 
 			public Object doInSqlMapClient(SqlMapExecutor executor)
 					throws SQLException {
-				IbatisBatchInserter inserter = getBatchTemplateInserter(executor);
+				BatchInserter inserter = getBatchTemplateInserter(executor);
 				
 				inserter.startBatch();
 				
@@ -174,7 +174,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			final String codingSchemeId, 
 			final PropertyType type,
 			final List<PropertyBatchInsertItem> batch, 
-			IbatisBatchInserter inserter) {
+			BatchInserter inserter) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		String propertyId = this.createUniqueId();
 		
@@ -292,7 +292,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			String propertyUId,
 			PropertyType referenceType, 
 			Property property, 
-			IbatisInserter inserter) {
+			Inserter inserter) {
 		
 		String entryStateUId = this.createUniqueId();
 		
@@ -340,7 +340,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	protected String doInsertHistoryProperty(String codingSchemeUId,
 			String propertyUId,
 			Property property, 
-			IbatisInserter inserter) {
+			Inserter inserter) {
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		String historyPrefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
@@ -464,7 +464,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			final String propertyQualifierUId, 
 			final String entryStateUId,
 			final PropertyQualifier propertyQualifier, 
-			final IbatisInserter inserter) {
+			final Inserter inserter) {
 
 				inserter.insert(INSERT_PROPERTY_QUALIFIER_SQL, 
 						buildInsertPropertyQualifierBean(
@@ -504,7 +504,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			final String propertySourceUId, 
 			final String entryStateUId,
 			final Source source, 
-			final IbatisInserter inserter) {
+			final Inserter inserter) {
 
 				inserter.insert(INSERT_PROPERTY_SOURCE_SQL, 
 						buildInsertPropertySourceBean(
@@ -529,7 +529,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			final String propertyUsageContextUId, 
 			final String entryStateUId,
 			final String usageContext, 
-			final IbatisInserter inserter) {
+			final Inserter inserter) {
 
 				inserter.insert(INSERT_PROPERTY_USAGECONTEXT_SQL, 
 						buildInsertPropertyUsageContextBean(
@@ -573,7 +573,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			final String link, 
 			final String sourcePropertyUId,
 			final String targetPropertyUId,
-			final IbatisInserter inserter) {
+			final Inserter inserter) {
 		final InsertPropertyLinkBean bean = new InsertPropertyLinkBean();
 		bean.setPrefix(prefix);
 		bean.setLink(link);

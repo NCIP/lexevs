@@ -16,23 +16,20 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.lexevs.dao.database.ibatis.batch;
+package org.lexevs.dao.database.inserter;
 
 /**
- * The Interface IbatisBatchInserter.
+ * The Interface Inserter.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface IbatisBatchInserter extends IbatisInserter {
+public interface Inserter {
 
 	/**
-	 * Start batch.
+	 * Insert.
+	 * 
+	 * @param sql the sql
+	 * @param parameter the parameter
 	 */
-	public void startBatch();
-	
-	/**
-	 * Execute batch.
-	 */
-	public void executeBatch();
-	
+	public void insert(String sql, Object parameter);
 }

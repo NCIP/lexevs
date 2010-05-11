@@ -38,8 +38,6 @@ import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
 import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
-import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
-import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.codingscheme.IbatisCodingSchemeDao;
 import org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
@@ -48,6 +46,8 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.property.IbatisPropertyDao;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
+import org.lexevs.dao.database.inserter.BatchInserter;
+import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
@@ -352,7 +352,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			String prefix, 
 			String codingSchemeUId, 
 			Entity entity, 
-			IbatisInserter inserter,
+			Inserter inserter,
 			boolean cascade) {
 		Map<String,String> propertyIdToGuidMap = new HashMap<String,String>();
 		
@@ -418,7 +418,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			String codingSchemeUId, 
 			String entityUId,
 			Entity entity, 
-			IbatisInserter inserter,
+			Inserter inserter,
 			boolean cascade) {
 
 		String historyPrefix = this.getPrefixResolver().resolveHistoryPrefix();
@@ -499,7 +499,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 
 			public Object doInSqlMapClient(SqlMapExecutor executor)
 					throws SQLException {
-				IbatisBatchInserter batchInserter = getBatchTemplateInserter(executor);
+				BatchInserter batchInserter = getBatchTemplateInserter(executor);
 				
 				batchInserter.startBatch();
 				

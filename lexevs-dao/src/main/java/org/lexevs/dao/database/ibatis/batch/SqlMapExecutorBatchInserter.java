@@ -20,6 +20,8 @@ package org.lexevs.dao.database.ibatis.batch;
 
 import java.sql.SQLException;
 
+import org.lexevs.dao.database.inserter.BatchInserter;
+
 import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 /**
@@ -27,7 +29,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class SqlMapExecutorBatchInserter implements IbatisBatchInserter {
+public class SqlMapExecutorBatchInserter implements BatchInserter {
 	
 	/** The sql map executor. */
 	private SqlMapExecutor sqlMapExecutor;
@@ -42,7 +44,7 @@ public class SqlMapExecutorBatchInserter implements IbatisBatchInserter {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter#executeBatch()
+	 * @see org.lexevs.dao.database.ibatis.batch.BatchInserter#executeBatch()
 	 */
 	public void executeBatch() {
 		try {
@@ -54,7 +56,7 @@ public class SqlMapExecutorBatchInserter implements IbatisBatchInserter {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter#startBatch()
+	 * @see org.lexevs.dao.database.ibatis.batch.BatchInserter#startBatch()
 	 */
 	public void startBatch() {
 		try {
@@ -66,7 +68,7 @@ public class SqlMapExecutorBatchInserter implements IbatisBatchInserter {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.ibatis.batch.IbatisInserter#insert(java.lang.String, java.lang.Object)
+	 * @see org.lexevs.dao.database.ibatis.batch.Inserter#insert(java.lang.String, java.lang.Object)
 	 */
 	public void insert(String sql, Object parameter) {
 		try {

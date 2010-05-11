@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.database.ibatis.batch;
 
+import org.lexevs.dao.database.inserter.Inserter;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
 
 /**
@@ -25,7 +26,7 @@ import org.springframework.orm.ibatis.SqlMapClientTemplate;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class SqlMapClientTemplateInserter implements IbatisInserter{
+public class SqlMapClientTemplateInserter implements Inserter{
 
 	/** The sql map client template. */
 	private SqlMapClientTemplate sqlMapClientTemplate;
@@ -40,7 +41,7 @@ public class SqlMapClientTemplateInserter implements IbatisInserter{
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.ibatis.batch.IbatisInserter#insert(java.lang.String, java.lang.Object)
+	 * @see org.lexevs.dao.database.ibatis.batch.Inserter#insert(java.lang.String, java.lang.Object)
 	 */
 	public void insert(String sql, Object parameter) {
 		sqlMapClientTemplate.insert(sql, parameter);
