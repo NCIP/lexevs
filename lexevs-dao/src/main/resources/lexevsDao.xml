@@ -49,6 +49,7 @@
 		<property name="versionsDao" ref="ibatisVersionsDao"/>
 		<property name="entityDao" ref="ibatisEntityDao"/>
 		<property name="associationDao" ref="ibatisAssociationDao"/>
+		<property name="propertyDao" ref="ibatisPropertyDao"/>
 	</bean>
 	
 	<bean id="ibatisPickListDao"
@@ -56,15 +57,30 @@
 		<property name="versionsDao" ref="ibatisVersionsDao"/>
 		<property name="vsEntryStateDao" ref="ibatisVSEntryStateDao"/>
 		<property name="vsPropertyDao" ref="ibatisVSPropertyDao"/>
+		<property name="pickListEntryNodeDao" ref="ibatisPickListEntryNodeDao"/>
 	</bean>
+	
+	<bean id="ibatisPickListEntryNodeDao"
+		class="org.lexevs.dao.database.ibatis.valuesets.IbatisPickListEntryNodeDao" parent="abstractIbatisDao">
+		<property name="versionsDao" ref="ibatisVersionsDao"/>
+		<property name="vsEntryStateDao" ref="ibatisVSEntryStateDao"/>
+		<property name="vsPropertyDao" ref="ibatisVSPropertyDao"/>
+	</bean>	
 	
 	<bean id="ibatisValueSetDefinitionDao"
 		class="org.lexevs.dao.database.ibatis.valuesets.IbatisValueSetDefinitionDao" parent="abstractIbatisDao">
 		<property name="versionsDao" ref="ibatisVersionsDao"/>
-		<property name="vsEntryStateDao" ref="ibatisVSEntryStateDao"/>
+		<property name="vsDefinitionEntryDao" ref="ibatisVSDefinitionEntryDao"/>
 		<property name="vsPropertyDao" ref="ibatisVSPropertyDao"/>
+		<property name="vsEntryStateDao" ref="ibatisVSEntryStateDao"/>
 	</bean>
-	
+
+	<bean id="ibatisVSDefinitionEntryDao"
+		class="org.lexevs.dao.database.ibatis.valuesets.IbatisVSDefinitionEntryDao" parent="abstractIbatisDao">
+		<property name="vsPropertyDao" ref="ibatisVSPropertyDao"/>
+		<property name="vsEntryStateDao" ref="ibatisVSEntryStateDao"/>
+	</bean>
+
 	<bean id="ibatisVSPropertyDao"
 		class="org.lexevs.dao.database.ibatis.valuesets.IbatisVSPropertyDao" parent="abstractIbatisDao">
 		<property name="ibatisVersionsDao" ref="ibatisVersionsDao"/>
@@ -111,6 +127,11 @@
 				<ref bean="ibatisAssociationDao"/>
 			</list>
 		</property>
+		<property name="associationDataDaos">
+			<list>
+				<ref bean="ibatisAssociationDataDao"/>
+			</list>
+		</property>
 		<property name="propertyDaos">
 			<list>
 				<ref bean="ibatisPropertyDao"/>
@@ -126,11 +147,21 @@
 				<ref bean="ibatisPickListDao"/>
 			</list>
 		</property>		
+		<property name="pickListEntryNodeDaos">
+			<list>
+				<ref bean="ibatisPickListEntryNodeDao"/>
+			</list>
+		</property>			
 		<property name="valueSetDefinitionDaos">
 			<list>
 				<ref bean="ibatisValueSetDefinitionDao"/>
 			</list>
 		</property>
+		<property name="vsDefinitionEntryDaos">
+			<list>
+				<ref bean="ibatisVSDefinitionEntryDao"/>
+			</list>
+		</property>		
 		<property name="vsPropertyDaos">
 			<list>
 				<ref bean="ibatisVSPropertyDao"/>
@@ -140,7 +171,7 @@
 			<list>
 				<ref bean="ibatisVSEntryStateDao"/>
 			</list>
-		</property>
+		</property>		
 		<property name="versionsDaos">
 			<list>
 				<ref bean="ibatisVersionsDao" />
@@ -162,6 +193,7 @@
 	 <bean id="ibatisEntityDao"
 		class="org.lexevs.dao.database.ibatis.entity.IbatisEntityDao" parent="abstractIbatisDao">
 		<property name="ibatisVersionsDao" ref="ibatisVersionsDao"/>
+		<property name="ibatisCodingSchemeDao" ref="ibatisCodingSchemeDao"/>
 		<property name="ibatisPropertyDao" ref="ibatisPropertyDao"/>
 		<property name="ibatisAssociationDao" ref="ibatisAssociationDao"/>
 	</bean>
@@ -172,8 +204,20 @@
 	<bean id="ibatisAssociationDao"
 		class="org.lexevs.dao.database.ibatis.association.IbatisAssociationDao" parent="abstractIbatisDao">
 		<property name="ibatisVersionsDao" ref="ibatisVersionsDao"/>
-		<property name="codingSchemeDao" ref="ibatisCodingSchemeDao"/>
-		<property name="entityDao" ref="ibatisEntityDao"/>
+		<property name="associationTargetDao" ref="ibatisAssociationTargetDao"/>
+		<property name="associationDataDao" ref="ibatisAssociationDataDao"/>
+		<property name="propertyDao" ref="ibatisPropertyDao"/>
+	</bean>
+
+	<bean id="ibatisAssociationTargetDao"
+		class="org.lexevs.dao.database.ibatis.association.IbatisAssociationTargetDao"
+		parent="abstractIbatisDao">
+		<property name="versionsDao" ref="ibatisVersionsDao" />
+	</bean>
+	
+    <bean id="ibatisAssociationDataDao"
+		class="org.lexevs.dao.database.ibatis.association.IbatisAssociationDataDao" parent="abstractIbatisDao">
+		<property name="versionsDao" ref="ibatisVersionsDao"/>
 	</bean>
     
     <bean id="ibatisVersionsDao"
@@ -194,12 +238,16 @@
 		<property name="codingSchemeService" ref="codingSchemeService"/>
 		<property name="propertyService" ref="propertyService"/>
 		<property name="entityService" ref="entityService"/>
+		<property name="relationService" ref="relationService"/>
 		<property name="associationService" ref="associationService"/>
+		<property name="associationTargetService" ref="associationTargetService"/>
+		<property name="associationDataService" ref="associationDataService"/>
 		<property name="pickListDefinitionService" ref="pickListDefinitionService"/>
 		<property name="valueSetDefinitionService" ref="valueSetDefinitionService"/>
 		<property name="vsPropertyService" ref="vsPropertyService"/>
 		<property name="daoCallbackService" ref="daoManagerDaoCallbackService"/>
 		<property name="codedNodeGraphService" ref="codedNodeGraphService"/>
+		<property name="authoringService" ref="authoringService"></property>
 	</bean>
 	
 	<bean id="abstractService" class="org.lexevs.dao.database.service.event.DatabaseServiceEventSupport"
@@ -213,12 +261,20 @@
 		class="org.lexevs.dao.database.service.daocallback.DaoManagerDaoCallbackService">
 		<property name="daoManager" ref="daoManager"/>
 	</bean>
+
+	<bean id="authoringService" 
+		class="org.lexevs.dao.database.service.version.VersionableEventAuthoringService"
+		parent="abstractService">
+		<property name="codingSchemeService" ref="codingSchemeService"/>
+	</bean>
 	
-<!--	<bean id="authoringService" -->
-<!--		class="org.lexevs.dao.database.service.version.VersionableEventAuthoringService"-->
-<!--		parent="abstractService">-->
-<!--		<property name="codingSchemeService" ref="codingSchemeService"/>-->
-<!--	</bean>-->
+	<bean id="relationService" 
+		class="org.lexevs.dao.database.service.relation.VersionableEventRelationService"
+		parent="abstractService">
+		<property name="assocTargetService" ref="associationTargetService"/>
+		<property name="assocDataService" ref="associationDataService"/>
+		<property name="propertyService" ref="propertyService"/>
+	</bean>
 	
 	<bean id="codingSchemeService" 
 		class="org.lexevs.dao.database.service.codingscheme.VersionableEventCodingSchemeService"
@@ -231,7 +287,7 @@
 		</property>
 		<property name="propertyService" ref="propertyService"/>
 		<property name="entityService" ref="entityService"/>
-		<property name="associationService" ref="associationService"/>
+		<property name="relationService" ref="relationService"/>
 	</bean>
 		
 	<bean id="propertyService" 
@@ -262,15 +318,39 @@
 	
 	<bean id="associationService" 
 		class="org.lexevs.dao.database.service.association.VersionableEventAssociationService"
-		parent="abstractService"/>
+		parent="abstractService">
+		<property name="propertyService" ref="propertyService"/>
+	</bean>
 	
-	<bean id="pickListDefinitionService" 
-		class="org.lexevs.dao.database.service.valuesets.VersionableEventPickListDefinitionService"
+	<bean id="associationTargetService" 
+		class="org.lexevs.dao.database.service.association.VersionableEventAssociationTargetService"
 		parent="abstractService">
 	</bean>
 	
+	<bean id="associationDataService" 
+		class="org.lexevs.dao.database.service.association.VersionableEventAssociationDataService"
+		parent="abstractService">
+	</bean>
+		
+	<bean id="pickListDefinitionService" 
+		class="org.lexevs.dao.database.service.valuesets.VersionableEventPickListDefinitionService"
+		parent="abstractService">
+		<property name="vsPropertyService" ref="vsPropertyService"/>
+		<property name="pickListEntryNodeService" ref="pickListEntryNodeService"/>
+	</bean>
+	
+	<bean id="pickListEntryNodeService" 
+		class="org.lexevs.dao.database.service.valuesets.VersionableEventPickListEntryNodeService"
+		parent="abstractService">
+		<property name="vsPropertyService" ref="vsPropertyService"/>
+	</bean>
 	<bean id="valueSetDefinitionService" 
 		class="org.lexevs.dao.database.service.valuesets.VersionableEventValueSetDefinitionService"
+		parent="abstractService">
+	</bean>
+	
+	<bean id="vsDefinitionEntryService" 
+		class="org.lexevs.dao.database.service.valuesets.VersionableEventVSDefinitionEntryService"
 		parent="abstractService">
 	</bean>
 	

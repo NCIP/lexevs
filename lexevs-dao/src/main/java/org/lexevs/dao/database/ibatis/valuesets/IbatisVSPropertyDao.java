@@ -30,9 +30,11 @@ import org.LexGrid.versions.EntryState;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
+import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.constants.classifier.property.PropertyMultiAttributeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean;
@@ -80,7 +82,17 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	
 	public static String GET_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL = PROPERTY_NAMESPACE + "getPropertyMultiAttribById";
 	
-	public static String UPDATE_PROPERTY_BY_ID_SQL = PROPERTY_NAMESPACE + "updatePropertyById";
+	public static String UPDATE_PROPERTY_BY_UID_SQL = PROPERTY_NAMESPACE + "updatePropertyByUId";
+	
+	public static String UPDATE_PROPERTY_VER_ATTRIB_BY_UID_SQL = PROPERTY_NAMESPACE + "updatePropertyVerAttribByUId";
+	
+	public static String DELETE_PROPERTY_BY_UID_SQL = PROPERTY_NAMESPACE + "deletePropertyByUId";
+	
+	public static String GET_PROPERTY_ATTRIBUTES_BY_UID_SQL = PROPERTY_NAMESPACE + "getPropertyAttributesByUId";
+	
+	private static String DELETE_ALL_PICKLIST_ENTRYNODE_PROPERTIES_BY_PICKLISTENTRYUID = PROPERTY_NAMESPACE + "deletePickListEntryPropertiesByPlEntryGuid";	
+	
+	private static String GET_VSPROPERTY_LATEST_REVISION_ID_BY_UID = PROPERTY_NAMESPACE + "getVSPropertyLatestRevisionIdByUId";
 	
 	PropertyMultiAttributeClassifier propertyMultiAttributeClassifier = new PropertyMultiAttributeClassifier();
 	
@@ -93,8 +105,10 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 			ReferenceType type, 
 			Property property) {
 		String propertyGuid = this.createUniqueId();
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
 		return this.doInsertProperty(
+				prefix,
 				parentGuid, 
 				propertyGuid, 
 				type, 
@@ -103,12 +117,34 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	}
 	
 	public String insertHistoryProperty(String parentGuid, String propertyGuid, ReferenceType type, Property property) {
-		return this.doInsertProperty(
-				parentGuid, 
-				propertyGuid, 
-				type, 
-				property, 
-				this.getNonBatchTemplateInserter());	
+		
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		String histPrefix = this.getPrefixResolver().resolveHistoryPrefix();
+		
+		InsertOrUpdatePropertyBean propertyData = (InsertOrUpdatePropertyBean) this.getSqlMapClientTemplate().queryForObject(
+				GET_PROPERTY_ATTRIBUTES_BY_UID_SQL,
+				new PrefixedParameter(prefix, propertyGuid));
+		
+		propertyData.setPrefix(histPrefix);
+		
+		this.getNonBatchTemplateInserter().insert(INSERT_PROPERTY_SQL, propertyData);
+		
+		/*for(Source source : property.getSource()) {
+			String propertySourceGuid = this.createUniqueId();
+			this.doInsertPropertySource(propertyGuid, propertySourceGuid, entryStateId, source, inserter);
+		}
+		
+		for(String context : property.getUsageContext()) {
+			String propertyUsageContextId = this.createUniqueId();
+			this.doInsertPropertyUsageContext(propertyGuid, propertyUsageContextId, entryStateId, context, inserter);
+		}
+		
+		for(PropertyQualifier qual : property.getPropertyQualifier()) {
+			String propertyQualifierId = this.createUniqueId();
+			this.doInsertPropertyQualifier(propertyGuid, propertyQualifierId, entryStateId, qual, inserter);
+		}*/
+		
+		return propertyData.getEntryStateUId();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -182,6 +218,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	 * @return the string
 	 */
 	public String doInsertProperty(
+			String prefix,
 			String parentGuid, 
 			String propertyGuid,
 			ReferenceType type, 
@@ -205,6 +242,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 		
 		inserter.insert(INSERT_PROPERTY_SQL,
 				buildInsertPropertyBean(
+						prefix,
 						parentGuid,
 						propertyGuid,
 						entryStateId,
@@ -232,7 +270,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	}
 
 
-	public void updateProperty(String parentGuid,
+	public String updateProperty(String parentGuid,
 			String propertyId, ReferenceType type, Property property) {
 		Assert.hasText(
 				property.getPropertyId(),
@@ -243,15 +281,22 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 				parentGuid, 
 				property.getPropertyId());
 		
+		String entryStateUId = this.createUniqueId();
+		
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
 		this.getSqlMapClientTemplate().update(
-				UPDATE_PROPERTY_BY_ID_SQL, 
+				UPDATE_PROPERTY_BY_UID_SQL, 
 				this.buildInsertPropertyBean(
-						null, 
+						prefix,
+						parentGuid, 
 						propertyGuid, 
-						null, 
+						entryStateUId, 
 						type, 
 						property),
 						1);	
+		
+		return entryStateUId;
 	}
 	
 	public void insertPropertyQualifier(String propertyGuid, PropertyQualifier propertyQualifier) {
@@ -412,6 +457,22 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 						ReferenceType.PICKLISTDEFINITION.name(), pickListId));
 	}
 	
+	@Override
+	public void deleteAllPickListEntryNodeProperties(String pickListEntryNodeUId) {
+
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+
+		/* 1. Remove entrystate details of all properties of pickListEntryNode. */
+		this.vsEntryStateDao.deleteAllEntryStatesOfVsPropertiesByParentUId(
+				pickListEntryNodeUId, ReferenceType.PICKLISTENTRY.name());
+
+		/* 2. Remove all pick list entry node properties */
+		this.getSqlMapClientTemplate().delete(
+				DELETE_ALL_PICKLIST_ENTRYNODE_PROPERTIES_BY_PICKLISTENTRYUID,
+				new PrefixedParameterTuple(prefix, pickListEntryNodeUId,
+						ReferenceType.PICKLISTENTRY.name()));
+	}
+
 	/**
 	 * Gets the propertyGuid from parentGuid and prop id.
 	 * 
@@ -420,7 +481,8 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	 * 
 	 * @return the propertyGUID from parentGuid and propertyID
 	 */
-	protected String getPropertyGuidFromParentGuidAndPropertyId(String parentGuid, String propertyId) {
+	@Override
+	public String getPropertyGuidFromParentGuidAndPropertyId(String parentGuid, String propertyId) {
 		
 		return (String) this.getSqlMapClientTemplate().queryForObject(GET_PROPERTY_GUID_SQL, 
 				new PrefixedParameterTuple(null, parentGuid, propertyId));
@@ -437,15 +499,18 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	 * 
 	 * @return the insert property bean
 	 */
-	protected InsertOrUpdatePropertyBean buildInsertPropertyBean(String parentGuid, String propertyGuid, 
-			String entryStateGuid, ReferenceType type, Property property){
+	protected InsertOrUpdatePropertyBean buildInsertPropertyBean(String prefix,
+			String parentGuid, String propertyGuid, String entryStateGuid,
+			ReferenceType type, Property property) {
+		
 		InsertOrUpdatePropertyBean bean = new InsertOrUpdatePropertyBean();
-		bean.setReferenceType(type.name());
-		bean.setEntityUId(parentGuid);
+		bean.setPrefix(prefix);
+		bean.setParentType(type.name());
+		bean.setParentUId(parentGuid);
 		bean.setUId(propertyGuid);
 		bean.setEntryStateUId(entryStateGuid);
 		bean.setProperty(property);
-		
+
 		return bean;
 	}
 	
@@ -554,6 +619,43 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 		this.ibatisVersionsDao = ibatisVersionsDao;
 	}
 
+	@Override
+	public void deletePropertyByUId(String propertyUId) {
+
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		this.getSqlMapClientTemplate().delete(DELETE_PROPERTY_BY_UID_SQL, 
+				new PrefixedParameter(prefix, propertyUId));
+	}
+
+	@Override
+	public String updateVersionableAttributes(String parentUId,
+			String propertyUId, ReferenceType type,
+			Property property) {
+
+		Assert.hasText(
+				property.getPropertyId(),
+				"Property must have a populated PropertyId " +
+				"in order to be updated.");
+		
+		String entryStateUId = this.createUniqueId();
+		
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_PROPERTY_VER_ATTRIB_BY_UID_SQL, 
+				this.buildInsertPropertyBean(
+						prefix,
+						parentUId, 
+						propertyUId, 
+						entryStateUId, 
+						type, 
+						property),
+						1);	
+		
+		return entryStateUId;
+	}
+
 	/**
 	 * @return the vsEntryStateDao
 	 */
@@ -566,5 +668,17 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	 */
 	public void setVsEntryStateDao(VSEntryStateDao vsEntryStateDao) {
 		this.vsEntryStateDao = vsEntryStateDao;
+	}
+
+	@Override
+	public String getLatestRevision(String propertyUId) {
+
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		String revId = (String) this.getSqlMapClientTemplate().queryForObject(
+				GET_VSPROPERTY_LATEST_REVISION_ID_BY_UID, 
+				new PrefixedParameter(prefix, propertyUId));
+		
+		return revId;
 	}
 }

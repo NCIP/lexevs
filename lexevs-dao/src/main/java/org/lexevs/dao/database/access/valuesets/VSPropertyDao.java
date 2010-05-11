@@ -138,10 +138,23 @@ public interface VSPropertyDao extends LexGridSchemaVersionAwareDao {
 	 * @param type the type
 	 * @param property the property
 	 */
-	public void updateProperty(
+	public String updateProperty(
 			String parentGuid,
 			String propertyGuid,
 			ReferenceType type,
-			Property property);	
+			Property property);
+
+	String getPropertyGuidFromParentGuidAndPropertyId(String parentGuid,
+			String propertyId);
+
+	public void deletePropertyByUId(String propertyUId);
+
+	public String updateVersionableAttributes(String valueSetDefUId,
+			String propertyUId, ReferenceType valuesetdefinition,
+			Property property);
+	
+	public void deleteAllPickListEntryNodeProperties(String pickListEntryNodeUId);
+
+	public String getLatestRevision(String propertyUId);
 }
 

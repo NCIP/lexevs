@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.database.service.valuesets;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.commonTypes.Property;
 
 /**
@@ -38,6 +39,25 @@ public interface VSPropertyService {
 			Property property);
 	
 	/**
+	 * Update value set definition property.
+	 * 
+	 * @param valueSetDefinitionUri the value set definition URI
+	 * @param propertyId the property id
+	 * @param property the property
+	 */
+	public void updateValueSetDefinitionProperty(
+			String valueSetDefinitionUri, 
+			Property property);
+
+	public void removeValueSetDefinitionProperty(
+	String valueSetDefinitionUri, 
+	Property property);
+
+	public void insertValueSetDefPropVersionableChanges(
+	String valueSetDefinitionUri, 
+	Property property);
+
+	/**
 	 * Insert pick list definition property.
 	 * 
 	 * @param pickListId the pick list id
@@ -47,6 +67,24 @@ public interface VSPropertyService {
 			String pickListId, 
 			Property property);
 	
+	/**
+	 * Update pick list definition property.
+	 * 
+	 * @param pickListId the pick list id
+	 * @param propertyId the property id
+	 * @param property the property
+	 */
+	public void updatePickListDefinitionProperty(
+			String pickListId, 
+			Property property);
+
+	public void removePickListDefinitionProperty(String pickListId,
+			Property property);
+
+	public void insertPickListDefPropVersionableChanges(
+	String pickListId, 
+	Property property);
+
 	/**
 	 * Insert pick list entry node property.
 	 * 
@@ -61,30 +99,6 @@ public interface VSPropertyService {
 	
 	
 	/**
-	 * Update value set definition property.
-	 * 
-	 * @param valueSetDefinitionUri the value set definition URI
-	 * @param propertyId the property id
-	 * @param property the property
-	 */
-	public void updateValueSetDefinitionProperty(
-			String valueSetDefinitionUri, 
-			String propertyId,
-			Property property);
-	
-	/**
-	 * Update pick list definition property.
-	 * 
-	 * @param pickListId the pick list id
-	 * @param propertyId the property id
-	 * @param property the property
-	 */
-	public void updatePickListDefinitionProperty(
-			String pickListId, 
-			String propertyId,
-			Property property);
-	
-	/**
 	 * Update pick list entry node property.
 	 * 
 	 * @param pickListId the pick list id
@@ -95,6 +109,27 @@ public interface VSPropertyService {
 	public void updatePickListEntryNodeProperty(
 			String pickListId,
 			String pickListEntryNodeId, 
-			String propertyId,
 			Property property);
+	
+	public void removePickListEntryNodeProperty(String pickListId,
+			String pickListEntryNodeId, 
+			Property property);
+	
+	public void insertPickListEntryNodePropVersionableChanges(
+			String pickListId, 
+			String pickListEntryNodeId,
+			Property property);
+	
+	public void reviseValueSetDefinitionProperty(
+			String valueSetDefinitionUri, 
+			Property property) throws LBException;
+	
+	public void revisePickListDefinitionProperty(
+			String pickListId, 
+			Property property) throws LBException;
+	
+	public void revisePickListEntryNodeProperty(
+			String pickListId,
+			String pickListEntryNodeId, 
+			Property property) throws LBException;
 }

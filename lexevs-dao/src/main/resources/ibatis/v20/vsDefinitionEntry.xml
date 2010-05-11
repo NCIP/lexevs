@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="vsDefinitionEntry">
+
+	<typeAlias alias="insertOrUpdateDefinitionEntryBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateDefinitionEntryBean" />
+	
+	<resultMap id="definitionEntry" class="insertOrUpdateDefinitionEntryBean">
+		<result property="uid" column="vsdEntryGuid" />
+		<result property="valueSetDefUId" column="valueSetDefGuid" />
+		<result property="definitionEntry.ruleOrder" column="ruleOrder" />
+		<result property="definitionEntry.operator" column="operator" />
+		<result property="definitionEntry.codingSchemeReference.codingScheme" column="codingSchemeReference" />
+		<result property="definitionEntry.valueSetDefinitionReference.valueSetDefinitionURI" column="valueSetDefReference" />
+		<result property="definitionEntry.entityReference.entityCode" column="entityCode" />
+		<result property="definitionEntry.entityReference.entityCodeNamespace" column="entityCodeNamespace" />
+		<result property="leafOnly" column="leafOnly" />
+		<result property="referenceAssociation" column="referenceAssociation" />
+		<result property="targetToSource" column="targetToSource" />
+		<result property="transitiveClosure" column="transitiveClosure" />
+		<result property="propertyRefCodingScheme" column="propertyRefCodingScheme" />
+		<result property="propertyName" column="propertyName" />
+		<result property="propertyMatchValue" column="propertyMatchValue" />
+		<result property="matchAlgorithm" column="matchAlgorithm" />
+		<result property="format" column="format" />
+		<result property="definitionEntry.isActive" column="isActive" />
+		<result property="definitionEntry.owner" column="owner" />
+		<result property="definitionEntry.status" column="status" />
+		<result property="definitionEntry.effectiveDate" column="effectiveDate" />
+		<result property="definitionEntry.expirationDate" column="expirationDate" />
+		<result property="entryStateUId" column="entryStateGuid" />
+	</resultMap>
+	
+     <insert id="insertDefinitionEntry" 
+		parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateDefinitionEntryBean">
+		INSERT INTO vsdEntry
+		(
+				vsdEntryGuid,
+				valueSetDefGuid,
+				ruleOrder,
+				operator,
+				codingSchemeReference,
+				valueSetDefReference,
+				entityCode,
+				entityCodeNamespace,
+				leafOnly,
+				referenceAssociation,
+				targetToSource,
+				transitiveClosure,
+				propertyRefCodingScheme,
+				propertyName,
+				propertyMatchValue,
+				matchAlgorithm,
+				format,
+				isActive,
+				owner,
+				status,
+				effectiveDate,
+				expirationDate,
+				entryStateGuid
+			) VALUES (
+				#uid#,
+				#valueSetDefUId#,
+				#definitionEntry.ruleOrder#,
+				#definitionEntry.operator#,
+				#codingSchemeReference#,
+				#valueSetDefReference#,
+				#entityCode#,				
+				#entityCodeNamespace#,
+				
+				<isPropertyAvailable property="leafOnly">
+					#leafOnly#,
+				</isPropertyAvailable>
+				<isNotPropertyAvailable property="leafOnly">
+					null,
+				</isNotPropertyAvailable>
+				
+				#referenceAssociation#,
+				
+				<isPropertyAvailable property="targetToSource">
+					#targetToSource#,
+				</isPropertyAvailable>
+				<isNotPropertyAvailable property="targetToSource">
+					null,
+				</isNotPropertyAvailable>
+				
+				<isPropertyAvailable property="transitiveClosure">
+					#transitiveClosure#,
+				</isPropertyAvailable>
+				<isNotPropertyAvailable property="transitiveClosure">
+					null,
+				</isNotPropertyAvailable>
+				
+				#propertyRefCodingScheme#,
+				#propertyName#,
+				#propertyMatchValue#,
+				#matchAlgorithm#,
+				#format#,
+				#definitionEntry.isActive#,
+				#definitionEntry.owner#,
+				#definitionEntry.status#,
+				#definitionEntry.effectiveDate#,
+				#definitionEntry.expirationDate#,
+				#entryStateUId#	
+			)
+     </insert>
+
+  <update id="updateDefinitionEntryByUId" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateDefinitionEntryBean">
+		UPDATE 
+			$prefix$vsdEntry vsdEntry
+		SET 
+   		  <dynamic prepend=" ">
+			<isNotNull prepend="," property="definitionEntry.operator">
+				operator = #definitionEntry.operator#
+			</isNotNull>
+			<isNotNull prepend="," property="definitionEntry.entityReference.entityCode">
+				entityCode = #definitionEntry.entityReference.entityCode#
+			</isNotNull>
+			<isNotNull prepend="," property="definitionEntry.entityReference.entityCodeNamespace">
+				entityCodeNamespace = #definitionEntry.entityReference.entityCodeNamespace#
+			</isNotNull>
+			<isNotNull prepend="," property="definitionEntry.entityReference.leafOnly">
+				leafOnly = #definitionEntry.entityReference.leafOnly#
+			</isNotNull>
+			<isNotNull prepend="," property="definitionEntry.entityReference.referenceAssociation">
+				referenceAssociation = #definitionEntry.entityReference.referenceAssociation#
+			</isNotNull>
+			<isNotNull prepend="," property="definitionEntry.entityReference.targetToSource">
+				targetToSource = #definitionEntry.entityReference.targetToSource#
+			</isNotNull>
+			<isNotNull prepend="," property="definitionEntry.entityReference.transitiveClosure">
+				transitiveClosure = #definitionEntry.entityReference.transitiveClosure#
+			</isNotNull>		
+			<isNotNull prepend="," property="definitionEntry.propertyReference.propertyMatchValue.content">
+				propertyMatchValue = #definitionEntry.propertyReference.propertyMatchValue.content#
+			</isNotNull>	
+			<isNotNull prepend="," property="definitionEntry.entityReference.propertyName">
+				propertyName = #definitionEntry.entityReference.propertyName#
+			</isNotNull>				
+			<isNotNull prepend="," property="entryStateUId">
+				entryStateGuid = #entryStateUId#
+			</isNotNull>
+		</dynamic>
+
+		WHERE 
+			vsdEntry.vsdEntryGuid = #uid#
+ 	</update>
+
+  <update id="updateDefinitionEntryVerAttribByUId" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateDefinitionEntryBean">
+		UPDATE 
+			$prefix$vsdEntry vsdEntry
+		SET 
+   		  <dynamic prepend=" ">
+			<isNotNull prepend="," property="definitionEntry.isActive">
+				isActive = #definitionEntry.isActive#
+			</isNotNull>
+			<isNotNull prepend="," property="definitionEntry.status">
+				status = #definitionEntry.status#
+			</isNotNull>
+			<isNotNull prepend="," property="definitionEntry.owner">
+				owner = #definitionEntry.owner#
+			</isNotNull>
+			<isNotNull prepend="," property="definitionEntry.effectiveDate">
+				effectiveDate = #definitionEntry.effectiveDate#
+			</isNotNull>
+			<isNotNull prepend="," property="definitionEntry.expirationDate">
+				expirationDate = #definitionEntry.expirationDate#
+			</isNotNull>				
+			<isNotNull prepend="," property="entryStateUId">
+				entryStateGuid = #entryStateUId#
+			</isNotNull>
+		</dynamic>
+
+		WHERE 
+			vsdEntry.vsdEntryGuid = #uid#
+ 	</update>
+ 	
+    <delete id="deleteDefinitionEntryByUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$vsdEntry
+		WHERE
+			vsdEntryGuid = #param1#
+	</delete>
+	
+	<select id="getDefinitionEntryUId" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+		resultClass="string" remapResults="true">
+		SELECT
+			vsdEntryGuid
+		FROM
+			$prefix$vsdEntry vsdEntry
+			$prefix$valueSetDefinition vsDef 
+		WHERE
+			vsDef.valueSetDefURI = #param1#
+		AND	
+			vsDef.valueSetDefGuid = vsdEntry.valueSetDefGuid
+		AND
+			vsdEntry.ruleOrder = #param2#
+     </select>	
+      
+	<select id="getDefinitionEntryAttribByUId" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultClass="definitionEntry" remapResults="true">
+		SELECT
+			*
+		FROM
+			$prefix$vsdEntry vsdEntry
+		WHERE
+			vsdEntry.vsdEntryGuid = #param1#
+     </select>
+
+	<select id="getDefinitionEntryLatestRevisionIdByUId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultClass="string">
+		SELECT 
+			rev.revisionId
+		FROM
+			$prefix$vsdEntry vsdEntry
+			$prefix$entrySate es
+			$prefix$revision rev
+		WHERE
+			vsdEntry.vsdEntryGuid = #param1#	
+		AND
+			vsdEntry.entryStateGuid = es.entryStateGuid	
+		AND
+			es.revisionGuid = rev.revisionGuid	
+	</select>  	     
+</sqlMap>

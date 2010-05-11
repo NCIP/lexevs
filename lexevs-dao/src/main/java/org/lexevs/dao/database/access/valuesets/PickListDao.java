@@ -107,19 +107,22 @@ public interface PickListDao extends LexGridSchemaVersionAwareDao {
 	public List<String> getPickListIds();
 	
 	/**
-	 * Insert pick list entry.
-	 * 
-	 * @param pickListGuid the pick list definition GUID
-	 * @param entryNode the pick list entry node
-	 * 
-	 * @return the string
-	 */
-	public String insertPickListEntry(String pickListGuid, PickListEntryNode entryNode);
-	
-	/**
 	 * Delete pick list definition by pick list id.
 	 * 
 	 * @param pickListDefinitionId the pick list definition id
 	 */
 	public void removePickListDefinitionByPickListId(String pickListDefinitionId);
+
+	public String insertHistoryPickListDefinition(String pickListDefUId, String pickListId);
+
+	public String updatePickListDefinition(String pickListDefUId,
+			PickListDefinition definition);
+
+	public String updateVersionableAttributes(String pickListDefUId, PickListDefinition definition);
+
+	public String getPickListEntryStateUId(String pickListDefUId);
+
+	public void updateEntryStateUId(String pickListDefUId, String entryStateUId);
+
+	public String getLatestRevision(String pickListDefUId);
 }

@@ -68,4 +68,91 @@
 			es.entryStateGuid = #param1#
      </select>
     
+	<select id="checkVSEntryStateExists" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultClass="string">
+		SELECT
+			count(1)
+		FROM
+			$prefix$vsEntryState es
+		WHERE
+			es.entryStateGuid = #param1#
+     </select>
+
+	<delete id="deleteAllVSPropertiesEntryStateByParentUId"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$vsEntryState
+		WHERE
+			entryGuid IN
+			(
+				SELECT
+					prop.propertyGuid
+				FROM
+					$prefix$vsProperty prop
+				WHERE
+					prop.referenceGuid = #param1#
+				AND
+					prop.referenceType = #param2#
+			)		
+	</delete>
+
+	<delete id="deleteAllEntrySateEntriesByEntryUId"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$vsEntryState
+		WHERE
+			entryGuid = #param1#
+	</delete>
+	
+	<delete id="deleteAllDefnitionEntryEntrySateEntriesByUId"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$vsEntryState
+		WHERE
+			entryGuid IN
+			(
+				SELECT
+					entry.vsdEntryGuid
+				FROM
+					$prefix$vsdEntry entry
+				WHERE
+					entry.valueSetDefGuid = #param1#
+			)		
+	</delete>
+
+	<delete id="deleteAllPLEntryPropsEntrySateEntriesOfPLDefinition"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$vsEntryState
+		WHERE
+			entryGuid IN
+			(
+				SELECT
+					prop.propertyGuid
+				FROM
+					$prifix$vsProperty prop
+					$prefix$vsPLEntry plEntry
+				WHERE
+					prop.referenceGuid = plEntry.vsPLEntryGuid
+				AND	
+					plEntry.pickListGuid = #param1#	
+			)		
+	</delete>
+
+	<delete id="deleteAllPLEntryEntrySateEntriesOfPLDefinition"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$vsEntryState
+		WHERE
+			entryGuid IN
+			(
+				SELECT
+					plEntry.vsPLEntryGuid
+				FROM
+					$prefix$vsPLEntry plEntry
+				WHERE
+					plEntry.pickListGuid = #param1#	
+			)		
+	</delete>	
 </sqlMap>

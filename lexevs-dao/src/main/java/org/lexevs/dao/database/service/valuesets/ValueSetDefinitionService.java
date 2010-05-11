@@ -109,4 +109,12 @@ public interface ValueSetDefinitionService {
 	 * @param valuesetdefinitionURI the value set definition URI
 	 */
 	public void removeValueSetDefinition(String valueSetDefinitionURI);
+	
+	public void updateValueSetDefinition(ValueSetDefinition valueSetDefinition) throws LBException;
+	
+	public void insertDependentChanges(ValueSetDefinition valueSetDefinition) throws LBException;
+	
+	public void updateVersionableAttributes(ValueSetDefinition valueSetDefinition) throws LBException;
+	
+	public void revise(ValueSetDefinition valueSetDefinition, String releaseURI) throws LBException;
 }

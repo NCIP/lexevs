@@ -22,11 +22,25 @@ import java.net.URI;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.relations.AssociationData;
+import org.LexGrid.relations.AssociationPredicate;
+import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
+import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.types.ChangeType;
+import org.lexevs.dao.database.access.association.AssociationDao;
+import org.lexevs.dao.database.access.association.AssociationTargetDao;
+import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
+import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
+import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.service.SystemResourceService;
@@ -38,6 +52,10 @@ import org.lexevs.system.service.SystemResourceService;
  */
 public class VersionableEventValueSetDefinitionService extends AbstractDatabaseService implements ValueSetDefinitionService{
 
+	VSDefinitionEntryService vsDefinitionEntryService = null;
+	
+	VSPropertyService vsPropertyService = null;
+	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#getValueSetDefinitionURISForName(java.lang.String)
 	 */
@@ -112,6 +130,198 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	public List<String> getValueSetDefinitionURIForSupportedTagAndValue(
 			String supportedTag, String value) {
 		return this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetDefinitionURIForSupportedTagAndValue(supportedTag, value);
+	}
+
+	@Override
+	public void insertDependentChanges(
+			ValueSetDefinition valueSetDefinition) throws LBException {
+
+		String valueSetDefinitionURI = valueSetDefinition.getValueSetDefinitionURI();
+		
+		ValueSetDefinitionDao valueSetDefDao = this.getDaoManager()
+				.getCurrentValueSetDefinitionDao();
+
+		VSEntryStateDao vsEntryStateDao = this.getDaoManager()
+				.getCurrentVsEntryStateDao();
+
+		/* 1. Update entryStateUId.*/
+		
+		String valueSetDefUId = valueSetDefDao
+				.getGuidFromvalueSetDefinitionURI(valueSetDefinitionURI);
+
+		String prevEntryStateUId = valueSetDefDao
+				.getValueSetDefEntryStateUId(valueSetDefUId);
+
+		String entryStateUId = vsEntryStateDao.insertEntryState(valueSetDefUId,
+				"valueSetDefinition", prevEntryStateUId, valueSetDefinition
+						.getEntryState());
+
+		valueSetDefDao.updateValueSetDefEntryStateUId(valueSetDefUId,
+				entryStateUId);
+		
+		/* 2. Revise dependent definition entries. */
+
+		DefinitionEntry[] definitionEntry = valueSetDefinition
+				.getDefinitionEntry();
+
+		for (int i = 0; i < definitionEntry.length; i++) {
+
+			vsDefinitionEntryService.revise(valueSetDefinitionURI, definitionEntry[i]);
+		}
+		
+		/* 3. Revise dependent properties. */
+		
+		if( valueSetDefinition.getProperties() != null ) {
+			
+			Property[] propertyList = valueSetDefinition.getProperties().getProperty();
+			
+			for (int i = 0; i < propertyList.length; i++) {
+				vsPropertyService.reviseValueSetDefinitionProperty(valueSetDefinitionURI, propertyList[i]);
+			}
+		}
+	}
+
+	@Override
+	public void updateVersionableAttributes(
+			ValueSetDefinition valueSetDefinition) throws LBException {
+
+		String valueSetDefinitionURI = valueSetDefinition
+				.getValueSetDefinitionURI();
+
+		ValueSetDefinitionDao vsdDao = this.getDaoManager()
+				.getCurrentValueSetDefinitionDao();
+
+		String valueSetDefUId = vsdDao
+				.getGuidFromvalueSetDefinitionURI(valueSetDefinitionURI);
+
+		String prevEntryStateUId = vsdDao
+				.insertHistoryValueSetDefinition(valueSetDefUId);
+
+		String entryStateUId = vsdDao.updateValueSetDefinitionVersionableChanges(valueSetDefUId,
+				valueSetDefinition);
+
+		this.getDaoManager().getCurrentVsEntryStateDao().insertEntryState(
+				entryStateUId, valueSetDefUId, "valueSetDefinition",
+				prevEntryStateUId, valueSetDefinition.getEntryState());
+
+		this.insertDependentChanges(valueSetDefinition);
+	}
+
+	@Override
+	public void updateValueSetDefinition(ValueSetDefinition valueSetDefinition) throws LBException {
+
+		String valueSetDefinitionURI = valueSetDefinition
+				.getValueSetDefinitionURI();
+
+		ValueSetDefinitionDao vsdDao = this.getDaoManager()
+				.getCurrentValueSetDefinitionDao();
+
+		String valueSetDefUId = vsdDao
+				.getGuidFromvalueSetDefinitionURI(valueSetDefinitionURI);
+
+		String prevEntryStateUId = vsdDao
+				.insertHistoryValueSetDefinition(valueSetDefUId);
+
+		String entryStateUId = vsdDao.updateValueSetDefinition(valueSetDefUId,
+				valueSetDefinition);
+
+		this.getDaoManager().getCurrentVsEntryStateDao().insertEntryState(
+				entryStateUId, valueSetDefUId, "ValueSetDefinition",
+				prevEntryStateUId, valueSetDefinition.getEntryState());
+
+		this.insertDependentChanges(valueSetDefinition);
+	}
+	
+	@Override
+	public void revise(ValueSetDefinition valueSetDefinition, String releaseURI)
+			throws LBException {
+		if(  valueSetDefinition == null) 
+			throw new LBParameterException("ValueSetDefinition is null.");
+		
+		EntryState entryState = valueSetDefinition.getEntryState();
+
+		if (entryState == null) {
+			throw new LBRevisionException("EntryState can't be null.");
+		}
+
+		String revisionId = entryState.getContainingRevision();
+		ChangeType changeType = entryState.getChangeType();
+
+		ValueSetDefinitionDao valueSetDefDao = this.getDaoManager().getCurrentValueSetDefinitionDao();
+		
+		String valueSetDefUId = valueSetDefDao
+				.getGuidFromvalueSetDefinitionURI(
+						valueSetDefinition.getValueSetDefinitionURI());
+
+		String valueSetDefLatestRevisionId = valueSetDefDao.getLatestRevision(valueSetDefUId);
+		
+		if (revisionId != null && changeType != null) {
+
+			if (changeType == ChangeType.NEW) {
+				if (entryState.getPrevRevision() != null) {
+					throw new LBRevisionException(
+							"Changes of type NEW are not allowed to have previous revisions.");
+				}
+			} else if (valueSetDefUId == null) {
+				throw new LBRevisionException(
+						"The value set definition being revised doesn't exist.");
+			} else if (entryState.getPrevRevision() == null) {
+				throw new LBRevisionException(
+						"All changes of type other than NEW should have previous revisions.");
+			} else if (valueSetDefLatestRevisionId != null
+					&& !valueSetDefLatestRevisionId.equalsIgnoreCase(entryState
+							.getPrevRevision())) {
+				throw new LBRevisionException(
+						"Revision source is not in sync with the database revisions. Previous revision id does not match with the latest revision id of the value set definition."
+								+ "Please update the authoring instance with all the revisions and regenerate the source.");
+			}
+
+			if (changeType == ChangeType.NEW) {
+
+				this.insertValueSetDefinition(valueSetDefinition, releaseURI, null);
+			} else if (changeType == ChangeType.REMOVE) {
+
+				this.removeValueSetDefinition(valueSetDefinition.getValueSetDefinitionURI());
+			} else if (changeType == ChangeType.MODIFY) {
+
+				this.updateValueSetDefinition(valueSetDefinition);
+			} else if (changeType == ChangeType.DEPENDENT) {
+				
+				this.insertDependentChanges(valueSetDefinition);
+			} else if (changeType == ChangeType.VERSIONABLE) {
+
+				this.updateVersionableAttributes(valueSetDefinition);
+			}
+		}
+	}
+
+	/**
+	 * @return the vsDefinitionEntryService
+	 */
+	public VSDefinitionEntryService getVsDefinitionEntryService() {
+		return vsDefinitionEntryService;
+	}
+
+	/**
+	 * @param vsDefinitionEntryService the vsDefinitionEntryService to set
+	 */
+	public void setVsDefinitionEntryService(
+			VSDefinitionEntryService vsDefinitionEntryService) {
+		this.vsDefinitionEntryService = vsDefinitionEntryService;
+	}
+
+	/**
+	 * @return the vsPropertyService
+	 */
+	public VSPropertyService getVsPropertyService() {
+		return vsPropertyService;
+	}
+
+	/**
+	 * @param vsPropertyService the vsPropertyService to set
+	 */
+	public void setVsPropertyService(VSPropertyService vsPropertyService) {
+		this.vsPropertyService = vsPropertyService;
 	}
 
 	@Override

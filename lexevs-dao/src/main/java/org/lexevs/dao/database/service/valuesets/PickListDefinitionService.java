@@ -102,4 +102,14 @@ public interface PickListDefinitionService {
 	 */
 	public List<String> listPickListIds() ;	
 	
+	public void updatePickListDefinition(PickListDefinition definition) throws LBException;
+	
+	public void removePickListDefinition(PickListDefinition definition);
+	
+	public void updateVersionableAttributes(PickListDefinition definition) throws LBException;
+	
+	public void insertDependentChanges(PickListDefinition definition) throws LBException;
+	
+	public void revise(PickListDefinition pickListDefinition, String releaseURI) throws LBException;
+	
 }

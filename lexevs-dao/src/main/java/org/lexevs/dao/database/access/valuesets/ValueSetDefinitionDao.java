@@ -125,21 +125,27 @@ public interface ValueSetDefinitionDao extends LexGridSchemaVersionAwareDao {
 	 * @throws LBException
 	 */
 	public List<String> getAllValueSetDefinitionsWithNoName()  throws LBException;
-	
-	/**
-	 * Insert value set definition entry.
-	 * 
-	 * @param valueSetDefinitionGuid the value set definition GUID
-	 * @param definitionEntry the Value Set definitionEntry
-	 * 
-	 * @return the string
-	 */
-	public String insertDefinitionEntry(String valueSetDefinitionGuid, DefinitionEntry definitionEntry);
-	
+		
 	/**
 	 * Delete value set definition by value set definition URI.
 	 * 
 	 * @param valuesetdefinitionURI the value set definition URI
 	 */
 	public void removeValueSetDefinitionByValueSetDefinitionURI(String valueSetDefinitionURI);
+	
+
+	public String insertHistoryValueSetDefinition(String valueSetDefUId);
+
+	public String updateValueSetDefinition(String valueSetDefUId,
+			ValueSetDefinition valueSetDefinition);
+
+	public String updateValueSetDefinitionVersionableChanges(
+			String valueSetDefUId, ValueSetDefinition valueSetDefinition);
+
+	public String getValueSetDefEntryStateUId(String valueSetDefUId);
+
+	public void updateValueSetDefEntryStateUId(String valueSetDefUId,
+			String entryStateUId);
+
+	public String getLatestRevision(String valueSetDefUId);
 }

@@ -35,10 +35,12 @@ import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
+import org.lexevs.dao.database.access.valuesets.VSDefinitionEntryDao;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
@@ -49,7 +51,6 @@ import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
-import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateDefinitionEntryBean;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
@@ -121,8 +122,22 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	
 	public static String DELETE_URIMAPS_BY_REFERENCE_GUID_SQL = VS_MAPPING_NAMESPACE + "deleteMappingsByReferenceGuid";
 	
+	private static String GET_VALUESET_DEFINITION_METADATA_BY_UID_SQL = VALUESETDEFINITION_NAMESPACE + "getValueSetDefinitionMetadataByUId";
+	
+	private static String UPDATE_VALUE_SET_DEFINITION_BY_ID_SQL = VALUESETDEFINITION_NAMESPACE + "updateValueSetDefinitionByUId";
+	
+	private static String UPDATE_VALUE_SET_DEFINITION_VERSIONABLE_CHANGES_BY_ID_SQL = VALUESETDEFINITION_NAMESPACE + "updateValueSetDefVersionableChangesByUId";
+	
+	private static String GET_ENTRYSTATE_UID_BY_VALUESET_DEFINITION_UID_SQL = VALUESETDEFINITION_NAMESPACE + "getEntryStateUIdByValuesetDefUId";
+	
+	private static String UPDATE_VALUESETDEFINITION_ENTRYSTATE_UID_SQL = VALUESETDEFINITION_NAMESPACE + "updateValueSetDefinitinEntryStateUId";
+	
+	private static String GET_VALUESET_DEFINITION_LATEST_REVISION_ID_BY_UID = VALUESETDEFINITION_NAMESPACE + "getValueSetDefinitionLatestRevisionIdByUId";
+	
 	/** The versions dao. */
 	private VersionsDao versionsDao;
+	
+	private VSDefinitionEntryDao vsDefinitionEntryDao;
 	
 	private VSPropertyDao vsPropertyDao;
 	
@@ -248,7 +263,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		// insert definition entry
 		for (DefinitionEntry vsdEntry : vsdef.getDefinitionEntryAsReference()) 
 		{
-			insertDefinitionEntry(valueSetDefinitionGuid, vsdEntry);
+			this.vsDefinitionEntryDao.insertDefinitionEntry(valueSetDefinitionGuid, vsdEntry);
 		}
 		
 		// insert value set definition properties
@@ -303,6 +318,39 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	}
 
 	@Override
+	public String insertHistoryValueSetDefinition(String valueSetDefUId) {
+
+		String prefix = getPrefix();
+		
+		InsertValueSetDefinitionBean vsDefBean = (InsertValueSetDefinitionBean) this
+				.getSqlMapClientTemplate().queryForObject(
+						GET_VALUESET_DEFINITION_METADATA_BY_UID_SQL,
+						new PrefixedParameter(prefix, valueSetDefUId));
+	
+		String histPrefix = this.getPrefixResolver().resolveHistoryPrefix();
+		
+		vsDefBean.setPrefix(histPrefix);
+		
+		this.getSqlMapClientTemplate().insert(
+				INSERT_VALUESET_DEFINITION_SQL, vsDefBean);
+		
+		if (!vsEntryStateExists(prefix, vsDefBean.getEntryStateUId())) {
+
+			EntryState entryState = new EntryState();
+
+			entryState.setChangeType(ChangeType.NEW);
+			entryState.setRelativeOrder(0L);
+
+			vsEntryStateDao
+					.insertEntryState(vsDefBean.getEntryStateUId(),
+							vsDefBean.getUId(), ReferenceType.VALUESETDEFINITION.name(), null,
+							entryState);
+		}
+		
+		return vsDefBean.getEntryStateUId();
+	}
+	
+	@Override
 	public void insertValueSetDefinitions(String systemReleaseURI,
 			ValueSetDefinitions vsdefs, Mappings mappings) {
 
@@ -321,6 +369,43 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			ValueSetDefinition definition) {
 		
 		return insertValueSetDefinition(systemReleaseUri, definition, null);
+	}
+
+	@Override
+	public String updateValueSetDefinition(String valueSetDefUId,
+			ValueSetDefinition valueSetDefinition) {
+
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		String entryStateUId = this.createUniqueId();
+		
+		InsertValueSetDefinitionBean bean = new InsertValueSetDefinitionBean();
+		bean.setPrefix(prefix);
+		bean.setValueSetDefinition(valueSetDefinition);
+		bean.setUId(valueSetDefUId);
+		bean.setEntryStateUId(entryStateUId);
+		
+		this.getSqlMapClientTemplate().update(UPDATE_VALUE_SET_DEFINITION_BY_ID_SQL, bean);
+		
+		return entryStateUId;
+	}
+	
+	@Override
+	public String updateValueSetDefinitionVersionableChanges(
+			String valueSetDefUId, ValueSetDefinition valueSetDefinition) {
+		
+
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		String entryStateUId = this.createUniqueId();
+		
+		InsertValueSetDefinitionBean bean = new InsertValueSetDefinitionBean();
+		bean.setPrefix(prefix);
+		bean.setValueSetDefinition(valueSetDefinition);
+		bean.setUId(valueSetDefUId);
+		bean.setEntryStateUId(entryStateUId);
+		
+		this.getSqlMapClientTemplate().update(UPDATE_VALUE_SET_DEFINITION_VERSIONABLE_CHANGES_BY_ID_SQL, bean);
+		
+		return entryStateUId;
 	}
 	
 	/* (non-Javadoc)
@@ -372,6 +457,9 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		
 		String valueSetDefGuid = (String) this.getSqlMapClientTemplate().queryForObject(GET_VALUESET_DEFINITION_GUID_BY_VALUESET_DEFINITION_URI_SQL, new PrefixedParameter(null, valueSetDefinitionURI));
 		
+		//remove entrystates
+		this.vsEntryStateDao.deleteAllEntryStatesOfValueSetDefinitionByUId(valueSetDefGuid);
+		
 		// remove definition entries
 		this.getSqlMapClientTemplate().delete(REMOVE_DEFINITION_ENTRY_BY_VALUESET_DEFINITION_GUID_SQL, new PrefixedParameter(null, valueSetDefGuid));
 		
@@ -390,61 +478,6 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		// remove value set definition
 		this.getSqlMapClientTemplate().
 			delete(REMOVE_VALUESET_DEFINITION_BY_VALUESET_DEFINITION_URI_SQL, new PrefixedParameter(null, valueSetDefinitionURI));	
-	}
-
-	@Override
-	public String insertDefinitionEntry(String valueSetDefinitionGuid,
-			DefinitionEntry vsdEntry) {
-		String vsdEntryGuid = this.createUniqueId();
-		String vsEntryStateGuid = this.createUniqueId();
-		
-		EntryState entryState = vsdEntry.getEntryState();
-		
-		if (entryState != null)
-		{
-			this.vsEntryStateDao.insertEntryState(vsEntryStateGuid, vsdEntryGuid, 
-					ReferenceType.DEFINITIONENTRY.name(), null, entryState);
-		}
-		
-		InsertOrUpdateDefinitionEntryBean vsdEntryBean = new InsertOrUpdateDefinitionEntryBean();
-		vsdEntryBean.setUId(vsdEntryGuid);
-		vsdEntryBean.setDefinitionEntry(vsdEntry);
-		vsdEntryBean.setValueSetDefUId(valueSetDefinitionGuid);
-		
-		if (vsdEntry.getCodingSchemeReference() != null)
-		{
-			vsdEntryBean.setCodingSchemeReference(vsdEntry.getCodingSchemeReference().getCodingScheme());
-		}
-		
-		else if (vsdEntry.getValueSetDefinitionReference() != null)
-		{
-			vsdEntryBean.setValueSetDefReference(vsdEntry.getValueSetDefinitionReference().getValueSetDefinitionURI());
-		}
-		else if (vsdEntry.getEntityReference() != null)
-		{
-			vsdEntryBean.setEntityCode(vsdEntry.getEntityReference().getEntityCode());
-			vsdEntryBean.setEntityCodeNamespace(vsdEntry.getEntityReference().getEntityCodeNamespace());
-			vsdEntryBean.setLeafOnly(vsdEntry.getEntityReference().getLeafOnly());
-			vsdEntryBean.setReferenceAssociation(vsdEntry.getEntityReference().getReferenceAssociation());
-			vsdEntryBean.setTargetToSource(vsdEntry.getEntityReference().getTargetToSource());
-			vsdEntryBean.setTransitiveClosure(vsdEntry.getEntityReference().getTransitiveClosure());
-		}
-		else if (vsdEntry.getPropertyReference() != null)
-		{
-			vsdEntryBean.setPropertyName(vsdEntry.getPropertyReference().getPropertyName());
-			vsdEntryBean.setPropertyRefCodingScheme(vsdEntry.getPropertyReference().getCodingScheme());
-			if (vsdEntry.getPropertyReference().getPropertyMatchValue() != null)
-			{
-				vsdEntryBean.setPropertyMatchValue(vsdEntry.getPropertyReference().getPropertyMatchValue().getContent());
-				vsdEntryBean.setFormat(vsdEntry.getPropertyReference().getPropertyMatchValue().getDataType());
-				vsdEntryBean.setMatchAlgorithm(vsdEntry.getPropertyReference().getPropertyMatchValue().getMatchAlgorithm());
-			}
-		}			
-		
-		// insert into vsdEntry table
-		this.getSqlMapClientTemplate().insert(INSERT_DEFINITION_ENTRY_SQL, vsdEntryBean);
-		
-		return vsdEntryGuid;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -587,6 +620,40 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		this.vsEntryStateDao = vsEntryStateDao;
 	}
 
+	@Override
+	public String getValueSetDefEntryStateUId(String valueSetDefUId) {
+		
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		return (String) this.getSqlMapClientTemplate().queryForObject(GET_ENTRYSTATE_UID_BY_VALUESET_DEFINITION_UID_SQL,
+				new PrefixedParameter(prefix, valueSetDefUId));
+	}
+
+	@Override
+	public void updateValueSetDefEntryStateUId(String valueSetDefUId,
+			String entryStateUId) {
+
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_VALUESETDEFINITION_ENTRYSTATE_UID_SQL, 
+				new PrefixedParameterTuple(prefix, valueSetDefUId, entryStateUId));
+	}
+
+	/**
+	 * @return the vsDefinitionEntryDao
+	 */
+	public VSDefinitionEntryDao getVsDefinitionEntryDao() {
+		return vsDefinitionEntryDao;
+	}
+
+	/**
+	 * @param vsDefinitionEntryDao the vsDefinitionEntryDao to set
+	 */
+	public void setVsDefinitionEntryDao(VSDefinitionEntryDao vsDefinitionEntryDao) {
+		this.vsDefinitionEntryDao = vsDefinitionEntryDao;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	@CacheMethod
@@ -601,9 +668,17 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			DefinitionEntry definitionEntry) {
 		String vsdGUID = getGuidFromvalueSetDefinitionURI(vsdef.getValueSetDefinitionURI());
 		if (vsdGUID != null)
-			insertDefinitionEntry(vsdGUID, definitionEntry);
+			this.vsDefinitionEntryDao.insertDefinitionEntry(vsdGUID, definitionEntry);
 		
 	}
-
 	
+	@Override
+	public String getLatestRevision(String valueSetDefUId) {
+
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		return (String) this.getSqlMapClientTemplate().queryForObject(
+				GET_VALUESET_DEFINITION_LATEST_REVISION_ID_BY_UID, 
+				new PrefixedParameter(prefix, valueSetDefUId));
+	}
 }

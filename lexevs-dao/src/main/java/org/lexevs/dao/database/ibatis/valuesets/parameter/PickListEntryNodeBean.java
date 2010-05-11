@@ -19,6 +19,8 @@ implements java.io.Serializable{
 	private PickListEntry pickListEntry;
 	
 	private PickListEntryExclusion pickListEntryExclusion;
+	
+	private String entryStateUId = null;
 
 	/**
 	 * @return the pickListEntryId
@@ -89,6 +91,20 @@ implements java.io.Serializable{
 	 */
 	public void setVsPLEntryGuid(String vsPLEntryGuid) {
 		this.vsPLEntryGuid = vsPLEntryGuid;
+	}
+
+	/**
+	 * @return the entryStateUId
+	 */
+	public String getEntryStateUId() {
+		return entryStateUId;
+	}
+
+	/**
+	 * @param entryStateUId the entryStateUId to set
+	 */
+	public void setEntryStateUId(String entryStateUId) {
+		this.entryStateUId = entryStateUId;
 	}
 	
 }

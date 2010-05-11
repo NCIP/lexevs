@@ -22,9 +22,11 @@ import java.util.List;
 
 import org.LexGrid.versions.EntryState;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
+import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.revision.IbatisRevisionDao;
 import org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
@@ -48,6 +50,16 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 	
 	/** The GE t_ entr y_ stat e_ b y_ i d_ sql. */
 	public static String GET_ENTRY_STATE_BY_ID_SQL = VERSIONS_NAMESPACE + "getEntryStateByUId";
+
+	private static String DELETE_ALL_VSPROPERTIES_ENTRYSTATE_BY_PARENTUID = VERSIONS_NAMESPACE + "deleteAllVSPropertiesEntryStateByParentUId";
+	
+	private static String DELETE_ALL_ENTRYSTATE_ENTRIES_BY_ENTRY_UID = VERSIONS_NAMESPACE + "deleteAllEntrySateEntriesByEntryUId";
+	
+	private static String DELETE_ALL_DEFINITIONENTRY_ENTRYSTATE_OF_VALUESET_DEFINITION = VERSIONS_NAMESPACE + "deleteAllDefnitionEntryEntrySateEntriesByUId";
+	
+	private static String DELETE_ALL_PLENTRY_PROPERTY_ENTRYSTATE_ENTRIES_OF_PL_DEFINITION = VERSIONS_NAMESPACE + "deleteAllPLEntryPropsEntrySateEntriesOfPLDefinition";
+
+	private static String DELETE_ALL_PLENTRY_ENTRYSTATE_ENTRIES_OF_PL_DEFINITION = VERSIONS_NAMESPACE + "deleteAllPLEntryEntrySateEntriesOfPLDefinition";
 	
 	/** ibatis revision dao*/
 	private IbatisRevisionDao ibatisRevisionDao = null;
@@ -96,6 +108,24 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 		
 	}
 	
+	public String insertEntryState(
+			String entryUId, String entryType, String previousEntryStateUId,
+			EntryState entryState) {
+		
+		String entryStateUId = this.createUniqueId();
+		
+		this.insertEntryState(
+				null, 
+				entryStateUId, 
+				entryUId, 
+				entryType, 
+				previousEntryStateUId, 
+				entryState, 
+				this.getNonBatchTemplateInserter());
+		
+		return entryStateUId;
+	}
+	
 	public void insertEntryState( String entryStateUId,
 			String entryUId, String entryType, String previousEntryStateUId,
 			EntryState entryState) {
@@ -109,6 +139,18 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 				this.getNonBatchTemplateInserter());
 	}
 	
+	@Override
+	public void deleteAllEntryStatesOfVsPropertiesByParentUId(
+			String parentUId, String parentType) {
+
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		this.getSqlMapClientTemplate().delete(
+				DELETE_ALL_VSPROPERTIES_ENTRYSTATE_BY_PARENTUID,
+				new PrefixedParameterTuple(prefix, parentUId,
+						ReferenceType.PICKLISTENTRY.name()));
+	}
+
 	/**
 	 * Builds the insert entry state bean.
 	 * 
@@ -163,12 +205,75 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 		
 		return bean;
 	}
-
+	
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
 		return DaoUtility.createNonTypedList(supportedDatebaseVersion);
 	}
 
 	public void setIbatisRevisionDao(IbatisRevisionDao ibatisRevisionDao) {
 		this.ibatisRevisionDao = ibatisRevisionDao;
+	}
+
+	@Override
+	public void deleteAllEntryStatesOfValueSetDefinitionByUId(
+			String valueSetDefGuid) {
+		
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		/* 1. Delete all value set defintion property entry states. */
+		this.deleteAllEntryStatesOfVsPropertiesByParentUId(valueSetDefGuid,
+				ReferenceType.VALUESETDEFINITION.name());
+		
+		/* 2. Delete all vsEntry entry states of value set definition.*/
+		this.getSqlMapClientTemplate().delete(
+				DELETE_ALL_DEFINITIONENTRY_ENTRYSTATE_OF_VALUESET_DEFINITION,
+				new PrefixedParameter(prefix, valueSetDefGuid));
+		
+		/* 3. Delete all value set definition entry states. */
+		this.deleteAllEntryStateEntriesByEntryUId(valueSetDefGuid);
+	}
+	
+	public void deleteAllEntryStateEntriesByEntryUId(String entryUId) {
+
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		this.getSqlMapClientTemplate().delete(
+				DELETE_ALL_ENTRYSTATE_ENTRIES_BY_ENTRY_UID,
+				new PrefixedParameter(prefix, entryUId));
+	}
+
+	@Override
+	public void deleteAllEntryStatesOfPickListDefinitionByUId(
+			String pickListUId) {
+
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		/* 1. Delete pick list definition properties entry states. */
+		this.deleteAllEntryStatesOfVsPropertiesByParentUId(pickListUId,
+				ReferenceType.PICKLISTDEFINITION.name());
+		
+		/* 2. Delete all PL Entry properties entry states of the PL definition. */
+		this.getSqlMapClientTemplate().delete(
+				DELETE_ALL_PLENTRY_PROPERTY_ENTRYSTATE_ENTRIES_OF_PL_DEFINITION,
+				new PrefixedParameter(prefix, pickListUId));
+		
+		/* 3. Delete all PL Entry entry states of the PL Definition.*/
+		this.getSqlMapClientTemplate().delete(DELETE_ALL_PLENTRY_ENTRYSTATE_ENTRIES_OF_PL_DEFINITION,
+				new PrefixedParameter(prefix, pickListUId));
+		
+		/* 4. Delete all entry states of PL definition.*/
+		this.deleteAllEntryStateEntriesByEntryUId(pickListUId);
+	}
+
+	@Override
+	public void deleteAllEntryStatesOfPLEntryNodeByUId(
+			String pickListEntryNodeUId) {
+
+		/* 1. Delete all PL entry properties entry states. */
+		this.deleteAllEntryStatesOfVsPropertiesByParentUId(
+				pickListEntryNodeUId, ReferenceType.PICKLISTENTRY.name());
+		
+		/* 2. Delete all PL entry entry states. */
+		this.deleteAllEntryStateEntriesByEntryUId(pickListEntryNodeUId);
 	}
 }
