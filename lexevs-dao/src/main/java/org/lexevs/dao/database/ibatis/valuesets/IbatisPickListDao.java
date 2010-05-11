@@ -324,6 +324,8 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 			insertOrUpdateValueSetsMultiAttribBean.setSubRef(null);
 			insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(this.createUniqueId());
 			
+			insertOrUpdateValueSetsMultiAttribBean.setPrefix(getPrefix());
+			
 			this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
 		}
 		
@@ -339,6 +341,8 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 			insertOrUpdateValueSetsMultiAttribBean.setRole(source.getRole());
 			insertOrUpdateValueSetsMultiAttribBean.setSubRef(source.getSubRef());
 			insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(this.createUniqueId());
+			
+			insertOrUpdateValueSetsMultiAttribBean.setPrefix(getPrefix());
 			
 			this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
 		}

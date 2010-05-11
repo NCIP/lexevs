@@ -113,10 +113,10 @@ public class IbatisPickListEntryNodeDao extends AbstractIbatisDao implements
 			PickListEntry plEntry = entryNode.getPickListEntryNodeChoice().getInclusionEntry();
 			PickListEntryExclusion plExclusion = entryNode.getPickListEntryNodeChoice().getExclusionEntry();
 			List<InsertOrUpdateValueSetsMultiAttribBean> contextList = null;
+			plEntryBean.setPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 			
 			if (plEntry != null)
 			{
-				plEntryBean.setPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 				plEntryBean.setInclude(true);
 				plEntryBean.setEntityCode(plEntry.getEntityCodeNamespace());
 				plEntryBean.setEntityCode(plEntry.getEntityCode());
@@ -139,6 +139,7 @@ public class IbatisPickListEntryNodeDao extends AbstractIbatisDao implements
 					insertOrUpdateValueSetsMultiAttribBean.setRole(null);
 					insertOrUpdateValueSetsMultiAttribBean.setSubRef(null);
 					insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(this.createUniqueId());
+					insertOrUpdateValueSetsMultiAttribBean.setPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 					
 					if (contextList == null)
 						contextList = new ArrayList<InsertOrUpdateValueSetsMultiAttribBean>();
