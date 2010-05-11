@@ -219,7 +219,7 @@
    		INNER JOIN
    			$prefix$relation rel
    		ON
-   			assoc.relationGuid = assoc.relationGuid
+   			rel.relationGuid = assoc.relationGuid
 		WHERE
 			rel.codingSchemeGuid = #param1#
 		AND
