@@ -39,7 +39,7 @@
 	
     <insert id="insertPickListEntry" 
 	parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdatePickListEntryBean">
-	INSERT INTO vsPLEntry
+	INSERT INTO $prefix$vsPLEntry
 	(
 			vsPLEntryGuid,
 			vsPickListGuid,
@@ -144,13 +144,13 @@
 			expirationDate,
 			entryStateGuid
 		FROM
-			vsPLEntry
+			$prefix$vsPLEntry
 		WHERE
 			vsPickListGuid = #param1#
 		ORDER BY entryOrder
      </select>
 
-	<update id="updatePickListEntryNodeByUId" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdatePickListEntryBean">
+	<update id="updatePickListEntryNodeByUId" parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdatePickListEntryBean">
 		UPDATE 
 			$prefix$vsPLEntry plEntry
 		SET 
@@ -191,7 +191,7 @@
 			plEntry.vsPLEntryGuid = #uid#
  	</update>
 
-	<update id="updatePickListEntryNodeVerAttribByUId" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdatePickListEntryBean">
+	<update id="updatePickListEntryNodeVerAttribByUId" parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdatePickListEntryBean">
 		UPDATE 
 			$prefix$vsPLEntry plEntry
 		SET 

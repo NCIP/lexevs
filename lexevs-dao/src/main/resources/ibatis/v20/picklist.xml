@@ -21,11 +21,11 @@
 	</resultMap>
 	
 	<select id="getPickListIds" 
-		parameterClass="string" resultClass="string">
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
 		SELECT
 			pickListId
 		FROM
-			vsPickList
+			$prefix$vsPickList
 	</select>
 	
 	<select id="getPickListGuidByPickListId" 
@@ -34,7 +34,7 @@
 		SELECT
 			vsPickListGuid
 		FROM
-			vsPickList pickListDef
+			$prefix$vsPickList pickListDef
 		WHERE
 			pickListDef.pickListId = #param1#
 	</select>
@@ -45,7 +45,7 @@
 		SELECT
 			vsPLEntryGuid
 		FROM
-			vsPLEntry
+			$prefix$vsPLEntry
 		WHERE
 			vsPickListGuid = #param1#
 		AND
@@ -69,7 +69,7 @@
 			pickListDef.effectiveDate,
 			pickListDef.expirationDate
 		FROM
-			vsPickList pickListDef
+			$prefix$vsPickList pickListDef
 		WHERE
 			pickListDef.pickListId = #param1#
 	</select>
@@ -80,7 +80,7 @@
 		SELECT
 			pickListDef.pickListId
 		FROM
-			vsPickList pickListDef
+			$prefix$vsPickList pickListDef
 		WHERE
 			pickListDef.representsValueSetDefinition = #param1#
 	</select>
@@ -91,8 +91,8 @@
 		SELECT
 			pickListDef.pickListId
 		FROM
-			vsPickList pickListDef,
-			vsPLEntry plEntry
+			$prefix$vsPickList pickListDef,
+			$prefix$vsPLEntry plEntry
 		WHERE
 			plEntry.entityCode = #param1#
 		AND
@@ -107,8 +107,8 @@
 		SELECT
 			pickListDef.pickListId
 		FROM
-			vsPickList pickListDef,
-			vsPLEntry plEntry
+			$prefix$vsPickList pickListDef,
+			$prefix$vsPLEntry plEntry
 		WHERE
 			plEntry.entityCode = #param1#
 		AND
@@ -121,7 +121,7 @@
 	
 	<insert id="insertPickListDefinition" 
 		parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertPickListDefinitionBean">
-		INSERT INTO vsPickList
+		INSERT INTO $prefix$vsPickList
 		(
 				vsPickListGuid,
 				pickListId,
@@ -166,14 +166,14 @@
 
 	<delete id="removePickListDefinitionByPickListId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			vsPickList
+			$prefix$vsPickList
 		WHERE
 			pickListId = #param1#
 	</delete>
 	
 	<delete id="removePickListEntryByPickListGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			vsPLEntry
+			$prefix$vsPLEntry
 		WHERE
 			vsPickListGuid = #param1#
 	</delete>

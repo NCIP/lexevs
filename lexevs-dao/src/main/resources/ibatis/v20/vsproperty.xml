@@ -69,7 +69,7 @@
   		SELECT
   			vsPropertyGuid
   		FROM
-  			vsProperty
+  			$prefix$vsProperty
   		WHERE
 			referenceGuid = #param1#
 		AND
@@ -102,9 +102,9 @@
   			currentRevision.revisionId currentRevisionId,
   			previousRevision.revisionId previousRevisionId  			
   		FROM
-  			vsproperty property
+  			$prefix$vsproperty property
   		LEFT JOIN
-  			vsentryState entryState
+  			$prefix$vsentryState entryState
   		ON
   			property.entryStateGuid =
   			entryState.entryStateGuid	
@@ -124,7 +124,7 @@
   	  	<include refid="selectPropertyFragment"/>
   				
   		LEFT JOIN
-  			vsPropertyMultiAttrib qualifier
+  			$prefix$vsPropertyMultiAttrib qualifier
   		ON
   		(
   			property.vspropertyGuid = qualifier.vspropertyGuid	
@@ -135,7 +135,7 @@
   		)
   			
   		LEFT JOIN
-  			vsPropertyMultiAttrib usageContext
+  			$prefix$vsPropertyMultiAttrib usageContext
   		ON
   		(
   			property.vspropertyGuid = usageContext.vspropertyGuid	
@@ -146,7 +146,7 @@
   		)
   			
   		LEFT JOIN
-  			vsPropertyMultiAttrib source
+  			$prefix$vsPropertyMultiAttrib source
   		ON
   		(
   			property.vspropertyGuid = source.vspropertyGuid		
@@ -161,7 +161,7 @@
   	  	<include refid="selectPropertyFragment"/>
   				
   		LEFT JOIN
-  			vsPropertyMultiAttrib multiAttrib
+  			$prefix$vsPropertyMultiAttrib multiAttrib
   		ON
 	  		property.vspropertyGuid = multiAttrib.vspropertyGuid
   	</sql>
@@ -188,7 +188,7 @@
 
 	<delete id="deletePickListDefinitionPropertiesByPickListGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			vsProperty
+			$prefix$vsProperty
 		WHERE
 			referenceType = #param1#
 		AND 
@@ -197,14 +197,14 @@
 	
 	<delete id="deletePickListEntryPropertiesByPickListGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			vsProperty
+			$prefix$vsProperty
 		WHERE
 			referenceType = #param1#
 		AND 
 			referenceGuid 
 		IN	(
 			SELECT 
-				vsPLEntryGuid
+				$prefix$vsPLEntryGuid
 			FROM
 				vsPLEntry
 			WHERE
@@ -214,7 +214,7 @@
 	
 	<delete id="deleteValueSetDefinitionPropertiesByValueSetGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			vsProperty
+			$prefix$vsProperty
 		WHERE
 			referenceType = #param1#
 		AND 
@@ -223,7 +223,7 @@
 
 	<delete id="deletePickListEntryPropertiesByPlEntryGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			vsProperty
+			$prefix$vsProperty
 		WHERE
 			referenceType = #param1#
 		AND 
@@ -232,7 +232,7 @@
 		
 	<delete id="deleteDefinitionEntryPropertiesByValueSetGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			vsProperty
+			$prefix$vsProperty
 		WHERE
 			referenceType = #param1#
 		AND 
@@ -241,7 +241,7 @@
 			SELECT 
 				vsdEntryGuid
 			FROM
-				vsdEntry
+				$prefix$vsdEntry
 			WHERE
 				valueSetDefGuid = #param2#
 			)
@@ -249,7 +249,7 @@
 	
 	
      <insert id="insertProperty" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
-		INSERT INTO vsProperty (
+		INSERT INTO $prefix$vsProperty (
 			vsPropertyGuid,
 			referenceGuid,
 			referenceType,
@@ -271,8 +271,8 @@
 			entryStateGuid
 		) VALUES (
 			#uid#, 
-			#entityUId#,
-			#referenceType#, 
+			#parentUId#,
+			#parentType#, 
 			#property.propertyId#, 
 			#property.propertyType#,
 			#property.propertyName#,
@@ -320,7 +320,7 @@
   <update id="updatePropertyByUId"
   	parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
   		UPDATE 
-			vsProperty property
+			$prefix$vsProperty property
 		SET 
    		  <dynamic prepend=" ">
    		  	<isNotNull prepend="," property="property.propertyType">
@@ -375,7 +375,7 @@
   <update id="updatePropertyVerAttribByUId"
   	parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
   		UPDATE 
-			vsProperty property
+			$prefix$vsProperty property
 		SET 
    		  <dynamic prepend=" ">
 			<isNotNull prepend="," property="property.isActive">

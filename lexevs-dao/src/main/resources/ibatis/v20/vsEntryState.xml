@@ -17,7 +17,7 @@
 			cr.revisionId currentRevisionId,
 			pr.revisionId previousRevisionId
 		FROM
-			vsEntryState es
+			$prefix$vsEntryState es
 		LEFT JOIN $prefix$revision cr ON
 			es.revisionGuid = cr.revisionGuid
 		LEFT JOIN $prefix$revision pr ON
@@ -31,11 +31,11 @@
 		SET 
 			changeType = #entryState.changeType#
 		where
-			entryStateId = #id#
+			$prefix$entryStateId = #id#
  	</update>
  	
  	<insert id="insertEntryState" parameterClass="org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean">
-		INSERT INTO vsEntryState (
+		INSERT INTO $prefix$vsEntryState (
 			entryStateGuid,
 			entryGuid,
 			entryType,
@@ -63,7 +63,7 @@
 		SELECT
 			count(1)
 		FROM
-			vsEntryState es
+			$prefix$vsEntryState es
 		WHERE
 			es.entryStateGuid = #param1#
      </select>

@@ -22,7 +22,7 @@
 			subRef,
 			role
 		FROM 
-			vsMultiAttrib
+			$prefix$vsMultiAttrib
 		WHERE
 			referenceGuid = #param1#
 		AND
@@ -38,7 +38,7 @@
 		SELECT 
 			attributeValue
 		FROM 
-			vsMultiAttrib
+			$prefix$vsMultiAttrib
 		WHERE
 			referenceGuid = #param1#
 		AND
@@ -50,7 +50,7 @@
 	
 	<insert id="insertMultiAttrib" 
 		parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean">
-		INSERT INTO vsMultiAttrib (
+		INSERT INTO $prefix$vsMultiAttrib (
 			vsMultiAttribGuid,
 			referenceGuid,
 			referenceType,
@@ -74,7 +74,7 @@
 	<delete id="deleteSourceByParentGuidAndType"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			vsMultiAttrib
+			$prefix$vsMultiAttrib
 		WHERE
 			referenceGuid = #param1#
 		AND
@@ -86,7 +86,7 @@
 	<delete id="deleteContextByParentGuidAndType"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			vsMultiAttrib
+			$prefix$vsMultiAttrib
 		WHERE
 			referenceGuid = #param1#
 		AND
@@ -97,7 +97,7 @@
 	
 	<delete id="deletePickListEntryContextByPickListGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			vsMultiAttrib
+			$prefix$vsMultiAttrib
 		WHERE
 			referenceType = #param1#
 		AND 

@@ -90,6 +90,8 @@ public class IbatisVSDefinitionEntryDao extends AbstractIbatisDao implements
 			}
 		}			
 		
+		vsdEntryBean.setPrefix(this.getPrefixResolver().resolveDefaultPrefix());
+		
 		// insert into vsdEntry table
 		this.getSqlMapClientTemplate().insert(INSERT_DEFINITION_ENTRY_SQL, vsdEntryBean);
 		

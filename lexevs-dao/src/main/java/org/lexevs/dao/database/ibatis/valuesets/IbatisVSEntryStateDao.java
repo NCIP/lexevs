@@ -115,7 +115,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 		String entryStateUId = this.createUniqueId();
 		
 		this.insertEntryState(
-				null, 
+				this.getPrefixResolver().resolveDefaultPrefix(), 
 				entryStateUId, 
 				entryUId, 
 				entryType, 
@@ -220,7 +220,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 		
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
-		/* 1. Delete all value set defintion property entry states. */
+		/* 1. Delete all value set definition property entry states. */
 		this.deleteAllEntryStatesOfVsPropertiesByParentUId(valueSetDefGuid,
 				ReferenceType.VALUESETDEFINITION.name());
 		

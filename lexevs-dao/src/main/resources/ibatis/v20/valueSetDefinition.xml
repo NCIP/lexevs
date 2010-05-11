@@ -85,11 +85,11 @@
 	</resultMap>
 	
 	<select id="getValueSetDefinitionURIs" 
-		parameterClass="string" resultClass="string">
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
 		SELECT
 			valueSetDefURI
 		FROM
-			valueSetDefinition
+			$prefix$valueSetDefinition
 	</select>
 	
 	<select id="getValueSetDefinitionGuidByValueSetDefinitionURI" 
@@ -98,7 +98,7 @@
 		SELECT
 			valueSetDefGuid
 		FROM
-			valueSetDefinition
+			$prefix$valueSetDefinition
 		WHERE
 			valueSetDefURI = #param1#
 	</select>
@@ -118,7 +118,7 @@
 			effectiveDate,
 			expirationDate
 		FROM
-			valueSetDefinition
+			$prefix$valueSetDefinition
 		WHERE
 			valueSetDefURI = #param1#
 	</select>
@@ -128,7 +128,7 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		SELECT *
 		FROM
-			valueSetDefinition
+			$prefix$valueSetDefinition
 		WHERE
 			valueSetDefURI = #param1#
 	</select>
@@ -139,7 +139,7 @@
 		SELECT
 			valueSetDefURI
 		FROM
-			valueSetDefinition
+			$prefix$valueSetDefinition
 		WHERE
 			valueSetDefName = #param1#
 	</select>
@@ -170,7 +170,7 @@
 			expirationDate,
 			entryStateGuid
 		FROM
-			vsdEntry
+			$prefix$vsdEntry
 		WHERE
 			valueSetDefGuid = #param1#
 		ORDER BY
@@ -179,7 +179,7 @@
 	
 	<insert id="insertValueSetDefinition" 
 		parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean">
-		INSERT INTO valueSetDefinition
+		INSERT INTO $prefix$valueSetDefinition
 		(
 				valueSetDefGuid,
 				valueSetDefURI,
@@ -277,14 +277,14 @@
  	
 	<delete id="removevalueSetDefinitionByValueSetDefinitionURI" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			valueSetDefinition
+			$prefix$valueSetDefinition
 		WHERE
 			valueSetDefURI = #param1#
 	</delete>
 	
 	<delete id="removeDefinitionEntryByValueSetDefinitionGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			vsdEntry
+			$prefix$vsdEntry
 		WHERE
 			valueSetDefGuid = #param1#
 	</delete>

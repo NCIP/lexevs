@@ -153,9 +153,10 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	@Override
 	@CacheMethod
 	public ValueSetDefinition getValueSetDefinitionByURI(String valueSetDefinitionURI) {
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		InsertValueSetDefinitionBean vsdBean = (InsertValueSetDefinitionBean) 
 			this.getSqlMapClientTemplate().queryForObject(GET_VALUESET_DEFINITION_METADATA_BY_VALUESET_DEFINITION_URI_SQL, 
-				new PrefixedParameter(null, valueSetDefinitionURI));
+				new PrefixedParameter(prefix, valueSetDefinitionURI));
 		
 		ValueSetDefinition vsd = null;
 		if (vsdBean != null)
@@ -167,7 +168,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			vsd.setEntryState(vsEntryStateDao.getEntryStateByUId(vsdBean.getEntryStateUId()));
 			
 			List<DefinitionEntry> des = this.getSqlMapClientTemplate().queryForList(GET_DEFINITION_ENTRY_BY_VALUESET_DEFINITION_GUID_SQL,
-					new PrefixedParameter(null, vsdGuid));
+					new PrefixedParameter(prefix, vsdGuid));
 			
 			if (des != null)
 				vsd.setDefinitionEntry(des);			
@@ -183,14 +184,14 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			
 			// Get value set definition source list
 			List<Source> sourceList = this.getSqlMapClientTemplate().queryForList(GET_SOURCE_LIST_BY_PARENT_GUID_AND_TYPE_SQL, 
-					new PrefixedParameterTuple(null, vsdGuid, ReferenceType.VALUESETDEFINITION.name())); 
+					new PrefixedParameterTuple(prefix, vsdGuid, ReferenceType.VALUESETDEFINITION.name())); 
 			
 			if (sourceList != null)
 				vsd.setSource(sourceList);
 			
 			// Get realm or context list
 			List<String> contextList = this.getSqlMapClientTemplate().queryForList(GET_CONTEXT_LIST_BY_PARENT_GUID_AND_TYPE_SQL, 
-					new PrefixedParameterTuple(null, vsdGuid, ReferenceType.VALUESETDEFINITION.name())); 
+					new PrefixedParameterTuple(prefix, vsdGuid, ReferenceType.VALUESETDEFINITION.name())); 
 			
 			if (contextList != null)
 				vsd.setRepresentsRealmOrContext(contextList);
@@ -208,7 +209,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	public String getGuidFromvalueSetDefinitionURI(String valueSetDefinitionURI) {
 		return (String) 
 		this.getSqlMapClientTemplate().queryForObject(GET_VALUESET_DEFINITION_GUID_BY_VALUESET_DEFINITION_URI_SQL, 
-			new PrefixedParameter(null, valueSetDefinitionURI));
+			new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), valueSetDefinitionURI));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -216,7 +217,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	@CacheMethod
 	public List<String> getAllValueSetDefinitionsWithNoName() throws LBException {
 		return this.getSqlMapClientTemplate().queryForList(GET_VALUESET_DEFINITION_URI_FOR_VALUESET_NAME_SQL,
-				new PrefixedParameter(null, " "));
+				new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), " "));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -230,7 +231,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			return getAllValueSetDefinitionsWithNoName();
 		else
 			return this.getSqlMapClientTemplate().queryForList(GET_VALUESET_DEFINITION_URI_FOR_VALUESET_NAME_SQL,
-					new PrefixedParameter(null, valueSetDefinitionName));
+					new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), valueSetDefinitionName));
 	}
 
 	@Override
@@ -253,7 +254,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		InsertValueSetDefinitionBean vsDefBean = new InsertValueSetDefinitionBean();
 		vsDefBean.setUId(valueSetDefinitionGuid);
 		vsDefBean.setValueSetDefinition(vsdef);
-		vsDefBean.setPrefix(null);
+		vsDefBean.setPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 		vsDefBean.setSystemReleaseUId(systemReleaseId);
 		vsDefBean.setEntryStateUId(vsEntryStateGuid);
 		
@@ -287,6 +288,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			insertOrUpdateValueSetsMultiAttribBean.setRole(null);
 			insertOrUpdateValueSetsMultiAttribBean.setSubRef(null);
 			insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(this.createUniqueId());
+			insertOrUpdateValueSetsMultiAttribBean.setPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 			
 			this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
 		}
@@ -303,6 +305,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			insertOrUpdateValueSetsMultiAttribBean.setRole(source.getRole());
 			insertOrUpdateValueSetsMultiAttribBean.setSubRef(source.getSubRef());
 			insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(this.createUniqueId());
+			insertOrUpdateValueSetsMultiAttribBean.setPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 			
 			this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
 		}
@@ -414,7 +417,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getValueSetDefinitionURIs() {
-		return this.getSqlMapClientTemplate().queryForList(GET_VALUESET_DEFINITION_URIS_SQL);
+		return this.getSqlMapClientTemplate().queryForList(GET_VALUESET_DEFINITION_URIS_SQL, new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), null));
 	}	
 	
 	/**
@@ -455,13 +458,14 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	@ClearCache
 	public void removeValueSetDefinitionByValueSetDefinitionURI(String valueSetDefinitionURI) {
 		
-		String valueSetDefGuid = (String) this.getSqlMapClientTemplate().queryForObject(GET_VALUESET_DEFINITION_GUID_BY_VALUESET_DEFINITION_URI_SQL, new PrefixedParameter(null, valueSetDefinitionURI));
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		String valueSetDefGuid = (String) this.getSqlMapClientTemplate().queryForObject(GET_VALUESET_DEFINITION_GUID_BY_VALUESET_DEFINITION_URI_SQL, new PrefixedParameter(prefix, valueSetDefinitionURI));
 		
 		//remove entrystates
 		this.vsEntryStateDao.deleteAllEntryStatesOfValueSetDefinitionByUId(valueSetDefGuid);
 		
 		// remove definition entries
-		this.getSqlMapClientTemplate().delete(REMOVE_DEFINITION_ENTRY_BY_VALUESET_DEFINITION_GUID_SQL, new PrefixedParameter(null, valueSetDefGuid));
+		this.getSqlMapClientTemplate().delete(REMOVE_DEFINITION_ENTRY_BY_VALUESET_DEFINITION_GUID_SQL, new PrefixedParameter(prefix, valueSetDefGuid));
 		
 		// remove value set properties
 		this.vsPropertyDao.deleteAllValueSetDefinitionProperties(valueSetDefGuid);
@@ -470,14 +474,14 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		deleteValueSetDefinitionMappings(valueSetDefGuid);
 		
 		// remove value set definition source list
-		this.getSqlMapClientTemplate().delete(DELETE_SOURCE_BY_PARENT_GUID_AND_TYPE_SQL, new PrefixedParameterTuple(null, valueSetDefGuid, ReferenceType.VALUESETDEFINITION.name()));
+		this.getSqlMapClientTemplate().delete(DELETE_SOURCE_BY_PARENT_GUID_AND_TYPE_SQL, new PrefixedParameterTuple(prefix, valueSetDefGuid, ReferenceType.VALUESETDEFINITION.name()));
 		
 		// remove realm or context list
-		this.getSqlMapClientTemplate().delete(DELETE_CONTEXT_BY_PARENT_GUID_AND_TYPE_SQL, new PrefixedParameterTuple(null, valueSetDefGuid, ReferenceType.VALUESETDEFINITION.name()));
+		this.getSqlMapClientTemplate().delete(DELETE_CONTEXT_BY_PARENT_GUID_AND_TYPE_SQL, new PrefixedParameterTuple(prefix, valueSetDefGuid, ReferenceType.VALUESETDEFINITION.name()));
 		
 		// remove value set definition
 		this.getSqlMapClientTemplate().
-			delete(REMOVE_VALUESET_DEFINITION_BY_VALUESET_DEFINITION_URI_SQL, new PrefixedParameter(null, valueSetDefinitionURI));	
+			delete(REMOVE_VALUESET_DEFINITION_BY_VALUESET_DEFINITION_URI_SQL, new PrefixedParameter(prefix, valueSetDefinitionURI));	
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -486,7 +490,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		
 		List<URIMap> uriMaps = this.getSqlMapClientTemplate().queryForList(	
 				GET_URIMAPS_BY_REFERENCE_GUID_SQL, 
-				new PrefixedParameterTuple(null, referenceGuid, ReferenceType.VALUESETDEFINITION.name()));
+				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), referenceGuid, ReferenceType.VALUESETDEFINITION.name()));
 		
 		for(URIMap uriMap : uriMaps) {
 			DaoUtility.insertIntoMappings(mappings, uriMap);
@@ -516,6 +520,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	
 	public void insertURIMap(final String referenceGuid,
 			final List<URIMap> urimapList) {
+		final String prefix  = this.getPrefixResolver().resolveDefaultPrefix();
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
 	
 			public Object doInSqlMapClient(SqlMapExecutor executor)
@@ -526,7 +531,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 					
 					executor.insert(INSERT_URIMAPS_SQL, 
 							buildInsertOrUpdateURIMapBean(
-									null,
+									prefix,
 									uriMapId, 
 									referenceGuid,
 									classToStringMappingClassifier.classify(uriMap.getClass()),
@@ -541,7 +546,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		String uriMapId = this.createUniqueId();
 		this.getSqlMapClientTemplate().insert(
 				INSERT_URIMAPS_SQL, buildInsertOrUpdateURIMapBean(
-									null,
+						this.getPrefixResolver().resolveDefaultPrefix(),
 									uriMapId, 
 									referenceGuid,
 									classToStringMappingClassifier.classify(uriMap.getClass()),
@@ -589,7 +594,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	public void deleteValueSetDefinitionMappings(String referenceGuid) {
 		this.getSqlMapClientTemplate().delete(
 				DELETE_URIMAPS_BY_REFERENCE_GUID_SQL, 
-				new PrefixedParameterTuple(null, referenceGuid, ReferenceType.VALUESETDEFINITION.name()));
+				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), referenceGuid, ReferenceType.VALUESETDEFINITION.name()));
 	}
 	
 	/**
@@ -660,7 +665,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	public List<String> getValueSetDefinitionURIForSupportedTagAndValue(
 			String supportedTag, String value) {
 		return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_VALUESETDEFINITIONURI_FOR_SUPPORTED_TAG_AND_VALUE_SQL,
-				new PrefixedParameterTuple(null, supportedTag, value));
+				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), supportedTag, value));
 	}
 
 	@Override

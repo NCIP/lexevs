@@ -161,16 +161,18 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	@Override
 	@CacheMethod
 	public PickListDefinition getPickListDefinitionById(String pickListId) {
+		final String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
 		PickListDefinition plDef = (PickListDefinition) 
 			this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_DEFINITION_BY_PICKLISTID_SQL, 
-				new PrefixedParameter(null, pickListId));
+				new PrefixedParameter(prefix, pickListId));
 		
 		if (plDef != null)
 		{
 			String plDefGuid = getPickListGuidFromPickListId(pickListId);
 			
 			List<PickListEntryNodeBean> plEntryNodeBeans = (List<PickListEntryNodeBean>) this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_ENTRYNODE_BEAN_BY_PICKLIST_GUID_SQL, 
-				new PrefixedParameter(null, plDefGuid));
+				new PrefixedParameter(prefix, plDefGuid));
 			
 			if (plEntryNodeBeans != null)
 			{
@@ -192,7 +194,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 						
 						// get pick context list
 						List<String> contextList = this.getSqlMapClientTemplate().queryForList(GET_CONTEXT_LIST_BY_PARENT_GUID_AND_TYPE_SQL, 
-								new PrefixedParameterTuple(null, plEntryNodeBean.getVsPLEntryGuid(), ReferenceType.PICKLISTENTRY.name())); 
+								new PrefixedParameterTuple(prefix, plEntryNodeBean.getVsPLEntryGuid(), ReferenceType.PICKLISTENTRY.name())); 
 						
 						if (contextList != null)
 							plEntry.setPickContext(contextList);
@@ -229,14 +231,14 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 			
 			// Get pick list definition source
 			List<Source> sourceList = this.getSqlMapClientTemplate().queryForList(GET_SOURCE_LIST_BY_PARENT_GUID_AND_TYPE_SQL, 
-					new PrefixedParameterTuple(null, plDefGuid, ReferenceType.PICKLISTDEFINITION.name())); 
+					new PrefixedParameterTuple(prefix, plDefGuid, ReferenceType.PICKLISTDEFINITION.name())); 
 			
 			if (sourceList != null)
 				plDef.setSource(sourceList);
 			
 			// Get pick list definition context
 			List<String> contextList = this.getSqlMapClientTemplate().queryForList(GET_CONTEXT_LIST_BY_PARENT_GUID_AND_TYPE_SQL, 
-					new PrefixedParameterTuple(null, plDefGuid, ReferenceType.PICKLISTDEFINITION.name())); 
+					new PrefixedParameterTuple(prefix, plDefGuid, ReferenceType.PICKLISTDEFINITION.name())); 
 			
 			if (contextList != null)
 				plDef.setDefaultPickContext(contextList);
@@ -256,7 +258,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	public String getPickListGuidFromPickListId(String pickListId) {
 		return (String) 
 		this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_GUID_BY_PICKLISTID_SQL, 
-			new PrefixedParameter(null, pickListId));
+			new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), pickListId));
 	}
 	
 	@Override
@@ -265,7 +267,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	public List<String> getPickListDefinitionIdForValueSetDefinitionURI(
 			String valueSetDefURI) {
 		return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_DEFINITION_ID_FOR_VALUESET_DEFINITION_URI_SQL, 
-				new PrefixedParameter(null, valueSetDefURI));
+				new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), valueSetDefURI));
 	}
 	
 	@Override
@@ -357,7 +359,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getPickListIds() {
-		return this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_IDS_SQL);
+		return this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_IDS_SQL,  new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), null));
 	}	
 	
 	/**
@@ -398,46 +400,46 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	@ClearCache
 	public void removePickListDefinitionByPickListId(String pickListDefinitionId) {
 		
-		String pickListGuid = (String) this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_GUID_BY_PICKLISTID_SQL, new PrefixedParameter(null, pickListDefinitionId));
+		String pickListGuid = (String) this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_GUID_BY_PICKLISTID_SQL, new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), pickListDefinitionId));
 		
 		// remove entry state details
 		this.vsEntryStateDao.deleteAllEntryStatesOfPickListDefinitionByUId(pickListGuid);
 		
 		// remove all pick list entry context
-		this.getSqlMapClientTemplate().delete(DELETE_PICKLIST_ENTRY_CONTEXT_BY_PICKLIST_GUID_SQL, new PrefixedParameterTuple(null, ReferenceType.PICKLISTENTRY.name(), pickListGuid));
+		this.getSqlMapClientTemplate().delete(DELETE_PICKLIST_ENTRY_CONTEXT_BY_PICKLIST_GUID_SQL, new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), ReferenceType.PICKLISTENTRY.name(), pickListGuid));
 		
 		// remove all pick list entry node properties
 		this.vsPropertyDao.deleteAllPickListEntityPropertiesOfPickListDefinition(pickListGuid);
 		
 		// remove pick list entries
-		this.getSqlMapClientTemplate().delete(REMOVE_PICKLIST_ENTRY_BY_PICKLISTGUID_SQL, new PrefixedParameter(null, pickListGuid));
+		this.getSqlMapClientTemplate().delete(REMOVE_PICKLIST_ENTRY_BY_PICKLISTGUID_SQL, new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), pickListGuid));
 		
 		// remove pick list definition properties
 		this.vsPropertyDao.deleteAllPickListDefinitionProperties(pickListGuid);
 		
 		// remove pick list definition source list
-		this.getSqlMapClientTemplate().delete(DELETE_SOURCE_BY_PARENT_GUID_AND_TYPE_SQL, new PrefixedParameterTuple(null, pickListGuid, ReferenceType.PICKLISTDEFINITION.name()));
+		this.getSqlMapClientTemplate().delete(DELETE_SOURCE_BY_PARENT_GUID_AND_TYPE_SQL, new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), pickListGuid, ReferenceType.PICKLISTDEFINITION.name()));
 		
 		// remove pick list definition default context
-		this.getSqlMapClientTemplate().delete(DELETE_CONTEXT_BY_PARENT_GUID_AND_TYPE_SQL, new PrefixedParameterTuple(null, pickListGuid, ReferenceType.PICKLISTDEFINITION.name()));
+		this.getSqlMapClientTemplate().delete(DELETE_CONTEXT_BY_PARENT_GUID_AND_TYPE_SQL, new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), pickListGuid, ReferenceType.PICKLISTDEFINITION.name()));
 		
 		// remove pick list definition mappings
 		deletePickListDefinitionMappings(pickListGuid);
 		
 		// remove pick list definition
 		this.getSqlMapClientTemplate().
-			delete(REMOVE_PICKLIST_DEFINITION_BY_PICKLISTID_SQL, new PrefixedParameter(null, pickListDefinitionId));	
+			delete(REMOVE_PICKLIST_DEFINITION_BY_PICKLISTID_SQL, new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), pickListDefinitionId));	
 	}
 
 	@Override
 	@CacheMethod
 	public String getPickListEntryNodeGuidByPickListIdAndPLEntryId(
 			String pickListDefinitionId, String plEntryId) {
-		String pickListGuid = (String) this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_GUID_BY_PICKLISTID_SQL, new PrefixedParameter(null, pickListDefinitionId));
+		String pickListGuid = (String) this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_GUID_BY_PICKLISTID_SQL, new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), pickListDefinitionId));
 		
 		return (String) 
 		this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_ENTRYNODEGUID_BY_PICKLISTID_AND_PLENTRYID_SQL, 
-			new PrefixedParameterTuple(null, pickListGuid, plEntryId));
+			new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), pickListGuid, plEntryId));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -446,7 +448,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		
 		List<URIMap> uriMaps = this.getSqlMapClientTemplate().queryForList(	
 				GET_URIMAPS_BY_REFERENCE_GUID_SQL, 
-				new PrefixedParameterTuple(null, referenceGuid, ReferenceType.PICKLISTDEFINITION.name()));
+				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), referenceGuid, ReferenceType.PICKLISTDEFINITION.name()));
 		
 		for(URIMap uriMap : uriMaps) {
 			DaoUtility.insertIntoMappings(mappings, uriMap);
@@ -476,6 +478,8 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	
 	public void insertURIMap(final String referenceGuid,
 			final List<URIMap> urimapList) {
+		final String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
 	
 			public Object doInSqlMapClient(SqlMapExecutor executor)
@@ -483,10 +487,9 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 				executor.startBatch();
 				for(URIMap uriMap : urimapList){
 					String uriMapId = UUID.randomUUID().toString();
-					
 					executor.insert(INSERT_URIMAPS_SQL, 
 							buildInsertOrUpdateURIMapBean(
-									null,
+									prefix,
 									uriMapId, 
 									referenceGuid,
 									classToStringMappingClassifier.classify(uriMap.getClass()),
@@ -501,7 +504,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		String uriMapId = this.createUniqueId();
 		this.getSqlMapClientTemplate().insert(
 				INSERT_URIMAPS_SQL, buildInsertOrUpdateURIMapBean(
-									null,
+									this.getPrefixResolver().resolveDefaultPrefix(),
 									uriMapId, 
 									referenceGuid,
 									classToStringMappingClassifier.classify(uriMap.getClass()),
@@ -549,7 +552,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	public void deletePickListDefinitionMappings(String referenceGuid) {
 		this.getSqlMapClientTemplate().delete(
 				DELETE_URIMAPS_BY_REFERENCE_GUID_SQL, 
-				new PrefixedParameterTuple(null, referenceGuid, ReferenceType.PICKLISTDEFINITION.name()));
+				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), referenceGuid, ReferenceType.PICKLISTDEFINITION.name()));
 	}
 	
 	/**
@@ -574,10 +577,10 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		List<String> pickListIds = null;
 		if (propertyId != null)			
 			pickListIds =  (List<String>) this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_DEFINITION_ID_FOR_ENTITYCODE_ENTITYCODENAMESPACE_PROPERTYID_SQL,
-					new PrefixedParameterTriple(null, entityCode, entityCodeNameSpace, propertyId));
+					new PrefixedParameterTriple(this.getPrefixResolver().resolveDefaultPrefix(), entityCode, entityCodeNameSpace, propertyId));
 		else
 			pickListIds =  this.getSqlMapClientTemplate().queryForList(GET_PICKLIST_DEFINITION_ID_FOR_ENTITYCODE_ENTITYCODENAMESPACE_SQL,
-					new PrefixedParameterTuple(null, entityCode, entityCodeNameSpace));
+					new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), entityCode, entityCodeNameSpace));
 		
 		return pickListIds;
 	}
@@ -602,7 +605,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	public List<String> getPickListDefinitionIdForSupportedTagAndValue(
 			String supportedTag, String value) {
 		return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_PICKLISTID_FOR_SUPPORTED_TAG_AND_VALUE_SQL,
-				new PrefixedParameterTuple(null, supportedTag, value));
+				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), supportedTag, value));
 	}
 
 	@Override

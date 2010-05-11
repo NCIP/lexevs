@@ -30,7 +30,6 @@ import org.LexGrid.versions.EntryState;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
-import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.constants.classifier.property.PropertyMultiAttributeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
@@ -149,10 +148,11 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	
 	@SuppressWarnings("unchecked")
 	public List<Property> getAllPropertiesOfParent(String parentGuid, ReferenceType type) {
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		List<Property> propertyList = new ArrayList<Property>();
 		List<VSPropertyBean> propertyBeanList = this.getSqlMapClientTemplate().queryForList(GET_ALL_PROPERTIES_OF_PARENT_SQL, 
 				new PrefixedParameterTuple(
-						null,
+						prefix,
 						type.name(),
 						parentGuid));
 		
@@ -162,7 +162,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 			
 			List<Object> multiAttribs =  this.getSqlMapClientTemplate().queryForList(GET_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL, 
 					new PrefixedParameterTuple(
-							null,
+							prefix,
 							propertyBean.getVsPropertyGuid(),
 							null));
 			
@@ -197,7 +197,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	@SuppressWarnings("unchecked")
 	protected <T> List<T> doGetPropertyMultiAttrib(String propertyGuid, Class<T> multiAttrib){
 		return this.getSqlMapClientTemplate().queryForList(GET_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL, 
-				new PrefixedParameterTuple(null, propertyGuid, this.propertyMultiAttributeClassifier.classify(multiAttrib)));
+				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), propertyGuid, this.propertyMultiAttributeClassifier.classify(multiAttrib)));
 	}
 	
 	protected String getPropertyTypeString(Property property) {
@@ -432,28 +432,28 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	public void deleteAllDefinitionEntityPropertiesOfValueSetDefinition(
 			String valueSetDefinitionURI){
 		this.getSqlMapClientTemplate().delete(DELETE_ALL_DEFINITIONENTRY_PROPERTIES_OF_VALUESET_SQL, 
-				new PrefixedParameterTuple(null, 
+				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), 
 						ReferenceType.DEFINITIONENTRY.name(), valueSetDefinitionURI));
 	}
 	
 	public void deleteAllValueSetDefinitionProperties(
 			String valueSetDefinitionURI){
 		this.getSqlMapClientTemplate().delete(DELETE_ALL_VALUESET_DEFINITION_PROPERTIES_OF_VALUESET_SQL, 
-				new PrefixedParameterTuple(null, 
+				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), 
 						ReferenceType.VALUESETDEFINITION.name(), valueSetDefinitionURI));
 	}
 	
 	public void deleteAllPickListEntityPropertiesOfPickListDefinition(
 			String pickListId){
 		this.getSqlMapClientTemplate().delete(DELETE_ALL_PICKLIST_ENTRY_PROPERTIES_OF_PCIKLIST_SQL, 
-				new PrefixedParameterTuple(null, 
+				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), 
 						ReferenceType.PICKLISTENTRY.name(), pickListId));
 	}
 	
 	public void deleteAllPickListDefinitionProperties(
 			String pickListId){
 		this.getSqlMapClientTemplate().delete(DELETE_ALL_PICKLIST_DEFINITION_PROPERTIES_OF_PCIKLIST_SQL, 
-				new PrefixedParameterTuple(null, 
+				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), 
 						ReferenceType.PICKLISTDEFINITION.name(), pickListId));
 	}
 	
@@ -485,7 +485,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	public String getPropertyGuidFromParentGuidAndPropertyId(String parentGuid, String propertyId) {
 		
 		return (String) this.getSqlMapClientTemplate().queryForObject(GET_PROPERTY_GUID_SQL, 
-				new PrefixedParameterTuple(null, parentGuid, propertyId));
+				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), parentGuid, propertyId));
 	}
 
 	/**
@@ -540,6 +540,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_QUALIFIER);
 		bean.setQualifierType(propertyQualifier.getPropertyQualifierType());
 		bean.setEntryStateUId(entryStateGuid);
+		bean.setPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 
 		return bean;
 	}
@@ -563,7 +564,8 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 		bean.setAttributeValue(usageContext);
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
 		bean.setEntryStateUId(entryStateGuid);
-
+		bean.setPrefix(this.getPrefixResolver().resolveDefaultPrefix());
+		
 		return bean;
 	}
 	
@@ -588,7 +590,8 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 		bean.setRole(source.getRole());
 		bean.setSubRef(source.getSubRef());
 		bean.setEntryStateUId(entryStateId);
-
+		bean.setPrefix(this.getPrefixResolver().resolveDefaultPrefix());
+		
 		return bean;
 	}
 

@@ -116,6 +116,7 @@ public class IbatisPickListEntryNodeDao extends AbstractIbatisDao implements
 			
 			if (plEntry != null)
 			{
+				plEntryBean.setPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 				plEntryBean.setInclude(true);
 				plEntryBean.setEntityCode(plEntry.getEntityCodeNamespace());
 				plEntryBean.setEntityCode(plEntry.getEntityCode());

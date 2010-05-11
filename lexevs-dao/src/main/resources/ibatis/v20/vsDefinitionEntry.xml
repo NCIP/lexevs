@@ -33,7 +33,7 @@
 	
      <insert id="insertDefinitionEntry" 
 		parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateDefinitionEntryBean">
-		INSERT INTO vsdEntry
+		INSERT INTO $prefix$vsdEntry
 		(
 				vsdEntryGuid,
 				valueSetDefGuid,
@@ -105,7 +105,7 @@
 			)
      </insert>
 
-  <update id="updateDefinitionEntryByUId" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateDefinitionEntryBean">
+  <update id="updateDefinitionEntryByUId" parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateDefinitionEntryBean">
 		UPDATE 
 			$prefix$vsdEntry vsdEntry
 		SET 
@@ -146,7 +146,7 @@
 			vsdEntry.vsdEntryGuid = #uid#
  	</update>
 
-  <update id="updateDefinitionEntryVerAttribByUId" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateDefinitionEntryBean">
+  <update id="updateDefinitionEntryVerAttribByUId" parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateDefinitionEntryBean">
 		UPDATE 
 			$prefix$vsdEntry vsdEntry
 		SET 

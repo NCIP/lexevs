@@ -151,7 +151,7 @@
 	 		assnEntityCode,
 	 		propertyType
 	 	FROM
-	 		vsSupportedAttrib urimap
+	 		$prefix$vsSupportedAttrib urimap
 	</sql>
 	
 	 <select id="getURIMaps" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="uriMapResult">
@@ -179,7 +179,7 @@
 	 	SELECT
 	 		COUNT(*)
 	 	FROM
-	 		vsSupportedAttrib urimap
+	 		$prefix$vsSupportedAttrib urimap
 	 	WHERE
 	 		urimap.referenceGuid = #param1#
 	 	AND
@@ -194,8 +194,8 @@
 		SELECT 
 			vsd.valueSetDefURI
 		FROM 
-			valuesetdefinition vsd, 
-			vssupportedattrib vss
+			$prefix$valuesetdefinition vsd, 
+			$prefix$vssupportedattrib vss
 		WHERE 
 			vss.supportedAttributeTag = #param1#
 		AND 
@@ -210,8 +210,8 @@
 		SELECT 
 			pld.pickListId
 		FROM 
-			vsPickList pld, 
-			vssupportedattrib vss
+			$prefix$vsPickList pld, 
+			$prefix$vssupportedattrib vss
 		WHERE 
 			vss.supportedAttributeTag = #param1#
 		AND 
@@ -221,7 +221,7 @@
 	 </select>
 	
      <insert id="insertURIMap" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean">
-		INSERT INTO vsSupportedAttrib (
+		INSERT INTO $prefix$vsSupportedAttrib (
 			vsSuppAttribGuid,
 			referenceGuid,
 			referenceType,
@@ -318,7 +318,7 @@
 	<update id="updateUriMapByLocalId"
 		parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean">
 		UPDATE
-			vsSupportedAttrib vssupportedattrib
+			$prefix$vsSupportedAttrib vssupportedattrib
 		SET
 		
 		<dynamic prepend=" ">
@@ -406,7 +406,7 @@
 	<delete id="deleteMappingsByReferenceGuid"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			vsSupportedAttrib
+			$prefix$vsSupportedAttrib
 		WHERE
 			referenceGuid = #param1#
 		AND

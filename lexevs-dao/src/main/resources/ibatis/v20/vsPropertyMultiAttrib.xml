@@ -38,13 +38,13 @@
 			role,
 			qualifierType
 		FROM 
-			vsPropertyMultiAttrib
+			$prefix$vsPropertyMultiAttrib
 		WHERE
 			vsPropertyGuid = #param1#
 	</select>
 
 	<insert id="insertPropertyMultiAttrib" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">
-		INSERT INTO vsPropertyMultiAttrib (
+		INSERT INTO $prefix$vsPropertyMultiAttrib (
 			vsPropMultiAttribGuid,
 			vsPropertyGuid,
 			attributeType,
@@ -69,7 +69,7 @@
 	
 <!--	<delete id="deletePropertyMultiAttrib" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">-->
 <!--		DELETE FROM-->
-<!--			vsPropertyMultiAttrib-->
+<!--			$prefix$vsPropertyMultiAttrib-->
 <!--		WHERE-->
 <!--			referenceType = #param1#-->
 <!--		AND -->
