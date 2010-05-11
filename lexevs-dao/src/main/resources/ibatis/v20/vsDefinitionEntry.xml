@@ -200,7 +200,7 @@
       
 	<select id="getDefinitionEntryAttribByUId" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="definitionEntry" remapResults="true">
+		resultMap="definitionEntry" remapResults="true">
 		SELECT
 			*
 		FROM
