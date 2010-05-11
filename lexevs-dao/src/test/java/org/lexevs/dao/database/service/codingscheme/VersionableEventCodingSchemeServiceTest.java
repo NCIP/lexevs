@@ -241,8 +241,8 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		assertEquals(0, template.queryForInt("Select count(*) from cssupportedattrib"));
 		
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entryStateGuid) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion', 'dummyEntryStateUId')");
 		
 		template.execute("Insert into cssupportedattrib " +
 			"values ('cssaguid', 'csguid', 'CodingScheme', 'id', 'uri', " +
@@ -273,8 +273,8 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		assertEquals(0, template.queryForInt("Select count(*) from cssupportedattrib"));
 		
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entryStateGuid) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion', 'entryStateUId')");
 		
 		template.execute("Insert into cssupportedattrib " +
 			"values ('cssaguid', 'csguid', 'CodingScheme', 'id', 'uri', " +

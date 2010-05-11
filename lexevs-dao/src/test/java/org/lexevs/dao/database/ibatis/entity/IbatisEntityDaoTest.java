@@ -283,7 +283,9 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		ed.setContent("a description");
 		entity.setEntityDescription(ed);
 		
-		ibatisEntityDao.insertHistoryEntity(csId, "entityId", entity);
+		String entityUId = ibatisEntityDao.insertEntity(csId, entity, false);
+		
+		ibatisEntityDao.insertHistoryEntity(csId, entityUId, entity);
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		assertEquals(1, template.queryForInt("select count(*) from h_entity"));
