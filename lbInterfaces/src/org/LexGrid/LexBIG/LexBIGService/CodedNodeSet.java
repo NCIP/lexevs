@@ -29,6 +29,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.commonTypes.types.PropertyTypes;
 
 /**
  * A coded node set represents a flat list of coded entries.
@@ -36,7 +37,25 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 public interface CodedNodeSet extends Serializable {
 
     public enum ActiveOption { ACTIVE_ONLY, INACTIVE_ONLY, ALL }
-    public enum PropertyType { COMMENT, DEFINITION, INSTRUCTION, PRESENTATION, GENERIC }
+    
+    public enum PropertyType { 
+    	COMMENT(PropertyTypes.COMMENT.toString()), 
+    	DEFINITION(PropertyTypes.DEFINITION.toString()), 
+    	PRESENTATION(PropertyTypes.PRESENTATION.toString()), 
+    	GENERIC(PropertyTypes.PROPERTY.toString());
+    	
+    	private String value;
+    	
+    	PropertyType(String value){
+    		this.value = value;
+    	}
+
+		@Override
+		public String toString() {
+			return this.value;
+		}
+    }
+    
     public enum SearchDesignationOption { PREFERRED_ONLY, NON_PREFERRED_ONLY, ALL }
 
 	/**
