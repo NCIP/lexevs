@@ -87,9 +87,9 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
                 for(String relationsId :
                     associationDao.getRelationsUIdsForCodingSchemeUId(csId)){
                     for(String associationPredicateId :
-                        associationDao.getAssociationPredicateIdsForRelationsId(csId, relationsId)) {
+                        associationDao.getAssociationPredicateUIdsForRelationsUId(csId, relationsId)) {
                         associationNames.add(
-                                associationDao.getAssociationPredicateNameForId(csId, associationPredicateId));
+                                associationDao.getAssociationPredicateNameForUId(csId, associationPredicateId));
                     }
                 }
                 return associationNames;

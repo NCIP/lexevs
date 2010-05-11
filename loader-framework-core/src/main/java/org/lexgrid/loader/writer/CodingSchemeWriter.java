@@ -10,7 +10,7 @@ public class CodingSchemeWriter extends AbstractDatabaseServiceWriter implements
 	public void write(List<? extends CodingScheme> schemes) throws Exception {
 		
 		for(CodingScheme scheme : schemes ){
-			this.getDatabaseServiceManager().getCodingSchemeService().insertCodingScheme(scheme, null);
+			this.getDatabaseServiceManager().getAuthoringService().loadRevision(scheme, null);
 		}
 	}
 }

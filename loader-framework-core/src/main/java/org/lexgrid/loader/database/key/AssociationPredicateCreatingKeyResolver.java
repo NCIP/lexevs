@@ -28,10 +28,10 @@ public class AssociationPredicateCreatingKeyResolver implements AssociationPredi
 						getCodingSchemeUIdByUriAndVersion(
 								codingSchemeUri, version);
 				
-				String relationId = associationDao.getRelationsId(codingSchemeId, relationContainerName);
+				String relationId = associationDao.getRelationUId(codingSchemeId, relationContainerName);
 				
 				String associationPredicateId = associationDao.
-							getAssociationPredicateUid(codingSchemeId, relationContainerName, associationName);
+							getAssociationPredicateUIdByContainerUId(codingSchemeId, relationId, associationName);
 				
 				if(associationPredicateId == null){
 					return associationDao.

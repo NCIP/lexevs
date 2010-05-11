@@ -48,7 +48,7 @@ public abstract class AbstractRootNodeResolver implements RootNodeResolver<Paren
 				executeInDaoLayer(new DaoCallback<String>() {
 
 				public String execute(DaoManager daoManager) {
-					return daoManager.getCurrentAssociationDao().getAssociationPredicateNameForId(codingSchemeId, associationPredicateId);
+					return daoManager.getCurrentAssociationDao().getAssociationPredicateNameForUId(codingSchemeId, associationPredicateId);
 				}
 
 			});

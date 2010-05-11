@@ -24,6 +24,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
@@ -45,8 +46,10 @@ import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallbac
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.dao.database.service.property.PropertyService;
+import org.lexevs.dao.database.service.relation.RelationService;
 import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
+import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
@@ -61,25 +64,28 @@ public class XMLDaoServiceAdaptor {
     EntityService entityService = null;
     CodingSchemeService codingSchemeService = null;
     AssociationService assocService = null;
+    RelationService relationService = null;
     VersionableEventAssociationService assocServiceForPred = null;
     DaoCallbackService daoCallbackService;
     PropertyService propertyService = null;
     PickListDefinitionService pickListService;
     ValueSetDefinitionService valueSetService;
+    AuthoringService authoringService;
     
     ArrayList<AssociationPredicate> associationList = null;
     ArrayList<Relations> relationList = null;;
     
-
     /**
      * constructor initializes all DAO services
      */
     public XMLDaoServiceAdaptor() {
         locator = LexEvsServiceLocator.getInstance();
         dbManager = locator.getDatabaseServiceManager();
+        authoringService = dbManager.getAuthoringService();
         entityService = dbManager.getEntityService();
         codingSchemeService = dbManager.getCodingSchemeService();
         assocService = dbManager.getAssociationService();
+        relationService = dbManager.getRelationService();
         associationList = new ArrayList<AssociationPredicate>();
         relationList = new ArrayList<Relations>();
         assocServiceForPred = (VersionableEventAssociationService) assocService;
@@ -94,9 +100,10 @@ public class XMLDaoServiceAdaptor {
      * the meta data of the coding scheme
      * @param scheme
      * @throws CodingSchemeAlreadyLoadedException
+     * @throws LBRevisionException 
      */
-    public void storeCodingScheme(CodingScheme scheme) throws CodingSchemeAlreadyLoadedException {
-        codingSchemeService.insertCodingScheme(scheme, null);
+    public void storeCodingScheme(CodingScheme scheme) throws CodingSchemeAlreadyLoadedException, LBRevisionException {
+        authoringService.loadRevision(scheme, null);
     }
 
     /**
@@ -117,7 +124,7 @@ public class XMLDaoServiceAdaptor {
     public void storeRelation(String codingSchemeUri, String version, Relations relation) {
         if (relationList.contains(relation))
             return;
-        assocService.insertRelation(codingSchemeUri, version, relation);
+        relationService.insertRelation(codingSchemeUri, version, relation);
         relationList.add(relation);
     }
 
@@ -150,7 +157,7 @@ public class XMLDaoServiceAdaptor {
                 String codingSchemeId = daoManager.getCurrentCodingSchemeDao().getCodingSchemeUIdByUriAndVersion(uri,
                         version);
                 String relationsId = daoManager.getCurrentAssociationDao()
-                        .getRelationsId(codingSchemeId, relationsName);
+                        .getRelationUId(codingSchemeId, relationsName);
                 daoManager.getCurrentAssociationDao().insertAssociationPredicate(codingSchemeId, relationsId,
                         predicate, true);
                 return null;

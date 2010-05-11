@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
@@ -65,6 +66,8 @@ public class LexGridElementProcessor {
             codingSchemes.add(scheme);
             service.storeCodingScheme(scheme);
         } catch (CodingSchemeAlreadyLoadedException e) {
+            e.printStackTrace();
+        } catch (LBRevisionException e) {
             e.printStackTrace();
         }
     }

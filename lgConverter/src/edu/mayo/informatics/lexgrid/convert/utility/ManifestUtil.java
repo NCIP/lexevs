@@ -251,10 +251,11 @@ public class ManifestUtil {
 
         CodingScheme codingScheme = codingSchemeService.getCodingSchemeByUriAndVersion(uri, version);
 
-        this.doApplyCommonManifestElements(manifest, codingScheme);
-        this.postLoadAssociationDefinitions(codingScheme, manifest.getAssociationDefinitions());
-
         try {
+            
+            this.doApplyCommonManifestElements(manifest, codingScheme);
+            this.postLoadAssociationDefinitions(codingScheme, manifest.getAssociationDefinitions());
+       
             codingSchemeService.updateCodingScheme(codingScheme);
         } catch (LBException e) {
             // TODO Auto-generated catch block
@@ -482,7 +483,7 @@ public class ManifestUtil {
         }
     }
     
-    protected void postLoadAssociationDefinitions(CodingScheme codingScheme, CsmfAssociationDefinition assocDefinitions) {
+    protected void postLoadAssociationDefinitions(CodingScheme codingScheme, CsmfAssociationDefinition assocDefinitions) throws LBException {
         if(assocDefinitions == null) {return;}
         
         EntityService entityService = 
@@ -507,7 +508,7 @@ public class ManifestUtil {
             } else {
                 if(assocDefinitions.getToUpdate()) {
                     DaoUtility.updateBean(manifestEntity, originalAssocEntity);
-                    entityService.updateEntity(uri, version, originalAssocEntity);
+                    entityService.updateEntity(uri, version, (Entity)originalAssocEntity);
                 }
             }
         } 

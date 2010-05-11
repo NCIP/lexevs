@@ -8,6 +8,7 @@ import org.LexGrid.concepts.Entity;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.entity.EntityService;
+import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexgrid.loader.test.LoaderFrameworkCoreTestBase;
@@ -21,7 +22,7 @@ public class EntityWriterTest extends LoaderFrameworkCoreTestBase {
 	private EntityWriter entityWriter;
 	
 	@Autowired
-	private CodingSchemeService codingSchemeService;
+    private AuthoringService authoringService;
 	
 	@Autowired
 	private LexEvsServiceLocator lexEvsServiceLocator;
@@ -44,7 +45,7 @@ public class EntityWriterTest extends LoaderFrameworkCoreTestBase {
 		cs.setCodingSchemeURI(test.getCodingSchemeUri());
 		cs.setRepresentsVersion(test.getCodingSchemeVersion());
 		
-		codingSchemeService.insertCodingScheme(cs, null);
+		authoringService.loadRevision(cs, null);
 		
 		CodingSchemeIdHolder<Entity> holder = new CodingSchemeIdHolder<Entity>();
 		holder.setCodingSchemeIdSetter(new TestCodingSchemeIdSetter());

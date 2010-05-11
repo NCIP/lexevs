@@ -38,7 +38,7 @@ public class UmlsIntrospectiveHardcodedValues extends AbstractIntrospectiveHardc
 		relation.setContainerName(RrfLoaderConstants.UMLS_RELATIONS_NAME);
 		
 		this.getDatabaseServiceManager().
-			getAssociationService().
+			getRelationService().
 			insertRelation(
 					this.getCodingSchemeIdSetter().getCodingSchemeUri(), 
 					this.getCodingSchemeIdSetter().getCodingSchemeVersion(), 

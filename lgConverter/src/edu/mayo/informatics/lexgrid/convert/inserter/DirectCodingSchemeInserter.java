@@ -42,8 +42,8 @@ public class DirectCodingSchemeInserter extends AbstractCodingSchemeInserter {
     public List<ResolvedLoadValidationError> insertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
         try {
             super.getDatabaseServiceManager().
-            getCodingSchemeService().
-            insertCodingScheme(codingScheme, null);
+            getAuthoringService().
+            loadRevision(codingScheme, null);
             
             return new ArrayList<ResolvedLoadValidationError>();
             

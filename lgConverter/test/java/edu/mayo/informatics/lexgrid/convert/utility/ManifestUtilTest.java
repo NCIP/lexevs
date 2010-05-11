@@ -23,12 +23,16 @@ import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.entity.VersionableEventEntityService;
 import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
+import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 
 public class ManifestUtilTest extends LexEvsDbUnitTestBase {
     
     @Resource
     private CodingSchemeService codingSchemeService;
+    
+    @Resource
+    private AuthoringService authoringService;
     
     @Resource
     private VersionableEventEntityService entityService;
@@ -304,7 +308,7 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
         cs.setRepresentsVersion("version");
         cs.setFormalName("original formal name");
         
-        codingSchemeService.insertCodingScheme(cs, null);
+        authoringService.loadRevision(cs, null);
         
         CodingSchemeManifest csManifest = new CodingSchemeManifest();
         CsmfFormalName formalName = new CsmfFormalName();
@@ -334,7 +338,7 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
         cs.setMappings(new Mappings());
         cs.getMappings().addSupportedCodingScheme(scs);
         
-        codingSchemeService.insertCodingScheme(cs, null);
+        authoringService.loadRevision(cs, null);
         
         CodingSchemeManifest csManifest = new CodingSchemeManifest();
         csManifest.setMappings(new CsmfMappings());
@@ -367,7 +371,7 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
         cs.setMappings(new Mappings());
         cs.getMappings().addSupportedCodingScheme(scs);
         
-        codingSchemeService.insertCodingScheme(cs, null);
+        authoringService.loadRevision(cs, null);
         
         CodingSchemeManifest csManifest = new CodingSchemeManifest();
         csManifest.setMappings(new CsmfMappings());
@@ -503,7 +507,7 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
         cs.setRepresentsVersion("version");
         cs.setFormalName("original formal name");
         
-        this.codingSchemeService.insertCodingScheme(cs, null);
+        this.authoringService.loadRevision(cs, null);
         
         ManifestUtil util = new ManifestUtil();
         
@@ -546,7 +550,7 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
         assoc1.setIsTransitive(true);
         cs.getEntities().addEntity(assoc1);
         
-        this.codingSchemeService.insertCodingScheme(cs, null);
+        this.authoringService.loadRevision(cs, null);
         //this.entityService.insertEntity("uri", "version", assoc1);
         
         ManifestUtil util = new ManifestUtil();

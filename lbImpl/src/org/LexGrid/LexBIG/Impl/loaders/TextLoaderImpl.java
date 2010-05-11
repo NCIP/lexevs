@@ -59,7 +59,7 @@ public class TextLoaderImpl extends BaseLoader implements Text_Loader {
         //
     }
     
-    @Override
+
     public void load(URI source, Character delimiter, boolean readDoublesAsTriples, boolean stopOnErrors, boolean async)
             throws LBException {
         this.getOptions().getStringOption(DELIMITER_OPTION).setOptionValue(String.valueOf(delimiter));
