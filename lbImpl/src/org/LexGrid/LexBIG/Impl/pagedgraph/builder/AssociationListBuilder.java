@@ -19,15 +19,13 @@
 package org.LexGrid.LexBIG.Impl.pagedgraph.builder;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparator;
 import org.LexGrid.LexBIG.Impl.pagedgraph.model.LazyLoadableAssociatedConceptList;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
@@ -36,7 +34,6 @@ import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 
 /**
  * The Class AssociationListBuilder.
@@ -202,39 +199,29 @@ public class AssociationListBuilder {
         CodedNodeGraphService codedNodeGraphService =
             databaseServiceManager.getCodedNodeGraphService();
         
-        List<String> associationPredicateNames;
-        if(CollectionUtils.isEmpty(graphQuery.getRestrictToAssociations())) {
-            associationPredicateNames = getAssociationPredicateNames(
-                codingSchemeUri,
-                version);
+        AssociationList returnList = new AssociationList();
+        
+        Map<String,Integer> tripleUidsAndCount;
+        if(direction.equals(AssociationDirection.SOURCE_OF)) {
+            tripleUidsAndCount = codedNodeGraphService.getTripleUidsContainingSubjectCount(
+                    codingSchemeUri, 
+                    version, 
+                    relationsContainerName, 
+                    entityCode, 
+                    entityCodeNamespace, 
+                    graphQuery);
         } else {
-            associationPredicateNames = graphQuery.getRestrictToAssociations();
+            tripleUidsAndCount = codedNodeGraphService.getTripleUidsContainingObjectCount(
+                    codingSchemeUri, 
+                    version, 
+                    relationsContainerName, 
+                    entityCode, 
+                    entityCodeNamespace, 
+                    graphQuery);
         }
 
-        AssociationList returnList = new AssociationList();
-
-        for(String associationPredicateName : associationPredicateNames) {
-            int tripleUidsCount;
-            if(direction.equals(AssociationDirection.SOURCE_OF)) {
-                tripleUidsCount = codedNodeGraphService.getTripleUidsContainingSubjectCount(
-                        codingSchemeUri, 
-                        version, 
-                        relationsContainerName, 
-                        associationPredicateName, 
-                        entityCode, 
-                        entityCodeNamespace, 
-                        graphQuery);
-            } else {
-                tripleUidsCount = codedNodeGraphService.getTripleUidsContainingObjectCount(
-                        codingSchemeUri, 
-                        version, 
-                        relationsContainerName, 
-                        associationPredicateName, 
-                        entityCode, 
-                        entityCodeNamespace, 
-                        graphQuery);
-            }
-
+        for(String associationPredicateName : tripleUidsAndCount.keySet()) {
+            int tripleUidsCount = tripleUidsAndCount.get(associationPredicateName);
             if(tripleUidsCount > 0) {
                 Association association = new Association();
 
@@ -266,17 +253,17 @@ public class AssociationListBuilder {
             }
 
         }
-        
+
         if(ResultComparator.isSortOptionListValid(sortAlgorithms)) {
             ResultComparator<Association> comparator = 
-                    new ResultComparator<Association>(sortAlgorithms, Association.class);
-            
+                new ResultComparator<Association>(sortAlgorithms, Association.class);
+
             Association[] array = returnList.getAssociation();
             Arrays.sort(array, comparator);
-            
+
             returnList.setAssociation(array);
         }
-        
+
         if(returnList.getAssociationCount() == 0) {
             return null;
         } else {
@@ -297,7 +284,7 @@ public class AssociationListBuilder {
             String codingSchemeVersion) {
         CodedNodeGraphService codedNodeGraphService =
             databaseServiceManager.getCodedNodeGraphService();
-        
+
         return codedNodeGraphService.getAssociationPredicateNamesForCodingScheme(
                 codingSchemeUri,
                 codingSchemeVersion);
