@@ -32,4 +32,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CacheMethod {
 
+	boolean cloneResult() default false;
 }
