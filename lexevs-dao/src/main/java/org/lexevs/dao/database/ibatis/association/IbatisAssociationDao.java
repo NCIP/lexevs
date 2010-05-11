@@ -576,13 +576,13 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		for (AssociationTarget target : source.getTarget()) {
 
 			associationTargetDao.insertAssociationTarget(codingSchemeUId,
-					associationPredicateUId, source, target);
+					associationPredicateUId, source, target, inserter);
 		}
 
 		for (AssociationData data : source.getTargetData()) {
 
 			associationDataDao.insertAssociationData(codingSchemeUId,
-					associationPredicateUId, source, data);
+					associationPredicateUId, source, data, inserter);
 		}
 	}
 	

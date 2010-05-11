@@ -84,25 +84,12 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 	public String insertAssociationTarget(String codingSchemeUId, String associationPredicateUId,
 			AssociationSource source, AssociationTarget target) {
 
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
-				codingSchemeUId);
-
-		String associationTargetUId = this.createUniqueId();
-
-		String entryStateUId = this.doInsertAssociationTarget(
-				prefix,
+		return this.insertAssociationTarget(
+				codingSchemeUId, 
 				associationPredicateUId, 
-				associationTargetUId, 
 				source, 
-				target,
+				target, 
 				this.getNonBatchTemplateInserter());
-
-		this.versionsDao.insertEntryState(entryStateUId, associationTargetUId,
-				entryStateClassifier
-						.classify(EntryStateType.ENTITYASSNSTOENTITY), null,
-				target.getEntryState());
-
-		return associationTargetUId;
 	}
 
 	@Override
@@ -126,6 +113,34 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 				UPDATE_ENTITY_ASSN_TO_ENTITY_BY_UID_SQL, bean);
 
 		return entryStateUId;
+	}
+	
+	
+
+	@Override
+	public String insertAssociationTarget(String codingSchemeUId,
+			String associationPredicateUId, AssociationSource source,
+			AssociationTarget target, Inserter inserter) {
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUId);
+
+		String associationTargetUId = this.createUniqueId();
+
+		String entryStateUId = this.doInsertAssociationTarget(
+				prefix,
+				associationPredicateUId, 
+				associationTargetUId, 
+				source, 
+				target,
+				inserter);
+
+		this.versionsDao.insertEntryState(entryStateUId, associationTargetUId,
+				entryStateClassifier
+						.classify(EntryStateType.ENTITYASSNSTOENTITY), null,
+				target.getEntryState());
+
+		return associationTargetUId;
 	}
 
 	protected String doInsertAssociationTarget(String prefix, String associationPredicateUId,

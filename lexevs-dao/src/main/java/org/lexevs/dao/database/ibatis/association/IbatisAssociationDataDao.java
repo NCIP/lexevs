@@ -83,13 +83,34 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 	public String insertAssociationData(String codingSchemeUId, String associationPredicateUId,
 			AssociationSource source, AssociationData data) {
 
+		return this.insertAssociationData(
+				codingSchemeUId, 
+				associationPredicateUId, 
+				source, 
+				data, 
+				this.getNonBatchTemplateInserter());
+	}
+	
+	@Override
+	public String insertAssociationData(
+			String codingSchemeUId,
+			String associationPredicateUId, 
+			AssociationSource source,
+			AssociationData data, 
+			Inserter inserter) {
+		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
 		String associationDataUId = this.createUniqueId();
 
-		String entryStateUId = this.doInsertAssociationData(prefix,
-				associationPredicateUId, associationDataUId, source, data);
+		String entryStateUId = this.doInsertAssociationData(
+				prefix,
+				associationPredicateUId, 
+				associationDataUId, 
+				source, 
+				data,
+				inserter);
 
 		this.versionsDao
 				.insertEntryState(entryStateUId, associationDataUId,
@@ -101,12 +122,11 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 	}
 
 	protected String doInsertAssociationData(String prefix, String associationPredicateUId,
-			String associationDataUId, AssociationSource source, AssociationData data) {
+			String associationDataUId, AssociationSource source, AssociationData data, Inserter inserter) {
 
 		String entryStateUId = this.createUniqueId();
 
 		InsertOrUpdateAssociationDataBean bean = new InsertOrUpdateAssociationDataBean();
-		Inserter inserter = this.getNonBatchTemplateInserter();
 
 		bean.setPrefix(prefix);
 		bean.setUId(associationDataUId);
