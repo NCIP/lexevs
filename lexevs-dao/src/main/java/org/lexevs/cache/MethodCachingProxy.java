@@ -18,6 +18,7 @@
  */
 package org.lexevs.cache;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -28,12 +29,15 @@ import java.util.Map;
 
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.lang.ClassUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ParameterKey;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
@@ -115,6 +119,7 @@ public class MethodCachingProxy implements InitializingBean {
 					parameterAnnotations);
 		
 		Cacheable cacheableAnnotation = AnnotationUtils.findAnnotation(pjp.getTarget().getClass(), Cacheable.class);
+		CacheMethod cacheMethodAnnotation = AnnotationUtils.findAnnotation(sig.getMethod(), CacheMethod.class);
 	
 		Map<String,Object> cache = this.getCacheFromName(
 				cacheableAnnotation.cacheName(),
@@ -129,7 +134,14 @@ public class MethodCachingProxy implements InitializingBean {
 
 		Object result = pjp.proceed();
 		cache.put(key, result);
-		return result;
+
+		if(result != null && 
+				cacheMethodAnnotation.cloneResult() && 
+				ClassUtils.isAssignable(result.getClass(), Serializable.class)) {
+			return DaoUtility.deepClone((Serializable)result);
+		} else {
+			return result;
+		}
 	}
 	
 	/**
