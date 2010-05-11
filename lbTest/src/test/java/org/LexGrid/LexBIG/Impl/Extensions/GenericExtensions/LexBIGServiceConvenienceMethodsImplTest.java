@@ -50,7 +50,7 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     }
     
     public void testGetAssociationForwardName() throws LBException {
-    	String forwardName = lbscm.getAssociationForwardName("hasSubtype", AUTO_SCHEME, null);
+    	String forwardName = lbscm.getAssociationForwardName("A1", AUTO_SCHEME, null);
     	assertEquals("GoingForward", forwardName);
     }
     
@@ -86,22 +86,22 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     
     public void testGetAssociationNameFromAssociationCode() throws Exception {
     	String assocName = lbscm.getAssociationNameFromAssociationCode(AUTO_SCHEME, null, "AssocEntity");
-    	assertTrue(assocName.equals("hasSubtype"));
+    	assertTrue(assocName.equals("A1"));
     }
     
     public void testGetAssociationCodeFromAssociationName() throws Exception {
-    	String assocCode = lbscm.getAssociationCodeFromAssociationName(AUTO_SCHEME, null, "hasSubtype");
+    	String assocCode = lbscm.getAssociationCodeFromAssociationName(AUTO_SCHEME, null, "A1");
     	assertTrue(assocCode.equals("AssocEntity"));
     }
     
     public void testGetAssociationNameForDirectionalNameReverseName() throws Exception {
-    	String[] assocNames = lbscm.getAssociationNameForDirectionalName(AUTO_SCHEME, null, "GoingForward");
+    	String[] assocNames = lbscm.getAssociationNameForDirectionalName(AUTO_SCHEME, null, "isA");
     	assertEquals(1, assocNames.length);
     	assertEquals("hasSubtype", assocNames[0]);
     }
     
     public void testGetAssociationNameForDirectionalNameForwardName() throws Exception {
-    	String[] assocNames = lbscm.getAssociationNameForDirectionalName(AUTO_SCHEME, null, "GoingBackward");
+    	String[] assocNames = lbscm.getAssociationNameForDirectionalName(AUTO_SCHEME, null, "hasSubtype");
     	assertEquals(1, assocNames.length);
     	assertEquals("hasSubtype", assocNames[0]);
     }
