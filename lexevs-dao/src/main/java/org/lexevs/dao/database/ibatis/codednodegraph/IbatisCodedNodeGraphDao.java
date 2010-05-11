@@ -90,6 +90,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		bean.setCodingSchemeUid(codingSchemeUid);
 		bean.setEntityCode(entityCode);
 		bean.setEntityCodeNamespace(entityCodeNamespace);
+		bean.setAssociations(associationNames);
 		bean.setAssociationQualifiers(associationQualifiers);
 		bean.setMustHaveCodes(mustHaveCodes);
 		bean.setTripleNode(tripleNode);
