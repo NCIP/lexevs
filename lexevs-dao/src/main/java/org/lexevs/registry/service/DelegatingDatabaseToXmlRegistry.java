@@ -48,6 +48,7 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#addNewItem(org.lexevs.registry.model.RegistryEntry)
 	 */
+	@ClearCache
 	public void addNewItem(RegistryEntry entry) throws Exception {
 	    databaseRegistry.addNewItem(entry);
 	}
