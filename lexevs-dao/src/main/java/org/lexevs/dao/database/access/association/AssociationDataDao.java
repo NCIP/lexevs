@@ -3,6 +3,7 @@ package org.lexevs.dao.database.access.association;
 import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationSource;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
+import org.lexevs.dao.database.inserter.Inserter;
 
 public interface AssociationDataDao extends LexGridSchemaVersionAwareDao {
 
@@ -32,5 +33,9 @@ public interface AssociationDataDao extends LexGridSchemaVersionAwareDao {
 			String associationDataUId);
 
 	public String getLatestRevision(String csUId, String assocDataUId);
+
+	public String insertAssociationData(String codingSchemeUId,
+			String associationPredicateUId, AssociationSource source,
+			AssociationData data, Inserter inserter);
 
 }

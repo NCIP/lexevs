@@ -3,6 +3,7 @@ package org.lexevs.dao.database.access.association;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
+import org.lexevs.dao.database.inserter.Inserter;
 
 public interface AssociationTargetDao extends LexGridSchemaVersionAwareDao {
 
@@ -24,5 +25,9 @@ public interface AssociationTargetDao extends LexGridSchemaVersionAwareDao {
 
 	public void deleteAssociationQualificationsByAssociationTargetUId(
 			String codingSchemeUId, String associationTargetUId);
+
+	public String insertAssociationTarget(String codingSchemeUId,
+			String associationPredicateUId, AssociationSource source,
+			AssociationTarget target, Inserter inserter);
 
 }
