@@ -71,8 +71,8 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				"values ('rel-guid', 'cs-guid', 'c-name')");
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-				"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+				"('ap-guid', 'rel-guid', 'apname')");
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid'," +
 				" 'ap-guid'," +
@@ -107,8 +107,8 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				"values ('rel-guid', 'cs-guid', 'c-name')");
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-				"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+				"('ap-guid', 'rel-guid', 'apname')");
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid'," +
 				" 'ap-guid'," +
@@ -153,8 +153,8 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-				"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+				"('ap-guid', 'rel-guid', 'apname')");
 		
 		for(int i=0;i<limit;i++) {
 			template.execute("insert into entityassnstoentity" +
@@ -272,8 +272,8 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				"values ('rel-guid', 'cs-guid', 'c-name')");
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-				"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+				"('ap-guid', 'rel-guid', 'apname')");
 	
 				
 		final Timestamp effectiveDate = new Timestamp(1l);
@@ -346,8 +346,8 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				"values ('rel-guid', 'cs-guid', 'c-name')");
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-				"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+				"('ap-guid', 'rel-guid', 'apname')");
 		
 		template.execute("insert into " +
 				"entityassnstoentity (" +
@@ -502,8 +502,8 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				"values ('rel-guid', 'cs-guid', 'c-name')");
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-				"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+				"('ap-guid', 'rel-guid', 'apname')");
 
 		ibatisAssociationDao.insertIntoTransitiveClosure("cs-guid", "ap-guid", "sc", "sns", "tc", "tns");
 		
