@@ -20,6 +20,7 @@ package org.LexGrid.LexBIG.Impl.pagedgraph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -149,11 +150,10 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
             getDatabaseServiceManager().
             getCodedNodeGraphService();
         
-        int subjectCount = service.getTripleUidsContainingSubjectCount(
+        Map<String,Integer> subjectCount = service.getTripleUidsContainingSubjectCount(
                 codingSchemeUri, 
                 version, 
                 relationsContainerName, 
-                null, 
                 sourceCode.getCode(), 
                 sourceCode.getCodeNamespace(), 
                 builder.getQuery());
@@ -163,16 +163,15 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         builder.restrictToAssociations(nvl, null);
         builder.getQuery().getRestrictToSourceCodes().add(Constructors.createConceptReference(sourceCode.getCode(), sourceCode.getCodeNamespace(), null));
     
-        int objectCount = service.getTripleUidsContainingObjectCount(
+        Map<String,Integer> objectCount = service.getTripleUidsContainingObjectCount(
                 codingSchemeUri, 
                 version, 
                 relationsContainerName, 
-                null, 
                 targetCode.getCode(), 
                 targetCode.getCodeNamespace(), 
                 builder.getQuery());
         
-        return (subjectCount + objectCount) > 0;
+        return !subjectCount.isEmpty() || objectCount.isEmpty();
     }
  
     /* (non-Javadoc)

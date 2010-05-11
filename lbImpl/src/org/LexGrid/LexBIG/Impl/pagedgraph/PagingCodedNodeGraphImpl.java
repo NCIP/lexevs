@@ -19,6 +19,7 @@
 package org.LexGrid.LexBIG.Impl.pagedgraph;
 
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
@@ -261,15 +262,16 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         CodedNodeGraphService service = 
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
         
-        return 0 <
+        Map<String,Integer> count = 
         service.getTripleUidsContainingSubjectCount(
                 this.getCodingSchemeUri(), 
                 this.getVersion(), 
                 this.getRelationsContainerName(), 
-                null, 
                 focus.getCode(), 
                 focus.getCodeNamespace(), 
                 this.getGraphQueryBuilder().getQuery());
+        
+        return !count.isEmpty();
     }
     
     private boolean hasReferenceToSourceCodeRestriction(ConceptReference focus) {
@@ -284,15 +286,16 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         CodedNodeGraphService service = 
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
         
-        return 0 <
+        Map<String,Integer> count = 
         service.getTripleUidsContainingObjectCount(
                 this.getCodingSchemeUri(), 
                 this.getVersion(), 
                 this.getRelationsContainerName(), 
-                null, 
                 focus.getCode(), 
                 focus.getCodeNamespace(), 
                 this.getGraphQueryBuilder().getQuery());
+        
+        return !count.isEmpty();
     }
     
     private static boolean containsConceptReference(ConceptReference ref, List<ConceptReference> list) {
