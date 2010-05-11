@@ -21,6 +21,7 @@ package org.lexevs.cache;
 import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.cache.annotation.Cacheable;
@@ -141,6 +142,16 @@ public class MethodCachingProxyTest extends LexEvsDbUnitTestBase {
 		testCacheBean.testClear();
 		assertEquals(0, testCacheProxy.getCaches().get("testCache").size());
 		
+	}
+	
+	@Test
+	public void testCloneResult(){
+		CodingScheme cs = testCacheBean.getClonedResult("uri", "version");
+		cs.setDefaultLanguage("test lang");
+		
+		CodingScheme cachedCs = testCacheBean.getClonedResult("uri", "version");
+		
+		assertNull(cachedCs.getDefaultLanguage());
 	}
 	
 	/**
