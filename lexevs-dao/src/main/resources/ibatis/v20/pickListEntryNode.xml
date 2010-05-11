@@ -16,8 +16,8 @@
 		<result property="status" column="status" />
 		<result property="effectiveDate" column="effectiveDate" />
 		<result property="expirationDate" column="expirationDate" />
-		<result property="pickListEntry" resultMap="PickList.pickListEntryResult"/>		
-		<result property="pickListEntryExclusion" resultMap="PickList.pickListExclusionResult"/>
+		<result property="pickListEntry" resultMap="PickListEntryNode.pickListEntryResult"/>		
+		<result property="pickListEntryExclusion" resultMap="PickListEntryNode.pickListExclusionResult"/>
 		<result property="entryStateUId" column="entryStateGuid"/>
 	</resultMap>
 	

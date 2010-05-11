@@ -87,7 +87,7 @@
 			entryGuid IN
 			(
 				SELECT
-					prop.propertyGuid
+					prop.vspropertyGuid
 				FROM
 					$prefix$vsProperty prop
 				WHERE
@@ -129,7 +129,7 @@
 			entryGuid IN
 			(
 				SELECT
-					prop.propertyGuid
+					prop.vspropertyGuid
 				FROM
 					$prifix$vsProperty prop
 					$prefix$vsPLEntry plEntry
