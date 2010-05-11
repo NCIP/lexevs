@@ -216,13 +216,14 @@
    			assoc.associationPredicateGuid
    		FROM
    			$prefix$associationPredicate assoc
+   		INNER JOIN
    			$prefix$relation rel
+   		ON
+   			assoc.relationGuid = assoc.relationGuid
 		WHERE
 			rel.containerName = #param1#
-		AND	
-			rel.relationGuid = assoc.relationGuid
 		AND
-			associationName = #param2#
+			assoc.associationName = #param2#
    </select> 
      
    <update id="updateRelationByUId" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateRelationsBean">
