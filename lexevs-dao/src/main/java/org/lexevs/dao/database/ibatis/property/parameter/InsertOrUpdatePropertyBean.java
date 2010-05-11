@@ -32,10 +32,18 @@ public class InsertOrUpdatePropertyBean extends IdableParameterBean {
 	private Property property;
 	
 	/** The entity id. */
-	private String entityUId;
+	private String parentUId;
 	
 	/** The reference type. */
-	private String referenceType;
+	private String parentType;
+	
+	private Boolean isPreferred;
+	
+	private Boolean matchIfNoContext;
+	
+	private String degreeOfFidelity;
+	
+	private String representationalForm;
 
 	/**
 	 * Gets the property.
@@ -60,26 +68,26 @@ public class InsertOrUpdatePropertyBean extends IdableParameterBean {
 	 * 
 	 * @return the entity id
 	 */
-	public String getEntityUId() {
-		return entityUId;
+	public String getParentUId() {
+		return parentUId;
 	}
 	
 	/**
-	 * Sets the entity id.
+	 * Sets the parent id.
 	 * 
-	 * @param entityUId the new entity id
+	 * @param parentUId the new entity id
 	 */
-	public void setEntityUId(String entityUId) {
-		this.entityUId = entityUId;
+	public void setParentUId(String parentUId) {
+		this.parentUId = parentUId;
 	}
 	
 	/**
-	 * Sets the reference type.
+	 * Sets the parent type.
 	 * 
-	 * @param referenceType the new reference type
+	 * @param parentType the new reference type
 	 */
-	public void setReferenceType(String referenceType) {
-		this.referenceType = referenceType;
+	public void setParentType(String parentType) {
+		this.parentType = parentType;
 	}
 	
 	/**
@@ -87,8 +95,64 @@ public class InsertOrUpdatePropertyBean extends IdableParameterBean {
 	 * 
 	 * @return the reference type
 	 */
-	public String getReferenceType() {
-		return referenceType;
+	public String getParentType() {
+		return parentType;
+	}
+
+	/**
+	 * @return the isPreferred
+	 */
+	public Boolean getIsPreferred() {
+		return isPreferred;
+	}
+
+	/**
+	 * @param isPreferred the isPreferred to set
+	 */
+	public void setIsPreferred(Boolean isPreferred) {
+		this.isPreferred = isPreferred;
+	}
+
+	/**
+	 * @return the representationalForm
+	 */
+	public String getRepresentationalForm() {
+		return representationalForm;
+	}
+
+	/**
+	 * @param representationalForm the representationalForm to set
+	 */
+	public void setRepresentationalForm(String representationalForm) {
+		this.representationalForm = representationalForm;
+	}
+
+	/**
+	 * @return the matchIfNoContext
+	 */
+	public Boolean getMatchIfNoContext() {
+		return matchIfNoContext;
+	}
+
+	/**
+	 * @param matchIfNoContext the matchIfNoContext to set
+	 */
+	public void setMatchIfNoContext(Boolean matchIfNoContext) {
+		this.matchIfNoContext = matchIfNoContext;
+	}
+
+	/**
+	 * @return the degreeOfFidelity
+	 */
+	public String getDegreeOfFidelity() {
+		return degreeOfFidelity;
+	}
+
+	/**
+	 * @param degreeOfFidelity the degreeOfFidelity to set
+	 */
+	public void setDegreeOfFidelity(String degreeOfFidelity) {
+		this.degreeOfFidelity = degreeOfFidelity;
 	}
 }
 

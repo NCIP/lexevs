@@ -25,6 +25,8 @@ import junit.framework.Assert;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.lexevs.dao.database.access.association.AssociationDao;
+import org.lexevs.dao.database.access.association.AssociationDataDao;
+import org.lexevs.dao.database.access.association.AssociationTargetDao;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
@@ -32,6 +34,8 @@ import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.revision.RevisionDao;
 import org.lexevs.dao.database.access.systemRelease.SystemReleaseDao;
 import org.lexevs.dao.database.access.valuesets.PickListDao;
+import org.lexevs.dao.database.access.valuesets.PickListEntryNodeDao;
+import org.lexevs.dao.database.access.valuesets.VSDefinitionEntryDao;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
@@ -61,12 +65,24 @@ public class DaoManager {
 	/** The association daos. */
 	private List<AssociationDao> associationDaos;
 	
+	/** The association entity daos. */
+	private List<AssociationTargetDao> associationTargetDaos;
+	
+	/** The association data daos. */
+	private List<AssociationDataDao> associationDataDaos;
+	
 	/** The pick list definition daos. */
 	private List<PickListDao> pickListDaos;
+	
+	/** The pick list entry node daos. */
+	private List<PickListEntryNodeDao> pickListEntryNodeDaos;
 	
 	/** The value set definition daos. */
 	private List<ValueSetDefinitionDao> valueSetDefinitionDaos;
 	
+	/** The VSDefinitionEntry daos. */
+	private List<VSDefinitionEntryDao> vsDefinitionEntryDaos;
+
 	/** The vsProperty daos. */
 	private List<VSPropertyDao> vsPropertyDaos;
 	
@@ -116,6 +132,26 @@ public class DaoManager {
 	 */
 	public AssociationDao getCurrentAssociationDao(){
 		return this.getCorrectDaoForSchemaVersion(this.getAssociationDaos(), CURRENT_VERSION);
+	}
+	
+	/**
+	 * Gets the current association target dao.
+	 * 
+	 * @return the current association target dao
+	 */
+	public AssociationTargetDao getCurrentAssociationTargetDao() {
+		return this.getCorrectDaoForSchemaVersion(this
+				.getAssociationTargetDaos(), CURRENT_VERSION);
+	}
+	
+	/**
+	 * Gets the current association data dao.
+	 * 
+	 * @return the current association data dao
+	 */
+	public AssociationDataDao getCurrentAssociationDataDao() {
+		return this.getCorrectDaoForSchemaVersion(
+				this.getAssociationDataDaos(), CURRENT_VERSION);
 	}
 	
 	/**
@@ -186,6 +222,30 @@ public class DaoManager {
 	 */
 	public AssociationDao getAssociationDao(String codingSchemeUri, String version){
 		return this.doGetDao(codingSchemeUri, version, this.getAssociationDaos());
+	}
+	
+	/**
+	 * Gets the association Target dao.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param version the version
+	 * 
+	 * @return the association entity dao
+	 */
+	public AssociationTargetDao getAssociationTargetDao(String codingSchemeUri, String version){
+		return this.doGetDao(codingSchemeUri, version, this.getAssociationTargetDaos());
+	}
+	
+	/**
+	 * Gets the association data dao.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param version the version
+	 * 
+	 * @return the association data dao
+	 */
+	public AssociationDataDao getAssociationDataDao(String codingSchemeUri, String version){
+		return this.doGetDao(codingSchemeUri, version, this.getAssociationDataDaos());
 	}
 	
 	public SystemReleaseDao getSystemReleaseDao(){
@@ -391,6 +451,15 @@ public class DaoManager {
 	public PickListDao getCurrentPickListDefinitionDao(){
 		return this.getCorrectDaoForSchemaVersion(this.getPickListDaos(), CURRENT_VERSION);
 	}
+
+	/**
+	 * Gets the current pick list entry node dao.
+	 * 
+	 * @return the current pick list entry node dao
+	 */
+	public PickListEntryNodeDao getCurrentPickListEntryNodeDao(){
+		return this.getCorrectDaoForSchemaVersion(this.getPickListEntryNodeDaos(), CURRENT_VERSION);
+	}
 	
 	public void setSystemReleaseDaos(List<SystemReleaseDao> systemReleaseDaos) {
 		this.systemReleaseDaos = systemReleaseDaos;
@@ -436,12 +505,21 @@ public class DaoManager {
 	/**
 	 * Gets the current value set definition dao.
 	 * 
-	 * @return the current value set definition dao
+	 * @return the current value set definition dao.
 	 */
 	public ValueSetDefinitionDao getCurrentValueSetDefinitionDao(){
 		return this.getCorrectDaoForSchemaVersion(this.getValueSetDefinitionDaos(), CURRENT_VERSION);
 	}
 
+	/**
+	 * Gets the current value set definition entry dao.
+	 * 
+	 * @return the current value set definition entry dao.
+	 */
+	public VSDefinitionEntryDao getCurrentVSDefinitionEntryDao(){
+		return this.getCorrectDaoForSchemaVersion(this.getVsDefinitionEntryDaos(), CURRENT_VERSION);
+	}
+	
 	public List<CodedNodeGraphDao> getCodedNodeGraphDaos() {
 		return codedNodeGraphDaos;
 	}
@@ -471,6 +549,65 @@ public class DaoManager {
 	 */
 	public VSPropertyDao getCurrentVsPropertyDao(){
 		return this.getCorrectDaoForSchemaVersion(this.getVsPropertyDaos(), CURRENT_VERSION);
+	}
+	
+	/**
+	 * @return the associationEntityDaos
+	 */
+	public List<AssociationTargetDao> getAssociationTargetDaos() {
+		return associationTargetDaos;
+	}
+
+	/**
+	 * @param associationTargetDaos the associationEntityDaos to set
+	 */
+	public void setAssociationTargetDaos(
+			List<AssociationTargetDao> associationTargetDaos) {
+		this.associationTargetDaos = associationTargetDaos;
+	}
+
+	/**
+	 * @return the associationDataDaos
+	 */
+	public List<AssociationDataDao> getAssociationDataDaos() {
+		return associationDataDaos;
+	}
+
+	/**
+	 * @param associationDataDaos the associationDataDaos to set
+	 */
+	public void setAssociationDataDaos(List<AssociationDataDao> associationDataDaos) {
+		this.associationDataDaos = associationDataDaos;
+	}
+
+	/**
+	 * @return the vsDefinitionEntryDaos
+	 */
+	public List<VSDefinitionEntryDao> getVsDefinitionEntryDaos() {
+		return vsDefinitionEntryDaos;
+	}
+
+	/**
+	 * @param vsDefinitionEntryDaos the vsDefinitionEntryDaos to set
+	 */
+	public void setVsDefinitionEntryDaos(
+			List<VSDefinitionEntryDao> vsDefinitionEntryDaos) {
+		this.vsDefinitionEntryDaos = vsDefinitionEntryDaos;
+	}
+
+	/**
+	 * @return the pickListEntryNodeDaos
+	 */
+	public List<PickListEntryNodeDao> getPickListEntryNodeDaos() {
+		return pickListEntryNodeDaos;
+	}
+
+	/**
+	 * @param pickListEntryNodeDaos the pickListEntryNodeDaos to set
+	 */
+	public void setPickListEntryNodeDaos(
+			List<PickListEntryNodeDao> pickListEntryNodeDaos) {
+		this.pickListEntryNodeDaos = pickListEntryNodeDaos;
 	}
 	
 	/**

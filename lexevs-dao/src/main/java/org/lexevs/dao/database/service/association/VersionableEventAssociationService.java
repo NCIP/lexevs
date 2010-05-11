@@ -20,13 +20,12 @@ package org.lexevs.dao.database.service.association;
 
 import java.util.List;
 
-import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
-import org.LexGrid.relations.Relations;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.dao.database.service.property.PropertyService;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +35,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class VersionableEventAssociationService extends AbstractDatabaseService implements AssociationService{
+	
+	private PropertyService propertyService = null;
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.association.AssociationService#insertAssociationSource(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.relations.AssociationSource)
@@ -48,26 +49,14 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 			AssociationSource source){
 		CodingSchemeDao codingSchemeDao = this.getDaoManager().getCodingSchemeDao(codingSchemeUri, version);
 		
-		String codingSchemeId = codingSchemeDao.
+		String codingSchemeUId = codingSchemeDao.
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 		
-		String associationPredicateUid = this.getDaoManager().getAssociationDao(codingSchemeUri, version).
-			getAssociationPredicateUid(codingSchemeId, relationContainerName, associationPredicateName);
+		String associationPredicateUId = this.getDaoManager().getAssociationDao(codingSchemeUri, version).
+			getAssociationPredicateUIdByContainerName(codingSchemeUId, relationContainerName, associationPredicateName);
 		
-		this.doInsertAssociationSource(codingSchemeUri, version, codingSchemeId, associationPredicateUid, 
+		this.doInsertAssociationSource(codingSchemeUri, version, codingSchemeUId, associationPredicateUId, 
 				DaoUtility.createNonTypedList(source));
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.service.association.AssociationService#insertRelation(java.lang.String, java.lang.String, org.LexGrid.relations.Relations)
-	 */
-	@Transactional
-	public void insertRelation(String codingSchemeUri, String version,
-			Relations relation) {
-		String codingSchemeId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri, version).
-			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
-		
-		this.doInsertRelation(codingSchemeUri, version, codingSchemeId, relation);
 	}
 	
 	/**
@@ -85,27 +74,9 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 		
 		AssociationDao associationDao = this.getDaoManager().getAssociationDao(codingSchemeUri, version);
-		String relationId = associationDao.getRelationsId(codingSchemeUri, relationsName);
+		String relationId = associationDao.getRelationUId(codingSchemeUri, relationsName);
 		
 		this.doInsertAssociationPredicate(codingSchemeUri, version, codingSchemeId, relationId, predicate);
-	}
-	
-	/**
-	 * Do insert relation.
-	 * 
-	 * @param codingSchemeUri the coding scheme uri
-	 * @param codingSchemeVersion the coding scheme version
-	 * @param codingSchemeId the coding scheme id
-	 * @param relations the relations
-	 */
-	protected void doInsertRelation(String codingSchemeUri, 
-			String codingSchemeVersion, String codingSchemeId, Relations relations) {
-
-		this.getDaoManager().getAssociationDao(codingSchemeUri, codingSchemeVersion)
-			.insertRelations(
-					codingSchemeId, 
-					relations, 
-					true);
 	}
 	
 	/**
@@ -146,27 +117,17 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 				sources);
 	}
 
-	@Override
-	public void reviseRelation(String codingSchemeUri, String version,
-			Relations relation) throws LBException {
-
-		AssociationPredicate[] assnPredicateList = relation
-				.getAssociationPredicate();
-
-		for (int j = 0; j < assnPredicateList.length; j++) {
-			AssociationSource[] assnSource = assnPredicateList[j].getSource();
-
-			for (int k = 0; k < assnSource.length; k++) {
-				this.reviseAssociationSource(codingSchemeUri,
-						version, assnSource[k]);
-			}
-		}
+	/**
+	 * @return the propertyService
+	 */
+	public PropertyService getPropertyService() {
+		return propertyService;
 	}
 
-	@Override
-	public void reviseAssociationSource(String codingSchemeUri, String version,
-			AssociationSource source) throws LBException {
-		// TODO Auto-generated method stub
-		
+	/**
+	 * @param propertyService the propertyService to set
+	 */
+	public void setPropertyService(PropertyService propertyService) {
+		this.propertyService = propertyService;
 	}
 }

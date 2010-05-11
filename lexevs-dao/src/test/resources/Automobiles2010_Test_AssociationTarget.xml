@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<systemRelease xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/versions http://LexGrid.org/schema/2010/01/LexGrid/versions.xsd"
+    xmlns="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+    xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins"
+    xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+    xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts"
+    xmlns:lgRel="http://LexGrid.org/schema/2010/01/LexGrid/relations"
+    xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
+    xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
+    xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueDomains"
+    xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory"
+    releaseURI="testReleaseApr2010" releaseDate="2010-04-01T00:00:00">
+
+    <codingSchemes>
+        <lgCS:codingScheme approxNumConcepts="5" codingSchemeName="Automobiles" defaultLanguage="en"
+            formalName="test2" codingSchemeURI="urn:oid:22.22.0.2" representsVersion="2.0">
+            <lgCommon:entityDescription>Automobiles</lgCommon:entityDescription>
+            <lgCS:localName>22.22.0.2</lgCS:localName>
+            <lgCS:localName>Automobiles</lgCS:localName>
+            <lgCS:localName>SomeOtherValue</lgCS:localName>
+            <lgCS:source>lexgrid.org</lgCS:source>
+            <lgCS:copyright>Copyright by Mayo Clinic.</lgCS:copyright>
+            <lgCS:mappings>
+                <lgNaming:supportedAssociation uri="urn:oid:1.3.6.1.4.1.2114.108.1.8.1"
+                    localId="hasSubtype">hasSubtype</lgNaming:supportedAssociation>
+                <lgNaming:supportedAssociation uri="urn:oid:11.11.0.1" localId="uses">uses</lgNaming:supportedAssociation>
+                <lgNaming:supportedAssociationQualifier uri="www.something.com" localId="hasEngine"
+                    >hasEngine</lgNaming:supportedAssociationQualifier>
+                <lgNaming:supportedCodingScheme uri="urn:oid:11.11.0.1" localId="Automobiles"
+                    >Automobiles</lgNaming:supportedCodingScheme>
+                <lgNaming:supportedCodingScheme uri="urn:oid:11.11.0.50" localId="ExpendableParts"
+                    >Expendable Parts</lgNaming:supportedCodingScheme>
+                <lgNaming:supportedCodingScheme uri="urn:oid:11.11.0.2" localId="GermanMadeParts"
+                    >German Made Parts</lgNaming:supportedCodingScheme>
+                <lgNaming:supportedDataType localId="testhtml">test/html</lgNaming:supportedDataType>
+                <lgNaming:supportedDataType localId="textplain">text/plain</lgNaming:supportedDataType>
+                <lgNaming:supportedLanguage uri="www.en.org/orsomething" localId="en">en</lgNaming:supportedLanguage>
+                <lgNaming:supportedNamespace uri="urn:oid:11.11.0.1" localId="Automobiles"
+                    >Automobiles</lgNaming:supportedNamespace>
+                <lgNaming:supportedNamespace uri="urn:oid:11.11.0.50" localId="ExpendableParts"
+                    >Expendable Parts</lgNaming:supportedNamespace>
+                <lgNaming:supportedNamespace uri="urn:oid:11.11.0.2" localId="GermanMadeParts"
+                    >German Made Parts</lgNaming:supportedNamespace>
+                <lgNaming:supportedProperty localId="definition">definition</lgNaming:supportedProperty>
+                <lgNaming:supportedProperty localId="textualPresentation">textualPresentation</lgNaming:supportedProperty>
+                <lgNaming:supportedSource localId="_111101">11.11.0.1</lgNaming:supportedSource>
+            </lgCS:mappings>
+            <lgCS:entities>
+                <lgCon:entity entityCode="005" entityCodeNamespace="Automobiles" isActive="true">
+                    <lgCommon:entityDescription>Domestic Auto Makers</lgCommon:entityDescription>
+                    <lgCon:presentation propertyName="textualPresentation" propertyId="p1"
+                        isPreferred="true">
+                        <lgCommon:value>Domestic Auto Makers</lgCommon:value>
+                    </lgCon:presentation>
+                    <lgCon:presentation propertyName="textualPresentation" propertyId="p2"
+                        isPreferred="false">
+                        <lgCommon:value>>American Car Companies</lgCommon:value>
+                    </lgCon:presentation>
+                </lgCon:entity>
+                <lgCon:entity entityCode="73" entityCodeNamespace="Automobiles" status="Retired"
+                    isActive="false">
+                    <lgCommon:entityDescription>Oldsmobile</lgCommon:entityDescription>
+                    <lgCon:presentation language="en" propertyName="textualPresentation"
+                        propertyId="t1" isPreferred="true">
+                        <lgCommon:value dataType="textplain">Oldsmobile</lgCommon:value>
+                    </lgCon:presentation>
+                    <lgCon:presentation language="en" propertyName="textualPresentation"
+                        propertyId="t2" isPreferred="false">
+                        <lgCommon:value dataType="textplain">Olds</lgCommon:value>
+                    </lgCon:presentation>
+                    <lgCon:presentation language="en" propertyName="textualPresentation"
+                        propertyId="t3" isPreferred="false">
+                        <lgCommon:value dataType="textplain">Oldsmobile Auto
+                        Manufacturing</lgCommon:value>
+                    </lgCon:presentation>
+                </lgCon:entity>
+                <lgCon:entity entityCode="@" entityCodeNamespace="Automobiles" status="asdf"
+                    isActive="true" isAnonymous="true">
+                    <lgCommon:entityDescription>Top level node for relationships</lgCommon:entityDescription>
+                    <lgCon:presentation propertyName="textualPresentation" propertyId="t1"
+                        isPreferred="true" matchIfNoContext="true">
+                        <lgCommon:source>GermanMadeParts</lgCommon:source>
+                        <lgCommon:value>Top level node for relationships</lgCommon:value>
+                    </lgCon:presentation>
+                </lgCon:entity>
+                <lgCon:entity entityCode="A0001" entityCodeNamespace="Automobiles" status="asfd"
+                    isActive="true">
+                    <lgCommon:entityDescription>Automobile</lgCommon:entityDescription>
+                    <lgCon:presentation language="en" propertyName="textualPresentation"
+                        propertyId="t1" isPreferred="true" matchIfNoContext="true">
+                        <lgCommon:source>A0001</lgCommon:source>
+                        <lgCommon:value dataType="textplain">Automobile</lgCommon:value>
+                    </lgCon:presentation>
+                    <lgCon:definition language="en" propertyName="definition" propertyId="p1"
+                        isPreferred="true">
+                        <lgCommon:source>A0001</lgCommon:source>
+                        <lgCommon:value dataType="textplain">An automobile</lgCommon:value>
+                    </lgCon:definition>
+                </lgCon:entity>
+                <lgCon:entity entityCode="Anonymous-mobile" entityCodeNamespace="Automobiles"
+                    isActive="true" isAnonymous="true">
+                    <lgCommon:entityDescription>isAnonymous=true</lgCommon:entityDescription>
+                    <lgCon:presentation propertyName="textualPresentation" propertyId="t2"
+                        isPreferred="true">
+                        <lgCommon:value>Anonymous-mobile</lgCommon:value>
+                    </lgCon:presentation>
+                    <lgCon:presentation propertyName="textualPresentation" propertyId="t1"
+                        isPreferred="false">
+                        <lgCommon:value>A concept for testing whether or not the isAnonymous flag is
+                            being heeded.</lgCommon:value>
+                    </lgCon:presentation>
+                </lgCon:entity>
+                <lgCon:entity entityCode="C0001" entityCodeNamespace="Automobiles" status="asf"
+                    isActive="true">
+                    <lgCommon:entityDescription>Car</lgCommon:entityDescription>
+                    <lgCon:presentation language="en" propertyName="textualPresentation"
+                        propertyId="c1" isPreferred="true" matchIfNoContext="true">
+                        <lgCommon:value>Car</lgCommon:value>
+                    </lgCon:presentation>
+                </lgCon:entity>
+                <lgCon:entity entityCode="Chevy" entityCodeNamespace="Automobiles" isActive="true">
+                    <lgCommon:entityDescription>Chevrolet</lgCommon:entityDescription>
+                    <lgCon:presentation propertyName="textualPresentation" propertyId="p1"
+                        isPreferred="true">
+                        <lgCommon:value>Chevy</lgCommon:value>
+                    </lgCon:presentation>
+                    <lgCon:presentation propertyName="textualPresentation" propertyId="p2"
+                        isPreferred="false">
+                        <lgCommon:value>Chevrolet</lgCommon:value>
+                    </lgCon:presentation>
+                </lgCon:entity>
+                <lgCon:entity entityCode="Ford" entityCodeNamespace="Automobiles" isActive="true">
+                    <lgCommon:entityDescription>Ford Motor Company</lgCommon:entityDescription>
+                    <lgCon:presentation propertyName="textualPresentation" propertyId="p1"
+                        isPreferred="true">
+                        <lgCommon:value>Ford</lgCommon:value>
+                    </lgCon:presentation>
+                    <lgCon:presentation propertyName="textualPresentation" propertyId="p2"
+                        isPreferred="false">
+                        <lgCommon:value>Ford Motor Company</lgCommon:value>
+                    </lgCon:presentation>
+                </lgCon:entity>
+                <lgCon:entity entityCode="GM" entityCodeNamespace="Automobiles" isActive="true">
+                    <lgCommon:entityDescription>General Motors</lgCommon:entityDescription>
+                    <lgCon:presentation propertyName="textualPresentation" propertyId="p1"
+                        isPreferred="true">
+                        <lgCommon:value>General Motors</lgCommon:value>
+                    </lgCon:presentation>
+                    <lgCon:presentation propertyName="textualPresentation" propertyId="p2"
+                        isPreferred="false">
+                        <lgCommon:value>GM</lgCommon:value>
+                    </lgCon:presentation>
+                </lgCon:entity>
+                <lgCon:entity entityCode="Chrysler" entityCodeNamespace="Automobiles"
+                    isActive="true">
+                    <lgCommon:entityDescription>DaimlerChrysler Corporation</lgCommon:entityDescription>
+                    <lgCon:presentation propertyName="textualPresentation" propertyId="p1"
+                        isPreferred="true">
+                        <lgCommon:value>DaimlerChrysler Corporation</lgCommon:value>
+                    </lgCon:presentation>
+                    <lgCon:presentation propertyName="textualPresentation" propertyId="p2"
+                        isPreferred="false">
+                        <lgCommon:value>Chrysler</lgCommon:value>
+                    </lgCon:presentation>
+                </lgCon:entity>
+                <lgCon:entity entityCode="Jaguar" entityCodeNamespace="Automobiles" isActive="true">
+                    <lgCommon:entityDescription>Jaguar</lgCommon:entityDescription>
+                    <lgCon:presentation propertyName="textualPresentation" propertyId="p1"
+                        isPreferred="false">
+                        <lgCommon:value>Jaguar</lgCommon:value>
+                    </lgCon:presentation>
+                </lgCon:entity>
+                <lgCon:entity entityCode="LeBaron" entityCodeNamespace="Automobiles" isActive="true">
+                    <lgCommon:entityDescription>LeBaron</lgCommon:entityDescription>
+                    <lgCon:presentation propertyName="textualPresentation" propertyId="p1"
+                        isPreferred="false">
+                        <lgCommon:value>LeBaron</lgCommon:value>
+                    </lgCon:presentation>
+                </lgCon:entity>
+                <lgCon:entity entityCode="T0001" entityCodeNamespace="Automobiles" status="a65"
+                    isActive="true">
+                    <lgCommon:entityDescription>Truck</lgCommon:entityDescription>
+                    <lgCon:presentation language="en" propertyName="textualPresentation"
+                        propertyId="t1" isPreferred="true" matchIfNoContext="true">
+                        <lgCommon:value>Truck</lgCommon:value>
+                    </lgCon:presentation>
+                </lgCon:entity>
+                <lgCon:entity entityCode="GearBox" entityCodeNamespace="Automobiles">
+                    <lgCommon:entityDescription>GearBox of an
+                    automobile.</lgCommon:entityDescription>
+                </lgCon:entity>
+            </lgCS:entities>
+            <lgCS:relations containerName="rel">
+                <lgCommon:entityDescription>asD</lgCommon:entityDescription>
+                <lgRel:associationPredicate associationName="hasSubtype">
+                    <lgRel:source sourceEntityCode="005" sourceEntityCodeNamespace="Automobiles">
+                        <lgRel:target targetEntityCodeNamespace="Automobiles"
+                            targetEntityCode="Ford" associationInstanceId="inst001"/>
+                        <lgRel:target targetEntityCodeNamespace="Automobiles" targetEntityCode="GM"
+                            associationInstanceId="inst100"/>
+                        <lgRel:target targetEntityCodeNamespace="Automobiles"
+                            targetEntityCode="Chrysler"/>
+                    </lgRel:source>
+                    <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="@">
+                        <lgRel:target targetEntityCodeNamespace="Automobiles" targetEntityCode="005"/>
+                        <lgRel:target targetEntityCodeNamespace="Automobiles"
+                            targetEntityCode="A0001"/>
+                    </lgRel:source>
+                    <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="A0001">
+                        <lgRel:target targetEntityCodeNamespace="Automobiles"
+                            targetEntityCode="C0001">
+                            <lgRel:associationQualification associationQualifier="hasEngine">
+                                <lgRel:qualifierText>true</lgRel:qualifierText>
+                            </lgRel:associationQualification>
+                        </lgRel:target>
+                        <lgRel:target targetEntityCodeNamespace="Automobiles"
+                            targetEntityCode="T0001"/>
+                    </lgRel:source>
+                    <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="Ford">
+                        <lgRel:target targetEntityCodeNamespace="Automobiles"
+                            targetEntityCode="Jaguar">
+                            <lgRel:associationQualification associationQualifier="since">
+                                <lgRel:qualifierText>1989</lgRel:qualifierText>
+                            </lgRel:associationQualification>
+                        </lgRel:target>
+                    </lgRel:source>
+                    <lgRel:source sourceEntityCodeNamespace="Automobiles"
+                        sourceEntityCode="Chrysler">
+                        <lgRel:target targetEntityCodeNamespace="Automobiles"
+                            targetEntityCode="LeBaron">
+                            <lgRel:associationQualification associationQualifier="since">
+                                <lgRel:qualifierText>1988</lgRel:qualifierText>
+                            </lgRel:associationQualification>
+                        </lgRel:target>
+                    </lgRel:source>
+                    <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="GM">
+                        <lgRel:target targetEntityCodeNamespace="Automobiles" targetEntityCode="73"/>
+                        <lgRel:target targetEntityCodeNamespace="Automobiles"
+                            targetEntityCode="Chevy"/>
+                    </lgRel:source>
+                </lgRel:associationPredicate>
+                <lgRel:associationPredicate associationName="uses">
+                    <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="A0001">
+                        <lgRel:target targetEntityCodeNamespace="ExpendableParts"
+                            targetEntityCode="Batteries"/>
+                        <lgRel:target targetEntityCodeNamespace="ExpendableParts"
+                            targetEntityCode="Brakes"/>
+                        <lgRel:target targetEntityCodeNamespace="ExpendableParts"
+                            targetEntityCode="Tires"/>
+                    </lgRel:source>
+                </lgRel:associationPredicate>
+                <lgRel:associationPredicate associationName="partOf">
+                    <lgRel:source sourceEntityCode="GearBox" sourceEntityCodeNamespace="Automobiles">
+                        <lgRel:target targetEntityCode="A0001"
+                            targetEntityCodeNamespace="Automobiles"/>
+                    </lgRel:source>
+                </lgRel:associationPredicate>
+            </lgCS:relations>
+        </lgCS:codingScheme>
+    </codingSchemes>
+
+    <!--Test : NEW AssociationTraget-->
+    <editHistory>
+        <revision revisionId="testRelease2010Jan_testTarget">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="Automobiles"
+                    codingSchemeURI="urn:oid:22.22.0.2" representsVersion="2.0">
+                    <lgCommon:entryState containingRevision="testRelease2010Jan_testTarget"
+                        relativeOrder="0" changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:relations containerName="rel">
+                        <lgCommon:entryState containingRevision="testRelease2010Jan_testTarget"
+                            relativeOrder="0" changeType="DEPENDENT"/>
+                        <lgRel:associationPredicate associationName="sameAs">
+                            <lgRel:source sourceEntityCode="005"
+                                sourceEntityCodeNamespace="Automobiles">
+                                <lgRel:target targetEntityCode="A0001"
+                                    targetEntityCodeNamespace="Automobiles"
+                                    associationInstanceId="inst002" isActive="true" status="high"
+                                    isInferred="false" isDefining="false"
+                                    effectiveDate="2010-01-01T01:25:35"
+                                    expirationDate="2010-04-01T01:23:33">
+                                    <lgCommon:owner>ItsMe</lgCommon:owner>
+                                    <lgCommon:entryState
+                                        containingRevision="testRelease2010Jan_testTarget"
+                                        relativeOrder="0" changeType="NEW"/>
+                                    <lgRel:associationQualification associationQualifier="qual1">
+                                        <lgRel:qualifierText>testQualText</lgRel:qualifierText>
+                                    </lgRel:associationQualification>
+                                </lgRel:target>
+                            </lgRel:source>
+                        </lgRel:associationPredicate>
+                    </lgCS:relations>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+
+        <!--Test : MODIFY entity-->
+        <revision revisionId="testRelease2010Feb_testTarget">
+            <changeAgent>Mayo-Feb</changeAgent>
+            <changeInstructions>changedInstruction</changeInstructions>
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="Automobiles"
+                    codingSchemeURI="urn:oid:22.22.0.2" representsVersion="2.0">
+                    <lgCommon:entryState containingRevision="testRelease2010Feb_testTarget"
+                        prevRevision="testRelease2010Jan_testTarget" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:relations containerName="rel">
+                        <lgCommon:entryState containingRevision="testRelease2010Feb_testTarget"
+                            prevRevision="testRelease2010Jan_testTarget" relativeOrder="0"
+                            changeType="DEPENDENT"/>
+                        <lgRel:associationPredicate associationName="hasSubtype">
+                            <lgRel:source sourceEntityCode="005"
+                                sourceEntityCodeNamespace="Automobiles">
+                                <lgRel:target targetEntityCodeNamespace="Automobiles"
+                                    targetEntityCode="Ford" associationInstanceId="inst001"
+                                    isDefining="true" isInferred="true">
+                                    <lgCommon:entryState
+                                        containingRevision="testRelease2010Feb_testTarget"
+                                        relativeOrder="0" changeType="MODIFY"/>
+                                </lgRel:target>
+                            </lgRel:source>
+                        </lgRel:associationPredicate>
+                    </lgCS:relations>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+
+        <!--Test : VERSIONABLE entity-->
+        <revision revisionId="testRelease2010Mar_testTarget">
+            <changeAgent>Mayo-March</changeAgent>
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="Automobiles"
+                    codingSchemeURI="urn:oid:22.22.0.2" representsVersion="2.0">
+                    <lgCommon:entryState containingRevision="testRelease2010Mar_testTarget"
+                        prevRevision="testRelease2010Feb_testTarget" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:relations containerName="rel">
+                        <lgCommon:entryState containingRevision="testRelease2010Mar_testTarget"
+                            prevRevision="testRelease2010Feb_testTarget" relativeOrder="0"
+                            changeType="DEPENDENT"/>
+                        <lgRel:associationPredicate associationName="hasSubtype">
+                            <lgRel:source sourceEntityCode="005"
+                                sourceEntityCodeNamespace="Automobiles">
+                                <lgRel:target targetEntityCodeNamespace="Automobiles"
+                                    targetEntityCode="GM" associationInstanceId="inst100"
+                                    isActive="true" status="active"
+                                    effectiveDate="2010-01-01T01:25:35"
+                                    expirationDate="2010-04-01T01:23:33">
+                                    <lgCommon:owner>mayo</lgCommon:owner>
+                                    <lgCommon:entryState
+                                        containingRevision="testRelease2010Mar_testTarget"
+                                        relativeOrder="0" changeType="VERSIONABLE"/>
+                                </lgRel:target>
+                            </lgRel:source>
+                        </lgRel:associationPredicate>
+                    </lgCS:relations>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+
+        <!-- Test:REMOVE entity -->
+        <revision revisionId="testRelease2010Apr_testTarget">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="Automobiles"
+                    codingSchemeURI="urn:oid:22.22.0.2" representsVersion="2.0">
+                    <lgCommon:entryState containingRevision="testRelease2010Apr_testTarget"
+                        prevRevision="testRelease2010Mar_testTarget" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:relations containerName="rel">
+                        <lgCommon:entryState containingRevision="testRelease2010Apr_testTarget"
+                            relativeOrder="0" prevRevision="testRelease2010Mar_testTarget"
+                            changeType="DEPENDENT"/>
+                        <lgRel:associationPredicate associationName="hasSubtype">
+                            <lgRel:source sourceEntityCodeNamespace="Automobiles"
+                                sourceEntityCode="Chrysler">
+                                <lgRel:target targetEntityCodeNamespace="Automobiles"
+                                    targetEntityCode="LeBaron">
+                                    <lgCommon:entryState
+                                        containingRevision="testRelease2010Apr_testTarget"
+                                        relativeOrder="0" changeType="REMOVE"/>
+                                </lgRel:target>
+                            </lgRel:source>
+                        </lgRel:associationPredicate>
+                    </lgCS:relations>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+    </editHistory>
+</systemRelease>

@@ -108,19 +108,6 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 			throw new UnsupportedOperationException();
 		}
 
-		/**
-		 * Update entity.
-		 * 
-		 * @param codingSchemeName the coding scheme name
-		 * @param version the version
-		 * @param entity the entity
-		 */
-		public void updateEntity(String codingSchemeName, String version,
-				Entity entity) {
-			// TODO Auto-generated method stub (IMPLEMENT!)
-			throw new UnsupportedOperationException();
-		}
-
 		/* (non-Javadoc)
 		 * @see org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao#executeInTransaction(org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao.IndividualDaoCallback)
 		 */
@@ -150,7 +137,7 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 		 * @see org.lexevs.dao.database.access.entity.EntityDao#updateEntity(java.lang.String, org.LexGrid.concepts.Entity)
 		 */
 		@Override
-		public void updateEntity(String codingSchemeId, Entity entity) {
+		public String updateEntity(String codingSchemeUId, String entityUId, Entity entity) {
 			// TODO Auto-generated method stub (IMPLEMENT!)
 			throw new UnsupportedOperationException();
 		}
@@ -190,10 +177,43 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 		}
 
 		@Override
-		public void updateEntityVersionableAttrib(String codingSchemeUId,
+		public String updateEntityVersionableAttrib(String codingSchemeUId,
 				String entityUId, Entity entity) {
-			// TODO Auto-generated method stub
+			throw new UnsupportedOperationException();
 			
+		}
+
+		@Override
+		public void removeEntityByUId(String codingSchemeUId, String entityUId) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public String getLatestRevision(String csUId, String entityUId) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean entityInUse(String codingSchemeUId, String entityCode,
+				String entityCodeNamespace) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public String getEntryStateUId(String codingSchemeUId, String entityUId) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void updateEntryStateUId(String codingSchemeUId,
+				String entityUId, String entryStateUId) {
+			throw new UnsupportedOperationException();
+			
+		}
+
+		@Override
+		public boolean entryStateExists(String entryStateUId) {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override

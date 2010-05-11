@@ -17,7 +17,7 @@
 		)
   </insert>
   
-  <delete id="deleteAssocQualsByCodingSchemeId" 
+  <delete id="deleteAssocQualsByCodingSchemeUId" 
   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
   		DELETE FROM
   			$prefix$entityAssnQuals
@@ -70,5 +70,88 @@
   			rel.codingSchemeGuid = #param1#
   		)
   </delete>
-    
+  
+  <delete id="deleteAssocQualsByRelationUId" 
+  	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+  		DELETE FROM
+  			$prefix$entityAssnQuals
+  			
+  		WHERE 
+  			referenceGuid IN
+  		( 
+  		SELECT
+  			eate.entityAssnsGuid
+  			
+  		FROM
+  			$prefix$entityAssnsToEntity eate
+	
+  		LEFT JOIN
+  			$prefix$associationPredicate ap
+  		ON
+  			ap.associationPredicateGuid =
+  			eate.associationPredicateGuid
+  		LEFT JOIN
+  			$prefix$relation rel
+ 		WHERE
+  			ap.relationGuid =
+  			rel.relationGuid
+ 	
+  		WHERE
+  			rel.codingSchemeGuid = #param1#
+  			AND
+  			rel.relationGuid = #param2#
+  
+  		UNION
+  		
+  		SELECT
+  			eatd.entityAssnsDataGuid
+  			
+  		FROM
+  			$prefix$entityAssnsToData eatd
+	
+  		LEFT JOIN
+  			$prefix$associationPredicate ap
+  		ON
+  			ap.associationPredicateGuid =
+  			eatd.associationPredicateGuid
+  			
+  		LEFT JOIN
+  			$prefix$relation rel
+  		ON
+  			ap.relationGuid =
+  			rel.relationGuid
+  			
+  		WHERE
+  			rel.codingSchemeGuid = #param1#
+  			AND
+  			rel.relationGuid = #param2#
+  		)
+  </delete>
+
+	<delete id="deleteAssocQualsByAssocUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$entityAssnQuals
+		WHERE
+			referenceGuid = #param1#
+	</delete>
+	
+	<resultMap
+		class="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean"
+		id="qualContextResult">
+		<result property="uid" column="entityAssnQualsGuid" />
+		<result property="associationTargetUId" column="referenceGuid" />
+		<result property="qualifierName" column="qualifierName" />
+		<result property="qualifierValue" column="qualifierValue" />
+		<result property="entryStateUId" column="entryStateUId" />
+	</resultMap>
+
+	<select id="getAssnQualsByReferenceUId" resultMap="qualContextResult"
+		remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
+		SELECT *
+		FROM
+			$prefix$entityAssnQuals assnQual
+		WHERE
+			assnQual.referenceGuid = #param2#
+	</select>
 </sqlMap>

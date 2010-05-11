@@ -123,11 +123,12 @@ public interface EntityService {
 	 * @param enityCode the enity code
 	 * @param entityCodeNamespace the entity code namespace
 	 * @param entity the entity
+	 * @throws LBException 
 	 */
 	public void updateEntity(
 			String codingSchemeUri, 
 			String version,
-			Entity entity);
+			Entity entity) throws LBException;
 	
 	public void revise(String codingSchemeUri, String version,
 			Entity revisedEntity) throws LBException;

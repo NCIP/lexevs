@@ -18,9 +18,7 @@
  */
 package org.lexevs.dao.database.service.association;
 
-import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.relations.AssociationSource;
-import org.LexGrid.relations.Relations;
 
 /**
  * The Interface AssociationService.
@@ -30,48 +28,20 @@ import org.LexGrid.relations.Relations;
 public interface AssociationService {
 
 	/**
-	 * Insert relation.
-	 * 
-	 * @param codingSchemeUri the coding scheme uri
-	 * @param version the version
-	 * @param relation the relation
-	 */
-	public void insertRelation(String codingSchemeUri, String version, Relations relation);
-	
-	/**
 	 * Insert association source.
 	 * 
-	 * @param codingSchemeUri the coding scheme uri
-	 * @param version the version
-	 * @param relationContainerName the relation container name
-	 * @param associationPredicateName the association predicate name
-	 * @param source the source
-	 */
-	public void insertAssociationSource(String codingSchemeUri, 
-			String version, 
-			String relationContainerName,
-			String associationPredicateName,
-			AssociationSource source);
-	
-	/**
-	 * version API to revise relations.
-	 * 
 	 * @param codingSchemeUri
+	 *            the coding scheme uri
 	 * @param version
-	 * @param relation
-	 * @throws LBException
-	 */
-	public void reviseRelation(String codingSchemeUri, String version,
-			Relations relation) throws LBException;
-
-	/**
-	 * version API to revise association source.
-	 * 
-	 * @param codingSchemeUri
-	 * @param version
+	 *            the version
+	 * @param relationContainerName
+	 *            the relation container name
+	 * @param associationPredicateName
+	 *            the association predicate name
 	 * @param source
-	 * @throws LBException
+	 *            the source
 	 */
-	public void reviseAssociationSource(String codingSchemeUri, String version,
-			AssociationSource source) throws LBException;
+	public void insertAssociationSource(String codingSchemeUri, String version,
+			String relationContainerName, String associationPredicateName,
+			AssociationSource source);
 }

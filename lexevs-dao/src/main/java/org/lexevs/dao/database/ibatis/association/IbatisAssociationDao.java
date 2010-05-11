@@ -22,32 +22,36 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.dao.database.access.association.AssociationDao;
+import org.lexevs.dao.database.access.association.AssociationDataDao;
+import org.lexevs.dao.database.access.association.AssociationTargetDao;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchInsertItem;
 import org.lexevs.dao.database.access.association.model.Triple;
-import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
-import org.lexevs.dao.database.access.entity.EntityDao;
+import org.lexevs.dao.database.access.property.PropertyDao;
+import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
+import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
+import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationPredicateBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
-import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationSourceBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean;
-import org.lexevs.dao.database.ibatis.association.parameter.InsertRelationsBean;
+import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateRelationsBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertTransitiveClosureBean;
 import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
-import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
-import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
@@ -96,8 +100,11 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private static String GET_RELATIONS_KEY_SQL = ASSOCIATION_NAMESPACE + "getRelationsKey";
 	
 	/** The GE t_ associatio n_ predicat e_ ke y_ sql. */
-	private static String GET_ASSOCIATION_PREDICATE_UID_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateUid";
-	
+
+	private static String GET_ASSOCIATION_PREDICATE_UID_BY_CONTAINER_UID_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateUIdByContainerUId";
+
+	private static String GET_ASSOCIATION_PREDICATE_UID_BY_CONTAINER_NAME_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateUIdByContainerName";
+
 	private static String GET_ASSOCIATION_PREDICATE_NAME_FOR_ID_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateNameForId";
 	
 	private static String GET_RELATIONS_IDS_FOR_CODINGSCHEME_ID_SQL = ASSOCIATION_NAMESPACE + "getRelationsKeysForCodingSchemeId";
@@ -106,21 +113,42 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	private static String GET_ALL_TRIPLES_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getAllTriplesOfCodingScheme";
 	
-	private static String DELETE_ASSOCIATION_QUALS_FOR_CODINGSCHEME_ID_SQL = ASSOCIATION_NAMESPACE + "deleteAssocQualsByCodingSchemeId";
+	private static String DELETE_ASSOCIATION_QUALS_FOR_CODINGSCHEME_UID_SQL = ASSOCIATION_NAMESPACE + "deleteAssocQualsByCodingSchemeUId";
+	
+	private static String DELETE_ASSOCIATION_QUALS_FOR_RELATION_UID_SQL = ASSOCIATION_NAMESPACE + "deleteAssocQualsByRelationUId";
 	
 	private static String GET_ASSOCIATION_PREDICATE_FOR_ID_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateForId";
 	
 	private static String GET_ASSOCIATION_PREDICATE_UID_FOR_DIRECTIONAL_NAME_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateUidForDirectionalName";
 	
 	private static String GET_RELATIONS_FOR__ID_SQL = ASSOCIATION_NAMESPACE + "getRelationsForId";
-
+	
+	private static String GET_RELATION_ATTRIBUTES_BY_UID_SQL = ASSOCIATION_NAMESPACE + "getRelationAttributeForRelationUId";
+	
+	private static String UPDATE_RELATION_BY_UID_SQL = ASSOCIATION_NAMESPACE + "updateRelationByUId";
+	
+	private static String UPDATE_RELATION_VERSIONABLE_CHANGES_BY_UID_SQL = ASSOCIATION_NAMESPACE + "updateRelationVersionableChangesByUId";
+	
+	private static String DELETE_RELATION_BY_UID_SQL = ASSOCIATION_NAMESPACE + "deleteRelationByUId";
+	
+	private static String GET_ENTRYSTATE_UID_BY_RELATION_UID_SQL = ASSOCIATION_NAMESPACE + "getEntryStateUIdByRelationUId";
+	
+	private static String UPDATE_RELATION_ENTRYSTATE_UID_SQL = ASSOCIATION_NAMESPACE + "updateRelationEntryStateUId";
+	
+	private static String ASSOCIATION_PREDICATE_EXISTS_SQL = ASSOCIATION_NAMESPACE + "checkIfAssociationPredicateExists";
+	
+	private static String GET_RELATION_LATEST_REVISION_ID_BY_UID = ASSOCIATION_NAMESPACE + "getRelationLatestRevisionIdByUId";
+	
+	private EntryStateTypeClassifier entryStateClassifier = new EntryStateTypeClassifier();
+	
 	/** The ibatis versions dao. */
 	private IbatisVersionsDao ibatisVersionsDao;
 	
-	/** The coding scheme dao. */
-	private CodingSchemeDao codingSchemeDao;
+	private AssociationTargetDao associationTargetDao = null;
 	
-	private EntityDao entityDao;
+	private AssociationDataDao associationDataDao = null;
+	
+	private PropertyDao propertyDao = null;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -140,12 +168,28 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#getAssociationPredicateId(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public String getAssociationPredicateUid(String codingSchemeUid, String relationsContainerName, String associationPredicateName) {
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
-		return
-			(String) 
-				this.getSqlMapClientTemplate().queryForObject(GET_ASSOCIATION_PREDICATE_UID_SQL, new PrefixedParameterTriple(
-						prefix, codingSchemeUid, relationsContainerName, associationPredicateName));
+	public String getAssociationPredicateUIdByContainerUId(String codingSchemeId,
+			String relationContainerId, String associationPredicateName) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeId);
+		return (String) this.getSqlMapClientTemplate().queryForObject(
+				GET_ASSOCIATION_PREDICATE_UID_BY_CONTAINER_UID_SQL,
+				new PrefixedParameterTuple(prefix, relationContainerId,
+						associationPredicateName));
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.association.AssociationDao#getAssociationPredicateId(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public String getAssociationPredicateUIdByContainerName(String codingSchemeId,
+			String relationContainerName, String associationPredicateName) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeId);
+		return (String) this.getSqlMapClientTemplate().queryForObject(
+				GET_ASSOCIATION_PREDICATE_UID_BY_CONTAINER_NAME_SQL,
+				new PrefixedParameterTuple(prefix, relationContainerName,
+						associationPredicateName));
+
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -166,16 +210,26 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#getRelationsId(java.lang.String, java.lang.String)
 	 */
-	public String getRelationsId(String codingSchemeId, String relationsName) {
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		return
-			(String) 
-				this.getSqlMapClientTemplate().queryForObject(GET_RELATIONS_KEY_SQL, new PrefixedParameterTuple(prefix, codingSchemeId, relationsName));
+	public String getRelationUId(String codingSchemeId, String relationsName) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeId);
+		return (String) this.getSqlMapClientTemplate().queryForObject(
+				GET_RELATIONS_KEY_SQL,
+				new PrefixedParameterTuple(prefix, codingSchemeId,
+						relationsName));
+	}
+	
+	public String getRelationEntryStateUId(String codingSchemeUId, String relationUId) {
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+				
+		return (String) this.getSqlMapClientTemplate().queryForObject(GET_ENTRYSTATE_UID_BY_RELATION_UID_SQL,
+				new PrefixedParameter(prefix, relationUId));
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<String> getAssociationPredicateIdsForRelationsId(
+	public List<String> getAssociationPredicateUIdsForRelationsUId(
 			String codingSchemeId, String relationsId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
@@ -195,15 +249,16 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	}
 
 	@Override
-	public void deleteAssociationQualificationsByCodingSchemeId(String codingSchemeId) {
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+	public void deleteAssociationQualificationsByCodingSchemeUId(String codingSchemeUId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
 		this.getSqlMapClientTemplate().delete(
-				DELETE_ASSOCIATION_QUALS_FOR_CODINGSCHEME_ID_SQL,
-				new PrefixedParameter(prefix, codingSchemeId));
+				DELETE_ASSOCIATION_QUALS_FOR_CODINGSCHEME_UID_SQL,
+				new PrefixedParameter(prefix, codingSchemeUId));
 	}
 	
-	public String getAssociationPredicateNameForId(String codingSchemeId, String associationPredicateId) {
+	public String getAssociationPredicateNameForUId(String codingSchemeId, String associationPredicateId) {
+
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		return
 			(String) 
@@ -217,44 +272,57 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String codingSchemeId,
 			Relations relations,
 			boolean cascade) {
-		String relationsId = this.createUniqueId();
+		String relationsUId = this.createUniqueId();
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		this.doInsertRelations(
 				prefix, 
 				codingSchemeId, 
-				relationsId, 
+				relationsUId, 
 				relations, 
 				cascade);
-		return relationsId;
+		return relationsUId;
 	}
 	
 	protected String doInsertRelations(
 			String prefix,
-			String codingSchemeId,
-			String relationsId,
+			String codingSchemeUId,
+			String relationsUId,
 			Relations relations,
 			boolean cascade) {
-		String entryStateId = this.createUniqueId();
+		String entryStateUId = this.createUniqueId();
 		
-		InsertRelationsBean bean = new InsertRelationsBean();
-		bean.setEntryStateUId(entryStateId);
-		bean.setUId(relationsId);
-		bean.setCodingSchemeUId(codingSchemeId);
+		InsertOrUpdateRelationsBean bean = new InsertOrUpdateRelationsBean();
+		bean.setEntryStateUId(entryStateUId);
+		bean.setUId(relationsUId);
+		bean.setCodingSchemeUId(codingSchemeUId);
 		bean.setRelations(relations);
 		bean.setPrefix(prefix);
+		
+		this.ibatisVersionsDao.insertEntryState(entryStateUId, relationsUId,
+				entryStateClassifier.classify(EntryStateType.RELATION), null,
+				relations.getEntryState());
 		
 		this.getSqlMapClientTemplate().insert(INSERT_RELATIONS_SQL, bean);
 		
 		if(cascade){
+			
+			if (relations.getProperties() != null) {
+				for (Property property : relations.getProperties()
+						.getProperty()) {
+					this.getPropertyDao().insertProperty(codingSchemeUId,
+							relationsUId, PropertyType.RELATION, property);
+				}
+			}
+			
 			for(AssociationPredicate predicate : relations.getAssociationPredicate()) {
 				this.insertAssociationPredicate(
-						codingSchemeId, 
-						relationsId, 
+						codingSchemeUId, 
+						relationsUId, 
 						predicate,
 						cascade);
 			}
 		}
-		return relationsId;
+		return relationsUId;
 	}
 	
 	public String insertAssociationEntity(
@@ -366,8 +434,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertBatchAssociationSources(java.lang.String, java.lang.String, java.util.List)
 	 */
 	@Override
-	public void insertBatchAssociationSources(final String codingSchemeId,
-			final String associationPredicateId, final List<AssociationSource> batch) {
+	public void insertBatchAssociationSources(final String codingSchemeUId,
+			final String associationPredicateUId, final List<AssociationSource> batch) {
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
 			
 			public Object doInSqlMapClient(SqlMapExecutor executor)
@@ -377,7 +445,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				batchInserter.startBatch();
 				
 				for(AssociationSource source : batch) {
-					insertAssociationSource(codingSchemeId, associationPredicateId, source, batchInserter);
+					insertAssociationSource(codingSchemeUId, associationPredicateUId, source, batchInserter);
 				}
 				
 				batchInserter.executeBatch();
@@ -487,64 +555,30 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/**
 	 * Insert association source.
 	 * 
-	 * @param codingSchemeId the coding scheme id
-	 * @param associationPredicateId the association predicate id
+	 * @param codingSchemeUId the coding scheme id
+	 * @param associationPredicateUId the association predicate id
 	 * @param source the source
 	 * @param inserter the inserter
 	 */
-	public void insertAssociationSource(String codingSchemeId,
-			String associationPredicateId, AssociationSource source, IbatisInserter inserter) {
-		Assert.isTrue(source.getTarget().length > 0, "Must Insert at least ONE AssociationTarget per AssociationSource.");
-		
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		
-		for(AssociationTarget target : source.getTarget()){
-			String associationTargetId = this.createUniqueId();
-			String entryStateId = this.createUniqueId();
-			
-			InsertAssociationSourceBean bean = new InsertAssociationSourceBean();
-			bean.setPrefix(prefix);
-			bean.setAssociationPredicateUId(associationPredicateId);
-			bean.setAssociationSource(source);
-			bean.setAssociationTarget(target);
-			bean.setEntryStateUId(entryStateId);
-			bean.setUId(associationTargetId);
-			inserter.insert(INSERT_ENTITY_ASSNS_TO_ENTITY_SQL, bean);
-			
-			ibatisVersionsDao.insertEntryState(codingSchemeId, entryStateId, associationTargetId, "associationSource", null, target.getEntryState(), inserter);
-			
-			for(AssociationQualification qual : target.getAssociationQualification()){
-				String qualId = this.createUniqueId();
-				
-				InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
-				qualBean.setAssociationTargetUId(associationTargetId);
-				qualBean.setUId(qualId);
-				qualBean.setPrefix(prefix);
-				qualBean.setQualifierName(qual.getAssociationQualifier());
-				
-				if(qual.getQualifierText() != null) {
-					qualBean.setQualifierValue(qual.getQualifierText().getContent());
-				}
-				
-				inserter.insert(
-						INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, 
-						qualBean);
-			}
-			
-			for(String context : target.getUsageContext()){
-				String contextId = this.createUniqueId();
-				
-				InsertAssociationQualificationOrUsageContextBean contextBean = new InsertAssociationQualificationOrUsageContextBean();
-				contextBean.setAssociationTargetUId(associationTargetId);
-				contextBean.setUId(contextId);
-				contextBean.setPrefix(prefix);
-				contextBean.setQualifierName(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
-				contextBean.setQualifierValue(context);
-				
-				inserter.insert(
-						INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, 
-						contextBean);
-			}
+	public void insertAssociationSource(String codingSchemeUId,
+			String associationPredicateUId, AssociationSource source,
+			IbatisInserter inserter) {
+		Assert
+				.isTrue(
+						source.getTarget().length > 0
+								|| source.getTargetData().length > 0,
+						"Must Insert at least ONE AssociationTarget or AssociationData per AssociationSource.");
+
+		for (AssociationTarget target : source.getTarget()) {
+
+			associationTargetDao.insertAssociationTarget(codingSchemeUId,
+					associationPredicateUId, source, target);
+		}
+
+		for (AssociationData data : source.getTargetData()) {
+
+			associationDataDao.insertAssociationData(codingSchemeUId,
+					associationPredicateUId, source, data);
 		}
 	}
 	
@@ -574,7 +608,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	
 	@Override
-	public AssociationPredicate getAssociationPredicateByUid(String codingSchemeId,
+	public AssociationPredicate getAssociationPredicateByUId(String codingSchemeId,
 			String associationPredicateUid) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
@@ -590,7 +624,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	}
 
 	@Override
-	public Relations getRelationsByUid(String codingSchemeId,
+	public Relations getRelationsByUId(String codingSchemeId,
 			String relationsUid) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
@@ -601,8 +635,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 		Relations relations = (Relations) this.getSqlMapClientTemplate().queryForObject(GET_RELATIONS_FOR__ID_SQL, bean);
 	
-		for(String predicateId : this.getAssociationPredicateIdsForRelationsId(codingSchemeId, relationsUid)) {
-			relations.addAssociationPredicate(getAssociationPredicateByUid(codingSchemeId, predicateId));
+		for(String predicateId : this.getAssociationPredicateUIdsForRelationsUId(codingSchemeId, relationsUid)) {
+			relations.addAssociationPredicate(getAssociationPredicateByUId(codingSchemeId, predicateId));
 		}
 		
 		return relations;
@@ -653,29 +687,198 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		this.ibatisVersionsDao = ibatisVersionsDao;
 	}
 
-	/**
-	 * Sets the coding scheme dao.
-	 * 
-	 * @param codingSchemeDao the new coding scheme dao
-	 */
-	public void setCodingSchemeDao(CodingSchemeDao codingSchemeDao) {
-		this.codingSchemeDao = codingSchemeDao;
+	@Override
+	public String insertHistoryRelation(String codingSchemeUId,
+			String relationUId, Relations relation) {
+
+		return this.doInsertHistoryRelation(codingSchemeUId, relationUId, relation,
+				this.getNonBatchTemplateInserter(), true);
+	}
+	
+	protected String doInsertHistoryRelation(String codingSchemeUId, 
+			String relationUId,
+			Relations relation, 
+			IbatisInserter inserter,
+			boolean cascade) {
+		
+		String historyPrefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+
+		InsertOrUpdateRelationsBean relationData = (InsertOrUpdateRelationsBean) this.getSqlMapClientTemplate()
+				.queryForObject(GET_RELATION_ATTRIBUTES_BY_UID_SQL,
+						new PrefixedParameter(prefix, relationUId));
+		
+		relationData.setPrefix(historyPrefix);
+		
+		inserter.insert(INSERT_RELATIONS_SQL, relationData);
+		
+		if (!entryStateExists(prefix, relationData.getEntryStateUId())) {
+
+			EntryState entryState = new EntryState();
+
+			entryState.setChangeType(ChangeType.NEW);
+			entryState.setRelativeOrder(0L);
+
+			ibatisVersionsDao.insertEntryState(relationData.getEntryStateUId(),
+					relationData.getUId(), entryStateClassifier
+							.classify(EntryStateType.RELATION), null,
+					entryState);
+		}
+		
+		return relationData.getEntryStateUId();
+	}
+
+	@Override
+	public String updateRelation(String codingSchemeUId, String relationUId,
+			Relations relation) {
+
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		return this.doUpdateRelation(prefix, codingSchemeUId, relationUId, relation);	
+	}
+
+	protected String doUpdateRelation(String prefix, String codingSchemeUId,
+			String relationUId, Relations relation) {
+	
+		String entryStateUId = this.createUniqueId();
+		
+		InsertOrUpdateRelationsBean bean = new InsertOrUpdateRelationsBean();
+		bean.setPrefix(prefix);
+		bean.setRelations(relation);
+		bean.setCodingSchemeUId(codingSchemeUId);
+		bean.setUId(relationUId);
+		bean.setEntryStateUId(entryStateUId);
+		
+		this.getSqlMapClientTemplate().update(UPDATE_RELATION_BY_UID_SQL, bean);
+		
+		return entryStateUId;
+	}
+
+	@Override
+	public void removeRelationByUId(String codingSchemeUId, String relationUId) {
+
+		String prefix = 
+			this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		this.getSqlMapClientTemplate().
+			delete(DELETE_RELATION_BY_UID_SQL, new PrefixedParameter(prefix, relationUId));	
+	}
+
+	@Override
+	public String updateRelationVersionableChanges(String codingSchemeUId,
+			String relationUId, Relations relation) {
+
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		String entryStateUId = this.createUniqueId();
+		
+		InsertOrUpdateRelationsBean bean = new InsertOrUpdateRelationsBean();
+		bean.setPrefix(prefix);
+		bean.setRelations(relation);
+		bean.setCodingSchemeUId(codingSchemeUId);
+		bean.setEntryStateUId(entryStateUId);
+		bean.setUId(relationUId);
+		
+		this.getSqlMapClientTemplate().update(UPDATE_RELATION_VERSIONABLE_CHANGES_BY_UID_SQL, bean);
+		
+		return entryStateUId;
+	}
+
+	@Override
+	public void updateRelationEntryStateUId(String codingSchemeUId,
+			String relationUId, String entryStateUId) {
+
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_RELATION_ENTRYSTATE_UID_SQL, 
+				new PrefixedParameterTuple(prefix, relationUId, entryStateUId));
+	}
+
+	@Override
+	public boolean associationPredicateExists(String codingSchemeUId,
+			String relationUId, String assocPredicateName) {
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		String count = (String) this.getSqlMapClientTemplate().queryForObject(
+				ASSOCIATION_PREDICATE_EXISTS_SQL,
+				new PrefixedParameter(prefix, relationUId));
+		
+		if( count == null || new Integer(count).intValue() == 0 ) 
+			return false;
+		else
+			return true;
+	}
+	
+	@Override
+	public void deleteAssociationQualificationsByRelationUId(
+			String codingSchemeUId, String relationUId) {
+
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		this.getSqlMapClientTemplate().delete(
+				DELETE_ASSOCIATION_QUALS_FOR_RELATION_UID_SQL,
+				new PrefixedParameterTuple(prefix, codingSchemeUId, relationUId));
+	}
+
+	@Override
+	public String getRelationLatestRevision(String csUId, String relationUId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUId);
+		String defaultPrefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		return (String) this.getSqlMapClientTemplate().queryForObject(
+				GET_RELATION_LATEST_REVISION_ID_BY_UID, 
+				new PrefixedParameterTuple(prefix, defaultPrefix, relationUId));	
 	}
 
 	/**
-	 * Gets the coding scheme dao.
-	 * 
-	 * @return the coding scheme dao
+	 * @return the propertyDao
 	 */
-	public CodingSchemeDao getCodingSchemeDao() {
-		return codingSchemeDao;
+	public PropertyDao getPropertyDao() {
+		return propertyDao;
 	}
 
-	public void setEntityDao(EntityDao entityDao) {
-		this.entityDao = entityDao;
+	/**
+	 * @param propertyDao the propertyDao to set
+	 */
+	public void setPropertyDao(PropertyDao propertyDao) {
+		this.propertyDao = propertyDao;
 	}
 
-	public EntityDao getEntityDao() {
-		return entityDao;
+	/**
+	 * @return the associationTargetDao
+	 */
+	public AssociationTargetDao getAssociationTargetDao() {
+		return associationTargetDao;
+	}
+
+	/**
+	 * @param associationTargetDao the associationTargetDao to set
+	 */
+	public void setAssociationTargetDao(AssociationTargetDao associationTargetDao) {
+		this.associationTargetDao = associationTargetDao;
+	}
+
+	/**
+	 * @return the associationDataDao
+	 */
+	public AssociationDataDao getAssociationDataDao() {
+		return associationDataDao;
+	}
+
+	/**
+	 * @param associationDataDao the associationDataDao to set
+	 */
+	public void setAssociationDataDao(AssociationDataDao associationDataDao) {
+		this.associationDataDao = associationDataDao;
+	}
+
+	@Override
+	public boolean entryStateExists(String entryStateUId) {
+
+		if(entryStateExists(entryStateUId))
+			return true;
+		else
+			return false;
 	}
 }

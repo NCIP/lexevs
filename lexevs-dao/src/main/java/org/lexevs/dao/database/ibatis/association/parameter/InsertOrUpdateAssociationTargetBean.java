@@ -18,6 +18,8 @@
  */
 package org.lexevs.dao.database.ibatis.association.parameter;
 
+import java.util.List;
+
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
@@ -27,7 +29,7 @@ import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class InsertAssociationSourceBean extends IdableParameterBean{
+public class InsertOrUpdateAssociationTargetBean extends IdableParameterBean{
 	
 	/** The association predicate id. */
 	private String associationPredicateUId;
@@ -37,6 +39,9 @@ public class InsertAssociationSourceBean extends IdableParameterBean{
 	
 	/** The association target. */
 	private AssociationTarget associationTarget;
+	
+	/** The association qualifications and usage contexts.*/
+	private List<InsertAssociationQualificationOrUsageContextBean> assnQualsAndUsageContextList = null;
 	
 	/**
 	 * Gets the association predicate id.
@@ -90,5 +95,20 @@ public class InsertAssociationSourceBean extends IdableParameterBean{
 	 */
 	public void setAssociationTarget(AssociationTarget associationTarget) {
 		this.associationTarget = associationTarget;
+	}
+
+	/**
+	 * @return the assnQualsAndUsageContext
+	 */
+	public List<InsertAssociationQualificationOrUsageContextBean> getAssnQualsAndUsageContext() {
+		return assnQualsAndUsageContextList;
+	}
+
+	/**
+	 * @param assnQualsAndUsageContext the assnQualsAndUsageContext to set
+	 */
+	public void setAssnQualsAndUsageContext(
+			List<InsertAssociationQualificationOrUsageContextBean> assnQualsAndUsageContext) {
+		this.assnQualsAndUsageContextList = assnQualsAndUsageContext;
 	}
 }

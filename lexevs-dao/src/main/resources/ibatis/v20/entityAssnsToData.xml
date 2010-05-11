@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="Association">
+
+	<typeAlias alias="associationData" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationDataBean"/>
+
+	<resultMap id="associationDataEntry" class="associationData">
+		<result property="uid" column="entityAssnsGuid" />
+		<result property="associationPredicateUId" column="associationPredicateGuid" />
+		<result property="associationSource.sourceEntityCode" column="sourceEntityCode" />
+		<result property="associationSource.sourceEntityCodeNamespace" column="sourceEntityCodeNamespace" />
+		<result property="associationData.associationInstanceId" column="associationInstanceId" />
+		<result property="associationData.isDefining" column="isDefining" />
+		<result property="associationData.isInferred" column="isInferred" />
+		<result property="associationData.isActive" column="isActive" />
+		<result property="associationData.owner" column="owner" />
+		<result property="associationData.status" column="status" />
+		<result property="associationData.effectiveDate" column="effectiveDate" />
+		<result property="associationData.expirationDate" column="expirationDate" />
+		<result property="entryStateUId" column="entryStateUId" />
+	</resultMap>
+
+	<insert id="insertEntityAssnsToData"
+		parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationDataBean">
+		INSERT INTO $prefix$entityAssnsToData (
+			entityAssnsDataGuid,
+			associationPredicateGuid,
+			sourceEntityCode,
+			sourceEntityCodeNamespace,
+			associationInstanceId,
+			isDefining,
+			isInferred,
+			dataValue,
+			isActive,
+			owner,
+			status,
+			effectiveDate,
+			expirationDate,
+			entryStateGuid
+		) VALUES (
+			#uid#,
+			#associationPredicateUId#,
+			#associationSource.sourceEntityCode#,
+			#associationSource.sourceEntityCodeNamespace#,
+			#associationData.associationInstanceId#,
+			#associationData.isDefining#,
+			#associationData.isInferred#,
+			#associationData.associationDataText.content#,
+			#associationData.isActive#,
+			#associationData.owner#,
+			#associationData.status#,
+			#associationData.effectiveDate#,
+			#associationData.expirationDate#,
+			#entryStateUId#
+		)
+  </insert>
+  	
+	<select id="getEntityAssnDataUIDByAssocInstanceId" remapResults="true" resultClass="string">
+		SELECT
+			eae.entityAssnsGuid
+		FROM 
+			$prefix$entityAssnsToData ead
+		JOIN
+			$prefix$associationPredicate ap
+		ON 
+			eae.associationPredicateGuid =
+			ap.associationPredicateGuid
+		JOIN
+			$prefix$relation rel
+		ON
+			ap.relationGuid =
+			rel.relationGuid
+		WHERE
+			rel.codingSchemeGuid = 
+			#param1#
+		AND
+			eae.associationInstanceId = 
+			#param2#
+	</select>
+	
+	<select id="getAssnDataAttributesByUId"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		remapResults="true" resultMap="associationDataEntry">
+		SELECT 
+			*
+		FROM
+			$prefix$entityAssnsToData
+		WHERE
+			entityAssnsGuid = #param1# 
+	</select>
+	
+	<update id="updateEntityAssnToDataByUId"
+		parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationDataBean">
+		UPDATE
+			$prefix$entityAssnsToData
+		SET
+		<dynamic prepend=" ">
+			<isNotNull prepend="," property="source.sourceEntityCode">
+				sourceEntityCode = #source.sourceEntityCode#
+			</isNotNull>
+			<isNotNull prepend="," property="source.sourceEntityCodeNamespace">
+				sourceEntityCodeNamespace = #source.sourceEntityCodeNamespace#
+			</isNotNull>
+			<isNotNull prepend="," property="data.isDefined">
+				isDefined = #data.isDefined#
+			</isNotNull>
+			<isNotNull prepend="," property="data.isInferred">
+				isInferred = #data.isInferred#
+			</isNotNull>
+			<isNotNull prepend="," property="data.associationDataText.content">
+				dataValue = #data.associationDataText.content#
+			</isNotNull>
+			<isNotNull prepend="," property="entryStateUId">
+				entryStateGuid = #entryStateUId#
+			</isNotNull>
+		</dynamic>
+		WHERE
+			entityAssnsGuid = #uid#
+	</update>	
+
+	<update id="updateEntityAssnToDataVerAttribByUId"
+		parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationDataBean">
+		UPDATE
+			$prefix$entityAssnsToData
+		SET
+		<dynamic prepend=" ">
+			<isNotNull prepend="," property="data.isActive">
+				isActive =
+				#data.isActive#
+			</isNotNull>
+			<isNotNull prepend="," property="data.owner">
+				owner = #data.owner#
+			</isNotNull>
+			<isNotNull prepend="," property="data.status">
+				status = #data.status#
+			</isNotNull>
+			<isNotNull prepend="," property="data.effectiveDate">
+				effectiveDate =
+				#data.effectiveDate#
+			</isNotNull>
+			<isNotNull prepend="," property="data.expirationDate">
+				expirationDate =
+				#data.expirationDate#
+			</isNotNull>
+			<isNotNull prepend="," property="entryStateUId">
+				entryStateGuid = #entryStateUId#
+			</isNotNull>
+		</dynamic>
+		WHERE
+			entityAssnsGuid = #uid#
+	</update>	
+		
+	<delete id="deleteAssocDataByAssnUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$entityAssnsToData
+		WHERE
+			entityAssnsDataGuid = #param1#
+	</delete>
+
+	<select id="getAssociationDataLatestRevisionIdByUId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="string">
+		SELECT 
+			rev.revisionId
+		FROM
+			$prefix$entityAssnsToData entAssnData
+			$prefix$entrySate es
+			$param1$revision rev
+		WHERE
+			entAssnData.entityAssnsDataGuid = #param2#	
+		AND
+			entAssnData.entryStateGuid = es.entryStateGuid
+		AND
+			es.revisionGuid = rev.revisionGuid	
+	</select> 	
+</sqlMap>

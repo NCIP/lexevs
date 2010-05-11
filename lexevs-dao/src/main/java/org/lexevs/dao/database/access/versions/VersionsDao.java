@@ -22,6 +22,7 @@ import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 
 /**
  * The Interface VersionsDao.
@@ -29,6 +30,21 @@ import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface VersionsDao extends LexGridSchemaVersionAwareDao {
+	
+	public enum EntryStateType {
+		/** The CODINGSCHEME. */
+		CODINGSCHEME,
+		/** The ENTITY. */
+		ENTITY,
+		/** The PROPERTY*/
+		PROPERTY,
+		/** The RELATION*/
+		RELATION,
+		/** The ENTITYASSNSTOENTITY*/
+		ENTITYASSNSTOENTITY,
+		/** The ENTITYASSNSTODATA*/
+		ENTITYASSNSTODATA,
+	}
 	
 	/**
 	 * Gets the entry state by id.
@@ -57,7 +73,7 @@ public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 	 * @param previousEntryStateUId the previous entry state id
 	 * @param entryState the entry state
 	 */
-	public void insertEntryState(
+	public String insertEntryState(
 			String entryUId,
 			String entryType,
 			String previousEntryStateUId,
@@ -98,4 +114,15 @@ public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 	 * @return the system release id by uri
 	 */
 	public String getSystemReleaseIdByUri(String systemReleaseUri);
+
+	public void deleteAllEntryStateOfCodingScheme(String codingSchemeUId);
+
+	public void deleteAllEntryStateOfEntity(String codingSchemeUId,
+			String entityUId);
+	
+	public void deleteAllEntryStateEntriesByEntryUId(String codingSchemeUId,
+			String entryUId);
+
+	public void deleteAllEntryStateOfRelation(String codingSchemeUId,
+			String relationUId);
 }

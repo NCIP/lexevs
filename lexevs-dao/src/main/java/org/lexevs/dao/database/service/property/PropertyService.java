@@ -20,6 +20,7 @@ package org.lexevs.dao.database.service.property;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.commonTypes.Property;
 
 /**
@@ -28,55 +29,256 @@ import org.LexGrid.commonTypes.Property;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface PropertyService {
-	
+
+	/**
+	 * Insert coding scheme property.
+	 * 
+	 * @param codingSchemeUri
+	 *            the coding scheme uri.
+	 * @param version
+	 *            the coding scheme version.
+	 * @param property
+	 *            the coding scheme property.
+	 */
+	public void insertCodingSchemeProperty(String codingSchemeUri,
+			String version, Property property);
+
+	/**
+	 * update coding schme property.
+	 * 
+	 * @param codingSchemeUri
+	 *            the coding scheme uri.
+	 * @param version
+	 *            the coding scheme version.
+	 * @param property
+	 *            the coding scheme property.
+	 */
+	public void updateCodingSchemeProperty(String codingSchemeUri,
+			String version, Property property);
+
+	/**
+	 * remove coding schme property.
+	 * 
+	 * @param codingSchemeUri
+	 *            the coding scheme uri.
+	 * @param version
+	 *            the coding scheme version.
+	 * @param property
+	 *            the coding scheme property.
+	 */
+	public void removeCodingSchemeProperty(String codingSchemeUri,
+			String version, Property property);
+
+	/**
+	 * insert versionable changes to coding schme property.
+	 * 
+	 * @param codingSchemeUri
+	 *            the coding scheme uri.
+	 * @param version
+	 *            the coding scheme version.
+	 * @param property
+	 *            the coding scheme property.
+	 */
+	public void insertCodingSchemePropertyVersionableChanges(
+			String codingSchemeUri, String version, Property property);
+
 	/**
 	 * Insert entity property.
 	 * 
-	 * @param codingSchemeUri the coding scheme uri
-	 * @param version the version
-	 * @param entityCode the entity code
-	 * @param entityCodeNamespace the entity code namespace
-	 * @param property the property
+	 * @param codingSchemeUri
+	 *            the coding scheme uri
+	 * @param version
+	 *            the version
+	 * @param entityCode
+	 *            the entity code
+	 * @param entityCodeNamespace
+	 *            the entity code namespace
+	 * @param property
+	 *            the property
 	 */
-	public void insertEntityProperty(
-			String codingSchemeUri, 
-			String version, 
-			String entityCode,
-			String entityCodeNamespace,
-			Property property);
-	
-	/**
-	 * Insert batch entity properties.
-	 * 
-	 * @param codingSchemeUri the coding scheme uri
-	 * @param version the version
-	 * @param entityCode the entity code
-	 * @param entityCodeNamespace the entity code namespace
-	 * @param batch the batch
-	 */
-	public void insertBatchEntityProperties(
-			String codingSchemeUri, 
-			String version, 
-			String entityCode,
-			String entityCodeNamespace,
-			List<Property> batch);
+	public void insertEntityProperty(String codingSchemeUri, String version,
+			String entityCode, String entityCodeNamespace, Property property);
 
-	
 	/**
 	 * Update entity property.
 	 * 
-	 * @param codingSchemeUri the coding scheme uri
-	 * @param version the version
-	 * @param entityCode the entity code
-	 * @param entityCodeNamespace the entity code namespace
-	 * @param propertyId the property id
-	 * @param property the property
+	 * @param codingSchemeUri
+	 *            the coding scheme uri
+	 * @param version
+	 *            the version
+	 * @param entityCode
+	 *            the entity code
+	 * @param entityCodeNamespace
+	 *            the entity code namespace
+	 * @param property
+	 *            the property
 	 */
-	public void updateEntityProperty(
-			String codingSchemeUri, 
-			String version, 
-			String entityCode,
-			String entityCodeNamespace,
-			String propertyId,
+	public void updateEntityProperty(String codingSchemeUri, String version,
+			String entityCode, String entityCodeNamespace, Property property);
+
+	/**
+	 * Remove entity property.
+	 * 
+	 * @param codingSchemeUri
+	 *            the coding scheme uri
+	 * @param version
+	 *            the version
+	 * @param entityCode
+	 *            the entity code
+	 * @param entityCodeNamespace
+	 *            the entity code namespace
+	 * @param property
+	 *            the property
+	 */
+	public void removeEntityProperty(String codingSchemeUri, String version,
+			String entityCode, String entityCodeNamespace, Property property);
+
+	/**
+	 * Insert versionable changes to entity property.
+	 * 
+	 * @param codingSchemeUri
+	 *            the coding scheme uri
+	 * @param version
+	 *            the version
+	 * @param entityCode
+	 *            the entity code
+	 * @param entityCodeNamespace
+	 *            the entity code namespace
+	 * @param property
+	 *            the property
+	 */
+	public void insertEntityPropertyVersionableChanges(String codingSchemeUri,
+			String version, String entityCode, String entityCodeNamespace,
 			Property property);
+
+	/**
+	 * Insert batch entity properties.
+	 * 
+	 * @param codingSchemeUri
+	 *            the coding scheme uri
+	 * @param version
+	 *            the version
+	 * @param entityCode
+	 *            the entity code
+	 * @param entityCodeNamespace
+	 *            the entity code namespace
+	 * @param batch
+	 *            the batch
+	 */
+	public void insertBatchEntityProperties(String codingSchemeUri,
+			String version, String entityCode, String entityCodeNamespace,
+			List<Property> batch);
+
+	/**
+	 * Insert relation property.
+	 * 
+	 * @param codingSchemeUri
+	 *            the coding scheme uri.
+	 * @param version
+	 *            the coding scheme version.
+	 * @param relationContainerName
+	 *            the relations container name.
+	 * 
+	 * @param property
+	 *            the relation property object.
+	 */
+	public void insertRelationProperty(String codingSchemeUri, String version,
+			String relationContainerName, Property property);
+
+	/**
+	 * Update relation property.
+	 * 
+	 * @param codingSchemeUri
+	 *            the coding scheme uri.
+	 * @param version
+	 *            the coding scheme version.
+	 * @param relationContainerName
+	 *            the relations container name.
+	 * 
+	 * @param property
+	 *            the relation property object.
+	 */
+	public void updateRelationProperty(String codingSchemeUri, String version,
+			String relationContainerName, Property property);
+
+	/**
+	 * Remove relation property.
+	 * 
+	 * @param codingSchemeUri
+	 *            the coding scheme uri.
+	 * @param version
+	 *            the coding scheme version.
+	 * @param relationContainerName
+	 *            the relations container name.
+	 * 
+	 * @param property
+	 *            the relation property object.
+	 */
+	public void removeRelationProperty(String codingSchemeUri, String version,
+			String relationContainerName, Property property);
+
+	/**
+	 * Insert relation property versionable changes.
+	 * 
+	 * @param codingSchemeUri
+	 *            the coding scheme uri.
+	 * @param version
+	 *            the coding scheme version.
+	 * @param relationContainerName
+	 *            the relations container name.
+	 * @param property
+	 *            the relation property object.
+	 */
+	public void insertRelationPropertyVersionableChanges(
+			String codingSchemeUri, String version,
+			String relationContainerName, Property property);
+
+	/**
+	 * Revise a coding scheme property.
+	 * 
+	 * @param codingSchemeUri
+	 *            the coding scheme uri.
+	 * @param version
+	 *            the coding scheme version.
+	 * @param property
+	 *            the coding scheme property object.
+	 * @throws LBException
+	 */
+	public void reviseCodingSchemeProperty(String codingSchemeUri,
+			String version, Property property) throws LBException;
+
+	/**
+	 * Revise a entity property.
+	 * 
+	 * @param codingSchemeUri
+	 *            the coding scheme uri.
+	 * @param version
+	 *            the coding scheme version.
+	 * @param entityCode
+	 *            the entity code
+	 * @param entityCodeNamespace
+	 *            the entity code namespace
+	 * @param property
+	 *            the entity property object.
+	 * @throws LBException
+	 */
+	public void reviseEntityProperty(String codingSchemeUri, String version,
+			String entityCode, String entityCodeNamespace, Property property)
+			throws LBException;
+
+	/**
+	 * Revise a relations property.
+	 * 
+	 * @param codingSchemeUri
+	 *            the coding scheme uri.
+	 * @param version
+	 *            the coding scheme version.
+	 * @param relationContainerName
+	 *            the relations container name.
+	 * @param property
+	 *            the relation property object.
+	 * @throws LBException
+	 */
+	public void reviseRelationProperty(String codingSchemeUri, String version,
+			String relationContainerName, Property property) throws LBException;
 }

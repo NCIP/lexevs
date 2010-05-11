@@ -20,6 +20,7 @@ package org.lexevs.dao.database.access.revision;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.versions.Revision;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
@@ -35,8 +36,9 @@ public interface RevisionDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @param revision
 	 * @param systemReleaseGuid
+	 * @throws LBRevisionException 
 	 */
-	public String insertRevisionEntry(Revision revision, String systemReleaseGuid);
+	public String insertRevisionEntry(Revision revision, String systemReleaseGuid) throws LBRevisionException;
 
 	/**
 	 * get revision entry for a given uri.
@@ -68,5 +70,7 @@ public interface RevisionDao extends LexGridSchemaVersionAwareDao {
 	 * @return
 	 */
 	public String getRevisionUIdById(String revisionId);
+
+	public String getNewRevisionId();
 
 }

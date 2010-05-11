@@ -45,7 +45,9 @@ public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 		/** The VALUEDOMAIN. */
 		VALUEDOMAIN,
 		/** The ENTITY. */
-		ENTITY}
+		ENTITY,
+		/** The RELATION*/
+		RELATION}
 	
 	/**
 	 * Gets the all properties of parent.
@@ -79,25 +81,30 @@ public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 	/**
 	 * Insert property.
 	 * 
-	 * @param codingSchemeId the coding scheme id
-	 * @param parentId the parent id
+	 * @param codingSchemeUId the coding scheme id
+	 * @param parentUId the parent id
 	 * @param type the type
 	 * @param property the property
 	 * 
 	 * @return the string
 	 */
 	public String insertProperty(
-			String codingSchemeId, 
-			String parentId,
+			String codingSchemeUId, 
+			String parentUId,
 			PropertyType type,
 			Property property);
 	
-	public String insertHistoryProperty(
-			String codingSchemeId, 
-			String parentId,
-			String propertyId,
-			PropertyType type,
-			Property property);
+	/**
+	 * insert property data into history.
+	 * 
+	 * @param codingSchemeUId
+	 * @param propertyUId
+	 * @param type
+	 * @param property
+	 * @return
+	 */
+	public String insertHistoryProperty(String codingSchemeUId,
+			String propertyUId, Property property);
 	
 	/**
 	 * Insert property source.
@@ -116,14 +123,40 @@ public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 	 * @param usageContext the usage context
 	 */
 	public void insertPropertyUsageContext(String codingSchemeId, String propertyId, String usageContext);
+
+	/**
+	 * Delete all coding scheme properties of coding scheme.
+	 * 
+	 * @param codingSchemeUId the coding scheme id.
+	 */
+	public void deleteAllCodingSchemePropertiesOfCodingScheme(
+			String codingSchemeUId);
 	
 	/**
 	 * Delete all entity properties of coding scheme.
 	 * 
-	 * @param codingSchemeId the coding scheme id
+	 * @param codingSchemeUId the coding scheme id
 	 */
 	public void deleteAllEntityPropertiesOfCodingScheme(
-			String codingSchemeId);
+			String codingSchemeUId);
+	
+	/**
+	 * Delete all relation properties of coding scheme.
+	 * 
+	 * @param codingSchemeUId the coding scheme id
+	 */
+	public void deleteAllRelationPropertiesOfCodingScheme(
+			String codingSchemeUId);
+	
+	/**
+	 * Delete all entity properties of coding scheme.
+	 * 
+	 * @param codingSchemeUId the coding scheme uid.
+	 * @param parentUId the parent uid.
+	 * @param parentType the parent type
+	 */
+	public void deleteAllPropertiesOfParent(
+			String codingSchemeUId, String parentUId, PropertyType parentType);
 	
 	/**
 	 * Insert batch properties.
@@ -140,35 +173,40 @@ public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 	/**
 	 * Insert property link.
 	 * 
-	 * @param codingSchemeId the coding scheme id
+	 * @param codingSchemeUId the coding scheme id
 	 * @param propertyId the property id
 	 * @param propertyLink the property link
 	 */
 	public void insertPropertyLink(
-			String codingSchemeId, 
-			String entityId,
+			String codingSchemeUId, 
+			String parentUId,
 			PropertyLink propertyLink);
 	
 	
 	/**
 	 * Update property.
 	 * 
-	 * @param codingSchemeId the coding scheme id
-	 * @param parentId the parent id
-	 * @param propertyId the property id
+	 * @param codingSchemeUId the coding scheme id
+	 * @param parentUId the parent id
+	 * @param propertyUId the property id
 	 * @param type the type
 	 * @param property the property
 	 */
 	public void updateProperty(
-			String codingSchemeId, 
-			String parentId,
-			String propertyId,
+			String codingSchemeUId, 
+			String parentUId,
+			String propertyUId,
 			PropertyType type,
 			Property property);
-	
 
+	public void updatePropertyVersionableAttrib(String codingSchemeUId, String parentUId,
+			String propertyUId, PropertyType type, Property property);
 	
-	
-	
+	public String getPropertyUIdByPropertyIdAndName(String codingSchemeUId, String referenceUId, String propertyId,
+			String propertyName);
+
+	public void removePropertyByUId(String codingSchemeUId, String propertyUId);
+
+	public String getLatestRevision(String csUId, String propertyUId);	
 }
 

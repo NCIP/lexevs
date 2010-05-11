@@ -7,7 +7,8 @@
 	<typeAlias alias="triple" type="org.lexevs.dao.database.access.association.model.Triple"/>
 	<typeAlias alias="associatedConcept" type="org.lexevs.dao.database.ibatis.codednodegraph.model.QualifierAddingAssociatedConcept"/>
 	<typeAlias alias="associationQualification" type="org.LexGrid.LexBIG.DataModel.Core.NameAndValue"/>
-	
+	<typeAlias alias="associationTarget" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean"/>
+
 	<resultMap id="nodeResult" class="node">
 		<result property="entityCode" column="entityCode" />
 		<result property="entityCodeNamespace" column="entityCodeNamespace" />
@@ -42,6 +43,24 @@
 		<result property="content" column="qualifierValue" />
 	</resultMap>
 	
+	<resultMap id="associationTargetEntry" class="associationTarget">
+		<result property="uid" column="entityAssnsGuid" />
+		<result property="associationPredicateUId" column="associationPredicateGuid" />
+		<result property="associationSource.sourceEntityCode" column="sourceEntityCode" />
+		<result property="associationSource.sourceEntityCodeNamespace" column="sourceEntityCodeNamespace" />
+		<result property="associationTarget.targetEntityCode" column="targetEntityCode" />
+		<result property="associationTarget.targetEntityCodeNamespace" column="targetEntityCodeNamespace" />
+		<result property="associationTarget.associationInstanceId" column="associationInstanceId" />
+		<result property="associationTarget.isDefining" column="isDefining" />
+		<result property="associationTarget.isInferred" column="isInferred" />
+		<result property="associationTarget.isActive" column="isActive" />
+		<result property="associationTarget.owner" column="owner" />
+		<result property="associationTarget.status" column="status" />
+		<result property="associationTarget.effectiveDate" column="effectiveDate" />
+		<result property="associationTarget.expirationDate" column="expirationDate" />
+		<result property="entryStateUId" column="entryStateUId" />
+	</resultMap>
+
 	<select id="getConceptReferenceFromEntityAssnsToEntityUid" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection"
 		remapResults="true" 
@@ -163,7 +182,7 @@
 			#param2#	
 	</select>
 	
-     <insert id="insertEntityAssnsToEntity" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationSourceBean">
+     <insert id="insertEntityAssnsToEntity" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean">
 		INSERT INTO $prefix$entityAssnsToEntity (
 			entityAssnsGuid,
 			associationPredicateGuid,
@@ -427,4 +446,102 @@
 			sourceEntityCodeNamespace = #param3#		
 	</select>
     
+	<select id="getAssnTargetAttributesByUId"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		remapResults="true" resultMap="associationTargetEntry">
+		SELECT 
+			entAssn.*
+		FROM
+			$prefix$entityAssnsToEntity entAssn
+		WHERE
+			entAssn.entityAssnsGuid = #param1# 
+	</select>
+
+	<update id="updateEntityAssnToEntityByUId"
+		parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean">
+		UPDATE
+			$prefix$entityAssnsToEntity
+		SET
+		<dynamic prepend=" ">
+			<isNotNull prepend="," property="source.sourceEntityCode">
+				sourceEntityCode = #source.sourceEntityCode#
+			</isNotNull>
+			<isNotNull prepend="," property="source.sourceEntityCodeNamespace">
+				sourceEntityCodeNamespace = #source.sourceEntityCodeNamespace#
+			</isNotNull>
+			<isNotNull prepend="," property="target.targetEntityCode">
+				targetEntityCode = #target.targetEntityCode#
+			</isNotNull>
+			<isNotNull prepend="," property="target.targetEntityCodeNamespace">
+				targetEntityCodeNamespace = #target.targetEntityCodeNamespace#
+			</isNotNull>
+			<isNotNull prepend="," property="target.isDefining">
+				target = #target.isDefining#
+			</isNotNull>
+			<isNotNull prepend="," property="target.isInferred">
+				isInferred = #target.isInferred#
+			</isNotNull>
+			<isNotNull prepend="," property="entryStateUId">
+				entryStateGuid = #entryStateUId#
+			</isNotNull>
+		</dynamic>
+		WHERE
+			entityAssnsGuid = #uid#
+	</update>
+	
+	<update id="updateEntityAssnToEntityVerAttribByUId"
+		parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean">
+		UPDATE
+			$prefix$entityAssnsToEntity
+		SET
+		<dynamic prepend=" ">
+			<isNotNull prepend="," property="target.isActive">
+				isActive =
+				#target.isActive#
+			</isNotNull>
+			<isNotNull prepend="," property="target.owner">
+				owner = #target.owner#
+			</isNotNull>
+			<isNotNull prepend="," property="target.status">
+				status = #target.status#
+			</isNotNull>
+			<isNotNull prepend="," property="target.effectiveDate">
+				effectiveDate =
+				#target.effectiveDate#
+			</isNotNull>
+			<isNotNull prepend="," property="target.expirationDate">
+				expirationDate =
+				#target.expirationDate#
+			</isNotNull>
+			<isNotNull prepend="," property="entryStateUId">
+				entryStateGuid = #entryStateUId#
+			</isNotNull>
+		</dynamic>
+		WHERE
+			entityAssnsGuid = #uid#
+	</update>	
+	
+	<delete id="deleteAssocTargetByAssnUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$entityAssnsToEntity
+		WHERE
+			entityAssnsGuid = #param1#
+	</delete>
+	
+	<select id="getAssociationTargetLatestRevisionIdByUId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="string">
+		SELECT 
+			rev.revisionId
+		FROM
+			$prefix$entityAssnsToEntity entAssnEnt
+			$prefix$entrySate es
+			$param1$revision rev
+		WHERE
+			entAssnEnt.entityAssnsGuid = #param2#	
+		AND
+			entAssnEnt.entryStateGuid = es.entryStateGuid	
+		AND
+			es.revisionGuid = rev.revisionGuid	
+	</select> 
 </sqlMap>

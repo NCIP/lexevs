@@ -75,7 +75,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			GraphQuery query, 
 			int start,
 			int pageSize) {
-		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 		
 		String associationPredicateUid = this.
 			getAssociationPredicateUid(
@@ -102,7 +102,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 	@Transactional
 	public List<String> getAssociationPredicateNamesForCodingScheme(
 			String codingSchemeUri, String codingSchemeVersion) {
-		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 		
 		return this.getDaoManager().
 			getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
@@ -118,7 +118,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			String objectEntityCode,
 			String objectEntityCodeNamespace, 
 			GraphQuery query) {
-		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 		
 		return this.getDaoManager().
 		getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
@@ -139,7 +139,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			String associationPredicateName, String subjectEntityCode,
 			String subjectEntityCodeNamespace, GraphQuery query, int start,
 			int pageSize) {
-	String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+	String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 		
 		String associationPredicateUid = this.
 		getAssociationPredicateUid(
@@ -172,7 +172,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			String subjectEntityCode,
 			String subjectEntityCodeNamespace, 
 			GraphQuery query) {
-		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 
 		return this.getDaoManager().
 		getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
@@ -198,7 +198,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 				uri, version);
 		
 		return associationDao.
-			getAssociationPredicateUid(
+			getAssociationPredicateUIdByContainerName(
 					codingSchemeUid, 
 					relationsContainerName,
 					associationPredicateName);
@@ -209,7 +209,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 	public List<AssociatedConcept> getAssociatedConceptsFromUidSource(
 			String codingSchemeUri, String codingSchemeVersion,
 			List<String> tripleUids) {
-		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 		
 		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
 			getAssociatedConceptsFromUid(
@@ -223,7 +223,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 	public List<AssociatedConcept> getAssociatedConceptsFromUidTarget(
 			String codingSchemeUri, String codingSchemeVersion,
 			List<String> tripleUids) {
-		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 		
 		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
 			getAssociatedConceptsFromUid(
@@ -237,7 +237,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 	public List<ConceptReference> getConceptReferencesFromUidSource(
 			String codingSchemeUri, String codingSchemeVersion,
 			List<String> tripleUids) {
-		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 
 		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
 		getConceptReferencesFromUid(
@@ -250,7 +250,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 	public List<ConceptReference> getConceptReferencesFromUidTarget(
 			String codingSchemeUri, String codingSchemeVersion,
 			List<String> tripleUids) {
-		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 
 		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
 		getConceptReferencesFromUid(
@@ -265,7 +265,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			String codingSchemeVersion, String relationsContainerName,
 			List<String> associationPredicateNames) {
 
-		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 
 		List<String> associationPredicateUids = 
 			getAssociationPredicateUids(
@@ -310,7 +310,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			String relationsContainerName,
 			List<String> associationPredicateNames) {
 
-		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 
 		List<String> associationPredicateUids = 
 			getAssociationPredicateUids(

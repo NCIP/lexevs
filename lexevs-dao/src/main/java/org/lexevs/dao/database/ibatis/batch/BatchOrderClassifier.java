@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
+import org.lexevs.dao.database.ibatis.association.IbatisAssociationTargetDao;
 import org.lexevs.dao.database.ibatis.entity.IbatisEntityDao;
 import org.lexevs.dao.database.ibatis.property.IbatisPropertyDao;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;

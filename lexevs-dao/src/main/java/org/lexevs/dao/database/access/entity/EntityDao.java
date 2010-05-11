@@ -101,7 +101,7 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	 * @param codingSchemeUId the coding scheme id
 	 * @param entity the entity
 	 */
-	public void updateEntity(String codingSchemeUId, Entity entity);
+	public String updateEntity(String codingSchemeUId, String entityUId, Entity entity);
 	
 	public void updateEntity(String codingSchemeUId,
 			AssociationEntity entity);
@@ -126,7 +126,19 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	 */
 	public List<? extends Entity> getAllEntitiesOfCodingScheme(String codingSchemeUId, int start, int pageSize);
 
-	void updateEntityVersionableAttrib(String codingSchemeUId,
+	public String updateEntityVersionableAttrib(String codingSchemeUId,
 			String entityUId, Entity entity);
 
+	public void removeEntityByUId(String codingSchemeUId, String entityUId);
+
+	public String getLatestRevision(String csUId, String entityUId);
+
+	public boolean entityInUse(String codingSchemeUId, String entityCode, String entityCodeNamespace);
+
+	public String getEntryStateUId(String codingSchemeUId, String entityUId);
+
+	public void updateEntryStateUId(String codingSchemeUId, String entityUId,
+			String entryStateUId);
+
+	public boolean entryStateExists(String entryStateUId);
 }

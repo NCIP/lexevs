@@ -56,7 +56,10 @@
 		<result property="entity.status" column="status" />
 		<result property="entity.effectiveDate" column="effectiveDate" />
 		<result property="entity.expirationDate" column="expirationDate" />
-		<result property="entity.entityType" resultMap="Entity.entityTypeResult"/>
+		<result property="forwardName" column="forwardName"/>
+		<result property="reverseName" column="reverseName"/>
+		<result property="isNavigable" column="isNavigable"/>
+		<result property="isTransitive" column="isTransitive"/>
 		<result property="entryStateUId" column="entryStateGuid" />
 	</resultMap>
 	
@@ -327,31 +330,31 @@
 			#entity.expirationDate#,
 			#entryStateUId#
 			
-			<isPropertyAvailable prepend="," property="entity.forwardName">
-				#entity.forwardName#
+			<isPropertyAvailable prepend="," property="forwardName">
+				#forwardName#
 			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="entity.forwardName">
+			<isNotPropertyAvailable prepend="," property="forwardName">
 				null
 			</isNotPropertyAvailable>
 			
-			<isPropertyAvailable prepend="," property="entity.reverseName">
-				#entity.reverseName#
+			<isPropertyAvailable prepend="," property="reverseName">
+				#reverseName#
 			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="entity.reverseName">
+			<isNotPropertyAvailable prepend="," property="reverseName">
 				null
 			</isNotPropertyAvailable>
 			
-			<isPropertyAvailable prepend="," property="entity.isNavigable">
-				#entity.isNavigable#
+			<isPropertyAvailable prepend="," property="isNavigable">
+				#isNavigable#
 			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="entity.isNavigable">
+			<isNotPropertyAvailable prepend="," property="isNavigable">
 				null
 			</isNotPropertyAvailable>
 			
-			<isPropertyAvailable prepend="," property="entity.isTransitive">
-				#entity.isTransitive#
+			<isPropertyAvailable prepend="," property="isTransitive">
+				#isTransitive#
 			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="entity.isTransitive">
+			<isNotPropertyAvailable prepend="," property="isTransitive">
 				null
 			</isNotPropertyAvailable>
 		)
@@ -370,6 +373,21 @@
 			</isNotNull>
 			<isNotNull prepend="," property="entity.entityDescription.content">
 				description = #entity.entityDescription.content#
+			</isNotNull>
+			<isNotNull prepend="," property="forwardName">
+				forwardName = #forwardName#
+			</isNotNull>
+			<isNotNull prepend="," property="reverseName">
+				reverseName = #reverseName#
+			</isNotNull>
+			<isNotNull prepend="," property="isNavigable">
+				isNavigable = #isNavigable#
+			</isNotNull>
+			<isNotNull prepend="," property="isTransitive">
+				isTransitive = #isTransitive#
+			</isNotNull>
+			<isNotNull prepend="," property="entryStateUId">
+				entryStateGuid = #entryStateUId#
 			</isNotNull>
 		</dynamic>
 
@@ -403,6 +421,9 @@
 				expirationDate =
 				#entity.expirationDate#
 			</isNotNull>
+			<isNotNull prepend="," property="entryStateUId">
+				entryStateGuid = #entryStateUId#
+			</isNotNull>
 		</dynamic>
 
 		WHERE
@@ -411,4 +432,76 @@
 			entity.codingSchemeGuid = #codingSchemeUId#
 	</update>
     
+    <delete id="deleteEntityByUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$entity
+		WHERE
+			entityGuid = #param1#
+	</delete>
+	
+	<select id="getEntityLatestRevisionIdByUId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="string">
+		SELECT 
+			rev.revisionId
+		FROM
+			$prefix$entity ent,
+			$prefix$entryState es,
+			$param1$revision rev
+		WHERE
+			ent.entityGuid = #param2#	
+		AND
+			ent.entryStateGuid = es.entryStateGuid	
+		AND
+			es.revisionGuid = rev.revisionGuid	
+	</select>
+
+	<select id="checkEntityUsage" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="string">
+		SELECT 
+			eat.entityAssnsGuid
+		FROM 
+			$prefix$entityAssnsToEntity eat
+		WHERE
+			(eat.sourceEntityCode = #param1# 
+			AND
+			eat.sourceEntityCodeNamespace = #param2#)
+			OR
+			(eat.targetEntityCode = #param1#
+			AND
+			eat.targetEntityCodeNamespace = #param2#)
+		
+		UNION
+		
+		SELECT 
+			ead.entityAssnsDataGuid
+		FROM 
+			$prefix$entityAssnsToData ead
+		WHERE
+			(ead.sourceEntityCode = #param1# 
+			AND
+			ead.sourceEntityCodeNamespace = #param2#)
+	</select>	
+	
+	<select id="getEntryStateUIdByEntityUId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultClass="string">
+		SELECT 
+			entryStateGuid
+		FROM
+			$prefix$entity en
+		WHERE
+			en.entityGuid = #param1#	
+	</select>
+	
+	<update id="updateEntityEntryStateUId" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		UPDATE
+			$prefix$entity
+		SET
+			entryStateGuid = #param2#
+		WHERE 
+			entityGuid = #param1#
+ 	</update>
 </sqlMap>

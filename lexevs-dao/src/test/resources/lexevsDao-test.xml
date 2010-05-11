@@ -10,7 +10,7 @@
 <!--    	<property name="url" value="jdbc:oracle:thin:@bmidev:1521:LEXGRID"/>-->
 <!--    	<property name="username" value="satya"/>-->
 <!--    	<property name="password" value="satya"/>-->
-<!--    </bean>-->
+<!--    </bean> -->
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">
     	<property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
@@ -19,7 +19,19 @@
     	<property name="password" value=""/>
     </bean>
     
-<!--    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">-->
+<!--     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">
+    	<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+    	<property name="url" value="jdbc:mysql://bmidev4:3307/testSatya3"/>
+    	<property name="username" value="lexgrid"/>
+    	<property name="password" value="lexgrid"/>
+    </bean> --><!--
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">
+    	<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+    	<property name="url" value="jdbc:mysql://localhost/revision"/>
+    	<property name="username" value="lexgrid"/>
+    	<property name="password" value="lexgrid"/>
+    </bean>
+--><!--    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close">-->
 <!--    	<property name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
 <!--    	<property name="url" value="jdbc:mysql://localhost/dbunit"/>-->
 <!--    	<property name="username" value="root"/>-->

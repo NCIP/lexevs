@@ -7,6 +7,7 @@
 	<typeAlias alias="presentation" type="org.LexGrid.concepts.Presentation"/>
 	<typeAlias alias="definition" type="org.LexGrid.concepts.Definition"/>
 	<typeAlias alias="comment" type="org.LexGrid.concepts.Comment"/>
+	<typeAlias alias="insertOrUpdatePropertyBean" type="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean"/>
 
 	<resultMap id="propertyResult" class="property" groupBy="propertyId">
 		<result property="parent" column="referenceGuid" />	
@@ -30,6 +31,28 @@
 			<subMap value="definition" resultMap="definitionResult" />
 			<subMap value="comment" resultMap="commentResult" />
 		</discriminator>	
+	</resultMap>
+	
+	<resultMap id="propertyAttributes" class="insertOrUpdatePropertyBean">
+		<result property="uid" column="propertyGuid" />
+		<result property="parentUId" column="referenceGuid" />
+		<result property="parentType" column="referenceType" />
+		<result property="property.propertyId" column="propertyId" />
+		<result property="property.propertyType" column="propertyType" />
+		<result property="property.propertyName" column="propertyName" />	
+		<result property="property.language" column="language" />
+		<result property="property.value.dataType" column="format" />
+		<result property="isPreferred" column="isPreferred" />
+		<result property="matchIfNoContext" column="matchIfNoContext"/>
+		<result property="degreeOfFidelity" column="degreeOfFidelity"/>
+		<result property="representationalForm" column="representationalForm"/>
+		<result property="property.value.content" column="propertyValue" />
+		<result property="property.isActive" column="isActive" />
+		<result property="property.owner" column="owner" />
+		<result property="property.status" column="status" />
+		<result property="property.effectiveDate" column="effectiveDate" />
+		<result property="property.expirationDate" column="expirationDate" />
+		<result property="entryStateUId" column="entryStateGuid" />
 	</resultMap>
 	
 	<resultMap id="presentationResult" class="presentation" extends="propertyResult" >
@@ -57,8 +80,23 @@
 			propertyId = #param2#
   	</select>
   	
+ 	<select id="getPropertyUIdByPropIdAndName" resultClass="string" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
+  		SELECT
+  			propertyGuid
+  		FROM
+  			$prefix$property
+  		WHERE
+			referenceGuid = #param1#
+		AND
+			propertyId = #param2#
+		AND
+			propertyName = #param3#
+  	</select>
+  	 	
   	<sql id="selectPropertyFragment">
   		SELECT
+  			property.propertyGuid,
   			property.referenceGuid,
   			property.referenceType,
   			property.propertyId,
@@ -76,6 +114,7 @@
   			property.status,
   			property.effectiveDate,
   			property.expirationDate,
+  			property.entryStateGuid,
   			entryState.changeType,
   			entryState.relativeOrder,
   			entryState.relativeOrder,
@@ -199,6 +238,13 @@
 			property.referenceGuid = #param2#
   	</select>
   	
+  	<select id="getPropertyAttributesByUId" remapResults="true"
+  		resultMap="propertyAttributes" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		<include refid="getPropertyFragment"/>
+  		WHERE			
+			property.propertyGuid = #param1# 
+  	</select>
+  	
   	<select id="getPropertiesByParentAndRevisionId" remapResults="true"
   		resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
 		<include refid="getHistoryPropertyFragment"/>
@@ -210,7 +256,33 @@
 			entryState.revisionGuid = #param3#
   	</select>
 
-	<delete id="deleteEntityPropertiesByCodingSchemeId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deleteCodingSchemePropertiesByCodingSchemeUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$property
+		WHERE
+			referenceType = #param1#
+		AND 
+			referenceGuid = #param2#
+	</delete>
+
+	<delete id="deleteCodingSchemePropertyMultiAttribByCodingSchemeUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$propertyMultiAttrib
+		WHERE
+			propertyGuid 
+		IN
+			(SELECT 
+				propertyGuid 
+			FROM 
+				$prefix$property 
+			WHERE 	
+				referenceType = #param1#
+			AND 
+				referenceGuid = #param2#
+			)
+	</delete>
+		
+	<delete id="deleteEntityPropertiesByCodingSchemeUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
 			$prefix$property
 		WHERE
@@ -225,6 +297,32 @@
 			WHERE
 				codingSchemeGuid = #param2#
 			)
+	</delete>
+	
+	<delete id="deleteRelationPropertiesByCodingSchemeUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$property
+		WHERE
+			referenceType = #param1#
+		AND 
+			referenceGuid
+		IN	(
+			SELECT 
+				relationGuid
+			FROM
+				$prefix$relation
+			WHERE
+				codingSchemeGuid = #param2#
+			)
+	</delete>
+	
+	<delete id="deletePropertiesByParentUIdAndParentType" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$property
+		WHERE
+			referenceType = #param1#
+		AND 
+			referenceGuid = #param2#
 	</delete>
 	
      <insert id="insertProperty" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
@@ -250,8 +348,8 @@
 			entryStateGuid
 		) VALUES (
 			#uid#, 
-			#entityUId#,
-			#referenceType#, 
+			#parentUId#,
+			#parentType#, 
 			#property.propertyId#, 
 			#property.propertyType#,
 			#property.propertyName#,
@@ -296,7 +394,7 @@
 		)
   </insert>
   
-  <update id="updatePropertyByUid"
+  <update id="updatePropertyByUId"
   	parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
   		UPDATE 
 			$prefix$property property
@@ -342,6 +440,21 @@
 			<isNotNull prepend="," property="property.value.content">
 				propertyValue = #property.value.content#
 			</isNotNull>
+			
+			<isNotNull prepend="," property="entryStateUId">
+				entryStateGuid = #entryStateUId#
+			</isNotNull>
+		  </dynamic>
+		 WHERE
+		 	property.propertyGuid = #uid#
+  </update>
+  
+  <update id="updatePropertyVersionableAttribByUId"
+  	parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
+  		UPDATE 
+			$prefix$property property
+		SET 
+   		  <dynamic prepend=" ">
 			<isNotNull prepend="," property="property.isActive">
 				isActive = #property.isActive#
 			</isNotNull>
@@ -357,9 +470,36 @@
 			<isNotNull prepend="," property="property.expirationDate">
 				expirationDate = #property.expirationDate#
 			</isNotNull>
+			<isNotNull prepend="," property="entryStateUId">
+				entryStateGuid = #entryStateUId#
+			</isNotNull>
 		  </dynamic>
 		 WHERE
 		 	property.propertyGuid = #uid#
   </update>
-    
+
+	<delete id="deletePropertyByUId"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$property
+		WHERE
+			propertyGuid = #param1#
+	</delete>
+
+	<select id="getLatestPropertyRevisionIdByUId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="string">
+		SELECT 
+			rev.revisionId
+		FROM
+			$prefix$property prop,
+			$prefix$entryState es,
+			$param1$revision rev
+		WHERE
+			prop.propertyGuid = #param2#	
+		AND
+			prop.entryStateGuid = es.entryStateGuid	
+		AND
+			es.revisionGuid = rev.revisionGuid	
+	</select>     
 </sqlMap>

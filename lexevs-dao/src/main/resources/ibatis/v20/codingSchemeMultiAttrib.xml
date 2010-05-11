@@ -8,10 +8,20 @@
 		<result property="subRef" column="subRef" />
 		<result property="role" column="role" />
 	</resultMap>
-
-
+	
 	<resultMap id="localNameResult" class="string">
 		<result property="java.lang.String" column="localNameValue" />
+	</resultMap>
+	
+	<resultMap id="csMultiAttribResultBean"
+		class="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeMultiAttribBean">
+		<result property="uid" column="csMultiAttribGuid" />
+		<result property="codingSchemeUId" column="codingSchemeGuid" />
+		<result property="attributeType" column="attributeType" />
+		<result property="attributeValue" column="attributeValue" />
+		<result property="subRef" column="subRef" />
+		<result property="role" column="role" />
+		<result property="entryStateUId" column="entryStateGuid" />
 	</resultMap>
 	
 	<select id="getSourceListByCodingSchemeId" remapResults="true"

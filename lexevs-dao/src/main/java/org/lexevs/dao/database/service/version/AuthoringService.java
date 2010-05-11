@@ -18,6 +18,8 @@
  */
 package org.lexevs.dao.database.service.version;
 
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
+import org.LexGrid.commonTypes.Versionable;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 
@@ -32,14 +34,19 @@ public interface AuthoringService {
 	 * Load system release.
 	 * 
 	 * @param systemRelease the system release
+	 * @throws LBRevisionException 
 	 */
-	public void loadSystemRelease(SystemRelease systemRelease);
+	public void loadSystemRelease(SystemRelease systemRelease) throws LBRevisionException;
 	
 	/**
 	 * Revise.
 	 * 
 	 * @param revision the revision
 	 * @param systemReleaseURI
+	 * @throws LBRevisionException 
 	 */
-	public void loadRevision(Revision revision, String systemReleaseURI);
+	public void loadRevision(Revision revision, String systemReleaseURI) throws LBRevisionException;
+	
+	public void loadRevision(Versionable versionable, String releaseURI) throws LBRevisionException;
 }
+

@@ -267,7 +267,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#updateCodingScheme(java.lang.String, org.LexGrid.codingSchemes.CodingScheme)
 	 */
-	public void updateCodingScheme(String codingSchemeId,
+	public String updateCodingScheme(String codingSchemeId,
 			CodingScheme codingScheme) {
 		throw new UnsupportedOperationException();
 		
@@ -284,7 +284,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#deleteCodingSchemeById(java.lang.String)
 	 */
-	public void removeCodingSchemeByUId(String codingSchemeId) {
+	public void deleteCodingSchemeByUId(String codingSchemeId) {
 		throw new UnsupportedOperationException();
 		
 	}
@@ -465,20 +465,14 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	}
 
 	@Override
-	public boolean codingSchemeExists(String codingSchemeUId) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public String insertHistoryCodingScheme(String codingSchemeUId) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void updateCodingSchemeVersionableAttrib(String codingSchemeId,
+	public String updateCodingSchemeVersionableAttrib(String codingSchemeId,
 			CodingScheme codingScheme) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -487,4 +481,24 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public String getEntryStateUId(String codingSchemeUId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void updateEntryStateUId(String codingSchemeUId, String entryStateUId) {
+		throw new UnsupportedOperationException();		
+	}
+
+	@Override
+	public String getLatestRevision(String codingSchemeUId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> getAllCodingSchemeRevisions(String csUId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

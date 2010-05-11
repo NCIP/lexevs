@@ -18,7 +18,9 @@
  */
 package org.lexevs.dao.database.service;
 
+import org.lexevs.dao.database.service.association.AssociationDataService;
 import org.lexevs.dao.database.service.association.AssociationService;
+import org.lexevs.dao.database.service.association.AssociationTargetService;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
@@ -26,9 +28,11 @@ import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.error.ErrorCallbackDatabaseServiceFactory;
 import org.lexevs.dao.database.service.error.ErrorCallbackListener;
 import org.lexevs.dao.database.service.property.PropertyService;
+import org.lexevs.dao.database.service.relation.RelationService;
 import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
 import org.lexevs.dao.database.service.valuesets.VSPropertyService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
+import org.lexevs.dao.database.service.version.AuthoringService;
 //import org.lexevs.dao.database.service.version.AuthoringService;
 
 /**
@@ -50,8 +54,17 @@ public class DatabaseServiceManager {
 	/** The property service. */
 	private PropertyService propertyService;
 	
+	/** The relation service. */
+	private RelationService relationService;
+	
 	/** The association service. */
 	private AssociationService associationService;
+	
+	/** The associationTarget service. */
+	private AssociationTargetService associationTargetService;
+	
+	/** The associationData service. */
+	private AssociationDataService associationDataService;
 	
 	/** The pick list service. */
 	private PickListDefinitionService pickListDefinitionService;
@@ -63,7 +76,7 @@ public class DatabaseServiceManager {
 	private VSPropertyService vsPropertyService;
 	
 	/** The authoring service. */
-	//private AuthoringService authoringService;
+	private AuthoringService authoringService;
 	
 	private CodedNodeGraphService codedNodeGraphService;
 	
@@ -168,7 +181,7 @@ public class DatabaseServiceManager {
 	public DaoCallbackService getDaoCallbackService() {
 		return daoCallbackService;
 	}
-	/*
+	
 	public AuthoringService getAuthoringService() {
 		return authoringService;
 	}
@@ -176,7 +189,7 @@ public class DatabaseServiceManager {
 	public void setAuthoringService(AuthoringService authoringService) {
 		this.authoringService = authoringService;
 	}
-	*/
+	
 
 	public void setPickListDefinitionService(PickListDefinitionService pickListDefinitionService) {
 		this.pickListDefinitionService = pickListDefinitionService;
@@ -221,6 +234,50 @@ public class DatabaseServiceManager {
 
 	public CodedNodeGraphService getCodedNodeGraphService() {
 		return codedNodeGraphService;
+	}
+
+	/**
+	 * @return the relationService
+	 */
+	public RelationService getRelationService() {
+		return relationService;
+	}
+
+	/**
+	 * @param relationService the relationService to set
+	 */
+	public void setRelationService(RelationService relationService) {
+		this.relationService = relationService;
+	}
+
+	/**
+	 * @return the associationTargetService
+	 */
+	public AssociationTargetService getAssociationTargetService() {
+		return associationTargetService;
+	}
+
+	/**
+	 * @param associationTargetService the associationTargetService to set
+	 */
+	public void setAssociationTargetService(
+			AssociationTargetService associationTargetService) {
+		this.associationTargetService = associationTargetService;
+	}
+
+	/**
+	 * @return the associationDataService
+	 */
+	public AssociationDataService getAssociationDataService() {
+		return associationDataService;
+	}
+
+	/**
+	 * @param associationDataService the associationDataService to set
+	 */
+	public void setAssociationDataService(
+			AssociationDataService associationDataService) {
+		this.associationDataService = associationDataService;
 	}
 }
 

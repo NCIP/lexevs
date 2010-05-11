@@ -1,8 +1,10 @@
 package org.lexevs.dao.database.ibatis.revision;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.versions.Revision;
 import org.lexevs.dao.database.access.revision.RevisionDao;
 import org.lexevs.dao.database.access.systemRelease.SystemReleaseDao;
@@ -48,32 +50,42 @@ public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao 
 		if(	revisionId == null )
 			return null;
 		
-		String revisionGuid = (String) this.getSqlMapClientTemplate()
+		String revisionGuid = null;
+		
+		revisionGuid = (String) this.getSqlMapClientTemplate()
 				.queryForObject(SELECT_REVISION_GUID_BY_ID, new PrefixedParameter(prefix, revisionId));
 		
 		return revisionGuid;
 	}
 
 	@Override
-	public String insertRevisionEntry(Revision revision, String releaseURI) {
+	public String insertRevisionEntry(Revision revision, String releaseURI) throws LBRevisionException {
 
-		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
-		String revisionUid = this.createUniqueId();
+		String revisionUId = this.createUniqueId();
 		
-		String releaseUId = systemReleaseDao.getSystemReleaseUIdByUri(releaseURI);
+		if (getRevisionUIdById(revision.getRevisionId()) == null) {
+			String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+
+			String releaseUId = systemReleaseDao
+					.getSystemReleaseUIdByUri(releaseURI);
+
+			InsertRevisionBean insertRevisionBean = new InsertRevisionBean();
+
+			insertRevisionBean.setPrefix(prefix);
+			insertRevisionBean.setRevisionGuid(revisionUId);
+			insertRevisionBean.setReleaseGuid(releaseUId);
+			insertRevisionBean.setRevAppliedDate(new Timestamp(System
+					.currentTimeMillis()));
+			insertRevisionBean.setRevision(revision);
+
+			this.getSqlMapClientTemplate().insert(INSERT_INTO_REVISION,
+					insertRevisionBean);
+		} else {
+			throw new LBRevisionException("Revision '"
+					+ revision.getRevisionId() + "' already exists.");
+		}
 		
-		InsertRevisionBean insertRevisionBean = new InsertRevisionBean();
-		
-		insertRevisionBean.setPrefix(prefix);
-		insertRevisionBean.setRevisionGuid(revisionUid);
-		insertRevisionBean.setReleaseGuid(releaseUId);
-		insertRevisionBean.setRevAppliedDate(new Date(System.currentTimeMillis()));
-		insertRevisionBean.setRevision(revision);
-		
-		this.getSqlMapClientTemplate().insert(INSERT_INTO_REVISION, 
-				insertRevisionBean);
-		
-		return revisionUid;
+		return revisionUId;
 	}
 
 	@Override
@@ -100,6 +112,12 @@ public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao 
 
 	public void setSystemReleaseDao(SystemReleaseDao systemReleaseDao) {
 		this.systemReleaseDao = systemReleaseDao;
+	}
+
+	@Override
+	public String getNewRevisionId() {
+
+		return this.createUniqueId();
 	}
 
 }

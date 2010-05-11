@@ -35,128 +35,188 @@ import org.lexevs.dao.database.access.association.model.Triple;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface AssociationDao extends LexGridSchemaVersionAwareDao {
-	
+
 	/**
 	 * Insert association predicate.
 	 * 
-	 * @param codingSchemeId the coding scheme id
-	 * @param relationId the relation id
-	 * @param associationPredicate the association predicate
+	 * @param codingSchemeUId
+	 *            the coding scheme id
+	 * @param relationUId
+	 *            the relation id
+	 * @param associationPredicate
+	 *            the association predicate
 	 * 
 	 * @return the string
 	 */
-	public String insertAssociationPredicate(
-			String codingSchemeId, 
-			String relationId, 
-			AssociationPredicate associationPredicate,
+	public String insertAssociationPredicate(String codingSchemeUId,
+			String relationUId, AssociationPredicate associationPredicate,
 			boolean cascade);
-	
+
 	/**
 	 * Insert association qualifier.
 	 * 
-	 * @param codingSchemeId the coding scheme id
-	 * @param associatableInstanceId the associatable instance id
-	 * @param qualifier the qualifier
+	 * @param codingSchemeUId
+	 *            the coding scheme id
+	 * @param associatableInstanceUId
+	 *            the associatable instance id
+	 * @param qualifier
+	 *            the qualifier
 	 */
-	public void insertAssociationQualifier(
-			String codingSchemeId, 
-			String associatableInstanceId, AssociationQualification qualifier);
-	
-	public void deleteAssociationQualificationsByCodingSchemeId(String codingSchemeId);
-	
+	public void insertAssociationQualifier(String codingSchemeUId,
+			String associatableInstanceUId, AssociationQualification qualifier);
+
+	public void deleteAssociationQualificationsByCodingSchemeUId(
+			String codingSchemeUId);
+
 	/**
 	 * Gets the association predicate id.
 	 * 
-	 * @param codingSchemeId the coding scheme id
-	 * @param relationContainerId the relation container id
-	 * @param associationPredicateName the association predicate name
-	 * @param associationPredicateName 
+	 * @param codingSchemeUId
+	 *            the coding scheme id
+	 * @param relationContainerUId
+	 *            the relation container id
+	 * @param associationPredicateName
+	 *            the association predicate name
 	 * 
 	 * @return the association predicate id
 	 */
-	public String getAssociationPredicateUid(String codingSchemeUid, String relationsContainerName, String associationPredicateName);
-
-	public String getAssociationPredicateNameForId(String codingSchemeId, String associationPredicateId);
+	public String getAssociationPredicateUIdByContainerUId(String codingSchemeUId,
+			String relationContainerUId, String associationPredicateName);
 	
+	public String getAssociationPredicateUIdByContainerName(String codingSchemeUId,
+			String relationContainerName, String associationPredicateName);
+
 	public List<String> getAssociationPredicateUidsForDirectionalName(String codingSchemeId, String directionalName);
+
+	public String getAssociationPredicateNameForUId(String codingSchemeUId,
+			String associationPredicateUId);
 	/**
 	 * Insert association source.
 	 * 
-	 * @param codingSchemeId the coding scheme id
-	 * @param associationPredicateId the association predicate id
-	 * @param source the source
+	 * @param codingSchemeUId
+	 *            the coding scheme id
+	 * @param associationPredicateUId
+	 *            the association predicate id
+	 * @param source
+	 *            the source
 	 */
-	public void insertAssociationSource(String codingSchemeId, String associationPredicateId, AssociationSource source);
+	public void insertAssociationSource(String codingSchemeUId,
+			String associationPredicateUId, AssociationSource source);
 
 	/**
 	 * Insert batch association sources.
 	 * 
-	 * @param codingSchemeId the coding scheme id
-	 * @param batch the batch
+	 * @param codingSchemeUId
+	 *            the coding scheme id
+	 * @param batch
+	 *            the batch
 	 */
-	public void insertBatchAssociationSources(String codingSchemeId,
+	public void insertBatchAssociationSources(String codingSchemeUId,
 			List<AssociationSourceBatchInsertItem> batch);
-	
+
 	/**
 	 * Insert batch association sources.
 	 * 
-	 * @param codingSchemeId the coding scheme id
-	 * @param associationPredicateId the association predicate id
-	 * @param batch the batch
+	 * @param codingSchemeUId
+	 *            the coding scheme id
+	 * @param associationPredicateUId
+	 *            the association predicate id
+	 * @param batch
+	 *            the batch
 	 */
-	public void insertBatchAssociationSources(String codingSchemeId, String associationPredicateId,
-			List<AssociationSource> batch);
-	
+	public void insertBatchAssociationSources(String codingSchemeUId,
+			String associationPredicateUId, List<AssociationSource> batch);
+
 	/**
 	 * Insert relations.
 	 * 
-	 * @param codingSchemeId the coding scheme id
-	 * @param relations the relations
+	 * @param codingSchemeUId
+	 *            the coding scheme id
+	 * @param relations
+	 *            the relations
 	 * 
 	 * @return the string
 	 */
-	public String insertRelations(String codingSchemeId, Relations relations, boolean cascade);
-	
+	public String insertRelations(String codingSchemeUId, Relations relations,
+			boolean cascade);
+
 	/**
 	 * Gets the relations id.
 	 * 
-	 * @param codingSchemeId the coding scheme id
-	 * @param relationsName the relations name
+	 * @param codingSchemeUId
+	 *            the coding scheme id
+	 * @param relationsName
+	 *            the relations name
 	 * 
 	 * @return the relations id
 	 */
-	public String getRelationsId(String codingSchemeId, String relationsName);
+	public String getRelationUId(String codingSchemeUId, String relationsName);
 	
-	public Relations getRelationsByUid(String codingSchemeId, String relationsUid);
-	
-	public AssociationPredicate getAssociationPredicateByUid(String codingSchemeId, String associationPredicateUid);
-	
-	public List<String> getRelationsUIdsForCodingSchemeUId(String codingSchemeId);
-	
-	public List<String> getAssociationPredicateIdsForRelationsId(String codingSchemeId, String relationsId);
-	
-	public List<Triple> getAllTriplesOfCodingScheme(String codingSchemeId, String associationPredicateId, int start, int pageSize);
+	public String getRelationEntryStateUId(String codingSchemeUId, String relationUId);
+
+	public Relations getRelationsByUId(String codingSchemeUId,
+			String relationsUId);
+
+	public AssociationPredicate getAssociationPredicateByUId(
+			String codingSchemeUId, String associationPredicateUId);
+
+	public List<String> getRelationsUIdsForCodingSchemeUId(
+			String codingSchemeUId);
+
+	public List<String> getAssociationPredicateUIdsForRelationsUId(
+			String codingSchemeUId, String relationsUId);
+
+	public List<Triple> getAllTriplesOfCodingScheme(String codingSchemeUId,
+			String associationPredicateUId, int start, int pageSize);
 
 	/**
 	 * Insert into transitive closure.
 	 * 
-	 * @param codingSchemeId the coding scheme id
-	 * @param associationPredicateId the association predicate id
-	 * @param sourceEntityCode the source entity code
-	 * @param sourceEntityCodeNamesapce the source entity code namesapce
-	 * @param targetEntityCode the target entity code
-	 * @param targetEntityCodeNamespace the target entity code namespace
+	 * @param codingSchemeUId
+	 *            the coding scheme id
+	 * @param associationPredicateUId
+	 *            the association predicate id
+	 * @param sourceEntityCode
+	 *            the source entity code
+	 * @param sourceEntityCodeNamesapce
+	 *            the source entity code namesapce
+	 * @param targetEntityCode
+	 *            the target entity code
+	 * @param targetEntityCodeNamespace
+	 *            the target entity code namespace
 	 * 
 	 * @return the string
 	 */
-	public String insertIntoTransitiveClosure(
-			String codingSchemeId, 
-			String associationPredicateId,
-			String sourceEntityCode, 
-			String sourceEntityCodeNamesapce, 
-			String targetEntityCode, 
+	public String insertIntoTransitiveClosure(String codingSchemeUId,
+			String associationPredicateUId, String sourceEntityCode,
+			String sourceEntityCodeNamesapce, String targetEntityCode,
 			String targetEntityCodeNamespace);
+
+	public String insertHistoryRelation(String codingSchemeUId,
+			String relationUId, Relations relation);
+
+	public String updateRelation(String codingSchemeUId, String relationUId,
+			Relations relation);
+
+	public void deleteAssociationQualificationsByRelationUId(
+			String codingSchemeUId, String relationUId);
+
+	public void removeRelationByUId(String codingSchemeUId, String relationUId);
+
+	public String updateRelationVersionableChanges(String codingSchemeUId,
+			String relationUId, Relations relation);
+
+	public void updateRelationEntryStateUId(String codingSchemeUId,
+			String relationUId, String entryStateUId);
+
+	public boolean associationPredicateExists(String codingSchemeUId,
+			String relationUId, String assocPredicateName);
+
+	public String getRelationLatestRevision(String csUId, String relationUId);
 	
 	public void insertBatchTransitiveClosure(final String codingSchemeId,
 			final List<TransitiveClosureBatchInsertItem> batch);
+
+	public boolean entryStateExists(String entryStateUId);
+
 }

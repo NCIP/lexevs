@@ -47,8 +47,13 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	/** The VERSION s_ namespace. */
 	public static String VERSIONS_NAMESPACE = "Versions.";
 	
+	/** The VERSION s_ namespace. */
+	public static String VSENTRYSTATE_NAMESPACE = "VSEntryState.";
+	
 	/** query to see if entrystate exists.  */
 	private static String CHECK_ENTRYSTATE_EXISTS = VERSIONS_NAMESPACE + "checkEntryStateExists";
+	
+	private static String CHECK_VSENTRYSTATE_EXISTS = VSENTRYSTATE_NAMESPACE + "checkVSEntryStateExists";
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
@@ -128,7 +133,22 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 		return false;
 	}
 	
-	
-	
-
+	/**
+	 * Method finds if the given entryState already exists. 
+	 * Returns true if entryState exists or else returns false.
+	 * 
+	 * @param entryStateUId
+	 * @return boolean
+	 */
+	public boolean vsEntryStateExists(String prefix, String entryStateUId) {
+		
+		String count = (String) this.getSqlMapClientTemplate().queryForObject(
+				CHECK_VSENTRYSTATE_EXISTS, 
+				new PrefixedParameter(prefix, entryStateUId));
+		
+		if( count != null &&  new Integer(count).intValue() > 0 )
+			return true;
+		
+		return false;
+	}
 }

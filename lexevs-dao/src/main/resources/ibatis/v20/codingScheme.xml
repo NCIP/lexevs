@@ -30,7 +30,7 @@
 		<result property="codingSchemeDescription.content" column="description" />
 	</resultMap>
 	
-	<resultMap id="codingSchemeMetaDataResult" class="codingSchemeBean">
+	<resultMap id="codingSchemeMetaDataResult" class="codingSchemeBean" groupBy="uid">
 		<result property="uid" column="codingSchemeGuid" />
 		<result property="codingScheme.codingSchemeName" column="codingSchemeName" />
 		<result property="codingScheme.codingSchemeURI" column="codingSchemeURI" />
@@ -47,9 +47,10 @@
 		<result property="codingScheme.expirationDate" column="expirationDate" />
 		<result property="releaseUId" column="releaseGuid" />
 		<result property="entryStateUId" column="entryStateGuid" />
+		<result property="csMultiAttribList" resultMap="CodingScheme.csMultiAttribResultBean"/>
 	</resultMap>
 	
-	<delete id="deleteCodingSchemeById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="deleteCodingSchemeByUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
 			$prefix$codingScheme
 		WHERE
@@ -152,12 +153,38 @@
      
      <select id="getCodingSchemeMetaDataByUId" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultMap="codingSchemeMetaDataResult"
+		resultMap="CodingScheme.codingSchemeMetaDataResult"
 		remapResults="true">
 		SELECT 
-			* 
+			cs.codingSchemeGuid,
+			cs.codingSchemeName,
+			cs.codingSchemeURI,
+			cs.representsVersion,
+			cs.formalName,
+			cs.defaultLanguage,
+			cs.approxNumConcepts,
+			cs.description,
+			cs.copyright,
+			cs.isActive,
+			cs.owner,
+			cs.status,
+			cs.effectiveDate,
+			cs.expirationDate, 
+			cs.releaseGuid,
+			cs.entryStateGuid,
+			csMulti.csMultiAttribGuid,
+			csMulti.codingSchemeGuid,
+			csMulti.attributeType,
+			csMulti.attributeValue,
+			csMulti.subRef,
+			csMulti.role,	
+			csMulti.entryStateGuid		
 		FROM
 			$prefix$codingScheme cs
+		LEFT JOIN
+			$prefix$csMultiAttrib csMulti
+		ON
+			cs.codingSchemeGuid = csMulti.codingSchemeGuid
 		WHERE
 			cs.codingSchemeGuid = #param1#
      </select>
@@ -257,14 +284,16 @@
    		  <dynamic prepend=" ">
 			<isNotNull prepend="," property="codingScheme.codingSchemeName">
 				codingSchemeName = #codingScheme.codingSchemeName#
-			</isNotNull><!--
+			</isNotNull>
+			<!--
 			<isNotNull prepend="," property="codingScheme.codingSchemeURI">
 				codingSchemeUri = #codingScheme.codingSchemeURI#
 			</isNotNull>
 			<isNotNull prepend="," property="codingScheme.representsVersion">
 				representsVersion = #codingScheme.representsVersion#
 			</isNotNull>
-			--><isNotNull prepend="," property="codingScheme.formalName">
+			-->
+			<isNotNull prepend="," property="codingScheme.formalName">
 				formalName = #codingScheme.formalName#
 			</isNotNull>
 			<isNotNull prepend="," property="codingScheme.approxNumConcepts">
@@ -279,13 +308,16 @@
 			<isNotNull prepend="," property="codingScheme.copyright.content">
 				copyright = #codingScheme.copyright.content#
 			</isNotNull>
+			<isNotNull prepend="," property="entryStateUId">
+				entryStateGuid = #entryStateUId#
+			</isNotNull>
 		</dynamic>
 
 		WHERE 
 			codingSchemeGuid = #uid#
  	</update>
  	
- 		<update id="updateCodingSchemeVerAttribByUId" 
+ 	<update id="updateCodingSchemeVerAttribByUId" 
 		parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
 		UPDATE 
 			$prefix$codingScheme
@@ -307,10 +339,23 @@
 			<isNotNull prepend="," property="codingScheme.expirationDate">
 				expirationDate = #codingScheme.expirationDate#
 			</isNotNull>
+			<isNotNull prepend="," property="entryStateUId">
+				entryStateGuid = #entryStateUId#
+			</isNotNull>			
 		</dynamic>
 
 		WHERE 
 			codingSchemeGuid = #uid#
+ 	</update>
+
+ 	<update id="updateCodingSchemeEntryStateUId" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		UPDATE
+			$prefix$codingScheme
+		SET
+			entryStateGuid = #param2#
+		WHERE 
+			codingSchemeGuid = #param1#
  	</update>
 
 	<insert id="insertCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
@@ -487,14 +532,70 @@
 		<include refid="distinctPropQualFragment"/>
      </select>
      
-     <select id="checkCodingSchemeExists" remapResults="true"
+	<select id="getEntryStateUIdByCodingSchemeUId" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
 		resultClass="string">
 		SELECT 
-			count(1) 
-		FROM 
-			$prefix$codingScheme cs 
-		WHERE 
-			cs.codingSchemeGuid = #param1#
-     </select>    
+			entryStateGuid
+		FROM
+			$prefix$codingScheme cs
+		WHERE
+			cs.codingSchemeGuid = #param1#	
+	</select>
+
+	<select id="getCodingSchemeLatestRevisionIdByUId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="string">
+		SELECT 
+			rev.revisionId
+		FROM
+			$prefix$codingScheme cs,
+			$prefix$entryState es,
+			$param1$revision rev
+		WHERE
+			cs.codingSchemeGuid = #param2#	
+		AND
+			cs.entryStateGuid = es.entryStateGuid	
+		AND
+			es.revisionGuid = rev.revisionGuid	
+	</select>
+
+	<delete id="deleteAllCodingSchemeSourceByCodingSchemeUId"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$csMultiAttrib
+		WHERE
+			attributeType = 'source'
+		AND
+			codingSchemeGuid = #param1#
+	</delete>
+	
+	<delete id="deleteAllCodingSchemeLocalNamesByCodingSchemeUId"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$csMultiAttrib
+		WHERE
+			attributeType = 'localName'
+		AND
+			codingSchemeGuid = #param1#
+	</delete>
+	
+	<select id="getAllCodingSchemeRevisionsByUId" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultClass="string"
+		remapResults="true">
+		SELECT 
+			rev.revisionId
+		FROM
+			$prefix$codingScheme cs,
+			$prefix$entryState es,
+			$prefix$revision rev
+		WHERE
+			cs.codingSchemeGuid = #param1# 
+		AND
+			cs.entryStateGuid = es.entryStateGuid
+		AND
+			es.revisionGuid = rev.revisionGuid
+	</select>
+	
 </sqlMap>

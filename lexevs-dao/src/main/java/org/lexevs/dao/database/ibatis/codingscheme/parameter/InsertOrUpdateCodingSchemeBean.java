@@ -18,6 +18,8 @@
  */
 package org.lexevs.dao.database.ibatis.codingscheme.parameter;
 
+import java.util.List;
+
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 
@@ -30,7 +32,9 @@ public class InsertOrUpdateCodingSchemeBean extends IdableParameterBean{
 	
 	/** The coding scheme. */
 	private CodingScheme codingScheme;
-
+	
+	private List<InsertOrUpdateCodingSchemeMultiAttribBean> csMultiAttribList = null;
+	
 	/** The system release uid*/
 	private String releaseUId = null;
 	/**
@@ -57,5 +61,20 @@ public class InsertOrUpdateCodingSchemeBean extends IdableParameterBean{
 
 	public void setReleaseUId(String releaseUId) {
 		this.releaseUId = releaseUId;
+	}
+
+	/**
+	 * @return the csMultiAttribList
+	 */
+	public List<InsertOrUpdateCodingSchemeMultiAttribBean> getCsMultiAttribList() {
+		return csMultiAttribList;
+	}
+
+	/**
+	 * @param csMultiAttribList the csMultiAttribList to set
+	 */
+	public void setCsMultiAttribList(
+			List<InsertOrUpdateCodingSchemeMultiAttribBean> csMultiAttribList) {
+		this.csMultiAttribList = csMultiAttribList;
 	}
 }

@@ -1,6 +1,7 @@
 package org.lexevs.dao.database.ibatis.versions.parameter;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 import org.LexGrid.versions.Revision;
 import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
@@ -16,7 +17,7 @@ public class InsertRevisionBean extends IdableParameterBean {
 	private String releaseGuid = null;
 	
 	/** revision applied date */
-	private Date revAppliedDate = null;
+	private Timestamp revAppliedDate = null;
 	
 	public String getRevisionGuid() {
 		return revisionGuid;
@@ -62,11 +63,11 @@ public class InsertRevisionBean extends IdableParameterBean {
 		this.revision = revision;
 	}
 
-	public Date getRevAppliedDate() {
+	public Timestamp getRevAppliedDate() {
 		return revAppliedDate;
 	}
 
-	public void setRevAppliedDate(Date revAppliedDate) {
+	public void setRevAppliedDate(Timestamp revAppliedDate) {
 		this.revAppliedDate = revAppliedDate;
 	}
 }

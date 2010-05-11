@@ -361,10 +361,10 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 				for(String relationsId : relationsIds) {
 					List<String> associatinPredicateIds = 
-						associationDao.getAssociationPredicateIdsForRelationsId(codingSchemeId, relationsId);
+						associationDao.getAssociationPredicateUIdsForRelationsUId(codingSchemeId, relationsId);
 
 					for(String associationPredicateId : associatinPredicateIds) {
-						String associationName = associationDao.getAssociationPredicateNameForId(codingSchemeId, associationPredicateId);
+						String associationName = associationDao.getAssociationPredicateNameForUId(codingSchemeId, associationPredicateId);
 
 						SupportedAssociation supportedAssociation = getSupportedAssociationWithName(mappings, associationName);
 

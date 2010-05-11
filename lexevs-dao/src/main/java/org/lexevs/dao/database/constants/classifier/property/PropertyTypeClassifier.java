@@ -40,6 +40,25 @@ public class PropertyTypeClassifier implements Classifier<PropertyType,String>{
 		if(type.equals(PropertyType.ENTITY)){
 			return "entity";
 		}
+		if(type.equals(PropertyType.RELATION)){
+			return "relation";
+		}
 		else throw new RuntimeException("Class:" + type + " is not Classifiable.");
+	}
+	
+	public static PropertyType getPropertyType(String propertyType) {
+		
+		if( propertyType == null )
+			return null;
+		
+		if( propertyType.equals("codingScheme")){
+			return PropertyType.CODINGSCHEME;
+		} else if( propertyType.equals("entity")){
+			return PropertyType.ENTITY;
+		} else if( propertyType.equals("relation")){
+			return PropertyType.RELATION;
+		}
+		
+		return null;
 	}
 }

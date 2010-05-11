@@ -83,15 +83,45 @@
 			description
 			)
 		VALUES (
-			#revisionGuid#,
-			#releaseGuid#,
-			#revision.revisionId#,
-			#revision.changeAgent#,
-			#revision.revisionDate#,
-			#revAppliedDate#,
-			#revision.editOrder#,
-			#revision.changeInstructions#,
-			#revision.entityDescription.content#
+			#revisionGuid#,			
+			<isPropertyAvailable property="releaseGuid">
+				#releaseGuid#,
+			</isPropertyAvailable>	
+			<isNotPropertyAvailable property="releaseGuid">
+				null,
+			</isNotPropertyAvailable>		
+			#revision.revisionId#,			
+			<isPropertyAvailable property="revision.changeAgent[0]">
+				#revision.changeAgent[0]#,
+			</isPropertyAvailable>	
+			<isNotPropertyAvailable property="revision.changeAgent[0]">
+				null,
+			</isNotPropertyAvailable>		
+			<isPropertyAvailable property="revision.revisionDate">
+				#revision.revisionDate#,
+			</isPropertyAvailable>	
+			<isNotPropertyAvailable property="revision.revisionDate">
+				null,
+			</isNotPropertyAvailable>		
+			#revAppliedDate#,			
+			<isPropertyAvailable property="revision.editOrder">
+				#revision.editOrder#,
+			</isPropertyAvailable>
+			<isNotPropertyAvailable property="revision.editOrder">
+				null,
+			</isNotPropertyAvailable>				
+			<isPropertyAvailable property="revision.changeInstructions">
+				#revision.changeInstructions.content#,
+			</isPropertyAvailable>
+			<isNotPropertyAvailable property="revision.changeInstructions">
+				null,
+			</isNotPropertyAvailable>
+			<isPropertyAvailable property="revision.entityDescription">
+				#revision.entityDescription.content#				
+			</isPropertyAvailable>
+			<isNotPropertyAvailable property="revision.entityDescription">
+				null
+			</isNotPropertyAvailable>
 			)
  	</insert>
  	
@@ -137,5 +167,237 @@
 		WHERE
 			es.entryStateGuid = #param1#
      </select>
-    
+     
+	<delete id="deleteAllEntrySateEntriesByEntryUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$entryState
+		WHERE
+			entryGuid = #param1#
+	</delete>
+	
+	<delete id="deletaAllCSPropEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$entryState
+		WHERE
+			entryType = #param1#
+		AND
+			entryGuid 
+		IN	( 
+			SELECT
+				prop.propertyGuid
+			FROM
+				$prefix$codingScheme cs,
+				$prefix$property prop
+			WHERE
+				prop.referenceGuid = cs.codingSchemeGuid 
+			AND
+				cs.codingSchemeGuid = #param2#
+			)
+	</delete>
+	
+    <delete id="deletaAllEntityPropertyEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$entryState
+		WHERE
+			entryType = #param1#
+		AND
+			entryGuid 
+		IN	( 
+			SELECT
+				prop.propertyGuid
+			FROM
+				$prefix$entity ent,
+				$prefix$property prop
+			WHERE
+				prop.referenceGuid = ent.entityGuid
+			AND
+				ent.codingSchemeGuid = #param2#
+			)
+	</delete>
+	
+    <delete id="deletaAllEntityEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$entryState
+		WHERE
+			entryType = #param1#
+		AND
+			entryGuid 
+		IN	( 
+			SELECT
+				entityGuid
+			FROM
+				$prefix$entity ent
+			WHERE
+				ent.codingSchemeGuid = #param2#
+			)
+	</delete>
+	
+    <delete id="deletaAllRelationPropertyEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$entryState
+		WHERE
+			entryType = #param1#
+		AND
+			entryGuid 
+		IN	( 
+			SELECT
+				prop.propertyGuid
+			FROM
+				$prefix$relation rel,
+				$prefix$property prop
+			WHERE
+				prop.referenceGuid = rel.relationGuid
+			AND
+				rel.codingSchemeGuid = #param2#
+			)
+	</delete>
+	
+	<delete id="deletaAllRelationEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$entryState
+		WHERE
+			entryType = #param1#
+		AND
+			entryGuid 
+		IN	( 
+			SELECT
+				relationGuid
+			FROM
+				$prefix$relation rel
+			WHERE
+				rel.codingSchemeGuid = #param2#
+			)
+	</delete>
+	
+	<delete id="deletaAllAssnTargetEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$entryState
+		WHERE
+			entryType = #param1#
+		AND
+			entryGuid 
+		IN	( 
+			SELECT
+				assnTarget.entityAssnsGuid
+			FROM
+				$prefix$relation rel,
+				$prefix$associationPredicate assnPred,
+				$prefix$entityAssnsToEntity assnTarget
+			WHERE
+				assnTarget.associationPredicateGuid = assnPred.associationPredicateGuid
+			AND
+				assnPred.relationGuid = rel.relationGuid
+			AND
+				rel.codingSchemeGuid = #param2#
+			)
+	</delete>
+	
+    <delete id="deletaAllAssnDataEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$entryState
+		WHERE
+			entryType = #param1#
+		AND
+			entryGuid 
+		IN	( 
+			SELECT
+				assnData.entityAssnsDataGuid
+			FROM
+				$prefix$relation rel,
+				$prefix$associationPredicate assnPred,
+				$prefix$entityAssnsToData assnData
+			WHERE
+				assnData.associationPredicateGuid = assnPred.associationPredicateGuid
+			AND
+				assnPred.relationGuid = rel.relationGuid
+			AND
+				rel.codingSchemeGuid = #param2#
+			)
+	</delete>
+	
+	<delete id="deletaAllEntityPropEntryStateOfEntity" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$entryState
+		WHERE
+			entryType = #param1#
+		AND
+			entryGuid 
+		IN	( 
+			SELECT
+				prop.propertyGuid
+			FROM
+				$prefix$entity ent,
+				$prefix$property prop
+			WHERE
+				ent.entityGuid = #param2#
+			AND
+				ent.entityGuid = prop.referenceGuid				
+			)
+	</delete>
+	
+	<delete id="deletaAllAssnTargetEntryStateOfRelation" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$entryState
+		WHERE
+			entryType = #param1#
+		AND
+			entryGuid 
+		IN	( 
+			SELECT
+				assnTarget.entityAssnsGuid
+			FROM
+				$prefix$relation rel,
+				$prefix$associationPredicate assnPred,
+				$prefix$entityAssnsToEntity assnTarget
+			WHERE
+				assnTarget.associationPredicateGuid = assnPred.associationPredicateGuid
+			AND
+				assnPred.relationGuid = rel.relationGuid
+			AND
+				rel.relationGuid = #param2#
+			)
+	</delete>
+	
+	<delete id="deletaAllAssnDataEntryStateOfRelation" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$entryState
+		WHERE
+			entryType = #param1#
+		AND
+			entryGuid 
+		IN	( 
+			SELECT
+				assnData.entityAssnsDataGuid
+			FROM
+				$prefix$relation rel,
+				$prefix$associationPredicate assnPred,
+				$prefix$entityAssnsToData assnData
+			WHERE
+				assnData.associationPredicateGuid = assnPred.associationPredicateGuid
+			AND
+				assnPred.relationGuid = rel.relationGuid
+			AND
+				rel.relationGuid = #param2#
+			)
+	</delete>
+
+    <delete id="deletaAllRelationPropertyEntryStateOfRelation" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$entryState
+		WHERE
+			entryType = #param1#
+		AND
+			entryGuid 
+		IN	( 
+			SELECT
+				prop.propertyGuid
+			FROM
+				$prefix$relation rel,
+				$prefix$property prop
+			WHERE
+				prop.referenceGuid = rel.relationGuid
+			AND
+				rel.relationGuid = #param2#
+			)
+	</delete>	
 </sqlMap>
