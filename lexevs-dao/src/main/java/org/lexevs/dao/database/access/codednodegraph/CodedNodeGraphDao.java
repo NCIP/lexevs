@@ -19,6 +19,7 @@
 package org.lexevs.dao.database.access.codednodegraph;
 
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
@@ -47,9 +48,9 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			int start, 
 			int pageSize);
 	
-	public int getTripleUidsContainingSubjectCount(
+	public Map<String,Integer> getTripleUidsContainingSubjectCount(
 			String codingSchemeUid,
-			String associationPredicateUid,
+			String relationsContainerName,
 			String subjectEntityCode,
 			String subjectEntityCodeNamespace,
 			List<String> associationNames,
@@ -67,9 +68,9 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			int start, 
 			int pageSize);
 	
-	public int getTripleUidsContainingObjectCount(
+	public Map<String,Integer> getTripleUidsContainingObjectCount(
 			String codingSchemeUid,
-			String associationPredicateUid,
+			String relationsContainerName,
 			String objectEntityCode,
 			String objectEntityCodeNamespace,
 			List<String> associationNames,
