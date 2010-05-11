@@ -1,6 +1,7 @@
 package org.lexevs.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -58,5 +59,21 @@ public class DaoUtilityTest {
 		assertEquals(1, original.getEntityTypeCount());
 		assertEquals("code", original.getEntityCode());
 		assertEquals(1, original.getPresentationCount());
+	}
+	
+	@Test
+	public void testClone() {
+		Entity original = new Entity();
+		original.addPresentation(new Presentation());
+		original.addEntityType("type1");
+		
+		original.getPresentation()[0].setValue(DaoUtility.createText("some content"));
+		
+		Entity copy = DaoUtility.deepClone(original);
+		
+		assertEquals("some content", copy.getPresentation()[0].getValue().getContent());
+		
+		assertTrue(original.getPresentation()[0].hashCode() != 
+			copy.getPresentation()[0].hashCode());
 	}
 }
