@@ -13,6 +13,11 @@
 		<result property="entityCodeNamespace" column="entityCodeNamespace" />
 	</resultMap>
 	
+	<resultMap id="countResult" class="java.util.HashMap">
+		<result property="key" column="associationName" />
+		<result property="value" column="relationshipsCount" javaType="int" />
+	</resultMap>
+	
 	<resultMap id="tripleResult" class="triple">
 		<result property="sourceEntityCode" column="sourceEntityCode" />
 		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace" />
@@ -230,9 +235,11 @@
 		WHERE
 			rel.codingSchemeGuid = #codingSchemeUid#
 
-		<isNotNull property="associationPredicateUid" prepend="AND">
+		<isPropertyAvailable property="associationPredicateUid">
+			<isNotNull property="associationPredicateUid" prepend="AND">
 			ap.associationPredicateGuid = #associationPredicateUid#
-		</isNotNull>
+			</isNotNull>
+		</isPropertyAvailable>
 
 		<isNotEmpty property="associationQualifiers" prepend="AND">
 			(
@@ -380,11 +387,14 @@
 	</select>
 	
 	<select id="getEntityAssnsToEntityUidsCount"
-				parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsBean"
-				resultClass="int">
-		SELECT COUNT(DISTINCT 
-			(eate.entityAssnsGuid))
+				parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCountBean"
+				resultMap="countResult">
+		SELECT 
+			COUNT(eate.associationPredicateGuid) AS relationshipsCount,
+			ap.associationName AS associationName
 		<include refid="getEntityAssnsToEntityUidsFragment"/>
+		GROUP BY
+			associationName
 	</select>
 	
 	<select id="getDistinctSources" 
