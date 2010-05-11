@@ -211,7 +211,7 @@
    </select>
    
    <select id="getAssociationPredicateUIdByContainerName" remapResults="true"
-   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
+   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultClass="string">
    		SELECT
    			assoc.associationPredicateGuid
    		FROM
@@ -221,9 +221,11 @@
    		ON
    			assoc.relationGuid = assoc.relationGuid
 		WHERE
-			rel.containerName = #param1#
+			rel.codingSchemeGuid = #param1#
 		AND
-			assoc.associationName = #param2#
+			rel.containerName = #param2#
+		AND
+			assoc.associationName = #param3#
    </select> 
      
    <update id="updateRelationByUId" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateRelationsBean">

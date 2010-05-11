@@ -52,6 +52,7 @@ import org.lexevs.dao.database.ibatis.association.parameter.InsertTransitiveClos
 import org.lexevs.dao.database.ibatis.batch.IbatisBatchInserter;
 import org.lexevs.dao.database.ibatis.batch.IbatisInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
@@ -181,13 +182,16 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#getAssociationPredicateId(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public String getAssociationPredicateUIdByContainerName(String codingSchemeId,
+	public String getAssociationPredicateUIdByContainerName(String codingSchemeUid,
 			String relationContainerName, String associationPredicateName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
-				codingSchemeId);
+				codingSchemeUid);
 		return (String) this.getSqlMapClientTemplate().queryForObject(
 				GET_ASSOCIATION_PREDICATE_UID_BY_CONTAINER_NAME_SQL,
-				new PrefixedParameterTuple(prefix, relationContainerName,
+				new PrefixedParameterTriple(
+						prefix, 
+						codingSchemeUid,
+						relationContainerName,
 						associationPredicateName));
 
 	}
