@@ -21,6 +21,7 @@ package org.lexevs.dao.database.ibatis.codednodegraph;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -132,11 +133,12 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				" 't-ns2'," +
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 	
-		int uids = ibatisCodedNodeGraphDao.
+		Map<String,Integer> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
 					"cs-guid", "ap-guid", "s-code", "s-ns", null, null, null);
-		
-		assertEquals(2, uids);
+
+		assertEquals(1, uids.keySet().size());
+		assertEquals(new Integer(2), uids.get("ap-guid"));
 	}
 	
 	@Test
@@ -173,11 +175,12 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				" 't-ns2'," +
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 	
-		int uids = ibatisCodedNodeGraphDao.
+		Map<String,Integer> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingObjectCount(
 					"cs-guid", "ap-guid", "t-code1", "t-ns1", null, null, null);
 		
-		assertEquals(1, uids);
+		assertEquals(1, uids.keySet().size());
+		assertEquals(new Integer(1), uids.get("ap-guid"));
 	}
 	
 	@Test
@@ -314,11 +317,12 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		List<QualifierNameValuePair> list = new ArrayList<QualifierNameValuePair>();
 		list.add(new QualifierNameValuePair("qualName", null));
 		
-		int uids = ibatisCodedNodeGraphDao.
+		Map<String,Integer> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
 					"cs-guid", "ap-guid", "s-code", "s-ns", null, list, null);
 		
-		assertEquals(1, uids);
+		assertEquals(1, uids.keySet().size());
+		assertEquals(new Integer(1), uids.get("ap-guid"));
 	}
 	
 	@Test
@@ -365,11 +369,11 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		List<QualifierNameValuePair> list = new ArrayList<QualifierNameValuePair>();
 		list.add(new QualifierNameValuePair("BAD_qualName", null));
 		
-		int uids = ibatisCodedNodeGraphDao.
+		Map<String,Integer> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
 					"cs-guid", "ap-guid", "s-code", "s-ns", null, list, null);
 		
-		assertEquals(0, uids);
+		assertEquals(0, uids.keySet().size());
 	}
 	
 	@Test
@@ -416,11 +420,12 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		List<QualifierNameValuePair> list = new ArrayList<QualifierNameValuePair>();
 		list.add(new QualifierNameValuePair("qualName", "qualValue"));
 		
-		int uids = ibatisCodedNodeGraphDao.
+		Map<String,Integer> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
 					"cs-guid", "ap-guid", "s-code", "s-ns", null, list, null);
 		
-		assertEquals(1, uids);
+		assertEquals(1, uids.keySet().size());
+		assertEquals(new Integer(1), uids.get("ap-guid"));
 	}
 	
 	@Test
@@ -467,11 +472,11 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		List<QualifierNameValuePair> list = new ArrayList<QualifierNameValuePair>();
 		list.add(new QualifierNameValuePair("qualName", "BAD_qualValue"));
 		
-		int uids = ibatisCodedNodeGraphDao.
+		Map<String,Integer> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
 					"cs-guid", "ap-guid", "s-code", "s-ns", null, list, null);
 		
-		assertEquals(0, uids);
+		assertEquals(0, uids.keySet().size());
 	}
 	
 	@Test
@@ -518,11 +523,12 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		CodeNamespacePair pair = new CodeNamespacePair("t-code2", "t-ns2");
 	
-		int uids = ibatisCodedNodeGraphDao.
+		Map<String,Integer> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
 					"cs-guid", "ap-guid", "s-code", "s-ns", null, null, DaoUtility.createNonTypedList(pair));
 		
-		assertEquals(1, uids);
+		assertEquals(1, uids.keySet().size());
+		assertEquals(new Integer(1), uids.get("ap-guid"));
 	}
 	
 	@Test
