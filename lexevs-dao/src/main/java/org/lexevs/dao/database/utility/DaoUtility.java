@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.database.utility;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -30,6 +31,7 @@ import java.util.Map;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
@@ -39,6 +41,7 @@ import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.apache.commons.lang.SerializationUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.springframework.beans.BeanUtils;
@@ -130,6 +133,11 @@ public class DaoUtility {
 	 */
 	public static Text createText(String content){
 		return createText(content, null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T extends Serializable> T deepClone(T obj){
+		return (T) SerializationUtils.clone(obj);
 	}
 	
 	/**
