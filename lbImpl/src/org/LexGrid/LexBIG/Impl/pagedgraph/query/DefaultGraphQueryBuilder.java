@@ -174,27 +174,25 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
             NameAndValueList associationQualifiers) throws LBInvocationException, LBParameterException {
         LexBIGServiceConvenienceMethods lbscm = 
             (LexBIGServiceConvenienceMethods) 
-                LexBIGServiceImpl.defaultInstance().getGenericExtension("LexBIGServiceConvenienceMethods");
-        
+            LexBIGServiceImpl.defaultInstance().getGenericExtension("LexBIGServiceConvenienceMethods");
+
         for(NameAndValue nameAndValue : directionalNames.getNameAndValue()) {
             String directionalName = nameAndValue.getName();
-            
+            String[] associationNames;
             try {
-                String[] associationNames = lbscm.getAssociationNameForDirectionalName(
+                associationNames = lbscm.getAssociationNameForDirectionalName(
                         codingSchemeUri, 
                         Constructors.createCodingSchemeVersionOrTagFromVersion(version), 
                         directionalName);
-                
-                if(ArrayUtils.isEmpty(associationNames)) {
-                    throw new LBParameterException("Directional Name:" + directionalName + 
-                            " is not a valid Directional Name.");
-                }
-
-                this.restrictToAssociations(Constructors.createNameAndValueList(associationNames), associationQualifiers);
-                
             } catch (LBException e) {
-               throw new RuntimeException(e);
+                throw new RuntimeException(e);
             }
+            if(ArrayUtils.isEmpty(associationNames)) {
+                throw new LBParameterException("Directional Name:" + directionalName + 
+                " is not a valid Directional Name.");
+            }
+
+            this.restrictToAssociations(Constructors.createNameAndValueList(associationNames), associationQualifiers); 
         }
     }
 
