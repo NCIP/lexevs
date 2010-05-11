@@ -168,20 +168,20 @@ public class CleanUpTest extends TestCase {
 		pickListIds.clear();
 	}
 	
-	@Test
-	public void testDropValueDomainTables() throws LBException {
-		List<String> pickListIds = getPickListService().listPickListIds();
-		List<String> uris = getValueDomainService().listValueSetDefinitions(null);
-		if (pickListIds.size() == 0 && uris.size() == 0)
-		{
-			getValueDomainService().dropValueDomainTables();
-			assertTrue(true);
-		}
-		else
-		{
-			assertFalse("Can not delete valueDomain tables when entries exists.", true);
-		}
-	}
+//	@Test
+//	public void testDropValueDomainTables() throws LBException {
+//		List<String> pickListIds = getPickListService().listPickListIds();
+//		List<String> uris = getValueDomainService().listValueSetDefinitions(null);
+//		if (pickListIds.size() == 0 && uris.size() == 0)
+//		{
+//			getValueDomainService().dropValueDomainTables();
+//			assertTrue(true);
+//		}
+//		else
+//		{
+//			assertFalse("Can not delete valueDomain tables when entries exists.", true);
+//		}
+//	}
 	
 	private LexEVSValueSetDefinitionServices getValueDomainService(){
 		if (vds_ == null) {
