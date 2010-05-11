@@ -16,12 +16,12 @@
 	<resultMap id="csMultiAttribResultBean"
 		class="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeMultiAttribBean">
 		<result property="uid" column="csMultiAttribGuid" />
-		<result property="codingSchemeUId" column="codingSchemeGuid" />
+		<result property="codingSchemeUId" column="csGuid" />
 		<result property="attributeType" column="attributeType" />
 		<result property="attributeValue" column="attributeValue" />
 		<result property="subRef" column="subRef" />
 		<result property="role" column="role" />
-		<result property="entryStateUId" column="entryStateGuid" />
+		<result property="entryStateUId" column="esGuid" />
 	</resultMap>
 	
 	<select id="getSourceListByCodingSchemeId" remapResults="true"

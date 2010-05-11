@@ -173,12 +173,12 @@
 			cs.releaseGuid,
 			cs.entryStateGuid,
 			csMulti.csMultiAttribGuid,
-			csMulti.codingSchemeGuid,
+			csMulti.codingSchemeGuid csGuid,
 			csMulti.attributeType,
 			csMulti.attributeValue,
 			csMulti.subRef,
 			csMulti.role,	
-			csMulti.entryStateGuid		
+			csMulti.entryStateGuid esGuid		
 		FROM
 			$prefix$codingScheme cs
 		LEFT JOIN
