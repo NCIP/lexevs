@@ -41,6 +41,7 @@ import org.junit.Test;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.error.DatabaseError;
 import org.lexevs.dao.database.service.error.ErrorCallbackListener;
+import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.model.RegistryEntry;
@@ -63,6 +64,9 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 	@Resource
 	private VersionableEventCodingSchemeService service;
 	
+    @Resource
+    private AuthoringService authoringService;
+	
 	@Resource
 	private Registry registry;
 	
@@ -80,7 +84,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		scheme.setCodingSchemeURI("uri");
 		scheme.setRepresentsVersion("v1");
 		
-		service.insertCodingScheme(scheme, null);
+		authoringService.loadRevision(scheme, null);
 	}
 	
 	/**
@@ -99,7 +103,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		
 		scheme.addLocalName("localName");
 		
-		service.insertCodingScheme(scheme, null);
+		authoringService.loadRevision(scheme, null);
 	}
 	
 	/**
@@ -131,7 +135,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		
 		scheme.getEntities().addEntity(entity);
 		
-		service.insertCodingScheme(scheme, null);
+		authoringService.loadRevision(scheme, null);
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		assertEquals(1, template.queryForInt("Select count(*) from codingScheme"));
@@ -216,7 +220,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		rel.addAssociationPredicate(pred);
 		pred.addSource(source);
 		
-		service.insertCodingScheme(scheme, null);
+		authoringService.loadRevision(scheme, null);
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		assertEquals(1, template.queryForInt("Select count(*) from codingScheme"));

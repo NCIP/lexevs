@@ -358,7 +358,7 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		text.setDataType("format");
 		property.setValue(text);
 		
-		ibatisPropertyDao.insertHistoryProperty("fake-cs-id", "fake-entityCode-id", "pguid", PropertyType.ENTITY, property);
+		ibatisPropertyDao.insertHistoryProperty("fake-cs-id", "pguid", property);
 	
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
@@ -389,7 +389,7 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		qual.setValue(DaoUtility.createText("qualContent"));
 		property.addPropertyQualifier(qual);
 		
-		ibatisPropertyDao.insertHistoryProperty("fake-cs-id", "fake-entityCode-id", "pguid", PropertyType.ENTITY, property);
+		ibatisPropertyDao.insertHistoryProperty("fake-cs-id", "pguid", property);
 	
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
@@ -905,7 +905,7 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
 			"values ('eguid', 'csguid', 'ecode', 'ens')");
 		
-		String id = ibatisPropertyDao.getPropertyIdFromParentIdAndPropId("csguid", "eguid", "id1");
+		String id = ibatisPropertyDao.getPropertyUIdFromParentUIdAndPropId("csguid", "eguid", "id1");
 		
 		assertEquals("pguid", id);
 	}

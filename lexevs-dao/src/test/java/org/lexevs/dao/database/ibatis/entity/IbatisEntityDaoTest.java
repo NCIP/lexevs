@@ -791,7 +791,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		ed.setContent("updated content");
 		modifiedEntity.setEntityDescription(ed);
 		
-		ibatisEntityDao.updateEntity("csguid", modifiedEntity);
+		ibatisEntityDao.updateEntity("csguid", "eguid", modifiedEntity);
 
 		template.queryForObject("Select * from entity", new RowMapper(){
 

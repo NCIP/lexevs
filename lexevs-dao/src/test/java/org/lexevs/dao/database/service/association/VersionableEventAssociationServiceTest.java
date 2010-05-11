@@ -25,9 +25,10 @@ import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.database.service.relation.VersionableEventRelationService;
+import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,9 +45,15 @@ public class VersionableEventAssociationServiceTest extends LexEvsDbUnitTestBase
 	@Resource
 	private VersionableEventAssociationService versionableEventAssociationService;
 	
+	@Resource
+	private VersionableEventRelationService versionableEventRelationService;
+	
 	/** The coding scheme service. */
 	@Resource 
 	private CodingSchemeService codingSchemeService;
+	
+    @Resource
+    private AuthoringService authoringService;
 	
 	/**
 	 * Test insert relations.
@@ -63,7 +70,7 @@ public class VersionableEventAssociationServiceTest extends LexEvsDbUnitTestBase
 		scheme.setCodingSchemeURI("uri");
 		scheme.setRepresentsVersion("v1");
 
-		codingSchemeService.insertCodingScheme(scheme, null);
+		this.authoringService.loadRevision(scheme, null);
 		
 		Relations relations = new Relations();
 		relations.setContainerName("containerName");
@@ -85,7 +92,7 @@ public class VersionableEventAssociationServiceTest extends LexEvsDbUnitTestBase
 		
 		ap.addSource(source);
 		
-		versionableEventAssociationService.insertRelation("uri", "v1", relations);
+		versionableEventRelationService.insertRelation("uri", "v1", relations);
 	
 		JdbcTemplate template = new JdbcTemplate(dataSource);
 		assertEquals(1, template.queryForObject("Select count(*) from associationpredicate", Integer.class));
@@ -109,7 +116,7 @@ public class VersionableEventAssociationServiceTest extends LexEvsDbUnitTestBase
 		scheme.setCodingSchemeURI("uri");
 		scheme.setRepresentsVersion("v1");
 
-		codingSchemeService.insertCodingScheme(scheme, null);
+		this.authoringService.loadRevision(scheme, null);
 		
 		Relations relations = new Relations();
 		relations.setContainerName("containerName");
@@ -136,7 +143,7 @@ public class VersionableEventAssociationServiceTest extends LexEvsDbUnitTestBase
 		
 		ap.addSource(source);
 		
-		versionableEventAssociationService.insertRelation("uri", "v1", relations);
+		versionableEventRelationService.insertRelation("uri", "v1", relations);
 	
 		JdbcTemplate template = new JdbcTemplate(dataSource);
 		assertEquals(1, template.queryForObject("Select count(*) from associationpredicate", Integer.class));
@@ -155,7 +162,7 @@ public class VersionableEventAssociationServiceTest extends LexEvsDbUnitTestBase
 		scheme.setCodingSchemeURI("uri");
 		scheme.setRepresentsVersion("v1");
 
-		codingSchemeService.insertCodingScheme(scheme, null);
+		this.authoringService.loadRevision(scheme, null);
 		
 		Relations relations = new Relations();
 		relations.setContainerName("containerName");
@@ -165,7 +172,7 @@ public class VersionableEventAssociationServiceTest extends LexEvsDbUnitTestBase
 		
 		relations.addAssociationPredicate(ap);
 		
-		versionableEventAssociationService.insertRelation("uri", "v1", relations);
+		versionableEventRelationService.insertRelation("uri", "v1", relations);
 
 		AssociationSource source = new AssociationSource();
 		source.setSourceEntityCode("source-code");

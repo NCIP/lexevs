@@ -394,7 +394,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		
 		assertEquals(2, template.queryForInt("select count(*) from entityassnquals"));
 		
-		ibatisAssociationDao.deleteAssociationQualificationsByCodingSchemeId("cs-guid");
+		ibatisAssociationDao.deleteAssociationQualificationsByCodingSchemeUId("cs-guid");
 		
 		assertEquals(0, template.queryForInt("select count(*) from entityassnquals"));
 	}
@@ -420,7 +420,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				"('ap-guid2', 'rel-guid', 'apName2')");
 		
 		List<String> assocPredIds = 
-			ibatisAssociationDao.getAssociationPredicateIdsForRelationsId("cs-guid", "rel-guid");
+			ibatisAssociationDao.getAssociationPredicateUIdsForRelationsUId("cs-guid", "rel-guid");
 		
 		assertEquals(2, assocPredIds.size());
 		

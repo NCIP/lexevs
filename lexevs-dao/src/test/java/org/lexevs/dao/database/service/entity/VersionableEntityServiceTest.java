@@ -31,6 +31,7 @@ import org.LexGrid.relations.AssociationEntity;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
+import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.utility.RegistryUtility;
@@ -52,6 +53,9 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 	private CodingSchemeService codingSchemeservice;
 	
 	@Resource
+	private AuthoringService authoringService;
+	
+	@Resource
 	private Registry registry;
 
 	
@@ -69,7 +73,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		scheme.setCodingSchemeURI("uri");
 		scheme.setRepresentsVersion("v1");
 		
-		codingSchemeservice.insertCodingScheme(scheme, null);
+		authoringService.loadRevision(scheme, null);
 		
 		CodingScheme cs = codingSchemeservice.getCodingSchemeByUriAndVersion("uri", "v1");
 		System.out.println(cs);
@@ -92,7 +96,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		scheme.setCodingSchemeURI("uri");
 		scheme.setRepresentsVersion("v1");
 		
-		codingSchemeservice.insertCodingScheme(scheme, null);
+		authoringService.loadRevision(scheme, null);
 		
 		CodingScheme cs = codingSchemeservice.getCodingSchemeByUriAndVersion("uri", "v1");
 		System.out.println(cs);
@@ -191,7 +195,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		scheme.setCodingSchemeURI("uri");
 		scheme.setRepresentsVersion("v1");
 		
-		codingSchemeservice.insertCodingScheme(scheme, null);
+		authoringService.loadRevision(scheme, null);
 		
 		Entity entity = new Entity();
 		entity.setEntityCode("c1");

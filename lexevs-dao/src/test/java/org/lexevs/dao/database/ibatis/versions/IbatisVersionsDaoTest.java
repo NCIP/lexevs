@@ -67,8 +67,8 @@ public class IbatisVersionsDaoTest extends LexEvsDbUnitTestBase {
 		"values ('csguid', 'csname', 'csuri', 'csversion')");
 		
 		ibatisVersionsDao.insertEntryState(
-				"entryStateId",
-				"entryId", 
+				"entryStateUId",
+				"entryUId", 
 				"entryType", 
 				null, 
 				es);
@@ -76,13 +76,13 @@ public class IbatisVersionsDaoTest extends LexEvsDbUnitTestBase {
 		template.queryForObject("Select * from EntryState", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
-				assertEquals(rs.getString(1), "entryStateId");
-				assertEquals(rs.getString(2), "entryId");
+				assertEquals(rs.getString(1), "entryStateUId");
+				assertEquals(rs.getString(2), "entryUId");
 				assertEquals(rs.getString(3), "entryType");
 				assertEquals(rs.getString(4), ChangeType.REMOVE.toString());
 				assertEquals(rs.getLong(5), 24l);
-				assertEquals(rs.getString(6), "containingRevision");
-				assertEquals(rs.getString(7), "previousRevision");
+				assertEquals(rs.getString(6), null);
+				assertEquals(rs.getString(7), null);
 							
 				return null;
 			}

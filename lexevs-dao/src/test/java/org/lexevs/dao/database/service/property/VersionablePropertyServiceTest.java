@@ -103,7 +103,7 @@ public class VersionablePropertyServiceTest extends LexEvsDbUnitTestBase {
 		testListeners.add(testListener);
 		service.setDatabaseServiceEventListeners(testListeners);
 
-		service.updateEntityProperty("csuri", "csversion", "ecode", "ens", "propId", property);
+		service.updateEntityProperty("csuri", "csversion", "ecode", "ens", property);
 
 		assertTrue(testListener.foundUpdate);
 
@@ -148,7 +148,7 @@ public class VersionablePropertyServiceTest extends LexEvsDbUnitTestBase {
 
 		boolean exceptionThrown = false;
 		try {
-			service.updateEntityProperty("csuri", "csversion", "ecode", "ens", "propId", property);
+			service.updateEntityProperty("csuri", "csversion", "ecode", "ens", property);
 		} catch (Exception e) {
 			exceptionThrown = true;
 		} finally {

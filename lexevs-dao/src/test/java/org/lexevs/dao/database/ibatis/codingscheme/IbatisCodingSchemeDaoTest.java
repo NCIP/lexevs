@@ -135,7 +135,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				assertTrue(rs.getString(1) + " - " + keys[0], rs.getString(1).equals(keys[0]));
 				assertTrue(rs.getString(2) + " - " + keys[1], rs.getString(2).equals(keys[1]));
-				assertEquals(rs.getString(3), "CodingScheme");
+				assertEquals(rs.getString(3), "codingScheme");
 				assertEquals(rs.getString(4), ChangeType.REMOVE.toString());
 				assertEquals(rs.getLong(5), 22l);
 				
