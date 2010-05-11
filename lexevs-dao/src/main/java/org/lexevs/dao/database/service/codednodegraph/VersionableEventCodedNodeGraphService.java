@@ -20,6 +20,7 @@ package org.lexevs.dao.database.service.codednodegraph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
@@ -110,25 +111,20 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 
 	@Override
 	@Transactional
-	public int getTripleUidsContainingObjectCount(String codingSchemeUri,
-			String codingSchemeVersion, String relationsContainerName,
-			String associationPredicateName, String objectEntityCode,
-			String objectEntityCodeNamespace, GraphQuery query) {
+	public Map<String,Integer> getTripleUidsContainingObjectCount(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			String relationsContainerName,
+			String objectEntityCode,
+			String objectEntityCodeNamespace, 
+			GraphQuery query) {
 		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
-		
-		String associationPredicateUid = this.
-		getAssociationPredicateUid(
-				codingSchemeUri, 
-				codingSchemeVersion, 
-				codingSchemeUid, 
-				relationsContainerName, 
-				associationPredicateName);
 		
 		return this.getDaoManager().
 		getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
 			getTripleUidsContainingObjectCount(
 					codingSchemeUid, 
-					associationPredicateUid, 
+					relationsContainerName, 
 					objectEntityCode, 
 					objectEntityCodeNamespace, 
 					query.getRestrictToAssociations(),
@@ -169,29 +165,20 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 
 	@Override
 	@Transactional
-	public int getTripleUidsContainingSubjectCount(
+	public Map<String,Integer> getTripleUidsContainingSubjectCount(
 			String codingSchemeUri,
 			String codingSchemeVersion, 
 			String relationsContainerName,
-			String associationPredicateName, 
 			String subjectEntityCode,
 			String subjectEntityCodeNamespace, 
 			GraphQuery query) {
 		String codingSchemeUid = this.getCodingSchemeId(codingSchemeUri, codingSchemeVersion);
-		
-		String associationPredicateUid = this.
-		getAssociationPredicateUid(
-				codingSchemeUri, 
-				codingSchemeVersion, 
-				codingSchemeUid, 
-				relationsContainerName, 
-				associationPredicateName);
-		
+
 		return this.getDaoManager().
 		getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
 			getTripleUidsContainingSubjectCount(
 					codingSchemeUid, 
-					associationPredicateUid, 
+					relationsContainerName, 
 					subjectEntityCode, 
 					subjectEntityCodeNamespace, 
 					query.getRestrictToAssociations(),
