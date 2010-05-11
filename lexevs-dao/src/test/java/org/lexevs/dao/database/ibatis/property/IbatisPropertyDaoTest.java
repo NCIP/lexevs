@@ -128,7 +128,7 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				assertEquals(rs.getString(1), keys[1]);
 				assertEquals(rs.getString(2), keys[0]);
-				assertEquals(rs.getString(3), "Property");
+				assertEquals(rs.getString(3), "property");
 				assertEquals(rs.getString(4), ChangeType.VERSIONABLE.toString());
 				assertEquals(rs.getLong(5), 23l);
 				
@@ -324,7 +324,7 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				assertEquals(rs.getString(1), keys[1]);
 				assertEquals(rs.getString(2), keys[0]);
-				assertEquals(rs.getString(3), "Property");
+				assertEquals(rs.getString(3), "property");
 				assertEquals(rs.getString(4), ChangeType.VERSIONABLE.toString());
 				assertEquals(rs.getLong(5), 23l);
 				
