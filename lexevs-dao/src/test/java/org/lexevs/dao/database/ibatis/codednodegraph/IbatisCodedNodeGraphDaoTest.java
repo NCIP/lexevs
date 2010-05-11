@@ -61,8 +61,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -112,8 +112,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -138,7 +138,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 					"cs-guid", "ap-guid", "s-code", "s-ns", null, null, null);
 
 		assertEquals(1, uids.keySet().size());
-		assertEquals(new Integer(2), uids.get("ap-guid"));
+		assertEquals(new Integer(2), uids.get("apname"));
 	}
 	
 	@Test
@@ -154,8 +154,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -180,7 +180,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 					"cs-guid", "ap-guid", "t-code1", "t-ns1", null, null, null);
 		
 		assertEquals(1, uids.keySet().size());
-		assertEquals(new Integer(1), uids.get("ap-guid"));
+		assertEquals(new Integer(1), uids.get("apname"));
 	}
 	
 	@Test
@@ -199,8 +199,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -249,8 +249,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -286,8 +286,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -322,7 +322,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 					"cs-guid", "ap-guid", "s-code", "s-ns", null, list, null);
 		
 		assertEquals(1, uids.keySet().size());
-		assertEquals(new Integer(1), uids.get("ap-guid"));
+		assertEquals(new Integer(1), uids.get("apname"));
 	}
 	
 	@Test
@@ -338,8 +338,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -389,8 +389,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -425,7 +425,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 					"cs-guid", "ap-guid", "s-code", "s-ns", null, list, null);
 		
 		assertEquals(1, uids.keySet().size());
-		assertEquals(new Integer(1), uids.get("ap-guid"));
+		assertEquals(new Integer(1), uids.get("apname"));
 	}
 	
 	@Test
@@ -441,8 +441,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -492,8 +492,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -528,7 +528,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 					"cs-guid", "ap-guid", "s-code", "s-ns", null, null, DaoUtility.createNonTypedList(pair));
 		
 		assertEquals(1, uids.keySet().size());
-		assertEquals(new Integer(1), uids.get("ap-guid"));
+		assertEquals(new Integer(1), uids.get("apname"));
 	}
 	
 	@Test
@@ -544,8 +544,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -586,8 +586,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -628,8 +628,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -668,8 +668,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -710,8 +710,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -752,8 +752,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -794,8 +794,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
@@ -834,8 +834,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
-				"relationGuid) values " +
-		"('ap-guid', 'rel-guid')");
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid1'," +
