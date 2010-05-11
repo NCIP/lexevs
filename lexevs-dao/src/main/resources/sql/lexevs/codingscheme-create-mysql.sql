@@ -6,7 +6,7 @@ CREATE TABLE @PREFIX@associationPredicate
 (
 	associationPredicateGuid VARCHAR(36) NOT NULL,
 	relationGuid VARCHAR(36) NOT NULL,
-	associationName VARCHAR(100),
+	associationName VARCHAR(100) NOT NULL,
 	PRIMARY KEY (associationPredicateGuid),
 	UNIQUE UQ_association(relationGuid, associationName),
 	KEY (relationGuid)

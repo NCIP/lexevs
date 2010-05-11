@@ -12,7 +12,7 @@ CREATE TABLE @PREFIX@associationPredicate
 (
 	associationPredicateGuid  VARCHAR2(36) NOT NULL,    --  Global unique identifier for a given associationPredicate. 
 	relationGuid              VARCHAR2(36) NOT NULL,    --  Foreign key to the corresponding relation container. 
-	associationName           VARCHAR2(100)    --  The local identifier of the relation itself.  associationName must match a local id of a supportedAssociationName in the corresponding mappings section. 
+	associationName           VARCHAR2(100) NOT NULL    --  The local identifier of the relation itself.  associationName must match a local id of a supportedAssociationName in the corresponding mappings section. 
 )
 ;
 

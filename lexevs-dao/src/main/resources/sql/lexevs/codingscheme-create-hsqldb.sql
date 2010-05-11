@@ -2,7 +2,7 @@
 CREATE TABLE @PREFIX@associationPredicate ( 
 	associationPredicateGuid varchar(36) NOT NULL,
 	relationGuid varchar(36) NOT NULL,
-	associationName varchar(100)
+	associationName varchar(100) NOT NULL
 )
 ;
 
