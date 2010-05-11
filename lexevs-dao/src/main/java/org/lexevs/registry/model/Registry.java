@@ -131,5 +131,52 @@ public class Registry implements Serializable {
 	public Timestamp getLastUpdateTime() {
 		return lastUpdateTime;
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		result = prime * result
+				+ ((lastUpdateTime == null) ? 0 : lastUpdateTime.hashCode());
+		result = prime
+				* result
+				+ ((lastUsedDbIdentifer == null) ? 0 : lastUsedDbIdentifer
+						.hashCode());
+		result = prime
+				* result
+				+ ((lastUsedHistoryIdentifer == null) ? 0
+						: lastUsedHistoryIdentifer.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Registry other = (Registry) obj;
+		if (id != other.id)
+			return false;
+		if (lastUpdateTime == null) {
+			if (other.lastUpdateTime != null)
+				return false;
+		} else if (!lastUpdateTime.equals(other.lastUpdateTime))
+			return false;
+		if (lastUsedDbIdentifer == null) {
+			if (other.lastUsedDbIdentifer != null)
+				return false;
+		} else if (!lastUsedDbIdentifer.equals(other.lastUsedDbIdentifer))
+			return false;
+		if (lastUsedHistoryIdentifer == null) {
+			if (other.lastUsedHistoryIdentifer != null)
+				return false;
+		} else if (!lastUsedHistoryIdentifer
+				.equals(other.lastUsedHistoryIdentifer))
+			return false;
+		return true;
+	}
 }
