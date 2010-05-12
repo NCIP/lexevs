@@ -403,36 +403,48 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 
 	@ClearCache
 	public void removePickListDefinitionByPickListId(String pickListDefinitionId) {
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
-		String pickListGuid = (String) this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_GUID_BY_PICKLISTID_SQL, new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), pickListDefinitionId));
+		String pickListGuid = (String) this.getSqlMapClientTemplate().queryForObject(
+				GET_PICKLIST_GUID_BY_PICKLISTID_SQL, 
+				new PrefixedParameter(prefix, pickListDefinitionId));
 		
 		// remove entry state details
 		this.vsEntryStateDao.deleteAllEntryStatesOfPickListDefinitionByUId(pickListGuid);
 		
 		// remove all pick list entry context
-		this.getSqlMapClientTemplate().delete(DELETE_PICKLIST_ENTRY_CONTEXT_BY_PICKLIST_GUID_SQL, new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), ReferenceType.PICKLISTENTRY.name(), pickListGuid));
+		this.getSqlMapClientTemplate().delete(
+				DELETE_PICKLIST_ENTRY_CONTEXT_BY_PICKLIST_GUID_SQL, 
+				new PrefixedParameterTuple(prefix, ReferenceType.PICKLISTENTRY.name(), pickListGuid));
 		
 		// remove all pick list entry node properties
 		this.vsPropertyDao.deleteAllPickListEntityPropertiesOfPickListDefinition(pickListGuid);
 		
 		// remove pick list entries
-		this.getSqlMapClientTemplate().delete(REMOVE_PICKLIST_ENTRY_BY_PICKLISTGUID_SQL, new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), pickListGuid));
+		this.getSqlMapClientTemplate().delete(
+				REMOVE_PICKLIST_ENTRY_BY_PICKLISTGUID_SQL, 
+				new PrefixedParameter(prefix, pickListGuid));
 		
 		// remove pick list definition properties
 		this.vsPropertyDao.deleteAllPickListDefinitionProperties(pickListGuid);
 		
 		// remove pick list definition source list
-		this.getSqlMapClientTemplate().delete(DELETE_SOURCE_BY_PARENT_GUID_AND_TYPE_SQL, new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), pickListGuid, ReferenceType.PICKLISTDEFINITION.name()));
+		this.getSqlMapClientTemplate().delete(
+				DELETE_SOURCE_BY_PARENT_GUID_AND_TYPE_SQL, 
+				new PrefixedParameterTuple(prefix, pickListGuid, ReferenceType.PICKLISTDEFINITION.name()));
 		
 		// remove pick list definition default context
-		this.getSqlMapClientTemplate().delete(DELETE_CONTEXT_BY_PARENT_GUID_AND_TYPE_SQL, new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), pickListGuid, ReferenceType.PICKLISTDEFINITION.name()));
+		this.getSqlMapClientTemplate().delete(
+				DELETE_CONTEXT_BY_PARENT_GUID_AND_TYPE_SQL, 
+				new PrefixedParameterTuple(prefix, pickListGuid, ReferenceType.PICKLISTDEFINITION.name()));
 		
 		// remove pick list definition mappings
 		deletePickListDefinitionMappings(pickListGuid);
 		
 		// remove pick list definition
-		this.getSqlMapClientTemplate().
-			delete(REMOVE_PICKLIST_DEFINITION_BY_PICKLISTID_SQL, new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), pickListDefinitionId));	
+		this.getSqlMapClientTemplate().delete(
+				REMOVE_PICKLIST_DEFINITION_BY_PICKLISTID_SQL, 
+				new PrefixedParameter(prefix, pickListDefinitionId));	
 	}
 
 	@Override
