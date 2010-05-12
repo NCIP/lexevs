@@ -177,6 +177,7 @@ CREATE TABLE @PREFIX@property (
 
 CREATE TABLE @PREFIX@propertyLinks ( 
 	propertyLinksGuid varchar(36) NOT NULL,
+	entityGuid varchar(36) NOT NULL,
 	sourcePropertyGuid varchar(36) NOT NULL,
 	link varchar(250) NOT NULL,
 	targetPropertyGuid varchar(36) NOT NULL
@@ -352,7 +353,12 @@ ALTER TABLE @PREFIX@property
 ;
 CREATE INDEX idx_referenceGuid
 ON @PREFIX@property (referenceGuid)
+
+ALTER TABLE @PREFIX@propertyLinks ADD CONSTRAINT @PREFIX@FK_pLinks_EntityGuid 
+	FOREIGN KEY (entityGuid) REFERENCES @PREFIX@entity (entityGuid)
+ON DELETE CASCADE
 ;
+
 ALTER TABLE @PREFIX@propertyLinks
 	ADD CONSTRAINT UQ_propLinks UNIQUE (sourcePropertyGuid, link, targetPropertyGuid)
 ;

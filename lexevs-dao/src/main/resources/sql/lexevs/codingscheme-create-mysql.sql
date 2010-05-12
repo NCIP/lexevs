@@ -262,6 +262,7 @@ TYPE=INNODB
 CREATE TABLE @PREFIX@propertyLinks
 (
 	propertyLinksGuid VARCHAR(36) NOT NULL,
+	entityGuid VARCHAR(36) NOT NULL,
 	sourcePropertyGuid VARCHAR(36) NOT NULL,
 	link VARCHAR(250) NOT NULL,
 	targetPropertyGuid VARCHAR(36) NOT NULL,
@@ -374,6 +375,11 @@ ALTER TABLE @PREFIX@entryState ADD CONSTRAINT @PREFIX@FK_es_revisionGuid
 
 ALTER TABLE @PREFIX@entryState ADD CONSTRAINT @PREFIX@FK_es_prevRevisionGuid 
 	FOREIGN KEY (prevRevisionGuid) REFERENCES @DEFAULT_PREFIX@revision (revisionGuid)
+;
+
+ALTER TABLE @PREFIX@propertyLinks ADD CONSTRAINT @PREFIX@FK_pLinks_EntityGuid 
+	FOREIGN KEY (entityGuid) REFERENCES @PREFIX@entity (entityGuid)
+	ON DELETE CASCADE
 ;
 
 ALTER TABLE @PREFIX@propertyLinks ADD CONSTRAINT @PREFIX@FK_pLinks_sPropGuid 

@@ -449,7 +449,8 @@ COMMENT ON COLUMN @PREFIX@property.entryStateGuid        IS 'Holds the reference
 
 CREATE TABLE @PREFIX@propertyLinks
 (
-	propertyLinksGuid   VARCHAR2(36) NOT NULL,    --  Global unique identifier for a given property link. 
+	propertyLinksGuid   VARCHAR2(36) NOT NULL,
+	entityGuid  		VARCHAR2(36) NOT NULL, 	 --  Global unique identifier for a given property link. 
 	sourcePropertyGuid  VARCHAR2(36) NOT NULL,    --  Foreign key to the source property guid. (The identifier of the first property in the link.) 
 	link                VARCHAR2(250) NOT NULL,    --  The local name of the type of link between properties.  (Examples include acronymFor, abbreviationOf, spellingVariantOf, etc. Must be in supportedPropertyLink) propertyLink must match a local id of a supportedPropertyLink in the corresponding mapping section. 
 	targetPropertyGuid  VARCHAR2(36) NOT NULL    --  Foreign key to the target property guid. (The identifier of the second property in the link.) 
@@ -776,6 +777,11 @@ ALTER TABLE @PREFIX@entryState ADD CONSTRAINT FK_es_revisionGuid
 
 ALTER TABLE @PREFIX@entryState ADD CONSTRAINT FK_es_prevRevisionGuid 
 	FOREIGN KEY (prevRevisionGuid) REFERENCES @PREFIX@revision (revisionGuid)
+;
+
+ALTER TABLE @PREFIX@propertyLinks ADD CONSTRAINT FK_pLinks_EntityGuid 
+	FOREIGN KEY (entityGuid) REFERENCES @PREFIX@entity (entityGuid)
+ON DELETE CASCADE
 ;
 
 ALTER TABLE @PREFIX@propertyLinks ADD CONSTRAINT FK_pLinks_sPropGuid 
