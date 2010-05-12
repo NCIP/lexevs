@@ -24,11 +24,11 @@ import org.LexGrid.LexBIG.Extensions.Query.Search;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Operation;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.LexGrid.naming.SupportedLanguage;
 import org.apache.lucene.search.Query;
-import org.lexevs.exceptions.InternalException;
 
 /**
  * Holder for the RestrictToMatchingDesignations operation.
@@ -59,15 +59,12 @@ public class RestrictToMatchingDesignations implements Restriction, Operation {
 
             if (language != null && language.length() > 0) {
                 // this validated that language (throws exceptions as necessary)
-                SQLImplementedMethods.validateLanguage(internalCodeSystemName, internalVersionString, language);
+                ServiceUtility.validateParameter(internalCodeSystemName, internalVersionString, language, SupportedLanguage.class);
             }
 
             language_ = language;
         } catch (LBParameterException e) {
-            throw e;
-        } catch (InternalException e) {
-            throw new LBInvocationException("There was an unexpected error while validating the language.", e
-                    .getLogId());
+            throw new LBInvocationException("There was an unexpected error while validating the language.", e.getLocalizedMessage());
         }
     }
 
