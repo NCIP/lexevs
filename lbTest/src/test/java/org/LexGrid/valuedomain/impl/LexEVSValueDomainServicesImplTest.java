@@ -344,19 +344,21 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 			cns = vdcns.getCodedNodeSet();
 			csvrList = vdcns.getCodingSchemeVersionRefList();
 			
-			rcrList = cns.resolveToList(null, null, null, null, false, 1024); // this should contain codes : FAO:0001004, FAO:0001003, FAO:0001014, FAO:0001013
+			rcrList = cns.resolveToList(null, null, null, null, false, 1024);
 			
-			System.out.println("rcrList.getResolvedConceptReferenceCount() : " + rcrList.getResolvedConceptReferenceCount());
-			assertTrue(rcrList.getResolvedConceptReferenceCount() == 4);
+			assertTrue(rcrList.getResolvedConceptReferenceCount() == 8);
 			
 			for (int i = 0; i < rcrList.getResolvedConceptReferenceCount(); i++)
 			{
 				ResolvedConceptReference rcr =  rcrList.getResolvedConceptReference(i);
-				System.out.println(rcr.getCode());
 				assertTrue(rcr.getCode().equalsIgnoreCase("FAO:0001014")
 						|| rcr.getCode().equalsIgnoreCase("FAO:0001013")
 						|| rcr.getCode().equalsIgnoreCase("FAO:0001004")
-						|| rcr.getCode().equalsIgnoreCase("FAO:0001003"));				
+						|| rcr.getCode().equalsIgnoreCase("FAO:0001003")
+						|| rcr.getCode().equalsIgnoreCase("FAO:0001020")
+						|| rcr.getCode().equalsIgnoreCase("FAO:0001017")
+						|| rcr.getCode().equalsIgnoreCase("FAO:0001012")
+						|| rcr.getCode().equalsIgnoreCase("FAO:0001015"));				
 			}
 		}		
 	}
@@ -464,7 +466,6 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	
 	@Test
 	public void testResolveValueDomain() throws LBException, URISyntaxException {
-		System.out.println("in testResolveValueDomain");
 		AbsoluteCodingSchemeVersionReferenceList csvList = new AbsoluteCodingSchemeVersionReferenceList();
 		csvList.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.1"));
 		ResolvedValueSetDefinition rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:Ford"), csvList, null);
