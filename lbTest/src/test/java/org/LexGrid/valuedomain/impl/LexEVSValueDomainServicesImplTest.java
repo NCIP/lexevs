@@ -450,12 +450,14 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	
 	@Test
 	public void testGetValueSetURIsForSupportedTagAndValue(){
-		System.out.println("in testGetValueSetURIsForSupportedTagAndValue");
-		List<String> uris = getValueSetDefinitionService().getValueSetDefinitionURIsForSupportedTagAndValue("codingScheme", "scs uri");
+		List<String> uris = getValueSetDefinitionService().getValueSetDefinitionURIsForSupportedTagAndValue("conceptDomain", "Autos");
 		
+		assertTrue(uris.size() == 3);
 		for (String uri : uris)
 		{
-			System.out.println("vsd uri with cs 'scs uri' : " + uri);
+			assertTrue(uri.equalsIgnoreCase("SRITEST:AUTO:Automobiles") || 
+					uri.equalsIgnoreCase("SRITEST:AUTO:DomesticAutoMakers") || 
+					uri.equalsIgnoreCase("SRITEST:AUTO:EveryThing"));
 		}
 	}
 	
@@ -509,14 +511,15 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		
 		//***************------------------*****************************
 		rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:FA:HyphaInMycelium"), null, null);
-        //dumpValueDomainResolution(new URI("SRITEST:AUTO:AllDomesticANDGM1"), null);
         
         codes = new HashSet<String>();
         while (rvdDef.getResolvedConceptReferenceIterator().hasNext())
         {
             ResolvedConceptReference rcr = rvdDef.getResolvedConceptReferenceIterator().next();
             codes.add(rcr.getCode());
+            System.out.println("rcr.getCodes() : " + rcr.getCode());
         }
+        System.out.println("codes.size : " + codes.size());
 //        assertTrue("Size: " + codes.size(), codes.size() == 3);
 //        assertTrue(codes.contains("GM"));
 //        assertTrue(codes.contains("Chevy"));
@@ -529,10 +532,8 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		{
 			ResolvedConceptReference rcr = rvdDef.getResolvedConceptReferenceIterator().next();
 			codes.add(rcr.getCode());
-			System.out.println("rcr.getCode() : " + rcr.getCode());
 		}
-		System.out.println("codes.size() : " + codes.size());
-		assertTrue(codes.size() == 6);
+		assertTrue(codes.size() == 5);
 		assertFalse(codes.contains("73"));        // We never pull retired codes (!)
 		assertTrue(codes.contains("Chevy"));
 		assertTrue(codes.contains("F150"));
@@ -542,7 +543,6 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		codes.clear();
 		
         rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:AllDomesticANDGM1"), null, null);
-        //dumpValueDomainResolution(new URI("SRITEST:AUTO:AllDomesticANDGM1"), null);
         
         codes = new HashSet<String>();
         while (rvdDef.getResolvedConceptReferenceIterator().hasNext())
@@ -550,7 +550,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
             ResolvedConceptReference rcr = rvdDef.getResolvedConceptReferenceIterator().next();
             codes.add(rcr.getCode());
         }
-        assertTrue("Size: " + codes.size(), codes.size() == 3);
+        assertTrue("Size: " + codes.size(), codes.size() == 2);
         assertTrue(codes.contains("GM"));
         assertTrue(codes.contains("Chevy"));
         codes.clear();

@@ -42,8 +42,6 @@ import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListEntry;
 import org.LexGrid.valueSets.PickListEntryExclusion;
 import org.LexGrid.valueSets.PickListEntryNode;
-import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntry;
