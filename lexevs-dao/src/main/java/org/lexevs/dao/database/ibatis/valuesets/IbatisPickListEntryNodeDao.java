@@ -119,7 +119,7 @@ public class IbatisPickListEntryNodeDao extends AbstractIbatisDao implements
 			{
 				plEntryBean.setInclude(true);
 				plEntryBean.setEntityCode(plEntry.getEntityCodeNamespace());
-				plEntryBean.setEntityCode(plEntry.getEntityCode());
+				plEntryBean.setEntityCodeNamespace(plEntry.getEntityCodeNamespace());
 				plEntryBean.setDefault(plEntry.isIsDefault() == null? false : plEntry.isIsDefault());
 				plEntryBean.setEntryOrder(plEntry.getEntryOrder() == null? 0 : plEntry.getEntryOrder());
 				plEntryBean.setMatchIfNoContext(plEntry.getMatchIfNoContext() == null ? true : plEntry.getMatchIfNoContext());
