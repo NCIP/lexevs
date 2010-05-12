@@ -21,7 +21,9 @@ package org.lexevs.system.service;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.codingSchemes.CodingScheme;
+import org.lexevs.cache.annotation.CacheMethod;
+import org.lexevs.cache.annotation.Cacheable;
+import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.event.SystemEventListener;
 import org.lexevs.system.event.SystemEventSupport;
@@ -32,6 +34,7 @@ import org.lexevs.system.utility.MyClassLoader;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Cacheable(cacheName = "RegistryServiceCache")
 public class DelegatingSystemResourceService extends SystemEventSupport implements SystemResourceService {
 	
 	/** The primary system resource service. */
@@ -43,17 +46,20 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#containsCodingSchemeResource(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public boolean containsCodingSchemeResource(String uri, String version)
 			throws LBParameterException {
 		return primarySystemResourceService.containsCodingSchemeResource(uri, version) ||
 		delegateSystemResourceService.containsCodingSchemeResource(uri, version);
 	}
 	
+	@CacheMethod
 	public boolean containsValueSetDefinitionResource(String uri, String version)
 		throws LBParameterException {
 		return primarySystemResourceService.containsValueSetDefinitionResource(uri, version);
 	}
 	
+	@CacheMethod
 	public boolean containsPickListDefinitionResource(String pickListId, String version)
 		throws LBParameterException {
 		return primarySystemResourceService.containsPickListDefinitionResource(pickListId, version);
@@ -62,6 +68,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#containsNonCodingSchemeResource(java.lang.String)
 	 */
+	@CacheMethod
 	public boolean containsNonCodingSchemeResource(String uri)
 			throws LBParameterException {
 		return primarySystemResourceService.containsNonCodingSchemeResource(uri) ||
@@ -85,6 +92,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#getInternalCodingSchemeNameForUserCodingSchemeName(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public String getInternalCodingSchemeNameForUserCodingSchemeName(
 			String codingSchemeName, String version)
 			throws LBParameterException {
@@ -98,6 +106,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#getInternalVersionStringForTag(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public String getInternalVersionStringForTag(String codingSchemeName,
 			String tag) throws LBParameterException {
 		LBParameterException exception;
@@ -117,6 +126,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#getUriForUserCodingSchemeName(java.lang.String)
 	 */
+	@CacheMethod
 	public String getUriForUserCodingSchemeName(String codingSchemeName) throws LBParameterException {
 		LBParameterException exception;
 		try {
@@ -134,6 +144,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#removeCodingSchemeResourceFromSystem(java.lang.String, java.lang.String)
 	 */
+	@ClearCache
 	public void removeCodingSchemeResourceFromSystem(String uri, String version)
 			throws LBParameterException {
 		if(primarySystemResourceService.containsCodingSchemeResource(uri, version)){
@@ -146,6 +157,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 		
 	}
 	
+	@ClearCache
 	public void removeValueSetDefinitionResourceFromSystem(String uri, String version)
 		throws LBParameterException {
 		if(primarySystemResourceService.containsValueSetDefinitionResource(uri, version)){
@@ -156,19 +168,20 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	
 	}
 	
+	@ClearCache
 	public void removePickListDefinitionResourceFromSystem(String pickListId, String version)
 	throws LBParameterException {
-	if(primarySystemResourceService.containsPickListDefinitionResource(pickListId, version)){
-		primarySystemResourceService.removePickListDefinitionResourceFromSystem(pickListId, version);
-	} else {
-		throw new LBParameterException("Could not find pick list definition : " + pickListId + " - " + version);
+		if(primarySystemResourceService.containsPickListDefinitionResource(pickListId, version)){
+			primarySystemResourceService.removePickListDefinitionResourceFromSystem(pickListId, version);
+		} else {
+			throw new LBParameterException("Could not find pick list definition : " + pickListId + " - " + version);
+		}
 	}
-
-}
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#removeNonCodingSchemeResourceFromSystem(java.lang.String)
 	 */
+	@ClearCache
 	public void removeNonCodingSchemeResourceFromSystem(String uri)
 			throws LBParameterException {
 		if(primarySystemResourceService.containsNonCodingSchemeResource(uri)){
@@ -183,6 +196,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#updateCodingSchemeResourceTag(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.lang.String)
 	 */
+	@ClearCache
 	public void updateCodingSchemeResourceTag(AbsoluteCodingSchemeVersionReference codingScheme, String newTag) 
 		throws LBParameterException {
 		if(primarySystemResourceService.containsCodingSchemeResource(
@@ -203,6 +217,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#updateCodingSchemeResourceStatus(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus)
 	 */
+	@ClearCache
 	public void updateCodingSchemeResourceStatus(
 			AbsoluteCodingSchemeVersionReference codingScheme,
 			CodingSchemeVersionStatus status) throws LBParameterException {
@@ -225,6 +240,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#updateNonCodingSchemeResourceStatus(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus)
 	 */
+	@ClearCache
 	public void updateNonCodingSchemeResourceStatus(String uri,
 			CodingSchemeVersionStatus status) throws LBParameterException {
 		
@@ -241,32 +257,28 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#addCodingSchemeResourceToSystem(java.lang.String, java.lang.String)
 	 */
+	@ClearCache
 	public void addCodingSchemeResourceToSystem(String uri, String version)
 		throws LBParameterException {
 		primarySystemResourceService.addCodingSchemeResourceToSystem(uri, version);
 	}
 	
+	@ClearCache
 	public void addValueSetDefinitionResourceToSystem(String uri, String version)
 		throws LBParameterException {
 		primarySystemResourceService.addValueSetDefinitionResourceToSystem(uri, version);
 	}
 	
+	@ClearCache
 	public void addPickListDefinitionResourceToSystem(String uri, String version)
 		throws LBParameterException {
 		primarySystemResourceService.addPickListDefinitionResourceToSystem(uri, version);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexevs.system.service.SystemResourceService#addCodingSchemeResourceToSystem(org.LexGrid.codingSchemes.CodingScheme)
-	 */
-	public void addCodingSchemeResourceToSystem(CodingScheme codingScheme)
-		throws LBParameterException {
-		//primarySystemResourceService.addCodingSchemeResourceToSystem(codingScheme);
-	}
-	
-	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#updateNonCodingSchemeResourceTag(java.lang.String, java.lang.String)
 	 */
+	@ClearCache
 	public void updateNonCodingSchemeResourceTag(String uri, String newTag)
 			throws LBParameterException {
 		
@@ -329,6 +341,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	}
 	
 	@Override
+	@ClearCache
 	public void refresh() {
 		primarySystemResourceService.refresh();
 		delegateSystemResourceService.refresh();

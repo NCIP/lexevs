@@ -31,9 +31,6 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
-import org.lexevs.cache.annotation.CacheMethod;
-import org.lexevs.cache.annotation.Cacheable;
-import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
@@ -54,7 +51,6 @@ import org.lexevs.system.utility.MyClassLoader;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@Cacheable(cacheName = "DelegatingResourceManagingService")
 public class LexEvsResourceManagingService extends SystemEventSupport implements SystemResourceService {
 
 	private LgLoggerIF logger;
@@ -97,7 +93,6 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 		readCodingSchemeAliasesFromServer();
 	}
 	
-	@ClearCache
 	public void refresh() {
 		readCodingSchemeAliasesFromServer();
 	}
@@ -159,7 +154,6 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#removeCodingSchemeResourceFromSystem(java.lang.String, java.lang.String)
 	 */
-	@ClearCache
 	public void removeCodingSchemeResourceFromSystem(String uri, String version) throws LBParameterException {
 		this.fireRemoveCodingSchemeResourceFromSystemEvent(uri, version);
 		
@@ -184,7 +178,6 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 		this.readCodingSchemeAliasesFromServer();
 	}
 
-	@ClearCache
 	public void removeValueSetDefinitionResourceFromSystem(String valueSetDefinitionURI, String version) throws LBParameterException {
 		List<RegistryEntry> entryList = this.getRegistry().getAllRegistryEntriesOfTypeURIAndVersion(ResourceType.VALUESET_DEFINITION, valueSetDefinitionURI, version);
 		for (RegistryEntry entry : entryList)
@@ -192,8 +185,7 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 			this.getRegistry().removeEntry(entry);
 		}
 	}
-	
-	@ClearCache
+
 	public void removePickListDefinitionResourceFromSystem(String pickListId, String version) throws LBParameterException {
 		List<RegistryEntry> entryList = this.getRegistry().getAllRegistryEntriesOfTypeURIAndVersion(ResourceType.PICKLIST_DEFINITION, pickListId, version);
 		for (RegistryEntry entry : entryList)
@@ -205,7 +197,6 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#getInternalCodingSchemeNameForUserCodingSchemeName(java.lang.String, java.lang.String)
 	 */
-	@CacheMethod
 	public String getInternalCodingSchemeNameForUserCodingSchemeName(
 			 String codingSchemeName, String version) throws LBParameterException {
 		for(CodingSchemeAliasHolder alias : this.aliasHolder){
@@ -297,7 +288,6 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#getInternalVersionStringForTag(java.lang.String, java.lang.String)
 	 */
-	@CacheMethod
 	public String getInternalVersionStringForTag(String codingSchemeName,
 			String tag) throws LBParameterException {
 		
@@ -411,7 +401,6 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#updateCodingSchemeResourceTag(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.lang.String)
 	 */
-	@ClearCache
 	public void updateCodingSchemeResourceTag(
 			AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
 			throws LBParameterException {
@@ -425,7 +414,6 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#updateCodingSchemeResourceStatus(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus)
 	 */
-	@ClearCache
 	public void updateCodingSchemeResourceStatus(
 			AbsoluteCodingSchemeVersionReference codingScheme,
 			CodingSchemeVersionStatus status) throws LBParameterException {
@@ -439,7 +427,6 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#updateNonCodingSchemeResourceStatus(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus)
 	 */
-	@ClearCache
 	public void updateNonCodingSchemeResourceStatus(String uri,
 			CodingSchemeVersionStatus status) throws LBParameterException {
 		RegistryEntry entry = registry.getNonCodingSchemeEntry(uri);
@@ -451,7 +438,6 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#updateNonCodingSchemeResourceTag(java.lang.String, java.lang.String)
 	 */
-	@ClearCache
 	public void updateNonCodingSchemeResourceTag(String uri, String newTag)
 			throws LBParameterException {
 		RegistryEntry entry = registry.getNonCodingSchemeEntry(uri);
@@ -463,7 +449,6 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#addCodingSchemeResourceToSystem(java.lang.String, java.lang.String)
 	 */
-	@ClearCache
 	public void addCodingSchemeResourceToSystem(String uri, String version)
 			throws LBParameterException {
 		RegistryEntry entry = RegistryUtility.codingSchemeToRegistryEntry(uri, version);
@@ -478,7 +463,6 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 		}
 	}
 	
-	@ClearCache
 	public void addValueSetDefinitionResourceToSystem(String uri, String version)
 			throws LBParameterException {
 		RegistryEntry entry = RegistryUtility.valueSetDefinitionToRegistryEntry(uri, version);
@@ -492,7 +476,6 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 		}
 	}
 	
-	@ClearCache
 	public void addPickListDefinitionResourceToSystem(String uri, String version)
 			throws LBParameterException {
 		RegistryEntry entry = RegistryUtility.pickListDefinitionToRegistryEntry(uri, version);
