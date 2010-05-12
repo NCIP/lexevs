@@ -706,7 +706,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 			"values ('eguid', 'concept')");
 		
 		template.execute("Insert into propertylinks " +
-			"values ('plguid1', 'pguid1', 'propertyLink1', 'pguid2')");
+			"values ('plguid1', 'eguid', 'pguid1', 'propertyLink1', 'pguid2')");
 		
 		template.execute("Insert into propertylinks " +
 			"values ('plguid2', 'pguid2', 'propertyLink2', 'pguid1')");

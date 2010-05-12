@@ -682,9 +682,10 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				assertNotNull(rs.getString(1));
-				assertEquals(rs.getString(2), "pguid1");
-				assertEquals(rs.getString(3), "link");
-				assertEquals(rs.getString(4), "pguid2");
+				assertEquals(rs.getString(2), "eguid");
+				assertEquals(rs.getString(3), "pguid1");
+				assertEquals(rs.getString(4), "link");
+				assertEquals(rs.getString(5), "pguid2");
 			
 				return null;
 			}
