@@ -39,7 +39,6 @@ import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClass
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
 import org.lexevs.dao.database.ibatis.codingscheme.IbatisCodingSchemeDao;
-import org.lexevs.dao.database.ibatis.entity.model.IdableEntity;
 import org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
@@ -154,6 +153,10 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	@Override
 	public List<Entity> getEntities(String codingSchemeId,
 			List<String> entityUids) {
+		if(CollectionUtils.isEmpty(entityUids)) {
+			return new ArrayList<Entity>();
+		}
+		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		Map<String,Entity> entities = (Map<String,Entity>) this.getSqlMapClientTemplate().queryForMap(GET_ENTITIES_BY_UIDS_SQL, 
