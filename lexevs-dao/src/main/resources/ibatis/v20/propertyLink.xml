@@ -7,11 +7,13 @@
      <insert id="insertPropertyLink" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyLinkBean">
      	INSERT INTO $prefix$propertyLinks (
      		propertyLinksGuid,
+     		entityGuid,
      		sourcePropertyGuid,
      		link,
      		targetPropertyGuid
      	) VALUES (
      		#uid#,
+     		#entityUId#,
      		#sourcePropertyUId#,
      		#link#,
      		#targetPropertyUId#
