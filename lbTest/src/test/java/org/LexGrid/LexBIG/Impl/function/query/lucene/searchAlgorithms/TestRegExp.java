@@ -131,7 +131,7 @@ public class TestRegExp extends BaseSearchAlgorithmTest {
       */
      public void testRegExpComplex() throws Exception {
          CodedNodeSet cns = super.getAutosCodedNodeSet();
-         cns.restrictToMatchingDesignations("a[^z]*o(m|o)*bi.*e$", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+         cns.restrictToMatchingDesignations("a[^z]t*o(m|o)*bi.*e$", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
          ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 

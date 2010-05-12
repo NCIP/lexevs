@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.Utility.Constructors;
 
 /**
  * The Class TestLeadingAndTrailingWildcard.
@@ -175,6 +176,7 @@ public class TestLeadingAndTrailingWildcard extends BaseSearchAlgorithmTest {
     public void testLeadingAndTrailingWildcardScoring() throws Exception {
    	 CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns.restrictToMatchingDesignations("auto", SearchDesignationOption.ALL, algorithm, null);
+        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] {"005", "A0001"}));
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
