@@ -204,9 +204,9 @@
 			referenceGuid 
 		IN	(
 			SELECT 
-				$prefix$vsPLEntryGuid
+				vsPLEntryGuid
 			FROM
-				vsPLEntry
+				$prefix$vsPLEntry
 			WHERE
 				vsPickListGuid = #param2#
 			)

@@ -108,7 +108,7 @@
 			SELECT 
 				vsPLEntryGuid
 			FROM
-				vsPLEntry
+				$prefix$vsPLEntry
 			WHERE
 				vsPickListGuid = #param2#
 			)
