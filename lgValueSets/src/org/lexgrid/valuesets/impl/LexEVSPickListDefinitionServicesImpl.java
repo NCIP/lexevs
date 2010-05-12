@@ -256,7 +256,6 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		return this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionIdForValueSetDefinitionUri(valueSetDefURI.toString());		
 	}
 	
-	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#resolvePickListForTerm(java.lang.String, java.lang.String, org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms)
 	 */
@@ -270,7 +269,11 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		PickListDefinition pickList = this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionByPickListId(pickListId);
 		if (pickList != null)
 		{
-			String defaultCS = pickList.getDefaultEntityCodeNamespace();
+			String defaultCS = null;
+			// Always add the default coding scheme, even if it isn't used
+		    if(!StringUtils.isEmpty(pickList.getDefaultEntityCodeNamespace()))
+		    	defaultCS = VSDServiceHelper.getCodingSchemeURIForEntityCodeNamespace(pickList.getMappings(), pickList.getDefaultEntityCodeNamespace());
+		    
 			String defaultLang = pickList.getDefaultLanguage();
 			
 			boolean completeDomain = pickList.isCompleteSet();
@@ -307,7 +310,10 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 				
 				if (plEntry != null && !excludeEntityCodes.contains(plEntry.getEntityCode()))
 				{
-					String cs = plEntry.getEntityCodeNamespace();
+					String cs = null;
+					if (plEntry.getEntityCodeNamespace() != null)
+						cs = VSDServiceHelper.getCodingSchemeURIForEntityCodeNamespace(pickList.getMappings(), plEntry.getEntityCodeNamespace());
+					
 					if (StringUtils.isEmpty(cs))
 						cs = defaultCS;
 					
@@ -422,9 +428,11 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 
         if (pickList != null)
         {
-            String defaultCS = pickList.getDefaultEntityCodeNamespace();
-//            String defaultLang = pickList.getDefaultLanguage();
-            
+        	String defaultCS = null;
+			// Always add the default coding scheme, even if it isn't used
+		    if(!StringUtils.isEmpty(pickList.getDefaultEntityCodeNamespace()))
+		    	defaultCS = VSDServiceHelper.getCodingSchemeURIForEntityCodeNamespace(pickList.getMappings(), pickList.getDefaultEntityCodeNamespace());
+		    
             boolean completeDomain = pickList.isCompleteSet();
             
             // get all static pickListEntryNodes to get any exclude entries.
@@ -447,7 +455,10 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
                 
                 if (plEntry != null && !excludeEntityCodes.contains(plEntry.getEntityCode()))
                 {
-                    String cs = plEntry.getEntityCodeNamespace();
+                	String cs = null;
+					if (plEntry.getEntityCodeNamespace() != null)
+						cs = VSDServiceHelper.getCodingSchemeURIForEntityCodeNamespace(pickList.getMappings(), plEntry.getEntityCodeNamespace());
+					
                     if (StringUtils.isEmpty(cs))
                         cs = defaultCS;
                     

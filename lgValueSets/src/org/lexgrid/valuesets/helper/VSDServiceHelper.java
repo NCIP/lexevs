@@ -122,7 +122,7 @@ public class VSDServiceHelper {
 	 * @param codingSchemeName - local identifier of the coding scheme
 	 * @return - URI or, if missing, the coding scheme name (surrogate)
 	 */
-    public String getURIForCodingSchemeName(Mappings maps, String codingSchemeName) {
+    public static String getURIForCodingSchemeName(Mappings maps, String codingSchemeName) {
 	    if(maps != null && maps.getSupportedCodingScheme() != null) {
 	        ListIterator<SupportedCodingScheme> scsi = maps.getSupportedCodingSchemeAsReference().listIterator();
     	    while(scsi.hasNext()) {
@@ -132,6 +132,28 @@ public class VSDServiceHelper {
     	    }
 	    }
 	    return codingSchemeName;
+	}
+    
+    /**
+	 * Return the coding scheme URI that corresponds to the supplied entityCodeNamespace. Comparison is case insensitive.
+	 * @param maps - Mappings that contain the name to URI maps
+	 * @param entityCodeNamespace - local identifier of the entityCodeNamespace
+	 * @return - URI or, if missing, the coding scheme name (surrogate)
+	 */
+    public static String getCodingSchemeURIForEntityCodeNamespace(Mappings maps, String entityCodeNamespace) {
+    	if (maps != null && maps.getSupportedNamespace() != null) {
+    		ListIterator<SupportedNamespace> snsi = maps.getSupportedNamespaceAsReference().listIterator();
+    		while (snsi.hasNext()){
+    			SupportedNamespace sns = snsi.next();
+    			if (sns.getLocalId().equalsIgnoreCase(entityCodeNamespace)){
+    				if (sns.getEquivalentCodingScheme() != null){
+    					return getURIForCodingSchemeName(maps, sns.getEquivalentCodingScheme());
+    				}
+    			}
+    		}
+    	}
+    	
+	    return entityCodeNamespace;
 	}
 	
 	/**
@@ -202,7 +224,8 @@ public class VSDServiceHelper {
 		}
 		return csRefs;
 	}
-
+    
+    
 	/**
 	 * Return a list of all the versions of the supplied coding scheme URI or local identifier that are supported by the service
 	 * @param codingSchemeNameOrURI - URI to return versions for or return all URI's if null
