@@ -9,7 +9,7 @@
 	<typeAlias alias="comment" type="org.LexGrid.concepts.Comment"/>
 	<typeAlias alias="insertOrUpdatePropertyBean" type="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean"/>
 
-	<resultMap id="propertyResult" class="property" groupBy="propertyId">
+	<resultMap id="propertyResult" class="property" groupBy="parent,propertyId">
 		<result property="parent" column="referenceGuid" />	
 		<result property="propertyName" column="propertyName" />	
 		<result property="propertyId" column="propertyId" />
