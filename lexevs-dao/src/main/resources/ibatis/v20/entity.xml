@@ -37,6 +37,7 @@
 		<result property="effectiveDate" column="effectiveDate" />
 		<result property="expirationDate" column="expirationDate" />
 		<result property="_entityTypeList" resultMap="Entity.entityTypeResult"/>
+		<result property="_propertyLinkList" resultMap="Entity.propertyLinkResult"/>
 		<result property="entryState" resultMap="Versions.entryStateResult" />
 		<discriminator javaType="string" column="entityType">
 			<subMap value="association" resultMap="Entity.associationEntityResult" />
@@ -70,7 +71,7 @@
 		<result property="isTransitive" column="isTransitive" />
 	</resultMap>
 	
-	<resultMap id="propertyLinkResult" class="propertyLink">
+	<resultMap id="propertyLinkResult" class="propertyLink" groupBy="sourceProperty,targetProperty,link">
 		<result property="parent" column="entityGuid" />
 		<result property="sourceProperty" column="sourcePropId" />
 		<result property="targetProperty" column="targetPropId" />
@@ -157,6 +158,11 @@
 			entryState.changeType,
   			entryState.relativeOrder,
   			entryState.relativeOrder,
+  			
+  			propertyLinks.link,
+  			
+  			sourcePropertyLinksProperty.propertyId sourcePropId,
+  			targetPropertyLinksProperty.propertyId targetPropId,
 			
 			currentRevision.revisionId currentRevisionId,
   			previousRevision.revisionId previousRevisionId
@@ -175,6 +181,24 @@
 		ON
 			entity.entryStateGuid =
 			entryState.entryStateGuid	
+			
+		LEFT JOIN
+			$actualTableSetPrefix$propertyLinks propertyLinks
+		ON
+			entity.entityGuid =
+			propertyLinks.entityGuid
+			
+		LEFT JOIN
+			$actualTableSetPrefix$property sourcePropertyLinksProperty
+		ON
+			propertyLinks.sourcePropertyGuid =
+			sourcePropertyLinksProperty.propertyGuid
+			
+		LEFT JOIN
+			$actualTableSetPrefix$property targetPropertyLinksProperty
+		ON
+			propertyLinks.targetPropertyGuid =
+			targetPropertyLinksProperty.propertyGuid
 			
 		LEFT JOIN
 			${defaultPrefix}revision currentRevision

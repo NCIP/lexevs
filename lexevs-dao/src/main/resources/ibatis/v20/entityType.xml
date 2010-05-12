@@ -14,8 +14,8 @@
      	)
      </insert>
      
-     <resultMap id="entityTypeResult" class="string">
-		<result property="java.lang.String" column="entityType" />
+     <resultMap id="entityTypeResult" class="string" groupBy="type">
+		<result property="type" column="entityType" />
 	</resultMap>
 
 </sqlMap>
