@@ -29,6 +29,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.URIMap;
@@ -477,7 +478,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 
 	@Override
 	public List<SupportedProperty> getPropertyUriMapForPropertyType(
-			String codingSchemeId, String propertyType) {
+			String codingSchemeId, PropertyTypes propertyType) {
 		throw new UnsupportedOperationException();
 	}
 

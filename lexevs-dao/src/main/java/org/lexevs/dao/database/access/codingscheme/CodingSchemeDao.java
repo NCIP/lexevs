@@ -23,6 +23,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.URIMap;
@@ -192,7 +193,7 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @return the uri map
 	 */
-	public List<SupportedProperty> getPropertyUriMapForPropertyType(String codingSchemeId, String propertyType);
+	public List<SupportedProperty> getPropertyUriMapForPropertyType(String codingSchemeId, PropertyTypes propertyType);
 	
 	/**
 	 * Validate supported attribute.

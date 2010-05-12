@@ -23,6 +23,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.versions.EntryState;
@@ -138,7 +139,7 @@ public interface CodingSchemeService {
 	 * 
 	 * @return the uri map
 	 */
-	public List<SupportedProperty> getSupportedPropertyForPropertyType(String codingSchemeUri, String codingSchemeVersion, String propertyType);
+	public List<SupportedProperty> getSupportedPropertyForPropertyType(String codingSchemeUri, String codingSchemeVersion, PropertyTypes propertyType);
 
 	/**
 	 * revise the codingScheme.

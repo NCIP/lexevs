@@ -26,6 +26,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedProperty;
@@ -414,7 +415,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 
 	@Override
 	public List<SupportedProperty> getSupportedPropertyForPropertyType(
-			String codingSchemeUri, String codingSchemeVersion, String propertyType) {
+			String codingSchemeUri, String codingSchemeVersion, PropertyTypes propertyType) {
 		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, codingSchemeVersion);
 		
 		String codingSchemeId = codingSchemeDao.

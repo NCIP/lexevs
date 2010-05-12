@@ -29,6 +29,7 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedProperty;
@@ -1007,11 +1008,11 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SupportedProperty> getPropertyUriMapForPropertyType(
-			String codingSchemeId, String propertyType) {
+			String codingSchemeId, PropertyTypes propertyType) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		return (List<SupportedProperty>) this.getSqlMapClientTemplate().queryForList(	
 				GET_PROPERTY_URIMAP_FOR_PROPERTYTYPE_SQL, 
-				new PrefixedParameterTriple(prefix, codingSchemeId, SQLTableConstants.TBLCOLVAL_SUPPTAG_PROPERTY, propertyType));
+				new PrefixedParameterTriple(prefix, codingSchemeId, SQLTableConstants.TBLCOLVAL_SUPPTAG_PROPERTY, propertyType.toString()));
 	}
 
 	@Override
