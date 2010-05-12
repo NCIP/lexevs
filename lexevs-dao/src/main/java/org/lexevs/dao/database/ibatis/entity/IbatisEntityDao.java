@@ -39,6 +39,7 @@ import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClass
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
 import org.lexevs.dao.database.ibatis.codingscheme.IbatisCodingSchemeDao;
+import org.lexevs.dao.database.ibatis.entity.model.IdableEntity;
 import org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
@@ -88,7 +89,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	public static String GET_ENTITY_COUNT_SQL = ENTITY_NAMESPACE + "getEntityCount";
 	
 	/** The GE t_ entitie s_ o f_ codin g_ schem e_ sql. */
-	public static String GET_ENTITIES_OF_CODING_SCHEME_SQL = ENTITY_NAMESPACE + "getAllEntitiesOfCodingScheme";
+	public static String GET_ENTITY_UIDS_OF_CODING_SCHEME_SQL = ENTITY_NAMESPACE + "getAllEntityUidsOfCodingScheme";
 	
 	public static String GET_ENTITY_ID_BY_CODE_AND_NAMESPACE = ENTITY_NAMESPACE + "getEntityIdByCodeAndNamespace";
 	
@@ -161,10 +162,6 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		for(Property prop : this.ibatisPropertyDao.getPropertiesOfParents(codingSchemeId, entityUids)){
 			entities.get(prop.getParent()).addAnyProperty(prop);
 		}
-		
-		for(PropertyLink propertyLink : this.doGetPropertyLinks(prefix, codingSchemeId, entityUids)) {
-			entities.get(propertyLink.getParent()).addPropertyLink(propertyLink);
-		}
 
 		return new ArrayList<Entity>(entities.values());
 	}
@@ -224,7 +221,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				tuple);
 	}
 	
-		protected <T extends Entity> T addEntityAttributes(
+	protected <T extends Entity> T addEntityAttributes(
 			String prefix, 
 			String codingSchemeId, 
 			String entityId,
@@ -236,13 +233,11 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		entity.addAnyProperties(
 				ibatisPropertyDao.getAllPropertiesOfParent(codingSchemeId, entityId, PropertyType.ENTITY));
 		
-		entity.setPropertyLink(
-				doGetPropertyLinks(prefix, codingSchemeId, DaoUtility.createNonTypedList(entityId)));
-		
 		return entity;
 	}
 	
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	protected List<PropertyLink> doGetPropertyLinks(String prefix, String codingSchemeId, List<String> entityUids){
 		return this.getSqlMapClientTemplate().
 			queryForList(GET_PROPERTY_LINKS_BY_ENTITY_UIDS_SQL, 
@@ -470,20 +465,12 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			pageSize = Integer.MAX_VALUE;
 		}
 		
-		List<Entity> entities = 
-			this.getSqlMapClientTemplate().queryForList(GET_ENTITIES_OF_CODING_SCHEME_SQL, 
+		List<String> entityUids = 
+			this.getSqlMapClientTemplate().queryForList(GET_ENTITY_UIDS_OF_CODING_SCHEME_SQL, 
 					new PrefixedParameter(prefix, codingSchemeId),
 					start, pageSize);
 		
-		for(Entity entity : entities) {
-			entity.addAnyProperties(
-					this.ibatisPropertyDao.getAllPropertiesOfParent(
-							codingSchemeId, 
-							this.getEntityUId(codingSchemeId, entity.getEntityCode(), entity.getEntityCodeNamespace()), 
-							PropertyType.ENTITY));
-		}
-
-		return entities;
+		return this.getEntities(codingSchemeId, entityUids);
 	}
 	
 	/* (non-Javadoc)
