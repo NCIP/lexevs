@@ -103,6 +103,18 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         
         File outFile = new File(outFileName);
         
+        // if file does not end with xml, exit
+        boolean endsWithXmlLc = outFile.getName().endsWith(".xml");
+        boolean endsWithXmlUc = outFile.getName().endsWith(".XML");
+        if(endsWithXmlLc == true || endsWithXmlUc == true) {
+            // do nothing
+        } else {
+            String msg = "File should end with .xml";
+            this.getLogger().fatal(msg);
+            this.getStatus().setErrorsLogged(true);
+            throw new RuntimeException(msg);                        
+        }
+        
         if(outFile.exists() == true && overwrite == true) 
         {
             outFile.delete();
