@@ -578,6 +578,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		bean.setPrefix(prefix);
 		bean.setLink(link);
 		bean.setUId(propertyLinkUId);
+		bean.setEntityUId(entityUId);
 		bean.setSourcePropertyUId(sourcePropertyUId);
 		bean.setTargetPropertyUId(targetPropertyUId);
 
