@@ -311,10 +311,13 @@
 			entity.entityGuid = #param1#		
      </select>
      
-     <select id="getAllEntitiesOfCodingScheme" 
+     <select id="getAllEntityUidsOfCodingScheme" 
      	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-     	resultMap="Entity.entityResult">
-		<include refid="getEntityFragment"/>
+     	resultClass="string">
+		SELECT
+			entityGuid
+		FROM
+			$prefix$entity entity
 		WHERE
 			entity.codingSchemeGuid = #param1#
      </select>
