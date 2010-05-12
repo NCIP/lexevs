@@ -48,6 +48,7 @@ import org.LexGrid.naming.SupportedProperty;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 
 /**
  * The Class AbstractQueryBuildingCodedNodeGraph.
@@ -83,7 +84,11 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
             String codingSchemeUri, 
             String version,
             String relationsContainerName) throws LBParameterException {
-        ServiceUtility.validateParameter(codingSchemeUri, version, relationsContainerName, SupportedContainerName.class);
+        try {
+            ServiceUtility.validateParameter(codingSchemeUri, version, relationsContainerName, SupportedContainerName.class);
+        } catch (LBParameterException e) {
+            LoggerFactory.getLogger().warn("Requested Relations Container Name is not registered as a SupportedContainerName: " + relationsContainerName);
+        }
         
         this.codingSchemeUri = codingSchemeUri;
         this.version = version;
