@@ -402,7 +402,7 @@ public class HL7MapToLexGrid {
         messages_.info("Processing concepts");
         for (int j = 0; j < conceptsList.size(); j++) {
             Entity concept =new Entity();
-            concept.setEntityType(new String[]{EntityTypes.CONCEPT.name()});
+            concept.setEntityType(new String[]{EntityTypes.CONCEPT.toString()});
             HL7ConceptContainer conceptContainer = (HL7ConceptContainer) conceptsList.get(new Integer(j));
             String uniqueInternalId = conceptContainer.getInternalId();
             concept.setEntityCode(conceptContainer.getConceptCode());

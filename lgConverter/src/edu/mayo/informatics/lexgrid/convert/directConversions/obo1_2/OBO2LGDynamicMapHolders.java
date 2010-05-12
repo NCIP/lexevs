@@ -176,7 +176,7 @@ public class OBO2LGDynamicMapHolders {
                 propertyCounter = 0;
 
                 Entity concept = new Entity();
-                concept.setEntityType(new String[] {EntityTypes.CONCEPT.name()});
+                concept.setEntityType(new String[] {EntityTypes.CONCEPT.toString()});
                 concept.setEntityCodeNamespace(csclass.getCodingSchemeName());
 
                 if (!OBO2LGUtils.isNull(oboTerm.getId()))
@@ -441,7 +441,7 @@ public class OBO2LGDynamicMapHolders {
 
     private Entity createAnonymousConcept(String entityDescription) {
         Entity concept = new Entity();
-        concept.setEntityType(new String[] {EntityTypes.CONCEPT.name()});
+        concept.setEntityType(new String[] {EntityTypes.CONCEPT.toString()});
         String conceptCode = OBO2LGConstants.ANONYMOUS_TEXTPRESENTATION + (++anonymousCounter);
         concept.setEntityCodeNamespace(cs.getCodingSchemeName());
         if (entityDescription == null) {

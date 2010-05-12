@@ -279,7 +279,7 @@ public class FMA2LGDynamicMapHolders {
                     conceptList_.add(conceptCode);
 
                     Entity con = new Entity();
-                    con.setEntityType(new String[]{EntityTypes.CONCEPT.name()});
+                    con.setEntityType(new String[]{EntityTypes.CONCEPT.toString()});
                     con.setEntityCode(conceptCode);
 
                     String description = getEntityDescriptionFromObj(concept);

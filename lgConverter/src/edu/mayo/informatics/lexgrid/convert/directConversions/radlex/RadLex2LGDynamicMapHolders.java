@@ -398,7 +398,7 @@ public class RadLex2LGDynamicMapHolders {
                     conceptList_.add(conceptCode);
 
                     con = new Entity();
-                    con.setEntityType(new String[]{EntityTypes.CONCEPT.name()});
+                    con.setEntityType(new String[]{EntityTypes.CONCEPT.toString()});
                     con.setEntityCode(conceptCode);
 
                     String description = getEntityDescriptionFromObj(concept);
@@ -444,7 +444,7 @@ public class RadLex2LGDynamicMapHolders {
         conceptList_.add(code);
 
         con = new Entity();
-        con.setEntityType(new String[]{EntityTypes.CONCEPT.name()});
+        con.setEntityType(new String[]{EntityTypes.CONCEPT.toString()});
         con.setEntityCode(code);
 
         String description = getEntityDescriptionFromObj(slot);
@@ -477,7 +477,7 @@ public class RadLex2LGDynamicMapHolders {
         conceptList_.add(code);
 
         inst = new Entity();
-        inst.setEntityType(new String[]{EntityTypes.INSTANCE.name()});
+        inst.setEntityType(new String[]{EntityTypes.INSTANCE.toString()});
         inst.setEntityCode(code);
 
         String description = getEntityDescriptionFromObj(pCls);

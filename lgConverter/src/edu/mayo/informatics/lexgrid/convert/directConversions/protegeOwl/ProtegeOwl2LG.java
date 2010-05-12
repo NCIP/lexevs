@@ -384,7 +384,7 @@ public class ProtegeOwl2LG {
 
         // If we found at least one, register the supported entity type.
         if (count > 0) {
-            String name = EntityTypes.CONCEPT.name();
+            String name = EntityTypes.CONCEPT.toString();
             emfSupportedMappings_.registerSupportedEntityType(name, null, name, false);
         }
        
@@ -450,7 +450,7 @@ public class ProtegeOwl2LG {
 
         // If we found at least one, register the supported entity type.
         if (!owlInstanceName2code_.isEmpty()) {
-            String name = EntityTypes.INSTANCE.name();            
+            String name = EntityTypes.INSTANCE.toString();            
             emfSupportedMappings_.registerSupportedEntityType(name, null, name, false);
         }
     } // end of the method.
@@ -543,7 +543,7 @@ public class ProtegeOwl2LG {
 
         // If we found at least one, register the supported entity type.
         if (count > 0) {
-            String name = EntityTypes.CONCEPT.name();
+            String name = EntityTypes.CONCEPT.toString();
             emfSupportedMappings_.registerSupportedEntityType(name, null, name, false);
         }
     }
@@ -868,7 +868,7 @@ public class ProtegeOwl2LG {
         // Create the raw EMF concept and assign label as initial description,
         // which may be overridden later by preferred text.
         Entity emfConcept = new Entity();
-        emfConcept.setEntityType(new String[]{EntityTypes.CONCEPT.name()});
+        emfConcept.setEntityType(new String[]{EntityTypes.CONCEPT.toString()});
         EntityDescription ed = new EntityDescription();
         ed.setContent(label);
         emfConcept.setEntityDescription(ed);
@@ -1268,7 +1268,7 @@ public class ProtegeOwl2LG {
         // description,
         // which may be overridden later by preferred text.
         Entity emfInstance = new Entity();
-        emfInstance.setEntityType(new String[]{EntityTypes.INSTANCE.name()});
+        emfInstance.setEntityType(new String[]{EntityTypes.INSTANCE.toString()});
         EntityDescription ed = new EntityDescription();
         ed.setContent(label);
         emfInstance.setEntityDescription(ed);
@@ -1503,11 +1503,11 @@ public class ProtegeOwl2LG {
 
         Property emfProp;
         String propName = prop.getName();
-        if (RDFSNames.Slot.LABEL.equals(propName) || emfClass == PropertyTypes.PRESENTATION.value())
+        if (RDFSNames.Slot.LABEL.equals(propName) || emfClass == PropertyTypes.PRESENTATION.toString())
             emfProp = CreateUtils.createPresentation(emfID, emfLabel, rdfText, null, emfSupportedMappings_);
-        else if (RDFSNames.Slot.COMMENT.equals(propName) || emfClass == PropertyTypes.COMMENT.value())
+        else if (RDFSNames.Slot.COMMENT.equals(propName) || emfClass == PropertyTypes.COMMENT.toString())
             emfProp = CreateUtils.createComment(emfID, emfLabel, rdfText, emfSupportedMappings_);
-        else if (emfClass == PropertyTypes.DEFINITION.value())
+        else if (emfClass == PropertyTypes.DEFINITION.toString())
             emfProp = CreateUtils.createDefinition(emfID, emfLabel, rdfText, null, emfSupportedMappings_);
         else
             emfProp = CreateUtils.createProperty(emfID, emfLabel, null, emfSupportedMappings_);
@@ -1609,7 +1609,7 @@ public class ProtegeOwl2LG {
         }
 
         Entity emfClass = new Entity();
-        emfClass.setEntityType(new String[]{EntityTypes.CONCEPT.name()});
+        emfClass.setEntityType(new String[]{EntityTypes.CONCEPT.toString()});
         emfClass.setEntityCode(code);
         emfClass.setIsAnonymous(Boolean.TRUE);
         
@@ -2463,7 +2463,7 @@ public class ProtegeOwl2LG {
      */
     protected Entity initSubtypeRoot() {
         Entity topThing = new Entity();
-        topThing.setEntityType(new String[]{EntityTypes.CONCEPT.name()});
+        topThing.setEntityType(new String[]{EntityTypes.CONCEPT.toString()});
         topThing.setEntityCode(ProtegeOwl2LGConstants.ROOT_CODE);
         topThing.setEntityCodeNamespace(this.getNameSpace(null));
         EntityDescription ed = new EntityDescription();
