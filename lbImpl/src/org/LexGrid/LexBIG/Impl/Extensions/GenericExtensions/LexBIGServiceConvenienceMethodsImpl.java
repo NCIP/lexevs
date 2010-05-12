@@ -2154,7 +2154,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         internalCodingSchemeName = systemService_.getInternalCodingSchemeNameForUserCodingSchemeName(
                 codingScheme, version);
         
-        return (List<SupportedProperty>) codingSchemeService_.getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.COMMENT.name());
+        return (List<SupportedProperty>) codingSchemeService_.getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.COMMENT);
     }
 
     @SuppressWarnings("unchecked")
@@ -2171,7 +2171,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         internalCodingSchemeName = systemService_.getInternalCodingSchemeNameForUserCodingSchemeName(
                 codingScheme, version);
         
-        return (List<SupportedProperty>) codingSchemeService_.getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.DEFINITION.name());
+        return (List<SupportedProperty>) codingSchemeService_.getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.DEFINITION);
     }
 
     @SuppressWarnings("unchecked")
@@ -2187,7 +2187,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
         internalCodingSchemeName = systemService_.getUriForUserCodingSchemeName(codingScheme);
         
-        return (List<SupportedProperty>) codingSchemeService_.getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.PRESENTATION.name());
+        return (List<SupportedProperty>) codingSchemeService_.getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.PRESENTATION);
     }
 
     @SuppressWarnings("unchecked")
@@ -2204,7 +2204,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         internalCodingSchemeName = systemService_.getInternalCodingSchemeNameForUserCodingSchemeName(
                 codingScheme, version);
         
-        return (List<SupportedProperty>) codingSchemeService_.getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.PROPERTY.name());
+        return (List<SupportedProperty>) codingSchemeService_.getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.PROPERTY);
     }
     
     
