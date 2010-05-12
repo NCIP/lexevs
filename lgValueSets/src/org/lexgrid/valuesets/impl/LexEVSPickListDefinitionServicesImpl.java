@@ -64,6 +64,7 @@ import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListEntry;
 import org.LexGrid.valueSets.PickListEntryExclusion;
 import org.LexGrid.valueSets.PickListEntryNode;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
@@ -396,7 +397,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 			Presentation[] presentations = entity.getPresentation();
 			for (Presentation pres : presentations)
 			{
-				if (pres.isIsPreferred())
+				if (BooleanUtils.toBoolean(pres.isIsPreferred()))
 				{
 					rpl.setPickText(pres.getValue().getContent());
 					rpl.setPropertyId(pres.getPropertyId());
@@ -542,7 +543,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
             Presentation[] presentations = entity.getPresentation();
             for (Presentation pres : presentations)
             {
-                if (pres.isIsPreferred())
+                if (BooleanUtils.toBoolean(pres.isIsPreferred()))
                 {
                     rpl.setPickText(pres.getValue().getContent());
                     rpl.setPropertyId(pres.getPropertyId());

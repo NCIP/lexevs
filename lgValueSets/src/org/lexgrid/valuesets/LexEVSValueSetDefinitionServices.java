@@ -112,7 +112,20 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	public AbsoluteCodingSchemeVersionReference isEntityInValueSet(
 	        String entityCode, URI entityCodeNamespace, URI valueSetDefinitionURI, AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) 
 	        throws LBException;
-
+	
+	/**
+	 * Returns unresolved CodedNodeSet populated using definition entries in the value set definition.
+	 *   
+	 * @param valueSetDefinitionURI
+	 * @param csVersionList
+	 * @param versionTag
+	 * @return 
+	 * @throws LBException
+	 */
+	public ResolvedValueSetCodedNodeSet getCodedNodeSetForValueSetDefinition(
+            URI valueSetDefinitionURI,
+            AbsoluteCodingSchemeVersionReferenceList csVersionList,
+            String versionTag) throws LBException;
 	/**
 	 * Resolve a value set definition using the supplied set of coding scheme versions.
 	 * 

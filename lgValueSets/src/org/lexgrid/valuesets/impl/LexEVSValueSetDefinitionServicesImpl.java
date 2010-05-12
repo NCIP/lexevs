@@ -240,7 +240,24 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         }
         return null;
 	}
-
+	
+	public ResolvedValueSetCodedNodeSet getCodedNodeSetForValueSetDefinition(
+            URI valueSetDefinitionURI,
+            AbsoluteCodingSchemeVersionReferenceList csVersionList,
+            String versionTag) throws LBException {
+        getLogger().logMethod(new Object[] { valueSetDefinitionURI, csVersionList, versionTag });
+        
+        ResolvedValueSetCodedNodeSet domainNodes = null;
+        
+        ValueSetDefinition vdDef = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);  
+        if(vdDef != null) {
+            domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vdDef, csVersionList, versionTag);
+            if (domainNodes != null && domainNodes.getCodedNodeSet() != null)
+            	domainNodes.getCodedNodeSet().restrictToStatus(ActiveOption.ACTIVE_ONLY, null);            
+        }
+        return domainNodes;
+	}
+	
 	@Override
 	public ResolvedValueSetDefinition resolveValueSetDefinition(
 			URI valueSetDefinitionURI,
@@ -377,7 +394,8 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
                     CodedNodeSet cns = getServiceHelper().getLexBIGService().getCodingSchemeConcepts(csURI, Constructors.createCodingSchemeVersionOrTag(tag, version));
                     if(matchAlgorithm != null)
                     	cns.restrictToMatchingDesignations(term, null, matchAlgorithm, null);
-                    domainNodes.setCodedNodeSet(domainNodes.getCodedNodeSet().intersect(cns));
+//                    domainNodes.setCodedNodeSet(domainNodes.getCodedNodeSet().intersect(cns));
+                    domainNodes.setCodedNodeSet(cns.intersect(domainNodes.getCodedNodeSet()));
                 } else {
                     domainNodes.setCodedNodeSet(domainNodes.getCodedNodeSet().restrictToMatchingDesignations(term, null, matchAlgorithm == null ? MatchAlgorithms.LuceneQuery.name() : matchAlgorithm, null));
                 }
