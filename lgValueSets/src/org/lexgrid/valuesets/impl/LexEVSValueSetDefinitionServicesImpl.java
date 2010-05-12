@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -394,8 +393,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
                     CodedNodeSet cns = getServiceHelper().getLexBIGService().getCodingSchemeConcepts(csURI, Constructors.createCodingSchemeVersionOrTag(tag, version));
                     if(matchAlgorithm != null)
                     	cns.restrictToMatchingDesignations(term, null, matchAlgorithm, null);
-//                    domainNodes.setCodedNodeSet(domainNodes.getCodedNodeSet().intersect(cns));
-                    domainNodes.setCodedNodeSet(cns.intersect(domainNodes.getCodedNodeSet()));
+                    domainNodes.setCodedNodeSet(domainNodes.getCodedNodeSet().intersect(cns));
                 } else {
                     domainNodes.setCodedNodeSet(domainNodes.getCodedNodeSet().restrictToMatchingDesignations(term, null, matchAlgorithm == null ? MatchAlgorithms.LuceneQuery.name() : matchAlgorithm, null));
                 }
@@ -458,47 +456,47 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		return false;
 	}
 	
-	public Map<String, String> getReferencedPLDefinitions(String entityCode,
-			String entityCodeNameSpace, String propertyId, Boolean extractPickListName) {
-
-		Map<String, String> refPLDef = new HashMap<String, String>();
-		
-		//TODO
-//		String pickListId = result
-//					.getString(SQLTableConstants.TBLCOL_PICKLISTID);
-//		String pickListName = null;
+//	public Map<String, String> getReferencedPLDefinitions(String entityCode,
+//			String entityCodeNameSpace, String propertyId, Boolean extractPickListName) {
 //
-//		if (pickListId != null) {
-//					
-//			if( extractPickListName )
-//				pickListName = getPickListName(pickListId);
-//					
-//			refPLDef.put(pickListId, pickListName);
-//		}
-		
-		return refPLDef;
-	}
+//		Map<String, String> refPLDef = new HashMap<String, String>();
+//		
+//		//TODO
+////		String pickListId = result
+////					.getString(SQLTableConstants.TBLCOL_PICKLISTID);
+////		String pickListName = null;
+////
+////		if (pickListId != null) {
+////					
+////			if( extractPickListName )
+////				pickListName = getPickListName(pickListId);
+////					
+////			refPLDef.put(pickListId, pickListName);
+////		}
+//		
+//		return refPLDef;
+//	}
 	
-	public Map<String, String> getReferencedPLDefinitions(
-			String valueSet, Boolean extractPickListName) {
-
-		Map<String, String> refPLDef = new HashMap<String, String>();
-		
-		// TODO
-//		String pickListId = result
-//				.getString(SQLTableConstants.TBLCOL_PICKLISTID);
-//		String pickListName = null;
+//	public Map<String, String> getReferencedPLDefinitions(
+//			String valueSet, Boolean extractPickListName) {
 //
-//		if (pickListId != null) {
-//				
-//			if( extractPickListName )
-//				pickListName = getPickListName(pickListId);
-//				
-//			refPLDef.put(pickListId, pickListName);
-//		}
-		
-		return refPLDef;
-	}
+//		Map<String, String> refPLDef = new HashMap<String, String>();
+//		
+//		// TODO
+////		String pickListId = result
+////				.getString(SQLTableConstants.TBLCOL_PICKLISTID);
+////		String pickListName = null;
+////
+////		if (pickListId != null) {
+////				
+////			if( extractPickListName )
+////				pickListName = getPickListName(pickListId);
+////				
+////			refPLDef.put(pickListId, pickListName);
+////		}
+//		
+//		return refPLDef;
+//	}
 	
 	@Override
 	public void removeValueSetDefinition(URI valueSetDefinitionURI)
