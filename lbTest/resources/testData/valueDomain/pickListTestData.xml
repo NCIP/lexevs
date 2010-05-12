@@ -170,7 +170,7 @@
             <lgCommon:entityDescription>My first test</lgCommon:entityDescription>
             <lgVD:pickListEntryNode pickListEntryId="PL005p1" isActive="true">
                 <lgCommon:owner>Owner for PL005p1</lgCommon:owner>
-                <lgVD:inclusionEntry entityCode="005" entityCodeNamespace="Automobiles" propertyId="p1">
+                <lgVD:inclusionEntry entityCode="005" entityCodeNamespace="Automobiles" propertyId="p1" language="en">
                     <lgVD:pickText>Domestic Auto Makers</lgVD:pickText>
                     <lgVD:pickContext>Domestic Auto Makers</lgVD:pickContext>
                     <lgVD:pickContext>Cars</lgVD:pickContext>
