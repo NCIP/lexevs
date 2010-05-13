@@ -185,12 +185,13 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 		if (revision == null)
 			return;
 
-		RevisionDao revisionDao = this.getDaoManager().getRevisionDao();
-		revisionDao.insertRevisionEntry(revision, releaseURI);
-
 		ChangedEntry[] changedEntry = revision.getChangedEntry();
 
 		if (changedEntry != null && changedEntry.length != 0) {
+			
+			RevisionDao revisionDao = this.getDaoManager().getRevisionDao();
+			revisionDao.insertRevisionEntry(revision, releaseURI);
+			
 			for (int j = 0; j < changedEntry.length; j++) {
 
 				ChangedEntry cEntry = changedEntry[j];
