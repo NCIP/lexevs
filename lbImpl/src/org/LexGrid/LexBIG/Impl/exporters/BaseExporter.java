@@ -25,7 +25,6 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
 import org.LexGrid.LexBIG.DataModel.Core.types.LogLevel;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExportStatus;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
@@ -51,6 +50,8 @@ public abstract class BaseExporter {
     
     private URI resourceUri;
     private AbsoluteCodingSchemeVersionReference source;
+    private URI valueSetDefinitionURI;
+    private String pickListId;
 
     private OptionHolder holder = new DefaultOptionHolder();
     
@@ -101,6 +102,28 @@ public abstract class BaseExporter {
             setInUse();
             this.setResourceUri(destination);
             this.setSource(source);
+        } catch (LBInvocationException e) {
+           throw new RuntimeException(e);
+        }
+        baseExport(true);
+    }
+    
+    public void exportValueSetDefinition(URI valueSetDefinitionURI, URI destination) {
+        try {
+            setInUse();
+            this.setResourceUri(destination);
+            this.setValueSetDefinitionURI(valueSetDefinitionURI);
+        } catch (LBInvocationException e) {
+           throw new RuntimeException(e);
+        }
+        baseExport(true);
+    }
+    
+    public void exportPickListDefinition(String pickListId, URI destination) {
+        try {
+            setInUse();
+            this.setResourceUri(destination);
+            this.setPickListId(pickListId);
         } catch (LBInvocationException e) {
            throw new RuntimeException(e);
         }
@@ -176,6 +199,34 @@ public abstract class BaseExporter {
     
     public OptionHolder getOptions() {
         return holder;
+    }
+
+    /**
+     * @return the valueSetDefinitionURI
+     */
+    public URI getValueSetDefinitionURI() {
+        return valueSetDefinitionURI;
+    }
+
+    /**
+     * @param valueSetDefinitionURI the valueSetDefinitionURI to set
+     */
+    public void setValueSetDefinitionURI(URI valueSetDefinitionURI) {
+        this.valueSetDefinitionURI = valueSetDefinitionURI;
+    }
+
+    /**
+     * @return the pickListId
+     */
+    public String getPickListId() {
+        return pickListId;
+    }
+
+    /**
+     * @param pickListId the pickListId to set
+     */
+    public void setPickListId(String pickListId) {
+        this.pickListId = pickListId;
     }
     
 }

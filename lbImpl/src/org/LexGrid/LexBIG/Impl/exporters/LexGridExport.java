@@ -20,7 +20,6 @@ package org.LexGrid.LexBIG.Impl.exporters;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -31,7 +30,6 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Export.LexGrid_Exporter;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -44,6 +42,11 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.valueSets.PickListDefinition;
+import org.LexGrid.valueSets.ValueSetDefinition;
+import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
+import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
@@ -89,7 +92,15 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
     }
     
     protected void doExport() {
-            //
+        if (super.getSource() != null)
+            exportCodingSchemeData();
+        if (super.getValueSetDefinitionURI() != null)
+            exportValueSetDefinitionData();
+        if (super.getPickListId() != null)
+            exportPickListDefinitionData();
+    }
+    
+    protected void exportCodingSchemeData(){
         URI destination = super.getResourceUri();
         AbsoluteCodingSchemeVersionReference source = super.getSource();
         
@@ -165,6 +176,111 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         XmlContentWriter xmlContentWriter = new XmlContentWriter();
         xmlContentWriter.marshalToXml(codingScheme, cng, cns, out);
     }
+    
+    protected void exportValueSetDefinitionData(){
+        URI destination = super.getResourceUri();
+        URI vsdURI = super.getValueSetDefinitionURI();
+        
+        boolean overwrite = super.getOptions().getBooleanOption(LexGridConstants.OPTION_FORCE).getOptionValue().booleanValue();
+        String outFileName = destination.getPath();
+
+        File outFile = new File(outFileName);
+        
+        // if file does not end with XML, exit
+        boolean endsWithXmlLc = outFile.getName().endsWith(".xml");
+        boolean endsWithXmlUc = outFile.getName().endsWith(".XML");
+        if(endsWithXmlLc == true || endsWithXmlUc == true) {
+            // do nothing
+        } else {
+            String msg = "File should end with .xml";
+            this.getLogger().fatal(msg);
+            this.getStatus().setErrorsLogged(true);
+            throw new RuntimeException(msg);                        
+        }
+        
+        if(outFile.exists() == true && overwrite == true) 
+        {
+            outFile.delete();
+        } else if (outFile.exists() == true && overwrite == false) {
+            String msg = "Output file \"" + outFileName + "\" already exists. Set force option to overwrite an existing file.";
+            this.getLogger().fatal(msg);
+            this.getStatus().setErrorsLogged(true);
+            throw new RuntimeException(msg);
+        } else {
+            // outFile did not exist.  do nothing.
+        }
+        
+        Writer w = null;
+        BufferedWriter out = null;
+        
+        try {
+            w = new FileWriter(outFile, false);
+            out = new BufferedWriter(w);
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        
+        
+        ValueSetDefinitionService vsdSer = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
+        ValueSetDefinition vsd = null;
+        vsd = vsdSer.getValueSetDefinitionByUri(vsdURI);
+        
+        XmlContentWriter xmlContentWriter = new XmlContentWriter();
+        xmlContentWriter.marshalToXml(vsd, null, null, out);
+    }
+    
+    protected void exportPickListDefinitionData(){
+        URI destination = super.getResourceUri();
+        String pickListId = super.getPickListId();
+        
+        boolean overwrite = super.getOptions().getBooleanOption(LexGridConstants.OPTION_FORCE).getOptionValue().booleanValue();
+        String outFileName = destination.getPath();
+
+        File outFile = new File(outFileName);
+        
+        // if file does not end with xml, exit
+        boolean endsWithXmlLc = outFile.getName().endsWith(".xml");
+        boolean endsWithXmlUc = outFile.getName().endsWith(".XML");
+        if(endsWithXmlLc == true || endsWithXmlUc == true) {
+            // do nothing
+        } else {
+            String msg = "File should end with .xml";
+            this.getLogger().fatal(msg);
+            this.getStatus().setErrorsLogged(true);
+            throw new RuntimeException(msg);                        
+        }
+        
+        if(outFile.exists() == true && overwrite == true) 
+        {
+            outFile.delete();
+        } else if (outFile.exists() == true && overwrite == false) {
+            String msg = "Output file \"" + outFileName + "\" already exists. Set force option to overwrite an existing file.";
+            this.getLogger().fatal(msg);
+            this.getStatus().setErrorsLogged(true);
+            throw new RuntimeException(msg);
+        } else {
+            // outFile did not exist.  do nothing.
+        }
+        
+        Writer w = null;
+        BufferedWriter out = null;
+        
+        try {
+            w = new FileWriter(outFile, false);
+            out = new BufferedWriter(w);
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        
+        PickListDefinitionService pldSer = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getPickListDefinitionService();
+        PickListDefinition pld = null;
+        pld = pldSer.getPickListDefinitionByPickListId(pickListId);
+        
+        XmlContentWriter xmlContentWriter = new XmlContentWriter();
+        xmlContentWriter.marshalToXml(pld, null, null, out);
+    }
 
     public URI getSchemaURL() {
         try {
@@ -203,6 +319,20 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         super.export(source, destination);
 
         
+    }
+
+    @Override
+    public void exportPickListDefinition(String pickListId, URI destination, boolean overwrite, boolean stopOnErros,
+            boolean async) throws LBException {
+        super.getOptions().getBooleanOption(LexGridConstants.OPTION_FORCE).setOptionValue(overwrite);
+        super.exportPickListDefinition(pickListId, destination);
+    }
+
+    @Override
+    public void exportValueSetDefinition(URI valueSetDefinitionURI, URI destination, boolean overwrite,
+            boolean stopOnErros, boolean async) throws LBException {
+        super.getOptions().getBooleanOption(LexGridConstants.OPTION_FORCE).setOptionValue(overwrite);
+        super.exportValueSetDefinition(valueSetDefinitionURI, destination);
     }    
     
 }
