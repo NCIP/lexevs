@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.database.service.association;
 
+import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 
 /**
@@ -44,4 +45,7 @@ public interface AssociationService {
 	public void insertAssociationSource(String codingSchemeUri, String version,
 			String relationContainerName, String associationPredicateName,
 			AssociationSource source);
+	
+	public void insertAssociationPredicate(
+			String codingSchemeUri, String version, String relationsName, AssociationPredicate predicate);
 }
