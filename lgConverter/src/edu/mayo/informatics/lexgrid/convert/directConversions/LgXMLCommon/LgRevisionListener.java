@@ -18,6 +18,7 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationPredicate;
@@ -38,6 +39,7 @@ public class LgRevisionListener implements UnmarshalListener {
     private boolean isRevisionLoaded = false;
     private boolean isPropertiesPresent = false;
     private AssociationPredicate currentPredicate = new AssociationPredicate();
+    private Revision revision = new Revision();
     private CodingScheme[] codingSchemes = null;
 
     public CodingScheme[] getCodingSchemes() {
@@ -140,14 +142,27 @@ public class LgRevisionListener implements UnmarshalListener {
         System.out.println("child: " + child.getClass().getSimpleName());
         
         if (!isRevisionLoaded && UnMarshallingLogic.isRevisionWithFirstChild(parent, child)) {
-            LexGridElementProcessor.processRevisionMetadata(serviceAdaptor, parent, child);
+            revision = (Revision)parent;
             isRevisionLoaded = true;
         }
         if (!isPropertiesPresent && UnMarshallingLogic.isCodingSchemeMappings(parent, child)) {
+            
+            try {
+                LexGridElementProcessor.processRevisionMetadata(serviceAdaptor, revision, (CodingScheme)parent);
+            } catch (LBRevisionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             LexGridElementProcessor.processCodingSchemeMetadata(serviceAdaptor, parent, child);
             isCodingSchemeLoaded = true;
         }
         if (!isCodingSchemeLoaded && UnMarshallingLogic.isCodingSchemeProperties(parent, child)) {
+            try {
+                LexGridElementProcessor.processRevisionMetadata(serviceAdaptor, revision, (CodingScheme)parent);
+            } catch (LBRevisionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             LexGridElementProcessor.processCodingSchemeMetadata(serviceAdaptor, parent, child);
             isCodingSchemeLoaded = true;
         }

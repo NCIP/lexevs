@@ -118,24 +118,19 @@ public class LexGridElementProcessor {
      * @param service
      * @param parent
      * @param child
+     * @throws LBRevisionException 
      */
-    public static void processRevisionMetadata(XMLDaoServiceAdaptor service, Object parent, Object child) {
-        Revision revision = (Revision) parent;
-        System.out.println("storeRevision(c.getCodingSchemeURI()," + "c.getRepresentsVersion(),e.getEntityCode(), "
-                + "e.getEntityCodeNamespace(), revision));");
-        System.out.println("id: " + revision.getRevisionId());
-        System.out.println("description: " + revision.getEntityDescription().getContent());
-        System.out.println("change agent: " + revision.getChangeAgent());
-        System.out.println("change instructions: " + revision.getChangeInstructions().getContent());
+    public static void processRevisionMetadata(XMLDaoServiceAdaptor service, Revision revision, CodingScheme child) throws LBRevisionException {
+       service.storeRevision(child.getCodingSchemeURI(), child.getRepresentsVersion(), revision);
     }
 
     /**
      * @param parent
      * @return
+     * @throws LBRevisionException 
      */
-    public static SystemRelease processSystemReleaseMetadata(Object parent) {
-        // AuthoringService.loadSystemRelease(parent);
-        return (SystemRelease) parent;
+    public static void processSystemReleaseMetadata(XMLDaoServiceAdaptor service, Object parent) throws LBRevisionException {
+        service.storeSystemRelease((SystemRelease)parent);
     }
 
     /**

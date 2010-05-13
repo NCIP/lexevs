@@ -20,6 +20,7 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.codingSchemes.CodingSchemes;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entities;
@@ -101,8 +102,7 @@ public class UnMarshallingLogic {
      * @return
      */
     public static boolean isSytemRelease(Object parent, Object child) {
-        return (child instanceof CodingSchemes || child instanceof PickListDefinitions || child instanceof ValueSetDefinitions)
-                && parent instanceof SystemRelease;
+        return (child instanceof EntityDescription );
     }
 
     /**

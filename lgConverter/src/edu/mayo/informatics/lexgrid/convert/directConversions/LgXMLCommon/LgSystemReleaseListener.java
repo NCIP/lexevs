@@ -20,6 +20,7 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.codingSchemes.CodingSchemes;
@@ -149,7 +150,12 @@ public class LgSystemReleaseListener implements UnmarshalListener {
         System.out.println("child: " + child.getClass().getSimpleName());
         
         if (!isSystemReleaseSet && UnMarshallingLogic.isSytemRelease(parent, child)) {
-            systemRelease = LexGridElementProcessor.processSystemReleaseMetadata(parent);
+           try {
+            LexGridElementProcessor.processSystemReleaseMetadata(serviceAdaptor, parent);
+        } catch (LBRevisionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
             isSystemReleaseSet = true;
         }
         if (!isPropertiesPresent && UnMarshallingLogic.isCodingSchemeMappings(parent, child)) {

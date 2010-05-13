@@ -178,14 +178,13 @@ public class XMLDaoServiceAdaptor {
             Property property) {
         propertyService.insertEntityProperty(codingSchemeUri, version, entityCode, entityCodeNamespace, property);
     }
-    public void storeRevision(String codingSchemeUri, String version, String revsionId,
-            Revision revision) {
-        //revisionService.insertRevision(codingSchemeUri, version, revisionId,  revision);
+    public void storeRevision(String codingSchemeUri, String revsionId,
+            Revision revision) throws LBRevisionException {
+        authoringService.loadRevision(revision, codingSchemeUri);
     }
     
-    public void storeSystemRelease(String codingSchemeUri, String version,
-            SystemRelease release) {
-        //revisionService.insertRevision(codingSchemeUri, version, release );
+    public void storeSystemRelease( SystemRelease release) throws LBRevisionException {
+        authoringService.loadSystemRelease(release);
     }
     
     public void storeValueSet(ValueSetDefinition valueSet, String systemReleaseURI, Mappings mappings) throws LBException {
