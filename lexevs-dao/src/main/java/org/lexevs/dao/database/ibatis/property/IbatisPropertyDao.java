@@ -819,11 +819,10 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	public String getLatestRevision(String csUId, String propertyUId) {
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUId);
-		String defaultPrefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
 		String revId = (String) this.getSqlMapClientTemplate().queryForObject(
 				GET_PROPERTY_LATEST_REVISION_ID_BY_UID, 
-				new PrefixedParameterTuple(prefix, defaultPrefix, propertyUId));
+				new PrefixedParameter(prefix, propertyUId));
 		
 		return revId;
 	}

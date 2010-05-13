@@ -271,7 +271,7 @@
 		FROM
 			$prefix$vsPickList picklist
 			$prefix$entrySate es
-			$prefix$revision rev
+			${defaultPrefix}revision rev
 		WHERE
 			picklist.vsPickListGuid = #param1#	
 		AND

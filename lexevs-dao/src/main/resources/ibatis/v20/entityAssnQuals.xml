@@ -8,12 +8,14 @@
 			entityAssnQualsGuid,
 			referenceGuid,
 			qualifierName,
-			qualifierValue
+			qualifierValue,
+			entryStateGuid
 		) VALUES (
 			#uid#, 
-			#associationTargetUId#,
+			#referenceUId#,
 			#qualifierName#, 
-			#qualifierValue#
+			#qualifierValue#,
+			#entryStateUId#
 		)
   </insert>
   
@@ -128,27 +130,50 @@
   		)
   </delete>
 
-	<delete id="deleteAssocQualsByAssocUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="deleteAllAssocMultiAttribByAssocUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
 			$prefix$entityAssnQuals
 		WHERE
 			referenceGuid = #param1#
 	</delete>
 	
+	<delete id="deleteAssocQualsByAssocUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$entityAssnQuals
+		WHERE
+			referenceGuid = #param1#
+		AND
+			qualifierName != "usageContext"
+	</delete>
+	
+	<delete id="deleteAssocUsageContextByAssocUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$entityAssnQuals
+		WHERE
+			referenceGuid = #param1#
+		AND
+			qualifierName = "usageContext"
+	</delete>
+	
 	<resultMap
 		class="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean"
 		id="qualContextResult">
 		<result property="uid" column="entityAssnQualsGuid" />
-		<result property="associationTargetUId" column="referenceGuid" />
+		<result property="referenceUId" column="referenceGuid" />
 		<result property="qualifierName" column="qualifierName" />
 		<result property="qualifierValue" column="qualifierValue" />
-		<result property="entryStateUId" column="entryStateUId" />
+		<result property="entryStateUId" column="esGuid" />
 	</resultMap>
 
 	<select id="getAssnQualsByReferenceUId" resultMap="qualContextResult"
 		remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
-		SELECT *
+		SELECT 
+			assnQual.entityAssnQualsGuid,
+			assnQual.referenceGuid,
+			assnQual.qualifierName,
+			assnQual.qualifierValue,
+			assnQual.entryStateGuid esGuid
 		FROM
 			$prefix$entityAssnQuals assnQual
 		WHERE

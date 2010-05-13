@@ -23,7 +23,6 @@ import java.util.List;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
-import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
@@ -112,10 +111,9 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	 */
 	@Override
 	public String getSystemReleaseIdByUri(String systemReleaseUri) {
-		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
 		return (String) this.getSqlMapClientTemplate().queryForObject(
-				GET_SYSTEM_RELEASE_ID_BY_URI,
-				new PrefixedParameter(prefix, systemReleaseUri));
+				GET_SYSTEM_RELEASE_ID_BY_URI, systemReleaseUri);
 	}
 
 	/*

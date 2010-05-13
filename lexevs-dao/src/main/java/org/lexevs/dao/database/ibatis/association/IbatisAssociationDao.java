@@ -78,9 +78,6 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/** The INSER t_ relation s_ sql. */
 	public static String INSERT_RELATIONS_SQL = ASSOCIATION_NAMESPACE + "insertRelations";
 	
-	/** The INSER t_ entit y_ assn s_ t o_ entit y_ sql. */
-	public static String INSERT_ENTITY_ASSNS_TO_ENTITY_SQL = ASSOCIATION_NAMESPACE + "insertEntityAssnsToEntity";
-	
 	/** The INSER t_ associatio n_ qua l_ o r_ contex t_ sql. */
 	public static String INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL = ASSOCIATION_NAMESPACE + "insertAssociationQualificationOrUsageContext";
 	
@@ -616,7 +613,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		String qualId = this.createUniqueId();
 		
 		InsertAssociationQualificationOrUsageContextBean contextBean = new InsertAssociationQualificationOrUsageContextBean();
-		contextBean.setAssociationTargetUId(associationTargetId);
+		contextBean.setReferenceUId(associationTargetId);
 		contextBean.setUId(qualId);
 		contextBean.setPrefix(prefix);
 		contextBean.setQualifierName(qualifier.getAssociationQualifier());
@@ -815,22 +812,6 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				UPDATE_RELATION_ENTRYSTATE_UID_SQL, 
 				new PrefixedParameterTuple(prefix, relationUId, entryStateUId));
 	}
-
-	@Override
-	public boolean associationPredicateExists(String codingSchemeUId,
-			String relationUId, String assocPredicateName) {
-		
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
-		
-		String count = (String) this.getSqlMapClientTemplate().queryForObject(
-				ASSOCIATION_PREDICATE_EXISTS_SQL,
-				new PrefixedParameter(prefix, relationUId));
-		
-		if( count == null || new Integer(count).intValue() == 0 ) 
-			return false;
-		else
-			return true;
-	}
 	
 	@Override
 	public void deleteAssociationQualificationsByRelationUId(
@@ -846,11 +827,10 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	@Override
 	public String getRelationLatestRevision(String csUId, String relationUId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUId);
-		String defaultPrefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
 		return (String) this.getSqlMapClientTemplate().queryForObject(
 				GET_RELATION_LATEST_REVISION_ID_BY_UID, 
-				new PrefixedParameterTuple(prefix, defaultPrefix, relationUId));	
+				new PrefixedParameter(prefix, relationUId));	
 	}
 
 	/**
@@ -896,9 +876,11 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	}
 
 	@Override
-	public boolean entryStateExists(String entryStateUId) {
+	public boolean entryStateExists(String codingSchemeUId, String entryStateUId) {
 
-		if(entryStateExists(entryStateUId))
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		if(super.entryStateExists(prefix, entryStateUId))
 			return true;
 		else
 			return false;

@@ -191,8 +191,8 @@ CREATE TABLE @PREFIX@entityAssnQuals
 	entityAssnQualsGuid  VARCHAR2(36) NOT NULL,    --  Global unique identifier for the association qualifier. 
 	referenceGuid        VARCHAR2(36) NOT NULL,    --  Global unique identifier of  the triple to which the qualifier belongs to.. 
 	qualifierName        VARCHAR2(50) NOT NULL,    --  The local name of a qualifier. Must be in supportedAssociationQualifier. 
-	qualifierValue       VARCHAR2(250) NOT NULL,    --  The value associated with this qualifier, if any. 
-	entryStateGuid       VARCHAR2(36)
+	qualifierValue       VARCHAR2(250),    			--  The value associated with this qualifier, if any. 
+	entryStateGuid       VARCHAR2(36) NOT NULL
 )
 ;
 

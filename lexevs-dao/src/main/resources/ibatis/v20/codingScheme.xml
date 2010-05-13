@@ -544,16 +544,16 @@
 	</select>
 
 	<select id="getCodingSchemeLatestRevisionIdByUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
 		resultClass="string">
 		SELECT 
 			rev.revisionId
 		FROM
 			$prefix$codingScheme cs,
 			$prefix$entryState es,
-			$param1$revision rev
+			${defaultPrefix}revision rev
 		WHERE
-			cs.codingSchemeGuid = #param2#	
+			cs.codingSchemeGuid = #param1#	
 		AND
 			cs.entryStateGuid = es.entryStateGuid	
 		AND
@@ -589,7 +589,7 @@
 		FROM
 			$prefix$codingScheme cs,
 			$prefix$entryState es,
-			$prefix$revision rev
+			${defaultPrefix}revision rev
 		WHERE
 			cs.codingSchemeGuid = #param1# 
 		AND

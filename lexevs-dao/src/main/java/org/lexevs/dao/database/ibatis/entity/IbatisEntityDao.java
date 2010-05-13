@@ -623,11 +623,10 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	public String getLatestRevision(String csUId, String entityUId) {
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUId);
-		String defaultPrefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
 		String revId = (String) this.getSqlMapClientTemplate().queryForObject(
 				GET_ENTITY_LATEST_REVISION_ID_BY_UID, 
-				new PrefixedParameterTuple(prefix, defaultPrefix, entityUId));
+				new PrefixedParameter(prefix, entityUId));
 		
 		return revId;
 	}

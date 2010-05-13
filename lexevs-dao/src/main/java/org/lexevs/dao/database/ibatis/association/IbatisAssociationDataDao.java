@@ -35,7 +35,7 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 	private static String ASSOCIATION_NAMESPACE = "Association.";
 
 	/** */
-	private static String INSERT_ENTITY_ASSN_DATA_SQL = ASSOCIATION_NAMESPACE
+	public static String INSERT_ENTITY_ASSN_DATA_SQL = ASSOCIATION_NAMESPACE
 			+ "insertEntityAssnsToData";
 
 	/** The INSER t_ associatio n_ qua l_ o r_ contex t_ sql. */
@@ -128,6 +128,11 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 
 		InsertOrUpdateAssociationDataBean bean = new InsertOrUpdateAssociationDataBean();
 
+		if (data.getAssociationInstanceId() == null
+				|| data.getAssociationInstanceId().trim().equals("")) {
+			data.setAssociationInstanceId("_@" + this.createUniqueId());
+		}
+		
 		bean.setPrefix(prefix);
 		bean.setUId(associationDataUId);
 		bean.setAssociationPredicateUId(associationPredicateUId);
@@ -141,7 +146,7 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 			String qualUId = this.createUniqueId();
 
 			InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
-			qualBean.setAssociationTargetUId(associationDataUId);
+			qualBean.setReferenceUId(associationDataUId);
 			qualBean.setUId(qualUId);
 			qualBean.setPrefix(prefix);
 			qualBean.setEntryStateUId(entryStateUId);
@@ -159,7 +164,7 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 			String contextUId = this.createUniqueId();
 
 			InsertAssociationQualificationOrUsageContextBean contextBean = new InsertAssociationQualificationOrUsageContextBean();
-			contextBean.setAssociationTargetUId(associationDataUId);
+			contextBean.setReferenceUId(associationDataUId);
 			contextBean.setUId(contextUId);
 			contextBean.setPrefix(prefix);
 			contextBean.setEntryStateUId(entryStateUId);
@@ -321,9 +326,9 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 	@Override
 	public String getLatestRevision(String csUId, String assocDataUId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUId);
-		String defaultPrefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
 		return (String) this.getSqlMapClientTemplate().queryForObject(
 				GET_ASSOC_DATA_LATEST_REVISION_ID_BY_UID, 
-				new PrefixedParameterTuple(prefix, defaultPrefix, assocDataUId));		}
+				new PrefixedParameter(prefix, assocDataUId));		
+	}
 }

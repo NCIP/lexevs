@@ -348,16 +348,16 @@
  	</update>
  	
 	<select id="getRelationLatestRevisionIdByUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
 		resultClass="string">
 		SELECT 
 			rev.revisionId
 		FROM
 			$prefix$relation rel,
 			$prefix$entryState es,
-			$param1$revision rev
+			${defaultPrefix}revision rev
 		WHERE
-			rel.relationGuid = #param2#	
+			rel.relationGuid = #param1#	
 		AND
 			rel.entryStateGuid = es.entryStateGuid	
 		AND

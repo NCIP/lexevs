@@ -23,7 +23,7 @@ public interface AssociationTargetDao extends LexGridSchemaVersionAwareDao {
 
 	public String getLatestRevision(String csUId, String targetUId);
 
-	public void deleteAssociationQualificationsByAssociationTargetUId(
+	public void deleteAssociationMultiAttribsByAssociationTargetUId(
 			String codingSchemeUId, String associationTargetUId);
 
 	public String insertAssociationTarget(String codingSchemeUId,

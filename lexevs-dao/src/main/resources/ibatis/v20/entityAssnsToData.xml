@@ -159,16 +159,16 @@
 	</delete>
 
 	<select id="getAssociationDataLatestRevisionIdByUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
 		resultClass="string">
 		SELECT 
 			rev.revisionId
 		FROM
 			$prefix$entityAssnsToData entAssnData
 			$prefix$entrySate es
-			$param1$revision rev
+			${defaultRevision}revision rev
 		WHERE
-			entAssnData.entityAssnsDataGuid = #param2#	
+			entAssnData.entityAssnsDataGuid = #param1#	
 		AND
 			entAssnData.entryStateGuid = es.entryStateGuid
 		AND

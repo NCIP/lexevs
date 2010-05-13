@@ -246,7 +246,7 @@
 		FROM
 			$prefix$vsPLEntry plEntry
 			$prefix$entrySate es
-			$prefix$revision rev
+			${defaultPrefix}revision rev
 		WHERE
 			plEntry.vsPLEntryGuid = #param1#	
 		AND

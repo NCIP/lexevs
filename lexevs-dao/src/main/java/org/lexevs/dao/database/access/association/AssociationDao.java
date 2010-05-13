@@ -214,14 +214,11 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	public void updateRelationEntryStateUId(String codingSchemeUId,
 			String relationUId, String entryStateUId);
 
-	public boolean associationPredicateExists(String codingSchemeUId,
-			String relationUId, String assocPredicateName);
-
 	public String getRelationLatestRevision(String csUId, String relationUId);
 	
 	public void insertBatchTransitiveClosure(final String codingSchemeId,
 			final List<TransitiveClosureBatchInsertItem> batch);
 
-	public boolean entryStateExists(String entryStateUId);
+	public boolean entryStateExists(String codingSchemeUId, String entryStateUId);
 
 }

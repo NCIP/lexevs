@@ -62,7 +62,7 @@ CREATE TABLE @PREFIX@h_entityAssnQuals (
 	entityAssnQualsGuid varchar(36) NOT NULL,
 	referenceGuid varchar(36) NOT NULL,
 	qualifierName varchar(50) NOT NULL,
-	qualifierValue varchar(250) NOT NULL,
+	qualifierValue varchar(250),
 	entryStateGuid varchar(36) NOT NULL
 )
 ;
@@ -179,17 +179,7 @@ ALTER TABLE h_codingScheme ADD CONSTRAINT PK_h_codingScheme
 ;
 
 
-ALTER TABLE h_csMultiAttrib ADD CONSTRAINT PK_h_csMultiAttrib 
-	PRIMARY KEY (csMultiAttribGuid,entryStateGuid)
-;
-
-
 ALTER TABLE h_entity ADD CONSTRAINT PK_h_entity 
-	PRIMARY KEY (entryStateGuid)
-;
-
-
-ALTER TABLE h_entityAssnQuals ADD CONSTRAINT PK_h_entityAssnQuals 
 	PRIMARY KEY (entryStateGuid)
 ;
 
@@ -210,11 +200,6 @@ ALTER TABLE h_property ADD CONSTRAINT PK_h_property
 
 
 ALTER TABLE h_propertyLinks ADD CONSTRAINT PK_h_propertyLinks 
-	PRIMARY KEY (entryStateGuid)
-;
-
-
-ALTER TABLE h_propertyMultiAttrib ADD CONSTRAINT PK_h_propertyMultiAttrib 
 	PRIMARY KEY (entryStateGuid)
 ;
 

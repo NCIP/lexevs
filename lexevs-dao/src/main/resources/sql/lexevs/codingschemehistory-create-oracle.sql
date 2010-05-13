@@ -123,7 +123,7 @@ CREATE TABLE @PREFIX@h_entityAssnQuals
 	entityAssnQualsGuid  VARCHAR2(36) NOT NULL,
 	referenceGuid        VARCHAR2(36) NOT NULL,
 	qualifierName        VARCHAR2(50) NOT NULL,    --  The local name of a qualifier. Must be in supportedAssociationQualifier. 
-	qualifierValue       VARCHAR2(250) NOT NULL,    --  The qualifier value 
+	qualifierValue       VARCHAR2(250),    			--  The qualifier value 
 	entryStateGuid       VARCHAR2(36) NOT NULL
 )
 ;
@@ -308,17 +308,11 @@ ALTER TABLE @PREFIX@h_codingScheme ADD CONSTRAINT PK_h_codingScheme
 	PRIMARY KEY (entryStateGuid)
 ;
 
-ALTER TABLE @PREFIX@h_csMultiAttrib ADD CONSTRAINT PK_h_csMultiAttrib 
-	PRIMARY KEY (entryStateGuid)
-;
 
 ALTER TABLE @PREFIX@h_entity ADD CONSTRAINT PK_h_entity 
 	PRIMARY KEY (entryStateGuid)
 ;
 
-ALTER TABLE @PREFIX@h_entityAssnQuals ADD CONSTRAINT PK_h_entityAssnQuals 
-	PRIMARY KEY (entryStateGuid)
-;
 
 ALTER TABLE @PREFIX@h_entityAssnsToData ADD CONSTRAINT PK_h_entityAssnsToData 
 	PRIMARY KEY (entryStateGuid)
@@ -336,9 +330,6 @@ ALTER TABLE @PREFIX@h_propertyLinks ADD CONSTRAINT PK_h_propertyLinks
 	PRIMARY KEY (entryStateGuid)
 ;
 
-ALTER TABLE @PREFIX@h_propertyMultiAttrib ADD CONSTRAINT PK_h_propertyMultiAttrib 
-	PRIMARY KEY (entryStateGuid)
-;
 
 ALTER TABLE @PREFIX@h_relation ADD CONSTRAINT PK_h_relation 
 	PRIMARY KEY (entryStateGuid)

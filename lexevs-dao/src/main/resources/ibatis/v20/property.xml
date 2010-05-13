@@ -487,16 +487,16 @@
 	</delete>
 
 	<select id="getLatestPropertyRevisionIdByUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
 		resultClass="string">
 		SELECT 
 			rev.revisionId
 		FROM
 			$prefix$property prop,
 			$prefix$entryState es,
-			$param1$revision rev
+			${defaultPrefix}revision rev
 		WHERE
-			prop.propertyGuid = #param2#	
+			prop.propertyGuid = #param1#	
 		AND
 			prop.entryStateGuid = es.entryStateGuid	
 		AND

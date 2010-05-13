@@ -165,11 +165,14 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 								codingSchemeUId, relationUId);
 					}
 
-					if (!associationDao.associationPredicateExists(codingSchemeUId,
-							relationUId, assocPredicateList[i].getAssociationName())) {
-
-						associationDao.insertAssociationPredicate(codingSchemeUId,
-								relationUId, assocPredicateList[i], false);
+					if (associationDao
+							.getAssociationPredicateUIdByContainerUId(
+									codingSchemeUId, relationUId,
+									assocPredicateList[i].getAssociationName()) == null) {
+						
+						associationDao.insertAssociationPredicate(
+								codingSchemeUId, relationUId,
+								assocPredicateList[i], false);
 					}
 					
 					assocTargetService.revise(codingSchemeUri, version,
@@ -189,8 +192,10 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 								codingSchemeUId, relationUId);
 					}
 
-					if (!associationDao.associationPredicateExists(codingSchemeUId,
-							relationUId, assocPredicateList[i].getAssociationName())) {
+					if (associationDao
+							.getAssociationPredicateUIdByContainerUId(
+									codingSchemeUId, relationUId,
+									assocPredicateList[i].getAssociationName()) == null) {
 
 						associationDao.insertAssociationPredicate(codingSchemeUId,
 								relationUId, assocPredicateList[i], false);
@@ -209,8 +214,8 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 			AssociationDao associationDao, VersionsDao versionsDao,
 			String codingSchemeUId, String relationUId) {
 		String prevEntryStateUId = associationDao.getRelationEntryStateUId(codingSchemeUId, relationUId);
-		
-		if( !associationDao.entryStateExists(prevEntryStateUId)) {
+
+		if( !associationDao.entryStateExists(codingSchemeUId, prevEntryStateUId)) {
 			EntryState entryState = new EntryState();
 
 			entryState.setChangeType(ChangeType.NEW);

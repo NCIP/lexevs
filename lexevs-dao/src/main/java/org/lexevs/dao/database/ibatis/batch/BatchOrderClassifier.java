@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
+import org.lexevs.dao.database.ibatis.association.IbatisAssociationDataDao;
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationTargetDao;
 import org.lexevs.dao.database.ibatis.entity.IbatisEntityDao;
 import org.lexevs.dao.database.ibatis.property.IbatisPropertyDao;
@@ -37,7 +38,8 @@ public class BatchOrderClassifier implements Classifier<String,Integer>{
 				
 				IbatisPropertyDao.INSERT_PROPERTY_SQL,
 				IbatisEntityDao.INSERT_ENTITY_TYPE_SQL,
-				IbatisAssociationDao.INSERT_ENTITY_ASSNS_TO_ENTITY_SQL
+				IbatisAssociationTargetDao.INSERT_ENTITY_ASSN_ENTITY_SQL,
+				IbatisAssociationDataDao.INSERT_ENTITY_ASSN_DATA_SQL
 				
 		));
 		

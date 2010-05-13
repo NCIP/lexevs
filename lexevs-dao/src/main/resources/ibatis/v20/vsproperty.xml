@@ -426,7 +426,7 @@
 		FROM
 			$prefix$vsProperty prop
 			$prefix$entrySate es
-			$prefix$revision rev
+			${defaultPrefix}revision rev
 		WHERE
 			prop.vsPropertyGuid = #param1#	
 		AND

@@ -123,7 +123,7 @@ CREATE TABLE @PREFIX@entityAssnQuals
 	referenceGuid VARCHAR(36) NOT NULL,
 	qualifierName VARCHAR(50) NOT NULL,
 	qualifierValue VARCHAR(250),
-	entryStateGuid VARCHAR(36),
+	entryStateGuid VARCHAR(36) NOT NULL,
 	PRIMARY KEY (entityAssnQualsGuid),
 	UNIQUE UQ_entityAssnQuals(referenceGuid, qualifierName, qualifierValue)
 ) 
@@ -300,6 +300,7 @@ CREATE TABLE @PREFIX@relation
 	codingSchemeGuid VARCHAR(36) NOT NULL,
 	containerName VARCHAR(50) NOT NULL,
 	isMapping CHAR(1),
+	representsVersion VARCHAR(50),
 	sourceCodingScheme VARCHAR(50),
 	sourceCodingSchemeVersion VARCHAR(50),
 	targetCodingScheme VARCHAR(50),

@@ -29,7 +29,7 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 	/** */
 	private static String ASSOCIATION_NAMESPACE = "Association.";
 	/** */
-	private static String INSERT_ENTITY_ASSN_ENTITY_SQL = ASSOCIATION_NAMESPACE
+	public static String INSERT_ENTITY_ASSN_ENTITY_SQL = ASSOCIATION_NAMESPACE
 			+ "insertEntityAssnsToEntity";
 	/** */
 	private static String GET_ENTITY_ASSN_TO_ENTITY_UID_BY_INSTANCE_ID_SQL = ASSOCIATION_NAMESPACE
@@ -52,8 +52,14 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 	private static String UPDATE_ENTITY_ASSN_TO_ENTITY_VER_ATTRIB_BY_UID_SQL = ASSOCIATION_NAMESPACE
 			+ "updateEntityAssnToEntityVerAttribByUId";
 
+	private static String DELETE_ALL_ASSOC_MULTI_ATTRIBS_BY_ASSOC_UID_SQL = ASSOCIATION_NAMESPACE
+			+ "deleteAllAssocMultiAttribByAssocUId";
+	
 	private static String DELETE_ASSOC_QUALS_BY_ASSOC_UID_SQL = ASSOCIATION_NAMESPACE
 			+ "deleteAssocQualsByAssocUId";
+	
+	private static String DELETE_ASSOC_USAGE_CONTEXT_BY_ASSOC_UID_SQL = ASSOCIATION_NAMESPACE
+			+ "deleteAssocUsageContextByAssocUId";
 
 	private static String DELETE_ASSOC_TARGET_BY_UID_SQL = ASSOCIATION_NAMESPACE
 			+ "deleteAssocTargetByAssnUId";
@@ -111,11 +117,57 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 
 		this.getSqlMapClientTemplate().update(
 				UPDATE_ENTITY_ASSN_TO_ENTITY_BY_UID_SQL, bean);
+		
+		AssociationQualification[] assocQual = target.getAssociationQualification();
+		
+		if (assocQual.length != 0) {
+			
+			this.getSqlMapClientTemplate().delete(
+					DELETE_ASSOC_QUALS_BY_ASSOC_UID_SQL,
+					new PrefixedParameter(prefix, associationTargetUId));
+			
+			for (int i = 0; i < assocQual.length; i++) {
+
+				InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
+				
+				qualBean.setUId(this.createUniqueId());
+				qualBean.setReferenceUId(associationTargetUId);
+				qualBean.setQualifierName(assocQual[i].getAssociationQualifier());
+				if (assocQual[i].getQualifierText() != null) {
+					qualBean.setQualifierValue(assocQual[i].getQualifierText().getContent());
+				}
+				qualBean.setEntryStateUId(entryStateUId);
+				
+				this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
+			}
+		}
+		
+		String[] usageContext = target.getUsageContext();
+		
+		if (usageContext.length != 0) {
+			
+			this.getSqlMapClientTemplate().delete(
+					DELETE_ASSOC_USAGE_CONTEXT_BY_ASSOC_UID_SQL,
+					new PrefixedParameter(prefix, associationTargetUId));
+			
+			for (int i = 0; i < usageContext.length; i++) {
+
+				InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
+				
+				qualBean.setUId(this.createUniqueId());
+				qualBean.setReferenceUId(associationTargetUId);
+				qualBean.setQualifierName(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
+				if (assocQual[i].getQualifierText() != null) {
+					qualBean.setQualifierValue(assocQual[i].getQualifierText().getContent());
+				}
+				qualBean.setEntryStateUId(entryStateUId);
+				
+				this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
+			}
+		}
 
 		return entryStateUId;
 	}
-	
-	
 
 	@Override
 	public String insertAssociationTarget(String codingSchemeUId,
@@ -152,6 +204,11 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 
 		InsertOrUpdateAssociationTargetBean bean = new InsertOrUpdateAssociationTargetBean();
 
+		if (target.getAssociationInstanceId() == null
+				|| target.getAssociationInstanceId().trim().equals("")) {
+			target.setAssociationInstanceId("_@" + this.createUniqueId());
+		}
+		
 		bean.setPrefix(prefix);
 		bean.setUId(associationTargetUId);
 		bean.setAssociationPredicateUId(associationPredicateUId);
@@ -166,7 +223,7 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 			String qualUId = this.createUniqueId();
 
 			InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
-			qualBean.setAssociationTargetUId(associationTargetUId);
+			qualBean.setReferenceUId(associationTargetUId);
 			qualBean.setUId(qualUId);
 			qualBean.setPrefix(prefix);
 			qualBean.setQualifierName(qual.getAssociationQualifier());
@@ -184,7 +241,7 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 			String contextUId = this.createUniqueId();
 
 			InsertAssociationQualificationOrUsageContextBean contextBean = new InsertAssociationQualificationOrUsageContextBean();
-			contextBean.setAssociationTargetUId(associationTargetUId);
+			contextBean.setReferenceUId(associationTargetUId);
 			contextBean.setUId(contextUId);
 			contextBean.setPrefix(prefix);
 			contextBean
@@ -247,19 +304,20 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 		this.getNonBatchTemplateInserter().insert(
 				INSERT_ENTITY_ASSN_ENTITY_SQL, assnTargetBean);
 
-		/* --- TO DO --- */
-		if (assnQualExists) {
-			InsertAssociationQualificationOrUsageContextBean assnQual = (InsertAssociationQualificationOrUsageContextBean) this
-					.getSqlMapClientTemplate()
-					.queryForObject(GET_ASSN_QUALS_BY_REF_UID_SQL,
-							new PrefixedParameter(prefix, associationTargetUId));
+		if (assnTargetBean.getAssnQualsAndUsageContext() != null) {
+			for (int i = 0; i < assnTargetBean.getAssnQualsAndUsageContext()
+					.size(); i++) {
+				InsertAssociationQualificationOrUsageContextBean assocMultiAttrib = assnTargetBean
+						.getAssnQualsAndUsageContext().get(i);
+
+				assocMultiAttrib.setPrefix(historyPrefix);
+
+				this.getSqlMapClientTemplate().insert(
+						INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL,
+						assocMultiAttrib);
+			}
 		}
-
-		if (contextExists) {
-
-		}
-		/* --- TO DO END --- */
-
+		
 		if (!entryStateExists(prefix, assnTargetBean.getEntryStateUId())) {
 
 			EntryState entryState = new EntryState();
@@ -315,22 +373,21 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 	public String getLatestRevision(String csUId, String targetUId) {
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUId);
-		String defaultPrefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
 		return (String) this.getSqlMapClientTemplate().queryForObject(
 				GET_ASSOC_TARGET_LATEST_REVISION_ID_BY_UID, 
-				new PrefixedParameterTuple(prefix, defaultPrefix, targetUId));	
+				new PrefixedParameter(prefix, targetUId));	
 	}
 
 	@Override
-	public void deleteAssociationQualificationsByAssociationTargetUId(
+	public void deleteAssociationMultiAttribsByAssociationTargetUId(
 			String codingSchemeUId, String associationTargetUId) {
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
 		this.getSqlMapClientTemplate().delete(
-				DELETE_ASSOC_QUALS_BY_ASSOC_UID_SQL,
+				DELETE_ALL_ASSOC_MULTI_ATTRIBS_BY_ASSOC_UID_SQL,
 				new PrefixedParameter(prefix, associationTargetUId));
 	}
 }

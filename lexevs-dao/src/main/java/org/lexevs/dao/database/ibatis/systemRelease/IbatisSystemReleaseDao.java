@@ -5,7 +5,6 @@ import java.util.List;
 import org.LexGrid.versions.SystemRelease;
 import org.lexevs.dao.database.access.systemRelease.SystemReleaseDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
-import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.versions.parameter.InsertSystemReleaseBean;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 
@@ -28,9 +27,9 @@ public class IbatisSystemReleaseDao extends AbstractIbatisDao implements SystemR
 	
 	@Override
 	public String getSystemReleaseUIdByUri(String systemReleaseUri) {
-		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
 		return (String) this.getSqlMapClientTemplate().queryForObject(GET_SYSTEM_RELEASE_ID_BY_URI, 
-			new PrefixedParameter(prefix, systemReleaseUri));
+			systemReleaseUri);
 	}
 	
 	@Override

@@ -18,9 +18,9 @@
 			pr.revisionId previousRevisionId
 		FROM
 			$prefix$vsEntryState es
-		LEFT JOIN $prefix$revision cr ON
+		LEFT JOIN ${defaultPrefix}revision cr ON
 			es.revisionGuid = cr.revisionGuid
-		LEFT JOIN $prefix$revision pr ON
+		LEFT JOIN ${defaultPrefix}revision pr ON
 			es.prevRevisionGuid = pr.revisionGuid
 		WHERE
 			entryStateGuid = #param1#		

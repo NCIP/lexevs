@@ -319,7 +319,7 @@
 		FROM
 			$prefix$valueSetDefinition vsDef
 			$prefix$entrySate es
-			$prefix$revision rev
+			${defaultPrefix}revision rev
 		WHERE
 			vsDef.valueSetDefGuid = #param1#	
 		AND

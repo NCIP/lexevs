@@ -980,13 +980,15 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		this.getSqlMapClientTemplate().insert(
 				INSERT_CODING_SCHEME_SQL, codingSchemeData);
 		
-		for (int i = 0; i < codingSchemeData.getCsMultiAttribList().size(); i++) {
-			
-			codingSchemeData.getCsMultiAttribList().get(i).setPrefix(historyPrefix);
-			
-			this.getSqlMapClientTemplate().insert(
-					INSERT_CODING_SCHEME_MULTIATTRIB_SQL,
-					codingSchemeData.getCsMultiAttribList().get(i));
+		if( codingSchemeData.getCsMultiAttribList() != null ) {
+			for (int i = 0; i < codingSchemeData.getCsMultiAttribList().size(); i++) {
+				
+				codingSchemeData.getCsMultiAttribList().get(i).setPrefix(historyPrefix);
+				
+				this.getSqlMapClientTemplate().insert(
+						INSERT_CODING_SCHEME_MULTIATTRIB_SQL,
+						codingSchemeData.getCsMultiAttribList().get(i));
+			}
 		}
 		
 		if (!entryStateExists(prefix, codingSchemeData.getEntryStateUId())) {
@@ -1029,11 +1031,10 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	public String getLatestRevision(String codingSchemeUId) {
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
-		String defaultPrefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
 		return (String) this.getSqlMapClientTemplate().queryForObject(
 				GET_CODING_SCHEME_LATEST_REVISION_ID_BY_UID, 
-				new PrefixedParameterTuple(prefix, defaultPrefix, codingSchemeUId));
+				new PrefixedParameter(prefix, codingSchemeUId));
 	}
 
 	/**

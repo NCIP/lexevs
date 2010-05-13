@@ -36,7 +36,6 @@ CREATE TABLE @PREFIX@h_csMultiAttrib
 	subRef VARCHAR(250),
 	role VARCHAR(250),
 	entryStateGuid VARCHAR(36) NOT NULL,
-	PRIMARY KEY (entryStateGuid),
 	INDEX idx_h_csMultiAttrib (codingSchemeGuid ASC, attributeType ASC)
 ) 
 ;
@@ -73,9 +72,8 @@ CREATE TABLE @PREFIX@h_entityAssnQuals
 	entityAssnQualsGuid VARCHAR(36) NOT NULL,
 	referenceGuid VARCHAR(36) NOT NULL,
 	qualifierName VARCHAR(50) NOT NULL,
-	qualifierValue VARCHAR(250) NOT NULL,
-	entryStateGuid VARCHAR(36) NOT NULL,
-	PRIMARY KEY (entryStateGuid)
+	qualifierValue VARCHAR(250),
+	entryStateGuid VARCHAR(36) NOT NULL
 ) 
 ;
 
@@ -180,7 +178,6 @@ CREATE TABLE @PREFIX@h_propertyMultiAttrib
 	role VARCHAR(250),
 	qualifierType VARCHAR(250),
 	entryStateGuid VARCHAR(36) NOT NULL,
-	PRIMARY KEY (entryStateGuid),
 	INDEX idx_h_propertyMultiAttrib (propertyGuid ASC)
 ) 
 ;

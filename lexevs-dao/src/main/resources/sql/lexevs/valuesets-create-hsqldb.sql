@@ -150,11 +150,16 @@ CREATE TABLE vdSupportedAttrib (
 	id varchar(250) NOT NULL,
 	uri varchar(250),
 	idValue varchar(250),
+	associationNames varchar(250),	
 	rootCode varchar(250),
 	isForwardNavigable char(1),
 	isImported char(1),
 	equivalentCodingScheme varchar(250),
-	assemblyRule varchar(250)
+	assemblyRule varchar(250),
+	assnCodingScheme VARCHAR(250),
+	assnNamespace VARCHAR(250),
+	assnEntityCode VARCHAR(200),
+	propertyType VARCHAR(50)
 )
 ;
 

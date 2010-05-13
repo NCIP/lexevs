@@ -217,7 +217,7 @@
 		FROM
 			$prefix$vsdEntry vsdEntry
 			$prefix$entrySate es
-			$prefix$revision rev
+			${defaultPrefix}revision rev
 		WHERE
 			vsdEntry.vsdEntryGuid = #param1#	
 		AND

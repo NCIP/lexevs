@@ -10,11 +10,11 @@
 		<result property="prevRevision" column="previousRevisionId" />
 	</resultMap>
 	
-	<select id="getSystemReleaseGuidByUri" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+	<select id="getSystemReleaseGuidByUri" parameterClass="string" resultClass="string">
 		SELECT
 			releaseGuid
 		FROM
-			$prefix$systemRelease
+			${defaultPrefix}systemRelease
 		WHERE
 			releaseURI = #param1#	
      </select>
@@ -31,15 +31,6 @@
 			entryStateGuid = #param1#
 		
      </select>
-
-	<select id="getRevisionGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
-		SELECT			
-			revisionGuid
-		FROM
-			$prefix$revision
-		WHERE
-			revisionId = #param1#
-     </select>
      
 	<update id="updateEntryStateById" parameterClass="map">
 		UPDATE entryState
@@ -50,7 +41,7 @@
  	</update>
  	
  	<insert id="insertSystemRelease" parameterClass="org.lexevs.dao.database.ibatis.versions.parameter.InsertSystemReleaseBean">
-		INSERT INTO $prefix$systemRelease (
+		INSERT INTO ${defaultPrefix}systemRelease (
 			releaseGuid,
 			releaseURI,
 			releaseId,
@@ -71,7 +62,7 @@
  	</insert>
  	
  	<insert id="insertRevision" parameterClass="org.lexevs.dao.database.ibatis.versions.parameter.InsertRevisionBean">
-		INSERT INTO $prefix$revision (
+		INSERT INTO ${defaultPrefix}revision (
 			revisionGuid,
 			releaseGuid,			
 			revisionId,
@@ -148,11 +139,11 @@
 			)
  	</insert>
  	
- 	<select id="getRevisionGuidFromId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+ 	<select id="getRevisionGuidFromId" parameterClass="string" resultClass="string">
    		SELECT
    			revisionGuid
    		FROM
-   			$prefix$revision
+   			${defaultPrefix}revision
 		WHERE
 			revisionId = #param1#
    </select>

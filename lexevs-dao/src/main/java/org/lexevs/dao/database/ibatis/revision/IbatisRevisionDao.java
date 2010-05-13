@@ -1,6 +1,5 @@
 package org.lexevs.dao.database.ibatis.revision;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -9,7 +8,6 @@ import org.LexGrid.versions.Revision;
 import org.lexevs.dao.database.access.revision.RevisionDao;
 import org.lexevs.dao.database.access.systemRelease.SystemReleaseDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
-import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.versions.parameter.InsertRevisionBean;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 
@@ -45,15 +43,13 @@ public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao 
 
 	@Override
 	public String getRevisionUIdById(String revisionId) {
-		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
-		
 		if(	revisionId == null )
 			return null;
 		
 		String revisionGuid = null;
 		
 		revisionGuid = (String) this.getSqlMapClientTemplate()
-				.queryForObject(SELECT_REVISION_GUID_BY_ID, new PrefixedParameter(prefix, revisionId));
+				.queryForObject(SELECT_REVISION_GUID_BY_ID, revisionId);
 		
 		return revisionGuid;
 	}
@@ -64,14 +60,12 @@ public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao 
 		String revisionUId = this.createUniqueId();
 		
 		if (getRevisionUIdById(revision.getRevisionId()) == null) {
-			String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 
 			String releaseUId = systemReleaseDao
 					.getSystemReleaseUIdByUri(releaseURI);
 
 			InsertRevisionBean insertRevisionBean = new InsertRevisionBean();
 
-			insertRevisionBean.setPrefix(prefix);
 			insertRevisionBean.setRevisionGuid(revisionUId);
 			insertRevisionBean.setReleaseGuid(releaseUId);
 			insertRevisionBean.setRevAppliedDate(new Timestamp(System

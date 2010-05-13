@@ -28,31 +28,13 @@ import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 public class InsertAssociationQualificationOrUsageContextBean extends IdableParameterBean {
 
 	/** The association target id. */
-	private String associationTargetUId;
+	private String referenceUId;
 	
 	/** The qualifier name. */
 	private String qualifierName;
 	
 	/** The qualifier value. */
 	private String qualifierValue;
-	
-	/**
-	 * Gets the association target id.
-	 * 
-	 * @return the association target id
-	 */
-	public String getAssociationTargetUId() {
-		return associationTargetUId;
-	}
-	
-	/**
-	 * Sets the association target id.
-	 * 
-	 * @param associationTargetUId the new association target id
-	 */
-	public void setAssociationTargetUId(String associationTargetUId) {
-		this.associationTargetUId = associationTargetUId;
-	}
 	
 	/**
 	 * Gets the qualifier name.
@@ -88,6 +70,20 @@ public class InsertAssociationQualificationOrUsageContextBean extends IdablePara
 	 */
 	public void setQualifierValue(String qualifierValue) {
 		this.qualifierValue = qualifierValue;
+	}
+
+	/**
+	 * @return the referenceUId
+	 */
+	public String getReferenceUId() {
+		return referenceUId;
+	}
+
+	/**
+	 * @param referenceUId the referenceUId to set
+	 */
+	public void setReferenceUId(String referenceUId) {
+		this.referenceUId = referenceUId;
 	}
 	
 	
