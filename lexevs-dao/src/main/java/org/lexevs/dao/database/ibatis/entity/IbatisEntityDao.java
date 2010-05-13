@@ -32,6 +32,7 @@ import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
@@ -163,7 +164,9 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				new PrefixedParameterCollection(prefix, codingSchemeId, entityUids), "id");
 		
 		for(Property prop : this.ibatisPropertyDao.getPropertiesOfParents(codingSchemeId, entityUids)){
-			entities.get(prop.getParent()).addAnyProperty(prop);
+			if(StringUtils.isNotBlank(prop.getPropertyName())) {
+				entities.get(prop.getParent()).addAnyProperty(prop);
+			}
 		}
 
 		return new ArrayList<Entity>(entities.values());
