@@ -1,7 +1,7 @@
 package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants;
 
 public class LexGridConstants {
-    /*========================================================================================
+    /*======================================================================================
     Builtins Package
     ========================================================================================*/
     public static final String lgBuiltin = "http://LexGrid.org/schema/2010/01/LexGrid/builtins";
