@@ -82,7 +82,7 @@ CREATE TABLE @PREFIX@entityAssnQuals (
 	entityAssnQualsGuid varchar(36) NOT NULL,
 	referenceGuid varchar(36) NOT NULL,
 	qualifierName varchar(50) NOT NULL,
-	qualifierValue varchar(250) 
+	qualifierValue varchar(250), 
 	entryStateGuid varchar(36) NOT NULL
 )
 ;
