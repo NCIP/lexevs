@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
-import org.LexGrid.LexBIG.Impl.pagedgraph.root.AbstractEndNode.Root;
-import org.LexGrid.LexBIG.Impl.pagedgraph.root.AbstractEndNode.Tail;
 import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
-import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 public class NullFocusRootsResolver implements RootsResolver {
@@ -121,6 +118,11 @@ public class NullFocusRootsResolver implements RootsResolver {
         CodedNodeGraphService service =
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
         
+        if(CollectionUtils.isEmpty(associationNames)) {
+            associationNames = 
+            service.getAssociationPredicateNamesForCodingScheme(codingSchemeUri, codingSchemeVersion);
+        }
+        
         List<ConceptReference> roots = 
             service.getRootConceptReferences(codingSchemeUri, codingSchemeVersion, relationsContainerName, associationNames);
         
@@ -136,7 +138,13 @@ public class NullFocusRootsResolver implements RootsResolver {
         CodedNodeGraphService service =
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
         
+        if(CollectionUtils.isEmpty(associationNames)) {
+            associationNames = 
+            service.getAssociationPredicateNamesForCodingScheme(codingSchemeUri, codingSchemeVersion);
+        }
+        
         return 
             service.getTailConceptReferences(codingSchemeUri, codingSchemeVersion, relationsContainerName, associationNames);
     }
+    
 }

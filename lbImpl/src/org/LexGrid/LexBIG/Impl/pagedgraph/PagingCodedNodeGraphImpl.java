@@ -40,6 +40,7 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver.ResolveDirection;
 import org.LexGrid.LexBIG.Impl.pagedgraph.utility.PagedGraphUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.util.CollectionUtils;
@@ -74,7 +75,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
             String codingSchemeUri, 
             String version,
             String relationsContainerName) throws LBParameterException{
-        super(codingSchemeUri, version, relationsContainerName);
+        super(codingSchemeUri, version, StringUtils.isBlank(relationsContainerName) ? null : relationsContainerName);
     }
     
   
