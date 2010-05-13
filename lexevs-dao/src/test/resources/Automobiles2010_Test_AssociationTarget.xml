@@ -197,7 +197,16 @@
                 <lgRel:associationPredicate associationName="hasSubtype">
                     <lgRel:source sourceEntityCode="005" sourceEntityCodeNamespace="Automobiles">
                         <lgRel:target targetEntityCodeNamespace="Automobiles"
-                            targetEntityCode="Ford" associationInstanceId="inst001"/>
+                            targetEntityCode="Ford" associationInstanceId="inst001">
+                            <lgRel:usageContext>context1</lgRel:usageContext>
+                            <lgRel:usageContext>context2</lgRel:usageContext>
+                            <lgRel:associationQualification associationQualifier="qual1">
+                                <lgRel:qualifierText>qualVal1</lgRel:qualifierText>
+                            </lgRel:associationQualification>                
+                            <lgRel:associationQualification associationQualifier="qual2">
+                                <lgRel:qualifierText>qualVal2</lgRel:qualifierText>
+                            </lgRel:associationQualification>  
+                        </lgRel:target>
                         <lgRel:target targetEntityCodeNamespace="Automobiles" targetEntityCode="GM"
                             associationInstanceId="inst100"/>
                         <lgRel:target targetEntityCodeNamespace="Automobiles"
@@ -229,7 +238,8 @@
                     <lgRel:source sourceEntityCodeNamespace="Automobiles"
                         sourceEntityCode="Chrysler">
                         <lgRel:target targetEntityCodeNamespace="Automobiles"
-                            targetEntityCode="LeBaron">
+                            targetEntityCode="LeBaron" associationInstanceId="inst003">
+                            <lgRel:usageContext>testing</lgRel:usageContext>
                             <lgRel:associationQualification associationQualifier="since">
                                 <lgRel:qualifierText>1988</lgRel:qualifierText>
                             </lgRel:associationQualification>
@@ -286,7 +296,7 @@
                                     <lgCommon:entryState
                                         containingRevision="testRelease2010Jan_testTarget"
                                         relativeOrder="0" changeType="NEW"/>
-                                    <lgRel:associationQualification associationQualifier="qual1">
+                                    <lgRel:associationQualification associationQualifier="testQual">
                                         <lgRel:qualifierText>testQualText</lgRel:qualifierText>
                                     </lgRel:associationQualification>
                                 </lgRel:target>
@@ -297,7 +307,7 @@
             </changedEntry>
         </revision>
 
-        <!--Test : MODIFY entity-->
+        <!--Test : MODIFY AssociationTraget-->
         <revision revisionId="testRelease2010Feb_testTarget">
             <changeAgent>Mayo-Feb</changeAgent>
             <changeInstructions>changedInstruction</changeInstructions>
@@ -321,6 +331,10 @@
                                     <lgCommon:entryState
                                         containingRevision="testRelease2010Feb_testTarget"
                                         relativeOrder="0" changeType="MODIFY"/>
+                                    <lgRel:usageContext>context3</lgRel:usageContext>
+                                    <lgRel:associationQualification associationQualifier="qual3">
+                                        <lgRel:qualifierText>qualVal3</lgRel:qualifierText>
+                                    </lgRel:associationQualification>          
                                 </lgRel:target>
                             </lgRel:source>
                         </lgRel:associationPredicate>
@@ -329,7 +343,7 @@
             </changedEntry>
         </revision>
 
-        <!--Test : VERSIONABLE entity-->
+        <!--Test : VERSIONABLE AssociationTraget-->
         <revision revisionId="testRelease2010Mar_testTarget">
             <changeAgent>Mayo-March</changeAgent>
             <changedEntry>
@@ -363,7 +377,7 @@
             </changedEntry>
         </revision>
 
-        <!-- Test:REMOVE entity -->
+        <!-- Test:REMOVE AssociationTraget -->
         <revision revisionId="testRelease2010Apr_testTarget">
             <changedEntry>
                 <changedCodingSchemeEntry codingSchemeName="Automobiles"
@@ -380,7 +394,7 @@
                             <lgRel:source sourceEntityCodeNamespace="Automobiles"
                                 sourceEntityCode="Chrysler">
                                 <lgRel:target targetEntityCodeNamespace="Automobiles"
-                                    targetEntityCode="LeBaron">
+                                    targetEntityCode="LeBaron" associationInstanceId="inst003">
                                     <lgCommon:entryState
                                         containingRevision="testRelease2010Apr_testTarget"
                                         relativeOrder="0" changeType="REMOVE"/>
