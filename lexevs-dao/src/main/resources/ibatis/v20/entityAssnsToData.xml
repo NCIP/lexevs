@@ -5,20 +5,22 @@
 
 	<typeAlias alias="associationData" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationDataBean"/>
 
-	<resultMap id="associationDataEntry" class="associationData">
-		<result property="uid" column="entityAssnsGuid" />
+	<resultMap id="associationDataEntry" class="associationData" groupBy="uid">
+		<result property="uid" column="entityAssnsDataGuid" />
 		<result property="associationPredicateUId" column="associationPredicateGuid" />
 		<result property="associationSource.sourceEntityCode" column="sourceEntityCode" />
 		<result property="associationSource.sourceEntityCodeNamespace" column="sourceEntityCodeNamespace" />
 		<result property="associationData.associationInstanceId" column="associationInstanceId" />
 		<result property="associationData.isDefining" column="isDefining" />
 		<result property="associationData.isInferred" column="isInferred" />
+		<result property="associationData.associationDataText.content" column="dataValue" />
 		<result property="associationData.isActive" column="isActive" />
 		<result property="associationData.owner" column="owner" />
 		<result property="associationData.status" column="status" />
 		<result property="associationData.effectiveDate" column="effectiveDate" />
 		<result property="associationData.expirationDate" column="expirationDate" />
-		<result property="entryStateUId" column="entryStateUId" />
+		<result property="entryStateUId" column="entryStateGuid" />
+		<result property="assnQualsAndUsageContextList" resultMap="Association.qualContextResult"/>
 	</resultMap>
 
 	<insert id="insertEntityAssnsToData"
@@ -58,13 +60,13 @@
   	
 	<select id="getEntityAssnDataUIDByAssocInstanceId" remapResults="true" resultClass="string">
 		SELECT
-			eae.entityAssnsGuid
+			ead.entityAssnsDataGuid
 		FROM 
 			$prefix$entityAssnsToData ead
 		JOIN
 			$prefix$associationPredicate ap
 		ON 
-			eae.associationPredicateGuid =
+			ead.associationPredicateGuid =
 			ap.associationPredicateGuid
 		JOIN
 			$prefix$relation rel
@@ -75,19 +77,41 @@
 			rel.codingSchemeGuid = 
 			#param1#
 		AND
-			eae.associationInstanceId = 
+			ead.associationInstanceId = 
 			#param2#
 	</select>
 	
 	<select id="getAssnDataAttributesByUId"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		remapResults="true" resultMap="associationDataEntry">
+		remapResults="true" resultMap="associationDataEntry">		
 		SELECT 
-			*
+			data.entityAssnsDataGuid,
+			data.associationPredicateGuid,
+			data.sourceEntityCode,
+			data.sourceEntityCodeNamespace,
+			data.associationInstanceId,
+			data.isDefining,
+			data.isInferred,
+			data.dataValue,
+			data.isActive,
+			data.owner,
+			data.status,
+			data.effectiveDate,
+			data.expirationDate,
+			data.entryStateGuid,
+			quals.entityAssnQualsGuid,
+			quals.referenceGuid,
+			quals.qualifierName,
+			quals.qualifierValue,
+			quals.entryStateGuid esGuid
 		FROM
-			$prefix$entityAssnsToData
+			$prefix$entityAssnsToData data
+		LEFT JOIN
+			$prefix$entityAssnQuals quals
+		ON
+			data.entityAssnsDataGuid = quals.referenceGuid
 		WHERE
-			entityAssnsGuid = #param1# 
+			data.entityAssnsDataGuid = #param1# 
 	</select>
 	
 	<update id="updateEntityAssnToDataByUId"
@@ -96,27 +120,27 @@
 			$prefix$entityAssnsToData
 		SET
 		<dynamic prepend=" ">
-			<isNotNull prepend="," property="source.sourceEntityCode">
-				sourceEntityCode = #source.sourceEntityCode#
+			<isNotNull prepend="," property="associationSource.sourceEntityCode">
+				sourceEntityCode = #associationSource.sourceEntityCode#
 			</isNotNull>
-			<isNotNull prepend="," property="source.sourceEntityCodeNamespace">
-				sourceEntityCodeNamespace = #source.sourceEntityCodeNamespace#
+			<isNotNull prepend="," property="associationSource.sourceEntityCodeNamespace">
+				sourceEntityCodeNamespace = #associationSource.sourceEntityCodeNamespace#
 			</isNotNull>
-			<isNotNull prepend="," property="data.isDefined">
-				isDefined = #data.isDefined#
+			<isNotNull prepend="," property="associationData.isDefining">
+				isDefined = #associationData.isDefining#
 			</isNotNull>
-			<isNotNull prepend="," property="data.isInferred">
-				isInferred = #data.isInferred#
+			<isNotNull prepend="," property="associationData.isInferred">
+				isInferred = #associationData.isInferred#
 			</isNotNull>
-			<isNotNull prepend="," property="data.associationDataText.content">
-				dataValue = #data.associationDataText.content#
+			<isNotNull prepend="," property="associationData.associationDataText">
+				dataValue = #associationData.associationDataText.content#
 			</isNotNull>
 			<isNotNull prepend="," property="entryStateUId">
 				entryStateGuid = #entryStateUId#
 			</isNotNull>
 		</dynamic>
 		WHERE
-			entityAssnsGuid = #uid#
+			entityAssnsDataGuid = #uid#
 	</update>	
 
 	<update id="updateEntityAssnToDataVerAttribByUId"
@@ -125,30 +149,30 @@
 			$prefix$entityAssnsToData
 		SET
 		<dynamic prepend=" ">
-			<isNotNull prepend="," property="data.isActive">
+			<isNotNull prepend="," property="associationData.isActive">
 				isActive =
-				#data.isActive#
+				#associationData.isActive#
 			</isNotNull>
-			<isNotNull prepend="," property="data.owner">
-				owner = #data.owner#
+			<isNotNull prepend="," property="associationData.owner">
+				owner = #associationData.owner#
 			</isNotNull>
-			<isNotNull prepend="," property="data.status">
-				status = #data.status#
+			<isNotNull prepend="," property="associationData.status">
+				status = #associationData.status#
 			</isNotNull>
-			<isNotNull prepend="," property="data.effectiveDate">
+			<isNotNull prepend="," property="associationData.effectiveDate">
 				effectiveDate =
-				#data.effectiveDate#
+				#associationData.effectiveDate#
 			</isNotNull>
-			<isNotNull prepend="," property="data.expirationDate">
+			<isNotNull prepend="," property="associationData.expirationDate">
 				expirationDate =
-				#data.expirationDate#
+				#associationData.expirationDate#
 			</isNotNull>
 			<isNotNull prepend="," property="entryStateUId">
 				entryStateGuid = #entryStateUId#
 			</isNotNull>
 		</dynamic>
 		WHERE
-			entityAssnsGuid = #uid#
+			entityAssnsDataGuid = #uid#
 	</update>	
 		
 	<delete id="deleteAssocDataByAssnUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
@@ -164,9 +188,9 @@
 		SELECT 
 			rev.revisionId
 		FROM
-			$prefix$entityAssnsToData entAssnData
-			$prefix$entrySate es
-			${defaultRevision}revision rev
+			$prefix$entityAssnsToData entAssnData,
+			$prefix$entryState es,
+			${defaultPrefix}revision rev
 		WHERE
 			entAssnData.entityAssnsDataGuid = #param1#	
 		AND

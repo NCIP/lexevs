@@ -130,6 +130,7 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 
 				InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
 				
+				qualBean.setPrefix(prefix);
 				qualBean.setUId(this.createUniqueId());
 				qualBean.setReferenceUId(associationTargetUId);
 				qualBean.setQualifierName(assocQual[i].getAssociationQualifier());
@@ -154,6 +155,7 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 
 				InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
 				
+				qualBean.setPrefix(prefix);
 				qualBean.setUId(this.createUniqueId());
 				qualBean.setReferenceUId(associationTargetUId);
 				qualBean.setQualifierName(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);

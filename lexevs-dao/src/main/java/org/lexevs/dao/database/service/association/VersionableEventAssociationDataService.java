@@ -98,8 +98,6 @@ public class VersionableEventAssociationDataService extends
 		
 		/* 3. Delete association data. */
 		associationDataDao.deleteAssociationData(codingSchemeUId, associationDataUId);
-		
-		//remove entryStates?
 	}
 
 	@Override
@@ -189,6 +187,22 @@ public class VersionableEventAssociationDataService extends
 				throw new LBRevisionException(
 						"Changes of type NEW are not allowed to have previous revisions.");
 			}
+			
+			String csUId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri,
+					version).getCodingSchemeUIdByUriAndVersion(codingSchemeUri,
+					version);
+			
+			AssociationDataDao assocDataDao = this.getDaoManager()
+					.getAssociationDataDao(codingSchemeUri, version);
+
+			String assocDataUId = assocDataDao.getAssociationDataUId(csUId,
+					data.getAssociationInstanceId());
+
+			if (assocDataUId != null) {
+				throw new LBRevisionException(
+						"The association data being added alredy exist.");
+			}
+			
 		} else {
 
 			String csUId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri,

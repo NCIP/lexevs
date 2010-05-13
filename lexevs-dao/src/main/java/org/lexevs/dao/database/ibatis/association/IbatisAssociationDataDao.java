@@ -52,9 +52,16 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 
 	private static String UPDATE_ENTITY_ASSN_TO_DATA_BY_UID_SQL = ASSOCIATION_NAMESPACE
 			+ "updateEntityAssnToDataByUId";
+	
+	private static String DELETE_ALL_ASSOC_MULTI_ATTRIBS_BY_ASSOC_UID_SQL = ASSOCIATION_NAMESPACE
+			+ "deleteAllAssocMultiAttribByAssocUId";
 
 	private static String DELETE_ASSOC_QUALS_BY_ASSOC_UID_SQL = ASSOCIATION_NAMESPACE
 			+ "deleteAssocQualsByAssocUId";
+
+	private static String DELETE_ASSOC_USAGE_CONTEXT_BY_ASSOC_UID_SQL = ASSOCIATION_NAMESPACE
+			+ "deleteAssocUsageContextByAssocUId";
+
 
 	private static String DELETE_ASSOC_DATA_BY_UID_SQL = ASSOCIATION_NAMESPACE
 			+ "deleteAssocDataByAssnUId";
@@ -227,18 +234,19 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 		this.getNonBatchTemplateInserter().insert(
 				INSERT_ENTITY_ASSN_DATA_SQL, assnDataBean);
 
-		/* --- TO DO --- */
-		if (assnQualExist) {
-			/*InsertAssociationQualificationOrUsageContextBean assnQual = (InsertAssociationQualificationOrUsageContextBean) this
-					.getSqlMapClientTemplate()
-					.queryForObject(GET_ASSN_QUALS_BY_REF_UID_SQL,
-							new PrefixedParameter(prefix, associationTargetUId));*/
-		}
+		if (assnDataBean.getAssnQualsAndUsageContext() != null) {
+			for (int i = 0; i < assnDataBean.getAssnQualsAndUsageContext()
+					.size(); i++) {
+				InsertAssociationQualificationOrUsageContextBean assocMultiAttrib = assnDataBean
+						.getAssnQualsAndUsageContext().get(i);
 
-		if (contextExist) {
+				assocMultiAttrib.setPrefix(historyPrefix);
 
+				this.getSqlMapClientTemplate().insert(
+						INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL,
+						assocMultiAttrib);
+			}
 		}
-		/* --- TO DO END --- */
 
 		if (!entryStateExists(prefix, assnDataBean.getEntryStateUId())) {
 
@@ -275,6 +283,56 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 		this.getSqlMapClientTemplate().update(
 				UPDATE_ENTITY_ASSN_TO_DATA_BY_UID_SQL, bean);
 
+		AssociationQualification[] assocQual = data.getAssociationQualification();
+		
+		if (assocQual.length != 0) {
+			
+			this.getSqlMapClientTemplate().delete(
+					DELETE_ASSOC_QUALS_BY_ASSOC_UID_SQL,
+					new PrefixedParameter(prefix, associationDataUId));
+			
+			for (int i = 0; i < assocQual.length; i++) {
+
+				InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
+				
+				qualBean.setPrefix(prefix);
+				qualBean.setUId(this.createUniqueId());
+				qualBean.setReferenceUId(associationDataUId);
+				qualBean.setQualifierName(assocQual[i].getAssociationQualifier());
+				if (assocQual[i].getQualifierText() != null) {
+					qualBean.setQualifierValue(assocQual[i].getQualifierText().getContent());
+				}
+				qualBean.setEntryStateUId(entryStateUId);
+				
+				this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
+			}
+		}
+		
+		String[] usageContext = data.getUsageContext();
+		
+		if (usageContext.length != 0) {
+			
+			this.getSqlMapClientTemplate().delete(
+					DELETE_ASSOC_USAGE_CONTEXT_BY_ASSOC_UID_SQL,
+					new PrefixedParameter(prefix, associationDataUId));
+			
+			for (int i = 0; i < usageContext.length; i++) {
+
+				InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
+				
+				qualBean.setPrefix(prefix);
+				qualBean.setUId(this.createUniqueId());
+				qualBean.setReferenceUId(associationDataUId);
+				qualBean.setQualifierName(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
+				if (assocQual[i].getQualifierText() != null) {
+					qualBean.setQualifierValue(assocQual[i].getQualifierText().getContent());
+				}
+				qualBean.setEntryStateUId(entryStateUId);
+				
+				this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
+			}
+		}
+		
 		return entryStateUId;
 	}
 
@@ -286,7 +344,7 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 				codingSchemeUId);
 
 		this.getSqlMapClientTemplate().delete(
-				DELETE_ASSOC_QUALS_BY_ASSOC_UID_SQL,
+				DELETE_ALL_ASSOC_MULTI_ATTRIBS_BY_ASSOC_UID_SQL,
 				new PrefixedParameter(prefix, associationDataUId));
 	}
 	

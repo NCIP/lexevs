@@ -473,7 +473,7 @@
 		FROM
 			$prefix$entity ent,
 			$prefix$entryState es,
-			${defaultRevision}revision rev
+			${defaultPrefix}revision rev
 		WHERE
 			ent.entityGuid = #param1#	
 		AND
