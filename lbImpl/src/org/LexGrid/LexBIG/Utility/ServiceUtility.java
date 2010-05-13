@@ -26,7 +26,6 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.service.SystemResourceService;
-import org.springframework.util.CollectionUtils;
 
 /**
  * The Class ServiceUtility.
@@ -60,19 +59,25 @@ public class ServiceUtility {
         return version;
     }
     
-    public static void validateParameter(String codingSchemeUri, String codingSchemeVersion, LocalNameList list, Class<? extends URIMap> supportedAttributeClass) throws LBParameterException {
+    public static void validateParameter(String codingSchemeNameOrUri, String codingSchemeVersion, LocalNameList list, Class<? extends URIMap> supportedAttributeClass) throws LBParameterException {
         if(list == null) {
             return;
         }
         for(String localName : list.getEntry()) {
-            validateParameter(codingSchemeUri,codingSchemeVersion, localName, supportedAttributeClass);
+            validateParameter(codingSchemeNameOrUri,codingSchemeVersion, localName, supportedAttributeClass);
         }
     }
     
-    public static void validateParameter(String codingSchemeUri, String codingSchemeVersion, String localId, Class<? extends URIMap> supportedAttributeClass) throws LBParameterException {
+    public static void validateParameter(String codingSchemeNameOrUri, String codingSchemeVersion, String localId, Class<? extends URIMap> supportedAttributeClass) throws LBParameterException {
         if(StringUtils.isBlank(localId)) {
             return;
         }
+        
+        String codingSchemeUri = 
+            LexEvsServiceLocator.getInstance().
+            getSystemResourceService().
+            getUriForUserCodingSchemeName(codingSchemeNameOrUri);
+        
         CodingSchemeService codingSchemeService = 
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
         
