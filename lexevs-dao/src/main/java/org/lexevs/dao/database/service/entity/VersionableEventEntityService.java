@@ -40,6 +40,7 @@ import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClass
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
+import org.lexevs.dao.database.service.event.entity.EntityInsertEvent;
 import org.lexevs.dao.database.service.property.PropertyService;
 import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -64,6 +65,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_ERROR)
 	public void insertEntity(String codingSchemeUri, String version,
 			Entity entity) {
+		this.firePreEntityInsertEvent(new EntityInsertEvent(codingSchemeUri, version, entity));	
 		String codingSchemeUId = this.getDaoManager().
 			getCodingSchemeDao(codingSchemeUri, version).
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
@@ -71,6 +73,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		this.getDaoManager().
 			getEntityDao(codingSchemeUri, version).
 				insertEntity(codingSchemeUId, entity, true);
+		this.firePostEntityInsertEvent(new EntityInsertEvent(codingSchemeUri, version, entity));
 	}
 
 	/* (non-Javadoc)
@@ -80,6 +83,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	@DatabaseErrorIdentifier(errorCode=INSERT_BATCH_ENTITY_ERROR)
 	public void insertBatchEntities(String codingSchemeUri, String version,
 			List<? extends Entity> entities) {
+		this.firePreEntityInsertEvent(new EntityInsertEvent(codingSchemeUri, version, entities));
 		String codingSchemeUId = this.getDaoManager().
 			getCodingSchemeDao(codingSchemeUri, version).
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);

@@ -22,13 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.apache.commons.lang.ClassUtils;
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PostCodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PreCodingSchemeInsertEvent;
+import org.lexevs.dao.database.service.event.entity.EntityInsertEvent;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
@@ -124,6 +124,23 @@ public class DatabaseServiceEventSupport implements InitializingBean {
 								codingScheme));
 			}
 		}
+	}
+	
+	protected void firePreEntityInsertEvent(EntityInsertEvent entityInsertEvent){
+		if(databaseServiceEventListeners != null){
+			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+				listener.onPreEntityInsert(entityInsertEvent);
+			}
+		}	
+	}
+	
+	protected void firePostEntityInsertEvent(EntityInsertEvent entityInsertEvent){
+		if(databaseServiceEventListeners != null){
+			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+				//TODO
+				//				listener.onPostEntityInsert(entityInsertEvent);
+			}
+		}	
 	}
 	
 	protected void firePropertyUpdateEvent(
