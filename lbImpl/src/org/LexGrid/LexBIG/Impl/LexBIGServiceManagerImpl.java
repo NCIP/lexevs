@@ -123,7 +123,7 @@ public class LexBIGServiceManagerImpl implements LexBIGServiceManager {
             throw new LBParameterException("The specified coding scheme is not a registered coding scheme",
                     codingSchemeVersionReference.getCodingSchemeURN() + " - " + 
                     codingSchemeVersionReference.getCodingSchemeVersion());
-        } else if (entry.getStatus() == CodingSchemeVersionStatus.ACTIVE.toString()) {
+        } else if (entry.getStatus().equals((CodingSchemeVersionStatus.ACTIVE.toString()))) {
             throw new LBParameterException("You cannot remove a 'ACTIVE' coding scheme.");
         }
 
