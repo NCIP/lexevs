@@ -71,5 +71,23 @@ public interface Exporter extends Extendable, StatusReporter {
 	 */
 	public void export(AbsoluteCodingSchemeVersionReference source,
 			URI destination);
+	
+	/**
+	 * Export a Value Set Definition resource to a URI destination.
+	 * 
+	 * @param URI of value set definition
+	 * @param destination the destination
+	 */
+	public void exportValueSetDefinition(URI valueSetDefinitionURI,
+			URI destination);
+	
+	/**
+	 * Export a Pick List Definition resource to a URI destination.
+	 * 
+	 * @param Id of Pick List Definition
+	 * @param destination the destination
+	 */
+	public void exportPickListDefinition(String pickListId,
+			URI destination);
 
 }

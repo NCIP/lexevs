@@ -67,5 +67,62 @@ public interface LexGrid_Exporter extends Exporter {
 	public void export(AbsoluteCodingSchemeVersionReference source,
 			URI destination, boolean overwrite, boolean stopOnErrors, boolean async)
 			throws LBException;
-
+	
+	/**
+	 * Export content of Value Set Definition from the underlying LexGrid repository.
+	 * 
+	 * An exception is raised if resources cannot be accessed or another load
+	 * operation is already in progress.
+	 * 
+	 * @param valueSetDefinitionURI
+	 *            URI of the value set definition to export.
+	 * @param destination
+	 *            URI corresponding to the XML file to write.
+	 * @param overwrite
+	 *            True indicates to overwrite an existing file if present. False
+	 *            indicates to stop if the destination file already exists.
+	 * @param stopOnErrors
+	 *            True means stop if any export error is detected. False means
+	 *            attempt to continue writing what can be exported if
+	 *            recoverable errors are encountered.
+	 * @param async
+	 *            Flag controlling whether export occurs in the calling thread.
+	 *            If true, the export will occur in a separate asynchronous
+	 *            process. If false, this method blocks until the export
+	 *            operation completes or fails. Regardless of setting, the
+	 *            getStatus and getLog calls are used to fetch results.
+	 * @throws LBException
+	 */
+	public void exportValueSetDefinition(URI valueSetDefinitionURI, 
+			URI destination, boolean overwrite, boolean stopOnErros, boolean async)
+			throws LBException;
+	
+	/**
+	 * Export content of PickList Definition from the underlying LexGrid repository.
+	 * 
+	 * An exception is raised if resources cannot be accessed or another load
+	 * operation is already in progress.
+	 * 
+	 * @param pickListId
+	 *            ID of the pick list definition to export.
+	 * @param destination
+	 *            URI corresponding to the XML file to write.
+	 * @param overwrite
+	 *            True indicates to overwrite an existing file if present. False
+	 *            indicates to stop if the destination file already exists.
+	 * @param stopOnErrors
+	 *            True means stop if any export error is detected. False means
+	 *            attempt to continue writing what can be exported if
+	 *            recoverable errors are encountered.
+	 * @param async
+	 *            Flag controlling whether export occurs in the calling thread.
+	 *            If true, the export will occur in a separate asynchronous
+	 *            process. If false, this method blocks until the export
+	 *            operation completes or fails. Regardless of setting, the
+	 *            getStatus and getLog calls are used to fetch results.
+	 * @throws LBException
+	 */
+	public void exportPickListDefinition(String pickListId, 
+			URI destination, boolean overwrite, boolean stopOnErros, boolean async)
+			throws LBException;
 }
