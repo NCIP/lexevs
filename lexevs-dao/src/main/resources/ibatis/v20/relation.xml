@@ -113,7 +113,7 @@
    </select>
    
    	<select id="getAssociationPredicatNamesFromCodingSchemeUid"
-		remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
+		remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
 		resultClass="String">
 		SELECT
 			associationPredicate.associationName
@@ -125,6 +125,8 @@
 			(relation.relationGuid = associationPredicate.relationGuid)
 		WHERE
 			relation.codingSchemeGuid = #param1#
+		AND
+			relation.containerName = #param2#
 	</select>
    
   	<select id="getAssociationPredicateKeysForRelationsId" remapResults="true"
