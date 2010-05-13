@@ -26,6 +26,11 @@
 <!--    	<property name="systemVariables" ref="systemVariables"/>-->
 <!--    </bean>-->
 
+	<bean id="defaultRootBuilder" class="org.lexevs.dao.database.operation.root.DefaultRootBuilder">
+		<property name="databaseServiceManager" ref="databaseServiceManager"/>
+		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
+	</bean>
+	
 	<bean id="defaultTransitivityBuilder" 
 		class="org.lexevs.dao.database.operation.transitivity.DefaultTransitivityBuilder">
 		<property name="databaseServiceManager" ref="databaseServiceManager"/>
@@ -511,6 +516,7 @@
    		<property name="databaseType" ref="databaseTypeFactory"/>
    		<property name="transactionManager" ref="transactionManager"/>
    		<property name="transitivityBuilder" ref="defaultTransitivityBuilder"/>
+   		<property name="rootBuilder" ref="defaultRootBuilder"/>
    	 </bean>
    	 
    	<bean id="lexevsHistoryCreateScript"
