@@ -92,7 +92,7 @@
    		)
    </insert>
 
-   <select id="getAssociationPredicateUid" remapResults="true"
+   <select id="getAssociationPredicateUidsForName" remapResults="true"
    	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultClass="string">
    		SELECT
    			associationPredicateGuid
