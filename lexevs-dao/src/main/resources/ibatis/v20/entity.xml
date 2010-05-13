@@ -72,7 +72,6 @@
 	</resultMap>
 	
 	<resultMap id="propertyLinkResult" class="propertyLink" groupBy="sourceProperty,targetProperty,link">
-		<result property="parent" column="entityGuid" />
 		<result property="sourceProperty" column="sourcePropId" />
 		<result property="targetProperty" column="targetPropId" />
 		<result property="propertyLink" column="link" />
