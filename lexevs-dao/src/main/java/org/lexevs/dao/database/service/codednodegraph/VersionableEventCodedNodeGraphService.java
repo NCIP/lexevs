@@ -39,6 +39,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class VersionableEventCodedNodeGraphService extends AbstractDatabaseService implements CodedNodeGraphService {
 
+	
+	
 	@Override
 	@Transactional
 	public AssociatedConcept getAssociatedConceptFromUidSource(
@@ -203,6 +205,24 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					relationsContainerName,
 					associationPredicateName);
 	}
+	
+	@Transactional
+	protected List<String> getAssociationPredicateUids(
+			String uri,
+			String version,
+			String codingSchemeUid,
+			String relationsContainerName, 
+			String associationPredicateName) {
+		AssociationDao associationDao =
+			this.getDaoManager().getAssociationDao(
+				uri, version);
+		
+		return associationDao.
+			getAssociationPredicateUidsForAssociationName(
+					codingSchemeUid, 
+					relationsContainerName,
+					associationPredicateName);
+	}
 
 	@Override
 	@Transactional
@@ -290,8 +310,8 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 		
 		if(CollectionUtils.isNotEmpty(associationPredicateNames)) {
 			for(String predicate : associationPredicateNames) {
-				associationPredicateUids.add(
-						this.getAssociationPredicateUid(
+				associationPredicateUids.addAll(
+						this.getAssociationPredicateUids(
 								codingSchemeUri, 
 								codingSchemeVersion, 
 								codingSchemeUid, 
@@ -322,5 +342,18 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 		
 		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
 			getTailNodes(codingSchemeUid, associationPredicateUids);
+	}
+
+	@Override
+	public List<String> getAssociationPredicateUidsForNames(
+			String codingSchemeUri, String codingSchemeVersion,
+			String relationsContainerName, List<String> associationNames) {
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		return this.getAssociationPredicateUids(
+				codingSchemeUri, 
+				codingSchemeVersion, 
+				codingSchemeUid, 
+				relationsContainerName, 
+				associationNames);
 	}
 }

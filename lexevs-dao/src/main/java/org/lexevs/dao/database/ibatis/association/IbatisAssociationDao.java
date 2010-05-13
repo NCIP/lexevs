@@ -140,6 +140,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	private static String GET_RELATION_LATEST_REVISION_ID_BY_UID = ASSOCIATION_NAMESPACE + "getRelationLatestRevisionIdByUId";
 	
+	private static String GET_ASSOCIATION_PREDICATE_UIDS_FOR_NAME_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateUidsForName";
+	
 	private EntryStateTypeClassifier entryStateClassifier = new EntryStateTypeClassifier();
 	
 	/** The ibatis versions dao. */
@@ -194,6 +196,22 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 						relationContainerName,
 						associationPredicateName));
 
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> getAssociationPredicateUidsForAssociationName(
+			String codingSchemeUid,
+			String relationContainerName, 
+			String associationPredicateName) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUid);
+		return (List<String>) this.getSqlMapClientTemplate().queryForList(
+				GET_ASSOCIATION_PREDICATE_UIDS_FOR_NAME_SQL,
+				new PrefixedParameterTriple(
+						prefix, 
+						codingSchemeUid,
+						relationContainerName,
+						associationPredicateName));
 	}
 	
 	@SuppressWarnings("unchecked")
