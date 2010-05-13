@@ -18,7 +18,6 @@
  */
 package org.lexevs.dao.database.ibatis.entity;
 
-import java.io.StringWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -709,7 +708,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 			"values ('plguid1', 'eguid', 'pguid1', 'propertyLink1', 'pguid2')");
 		
 		template.execute("Insert into propertylinks " +
-			"values ('plguid2', 'pguid2', 'propertyLink2', 'pguid1')");
+			"values ('plguid2', 'eguid', 'pguid2', 'propertyLink2', 'pguid1')");
 			
 		Entity entity = ibatisEntityDao.getEntityByCodeAndNamespace("csguid", "ecode", "ens");
 		
