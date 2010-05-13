@@ -19,10 +19,9 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationPredicate;
-import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.Revision;
 import org.castor.xml.UnmarshalListener;
 import org.mayo.edu.lgModel.LexGridBase;
@@ -42,26 +41,34 @@ public class LgRevisionListener implements UnmarshalListener {
     private Revision revision = new Revision();
     private CodingScheme[] codingSchemes = null;
 
+    private XMLDaoServiceAdaptor serviceAdaptor = null;
+    private LgMessageDirectorIF messages_;
+    
+
+
+    public LgRevisionListener() {
+        super();
+        serviceAdaptor = new XMLDaoServiceAdaptor();
+    }
+    
+    public LgRevisionListener(LgMessageDirectorIF messages) {
+        super();
+        serviceAdaptor = new XMLDaoServiceAdaptor();
+        messages_ = messages;
+    }
+    /**
+     * @return
+     */
+    int getNentities() {
+        return nentities;
+    }
+    
     public CodingScheme[] getCodingSchemes() {
         return codingSchemes;
     }
 
     public void setCodingSchemes(CodingScheme[] codingSchemes) {
         this.codingSchemes = codingSchemes;
-    }
-
-    private XMLDaoServiceAdaptor serviceAdaptor = null;
-
-    public LgRevisionListener() {
-        super();
-        serviceAdaptor = new XMLDaoServiceAdaptor();
-    }
-
-    /**
-     * @return
-     */
-    int getNentities() {
-        return nentities;
     }
 
     /**
@@ -150,7 +157,7 @@ public class LgRevisionListener implements UnmarshalListener {
             try {
                 LexGridElementProcessor.processRevisionMetadata(serviceAdaptor, revision, (CodingScheme)parent);
             } catch (LBRevisionException e) {
-                // TODO Auto-generated catch block
+                messages_.error("Revision element reading and writing has failed.", e);
                 e.printStackTrace();
             }
             LexGridElementProcessor.processCodingSchemeMetadata(serviceAdaptor, parent, child);
@@ -160,7 +167,7 @@ public class LgRevisionListener implements UnmarshalListener {
             try {
                 LexGridElementProcessor.processRevisionMetadata(serviceAdaptor, revision, (CodingScheme)parent);
             } catch (LBRevisionException e) {
-                // TODO Auto-generated catch block
+                messages_.error("Revision element reading and writing has failed.", e);
                 e.printStackTrace();
             }
             LexGridElementProcessor.processCodingSchemeMetadata(serviceAdaptor, parent, child);

@@ -74,7 +74,7 @@ public class LexGridXMLProcessor {
 
             in = new BufferedReader(new FileReader(path));
             umr = new Unmarshaller();
-            LgCodingSchemeListener listener = new LgCodingSchemeListener();
+            LgCodingSchemeListener listener = new LgCodingSchemeListener(messages);
             // default is true -- no need to set the validation flag if the user
             // wants to validate.
             if (!validateXML) {
@@ -118,7 +118,7 @@ public class LexGridXMLProcessor {
 
             in = new BufferedReader(new FileReader(path));
             umr = new Unmarshaller();
-            LgRevisionListener listener = new LgRevisionListener();
+            LgRevisionListener listener = new LgRevisionListener(messages);
             // default is true -- no need to set the validation flag if the user
             // wants to validate.
             if (!validateXML) {
@@ -170,7 +170,7 @@ public class LexGridXMLProcessor {
 
             in = new BufferedReader(new FileReader(path));
             umr = new Unmarshaller();
-            LgSystemReleaseListener listener = new LgSystemReleaseListener();
+            LgSystemReleaseListener listener = new LgSystemReleaseListener(messages);
             // default is true -- no need to set the validation flag if the user
             // wants to validate.
             if (!validateXML) {

@@ -57,7 +57,14 @@ public class LgSystemReleaseListener implements UnmarshalListener {
     public LgSystemReleaseListener() {
         super();
         serviceAdaptor = new XMLDaoServiceAdaptor();
+
     }
+    public LgSystemReleaseListener(LgMessageDirectorIF messages) {
+        super();
+        serviceAdaptor = new XMLDaoServiceAdaptor();
+        messages_ = messages;
+    }
+    
 
     /**
      * @return
@@ -153,7 +160,7 @@ public class LgSystemReleaseListener implements UnmarshalListener {
            try {
             LexGridElementProcessor.processSystemReleaseMetadata(serviceAdaptor, parent);
         } catch (LBRevisionException e) {
-            // TODO Auto-generated catch block
+            messages_.error("System release element reading and writing has failed.", e);
             e.printStackTrace();
         }
             isSystemReleaseSet = true;

@@ -18,6 +18,7 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.castor.xml.UnmarshalListener;
@@ -39,7 +40,7 @@ public class LgCodingSchemeListener implements UnmarshalListener {
     AssociationPredicate currentPredicate = new AssociationPredicate();
 
     XMLDaoServiceAdaptor serviceAdaptor = null;
-
+    LgMessageDirectorIF messages_;
     /**
      * Constructor initializes service adaptor
      */
@@ -47,7 +48,11 @@ public class LgCodingSchemeListener implements UnmarshalListener {
         super();
         serviceAdaptor = new XMLDaoServiceAdaptor();
     }
-
+    public LgCodingSchemeListener(LgMessageDirectorIF messages) {
+        super();
+        serviceAdaptor = new XMLDaoServiceAdaptor();
+        messages_ = messages;
+    }
     /**
      * @return
      */
