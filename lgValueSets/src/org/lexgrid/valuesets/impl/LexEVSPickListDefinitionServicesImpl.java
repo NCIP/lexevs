@@ -75,7 +75,6 @@ import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntry;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntryList;
-import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 import org.lexgrid.valuesets.helper.PLEntryNodeSortUtil;
 import org.lexgrid.valuesets.helper.VSDServiceHelper;
@@ -256,75 +255,41 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		return this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionIdForValueSetDefinitionUri(valueSetDefURI.toString());		
 	}
 	
+	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#resolvePickListForTerm(java.lang.String, java.lang.String, org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms)
 	 */
 	public ResolvedPickListEntryList resolvePickListForTerm(String pickListId,
 			String term, String matchAlgorithm, String language, String[] context, boolean sortByText) throws LBException {
-		ResolvedPickListEntryList plList = new ResolvedPickListEntryList();
+		ResolvedPickListEntryList resolvedPLEntryListToReturn = new ResolvedPickListEntryList();
 		
-		List<String> rcrCodes = new ArrayList<String>();
-		List<String> excludeEntityCodes = new ArrayList<String>();
+		ResolvedPickListEntryList plEntryList = resolvePickList(pickListId, sortByText);
 		
-		PickListDefinition pickList = this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionByPickListId(pickListId);
-		if (pickList != null)
+		if (plEntryList != null)
 		{
-			String defaultCS = null;
+			CodedNodeSet cns = null;
+			ConceptReferenceList crList = new ConceptReferenceList();			
+			PickListDefinition pickList = this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionByPickListId(pickListId);
 			// Always add the default coding scheme, even if it isn't used
+			String defaultCS = null;
 		    if(!StringUtils.isEmpty(pickList.getDefaultEntityCodeNamespace()))
 		    	defaultCS = VSDServiceHelper.getCodingSchemeURIForEntityCodeNamespace(pickList.getMappings(), pickList.getDefaultEntityCodeNamespace());
 		    
-			String defaultLang = pickList.getDefaultLanguage();
-			
-			boolean completeDomain = pickList.isCompleteSet();
-			
-			//TODO, if completeDomain is true, dynamically populate pickListEntries
-			if (completeDomain)
+			for (int i = 0; i < plEntryList.getResolvedPickListEntryCount(); i++)
 			{
-				return internalResolvePickListForTerm(pickList.getRepresentsValueSetDefinition(), term, matchAlgorithm, language, context, sortByText);
-			}
-			
-			// get all static pickListEntryNodes to get any exclude entries.
-			List<PickListEntryNode> plEntryNodeList = pickList.getPickListEntryNodeAsReference();
-			
-			// Get all exclude list
-			for (int i = 0; i < plEntryNodeList.size(); i++)
-			{
-				PickListEntryNode plEntryNode = plEntryNodeList.get(i);
+				ResolvedPickListEntry plEntry = plEntryList.getResolvedPickListEntry(i);
+				String cs = null;
+				if (plEntry.getEntityCodeNamespace() != null)
+					cs = VSDServiceHelper.getCodingSchemeURIForEntityCodeNamespace(pickList.getMappings(), plEntry.getEntityCodeNamespace());
 				
-				if (plEntryNode.getPickListEntryNodeChoice() != null)
-				{
-					PickListEntryExclusion plEntryExclusion = plEntryNode.getPickListEntryNodeChoice().getExclusionEntry();
-					if (plEntryExclusion != null)
-						excludeEntityCodes.add(plEntryExclusion.getEntityCode());
-				}
-			}
-			
-			CodedNodeSet cns = null;
-			ConceptReferenceList crList = new ConceptReferenceList();			
-			
-			
-			for (int i = 0; i < plEntryNodeList.size(); i++)
-			{
-				PickListEntry plEntry = plEntryNodeList.get(i).getPickListEntryNodeChoice().getInclusionEntry();
+				if (StringUtils.isEmpty(cs))
+					cs = defaultCS;
 				
-				if (plEntry != null && !excludeEntityCodes.contains(plEntry.getEntityCode()))
+				if (StringUtils.isNotEmpty(cs))
 				{
-					String cs = null;
-					if (plEntry.getEntityCodeNamespace() != null)
-						cs = VSDServiceHelper.getCodingSchemeURIForEntityCodeNamespace(pickList.getMappings(), plEntry.getEntityCodeNamespace());
-					
-					if (StringUtils.isEmpty(cs))
-						cs = defaultCS;
-					
-					if (StringUtils.isNotEmpty(cs))
-					{
-						crList.addConceptReference(Constructors.createConceptReference(plEntry.getEntityCode(), cs));
-						if (StringUtils.isEmpty(defaultCS))
-							defaultCS = cs;
-						if (StringUtils.isEmpty(defaultLang))
-							defaultLang = plEntry.getLanguage();
-					}
+					crList.addConceptReference(Constructors.createConceptReference(plEntry.getEntityCode(), cs));
+					if (StringUtils.isEmpty(defaultCS))
+						defaultCS = cs;
 				}
 			}
 			
@@ -344,75 +309,71 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 				
 				cns.restrictToCodes(crList);
 				
-				cns.restrictToMatchingDesignations(term, null, matchAlgorithm != null ? matchAlgorithm : MatchAlgorithms.LuceneQuery.name(), defaultLang);
+				cns.restrictToMatchingDesignations(term, null, matchAlgorithm != null ? matchAlgorithm : MatchAlgorithms.LuceneQuery.name(), null);
 				
-				ResolvedConceptReferencesIterator rcrItr = cns.resolve(null, null, null, null, false);
+				ResolvedConceptReferencesIterator rcrItr = cns.resolve(null, null, null, null, true);
+				List<PickListEntryNode> plEntryNodeList = pickList.getPickListEntryNodeAsReference();
 				
 				while (rcrItr.hasNext())
 				{
-					rcrCodes.add(rcrItr.next().getCode());
-				}
-				
-				for (int i = 0; i < plEntryNodeList.size(); i++)
-				{
-					PickListEntry plEntry = plEntryNodeList.get(i).getPickListEntryNodeChoice().getInclusionEntry();
+					ResolvedConceptReference rcr = rcrItr.next();
+					PickListEntry plEntry = getPickListEntryForCode(rcr.getCode(), plEntryNodeList);
 					
-					if (plEntry != null && rcrCodes.contains(plEntry.getEntityCode()))
+					
+					// if found as pickListEntry, add their details
+					if (plEntry != null)
 					{
 						ResolvedPickListEntry rpl = new ResolvedPickListEntry();
+						
 						rpl.setDefault(plEntry.isIsDefault());
 						rpl.setEntityCode(plEntry.getEntityCode());
 						rpl.setEntityCodeNamespace(plEntry.getEntityCodeNamespace());
 						rpl.setPickText(plEntry.getPickText());
 						rpl.setPropertyId(plEntry.getPropertyId());
-						plList.addResolvedPickListEntry(rpl);
+						resolvedPLEntryListToReturn.addResolvedPickListEntry(rpl);
+					}
+					else // else, add entities details
+					{						
+						Entity entity = rcr.getEntity();
+						if (entity.getPresentationAsReference() != null)
+						{
+							List<Presentation> presentations = entity.getPresentationAsReference();
+							for (Presentation presentation : presentations)
+							{
+								if (presentation.getValue() != null && StringUtils.isNotEmpty(presentation.getValue().getContent()))
+								{
+									ResolvedPickListEntry rpl = new ResolvedPickListEntry();
+									rpl.setEntityCode(entity.getEntityCode());
+									rpl.setEntityCodeNamespace(entity.getEntityCodeNamespace());
+									rpl.setPickText(presentation.getValue().getContent());
+									rpl.setPropertyId(presentation.getPropertyId());
+									resolvedPLEntryListToReturn.addResolvedPickListEntry(rpl);
+								}
+								
+							}
+						}
 					}
 				}
 			}
 		}
 		
-		return plList;
+		return resolvedPLEntryListToReturn;
 	}
 	
-	private ResolvedPickListEntryList internalResolvePickListForTerm(String valueDomainURI,
-			String term, String matchAlgorithm, String language, String[] context, boolean sortByText) throws LBException {
+	private PickListEntry getPickListEntryForCode(String code, List<PickListEntryNode> plEntryNodeList){
+		PickListEntry plEntry = null;
 		
-		ResolvedPickListEntryList plList = new ResolvedPickListEntryList();
-		
-		LexEVSValueSetDefinitionServices vds = new LexEVSValueSetDefinitionServicesImpl();
-		
-		ResolvedValueSetCodedNodeSet rvdCNS;
-		
-		try {
-			rvdCNS = vds.getValueSetDefinitionEntitiesForTerm(term, matchAlgorithm, new URI(valueDomainURI), null, null);
-		} catch (URISyntaxException e) {
-			throw new LBException("Problem with ValueDomain URI", e);
-		}
-		
-		CodedNodeSet cns = rvdCNS.getCodedNodeSet();
-		
-		ResolvedConceptReferencesIterator rcrItr = cns.resolve(null, null, null, null, true);
-		
-		while (rcrItr.hasNext())
+		for (int i = 0; i < plEntryNodeList.size(); i++)
 		{
-			ResolvedConceptReference rcr = rcrItr.next();
-			ResolvedPickListEntry rpl = new ResolvedPickListEntry();
-			rpl.setEntityCode(rcr.getCode());
-			rpl.setEntityCodeNamespace(rcr.getCodeNamespace());
-			Entity entity = rcr.getEntity();
-			Presentation[] presentations = entity.getPresentation();
-			for (Presentation pres : presentations)
+			plEntry = plEntryNodeList.get(i).getPickListEntryNodeChoice().getInclusionEntry();
+			
+			if (plEntry != null && code.equalsIgnoreCase(plEntry.getEntityCode()))
 			{
-				if (BooleanUtils.toBoolean(pres.isIsPreferred()))
-				{
-					rpl.setPickText(pres.getValue().getContent());
-					rpl.setPropertyId(pres.getPropertyId());
-					plList.addResolvedPickListEntry(rpl);
-				}				
+				return plEntry;
 			}
 		}
 		
-		return plList;
+		return plEntry;
 	}
 	
 	/* (non-Javadoc)
