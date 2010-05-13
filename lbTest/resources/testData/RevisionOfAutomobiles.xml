@@ -49,7 +49,7 @@
     <lgNaming:supportedSource localId="_111101">11.11.0.1</lgNaming:supportedSource>
     </lgCS:mappings>
             <lgCS:properties>
-    <lgCommon:property expirationDate="2001-12-17T09:30:47Z" language="en" propertyType="textualPresentation" status="sampleStatus" propertyId="p1" effectiveDate="2001-12-17T09:30:47Z" isActive="true" propertyName="codingSchemeProp">
+    <lgCommon:property expirationDate="2001-12-17T09:30:47Z" language="en" propertyType="property" status="sampleStatus" propertyId="p1" effectiveDate="2001-12-17T09:30:47Z" isActive="true" propertyName="codingSchemeProp">
       <lgCommon:owner >sampleOwner</lgCommon:owner>
       <lgCommon:source role="sampleRole" subRef="sampleSubRef">lexgrid.org</lgCommon:source>
       <lgCommon:usageContext>sampleUsageContext</lgCommon:usageContext>
