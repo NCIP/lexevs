@@ -18,8 +18,11 @@
  */
 package org.lexevs.dao.database.operation;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
+import org.lexevs.dao.database.operation.root.RootBuilder;
 import org.lexevs.dao.database.operation.transitivity.TransitivityBuilder;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.type.DatabaseType;
@@ -68,6 +71,20 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	private DatabaseType databaseType;
 	
 	private TransitivityBuilder transitivityBuilder;
+	
+	private RootBuilder rootBuilder;
+	
+	@Override
+	public void addRootRelationNode(String codingSchemeUri,
+			String codingSchemeVersion, List<String> associationNames,
+			String relationContainerName, RootOrTail rootOrTail) {
+		rootBuilder.addRootRelationNode(
+				codingSchemeUri, 
+				codingSchemeVersion, 
+				associationNames,
+				relationContainerName, 
+				rootOrTail);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.LexGrid.persistence.connection.PersistenceConnectionManager#isCodingSchemeLoaded(java.lang.String, java.lang.String)
@@ -348,5 +365,13 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 
 	public Resource getLexevsCodingSchemeSchemaDropScript() {
 		return lexevsCodingSchemeSchemaDropScript;
+	}
+
+	public void setRootBuilder(RootBuilder rootBuilder) {
+		this.rootBuilder = rootBuilder;
+	}
+
+	public RootBuilder getRootBuilder() {
+		return rootBuilder;
 	}
 }

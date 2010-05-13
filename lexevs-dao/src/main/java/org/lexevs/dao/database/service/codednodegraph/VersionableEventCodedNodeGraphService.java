@@ -39,8 +39,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class VersionableEventCodedNodeGraphService extends AbstractDatabaseService implements CodedNodeGraphService {
 
-	
-	
 	@Override
 	@Transactional
 	public AssociatedConcept getAssociatedConceptFromUidSource(
@@ -99,16 +97,18 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					start, 
 					pageSize);
 	}
-
+	
 	@Override
 	@Transactional
 	public List<String> getAssociationPredicateNamesForCodingScheme(
-			String codingSchemeUri, String codingSchemeVersion) {
+			String codingSchemeUri, 
+			String codingSchemeVersion,
+			String relationsContainerName) {
 		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 		
 		return this.getDaoManager().
 			getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
-				getAssociationPredicateNamesForCodingSchemeUid(codingSchemeUid);
+				getAssociationPredicateNamesForCodingSchemeUid(codingSchemeUid, relationsContainerName);
 	}
 
 	@Override

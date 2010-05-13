@@ -91,7 +91,8 @@ public interface CodedNodeGraphService {
 	
 	public List<String> getAssociationPredicateNamesForCodingScheme(
 			String codingSchemeUri,
-			String codingSchemeVersion);
+			String codingSchemeVersion,
+			String relationsContainerName);
 	
 	public List<String> getAssociationPredicateUidsForNames(
 			String codingSchemeUri,

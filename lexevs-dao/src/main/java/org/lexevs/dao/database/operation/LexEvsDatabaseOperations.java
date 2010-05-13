@@ -18,6 +18,8 @@
  */
 package org.lexevs.dao.database.operation;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.lexevs.dao.database.prefix.PrefixResolver;
@@ -32,6 +34,7 @@ import org.springframework.transaction.PlatformTransactionManager;
  */
 public interface LexEvsDatabaseOperations {
 
+	public enum RootOrTail {ROOT,TAIL}
 	/**
 	 * Creates the common tables.
 	 */
@@ -122,6 +125,9 @@ public interface LexEvsDatabaseOperations {
 	 * @param version the version
 	 */
 	public void computeTransitiveTable(String codingSchemeUri, String codingSchemeVersion);
+	
+	public void addRootRelationNode(String codingSchemeUri, String codingSchemeVersion, 
+			List<String> associationNames, String relationContainerName, RootOrTail rootOrTail);
 	
 	
 	/**
