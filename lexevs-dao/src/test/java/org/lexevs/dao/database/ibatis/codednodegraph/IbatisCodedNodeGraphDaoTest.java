@@ -313,7 +313,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				"'eae-guid1'," +
 				"'qualName'," +
 				"'qualValue'," +
-				"null )");
+				"'es' )");
 		List<QualifierNameValuePair> list = new ArrayList<QualifierNameValuePair>();
 		list.add(new QualifierNameValuePair("qualName", null));
 		
@@ -365,7 +365,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				"'eae-guid1'," +
 				"'qualName'," +
 				"'qualValue'," +
-				"null )");
+				"'es' )");
 		List<QualifierNameValuePair> list = new ArrayList<QualifierNameValuePair>();
 		list.add(new QualifierNameValuePair("BAD_qualName", null));
 		
@@ -416,7 +416,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				"'eae-guid1'," +
 				"'qualName'," +
 				"'qualValue'," +
-				"null )");
+				"'es'  )");
 		List<QualifierNameValuePair> list = new ArrayList<QualifierNameValuePair>();
 		list.add(new QualifierNameValuePair("qualName", "qualValue"));
 		
@@ -468,7 +468,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				"'eae-guid1'," +
 				"'qualName'," +
 				"'qualValue'," +
-				"null )");
+				"'es' )");
 		List<QualifierNameValuePair> list = new ArrayList<QualifierNameValuePair>();
 		list.add(new QualifierNameValuePair("qualName", "BAD_qualValue"));
 		
@@ -519,7 +519,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				"'eae-guid1'," +
 				"'qualName'," +
 				"'qualValue'," +
-				"null )");
+				"'es' )");
 		
 		CodeNamespacePair pair = new CodeNamespacePair("t-code2", "t-ns2");
 	
