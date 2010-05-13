@@ -15,6 +15,7 @@ import org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCou
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
@@ -222,12 +223,14 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getAssociationPredicateNamesForCodingSchemeUid(
-			String codingSchemeUid) {
+			String codingSchemeUid,
+			String relationContainerUid) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
-		PrefixedParameter bean = new PrefixedParameter();
+		PrefixedParameterTuple bean = new PrefixedParameterTuple();
 		bean.setPrefix(prefix);
 		bean.setParam1(codingSchemeUid);
+		bean.setParam2(relationContainerUid);
 		
 		return this.getSqlMapClientTemplate().
 			queryForList(GET_ASSOCIATION_PREDICATE_NAMES_SQL, 
