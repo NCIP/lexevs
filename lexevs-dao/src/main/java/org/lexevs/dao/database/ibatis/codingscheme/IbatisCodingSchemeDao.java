@@ -32,6 +32,7 @@ import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.relations.Relations;
@@ -62,6 +63,7 @@ import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
 
@@ -828,6 +830,11 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		bean.setCodingSchemeUId(codingSchemeId);
 		bean.setUriMap(uriMap);
 		bean.setUId(uriMapId);
+		
+		if (uriMap instanceof SupportedHierarchy){
+			String[] assocNames = ((SupportedHierarchy)uriMap).getAssociationNames();
+			bean.setAssociationNames(StringUtils.arrayToCommaDelimitedString(assocNames));
+		}
 		
 		return bean;
 	}
