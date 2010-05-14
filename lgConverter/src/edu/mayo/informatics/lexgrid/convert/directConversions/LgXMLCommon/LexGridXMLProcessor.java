@@ -32,6 +32,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.LexGrid.LexBIG.Exceptions.LBUnsupportedOperationException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
@@ -257,7 +258,46 @@ public class LexGridXMLProcessor {
     }
     public org.LexGrid.codingSchemes.CodingScheme[] loadPickListDefinition(String path, LgMessageDirectorIF messages,
             boolean validateXML){
-        return null;
+        BufferedReader in = null;
+        Unmarshaller umr = null;
+        CodingScheme[] cs = null;
+
+        try {
+
+            in = new BufferedReader(new FileReader(path));
+            umr = new Unmarshaller();
+            LgPickListListener listener = new LgPickListListener(messages);
+            // default is true -- no need to set the validation flag if the user
+            // wants to validate.
+            if (!validateXML) {
+                umr.setValidation(validateXML);
+            }
+            //listener.setPropertiesPresent(setPropertiesFlag(path, messages));
+            umr.setUnmarshalListener(listener);
+            umr.setClass(PickListDefinition.class);
+            umr.unmarshal(in);
+            if(isCodingSchemePresent(path, messages)){
+            cs = listener.getCodingSchemes();
+            }
+            else{
+                CodingScheme scheme = new CodingScheme();
+                scheme.setCodingSchemeURI(NO_SCHEME_URL);
+                scheme.setRepresentsVersion(NO_SCHEME_VERSION);
+                cs = new CodingScheme[]{scheme};
+            }
+            in.close();
+
+        } catch (MarshalException e) {
+            messages.error("the Value Set Listener detected a reading or writing problem");
+            e.printStackTrace();
+        } catch (ValidationException e) {
+            messages.error("Unmarshaller detected invalid xml at: " + path);
+            e.printStackTrace();
+        } catch (IOException e) {
+            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+            e.printStackTrace();
+            }
+        return cs;
     }
     
     

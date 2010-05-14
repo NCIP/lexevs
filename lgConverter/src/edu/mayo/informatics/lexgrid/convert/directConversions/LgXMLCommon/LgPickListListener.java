@@ -2,27 +2,22 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.relations.AssociationPredicate;
-import org.LexGrid.valueSets.ValueSetDefinition;
-import org.LexGrid.versions.Revision;
-import org.mayo.edu.lgModel.LexGridBase;
+import org.LexGrid.valueSets.PickListDefinition;
 import org.castor.xml.UnmarshalListener;
+import org.mayo.edu.lgModel.LexGridBase;
 
-public class LgValueSetListener implements UnmarshalListener {
+public class LgPickListListener implements UnmarshalListener {
     
     private int nentities = 0;
     private int nassociations = 0;
     int modCount = 0;
-    private static final int mod = 10;
     
-    private boolean isCodingSchemeLoaded = false;
-    private boolean isRevisionLoaded = false;
+
     private boolean isPropertiesPresent = false;
     private AssociationPredicate currentPredicate = new AssociationPredicate();
-    private Revision revision = new Revision();
     private CodingScheme[] codingSchemes = null;
 
     private XMLDaoServiceAdaptor serviceAdaptor = null;
@@ -31,12 +26,12 @@ public class LgValueSetListener implements UnmarshalListener {
     
 
 
-    public LgValueSetListener() {
+    public LgPickListListener() {
         super();
         serviceAdaptor = new XMLDaoServiceAdaptor();
     }
     
-    public LgValueSetListener(LgMessageDirectorIF messages) {
+    public LgPickListListener(LgMessageDirectorIF messages) {
         super();
         serviceAdaptor = new XMLDaoServiceAdaptor();
         messages_ = messages;
@@ -117,12 +112,12 @@ public class LgValueSetListener implements UnmarshalListener {
                 messages_.debug("parent of Unmarshalled target: "
                 + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
         
-        if(target instanceof ValueSetDefinition && parent == null){
+        if(target instanceof PickListDefinition && parent == null){
             setCodingSchemes(LexGridElementProcessor.setAndRetrieveCodingSchemes());
            try {
-            LexGridElementProcessor.processValueSetDefinition(serviceAdaptor, target, parent);
+            LexGridElementProcessor.processPickListDefinition(serviceAdaptor, target, parent);
         } catch (LBException e) {
-           messages_.error("Error processing value set from XML", e);
+          messages_.error("Error processing pick list from XML", e);
             e.printStackTrace();
         }
         }
@@ -137,7 +132,6 @@ public class LgValueSetListener implements UnmarshalListener {
         messages_.debug("parent: " + parent.getClass().getSimpleName());
         messages_.debug("child: " + child.getClass().getSimpleName());
         
-
         
     }
 }

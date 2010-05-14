@@ -152,6 +152,10 @@ public class LexGridElementProcessor {
         service.storeValueSetDefinition(valueSet);
     }
 
+    public static void processPickListDefinition(XMLDaoServiceAdaptor service, Object parent, Object child) throws LBException {
+        PickListDefinition pickList = (PickListDefinition) parent;
+        service.storePickListDefinition(pickList);
+    }
     /**
      * @param service
      * @param parent

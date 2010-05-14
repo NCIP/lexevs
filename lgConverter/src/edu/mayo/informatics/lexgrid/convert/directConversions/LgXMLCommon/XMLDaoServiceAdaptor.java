@@ -199,6 +199,9 @@ public class XMLDaoServiceAdaptor {
         pickListService.insertPickListDefinition(picklist, systemReleaseURI, mappings);
     }
     
+    public void storePickListDefinition(PickListDefinition picklist) throws LBParameterException, LBException {
+        pickListService.insertPickListDefinition(picklist, null, null);
+    }
     /**
      * Activate a given coding scheme
      * @param urn
