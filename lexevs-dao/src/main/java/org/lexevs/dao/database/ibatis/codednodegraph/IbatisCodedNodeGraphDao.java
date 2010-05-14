@@ -16,6 +16,7 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
@@ -273,12 +274,12 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ConceptReference> getRootNodes(String codingSchemeUid,
-			List<String> associationPredicateUids) {
+			List<String> associationPredicateUids, TraverseAssociations traverse) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
 		PrefixedParameterCollection bean = new PrefixedParameterCollection();
 		bean.setPrefix(prefix);
-		bean.setParam1(codingSchemeUid);
+		bean.setParam1(traverse.toString());
 		bean.setParam2(associationPredicateUids);
 		
 		return this.getSqlMapClientTemplate().
@@ -288,12 +289,12 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ConceptReference> getTailNodes(String codingSchemeUid,
-			List<String> associationPredicateUids) {
+			List<String> associationPredicateUids, TraverseAssociations traverse) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
 		PrefixedParameterCollection bean = new PrefixedParameterCollection();
 		bean.setPrefix(prefix);
-		bean.setParam1(codingSchemeUid);
+		bean.setParam1(traverse.toString());
 		bean.setParam2(associationPredicateUids);
 		
 		return this.getSqlMapClientTemplate().

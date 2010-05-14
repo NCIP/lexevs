@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 
 public interface CodedNodeGraphService {
@@ -13,13 +14,15 @@ public interface CodedNodeGraphService {
 			String codingSchemeUri,
 			String codingSchemeVersion,
 			String relationsContainerName,
-			List<String> associationPredicateNames);
+			List<String> associationPredicateNames, 
+			TraverseAssociations traverse);
 	
 	public List<ConceptReference> getTailConceptReferences(
 			String codingSchemeUri,
 			String codingSchemeVersion,
 			String relationsContainerName,
-			List<String> associationPredicateNames);
+			List<String> associationPredicateNames,
+			TraverseAssociations traverse);
 	
 	public List<String> getTripleUidsContainingSubject(
 			String codingSchemeUri,

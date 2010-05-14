@@ -77,13 +77,14 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	@Override
 	public void addRootRelationNode(String codingSchemeUri,
 			String codingSchemeVersion, List<String> associationNames,
-			String relationContainerName, RootOrTail rootOrTail) {
+			String relationContainerName, RootOrTail rootOrTail,
+			TraverseAssociations traverse) {
 		rootBuilder.addRootRelationNode(
 				codingSchemeUri, 
 				codingSchemeVersion, 
 				associationNames,
 				relationContainerName, 
-				rootOrTail);
+				rootOrTail, traverse);
 	}
 
 	/* (non-Javadoc)

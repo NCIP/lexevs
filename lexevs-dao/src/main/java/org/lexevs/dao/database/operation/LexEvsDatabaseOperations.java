@@ -35,6 +35,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 public interface LexEvsDatabaseOperations {
 
 	public enum RootOrTail {ROOT,TAIL}
+	
+	public enum TraverseAssociations {TOGETHER,INDIVIDUALLY}
+	
 	/**
 	 * Creates the common tables.
 	 */
@@ -127,7 +130,8 @@ public interface LexEvsDatabaseOperations {
 	public void computeTransitiveTable(String codingSchemeUri, String codingSchemeVersion);
 	
 	public void addRootRelationNode(String codingSchemeUri, String codingSchemeVersion, 
-			List<String> associationNames, String relationContainerName, RootOrTail rootOrTail);
+			List<String> associationNames, String relationContainerName, 
+			RootOrTail rootOrTail, TraverseAssociations traverse);
 	
 	
 	/**

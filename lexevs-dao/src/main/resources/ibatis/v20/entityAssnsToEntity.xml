@@ -330,13 +330,16 @@
 			$prefix$entityAssnsToEntity eate2
 		ON (
 			eate1.sourceEntityCode = eate2.targetEntityCode
+	
+			<!-- 
 			AND
 			eate2.sourceEntityCodeNamespace = eate2.TargetEntityCodeNamespace
-			
-			<!--  NOT SURE IF THIS IS NEEDED OR NOT
+			-->
+			<isEqual property="param1" compareValue="INDIVIDUALLY">
 			AND
 			eate1.associationPredicateGuid = eate2.associationPredicateGuid
-			-->
+			</isEqual>
+			
 			)
 		WHERE
 			eate2.entityAssnsGuid IS NULL	
@@ -361,13 +364,17 @@
 			$prefix$entityAssnsToEntity eate2
 		ON (
 			eate1.targetEntityCode = eate2.sourceEntityCode
+			<!--
 			AND
 			eate1.targetEntityCodeNamespace = eate2.sourceEntityCodeNamespace
 			
-			<!--  NOT SURE IF THIS IS NEEDED OR NOT
+			NOT SURE IF THIS IS NEEDED OR NOT
+			-->
+			<isEqual property="param1" compareValue="INDIVIDUALLY">
 			AND
 			eate1.associationPredicateGuid = eate2.associationPredicateGuid
-			-->
+			</isEqual>
+			
 			)
 		WHERE
 			eate2.entityAssnsGuid IS NULL	

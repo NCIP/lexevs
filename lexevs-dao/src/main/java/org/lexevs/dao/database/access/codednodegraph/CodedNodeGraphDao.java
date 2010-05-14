@@ -25,6 +25,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.access.association.model.Node;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 
@@ -99,9 +100,9 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 	
 	public List<ConceptReference> getTailNodes(
 			String codingSchemeUid,
-			List<String> associationPredicateUids);
+			List<String> associationPredicateUids, TraverseAssociations traverse);
 	
 	public List<ConceptReference> getRootNodes(
 			String codingSchemeUid,
-			List<String> associationPredicateUids);
+			List<String> associationPredicateUids, TraverseAssociations traverse);
 }
