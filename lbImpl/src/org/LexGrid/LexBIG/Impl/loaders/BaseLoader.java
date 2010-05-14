@@ -20,7 +20,6 @@ package org.LexGrid.LexBIG.Impl.loaders;
 
 import java.io.File;
 import java.net.URI;
-import java.sql.Connection;
 import java.util.Date;
 import java.util.List;
 
@@ -47,9 +46,7 @@ import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
-import org.LexGrid.util.sql.DBUtility;
-import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
-import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.RootOrTail;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -330,21 +327,22 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
      *            - true for root nodes, false for tail nodes.
      * @throws Exception
      */
-    protected void buildRootNode(String[] codingSchemes, String[] associations, SQLConnectionInfo sci, boolean root)
+    protected void buildRootNode(
+            AbsoluteCodingSchemeVersionReference reference,
+            List<String> associationNames,
+            String relationContainerName,
+            RootOrTail rootOrTail)
             throws Exception {
         md_.info("Building the root node");
-        Connection c = null;
-        try {
-            c = DBUtility.connectToDatabase(sci.server, sci.driver, sci.username, sci.password);
-            SQLTableUtilities stu = new SQLTableUtilities(c, sci.prefix);
-            for (int i = 0; i < codingSchemes.length; i++) {
-                stu.addRootRelationNode(codingSchemes[i], associations, stu.getNativeRelation(codingSchemes[i]), root);
-            }
-        } finally {
-            if (c != null) {
-                c.close();
-            }
-        }
+
+        LexEvsServiceLocator.getInstance().
+        getLexEvsDatabaseOperations().addRootRelationNode(
+                reference.getCodingSchemeURN(), 
+                reference.getCodingSchemeVersion(), 
+                associationNames, 
+                relationContainerName, 
+                rootOrTail);
+
         md_.info("Finished building root node");
     }
 

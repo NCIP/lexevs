@@ -30,8 +30,12 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.relations.Relations;
 import org.jdom.input.SAXBuilder;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.RootOrTail;
+import org.springframework.util.Assert;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.obo1_2.OBO2LGMain;
 import edu.mayo.informatics.lexgrid.convert.directConversions.obo1_2.OBOFormatValidator;
@@ -138,9 +142,25 @@ public class OBOLoaderImpl extends BaseLoader implements OBO_Loader {
         manifestUtil.applyManifest(this.getCodingSchemeManifest(), codingScheme);
   
         this.persistCodingSchemeToDatabase(codingScheme);
-
-        URNVersionPair  urnVersion= new URNVersionPair(codingScheme.getCodingSchemeURI(), codingScheme.getRepresentsVersion());
+        
+        URNVersionPair urnVersion = new URNVersionPair(codingScheme.getCodingSchemeURI(), codingScheme.getRepresentsVersion());
+     
+        
+        this.buildRootNode(
+                Constructors.createAbsoluteCodingSchemeVersionReference(
+                codingScheme.getCodingSchemeURI(), codingScheme.getRepresentsVersion()), 
+                null, 
+                getRelationsContainerName(codingScheme), 
+                RootOrTail.TAIL);
+        
         return new URNVersionPair[]{urnVersion};
+    }
+    
+    private String getRelationsContainerName(CodingScheme codingScheme) {
+        Relations[] relations = codingScheme.getRelations();
+        Assert.state(relations.length == 1);
+        
+        return relations[0].getContainerName();
     }
 
     public void finalize() throws Throwable {
