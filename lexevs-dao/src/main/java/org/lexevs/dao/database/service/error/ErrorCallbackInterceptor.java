@@ -73,7 +73,7 @@ public class ErrorCallbackInterceptor implements MethodInterceptor, Serializable
         } catch (Exception e) {
         	errorCallbackListener.onDatabaseError(new DefaultDatabaseError(errorCode, methodInvocation.getArguments(), e)); 
         
-        	TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        	//TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return null;
     }
