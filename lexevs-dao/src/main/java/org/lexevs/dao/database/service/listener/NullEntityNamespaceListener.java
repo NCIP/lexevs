@@ -15,7 +15,7 @@ public class NullEntityNamespaceListener extends DefaultServiceEventListener{
 	public boolean onPreEntityInsert(EntityInsertEvent entityInsertEvent) {
 		String uri = entityInsertEvent.getCodingSchemeUri();
 		String version = entityInsertEvent.getVersion();
-		List<? extends Entity> entityList = entityInsertEvent.getEntityList();
+		List<Entity> entityList = entityInsertEvent.getEntityList();
 		
 		for(Entity entity : entityList) {
 			if(StringUtils.isBlank(entity.getEntityCodeNamespace())){
