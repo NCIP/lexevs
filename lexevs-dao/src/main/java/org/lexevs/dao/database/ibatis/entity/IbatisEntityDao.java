@@ -164,9 +164,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				new PrefixedParameterCollection(prefix, codingSchemeId, entityUids), "id");
 		
 		for(Property prop : this.ibatisPropertyDao.getPropertiesOfParents(codingSchemeId, entityUids)){
-			if(StringUtils.isNotBlank(prop.getPropertyName())) {
-				entities.get(prop.getParent()).addAnyProperty(prop);
-			}
+			entities.get(prop.getParent()).addAnyProperty(prop);
 		}
 
 		return new ArrayList<Entity>(entities.values());

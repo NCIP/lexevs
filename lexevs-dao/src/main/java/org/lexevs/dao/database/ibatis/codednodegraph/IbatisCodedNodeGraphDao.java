@@ -224,13 +224,13 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	@Override
 	public List<String> getAssociationPredicateNamesForCodingSchemeUid(
 			String codingSchemeUid,
-			String relationContainerUid) {
+			String relationContainerName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
 		PrefixedParameterTuple bean = new PrefixedParameterTuple();
 		bean.setPrefix(prefix);
 		bean.setParam1(codingSchemeUid);
-		bean.setParam2(relationContainerUid);
+		bean.setParam2(relationContainerName);
 		
 		return this.getSqlMapClientTemplate().
 			queryForList(GET_ASSOCIATION_PREDICATE_NAMES_SQL, 

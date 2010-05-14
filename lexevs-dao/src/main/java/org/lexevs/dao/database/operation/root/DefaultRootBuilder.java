@@ -1,5 +1,6 @@
 package org.lexevs.dao.database.operation.root;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
@@ -52,9 +53,9 @@ public class DefaultRootBuilder implements RootBuilder {
 			if(CollectionUtils.isEmpty(associationNames)){
 				associationNames = databaseServiceManager.getCodedNodeGraphService().
 					getAssociationPredicateNamesForCodingScheme(
-							relationContainerName,
 							codingSchemeUri, 
-							codingSchemeVersion);
+							codingSchemeVersion,
+							relationContainerName);
 			}
 		} else {
 			return;
@@ -69,23 +70,21 @@ public class DefaultRootBuilder implements RootBuilder {
 					createMultiAssociationPredicate());
 		}
 		
-		AssociationSource source = buildAssociationSource(
+		List<AssociationSource> sources = buildAssociationSources(
 				codingSchemeUri, 
 				codingSchemeVersion,
+				refs,
 				rootOrTail);
-		
-		for(ConceptReference ref : refs) {
-			source.addTarget(this.buildAssociationTarget(ref));
-		}
-
-		databaseServiceManager.getAssociationService().
+	
+		for(AssociationSource source : sources) {
+			databaseServiceManager.getAssociationService().
 			insertAssociationSource(
 					codingSchemeUri, 
 					codingSchemeVersion, 
 					relationContainerName, 
 					getAssociationPredicateName(associationNames), 
 					source);
-
+		}
 	}
 	
 	private String getAssociationPredicateName(List<String> associations) {
@@ -113,10 +112,21 @@ public class DefaultRootBuilder implements RootBuilder {
 		return target;
 	}
 	
-	private AssociationSource buildAssociationSource(
+	private AssociationSource buildAssociationSource(ConceptReference ref) {
+		AssociationSource source = new AssociationSource();
+		source.setSourceEntityCode(ref.getCode());
+		source.setSourceEntityCodeNamespace(ref.getCodeNamespace());
+		
+		return source;
+	}
+	
+	private List<AssociationSource> buildAssociationSources(
 			String codingSchemeUri, 
 			String codingSchemeVersion,
+			List<ConceptReference> refs,
 			RootOrTail rootOrTail) {
+		List<AssociationSource> returnList = new ArrayList<AssociationSource>();
+		
 		String namespace;
 		try {
 			namespace = this.systemResourceService.
@@ -124,11 +134,32 @@ public class DefaultRootBuilder implements RootBuilder {
 		} catch (LBParameterException e) {
 			throw new RuntimeException(e);
 		}
-		AssociationSource source = new AssociationSource();
-		source.setSourceEntityCode(rootOrTail.equals(RootOrTail.ROOT)? ROOT_NODE : TAIL_NODE);
-		source.setSourceEntityCodeNamespace(namespace);
 		
-		return source;
+		if(rootOrTail.equals(RootOrTail.ROOT)) {
+			AssociationSource source = new AssociationSource();
+			source.setSourceEntityCode(ROOT_NODE);
+			source.setSourceEntityCodeNamespace(namespace);
+			
+			for(ConceptReference ref : refs) {
+				source.addTarget(this.buildAssociationTarget(ref));
+			}
+			
+			returnList.add(source);
+		} else {
+			for(ConceptReference ref : refs) {
+				AssociationSource source = this.buildAssociationSource(ref);
+				
+				AssociationTarget target = new AssociationTarget();
+				target.setTargetEntityCode(TAIL_NODE);
+				target.setTargetEntityCodeNamespace(namespace);
+				
+				source.addTarget(target);
+				
+				returnList.add(source);
+			}
+		}
+			
+		return returnList;
 	}
 	
 

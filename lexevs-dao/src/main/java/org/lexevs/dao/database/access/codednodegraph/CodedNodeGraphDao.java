@@ -85,7 +85,7 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 	
 	public List<String> getAssociationPredicateNamesForCodingSchemeUid(
 			String codingSchemeUid,
-			String relationsContainerUid);
+			String relationsContainerName);
 	
 	public List<Node> getDistinctSourceNodesForAssociationPredicate(
 			String codingSchemeUid, 
