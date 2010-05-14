@@ -11,22 +11,21 @@ public class DuplicatePropertyIdListener extends DefaultServiceEventListener {
 	@Override
 	public boolean onPreEntityInsert(EntityInsertEvent entityInsertEvent) {
 		List<Entity> entityList = entityInsertEvent.getEntityList();
-		List<Property> validList = new ArrayList<Property>();
+
 		for (Entity entity : entityList) {
-			boolean isDuplicated = false;
-			for (int i = 0; i < entity.getProperty().length - 1; i++) {
-				for (int j = i + 1; i < entity.getProperty().length; j++) {
-					if (isDuplicated == false && entity.getProperty()[i].getPropertyId()
-							.equalsIgnoreCase(
-									entity.getProperty()[j].getPropertyId()))
-						isDuplicated = true;
+			Property[] props = entity.getProperty();
+			List<Property> validList = new ArrayList<Property>();
+			List<String> propIdList = new ArrayList<String>();
+
+			for (Property prop : props) {
+				if (!propIdList.contains(prop.getPropertyId().toLowerCase())) {
+					validList.add(prop);
+					propIdList.add(prop.getPropertyId().toLowerCase());
 				}
-				if (isDuplicated == false)
-					validList.add(entity.getProperty()[i]);
 			}
 			entity.setProperty(validList);
 		}
-		
+
 		return true;
 	}
 }
