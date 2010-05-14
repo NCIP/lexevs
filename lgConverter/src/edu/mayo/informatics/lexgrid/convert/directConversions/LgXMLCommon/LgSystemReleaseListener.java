@@ -34,12 +34,14 @@ import org.mayo.edu.lgModel.LexGridBase;
 
 /**
  * @author  <A HREF="mailto:scott.bauer@mayo.edu">Scott Bauer </A>
- *
+ * Listener for loading a system release element and its contained 
+ * coding schemes, picklists, value sets and revision.
  */
 public class LgSystemReleaseListener implements UnmarshalListener {
 
     private int nentities = 0;
     private int nassociations = 0;
+    private int modCount = 0;
     private boolean isCodingSchemeLoaded = false;
     private boolean isPropertiesPresent = false;
     private boolean isSystemReleaseSet = false;
@@ -50,7 +52,7 @@ public class LgSystemReleaseListener implements UnmarshalListener {
     private XMLDaoServiceAdaptor serviceAdaptor = null;
     private CodingScheme[] codingSchemes = null;
     private LgMessageDirectorIF messages_;
-    
+    private static final int mod = 10;
     /**
      * 
      */
@@ -59,6 +61,10 @@ public class LgSystemReleaseListener implements UnmarshalListener {
         serviceAdaptor = new XMLDaoServiceAdaptor();
 
     }
+    
+    /**
+     * @param messages
+     */
     public LgSystemReleaseListener(LgMessageDirectorIF messages) {
         super();
         serviceAdaptor = new XMLDaoServiceAdaptor();
@@ -114,7 +120,7 @@ public class LgSystemReleaseListener implements UnmarshalListener {
         if (target != null && target instanceof LexGridBase)
             ((LexGridBase) target).setParent(parent);
         else
-            System.out.println(target.getClass().getName() + " is not an instance of LexGridBase");
+            messages_.error(target.getClass().getName() + " is not an instance of LexGridBase");
     }
 
     public void attributesProcessed(Object target, Object parent) {
@@ -126,11 +132,10 @@ public class LgSystemReleaseListener implements UnmarshalListener {
      */
     public void unmarshalled(Object target, Object parent) {
         
-        //TODO Debugging code.  Remove before shipping
-        System.out.println("Unmarshalled target: "
-                + (target != null ? target.getClass().getSimpleName() : "target is null"));
-        System.out.println("parent of Unmarshalled target: "
-                + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
+//       messages_.debug("Unmarshalled target: "
+//                + (target != null ? target.getClass().getSimpleName() : "target is null"));
+//       messages_.debug("parent of Unmarshalled target: "
+//                + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
         
         if(target instanceof CodingScheme && parent instanceof CodingSchemes){
             setCodingSchemes(LexGridElementProcessor.setAndRetrieveCodingSchemes());
@@ -151,10 +156,9 @@ public class LgSystemReleaseListener implements UnmarshalListener {
      */
     public void fieldAdded(String fieldName, Object parent, Object child) {
 
-        //TODO Debugging code.  Remove before shipping
-        System.out.println("fieldName:" + fieldName);
-        System.out.println("parent: " + parent.getClass().getSimpleName());
-        System.out.println("child: " + child.getClass().getSimpleName());
+//        messages_.debug("fieldName:" + fieldName);
+//        messages_.debug("parent: " + parent.getClass().getSimpleName());
+//        messages_.debug("child: " + child.getClass().getSimpleName());
         
         if (!isSystemReleaseSet && UnMarshallingLogic.isSytemRelease(parent, child)) {
            try {
@@ -176,12 +180,19 @@ public class LgSystemReleaseListener implements UnmarshalListener {
         if (UnMarshallingLogic.isCodingSchemeEntity(parent, child)) {
             LexGridElementProcessor.processCodingSchemeEntity(serviceAdaptor, parent, child);
             nentities++;
+            if(nentities%mod == mod-1){  
+                modCount = modCount + mod;
+                messages_.info("Entities Loaded: " + modCount);}
         } else if (UnMarshallingLogic.isCodingSchemeEntities(parent, child)) {
             LexGridElementProcessor.removeEntitiesContainer(parent);
+            modCount = 0;
         } else if (UnMarshallingLogic.isCodingSchemeAssociation(parent, child)) {
             LexGridElementProcessor.processCodingSchemeAssociation(this
                     .isPredicateLoaded((AssociationPredicate) parent), serviceAdaptor, parent, child);
             nassociations++;
+            if(nassociations%mod == mod-1){  
+                modCount = modCount + mod;
+                messages_.info("Associations Loaded: " + modCount);}
         }
         if (UnMarshallingLogic.isValueSetMappings(parent, child)) {
             currentValueSetMappings = LexGridElementProcessor.processValueSetMappings(serviceAdaptor, parent, child);

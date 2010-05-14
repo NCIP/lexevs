@@ -28,12 +28,16 @@ import org.mayo.edu.lgModel.LexGridBase;
 
 /**
  * @author  <A HREF="mailto:scott.bauer@mayo.edu">Scott Bauer </A>
- *
+ * Listener for Unmarshalling a Revision of a LexGrid XML representation of
+ * a picklist, value set or coding scheme. 
  */
 public class LgRevisionListener implements UnmarshalListener {
     
     private int nentities = 0;
     private int nassociations = 0;
+    int modCount = 0;
+    private static final int mod = 10;
+    
     private boolean isCodingSchemeLoaded = false;
     private boolean isRevisionLoaded = false;
     private boolean isPropertiesPresent = false;
@@ -43,6 +47,7 @@ public class LgRevisionListener implements UnmarshalListener {
 
     private XMLDaoServiceAdaptor serviceAdaptor = null;
     private LgMessageDirectorIF messages_;
+
     
 
 
@@ -112,7 +117,7 @@ public class LgRevisionListener implements UnmarshalListener {
         if (target != null && target instanceof LexGridBase)
             ((LexGridBase) target).setParent(parent);
         else
-            System.out.println(target.getClass().getName() + " is not an instance of LexGridBase");
+            messages_.error(target.getClass().getName() + " is not an instance of LexGridBase");
     }
 
     /* (non-Javadoc)
@@ -127,14 +132,15 @@ public class LgRevisionListener implements UnmarshalListener {
      */
     public void unmarshalled(Object target, Object parent) {
         
-        //TODO Debugging code.  Remove before shipping
-        System.out.println("Unmarshalled target: "
-                + (target != null ? target.getClass().getSimpleName() : "target is null"));
-        System.out.println("parent of Unmarshalled target: "
-                + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
+//                messages_.debug("Unmarshalled target: "
+//                + (target != null ? target.getClass().getSimpleName() : "target is null"));
+//                messages_.debug("parent of Unmarshalled target: "
+//                + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
         
         if(target instanceof Revision && parent == null){
             setCodingSchemes(LexGridElementProcessor.setAndRetrieveCodingSchemes());
+           messages_.info("Entity Count: " + nentities);
+           messages_.info("Association Count: " + nassociations);
         }
     }
 
@@ -143,10 +149,9 @@ public class LgRevisionListener implements UnmarshalListener {
      */
     public void fieldAdded(String fieldName, Object parent, Object child) {
 
-        //TODO Debugging code.  Remove before shipping
-        System.out.println("fieldName:" + fieldName);
-        System.out.println("parent: " + parent.getClass().getSimpleName());
-        System.out.println("child: " + child.getClass().getSimpleName());
+//        messages_.debug("fieldName:" + fieldName);
+//        messages_.debug("parent: " + parent.getClass().getSimpleName());
+//        messages_.debug("child: " + child.getClass().getSimpleName());
         
         if (!isRevisionLoaded && UnMarshallingLogic.isRevisionWithFirstChild(parent, child)) {
             revision = (Revision)parent;
@@ -176,14 +181,22 @@ public class LgRevisionListener implements UnmarshalListener {
         if (UnMarshallingLogic.isCodingSchemeEntity(parent, child)) {
             LexGridElementProcessor.processCodingSchemeEntity(serviceAdaptor, parent, child);
             nentities++;
+            if(nentities%mod == mod-1){  
+                modCount = modCount + mod;
+                messages_.info("Entities Loaded: " + modCount);}
+         
         } else if (UnMarshallingLogic.isCodingSchemeEntities(parent, child)) {
             LexGridElementProcessor.removeEntitiesContainer(parent);
+            modCount = 0;
         } else if (UnMarshallingLogic.isCodingSchemeAssociation(parent, child)) {
             LexGridElementProcessor.processCodingSchemeAssociation(this
                     .isPredicateLoaded((AssociationPredicate) parent), serviceAdaptor, parent, child);
             nassociations++;
+            if(nassociations%mod == mod-1){  
+                modCount = modCount + mod;
+                messages_.info("Associations Loaded: " + modCount);}
         }
         
     }
-
+   
 }

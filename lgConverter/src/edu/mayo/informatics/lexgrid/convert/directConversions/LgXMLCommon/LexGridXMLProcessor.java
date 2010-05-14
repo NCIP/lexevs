@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.LexGrid.LexBIG.Exceptions.LBUnsupportedOperationException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.versions.Revision;
@@ -37,7 +38,6 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
-import org.lexevs.logging.Logger;
 
 /**
  * @author <A HREF="mailto:scott.bauer@mayo.edu">Scott Bauer </A>
@@ -61,7 +61,7 @@ public class LexGridXMLProcessor {
      * @param path
      * @param messages
      * @param validateXML
-     * @return
+     * @return Coding scheme loaded from this LexGrid xml.
      * @throws CodingSchemeAlreadyLoadedException
      */
     public org.LexGrid.codingSchemes.CodingScheme[] loadCodingScheme(String path, LgMessageDirectorIF messages,
@@ -105,7 +105,7 @@ public class LexGridXMLProcessor {
      * @param path
      * @param messages
      * @param validateXML
-     * @return
+     * @return Set of coding schemes loaded as changed entry elements in this revision.
      * @throws CodingSchemeAlreadyLoadedException
      */
     public org.LexGrid.codingSchemes.CodingScheme[] loadRevision(String path, LgMessageDirectorIF messages,
@@ -157,7 +157,7 @@ public class LexGridXMLProcessor {
      * @param path
      * @param messages
      * @param validateXML
-     * @return
+     * @return Set of coding schemes loaded wiith this system release.
      * @throws CodingSchemeAlreadyLoadedException
      */
     public org.LexGrid.codingSchemes.CodingScheme[] loadSystemRelease(String path, LgMessageDirectorIF messages,
@@ -190,7 +190,6 @@ public class LexGridXMLProcessor {
                 scheme.setRepresentsVersion(NO_SCHEME_VERSION);
                 cs = new CodingScheme[]{scheme};
             }
-           // service.activateScheme(cs.getCodingSchemeURI(), cs.getRepresentsVersion());
             in.close();
 
         } catch (MarshalException e) {
@@ -222,12 +221,14 @@ public class LexGridXMLProcessor {
             for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
                     .next()) {
                 if (event == XMLStreamConstants.START_ELEMENT) {
-                    System.out.println(xmlStreamReader.getLocalName());
                     if (xmlStreamReader.getLocalName().equals(CODING_SCHEME_ENTRY_POINT)) {
+                        messages.info("Top level XML element and entry point: " + CODING_SCHEME_ENTRY_POINT);
                         return CS_ENTRY_POINT_TYPE;
                     } else if (xmlStreamReader.getLocalName().equals(REVISION_ENTRY_POINT)) {
+                        messages.info("Top level XML element and entry point: " + REVISION_ENTRY_POINT);
                         return REV_ENTRY_POINT_TYPE;
                     } else if (xmlStreamReader.getLocalName().equals(SYSTEM_RELEASE_ENTRY_POINT)) {
+                        messages.info("Top level XML element and entry point: " + SYSTEM_RELEASE_ENTRY_POINT);
                         return SR_ENTRY_POINT_TYPE;
                     }
                 }
@@ -250,12 +251,18 @@ public class LexGridXMLProcessor {
 
         return ENTRY_POINT_NOT_FOUND;
     }
-
+    public org.LexGrid.codingSchemes.CodingScheme[] loadValueSetDefinition(String path, LgMessageDirectorIF messages,
+            boolean validateXML){
+      return null;
+    }
+    public org.LexGrid.codingSchemes.CodingScheme[] loadPickListDefinition(String path, LgMessageDirectorIF messages,
+            boolean validateXML){
+        return null;
+    }
     /**
      * @param path
      * @return boolean indicating if a coding scheme contains a property
      */
-    //TODO Remove or modify print statements for logging.
     private boolean setPropertiesFlag(String path,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         boolean propsPresent = false;
@@ -270,12 +277,10 @@ public class LexGridXMLProcessor {
                     .next()) {
 
                 if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("properties")) {
-                   System.out.println(xmlStreamReader.getLocalName());
+                    messages.info("This coding scheme contians properties metadata ... adjusting XML streaming to database");
                     propsPresent = true;
                     break;
                 }
-                if (event == XMLStreamConstants.START_ELEMENT)
-                   System.out.println("Printing local name from stax: " + xmlStreamReader.getLocalName());
             }
             xmlStreamReader.close();
             in.close();
@@ -296,7 +301,12 @@ public class LexGridXMLProcessor {
     }
     
     
-   private boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages) {
+   /**
+ * @param path represents a path to the xml file to load
+ * @param messages
+ * @return flag indicating there is a coding scheme element somewhere in this xml source
+ */
+private boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         boolean schemePresent = false;
         XMLStreamReader xmlStreamReader;
@@ -312,12 +322,10 @@ public class LexGridXMLProcessor {
                 if (event == XMLStreamConstants.START_ELEMENT && 
                         (xmlStreamReader.getLocalName().equals("codingScheme") || 
                                 xmlStreamReader.getLocalName().equals("changedCodingSchemeEntry"))) {
-                   System.out.println(xmlStreamReader.getLocalName());
+                  messages.info("This LexGrid XML contains a coding scheme elment, preparing to load coding scheme");
                     schemePresent = true;
                     break;
                 }
-                if (event == XMLStreamConstants.START_ELEMENT)
-                   System.out.println("Printing local name from stax: " + xmlStreamReader.getLocalName());
             }
             xmlStreamReader.close();
             in.close();
@@ -336,19 +344,6 @@ public class LexGridXMLProcessor {
         }
         return schemePresent;
     }
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
-        System.out.println("Parsing content from " + args[0] + "...");
-        LgMessageDirectorIF messages = new Logger();
-        try {
-            System.out.println("Coding Scheme Present? : " + new LexGridXMLProcessor().isCodingSchemePresent(args[0], messages));
-        } catch (FactoryConfigurationError e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
 
-    }
 
 }

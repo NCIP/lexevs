@@ -24,14 +24,20 @@ import org.LexGrid.relations.AssociationPredicate;
 import org.castor.xml.UnmarshalListener;
 import org.mayo.edu.lgModel.LexGridBase;
 
+import com.sun.corba.se.impl.protocol.giopmsgheaders.Message_1_0;
+
 /**
  * @author  <A HREF="mailto:scott.bauer@mayo.edu">Scott Bauer </A>
  *
+ * Listener for unmarshalling a coding scheme element from LexGrid XML.
  */
 public class LgCodingSchemeListener implements UnmarshalListener {
 
     int nentities = 0;
     int nassociations = 0;
+    int modCount = 0;
+    private static final int mod = 10;
+    
     boolean isCodingSchemeLoaded = false;
     boolean isConceptLoaded = false;
     boolean isAssociationLoaded = false;
@@ -101,7 +107,7 @@ public class LgCodingSchemeListener implements UnmarshalListener {
         if (target != null && target instanceof LexGridBase)
             ((LexGridBase) target).setParent(parent);
         else
-            System.out.println(target.getClass().getName() + " is not an instance of LexGridBase");
+            messages_.error(target.getClass().getName() + " is not an instance of LexGridBase");
     }
 
     /* (non-Javadoc)
@@ -116,11 +122,10 @@ public class LgCodingSchemeListener implements UnmarshalListener {
      */
     public void unmarshalled(Object target, Object parent) {
         
-        //TODO Debugging code.  Remove before shipping
-        System.out.println("Unmarshalled target: "
-                + (target != null ? target.getClass().getSimpleName() : "target is null"));
-        System.out.println("parent of Unmarshalled target: "
-                + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
+//        messages_.debug("Unmarshalled target: "
+//                + (target != null ? target.getClass().getSimpleName() : "target is null"));
+//        messages_.debug("parent of Unmarshalled target: "
+//                + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
     }
 
     /* (non-Javadoc)
@@ -128,10 +133,9 @@ public class LgCodingSchemeListener implements UnmarshalListener {
      */
     public void fieldAdded(String fieldName, Object parent, Object child) {
 
-        //TODO Debugging code.  Remove before shipping
-        System.out.println("fieldName:" + fieldName);
-        System.out.println("parent: " + parent.getClass().getSimpleName());
-        System.out.println("child: " + child.getClass().getSimpleName());
+//        messages_.debug("fieldName:" + fieldName);
+//        messages_.debug("parent: " + parent.getClass().getSimpleName());
+//        messages_.debug("child: " + child.getClass().getSimpleName());
         
         if (!isPropertiesPresent && UnMarshallingLogic.isCodingSchemeMappings(parent, child)) {
             LexGridElementProcessor.processCodingSchemeMetadata(serviceAdaptor, parent, child);
@@ -144,12 +148,19 @@ public class LgCodingSchemeListener implements UnmarshalListener {
         if (UnMarshallingLogic.isCodingSchemeEntity(parent, child)) {
             LexGridElementProcessor.processCodingSchemeEntity(serviceAdaptor, parent, child);
             nentities++;
+            if(nentities%10== 9){  
+                modCount = modCount + 10;
+                messages_.info("Entities Loaded: " + modCount);}
         } else if (UnMarshallingLogic.isCodingSchemeEntities(parent, child)) {
             LexGridElementProcessor.removeEntitiesContainer(parent);
+            modCount = 0;
         } else if (UnMarshallingLogic.isCodingSchemeAssociation(parent, child)) {
             LexGridElementProcessor.processCodingSchemeAssociation(this
                     .isPredicateLoaded((AssociationPredicate) parent), serviceAdaptor, parent, child);
             nassociations++;
+            if(nassociations%10 == 9){  
+                modCount = modCount + 10;
+                messages_.info("Associations Loaded: " + modCount);}
         }
     }
 
