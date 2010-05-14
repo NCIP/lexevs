@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.database.service.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -26,7 +27,10 @@ import junit.framework.Assert;
 
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.relations.AssociationEntity;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
@@ -83,6 +87,216 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		entity.setEntityCodeNamespace("ns");
 		
 		service.insertEntity("uri", "v1", entity);
+	}
+	
+	@Test
+	public void insertBatchEntityWithoutCodingNamespace() throws Exception {
+		CodingScheme scheme = new CodingScheme();
+		scheme.setApproxNumConcepts(111l);
+		scheme.setCodingSchemeName("testName");
+		scheme.setCodingSchemeURI("uri");
+		scheme.setRepresentsVersion("v1");
+		
+		authoringService.loadRevision(scheme, null);
+		
+		CodingScheme cs = codingSchemeservice.getCodingSchemeByUriAndVersion("uri", "v1");
+		System.out.println(cs);
+		
+		Entity entity1 = new Entity();
+		entity1.setEntityCode("c1");
+		Entity entity2 = new Entity();
+		entity2.setEntityCode("c2");
+		
+		List<Entity> entities = new ArrayList<Entity>();
+		entities.add(entity1);
+		entities.add(entity2);
+		
+		service.insertBatchEntities("uri", "v1", entities);
+		
+		for(Entity en : entities) {
+			Assert.assertEquals("testName", en.getEntityCodeNamespace());
+		}
+	}
+	
+	@Test
+	public void insertEntityWithoutCodingNamespace() throws Exception{
+
+		CodingScheme scheme = new CodingScheme();
+		scheme.setApproxNumConcepts(111l);
+		scheme.setCodingSchemeName("testName");
+		scheme.setCodingSchemeURI("uri");
+		scheme.setRepresentsVersion("v1");
+		
+		authoringService.loadRevision(scheme, null);
+		
+		CodingScheme cs = codingSchemeservice.getCodingSchemeByUriAndVersion("uri", "v1");
+		System.out.println(cs);
+		
+		Entity entity = new Entity();
+		entity.setEntityCode("c1");
+		
+		service.insertEntity("uri", "v1", entity);
+		Assert.assertEquals("testName", entity.getEntityCodeNamespace());
+	}
+	
+	@Test
+	public void insertEntityWithDuplicatePropId() throws Exception {
+		CodingScheme scheme = new CodingScheme();
+		scheme.setApproxNumConcepts(111l);
+		scheme.setCodingSchemeName("testName");
+		scheme.setCodingSchemeURI("uri");
+		scheme.setRepresentsVersion("v1");
+		
+		authoringService.loadRevision(scheme, null);
+		
+		CodingScheme cs = codingSchemeservice.getCodingSchemeByUriAndVersion("uri", "v1");
+		System.out.println(cs);
+		
+		Entity entity = new Entity();
+		entity.setEntityCode("c1");
+		
+		Text text = new Text();
+		text.setContent("value");
+		
+		Property prop1 = new Property();
+		prop1.setPropertyName("prop name");
+		prop1.setValue(text);
+		prop1.setPropertyId("propertyId");
+		
+		Property prop2 = new Property();
+		prop2.setPropertyName("prop name");
+		prop2.setValue(text);
+		prop2.setPropertyId("propertyId");
+		
+		entity.addProperty(prop1);
+		entity.addProperty(prop2);
+		Assert.assertEquals(2, entity.getPropertyCount());
+		service.insertEntity("uri", "v1", entity);
+		Assert.assertEquals(1, entity.getPropertyCount());
+	}
+	
+	@Test
+	public void insertBatchEntityWithDuplicatePropId() throws Exception {
+		CodingScheme scheme = new CodingScheme();
+		scheme.setApproxNumConcepts(111l);
+		scheme.setCodingSchemeName("testName");
+		scheme.setCodingSchemeURI("uri");
+		scheme.setRepresentsVersion("v1");
+		
+		authoringService.loadRevision(scheme, null);
+		
+		CodingScheme cs = codingSchemeservice.getCodingSchemeByUriAndVersion("uri", "v1");
+		System.out.println(cs);
+		
+		Text text = new Text();
+		text.setContent("value");
+
+		Property prop1 = new Property();
+		prop1.setPropertyName("prop name");
+		prop1.setValue(text);
+		prop1.setPropertyId("propertyId");
+		
+		Property prop2 = new Property();
+		prop2.setPropertyName("prop name");
+		prop2.setValue(text);
+		prop2.setPropertyId("propertyid");
+		
+		Entity entity1 = new Entity();
+		entity1.setEntityCode("c1");
+		entity1.setEntityCodeNamespace("ns");
+		entity1.addProperty(prop1);
+		entity1.addProperty(prop2);
+		
+		Entity entity2 = new Entity();
+		entity2.setEntityCode("c2");
+		entity2.setEntityCodeNamespace("ns");
+		entity2.addProperty(prop1);
+		entity2.addProperty(prop2);
+		
+		List<Entity> enList = new ArrayList<Entity>();
+		enList.add(entity1);
+		enList.add(entity2);
+		
+		Assert.assertEquals(2, entity1.getPropertyCount());
+		Assert.assertEquals(2, entity2.getPropertyCount());
+		service.insertBatchEntities("uri", "v1", enList);
+		Assert.assertEquals(1, entity1.getPropertyCount());
+		Assert.assertEquals(1, entity2.getPropertyCount());
+	}
+	
+	@Test
+	public void insertEntityWithInvalidPropLink() throws Exception{
+
+		CodingScheme scheme = new CodingScheme();
+		scheme.setApproxNumConcepts(111l);
+		scheme.setCodingSchemeName("testName");
+		scheme.setCodingSchemeURI("uri");
+		scheme.setRepresentsVersion("v1");
+		
+		authoringService.loadRevision(scheme, null);
+		
+		CodingScheme cs = codingSchemeservice.getCodingSchemeByUriAndVersion("uri", "v1");
+		System.out.println(cs);
+		
+		Entity entity = new Entity();
+		entity.setEntityCode("c1");
+		entity.setEntityCodeNamespace("entityCodeNamespace");
+		
+		PropertyLink pl = new PropertyLink();
+		pl.setPropertyLink("propertyLink");
+		pl.setSourceProperty("src1");
+		pl.setTargetProperty("tgt1");
+		List<PropertyLink> plList = new ArrayList<PropertyLink>();
+		plList.add(pl);
+		
+		entity.setPropertyLink(plList);
+		
+		Assert.assertEquals(1, entity.getPropertyLink().length);
+		service.insertEntity("uri", "v1", entity);
+		Assert.assertEquals(0, entity.getPropertyLink().length);
+	}
+	
+	@Test
+	public void insertBatchEntityWithInvalidPropLink() throws Exception{
+
+		CodingScheme scheme = new CodingScheme();
+		scheme.setApproxNumConcepts(111l);
+		scheme.setCodingSchemeName("testName");
+		scheme.setCodingSchemeURI("uri");
+		scheme.setRepresentsVersion("v1");
+		
+		authoringService.loadRevision(scheme, null);
+		
+		CodingScheme cs = codingSchemeservice.getCodingSchemeByUriAndVersion("uri", "v1");
+		System.out.println(cs);
+		
+		PropertyLink pl = new PropertyLink();
+		pl.setPropertyLink("propertyLink");
+		pl.setSourceProperty("src1");
+		pl.setTargetProperty("tgt1");
+		
+		List<PropertyLink> plList = new ArrayList<PropertyLink>();
+		plList.add(pl);
+		
+		Entity entity1 = new Entity();
+		entity1.setEntityCode("c1");
+		entity1.setEntityCodeNamespace("entityCodeNamespace");
+		entity1.setPropertyLink(plList);
+		
+		Entity entity2 = new Entity();
+		entity2.setEntityCode("c2");
+		entity2.setEntityCodeNamespace("entityCodeNamespace");
+		entity2.setPropertyLink(plList);
+		
+		List<Entity> enList = new ArrayList<Entity>();
+		enList.add(entity1);
+		enList.add(entity2);
+		
+		Assert.assertEquals(1, entity1.getPropertyLink().length);
+		Assert.assertEquals(1, entity2.getPropertyLink().length);
+		service.insertBatchEntities("uri", "v1", enList);
+		Assert.assertEquals(0, entity1.getPropertyLink().length);
+		Assert.assertEquals(0, entity2.getPropertyLink().length);
 	}
 	
 	@Test
