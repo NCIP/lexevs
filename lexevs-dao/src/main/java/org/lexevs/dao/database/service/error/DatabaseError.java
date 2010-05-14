@@ -27,6 +27,8 @@ import java.util.Date;
  */
 public interface DatabaseError {
 
+	public static String UNKNOWN_ERROR_CODE = "UNKNOWN_ERROR";
+
 	/**
 	 * Gets the error time.
 	 * 
