@@ -1,4 +1,4 @@
-package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml;
+package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants;
 
 public class Constants {
     public static final String VALUE_AUTOMOBILES_NAME_SPACE = "Automobiles";
@@ -8,5 +8,6 @@ public class Constants {
     public static final String VALUE_CODING_SCHEME_URI = "11.22.33.44";
     public static final String VALUE_CODING_SCHEME_VERSION = "JUNIT";
     public static final String VALUE_LANG_EN = "en";
+    public static final int VALUE_PAGE_SIZE = 2;
 
 }

@@ -1,52 +1,22 @@
-package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml;
+package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.factory;
 
-import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
-import org.LexGrid.naming.Mappings;
-import org.LexGrid.naming.SupportedAssociation;
 
-public class LexGridObjectFactory {
+import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.Constants;
+
+public class EntityFactory {
     
     /*
      * example XML from lbTest, automobiles2.xml
      */
     
-    /*
-     *  <lgNaming:supportedAssociation uri="urn:oid:1.3.6.1.4.1.2114.108.1.8.1" localId="hasSubtype">hasSubtype</lgNaming:supportedAssociation>
-     */
     
-    public static SupportedAssociation createSupportedAssociationHasSubType() {
-        return LexGridObjectFactory.createSupportedAssociation(
-                "urn:oid:1.3.6.1.4.1.2114.108.1.8.1", 
-                "hasSubType", 
-                "hasSubType");
-    }
-    
-    /*
-     * <lgNaming:supportedAssociation uri="urn:oid:11.11.0.1" localId="uses">uses</lgNaming:supportedAssociation>
-     */
-    public static SupportedAssociation createSupportedAssociationUses() {
-        return LexGridObjectFactory.createSupportedAssociation(
-                "urn:oid:11.11.0.7", 
-                "uses", 
-                "uses");        
-    }
-    
-    private static SupportedAssociation createSupportedAssociation(String uri, String localId, String content) {
-        SupportedAssociation sa = new SupportedAssociation();
-        sa.setUri(uri);
-        sa.setLocalId(localId);
-        sa.setContent(content);
-        return sa;                
-    }
-    
-    /* taken from lbTest, automobiles2.xml
-     *
+    /* 
      * <lgCon:entity entityCode="005" isActive="true" entityCodeNamespace="Automobiles">
             <lgCommon:entityDescription>Domestic Auto Makers</lgCommon:entityDescription>
             <lgCon:entityType>concept</lgCon:entityType>
@@ -311,19 +281,5 @@ public class LexGridObjectFactory {
         entity.setPresentation(presentationAr);
         return entity;
         
-    }
-    
-    public static CodingScheme createCodingScheme() {
-        CodingScheme cs = new CodingScheme();
-        cs.setApproxNumConcepts(new Long(4));
-        cs.setCodingSchemeName("miniautomobiles");
-        cs.setCodingSchemeURI(Constants.VALUE_CODING_SCHEME_URI);
-        Text copyright = new Text();
-        copyright.setContent("Copyright Mayo Clinic.");
-        cs.setCopyright(copyright);
-        cs.setDefaultLanguage(Constants.VALUE_LANG_EN);
-        cs.setMappings(new Mappings());
-        cs.setRepresentsVersion(Constants.VALUE_CODING_SCHEME_VERSION);
-        return cs;
-    }
+    }    
 }
