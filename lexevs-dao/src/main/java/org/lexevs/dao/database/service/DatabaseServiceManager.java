@@ -82,6 +82,11 @@ public class DatabaseServiceManager {
 	
 	private DaoCallbackService daoCallbackService;
 	
+	public <T> T wrapServiceForErrorHandling(T service, ErrorCallbackListener errorCallbackListener) {
+		return errorCallbackDatabaseServiceFactory.
+			getErrorCallbackDatabaseService(service, errorCallbackListener);
+	}
+	
 	/**
 	 * Sets the coding scheme service.
 	 * 
@@ -100,11 +105,6 @@ public class DatabaseServiceManager {
 		return codingSchemeService;
 	}
 
-	public CodingSchemeService getCodingSchemeService(ErrorCallbackListener errorCallbackListener) {
-		return errorCallbackDatabaseServiceFactory.
-			getErrorCallbackDatabaseService(codingSchemeService, errorCallbackListener);
-	}
-	
 	/**
 	 * Sets the entity service.
 	 * 
@@ -122,11 +122,6 @@ public class DatabaseServiceManager {
 	public EntityService getEntityService() {
 		return entityService;
 	}
-	
-	public EntityService getEntityService(ErrorCallbackListener errorCallbackListener) {
-		return errorCallbackDatabaseServiceFactory.
-			getErrorCallbackDatabaseService(entityService, errorCallbackListener);
-	}
 
 	/**
 	 * Gets the property service.
@@ -137,11 +132,6 @@ public class DatabaseServiceManager {
 		return propertyService;
 	}
 	
-	public PropertyService getPropertyService(ErrorCallbackListener errorCallbackListener) {
-		return errorCallbackDatabaseServiceFactory.
-			getErrorCallbackDatabaseService(propertyService, errorCallbackListener);
-	}
-
 	/**
 	 * Sets the property service.
 	 * 
@@ -169,11 +159,6 @@ public class DatabaseServiceManager {
 		return associationService;
 	}
 	
-	public AssociationService getAssociationService(ErrorCallbackListener errorCallbackListener) {
-		return errorCallbackDatabaseServiceFactory.
-			getErrorCallbackDatabaseService(associationService, errorCallbackListener);
-	}
-
 	public void setDaoCallbackService(DaoCallbackService daoCallbackService) {
 		this.daoCallbackService = daoCallbackService;
 	}
@@ -189,7 +174,6 @@ public class DatabaseServiceManager {
 	public void setAuthoringService(AuthoringService authoringService) {
 		this.authoringService = authoringService;
 	}
-	
 
 	public void setPickListDefinitionService(PickListDefinitionService pickListDefinitionService) {
 		this.pickListDefinitionService = pickListDefinitionService;
