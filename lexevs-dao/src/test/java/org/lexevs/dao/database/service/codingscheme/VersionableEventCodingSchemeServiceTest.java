@@ -29,7 +29,6 @@ import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.PropertyLink;
-import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.relations.AssociationPredicate;
@@ -41,6 +40,7 @@ import org.junit.Test;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.error.DatabaseError;
 import org.lexevs.dao.database.service.error.ErrorCallbackListener;
+import org.lexevs.dao.database.service.error.ErrorHandlingService;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
@@ -327,6 +327,27 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		assertEquals(CodingSchemeService.INSERT_CODINGSCHEME_ERROR, errors.get(0).getErrorCode());
 	}
 	
+	@Test
+	public void testErrorCallbackCodingSchemeServiceNonAnnotatedException() throws Exception{
+		CodingScheme scheme = new CodingScheme();
+		scheme.setApproxNumConcepts(111l);
+		scheme.setCodingSchemeName("testName");
+		scheme.setCodingSchemeURI("uri");
+		
+		CachingCallback callback = new CachingCallback();
+		
+		CodingSchemeService service = databaseServiceManager.wrapServiceForErrorHandling(
+				new TestAnnotatedCodingSchemeService(), callback);
+		
+		service.validatedSupportedAttribute(null, null, null, null);
+		
+		List<DatabaseError> errors = callback.errors;
+		
+		assertEquals(1, errors.size());	
+		
+		assertEquals(DatabaseError.UNKNOWN_ERROR_CODE, errors.get(0).getErrorCode());
+	}
+	
 	private class CachingCallback implements ErrorCallbackListener {
 
 		List<DatabaseError> errors = new ArrayList<DatabaseError>();
@@ -335,5 +356,13 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		public void onDatabaseError(DatabaseError databaseError) {
 			errors.add(databaseError);
 		}
+	}
+	
+
+	@ErrorHandlingService(matchAllMethods=true)
+	public static class TestAnnotatedCodingSchemeService extends
+	VersionableEventCodingSchemeService {
+
+		public TestAnnotatedCodingSchemeService(){}
 	}
 }
