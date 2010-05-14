@@ -115,7 +115,7 @@
    	<select id="getAssociationPredicatNamesFromCodingSchemeUid"
 		remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
 		resultClass="String">
-		SELECT
+		SELECT DISTINCT
 			associationPredicate.associationName
 		FROM
 			$prefix$associationPredicate associationPredicate
@@ -125,8 +125,10 @@
 			(relation.relationGuid = associationPredicate.relationGuid)
 		WHERE
 			relation.codingSchemeGuid = #param1#
+		<isNotNull property="param2">
 		AND
 			relation.containerName = #param2#
+		</isNotNull>
 	</select>
    
   	<select id="getAssociationPredicateKeysForRelationsId" remapResults="true"

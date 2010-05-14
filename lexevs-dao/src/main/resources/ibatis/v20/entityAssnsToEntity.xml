@@ -331,8 +331,12 @@
 		ON (
 			eate1.sourceEntityCode = eate2.targetEntityCode
 			AND
+			eate2.sourceEntityCodeNamespace = eate2.TargetEntityCodeNamespace
+			
+			<!--  NOT SURE IF THIS IS NEEDED OR NOT
+			AND
 			eate1.associationPredicateGuid = eate2.associationPredicateGuid
-
+			-->
 			)
 		WHERE
 			eate2.entityAssnsGuid IS NULL	
@@ -358,7 +362,12 @@
 		ON (
 			eate1.targetEntityCode = eate2.sourceEntityCode
 			AND
+			eate1.targetEntityCodeNamespace = eate2.sourceEntityCodeNamespace
+			
+			<!--  NOT SURE IF THIS IS NEEDED OR NOT
+			AND
 			eate1.associationPredicateGuid = eate2.associationPredicateGuid
+			-->
 			)
 		WHERE
 			eate2.entityAssnsGuid IS NULL	

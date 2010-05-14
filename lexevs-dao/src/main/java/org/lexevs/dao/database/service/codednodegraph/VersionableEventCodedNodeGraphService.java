@@ -25,6 +25,7 @@ import java.util.Map;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
@@ -217,11 +218,15 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			this.getDaoManager().getAssociationDao(
 				uri, version);
 		
-		return associationDao.
-			getAssociationPredicateUidsForAssociationName(
+		if(StringUtils.isBlank(relationsContainerName)) {
+			return associationDao.getAssociationPredicateUidsForAssociationName(
 					codingSchemeUid, 
-					relationsContainerName,
+					relationsContainerName, 
 					associationPredicateName);
+		}
+		return DaoUtility.createNonTypedList(associationDao.
+			getAssociationPredicateUIdByContainerName(
+					codingSchemeUid, relationsContainerName, associationPredicateName));
 	}
 
 	@Override
@@ -331,6 +336,8 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			List<String> associationPredicateNames) {
 
 		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		
 
 		List<String> associationPredicateUids = 
 			getAssociationPredicateUids(
