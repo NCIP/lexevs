@@ -59,13 +59,13 @@ public class CodedNodeGraphImplTest extends TestCase {
 
         // This is technically, illegal. But its what everyone is going to do...
         // so I bent some rules.
-        assertTrue(cng.areCodesRelated(Constructors.createNameAndValue("hasSubtype", "Automobiles"),
+        assertTrue(cng.areCodesRelated(Constructors.createNameAndValue("hasSubtype", null),
                 Constructors.createConceptReference("005", "Automobiles"),
                 Constructors.createConceptReference("Ford", "urn:oid:11.11.0.1"), true).booleanValue());
 
         // This is technically illegal as well... bent the rules the same as
         // above.
-        assertTrue(cng.areCodesRelated(Constructors.createNameAndValue("hasSubtype", "urn:oid:11.11.0.1"),
+        assertTrue(cng.areCodesRelated(Constructors.createNameAndValue("hasSubtype", null),
                 Constructors.createConceptReference("005", "Automobiles"),
                 Constructors.createConceptReference("Ford", "urn:oid:11.11.0.1"), true).booleanValue());
 
@@ -74,7 +74,7 @@ public class CodedNodeGraphImplTest extends TestCase {
         // If you don't know where this oid came from, you can see why I bent
         // the rules...
         assertTrue(cng.areCodesRelated(
-                Constructors.createNameAndValue("hasSubtype", "urn:oid:1.3.6.1.4.1.2114.108.1.8.1"),
+                Constructors.createNameAndValue("hasSubtype", null),
                 Constructors.createConceptReference("005", "Automobiles"),
                 Constructors.createConceptReference("Ford", "urn:oid:11.11.0.1"), true).booleanValue());
 
@@ -85,13 +85,13 @@ public class CodedNodeGraphImplTest extends TestCase {
 
         // This is technically, illegal. But its what everyone is going to do...
         // so I bent some rules.
-        assertTrue(cng.areCodesRelated(Constructors.createNameAndValue("hasSubtype", "Automobiles"),
+        assertTrue(cng.areCodesRelated(Constructors.createNameAndValue("hasSubtype", null),
                 Constructors.createConceptReference("005", "Automobiles"),
                 Constructors.createConceptReference("Ford", "urn:oid:11.11.0.1"), false).booleanValue());
 
         // This is technically illegal as well... bent the rules the same as
         // above.
-        assertTrue(cng.areCodesRelated(Constructors.createNameAndValue("hasSubtype", "urn:oid:11.11.0.1"),
+        assertTrue(cng.areCodesRelated(Constructors.createNameAndValue("hasSubtype", null),
                 Constructors.createConceptReference("005", "Automobiles"),
                 Constructors.createConceptReference("Ford", "urn:oid:11.11.0.1"), false).booleanValue());
 
@@ -100,7 +100,7 @@ public class CodedNodeGraphImplTest extends TestCase {
         // If you don't know where this oid came from, you can see why I bent
         // the rules...
         assertTrue(cng.areCodesRelated(
-                Constructors.createNameAndValue("hasSubtype", "urn:oid:1.3.6.1.4.1.2114.108.1.8.1"),
+                Constructors.createNameAndValue("hasSubtype", null),
                 Constructors.createConceptReference("005", "Automobiles"),
                 Constructors.createConceptReference("Ford", "urn:oid:11.11.0.1"), false).booleanValue());
 
@@ -111,13 +111,13 @@ public class CodedNodeGraphImplTest extends TestCase {
 
         // This is technically, illegal. But its what everyone is going to do...
         // so I bent some rules.
-        assertTrue(cng.areCodesRelated(Constructors.createNameAndValue("hasSubtype", "Automobiles"),
+        assertTrue(cng.areCodesRelated(Constructors.createNameAndValue("hasSubtype", null),
                 Constructors.createConceptReference("005", "Automobiles"),
                 Constructors.createConceptReference("Jaguar", "urn:oid:11.11.0.1"), false).booleanValue());
 
         // This is technically illegal as well... bent the rules the same as
         // above.
-        assertTrue(cng.areCodesRelated(Constructors.createNameAndValue("hasSubtype", "urn:oid:11.11.0.1"),
+        assertTrue(cng.areCodesRelated(Constructors.createNameAndValue("hasSubtype", null),
                 Constructors.createConceptReference("005", "Automobiles"),
                 Constructors.createConceptReference("Jaguar", "urn:oid:11.11.0.1"), false).booleanValue());
 
@@ -126,7 +126,7 @@ public class CodedNodeGraphImplTest extends TestCase {
         // If you don't know where this oid came from, you can see why I bent
         // the rules...
         assertTrue(cng.areCodesRelated(
-                Constructors.createNameAndValue("hasSubtype", "urn:oid:1.3.6.1.4.1.2114.108.1.8.1"),
+                Constructors.createNameAndValue("hasSubtype", null),
                 Constructors.createConceptReference("005", "Automobiles"),
                 Constructors.createConceptReference("Jaguar", "urn:oid:11.11.0.1"), false).booleanValue());
 
@@ -137,13 +137,13 @@ public class CodedNodeGraphImplTest extends TestCase {
 
         // This is technically, illegal. But its what everyone is going to do...
         // so I bent some rules.
-        assertFalse(cng.areCodesRelated(Constructors.createNameAndValue("hasSubtype", "Automobiles"),
+        assertFalse(cng.areCodesRelated(Constructors.createNameAndValue("hasSubtype", null),
                 Constructors.createConceptReference("005", "Automobiles"),
                 Constructors.createConceptReference("Jaguar", "urn:oid:11.11.0.1"), true).booleanValue());
 
         // This is technically illegal as well... bent the rules the same as
         // above.
-        assertFalse(cng.areCodesRelated(Constructors.createNameAndValue("hasSubtype", "urn:oid:11.11.0.1"),
+        assertFalse(cng.areCodesRelated(Constructors.createNameAndValue("hasSubtype", null),
                 Constructors.createConceptReference("005", "Automobiles"),
                 Constructors.createConceptReference("Jaguar", "urn:oid:11.11.0.1"), true).booleanValue());
 
@@ -152,7 +152,7 @@ public class CodedNodeGraphImplTest extends TestCase {
         // If you don't know where this oid came from, you can see why I bent
         // the rules...
         assertFalse(cng.areCodesRelated(
-                Constructors.createNameAndValue("hasSubtype", "urn:oid:1.3.6.1.4.1.2114.108.1.8.1"),
+                Constructors.createNameAndValue("hasSubtype", null),
                 Constructors.createConceptReference("005", "Automobiles"),
                 Constructors.createConceptReference("Jaguar", "urn:oid:11.11.0.1"), true).booleanValue());
     }
@@ -272,15 +272,16 @@ public class CodedNodeGraphImplTest extends TestCase {
         // code system)
         CodedNodeGraph cng2 = lbsi.getNodeGraph("Automobiles", null, "relations");
         cng2.restrictToSourceCodes(cm.createCodedNodeSet(new String[] { "Ford" }, "Automobiles", null));
+        cng2.restrictToTargetCodes(cm.createCodedNodeSet(new String[] { "Jaguar" }, "Automobiles", null));
 
         // join them
-        cng.union(cng2);
+        CodedNodeGraph unionGraph = cng.union(cng2);
 
         // result should be 005 -> Ford -> Jaguar
-        ResolvedConceptReference[] rcr = cng.resolveAsList(null, true, false, -1, -1, null, null, null, 50)
+        ResolvedConceptReference[] rcr = unionGraph.resolveAsList(null, true, false, -1, -1, null, null, null, 50)
                 .getResolvedConceptReference();
 
-        assertTrue(rcr.length == 1);
+        assertEquals(1,rcr.length);
         // top node
         assertTrue(rcr[0].getConceptCode().equals("005"));
 
