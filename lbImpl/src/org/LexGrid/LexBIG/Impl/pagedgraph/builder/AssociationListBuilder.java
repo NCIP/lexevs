@@ -281,13 +281,15 @@ public class AssociationListBuilder {
      */
     protected List<String> getAssociationPredicateNames(
             String codingSchemeUri, 
-            String codingSchemeVersion) {
+            String codingSchemeVersion,
+            String relationsContainerName) {
         CodedNodeGraphService codedNodeGraphService =
             databaseServiceManager.getCodedNodeGraphService();
 
         return codedNodeGraphService.getAssociationPredicateNamesForCodingScheme(
                 codingSchemeUri,
-                codingSchemeVersion);
+                codingSchemeVersion,
+                relationsContainerName);
     }
 
     /**

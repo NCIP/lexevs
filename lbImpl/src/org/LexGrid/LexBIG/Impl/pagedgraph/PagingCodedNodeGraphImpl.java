@@ -55,15 +55,11 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -1153282485482789848L;
     
-    /** The builder. */
-    private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
-    
-    //Implementation to return either the full reference or a stub upon detecting a cycle
-    //private CycleDetectingCallback cycleDetectingCallback = new ReferenceReturningCycleDetectingCallback();
-    private CycleDetectingCallback cycleDetectingCallback = new StubReturningCycleDetectingCallback();
-   
     private RootsResolver rootsResolver = new NullFocusRootsResolver();
-    /**
+    
+    private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
+
+  /**
      * Instantiates a new paging coded node graph impl.
      * 
      * @param codingSchemeUri the coding scheme uri
@@ -97,6 +93,10 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
             boolean keepLastAssociationLevelUnresolved) throws LBInvocationException, LBParameterException {
         this.getLogger().warn("Paged Graph is currently an incomplete implementation. Graph functionality will be implemented incrementally.");
         
+        //Implementation to return either the full reference or a stub upon detecting a cycle
+        //private CycleDetectingCallback cycleDetectingCallback = new ReferenceReturningCycleDetectingCallback();
+        CycleDetectingCallback cycleDetectingCallback = new StubReturningCycleDetectingCallback();
+              
         String codingSchemeUri = this.getCodingSchemeUri();
         String version = this.getVersion();
         String relationsContainerName = this.getRelationsContainerName();
@@ -119,7 +119,15 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
             if(focus == null) {
                focus = new ResolvedConceptReference();
                focus.setCode(graphFocus.getCode());
-               focus.setCodeNamespace(graphFocus.getCodeNamespace());
+               
+               String namespace = graphFocus.getCodeNamespace();
+             
+               if(StringUtils.isBlank(namespace)){
+                   namespace = LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, version);
+               }
+
+               focus.setCodeNamespace(namespace);    
+               
                focus.setCodingSchemeName(graphFocus.getCodingSchemeName());
             }
             boolean isValidFocus = this.checkFocus(focus);
@@ -140,10 +148,6 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                 ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
 
                 for(ConceptReference root : codes) {
-                    
-                    if(this.rootsResolver.isRootOrTail(root) && resolveAssociationDepth >= 0) {
-                        resolveAssociationDepth++;
-                    }
                     
                     ResolvedConceptReferenceList list = this.doResolveAsList(
                             root, 
@@ -167,6 +171,10 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     }
                 }
                 return returnList;
+        }
+        
+        if(this.rootsResolver.isRootOrTail(focus) && resolveAssociationDepth >= 0) {
+            resolveAssociationDepth++;
         }
 
         if(resolveForward && shouldResolveNextLevel(resolveAssociationDepth)) {

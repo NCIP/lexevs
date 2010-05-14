@@ -120,7 +120,7 @@ public class NullFocusRootsResolver implements RootsResolver {
         
         if(CollectionUtils.isEmpty(associationNames)) {
             associationNames = 
-            service.getAssociationPredicateNamesForCodingScheme(codingSchemeUri, codingSchemeVersion);
+            service.getAssociationPredicateNamesForCodingScheme(codingSchemeUri, codingSchemeVersion, relationsContainerName);
         }
         
         List<ConceptReference> roots = 
@@ -140,7 +140,7 @@ public class NullFocusRootsResolver implements RootsResolver {
         
         if(CollectionUtils.isEmpty(associationNames)) {
             associationNames = 
-            service.getAssociationPredicateNamesForCodingScheme(codingSchemeUri, codingSchemeVersion);
+            service.getAssociationPredicateNamesForCodingScheme(codingSchemeUri, codingSchemeVersion, relationsContainerName);
         }
         
         return 

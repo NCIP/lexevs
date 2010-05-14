@@ -40,6 +40,7 @@ import org.LexGrid.naming.SupportedAssociationQualifier;
 import org.apache.commons.lang.ArrayUtils;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
+import org.lexevs.logging.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 /**
@@ -95,7 +96,7 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
             for(NameAndValue nameAndValue : association.getNameAndValue()) {
                 //TODO: resolve URIs
                 if(StringUtils.hasText(nameAndValue.getContent())){
-                    throw new UnsupportedOperationException();
+                    LoggerFactory.getLogger().warn("URIs are currently not resolved.");
                 }
                 String localId = nameAndValue.getName();
                 ServiceUtility.validateParameter(codingSchemeUri, version, localId, SupportedAssociation.class);
