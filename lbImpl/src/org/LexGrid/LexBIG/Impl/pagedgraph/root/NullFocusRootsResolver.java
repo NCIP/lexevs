@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.apache.commons.collections.CollectionUtils;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -124,7 +125,7 @@ public class NullFocusRootsResolver implements RootsResolver {
         }
         
         List<ConceptReference> roots = 
-            service.getRootConceptReferences(codingSchemeUri, codingSchemeVersion, relationsContainerName, associationNames);
+            service.getRootConceptReferences(codingSchemeUri, codingSchemeVersion, relationsContainerName, associationNames, TraverseAssociations.INDIVIDUALLY);
         
         return roots;
     }
@@ -144,7 +145,7 @@ public class NullFocusRootsResolver implements RootsResolver {
         }
         
         return 
-            service.getTailConceptReferences(codingSchemeUri, codingSchemeVersion, relationsContainerName, associationNames);
+            service.getTailConceptReferences(codingSchemeUri, codingSchemeVersion, relationsContainerName, associationNames, TraverseAssociations.INDIVIDUALLY);
     }
     
 }

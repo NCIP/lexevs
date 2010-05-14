@@ -35,6 +35,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.relations.Relations;
 import org.jdom.input.SAXBuilder;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.RootOrTail;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.springframework.util.Assert;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.obo1_2.OBO2LGMain;
@@ -151,7 +152,8 @@ public class OBOLoaderImpl extends BaseLoader implements OBO_Loader {
                 codingScheme.getCodingSchemeURI(), codingScheme.getRepresentsVersion()), 
                 null, 
                 getRelationsContainerName(codingScheme), 
-                RootOrTail.TAIL);
+                RootOrTail.TAIL,
+                TraverseAssociations.TOGETHER);
         
         return new URNVersionPair[]{urnVersion};
     }

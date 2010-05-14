@@ -47,6 +47,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.RootOrTail;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -331,7 +332,8 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
             AbsoluteCodingSchemeVersionReference reference,
             List<String> associationNames,
             String relationContainerName,
-            RootOrTail rootOrTail)
+            RootOrTail rootOrTail,
+            TraverseAssociations traverse)
             throws Exception {
         md_.info("Building the root node");
 
@@ -341,7 +343,8 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                 reference.getCodingSchemeVersion(), 
                 associationNames, 
                 relationContainerName, 
-                rootOrTail);
+                rootOrTail,
+                traverse);
 
         md_.info("Finished building root node");
     }
