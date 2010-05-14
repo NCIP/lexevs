@@ -71,14 +71,6 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	
 		ibatisCodingSchemeDao.insertURIMap("csguid", hier);
 		
-		Map map = template.queryForMap("Select * from cssupportedattrib");
-
-		Iterator itr = map.keySet().iterator();
-		
-		while(itr.hasNext()) {
-			System.out.println(map.get(itr.next()));
-		}
-		
 		template.queryForObject("Select * from cssupportedattrib", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
