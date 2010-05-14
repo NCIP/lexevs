@@ -412,7 +412,7 @@
 	 ON 
 	 	prop.referenceGuid = entity.entityGuid
 	 INNER JOIN
-		$prefix$codingscheme cs
+		$prefix$codingScheme cs
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
@@ -430,7 +430,7 @@
 	 ON 
 	 	type.entityGuid = entity.entityGuid
 	 INNER JOIN
-		$prefix$codingscheme cs
+		$prefix$codingScheme cs
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
@@ -458,7 +458,7 @@
 	 ON 
 	 	prop.referenceGuid = entity.entityGuid
 	 INNER JOIN
-		$prefix$codingscheme cs
+		$prefix$codingScheme cs
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
@@ -478,7 +478,7 @@
 	 ON 
 	 	prop.referenceGuid = entity.entityGuid
 	 INNER JOIN
-		$prefix$codingscheme cs
+		$prefix$codingScheme cs
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
@@ -509,7 +509,7 @@
 		ON
 			prop.referenceGuid = entity.entityGuid
 		INNER JOIN
-			$prefix$codingscheme cs
+			$prefix$codingScheme cs
 		ON
 			entity.codingSchemeGuid = cs.codingSchemeGuid
 		WHERE
