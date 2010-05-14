@@ -10,6 +10,7 @@ import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.RootOrTail;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.system.service.SystemResourceService;
 import org.springframework.util.Assert;
@@ -30,7 +31,8 @@ public class DefaultRootBuilder implements RootBuilder {
 			String codingSchemeVersion, 
 			List<String> associationNames,
 			String relationContainerName, 
-			RootOrTail rootOrTail) {
+			RootOrTail rootOrTail,
+			TraverseAssociations traverse) {
 		List<ConceptReference> refs;
 		
 		if(rootOrTail.equals(RootOrTail.ROOT)) {
@@ -39,14 +41,16 @@ public class DefaultRootBuilder implements RootBuilder {
 					codingSchemeUri, 
 					codingSchemeVersion, 
 					relationContainerName, 
-					associationNames);
+					associationNames,
+					traverse);
 		} else {
 			refs = databaseServiceManager.getCodedNodeGraphService().
 			getTailConceptReferences(
 					codingSchemeUri, 
 					codingSchemeVersion, 
 					relationContainerName, 
-					associationNames);
+					associationNames,
+					traverse);
 		}
 		
 		if(CollectionUtils.isNotEmpty(refs)) {
