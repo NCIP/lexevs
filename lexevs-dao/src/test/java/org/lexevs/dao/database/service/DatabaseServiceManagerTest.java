@@ -89,7 +89,9 @@ public class DatabaseServiceManagerTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
 			"values ('csguid', 'csname', 'csuri', 'csversion')");
 		
-		EntityService entityService = this.databaseServiceManager.getEntityService(new ErrorCallbackListener() {
+		EntityService entityService = this.databaseServiceManager.wrapServiceForErrorHandling(
+				databaseServiceManager.getEntityService(),
+				new ErrorCallbackListener() {
 
 			@Override
 			public void onDatabaseError(DatabaseError databaseError) {

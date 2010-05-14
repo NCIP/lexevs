@@ -315,7 +315,8 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		
 		CachingCallback callback = new CachingCallback();
 		
-		CodingSchemeService service = databaseServiceManager.getCodingSchemeService(callback);
+		CodingSchemeService service = databaseServiceManager.wrapServiceForErrorHandling(
+				databaseServiceManager.getCodingSchemeService(), callback);
 		
 		service.insertCodingScheme(scheme, null);
 		
