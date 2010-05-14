@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.RootOrTail;
+import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.service.Registry;
@@ -58,7 +59,7 @@ public class DefaultRootBuilderTest extends LexEvsDbUnitTestBase {
 				" 't-ns1'," +
 				" 'ai-id', null, null, null, null, null, null, null, null)");
 		
-		rootBuilder.addRootRelationNode("csuri", "csversion", DaoUtility.createNonTypedList("test-assoc"), "c-name", RootOrTail.ROOT);
+		rootBuilder.addRootRelationNode("csuri", "csversion", DaoUtility.createNonTypedList("test-assoc"), "c-name", RootOrTail.ROOT, TraverseAssociations.TOGETHER);
 	
 		int count = template.queryForInt("Select count(*) from entityassnstoentity" +
 				" where sourceEntitycode = '@' and targetEntityCode = 's-code'");
@@ -98,7 +99,7 @@ public class DefaultRootBuilderTest extends LexEvsDbUnitTestBase {
 				" 't-ns1'," +
 				" 'ai-id', null, null, null, null, null, null, null, null)");
 		
-		rootBuilder.addRootRelationNode("csuri", "csversion", DaoUtility.createNonTypedList("test-assoc"), "c-name", RootOrTail.TAIL);
+		rootBuilder.addRootRelationNode("csuri", "csversion", DaoUtility.createNonTypedList("test-assoc"), "c-name", RootOrTail.TAIL, TraverseAssociations.TOGETHER);
 	
 		int count = template.queryForInt("Select count(*) from entityassnstoentity" +
 				" where sourceEntitycode = 't-code1' and targetEntityCode = '@@'");
