@@ -19,14 +19,19 @@
 package org.lexevs.dao.database.service.error;
 
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
 
 import junit.framework.Assert;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * The Class LazyLoadingCodeToReturnInterceptor.
@@ -54,27 +59,46 @@ public class ErrorCallbackInterceptor implements MethodInterceptor, Serializable
     /* (non-Javadoc)
      * @see org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)
      */
-    public Object invoke(MethodInvocation methodInvocation) throws Throwable {
+    public Object invoke(final MethodInvocation methodInvocation) throws Throwable {
     	Assert.assertFalse("Cannot use Validating Listerner on methods that return anything other than NULL",
     			methodInvocation.getMethod().getReturnType().getClass().equals(Void.class));
-    		
+
     	DatabaseErrorIdentifier errorId = 
     		AnnotationUtils.findAnnotation(methodInvocation.getMethod(), DatabaseErrorIdentifier.class);
+
+    	/* TODO: Hook up Transaction semantics to the Transactional Annotation (if any)
+    	ErrorHandlingService serviceAnnotation = 
+    		AnnotationUtils.findAnnotation(methodInvocation.getThis().getClass(), ErrorHandlingService.class);
+
+    	Transactional transactionalAnnotation = 
+    		AnnotationUtils.findAnnotation(methodInvocation.getMethod(), Transactional.class);
+    	*/
     	
-    	String errorCode;
+    	final String errorCode;
     	if(errorId == null) {
     		errorCode = UNKNOWN_ERROR_CODE;
     	} else {
     		errorCode = errorId.errorCode();
     	}
 
-        try {
-           return methodInvocation.proceed();
-        } catch (Exception e) {
-        	errorCallbackListener.onDatabaseError(new DefaultDatabaseError(errorCode, methodInvocation.getArguments(), e)); 
-        
-        	//TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        return null;
+    	PlatformTransactionManager txManager =
+    		LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().getTransactionManager();
+    	TransactionTemplate template = new TransactionTemplate(txManager);
+
+    	return template.execute(new TransactionCallback() {
+
+    		@Override
+    		public Object doInTransaction(TransactionStatus status) {
+
+    			try {
+    				return methodInvocation.proceed();
+    			} catch (Throwable e) {
+
+    				errorCallbackListener.onDatabaseError(new DefaultDatabaseError(errorCode, methodInvocation.getArguments(), new Exception(e))); 
+    				status.setRollbackOnly();
+    				return null;
+    			} 
+    		}	
+    	});
     }
 }

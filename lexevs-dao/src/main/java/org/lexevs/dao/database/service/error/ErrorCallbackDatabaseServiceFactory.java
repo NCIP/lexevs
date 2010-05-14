@@ -47,6 +47,7 @@ public class ErrorCallbackDatabaseServiceFactory {
 		}
 		
 		ProxyFactory pf = new ProxyFactory(databaseService);
+
 		pf.setProxyTargetClass(true);
 		ErrorCallbackInterceptor interceptor = new ErrorCallbackInterceptor(callback);
 

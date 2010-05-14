@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
 public @interface ErrorHandlingService {
 
 	boolean matchAllMethods() default false;
-	
+
 	Class<?>[] matchAnnotatedMethods() default {};
 }
