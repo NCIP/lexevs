@@ -102,7 +102,7 @@ public class UnMarshallingLogic {
      * @return
      */
     public static boolean isSytemRelease(Object parent, Object child) {
-        return (child instanceof EntityDescription );
+        return (parent instanceof SystemRelease && child instanceof EntityDescription );
     }
 
     /**
@@ -113,7 +113,10 @@ public class UnMarshallingLogic {
     public static boolean isValueSet(Object parent, Object child) {
         return child instanceof ValueSetDefinition && parent instanceof ValueSetDefinitions;
     }
-
+    
+    public static boolean isValueSetDefinition(Object parent, Object child) {
+        return child instanceof ValueSetDefinition && parent == null;
+    }
     /**
      * @param parent
      * @param child

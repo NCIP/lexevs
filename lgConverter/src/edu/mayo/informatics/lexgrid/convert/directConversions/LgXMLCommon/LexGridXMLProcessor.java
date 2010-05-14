@@ -32,6 +32,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.LexGrid.LexBIG.Exceptions.LBUnsupportedOperationException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 import org.exolab.castor.xml.MarshalException;
@@ -48,12 +49,16 @@ public class LexGridXMLProcessor {
     private static final String CODING_SCHEME_ENTRY_POINT = "codingScheme";
     private static final String REVISION_ENTRY_POINT = "revision";
     private static final String SYSTEM_RELEASE_ENTRY_POINT = "systemRelease";
-
+    private static final String VALUE_SET_ENTRY_POINT = "valueSetDefinition";
+    
+    private static final String PICK_LIST_ENTRY_POINT = "pickListDefinition";
+    
     private static final int ENTRY_POINT_NOT_FOUND = 0;
     private static final int CS_ENTRY_POINT_TYPE = 1;
     private static final int REV_ENTRY_POINT_TYPE = 2;
     private static final int SR_ENTRY_POINT_TYPE = 3;
-    
+    private static final int VS_ENTRY_POINT_TYPE = 4;
+    private static final int PL_ENTRY_POINT_TYPE = 5;
     public static final String NO_SCHEME_URL = "http://no.scheme.found";
     public static final String NO_SCHEME_VERSION = "0.0";
 
@@ -205,7 +210,57 @@ public class LexGridXMLProcessor {
         return cs;
 
     }
+    
+    public org.LexGrid.codingSchemes.CodingScheme[] loadValueSetDefinition(String path, LgMessageDirectorIF messages,
+            boolean validateXML){
+        BufferedReader in = null;
+        Unmarshaller umr = null;
+        CodingScheme[] cs = null;
 
+        try {
+
+            in = new BufferedReader(new FileReader(path));
+            umr = new Unmarshaller();
+            LgValueSetListener listener = new LgValueSetListener(messages);
+            // default is true -- no need to set the validation flag if the user
+            // wants to validate.
+            if (!validateXML) {
+                umr.setValidation(validateXML);
+            }
+            //listener.setPropertiesPresent(setPropertiesFlag(path, messages));
+            umr.setUnmarshalListener(listener);
+            umr.setClass(ValueSetDefinition.class);
+            umr.unmarshal(in);
+            if(isCodingSchemePresent(path, messages)){
+            cs = listener.getCodingSchemes();
+            }
+            else{
+                CodingScheme scheme = new CodingScheme();
+                scheme.setCodingSchemeURI(NO_SCHEME_URL);
+                scheme.setRepresentsVersion(NO_SCHEME_VERSION);
+                cs = new CodingScheme[]{scheme};
+            }
+            in.close();
+
+        } catch (MarshalException e) {
+            messages.error("the Value Set Listener detected a reading or writing problem");
+            e.printStackTrace();
+        } catch (ValidationException e) {
+            messages.error("Unmarshaller detected invalid xml at: " + path);
+            e.printStackTrace();
+        } catch (IOException e) {
+            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+            e.printStackTrace();
+            }
+        return cs;
+
+    }
+    public org.LexGrid.codingSchemes.CodingScheme[] loadPickListDefinition(String path, LgMessageDirectorIF messages,
+            boolean validateXML){
+        return null;
+    }
+    
+    
     /**
      * @param path
      * @return int representation of the Entry Point Type
@@ -230,6 +285,12 @@ public class LexGridXMLProcessor {
                     } else if (xmlStreamReader.getLocalName().equals(SYSTEM_RELEASE_ENTRY_POINT)) {
                         messages.info("Top level XML element and entry point: " + SYSTEM_RELEASE_ENTRY_POINT);
                         return SR_ENTRY_POINT_TYPE;
+                    } else if (xmlStreamReader.getLocalName().equals(VALUE_SET_ENTRY_POINT)) {
+                        messages.info("Top level XML element and entry point: " + VALUE_SET_ENTRY_POINT);
+                        return VS_ENTRY_POINT_TYPE;
+                    } else if (xmlStreamReader.getLocalName().equals(PICK_LIST_ENTRY_POINT)) {
+                        messages.info("Top level XML element and entry point: " + PICK_LIST_ENTRY_POINT);
+                        return PL_ENTRY_POINT_TYPE;
                     }
                 }
             }
@@ -251,14 +312,7 @@ public class LexGridXMLProcessor {
 
         return ENTRY_POINT_NOT_FOUND;
     }
-    public org.LexGrid.codingSchemes.CodingScheme[] loadValueSetDefinition(String path, LgMessageDirectorIF messages,
-            boolean validateXML){
-      return null;
-    }
-    public org.LexGrid.codingSchemes.CodingScheme[] loadPickListDefinition(String path, LgMessageDirectorIF messages,
-            boolean validateXML){
-        return null;
-    }
+
     /**
      * @param path
      * @return boolean indicating if a coding scheme contains a property
@@ -277,7 +331,7 @@ public class LexGridXMLProcessor {
                     .next()) {
 
                 if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("properties")) {
-                    messages.info("This coding scheme contians properties metadata ... adjusting XML streaming to database");
+                    messages.info("This coding scheme contains coding scheme property metadata ... adjusting XML streaming to database");
                     propsPresent = true;
                     break;
                 }

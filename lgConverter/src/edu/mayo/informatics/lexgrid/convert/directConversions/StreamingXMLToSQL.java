@@ -53,6 +53,8 @@ public class StreamingXMLToSQL {
             case 1:  codingScheme = processor.loadCodingScheme(fileLocation.getPath(), messages_, isXMLValid); break;
             case 2:  codingScheme = processor.loadRevision(fileLocation.getPath(), messages_, isXMLValid); break;
             case 3:  codingScheme = processor.loadSystemRelease(fileLocation.getPath(), messages_, isXMLValid); break;
+            case 4:  codingScheme = processor.loadValueSetDefinition(fileLocation.getPath(), messages_, isXMLValid); break;
+            case 5:  codingScheme = processor.loadPickListDefinition(fileLocation.getPath(), messages_, isXMLValid); break;
             default: messageDirector.info("No Valid LexGrid XML entry point found at " + fileLocation.getPath()); break;
         }
         

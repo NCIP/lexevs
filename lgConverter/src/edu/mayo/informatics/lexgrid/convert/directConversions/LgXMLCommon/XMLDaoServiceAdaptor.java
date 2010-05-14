@@ -32,6 +32,7 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.Relations;
+import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.Revision;
@@ -190,7 +191,10 @@ public class XMLDaoServiceAdaptor {
     public void storeValueSet(ValueSetDefinition valueSet, String systemReleaseURI, Mappings mappings) throws LBException {
         valueSetService.insertValueSetDefinition(valueSet, systemReleaseURI, mappings);
     }
-    
+    public void storeValueSetDefinition(ValueSetDefinition valueSet) throws LBException {
+        //valueSetService.insertDefinitionEntry(valueSet, valueSet.getDefinitionEntry(0));
+        valueSetService.insertValueSetDefinition(valueSet,null, null);
+    }
     public void storePickList(PickListDefinition picklist, String systemReleaseURI, Mappings mappings) throws LBParameterException, LBException {
         pickListService.insertPickListDefinition(picklist, systemReleaseURI, mappings);
     }
