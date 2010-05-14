@@ -19,12 +19,14 @@
 package org.lexevs.dao.database.service.error;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 
 import junit.framework.Assert;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 /**
  * The Class LazyLoadingCodeToReturnInterceptor.
@@ -38,6 +40,8 @@ public class ErrorCallbackInterceptor implements MethodInterceptor, Serializable
 
     /** The callback. */
     private ErrorCallbackListener errorCallbackListener;
+    
+    private static String UNKNOWN_ERROR_CODE = DatabaseError.UNKNOWN_ERROR_CODE;
     
     /**
      * Instantiates a new dao validating interceptor.
@@ -53,18 +57,24 @@ public class ErrorCallbackInterceptor implements MethodInterceptor, Serializable
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
     	Assert.assertFalse("Cannot use Validating Listerner on methods that return anything other than NULL",
     			methodInvocation.getMethod().getReturnType().getClass().equals(Void.class));
-    	
+    		
     	DatabaseErrorIdentifier errorId = 
     		AnnotationUtils.findAnnotation(methodInvocation.getMethod(), DatabaseErrorIdentifier.class);
     	
-    	String errorCode = errorId.errorCode();
-    	
-        Object returnObj = null;
+    	String errorCode;
+    	if(errorId == null) {
+    		errorCode = UNKNOWN_ERROR_CODE;
+    	} else {
+    		errorCode = errorId.errorCode();
+    	}
+
         try {
-            methodInvocation.proceed();
+           return methodInvocation.proceed();
         } catch (Exception e) {
         	errorCallbackListener.onDatabaseError(new DefaultDatabaseError(errorCode, methodInvocation.getArguments(), e)); 
+        
+        	TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
-        return returnObj;
+        return null;
     }
 }

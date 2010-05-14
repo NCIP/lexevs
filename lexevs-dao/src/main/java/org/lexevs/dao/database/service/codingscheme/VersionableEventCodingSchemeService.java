@@ -43,6 +43,7 @@ import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClass
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
+import org.lexevs.dao.database.service.error.ErrorHandlingService;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.dao.database.service.property.PropertyService;
 import org.lexevs.dao.database.service.relation.RelationService;
@@ -57,6 +58,7 @@ import org.springframework.util.Assert;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@ErrorHandlingService
 public class VersionableEventCodingSchemeService extends AbstractDatabaseService implements CodingSchemeService {
 	
 	private PropertyService propertyService = null;
