@@ -27,7 +27,7 @@ public class DefaultRootBuilderTest extends LexEvsDbUnitTestBase {
 	private LexEvsResourceManagingService lexEvsResourceManagingService;
 	
 	@Test
-	public void testBuildRootFromOneElement() throws Exception {
+	public void testBuildRootFromOneElementRoot() throws Exception {
 	JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
@@ -62,6 +62,46 @@ public class DefaultRootBuilderTest extends LexEvsDbUnitTestBase {
 	
 		int count = template.queryForInt("Select count(*) from entityassnstoentity" +
 				" where sourceEntitycode = '@' and targetEntityCode = 's-code'");
+		
+		assertEquals(1,count);
+	}
+	
+	@Test
+	public void testBuildRootFromOneTailRoot() throws Exception {
+	JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+				"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		
+		lexEvsResourceManagingService.refresh();
+		
+		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnNamespace, assnEntityCode) " +
+				"values ('cssa-guid', 'cs-guid', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+				"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+				"('ap-guid', 'rel-guid', 'test-assoc')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid1'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+				" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		rootBuilder.addRootRelationNode("csuri", "csversion", DaoUtility.createNonTypedList("test-assoc"), "c-name", RootOrTail.TAIL);
+	
+		int count = template.queryForInt("Select count(*) from entityassnstoentity" +
+				" where sourceEntitycode = 't-code1' and targetEntityCode = '@@'");
 		
 		assertEquals(1,count);
 	}
