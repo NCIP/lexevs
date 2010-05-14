@@ -307,6 +307,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 	 * @throws Exception the exception
 	 */
 	@Test
+	@Transactional
 	public void testErrorCallbackCodingSchemeService() throws Exception{
 		CodingScheme scheme = new CodingScheme();
 		scheme.setApproxNumConcepts(111l);
@@ -346,6 +347,39 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		assertEquals(1, errors.size());	
 		
 		assertEquals(DatabaseError.UNKNOWN_ERROR_CODE, errors.get(0).getErrorCode());
+	}
+	
+	@Test
+	@Transactional
+	public void testErrorCallbackCodingSchemeServiceWithRollback() throws Exception {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		CodingScheme goodScheme = new CodingScheme();
+		goodScheme.setApproxNumConcepts(111l);
+		goodScheme.setCodingSchemeName("testName");
+		goodScheme.setCodingSchemeURI("uri");
+		goodScheme.setRepresentsVersion("12");
+		
+		CodingScheme badScheme = new CodingScheme();
+		badScheme.setApproxNumConcepts(111l);
+		badScheme.setCodingSchemeName("testName");
+		badScheme.setCodingSchemeURI("uri");
+		
+		CachingCallback callback = new CachingCallback();
+		
+		CodingSchemeService service = databaseServiceManager.wrapServiceForErrorHandling(
+				databaseServiceManager.getCodingSchemeService(), callback);
+		
+		service.insertCodingScheme(goodScheme, null);
+		service.insertCodingScheme(badScheme, null);
+		
+		List<DatabaseError> errors = callback.errors;
+		
+		assertEquals(1, errors.size());	
+		
+		assertEquals(CodingSchemeService.INSERT_CODINGSCHEME_ERROR, errors.get(0).getErrorCode());
+		
+		assertEquals(1, template.queryForInt("Select count(*) from codingscheme"));
 	}
 	
 	private class CachingCallback implements ErrorCallbackListener {
