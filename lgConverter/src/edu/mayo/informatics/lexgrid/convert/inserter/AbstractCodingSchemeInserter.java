@@ -45,8 +45,15 @@ public abstract class AbstractCodingSchemeInserter implements CodingSchemeInsert
     /* (non-Javadoc)
      * @see edu.mayo.informatics.lexgrid.convert.inserter.CodingSchemeInserter#insertCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
      */
-    public abstract List<ResolvedLoadValidationError> insertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException;
+    public List<ResolvedLoadValidationError> insertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
+        
+        List<ResolvedLoadValidationError> errors = doInsertCodingScheme(codingScheme);
+        systemResourceService.refresh();
+        
+        return errors;
+    }
 
+    protected abstract List<ResolvedLoadValidationError> doInsertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException;
     /**
      * Gets the database service manager.
      * 

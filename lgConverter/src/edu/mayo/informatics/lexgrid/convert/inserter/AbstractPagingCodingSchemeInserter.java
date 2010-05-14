@@ -39,7 +39,7 @@ public abstract class AbstractPagingCodingSchemeInserter extends AbstractCodingS
     /* (non-Javadoc)
      * @see edu.mayo.informatics.lexgrid.convert.inserter.AbstractCodingSchemeInserter#insertCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
      */
-    public List<ResolvedLoadValidationError> insertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
+    protected List<ResolvedLoadValidationError> doInsertCodingScheme(CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
  
         List<LoadValidationError> errors = new ArrayList<LoadValidationError>();
         
