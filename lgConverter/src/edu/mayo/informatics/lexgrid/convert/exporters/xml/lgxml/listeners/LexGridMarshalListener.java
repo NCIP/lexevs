@@ -48,28 +48,41 @@ public class LexGridMarshalListener implements MarshalListener {
 	
 	public static Vector<String> processed = new Vector<String>();
 	
-	private final int BLOCK_SIZE = 10;
+	private final int MAX_BLOCK_SIZE = 10; 
+	private int blockSize = 10;
 	private int start = 0;
-	private int end = BLOCK_SIZE;
+	private int end = blockSize;
 	private int max = 30;  // limit our output to the file just to keep it small
 	private int entityIndex = start;
 	
 	
 	
-	public LexGridMarshalListener(Marshaller marshaller, CodedNodeSet cns) {
+	public LexGridMarshalListener(Marshaller marshaller, CodedNodeSet cns, int pageSize) {
+	    this.setBlockSize(pageSize);
 		this.marshaller = marshaller;
 		this.cns = cns;
 	}
-
-	public LexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng) {
+	
+	public LexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng, int pageSize) {
+	    this.setBlockSize(pageSize);
 		this.marshaller = marshaller;
 		this.cng = cng;
 	}
 	
-	public LexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng, CodedNodeSet cns) {
+	public LexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng, CodedNodeSet cns, int pageSize) {
+	    this.setBlockSize(pageSize);
 		this.marshaller = marshaller;
 		this.cng = cng;
 		this.cns = cns;
+	}
+	
+	private void setBlockSize(int size) {
+	    if(size > MAX_BLOCK_SIZE || size < 1 ) {
+	        blockSize = MAX_BLOCK_SIZE;
+	    } else {
+	        blockSize = size;
+	    }
+        System.out.println("============ setting page size to: " + blockSize);	    
 	}
 	
 
@@ -89,6 +102,8 @@ public class LexGridMarshalListener implements MarshalListener {
 		}
 		
 		if((Entity.class.equals(arg0.getClass()) == true)) {
+		    Entity temp = (Entity)arg0;
+		    System.out.println("PRE: **************** marshalling entityCode=" + temp.getEntityCode());
 			if(entityIndex >= max) {
 				return false;
 			}
@@ -100,24 +115,25 @@ public class LexGridMarshalListener implements MarshalListener {
 			if(cns != null) {
 				try {
 					rcri_iterator = cns.resolve(null, null, null, null, true);
-					int numberRemaining = rcri_iterator.numberRemaining();  // total number of concepts
-					System.out.println("number remaining=" + numberRemaining);
 					
 					// will a  LBabcException break us out?
 					boolean done = false;
 					while(!done) {
-						refList = rcri_iterator.get(start, end);
+						refList = rcri_iterator.next(blockSize);
+//						refList = rcri_iterator.get(start, end);
 						blockIterator = (Iterator<ResolvedConceptReference>) refList.iterateResolvedConceptReference();
 						while(blockIterator.hasNext()) {
 							curConRef = (ResolvedConceptReference)blockIterator.next();					
 							curEntity = curConRef.getEntity();
+							System.out.println("**************** entityCode=" + curEntity.getEntityCode());
 						    this.marshaller.marshal(curEntity);
 						    ++entityIndex;
 						}			
 						start = entityIndex;
-						end = start + BLOCK_SIZE;
+						end = start + blockSize;
 						System.out.println("new block: start=" + start + " end=" + end);
-						if(start >= numberRemaining) {
+						// if(start >= numberRemaining) {
+						if(rcri_iterator.hasNext() == false) {
 							done = true;
 						}
 					}
@@ -269,6 +285,7 @@ public class LexGridMarshalListener implements MarshalListener {
 					else
 					{
 						associationSource = new AssociationSource();
+						associationSource.setSourceEntityCodeNamespace(sourceRef.getCodeNamespace());
 						associationSource.setSourceEntityCode(sourceRef.getConceptCode());
 					
 						Iterator<?> targetsIterator = targets.iterateAssociation();
@@ -285,6 +302,7 @@ public class LexGridMarshalListener implements MarshalListener {
 									continue;
 								
 								AssociationTarget associationTarget = new AssociationTarget();
+								associationTarget.setTargetEntityCodeNamespace(target.getCodeNamespace());
 								associationTarget.setTargetEntityCode(target.getConceptCode());
 								System.out.println("\t\t" + target.getConceptCode() + " with " + targetAssociation.getAssociationName());
 								if(targetAssociation.getAssociationName().equals(curAssociationName)) 

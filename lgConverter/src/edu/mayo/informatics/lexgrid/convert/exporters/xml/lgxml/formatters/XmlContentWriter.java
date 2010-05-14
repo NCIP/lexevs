@@ -63,9 +63,9 @@ public class XmlContentWriter {
 	}
 	
 	
-	public void marshalToXml(Object obj, CodedNodeSet cns, Writer writer) {
+	public void marshalToXml(Object obj, CodedNodeSet cns, Writer writer, int pageSize) {
 		 Marshaller marshaller = ns_marshaller;
-		 LexGridMarshalListener listener = new LexGridMarshalListener(marshaller, cns);
+		 LexGridMarshalListener listener = new LexGridMarshalListener(marshaller, cns, pageSize);
 		try {
 			marshaller.setMarshalListener(listener);
 			marshaller.setWriter(writer);
@@ -75,9 +75,9 @@ public class XmlContentWriter {
 		} 
 	}
 
-	public void marshalToXml(Object obj, CodedNodeGraph cng, Writer writer) {
+	public void marshalToXml(Object obj, CodedNodeGraph cng, Writer writer, int pageSize) {
 		 Marshaller marshaller = ns_marshaller;
-		 LexGridMarshalListener listener = new LexGridMarshalListener(marshaller, cng);
+		 LexGridMarshalListener listener = new LexGridMarshalListener(marshaller, cng, pageSize);
 		try {
 			marshaller.setMarshalListener(listener);
 			marshaller.setWriter(writer);
@@ -87,9 +87,9 @@ public class XmlContentWriter {
 		} 
 	}
 	
-	public void marshalToXml(Object obj, CodedNodeGraph cng, CodedNodeSet cns, Writer writer) {
+	public void marshalToXml(Object obj, CodedNodeGraph cng, CodedNodeSet cns, Writer writer, int pageSize) {
 		 Marshaller marshaller = ns_marshaller;
-		 LexGridMarshalListener listener = new LexGridMarshalListener(marshaller, cng, cns);
+		 LexGridMarshalListener listener = new LexGridMarshalListener(marshaller, cng, cns, pageSize);
 		try {
 			marshaller.setMarshalListener(listener);
 			marshaller.setWriter(writer);
