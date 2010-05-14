@@ -21,8 +21,9 @@ package org.lexevs.dao.database.ibatis.codingscheme;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Iterator;
 import java.util.List;
-
+import java.util.Map;
 import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
@@ -32,6 +33,7 @@ import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.EntryState;
@@ -55,11 +57,40 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	@Resource
 	private IbatisCodingSchemeDao ibatisCodingSchemeDao;
 
-	/**
-	 * Test insert coding scheme.
-	 * 
-	 * @throws SQLException the SQL exception
-	 */
+	@Test
+	@Transactional
+	public void testInsertSupportedHierarchy() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		SupportedHierarchy hier = new SupportedHierarchy();
+		hier.setLocalId("test");
+		hier.setAssociationNames(new String[] {"test", "test2", "test3"});
+	
+		ibatisCodingSchemeDao.insertURIMap("csguid", hier);
+		
+		Map map = template.queryForMap("Select * from cssupportedattrib");
+
+		Iterator itr = map.keySet().iterator();
+		
+		while(itr.hasNext()) {
+			System.out.println(map.get(itr.next()));
+		}
+		
+		template.queryForObject("Select * from cssupportedattrib", new RowMapper(){
+
+			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
+				
+				assertEquals("test,test2,test3", rs.getString(7));
+
+				return true;
+			}
+		});
+		
+	}
+	
 	@Test
 	@Transactional
 	public void testInsertCodingScheme() throws SQLException{
@@ -402,6 +433,8 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertNotNull(returnedCs);
 		assertNotNull(returnedCs.getMappings());	
 	}
+	
+
 	
 	/**
 	 * Test distinct namespaces.
