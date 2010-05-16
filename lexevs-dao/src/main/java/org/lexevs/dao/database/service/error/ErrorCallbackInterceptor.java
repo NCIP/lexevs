@@ -69,8 +69,8 @@ public class ErrorCallbackInterceptor extends TransactionInterceptor {
 
     	try {
     		return super.invoke(methodInvocation);
-    	} catch (Throwable e) {
-    		errorCallbackListener.onDatabaseError(new DefaultDatabaseError(errorCode, methodInvocation.getArguments(), new Exception(e))); 
+    	} catch (Exception e) {
+    		errorCallbackListener.onDatabaseError(new DefaultDatabaseError(errorCode, methodInvocation.getArguments(), e)); 
     		return null;
     	} 
     }	
