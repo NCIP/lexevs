@@ -18,27 +18,18 @@
  */
 package org.lexevs.dao.database.service.error;
 
-import java.io.Serializable;
-
-import junit.framework.Assert;
-
-import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 /**
  * The Class LazyLoadingCodeToReturnInterceptor.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class ErrorCallbackInterceptor implements MethodInterceptor, Serializable {
+public class ErrorCallbackInterceptor extends TransactionInterceptor {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -8816574427519953487L;
@@ -55,25 +46,20 @@ public class ErrorCallbackInterceptor implements MethodInterceptor, Serializable
      */
     public ErrorCallbackInterceptor(ErrorCallbackListener errorCallbackListener){
         this.errorCallbackListener = errorCallbackListener;
+        this.setTransactionManager(
+        		LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().getTransactionManager());
+       
+        this.setTransactionAttributeSource( new AnnotationTransactionAttributeSource());
+        this.afterPropertiesSet();
     }
     /* (non-Javadoc)
      * @see org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)
      */
     public Object invoke(final MethodInvocation methodInvocation) throws Throwable {
-    	Assert.assertFalse("Cannot use Validating Listerner on methods that return anything other than NULL",
-    			methodInvocation.getMethod().getReturnType().getClass().equals(Void.class));
-
+   
     	DatabaseErrorIdentifier errorId = 
     		AnnotationUtils.findAnnotation(methodInvocation.getMethod(), DatabaseErrorIdentifier.class);
 
-    	/* TODO: Hook up Transaction semantics to the Transactional Annotation (if any)
-    	ErrorHandlingService serviceAnnotation = 
-    		AnnotationUtils.findAnnotation(methodInvocation.getThis().getClass(), ErrorHandlingService.class);
-
-    	Transactional transactionalAnnotation = 
-    		AnnotationUtils.findAnnotation(methodInvocation.getMethod(), Transactional.class);
-    	*/
-    	
     	final String errorCode;
     	if(errorId == null) {
     		errorCode = UNKNOWN_ERROR_CODE;
@@ -81,24 +67,11 @@ public class ErrorCallbackInterceptor implements MethodInterceptor, Serializable
     		errorCode = errorId.errorCode();
     	}
 
-    	PlatformTransactionManager txManager =
-    		LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().getTransactionManager();
-    	TransactionTemplate template = new TransactionTemplate(txManager);
-
-    	return template.execute(new TransactionCallback() {
-
-    		@Override
-    		public Object doInTransaction(TransactionStatus status) {
-
-    			try {
-    				return methodInvocation.proceed();
-    			} catch (Throwable e) {
-
-    				errorCallbackListener.onDatabaseError(new DefaultDatabaseError(errorCode, methodInvocation.getArguments(), new Exception(e))); 
-    				status.setRollbackOnly();
-    				return null;
-    			} 
-    		}	
-    	});
-    }
+    	try {
+    		return super.invoke(methodInvocation);
+    	} catch (Throwable e) {
+    		errorCallbackListener.onDatabaseError(new DefaultDatabaseError(errorCode, methodInvocation.getArguments(), new Exception(e))); 
+    		return null;
+    	} 
+    }	
 }
