@@ -348,7 +348,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		
 		assertEquals(DatabaseError.UNKNOWN_ERROR_CODE, errors.get(0).getErrorCode());
 	}
-	
+
 	@Test
 	@Transactional
 	public void testErrorCallbackCodingSchemeServiceWithRollback() throws Exception {
