@@ -29,7 +29,6 @@ import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
-import org.apache.commons.lang.ClassUtils;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
@@ -39,11 +38,10 @@ import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
 import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
-import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
+import org.lexevs.dao.database.service.error.ErrorHandlingService;
 import org.lexevs.dao.database.service.event.entity.EntityInsertEvent;
+import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.database.service.property.PropertyService;
-import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
-import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.batch.classify.Classifier;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -53,6 +51,7 @@ import org.springframework.util.Assert;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@ErrorHandlingService
 public class VersionableEventEntityService extends AbstractDatabaseService implements EntityService {
 
 	private PropertyService propertyService = null;
