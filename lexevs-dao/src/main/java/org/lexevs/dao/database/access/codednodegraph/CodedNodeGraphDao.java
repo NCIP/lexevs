@@ -46,6 +46,7 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveObjectCodes,
+			List<String> mustHaveObjectNamespace,
 			int start, 
 			int pageSize);
 	
@@ -56,7 +57,8 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			String subjectEntityCodeNamespace,
 			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
-			List<CodeNamespacePair> mustHaveObjectCodes);
+			List<CodeNamespacePair> mustHaveObjectCodes,
+			List<String> mustHaveObjectNamespace);
 	
 	public List<String> getTripleUidsContainingObject(
 			String codingSchemeUid,
@@ -66,6 +68,7 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveSubjectCodes,
+			List<String> mustHaveSubjectNamespace,
 			int start, 
 			int pageSize);
 	
@@ -76,7 +79,8 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			String objectEntityCodeNamespace,
 			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
-			List<CodeNamespacePair> mustHaveSubjectCodes);
+			List<CodeNamespacePair> mustHaveSubjectCodes,
+			List<String> mustHaveSubjectNamespace);
 	
 	public List<AssociatedConcept> getAssociatedConceptsFromUid(
 			String codingSchemeUid, List<String> tripleUids, TripleNode tripleNode);

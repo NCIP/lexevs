@@ -46,7 +46,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String objectEntityCodeNamespace,
 			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
-			List<CodeNamespacePair> mustHaveSubjectCodes) {
+			List<CodeNamespacePair> mustHaveSubjectCodes,
+			List<String> mustHaveSubjectNamespace) {
 		return this.doGetTripleUidsCount(
 				codingSchemeUid, 
 				objectEntityCode, 
@@ -54,6 +55,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 				associationNames,
 				associationQualifiers,
 				mustHaveSubjectCodes,
+				mustHaveSubjectNamespace,
 				TripleNode.OBJECT);
 	}
 
@@ -65,7 +67,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String subjectEntityCodeNamespace,
 			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
-			List<CodeNamespacePair> mustHaveObjectCodes){
+			List<CodeNamespacePair> mustHaveObjectCodes,
+			List<String> mustHaveObjectNamespace){
 		return this.doGetTripleUidsCount(
 				codingSchemeUid,  
 				subjectEntityCode, 
@@ -73,6 +76,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 				associationNames,
 				associationQualifiers,
 				mustHaveObjectCodes,
+				mustHaveObjectNamespace,
 				TripleNode.SUBJECT);
 	}
 
@@ -84,6 +88,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveCodes,
+			List<String> mustHaveNamespace,
 			TripleNode tripleNode) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
@@ -110,6 +115,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveObjectCodes,
+			List<String> mustHaveObjectNamespace,
 			int start, 
 			int pageSize){
 		return this.doGetTripleUids(
@@ -133,6 +139,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveSubjectCodes,
+			List<String> mustHaveSubjectNamespace,
 			int start, 
 			int pageSize){
 		return this.doGetTripleUids(
