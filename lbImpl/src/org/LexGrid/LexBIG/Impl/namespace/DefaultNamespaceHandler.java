@@ -1,0 +1,99 @@
+package org.LexGrid.LexBIG.Impl.namespace;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.naming.SupportedNamespace;
+import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.service.Registry.KnownTags;
+import org.lexevs.registry.service.Registry.ResourceType;
+import org.springframework.util.CollectionUtils;
+
+public class DefaultNamespaceHandler implements NamespaceHandler {
+
+    @Override
+    public AbsoluteCodingSchemeVersionReference
+    getCodingSchemeForNamespace(String codingSchemeUri, String version,
+            String namespace) throws LBParameterException {
+        
+        CodingScheme cs = getCodingScheme(codingSchemeUri, version);
+        
+        SupportedNamespace sns = getSupportedNamespace(cs, namespace);
+        
+        if(sns == null || StringUtils.isBlank(sns.getEquivalentCodingScheme())){
+            return null;
+        }
+        
+        String uri = LexEvsServiceLocator.getInstance().
+            getSystemResourceService().getUriForUserCodingSchemeName(sns.getEquivalentCodingScheme());
+        
+        Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
+        
+        List<RegistryEntry> entries = registry.getAllRegistryEntriesOfTypeAndURI(ResourceType.CODING_SCHEME, uri);
+        
+        if(CollectionUtils.isEmpty(entries)) {
+            return null;
+        }
+        
+        RegistryEntry entry = getProductionEntry(entries);
+        
+        return 
+            Constructors.createAbsoluteCodingSchemeVersionReference(
+                    entry.getResourceUri(),
+                    entry.getResourceVersion());
+        
+    }
+    
+    private RegistryEntry getProductionEntry(List<RegistryEntry> entries) {
+        for(RegistryEntry entry : entries) {
+            if(entry.getTag().equals(KnownTags.PRODUCTION.toString())) {
+                return entry;
+            }
+        }
+        return entries.get(0);
+    }
+    
+    private CodingScheme getCodingScheme(String uri, String version) {
+        CodingSchemeService service = 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
+        
+        return service.getCodingSchemeByUriAndVersion(uri, version);  
+    }
+    
+    private SupportedNamespace getSupportedNamespace(CodingScheme cs, String namespace) {
+        for(SupportedNamespace sn : cs.getMappings().getSupportedNamespace()) {
+            if(StringUtils.equals(sn.getLocalId(), namespace)) {
+                return sn;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getNamespacesForCodingScheme(
+            String codingSchemeUri, 
+            String version,
+            String codingSchemeNameOfSearchCodingScheme)
+            throws LBParameterException {
+        List<String> returnList = new ArrayList<String>();
+        CodingScheme cs = this.getCodingScheme(codingSchemeUri, version);
+       
+        for(SupportedNamespace sn : cs.getMappings().getSupportedNamespace()) {
+            if(StringUtils.equals(
+                    sn.getEquivalentCodingScheme(),
+                    codingSchemeNameOfSearchCodingScheme)){
+                returnList.add(sn.getLocalId());
+            }
+        }
+        return returnList;   
+    }
+}
+    
