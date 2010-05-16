@@ -31,6 +31,8 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandler;
+import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
@@ -55,6 +57,8 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
     /** The graph query. */
     private GraphQuery graphQuery = new GraphQuery();
 
+    private NamespaceHandler namespaceHandler = new DefaultNamespaceHandler();
+    
     /** The coding scheme uri. */
     private String codingSchemeUri;
     
@@ -128,8 +132,14 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
      */
     @Override
     public void restrictToCodeSystem(String codingScheme) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        List<String> namespaces = this.namespaceHandler.
+        getNamespacesForCodingScheme(
+                this.codingSchemeUri, 
+                this.version, 
+                codingScheme);
+        
+        this.graphQuery.getRestrictToSourceCodeSystem().addAll(namespaces);
+        this.graphQuery.getRestrictToTargetCodeSystem().addAll(namespaces);
     }
 
     /* (non-Javadoc)
@@ -203,8 +213,13 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
     @Override
     public void restrictToSourceCodeSystem(String codingScheme) throws LBInvocationException,
             LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        List<String> namespaces = this.namespaceHandler.
+        getNamespacesForCodingScheme(
+                this.codingSchemeUri, 
+                this.version, 
+                codingScheme);
+        
+        this.graphQuery.getRestrictToSourceCodeSystem().addAll(namespaces);
     }
 
     /* (non-Javadoc)
@@ -224,8 +239,13 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
     @Override
     public void restrictToTargetCodeSystem(String codingScheme) throws LBInvocationException,
             LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        List<String> namespaces = this.namespaceHandler.
+        getNamespacesForCodingScheme(
+                this.codingSchemeUri, 
+                this.version, 
+                codingScheme);
+        
+        this.graphQuery.getRestrictToTargetCodeSystem().addAll(namespaces);
     }
 
     /* (non-Javadoc)
