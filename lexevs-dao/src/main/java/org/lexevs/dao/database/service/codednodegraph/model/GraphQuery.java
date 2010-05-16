@@ -11,7 +11,6 @@ public class GraphQuery implements Cloneable {
     private List<ConceptReference> restrictToTargetCodes = new ArrayList<ConceptReference>();
     private List<String> restrictToAssociations = new ArrayList<String>();
     private List<QualifierNameValuePair> restrictToAssociationsQualifiers = new ArrayList<QualifierNameValuePair>();
-    private List<String> restrictToCodeSystem = new ArrayList<String>();
     private List<String> restrictToSourceCodeSystem = new ArrayList<String>();
     private List<String> restrictToTargetCodeSystem = new ArrayList<String>();
  
@@ -37,14 +36,6 @@ public class GraphQuery implements Cloneable {
 
     public void setRestrictToAssociations(List<String> restrictToAssociations) {
         this.restrictToAssociations = restrictToAssociations;
-    }
-
-    public List<String> getRestrictToCodeSystem() {
-        return restrictToCodeSystem;
-    }
-
-    public void setRestrictToCodeSystem(List<String> restrictToCodeSystem) {
-        this.restrictToCodeSystem = restrictToCodeSystem;
     }
 
     public List<String> getRestrictToSourceCodeSystem() {
@@ -189,10 +180,11 @@ public class GraphQuery implements Cloneable {
 
 	@Override
 	public GraphQuery clone() throws CloneNotSupportedException {
+		super.clone();
+		
 		GraphQuery query = new GraphQuery();
 		query.setRestrictToAssociations(new ArrayList<String>(this.restrictToAssociations));
 		query.setRestrictToAssociationsQualifiers(new ArrayList<QualifierNameValuePair>(this.restrictToAssociationsQualifiers));
-		query.setRestrictToCodeSystem(new ArrayList<String>(this.restrictToCodeSystem));
 		query.setRestrictToSourceCodes(new ArrayList<ConceptReference>(this.restrictToSourceCodes));
 		query.setRestrictToSourceCodeSystem(new ArrayList<String>(this.restrictToSourceCodeSystem));
 		query.setRestrictToTargetCodes(new ArrayList<ConceptReference>(this.restrictToTargetCodes));
