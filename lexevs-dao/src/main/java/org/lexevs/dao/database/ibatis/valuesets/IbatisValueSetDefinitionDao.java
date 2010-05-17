@@ -28,10 +28,19 @@ import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedAssociation;
+import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedConceptDomain;
+import org.LexGrid.naming.SupportedContext;
 import org.LexGrid.naming.SupportedHierarchy;
+import org.LexGrid.naming.SupportedNamespace;
+import org.LexGrid.naming.SupportedProperty;
+import org.LexGrid.naming.SupportedSource;
+import org.LexGrid.naming.SupportedStatus;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.valueSets.DefinitionEntry;
+import org.LexGrid.valueSets.EntityReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.LexGrid.versions.EntryState;
@@ -316,6 +325,8 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		
 		if (vsdef.getMappings() != null)
 			insertMappings(valueSetDefinitionGuid, vsdef.getMappings());
+		
+//		insertNonSuppliedMappings(valueSetDefinitionGuid, vsdef);
 		
 		return valueSetDefinitionGuid;		
 	}
@@ -685,5 +696,106 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		return (String) this.getSqlMapClientTemplate().queryForObject(
 				GET_VALUESET_DEFINITION_LATEST_REVISION_ID_BY_UID, 
 				new PrefixedParameter(prefix, valueSetDefUId));
+	}
+	
+	@SuppressWarnings("unused")
+	private void insertNonSuppliedMappings(String vsdGuid, ValueSetDefinition vsDef){
+		if (vsDef == null)
+			return;
+		
+		Mappings mappings = new Mappings();
+		
+		for (Source src : vsDef.getSourceAsReference())
+		{
+			SupportedSource suppSrc = new SupportedSource();
+			suppSrc.setLocalId(src.getContent());
+			suppSrc.setContent(src.getContent());
+			suppSrc.setUri(null);
+			mappings.addSupportedSource(suppSrc);
+		}
+		for (String ctx : vsDef.getRepresentsRealmOrContextAsReference())
+		{
+			SupportedContext suppCtx = new SupportedContext();
+			suppCtx.setLocalId(ctx);
+			suppCtx.setContent(ctx);
+			suppCtx.setUri(null);
+			mappings.addSupportedContext(suppCtx);
+		}
+		if (vsDef.getDefaultCodingScheme() != null)
+		{
+			SupportedCodingScheme suppCS = new SupportedCodingScheme();
+			suppCS.setLocalId(vsDef.getDefaultCodingScheme());
+			suppCS.setContent(vsDef.getDefaultCodingScheme());
+			suppCS.setUri(null);
+			mappings.addSupportedCodingScheme(suppCS);
+		}
+		if (vsDef.getConceptDomain() != null)
+		{
+			SupportedConceptDomain suppCD = new SupportedConceptDomain();
+			suppCD.setLocalId(vsDef.getConceptDomain());
+			suppCD.setContent(vsDef.getConceptDomain());
+			suppCD.setUri(null);
+			mappings.addSupportedConceptDomain(suppCD);
+		}
+		if (vsDef.getStatus() != null)
+		{
+			String status = vsDef.getStatus();
+			SupportedStatus suppStatus = new SupportedStatus();
+			suppStatus.setLocalId(status);
+			suppStatus.setContent(status);
+			suppStatus.setUri(null);
+			mappings.addSupportedStatus(suppStatus);
+		}
+		if (vsDef.getDefinitionEntry() != null)
+		{
+			for (DefinitionEntry de : vsDef.getDefinitionEntryAsReference())
+			{
+				if (de.getCodingSchemeReference() != null)
+				{
+					String cs = de.getCodingSchemeReference().getCodingScheme();
+					SupportedCodingScheme suppCS = new SupportedCodingScheme();
+					suppCS.setLocalId(cs);
+					suppCS.setContent(cs);
+					suppCS.setUri(null);
+					mappings.addSupportedCodingScheme(suppCS);
+				}
+				else if (de.getEntityReference() != null)
+				{
+					EntityReference er = de.getEntityReference();
+					String ns = er.getEntityCodeNamespace();
+					if (StringUtils.isNotEmpty(ns))
+					{
+						SupportedNamespace suppNS = new SupportedNamespace();
+						suppNS.setLocalId(ns);
+						suppNS.setContent(ns);
+						suppNS.setUri(null);
+						mappings.addSupportedNamespace(suppNS);
+					}
+					String assn = er.getReferenceAssociation();
+					if (StringUtils.isNotEmpty(assn))
+					{
+						SupportedAssociation suppAssn = new SupportedAssociation();
+						suppAssn.setLocalId(assn);
+						suppAssn.setContent(assn);
+						suppAssn.setUri(null);
+						mappings.addSupportedAssociation(suppAssn);
+					}
+				}
+				else if (de.getPropertyReference() != null)
+				{
+					String prop = de.getPropertyReference().getPropertyName();
+					if (prop != null)
+					{
+						SupportedProperty suppProp = new SupportedProperty();
+						suppProp.setLocalId(prop);
+						suppProp.setContent(prop);
+						suppProp.setUri(null);
+						mappings.addSupportedProperty(suppProp);
+					}
+				}
+			}
+		}
+		
+		insertMappings(vsdGuid, mappings);
 	}
 }
