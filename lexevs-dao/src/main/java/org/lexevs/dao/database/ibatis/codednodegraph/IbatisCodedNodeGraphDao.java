@@ -100,6 +100,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		bean.setAssociations(associationNames);
 		bean.setAssociationQualifiers(associationQualifiers);
 		bean.setMustHaveCodes(mustHaveCodes);
+		bean.setMustHaveNamespaces(mustHaveNamespace);
 		bean.setTripleNode(tripleNode);
 		
 		return (Map<String,Integer> ) this.getSqlMapClientTemplate().
@@ -125,6 +126,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 				entityCodeNamespace, 
 				associationQualifiers,
 				mustHaveObjectCodes,
+				mustHaveObjectNamespace,
 				TripleNode.SUBJECT,
 				start, 
 				pageSize);		
@@ -149,6 +151,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 				entityCodeNamespace,
 				associationQualifiers,
 				mustHaveSubjectCodes,
+				mustHaveSubjectNamespace,
 				TripleNode.OBJECT, 
 				start, 
 				pageSize);
@@ -163,6 +166,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String entityCodeNamespace,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveCodes,
+			List<String> mustHaveNamespaces,
 			TripleNode tripleNode,
 			int start, 
 			int pageSize){
@@ -177,6 +181,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		bean.setEntityCodeNamespace(entityCodeNamespace);
 		bean.setAssociationQualifiers(associationQualifiers);
 		bean.setMustHaveCodes(mustHaveCodes);
+		bean.setMustHaveNamespaces(mustHaveNamespaces);
 		bean.setTripleNode(tripleNode);
 		
 		if(pageSize < 0) {

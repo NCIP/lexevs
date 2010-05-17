@@ -15,6 +15,7 @@ public class GetEntityAssnUidsCountBean extends PrefixedTableParameterBean {
 	private List<QualifierNameValuePair> associationQualifiers;
 	private List<String> associations;
 	private List<CodeNamespacePair> mustHaveCodes;
+	private List<String> mustHaveNamespaces;
 	
 	private TripleNode tripleNode;
 	
@@ -60,5 +61,11 @@ public class GetEntityAssnUidsCountBean extends PrefixedTableParameterBean {
 	}
 	public List<String> getAssociations() {
 		return associations;
+	}
+	public void setMustHaveNamespaces(List<String> mustHaveNamespaces) {
+		this.mustHaveNamespaces = mustHaveNamespaces;
+	}
+	public List<String> getMustHaveNamespaces() {
+		return mustHaveNamespaces;
 	}
 }
