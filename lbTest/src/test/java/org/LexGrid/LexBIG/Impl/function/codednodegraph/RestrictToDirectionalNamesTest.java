@@ -62,7 +62,7 @@ public class RestrictToDirectionalNamesTest extends BaseCodedNodeGraphTest {
         
         Association[] assocs = ref.getSourceOf().getAssociation();
         
-        assertTrue(assocs.length == 1);
+        assertEquals(1,assocs.length);
         
         assertEquals("uses", assocs[0].getAssociationName());
         
@@ -81,24 +81,17 @@ public class RestrictToDirectionalNamesTest extends BaseCodedNodeGraphTest {
      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
      */
-    public void testOneDirectionalNameNullQualifiersNoMatch() throws LBInvocationException, LBParameterException{
-        cng.restrictToDirectionalNames(Constructors.createNameAndValueList("NOT_A_MATCH"), 
-                null);
+    public void testOneDirectionalNameNullQualifiersNoMatch() {
+        try {
+			cng.restrictToDirectionalNames(Constructors.createNameAndValueList("NOT_A_MATCH"), 
+			        null);
+		} catch (LBInvocationException e) {
+			fail();
+		} catch (LBParameterException e) {
+			return;
+		}
         
-        ResolvedConceptReference[] rcr = 
-            cng.resolveAsList(Constructors.createConceptReference("A0001", LexBIGServiceTestCase.AUTO_SCHEME), 
-                    true, 
-                    false, 
-                    -1, 
-                    -1, 
-                    null, 
-                    null, 
-                    null, 
-                    -1).getResolvedConceptReference();
-     
-        assertTrue(rcr.length == 1);
-        
-        assertTrue(rcr[0].getSourceOf() == null);
+      fail();
     }
     
     /**
