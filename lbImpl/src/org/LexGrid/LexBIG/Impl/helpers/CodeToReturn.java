@@ -22,6 +22,7 @@ import java.io.Serializable;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.system.ResourceManager;
 
 /**
@@ -81,7 +82,8 @@ public class CodeToReturn implements Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof CodeToReturn) {
             CodeToReturn a = (CodeToReturn) obj;
-            if (this.getCode().equals(a.getCode()) && this.getUri().equals(a.getUri())) {
+            if (StringUtils.equals(this.getCode(),a.getCode()) && 
+                    StringUtils.equals(this.getNamespace(), a.getNamespace())) {
                 return true;
             }
         }
