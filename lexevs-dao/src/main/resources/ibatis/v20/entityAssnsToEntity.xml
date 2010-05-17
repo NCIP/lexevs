@@ -314,6 +314,22 @@
 			</iterate>
 			)
 		</isNotEmpty>
+		<isNotEmpty property="mustHaveNamespaces" prepend="AND">
+			(
+			<iterate property="mustHaveNamespaces" conjunction="OR">
+				<isEqual property="tripleNode" compareValue="SUBJECT">
+					(
+					eate.targetEntityCodeNamespace = #mustHaveNamespaces[]#
+					)
+				</isEqual>
+				<isEqual property="tripleNode" compareValue="OBJECT">
+					(
+					eate.sourceEntityCodeNamespace = #mustHaveNamespaces[]#
+					)
+				</isEqual>
+			</iterate>
+			)
+		</isNotEmpty>
 	</sql>
 	
 	<select id="getRootEntityAssnsToEntityUids"
