@@ -314,7 +314,7 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 			if(taggedEntries.size() > 1){
 				
 				try {
-					return this.getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeName, KnownTags.PRODUCTION.toString());
+					return this.getInternalVersionStringForTag(codingSchemeName, KnownTags.PRODUCTION.toString());
 				} catch (LBParameterException e) {
 					 throw new LBParameterException("Multiple Coding Schemes were found for the values you provided: ",
 			                 SQLTableConstants.TBLCOL_CODINGSCHEMENAME + ", " + SQLTableConstants.TBLCOL_VERSION,
@@ -350,6 +350,10 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	 * @return the tagged entries
 	 */
 	protected List<RegistryEntry> getTaggedEntries(List<RegistryEntry> entries, String tag){
+		if(StringUtils.isEmpty(tag)) {
+			return entries;
+		}
+		
 		List<RegistryEntry> foundEntries = new ArrayList<RegistryEntry>();
 		for(RegistryEntry entry : entries){
 		
