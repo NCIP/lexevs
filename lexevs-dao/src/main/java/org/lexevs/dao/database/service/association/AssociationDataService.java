@@ -5,6 +5,11 @@ import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationSource;
 
 public interface AssociationDataService {
+	public static final String INSERT_ASSOCIATIONDATA_ERROR = "INSERT-ASSOCIATIONDATA-ERROR";
+	public static final String UPDATE_ASSOCIATIONDATA_ERROR = "UPDATE-ASSOCIATIONDATA-ERROR";
+	public static final String REMOVE_ASSOCIATIONDATA_ERROR = "REMOVE-ASSOCIATIONDATA-ERROR";
+	public static final String INSERT_ASSOCIATIONDATA_VERSIONABLE_CHANGES_ERROR = "INSERT-ASSOCIATIONDATA-VERSIONABLE-CHANGES-ERROR";
+	
 
 	public void insertAssociationData(String codingSchemeUri, String version,
 			String relationContainerName, String associationPredicateName,

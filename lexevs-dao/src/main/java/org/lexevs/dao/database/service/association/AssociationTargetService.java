@@ -5,6 +5,11 @@ import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 
 public interface AssociationTargetService {
+	public static final String INSERT_ASSOCIATIONTARGET_ERROR = "INSERT-ASSOCIATIONTARGET-ERROR";
+	public static final String UPDATE_ASSOCIATIONTARGET_ERROR = "UPDATE-ASSOCIATIONTARGET-ERROR";
+	public static final String REMOVE_ASSOCIATIONTARGET_ERROR = "REMOVE-ASSOCIATIONTARGET-ERROR";
+	public static final String INSERT_ASSOCIATIONTARGET_VERSIONABLE_CHANGES_ERROR = "INSERT-ASSOCIATIONTARGET-VERSIONABLE-CHANGES-ERROR";
+	
 
 	public void insertAssociationTarget(String codingSchemeUri, String version,
 			String relationContainerName, String associationPredicateName,

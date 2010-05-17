@@ -27,6 +27,8 @@ import org.LexGrid.relations.AssociationSource;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface AssociationService {
+	public final static String INSERT_ASSOCIATIONSOURCE_ERROR = "INSERT-ASSOCIATIONSOURCE-ERROR";
+	public final static String INSERT_ASSOCIATIONPREDICATE_ERROR = "INSERT-ASSOCIATIONPREDICATE-ERROR";
 
 	/**
 	 * Insert association source.

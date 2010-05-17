@@ -13,6 +13,7 @@ import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
 import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.springframework.batch.classify.Classifier;
 
 public class VersionableEventAssociationTargetService extends
@@ -21,6 +22,7 @@ public class VersionableEventAssociationTargetService extends
 	private Classifier<EntryStateType, String> entryStateTypeClassifier = new EntryStateTypeClassifier();
 
 	@Override
+	@DatabaseErrorIdentifier(errorCode=INSERT_ASSOCIATIONTARGET_ERROR)
 	public void insertAssociationTarget(String codingSchemeUri, String version,
 			String relationContainerName, String associationPredicateName,
 			AssociationSource source, AssociationTarget target) {
@@ -39,6 +41,7 @@ public class VersionableEventAssociationTargetService extends
 	}
 
 	@Override
+	@DatabaseErrorIdentifier(errorCode=UPDATE_ASSOCIATIONTARGET_ERROR)
 	public void updateAssociationTarget(String codingSchemeUri, String version,
 			AssociationSource source, AssociationTarget target) {
 
@@ -76,6 +79,7 @@ public class VersionableEventAssociationTargetService extends
 	}
 
 	@Override
+	@DatabaseErrorIdentifier(errorCode=REMOVE_ASSOCIATIONTARGET_ERROR)
 	public void removeAssociationTarget(String codingSchemeUri, String version,
 			AssociationSource source, AssociationTarget target) {
 
@@ -110,6 +114,7 @@ public class VersionableEventAssociationTargetService extends
 	}
 
 	@Override
+	@DatabaseErrorIdentifier(errorCode=INSERT_ASSOCIATIONTARGET_VERSIONABLE_CHANGES_ERROR)
 	public void insertAssociationTargetVersionableChanges(
 			String codingSchemeUri, String version, AssociationSource source,
 			AssociationTarget target) {

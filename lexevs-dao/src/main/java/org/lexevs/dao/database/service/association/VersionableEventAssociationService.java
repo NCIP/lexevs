@@ -25,6 +25,7 @@ import org.LexGrid.relations.AssociationSource;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.lexevs.dao.database.service.property.PropertyService;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +43,7 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 	 * @see org.lexevs.dao.database.service.association.AssociationService#insertAssociationSource(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.relations.AssociationSource)
 	 */
 	@Transactional
+	@DatabaseErrorIdentifier(errorCode=INSERT_ASSOCIATIONSOURCE_ERROR)
 	public void insertAssociationSource(String codingSchemeUri, 
 			String version, 
 			String relationContainerName,
@@ -68,6 +70,7 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 	 * @param predicate the predicate
 	 */
 	@Transactional
+	@DatabaseErrorIdentifier(errorCode=INSERT_ASSOCIATIONPREDICATE_ERROR)
 	public void insertAssociationPredicate(
 			String codingSchemeUri, String version, String relationsName, AssociationPredicate predicate) {
 		String codingSchemeId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri, version).

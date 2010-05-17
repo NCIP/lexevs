@@ -13,6 +13,7 @@ import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
 import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 
 public class VersionableEventAssociationDataService extends
 		AbstractDatabaseService implements AssociationDataService {
@@ -20,6 +21,7 @@ public class VersionableEventAssociationDataService extends
 	private EntryStateTypeClassifier entryStateClassifier = new EntryStateTypeClassifier();
 	
 	@Override
+	@DatabaseErrorIdentifier(errorCode=INSERT_ASSOCIATIONDATA_ERROR)
 	public void insertAssociationData(String codingSchemeUri, String version,
 			String relationContainerName, String associationPredicateName,
 			AssociationSource source, AssociationData data) {
@@ -38,6 +40,7 @@ public class VersionableEventAssociationDataService extends
 	}
 
 	@Override
+	@DatabaseErrorIdentifier(errorCode=UPDATE_ASSOCIATIONDATA_ERROR)
 	public void updateAssociationData(String codingSchemeUri, String version,
 			AssociationSource source, AssociationData data) {
 	
@@ -73,6 +76,7 @@ public class VersionableEventAssociationDataService extends
 	}
 
 	@Override
+	@DatabaseErrorIdentifier(errorCode=REMOVE_ASSOCIATIONDATA_ERROR)
 	public void removeAssociationData(String codingSchemeUri, String version,
 			AssociationSource source, AssociationData data) {
 
@@ -101,6 +105,7 @@ public class VersionableEventAssociationDataService extends
 	}
 
 	@Override
+	@DatabaseErrorIdentifier(errorCode=INSERT_ASSOCIATIONDATA_VERSIONABLE_CHANGES_ERROR)
 	public void insertAssociationDataVersionableChanges(String codingSchemeUri,
 			String version, AssociationSource source, AssociationData data) {
 
