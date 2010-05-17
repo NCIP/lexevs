@@ -36,8 +36,15 @@ import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedExcept
  */
 public interface CodingSchemeService {
 	
-	public static String INSERT_CODINGSCHEME_ERROR = "INSERT-CODING-SCHEME-ERROR";
-
+	public static final String INSERT_CODINGSCHEME_ERROR = "INSERT-CODING-SCHEME-ERROR";
+	public static final String REMOVE_CODINGSCHEME_ERROR = "REMOVE-CODING-SCHEME-ERROR";
+	public static final String INSERT_CODINGSCHEME_URI_ERROR = "INSERT-CODING-SCHEME-URI-ERROR";
+	public static final String UPDATE_CODINGSCHEME_URI_ERROR = "UPDATE-CODING-SCHEME-URI-ERROR";
+	public static final String UPDATE_CODINGSCHEME_ERROR = "UPDATE-CODING-SCHEME-ERROR";
+	public static final String UPDATE_CODINGSCHEME_ENTRYSTATE_ERROR = "UPDATE-CODING-SCHEME-ENTRYSTATE-ERROR";
+	public static final String INSERT_CODINGSCHEME_VERSIONABLE_CHANGES_ERROR = "INSERT-CODING-SCHEME-VERSIONABLE-CHANGES-ERROR";
+	public static final String INSERT_CODINGSCHEME_DEPENDENT_CHANGES_ERROR = "INSERT-CODING-SCHEME-DEPENDENT-CHANGES-ERROR";
+	
 	/**
 	 * Gets the coding scheme by uri and version.
 	 * 

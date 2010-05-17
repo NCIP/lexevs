@@ -112,6 +112,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#destroyCodingScheme(java.lang.String, java.lang.String)
 	 */
 	@Transactional
+	@DatabaseErrorIdentifier(errorCode=REMOVE_CODINGSCHEME_ERROR)
 	public void removeCodingScheme(String uri, String version) {
 		
 		CodingSchemeDao csDao = this.getDaoManager().getCodingSchemeDao(uri,
@@ -171,6 +172,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#insertURIMap(java.lang.String, java.lang.String, org.LexGrid.naming.URIMap)
 	 */
 	@Transactional
+	@DatabaseErrorIdentifier(errorCode=INSERT_CODINGSCHEME_URI_ERROR)
 	public void insertURIMap(
 			String codingSchemeUri, 
 			String codingSchemeVersion,
@@ -183,6 +185,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	}
 	
 	@Transactional
+	@DatabaseErrorIdentifier(errorCode=UPDATE_CODINGSCHEME_URI_ERROR)
 	public void updateURIMap(
 			String codingSchemeUri, 
 			String codingSchemeVersion,
@@ -201,6 +204,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	 */
 	@Transactional  
 	@Override
+	@DatabaseErrorIdentifier(errorCode=UPDATE_CODINGSCHEME_ERROR)
 	public void updateCodingScheme(
 			CodingScheme codingScheme) throws LBException {
 		
@@ -247,6 +251,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#updateCodingSchemeEntryState(org.LexGrid.codingSchemes.CodingScheme, org.LexGrid.versions.EntryState)
 	 */
 	@Transactional
+	@DatabaseErrorIdentifier(errorCode=UPDATE_CODINGSCHEME_ENTRYSTATE_ERROR)
 	public void updateCodingSchemeEntryState(CodingScheme codingScheme,
 			EntryState entryState) {
 		// TODO Auto-generated method stub
@@ -299,6 +304,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	}
 
 	@Override
+	@DatabaseErrorIdentifier(errorCode=INSERT_CODINGSCHEME_VERSIONABLE_CHANGES_ERROR)
 	public void insertVersionableChanges(CodingScheme codingScheme) throws LBException {
 		
 		String codingSchemeUri = codingScheme.getCodingSchemeURI();
@@ -333,6 +339,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	}
 	
 	@Override
+	@DatabaseErrorIdentifier(errorCode=INSERT_CODINGSCHEME_DEPENDENT_CHANGES_ERROR)
 	public void insertDependentChanges(CodingScheme codingScheme)
 			throws LBException {
 
@@ -391,6 +398,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	}
 
 	@Override
+	@DatabaseErrorIdentifier(errorCode=REMOVE_CODINGSCHEME_ERROR)
 	public void removeCodingScheme(CodingScheme codingScheme) {
 
 		String codingSchemeUri = codingScheme.getCodingSchemeURI();
