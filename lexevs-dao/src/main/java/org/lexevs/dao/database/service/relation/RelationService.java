@@ -4,7 +4,12 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.relations.Relations;
 
 public interface RelationService {
-
+	public static final String INSERT_RELATION_ERROR = "INSERT-RELATION-ERROR";
+	public static final String UPDATE_RELATION_ERROR = "UPDATE-RELATION-ERROR";
+	public static final String REMOVE_RELATION_ERROR = "REMOVE-RELATION-ERROR";
+	public static final String INSERT_RELATION_DEPENDENT_CHANGES_ERROR = "INSERT-RELATION-DEPENDENT-CHANGES-ERROR";
+	public static final String INSERT_RELATION_VERSIONABLE_CHANGES_ERROR = "INSERT-RELATION-VERSIONABLE-CHANGES-ERROR";
+	
 	/**
 	 * Insert relation.
 	 * 

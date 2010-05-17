@@ -21,6 +21,7 @@ import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClass
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.association.AssociationDataService;
 import org.lexevs.dao.database.service.association.AssociationTargetService;
+import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.lexevs.dao.database.service.property.PropertyService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,7 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 	 * @see org.lexevs.dao.database.service.association.AssociationService#insertRelation(java.lang.String, java.lang.String, org.LexGrid.relations.Relations)
 	 */
 	@Transactional
+	@DatabaseErrorIdentifier(errorCode=INSERT_RELATION_ERROR)
 	public void insertRelation(String codingSchemeUri, String version,
 			Relations relation) {
 		String codingSchemeUId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri, version).
@@ -48,6 +50,7 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 	}
 	
 	@Override
+	@DatabaseErrorIdentifier(errorCode=UPDATE_RELATION_ERROR)
 	public void updateRelation(String codingSchemeUri, String version,
 			Relations relation) throws LBException {
 
@@ -80,6 +83,7 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 	}
 	
 	@Override
+	@DatabaseErrorIdentifier(errorCode=REMOVE_RELATION_ERROR)
 	public void removeRelation(String codingSchemeUri, String version,
 			Relations relation) {
 
@@ -111,6 +115,7 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 	}
 	
 	@Override
+	@DatabaseErrorIdentifier(errorCode=INSERT_RELATION_DEPENDENT_CHANGES_ERROR)
 	public void insertRelationDependentChanges(String codingSchemeUri,
 			String version, Relations relation) throws LBException {
 
@@ -236,6 +241,7 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 	}
 
 	@Override
+	@DatabaseErrorIdentifier(errorCode=INSERT_RELATION_VERSIONABLE_CHANGES_ERROR)
 	public void insertRelationVersionableChanges(String codingSchemeUri,
 			String version, Relations relation) throws LBException {
 
