@@ -95,6 +95,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	 * @see org.lexevs.dao.database.service.entity.EntityService#updateEntity(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.concepts.Entity)
 	 */
 	@Transactional
+	@DatabaseErrorIdentifier(errorCode=UPDATE_ENTITY_ERROR)
 	public void updateEntity(
 			String codingSchemeUri, 
 			String version,
@@ -132,6 +133,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	}
 	
 	@Transactional
+	@DatabaseErrorIdentifier(errorCode=UPDATE_ENTITY_ERROR)
 	public void updateEntity(
 			String codingSchemeUri, 
 			String version,
@@ -150,6 +152,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		this.fireEntityUpdateEvent(new EntityUpdateEvent(codingSchemeUri, version, originalEntity, entity));
 	}
 
+	@DatabaseErrorIdentifier(errorCode=REMOVE_ENTITY_ERROR)
 	public void removeEntity(String codingSchemeUri, String version,
 			Entity revisedEntity) {
 
@@ -188,7 +191,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		/*3. Remove search (lucene) indexes. */
 		
 	}
-	
+	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_VERSIONABLE_CHANGES_ERROR)
 	public void insertVersionableChanges(String codingSchemeUri,
 			String version, Entity revisedEntity) throws LBException {
 		
@@ -222,7 +225,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 							revisedEntity);
 		}
 	}
-
+	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_DEPENDENT_CHANGES_ERROR)
 	public void insertDependentChanges(String codingSchemeUri, String version,
 			Entity revisedEntity) throws LBException {
 

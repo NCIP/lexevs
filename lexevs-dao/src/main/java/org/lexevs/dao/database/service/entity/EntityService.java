@@ -32,8 +32,12 @@ import org.LexGrid.relations.AssociationEntity;
  */
 public interface EntityService {
 	
-	public static String INSERT_ENTITY_ERROR = "INSERT-ENTITY-ERROR";
-	public static String INSERT_BATCH_ENTITY_ERROR = "INSERT-BATCH-ENTITY-ERROR";
+	public static final String INSERT_ENTITY_ERROR = "INSERT-ENTITY-ERROR";
+	public static final String INSERT_BATCH_ENTITY_ERROR = "INSERT-BATCH-ENTITY-ERROR";
+	public static final String UPDATE_ENTITY_ERROR = "UPDATE-ENTITY-ERROR";
+	public static final String REMOVE_ENTITY_ERROR = "REMOVE-ENTITY-ERROR";
+	public static final String INSERT_ENTITY_VERSIONABLE_CHANGES_ERROR = "INSERT-ENTITY-VERSIONABLE-CHANGES-ERROR";
+	public static final String INSERT_ENTITY_DEPENDENT_CHANGES_ERROR = "INSERT-ENTITY-DEPENDENT-CHANGES-ERROR";
 	
 	/**
 	 * Insert entity.
