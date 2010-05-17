@@ -36,6 +36,7 @@ import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
 import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.constants.classifier.property.PropertyTypeClassifier;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.springframework.batch.classify.Classifier;
 
 /**
@@ -60,6 +61,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	 * java.lang.String, java.lang.String, java.util.List)
 	 */
 	@Override
+	@DatabaseErrorIdentifier(errorCode=INSERT_BATCH_PROPERTY_ERROR)
 	public void insertBatchEntityProperties(String codingSchemeUri,
 			String version, String entityCode, String entityCodeNamespace,
 			List<Property> items) {
@@ -83,6 +85,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	 * org.LexGrid.commonTypes.Property)
 	 */
 	@Override
+	@DatabaseErrorIdentifier(errorCode=INSERT_CODINGSCHEME_PROPERTY_ERROR)
 	public void insertCodingSchemeProperty(String codingSchemeUri,
 			String version, Property property) {
 		String codingSchemeUId = this.getCodingSchemeUId(codingSchemeUri,
@@ -101,6 +104,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	 * java.lang.String, org.LexGrid.commonTypes.Property)
 	 */
 	@Override
+	@DatabaseErrorIdentifier(errorCode=INSERT_CODINGSCHEME_PROPERTY_VERSIONABLE_CHANGES_ERROR)
 	public void insertCodingSchemePropertyVersionableChanges(
 			String codingSchemeUri, String version, Property property) {
 
@@ -137,6 +141,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	 * org.LexGrid.commonTypes.Property)
 	 */
 	@Override
+	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_PROPERTY_ERROR)
 	public void insertEntityProperty(String codingSchemeUri, String version,
 			String entityCode, String entityCodeNamespace, Property property) {
 		String codingSchemeUId = this.getCodingSchemeUId(codingSchemeUri,
@@ -158,6 +163,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	 * java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property)
 	 */
 	@Override
+	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_PROPERTY_VERSIONABLE_CHANGES_ERROR)
 	public void insertEntityPropertyVersionableChanges(String codingSchemeUri,
 			String version, String entityCode, String entityCodeNamespace,
 			Property property) {
@@ -198,6 +204,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	 * java.lang.String, org.LexGrid.commonTypes.Property)
 	 */
 	@Override
+	@DatabaseErrorIdentifier(errorCode=INSERT_RELATION_PROPERTY_ERROR)
 	public void insertRelationProperty(String codingSchemeUri, String version,
 			String relationContainerName, Property property) {
 
@@ -220,6 +227,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	 * java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property)
 	 */
 	@Override
+	@DatabaseErrorIdentifier(errorCode=INSERT_RELATION_PROPERTY_VERSIONABLE_CHANGES_ERROR)
 	public void insertRelationPropertyVersionableChanges(
 			String codingSchemeUri, String version,
 			String relationContainerName, Property property) {
@@ -258,6 +266,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	 * org.LexGrid.commonTypes.Property)
 	 */
 	@Override
+	@DatabaseErrorIdentifier(errorCode=REMOVE_CODINGSCHEME_PROPERTY_ERROR)
 	public void removeCodingSchemeProperty(String codingSchemeUri,
 			String version, Property property) {
 
@@ -297,6 +306,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	 * org.LexGrid.commonTypes.Property)
 	 */
 	@Override
+	@DatabaseErrorIdentifier(errorCode=REMOVE_ENTITY_PROPERTY_ERROR)
 	public void removeEntityProperty(String codingSchemeUri, String version,
 			String entityCode, String entityCodeNamespace, Property property) {
 
@@ -336,6 +346,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	 * java.lang.String, org.LexGrid.commonTypes.Property)
 	 */
 	@Override
+	@DatabaseErrorIdentifier(errorCode=REMOVE_RELATION_PROPERTY_ERROR)
 	public void removeRelationProperty(String codingSchemeUri, String version,
 			String relationContainerName, Property property) {
 
@@ -482,6 +493,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	 * org.LexGrid.commonTypes.Property)
 	 */
 	@Override
+	@DatabaseErrorIdentifier(errorCode=UPDATE_CODINGSCHEME_PROPERTY_ERROR)
 	public void updateCodingSchemeProperty(String codingSchemeUri,
 			String version, Property property) {
 		String codingSchemeUId = this.getDaoManager().getCodingSchemeDao(
@@ -522,6 +534,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	 * org.LexGrid.commonTypes.Property)
 	 */
 	@Override
+	@DatabaseErrorIdentifier(errorCode=UPDATE_ENTITY_PROPERTY_ERROR)
 	public void updateEntityProperty(String codingSchemeUri, String version,
 			String entityCode, String entityCodeNamespace, Property property) {
 
@@ -569,6 +582,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	 * java.lang.String, org.LexGrid.commonTypes.Property)
 	 */
 	@Override
+	@DatabaseErrorIdentifier(errorCode=UPDATE_ENTITY_PROPERTY_ERROR)
 	public void updateRelationProperty(String codingSchemeUri, String version,
 			String relationContainerName, Property property) {
 
