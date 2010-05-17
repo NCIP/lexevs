@@ -534,6 +534,92 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
+	public void testGetTripleUidsContainingSubjectCountWithRestrictToCodesystem() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid1'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid2'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+	
+	
+		Map<String,Integer> uids = ibatisCodedNodeGraphDao.
+			getTripleUidsContainingSubjectCount(
+					"cs-guid", "ap-guid", "s-code", "s-ns", null, null, null, DaoUtility.createNonTypedList("t-ns2"));
+		
+		assertEquals(1, uids.keySet().size());
+		assertEquals(new Integer(1), uids.get("apname"));
+	}
+	
+	@Test
+	public void testGetTripleUidsContainingSubjectWithRestrictToCodesystem() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid1'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid2'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+	
+	
+		List<String> uids = ibatisCodedNodeGraphDao.
+			getTripleUidsContainingSubject(
+					"cs-guid", "ap-guid", "s-code", "s-ns", null, null, null, DaoUtility.createNonTypedList("t-ns2"), 0, -1);
+		
+		assertEquals(1, uids.size());
+		assertEquals("eae-guid2", uids.get(0));
+	}
+	
+	@Test
 	public void testGetRootsWithNoAssociationRestriction() throws SQLException{
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
