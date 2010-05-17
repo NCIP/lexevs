@@ -205,6 +205,21 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			this.getDaoManager().getAssociationDao(
 				uri, version);
 		
+		if(StringUtils.isBlank(relationsContainerName)) {
+			List<String> uuids = associationDao.getAssociationPredicateUidsForAssociationName(
+					codingSchemeUid, 
+					relationsContainerName, 
+					associationPredicateName);
+			
+			if(uuids.size() > 1) {
+				throw new RuntimeException("The AssociationPredicateName: " + associationPredicateName + " is " +
+						" ambiguous. Please specify a RelationsContainer Name.");
+			}
+			
+			if(uuids.size() == 1) {
+				return uuids.get(0);
+			}
+		}
 		return associationDao.
 			getAssociationPredicateUIdByContainerName(
 					codingSchemeUid, 
