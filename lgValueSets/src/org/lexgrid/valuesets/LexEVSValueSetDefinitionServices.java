@@ -144,7 +144,23 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	public ResolvedValueSetDefinition resolveValueSetDefinition(URI valueSetDefinitionURI,
 			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException;
 	
-	
+	/**
+	 * Resolve a value set definition provided using the supplied set of coding scheme versions.
+	 * 
+	 * @param valueSetDefinition
+	 * 			  value set definition object
+	 * @param csVersionList
+	 *            list of coding scheme versions to use in resolution. IF the
+	 *            value set definition uses a version that isn't mentioned in this list,
+	 *            the resolve function will return the codingScheme and version 
+	 *            that was used as a default for the resolution. 
+	 * @param versionTag 
+	 *            the tag (e.g. "devel", "production", ...) to be used to determine which coding scheme to be used
+	 * @return Resolved Value Domain Definition
+	 * @throws LBException
+	 */
+	public ResolvedValueSetDefinition resolveValueSetDefinition(ValueSetDefinition vsDef,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException;
 
 	/**
 	 * Check whether childValueDSetDefinitionURI is a child of parentValueSetDefinitionURI.

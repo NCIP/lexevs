@@ -449,10 +449,13 @@ public class VSDServiceHelper {
 	        ValueSetDefinition vdd, PropertyReference propertyRef, HashMap<String, String> refVersions, String versionTag) 
     throws LBException {
 	    
-	    AbsoluteCodingSchemeVersionReference resVersion = resolveCSVersion(propertyRef.getCodingScheme(), vdd.getMappings(), versionTag, refVersions);
+		AbsoluteCodingSchemeVersionReference resVersion = resolveCSVersion(propertyRef.getCodingScheme(), vdd.getMappings(), versionTag, refVersions);
 	    CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
 	    try{
-	    	versionOrTag.setVersion(resVersion.getCodingSchemeVersion());
+	    	if (refVersions != null && refVersions.containsKey(resVersion.getCodingSchemeURN()))
+	    		versionOrTag.setVersion(refVersions.get(resVersion.getCodingSchemeURN()));
+	    	else
+	    		versionOrTag.setVersion(resVersion.getCodingSchemeVersion());	    	
 	    }catch(NullPointerException e){
 	    	throw new LBException("Coding Scheme not found in the system");
 	    }
@@ -468,7 +471,7 @@ public class VSDServiceHelper {
 	    	matchAlgorithm = pmv.getMatchAlgorithm();
 	    }
 	    cns.restrictToMatchingProperties(
-	    		propertyRef.getPropertyName() != null ? Constructors.createLocalNameList(propertyRef.getPropertyName()): null, 
+	    		StringUtils.isNotEmpty(propertyRef.getPropertyName()) ? Constructors.createLocalNameList(propertyRef.getPropertyName()): null, 
 	    				new PropertyType[] { PropertyType.PRESENTATION }, propertyMatchValue, matchAlgorithm, null);
 	     
 	    return cns;

@@ -290,6 +290,36 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
             throw new LBException("No Value Set Definition found for URI : " + valueSetDefinitionURI);
         }
     }
+	
+	@Override
+	public ResolvedValueSetDefinition resolveValueSetDefinition(
+			ValueSetDefinition vsDef,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList,
+			String versionTag) throws LBException {
+		getLogger().logMethod(new Object[] { vsDef, csVersionList, versionTag });
+        
+		if(vsDef != null) {
+            ResolvedValueSetCodedNodeSet domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vsDef, csVersionList, versionTag);
+            
+            // Assemble the reply
+            ResolvedValueSetDefinition rvddef = new ResolvedValueSetDefinition();
+            try {
+                rvddef.setValueDomainURI(new URI(vsDef.getValueSetDefinitionURI()));
+            } catch (URISyntaxException e) {
+                md_.fatal("Value Set Definition URI is not a valid URI : " + vsDef.getValueSetDefinitionURI());
+                throw new LBException("Value Set Definition URI is not a valid URI : " + vsDef.getValueSetDefinitionURI());
+            }
+            rvddef.setValueDomainName(vsDef.getValueSetDefinitionName());
+            rvddef.setDefaultCodingScheme(vsDef.getDefaultCodingScheme());
+            rvddef.setRepresentsRealmOrContext(vsDef.getRepresentsRealmOrContextAsReference());
+            rvddef.setSource(vsDef.getSourceAsReference());
+            rvddef.setCodingSchemeVersionRefList(domainNodes.getCodingSchemeVersionRefList());
+            if(domainNodes != null && domainNodes.getCodedNodeSet() != null)
+                rvddef.setResolvedConceptReferenceIterator(domainNodes.getCodedNodeSet().restrictToStatus(ActiveOption.ACTIVE_ONLY, null).resolve(null, null, null));
+            return rvddef;
+        }
+		return null;
+    }
     
     @Override
 	public boolean isSubSet(URI childValueSetDefinitionURI,
