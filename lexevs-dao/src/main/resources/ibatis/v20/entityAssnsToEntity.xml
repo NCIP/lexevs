@@ -332,6 +332,137 @@
 		</isNotEmpty>
 	</sql>
 	
+	<sql id="getRelationshipsFragment">
+		INNER JOIN
+			$prefix$associationPredicate ap
+		ON
+			(ap.associationPredicateGuid = eate.associationPredicateGuid)
+		INNER JOIN
+			$prefix$relation rel
+		ON
+			(rel.relationGuid = ap.relationGuid)
+		
+		WHERE
+			rel.codingSchemeGuid = #codingSchemeUid#
+
+		<isPropertyAvailable property="associationPredicateUid">
+			<isNotNull property="associationPredicateUid" prepend="AND">
+			ap.associationPredicateGuid = #associationPredicateUid#
+			</isNotNull>
+		</isPropertyAvailable>
+
+		
+		<isNotEmpty property="associations" prepend="AND">
+			(
+			<iterate property="associations" conjunction="OR">
+				ap.associationName = #associations[]#
+			</iterate>
+			)
+		</isNotEmpty>
+
+		<isNotNull property="sourceCode" prepend="AND">
+			eate.sourceEntityCode = #sourceCode#
+		</isNotNull>
+		<isNotNull property="sourceNamespace" prepend="AND">
+			eate.sourceEntityCodeNamespace = #sourceNamespace#
+		</isNotNull>
+		<isNotNull property="targetCode" prepend="AND">
+			eate.targetEntityCode = #targetCode#
+		</isNotNull>
+		<isNotNull property="targetNamespace" prepend="AND">
+			eate.targetEntityCodeNamespace = #targetNamespace#
+		</isNotNull>
+		
+		<isNotEmpty property="mustHaveSourceCodes" prepend="AND">
+			(
+			<iterate property="mustHaveSourceCodes" conjunction="OR">
+				(
+					eate.sourceEntityCode = #mustHaveSourceCodes[].code#
+					AND
+					eate.sourceEntityCodeNamespace = #mustHaveSourceCodes[].namespace#
+				)
+			</iterate>
+			)
+		</isNotEmpty>
+		
+		<isNotEmpty property="mustHaveTargetCodes" prepend="AND">
+			(
+			<iterate property="mustHaveTargetCodes" conjunction="OR">
+				(
+					eate.targetEntityCode = #mustHaveTargetCodes[].code#
+					AND
+					eate.targetEntityCodeNamespace = #mustHaveTargetCodes[].namespace#
+				)
+			</iterate>
+			)
+		</isNotEmpty>
+		<isNotEmpty property="mustHaveSourceNamespaces" prepend="AND">
+			(
+			<iterate property="mustHaveSourceNamespaces" conjunction="OR">
+					(
+					eate.sourceEntityCodeNamespace = #mustHaveSourceNamespaces[]#
+					)
+			</iterate>
+			)
+		</isNotEmpty>
+		<isNotEmpty property="mustHaveTargetNamespaces" prepend="AND">
+			(
+			<iterate property="mustHaveTargetNamespaces" conjunction="OR">
+					(
+					eate.targetEntityCodeNamespace = #mustHaveTargetNamespaces[]#
+					)
+			</iterate>
+			)
+		</isNotEmpty>
+	</sql>
+	
+	<sql id="getEntityAssnsToEntityRelationships">
+		SELECT DISTINCT
+			eate.associationPredicateGuid
+		FROM
+			$prefix$entityAssnsToEntity eate
+		LEFT JOIN
+			$prefix$entityAssnQuals quals
+		ON
+			(eate.entityAssnsGuid = quals.referenceGuid)
+		<include refid="getRelationshipsFragment"/>
+	
+		<isNotEmpty property="associationQualifiers" prepend="AND">
+			(
+			<iterate property="associationQualifiers" conjunction="AND">
+				(
+				quals.qualifierName = #associationQualifiers[].qualifierName#
+				<isNotEmpty property="associationQualifiers[].qualifierValue">
+					AND
+					quals.qualifierValue = #associationQualifiers[].qualifierValue#
+			</isNotEmpty>
+				)
+			</iterate>
+			)
+		</isNotEmpty>
+
+	</sql>
+	
+	<sql id="getEntityAssnsToEntityTrRelationships">
+		SELECT DISTINCT
+			eate.associationPredicateGuid
+		FROM
+			$prefix$entityAssnsToEntityTr eate
+		<include refid="getRelationshipsFragment"/>
+	</sql>
+	
+	<select id="getCodeRelationships"
+				parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetCodeRelationshipsBean"
+				remapResults="true"
+				resultClass="string">
+		<include refid="getEntityAssnsToEntityRelationships"/>
+	
+		<isEqual property="useTransitive" compareValue="true">
+			UNION
+			<include refid="getEntityAssnsToEntityTrRelationships"/>
+		</isEqual>
+	</select>
+	
 	<select id="getRootEntityAssnsToEntityUids"
 				parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection"
 				remapResults="true"
