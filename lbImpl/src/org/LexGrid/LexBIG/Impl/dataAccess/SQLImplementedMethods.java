@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
@@ -1826,7 +1827,7 @@ public class SQLImplementedMethods {
 
     }
 
-    public static ConceptReferenceList listCodeRelationships(ConceptReference sourceCode, ConceptReference targetCode,
+    public static List<String> listCodeRelationships(ConceptReference sourceCode, ConceptReference targetCode,
             boolean directOnly, ArrayList<Operation> operations, String internalCodingSchemeName,
             String internalVersionString, String relationName) throws Exception {
         SQLInterface si = ResourceManager.instance().getSQLInterface(internalCodingSchemeName, internalVersionString);
@@ -1857,13 +1858,12 @@ public class SQLImplementedMethods {
             ResultSet results = listCodeRelationships.executeQuery();
 
             // hashtable to remove duplicates
-            Hashtable<String, ConceptReference> associations = new Hashtable<String, ConceptReference>();
+            Set<String> associations = new HashSet<String>();
 
             while (results.next()) {
                 String associationName = results.getString(si.getSQLTableConstants().entityCodeOrAssociationId);
-                ConceptReference ref = getAssociationReference(associationName, internalCodingSchemeName,
-                        internalVersionString);
-                associations.put(ref.getCodingSchemeName() + ":" + ref.getConceptCode(), ref);
+               
+                associations.add(associationName);
             }
 
             results.close();
@@ -1885,9 +1885,8 @@ public class SQLImplementedMethods {
 
                 while (results.next()) {
                     String associationName = results.getString(si.getSQLTableConstants().entityCodeOrAssociationId);
-                    ConceptReference ref = getAssociationReference(associationName, internalCodingSchemeName,
-                            internalVersionString);
-                    associations.put(ref.getCodingSchemeName() + ":" + ref.getConceptCode(), ref);
+                   
+                    associations.add(associationName);
                 }
                 results.close();
                 si.checkInPreparedStatement(listCodeRelationshipsT);
@@ -1899,41 +1898,34 @@ public class SQLImplementedMethods {
                 if (current instanceof Union) {
                     // add everything from the graphed we have been unioned to.
                     Union union = (Union) current;
-                    ConceptReferenceList list = union.getGraph().listCodeRelationships(sourceCode, targetCode,
+                    List<String> list = union.getGraph().listCodeRelationships(sourceCode, targetCode,
                             directOnly);
-                    for (int j = 0; j < list.getConceptReferenceCount(); j++) {
-                        ConceptReference ref = list.getConceptReference(j);
-                        associations.put(ref.getCodingSchemeName() + ":" + ref.getConceptCode(), ref);
+                    for (String association : list) {
+                        associations.add(association);
                     }
                 } else if (current instanceof Intersection) {
                     // only keep the concept references if they are in both
                     // graphs.
                     Intersection intersection = (Intersection) current;
-                    ConceptReferenceList list = intersection.getGraph().listCodeRelationships(sourceCode, targetCode,
+                    List<String> list = intersection.getGraph().listCodeRelationships(sourceCode, targetCode,
                             directOnly);
                     HashSet<String> graph2 = new HashSet<String>();
-                    for (int j = 0; j < list.getConceptReferenceCount(); j++) {
-                        ConceptReference cr = list.getConceptReference(j);
-                        graph2.add(cr.getCodingSchemeName() + ":" + cr.getConceptCode());
+                    for (String association : list) {
+                        graph2.add(association);
                     }
 
                     // now I have all of graph 2 keyed into a hashtable - remove
                     // from one as necessary.
-                    Enumeration<ConceptReference> e = associations.elements();
-                    while (e.hasMoreElements()) {
-                        ConceptReference cr = e.nextElement();
-                        if (!graph2.contains(cr.getCodingSchemeName() + ":" + cr.getConceptCode())) {
-                            associations.remove(cr.getCodingSchemeName() + ":" + cr.getConceptCode());
+                   
+                    for (String e : associations) {
+                        if (!graph2.contains(e)) {
+                            associations.remove(e);
                         }
                     }
                 }
             }
-            ConceptReferenceList associationsList = new ConceptReferenceList();
-            Enumeration<ConceptReference> e = associations.elements();
-            while (e.hasMoreElements()) {
-                associationsList.addConceptReference(e.nextElement());
-            }
-            return associationsList;
+      
+            return new ArrayList<String>(associations);
         } catch (MissingResourceException e) {
             throw new LBParameterException("Either the source or the target code could not be properly resolved");
         } catch (Exception e) {
