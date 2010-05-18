@@ -38,6 +38,20 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 	
 	public enum TripleNode {SUBJECT, OBJECT}
 	
+	public List<String> listCodeRelationships(
+			String codingSchemeUid,
+			String sourceEntityCode,
+			String sourceEntityCodeNamespace, 
+			String targetEntityCode,
+			String targetEntityCodeNamespace, 
+			List<String> associationNames,
+			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveSourceCodes,
+			List<CodeNamespacePair> mustHaveTargetCodes,
+			List<String> mustHaveSourceNamespace,
+			List<String> mustHaveTargetNamespace,
+			boolean useTransitive);
+	
 	public List<String> getTripleUidsContainingSubject(
 			String codingSchemeUid,
 			String associationPredicateUid,
