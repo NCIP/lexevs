@@ -17,9 +17,12 @@ import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
+import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.concepts.Presentation;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
@@ -28,11 +31,13 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
+import org.lexevs.dao.database.ibatis.entity.model.IdableEntity;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
 
 
-public class LexGridMarshalListener implements MarshalListener {
+public class LexGridMarshalListener implements MarshalListener 
+{
 	Marshaller marshaller;
 	CodedNodeSet cns;
 	CodedNodeGraph cng;
@@ -50,39 +55,60 @@ public class LexGridMarshalListener implements MarshalListener {
 	
 	private final int MAX_BLOCK_SIZE = 10; 
 	private int blockSize = 10;
-	private int start = 0;
-	private int end = blockSize;
-	private int max = 30;  // limit our output to the file just to keep it small
-	private int entityIndex = start;
+    private int entityIndex = 0;
+	private int entitiesToReturn = -1;  // limit our output to the file just to keep it small
 	
-	
-	
-	public LexGridMarshalListener(Marshaller marshaller, CodedNodeSet cns, int pageSize) {
+	public int getMaxEntitiesToReturn() 
+	{
+        return entitiesToReturn;
+    }
+
+    public void setMaxEntitiesToReturn(int limit) 
+    {
+        this.entitiesToReturn = limit;
+    }
+
+    public LexGridMarshalListener(Marshaller marshaller, CodedNodeSet cns, int pageSize) 
+    {
 	    this.setBlockSize(pageSize);
 		this.marshaller = marshaller;
 		this.cns = cns;
 	}
 	
-	public LexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng, int pageSize) {
+	public LexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng, int pageSize) 
+	{
 	    this.setBlockSize(pageSize);
 		this.marshaller = marshaller;
 		this.cng = cng;
 	}
 	
-	public LexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng, CodedNodeSet cns, int pageSize) {
+	public LexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng, CodedNodeSet cns, int pageSize) 
+	{
 	    this.setBlockSize(pageSize);
 		this.marshaller = marshaller;
 		this.cng = cng;
 		this.cns = cns;
 	}
+
+	public LexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng, CodedNodeSet cns, int pageSize, int limit) 
+	{
+	        this.setBlockSize(pageSize);
+	        this.entitiesToReturn = limit;
+	        this.marshaller = marshaller;
+	        this.cng = cng;
+	        this.cns = cns;
+	}
 	
-	private void setBlockSize(int size) {
-	    if(size > MAX_BLOCK_SIZE || size < 1 ) {
+	private void setBlockSize(int size) 
+	{
+	    if(size > MAX_BLOCK_SIZE || size < 1 ) 
+	    {
 	        blockSize = MAX_BLOCK_SIZE;
-	    } else {
+	    } 
+	    else 
+	    {
 	        blockSize = size;
 	    }
-        System.out.println("============ setting page size to: " + blockSize);	    
 	}
 	
 
@@ -95,66 +121,93 @@ public class LexGridMarshalListener implements MarshalListener {
 	}
 
 	@Override
-	public boolean preMarshal(Object arg0) {
-		if(Entities.class.equals(arg0.getClass()) == true) {
+	public boolean preMarshal(Object arg0) 
+	{
+	    System.out.println("PREMARSHAL:" + arg0.getClass().getName());
+		if(Entities.class.equals(arg0.getClass()) == true) 
+		{
 			Entities entities = (Entities)arg0;
-			System.out.println("PRE: entity count = " + entities.getEntityCount());
+			System.out.println("PRE: Entity count = " + entities.getEntityCount());
 		}
 		
-		if((Entity.class.equals(arg0.getClass()) == true)) {
+//		if(IdableEntity.class.equals(arg0.getClass()) == true) {
+//		    return false;
+//		}
+		
+		//if((Entity.class.equals(arg0.getClass()) == true)||(IdableEntity.class.equals(arg0.getClass()) == true))
+		if((Entity.class.equals(arg0.getClass()) == true))
+		{
 		    Entity temp = (Entity)arg0;
 		    System.out.println("PRE: **************** marshalling entityCode=" + temp.getEntityCode());
-			if(entityIndex >= max) {
+		    
+			if((entitiesToReturn > 0)&&(entityIndex >= entitiesToReturn)) 
+			{
 				return false;
 			}
-		}
-		
-		if((Entity.class.equals(arg0.getClass()) == true) && ((Entity)arg0).getEntityCode().equals(LexGridConstants.MR_FLAG))  {
 			
-			// get groups of entity objects using CNS.
-			if(cns != null) {
-				try {
-					rcri_iterator = cns.resolve(null, null, null, null, true);
-					
-					// will a  LBabcException break us out?
-					boolean done = false;
-					while(!done) {
-						refList = rcri_iterator.next(blockSize);
-//						refList = rcri_iterator.get(start, end);
-						blockIterator = (Iterator<ResolvedConceptReference>) refList.iterateResolvedConceptReference();
-						while(blockIterator.hasNext()) {
-							curConRef = (ResolvedConceptReference)blockIterator.next();					
-							curEntity = curConRef.getEntity();
-							System.out.println("**************** entityCode=" + curEntity.getEntityCode());
-						    this.marshaller.marshal(curEntity);
-						    ++entityIndex;
-						}			
-						start = entityIndex;
-						end = start + blockSize;
-						System.out.println("new block: start=" + start + " end=" + end);
-						// if(start >= numberRemaining) {
-						if(rcri_iterator.hasNext() == false) {
-							done = true;
-						}
-					}
-										
-				} catch (LBInvocationException e) {
-					e.printStackTrace();
-				} catch (LBParameterException e) {
-					e.printStackTrace();
-				} catch (LBResourceUnavailableException e) {
-					e.printStackTrace();
-				} catch (MarshalException e) {
-					e.printStackTrace();
-				} catch (ValidationException e) {
-					e.printStackTrace();
-				}
-			}
+			if (((Entity)arg0).getEntityCode().equals(LexGridConstants.MR_FLAG))
+            {
+			    //   get groups of Entity objects using CNS.
+			    if(cns != null) 
+			    {
+    				try 
+    				{
+    					rcri_iterator = cns.resolve(null, null, null, null, true);
+    					
+    					// will a  LBabcException break us out?
+    					boolean done = false;
+    					while(!done) 
+    					{
+    						refList = rcri_iterator.next(blockSize);
+    						blockIterator = (Iterator<ResolvedConceptReference>) refList.iterateResolvedConceptReference();
+    						while(blockIterator.hasNext()) 
+    						{
+    							curConRef = (ResolvedConceptReference)blockIterator.next();					
+    							curEntity = (Entity) curConRef.getEntity();
+    							System.out.println("**************** Marshalling Entity=" + curEntity.getEntityCode());
+
+    							if (curEntity == null)
+    							    continue;
+    							
+                                if ((curEntity.getIsAnonymous() != null)&&(curEntity.getIsAnonymous().booleanValue()))
+                                    continue;
+    						    
+    						    if (curEntity.getEntityCode().startsWith("@"))
+    						        continue;
+    						    
+    						    Entity transferredEntity = transferEntity(curEntity);
+    						    // Entity transferredEntity = (Entity)curEntity;
+    						    
+    						    if (transferredEntity == null)
+    						        continue;
+    						    
+    						    this.marshaller.marshal(transferredEntity);
+    						    ++entityIndex;
+    						}			
+    
+    						if(rcri_iterator.hasNext() == false) 
+    						{
+    							done = true;
+    						}
+    					}
+    										
+    				} catch (LBInvocationException e) {
+    					e.printStackTrace();
+    				} catch (LBParameterException e) {
+    					e.printStackTrace();
+    				} catch (LBResourceUnavailableException e) {
+    					e.printStackTrace();
+    				} catch (MarshalException e) {
+    					e.printStackTrace();
+    				} catch (ValidationException e) {
+    					e.printStackTrace();
+    				}
+			    }
+			    
+			    return false;
+            }
 			
-			// lets try and prevent the FLAG entity from getting marshaled
-			Entity entity = (Entity)arg0;
-			System.out.println("PRE: don't marshal entity with code: " + entity.getEntityCode());
-			return false;
+			return true;
 		}
 		else if(AssociationPredicate.class.equals(arg0.getClass())) 
 		{
@@ -198,9 +251,77 @@ public class LexGridMarshalListener implements MarshalListener {
 				} 
 				return true;
 			}
+			
 			return false;
 		}
+		else {
+            if(Presentation.class.equals(arg0.getClass())) 
+            {
+                System.out.println("Presentation=" + ((Presentation) arg0).getValue().getContent());
+                return true;
+            }
+            else {
+                if(Definition.class.equals(arg0.getClass())) 
+                {
+                    System.out.println("Definition=" + ((Definition) arg0).getValue().getContent());
+                    return true;
+                }
+            }
+		}
+		
 		return true;
+	}
+	
+	private Entity transferEntity(Entity curEntity)
+	{
+	    if (curEntity == null)
+	        return null;
+	    
+	    Entity temp = new Entity();
+	    temp.setEntityCode(curEntity.getEntityCode());
+	    temp.setEntityDescription(curEntity.getEntityDescription());
+	    temp.setEntityCodeNamespace(curEntity.getEntityCodeNamespace());
+	    
+	    // add properties
+	    Property[] pps = curEntity.getAllProperties();
+	    if (pps != null)
+	        for(int i=0; i < pps.length; i++)
+	            if (pps[i] != null)
+	                  temp.addAnyProperty(pps[i]);
+	    
+	    
+	    temp.setComment(curEntity.getComment());
+	    temp.setDefinition(curEntity.getDefinition());
+	    temp.setEffectiveDate(curEntity.getEffectiveDate());
+	    temp.setEntityType(curEntity.getEntityType());
+	    temp.setEntityTypeAsReference(curEntity.getEntityTypeAsReference());
+	    temp.setEntryState(curEntity.getEntryState());
+	    temp.setExpirationDate(curEntity.getExpirationDate());
+	    temp.setIsActive(curEntity.getIsActive());
+	    temp.setIsAnonymous(curEntity.getIsAnonymous());
+	    temp.setIsDefined(curEntity.getIsDefined());
+	    temp.setOwner(curEntity.getOwner());
+	    temp.setParent(curEntity.getParent());
+	    
+//	    temp.setPresentation(curEntity.getPresentation());
+        // add properties
+	    Presentation[] presentationAr = curEntity.getPresentation();
+        if (presentationAr != null)
+            for(int i=0; i < presentationAr.length; i++)
+                if (presentationAr[i] != null)
+                      temp.addPresentation(presentationAr[i]);
+	    
+	    
+	    
+	    temp.setPresentationAsReference(curEntity.getPresentationAsReference());
+	    temp.setPropertyAsReference(curEntity.getPropertyAsReference());
+	    temp.setPropertyLink(curEntity.getPropertyLink());
+	    temp.setPropertyLinkAsReference(curEntity.getPropertyLinkAsReference());
+	    temp.setStatus(curEntity.getStatus());
+
+	    
+	    
+	    return temp;
 	}
 	
 	private void processAssociationList(AssociationList _asl, AssociationPredicate _asp) 
