@@ -12,13 +12,13 @@
     xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueSets" 
     xmlns:lgVer="http://LexGrid.org/schema/2010/01/LexGrid/versions" 
     xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" 
-  xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd" revisionId="1.2.3">
+  xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd" revisionId="R001">
   <lgCommon:entityDescription>Revision of SRITEST</lgCommon:entityDescription>
     <changeAgent>SRITEST user</changeAgent>
     <changeInstructions>revised SRITEST entry</changeInstructions>
     <changedEntry>
-      <changedValueSetDefinitionEntry     valueSetDefinitionURI="SRITEST:AUTO:PropertyRefTest1" valueSetDefinitionName="Property Reference Test 1" defaultCodingScheme="Automobiles" effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
-        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+      <changedValueSetDefinitionEntry     valueSetDefinitionURI="SRITEST:AUTO:RevisionTest1" valueSetDefinitionName="Revision Test 1" defaultCodingScheme="Automobiles" effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
+        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW"/>
         <lgVD:mappings>
           <lgNaming:supportedSource localId="GM">GM</lgNaming:supportedSource>
           <lgNaming:supportedSource localId="Ford">Ford</lgNaming:supportedSource>
