@@ -691,8 +691,15 @@
 		<property name="indexerService" ref="indexerService"/>
 	</bean>
 	
+	<bean id="luceneMetadataIndexService" 
+		class="org.lexevs.dao.index.service.metadata.LuceneMetadataIndexService">
+		<property name="indexDaoManager" ref="indexDaoManager"/> 
+		<property name="metadataIndexCreator" ref="luceneMetadataIndexCreator"/>
+	</bean>
+	
 	<bean id="indexServiceManager" class="org.lexevs.dao.index.service.IndexServiceManager">
 		<property name="entityIndexService" ref="luceneEntityIndexService"/>
+		<property name="metadataIndexService" ref="luceneMetadataIndexService"/>
 	</bean>
 	
 	<bean id="indexDaoManager" class="org.lexevs.dao.index.access.IndexDaoManager">
@@ -704,12 +711,30 @@
 				<ref bean="luceneEntity2009Dao"/>
 			</list>
 		</property>
+		<property name="metadataDaos">
+			<list>
+				<ref bean="luceneMetadataDao"/>
+			</list>
+		</property>
 	</bean>
 	
 	<bean id="indexerService" class="org.lexevs.dao.index.factory.IndexerServiceFactory">
 		<property name="systemVariables" ref="systemVariables"/> 
 	</bean>
 	
+	<bean id="luceneMetadataDao" class="org.lexevs.dao.index.lucene.v2010.metadata.LuceneMetadataDao">
+		<property name="baseMetaDataLoader" ref="oboMetaDataLoader"/>
+		<property name="indexInterface" ref="indexInterface"/>
+	</bean>
+
+	<bean id="luceneMetadataIndexCreator" class="org.lexevs.dao.index.indexer.LuceneMetadataIndexCreator">
+		<property name="oboMetaDataLoader" ref="oboMetaDataLoader"/>
+	</bean>
+	
+	<bean id="oboMetaDataLoader" class="org.lexevs.dao.index.metadata.OBOMetaDataLoader" init-method="init">
+		<property name="indexerService" ref="indexerService"/>
+	</bean>
+
 	<bean id="luceneIndexEntityDao" class="org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao">
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="indexInterface" ref="indexInterface"/>
