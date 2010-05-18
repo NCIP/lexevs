@@ -18,15 +18,22 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph;
 
-import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.lexevs.logging.LoggerFactory;
 
@@ -146,24 +153,37 @@ public abstract class AbstractCodedNodeGraph implements CodedNodeGraph {
         return (list != null && list.getResolvedConceptReferenceCount() > 0);
     }
 
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#listCodeRelationships(org.LexGrid.LexBIG.DataModel.Core.ConceptReference, org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean)
-     */
-    @Override
-    public ConceptReferenceList listCodeRelationships(ConceptReference sourceCode, ConceptReference targetCode,
-            boolean directOnly) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
-    }
-
+  
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#listCodeRelationships(org.LexGrid.LexBIG.DataModel.Core.ConceptReference, org.LexGrid.LexBIG.DataModel.Core.ConceptReference, int)
      */
     @Override
-    public ConceptReferenceList listCodeRelationships(ConceptReference sourceCode, ConceptReference targetCode,
+    public List<String> listCodeRelationships(ConceptReference sourceCode, ConceptReference targetCode,
             int distance) throws LBInvocationException, LBParameterException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+ 
+            List<String> returnList = new ArrayList<String>();
+
+            if (distance <= 1)
+                return listCodeRelationships(sourceCode, targetCode, true);
+
+            int newDistance = distance - 1;
+            ResolvedConceptReferenceList rList = resolveAsList(sourceCode, true, false, 1, 1, null, null, null, null,
+                    0, false);
+            for (Iterator<? extends ResolvedConceptReference> rListI = rList.iterateResolvedConceptReference(); rListI.hasNext();) {
+                for (Iterator<? extends Association> assocI = rListI.next().getSourceOf().iterateAssociation(); assocI.hasNext();) {
+                    for (Iterator<? extends AssociatedConcept> assConI = assocI.next().getAssociatedConcepts()
+                            .iterateAssociatedConcept(); assConI.hasNext();) {
+                        AssociatedConcept assCon = assConI.next();
+                        ConceptReference src = Constructors.createConceptReference(assCon.getConceptCode(), assCon
+                                .getCodingSchemeName());
+                        for (String association : listCodeRelationships(src, targetCode, newDistance)) {
+                            returnList.add(association);
+                        }
+                    }
+                }
+            }
+
+            return returnList;
     }
 
     /**

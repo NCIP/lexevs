@@ -143,7 +143,6 @@ public abstract class AbstractMultiGraph extends AbstractCodedNodeGraph {
         
         return this;
     }
-    
 
     /**
      * Gets the graph1.

@@ -20,6 +20,7 @@ package org.LexGrid.LexBIG.Impl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -384,7 +385,7 @@ public class CodedNodeGraphImpl implements CodedNodeGraph, Cloneable {
      * (org.LexGrid.LexBIG.DataModel.Core.ConceptReference,
      * org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean)
      */
-    public ConceptReferenceList listCodeRelationships(ConceptReference sourceCode, ConceptReference targetCode,
+    public List<String> listCodeRelationships(ConceptReference sourceCode, ConceptReference targetCode,
             boolean directOnly) throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { sourceCode, targetCode, new Boolean(directOnly) });
         try {
@@ -394,17 +395,19 @@ public class CodedNodeGraphImpl implements CodedNodeGraph, Cloneable {
 
             // Fetch results for the first relations container (typically there
             // will only be one) ...
-            ConceptReferenceList crl = SQLImplementedMethods.listCodeRelationships(sourceCode, targetCode, directOnly,
+            List<String> list = SQLImplementedMethods.listCodeRelationships(sourceCode, targetCode, directOnly,
                     pendingOperations_, internalCodingSchemeName, internalVersion, relationContainerNames_[0]);
 
             // Add others as assigned ...
             for (int i = 1; i < relationContainerNames_.length; i++)
-                for (Iterator<? extends ConceptReference> refs = SQLImplementedMethods.listCodeRelationships(sourceCode,
+                for (String assoc : SQLImplementedMethods.listCodeRelationships(sourceCode,
                         targetCode, directOnly, pendingOperations_, internalCodingSchemeName, internalVersion,
-                        relationContainerNames_[i]).iterateConceptReference(); refs.hasNext();)
-                    crl.addConceptReference(refs.next());
+                        relationContainerNames_[i])) {
+                    list.add(assoc);
+                }
 
-            return crl;
+            return list;
+            
         } catch (LBInvocationException e) {
             throw e;
         } catch (LBParameterException e) {
@@ -729,11 +732,11 @@ public class CodedNodeGraphImpl implements CodedNodeGraph, Cloneable {
         pendingOperations_.add(operation);
     }
 
-    public ConceptReferenceList listCodeRelationships(ConceptReference sourceCode, ConceptReference targetCode,
+    public List<String> listCodeRelationships(ConceptReference sourceCode, ConceptReference targetCode,
             int distance) throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { sourceCode, targetCode, distance });
         try {
-            ConceptReferenceList crl = new ConceptReferenceList();
+            List<String> returnList = new ArrayList<String>();
 
             if (distance <= 1)
                 return listCodeRelationships(sourceCode, targetCode, true);
@@ -748,14 +751,14 @@ public class CodedNodeGraphImpl implements CodedNodeGraph, Cloneable {
                         AssociatedConcept assCon = assConI.next();
                         ConceptReference src = Constructors.createConceptReference(assCon.getConceptCode(), assCon
                                 .getCodingSchemeName());
-                        for (Iterator<? extends ConceptReference> refs = listCodeRelationships(src, targetCode, newDistance)
-                                .iterateConceptReference(); refs.hasNext();)
-                            crl.addConceptReference(refs.next());
+                        for (String association : listCodeRelationships(src, targetCode, newDistance)) {
+                            returnList.add(association);
+                        }
                     }
                 }
             }
 
-            return crl;
+            return returnList;
         } catch (LBInvocationException e) {
             throw e;
         } catch (LBParameterException e) {

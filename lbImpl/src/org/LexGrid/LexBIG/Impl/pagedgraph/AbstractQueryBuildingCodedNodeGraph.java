@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
@@ -34,10 +35,6 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
-import org.LexGrid.LexBIG.Impl.helpers.AdditiveCodeHolder;
-import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
-import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
-import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
@@ -49,7 +46,6 @@ import org.LexGrid.naming.SupportedContainerName;
 import org.LexGrid.naming.SupportedProperty;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
-import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 
@@ -100,6 +96,27 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         graphQueryBuilder = new DefaultGraphQueryBuilder(codingSchemeUri, version);
     }
     
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#listCodeRelationships(org.LexGrid.LexBIG.DataModel.Core.ConceptReference, org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean)
+     */
+    @Override
+    public List<String> listCodeRelationships(ConceptReference sourceCode, ConceptReference targetCode,
+            boolean directOnly) throws LBInvocationException, LBParameterException {
+       return LexEvsServiceLocator.getInstance().
+           getDatabaseServiceManager().
+               getCodedNodeGraphService().
+                   listCodeRelationships(
+                           codingSchemeUri, 
+                           version, 
+                           relationsContainerName, 
+                           sourceCode.getCode(), 
+                           sourceCode.getCodeNamespace(), 
+                           targetCode.getCode(), 
+                           targetCode.getCodeNamespace(), 
+                           this.graphQueryBuilder.getQuery(), 
+                           !directOnly);
+    }
+
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#areCodesRelated(org.LexGrid.LexBIG.DataModel.Core.NameAndValue, org.LexGrid.LexBIG.DataModel.Core.ConceptReference, org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean)
      */
@@ -262,47 +279,45 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
     public CodedNodeSet toNodeList(ConceptReference graphFocus, boolean resolveForward, boolean resolveBackward,
             int resolveAssociationDepth, int maxToReturn) throws LBInvocationException, LBParameterException {
         ResolvedConceptReferenceList list = 
-            this.resolveAsList(
-                    graphFocus, 
-                    resolveForward, 
-                    resolveBackward, 
-                    0, 
-                    resolveAssociationDepth,
-                    null, null, null, null, maxToReturn, false);
+            this.doResolveAsList(
+                graphFocus, 
+                resolveForward, 
+                resolveBackward, 
+                0, 
+                resolveAssociationDepth,
+                null, null, null, null, maxToReturn, false);
+        
+        ConceptReferenceList codeList = this.traverseGraph(list, resolveForward, resolveBackward);
 
-        CodeHolder holder = 
-            this.traverseGraph(list, resolveForward, resolveBackward);
-
-        String codingSchemeName = LexEvsServiceLocator.getInstance().getSystemResourceService().
-        getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, version);
-
-        CodedNodeSet cns = new CodedNodeSetImpl(
-                holder,
-                codingSchemeName, 
-                version);
-
-        return cns;
+        try {
+            CodedNodeSet cns = new CodedNodeSetImpl(
+                    this.getCodingSchemeUri(), 
+                    Constructors.createCodingSchemeVersionOrTagFromVersion(this.getVersion()), null);
+            
+            cns = cns.restrictToCodes(codeList);
+            
+            return cns;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     
-    private CodeHolder traverseGraph(ResolvedConceptReferenceList list, boolean resolveForward, boolean resolveBackward){
-        AdditiveCodeHolder holder = new DefaultCodeHolder();
+    private ConceptReferenceList traverseGraph(ResolvedConceptReferenceList list, boolean resolveForward, boolean resolveBackward){
+        List<ConceptReference> returnList = new ArrayList<ConceptReference>();
         
         for(ResolvedConceptReference ref : list.getResolvedConceptReference()) {
-            List<CodeToReturn> codes = 
-                traverseGraph(ref, resolveForward, resolveBackward);
-
-                for(CodeToReturn code : codes) {
-                    holder.add(code);
-                }
+            returnList.addAll(traverseGraph(ref, resolveForward, resolveBackward));
         }
-       
-        return holder;
+        
+        ConceptReferenceList refList = new ConceptReferenceList();
+        refList.setConceptReference(returnList.toArray(new ConceptReference[returnList.size()] ));
+        
+        return refList;
     }
     
-    private List<CodeToReturn> traverseGraph(ResolvedConceptReference ref, boolean resolveForward, boolean resolveBackward){
-        List<CodeToReturn> returnList = new ArrayList<CodeToReturn>();
-        returnList.add(
-                resolvedConceptReferenceToCodeToReturn(ref));
+    private List<ConceptReference> traverseGraph(ResolvedConceptReference ref, boolean resolveForward, boolean resolveBackward){
+        List<ConceptReference> returnList = new ArrayList<ConceptReference>();
+        returnList.add(ref);
         
         if(resolveForward) {
             if(ref.getSourceOf() != null) {
@@ -327,18 +342,6 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         }
         
         return returnList;
-    }
-    
-    private CodeToReturn resolvedConceptReferenceToCodeToReturn(ResolvedConceptReference ref) {
-        CodeToReturn code = new CodeToReturn();
-        code.setCode(ref.getCode());
-        code.setEntityDescription(DaoUtility.getEntityDescriptionText(ref.getEntityDescription()));
-        code.setEntityTypes(ref.getEntityType());
-        code.setNamespace(ref.getCodeNamespace());
-        code.setUri(ref.getCodingSchemeURI());
-        code.setVersion(ref.getCodingSchemeVersion());
-        
-        return code;
     }
 
     /**

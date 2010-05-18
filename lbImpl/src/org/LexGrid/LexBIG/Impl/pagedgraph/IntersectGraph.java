@@ -18,6 +18,11 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -52,6 +57,19 @@ public class IntersectGraph extends AbstractMultiGraph {
      */
     public IntersectGraph(CodedNodeGraph graph1, CodedNodeGraph graph2) {
         super(graph1, graph2);
+    }
+    
+    @Override
+    public List<String> listCodeRelationships(ConceptReference sourceCode, ConceptReference targetCode,
+            boolean directOnly) throws LBInvocationException, LBParameterException {
+       List<String> assocs1 = this.getGraph1().listCodeRelationships(sourceCode, targetCode, directOnly);
+       List<String> assocs2 = this.getGraph2().listCodeRelationships(sourceCode, targetCode, directOnly);
+       
+       Set<String> returnSet = new HashSet<String>(assocs1);
+
+       returnSet.retainAll(assocs2);
+       
+       return new ArrayList<String>(returnSet);
     }
 
     @Override

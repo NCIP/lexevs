@@ -18,6 +18,11 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -55,10 +60,23 @@ public class UnionGraph extends AbstractMultiGraph {
     }
     
     @Override
+    public List<String> listCodeRelationships(ConceptReference sourceCode, ConceptReference targetCode,
+            boolean directOnly) throws LBInvocationException, LBParameterException {
+       List<String> assocs1 = this.getGraph1().listCodeRelationships(sourceCode, targetCode, directOnly);
+       List<String> assocs2 = this.getGraph2().listCodeRelationships(sourceCode, targetCode, directOnly);
+       
+       Set<String> returnSet = new HashSet<String>(assocs1);
+       
+       returnSet.addAll(assocs2);
+       
+       return new ArrayList<String>(returnSet);
+    }
+    
+    @Override
     public Boolean areCodesRelated(NameAndValue association, ConceptReference sourceCode, ConceptReference targetCode,
             boolean directOnly) throws LBInvocationException, LBParameterException {
         boolean relatedGraph1 = this.getGraph1().areCodesRelated(association, sourceCode, targetCode, directOnly);
-        boolean relatedGraph2 = this.getGraph1().areCodesRelated(association, sourceCode, targetCode, directOnly);
+        boolean relatedGraph2 = this.getGraph2().areCodesRelated(association, sourceCode, targetCode, directOnly);
     
         return relatedGraph1 || relatedGraph2;
     }
