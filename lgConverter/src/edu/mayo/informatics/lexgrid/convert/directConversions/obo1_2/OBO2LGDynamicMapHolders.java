@@ -403,25 +403,49 @@ public class OBO2LGDynamicMapHolders {
         List<String> special_relationNames = Arrays.asList(OBO2LGConstants.BUILT_IN_SPECIAL_ASSOCIATIONS);
         if (special_relationNames.contains(relation_name)) {
             processed = true;
-
-            Entity anon_eq = createAnonymousConcept("(" + relation_name + ")");
+            processed = true;
+            String anon_concept_label= createAnonymousConceptLabel(relation_name,  targets);
+            Entity anon_eq = createAnonymousConcept(anon_concept_label);
             addAssociation(concept, "equivalentClass", null, null, null, anon_eq);
 
-            Iterator<String> itr = targets.iterator();
-            String target1 = "";
-            String target2 = "";
-            if (itr.hasNext()) {
-                target1 = itr.next();
-                processAnonListTarget(anon_eq, target1);
-
-            }
-            if (itr.hasNext()) {
-                target2 = itr.next();
-                processAnonListTarget(anon_eq, target2);
+            for (String target: targets) {
+              processAnonListTarget(anon_eq, target);
             }
 
         }
         return processed;
+    }
+    
+    String createAnonymousConceptLabel(String relation_name, Collection<String> targets) {
+        String str="";
+        if (relation_name.equalsIgnoreCase(OBO2LGConstants.ASSOCIATION_UNION_OF)) {
+            for (String targetStr: targets) {
+                str+= targetStr + " OR ";
+            }
+            if (str.length() > 4){
+               str= str.substring(0, str.length() - 4);
+            }
+        }
+        
+        if (relation_name.equalsIgnoreCase(OBO2LGConstants.ASSOCIATION_INTERSECTION_OF)) {
+            for (String targetStr: targets) {
+                String[] result = targetStr.split("\\s");
+                if (result.length == 1) {
+                    str+= targetStr + " AND ";
+                }
+                if (result.length == 2) {
+                   str+= result[0]+ " SOME "+ result[1]+ " AND ";
+                }
+            }
+            if (str.length() > 5){
+               str= str.substring(0, str.length() - 5);
+            }
+        }        
+        
+        
+        
+        
+        return str;
     }
 
     void processAnonListTarget(Entity anon_concept, String target) {
