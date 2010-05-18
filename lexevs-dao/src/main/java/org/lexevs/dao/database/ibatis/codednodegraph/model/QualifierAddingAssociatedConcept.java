@@ -5,8 +5,9 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
+import org.LexGrid.proxy.CastorProxy;
 
-public class QualifierAddingAssociatedConcept extends AssociatedConcept {
+public class QualifierAddingAssociatedConcept extends AssociatedConcept implements CastorProxy {
 
 	private static final long serialVersionUID = 4411803013641184558L;
 	
