@@ -62,7 +62,7 @@ public class IndexDaoManager {
 	}
 	
 	public MetadataDao getMetadataDao(){
-		Assert.state(this.entityDaos.size() == 1, "Currently Metadata Daos are not Versionaable.");
+		Assert.state(this.metadataDaos.size() == 1, "Currently Metadata Daos are not Versionable.");
 		
 		return this.metadataDaos.get(0);
 	}
