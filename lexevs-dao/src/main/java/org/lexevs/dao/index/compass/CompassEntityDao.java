@@ -53,6 +53,22 @@ public class CompassEntityDao extends CompassDaoSupport implements EntityDao {
 	/** The compass search helper. */
 	private CompassSearchHelper compassSearchHelper;
 	
+	
+	
+	@Override
+	public void addEntityToIndex(
+			AbsoluteCodingSchemeVersionReference reference, Entity entity) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void deleteDocumentsOfEntity(
+			AbsoluteCodingSchemeVersionReference reference, Entity entity) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
 	/**
 	 * Gets the resource by id.
 	 * 

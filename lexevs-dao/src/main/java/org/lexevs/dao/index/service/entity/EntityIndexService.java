@@ -34,14 +34,21 @@ import org.lexevs.dao.index.indexer.IndexCreator.EntityIndexerProgressCallback;
  */
 public interface EntityIndexService {
 
-/**
- * Update index for entity.
- * 
- * @param codingSchemeUri the coding scheme uri
- * @param codingSchemeVersion the coding scheme version
- * @param entity the entity
- */
-public void updateIndexForEntity(String codingSchemeUri, String codingSchemeVersion, Entity entity);
+	/**
+	 * Update index for entity.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param codingSchemeVersion the coding scheme version
+	 * @param entity the entity
+	 */
+	public void updateIndexForEntity(String codingSchemeUri, String codingSchemeVersion, Entity entity);
+	
+	public void addEntityToIndex(String codingSchemeUri, String codingSchemeVersion, Entity entity);
+	
+	public void deleteEntityFromIndex(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			Entity entity);
 	
 	/**
 	 * Creates the index.

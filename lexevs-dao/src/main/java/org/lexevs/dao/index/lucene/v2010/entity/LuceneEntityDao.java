@@ -41,6 +41,8 @@ import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.indexer.api.IndexerService;
 import edu.mayo.informatics.indexer.api.SearchServiceInterface;
+import edu.mayo.informatics.indexer.api.exceptions.IndexNotFoundException;
+import edu.mayo.informatics.indexer.api.exceptions.InternalIndexerErrorException;
 import edu.mayo.informatics.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
 import edu.mayo.informatics.indexer.lucene.hitcollector.BitSetBestScoreOfEntityHitCollector;
 import edu.mayo.informatics.indexer.lucene.hitcollector.BitSetFilteringBestScoreOfEntityHitCollector;
@@ -252,6 +254,35 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 		}
 	}
 	
+	@Override
+	public void deleteDocumentsOfEntity(
+			AbsoluteCodingSchemeVersionReference reference, Entity entity) {
+		try {
+			String indexName = getIndexName(
+					reference.getCodingSchemeURN(),
+					reference.getCodingSchemeVersion());
+			
+			IndexerService indexerService = this.getIndexInterface().getBaseIndexerService();
+			indexerService.forceUnlockIndex(indexName);
+			indexerService.openBatchRemover(indexName);
+			
+			
+			this.removeDocumentsByField(
+					indexName, 
+					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, 
+					LuceneLoaderCode.
+						createCodingSchemeUriVersionCodeNamespaceKey(
+							reference.getCodingSchemeURN(), 
+							reference.getCodingSchemeVersion(), 
+							entity.getEntityCode(), 
+							entity.getEntityCodeNamespace()));
+			
+			indexerService.closeBatchRemover(indexName);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} 
+	}
+
 	protected void removeDocumentsByField(String indexName, String fieldName, String fieldValue) {
 		IndexerService indexerService = this.getIndexInterface().getBaseIndexerService();
 		try {
@@ -262,7 +293,32 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 			throw new RuntimeException(e);
 		}
 	}
-		
+	
+
+	@Override
+	public void addEntityToIndex(
+			AbsoluteCodingSchemeVersionReference reference, Entity entity) {
+		String codingSchemeUri = reference.getCodingSchemeURN();
+		String codingSchemeVersion = reference.getCodingSchemeVersion();
+		try {
+			String indexName = getIndexName(codingSchemeUri,codingSchemeVersion);
+
+			IndexerService indexerService = this.getIndexInterface().getBaseIndexerService();
+			indexerService.forceUnlockIndex(indexName);
+			indexerService.openBatchRemover(indexName);
+
+			entityIndexer.indexEntity(indexName, codingSchemeUri, codingSchemeVersion, entity);
+			
+			String internalCodeSystemName = systemResourceService.
+			 	getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, 
+			 	codingSchemeVersion);
+			
+			indexInterface.reopenIndex(internalCodeSystemName, codingSchemeVersion);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	protected String getIndexName(String codingSchemeUri, String codingSchemeVersion) throws Exception {
 		String internalCodeSystemName = systemResourceService.
 		getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, 

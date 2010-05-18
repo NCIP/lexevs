@@ -64,6 +64,10 @@ public interface EntityDao extends LexEvsIndexFormatVersionAwareDao {
 	
 	public void updateDocumentsOfEntity(AbsoluteCodingSchemeVersionReference reference, Entity entity);
 	
+	public void deleteDocumentsOfEntity(AbsoluteCodingSchemeVersionReference reference, Entity entity);
+	
+	public void addEntityToIndex(AbsoluteCodingSchemeVersionReference reference, Entity entity);
+	
 	/**
 	 * Gets the match all docs query.
 	 * 
