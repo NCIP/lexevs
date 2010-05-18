@@ -23,26 +23,18 @@ import java.util.ArrayList;
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.MetadataPropertyList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.DataModel.Core.MetadataProperty;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.dataAccess.MetaDataQuery;
-import org.LexGrid.LexBIG.Impl.loaders.metadata.BaseMetaDataLoader;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceMetadata;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.regex.RegexQuery;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.system.ResourceManager;
-
-import edu.mayo.informatics.indexer.api.SearchServiceInterface;
-import edu.mayo.informatics.indexer.lucene.LuceneIndexReader;
 
 /**
  * Lucene implementation of the LexBIGServiceMetadata interface.
@@ -132,25 +124,9 @@ public class LexBIGServiceMetadataImpl implements LexBIGServiceMetadata {
                 masterQuery.add(new RegexQuery(termClauses.get(i)), Occur.MUST);
             }
 
-            SearchServiceInterface ssi = ResourceManager.instance().getMetaDataIndexInterface().getMetaDataSearcher();
-            Document[] d = ssi.search(masterQuery, null, false, -1);
-
-            MetadataPropertyList mdpl = new MetadataPropertyList();
-
-            // assemble the result object
-            for (int i = 0; i < d.length; i++) {
-                MetadataProperty curr = new MetadataProperty();
-                curr.setCodingSchemeURI(d[i].get("codingSchemeRegisteredName"));
-                curr.setCodingSchemeVersion(d[i].get("codingSchemeVersion"));
-                curr.setName(d[i].get("propertyName"));
-                curr.setValue(d[i].get("propertyValue"));
-
-                String temp = d[i].get("parentContainers");
-                curr.setContext(temp.split(BaseMetaDataLoader.STRING_TOKEINZER_TOKEN));
-
-                mdpl.addMetadataProperty(curr);
-            }
-            return mdpl;
+            return LexEvsServiceLocator.getInstance().
+                getIndexServiceManager().
+                getMetadataIndexService().search(masterQuery);
         } catch (LBParameterException e) {
             throw e;
         } catch (Exception e) {
@@ -163,38 +139,14 @@ public class LexBIGServiceMetadataImpl implements LexBIGServiceMetadata {
     public AbsoluteCodingSchemeVersionReferenceList listCodingSchemes() throws LBInvocationException {
         getLogger().logMethod(new Object[] {});
         try {
-            AbsoluteCodingSchemeVersionReferenceList result = new AbsoluteCodingSchemeVersionReferenceList();
-
-            LuceneIndexReader ir = ResourceManager.instance().getMetaDataIndexInterface().getMetaDataIndexReader();
-            TermEnum te = ir.getBaseIndexReader().terms(new Term("codingSchemeNameVersion", ""));
-
-            SearchServiceInterface ssi = ResourceManager.instance().getMetaDataIndexInterface().getMetaDataSearcher();
-
-            boolean hasNext = true;
-            while (hasNext && te.term().field().equals("codingSchemeNameVersion")) {
-                Query temp = new TermQuery(new Term(te.term().field(), te.term().text()));
-
-                Document[] d = ssi.search(temp, null, true, 1);
-                if (d.length > 0) {
-
-                    Document doc = d[0];
-                    AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
-                    acsvr.setCodingSchemeURN(doc.get("codingSchemeRegisteredName"));
-                    acsvr.setCodingSchemeVersion(doc.get("codingSchemeVersion"));
-
-                    result.addAbsoluteCodingSchemeVersionReference(acsvr);
-                }
-                hasNext = te.next();
-            }
-            te.close();
-
-            return result;
+            return LexEvsServiceLocator.getInstance().
+            getIndexServiceManager().
+            getMetadataIndexService().listCodingSchemes();
         } catch (Exception e) {
             String id = getLogger().error("An unexpected error occurred while listing metadata coding schemes.", e);
             throw new LBInvocationException(
                     "An unexpected error occurred while listing metadata coding schemes.  See the log for more details",
                     id);
-
         }
     }
 }

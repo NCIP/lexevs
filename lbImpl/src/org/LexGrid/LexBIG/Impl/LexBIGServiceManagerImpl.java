@@ -32,7 +32,6 @@ import org.LexGrid.LexBIG.Extensions.Export.Exporter;
 import org.LexGrid.LexBIG.Extensions.Index.Index;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.Impl.loaders.metadata.BaseMetaDataLoader;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgAdminFunction;
@@ -235,8 +234,12 @@ public class LexBIGServiceManagerImpl implements LexBIGServiceManager {
             throw new LBParameterException("The coding scheme URN and version must be supplied.");
         }
         try {
-            BaseMetaDataLoader.removeMeta(codingSchemeVersion.getCodingSchemeURN(), codingSchemeVersion
-                    .getCodingSchemeVersion());
+            LexEvsServiceLocator.getInstance().
+                getIndexServiceManager().
+                getMetadataIndexService().
+                removeMetadata(codingSchemeVersion.getCodingSchemeURN(), codingSchemeVersion
+                        .getCodingSchemeVersion());
+          
         } catch (Exception e) {
             String id = getLogger().error("Problem removing metadata", e);
             throw new LBInvocationException("Unexpected error removing metadata", id);
