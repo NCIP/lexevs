@@ -2,6 +2,7 @@ package org.lexevs.dao.index.service.metadata;
 
 import java.net.URI;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.MetadataPropertyList;
 import org.apache.lucene.search.Query;
 import org.lexevs.dao.index.access.IndexDaoManager;
@@ -12,6 +13,10 @@ public class LuceneMetadataIndexService implements MetadataIndexService {
 	private MetadataIndexCreator metadataIndexCreator;
 	
 	private IndexDaoManager indexDaoManager;
+	
+	public AbsoluteCodingSchemeVersionReferenceList listCodingSchemes() {
+		return indexDaoManager.getMetadataDao().listCodingSchemes();
+	}
 	
 	@Override
 	public void indexMetadata(String codingSchemeUri,
