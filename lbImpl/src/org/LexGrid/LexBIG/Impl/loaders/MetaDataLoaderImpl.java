@@ -24,37 +24,23 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
-import java.sql.SQLException;
-import java.util.Date;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
-import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.Impl.loaders.metadata.OBOMetaDataLoader;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
-import org.apache.commons.lang.BooleanUtils;
 import org.jdom.input.SAXBuilder;
-import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
-import org.lexevs.dao.index.connection.IndexInterface;
-import org.lexevs.exceptions.MissingResourceException;
-import org.lexevs.registry.service.Registry;
-import org.lexevs.system.ResourceManager;
+import org.lexevs.locator.LexEvsServiceLocator;
 
-import edu.mayo.informatics.indexer.api.IndexerService;
-import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
-import edu.mayo.informatics.indexer.utility.MetaData;
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
-import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
-import edu.mayo.informatics.lexgrid.convert.formats.Option;
+import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
+import edu.mayo.informatics.lexgrid.convert.options.StringOption;
 import edu.mayo.informatics.lexgrid.convert.utility.ManifestUtil;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
@@ -68,10 +54,17 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
     private static final long serialVersionUID = -205479865592766865L;
     public final static String name = "MetaDataLoader";
     private final static String description = "This loader loads metadata xml files into the system.";
-    private ManifestUtil manifestUtil_ = null;
+    
+    private static String URI_OPTION = "URI";
+    private static String VERSION_OPTION = "Version";
+    private static String OVERWRITE_OPTION = "Overwrite Existing";
+    
 
     public MetaDataLoaderImpl() {
        super();
+       this.setDoComputeTransitiveClosure(false);
+       this.setDoIndexing(false);
+       this.setDoRegister(false);
     }
 
     protected ExtensionDescription buildExtensionDescription(){
@@ -156,249 +149,32 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
 
     }
 
-    private class DoConversion implements Runnable {
-        URI source_;
-        AbsoluteCodingSchemeVersionReference lacsvr_;
-        boolean overwrite_;
-
-        public DoConversion(URI source, AbsoluteCodingSchemeVersionReference codingSchemeVersion, boolean overwrite) {
-            source_ = source;
-            lacsvr_ = codingSchemeVersion;
-            overwrite_ = overwrite;
-        }
-
-        public void run() {
-            try {
-
-                getLogger().info("Loading the OBO MetaData");
-                new OBOMetaDataLoader(lacsvr_.getCodingSchemeURN(), lacsvr_.getCodingSchemeVersion(), source_, false,
-                        true, true, true, !overwrite_);
-                getLogger().info("Finished loading the Metadata");
-                getStatus().setState(ProcessState.COMPLETED);
-                getLogger().info("Load process completed without error");
-            } catch (Exception e) {
-                getStatus().setState(ProcessState.FAILED);
-                getLogger().fatal("Failed while running the conversion", e);
-
-            } finally {
-                if (getStatus().getState() == null || getStatus().getState().equals(ProcessState.COMPLETED)) {
-                    getStatus().setState(ProcessState.FAILED);
-                }
-                getStatus().setEndTime(new Date(System.currentTimeMillis()));
-                inUse = false;
-            }
-        }
-    }
-
-    private class LoadManifest implements Runnable {
-
-        CodingSchemeManifest manifest_;
-        AbsoluteCodingSchemeVersionReference currentURNVersion_;
-        AbsoluteCodingSchemeVersionReference newURNVersion_ = new AbsoluteCodingSchemeVersionReference();
-
-        SQLInterface sqlInterface;
-        String tablePrefix;
-        MessageDirector message_ = null;
-
-        public LoadManifest(CodingSchemeManifest source, AbsoluteCodingSchemeVersionReference codingSchemeVersion,
-                MessageDirector md) {
-            manifest_ = source;
-            currentURNVersion_ = codingSchemeVersion;
-            message_ = md;
-        }
-
-        public void run() {
-
-            message_.info("Start Time : " + new Date(System.currentTimeMillis()));
-            try {
-
-                String urn = currentURNVersion_.getCodingSchemeURN();
-                String version = currentURNVersion_.getCodingSchemeVersion();
-
-                boolean overrideURN = 
-                    (manifest_.getCodingSchemeURI() != null
-                        ? BooleanUtils.toBoolean(manifest_.getCodingSchemeURI().getToOverride())
-                        : false);
-                boolean overrideVersion =
-                    (manifest_.getRepresentsVersion() != null
-                        ? BooleanUtils.toBoolean(manifest_.getRepresentsVersion().getToOverride())
-                        : false);
-
-                if (overrideURN) {
-                    newURNVersion_.setCodingSchemeURN(manifest_.getCodingSchemeURI().getContent());
-                } else {
-                    newURNVersion_.setCodingSchemeURN(urn);
-                }
-
-                if (overrideVersion) {
-                    newURNVersion_.setCodingSchemeVersion(manifest_.getRepresentsVersion().getContent());
-                } else {
-                    newURNVersion_.setCodingSchemeVersion(version);
-                }
-
-                /* -Check if supplied urn version is valid- */
-                try {
-                    ResourceManager.instance()
-                    .getInternalCodingSchemeNameForUserCodingSchemeName(urn, version);
-
-                } catch (LBParameterException e1) {
-                    message_.fatalAndThrowException("Supplied Coding Scheme URN Version pair is not valid.");
-
-                }
-
-                /* -Check if ontology with same URN and Version already exists.- */
-                try {
-                    if ((!urn.equals(newURNVersion_.getCodingSchemeURN()) && overrideURN)
-                            || (!version.equals(newURNVersion_.getCodingSchemeVersion()) && overrideVersion)) {
-
-                        String codingScheme = ResourceManager.instance()
-                        .getInternalCodingSchemeNameForUserCodingSchemeName(
-                                newURNVersion_.getCodingSchemeURN(), newURNVersion_.getCodingSchemeVersion());
-                        if (codingScheme != null) {
-                            message_
-                            .fatalAndThrowException("An ontology with the URN and Version specified in manifest is already loaded.");
-                        }
-
-                    }
-
-                } catch (LBParameterException e1) {
-                    // do nothing
-                }
-
-                /*-Get JDBCConnectionDescriptor, tablePrefix & currentURNVersion-*/
-                String internalVersion = null;
-                String internalCSName = null;
-
-                try {
-                    internalVersion = ResourceManager.instance().getInternalVersionStringForTag(
-                            currentURNVersion_.getCodingSchemeURN(), null);
-                    internalCSName = ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(
-                            currentURNVersion_.getCodingSchemeURN(), internalVersion);
-
-                } catch (LBParameterException e1) {
-                    message_
-                    .fatalAndThrowException("Exception occured while obtaining internalVersion and internal codingscheme: "
-                            + e1.getMessage());
-                }
-
-                String tablePrefix = null;
-
-                try {
-
-                    sqlInterface = ResourceManager.instance().getSQLInterface(internalCSName, internalVersion);
-
-                } catch (MissingResourceException e) {
-                    message_
-                    .fatalAndThrowException("Exception occured while obtaining sqlInterface: " + e.getMessage());
-                }
-
-                //sqlConfig = sqlInterface.getConnectionDescriptor();
-                tablePrefix = sqlInterface.getTablePrefix();
-
-                URNVersionPair currentURNVersion = new URNVersionPair(urn, version);
-
-                /* --------------------- Apply Manifest ---------------------- */
-                message_.info("Applying manifest entries to the coding scheme...");
-                try {
-
-                    manifestUtil_.applyManifest(manifest_, currentURNVersion);
-
-                } catch (LgConvertException e) {
-                    message_.fatalAndThrowException("Exception occured while applying manifest: " + e.getMessage());
-                } catch (SQLException e) {
-                    message_.fatalAndThrowException("Exception occured while applying manifest: " + e.getMessage());
-                }
-
-                message_.info("Coding scheme is updated with manifest entries.");
-
-                boolean urnChanged = !urn.equals(newURNVersion_.getCodingSchemeURN()) && overrideURN;
-                boolean versionChanged = !version.equals(newURNVersion_.getCodingSchemeVersion()) && overrideVersion;
-
-                /*-------- Update Registry if urn or version changed --------*/
-                if (urnChanged || versionChanged) {
-                    message_.info("Updating registry.xml...");
-                    
-                    //TODO: do this update for the new 6.0 database registry
-                    /*
-                    Registry reg = ResourceManager.instance().getRegistry();
-                    try {
-
-                        reg.updateURNVersion(currentURNVersion_, newURNVersion_);
-                        ResourceManager.reInit(null);
-
-                    } catch (LBInvocationException e) {
-                        message_.error("Exception occured while updating registry: " + e.getMessage());
-                    } catch (LBParameterException e) {
-                        message_.error("Exception occured while updating registry: " + e.getMessage());
-                    }
-
-                    message_.info("Finished updating registry.xml...");
-                    */
-                }
-
-                /*-------- Update Index Metadata if version changed --------*/
-                if (versionChanged) {
-                    message_.info("Updating index metadata...");
-                    IndexInterface indexInterface = ResourceManager.instance().getMetaDataIndexInterface();
-                    IndexerService indexService = indexInterface.getBaseIndexerService();
-                    try {
-                        MetaData metadata = indexService.getMetaData();
-                        String[] keys = metadata.getIndexMetaDataKeys();
-
-                        for (int i = 0; i < keys.length; i++) {
-                            if (keys[i].startsWith(internalCSName) && keys[i].endsWith(internalVersion)) {
-                                String indexName = metadata.getIndexMetaDataValue(keys[i]);
-
-                                // Remove old header mapping from scheme/version to index name,
-                                // and the version within the index section ...
-                                metadata.removeIndexMetaDataValue(keys[i]);
-                                metadata.removeIndexMetaDataValue(indexName, internalVersion);
-
-                                // Add the new header and version entry ...
-                                String newVersion = newURNVersion_.getCodingSchemeVersion();
-                                metadata.setIndexMetaDataValue(internalCSName + "[:]" + newVersion, indexName);
-                                metadata.setIndexMetaDataValue(indexName, "version", newVersion);
-
-                                // Force refresh of cached resource info ...
-                                try {
-                                    ResourceManager.reInit(null);
-                                } catch (Exception e) {
-                                }
-                                break;
-                            }
-                        }
-                    } catch (InternalErrorException e) {
-                        message_.error("Exception occured updating index metadata : " + e.getMessage());
-                    }
-
-                    message_.info("Finished updating index metadata...");
-                }
-
-                getStatus().setState(ProcessState.COMPLETED);
-
-                message_.info("Manifest process completed without error!");
-
-            } catch (Exception e) {
-                message_.fatal("Load failed due to exception." + e.getMessage());
-
-            } finally {
-                if (getStatus().getState() == null || getStatus().getState().equals(ProcessState.COMPLETED)) {
-                    getStatus().setState(ProcessState.FAILED);
-                }
-                getStatus().setEndTime(new Date(System.currentTimeMillis()));
-                inUse = false;
-            }
-        }
-    }
-
     @Override
     protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+        holder.getStringOptions().add(new StringOption(URI_OPTION));
+        holder.getStringOptions().add(new StringOption(VERSION_OPTION));
+        
+        holder.getBooleanOptions().add(new BooleanOption(OVERWRITE_OPTION, false));
         return holder;
     }
 
     @Override
     protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        try {
+            LexEvsServiceLocator.getInstance().
+            getIndexServiceManager().
+            getMetadataIndexService().indexMetadata(
+                    this.getOptions().getStringOption(URI_OPTION).getOptionValue(), 
+                    this.getOptions().getStringOption(VERSION_OPTION).getOptionValue(), 
+                    this.getResourceUri(), 
+                    this.getOptions().getBooleanOption(OVERWRITE_OPTION).getOptionValue());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+        return new URNVersionPair[] {new URNVersionPair(
+                    this.getOptions().getStringOption(URI_OPTION).getOptionValue(),
+                    this.getOptions().getStringOption(VERSION_OPTION).getOptionValue()
+        )};
     }
 }
