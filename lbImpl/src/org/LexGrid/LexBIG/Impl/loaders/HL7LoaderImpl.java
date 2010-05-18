@@ -86,7 +86,7 @@ public class HL7LoaderImpl extends BaseLoader implements HL7_Loader {
             LBInvocationException {
 
         this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
-        this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(async);
+        this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
         
         try {
             this.load(new URI(dbName));
