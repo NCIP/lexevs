@@ -38,6 +38,8 @@ public interface CodedNodeSet extends Serializable {
 
     public enum ActiveOption { ACTIVE_ONLY, INACTIVE_ONLY, ALL }
     
+    public enum AnonymousOption { ANONYMOUS_ONLY, NON_ANONYMOUS_ONLY, ALL }
+    
     public enum PropertyType { 
     	COMMENT(PropertyTypes.COMMENT.toString()), 
     	DEFINITION(PropertyTypes.DEFINITION.toString()), 
@@ -651,6 +653,8 @@ public interface CodedNodeSet extends Serializable {
 	 */
 	CodedNodeSet restrictToStatus(ActiveOption activeOption, String[] status)
 			throws LBInvocationException,LBParameterException;
+	
+	CodedNodeSet restrictToAnonymous(AnonymousOption anonymousOption) throws LBInvocationException, LBParameterException;
 
 	/**
 	 * Return the set union of all of the codes in the containing or the
