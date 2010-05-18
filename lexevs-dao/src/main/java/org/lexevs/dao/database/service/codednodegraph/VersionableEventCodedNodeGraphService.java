@@ -61,6 +61,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
 				listCodeRelationships(
 						codingSchemeUid, 
+						relationsContainerName,
 						sourceEntityCode, 
 						sourceEntityCodeNamespace, 
 						targetEntityCode, 

@@ -40,6 +40,7 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 	
 	public List<String> listCodeRelationships(
 			String codingSchemeUid,
+			String relationsContainerName,
 			String sourceEntityCode,
 			String sourceEntityCodeNamespace, 
 			String targetEntityCode,

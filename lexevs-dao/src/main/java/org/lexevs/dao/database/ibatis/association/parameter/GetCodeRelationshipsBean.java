@@ -9,6 +9,7 @@ import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.Qualifier
 public class GetCodeRelationshipsBean extends PrefixedTableParameterBean {
 	
 	private String codingSchemeUid;
+	private String relationsContainerName;
 	private String sourceCode;
 	private String sourceNamespace;
 	private String targetCode;
@@ -93,5 +94,11 @@ public class GetCodeRelationshipsBean extends PrefixedTableParameterBean {
 	}
 	public void setUseTransitive(boolean useTransitive) {
 		this.useTransitive = useTransitive;
+	}
+	public void setRelationsContainerName(String relationsContainerName) {
+		this.relationsContainerName = relationsContainerName;
+	}
+	public String getRelationsContainerName() {
+		return relationsContainerName;
 	}	
 }

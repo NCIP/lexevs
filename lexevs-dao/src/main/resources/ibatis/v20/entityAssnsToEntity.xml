@@ -345,12 +345,9 @@
 		WHERE
 			rel.codingSchemeGuid = #codingSchemeUid#
 
-		<isPropertyAvailable property="associationPredicateUid">
-			<isNotNull property="associationPredicateUid" prepend="AND">
-			ap.associationPredicateGuid = #associationPredicateUid#
-			</isNotNull>
-		</isPropertyAvailable>
-
+		<isNotNull property="relationsContainerName" prepend="AND">
+			rel.containerName = #relationsContainerName#
+		</isNotNull>
 		
 		<isNotEmpty property="associations" prepend="AND">
 			(

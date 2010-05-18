@@ -75,7 +75,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		List<String> rels = ibatisCodedNodeGraphDao.
-			listCodeRelationships("cs-guid", "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, false);
+			listCodeRelationships("cs-guid", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, false);
 			
 		
 		assertEquals(1, rels.size());
@@ -121,7 +121,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				" 't-ns1')");
 		
 		List<String> rels = ibatisCodedNodeGraphDao.
-			listCodeRelationships("cs-guid", "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, true);
+			listCodeRelationships("cs-guid", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, true);
 			
 		assertEquals(2, rels.size());
 		assertTrue(rels.contains("ap-guid"));
