@@ -44,6 +44,7 @@ import org.LexGrid.LexBIG.Impl.Extensions.Sort.MatchToQuerySort;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Difference;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.GetAllConcepts;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Intersect;
+import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToAnonymous;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToCodes;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToEntityTypes;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToMatchingDesignations;
@@ -702,6 +703,21 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             throw new LBInvocationException("Unexpected Internal Error", logId);
         }
     }
+    
+    @Override
+    public CodedNodeSet restrictToAnonymous(AnonymousOption anonymousOption) 
+        throws LBInvocationException, LBParameterException {
+        getLogger().logMethod(new Object[] { anonymousOption });
+        try {
+            pendingOperations_.add(new RestrictToAnonymous(anonymousOption));
+            return this;
+        } catch (LBParameterException e) {
+            throw e;
+        } catch (Exception e) {
+            String logId = getLogger().error("Unexpected Error", e);
+            throw new LBInvocationException("Unexpected Internal Error", logId);
+        }
+    }
 
     /*
      * Run all of the stacked up operations.
@@ -729,6 +745,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                     booleanQuery.add(query, Occur.MUST);
                     this.combinedQuery.add(booleanQuery);
                 } else if(operation instanceof RestrictToStatus ||
+                        operation instanceof RestrictToAnonymous ||
                         operation instanceof RestrictToCodes ||
                         operation instanceof RestrictToEntityTypes){
                     Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString);   

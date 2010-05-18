@@ -26,6 +26,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToAnonymous;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToCodes;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToEntityTypes;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToMatchingDesignations;
@@ -34,6 +35,7 @@ import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToProperties;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToStatus;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
@@ -108,6 +110,7 @@ public class RestrictionImplementations {
             PropertyType[] propertyType = null;
             String[] conceptStatus = null;
             ActiveOption activeOption = null;
+            AnonymousOption anonymousOption = null;
             String[] entityTypes = null;
 
             if (restriction instanceof RestrictToMatchingDesignations) {
@@ -144,6 +147,10 @@ public class RestrictionImplementations {
                 activeOption = temp.getActiveOption();
                 conceptStatus = temp.getStatus();
                 
+            } else if (restriction instanceof RestrictToAnonymous) {
+                RestrictToAnonymous temp = (RestrictToAnonymous) restriction;
+                anonymousOption = temp.getAnonymousOption();
+                
             } else if (restriction instanceof RestrictToEntityTypes) {
                 RestrictToEntityTypes temp = (RestrictToEntityTypes) restriction;
                 entityTypes = temp.getTypeList();
@@ -177,6 +184,16 @@ public class RestrictionImplementations {
                 }
             }
 
+            if (anonymousOption != null) {
+                if (anonymousOption.equals(AnonymousOption.ANONYMOUS_ONLY)) {
+                    masterQuery.add(new BooleanClause(new TermQuery(new Term("isAnonymous", "T")),
+                            Occur.MUST));
+                } else if (anonymousOption.equals(AnonymousOption.NON_ANONYMOUS_ONLY)) {
+                    masterQuery.add(new BooleanClause(new TermQuery(new Term("isAnonymous", "T")),
+                            Occur.MUST_NOT));
+                }
+            }
+            
             if (conceptStatus != null && conceptStatus.length > 0) {
                 BooleanQuery nestedQuery = new BooleanQuery();
 
