@@ -213,7 +213,7 @@ public abstract class LuceneLoaderCode {
      * @throws Exception the exception
      */
     protected void addEntity(String codingSchemeName, String codingSchemeId, String codingSchemeVersion, String entityId, String entityNamespace, String entityType,
-            String entityDescription, String propertyType, String propertyName, String propertyValue, Boolean isActive,
+            String entityDescription, String propertyType, String propertyName, String propertyValue, Boolean isActive, Boolean isAnonymous,
             String format, String language, Boolean isPreferred, String conceptStatus, String propertyId,
             String degreeOfFidelity, Boolean matchIfNoContext, String representationalForm, String[] sources,
             String[] usageContexts, Qualifier[] qualifiers, String indexName) throws Exception {
@@ -319,6 +319,17 @@ public abstract class LuceneLoaderCode {
 
             fields.append("isActive ");
         }
+        
+        if (isAnonymous != null) {
+            if (isAnonymous.booleanValue()) {
+                generator_.addTextField("isAnonymous", "T", store(), true, false);
+            } else {
+                generator_.addTextField("isAnonymous", "F", store(), true, false);
+            }
+
+            fields.append("isAnonymous ");
+        }
+        
         if (isPreferred != null) {
             if (isPreferred.booleanValue()) {
                 generator_.addTextField("isPreferred", "T", store(), true, false);

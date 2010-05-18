@@ -168,6 +168,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 				prop.getPropertyName(), 
 				prop.getValue().getContent(), 
 				entity.getIsActive(), 
+				entity.getIsAnonymous(),
 				prop.getValue().getDataType(), 
 				prop.getLanguage(),
 				isPreferred,
