@@ -10,6 +10,7 @@ import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
+import org.lexevs.dao.database.ibatis.association.parameter.GetCodeRelationshipsBean;
 import org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsBean;
 import org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCountBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
@@ -37,7 +38,41 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	private static String GET_TARGET_NODES_OF_SOURCE_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTargetsOfSource";
 	private static String GET_TAIL_ENTITY_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTailEntityAssnsToEntityUids";
 	private static String GET_ROOT_ENTITY_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getRootEntityAssnsToEntityUids";
-	
+	private static String GET_CODE_RELATIONSHIPS_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getCodeRelationships";
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> listCodeRelationships(
+			String codingSchemeUid,
+			String sourceEntityCode, String sourceEntityCodeNamespace,
+			String targetEntityCode, String targetEntityCodeNamespace,
+			List<String> associationNames,
+			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveSourceCodes,
+			List<CodeNamespacePair> mustHaveTargetCodes,
+			List<String> mustHaveSourceNamespace,
+			List<String> mustHaveTargetNamespace,
+			boolean useTransitive) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
+		
+		GetCodeRelationshipsBean bean = new GetCodeRelationshipsBean();
+		bean.setPrefix(prefix);
+		bean.setCodingSchemeUid(codingSchemeUid);
+		bean.setSourceCode(sourceEntityCode);
+		bean.setSourceNamespace(sourceEntityCodeNamespace);
+		bean.setTargetCode(targetEntityCode);
+		bean.setTargetNamespace(targetEntityCodeNamespace);
+		bean.setAssociations(associationNames);
+		bean.setAssociationQualifiers(associationQualifiers);
+		bean.setMustHaveSourceCodes(mustHaveSourceCodes);
+		bean.setMustHaveTargetCodes(mustHaveTargetCodes);
+		bean.setMustHaveSourceNamespaces(mustHaveSourceNamespace);
+		bean.setMustHaveTargetNamespaces(mustHaveTargetNamespace);
+		bean.setUseTransitive(useTransitive);
+		
+		return this.getSqlMapClientTemplate().queryForList(GET_CODE_RELATIONSHIPS_SQL, bean);
+	}
+
 	@Override
 	public Map<String,Integer> getTripleUidsContainingObjectCount(
 			String codingSchemeUid,
