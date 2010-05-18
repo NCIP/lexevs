@@ -22,6 +22,7 @@ import java.io.Writer;
 
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.proxy.CastorProxy;
 import org.castor.xml.XMLProperties;
 import org.exolab.castor.xml.Marshaller;
 
@@ -49,7 +50,7 @@ public class XmlContentWriter {
 	    ns_marshaller.setSuppressXSIType(false);
 	    ns_marshaller.setValidation(true);
 //	    ns_marshaller.setEncoding("UTF-8");
-//	    ns_marshaller.setProperty(XMLProperties.PROXY_INTERFACES, CastorProxy.class.getCanonicalName());
+	    ns_marshaller.setProperty(XMLProperties.PROXY_INTERFACES, CastorProxy.class.getCanonicalName());
 	    ns_marshaller.setNamespaceMapping("lgBuiltin", LexGridConstants.lgBuiltin);
 	    ns_marshaller.setNamespaceMapping("lgCommon", LexGridConstants.lgCommon);
 	    ns_marshaller.setNamespaceMapping("lgCon", LexGridConstants.lgCon);
@@ -59,7 +60,7 @@ public class XmlContentWriter {
 	    ns_marshaller.setNamespaceMapping("lgVD", LexGridConstants.lgVD);
 	    ns_marshaller.setNamespaceMapping("lgVer", LexGridConstants.lgVer);
 	    ns_marshaller.setNamespaceMapping("xsi", LexGridConstants.lgXSI);  // mct
-
+	    ns_marshaller.setInternalContext(ns_marshaller.getInternalContext());
 	}
 	
 	

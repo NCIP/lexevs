@@ -32,6 +32,7 @@ import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.lexevs.dao.database.ibatis.entity.model.IdableEntity;
+import org.springframework.beans.BeanUtils;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
 
@@ -130,10 +131,6 @@ public class LexGridMarshalListener implements MarshalListener
 			System.out.println("PRE: Entity count = " + entities.getEntityCount());
 		}
 		
-//		if(IdableEntity.class.equals(arg0.getClass()) == true) {
-//		    return false;
-//		}
-		
 		//if((Entity.class.equals(arg0.getClass()) == true)||(IdableEntity.class.equals(arg0.getClass()) == true))
 		if((Entity.class.equals(arg0.getClass()) == true))
 		{
@@ -175,8 +172,8 @@ public class LexGridMarshalListener implements MarshalListener
     						    if (curEntity.getEntityCode().startsWith("@"))
     						        continue;
     						    
-    						    Entity transferredEntity = transferEntity(curEntity);
-    						    // Entity transferredEntity = (Entity)curEntity;
+    						    // Entity transferredEntity = transferEntity(curEntity);
+    						    Entity transferredEntity = curEntity;
     						    
     						    if (transferredEntity == null)
     						        continue;
@@ -271,13 +268,16 @@ public class LexGridMarshalListener implements MarshalListener
 		
 		return true;
 	}
-	
+
+	/*
 	private Entity transferEntity(Entity curEntity)
 	{
+	    Entity newEntity = new Entity();
+	    BeanUtils.copyProperties(curEntity, newEntity);
 	    if (curEntity == null)
 	        return null;
 	    
-	    Entity temp = new Entity();
+	    Entity temp = new IdableEntity();
 	    temp.setEntityCode(curEntity.getEntityCode());
 	    temp.setEntityDescription(curEntity.getEntityDescription());
 	    temp.setEntityCodeNamespace(curEntity.getEntityCodeNamespace());
@@ -323,6 +323,7 @@ public class LexGridMarshalListener implements MarshalListener
 	    
 	    return temp;
 	}
+	*/
 	
 	private void processAssociationList(AssociationList _asl, AssociationPredicate _asp) 
 	{
