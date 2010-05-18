@@ -346,7 +346,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 			
 			rcrList = cns.resolveToList(null, null, null, null, false, 1024);
 			
-			assertTrue(rcrList.getResolvedConceptReferenceCount() == 8);
+			assertTrue(rcrList.getResolvedConceptReferenceCount() == 4);
 			
 			for (int i = 0; i < rcrList.getResolvedConceptReferenceCount(); i++)
 			{
@@ -354,11 +354,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 				assertTrue(rcr.getCode().equalsIgnoreCase("FAO:0001014")
 						|| rcr.getCode().equalsIgnoreCase("FAO:0001013")
 						|| rcr.getCode().equalsIgnoreCase("FAO:0001004")
-						|| rcr.getCode().equalsIgnoreCase("FAO:0001003")
-						|| rcr.getCode().equalsIgnoreCase("FAO:0001020")
-						|| rcr.getCode().equalsIgnoreCase("FAO:0001017")
-						|| rcr.getCode().equalsIgnoreCase("FAO:0001012")
-						|| rcr.getCode().equalsIgnoreCase("FAO:0001015"));				
+						|| rcr.getCode().equalsIgnoreCase("FAO:0001003"));				
 			}
 		}		
 	}
@@ -475,12 +471,12 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		assertTrue(rvdDef.getValueDomainName().equals("Ford"));
 		
 		Set<String> codes = new HashSet<String>();
-		int i = 0;
 		while (rvdDef.getResolvedConceptReferenceIterator().hasNext())
 		{
 			ResolvedConceptReference rcr = rvdDef.getResolvedConceptReferenceIterator().next();
 			codes.add(rcr.getCode());
 		}
+		
 		assertTrue(codes.size() == 5);
 		assertTrue(codes.contains("F150"));
 		assertTrue(codes.contains("Windsor"));
@@ -511,19 +507,18 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		assertTrue(codes.contains("Ford"));
 		
 		//***************------------------*****************************
-		rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:FA:HyphaInMycelium"), null, null);
+		rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:FA:hyphaLeafOnly"), null, null);
         
         codes = new HashSet<String>();
         while (rvdDef.getResolvedConceptReferenceIterator().hasNext())
         {
             ResolvedConceptReference rcr = rvdDef.getResolvedConceptReferenceIterator().next();
             codes.add(rcr.getCode());
-            System.out.println("rcr.getCodes() : " + rcr.getCode());
         }
-        System.out.println("codes.size : " + codes.size());
-//        assertTrue("Size: " + codes.size(), codes.size() == 3);
-//        assertTrue(codes.contains("GM"));
-//        assertTrue(codes.contains("Chevy"));
+        assertTrue("Size: " + codes.size(), codes.size() == 3);
+        assertTrue(codes.contains("FAO:0001018"));
+        assertTrue(codes.contains("FAO:0001014"));
+        assertTrue(codes.contains("FAO:0001013"));
         codes.clear();
         
 		rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:DomasticLeafOnly"), null, LBConstants.KnownTags.PRODUCTION.name());
