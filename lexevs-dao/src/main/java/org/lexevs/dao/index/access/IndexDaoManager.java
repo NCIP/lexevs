@@ -21,12 +21,12 @@ package org.lexevs.dao.index.access;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.lexevs.dao.index.access.entity.EntityDao;
+import org.lexevs.dao.index.access.metadata.MetadataDao;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
+import org.springframework.util.Assert;
 
 import edu.mayo.informatics.indexer.api.IndexerService;
 
@@ -39,6 +39,9 @@ public class IndexDaoManager {
 
 	/** The entity daos. */
 	private List<EntityDao> entityDaos;
+	
+	/** The entity daos. */
+	private List<MetadataDao> metadataDaos;
 	
 	/** The indexer service. */
 	private IndexerService indexerService;
@@ -58,6 +61,12 @@ public class IndexDaoManager {
 		return this.doGetDao(codingSchemeUri, version, this.getEntityDaos());
 	}
 	
+	public MetadataDao getMetadataDao(){
+		Assert.state(this.entityDaos.size() == 1, "Currently Metadata Daos are not Versionaable.");
+		
+		return this.metadataDaos.get(0);
+	}
+	
 	/**
 	 * Do get dao.
 	 * 
@@ -68,7 +77,7 @@ public class IndexDaoManager {
 	 * @return the t
 	 */
 	protected <T extends LexEvsIndexFormatVersionAwareDao> T doGetDao(String codingSchemeUri, String version, List<T> daos){
-		Assert.assertNotNull("No DAOs have been registered for the requested type.", daos);	
+		Assert.notEmpty(daos, "No DAOs have been registered for the requested type.");	
 		return getCorrectDaoForIndexVersion(daos, 
 				getLexGridSchemaVersion(codingSchemeUri, version));
 	}
@@ -113,11 +122,11 @@ public class IndexDaoManager {
 			}
 		}
 		
-		Assert.assertTrue("No matching DAO for Index Version: " +
-				indexVersion, foundDaos.size() > 0);	
+		Assert.state(foundDaos.size() > 0, "No matching DAO for Index Version: " +
+				indexVersion);	
 		
-		Assert.assertTrue("More than one matching DAO for: " +
-				foundDaos.get(0).getClass().getName(), foundDaos.size() < 2);
+		Assert.state(foundDaos.size() < 2, "More than one matching DAO for: " +
+				foundDaos.get(0).getClass().getName());
 		
 		return foundDaos.get(0);
 	}
@@ -176,5 +185,13 @@ public class IndexDaoManager {
 	 */
 	public SystemResourceService getSystemResourceService() {
 		return systemResourceService;
+	}
+
+	public void setMetadataDaos(List<MetadataDao> metadataDaos) {
+		this.metadataDaos = metadataDaos;
+	}
+
+	public List<MetadataDao> getMetadataDaos() {
+		return metadataDaos;
 	}
 }
