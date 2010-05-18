@@ -9,6 +9,17 @@ import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssoci
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 
 public interface CodedNodeGraphService {
+	
+	public List<String> listCodeRelationships(
+			String codingSchemeUri,
+			String codingSchemeVersion,
+			String relationsContainerName,
+			String sourceEntityCode,
+			String sourceEntityCodeNamespace, 
+			String targetEntityCode,
+			String targetEntityCodeNamespace, 
+			GraphQuery query,
+			boolean useTransitive);
 
 	public List<ConceptReference> getRootConceptReferences(
 			String codingSchemeUri,

@@ -43,6 +43,50 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 
 	@Override
 	@Transactional
+	public List<String> listCodeRelationships(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			String relationsContainerName,
+			String sourceEntityCode, 
+			String sourceEntityCodeNamespace,
+			String targetEntityCode, 
+			String targetEntityCodeNamespace,
+			GraphQuery query, 
+			boolean useTransitive) {
+		List<String> returnList = new ArrayList<String>();
+		
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		List<String> associationPredicateUids = this.getDaoManager().
+			getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
+				listCodeRelationships(
+						codingSchemeUid, 
+						sourceEntityCode, 
+						sourceEntityCodeNamespace, 
+						targetEntityCode, 
+						targetEntityCodeNamespace, 
+						query.getRestrictToAssociations(), 
+						query.getRestrictToAssociationsQualifiers(), 
+						DaoUtility.toCodeNamespacePair(query.getRestrictToSourceCodes()), 
+						DaoUtility.toCodeNamespacePair(query.getRestrictToTargetCodes()), 
+						query.getRestrictToSourceCodeSystem(), 
+						query.getRestrictToTargetCodeSystem(), 
+						useTransitive);
+		
+		
+		AssociationDao associationDao = 
+			this.getDaoManager().getAssociationDao(codingSchemeUri, codingSchemeVersion);
+		
+		for(String uid : associationPredicateUids) {
+			returnList.add(
+					associationDao.getAssociationPredicateNameForUId(codingSchemeUid, uid));
+		}
+		
+		return returnList;
+	}
+
+	@Override
+	@Transactional
 	public AssociatedConcept getAssociatedConceptFromUidSource(
 			String codingSchemeUri, 
 			String codingSchemeVersion,
