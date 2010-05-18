@@ -20,6 +20,8 @@ package org.LexGrid.LexBIG.Impl.function.query;
 
 // LexBIG Test ID: T1_FNC_31	TestEnumerateRelationships
 
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
@@ -47,32 +49,13 @@ public class TestEnumerateRelationships extends LexBIGServiceTestCase {
         ConceptReference ref5 = ConvenienceMethods.createConceptReference("C0001", AUTO_SCHEME);
         ConceptReference ref6 = ConvenienceMethods.createConceptReference("Tires", "ExpendableParts");
 
-        ConceptReference[] cr = cng.listCodeRelationships(ref4, ref5, true).getConceptReference();
+        List<String> assocs = cng.listCodeRelationships(ref4, ref5, true);
 
-        assertTrue(contains(cr, new String[] { "hasSubtype" }));
+        assertTrue(assocs.contains("hasSubtype"));
 
-        cr = cng.listCodeRelationships(ref4, ref6, false).getConceptReference();
+        assocs = cng.listCodeRelationships(ref4, ref6, false);
 
-        assertTrue(contains(cr, new String[] { "uses" }));
+        assertTrue(assocs.contains("uses"));
 
-    }
-
-    private boolean contains(ConceptReference[] cr, String[] associations) {
-        if (cr.length != associations.length) {
-            return false;
-        }
-        for (int i = 0; i < cr.length; i++) {
-            boolean found = false;
-            for (int j = 0; j < associations.length; j++) {
-                if (cr[i].getConceptCode().equals(associations[j])) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                return false;
-            }
-        }
-        return true;
     }
 }

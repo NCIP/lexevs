@@ -18,6 +18,8 @@
  */
 package org.LexGrid.LexBIG.Impl;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
@@ -219,43 +221,43 @@ public class CodedNodeGraphImplTest extends TestCase {
     public void testListCodeRelationships() throws LBException {
         CodedNodeGraph cng = lbsi.getNodeGraph("Automobiles", null, "relations");
 
-        ConceptReference[] cr = cng.listCodeRelationships(Constructors.createConceptReference("005", "Automobiles"),
-                Constructors.createConceptReference("Ford", "Automobiles"), false).getConceptReference();
+        List<String> cr = cng.listCodeRelationships(Constructors.createConceptReference("005", "Automobiles"),
+                Constructors.createConceptReference("Ford", "Automobiles"), false);
 
-        assertTrue(cr.length == 1);
+        assertTrue(cr.size() == 1);
         // Yes, has subtype should come back with the global oid for hasSubtype.
-        assertTrue(contains(cr, "hasSubtype", "urn:oid:1.3.6.1.4.1.2114.108.1.8.1"));
+        assertTrue(cr.contains("hasSubtype"));
 
         // transitive flag switched
         cr = cng.listCodeRelationships(Constructors.createConceptReference("005", "Automobiles"),
-                Constructors.createConceptReference("Ford", "Automobiles"), true).getConceptReference();
+                Constructors.createConceptReference("Ford", "Automobiles"), true);
 
-        assertTrue(cr.length == 1);
+        assertTrue(cr.size() == 1);
         // Yes, has subtype should come back with the global oid for hasSubtype.
-        assertTrue(contains(cr, "hasSubtype", "urn:oid:1.3.6.1.4.1.2114.108.1.8.1"));
+        assertTrue(cr.contains("hasSubtype"));
 
         cr = cng.listCodeRelationships(Constructors.createConceptReference("005", "Automobiles"),
-                Constructors.createConceptReference("Jaguar", "Automobiles"), false).getConceptReference();
+                Constructors.createConceptReference("Jaguar", "Automobiles"), false);
 
-        assertTrue(cr.length == 1);
+        assertTrue(cr.size() == 1);
         // Yes, has subtype should come back with the global oid for hasSubtype.
-        assertTrue(contains(cr, "hasSubtype", "urn:oid:1.3.6.1.4.1.2114.108.1.8.1"));
+        assertTrue(cr.contains("hasSubtype"));
 
         // transitive flag switched
         cr = cng.listCodeRelationships(Constructors.createConceptReference("005", "Automobiles"),
-                Constructors.createConceptReference("Jaguar", "Automobiles"), 2).getConceptReference();
+                Constructors.createConceptReference("Jaguar", "Automobiles"), 2);
 
-        assertTrue(cr.length == 1);
-
-        cr = cng.listCodeRelationships(Constructors.createConceptReference("005", "Automobiles"),
-                Constructors.createConceptReference("Jaguar", "Automobiles"), 1).getConceptReference();
-
-        assertTrue(cr.length == 0);
+        assertTrue(cr.size() == 1);
 
         cr = cng.listCodeRelationships(Constructors.createConceptReference("005", "Automobiles"),
-                Constructors.createConceptReference("Jaguar", "Automobiles"), 3).getConceptReference();
+                Constructors.createConceptReference("Jaguar", "Automobiles"), 1);
 
-        assertTrue(cr.length == 0);
+        assertTrue(cr.size() == 0);
+
+        cr = cng.listCodeRelationships(Constructors.createConceptReference("005", "Automobiles"),
+                Constructors.createConceptReference("Jaguar", "Automobiles"), 3);
+
+        assertTrue(cr.size() == 0);
     }
 
     public void testUnion() throws LBException {
