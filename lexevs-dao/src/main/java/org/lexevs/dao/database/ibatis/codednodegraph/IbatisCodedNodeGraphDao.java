@@ -44,6 +44,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	@Override
 	public List<String> listCodeRelationships(
 			String codingSchemeUid,
+			String relationsContainerName,
 			String sourceEntityCode, String sourceEntityCodeNamespace,
 			String targetEntityCode, String targetEntityCodeNamespace,
 			List<String> associationNames,
@@ -58,6 +59,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		GetCodeRelationshipsBean bean = new GetCodeRelationshipsBean();
 		bean.setPrefix(prefix);
 		bean.setCodingSchemeUid(codingSchemeUid);
+		bean.setRelationsContainerName(relationsContainerName);
 		bean.setSourceCode(sourceEntityCode);
 		bean.setSourceNamespace(sourceEntityCodeNamespace);
 		bean.setTargetCode(targetEntityCode);
