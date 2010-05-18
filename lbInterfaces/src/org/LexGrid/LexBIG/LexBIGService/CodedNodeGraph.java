@@ -19,8 +19,8 @@
 package org.LexGrid.LexBIG.LexBIGService;
 
 import java.io.Serializable;
+import java.util.List;
 
-import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
@@ -109,10 +109,10 @@ public interface CodedNodeGraph extends Serializable {
 	 *            to imply concepts only, each contained reference inherits
 	 *            from the more general CodedNodeReference and is capable
 	 *            of representing any type of node contained by the graph.
-	 * @return The list of code references for matching associations.
+	 * @return The list of matching associations.
 	 * @throws LBInvocationException,LBParameterException
 	 */
-	ConceptReferenceList listCodeRelationships(
+	List<String> listCodeRelationships(
 			ConceptReference sourceCode, ConceptReference targetCode,
 			boolean directOnly) throws LBInvocationException,
 			LBParameterException;
@@ -135,15 +135,11 @@ public interface CodedNodeGraph extends Serializable {
 	 *            Distance (# of edges) source and target codes must have in 
 	 *            between. Must be positive & greater than zero. 
 	 *
-	 * @return The list of node references for matching associations.
-	 *            <p>
-	 *            Note that while the class of the returned value appears
-	 *            to imply concepts only, each contained reference inherits
-	 *            from the more general CodedNodeReference and is capable
-	 *            of representing any type of node contained by the graph.
+	 * @return The list of matching associations.
+	 *            
 	 * @throws LBInvocationException,LBParameterException
 	 */
-	ConceptReferenceList listCodeRelationships(
+	List<String> listCodeRelationships(
 			ConceptReference sourceCode, ConceptReference targetCode,
 			int distance) throws LBInvocationException,
 			LBParameterException;
