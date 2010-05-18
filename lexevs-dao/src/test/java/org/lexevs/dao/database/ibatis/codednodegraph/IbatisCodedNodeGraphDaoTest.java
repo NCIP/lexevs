@@ -50,6 +50,85 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	private IbatisCodedNodeGraphDao ibatisCodedNodeGraphDao;
 	
 	@Test
+	public void testListCodeRelationshipsNoTransitive() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid1'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		List<String> rels = ibatisCodedNodeGraphDao.
+			listCodeRelationships("cs-guid", "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, false);
+			
+		
+		assertEquals(1, rels.size());
+		assertTrue(rels.contains("ap-guid"));
+	}
+	
+	@Test
+	public void testListCodeRelationshipsWithTransitive() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('ap-guid2', 'rel-guid', 'apname2')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid1'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentitytr" +
+				" values ('eaetr-guid1'," +
+				" 'ap-guid2'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1')");
+		
+		List<String> rels = ibatisCodedNodeGraphDao.
+			listCodeRelationships("cs-guid", "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, true);
+			
+		assertEquals(2, rels.size());
+		assertTrue(rels.contains("ap-guid"));
+		assertTrue(rels.contains("ap-guid2"));
+	}
+
+	@Test
 	public void testGetTripleUids() throws SQLException{
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
