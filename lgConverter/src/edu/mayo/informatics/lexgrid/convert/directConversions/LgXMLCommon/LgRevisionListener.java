@@ -22,6 +22,7 @@ import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.relations.AssociationPredicate;
+import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.versions.Revision;
 import org.castor.xml.UnmarshalListener;
 import org.mayo.edu.lgModel.LexGridBase;
@@ -155,48 +156,59 @@ public class LgRevisionListener implements UnmarshalListener {
         
         if (!isRevisionLoaded && UnMarshallingLogic.isRevisionWithFirstChild(parent, child)) {
             revision = (Revision)parent;
+            try {
+                LexGridElementProcessor.processRevisionMetadata(serviceAdaptor, revision);
+            } catch (LBRevisionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             isRevisionLoaded = true;
         }
         if (!isPropertiesPresent && UnMarshallingLogic.isCodingSchemeMappings(parent, child)) {
             
-            try {
-                LexGridElementProcessor.processRevisionMetadata(serviceAdaptor, revision, (CodingScheme)parent);
-            } catch (LBRevisionException e) {
-                messages_.error("Revision element reading and writing has failed.", e);
-                e.printStackTrace();
-            }
-            LexGridElementProcessor.processCodingSchemeMetadata(serviceAdaptor, parent, child);
+//            try {
+//                LexGridElementProcessor.processRevisionMetadata(serviceAdaptor, revision, (CodingScheme)parent);
+//            } catch (LBRevisionException e) {
+//                messages_.error("Revision element reading and writing has failed.", e);
+//                e.printStackTrace();
+//            }
+            LexGridElementProcessor.processCodingSchemeMetadataRevision(serviceAdaptor, parent, child);
             isCodingSchemeLoaded = true;
         }
         if (!isCodingSchemeLoaded && UnMarshallingLogic.isCodingSchemeProperties(parent, child)) {
-            try {
-                LexGridElementProcessor.processRevisionMetadata(serviceAdaptor, revision, (CodingScheme)parent);
-            } catch (LBRevisionException e) {
-                messages_.error("Revision element reading and writing has failed.", e);
-                e.printStackTrace();
-            }
-            LexGridElementProcessor.processCodingSchemeMetadata(serviceAdaptor, parent, child);
+//            try {
+//                LexGridElementProcessor.processRevisionMetadata(serviceAdaptor, revision, (CodingScheme)parent);
+//            } catch (LBRevisionException e) {
+//                messages_.error("Revision element reading and writing has failed.", e);
+//                e.printStackTrace();
+//            }
+            LexGridElementProcessor.processCodingSchemeMetadataRevision(serviceAdaptor, parent, child);
             isCodingSchemeLoaded = true;
         }
+//        if(UnMarshallingLogic.isCodingSchemeProperty(serviceAdaptor, parent, child)){
+//            LexGridElementProcessor.processCodingSchemePropertyRevision(serviceAdaptor, parent, child);
+//        }
+        
         if (UnMarshallingLogic.isCodingSchemeEntity(parent, child)) {
-            LexGridElementProcessor.processCodingSchemeEntity(serviceAdaptor, parent, child);
+            LexGridElementProcessor.processCodingSchemeEntityRevision(serviceAdaptor, parent, child);
             nentities++;
             if(nentities%mod == mod-1){  
                 modCount = modCount + mod;
                 messages_.info("Entities Loaded: " + modCount);}
          
-        } else if (UnMarshallingLogic.isCodingSchemeEntities(parent, child)) {
-            LexGridElementProcessor.removeEntitiesContainer(parent);
-            modCount = 0;
-        } else if (UnMarshallingLogic.isCodingSchemeAssociation(parent, child)) {
-            LexGridElementProcessor.processCodingSchemeAssociation(this
-                    .isPredicateLoaded((AssociationPredicate) parent), serviceAdaptor, parent, child);
-            nassociations++;
-            if(nassociations%mod == mod-1){  
-                modCount = modCount + mod;
-                messages_.info("Associations Loaded: " + modCount);}
+        } 
+        
+        if(UnMarshallingLogic.isCodingSchemeAssociationSource(parent,child)){
+            AssociationSource source = (AssociationSource)parent;
+            AssociationPredicate predicate = (AssociationPredicate) source.getParent();
+            LexGridElementProcessor.processCodingSchemeAssociationRevision(isPredicateLoaded(predicate), serviceAdaptor, parent, child);
+          nassociations++;
+          if(nassociations%mod == mod-1){  
+              modCount = modCount + mod;
+              messages_.info("Associations Loaded: " + modCount);}
         }
         
+          
     }
    
 }

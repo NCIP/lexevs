@@ -22,6 +22,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.codingSchemes.CodingSchemes;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
@@ -29,6 +30,7 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListDefinitions;
 import org.LexGrid.valueSets.ValueSetDefinition;
@@ -86,7 +88,14 @@ public class UnMarshallingLogic {
     public static boolean isCodingSchemeAssociation(Object parent, Object child) {
         return child instanceof AssociationSource && parent instanceof AssociationPredicate;
     }
-
+    /**
+     * @param parent
+     * @param child
+     * @return
+     */
+    public static boolean isCodingSchemeAssociationSource(Object parent, Object child) {
+        return child instanceof AssociationTarget && parent instanceof AssociationSource;
+    }
     /**
      * @param parent
      * @param child
@@ -143,4 +152,9 @@ public class UnMarshallingLogic {
     public static boolean isPickListDefinition(Object parent, Object child) {
         return child instanceof PickListDefinition && parent instanceof PickListDefinitions;
     }
+
+    public static boolean isCodingSchemeProperty(XMLDaoServiceAdaptor serviceAdaptor, Object parent, Object child) {
+     return child instanceof Property && parent instanceof Properties;
+    }
+
 }

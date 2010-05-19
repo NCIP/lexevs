@@ -24,11 +24,14 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
@@ -120,8 +123,8 @@ public class LexGridElementProcessor {
      * @param child
      * @throws LBRevisionException 
      */
-    public static void processRevisionMetadata(XMLDaoServiceAdaptor service, Revision revision, CodingScheme child) throws LBRevisionException {
-       service.storeRevision(child.getCodingSchemeURI(), child.getRepresentsVersion(), revision);
+    public static void processRevisionMetadata(XMLDaoServiceAdaptor service, Revision revision) throws LBRevisionException {
+       service.storeRevisionMetaData(revision);
     }
 
     /**
@@ -191,5 +194,52 @@ public class LexGridElementProcessor {
         PickListDefinition picklist = (PickListDefinition) child;
         service.storePickList(picklist, systemReleaseURI, mappings);
     }
+
+    public static void processCodingSchemeMetadataRevision(XMLDaoServiceAdaptor service, Object parent,
+            Object child) {
+        CodingScheme scheme = (CodingScheme)parent;
+        codingSchemes.add(scheme);
+       service.storeCodingSchemeRevision(scheme);
+        
+    }
+    
+    /**
+     * @param service
+     * @param parent
+     * @param child
+     */
+    public static void processCodingSchemeEntityRevision(XMLDaoServiceAdaptor service, Object parent, Object child) {
+        Entity e = (Entity) child;
+        Entities entities = (Entities) parent;
+        CodingScheme c = (CodingScheme) entities.getParent();
+        service.storeEntityRevision(e, c);
+        entities.removeEntity(e);
+    }
+    
+    public static void processCodingSchemeAssociationRevision(boolean isPredicateLoaded, XMLDaoServiceAdaptor service,
+            Object parent, Object child) {
+        AssociationSource source = (AssociationSource) parent;
+        AssociationPredicate a = (AssociationPredicate)source.getParent();
+        Relations relations = (Relations) a.getParent();
+        CodingScheme cs = (CodingScheme) relations.getParent();
+        service.storeRelationsRevision(cs.getCodingSchemeURI(), cs.getRepresentsVersion(), relations);
+        if (!isPredicateLoaded) {
+            service.storeAssociationPredicate(cs.getCodingSchemeURI(), cs.getRepresentsVersion(), relations
+                    .getContainerName(), a);
+        } else {
+            service.storeAssociationRevision(cs.getCodingSchemeURI(), cs.getRepresentsVersion(), relations.getContainerName(),
+                    a.getAssociationName(), (AssociationSource)parent, (AssociationTarget)child);
+        }
+        a.removeSource((AssociationSource) parent);
+    }
+
+    public static void processCodingSchemePropertyRevision(XMLDaoServiceAdaptor service, Object parent, Object child) {
+        Property p = (Property)child;
+        Properties props = (Properties)parent;
+        CodingScheme c = (CodingScheme)props.getParent();
+        service.storeCodingSchemePropertyRevision(p, c);
+        
+    }
+
 
 }

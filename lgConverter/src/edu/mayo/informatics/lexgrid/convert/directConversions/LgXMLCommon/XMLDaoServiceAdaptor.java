@@ -27,10 +27,12 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.PickListDefinition;
@@ -40,6 +42,7 @@ import org.LexGrid.versions.SystemRelease;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.association.AssociationService;
+import org.lexevs.dao.database.service.association.AssociationTargetService;
 import org.lexevs.dao.database.service.association.VersionableEventAssociationService;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
@@ -72,9 +75,10 @@ public class XMLDaoServiceAdaptor {
     PickListDefinitionService pickListService;
     ValueSetDefinitionService valueSetService;
     AuthoringService authoringService;
+    AssociationTargetService assocTargetService = null;
     
     ArrayList<AssociationPredicate> associationList = null;
-    ArrayList<Relations> relationList = null;;
+    ArrayList<String> relationList = null;;
     
     /**
      * constructor initializes all DAO services
@@ -88,12 +92,13 @@ public class XMLDaoServiceAdaptor {
         assocService = dbManager.getAssociationService();
         relationService = dbManager.getRelationService();
         associationList = new ArrayList<AssociationPredicate>();
-        relationList = new ArrayList<Relations>();
+        relationList = new ArrayList<String>();
         assocServiceForPred = (VersionableEventAssociationService) assocService;
         daoCallbackService = dbManager.getDaoCallbackService();
         propertyService = dbManager.getPropertyService();
         pickListService = dbManager.getPickListDefinitionService();
         valueSetService = dbManager.getValueSetDefinitionService();
+        assocTargetService = dbManager.getAssociationTargetService();
     }
 
     /**
@@ -126,7 +131,7 @@ public class XMLDaoServiceAdaptor {
         if (relationList.contains(relation))
             return;
         relationService.insertRelation(codingSchemeUri, version, relation);
-        relationList.add(relation);
+        relationList.add(relation.getContainerName());
     }
 
     /**
@@ -214,5 +219,89 @@ public class XMLDaoServiceAdaptor {
         codingScheme.setCodingSchemeVersion(version);
         locator.getSystemResourceService().updateCodingSchemeResourceStatus(codingScheme,
                 CodingSchemeVersionStatus.ACTIVE);
+    }
+    
+    public void storeRevisionMetaData(final Revision revision) {
+
+        daoCallbackService.executeInDaoLayer(new DaoCallback<Object>() {
+
+            public Object execute(DaoManager daoManager){
+                try {
+                    daoManager.getRevisionDao().insertRevisionEntry(revision, null);
+                } catch (LBRevisionException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+        });
+    }
+
+    public void storeCodingSchemeRevision(CodingScheme scheme) {
+        try {
+            codingSchemeService.revise(scheme ,null);
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+    }
+
+    public void storeEntityRevision(Entity entity, CodingScheme c) {
+        try {
+            entityService.revise(c.getCodingSchemeURI(), c.getRepresentsVersion(), entity);
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+    }
+    
+    public void storeCodingSchemePropertyRevision(Property property, CodingScheme c) {
+        try {
+            propertyService.reviseCodingSchemeProperty(c.getCodingSchemeURI(), c.getRepresentsVersion(), property);
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+    }
+    public void storeRelationsRevision(String URI, String version, Relations relations){
+        try {
+            if(relationList.contains(relations.getContainerName()))
+                return;
+            relationService.revise(URI, version, relations);
+            relationList.add(relations.getContainerName());
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    public void storeAssociationRevision( String scheme, String containerName, String associationName, String version, AssociationSource source, AssociationTarget target) {
+        try {
+            assocTargetService.revise(scheme, containerName , associationName, version, source, target);
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+    }
+    
+    public void storeValueSetDefinitionRevision(ValueSetDefinition vsDefinition){
+        try {
+            valueSetService.revise(vsDefinition, null);
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    public void storePickListDefinitionRevision(PickListDefinition plDefinition){
+        try {
+            pickListService.revise(plDefinition, null);
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }
