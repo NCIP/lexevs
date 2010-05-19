@@ -52,7 +52,7 @@ public class TestPagedReturns extends LexBIGServiceTestCase {
         ResolvedConceptReferencesIterator iter = cns.resolve(null, Constructors.createLocalNameList("invalidProperty"),
                 null);
 
-        // should be a total of 66
+        // should be a total of 67
         int count = 0;
         while (iter.hasNext()) {
             ResolvedConceptReference[] temp = iter.next(100).getResolvedConceptReference();
@@ -60,7 +60,7 @@ public class TestPagedReturns extends LexBIGServiceTestCase {
             assertTrue(temp.length <= 100);
         }
 
-        assertTrue("Actual Count: " + count, count == 66);
+        assertTrue("Actual Count: " + count, count == 67);
 
     }
 
