@@ -123,30 +123,34 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
 
     public void loadAuxiliaryData(URI source, AbsoluteCodingSchemeVersionReference codingSchemeVersion,
             boolean overwrite, boolean stopOnErrors, boolean async) throws LBParameterException, LBInvocationException {
-      //
+        this.getOptions().getStringOption(URI_OPTION).setOptionValue(codingSchemeVersion.getCodingSchemeURN());
+        this.getOptions().getStringOption(VERSION_OPTION).setOptionValue(codingSchemeVersion.getCodingSchemeVersion());
+        this.getOptions().getBooleanOption(OVERWRITE_OPTION).setOptionValue(overwrite);
+        this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
+        this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
+        
+        this.load(source);
     }
 
     public void loadAuxiliaryData(Map<Object, Object> source, AbsoluteCodingSchemeVersionReference codingSchemeVersion,
             boolean overwrite, boolean stopOnErrors, boolean async) throws LBException {
+        throw new UnsupportedOperationException();
     }
 
     public void loadLexGridManifest(CodingSchemeManifest source,
             AbsoluteCodingSchemeVersionReference codingSchemeURNVersion, boolean stopOnErrors, boolean async)
     throws LBException {
        //
-
     }
 
     public void loadLexGridManifest(URI source, AbsoluteCodingSchemeVersionReference codingSchemeURNVersion,
             boolean stopOnErrors, boolean async) throws LBException {
         //
-
     }
 
     public void validateLexGridManifest(URI source, AbsoluteCodingSchemeVersionReference codingSchemeVersion,
             int validationLevel) throws LBException {
         // TODO Auto-generated method stub
-
     }
 
     @Override
