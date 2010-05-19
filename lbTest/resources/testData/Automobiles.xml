@@ -252,7 +252,7 @@
     </lgCon:associationEntity>
     
     <lgCon:associationEntity entityCode="hasSubtype" entityCodeNamespace="Automobiles"
-    	forwardName="hasSubtype" reverseName="isA">
+    	forwardName="hasSubtype" reverseName="isA" isTransitive="true">
     	<lgCommon:entityDescription>hasSubtype</lgCommon:entityDescription>
     	<lgCon:entityType>association</lgCon:entityType>
     </lgCon:associationEntity>
