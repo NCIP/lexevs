@@ -285,14 +285,16 @@
 
 		<isEqual property="tripleNode" compareValue="SUBJECT" prepend="AND">
 			eate.sourceEntityCode = #entityCode#
-			AND
-			eate.sourceEntityCodeNamespace = #entityCodeNamespace#
-			</isEqual>
+			<isNotNull property="entityCodeNamespace" prepend="AND">
+				eate.sourceEntityCodeNamespace = #entityCodeNamespace#
+			</isNotNull>
+		</isEqual>
 		<isEqual property="tripleNode" compareValue="OBJECT" prepend="AND">
 			eate.targetEntityCode = #entityCode#
-			AND
-			eate.targetEntityCodeNamespace = #entityCodeNamespace#
-			</isEqual>
+			<isNotNull property="entityCodeNamespace" prepend="AND">
+				eate.targetEntityCodeNamespace = #entityCodeNamespace#
+			</isNotNull>
+		</isEqual>
 
 		<isNotEmpty property="mustHaveCodes" prepend="AND">
 			(
@@ -300,15 +302,17 @@
 				<isEqual property="tripleNode" compareValue="SUBJECT">
 					(
 					eate.targetEntityCode = #mustHaveCodes[].code#
-					AND
-					eate.targetEntityCodeNamespace = #mustHaveCodes[].namespace#
+					<isNotNull property="mustHaveCodes[].namespace" prepend="AND">
+						eate.targetEntityCodeNamespace = #mustHaveCodes[].namespace#
+					</isNotNull>
 					)
 				</isEqual>
 				<isEqual property="tripleNode" compareValue="OBJECT">
 					(
 					eate.sourceEntityCode = #mustHaveCodes[].code#
-					AND
-					eate.sourceEntityCodeNamespace = #mustHaveCodes[].namespace#
+					<isNotNull property="mustHaveCodes[].namespace" prepend="AND">
+						eate.sourceEntityCodeNamespace = #mustHaveCodes[].namespace#
+					</isNotNull>
 					)
 				</isEqual>
 			</iterate>
@@ -375,8 +379,9 @@
 			<iterate property="mustHaveSourceCodes" conjunction="OR">
 				(
 					eate.sourceEntityCode = #mustHaveSourceCodes[].code#
-					AND
-					eate.sourceEntityCodeNamespace = #mustHaveSourceCodes[].namespace#
+					<isNotEmpty property="mustHaveSourceCodes[].namespace" prepend="AND">
+						eate.sourceEntityCodeNamespace = #mustHaveSourceCodes[].namespace#
+					</isNotEmpty>
 				)
 			</iterate>
 			)
@@ -387,8 +392,9 @@
 			<iterate property="mustHaveTargetCodes" conjunction="OR">
 				(
 					eate.targetEntityCode = #mustHaveTargetCodes[].code#
-					AND
-					eate.targetEntityCodeNamespace = #mustHaveTargetCodes[].namespace#
+					<isNotEmpty property="mustHaveTargetCodes[].namespace" prepend="AND">
+						eate.targetEntityCodeNamespace = #mustHaveTargetCodes[].namespace#
+					</isNotEmpty>
 				)
 			</iterate>
 			)
