@@ -43,6 +43,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
@@ -470,6 +471,9 @@ public class VSDServiceHelper {
 	    	propertyMatchValue = pmv.getContent();
 	    	matchAlgorithm = pmv.getMatchAlgorithm();
 	    }
+	    if (StringUtils.isEmpty(matchAlgorithm))
+	    	matchAlgorithm = MatchAlgorithms.LuceneQuery.name();
+	    
 	    cns.restrictToMatchingProperties(
 	    		StringUtils.isNotEmpty(propertyRef.getPropertyName()) ? Constructors.createLocalNameList(propertyRef.getPropertyName()): null, 
 	    				new PropertyType[] { PropertyType.PRESENTATION }, propertyMatchValue, matchAlgorithm, null);
