@@ -102,7 +102,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	private static final String provider_ = "Mayo Clinic";
 	private static final String version_ = "2.0";
 	
-	private static LexEVSPickListDefinitionServicesImpl pickListService_ = null;
+	private static LexEVSPickListDefinitionServices pickListService_ = null;
 	
 	private DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
 	
@@ -115,9 +115,9 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
      * distributed service). However, use of the public constructor is supported
      * to preserve backward compatibility.
      * 
-     * @return LexEVSPickListDefinitionServicesImpl
+     * @return LexEVSPickListDefinitionServices
      */
-    public static LexEVSPickListDefinitionServicesImpl defaultInstance() {
+    public static LexEVSPickListDefinitionServices defaultInstance() {
         if (pickListService_ == null)
         	pickListService_ = new LexEVSPickListDefinitionServicesImpl();
         return pickListService_;

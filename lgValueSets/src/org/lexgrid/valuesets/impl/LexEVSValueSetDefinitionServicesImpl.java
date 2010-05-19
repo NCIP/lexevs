@@ -82,7 +82,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	private static final String provider_ = "Mayo Clinic";
 	private static final String version_ = "2.0";
 	
-	private static LexEVSValueSetDefinitionServicesImpl valueSetService_ = null;
+	private static LexEVSValueSetDefinitionServices valueSetService_ = null;
 
 	private static final long serialVersionUID = 4995582014921448463L;
 	
@@ -99,9 +99,9 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
      * distributed service). However, use of the public constructor is supported
      * to preserve backward compatibility.
      * 
-     * @return LexEVSValueSetDefinitionServicesImpl
+     * @return LexEVSValueSetDefinitionServices
      */
-    public static LexEVSValueSetDefinitionServicesImpl defaultInstance() {
+    public static LexEVSValueSetDefinitionServices defaultInstance() {
         if (valueSetService_ == null)
             valueSetService_ = new LexEVSValueSetDefinitionServicesImpl();
         return valueSetService_;
