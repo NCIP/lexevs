@@ -1,7 +1,5 @@
 DROP TABLE @PREFIX@entityAssnQuals
 ;
-DROP TABLE @PREFIX@associationEntity
-;
 DROP TABLE @PREFIX@propertyLinks
 ;
 DROP TABLE @PREFIX@propertyMultiAttrib
