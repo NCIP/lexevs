@@ -240,7 +240,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		return this.getSqlMapClientTemplate().queryForList(GET_ALL_PROPERTIES_OF_PARENT_SQL, 
 				new PrefixedParameterTuple(
 						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
-						this.propertyTypeClassifier.classify(PropertyType.ENTITY),
+						this.propertyTypeClassifier.classify(type),
 						parentId));
 	}
 	
@@ -250,7 +250,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		
 		PrefixedParameterTriple param = new PrefixedParameterTriple(
 				this.getPrefixResolver().resolveHistoryPrefix(),
-				this.propertyTypeClassifier.classify(PropertyType.ENTITY),
+				this.propertyTypeClassifier.classify(type),
 				parentId,
 				revisionId);
 		
@@ -732,7 +732,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		bean.setPrefix(prefix);
 		bean.setUId(qualifierId);
 		bean.setPropertyUId(propertyId);
-		bean.setAttributeId(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
+		bean.setAttributeId(usageContext);
 		bean.setAttributeValue(usageContext);
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
 		bean.setEntryStateUId(entryStateId);
@@ -756,7 +756,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		bean.setPrefix(prefix);
 		bean.setUId(sourceId);
 		bean.setPropertyUId(propertyId);
-		bean.setAttributeId(SQLTableConstants.TBLCOLVAL_SOURCE);
+		bean.setAttributeId(source.getContent());
 		bean.setAttributeValue(source.getContent());
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_SOURCE);
 		bean.setRole(source.getRole());

@@ -27,6 +27,7 @@ import java.util.UUID;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.types.PropertyTypes;
@@ -206,6 +207,13 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		for(String relationsUid : associationDao.getRelationsUIdsForCodingSchemeUId(codingSchemeUId)){
 			scheme.addRelations(associationDao.getRelationsByUId(codingSchemeUId, relationsUid));
 		}
+		
+		scheme.setProperties(new Properties());
+		
+		List<Property> properties = this.propertyDao.
+			getAllPropertiesOfParent(codingSchemeUId, codingSchemeUId, PropertyType.CODINGSCHEME);
+		
+		scheme.getProperties().setProperty(properties);
 
 		return scheme;
 	}
