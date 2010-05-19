@@ -35,6 +35,8 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
+import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
+import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
@@ -48,6 +50,7 @@ import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 /**
  * The Class AbstractQueryBuildingCodedNodeGraph.
@@ -123,11 +126,11 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
     @Override
     public Boolean areCodesRelated(NameAndValue association, ConceptReference sourceCode, ConceptReference targetCode,
             boolean directOnly) throws LBInvocationException, LBParameterException {
-       boolean areRelatedForward = this.doGetAreCodesRelated(sourceCode, targetCode, association);
+       boolean areRelatedForward = this.doGetAreCodesRelated(sourceCode, targetCode, association, directOnly);
        
        if(areRelatedForward) {return true;}
        
-       boolean areRelatedBackward = this.doGetAreCodesRelated(targetCode, sourceCode, association);
+       boolean areRelatedBackward = this.doGetAreCodesRelated(targetCode, sourceCode, association, directOnly);
        
        if(areRelatedBackward) {return true;}
        
@@ -145,23 +148,29 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         
         ServiceUtility.validateParameter(this.getCodingSchemeUri(), this.getVersion(), propertyNames, SupportedProperty.class);
         
+        //Implementation to return either the full reference or a stub upon detecting a cycle
+        //CycleDetectingCallback cycleDetectingCallback = new ReferenceReturningCycleDetectingCallback();
+        CycleDetectingCallback cycleDetectingCallback = new StubReturningCycleDetectingCallback();
+        
         return this.doResolveAsValidatedParameterList(
                 graphFocus, resolveForward, resolveBackward, 
                 resolveCodedEntryDepth, resolveAssociationDepth, 
                 propertyNames, propertyTypes, sortOptions, 
-                filterOptions, maxToReturn, keepLastAssociationLevelUnresolved);
+                filterOptions, maxToReturn, keepLastAssociationLevelUnresolved, cycleDetectingCallback);
     }
     
     protected abstract ResolvedConceptReferenceList doResolveAsValidatedParameterList(ConceptReference graphFocus, boolean resolveForward,
             boolean resolveBackward, int resolveCodedEntryDepth, int resolveAssociationDepth,
             LocalNameList propertyNames, PropertyType[] propertyTypes, SortOptionList sortOptions,
-            LocalNameList filterOptions, int maxToReturn, boolean keepLastAssociationLevelUnresolved)
+            LocalNameList filterOptions, int maxToReturn, boolean keepLastAssociationLevelUnresolved, 
+            CycleDetectingCallback cycleDetectingCallback)
             throws LBInvocationException, LBParameterException;
 
     protected boolean doGetAreCodesRelated(
             ConceptReference sourceCode, 
             ConceptReference targetCode, 
-            NameAndValue association) throws LBParameterException, LBInvocationException {
+            NameAndValue association,
+            boolean directOnly) throws LBParameterException, LBInvocationException {
 
         GraphQueryBuilder builder = new DefaultGraphQueryBuilder(this.codingSchemeUri, this.version, getClonedGraphQuery());
         
@@ -175,28 +184,34 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
             getDatabaseServiceManager().
             getCodedNodeGraphService();
         
-        Map<String,Integer> subjectCount = service.getTripleUidsContainingSubjectCount(
+        List<String> subjectAssocs = service.listCodeRelationships(
                 codingSchemeUri, 
                 version, 
                 relationsContainerName, 
                 sourceCode.getCode(), 
                 sourceCode.getCodeNamespace(), 
-                builder.getQuery());
+                targetCode.getCode(),
+                targetCode.getCodeNamespace(),
+                builder.getQuery(),
+                !directOnly);
         
         builder = new DefaultGraphQueryBuilder(this.codingSchemeUri, this.version, getClonedGraphQuery());
 
         builder.restrictToAssociations(nvl, null);
         builder.getQuery().getRestrictToSourceCodes().add(Constructors.createConceptReference(sourceCode.getCode(), sourceCode.getCodeNamespace(), null));
     
-        Map<String,Integer> objectCount = service.getTripleUidsContainingObjectCount(
+        List<String> objectAssocs = service.listCodeRelationships(
                 codingSchemeUri, 
                 version, 
                 relationsContainerName, 
                 targetCode.getCode(), 
                 targetCode.getCodeNamespace(), 
-                builder.getQuery());
+                sourceCode.getCode(),
+                sourceCode.getCodeNamespace(),
+                builder.getQuery(),
+                !directOnly);
         
-        return !subjectCount.isEmpty() || objectCount.isEmpty();
+        return !CollectionUtils.isEmpty(subjectAssocs) || !CollectionUtils.isEmpty(objectAssocs);
     }
  
     /* (non-Javadoc)

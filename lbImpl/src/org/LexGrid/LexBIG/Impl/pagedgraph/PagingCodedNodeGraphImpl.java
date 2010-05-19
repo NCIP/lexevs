@@ -32,7 +32,6 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
-import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.NullFocusRootsResolver;
@@ -58,7 +57,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
     private RootsResolver rootsResolver = new NullFocusRootsResolver();
     
     private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
-
+    
   /**
      * Instantiates a new paging coded node graph impl.
      * 
@@ -90,18 +89,13 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
             SortOptionList sortOptions,
             LocalNameList filterOptions, 
             int maxToReturn,
-            boolean keepLastAssociationLevelUnresolved) throws LBInvocationException, LBParameterException {
-        this.getLogger().warn("Paged Graph is currently an incomplete implementation. Graph functionality will be implemented incrementally.");
-        
-        //Implementation to return either the full reference or a stub upon detecting a cycle
-        //private CycleDetectingCallback cycleDetectingCallback = new ReferenceReturningCycleDetectingCallback();
-        CycleDetectingCallback cycleDetectingCallback = new StubReturningCycleDetectingCallback();
+            boolean keepLastAssociationLevelUnresolved,
+            CycleDetectingCallback cycleDetectingCallback) throws LBInvocationException, LBParameterException {
               
         String codingSchemeUri = this.getCodingSchemeUri();
         String version = this.getVersion();
         String relationsContainerName = this.getRelationsContainerName();
-        GraphQueryBuilder graphQueryBuilder = this.getGraphQueryBuilder();
-        
+        GraphQueryBuilder graphQueryBuilder = this.getGraphQueryBuilder(); 
         
         if (graphFocus == null && resolveForward && resolveBackward) {
             throw new LBParameterException(
@@ -149,7 +143,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
 
                 for(ConceptReference root : codes) {
                     
-                    ResolvedConceptReferenceList list = this.doResolveAsList(
+                    ResolvedConceptReferenceList list = this.doResolveAsValidatedParameterList(
                             root, 
                             resolveForward, 
                             resolveBackward, 
@@ -160,7 +154,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                             sortOptions, 
                             filterOptions, 
                             maxToReturn, 
-                            keepLastAssociationLevelUnresolved);
+                            keepLastAssociationLevelUnresolved,
+                            cycleDetectingCallback);
                     
                     if(list != null) {
 
