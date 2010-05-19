@@ -80,7 +80,7 @@ public class TestMetaDataSearch extends TestCase {
         md.restrictToPropertyParents(new String[] { "core_format" });
         md.restrictToValue("obo-text", "LuceneQuery");
         result = md.resolve().getMetadataProperty();
-        assertTrue(result.length == 1);
+        assertEquals(1,result.length);
         assertTrue(contains(result, "test.1", "1.0", "format", "OBO-TEXT"));
 
     }
