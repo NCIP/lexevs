@@ -119,13 +119,23 @@ public class NullFocusRootsResolver implements RootsResolver {
         CodedNodeGraphService service =
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
         
+        TraverseAssociations traverseAssociations;
+        
         if(CollectionUtils.isEmpty(associationNames)) {
             associationNames = 
             service.getAssociationPredicateNamesForCodingScheme(codingSchemeUri, codingSchemeVersion, relationsContainerName);
+            traverseAssociations = TraverseAssociations.TOGETHER;
+        } else {
+            traverseAssociations = TraverseAssociations.INDIVIDUALLY;
         }
         
         List<ConceptReference> roots = 
-            service.getRootConceptReferences(codingSchemeUri, codingSchemeVersion, relationsContainerName, associationNames, TraverseAssociations.INDIVIDUALLY);
+            service.getRootConceptReferences(
+            		codingSchemeUri, 
+            		codingSchemeVersion, 
+            		relationsContainerName, 
+            		associationNames, 
+            		traverseAssociations);
         
         return roots;
     }
@@ -139,13 +149,22 @@ public class NullFocusRootsResolver implements RootsResolver {
         CodedNodeGraphService service =
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
         
+        TraverseAssociations traverseAssociations;
+        
         if(CollectionUtils.isEmpty(associationNames)) {
             associationNames = 
             service.getAssociationPredicateNamesForCodingScheme(codingSchemeUri, codingSchemeVersion, relationsContainerName);
+            traverseAssociations = TraverseAssociations.TOGETHER;
+        } else {
+        	 traverseAssociations = TraverseAssociations.INDIVIDUALLY;
         }
         
         return 
-            service.getTailConceptReferences(codingSchemeUri, codingSchemeVersion, relationsContainerName, associationNames, TraverseAssociations.INDIVIDUALLY);
+            service.getTailConceptReferences(
+            		codingSchemeUri, 
+            		codingSchemeVersion, 
+            		relationsContainerName, 
+            		associationNames, 
+            		traverseAssociations);
     }
-    
 }
