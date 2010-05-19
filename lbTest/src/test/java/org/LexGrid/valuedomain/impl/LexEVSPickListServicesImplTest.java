@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -284,19 +283,15 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 	public void testResolvePickListForTermForCompleteDomain() throws LBException {
 		ResolvedPickListEntryList pickLists = getPickListService().resolvePickListForTerm("SRITEST:FA:MSOntologyAndHyphaInMycelium", "hypha", MatchAlgorithms.LuceneQuery.name(), null, null, false);
 		
-		assertTrue(pickLists.getResolvedPickListEntryCount() == 9);
+		assertTrue(pickLists.getResolvedPickListEntryCount() == 5);
 		
 		Iterator<ResolvedPickListEntry> plItr = pickLists.iterateResolvedPickListEntry();
 		while(plItr.hasNext())
 		{
 			ResolvedPickListEntry pickList = plItr.next();
-			assertTrue(pickList.getEntityCode().equals("FAO:0001014")
+			assertTrue(pickList.getEntityCode().equals("FAO:0001014") // this will come twice b'cos there are two properties with term hypha in it.
 					|| pickList.getEntityCode().equals("FAO:0001013")
 					|| pickList.getEntityCode().equals("FAO:0001004")
-					|| pickList.getEntityCode().equals("FAO:0001012")
-					|| pickList.getEntityCode().equals("FAO:0001015")
-					|| pickList.getEntityCode().equals("FAO:0001017")
-					|| pickList.getEntityCode().equals("FAO:0001020")
 					|| pickList.getEntityCode().equals("FAO:0001003"));
 			assertTrue(pickList.getEntityCodeNamespace().equals("fungal_anatomy"));
 			assertTrue(pickList.getPickText().contains("hypha"));
@@ -406,7 +401,7 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 	public void testResolvePickListForCompleteDomain() throws LBException {
 		ResolvedPickListEntryList pickLists = getPickListService().resolvePickList("SRITEST:FA:hyphaLeafOnly", true);
 		
-		assertTrue(pickLists.getResolvedPickListEntryCount() == 5);
+		assertTrue(pickLists.getResolvedPickListEntryCount() == 3);
 		
 		Iterator<ResolvedPickListEntry> plItr = pickLists.iterateResolvedPickListEntry();
 		while(plItr.hasNext())
@@ -416,10 +411,6 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 						&& pickList.getPickText().equals("hypha with dolipore septa"))
 					|| (pickList.getEntityCode().equals("FAO:0001014")
 						&& pickList.getPickText().equals("aseptate hypha in mycelium"))
-					|| (pickList.getEntityCode().equals("FAO:0001017")
-						&& pickList.getPickText().equals("hyphal tip, hypha with dolipore septa in mycelium"))
-					|| (pickList.getEntityCode().equals("FAO:0001020")
-						&& pickList.getPickText().equals("hyphal tip, aseptate hypha in mycelium"))
 					|| (pickList.getEntityCode().equals("FAO:0001013")
 						&& pickList.getPickText().equals("hypha with dolipore septa, in mycelium")));
 			assertTrue(pickList.getEntityCodeNamespace().equals("fungal_anatomy"));

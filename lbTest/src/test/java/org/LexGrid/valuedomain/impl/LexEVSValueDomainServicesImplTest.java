@@ -47,7 +47,6 @@ import org.LexGrid.naming.SupportedDataType;
 import org.LexGrid.naming.SupportedPropertyQualifier;
 import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.valueSets.ValueSetDefinition;
-import org.LexGrid.versions.EntryState;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
@@ -142,7 +141,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		
 		
 		// value domain definition entry state
-		EntryState vdES = vdDef.getEntryState();
+//		EntryState vdES = vdDef.getEntryState();
 		
 //		assertTrue(vdES.getContainingRevision().equals("R001"));
 //		assertTrue(vdES.getPrevRevision().equals("R00A"));
@@ -255,7 +254,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		{
 			PropertyQualifier pQual = pItr.next();
 			String value = pQual.getValue().getContent();
-			String dataType = pQual.getValue().getDataType();
+//			String dataType = pQual.getValue().getDataType();
 			String type = pQual.getPropertyQualifierType();
 			String name = pQual.getPropertyQualifierName();
 			
@@ -264,7 +263,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 			assertTrue(type.equals("pQual Type A") || type.equals("pQual Type B"));
 		}
 		
-		EntryState propES = prop.getEntryState();
+//		EntryState propES = prop.getEntryState();
 		
 		// entry state for this property
 //		assertTrue(propES.getContainingRevision().equals("PR001"));
@@ -277,6 +276,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		
 		ResolvedValueSetCodedNodeSet vdcns = getValueSetDefinitionService().getValueSetDefinitionEntitiesForTerm("General Motors", MatchAlgorithms.exactMatch.name(), new URI("SRITEST:AUTO:AllDomesticANDGM"), null, null);
 		CodedNodeSet cns = null;
+		@SuppressWarnings("unused")
 		AbsoluteCodingSchemeVersionReferenceList csvrList = null;
 		ResolvedConceptReferenceList rcrList = null;
 		
