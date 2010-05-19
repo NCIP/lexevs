@@ -529,13 +529,14 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 			ResolvedConceptReference rcr = rvdDef.getResolvedConceptReferenceIterator().next();
 			codes.add(rcr.getCode());
 		}
-		assertTrue(codes.size() == 5);
+		assertTrue(codes.size() == 6);
 		assertFalse(codes.contains("73"));        // We never pull retired codes (!)
 		assertTrue(codes.contains("Chevy"));
 		assertTrue(codes.contains("F150"));
 		assertTrue(codes.contains("Focus"));
 		assertTrue(codes.contains("Jaguar"));
 		assertTrue(codes.contains("Windsor"));
+		assertTrue(codes.contains("GMC"));
 		codes.clear();
 		
         rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:AllDomesticANDGM1"), null, null);

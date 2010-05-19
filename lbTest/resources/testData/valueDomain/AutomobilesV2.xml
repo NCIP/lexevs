@@ -152,6 +152,16 @@
                 <lgCommon:value>GM</lgCommon:value>
             </lgCon:presentation>
         </lgCon:entity>
+        <lgCon:entity entityCode="GMC" entityCodeNamespace="Automobiles" isActive="true">
+            <lgCommon:entityDescription>General Motors</lgCommon:entityDescription>
+            <lgCon:entityType>concept</lgCon:entityType>
+            <lgCon:presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>GMC trucks</lgCommon:value>
+            </lgCon:presentation>
+            <lgCon:presentation propertyName="textualPresentation" propertyId="p2" isPreferred="false">
+                <lgCommon:value>GMC</lgCommon:value>
+            </lgCon:presentation>
+        </lgCon:entity>
         <lgCon:entity entityCode="Jaguar" entityCodeNamespace="Automobiles" isActive="true">
             <lgCommon:entityDescription>Jaguar</lgCommon:entityDescription>
             <lgCon:entityType>concept</lgCon:entityType>
@@ -247,6 +257,7 @@
             <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="GM">
                 <lgRel:target targetEntityCodeNamespace="Automobiles" targetEntityCode="73"/>
                 <lgRel:target targetEntityCodeNamespace="Automobiles" targetEntityCode="Chevy"/>
+                <lgRel:target targetEntityCodeNamespace="Automobiles" targetEntityCode="GMC"/>
             </lgRel:source>
         </lgRel:associationPredicate>
         <lgRel:associationPredicate associationName="uses">
