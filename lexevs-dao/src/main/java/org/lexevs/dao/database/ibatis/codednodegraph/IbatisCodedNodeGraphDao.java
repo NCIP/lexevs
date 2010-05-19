@@ -87,6 +87,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<String> mustHaveSubjectNamespace) {
 		return this.doGetTripleUidsCount(
 				codingSchemeUid, 
+				relationsContainerName,
 				objectEntityCode, 
 				objectEntityCodeNamespace, 
 				associationNames,
@@ -108,6 +109,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<String> mustHaveObjectNamespace){
 		return this.doGetTripleUidsCount(
 				codingSchemeUid,  
+				relationsContainerName,
 				subjectEntityCode, 
 				subjectEntityCodeNamespace, 
 				associationNames,
@@ -120,6 +122,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	@SuppressWarnings("unchecked")
 	protected Map<String,Integer>  doGetTripleUidsCount(
 			String codingSchemeUid,
+			String relationsContainerName,
 			String entityCode,
 			String entityCodeNamespace, 
 			List<String> associationNames,
@@ -132,6 +135,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		GetEntityAssnUidsCountBean bean = new GetEntityAssnUidsCountBean();
 		bean.setPrefix(prefix);
 		bean.setCodingSchemeUid(codingSchemeUid);
+		bean.setRelationsContainerName(relationsContainerName);
 		bean.setEntityCode(entityCode);
 		bean.setEntityCodeNamespace(entityCodeNamespace);
 		bean.setAssociations(associationNames);

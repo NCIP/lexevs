@@ -254,6 +254,12 @@
 			(eate.entityAssnsGuid = quals.referenceGuid)
 		WHERE
 			rel.codingSchemeGuid = #codingSchemeUid#
+			
+		<isPropertyAvailable property="relationsContainerName" prepend="AND">
+			<isNotNull property="relationsContainerName">
+			rel.containerName = #relationsContainerName#
+			</isNotNull>
+		</isPropertyAvailable>
 
 		<isPropertyAvailable property="associationPredicateUid">
 			<isNotNull property="associationPredicateUid" prepend="AND">

@@ -10,6 +10,7 @@ import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.Qualifier
 public class GetEntityAssnUidsCountBean extends PrefixedTableParameterBean {
 	
 	private String codingSchemeUid;
+	private String relationsContainerName;
 	private String entityCode;
 	private String entityCodeNamespace;
 	private List<QualifierNameValuePair> associationQualifiers;
@@ -67,5 +68,11 @@ public class GetEntityAssnUidsCountBean extends PrefixedTableParameterBean {
 	}
 	public List<String> getMustHaveNamespaces() {
 		return mustHaveNamespaces;
+	}
+	public void setRelationsContainerName(String relationsContainerName) {
+		this.relationsContainerName = relationsContainerName;
+	}
+	public String getRelationsContainerName() {
+		return relationsContainerName;
 	}
 }
