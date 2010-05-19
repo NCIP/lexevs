@@ -95,7 +95,7 @@ public class OBO2LGDynamicMapHolders {
     private long propertyCounter = 0;
     private long anonymousCounter = 0;
     private Map<String, AssociationSource> assocName_SrcCodeStr2assocSrcMap = null; // association+source
-
+    OBOTerms terms;
     // name
     // to
     // association
@@ -135,7 +135,7 @@ public class OBO2LGDynamicMapHolders {
             relationsList.add(allRelations);
             assocPredicateList = allRelations.getAssociationPredicateAsReference();
 
-            OBOTerms terms = contents.getOBOTerms();
+            terms = contents.getOBOTerms();
             Collection<OBOTerm> termList = terms.getAllMembers();
 
             if ((termList != null) && (!termList.isEmpty())) {
@@ -420,7 +420,7 @@ public class OBO2LGDynamicMapHolders {
         String str="";
         if (relation_name.equalsIgnoreCase(OBO2LGConstants.ASSOCIATION_UNION_OF)) {
             for (String targetStr: targets) {
-                str+= targetStr + " OR ";
+                str+= getLabelForOBOId(targetStr) + " OR ";
             }
             if (str.length() > 4){
                str= str.substring(0, str.length() - 4);
@@ -431,21 +431,32 @@ public class OBO2LGDynamicMapHolders {
             for (String targetStr: targets) {
                 String[] result = targetStr.split("\\s");
                 if (result.length == 1) {
-                    str+= targetStr + " AND ";
+                    str+= getLabelForOBOId(targetStr) + " AND ";
                 }
                 if (result.length == 2) {
-                   str+= result[0]+ " SOME "+ result[1]+ " AND ";
+                   str+= result[0]+ " SOME "+ getLabelForOBOId(result[1])+ " AND ";
                 }
             }
             if (str.length() > 5){
                str= str.substring(0, str.length() - 5);
             }
         }        
-        
-        
-        
-        
         return str;
+    }
+
+    String getLabelForOBOId(String id) {
+         OBOTerm term=null;
+         try {
+            term = terms.getMemberById(id);
+         }catch (Exception ex) {
+             
+         }
+         if (term!= null) {
+             return term.getName();
+         } else {
+             return id;
+         }
+             
     }
 
     void processAnonListTarget(Entity anon_concept, String target) {
