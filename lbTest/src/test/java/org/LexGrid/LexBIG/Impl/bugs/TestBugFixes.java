@@ -87,15 +87,15 @@ public class TestBugFixes extends LexBIGServiceTestCase {
      */
     public void testValidateLanguage() throws LBException {
 
-        CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(THES_SCHEME, null);
+        CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null);
 
         // priviously, just specifying a language restriction was causing an
         // error.
-        cns.restrictToMatchingDesignations("heart", SearchDesignationOption.ALL, "LuceneQuery", "en");
+        cns.restrictToMatchingDesignations("car", SearchDesignationOption.ALL, "LuceneQuery", "en");
 
         ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 50).getResolvedConceptReference();
 
-        assertTrue(rcr.length == 2);
+        assertEquals(1,rcr.length);
     }
 
     /*
@@ -109,7 +109,7 @@ public class TestBugFixes extends LexBIGServiceTestCase {
         cng.restrictToAssociations(Constructors.createNameAndValueList("Anatomic_Structure_is_Physical_Part_of"),
                 Constructors.createNameAndValueList("owl:someValuesFrom"));
         ResolvedConceptReference[] rcr = cng.resolveAsList(Constructors.createConceptReference("External_Lip", null), true,
-                false, 1, 1, Constructors.createLocalNameList("invalid"), null, null, -1).getResolvedConceptReference();
+                false, 1, 1, null, null, null, -1).getResolvedConceptReference();
 
         assertTrue(rcr[0].getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConcept(0)
                 .getAssociationQualifiers().getNameAndValue(0).getName().equals("owl:someValuesFrom"));
