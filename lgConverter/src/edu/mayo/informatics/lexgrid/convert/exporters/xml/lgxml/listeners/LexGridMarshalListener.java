@@ -124,18 +124,18 @@ public class LexGridMarshalListener implements MarshalListener
 	@Override
 	public boolean preMarshal(Object arg0) 
 	{
-	    System.out.println("PREMARSHAL:" + arg0.getClass().getName());
+	    /*System.out.println("PREMARSHAL:" + arg0.getClass().getName());
 		if(Entities.class.equals(arg0.getClass()) == true) 
 		{
 			Entities entities = (Entities)arg0;
 			System.out.println("PRE: Entity count = " + entities.getEntityCount());
 		}
-		
+		*/
 		//if((Entity.class.equals(arg0.getClass()) == true)||(IdableEntity.class.equals(arg0.getClass()) == true))
 		if((Entity.class.equals(arg0.getClass()) == true))
 		{
 		    Entity temp = (Entity)arg0;
-		    System.out.println("PRE: **************** marshalling entityCode=" + temp.getEntityCode());
+		    //System.out.println("PRE: **************** marshalling entityCode=" + temp.getEntityCode());
 		    
 			if((entitiesToReturn > 0)&&(entityIndex >= entitiesToReturn)) 
 			{
@@ -161,7 +161,7 @@ public class LexGridMarshalListener implements MarshalListener
     						{
     							curConRef = (ResolvedConceptReference)blockIterator.next();					
     							curEntity = (Entity) curConRef.getEntity();
-    							System.out.println("**************** Marshalling Entity=" + curEntity.getEntityCode());
+    							System.out.println("**************** Checking Entity=" + curEntity.getEntityCode());
 
     							if (curEntity == null)
     							    continue;
@@ -178,6 +178,7 @@ public class LexGridMarshalListener implements MarshalListener
     						    if (transferredEntity == null)
     						        continue;
     						    
+    						    System.out.println("@@@@@@@@@@@@@@@@@@@@@@ Marshalling Entity=" + transferredEntity.getEntityCode());
     						    this.marshaller.marshal(transferredEntity);
     						    ++entityIndex;
     						}			
@@ -219,13 +220,14 @@ public class LexGridMarshalListener implements MarshalListener
 				System.out.println("\n$$$$$$$$$$$$$$$   Marshalling " + curAssociationName + "    $$$$$$$$$$$$$$$$$$$\n");
 				try 
 				{
-					ResolvedConceptReferenceList rcrl = cng.resolveAsList(null, true, false, -1, -1, null, null, null, null, -1);
+					ResolvedConceptReferenceList rcrl = cng.resolveAsList(null, true, false, 0, -1, null, null, null, null, -1);
 					if (rcrl != null)
 					{
 						blockIterator = (Iterator<ResolvedConceptReference>) rcrl.iterateResolvedConceptReference();
 						while(blockIterator.hasNext()) 
 						{
 							curConRef = (ResolvedConceptReference)blockIterator.next();	
+							
 							
 							AssociationList asl = curConRef.getSourceOf();
 							if ((userAP == null)||(!curAssociationName.equals(userAP.getAssociationName())))
@@ -234,6 +236,7 @@ public class LexGridMarshalListener implements MarshalListener
 								userAP = ap;
 							}
 
+							processTargets(curConRef, curAssociationName, userAP);
 							processAssociationList(asl, userAP);
 							userAP.setParent(new String(stopToken));
 						}
@@ -250,20 +253,6 @@ public class LexGridMarshalListener implements MarshalListener
 			}
 			
 			return false;
-		}
-		else {
-            if(Presentation.class.equals(arg0.getClass())) 
-            {
-                System.out.println("Presentation=" + ((Presentation) arg0).getValue().getContent());
-                return true;
-            }
-            else {
-                if(Definition.class.equals(arg0.getClass())) 
-                {
-                    System.out.println("Definition=" + ((Definition) arg0).getValue().getContent());
-                    return true;
-                }
-            }
 		}
 		
 		return true;
@@ -373,7 +362,7 @@ public class LexGridMarshalListener implements MarshalListener
 					try 
 					{
 						System.out.println("Focus=" + focus);
-						localRcrl = cng.resolveAsList(focus, true, false, -1, -1, null, null, null, null, -1);
+						localRcrl = cng.resolveAsList(focus, true, false, 0, -1, null, null, null, null, -1);
 					} 
 					catch (LBInvocationException e) 
 					{
@@ -399,78 +388,84 @@ public class LexGridMarshalListener implements MarshalListener
 					}
 					
 					AssociationList targets = sourceRef.getSourceOf();
-					if(targets == null) 
-					{
-						System.out.println("No Targets found for " + sourceRef.getConceptCode());
-						continue;
-					}
-					else
-					{
-						associationSource = new AssociationSource();
-						associationSource.setSourceEntityCodeNamespace(sourceRef.getCodeNamespace());
-						associationSource.setSourceEntityCode(sourceRef.getConceptCode());
+					processTargets(sourceRef, curAssociationName, _asp);
 					
-						Iterator<?> targetsIterator = targets.iterateAssociation();
-						boolean targetsFound = false;
-						while(targetsIterator.hasNext()) 
-						{
-							Association targetAssociation = (Association)targetsIterator.next();
-							Iterator<?> associatedTargetsIterator = targetAssociation.getAssociatedConcepts().iterateAssociatedConcept();
-							while(associatedTargetsIterator.hasNext()) 
-							{
-								AssociatedConcept target = (AssociatedConcept)associatedTargetsIterator.next();
-								
-								if (target == null)
-									continue;
-								
-								AssociationTarget associationTarget = new AssociationTarget();
-								associationTarget.setTargetEntityCodeNamespace(target.getCodeNamespace());
-								associationTarget.setTargetEntityCode(target.getConceptCode());
-								System.out.println("\t\t" + target.getConceptCode() + " with " + targetAssociation.getAssociationName());
-								if(targetAssociation.getAssociationName().equals(curAssociationName)) 
-								{
-									targetsFound = true;
-									associationSource.addTarget(associationTarget);
-									System.out.println("\t\tAdding Target:" + associationTarget.getTargetEntityCode());
-									NameAndValueList assocQuals = target.getAssociationQualifiers();
-									if ((assocQuals != null)&&(assocQuals.getNameAndValueCount() > 0))
-									{
-										System.out.println("Processing Association Qualifiers now...");
-										Iterator<?> associatedQualItr = assocQuals.iterateNameAndValue();
-										while(associatedQualItr.hasNext()) 
-										{
-											NameAndValue nv = (NameAndValue) associatedQualItr.next();
-											
-											AssociationQualification qlf = new AssociationQualification();
-											qlf.setAssociationQualifier(nv.getName());
-											Text v = new Text();
-											v.setContent(nv.getContent());
-											qlf.setQualifierText(v);
-											associationTarget.addAssociationQualification(qlf);
-										}
-									}
-								}
-							}
-						}
-						
-						if (targetsFound)
-							associationSourceV.add(associationSource);
-					}
-				
-					if(associationSourceV.size() > 0) 
-					{
-						for (int vi=0; vi < associationSourceV.size();vi++)
-						{
-							System.out.println("\t Source[" + vi + "] ADDED TO PREDICATE");
-							_asp.addSource(associationSourceV.elementAt(vi));
-						}
-						associationSourceV = new Vector<AssociationSource>();
-					}
-					
-					System.out.println("\n--------> CALLING AGAIN targets =" + targets.getAssociation().length + " --------->\n");
-					processAssociationList(targets, _asp);
+					if((targets != null)&&(targets.getAssociationCount() > 0)) 
+			        {
+					    System.out.println("\n--------> CALLING AGAIN targets =" + targets.getAssociation().length + " --------->\n");
+					    processAssociationList(targets, _asp);
+			        }
 				}
 			}
 		}
 	}
+	
+	private void processTargets(ResolvedConceptReference sRef, String asName, AssociationPredicate ap)
+	{
+	    Vector<AssociationSource> aV = new Vector<AssociationSource>();
+	    AssociationSource aS = null;
+	    AssociationList targets = sRef.getSourceOf();  
+	    if((targets != null)&&(targets.getAssociationCount() > 0)) 
+	    {	        
+	        aS = new AssociationSource();
+	        aS.setSourceEntityCodeNamespace(sRef.getCodeNamespace());
+	        aS.setSourceEntityCode(sRef.getConceptCode());
+    
+	        Iterator<?> targetsIterator = targets.iterateAssociation();
+	        boolean targetsFound = false;
+	        while(targetsIterator.hasNext()) 
+	        {
+	            Association targetAssociation = (Association)targetsIterator.next();
+	            Iterator<?> associatedTargetsIterator = targetAssociation.getAssociatedConcepts().iterateAssociatedConcept();
+	            while(associatedTargetsIterator.hasNext()) 
+	            {
+	                AssociatedConcept target = (AssociatedConcept)associatedTargetsIterator.next();
+                
+	                if (target == null)
+                    continue;
+                
+	                AssociationTarget associationTarget = new AssociationTarget();
+	                associationTarget.setTargetEntityCodeNamespace(target.getCodeNamespace());
+	                associationTarget.setTargetEntityCode(target.getConceptCode());
+	                System.out.println("\t\t" + target.getConceptCode() + " with " + targetAssociation.getAssociationName());
+	                if(targetAssociation.getAssociationName().equals(asName)) 
+	                {
+	                    targetsFound = true;
+	                    aS.addTarget(associationTarget);
+	                    System.out.println("\t\tAdding Target:" + associationTarget.getTargetEntityCode());
+	                    NameAndValueList assocQuals = target.getAssociationQualifiers();
+	                    if ((assocQuals != null)&&(assocQuals.getNameAndValueCount() > 0))
+	                    {
+	                        System.out.println("Processing Association Qualifiers now...");
+	                        Iterator<?> associatedQualItr = assocQuals.iterateNameAndValue();
+	                        while(associatedQualItr.hasNext()) 
+	                        {
+	                            NameAndValue nv = (NameAndValue) associatedQualItr.next();
+                            
+	                            AssociationQualification qlf = new AssociationQualification();
+	                            qlf.setAssociationQualifier(nv.getName());
+	                            Text v = new Text();
+	                            v.setContent(nv.getContent());
+	                            qlf.setQualifierText(v);
+	                            associationTarget.addAssociationQualification(qlf);
+	                        }
+	                    }
+	                }
+	            }
+	        }
+        
+	        if (targetsFound)
+	            aV.add(aS);
+	    }
+	    
+	    if(aV.size() > 0) 
+        {
+            for (int vi=0; vi < aV.size();vi++)
+            {
+                System.out.println("\t Source[" + vi + "] ADDED TO PREDICATE");
+                ap.addSource(aV.elementAt(vi));
+            }
+            aV = new Vector<AssociationSource>();
+        }
+    }
 }
