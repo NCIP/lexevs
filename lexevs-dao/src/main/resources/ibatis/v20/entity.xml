@@ -14,7 +14,7 @@
 	<resultMap id="conceptReferenceResult" class="resolvedCodedNodeReference">
 		<result property="code" column="entityCode" />
 		<result property="codeNamespace" column="entityCodeNamespace" />
-		<result property="codingSchemeName" column="codingSchemeName" />
+<!--		<result property="codingSchemeName" column="codingSchemeName" />-->
 	</resultMap>
 	
 	<resultMap id="resolvedCodedNodeReferenceResult" 
