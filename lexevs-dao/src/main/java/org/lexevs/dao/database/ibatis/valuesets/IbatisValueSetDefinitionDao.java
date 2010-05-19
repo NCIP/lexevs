@@ -160,7 +160,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	@CacheMethod
+//	@CacheMethod
 	public ValueSetDefinition getValueSetDefinitionByURI(String valueSetDefinitionURI) {
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		InsertValueSetDefinitionBean vsdBean = (InsertValueSetDefinitionBean) 
