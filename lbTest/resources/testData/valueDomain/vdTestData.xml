@@ -102,6 +102,23 @@
                 <lgVD:entityReference entityCode="A0001" referenceAssociation="hasSubtype" transitiveClosure="true"  targetToSource="false" leafOnly="false"/>
             </lgVD:definitionEntry>
         </lgVD:valueSetDefinition>
+        <lgVD:valueSetDefinition valueSetDefinitionURI="SRITEST:AUTO:PropRefGeneralOrFocus" valueSetDefinitionName="Property Ref test General OR Focus" defaultCodingScheme="Automobiles" effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
+            <lgVD:properties>                
+                <lgCommon:property propertyName="textualPresentation">
+                    <lgCommon:value>Automobiles Property Reference Test</lgCommon:value>
+                </lgCommon:property>                
+            </lgVD:properties>
+            <lgVD:definitionEntry ruleOrder="1" operator="OR">
+                <lgVD:propertyReference codingScheme="Automobiles">
+                    <lgVD:propertyMatchValue>General</lgVD:propertyMatchValue>
+                </lgVD:propertyReference>                
+            </lgVD:definitionEntry>
+            <lgVD:definitionEntry ruleOrder="2" operator="OR">
+                <lgVD:propertyReference codingScheme="Automobiles">
+                    <lgVD:propertyMatchValue>Focus</lgVD:propertyMatchValue>
+                </lgVD:propertyReference>                
+            </lgVD:definitionEntry>
+        </lgVD:valueSetDefinition>
         <lgVD:valueSetDefinition valueSetDefinitionURI="SRITEST:AUTO:AllDomesticButGM" valueSetDefinitionName="All Domestic Autos But GM" defaultCodingScheme="Automobiles" effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
             <lgVD:properties>
                 <lgCommon:property propertyName="textualPresentation">
