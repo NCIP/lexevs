@@ -557,6 +557,46 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		assertTrue(getValueSetDefinitionService().isValueSetDefinition("VD005", "Automobiles", Constructors.createCodingSchemeVersionOrTag(null, "1.1")));
 	}
 	
+	@Test
+	public void testPropertyReference() throws LBException, URISyntaxException {
+		AbsoluteCodingSchemeVersionReferenceList acsvrList = new AbsoluteCodingSchemeVersionReferenceList();
+		AbsoluteCodingSchemeVersionReference autoVersion_10 = Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.0");
+		AbsoluteCodingSchemeVersionReference autoVersion_11 = Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.1");
+		
+		// version 1.0 does not contain Focus, so only General Motors should be returned
+		acsvrList.addAbsoluteCodingSchemeVersionReference(autoVersion_10);
+		ResolvedValueSetDefinition rvdDef = getValueSetDefinitionService().
+				resolveValueSetDefinition(new URI("SRITEST:AUTO:PropRefGeneralOrFocus"), acsvrList, null);
+		
+		assertTrue(rvdDef != null);
+		assertTrue(rvdDef.getDefaultCodingScheme().equals("Automobiles"));
+		assertTrue(rvdDef.getValueDomainURI().equals(new URI("SRITEST:AUTO:PropRefGeneralOrFocus")));
+		assertTrue(rvdDef.getValueDomainName().equals("Property Ref test General OR Focus"));
+		
+		while (rvdDef.getResolvedConceptReferenceIterator().hasNext())
+		{
+			ResolvedConceptReference rcr = rvdDef.getResolvedConceptReferenceIterator().next();
+			assertTrue(rcr.getCode().equals("GM"));
+		}
+		
+		acsvrList = new AbsoluteCodingSchemeVersionReferenceList();
+		// version 1.1 does contain both General and Focus terms, so both General Motors and Focus should be returned
+		acsvrList.addAbsoluteCodingSchemeVersionReference(autoVersion_11);
+		rvdDef = getValueSetDefinitionService().
+				resolveValueSetDefinition(new URI("SRITEST:AUTO:PropRefGeneralOrFocus"), acsvrList, null);
+		
+		assertTrue(rvdDef != null);
+		assertTrue(rvdDef.getDefaultCodingScheme().equals("Automobiles"));
+		assertTrue(rvdDef.getValueDomainURI().equals(new URI("SRITEST:AUTO:PropRefGeneralOrFocus")));
+		assertTrue(rvdDef.getValueDomainName().equals("Property Ref test General OR Focus"));
+		
+		while (rvdDef.getResolvedConceptReferenceIterator().hasNext())
+		{
+			ResolvedConceptReference rcr = rvdDef.getResolvedConceptReferenceIterator().next();
+			assertTrue(rcr.getCode().equals("GM") || rcr.getCode().equals("Focus"));
+		}		
+	}
+	
 	private LexEVSValueSetDefinitionServices getValueSetDefinitionService(){
 		if (vds_ == null) {
 			vds_ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
