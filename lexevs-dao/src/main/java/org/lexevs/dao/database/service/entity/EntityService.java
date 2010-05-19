@@ -134,6 +134,11 @@ public interface EntityService {
 			String version,
 			Entity entity) throws LBException;
 	
+	public void removeEntity(
+			String codingSchemeUri, 
+			String version,
+			Entity entity) throws LBException;
+	
 	public void revise(String codingSchemeUri, String version,
 			Entity revisedEntity) throws LBException;
 }
