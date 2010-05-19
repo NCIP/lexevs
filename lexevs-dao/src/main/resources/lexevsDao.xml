@@ -132,6 +132,11 @@
 				<ref bean="ibatisAssociationDao"/>
 			</list>
 		</property>
+		<property name="associationTargetDaos">
+			<list>
+				<ref bean="ibatisAssociationTargetDao"/>
+			</list>
+		</property>
 		<property name="associationDataDaos">
 			<list>
 				<ref bean="ibatisAssociationDataDao"/>
