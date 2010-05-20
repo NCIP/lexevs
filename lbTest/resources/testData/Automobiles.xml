@@ -67,7 +67,9 @@
       <lgCommon:entityDescription>Domestic Auto Makers</lgCommon:entityDescription>
       <lgCon:entityType>concept</lgCon:entityType>
       <lgCon:presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
-        <lgCommon:value>Domestic Auto Makers</lgCommon:value>
+      	<lgCommon:source role="sampleSource" subRef="sampleSubRef1">lexgrid.org</lgCommon:source>
+        <lgCommon:source role="sampleSource" subRef="sampleSubRef2">lexgrid.org</lgCommon:source>
+        <lgCommon:value>Domestic Auto Makers</lgCommon:value>        
       </lgCon:presentation>
       <lgCon:presentation propertyName="textualPresentation" propertyId="p2" isPreferred="false">
         <lgCommon:value>American Car Companies</lgCommon:value>
