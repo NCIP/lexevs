@@ -27,6 +27,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -37,6 +38,7 @@ import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -157,9 +159,15 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
             cng = lbsvc.getNodeGraph(codingScheme.getCodingSchemeURI(), 
                     Constructors.createCodingSchemeVersionOrTagFromVersion(codingScheme.getRepresentsVersion()),null);
             
+            // TEST TEST TEST
+            cng.restrictToAssociations(Constructors.createNameAndValueList("uses"), null);
+            
             // create coded node set
             cns = lbsvc.getCodingSchemeConcepts(codingScheme.getCodingSchemeURI(), 
                     Constructors.createCodingSchemeVersionOrTagFromVersion(codingScheme.getRepresentsVersion()) );
+            
+            // TEST TEST TEST            
+            cns.restrictToMatchingDesignations("G*", SearchDesignationOption.ALL, "LuceneQuery", null);
             
         } catch (IOException e) {
             e.printStackTrace();
