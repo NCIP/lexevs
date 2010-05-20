@@ -126,10 +126,11 @@ public class ResolveToListTest extends BaseCodedNodeSetTest {
     public void testPostSort() throws LBInvocationException, LBParameterException{
         ResolvedConceptReferenceList rcrl = cns.resolveToList(Constructors.createSortOptionList(new String[]{"codePost"}, new Boolean[]{false}), null, null, 2);
         assertTrue(rcrl.getResolvedConceptReference().length == 2);
-        assertTrue("Found: " + rcrl.getResolvedConceptReference(0).getCode(),
-                rcrl.getResolvedConceptReference(0).getCode().equals("73"));   
-        assertTrue("Found: " + rcrl.getResolvedConceptReference(1).getCode(),
-                rcrl.getResolvedConceptReference(1).getCode().equals("005"));
+        
+        assertEquals(1,
+        		rcrl.getResolvedConceptReference(0).getCode().compareTo(
+      
+        		rcrl.getResolvedConceptReference(1).getCode()));
     }
     
     public void testPreAndPostSort() throws LBInvocationException, LBParameterException{
