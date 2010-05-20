@@ -220,5 +220,17 @@ public interface LexEVSPickListDefinitionServices extends Serializable {
 	 */
 	public List<String> getPickListIdsForSupportedTagAndValue(String supportedTag, String value);
 	
+	/**
+	 * Exports the pick list definition in LexGrid XML format.
+	 * 
+	 * @param pickListId id of pick list definition to export
+	 * @param xmlFolderLocation destination location
+	 * @param overwrite 
+	 * @param failOnAllErrors
+	 * @throws LBException
+	 */
+	public void exportPickListDefinition(String pickListId,
+			String xmlFolderLocation, boolean overwrite, boolean failOnAllErrors)
+			throws LBException;
 	public LogEntry[] getLogEntries();
 }

@@ -40,6 +40,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Export.LexGrid_Exporter;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
@@ -145,6 +146,10 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		return null;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#loadValueSetDefinition(org.LexGrid.valueSets.ValueSetDefinition, java.lang.String, org.LexGrid.naming.Mappings)
+	 */
 	public void loadValueSetDefinition(ValueSetDefinition definition, String systemReleaseURI, Mappings mappings)
 			throws LBException {
 		getLogger().logMethod(new Object[] { definition });
@@ -157,12 +162,20 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		}		
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#loadValueSetDefinition(java.io.InputStream, boolean)
+	 */
 	@Override
 	public void loadValueSetDefinition(InputStream inputStream,
 			boolean failOnAllErrors) throws LBException {
 		throw new LBException("Method not implemented");
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#loadValueSetDefinition(java.lang.String, boolean)
+	 */
 	@Override
 	public void loadValueSetDefinition(String xmlFileLocation,
 			boolean failOnAllErrors) throws LBException {
@@ -199,6 +212,10 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		loader.validate(uri, validationLevel);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#isEntityInValueSet(java.lang.String, java.net.URI, java.lang.String)
+	 */
 	@Override
 	public AbsoluteCodingSchemeVersionReference isEntityInValueSet(
 			String entityCode, URI valueSetDefinitionURI, String versionTag)
@@ -207,6 +224,10 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         return isEntityInValueSet(entityCode, null, valueSetDefinitionURI, null, versionTag);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#isEntityInValueSet(java.lang.String, java.net.URI, java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
+	 */
 	@Override
 	public AbsoluteCodingSchemeVersionReference isEntityInValueSet(
 			String entityCode, URI entityCodeNamespace,
@@ -240,6 +261,10 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         return null;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getCodedNodeSetForValueSetDefinition(java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
+	 */
 	public ResolvedValueSetCodedNodeSet getCodedNodeSetForValueSetDefinition(
             URI valueSetDefinitionURI,
             AbsoluteCodingSchemeVersionReferenceList csVersionList,
@@ -257,6 +282,10 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         return domainNodes;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#resolveValueSetDefinition(java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
+	 */
 	@Override
 	public ResolvedValueSetDefinition resolveValueSetDefinition(
 			URI valueSetDefinitionURI,
@@ -291,6 +320,10 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         }
     }
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#resolveValueSetDefinition(org.LexGrid.valueSets.ValueSetDefinition, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
+	 */
 	@Override
 	public ResolvedValueSetDefinition resolveValueSetDefinition(
 			ValueSetDefinition vsDef,
@@ -321,6 +354,10 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		return null;
     }
     
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#isSubSet(java.net.URI, java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
+	 */
     @Override
 	public boolean isSubSet(URI childValueSetDefinitionURI,
 			URI parentValueSetDefinitionURI,
@@ -366,15 +403,17 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 
     /*
      * (non-Javadoc)
-     * 
-     * @seeorg.lexgrid.extension.valuedomain.LexEVSValueDomainServices#
-     * getValueSetDefinition (java.net.URI)
+     * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinition(java.net.URI)
      */
     public ValueSetDefinition getValueSetDefinition(URI valueDomainURI) throws LBException {
         getLogger().logMethod(new Object[] { valueDomainURI });
         return this.vsds_.getValueSetDefinitionByUri(valueDomainURI);
     }
     
+    /*
+     * (non-Javadoc)
+     * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#listValueSetDefinitions(java.lang.String)
+     */
     @Override
 	public List<String> listValueSetDefinitions(String valueSetDefinitionName)
 			throws LBException {
@@ -382,23 +421,30 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         return this.vsds_.getValueSetDefinitionURISForName(valueSetDefinitionName);        
     }
     
-    /**
-	 * Lists all the value set definition URIs that are loaded in the system.
-	 * 
-	 * @return list of value set definition URIs
-	 */
+    /*
+     * (non-Javadoc)
+     * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#listValueSetDefinitionURIs()
+     */
     @Override
 	public List<String> listValueSetDefinitionURIs(){
 		getLogger().logMethod(new Object[]{});
 		return this.vsds_.listValueSetDefinitionURIs();
 	}
-	
+    
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getAllValueSetDefinitionsWithNoName()
+	 */
 	@Override
 	public List<String> getAllValueSetDefinitionsWithNoName() throws LBException {
 		getLogger().logMethod(new Object[]{});
 		return this.vsds_.getValueSetDefinitionURISForName(" ");
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinitionEntitiesForTerm(java.lang.String, java.lang.String, java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
+	 */
 	@Override
 	public ResolvedValueSetCodedNodeSet getValueSetDefinitionEntitiesForTerm(
 			String term, String matchAlgorithm, URI valueSetDefinitionURI,
@@ -435,8 +481,10 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         }
 	}
 
-	
-
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getCodingSchemesInValueSetDefinition(java.net.URI)
+	 */
 	@Override
 	public AbsoluteCodingSchemeVersionReferenceList getCodingSchemesInValueSetDefinition(
 			URI valueSetDefinitionURI) throws LBException {
@@ -466,6 +514,10 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		return csList;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#isValueSetDefinition(java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+	 */
 	@Override
 	public boolean isValueSetDefinition(String entityCode,
 			String codingSchemeName, CodingSchemeVersionOrTag csvt)
@@ -528,6 +580,9 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 //		return refPLDef;
 //	}
 	
+	/*
+	 * 
+	 */
 	@Override
 	public void removeValueSetDefinition(URI valueSetDefinitionURI)
 			throws LBException {
@@ -541,6 +596,10 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#removeAllValueSetDefinitions()
+	 */
 	@Override
 	public void removeAllValueSetDefinitions() throws LBException {
 		//TODO - sod
@@ -664,18 +723,32 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	public void exportValueSetDefinition(URI valueDomainURI,
 			String xmlFolderLocation, boolean overwrite, boolean failOnAllErrors)
 			throws LBException {
-//		md_.info("Starting to export value domain definition : " + valueDomainURI);
-//		XMLWrite xmlWrite = new XMLWrite(xmlFolderLocation, overwrite, failOnAllErrors, md_);
-//		ValueSetDefinition vdDef = getValueSetDefinition(valueDomainURI);
-//		try {
-//			//xmlWrite.writeValueSetDefinition(vdDef);
-//		} catch (Exception e) {
-//			md_.fatal("Problem exporting value domain definition", e);
-//			e.printStackTrace();
-//		}
-//		md_.info("Completed exporting value domain definition : " + valueDomainURI);
+		md_.info("Starting to export value domain definition : " + valueDomainURI);
+		if (StringUtils.isNotEmpty(xmlFolderLocation))
+		{
+			File f = new File(xmlFolderLocation.trim());
+			LexGrid_Exporter exporter = (LexGrid_Exporter)getLexBIGService().getServiceManager(null).getExporter(org.LexGrid.LexBIG.Impl.exporters.LexGridExport.name);			
+			exporter.exportValueSetDefinition(valueDomainURI, f.toURI(), overwrite, failOnAllErrors, true);
+			
+			while (exporter.getStatus().getEndTime() == null) {
+	            try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        }
+		}
+		else
+		{
+			md_.error("XML file destination can not be blank.");
+		}
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinitionURIsForSupportedTagAndValue(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<String> getValueSetDefinitionURIsForSupportedTagAndValue(
 			String supportedTag, String value) {
@@ -683,6 +756,10 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		return this.vsds_.getValueSetDefinitionURIForSupportedTagAndValue(supportedTag, value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinitionURIsWithCodingScheme(java.lang.String)
+	 */
 	@Override
 	public List<String> getValueSetDefinitionURIsWithCodingScheme(
 			String codingSchemename) {
@@ -690,14 +767,14 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		return this.vsds_.getValueSetDefinitionURIForSupportedTagAndValue(SQLTableConstants.TBLCOLVAL_SUPPTAG_CODINGSCHEME, codingSchemename);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinitionURIsWithConceptDomain(java.lang.String)
+	 */
 	@Override
 	public List<String> getValueSetDefinitionURIsWithConceptDomain(
 			String conceptDomain) {
 		getLogger().logMethod(new Object[]{conceptDomain});
 		return this.vsds_.getValueSetDefinitionURIForSupportedTagAndValue(SQLTableConstants.TBLCOLVAL_SUPPTAG_CONCEPTDOMAIN, conceptDomain);
-	}
-
-	
-
-	
+	}	
 }

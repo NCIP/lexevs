@@ -45,6 +45,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Export.LexGrid_Exporter;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
@@ -78,6 +79,9 @@ import org.lexgrid.valuesets.dto.ResolvedPickListEntryList;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 import org.lexgrid.valuesets.helper.PLEntryNodeSortUtil;
 import org.lexgrid.valuesets.helper.VSDServiceHelper;
+
+import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
+import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 
 /**
  * Implements LexEVSPickListSerives.
@@ -543,6 +547,10 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#getReferencedPLDefinitions(java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean)
+	 */
 	public Map<String, String> getReferencedPLDefinitions(String entityCode,
 			String entityCodeNameSpace, String propertyId,
 			Boolean extractPickListName) throws LBException {
@@ -563,6 +571,10 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		return refPLDef;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#getReferencedPLDefinitions(java.lang.String, java.lang.Boolean)
+	 */
 	public Map<String, String> getReferencedPLDefinitions(String valueSet, Boolean extractPickListName)
 			throws LBException {
 		Map<String, String> refPLDef = null;
@@ -618,6 +630,10 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		return version_;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#getLogEntries()
+	 */
 	public LogEntry[] getLogEntries(){
 		if (md_ != null)
 			return md_.getLogEntries(null);
@@ -704,13 +720,48 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 
 		return pickListName;
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#getPickListIdsForSupportedTagAndValue(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<String> getPickListIdsForSupportedTagAndValue(
 			String supportedTag, String value) {
 		return this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionIdForSupportedTagAndValue(supportedTag, value);
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#exportPickListDefinition(java.lang.String, java.lang.String, boolean, boolean)
+	 */
+	@Override
+	public void exportPickListDefinition(String pickListId,
+			String xmlFolderLocation, boolean overwrite, boolean failOnAllErrors)
+			throws LBException {
+		md_.info("Starting to export pick list definition : " + pickListId);
+		if (StringUtils.isNotEmpty(xmlFolderLocation))
+		{
+			File f = new File(xmlFolderLocation.trim());
+			LexGrid_Exporter exporter = (LexGrid_Exporter) getLexBIGService().getServiceManager(null).getExporter(org.LexGrid.LexBIG.Impl.exporters.LexGridExport.name);
+			exporter.getOptions().getBooleanOptions().add(new BooleanOption(LexGridConstants.OPTION_FORCE, (new Boolean(overwrite))));
+			exporter.exportPickListDefinition(pickListId, f.toURI(), overwrite, failOnAllErrors, true);
+			
+			while (exporter.getStatus().getEndTime() == null) {
+	            try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        }
+		}
+		else
+		{
+			md_.error("XML file destination can not be blank.");
+		}
+	}
+	
 	public VSDServiceHelper getServiceHelper(){
 		if (sh_ == null)
 		{
@@ -725,15 +776,5 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 			}
 		}
 		return sh_;
-	}
-//	private String getStringFromURI(URI uri) throws LBParameterException {
-//        if ("file".equals(uri.getScheme()))
-//
-//        {
-//            File temp = new File(uri);
-//            return temp.getAbsolutePath();
-//        } 
-//        
-//        return uri.toString();
-//    }
+	}	
 }
