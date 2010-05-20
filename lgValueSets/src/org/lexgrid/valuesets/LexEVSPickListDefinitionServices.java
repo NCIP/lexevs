@@ -18,7 +18,6 @@
  */
 package org.lexgrid.valuesets;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
@@ -75,14 +74,6 @@ public interface LexEVSPickListDefinitionServices extends Serializable {
 	 * @throws LBException
 	 */
 	public List<String> listPickListIds() throws LBException;
-	
-	/**
-	 * Loads pick list using inputStream
-	 * @param inputStream
-	 * @param failOnAllErrors
-	 * @throws LBException
-	 */
-	public void loadPickList(InputStream inputStream, boolean failOnAllErrors) throws LBException;
 	
 	/**
 	 * Loads supplied PickListDefinition object

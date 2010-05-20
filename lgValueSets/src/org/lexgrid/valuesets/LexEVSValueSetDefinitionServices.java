@@ -18,7 +18,6 @@
  */
 package org.lexgrid.valuesets;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
@@ -50,14 +49,6 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * @throws LBException
 	 */
 	public void loadValueSetDefinition(ValueSetDefinition vsdef, String systemReleaseURI, Mappings mappings) throws LBException;
-	
-	/**
-	 * Loads value set definition using inputStream
-	 * @param inputStream
-	 * @param failOnAllErrors
-	 * @throws Exception
-	 */
-	public void loadValueSetDefinition(InputStream inputStream, boolean failOnAllErrors) throws LBException;
 	
 	/**
 	 * Loads value set definition by reading XML file location supplied
@@ -284,19 +275,6 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * @throws LBException
 	 */
 	public void removeValueSetDefinition(URI valueSetDefinitionURI) throws LBException;
-	
-	/**
-	 * Removes all value set definitions from the system.
-	 * 
-	 * @throws LBException
-	 */
-	public void removeAllValueSetDefinitions() throws LBException;
-	
-	/**
-	 * Drops value sets tables only if there are no value set definition and pick list definition entries.
-	 * @throws LBException
-	 */
-	public void dropValueDomainTables() throws LBException;
 	
 	public LogEntry[] getLogEntries();
 	

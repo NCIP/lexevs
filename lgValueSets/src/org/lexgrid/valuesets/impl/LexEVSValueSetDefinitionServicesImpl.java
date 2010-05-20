@@ -19,7 +19,6 @@
 package org.lexgrid.valuesets.impl;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
@@ -160,16 +159,6 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 			this.databaseServiceManager.getValueSetDefinitionService().insertValueSetDefinition(definition, systemReleaseURI, mappings);
 			md_.info("Finished loading value set definition URI : " + uri);
 		}		
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#loadValueSetDefinition(java.io.InputStream, boolean)
-	 */
-	@Override
-	public void loadValueSetDefinition(InputStream inputStream,
-			boolean failOnAllErrors) throws LBException {
-		throw new LBException("Method not implemented");
 	}
 	
 	/*
@@ -538,97 +527,21 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		return false;
 	}
 	
-//	public Map<String, String> getReferencedPLDefinitions(String entityCode,
-//			String entityCodeNameSpace, String propertyId, Boolean extractPickListName) {
-//
-//		Map<String, String> refPLDef = new HashMap<String, String>();
-//		
-//		//TODO
-////		String pickListId = result
-////					.getString(SQLTableConstants.TBLCOL_PICKLISTID);
-////		String pickListName = null;
-////
-////		if (pickListId != null) {
-////					
-////			if( extractPickListName )
-////				pickListName = getPickListName(pickListId);
-////					
-////			refPLDef.put(pickListId, pickListName);
-////		}
-//		
-//		return refPLDef;
-//	}
-	
-//	public Map<String, String> getReferencedPLDefinitions(
-//			String valueSet, Boolean extractPickListName) {
-//
-//		Map<String, String> refPLDef = new HashMap<String, String>();
-//		
-//		// TODO
-////		String pickListId = result
-////				.getString(SQLTableConstants.TBLCOL_PICKLISTID);
-////		String pickListName = null;
-////
-////		if (pickListId != null) {
-////				
-////			if( extractPickListName )
-////				pickListName = getPickListName(pickListId);
-////				
-////			refPLDef.put(pickListId, pickListName);
-////		}
-//		
-//		return refPLDef;
-//	}
-	
 	/*
-	 * 
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#removeValueSetDefinition(java.net.URI)
 	 */
 	@Override
 	public void removeValueSetDefinition(URI valueSetDefinitionURI)
 			throws LBException {
 		if (valueSetDefinitionURI != null)
 		{
-			System.out.println("removing value set definition : " + valueSetDefinitionURI);
+			md_.info("removing value set definition : " + valueSetDefinitionURI);
 			SystemResourceService service = LexEvsServiceLocator.getInstance().getSystemResourceService();
 			this.vsds_.removeValueSetDefinition(valueSetDefinitionURI.toString());
 			service.removeValueSetDefinitionResourceFromSystem(valueSetDefinitionURI.toString(), null);
-			System.out.println("DONE removing value set definition : " + valueSetDefinitionURI);
+			md_.info("DONE removing value set definition : " + valueSetDefinitionURI);
 		}
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#removeAllValueSetDefinitions()
-	 */
-	@Override
-	public void removeAllValueSetDefinitions() throws LBException {
-		//TODO - sod
-//		try {
-//			URI[] vdURIs = listValueDomains(null);
-//			
-//			for (URI vdURI : vdURIs)
-//			{
-//				getServiceHelper().getValueDomainServices().remove(vdURI);
-//			}
-//		} catch (FindException e) {
-//			md_.fatal("Failed during removing all value domains", e);
-//			throw new LBException("Failed during removing all value domains", e);
-//		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#dropValueDomainTables()
-	 */
-	public void dropValueDomainTables() throws LBException {
-//		try {
-//			getServiceHelper().getValueDomainServices().dropValueDomainTables(false);
-//		} catch (FindException e) {
-//			md_.fatal("Failed to drop value domain tables", e);
-//			throw new LBException("Failed to drop value domain tables", e);
-//		} catch (SQLException e) {
-//			md_.fatal("Failed to drop value domain tables", e);
-//			throw new LBException("Failed to drop value domain tables", e);
-//		}
 	}
 	
 	/*
@@ -690,7 +603,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         return lbs_;
     }
 
-	public VSDServiceHelper getServiceHelper(){
+	private VSDServiceHelper getServiceHelper(){
 		if (sh_ == null)
 		{
 			try {
@@ -738,6 +651,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 					e.printStackTrace();
 				}
 	        }
+			md_.info("Done exporting value domain definition : " + valueDomainURI + " to location : " + xmlFolderLocation);
 		}
 		else
 		{

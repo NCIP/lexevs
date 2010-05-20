@@ -19,7 +19,6 @@
 package org.lexgrid.valuesets.impl;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -172,14 +171,6 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 			this.databaseServiceManager.getPickListDefinitionService().insertPickListDefinition(pldef, systemReleaseURI != null ? systemReleaseURI.toString():null, mappings);
 			md_.info("Finished loading Pick list Definition ID : " + pickListId);
 		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#loadPickList(java.io.InputStream, boolean)
-	 */
-	public void loadPickList(InputStream inputStream, boolean failOnAllErrors)
-			throws LBException {
-		throw new LBException("Method not implemented");
 	}
 
 	/* (non-Javadoc)
@@ -538,11 +529,11 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		getLogger().logMethod(new Object[] { pickListId });
 		if (pickListId != null)
 		{
-			System.out.println("removing pick list definition : " + pickListId);
+			md_.info("removing pick list definition : " + pickListId);
 			SystemResourceService service = LexEvsServiceLocator.getInstance().getSystemResourceService();
 			this.databaseServiceManager.getPickListDefinitionService().removePickListDefinitionByPickListId(pickListId);
 			service.removePickListDefinitionResourceFromSystem(pickListId, null);
-			System.out.println("DONE removing pick list definition : " + pickListId);
+			md_.info("DONE removing pick list definition : " + pickListId);
 		}
 		
 	}
@@ -755,6 +746,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 					e.printStackTrace();
 				}
 	        }
+			md_.info("Starting to export pick list definition : " + pickListId + " to location : " + xmlFolderLocation);
 		}
 		else
 		{
@@ -762,7 +754,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		}
 	}
 	
-	public VSDServiceHelper getServiceHelper(){
+	private VSDServiceHelper getServiceHelper(){
 		if (sh_ == null)
 		{
 			try {
