@@ -709,6 +709,19 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { anonymousOption });
         try {
+            boolean foundPrevious = false;
+            int previousIndex = 0;
+            
+            for(int i=0;i<pendingOperations_.size();i++) {
+                Operation operation = pendingOperations_.get(i);
+                if(operation instanceof RestrictToAnonymous) {
+                    foundPrevious = true;
+                    previousIndex = i;
+                }
+            }
+            if(foundPrevious) {
+                pendingOperations_.remove(previousIndex);
+            }
             pendingOperations_.add(new RestrictToAnonymous(anonymousOption));
             return this;
         } catch (LBParameterException e) {

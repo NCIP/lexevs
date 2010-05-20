@@ -89,6 +89,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceMetadata;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
@@ -309,6 +310,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         getLogger().logMethod(new Object[] { codingScheme, versionOrTag, new Boolean(activeOnly) });
         CodedNodeSetImpl cns = new CodedNodeSetImpl(codingScheme, versionOrTag, new Boolean(activeOnly));
         cns.restrictToEntityTypes(Constructors.createLocalNameList("concept"));
+        cns.restrictToAnonymous(AnonymousOption.NON_ANONYMOUS_ONLY);
         return cns;
     }
 
@@ -321,6 +323,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         getLogger().logMethod(new Object[] { codingScheme, versionOrTag });
         CodedNodeSetImpl cns = new CodedNodeSetImpl(codingScheme, versionOrTag, null);
         cns.restrictToEntityTypes(Constructors.createLocalNameList("concept"));
+        cns.restrictToAnonymous(AnonymousOption.NON_ANONYMOUS_ONLY);
         return cns;
     }
 
@@ -333,8 +336,10 @@ public class LexBIGServiceImpl implements LexBIGService {
             LocalNameList entityTypes) throws LBException {
         getLogger().logMethod(new Object[] { codingScheme, versionOrTag, entityTypes });
         CodedNodeSetImpl cns = new CodedNodeSetImpl(codingScheme, versionOrTag, null);
-        if (entityTypes != null && entityTypes.getEntryCount() > 0)
+        if (entityTypes != null && entityTypes.getEntryCount() > 0) {
             cns.restrictToEntityTypes(entityTypes);
+        }
+        cns.restrictToAnonymous(AnonymousOption.NON_ANONYMOUS_ONLY);
         return cns;
     }
 
