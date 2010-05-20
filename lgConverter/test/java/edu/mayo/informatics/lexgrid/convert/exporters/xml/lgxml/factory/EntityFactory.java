@@ -69,6 +69,59 @@ public class EntityFactory {
         
     }
     
+    /*    
+        <lgCon:entity entityCode="Ford" isActive="true" entityCodeNamespace="Automobiles">
+            <lgCommon:entityDescription>Ford Motor Company</lgCommon:entityDescription>
+            <lgCon:entityType>concept</lgCon:entityType>
+            <lgCon:presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>Ford</lgCommon:value>
+            </lgCon:presentation>
+            <lgCon:presentation propertyName="textualPresentation" propertyId="p2" isPreferred="false">
+                <lgCommon:value>Ford Motor Company</lgCommon:value>
+            </lgCon:presentation>
+        </lgCon:entity>
+    */
+    public static Entity createEntityFord() {
+        Entity entity = new Entity();
+        entity.setEntityCode("Ford");
+        entity.setIsActive(new Boolean(true));
+        entity.setEntityCodeNamespace(Constants.VALUE_AUTOMOBILES_NAME_SPACE);
+        
+        // description
+        EntityDescription ed = new EntityDescription();
+        ed.setContent("Ford Motor Company<");
+        entity.setEntityDescription(ed);
+        
+        // entityType
+        String[] stringAr = {Constants.VALUE_ENTITY_TYPE_CONCEPT};
+        entity.setEntityType(stringAr);
+        
+        // presentations
+        Presentation p1 = new Presentation();
+        p1.setPropertyName(Constants.VALUE_PROP_NAME_TEXT_PRES);
+        p1.setPropertyId("p1");
+        p1.setIsPreferred(new Boolean(true));
+        Text text = new Text();
+        text.setContent("Ford");
+        p1.setValue(text);
+        
+        Presentation p2 = new Presentation();
+        p2.setPropertyName(Constants.VALUE_PROP_NAME_TEXT_PRES);
+        p2.setPropertyId("p2");
+        p2.setIsPreferred(new Boolean(false));
+        Text text2 = new Text();
+        text2.setContent("Ford Motor Company");
+        p2.setValue(text2);
+        
+        Presentation[] presentationAr = {p1, p2};
+        
+        entity.setPresentation(presentationAr);
+        
+        return entity;
+        
+    }
+
+    
     /*
        <lgCon:entity  entityCode="A0001" status="asfd" isActive="true" entityCodeNamespace="Automobiles">
             <lgCommon:entityDescription>Automobile</lgCommon:entityDescription>

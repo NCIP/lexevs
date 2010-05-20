@@ -27,6 +27,10 @@ public class MockLexGridObjectFactory {
         // create automaker and add to refList list
         rcr = ResolvedConceptReferenceFactory.createRcrAutoMaker();
         refList1.addResolvedConceptReference(rcr);
+        
+        // create ford and add to refList list
+        rcr = ResolvedConceptReferenceFactory.createRcrFord();
+        refList1.addResolvedConceptReference(rcr);        
 
         // create root and add to refList list
         rcr = ResolvedConceptReferenceFactory.createRcrRoot();
