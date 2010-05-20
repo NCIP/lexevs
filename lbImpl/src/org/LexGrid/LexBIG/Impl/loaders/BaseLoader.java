@@ -116,6 +116,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     private boolean doIndexing = true;
     private boolean doComputeTransitiveClosure = true;
     private boolean doRegister = true;
+    private boolean doApplyPostLoadManifest = true;
     
  
     public BaseLoader(){
@@ -240,6 +241,10 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                     doPostProcessing(options_, codingSchemeReferences);
                     
                     doTransitiveAndIndex(codingSchemeReferences);
+                    
+                    if(doApplyPostLoadManifest) {
+                        doApplyManifest(codingSchemeReferences);
+                    }
 
                     md_.info("After Indexing");
                     snap = SimpleMemUsageReporter.snapshot();
@@ -289,10 +294,22 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                     }
 
                 }
+             
                 status_.setEndTime(new Date(System.currentTimeMillis()));
                 inUse = false;
             }
 
+        }
+
+    
+    }
+    
+    private void doApplyManifest(AbsoluteCodingSchemeVersionReference[] codingSchemeReferences) throws LgConvertException {
+        for(AbsoluteCodingSchemeVersionReference reference : codingSchemeReferences) {
+            md_.info("Applying Post-Load Manifest (if any).");
+            this.getManifestUtil().applyManifest(
+                    this.getCodingSchemeManifest(), 
+                    new URNVersionPair(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion()));
         }
     }
     

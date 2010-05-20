@@ -101,7 +101,9 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
 
     public void load(URI source, URI codingSchemeManifestURI, int memorySafe, boolean stopOnErrors, boolean async)
             throws LBException {
-        this.setCodingSchemeManifestURI(codingSchemeManifestURI);
+        if(codingSchemeManifestURI != null) {
+            this.setCodingSchemeManifestURI(codingSchemeManifestURI);
+        }
         this.getOptions().getIntegerOption(Option.getNameForType(Option.MEMORY_SAFE)).setOptionValue(memorySafe);
         this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
         this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
@@ -132,8 +134,9 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
 
             if(this.getOptions().getIntegerOption(Option.getNameForType(Option.MEMORY_SAFE)).getOptionValue().equals(
                     ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY)) {
+                
                 this.persistCodingSchemeToDatabase(owlScheme);
-            }
+            } 
             
             return this.constructVersionPairsFromCodingSchemes(owlScheme);
         } catch (Exception e) {
