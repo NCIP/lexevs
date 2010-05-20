@@ -82,7 +82,14 @@ public class CodeToReturn implements Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof CodeToReturn) {
             CodeToReturn a = (CodeToReturn) obj;
-            if (StringUtils.equals(this.getCode(),a.getCode())) {
+            if (StringUtils.equals(this.getCode(), a.getCode())) {
+                if(StringUtils.isNotBlank(this.getNamespace()) && StringUtils.isNotBlank(a.getNamespace())){
+                    if (StringUtils.equals(this.getNamespace(), a.getNamespace())) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
                 return true;
             }
         }
