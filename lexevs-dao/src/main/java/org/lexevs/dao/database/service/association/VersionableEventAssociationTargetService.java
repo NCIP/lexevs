@@ -188,6 +188,10 @@ public class VersionableEventAssociationTargetService extends
 			String relationContainerName, String associationPredicateName,
 			AssociationSource source, AssociationTarget target) throws LBException {
 		
+		String csUId = null;
+		AssociationTargetDao assocTargetDao = null;
+		String targetUId = null;
+		
 		if (target == null)
 			throw new LBParameterException(
 					"Association entity object is not supplied.");
@@ -198,6 +202,25 @@ public class VersionableEventAssociationTargetService extends
 			throw new LBRevisionException("EntryState can't be null.");
 		}
 
+		try {
+			csUId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri,
+					version).getCodingSchemeUIdByUriAndVersion(codingSchemeUri,
+					version);
+		} catch (Exception e) {
+			throw new LBRevisionException(
+					"The coding scheme to which the association target belongs to doesnt exist.");
+		}
+
+		try {
+			assocTargetDao = this.getDaoManager().getAssociationTargetDao(
+					codingSchemeUri, version);
+
+			targetUId = assocTargetDao.getAssociationTargetUId(csUId, target
+					.getAssociationInstanceId());
+		} catch (Exception e) {
+			// do nothing.
+		}
+		
 		ChangeType changeType = entryState.getChangeType();
 		
 		if (changeType == ChangeType.NEW) {
@@ -205,43 +228,35 @@ public class VersionableEventAssociationTargetService extends
 				throw new LBRevisionException(
 						"Changes of type NEW are not allowed to have previous revisions.");
 			}
+
+			if (targetUId != null) {
+				throw new LBRevisionException(
+						"The association target being added already exist.");
+			}
 		} else {
 			
-			String csUId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri,
-					version).getCodingSchemeUIdByUriAndVersion(codingSchemeUri,
-					version);
-
-			AssociationTargetDao assocTargetDao = this.getDaoManager()
-					.getAssociationTargetDao(codingSchemeUri, version);
-			
-			String assocPredicateUId = this.getDaoManager().getAssociationDao(codingSchemeUri, version)
-					.getAssociationPredicateUIdByContainerName(csUId,
-							relationContainerName, associationPredicateName);
-			
-			if (assocPredicateUId == null) {
-				throw new LBRevisionException(
-						"The association triple being revised doesn't exist.");
-			}
-			
-			String targetUId = assocTargetDao.getAssociationTargetUId(csUId, target
-					.getAssociationInstanceId());
-
 			if (targetUId == null) {
 				throw new LBRevisionException(
-						"The association target being revised doesn't exist.");
+						"The association triple being revised doesn't exist.");
 			} 
 			
 			String targetLatestRevisionId = assocTargetDao.getLatestRevision(csUId,
 					targetUId);
 			
-			if (entryState.getPrevRevision() == null && targetLatestRevisionId != null) {
+			String currentRevision = entryState.getContainingRevision();
+			String prevRevision = entryState.getPrevRevision();
+			
+			if (entryState.getPrevRevision() == null
+					&& targetLatestRevisionId != null
+					&& !targetLatestRevisionId.equals(currentRevision)) {
 				throw new LBRevisionException(
 						"All changes of type other than NEW should have previous revisions.");
 			} else if (targetLatestRevisionId != null
-					&& !targetLatestRevisionId.equalsIgnoreCase(entryState
-							.getPrevRevision())) {
+					&& !targetLatestRevisionId.equals(currentRevision)
+					&& !targetLatestRevisionId.equals(prevRevision)) {
 				throw new LBRevisionException(
-						"Revision source is not in sync with the database revisions. Previous revision id does not match with the latest revision id of the association target."
+						"Revision source is not in sync with the database revisions. "
+								+ "Previous revision id does not match with the latest revision id of the association target."
 								+ "Please update the authoring instance with all the revisions and regenerate the source.");
 			}
 		}

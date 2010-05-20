@@ -243,7 +243,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 			String prevEntryStateUId = entityDao.getEntryStateUId(
 					codingSchemeUId, entityUId);
 
-			if (!entityDao.entryStateExists(prevEntryStateUId)) {
+			if (!entityDao.entryStateExists(codingSchemeUId, prevEntryStateUId)) {
 				EntryState entryState = new EntryState();
 
 				entryState.setChangeType(ChangeType.NEW);
@@ -377,6 +377,10 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 
 	private boolean validRevision(String codingSchemeUri, String version, Entity entity) throws LBException {
 		
+		String csUId = null;
+		EntityDao entityDao = null;
+		String entityUId = null;
+		
 		if( entity == null) 
 			throw new LBParameterException("Entity object is not supplied.");
 		
@@ -386,6 +390,25 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 			throw new LBRevisionException("EntryState can't be null.");
 		}
 		
+		try {
+			csUId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri,
+					version).getCodingSchemeUIdByUriAndVersion(codingSchemeUri,
+					version);
+		} catch (Exception e) {
+			throw new LBRevisionException(
+					"The coding scheme to which the entity belongs to doesn't exist.");
+		}
+		
+		try {
+			entityDao = this.getDaoManager().getEntityDao(
+					codingSchemeUri, version);
+	
+			entityUId = entityDao.getEntityUId(csUId, entity
+					.getEntityCode(), entity.getEntityCodeNamespace());
+		} catch (Exception e) {
+			//do nothing.
+		}
+		
 		ChangeType changeType = entryState.getChangeType();
 	
 		if (changeType == ChangeType.NEW) {
@@ -393,18 +416,12 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 				throw new LBRevisionException(
 						"Changes of type NEW are not allowed to have previous revisions.");
 			}
-		} else {
 			
-			String csUId = this
-					.getDaoManager()
-					.getCodingSchemeDao(codingSchemeUri, version)
-					.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
-
-			EntityDao entityDao = this.getDaoManager().getEntityDao(
-					codingSchemeUri, version);
-
-			String entityUId = entityDao.getEntityUId(csUId, entity
-					.getEntityCode(), entity.getEntityCodeNamespace());
+			if (entityUId != null) {
+				throw new LBRevisionException(
+						"The entity being added already exist.");
+			}
+		} else {
 			
 			if (entityUId == null) {
 				throw new LBRevisionException(
@@ -414,13 +431,17 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 			String entityLatestRevisionId = entityDao.getLatestRevision(csUId,
 					entityUId);
 
+			String currentRevision = entryState.getContainingRevision();
+			String prevRevision = entryState.getPrevRevision();
+			
 			if (entryState.getPrevRevision() == null
-					&& entityLatestRevisionId != null) {
+					&& entityLatestRevisionId != null
+					&& !entityLatestRevisionId.equals(currentRevision)) {
 				throw new LBRevisionException(
 						"All changes of type other than NEW should have previous revisions.");
-			} else if (entityLatestRevisionId != null
-					&& !entityLatestRevisionId.equalsIgnoreCase(entryState
-							.getPrevRevision())) {
+			} else if (entityLatestRevisionId != null 
+					&& !entityLatestRevisionId.equals(currentRevision)
+					&& !entityLatestRevisionId.equalsIgnoreCase(prevRevision)) {
 				throw new LBRevisionException(
 						"Revision source is not in sync with the database revisions. "
 								+ "Previous revision id does not match with the latest revision id of the entity. "

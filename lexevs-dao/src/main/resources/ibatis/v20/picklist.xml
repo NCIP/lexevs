@@ -269,8 +269,8 @@
 		SELECT 
 			rev.revisionId
 		FROM
-			$prefix$vsPickList picklist
-			$prefix$entrySate es
+			$prefix$vsPickList picklist,
+			$prefix$vsEntryState es,
 			${defaultPrefix}revision rev
 		WHERE
 			picklist.vsPickListGuid = #param1#	

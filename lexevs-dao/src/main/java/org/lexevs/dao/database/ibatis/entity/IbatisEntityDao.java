@@ -32,7 +32,6 @@ import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
-import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
@@ -431,7 +430,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		
 		inserter.insert(INSERT_ENTITY_SQL, entityData);
 		
-		if (!entryStateExists(prefix, entityData.getEntryStateUId())) {
+		if (!super.entryStateExists(prefix, entityData.getEntryStateUId())) {
 
 			EntryState entryState = new EntryState();
 
@@ -689,9 +688,12 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	}
 
 	@Override
-	public boolean entryStateExists(String entryStateUId) {
+	public boolean entryStateExists(String codingSchemeUId, String entryStateUId) {
 
-		if( entryStateExists(entryStateUId))
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUId);
+
+		if (super.entryStateExists(prefix, entryStateUId))
 			return true;
 		else
 			return false;

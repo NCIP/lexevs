@@ -212,7 +212,7 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 		}
 
 		@Override
-		public boolean entryStateExists(String entryStateUId) {
+		public boolean entryStateExists(String codingSchemeUId, String entryStateUId) {
 			throw new UnsupportedOperationException();
 		}
 

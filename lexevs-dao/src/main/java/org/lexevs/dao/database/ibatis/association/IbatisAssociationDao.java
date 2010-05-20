@@ -731,7 +731,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 		inserter.insert(INSERT_RELATIONS_SQL, relationData);
 		
-		if (!entryStateExists(prefix, relationData.getEntryStateUId())) {
+		if (!super.entryStateExists(prefix, relationData.getEntryStateUId())) {
 
 			EntryState entryState = new EntryState();
 

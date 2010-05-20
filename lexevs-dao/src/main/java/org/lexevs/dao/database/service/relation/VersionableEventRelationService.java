@@ -306,6 +306,10 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 	private boolean validRevision(String codingSchemeUri, String version,
 			Relations relation) throws LBException {
 		
+		String csUId = null;
+		AssociationDao associationDao = null;
+		String relationUId = null;
+		
 		if( relation == null) 
 			throw new LBParameterException("Relation object is not supplied.");
 		
@@ -315,6 +319,25 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 			throw new LBRevisionException("EntryState can't be null.");
 		}
 		
+		try {
+			csUId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri,
+					version).getCodingSchemeUIdByUriAndVersion(codingSchemeUri,
+					version);
+		} catch (Exception e) {
+			throw new LBRevisionException(
+					"The coding scheme to which the relation belongs to doesnt exist.");
+		}
+
+		try {
+			associationDao = this.getDaoManager().getAssociationDao(
+					codingSchemeUri, version);
+
+			relationUId = associationDao.getRelationUId(csUId, relation
+					.getContainerName());
+		} catch (Exception e) {
+			// do nothing.
+		}
+
 		ChangeType changeType = entryState.getChangeType();
 	
 		if (changeType == ChangeType.NEW) {
@@ -322,17 +345,12 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 				throw new LBRevisionException(
 						"Changes of type NEW are not allowed to have previous revisions.");
 			}
-		} else {
 			
-			String csUId = this
-					.getDaoManager()
-					.getCodingSchemeDao(codingSchemeUri, version)
-					.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
-	
-			AssociationDao associationDao = this.getDaoManager().getAssociationDao(
-					codingSchemeUri, version);
-	
-			String relationUId = associationDao.getRelationUId(csUId, relation.getContainerName());
+			if (relationUId != null) {
+				throw new LBRevisionException(
+						"The relation being added already exist.");
+			}
+		} else {
 			
 			if (relationUId == null) {
 				throw new LBRevisionException(
@@ -342,13 +360,17 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 			String relationLatestRevisionId = associationDao.getRelationLatestRevision(csUId,
 					relationUId);
 	
+			String currentRevision = entryState.getContainingRevision();
+			String prevRevision = entryState.getPrevRevision();
+			
 			if (entryState.getPrevRevision() == null
-					&& relationLatestRevisionId != null) {
+					&& relationLatestRevisionId != null
+					&& !relationLatestRevisionId.equals(currentRevision)) {
 				throw new LBRevisionException(
 						"All changes of type other than NEW should have previous revisions.");
 			} else if (relationLatestRevisionId != null
-					&& !relationLatestRevisionId.equalsIgnoreCase(entryState
-							.getPrevRevision())) {
+					&& !relationLatestRevisionId.equals(currentRevision)
+					&& !relationLatestRevisionId.equalsIgnoreCase(prevRevision)) {
 				throw new LBRevisionException(
 						"Revision source is not in sync with the database revisions. "
 								+ "Previous revision id does not match with the latest revision id of the entity. "

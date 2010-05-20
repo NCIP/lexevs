@@ -458,12 +458,18 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		}
 		
 		ChangeType changeType = entryState.getChangeType();
-
-		CodingSchemeDao codingSchemeDao = this.getDaoManager()
-				.getCodingSchemeDao(csURI, version);
-
-		String csUId = codingSchemeDao.getCodingSchemeUIdByUriAndVersion(csURI,
-				version);
+		String csUId = null;
+		CodingSchemeDao codingSchemeDao = null;
+		
+		try { 
+			codingSchemeDao = this.getDaoManager()
+					.getCodingSchemeDao(csURI, version);
+	
+			csUId = codingSchemeDao.getCodingSchemeUIdByUriAndVersion(csURI,
+					version);
+		} catch (Exception e) {
+			//do nothing.
+		}
 		
 		if (changeType == ChangeType.NEW) {
 			if (entryState.getPrevRevision() != null) {
@@ -485,15 +491,20 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			
 			String csLatestRevId = codingSchemeDao.getLatestRevision(csUId);
 			
+			String currentRevision = entryState.getContainingRevision();
+			String prevRevision = entryState.getPrevRevision();
+			
 			if (entryState.getPrevRevision() == null
 					&& csLatestRevId != null
+					&& !csLatestRevId.equals(currentRevision)
 					&& !csLatestRevId
 							.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
 				throw new LBRevisionException(
 						invalid
 								+ "All changes of type other than NEW should have previous revisions.");
-			} else if (csLatestRevId != null && !csLatestRevId.equalsIgnoreCase(entryState
-					.getPrevRevision())
+			} else if (csLatestRevId != null
+					&& !csLatestRevId.equals(currentRevision)
+					&& !csLatestRevId.equalsIgnoreCase(prevRevision)
 					&& !csLatestRevId
 							.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
 				throw new LBRevisionException(

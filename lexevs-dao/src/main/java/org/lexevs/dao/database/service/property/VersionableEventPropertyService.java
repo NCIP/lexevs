@@ -639,6 +639,10 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	private boolean validCodingSchemeRevision(String codingSchemeUri,
 			String version,Property property) throws LBException {
 		
+		String csUId = null;
+		PropertyDao propertyDao = null; 
+		String propertyUId = null;
+		
 		if (property == null)
 			throw new LBParameterException("property is null.");
 
@@ -648,6 +652,25 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 			throw new LBRevisionException("EntryState can't be null.");
 		}
 
+		try {
+			csUId = this.getDaoManager().getCodingSchemeDao(
+					codingSchemeUri, version)
+					.getCodingSchemeUIdByUriAndVersion(codingSchemeUri,
+							version);
+		} catch (Exception e) {
+			throw new LBRevisionException(
+					"he coding scheme to which the property belongs to doesnt exist.");
+		}
+		
+		try {
+			propertyDao = this.getDaoManager().getPropertyDao(codingSchemeUri, version);
+			
+			propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(csUId,csUId,
+					property.getPropertyId(), property.getPropertyName());
+		} catch (Exception e) {
+			//do nothing.
+		}
+		
 		ChangeType changeType = property.getEntryState().getChangeType();
 		
 		if (changeType == ChangeType.NEW) {
@@ -655,16 +678,12 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 				throw new LBRevisionException(
 						"Changes of type NEW are not allowed to have previous revisions.");
 			}
+			
+			if (propertyUId != null) {
+				throw new LBRevisionException(
+						"The property being added already exist.");
+			}
 		} else {
-			
-			String csUId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri,
-					version).getCodingSchemeUIdByUriAndVersion(codingSchemeUri,
-					version);
-			
-			PropertyDao propertyDao = this.getDaoManager().getPropertyDao(codingSchemeUri, version);
-			
-			String propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(csUId,csUId,
-					property.getPropertyId(), property.getPropertyName());
 			
 			if (propertyUId == null) {
 				throw new LBRevisionException(
@@ -673,12 +692,17 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 			
 			String propLatestRevisionId = propertyDao.getLatestRevision(csUId, propertyUId);
 			
-			if (entryState.getPrevRevision() == null && propLatestRevisionId != null) {
+			String currentRevision = entryState.getContainingRevision();
+			String prevRevision = entryState.getPrevRevision();
+			
+			if (entryState.getPrevRevision() == null 
+					&& propLatestRevisionId != null
+					&& !propLatestRevisionId.equals(currentRevision)) {
 				throw new LBRevisionException(
 						"All changes of type other than NEW should have previous revisions.");
 			} else if (propLatestRevisionId != null
-					&& !propLatestRevisionId.equalsIgnoreCase(entryState
-							.getPrevRevision())) {
+					&& !propLatestRevisionId.equals(currentRevision)
+					&& !propLatestRevisionId.equals(prevRevision)) {
 				throw new LBRevisionException(
 						"Revision source is not in sync with the database revisions. Previous revision id does not match with the latest revision id of the codingScheme property."
 								+ "Please update the authoring instance with all the revisions and regenerate the source.");
@@ -691,6 +715,11 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	private boolean validEntityRevision(String codingSchemeUri,
 			String version, String entityCode, String entityCodeNamespace, Property property) throws LBException {
 		
+		String csUId = null;
+		PropertyDao propertyDao = null;
+		String entityUId = null;
+		String propertyUId = null;
+		
 		if (property == null)
 			throw new LBParameterException("property is null.");
 
@@ -700,6 +729,30 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 			throw new LBRevisionException("EntryState can't be null.");
 		}
 
+		try {
+			csUId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri,
+					version).getCodingSchemeUIdByUriAndVersion(codingSchemeUri,
+					version);
+		} catch (Exception e) {
+			throw new LBRevisionException(
+					"The coding scheme to which the property belongs to doesn't exist.");
+		}
+		
+		try {
+			propertyDao = this.getDaoManager().getPropertyDao(codingSchemeUri,
+					version);
+
+			entityUId = this.getDaoManager().getEntityDao(codingSchemeUri,
+					version).getEntityUId(csUId, entityCode,
+					entityCodeNamespace);
+
+			propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(csUId,
+					entityUId, property.getPropertyId(), property
+							.getPropertyName());
+		} catch (Exception e) {
+			// do nothing.
+		}
+		
 		ChangeType changeType = property.getEntryState().getChangeType();
 		
 		if (changeType == ChangeType.NEW) {
@@ -707,20 +760,12 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 				throw new LBRevisionException(
 						"Changes of type NEW are not allowed to have previous revisions.");
 			}
+			
+			if( propertyUId != null ) {
+				throw new LBRevisionException(
+						"The property being revised already exist.");
+			}
 		} else {
-			
-			String csUId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri,
-					version).getCodingSchemeUIdByUriAndVersion(codingSchemeUri,
-					version);
-			
-			PropertyDao propertyDao = this.getDaoManager().getPropertyDao(codingSchemeUri, version);
-			
-			String entityUId = this.getDaoManager().getEntityDao(
-					codingSchemeUri, version).getEntityUId(csUId, entityCode,
-					entityCodeNamespace);
-			
-			String propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(csUId, entityUId,
-					property.getPropertyId(), property.getPropertyName());
 			
 			if (propertyUId == null) {
 				throw new LBRevisionException(
@@ -729,14 +774,20 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 			
 			String propLatestRevisionId = propertyDao.getLatestRevision(csUId, propertyUId);
 			
-			if (entryState.getPrevRevision() == null && propLatestRevisionId != null) {
+			String currentRevision = entryState.getContainingRevision();
+			String prevRevision = entryState.getPrevRevision();
+			
+			if (entryState.getPrevRevision() == null
+					&& propLatestRevisionId != null
+					&& !propLatestRevisionId.equals(currentRevision)) {
 				throw new LBRevisionException(
 						"All changes of type other than NEW should have previous revisions.");
 			} else if (propLatestRevisionId != null
-					&& !propLatestRevisionId.equalsIgnoreCase(entryState
-							.getPrevRevision())) {
+					&& !propLatestRevisionId.equals(currentRevision)
+					&& !propLatestRevisionId.equals(prevRevision)) {
 				throw new LBRevisionException(
-						"Revision source is not in sync with the database revisions. Previous revision id does not match with the latest revision id of the codingScheme property."
+						"Revision source is not in sync with the database revisions. "
+								+ "Previous revision id does not match with the latest revision id of the codingScheme property."
 								+ "Please update the authoring instance with all the revisions and regenerate the source.");
 			}
 		}
@@ -748,6 +799,11 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	private boolean validRelationRevision(String codingSchemeUri,
 			String version, String containerRelationName, Property property) throws LBException {
 		
+		String csUId = null;
+		String relationUId = null;
+		PropertyDao propertyDao = null;
+		String propertyUId = null;
+		
 		if (property == null)
 			throw new LBParameterException("property is null.");
 
@@ -757,6 +813,30 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 			throw new LBRevisionException("EntryState can't be null.");
 		}
 
+		try { 
+			csUId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri,
+					version).getCodingSchemeUIdByUriAndVersion(codingSchemeUri,
+					version);
+		} catch (Exception e) {
+			throw new LBRevisionException(
+					"The coding scheme to which the property belongs to doesn't exist.");
+		}
+		
+		try {
+			relationUId = this.getDaoManager().getAssociationDao(
+					codingSchemeUri, version).getRelationUId(csUId,
+					containerRelationName);
+	
+			propertyDao = this.getDaoManager().getPropertyDao(
+					codingSchemeUri, version);
+	
+			propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(
+					csUId, relationUId, property.getPropertyId(), property
+							.getPropertyName());
+		} catch (Exception e) {
+			//do nothing.
+		}
+
 		ChangeType changeType = property.getEntryState().getChangeType();
 		
 		if (changeType == ChangeType.NEW) {
@@ -764,24 +844,13 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 				throw new LBRevisionException(
 						"Changes of type NEW are not allowed to have previous revisions.");
 			}
+			
+			if( propertyUId != null ) {
+				throw new LBRevisionException(
+						"The property being revised already exist.");
+			}
 		} else {
 			
-			String csUId = this
-					.getDaoManager()
-					.getCodingSchemeDao(codingSchemeUri, version)
-					.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
-
-			String relationUId = this.getDaoManager().getAssociationDao(
-					codingSchemeUri, version).getRelationUId(csUId,
-					containerRelationName);
-
-			PropertyDao propertyDao = this.getDaoManager().getPropertyDao(
-					codingSchemeUri, version);
-
-			String propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(csUId,
-					relationUId, property.getPropertyId(), property
-							.getPropertyName());
-
 			if (propertyUId == null) {
 				throw new LBRevisionException(
 						"The property being revised doesn't exist.");
@@ -789,18 +858,24 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 			
 			String propLatestRevisionId = propertyDao.getLatestRevision(csUId, propertyUId);
 			
-			if (entryState.getPrevRevision() == null && propLatestRevisionId != null) {
+			String currentRevision = entryState.getContainingRevision();
+			String prevRevision = entryState.getPrevRevision();
+			
+			if (entryState.getPrevRevision() == null
+					&& propLatestRevisionId != null
+					&& !propLatestRevisionId.equals(currentRevision)) {
 				throw new LBRevisionException(
 						"All changes of type other than NEW should have previous revisions.");
 			} else if (propLatestRevisionId != null
-					&& !propLatestRevisionId.equalsIgnoreCase(entryState
-							.getPrevRevision())) {
+					&& !propLatestRevisionId.equals(currentRevision)
+					&& !propLatestRevisionId.equals(prevRevision)) {
 				throw new LBRevisionException(
-						"Revision source is not in sync with the database revisions. Previous revision id does not match with the latest revision id of the codingScheme property."
+						"Revision source is not in sync with the database revisions. "
+								+ "Previous revision id does not match with the latest revision id of the codingScheme property."
 								+ "Please update the authoring instance with all the revisions and regenerate the source.");
 			}
 		}
-			
+		
 		return true;
 	}
 }

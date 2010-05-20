@@ -94,7 +94,7 @@
   			eate.associationPredicateGuid
   		LEFT JOIN
   			$prefix$relation rel
- 		WHERE
+ 		ON
   			ap.relationGuid =
   			rel.relationGuid
  	

@@ -140,5 +140,5 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	public void updateEntryStateUId(String codingSchemeUId, String entityUId,
 			String entryStateUId);
 
-	public boolean entryStateExists(String entryStateUId);
+	public boolean entryStateExists(String codingSchemeUId, String entryStateUId);
 }

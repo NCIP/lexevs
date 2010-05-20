@@ -307,7 +307,7 @@
 		SELECT * FROM
 			$prefix$entity
 		WHERE
-			entity.entityGuid = #param1#		
+			entityGuid = #param1#		
      </select>
      
      <select id="getAllEntityUidsOfCodingScheme" 
