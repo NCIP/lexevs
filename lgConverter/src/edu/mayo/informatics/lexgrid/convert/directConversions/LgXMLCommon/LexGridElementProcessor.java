@@ -241,5 +241,19 @@ public class LexGridElementProcessor {
         
     }
 
+    public static void processValueSetDefinitionRevision(XMLDaoServiceAdaptor service,
+            Object child) {
+        ValueSetDefinition vsDefinition = (ValueSetDefinition)child;
+      service.storeValueSetDefinitionRevision(vsDefinition);
+        
+    }
+
+    public static void processPickListtDefinitionRevision(XMLDaoServiceAdaptor service,
+            Object child) {
+        PickListDefinition plDefinition = (PickListDefinition)child;
+       service.storePickListDefinitionRevision(plDefinition);
+        
+    }
+
 
 }

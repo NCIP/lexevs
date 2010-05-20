@@ -166,28 +166,16 @@ public class LgRevisionListener implements UnmarshalListener {
         }
         if (!isPropertiesPresent && UnMarshallingLogic.isCodingSchemeMappings(parent, child)) {
             
-//            try {
-//                LexGridElementProcessor.processRevisionMetadata(serviceAdaptor, revision, (CodingScheme)parent);
-//            } catch (LBRevisionException e) {
-//                messages_.error("Revision element reading and writing has failed.", e);
-//                e.printStackTrace();
-//            }
+
             LexGridElementProcessor.processCodingSchemeMetadataRevision(serviceAdaptor, parent, child);
             isCodingSchemeLoaded = true;
         }
         if (!isCodingSchemeLoaded && UnMarshallingLogic.isCodingSchemeProperties(parent, child)) {
-//            try {
-//                LexGridElementProcessor.processRevisionMetadata(serviceAdaptor, revision, (CodingScheme)parent);
-//            } catch (LBRevisionException e) {
-//                messages_.error("Revision element reading and writing has failed.", e);
-//                e.printStackTrace();
-//            }
+
             LexGridElementProcessor.processCodingSchemeMetadataRevision(serviceAdaptor, parent, child);
             isCodingSchemeLoaded = true;
         }
-//        if(UnMarshallingLogic.isCodingSchemeProperty(serviceAdaptor, parent, child)){
-//            LexGridElementProcessor.processCodingSchemePropertyRevision(serviceAdaptor, parent, child);
-//        }
+
         
         if (UnMarshallingLogic.isCodingSchemeEntity(parent, child)) {
             LexGridElementProcessor.processCodingSchemeEntityRevision(serviceAdaptor, parent, child);
@@ -208,7 +196,12 @@ public class LgRevisionListener implements UnmarshalListener {
               messages_.info("Associations Loaded: " + modCount);}
         }
         
-          
+        if(UnMarshallingLogic.isValueSetDefinitionRevision(parent, child)){
+            LexGridElementProcessor.processValueSetDefinitionRevision(serviceAdaptor, child);
+        }
+        if(UnMarshallingLogic.isPickListDefinitionRevision(parent, child)){
+            LexGridElementProcessor.processPickListtDefinitionRevision(serviceAdaptor, child);
+        }
     }
    
 }

@@ -35,6 +35,7 @@ import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListDefinitions;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
+import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 
@@ -96,6 +97,11 @@ public class UnMarshallingLogic {
     public static boolean isCodingSchemeAssociationSource(Object parent, Object child) {
         return child instanceof AssociationTarget && parent instanceof AssociationSource;
     }
+    
+    public static boolean isCodingSchemeProperty(XMLDaoServiceAdaptor serviceAdaptor, Object parent, Object child) {
+        return child instanceof Property && parent instanceof Properties;
+       }
+
     /**
      * @param parent
      * @param child
@@ -153,8 +159,13 @@ public class UnMarshallingLogic {
         return child instanceof PickListDefinition && parent instanceof PickListDefinitions;
     }
 
-    public static boolean isCodingSchemeProperty(XMLDaoServiceAdaptor serviceAdaptor, Object parent, Object child) {
-     return child instanceof Property && parent instanceof Properties;
+    public static boolean isValueSetDefinitionRevision(Object parent, Object child) {
+        return child instanceof ValueSetDefinition && parent instanceof ChangedEntry;
     }
+
+    public static boolean isPickListDefinitionRevision(Object parent, Object child) {
+    return child instanceof PickListDefinition && parent instanceof ChangedEntry;
+    }
+
 
 }
