@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<systemRelease xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/versions http://LexGrid.org/schema/2010/01/LexGrid/versions.xsd"
+    xmlns="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+    xmlns:lgVer="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+    xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" xmlns:data="data"
+    xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueSets"
+    xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
+    releaseURI="http://testRelease/04" releaseDate="2008-11-07T14:55:51.615-06:00">
+    <lgCommon:entityDescription>Sample value set definitions</lgCommon:entityDescription>
+    <lgVer:valueSetDefinitions>
+        <lgVD:mappings>
+            <lgNaming:supportedAssociation localId="is_a"
+                uri="urn:lsid:bioontology.org:fungal_anatomy:is_a">is_a</lgNaming:supportedAssociation>
+            <lgNaming:supportedAssociation localId="hasSubtype"
+                uri="urn:oid:1.3.6.1.4.1.2114.108.1.8.1">hasSubtype</lgNaming:supportedAssociation>
+            <lgNaming:supportedAssociation localId="uses" uri="urn:oid:11.11.0.1">uses</lgNaming:supportedAssociation>
+            <lgNaming:supportedAssociationQualifier localId="hasEngine" uri="www.something.com"
+                >hasEngine</lgNaming:supportedAssociationQualifier>
+            <lgNaming:supportedCodingScheme localId="Automobiles" uri="urn:oid:11.11.0.1"
+                >Automobiles</lgNaming:supportedCodingScheme>
+            <lgNaming:supportedCodingScheme localId="fungal_anatomy"
+                uri="urn:lsid:bioontology.org:fungal_anatomy">fungal_anatomy</lgNaming:supportedCodingScheme>
+            <lgNaming:supportedCodingScheme localId="ExpendableParts" uri="urn:oid:11.11.0.50"
+                >Expendable Parts</lgNaming:supportedCodingScheme>
+            <lgNaming:supportedCodingScheme localId="GermanMadeParts" uri="urn:oid:11.11.0.2">German
+                Made Parts</lgNaming:supportedCodingScheme>
+            <lgNaming:supportedDataType localId="testhtml">test/html</lgNaming:supportedDataType>
+            <lgNaming:supportedDataType localId="textplain">text/plain</lgNaming:supportedDataType>
+            <lgNaming:supportedHierarchy localId="is_a" associationNames="hasSubtype"
+                isForwardNavigable="true" rootCode="@">hasSubtype</lgNaming:supportedHierarchy>
+            <lgNaming:supportedLanguage localId="en" uri="www.en.org/orsomething">en</lgNaming:supportedLanguage>
+            <lgNaming:supportedNamespace localId="Automobiles" uri="urn:oid:11.11.0.1"
+                equivalentCodingScheme="Automobiles">Automobiles</lgNaming:supportedNamespace>
+            <lgNaming:supportedNamespace localId="ExpendableParts" uri="urn:oid:11.11.0.50"
+                equivalentCodingScheme="ExpendableParts">Expendable Parts</lgNaming:supportedNamespace>
+            <lgNaming:supportedNamespace localId="GermanMadePartsNamespace" uri="urn:oid:11.11.0.2"
+                equivalentCodingScheme="GermanMadeParts">German Made Parts</lgNaming:supportedNamespace>
+            <lgNaming:supportedProperty localId="definition">definition</lgNaming:supportedProperty>
+            <lgNaming:supportedProperty localId="textualPresentation">textualPresentation</lgNaming:supportedProperty>
+            <lgNaming:supportedSource localId="lexgrid.org">lexgrid.org</lgNaming:supportedSource>
+            <lgNaming:supportedSource localId="_111101">11.11.0.1</lgNaming:supportedSource>
+        </lgVD:mappings>
+        <lgVD:valueSetDefinition valueSetDefinitionURI="SRITEST:AUTO:EveryThing"
+            valueSetDefinitionName="All Automobiles nodes" defaultCodingScheme="Automobiles"
+            conceptDomain="Autos" effectiveDate="2009-01-01T11:00:00Z" isActive="true"
+            status="ACTIVE">
+            <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW"/>
+            <lgVD:mappings>
+                <lgNaming:supportedConceptDomain localId="Autos" uri="urn:oid:11.11.0.1">Autos</lgNaming:supportedConceptDomain>
+                <lgNaming:supportedSource localId="GM">GM</lgNaming:supportedSource>
+                <lgNaming:supportedSource localId="Ford">Ford</lgNaming:supportedSource>
+            </lgVD:mappings>
+            <lgVD:source role="role1" subRef="subRef1">GM</lgVD:source>
+            <lgVD:source role="role2" subRef="subRef2">Ford</lgVD:source>
+            <lgVD:representsRealmOrContext>Automobiles</lgVD:representsRealmOrContext>
+            <lgVD:representsRealmOrContext>Ford</lgVD:representsRealmOrContext>
+            <lgVD:representsRealmOrContext>GM</lgVD:representsRealmOrContext>
+            <lgVD:properties>
+                <lgCommon:property propertyName="textualPresentation">
+                    <lgCommon:source role="PropRole1" subRef="PropSubRef1">GM</lgCommon:source>
+                    <lgCommon:source role="PropRole2" subRef="PropSubRef2">Ford</lgCommon:source>
+                    <lgCommon:usageContext>PropUsageContext GM</lgCommon:usageContext>
+                    <lgCommon:usageContext>PropUsageContext Ford</lgCommon:usageContext>
+                    <lgCommon:propertyQualifier propertyQualifierName="PropQual1Namuuuuu"
+                        propertyQualifierType="PQual Type 1">
+                        <lgCommon:value dataType="text">PropQualValue GM</lgCommon:value>
+                    </lgCommon:propertyQualifier>
+                    <lgCommon:propertyQualifier propertyQualifierName="PropQual2Namuuuuu"
+                        propertyQualifierType="PQual Type 2">
+                        <lgCommon:value dataType="text">PropQualValue Ford</lgCommon:value>
+                    </lgCommon:propertyQualifier>
+                    <lgCommon:value>All Automobiles nodes</lgCommon:value>
+                </lgCommon:property>
+            </lgVD:properties>
+            <lgVD:definitionEntry ruleOrder="1" operator="OR">
+                <lgVD:entityReference entityCode="A0001" referenceAssociation="hasSubtype"
+                    transitiveClosure="true" targetToSource="false" leafOnly="false"/>
+            </lgVD:definitionEntry>
+            <lgVD:definitionEntry ruleOrder="2" operator="OR">
+                <lgVD:entityReference entityCode="005" referenceAssociation="hasSubtype"
+                    transitiveClosure="true" targetToSource="false" leafOnly="false"/>
+            </lgVD:definitionEntry>
+        </lgVD:valueSetDefinition>
+        <lgVD:valueSetDefinition valueSetDefinitionURI="SRITEST:AUTO:DomesticAutoMakers"
+            valueSetDefinitionName="Domestic Auto Makers" defaultCodingScheme="Automobiles"
+            conceptDomain="Autos" effectiveDate="2009-01-01T11:00:00Z" isActive="true"
+            status="ACTIVE">
+            <lgVD:mappings>
+                <lgNaming:supportedConceptDomain localId="Autos" uri="urn:oid:11.11.0.1"
+                >Autos</lgNaming:supportedConceptDomain>
+            </lgVD:mappings>
+            <lgVD:properties>
+                <lgCommon:property propertyName="textualPresentation">
+                    <lgCommon:value> Domestic Auto Makers</lgCommon:value>
+                </lgCommon:property>
+            </lgVD:properties>
+            <lgVD:definitionEntry ruleOrder="1" operator="OR">
+                <lgVD:entityReference entityCode="005" referenceAssociation="hasSubtype"
+                    transitiveClosure="true" targetToSource="false" leafOnly="false"/>
+            </lgVD:definitionEntry>
+        </lgVD:valueSetDefinition>
+        <lgVD:valueSetDefinition valueSetDefinitionURI="SRITEST:AUTO:Automobiles"
+            valueSetDefinitionName="Automobiles" defaultCodingScheme="Automobiles"
+            conceptDomain="Autos" effectiveDate="2009-01-01T11:00:00Z" isActive="true"
+            status="ACTIVE">
+            <lgVD:mappings>
+                <lgNaming:supportedConceptDomain localId="Autos" uri="urn:oid:11.11.0.1"
+                >Autos</lgNaming:supportedConceptDomain>
+            </lgVD:mappings>
+            <lgVD:source role="role100" subRef="subRef100">GM007</lgVD:source>
+            <lgVD:source role="role200" subRef="subRef200">Ford007</lgVD:source>
+            <lgVD:representsRealmOrContext>testContext1</lgVD:representsRealmOrContext>
+            <lgVD:representsRealmOrContext>testContext2</lgVD:representsRealmOrContext>
+            <lgVD:properties>
+                <lgCommon:property propertyName="textualPresentation">
+                    <lgCommon:value>Automobiles</lgCommon:value>
+                </lgCommon:property>
+            </lgVD:properties>
+            <lgVD:definitionEntry ruleOrder="1" operator="OR">
+                <lgVD:entityReference entityCode="A0001" referenceAssociation="hasSubtype"
+                    transitiveClosure="true" targetToSource="false" leafOnly="false"/>
+            </lgVD:definitionEntry>
+        </lgVD:valueSetDefinition>
+        <lgVD:valueSetDefinition valueSetDefinitionURI="SRITEST:AUTO:AutomobilesNoName"
+            valueSetDefinitionName=" " defaultCodingScheme="Automobiles"
+            effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
+            <lgVD:properties>
+                <lgCommon:property propertyName="textualPresentation">
+                    <lgCommon:value>Automobiles No VD Name</lgCommon:value>
+                </lgCommon:property>
+            </lgVD:properties>
+            <lgVD:definitionEntry ruleOrder="1" operator="OR">
+                <lgVD:entityReference entityCode="A0001" referenceAssociation="hasSubtype"
+                    transitiveClosure="true" targetToSource="false" leafOnly="false"/>
+            </lgVD:definitionEntry>
+        </lgVD:valueSetDefinition>
+        <lgVD:valueSetDefinition valueSetDefinitionURI="SRITEST:AUTO:AllDomesticButGM"
+            valueSetDefinitionName="All Domestic Autos But GM" defaultCodingScheme="Automobiles"
+            effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
+            <lgVD:properties>
+                <lgCommon:property propertyName="textualPresentation">
+                    <lgCommon:value> Domestic Auto Makers</lgCommon:value>
+                </lgCommon:property>
+            </lgVD:properties>
+            <lgVD:definitionEntry ruleOrder="1" operator="OR">
+                <lgVD:entityReference entityCode="005" referenceAssociation="hasSubtype"
+                    transitiveClosure="true" targetToSource="false" leafOnly="false"/>
+            </lgVD:definitionEntry>
+            <lgVD:definitionEntry ruleOrder="2" operator="SUBTRACT">
+                <lgVD:entityReference entityCode="GM" referenceAssociation="hasSubtype"
+                    transitiveClosure="true" targetToSource="false" leafOnly="false"/>
+            </lgVD:definitionEntry>
+        </lgVD:valueSetDefinition>
+    </lgVer:valueSetDefinitions>
+
+    <editHistory>
+        <!-- Test : NEW ValueSet Definition -->
+        <revision revisionId="vdTestRelease2010Jan">
+            <lgCommon:entityDescription>test Description</lgCommon:entityDescription>
+            <changedEntry>
+                <changedValueSetDefinitionEntry valueSetDefinitionURI="SRITEST:AUTO:GM"
+                    valueSetDefinitionName="GM" defaultCodingScheme="Automobiles"
+                    effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
+                    <lgCommon:entryState containingRevision="vdTestRelease2010Jan" relativeOrder="0"
+                        changeType="NEW"/>
+                    <lgCommon:entityDescription>test new value set definition</lgCommon:entityDescription>
+                    <lgVD:properties>
+                        <lgCommon:property propertyName="textualPresentation" language="en"
+                            isActive="true" propertyId="p1" status="active" propertyType="property"
+                            effectiveDate="2010-01-01T11:00:00" expirationDate="2012-12-01T11:11:11">
+                            <!--lgCommon:entryState containingRevision="vdTestRelease2010Jan"
+                                relativeOrder="0" changeType="NEW"/-->
+                            <lgCommon:value>GM</lgCommon:value>
+                        </lgCommon:property>
+                    </lgVD:properties>
+                    <lgVD:definitionEntry ruleOrder="1" operator="OR" isActive="true"
+                        effectiveDate="2010-01-01T11:00:00" status="active">
+                        <!--lgCommon:entryState containingRevision="vdTestRelease2010Jan"
+                            relativeOrder="0" changeType="NEW"/-->
+                        <lgVD:entityReference entityCode="GM" referenceAssociation="hasSubtype"
+                            transitiveClosure="true" targetToSource="false" leafOnly="false"/>
+                    </lgVD:definitionEntry>
+                </changedValueSetDefinitionEntry>
+            </changedEntry>
+        </revision>
+
+        <!-- Test: MODIFY ValueSet Definition -->
+        <revision revisionId="vdTestRelease2010Feb">
+            <changedEntry>
+                <changedValueSetDefinitionEntry valueSetDefinitionURI="SRITEST:AUTO:Automobiles"
+                    valueSetDefinitionName="Automobiles" defaultCodingScheme="Automobiles"
+                    conceptDomain="Autos" effectiveDate="2009-01-01T11:00:00Z" isActive="true"
+                    status="ACTIVE">
+                    <lgCommon:entryState containingRevision="vdTestRelease2010Feb" relativeOrder="0"
+                        changeType="MODIFY"/>
+                    <lgCommon:entityDescription>test MODIFY value set
+                    definition</lgCommon:entityDescription>
+                    <lgVD:source role="role300" subRef="subRef300">Ford003</lgVD:source>
+                    <lgVD:representsRealmOrContext>testContext3</lgVD:representsRealmOrContext>
+                </changedValueSetDefinitionEntry>
+            </changedEntry>
+        </revision>
+
+        <!-- Test: VERSIONABLE ValueSet Definition -->
+        <revision revisionId="vdTestRelease2010Mar">
+            <changedEntry>
+                <changedValueSetDefinitionEntry
+                    valueSetDefinitionURI="SRITEST:AUTO:AutomobilesNoName"
+                    valueSetDefinitionName=" " defaultCodingScheme="Automobiles"
+                    effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="active">
+                    <lgCommon:owner>Mayo</lgCommon:owner>
+                    <lgCommon:entryState containingRevision="vdTestRelease2010Mar" relativeOrder="0"
+                        changeType="VERSIONABLE"/>
+                </changedValueSetDefinitionEntry>
+            </changedEntry>
+        </revision>
+
+        <!-- Test: REMOVE ValueSet Definition -->
+        <revision revisionId="vdTestRelease2010Apr">
+            <changedEntry>
+                <changedValueSetDefinitionEntry valueSetDefinitionURI="SRITEST:AUTO:Automobiles">
+                    <lgCommon:entryState containingRevision="vdTestRelease2010Apr"
+                        prevRevision="vdTestRelease2010Feb" relativeOrder="0" changeType="REMOVE"/>
+                </changedValueSetDefinitionEntry>
+            </changedEntry>
+        </revision>
+        
+    </editHistory>
+</systemRelease>
