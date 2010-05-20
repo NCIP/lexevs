@@ -466,6 +466,15 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 		}
 	}
 	
+//	public void testExportPicklistDefinition(){
+//		try {
+//			getPickListService().exportPickListDefinition("SRITEST:FA:hyphaLeafOnly", "c:\\testExportPLD.xml", true, true);
+//		} catch (LBException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
+//	}
+	
 	private LexEVSPickListDefinitionServices getPickListService(){
 		if (pls_ == null) {
 			LexEVSPickListDefinitionServices pickListService = LexEVSPickListDefinitionServicesImpl.defaultInstance();

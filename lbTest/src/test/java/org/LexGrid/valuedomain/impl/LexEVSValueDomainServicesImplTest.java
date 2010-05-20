@@ -598,6 +598,18 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		}		
 	}
 	
+//	public void testExportValueSetDefinition(){
+//		try {
+//			getValueSetDefinitionService().exportValueSetDefinition(new URI("SRITEST:AUTO:PropRefGeneralOrFocus"), "c:\\testExportVSD.xml", true, true);
+//		} catch (LBException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (URISyntaxException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+	
 	private LexEVSValueSetDefinitionServices getValueSetDefinitionService(){
 		if (vds_ == null) {
 			vds_ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
