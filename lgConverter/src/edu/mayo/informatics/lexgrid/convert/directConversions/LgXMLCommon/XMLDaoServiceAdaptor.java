@@ -290,7 +290,7 @@ public class XMLDaoServiceAdaptor {
     
     public void storeValueSetDefinitionRevision(ValueSetDefinition vsDefinition){
         try {
-            valueSetService.revise(vsDefinition, null);
+            valueSetService.revise(vsDefinition, null, null);
         } catch (LBException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -298,7 +298,7 @@ public class XMLDaoServiceAdaptor {
     }
     public void storePickListDefinitionRevision(PickListDefinition plDefinition){
         try {
-            pickListService.revise(plDefinition, null);
+            pickListService.revise(plDefinition, null, null);
         } catch (LBException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
