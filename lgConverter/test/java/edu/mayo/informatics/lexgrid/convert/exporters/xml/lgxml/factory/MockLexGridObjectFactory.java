@@ -5,12 +5,14 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.easymock.EasyMock;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.Constants;
 
 public class MockLexGridObjectFactory {
+   
     /*
      * create mock CNS
      */
@@ -58,6 +60,36 @@ public class MockLexGridObjectFactory {
         return cns;
         
     }
+    
+    /*
+     * create mock CNS for filtering test
+     * cns.restrictToMatchingDesignations("T*", SearchDesignationOption.ALL, "LuceneQuery", null);
+     */
+    public static CodedNodeSet createCnsFiltered() throws LBException {
+        
+
+        CodedNodeSet cns = EasyMock.createNiceMock(CodedNodeSet.class);
+        
+        ResolvedConceptReferenceList refList1 = new ResolvedConceptReferenceList();
+        
+        ResolvedConceptReference rcr = null;
+        
+        // create truck and add to refList list
+        rcr = ResolvedConceptReferenceFactory.createRcrTruck();
+        refList1.addResolvedConceptReference(rcr);
+        
+        ResolvedConceptReferencesIterator rcri = EasyMock.createNiceMock(ResolvedConceptReferencesIterator.class);
+        EasyMock.expect(rcri.next(Constants.VALUE_PAGE_SIZE)).andReturn(refList1).times(1);
+        EasyMock.expect(rcri.hasNext()).andReturn(false).times(1);
+
+        EasyMock.expect(cns.restrictToMatchingDesignations("T*", SearchDesignationOption.ALL, "LuceneQuery", null)).andReturn(cns);
+        EasyMock.expect(cns.resolve(null, null, null, null, true)).andReturn(rcri);
+        EasyMock.replay(cns, rcri);
+        
+        return cns;
+        
+    }
+    
     
     /*
      * create mock CNG

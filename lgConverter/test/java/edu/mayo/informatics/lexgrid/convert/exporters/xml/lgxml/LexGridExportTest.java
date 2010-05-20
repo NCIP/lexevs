@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 
 import junit.framework.Assert;
@@ -11,6 +12,7 @@ import junit.framework.Assert;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
@@ -43,7 +45,6 @@ import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.formatters.XmlCo
 
 public class LexGridExportTest {
     
-    @Test
     public void lexGridExportTestCns() throws LBException {
         String outFileName = "lexGridExportTestCns.xml";
         CodingScheme cs = CodingSchemeFactory.createCodingScheme();
@@ -52,6 +53,21 @@ public class LexGridExportTest {
         LexGridExportTest.lexGridExportTestRunner(cs, cng, cns, outFileName);
         Assert.assertTrue(true);
     }
+    
+    /*
+     * cns.restrictToMatchingDesignations("G*", SearchDesignationOption.ALL, "LuceneQuery", null);
+     */
+    @Test
+    public void lexGridExportTestCnsFilter() throws LBException {
+        String outFileName = "lexGridExportTestCnsFilter.xml";
+        CodingScheme cs = CodingSchemeFactory.createCodingScheme();
+        CodedNodeSet cns = MockLexGridObjectFactory.createCnsFiltered();
+        CodedNodeGraph cng = null;
+        LexGridExportTest.lexGridExportTestRunner(cs, cng, cns, outFileName);
+        Assert.assertTrue(true);
+    }
+    
+    
     
     @Test
     public void lexGridExportTestCng() throws LBException {
@@ -66,6 +82,7 @@ public class LexGridExportTest {
     
     private static void lexGridExportTestRunner(CodingScheme cs, CodedNodeGraph cng, CodedNodeSet cns, String outFileName) throws LBException {
 
+        /*
         File outFile = new File(outFileName);
         
         Writer w = null;
@@ -75,7 +92,9 @@ public class LexGridExportTest {
             out = new BufferedWriter(w);
         } catch (IOException e) {
             e.printStackTrace();
-        } 
+        }
+        */
+        StringWriter out = new StringWriter();
         
         Entities entities = new Entities();
         Entity entity = new Entity();
@@ -85,5 +104,7 @@ public class LexGridExportTest {
         
         XmlContentWriter xmlContentWriter = new XmlContentWriter();
         xmlContentWriter.marshalToXml(cs, cng, cns, out, Constants.VALUE_PAGE_SIZE);
+        
+        System.out.println("StringWriter contents: " + out.toString());
     }
 }
