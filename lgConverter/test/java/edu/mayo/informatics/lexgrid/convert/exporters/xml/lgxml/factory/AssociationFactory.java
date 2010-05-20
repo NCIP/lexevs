@@ -16,10 +16,12 @@ public class AssociationFactory {
         // associated concepts
         AssociatedConceptList assocConList = new AssociatedConceptList();
         AssociatedConcept assocCon = new AssociatedConcept();
-        assocCon.s
         
-        assocConList.setAssociatedConcept(arg0)
-        assoc.setAssociatedConcepts(associatedConcepts)
+//        assocCon.s
+        
+//        assocConList.setAssociatedConcept(arg0)
+//        assoc.setAssociatedConcepts(associatedConcepts)
+        return null;
     }
 
 }
