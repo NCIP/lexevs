@@ -1,6 +1,7 @@
 package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants;
 
 public class Constants {
+    public static final String VALUE_HAS_SUB_TYPE = "hasSubType";
     public static final String VALUE_AUTOMOBILES_NAME_SPACE = "Automobiles";
     public static final String VALUE_ENTITY_TYPE_CONCEPT = "concept";
     public static final String VALUE_PROP_NAME_TEXT_PRES = "textualPresentation";
