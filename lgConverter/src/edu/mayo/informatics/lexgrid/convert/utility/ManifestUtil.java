@@ -153,7 +153,7 @@ public class ManifestUtil {
      * @param emfCodingScheme
      * @throws LgConvertException
      */
-    protected void doApplyCommonManifestElements(CodingSchemeManifest manifest, CodingScheme codingScheme) {
+    protected void doApplyCommonManifestElements(CodingSchemeManifest manifest, CodingScheme codingScheme, boolean postLoad) {
 
         if (manifest == null || codingScheme == null) {
             return;
@@ -165,20 +165,30 @@ public class ManifestUtil {
             codingScheme.setMappings(emfMappings);
         }
 
-        // Set CodingScheme
-        CsmfCodingSchemeName csName = manifest.getCodingScheme();
-        if (csName != null)
-            setCodingScheme(codingScheme, csName.getContent(), csName.getToOverride().booleanValue());
-
+    
         // set FormalName
         CsmfFormalName frmlName = manifest.getFormalName();
         if (frmlName != null)
             setFormalName(codingScheme, frmlName.getContent(), frmlName.getToOverride().booleanValue());
 
-        // set Registered Name
-        CsmfCodingSchemeURI regName = manifest.getCodingSchemeURI();
-        if (regName != null)
-            setRegisteredName(codingScheme, regName.getContent(), regName.getToOverride().booleanValue());
+        if(!postLoad) {
+            // set Registered Name
+            CsmfCodingSchemeURI regName = manifest.getCodingSchemeURI();
+            if (regName != null)
+                setRegisteredName(codingScheme, regName.getContent(), regName.getToOverride().booleanValue());
+
+            // Set CodingScheme
+            CsmfCodingSchemeName csName = manifest.getCodingScheme();
+            if (csName != null) {
+                setCodingScheme(codingScheme, csName.getContent(), csName.getToOverride().booleanValue());
+            }
+            
+            // set Represents Version
+            CsmfVersion version = manifest.getRepresentsVersion();
+            if (version != null) {
+                setRepresentsVersion(codingScheme, version.getContent(), version.getToOverride().booleanValue());
+            }
+        }
 
         // set Entity Description
         CsmfEntityDescription entDesc = manifest.getEntityDescription();
@@ -189,11 +199,6 @@ public class ManifestUtil {
         CsmfDefaultLanguage defLang = manifest.getDefaultLanguage();
         if (defLang != null)
             setDefaultLanguage(codingScheme, defLang.getContent(), defLang.getToOverride().booleanValue());
-
-        // set Represents Version
-        CsmfVersion version = manifest.getRepresentsVersion();
-        if (version != null)
-            setRepresentsVersion(codingScheme, version.getContent(), version.getToOverride().booleanValue());
 
         // set Copyright Text
         CsmfText txt = manifest.getCopyright();
@@ -219,7 +224,7 @@ public class ManifestUtil {
             return;
         }
         
-        this.doApplyCommonManifestElements(manifest, codingScheme);
+        this.doApplyCommonManifestElements(manifest, codingScheme, false);
         this.preLoadAssociationDefinitions(codingScheme, manifest.getAssociationDefinitions());
     }
 
@@ -238,9 +243,21 @@ public class ManifestUtil {
      */
     public void applyManifest(
             CodingSchemeManifest manifest, 
-            URNVersionPair versionPair) throws LgConvertException, SQLException {
+            URNVersionPair versionPair) throws LgConvertException {
         if (manifest == null || versionPair == null) {
             return;
+        }
+        
+        if(manifest.getCodingSchemeURI() != null) {
+            LoggerFactory.getLogger().warn("Coding Scheme URI cannot be changed Post-Load.");
+        }
+        
+        if(manifest.getCodingScheme() != null) {
+            LoggerFactory.getLogger().warn("Coding Scheme Name cannot be changed Post-Load.");
+        }
+        
+        if(manifest.getRepresentsVersion() != null) {
+            LoggerFactory.getLogger().warn("Coding Scheme Version cannot be changed Post-Load.");
         }
         
         CodingSchemeService codingSchemeService = 
@@ -253,13 +270,12 @@ public class ManifestUtil {
 
         try {
             
-            this.doApplyCommonManifestElements(manifest, codingScheme);
+            this.doApplyCommonManifestElements(manifest, codingScheme, true);
             this.postLoadAssociationDefinitions(codingScheme, manifest.getAssociationDefinitions());
        
             codingSchemeService.updateCodingScheme(codingScheme);
         } catch (LBException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
     }
     
