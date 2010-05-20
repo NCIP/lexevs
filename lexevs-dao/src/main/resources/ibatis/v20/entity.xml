@@ -14,7 +14,6 @@
 	<resultMap id="conceptReferenceResult" class="resolvedCodedNodeReference">
 		<result property="code" column="entityCode" />
 		<result property="codeNamespace" column="entityCodeNamespace" />
-<!--		<result property="codingSchemeName" column="codingSchemeName" />-->
 	</resultMap>
 	
 	<resultMap id="resolvedCodedNodeReferenceResult" 
@@ -22,6 +21,7 @@
 		<result property="entityDescription.content" column="description" />
 		<result property="codingSchemeURI" column="codingSchemeURI" />
 		<result property="codingSchemeVersion" column="representsVersion" />
+		<result property="codingSchemeName" column="codingSchemeName" />
 	</resultMap>
 
 	<resultMap id="entityResult" class="entity" groupBy="entityCode,entityCodeNamespace">
