@@ -235,7 +235,7 @@ public class LexGridMarshalListener implements MarshalListener
 								System.out.println("STARTING ASSOCIATION PREDICATE.... with " + curAssociationName);
 								userAP = ap;
 							}
-
+                            System.out.println("CALL processTargets WITH curConRef code..." + curConRef.getCode() + " " + curConRef.getEntityDescription().getContent());
 							processTargets(curConRef, curAssociationName, userAP);
 							processAssociationList(asl, userAP);
 							userAP.setParent(new String(stopToken));
@@ -249,7 +249,13 @@ public class LexGridMarshalListener implements MarshalListener
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} 
-				return true;
+				
+				if(userAP.getSourceCount() > 0) {
+				    return true;
+				} else {
+				    return false;
+				}
+				
 			}
 			
 			return false;
@@ -432,7 +438,7 @@ public class LexGridMarshalListener implements MarshalListener
 	                {
 	                    targetsFound = true;
 	                    aS.addTarget(associationTarget);
-	                    System.out.println("\t\tAdding Target:" + associationTarget.getTargetEntityCode());
+	                    System.out.println("\t\t\tAdding Target:" + associationTarget.getTargetEntityCode());
 	                    NameAndValueList assocQuals = target.getAssociationQualifiers();
 	                    if ((assocQuals != null)&&(assocQuals.getNameAndValueCount() > 0))
 	                    {
