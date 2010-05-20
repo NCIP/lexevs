@@ -124,7 +124,7 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 	 * @see org.lexevs.dao.database.access.registry.RegistryDao#updateRegistryEntry(org.lexevs.registry.model.RegistryEntry)
 	 */
 	public void updateRegistryEntry(RegistryEntry entry) {
-		this.getHibernateTemplate().update(entry);
+		this.getHibernateTemplate().merge(entry);
 	}
 
 	/* (non-Javadoc)
