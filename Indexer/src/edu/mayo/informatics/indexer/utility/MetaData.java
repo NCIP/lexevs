@@ -33,6 +33,7 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+import org.springframework.core.io.Resource;
 
 import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
 
@@ -51,6 +52,10 @@ public class MetaData {
     private boolean reading_ = false;
 
     private final Logger logger = Logger.getLogger("Indexer.MetaData");
+    
+    public MetaData(Resource rootLocation) throws InternalErrorException, IOException {
+        this(rootLocation.getFile());
+    }
 
     public MetaData(File rootLocation) throws InternalErrorException {
         try {
