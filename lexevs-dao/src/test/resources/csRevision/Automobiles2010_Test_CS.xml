@@ -390,5 +390,17 @@
                 </changedCodingSchemeEntry>
             </changedEntry>
         </revision>
+        
+		<!-- Test:REMOVE coding scheme -->
+        <revision revisionId="testRelease2010May">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="Automobiles"
+                    codingSchemeURI="urn:oid:11.11.0.1" representsVersion="1.1">
+                    <lgCommon:entryState containingRevision="testRelease2010May"
+                        prevRevision="testRelease2010Feb" relativeOrder="0" changeType="REMOVE"/>
+                    <lgCS:mappings/>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
     </editHistory>
 </systemRelease>
