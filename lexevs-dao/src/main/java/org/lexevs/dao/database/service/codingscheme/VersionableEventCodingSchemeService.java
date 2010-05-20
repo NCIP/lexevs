@@ -233,16 +233,8 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		versionsDao.insertEntryState(entryStateUId, codingSchemeUId,
 				entryStateTypeClassifier.classify(EntryStateType.CODINGSCHEME),
 				prevEntryStateUId, codingScheme.getEntryState());
-
-		if ((codingScheme.getProperties() != null && codingScheme
-				.getProperties().getPropertyCount() != 0)
-				|| (codingScheme.getEntities() != null && codingScheme
-						.getEntities().getEntityCount() != 0)
-				|| (codingScheme.getRelations() != null && codingScheme
-						.getRelations().length != 0)) {
 			
-			this.insertDependentChanges(codingScheme);
-		}
+		this.insertDependentChanges(codingScheme);
 		
 		this.fireCodingSchemeUpdateEvent(null, null, codingScheme, codingScheme);
 	}
@@ -326,16 +318,8 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		versionsDao.insertEntryState(entryStateUId, codingSchemeUId,
 				entryStateTypeClassifier.classify(EntryStateType.CODINGSCHEME),
 				prevEntryStateUId, codingScheme.getEntryState());
-
-		if ((codingScheme.getProperties() != null && codingScheme
-				.getProperties().getPropertyCount() != 0)
-				|| (codingScheme.getEntities() != null && codingScheme
-						.getEntities().getEntityCount() != 0)
-				|| (codingScheme.getRelations() != null && codingScheme
-						.getRelations().length != 0)) {
 			
-			this.insertDependentChanges(codingScheme);
-		}
+		this.insertDependentChanges(codingScheme);
 	}
 	
 	@Override
@@ -350,16 +334,20 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		
 		VersionsDao versionsDao = getDaoManager().getVersionsDao(codingSchemeUri, version);
 		
-		String codingSchemeUId = codingSchemeDao.
-			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+		if (codingScheme.getEntryState().getChangeType() == ChangeType.DEPENDENT) {
+			String codingSchemeUId = codingSchemeDao
+					.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 
-		String prevEntryStateUId = codingSchemeDao.getEntryStateUId(codingSchemeUId);
-		
-		String entryStateUId = versionsDao.insertEntryState(codingSchemeUId,
-				entryStateTypeClassifier.classify(EntryStateType.CODINGSCHEME),
-				prevEntryStateUId, codingScheme.getEntryState());
-		
-		codingSchemeDao.updateEntryStateUId(codingSchemeUId, entryStateUId);
+			String prevEntryStateUId = codingSchemeDao
+					.getEntryStateUId(codingSchemeUId);
+
+			String entryStateUId = versionsDao.insertEntryState(
+					codingSchemeUId, entryStateTypeClassifier
+							.classify(EntryStateType.CODINGSCHEME),
+					prevEntryStateUId, codingScheme.getEntryState());
+
+			codingSchemeDao.updateEntryStateUId(codingSchemeUId, entryStateUId);
+		}
 		
 		if (codingScheme.getProperties() != null) {
 			Property[] propertyList = codingScheme.getProperties()
@@ -464,12 +452,18 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			throw new LBRevisionException(invalid + "EntryState is null.");
 		}
 		
-		ChangeType changeType = entryState.getChangeType();
-		
-		if( entryState.getContainingRevision() == null ) {
-			throw new LBRevisionException(
-					invalid + "Revision identifier is null for the versionable object.");
+		if (entryState.getContainingRevision() == null) {
+			throw new LBRevisionException(invalid
+					+ "Revision identifier is null for the versionable object.");
 		}
+		
+		ChangeType changeType = entryState.getChangeType();
+
+		CodingSchemeDao codingSchemeDao = this.getDaoManager()
+				.getCodingSchemeDao(csURI, version);
+
+		String csUId = codingSchemeDao.getCodingSchemeUIdByUriAndVersion(csURI,
+				version);
 		
 		if (changeType == ChangeType.NEW) {
 			if (entryState.getPrevRevision() != null) {
@@ -477,13 +471,12 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 						invalid + "Changes of type NEW are not allowed to have previous revisions.");
 			}
 			
-		} else {
+			if (csUId != null) {
+				throw new LBRevisionException(invalid +
+						"The codingScheme being added already exist.");
+			} 
 			
-			CodingSchemeDao codingSchemeDao = this.getDaoManager()
-					.getCodingSchemeDao(csURI, version);
-	
-			String csUId = codingSchemeDao.getCodingSchemeUIdByUriAndVersion(
-					csURI, version);
+		} else {
 			
 			if (csUId == null) {
 				throw new LBRevisionException(invalid +
@@ -492,16 +485,20 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			
 			String csLatestRevId = codingSchemeDao.getLatestRevision(csUId);
 			
-			if (entryState.getPrevRevision() == null && !csLatestRevId
-					.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
-				throw new LBRevisionException(invalid +
-						"All changes of type other than NEW should have previous revisions.");
-			} else if (!csLatestRevId.equalsIgnoreCase(entryState
+			if (entryState.getPrevRevision() == null
+					&& csLatestRevId != null
+					&& !csLatestRevId
+							.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
+				throw new LBRevisionException(
+						invalid
+								+ "All changes of type other than NEW should have previous revisions.");
+			} else if (csLatestRevId != null && !csLatestRevId.equalsIgnoreCase(entryState
 					.getPrevRevision())
 					&& !csLatestRevId
 							.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
-				throw new LBRevisionException(invalid +
-						"Revision source is not in sync with the database revisions. "
+				throw new LBRevisionException(
+						invalid
+								+ "Revision source is not in sync with the database revisions. "
 								+ "Previous revision id does not match with the latest revision id of the coding scheme. "
 								+ "Please update the authoring instance with all the revisions and regenerate the source.");
 			}

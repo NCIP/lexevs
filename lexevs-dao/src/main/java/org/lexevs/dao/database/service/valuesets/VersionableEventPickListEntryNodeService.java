@@ -7,7 +7,6 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.valueSets.PickListEntryNode;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
-import org.lexevs.dao.database.access.valuesets.PickListDao;
 import org.lexevs.dao.database.access.valuesets.PickListEntryNodeDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
@@ -154,46 +153,11 @@ public class VersionableEventPickListEntryNodeService extends
 	public void revise(String pickListId, PickListEntryNode pickListEntryNode)
 			throws LBException {
 
-		if (pickListEntryNode == null)
-			throw new LBParameterException("pickListEntryNode is null.");
+		if (validRevision(pickListId, pickListEntryNode)) {
 
-		EntryState entryState = pickListEntryNode.getEntryState();
+			ChangeType changeType = pickListEntryNode.getEntryState()
+					.getChangeType();
 
-		if (entryState == null) {
-			throw new LBRevisionException("EntryState can't be null.");
-		}
-
-		String revisionId = entryState.getContainingRevision();
-		ChangeType changeType = entryState.getChangeType();
-
-		PickListEntryNodeDao pickListEntryDao = this.getDaoManager().getCurrentPickListEntryNodeDao();
-		
-		String pickListEntryNodeUId = pickListEntryDao.getPickListEntryNodeUId(
-				pickListId, pickListEntryNode.getPickListEntryId());
-
-		String pickListEntryNodeLatestRevisionId = pickListEntryDao.getLatestRevision(pickListEntryNodeUId);
-		
-		if (revisionId != null && changeType != null) {
-
-			if (changeType == ChangeType.NEW) {
-				if (entryState.getPrevRevision() != null) {
-					throw new LBRevisionException(
-							"Changes of type NEW are not allowed to have previous revisions.");
-				}
-			} else if (pickListEntryNodeUId == null) {
-				throw new LBRevisionException(
-						"The picklist entry node being revised doesn't exist.");
-			} else if (entryState.getPrevRevision() == null) {
-				throw new LBRevisionException(
-						"All changes of type other than NEW should have previous revisions.");
-			} else if (pickListEntryNodeLatestRevisionId != null
-					&& !pickListEntryNodeLatestRevisionId.equalsIgnoreCase(entryState
-							.getPrevRevision())) {
-				throw new LBRevisionException(
-						"Revision source is not in sync with the database revisions. Previous revision id does not match with the latest revision id of the picklist entry node."
-								+ "Please update the authoring instance with all the revisions and regenerate the source.");
-			}
-			
 			if (changeType == ChangeType.NEW) {
 
 				this.insertPickListEntryNode(pickListId, pickListEntryNode);
@@ -226,5 +190,62 @@ public class VersionableEventPickListEntryNodeService extends
 	 */
 	public void setVsPropertyService(VSPropertyService vsPropertyService) {
 		this.vsPropertyService = vsPropertyService;
+	}
+
+	private boolean validRevision(String pickListId,
+			PickListEntryNode pickListEntryNode) throws LBException {
+		
+		if (pickListEntryNode == null)
+			throw new LBParameterException("pickListEntryNode is null.");
+	
+		EntryState entryState = pickListEntryNode.getEntryState();
+	
+		if (entryState == null) {
+			throw new LBRevisionException("EntryState can't be null.");
+		}
+	
+		ChangeType changeType = entryState.getChangeType();
+	
+		PickListEntryNodeDao pickListEntryDao = this.getDaoManager().getCurrentPickListEntryNodeDao();
+		
+		String pickListEntryNodeUId = pickListEntryDao.getPickListEntryNodeUId(
+				pickListId, pickListEntryNode.getPickListEntryId());
+	
+		if (changeType == ChangeType.NEW) {
+			if (entryState.getPrevRevision() != null) {
+				throw new LBRevisionException(
+						"Changes of type NEW are not allowed to have previous revisions.");
+			}
+	
+			if (pickListEntryNodeUId != null) {
+				throw new LBRevisionException(
+						"The picklist entry node being added already exist.");
+			}
+	
+		} else {
+	
+			if (pickListEntryNodeUId == null) {
+				throw new LBRevisionException(
+						"The picklist entry node being revised doesn't exist.");
+			}
+	
+			String pickListEntryNodeLatestRevisionId = pickListEntryDao
+					.getLatestRevision(pickListEntryNodeUId);
+	
+			if (entryState.getPrevRevision() == null
+					&& pickListEntryNodeLatestRevisionId != null) {
+				throw new LBRevisionException(
+						"All changes of type other than NEW should have previous revisions.");
+			} else if (pickListEntryNodeLatestRevisionId != null
+					&& !pickListEntryNodeLatestRevisionId
+							.equalsIgnoreCase(entryState.getPrevRevision())) {
+				throw new LBRevisionException(
+						"Revision source is not in sync with the database revisions. "
+								+ "Previous revision id does not match with the latest revision id of the picklist entry node."
+								+ "Please update the authoring instance with all the revisions and regenerate the source.");
+			}
+		}
+		
+		return true;
 	}
 }

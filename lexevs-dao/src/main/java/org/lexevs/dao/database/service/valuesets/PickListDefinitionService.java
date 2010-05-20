@@ -110,6 +110,6 @@ public interface PickListDefinitionService {
 	
 	public void insertDependentChanges(PickListDefinition definition) throws LBException;
 	
-	public void revise(PickListDefinition pickListDefinition, String releaseURI) throws LBException;
+	public void revise(PickListDefinition pickListDefinition, Mappings mapping, String releaseURI) throws LBException;
 	
 }

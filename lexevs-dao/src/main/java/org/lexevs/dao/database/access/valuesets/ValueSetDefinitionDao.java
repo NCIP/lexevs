@@ -148,4 +148,8 @@ public interface ValueSetDefinitionDao extends LexGridSchemaVersionAwareDao {
 			String entryStateUId);
 
 	public String getLatestRevision(String valueSetDefUId);
+	
+	public void insertMappings(String referenceGuid, Mappings mappings);
+
+	public boolean entryStateExists(String entryStateUId);
 }

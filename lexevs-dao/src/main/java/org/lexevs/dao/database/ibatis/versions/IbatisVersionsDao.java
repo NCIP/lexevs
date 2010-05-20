@@ -72,6 +72,9 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	private static String DELETE_ALL_ENTITY_ENTRYSTATE_OF_CODINGSCHEME_SQL = VERSIONS_NAMESPACE
 			+ "deletaAllEntityEntryStateOfCodingScheme";
 
+	private static String DELETE_ALL_CODINGSCHEME_ENTRYSTATES_SQL = VERSIONS_NAMESPACE
+			+ "deleteAllCodingSchemeEntrySatesByCodingSchemeUId";
+	
 	private static String DELETE_ALL_RELATION_PROPERTY_ENTRYSTATE_OF_CODINGSCHEME_SQL = VERSIONS_NAMESPACE
 			+ "deletaAllRelationPropertyEntryStateOfCodingScheme";
 
@@ -382,8 +385,11 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 								.classify(EntryStateType.ENTITY),
 						codingSchemeUId));
 
-		/* 9. Delete all coding scheme entry states. */
-		this.deleteAllEntryStateEntriesByEntryUId(codingSchemeUId, codingSchemeUId);
+		/* 9. Delete all coding scheme entry states. */	
+		this.getSqlMapClientTemplate().delete(
+				DELETE_ALL_CODINGSCHEME_ENTRYSTATES_SQL,
+				new PrefixedParameter(prefix,
+						codingSchemeUId));
 	}
 
 	@Override

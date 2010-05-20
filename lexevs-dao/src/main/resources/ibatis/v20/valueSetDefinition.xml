@@ -25,7 +25,7 @@
 		<result property="expirationDate" column="expirationDate" />
 	</resultMap>
 	
-	<resultMap id="valueSetDefinitionMetaDataResult" class="valueSetDefinitionBean">
+	<resultMap id="valueSetDefinitionMetaDataResult" class="valueSetDefinitionBean" groupBy="uid">
 		<result property="uid" column="valueSetDefGuid" />
 		<result property="valueSetDefinition.valueSetDefinitionURI" column="valueSetDefURI" />
 		<result property="valueSetDefinition.valueSetDefinitionName" column="valueSetDefName" />
@@ -39,6 +39,7 @@
 		<result property="valueSetDefinition.effectiveDate" column="effectiveDate" />
 		<result property="valueSetDefinition.expirationDate" column="expirationDate" />
 		<result property="entryStateUId" column="entryStateGuid" />
+		<result property="vsMultiAttribList" resultMap="VSMultiAttrib.vsMultiAttribResultBean"/>
 	</resultMap>
 	
 	<resultMap  id="definitionEntryResult" class="definitionEntry">
@@ -225,7 +226,7 @@
 			<isNotNull prepend="," property="valueSetDefinition.conceptDomain">
 				conceptDomain = #valueSetDefinition.conceptDomain#
 			</isNotNull>
-			<isNotNull prepend="," property="valueSetDefinition.entityDescription.content">
+			<isNotNull prepend="," property="valueSetDefinition.entityDescription">
 				description = #valueSetDefinition.entityDescription.content#
 			</isNotNull>			
 			<isNotNull prepend="," property="entryStateUId">
@@ -234,7 +235,7 @@
 		</dynamic>
 
 		WHERE 
-			valueSetDefinition.valueSetDefGuid = #uid#
+			valueSetDefGuid = #uid#
  	</update>	
 
 	<update id="updateValueSetDefVersionableChangesByUId" parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean">
@@ -289,13 +290,37 @@
 			valueSetDefGuid = #param1#
 	</delete>
 	
-	<select id="getValueSetDefinitionMetadataByUId" 
-		resultClass="string" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<select id="getValueSetDefinitionMetadataByUId" 		
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultMap="ValueSetDefinition.valueSetDefinitionMetaDataResult">
 		SELECT
-			*
+			vs.valueSetDefGuid,
+			vs.valueSetDefURI,
+			vs.valueSetDefName,
+			vs.defaultCodingScheme,
+			vs.conceptDomain,
+			vs.description,
+			vs.releaseGuid,
+			vs.isActive,
+			vs.owner,
+			vs.status,
+			vs.effectiveDate,
+			vs.expirationDate,
+			vs.entryStateGuid,
+			vsMulti.vsMultiAttribGuid,
+			vsMulti.referenceGuid,
+			vsMulti.referenceType,
+			vsMulti.attributeType,
+			vsMulti.attributeValue,
+			vsMulti.subRef,
+			vsMulti.role,
+			vsMulti.entryStateGuid esGuid				
 		FROM
-			$prefix$valueSetDefinition
+			$prefix$valueSetDefinition vs
+		LEFT JOIN
+			$prefix$vsMultiAttrib vsMulti
+		ON
+			vsMulti.referenceGuid = vs.valueSetDefGuid
 		WHERE
 			valueSetDefGuid = #param1#
 	</select>
@@ -317,8 +342,8 @@
 		SELECT 
 			rev.revisionId
 		FROM
-			$prefix$valueSetDefinition vsDef
-			$prefix$entrySate es
+			$prefix$valueSetDefinition vsDef,
+			$prefix$vsEntryState es,
 			${defaultPrefix}revision rev
 		WHERE
 			vsDef.valueSetDefGuid = #param1#	

@@ -113,30 +113,39 @@
 			<isNotNull prepend="," property="definitionEntry.operator">
 				operator = #definitionEntry.operator#
 			</isNotNull>
-			<isNotNull prepend="," property="definitionEntry.entityReference.entityCode">
-				entityCode = #definitionEntry.entityReference.entityCode#
+			<isNotNull property="definitionEntry.entityReference">
+				<isNotNull prepend=","
+					property="definitionEntry.entityReference.entityCode">
+					entityCode = #definitionEntry.entityReference.entityCode#
+				</isNotNull>
+				<isNotNull prepend=","
+					property="definitionEntry.entityReference.entityCodeNamespace">
+					entityCodeNamespace = #definitionEntry.entityReference.entityCodeNamespace#
+				</isNotNull>
+				<isNotNull prepend="," property="definitionEntry.entityReference.leafOnly">
+					leafOnly = #definitionEntry.entityReference.leafOnly#
+				</isNotNull>
+				<isNotNull prepend=","
+					property="definitionEntry.entityReference.referenceAssociation">
+					referenceAssociation = #definitionEntry.entityReference.referenceAssociation#
+				</isNotNull>
+				<isNotNull prepend=","
+					property="definitionEntry.entityReference.targetToSource">
+					targetToSource = #definitionEntry.entityReference.targetToSource#
+				</isNotNull>
+				<isNotNull prepend=","
+					property="definitionEntry.entityReference.transitiveClosure">
+					transitiveClosure = #definitionEntry.entityReference.transitiveClosure#
+				</isNotNull>
 			</isNotNull>
-			<isNotNull prepend="," property="definitionEntry.entityReference.entityCodeNamespace">
-				entityCodeNamespace = #definitionEntry.entityReference.entityCodeNamespace#
-			</isNotNull>
-			<isNotNull prepend="," property="definitionEntry.entityReference.leafOnly">
-				leafOnly = #definitionEntry.entityReference.leafOnly#
-			</isNotNull>
-			<isNotNull prepend="," property="definitionEntry.entityReference.referenceAssociation">
-				referenceAssociation = #definitionEntry.entityReference.referenceAssociation#
-			</isNotNull>
-			<isNotNull prepend="," property="definitionEntry.entityReference.targetToSource">
-				targetToSource = #definitionEntry.entityReference.targetToSource#
-			</isNotNull>
-			<isNotNull prepend="," property="definitionEntry.entityReference.transitiveClosure">
-				transitiveClosure = #definitionEntry.entityReference.transitiveClosure#
-			</isNotNull>		
-			<isNotNull prepend="," property="definitionEntry.propertyReference.propertyMatchValue.content">
-				propertyMatchValue = #definitionEntry.propertyReference.propertyMatchValue.content#
-			</isNotNull>	
-			<isNotNull prepend="," property="definitionEntry.entityReference.propertyName">
-				propertyName = #definitionEntry.entityReference.propertyName#
-			</isNotNull>				
+			<isNotNull property="definitionEntry.propertyReference">
+				<isNotNull prepend="," property="definitionEntry.propertyReference.propertyMatchValue.content">
+					propertyMatchValue = #definitionEntry.propertyReference.propertyMatchValue.content#
+				</isNotNull>
+				<isNotNull prepend="," property="definitionEntry.propertyReference.propertyName">
+					propertyName = #definitionEntry.propertyReference.propertyName#
+				</isNotNull>
+			</isNotNull>					
 			<isNotNull prepend="," property="entryStateUId">
 				entryStateGuid = #entryStateUId#
 			</isNotNull>
@@ -188,7 +197,7 @@
 		SELECT
 			vsdEntryGuid
 		FROM
-			$prefix$vsdEntry vsdEntry
+			$prefix$vsdEntry vsdEntry,
 			$prefix$valueSetDefinition vsDef 
 		WHERE
 			vsDef.valueSetDefURI = #param1#
@@ -215,8 +224,8 @@
 		SELECT 
 			rev.revisionId
 		FROM
-			$prefix$vsdEntry vsdEntry
-			$prefix$entrySate es
+			$prefix$vsdEntry vsdEntry,
+			$prefix$vsEntryState es,
 			${defaultPrefix}revision rev
 		WHERE
 			vsdEntry.vsdEntryGuid = #param1#	

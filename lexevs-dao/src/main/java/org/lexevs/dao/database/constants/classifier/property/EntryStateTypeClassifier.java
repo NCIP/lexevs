@@ -29,6 +29,18 @@ public class EntryStateTypeClassifier implements Classifier<EntryStateType,Strin
 		if(type.equals(EntryStateType.ENTITYASSNSTODATA)){
 			return "entityAssnsToData";
 		}
+		if(type.equals(EntryStateType.VALUESETDEFINITION)){
+			return "valueSetDefinition";
+		}
+		if(type.equals(EntryStateType.VALUESETDEFINITIONENTRY)){
+			return "vsdEntry";
+		}
+		if(type.equals(EntryStateType.PICKLISTDEFINITION)){
+			return "vsPickList";
+		}
+		if(type.equals(EntryStateType.PICKLISTENTRYNODE)){
+			return "vsPLEntry";
+		}
 		else throw new RuntimeException("Class:" + type + " is not Classifiable.");
 	}
 }

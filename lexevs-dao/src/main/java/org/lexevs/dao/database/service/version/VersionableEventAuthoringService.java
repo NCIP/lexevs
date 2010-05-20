@@ -70,94 +70,92 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 		if (systemRelease == null) {
 			return;
 		}
-
+		
+		RevisionDao revisionDao = this.getDaoManager().getRevisionDao();
+		String revisionId = LEXGRID_GENERATED_REVISION + revisionDao.getNewRevisionId();
+		String releaseURI = systemRelease.getReleaseURI();
+		
 		/* 1. Insert system release entry.*/
 		SystemReleaseDao sysReleaseDao = this.getDaoManager()
 				.getSystemReleaseDao();
 		sysReleaseDao.insertSystemReleaseEntry(systemRelease);
 		
 		/* 2. Insert revision entry.*/
-		RevisionDao revisionDao = this.getDaoManager().getRevisionDao();
-		Revision revision = new Revision();
-		revision.setRevisionId(LEXGRID_GENERATED_REVISION + revisionDao.getNewRevisionId());
-
-		/* 3. Include all coding schemes into revision.*/
 		CodingSchemes codingSchemes = systemRelease.getCodingSchemes();
+		ValueSetDefinitions valueSetDefinitions = systemRelease
+				.getValueSetDefinitions();
+		PickListDefinitions pickLists = systemRelease.getPickListDefinitions();
+		
+		if (codingSchemes != null || valueSetDefinitions != null
+				|| pickLists != null) {
+
+			Revision revision = new Revision();
+			revision.setRevisionId(revisionId);
+			revisionDao.insertRevisionEntry(revision, releaseURI);
+		}
+		
+		/* 3. Add coding schemes.*/
 		if (codingSchemes != null) {
 			CodingScheme[] codingSchemeList = codingSchemes.getCodingScheme();
 
 			for (int i = 0; i < codingSchemeList.length; i++) {
 				
-				if( codingSchemeList[i].getEntryState() == null ) {
-					EntryState entryState = new EntryState();
-					
-					entryState.setChangeType(ChangeType.NEW);
-					entryState.setContainingRevision(revision.getRevisionId());
-					entryState.setRelativeOrder(0L);
-					
-					codingSchemeList[i].setEntryState(entryState);
+				codingSchemeList[i].setEntryState(getEntryState(revisionId));
+
+				try {
+					codingSchemeService.revise(codingSchemeList[i], releaseURI);
+				} catch (LBException e) {
+					super.getLogger().error(
+							"Error occured while revising the codingScheme: "
+									+ e.getMessage());
 				}
-				ChangedEntry changeEntry = new ChangedEntry();
-				changeEntry.setChangedCodingSchemeEntry(codingSchemeList[i]);
-				revision.addChangedEntry(changeEntry);
 			}
 		}
 
-		/* 4. Include all valuesets into revision.*/
-		ValueSetDefinitions valueSetDefinitions = systemRelease
-				.getValueSetDefinitions();
+		/* 4. Add valueset definitions.*/
 		if (valueSetDefinitions != null) {
-			
-			ValueSetDefinition[] valueSetDefList = valueSetDefinitions.getValueSetDefinition();
-			
+
+			ValueSetDefinition[] valueSetDefList = valueSetDefinitions
+					.getValueSetDefinition();
+			Mappings vsMapping = valueSetDefinitions.getMappings();
+
 			for (int i = 0; i < valueSetDefList.length; i++) {
-				
-				if( valueSetDefList[i].getEntryState() == null ) {
-					EntryState entryState = new EntryState();
-					
-					entryState.setChangeType(ChangeType.NEW);
-					entryState.setContainingRevision(revision.getRevisionId());
-					entryState.setRelativeOrder(0L);
-					
-					valueSetDefList[i].setEntryState(entryState);
+
+				valueSetDefList[i].setEntryState(getEntryState(revisionId));
+
+				try {
+					valueSetDefinitionService.revise(valueSetDefList[i],
+							vsMapping, releaseURI);
+				} catch (LBException e) {
+					super.getLogger().error(
+							"Error occured while revising the valueSetDefinition : "
+									+ e.getMessage());
 				}
-				
-				ChangedEntry changeEntry = new ChangedEntry();
-				changeEntry.setChangedValueSetDefinitionEntry(valueSetDefList[i]);
-				revision.addChangedEntry(changeEntry);
 			}
 		}
 
-		/* 5. Include all picklists into revision.*/
-		PickListDefinitions pickLists = systemRelease.getPickListDefinitions();
+		/* 5. Add picklist definitions.*/
 		if (pickLists != null) {
 			PickListDefinition[] pickListDefList = pickLists
 					.getPickListDefinition();
-			Mappings mappings = pickLists.getMappings();
-			
+			Mappings plMappings = pickLists.getMappings();
+
 			for (int i = 0; i < pickListDefList.length; i++) {
-				
-				if( pickListDefList[i].getEntryState() == null ) {
-					EntryState entryState = new EntryState();
-					
-					entryState.setChangeType(ChangeType.NEW);
-					entryState.setContainingRevision(revision.getRevisionId());
-					entryState.setRelativeOrder(0L);
-					
-					pickListDefList[i].setEntryState(entryState);
+
+				pickListDefList[i].setEntryState(getEntryState(revisionId));
+
+				try {
+					pickListDefinitionService.revise(pickListDefList[i],
+							plMappings, releaseURI);
+				} catch (LBException e) {
+					super.getLogger().error(
+							"Error occured while revising the pickListDefinition : "
+									+ e.getMessage());
 				}
-				
-				ChangedEntry changeEntry = new ChangedEntry();
-				changeEntry.setChangedPickListDefinitionEntry(pickListDefList[i]);
-				
-				revision.addChangedEntry(changeEntry);
 			}
 		}
-
-		/* 6. Load revision. */
-		loadRevision(revision, systemRelease.getReleaseURI());
 		
-		/* 7. Process revisions.*/
+		/* 6. Process revisions.*/
 		EditHistory editHistory = systemRelease.getEditHistory();
 		if (editHistory != null) {
 			Revision[] revisionList = editHistory.getRevision();
@@ -219,7 +217,7 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 								.getChangedValueSetDefinitionEntry();
 						if (valueSetDefinition != null) {
 							valueSetDefinitionService.revise(
-									valueSetDefinition, releaseURI);
+									valueSetDefinition, null, releaseURI);
 							continue;
 						}
 					} catch (LBException e) {
@@ -234,7 +232,7 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 								.getChangedPickListDefinitionEntry();
 						if (pickListDef != null) {
 
-							pickListDefinitionService.revise(pickListDef,
+							pickListDefinitionService.revise(pickListDef, null,
 									releaseURI);
 							continue;
 						}
@@ -328,5 +326,14 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 	public void setPickListDefinitionService(
 			PickListDefinitionService pickListDefinitionService) {
 		this.pickListDefinitionService = pickListDefinitionService;
+	}
+
+	private EntryState getEntryState(String revisionId) {
+		EntryState entryState = new EntryState();
+		
+		entryState.setChangeType(ChangeType.NEW);
+		entryState.setContainingRevision(revisionId);
+		entryState.setRelativeOrder(0L);
+		return entryState;
 	}
 }

@@ -322,7 +322,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 			insertOrUpdateValueSetsMultiAttribBean.setAttributeValue(pickContext);
 			insertOrUpdateValueSetsMultiAttribBean.setRole(null);
 			insertOrUpdateValueSetsMultiAttribBean.setSubRef(null);
-			insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(this.createUniqueId());
+			insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(vsEntryStateGuid);
 			
 			insertOrUpdateValueSetsMultiAttribBean.setPrefix(getPrefix());
 			
@@ -340,7 +340,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 			insertOrUpdateValueSetsMultiAttribBean.setAttributeValue(source.getContent());
 			insertOrUpdateValueSetsMultiAttribBean.setRole(source.getRole());
 			insertOrUpdateValueSetsMultiAttribBean.setSubRef(source.getSubRef());
-			insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(this.createUniqueId());
+			insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(vsEntryStateGuid);
 			
 			insertOrUpdateValueSetsMultiAttribBean.setPrefix(getPrefix());
 			

@@ -9,6 +9,17 @@
 		<result property="role" column="role" />
 	</resultMap>
 
+	<resultMap id="vsMultiAttribResultBean"
+		class="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean">
+		<result property="uid" column="vsMultiAttribGuid" />
+		<result property="referenceUId" column="referenceGuid" />
+		<result property="referenceType" column="referenceType" />
+		<result property="attributeType" column="attributeType" />
+		<result property="attributeValue" column="attributeValue" />
+		<result property="subRef" column="subRef" />
+		<result property="role" column="role" />
+		<result property="entryStateUId" column="esGuid" />
+	</resultMap>
 
 	<resultMap id="localNameResult" class="string">
 		<result property="java.lang.String" column="localNameValue" />

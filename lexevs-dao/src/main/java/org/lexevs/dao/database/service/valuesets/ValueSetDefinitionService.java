@@ -116,5 +116,5 @@ public interface ValueSetDefinitionService {
 	
 	public void updateVersionableAttributes(ValueSetDefinition valueSetDefinition) throws LBException;
 	
-	public void revise(ValueSetDefinition valueSetDefinition, String releaseURI) throws LBException;
+	public void revise(ValueSetDefinition valueSetDefinition, Mappings mapping, String releaseURI) throws LBException;
 }

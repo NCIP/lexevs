@@ -276,6 +276,8 @@
 		class="org.lexevs.dao.database.service.version.VersionableEventAuthoringService"
 		parent="abstractService">
 		<property name="codingSchemeService" ref="codingSchemeService"/>
+		<property name="valueSetDefinitionService" ref="valueSetDefinitionService"/>
+		<property name="pickListDefinitionService" ref="pickListDefinitionService"/>
 	</bean>
 	
 	<bean id="relationService" 
@@ -360,6 +362,7 @@
 	<bean id="valueSetDefinitionService" 
 		class="org.lexevs.dao.database.service.valuesets.VersionableEventValueSetDefinitionService"
 		parent="abstractService">
+		<property name="vsDefinitionEntryService" ref="vsDefinitionEntryService"></property>
 	</bean>
 	
 	<bean id="vsDefinitionEntryService" 

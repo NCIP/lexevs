@@ -138,7 +138,7 @@ public class IbatisPickListEntryNodeDao extends AbstractIbatisDao implements
 					insertOrUpdateValueSetsMultiAttribBean.setAttributeValue(pickContext);
 					insertOrUpdateValueSetsMultiAttribBean.setRole(null);
 					insertOrUpdateValueSetsMultiAttribBean.setSubRef(null);
-					insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(this.createUniqueId());
+					insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(vsEntryStateGuid);
 					insertOrUpdateValueSetsMultiAttribBean.setPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 					
 					if (contextList == null)

@@ -368,6 +368,7 @@ ALTER TABLE @PREFIX@entityType ADD CONSTRAINT @PREFIX@FK_eType_entityGuid
 
 ALTER TABLE @PREFIX@entryState ADD CONSTRAINT @PREFIX@FK_es_prevEntryStateGuid 
 	FOREIGN KEY (prevEntryStateGuid) REFERENCES @PREFIX@entryState (entryStateGuid)
+	ON DELETE CASCADE
 ;
 
 ALTER TABLE @PREFIX@entryState ADD CONSTRAINT @PREFIX@FK_es_revisionGuid 

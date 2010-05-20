@@ -36,7 +36,7 @@ public class IbatisVSDefinitionEntryDao extends AbstractIbatisDao implements
 	
 	private static String GET_DEFINITION_ENTRY_ATTRIBUTES_BY_UID_SQL = VSDEFINITIONENTRY_NAMESPACE + "getDefinitionEntryAttribByUId";
 	
-	private static String UPDATE_DEFINITION_ENTRY_ATTRIBUTES_BY_UID_SQL = VSDEFINITIONENTRY_NAMESPACE + "updateDefinitionEntryAttribByUId";
+	private static String UPDATE_DEFINITION_ENTRY_ATTRIBUTES_BY_UID_SQL = VSDEFINITIONENTRY_NAMESPACE + "updateDefinitionEntryByUId";
 	
 	private static String UPDATE_DEFINITION_ENTRY_VER_ATTRIBUTES_BY_UID_SQL = VSDEFINITIONENTRY_NAMESPACE + "updateDefinitionEntryVerAttribByUId";
 	
@@ -54,6 +54,7 @@ public class IbatisVSDefinitionEntryDao extends AbstractIbatisDao implements
 	public String insertDefinitionEntry(String valueSetDefinitionUId,
 			DefinitionEntry vsdEntry) {
 		String vsdEntryGuid = this.createUniqueId();
+		String vsdEntryStateGuid = this.createUniqueId();
 		
 		InsertOrUpdateDefinitionEntryBean vsdEntryBean = new InsertOrUpdateDefinitionEntryBean();
 		vsdEntryBean.setUId(vsdEntryGuid);
@@ -91,9 +92,18 @@ public class IbatisVSDefinitionEntryDao extends AbstractIbatisDao implements
 		}			
 		
 		vsdEntryBean.setPrefix(this.getPrefixResolver().resolveDefaultPrefix());
+		vsdEntryBean.setEntryStateUId(vsdEntryStateGuid);
 		
 		// insert into vsdEntry table
 		this.getSqlMapClientTemplate().insert(INSERT_DEFINITION_ENTRY_SQL, vsdEntryBean);
+
+		EntryState entryState = vsdEntry.getEntryState();
+		
+		if (entryState != null) {
+			this.vsEntryStateDao.insertEntryState(vsdEntryStateGuid,
+					vsdEntryGuid, ReferenceType.DEFINITIONENTRY.name(), null,
+					entryState);
+		}
 		
 		return vsdEntryGuid;
 	}

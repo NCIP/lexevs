@@ -166,6 +166,20 @@
 			entryGuid = #param1#
 	</delete>
 	
+	<delete id="deleteAllCodingSchemeEntrySatesByCodingSchemeUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$entryState
+		WHERE
+			entryStateGuid IN
+			( SELECT
+					entryStateGuid 
+				FROM					
+					$prefix$codingScheme
+				WHERE					
+					codingSchemeGuid = #param1#
+			)					
+	</delete>
+	
 	<delete id="deletaAllCSPropEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
 			$prefix$entryState

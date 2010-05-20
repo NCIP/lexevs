@@ -214,11 +214,16 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	 * @see org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao#getGuidFromvalueSetDefinitionURI(java.lang.String)
 	 */
 	@Override
-	@CacheMethod
+//	@CacheMethod
 	public String getGuidFromvalueSetDefinitionURI(String valueSetDefinitionURI) {
-		return (String) 
+		
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		String valueSetDefGuid = (String) 
 		this.getSqlMapClientTemplate().queryForObject(GET_VALUESET_DEFINITION_GUID_BY_VALUESET_DEFINITION_URI_SQL, 
-			new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), valueSetDefinitionURI));
+			new PrefixedParameter(prefix, valueSetDefinitionURI));
+		
+		return valueSetDefGuid;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -296,7 +301,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			insertOrUpdateValueSetsMultiAttribBean.setAttributeValue(context);
 			insertOrUpdateValueSetsMultiAttribBean.setRole(null);
 			insertOrUpdateValueSetsMultiAttribBean.setSubRef(null);
-			insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(this.createUniqueId());
+			insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(vsEntryStateGuid);
 			insertOrUpdateValueSetsMultiAttribBean.setPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 			
 			this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
@@ -313,7 +318,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			insertOrUpdateValueSetsMultiAttribBean.setAttributeValue(source.getContent());
 			insertOrUpdateValueSetsMultiAttribBean.setRole(source.getRole());
 			insertOrUpdateValueSetsMultiAttribBean.setSubRef(source.getSubRef());
-			insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(this.createUniqueId());
+			insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(vsEntryStateGuid);
 			insertOrUpdateValueSetsMultiAttribBean.setPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 			
 			this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
@@ -347,6 +352,13 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		
 		this.getSqlMapClientTemplate().insert(
 				INSERT_VALUESET_DEFINITION_SQL, vsDefBean);
+		
+		for (InsertOrUpdateValueSetsMultiAttribBean vsMultiAttrib : vsDefBean.getVsMultiAttribList())
+		{
+			vsMultiAttrib.setPrefix(histPrefix);
+			
+			this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, vsMultiAttrib);
+		}
 		
 		if (!vsEntryStateExists(prefix, vsDefBean.getEntryStateUId())) {
 
@@ -399,6 +411,55 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		bean.setEntryStateUId(entryStateUId);
 		
 		this.getSqlMapClientTemplate().update(UPDATE_VALUE_SET_DEFINITION_BY_ID_SQL, bean);
+		
+		if( valueSetDefinition.getSourceCount() != 0 ) {
+			
+			this.getSqlMapClientTemplate().delete(
+					DELETE_SOURCE_BY_PARENT_GUID_AND_TYPE_SQL,
+					new PrefixedParameterTuple(prefix, valueSetDefUId, ReferenceType.VALUESETDEFINITION.name()));
+			
+			Source[] sourceList = valueSetDefinition.getSource();
+			
+			for (int i = 0; i < sourceList.length; i++) {
+				InsertOrUpdateValueSetsMultiAttribBean insertOrUpdateValueSetsMultiAttribBean = new InsertOrUpdateValueSetsMultiAttribBean();
+				insertOrUpdateValueSetsMultiAttribBean.setUId(this.createUniqueId());
+				insertOrUpdateValueSetsMultiAttribBean.setReferenceUId(valueSetDefUId);
+				insertOrUpdateValueSetsMultiAttribBean.setReferenceType(ReferenceType.VALUESETDEFINITION.name());
+				insertOrUpdateValueSetsMultiAttribBean.setAttributeType(SQLTableConstants.TBLCOLVAL_SUPPTAG_SOURCE);
+				insertOrUpdateValueSetsMultiAttribBean.setAttributeValue(sourceList[i].getContent());
+				insertOrUpdateValueSetsMultiAttribBean.setRole(sourceList[i].getRole());
+				insertOrUpdateValueSetsMultiAttribBean.setSubRef(sourceList[i].getSubRef());
+				insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(entryStateUId);
+				insertOrUpdateValueSetsMultiAttribBean.setPrefix(prefix);
+				
+				this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
+			}
+		}
+		
+		if( valueSetDefinition.getRepresentsRealmOrContextCount() != 0 ) {
+			
+			this.getSqlMapClientTemplate().delete(
+					DELETE_CONTEXT_BY_PARENT_GUID_AND_TYPE_SQL,
+					new PrefixedParameterTuple(prefix, valueSetDefUId,
+							ReferenceType.VALUESETDEFINITION.name()));
+			
+			String[] contextList = valueSetDefinition.getRepresentsRealmOrContext();
+			
+			for (int i = 0; i < contextList.length; i++) {
+				InsertOrUpdateValueSetsMultiAttribBean insertOrUpdateValueSetsMultiAttribBean = new InsertOrUpdateValueSetsMultiAttribBean();
+				insertOrUpdateValueSetsMultiAttribBean.setUId(this.createUniqueId());
+				insertOrUpdateValueSetsMultiAttribBean.setReferenceUId(valueSetDefUId);
+				insertOrUpdateValueSetsMultiAttribBean.setReferenceType(ReferenceType.VALUESETDEFINITION.name());
+				insertOrUpdateValueSetsMultiAttribBean.setAttributeType(SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT);
+				insertOrUpdateValueSetsMultiAttribBean.setAttributeValue(contextList[i]);
+				insertOrUpdateValueSetsMultiAttribBean.setRole(null);
+				insertOrUpdateValueSetsMultiAttribBean.setSubRef(null);
+				insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(entryStateUId);
+				insertOrUpdateValueSetsMultiAttribBean.setPrefix(prefix);
+				
+				this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
+			}
+		}
 		
 		return entryStateUId;
 	}
@@ -697,6 +758,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 				GET_VALUESET_DEFINITION_LATEST_REVISION_ID_BY_UID, 
 				new PrefixedParameter(prefix, valueSetDefUId));
 	}
+
 	
 	@SuppressWarnings("unused")
 	private void insertNonSuppliedMappings(String vsdGuid, ValueSetDefinition vsDef){
@@ -797,5 +859,12 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		}
 		
 		insertMappings(vsdGuid, mappings);
+	}
+	
+	@Override
+	public boolean entryStateExists(String entryStateUId) {
+		String prefix = this.getPrefix();
+		
+		return	super.entryStateExists(prefix, entryStateUId);
 	}
 }

@@ -7,7 +7,6 @@ import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.valuesets.VSDefinitionEntryDao;
-import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 
@@ -54,12 +53,8 @@ public class VersionableEventVSDefinitionEntryService extends AbstractDatabaseSe
 		VSDefinitionEntryDao vsDefinitionEntryDao = this.getDaoManager()
 				.getCurrentVSDefinitionEntryDao();
 
-		String valueSetDefUId = this.getDaoManager()
-				.getCurrentValueSetDefinitionDao()
-				.getGuidFromvalueSetDefinitionURI(valueSetDefinitionURI);
-
 		String vsDefinitionUId = vsDefinitionEntryDao.getDefinitionEntryUId(
-				valueSetDefUId, defEntry.getRuleOrder().toString());
+				valueSetDefinitionURI, defEntry.getRuleOrder().toString());
 
 		String prevEntryStateUId = vsDefinitionEntryDao.insertHistoryDefinitionEntry(vsDefinitionUId, vsDefinitionUId, defEntry);
 		
@@ -78,12 +73,8 @@ public class VersionableEventVSDefinitionEntryService extends AbstractDatabaseSe
 		VSDefinitionEntryDao vsDefinitionEntryDao = this.getDaoManager()
 				.getCurrentVSDefinitionEntryDao();
 
-		String valueSetDefUId = this.getDaoManager()
-				.getCurrentValueSetDefinitionDao()
-				.getGuidFromvalueSetDefinitionURI(valueSetDefinitionURI);
-
 		String vsDefinitionUId = vsDefinitionEntryDao.getDefinitionEntryUId(
-				valueSetDefUId, defEntry.getRuleOrder().toString());
+				valueSetDefinitionURI, defEntry.getRuleOrder().toString());
 
 		String prevEntryStateUId = vsDefinitionEntryDao
 				.insertHistoryDefinitionEntry(vsDefinitionUId, vsDefinitionUId,
@@ -101,45 +92,9 @@ public class VersionableEventVSDefinitionEntryService extends AbstractDatabaseSe
 	@Override
 	public void revise(String valueSetDefinitionURI, DefinitionEntry defEntry) throws LBException {
 
-		if(  defEntry == null) 
-			throw new LBParameterException("definition entry is null.");
-		
-		EntryState entryState = defEntry.getEntryState();
-
-		if (entryState == null) {
-			throw new LBRevisionException("EntryState can't be null.");
-		}
-
-		String revisionId = entryState.getContainingRevision();
-		ChangeType changeType = entryState.getChangeType();
-
-		VSDefinitionEntryDao entryDao = this.getDaoManager().getCurrentVSDefinitionEntryDao();
-		
-		String vsDefEntryUId = entryDao.getDefinitionEntryUId(
-						valueSetDefinitionURI, defEntry.getRuleOrder().toString());
-
-		String vsEntryLatestRevisionId = entryDao.getLatestRevision(vsDefEntryUId);
-		
-		if (revisionId != null && changeType != null) {
-
-			if (changeType == ChangeType.NEW) {
-				if (entryState.getPrevRevision() != null) {
-					throw new LBRevisionException(
-							"Changes of type NEW are not allowed to have previous revisions.");
-				}
-			} else if (vsDefEntryUId == null) {
-				throw new LBRevisionException(
-						"The vsDefinitionEntry being revised doesn't exist.");
-			} else if (entryState.getPrevRevision() == null) {
-				throw new LBRevisionException(
-						"All changes of type other than NEW should have previous revisions.");
-			} else if (vsEntryLatestRevisionId != null
-					&& !vsEntryLatestRevisionId.equalsIgnoreCase(entryState
-							.getPrevRevision())) {
-				throw new LBRevisionException(
-						"Revision source is not in sync with the database revisions. Previous revision id does not match with the latest revision id of the vsDefinitionEntry."
-								+ "Please update the authoring instance with all the revisions and regenerate the source.");
-			}
+		if( validRevision(valueSetDefinitionURI, defEntry)) {
+			
+			ChangeType changeType = defEntry.getEntryState().getChangeType();
 			
 			if (changeType == ChangeType.NEW) {
 
@@ -155,5 +110,62 @@ public class VersionableEventVSDefinitionEntryService extends AbstractDatabaseSe
 				this.updateVSDefinitionEntryVersionableChanges(valueSetDefinitionURI, defEntry);
 			}
 		}
+	}
+
+	private boolean validRevision(String valueSetDefinitionURI,
+			DefinitionEntry defEntry) throws LBException {
+		
+		if(  defEntry == null) 
+			throw new LBParameterException("definition entry is null.");
+		
+		EntryState entryState = defEntry.getEntryState();
+
+		if (entryState == null) {
+			throw new LBRevisionException("EntryState can't be null.");
+		}
+
+		ChangeType changeType = entryState.getChangeType();
+
+		VSDefinitionEntryDao entryDao = this.getDaoManager()
+				.getCurrentVSDefinitionEntryDao();
+
+		String vsDefEntryUId = entryDao.getDefinitionEntryUId(
+				valueSetDefinitionURI, defEntry.getRuleOrder().toString());
+		
+		if (changeType == ChangeType.NEW) {
+			if (entryState.getPrevRevision() != null) {
+				throw new LBRevisionException(
+						"Changes of type NEW are not allowed to have previous revisions.");
+			}
+			
+			if (vsDefEntryUId != null) {
+				throw new LBRevisionException(
+						"The vsDefinitionEntry being added already exist.");
+			}
+			
+		} else {
+
+			if (vsDefEntryUId == null) {
+				throw new LBRevisionException(
+						"The vsDefinitionEntry being revised doesn't exist.");
+			}
+
+			String vsEntryLatestRevisionId = entryDao.getLatestRevision(vsDefEntryUId);
+			
+			if (entryState.getPrevRevision() == null
+					&& vsEntryLatestRevisionId != null) {
+				throw new LBRevisionException(
+						"All changes of type other than NEW should have previous revisions.");
+			} else if (vsEntryLatestRevisionId != null
+					&& !vsEntryLatestRevisionId.equalsIgnoreCase(entryState
+							.getPrevRevision())) {
+				throw new LBRevisionException(
+						"Revision source is not in sync with the database revisions. " +
+						"Previous revision id does not match with the latest revision id of the vsDefinitionEntry."
+								+ "Please update the authoring instance with all the revisions and regenerate the source.");
+			}
+		}
+		
+		return true;
 	}
 }

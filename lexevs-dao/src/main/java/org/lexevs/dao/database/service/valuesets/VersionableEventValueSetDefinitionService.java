@@ -26,24 +26,21 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.naming.Mappings;
-import org.LexGrid.relations.AssociationData;
-import org.LexGrid.relations.AssociationPredicate;
-import org.LexGrid.relations.AssociationSource;
-import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
-import org.lexevs.dao.database.access.association.AssociationDao;
-import org.lexevs.dao.database.access.association.AssociationTargetDao;
-import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
-import org.lexevs.dao.database.access.versions.VersionsDao;
+import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
+import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
+import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.service.SystemResourceService;
+import org.springframework.batch.classify.Classifier;
 
 /**
  * The Class VersionableEventValueSetDefinitionService.
@@ -55,6 +52,8 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	VSDefinitionEntryService vsDefinitionEntryService = null;
 	
 	VSPropertyService vsPropertyService = null;
+	
+	private Classifier<EntryStateType, String> entryStateTypeClassifier = new EntryStateTypeClassifier();
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#getValueSetDefinitionURISForName(java.lang.String)
@@ -138,26 +137,12 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 
 		String valueSetDefinitionURI = valueSetDefinition.getValueSetDefinitionURI();
 		
-		ValueSetDefinitionDao valueSetDefDao = this.getDaoManager()
-				.getCurrentValueSetDefinitionDao();
-
-		VSEntryStateDao vsEntryStateDao = this.getDaoManager()
-				.getCurrentVsEntryStateDao();
-
 		/* 1. Update entryStateUId.*/
 		
-		String valueSetDefUId = valueSetDefDao
-				.getGuidFromvalueSetDefinitionURI(valueSetDefinitionURI);
+		if (valueSetDefinition.getEntryState().getChangeType() == ChangeType.DEPENDENT) {
 
-		String prevEntryStateUId = valueSetDefDao
-				.getValueSetDefEntryStateUId(valueSetDefUId);
-
-		String entryStateUId = vsEntryStateDao.insertEntryState(valueSetDefUId,
-				"valueSetDefinition", prevEntryStateUId, valueSetDefinition
-						.getEntryState());
-
-		valueSetDefDao.updateValueSetDefEntryStateUId(valueSetDefUId,
-				entryStateUId);
+			doAddValueSetDefinitionDependentEntry(valueSetDefinition);
+		}
 		
 		/* 2. Revise dependent definition entries. */
 
@@ -201,7 +186,7 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 				valueSetDefinition);
 
 		this.getDaoManager().getCurrentVsEntryStateDao().insertEntryState(
-				entryStateUId, valueSetDefUId, "valueSetDefinition",
+				entryStateUId, valueSetDefUId, ReferenceType.VALUESETDEFINITION.name(),
 				prevEntryStateUId, valueSetDefinition.getEntryState());
 
 		this.insertDependentChanges(valueSetDefinition);
@@ -226,67 +211,34 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 				valueSetDefinition);
 
 		this.getDaoManager().getCurrentVsEntryStateDao().insertEntryState(
-				entryStateUId, valueSetDefUId, "ValueSetDefinition",
+				entryStateUId, valueSetDefUId, ReferenceType.VALUESETDEFINITION.name(),
 				prevEntryStateUId, valueSetDefinition.getEntryState());
 
 		this.insertDependentChanges(valueSetDefinition);
 	}
 	
 	@Override
-	public void revise(ValueSetDefinition valueSetDefinition, String releaseURI)
-			throws LBException {
-		if(  valueSetDefinition == null) 
-			throw new LBParameterException("ValueSetDefinition is null.");
-		
-		EntryState entryState = valueSetDefinition.getEntryState();
+	public void revise(ValueSetDefinition valueSetDefinition, Mappings mapping,
+			String releaseURI) throws LBException {
 
-		if (entryState == null) {
-			throw new LBRevisionException("EntryState can't be null.");
-		}
+		if (validRevision(valueSetDefinition)) {
 
-		String revisionId = entryState.getContainingRevision();
-		ChangeType changeType = entryState.getChangeType();
-
-		ValueSetDefinitionDao valueSetDefDao = this.getDaoManager().getCurrentValueSetDefinitionDao();
-		
-		String valueSetDefUId = valueSetDefDao
-				.getGuidFromvalueSetDefinitionURI(
-						valueSetDefinition.getValueSetDefinitionURI());
-
-		String valueSetDefLatestRevisionId = valueSetDefDao.getLatestRevision(valueSetDefUId);
-		
-		if (revisionId != null && changeType != null) {
-
-			if (changeType == ChangeType.NEW) {
-				if (entryState.getPrevRevision() != null) {
-					throw new LBRevisionException(
-							"Changes of type NEW are not allowed to have previous revisions.");
-				}
-			} else if (valueSetDefUId == null) {
-				throw new LBRevisionException(
-						"The value set definition being revised doesn't exist.");
-			} else if (entryState.getPrevRevision() == null) {
-				throw new LBRevisionException(
-						"All changes of type other than NEW should have previous revisions.");
-			} else if (valueSetDefLatestRevisionId != null
-					&& !valueSetDefLatestRevisionId.equalsIgnoreCase(entryState
-							.getPrevRevision())) {
-				throw new LBRevisionException(
-						"Revision source is not in sync with the database revisions. Previous revision id does not match with the latest revision id of the value set definition."
-								+ "Please update the authoring instance with all the revisions and regenerate the source.");
-			}
+			ChangeType changeType = valueSetDefinition.getEntryState()
+					.getChangeType();
 
 			if (changeType == ChangeType.NEW) {
 
-				this.insertValueSetDefinition(valueSetDefinition, releaseURI, null);
+				this.insertValueSetDefinition(valueSetDefinition, releaseURI,
+						mapping);
 			} else if (changeType == ChangeType.REMOVE) {
 
-				this.removeValueSetDefinition(valueSetDefinition.getValueSetDefinitionURI());
+				this.removeValueSetDefinition(valueSetDefinition
+						.getValueSetDefinitionURI());
 			} else if (changeType == ChangeType.MODIFY) {
 
 				this.updateValueSetDefinition(valueSetDefinition);
 			} else if (changeType == ChangeType.DEPENDENT) {
-				
+
 				this.insertDependentChanges(valueSetDefinition);
 			} else if (changeType == ChangeType.VERSIONABLE) {
 
@@ -329,6 +281,103 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 			DefinitionEntry definitionEntry) throws LBException {
 		this.getDaoManager().getCurrentValueSetDefinitionDao().insertDefinitionEntry(valueSetDefinition, definitionEntry);
 		
+	}
+
+	private boolean validRevision(ValueSetDefinition valueSetDefinition) throws LBException {
+		
+		if(  valueSetDefinition == null) 
+			throw new LBParameterException("ValueSetDefinition is null.");
+		
+		EntryState entryState = valueSetDefinition.getEntryState();
+	
+		if (entryState == null) {
+			throw new LBRevisionException("EntryState can't be null.");
+		}
+	
+		ChangeType changeType = entryState.getChangeType();
+	
+		ValueSetDefinitionDao valueSetDefDao = this.getDaoManager()
+				.getCurrentValueSetDefinitionDao();
+		
+		String valueSetDefUId = valueSetDefDao
+				.getGuidFromvalueSetDefinitionURI(valueSetDefinition
+						.getValueSetDefinitionURI());
+		
+		if (changeType == ChangeType.NEW) {
+			if (entryState.getPrevRevision() != null) {
+				throw new LBRevisionException(
+						"Changes of type NEW are not allowed to have previous revisions.");
+			}
+			
+			if (valueSetDefUId != null) {
+				throw new LBRevisionException(
+						"The value set definition being added already exist.");
+			}
+		} else {
+	
+			if (valueSetDefUId == null) {
+				throw new LBRevisionException(
+						"The value set definition being revised doesn't exist.");
+			}
+			
+			String valueSetDefLatestRevisionId = valueSetDefDao.getLatestRevision(valueSetDefUId);
+			
+			if (entryState.getPrevRevision() == null
+					&& valueSetDefLatestRevisionId != null
+					&& !valueSetDefLatestRevisionId
+							.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
+				throw new LBRevisionException(
+						"All changes of type other than NEW should have previous revisions.");
+			} else if (valueSetDefLatestRevisionId != null
+					&& !valueSetDefLatestRevisionId.equalsIgnoreCase(entryState
+							.getPrevRevision()) && !valueSetDefLatestRevisionId
+							.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
+				throw new LBRevisionException(
+						"Revision source is not in sync with the database revisions. "
+								+ "Previous revision id does not match with the latest revision id of the value set definition."
+								+ "Please update the authoring instance with all the revisions and regenerate the source.");
+			}
+		}
+		return true;
+	}
+
+	private void doAddValueSetDefinitionDependentEntry(
+			ValueSetDefinition valueSetDefinition) {
+	
+		String valueSetDefinitionURI = valueSetDefinition
+				.getValueSetDefinitionURI();
+	
+		ValueSetDefinitionDao valueSetDefDao = this.getDaoManager()
+				.getCurrentValueSetDefinitionDao();
+	
+		VSEntryStateDao vsEntryStateDao = this.getDaoManager()
+				.getCurrentVsEntryStateDao();
+	
+		String valueSetDefUId = valueSetDefDao
+				.getGuidFromvalueSetDefinitionURI(valueSetDefinitionURI);
+	
+		String prevEntryStateUId = valueSetDefDao
+				.getValueSetDefEntryStateUId(valueSetDefUId);
+	
+		if (!valueSetDefDao.entryStateExists(prevEntryStateUId)) {
+	
+			EntryState entryState = new EntryState();
+	
+			entryState.setChangeType(ChangeType.NEW);
+			entryState.setRelativeOrder(0L);
+	
+			vsEntryStateDao.insertEntryState(prevEntryStateUId, valueSetDefUId,
+					entryStateTypeClassifier
+							.classify(EntryStateType.VALUESETDEFINITION), null,
+					entryState);
+		}
+	
+		String entryStateUId = vsEntryStateDao.insertEntryState(valueSetDefUId,
+				ReferenceType.VALUESETDEFINITION.name(), prevEntryStateUId,
+				valueSetDefinition.getEntryState());
+	
+		valueSetDefDao.updateValueSetDefEntryStateUId(valueSetDefUId,
+				entryStateUId);
 	}
 
 	

@@ -104,8 +104,22 @@
 		WHERE
 			entryGuid = #param1#
 	</delete>
+		
+	<delete id="deleteAllValueSetDefEntryStatesByValueSetDefUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$vsEntryState
+		WHERE
+			entryStateGuid IN
+			( SELECT
+					entryStateGuid 
+				FROM					
+					$prefix$valueSetDefinition
+				WHERE					
+					valueSetDefGuid = #param1#
+			)					
+	</delete>
 	
-	<delete id="deleteAllDefnitionEntryEntrySateEntriesByUId"
+	<delete id="deleteAllDefinitionEntryEntrySateEntriesByUId"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
 			$prefix$vsEntryState

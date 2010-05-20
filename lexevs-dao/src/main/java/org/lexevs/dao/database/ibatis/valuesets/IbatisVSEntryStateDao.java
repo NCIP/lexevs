@@ -55,7 +55,9 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 	
 	private static String DELETE_ALL_ENTRYSTATE_ENTRIES_BY_ENTRY_UID = VERSIONS_NAMESPACE + "deleteAllEntrySateEntriesByEntryUId";
 	
-	private static String DELETE_ALL_DEFINITIONENTRY_ENTRYSTATE_OF_VALUESET_DEFINITION = VERSIONS_NAMESPACE + "deleteAllDefnitionEntryEntrySateEntriesByUId";
+	private static String DELETE_ALL_VSDEF_ENTRYSTATE_ENTRIES_BY_VSDEF_UID = VERSIONS_NAMESPACE + "deleteAllValueSetDefEntryStatesByValueSetDefUId";
+	
+	private static String DELETE_ALL_DEFINITIONENTRY_ENTRYSTATE_OF_VALUESET_DEFINITION = VERSIONS_NAMESPACE + "deleteAllDefinitionEntryEntrySateEntriesByUId";
 	
 	private static String DELETE_ALL_PLENTRY_PROPERTY_ENTRYSTATE_ENTRIES_OF_PL_DEFINITION = VERSIONS_NAMESPACE + "deleteAllPLEntryPropsEntrySateEntriesOfPLDefinition";
 
@@ -177,19 +179,21 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 		if (entryState != null) {
 			revisionUId = ibatisRevisionDao
 					.getRevisionUIdById(entryState.getContainingRevision());
-			if (revisionUId == null)
+			// commenting it out since a null revision is valid in case of 
+			// initial load.
+			/*if (revisionUId == null)
 			{
 				return null;
 				
-			}
+			}*/
 			if (entryState.getPrevRevision() != null)
 			{
 				prevRevisionUId = ibatisRevisionDao
 					.getRevisionUIdById(entryState.getPrevRevision());
-				if (prevRevisionUId == null)
+				/*if (prevRevisionUId == null)
 				{
 					return null;					
-				}
+				}*/
 			}
 		}
 		
@@ -230,7 +234,9 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 				new PrefixedParameter(prefix, valueSetDefGuid));
 		
 		/* 3. Delete all value set definition entry states. */
-		this.deleteAllEntryStateEntriesByEntryUId(valueSetDefGuid);
+		this.getSqlMapClientTemplate().delete(
+				DELETE_ALL_VSDEF_ENTRYSTATE_ENTRIES_BY_VSDEF_UID,
+				new PrefixedParameter(prefix, valueSetDefGuid));
 	}
 	
 	public void deleteAllEntryStateEntriesByEntryUId(String entryUId) {
