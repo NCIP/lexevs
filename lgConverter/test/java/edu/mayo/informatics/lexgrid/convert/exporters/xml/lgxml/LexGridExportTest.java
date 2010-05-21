@@ -1,9 +1,12 @@
 package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 
@@ -135,22 +138,89 @@ public class LexGridExportTest {
         Assert.assertTrue(false);
     }
     
-    
-    private static void lexGridExportTestRunner(CodingScheme cs, CodedNodeGraph cng, CodedNodeSet cns, StringWriter out) throws LBException {
-
-        /*
-        File outFile = new File(outFileName);
+    @Test
+    public void lexGridExportTestFileWriter() {
         
+        String outFileName = "lexGridExportTestFileWriter.xml";        
+        File outFile = new File(outFileName);
         Writer w = null;
         BufferedWriter out = null;
         try {
             w = new FileWriter(outFile, false);
             out = new BufferedWriter(w);
+            CodingScheme cs = CodingSchemeFactory.createCodingScheme();
+            CodedNodeSet cns = MockLexGridObjectFactory.createCns();
+            CodedNodeGraph cng = null;
+            LexGridExportTest.lexGridExportTestRunner(cs, cng, cns, out);
+            
+            boolean outFileExists = outFile.exists();
+            Assert.assertTrue(outFileExists);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(outFile != null && outFile.exists() == true){
+                try {
+                    out.close();
+                    w.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+        boolean outFileHasContent = LexGridExportTest.verifyOutFileHasContent(outFile);
+        Assert.assertTrue(outFileHasContent);       
+        
+        if(outFile != null && outFile.exists()) {
+            boolean result = outFile.delete();
+            System.out.println("File delete result: " + result);
+        }
+
+        
+    }
+    
+    private static boolean verifyOutFileHasContent(File outFile) {
+        boolean verifyTrue = false;
+        final String searchTarget = LexGridExportTest.SEARCH_STRING_ENTITY_CODE_DOMESTIC_AUTO_MAKERS;
+        // final String searchTarget = "blah";
+        Reader r = null;
+        BufferedReader in = null;
+        try {
+            r = new FileReader(outFile);
+            in = new BufferedReader(r);
+            if(in != null) {
+                boolean done = false;
+                String line = null;
+                while(!done)
+                {
+                    line = in.readLine();
+                    if(line == null) {
+                        done = true;
+                    } else {
+                        if(line.contains(searchTarget) == true) {
+                            verifyTrue = true;
+                            done = true;
+                        }                        
+                    }
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
+        }  finally {
+            if(in != null) {
+                try {
+                    in.close();
+                    r.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        */
-        
+        return verifyTrue;
+    }
+
+    
+    private static void lexGridExportTestRunner(CodingScheme cs, CodedNodeGraph cng, CodedNodeSet cns, Writer out) throws LBException {
         
         Entities entities = new Entities();
         Entity entity = new Entity();
@@ -160,7 +230,5 @@ public class LexGridExportTest {
         
         XmlContentWriter xmlContentWriter = new XmlContentWriter();
         xmlContentWriter.marshalToXml(cs, cng, cns, out, Constants.VALUE_PAGE_SIZE);
-        
-        System.out.println("StringWriter contents: " + out.toString());
     }
 }
