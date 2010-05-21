@@ -27,8 +27,7 @@ import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 import org.springframework.util.Assert;
-
-import edu.mayo.informatics.indexer.api.IndexerService;
+import edu.mayo.informatics.indexer.utility.MetaData;
 
 /**
  * The Class IndexDaoManager.
@@ -42,12 +41,11 @@ public class IndexDaoManager {
 	
 	/** The entity daos. */
 	private List<MetadataDao> metadataDaos;
-	
-	/** The indexer service. */
-	private IndexerService indexerService;
-	
+		
 	/** The system resource service. */
 	private SystemResourceService systemResourceService;
+	
+	private MetaData metaData;
 
 	/**
 	 * Gets the entity dao.
@@ -95,9 +93,9 @@ public class IndexDaoManager {
 			String codingSchemeName = systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(uri, version);
 			
 			LocalCodingScheme lcs = LocalCodingScheme.getLocalCodingScheme(codingSchemeName, version);
-			String indexName = indexerService.getMetaData().getIndexMetaDataValue(lcs.getKey());
+			String indexName = metaData.getIndexMetaDataValue(lcs.getKey());
 	
-			String indexVersion = indexerService.getMetaData().getIndexMetaDataValue(indexName, "lgModel");
+			String indexVersion = metaData.getIndexMetaDataValue(indexName, "lgModel");
 			
 			return LexEvsIndexFormatVersion.parseStringToVersion(indexVersion);
 		} catch (Exception e) {
@@ -152,24 +150,6 @@ public class IndexDaoManager {
 	}
 
 	/**
-	 * Sets the indexer service.
-	 * 
-	 * @param indexerService the new indexer service
-	 */
-	public void setIndexerService(IndexerService indexerService) {
-		this.indexerService = indexerService;
-	}
-
-	/**
-	 * Gets the indexer service.
-	 * 
-	 * @return the indexer service
-	 */
-	public IndexerService getIndexerService() {
-		return indexerService;
-	}
-
-	/**
 	 * Sets the system resource service.
 	 * 
 	 * @param systemResourceService the new system resource service
@@ -193,5 +173,13 @@ public class IndexDaoManager {
 
 	public List<MetadataDao> getMetadataDaos() {
 		return metadataDaos;
+	}
+
+	public void setMetaData(MetaData metaData) {
+		this.metaData = metaData;
+	}
+
+	public MetaData getMetaData() {
+		return metaData;
 	}
 }

@@ -45,6 +45,12 @@ public interface EntityIndexService {
 	
 	public void addEntityToIndex(String codingSchemeUri, String codingSchemeVersion, Entity entity);
 	
+	public String getIndexName(String codingSchemeUri, String codingSchemeVersion);
+	
+	public void optimizeIndex(String codingSchemeUri, String codingSchemeVersion);
+	
+	public Document getDocumentById(String codingSchemeUri, String codingSchemeVersion, int id);
+	
 	public void deleteEntityFromIndex(
 			String codingSchemeUri,
 			String codingSchemeVersion, 
@@ -76,18 +82,8 @@ public interface EntityIndexService {
 	 * 
 	 * @return the list< score doc>
 	 */
-	public List<ScoreDoc> query(AbsoluteCodingSchemeVersionReference reference, List<? extends Query> combinedQueries, List<? extends Query> individualQueries);
-	
-	/**
-	 * Gets the document by id.
-	 * 
-	 * @param reference the reference
-	 * @param documentId the document id
-	 * 
-	 * @return the document by id
-	 */
-	public Document getDocumentById(AbsoluteCodingSchemeVersionReference reference, int documentId);
-	
+	public List<ScoreDoc> query(String codingSchemeUri, String codingSchemeVersion, List<? extends Query> combinedQueries, List<? extends Query> individualQueries);
+
 	/**
 	 * Gets the match all docs query.
 	 * 

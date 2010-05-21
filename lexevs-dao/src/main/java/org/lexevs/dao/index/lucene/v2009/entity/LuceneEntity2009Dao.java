@@ -20,7 +20,6 @@ package org.lexevs.dao.index.lucene.v2009.entity;
 
 import java.util.List;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.lexevs.dao.database.utility.DaoUtility;
@@ -43,7 +42,7 @@ public class LuceneEntity2009Dao extends LuceneEntityDao implements EntityDao {
 	 */
 	@Override
 	public Query getMatchAllDocsQuery(
-			AbsoluteCodingSchemeVersionReference reference) {
+			String uri, String version) {
 		return new MatchAllDocsQuery();
 	}
 	

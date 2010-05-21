@@ -18,42 +18,39 @@
  */
 package org.lexevs.dao.index.indexer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
+import org.apache.lucene.document.Document;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * The Class LuceneLoaderCodeIndexer.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityIndexer, InitializingBean {
+public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityIndexer {
 
 	/** The system resource service. */
 	private SystemResourceService systemResourceService;
 	
 	/** The system variables. */
 	private SystemVariables systemVariables;
-	
-	/** The index name. */
-	private String indexName = "commonIndex";
-	
+		
 	/** The current index version. */
 	private String currentIndexVersion = "2010";
 	
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		createIndex(indexName);
-	}
+	private LuceneEntityDao luceneEntityDao;
 
 	/**
 	 * Instantiates a new lucene loader code indexer.
@@ -69,39 +66,44 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 	 * @param codingSchemeVersion the coding scheme version
 	 * @param entity the entity
 	 */
-	public void indexEntity(
-			String indexName,
+	public List<Document> indexEntity(
 			String codingSchemeUri, 
 			String codingSchemeVersion,
 			Entity entity) {
+		List<Document> returnList = new ArrayList<Document>();
+		
 		try {
 			String codingSchemeName = 
 				  systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, codingSchemeVersion);
 
-			this.addEntityBoundryDocument(
+			Document startBoundryDoc = this.addEntityBoundryDocument(
 					codingSchemeName, 
 					codingSchemeUri, 
 					codingSchemeVersion, 
 					entity.getEntityCode(),
-					entity.getEntityCodeNamespace(),
-					indexName);
+					entity.getEntityCodeNamespace());
+			
+			returnList.add(startBoundryDoc);
 			
 			if(entity.getAllProperties().length == 0) {
 				entity.addPresentation(
 						getDefaultPresentation(entity));
 			}
 			for(Property prop : entity.getAllProperties()) {
-				this.indexEntity(codingSchemeUri, codingSchemeVersion, entity, prop, indexName);
-
+				returnList.add(
+						this.indexEntity(codingSchemeUri, codingSchemeVersion, entity, prop));
 			}
 			
-			this.addEntityBoundryDocument(
+			Document endBoundryDoc = this.addEntityBoundryDocument(
 					codingSchemeName, 
 					codingSchemeUri, 
 					codingSchemeVersion, 
 					entity.getEntityCode(),
-					entity.getEntityCodeNamespace(),
-					indexName);
+					entity.getEntityCodeNamespace());
+			
+			returnList.add(endBoundryDoc);
+			
+			return returnList;
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -129,8 +131,8 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 	 * 
 	 * @throws Exception the exception
 	 */
-	protected void indexEntity(String codingSchemeUri, String codingSchemeVersion,
-			Entity entity, Property prop, String indexName) throws Exception {
+	protected Document indexEntity(String codingSchemeUri, String codingSchemeVersion,
+			Entity entity, Property prop) throws Exception {
 		
 		boolean isPreferred = false;
 		String degreeOfFidelity = "";
@@ -155,7 +157,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 			repForm = pres.getRepresentationalForm();
 		}
 
-		this.addEntity(
+		return this.addEntity(
 				systemResourceService.
 					getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, codingSchemeVersion), 
 				codingSchemeUri, 
@@ -179,8 +181,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 				repForm,
 				sourceToString(prop.getSource()), 
 				prop.getUsageContext(), 
-				propertyQualifiersToQualifiers(prop.getPropertyQualifier()), 
-				indexName);
+				propertyQualifiersToQualifiers(prop.getPropertyQualifier()));
 	}
 	
 	/**
@@ -231,43 +232,6 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 		this.systemResourceService = systemResourceService;
 	}
 
-	/*
-	public void closeIndex() {
-		try {
-			this.closeIndexes();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	public void openIndex() {
-		try {
-			this.initIndexes(indexName, this.systemVariables.getAutoLoadIndexLocation());
-			this.createIndex();
-			this.openIndexes();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	*/
-	/**
-	 * Gets the index name.
-	 * 
-	 * @return the index name
-	 */
-	public String getIndexName() {
-		return indexName;
-	}
-
-	/**
-	 * Sets the index name.
-	 * 
-	 * @param indexName the new index name
-	 */
-	public void setIndexName(String indexName) {
-		this.indexName = indexName;
-	}
-
 	/**
 	 * Gets the system variables.
 	 * 
@@ -284,6 +248,14 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 	 */
 	public void setSystemVariables(SystemVariables systemVariables) {
 		this.systemVariables = systemVariables;
+	}
+
+	public LuceneEntityDao getLuceneEntityDao() {
+		return luceneEntityDao;
+	}
+
+	public void setLuceneEntityDao(LuceneEntityDao luceneEntityDao) {
+		this.luceneEntityDao = luceneEntityDao;
 	}
 
 	/**
@@ -308,9 +280,4 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 	public LexEvsIndexFormatVersion getIndexerFormatVersion() {
 		return LexEvsIndexFormatVersion.parseStringToVersion(this.getCurrentIndexVersion());
 	}
-	
-	public String getCommonIndexName() {
-		return this.getIndexName();
-	}
-
 }

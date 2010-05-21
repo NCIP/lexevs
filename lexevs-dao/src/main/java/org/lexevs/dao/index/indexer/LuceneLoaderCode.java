@@ -22,9 +22,11 @@ import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.codec.language.DoubleMetaphone;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
+import org.apache.lucene.document.Document;
+import org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao;
 
-import edu.mayo.informatics.indexer.api.IndexerService;
 import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
 import edu.mayo.informatics.indexer.api.generators.DocumentFromStringsGenerator;
 import edu.mayo.informatics.indexer.lucene.analyzers.EncoderAnalyzer;
@@ -32,8 +34,6 @@ import edu.mayo.informatics.indexer.lucene.analyzers.NormAnalyzer;
 import edu.mayo.informatics.indexer.lucene.analyzers.SnowballAnalyzer;
 import edu.mayo.informatics.indexer.lucene.analyzers.StringAnalyzer;
 import edu.mayo.informatics.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
-
-import org.apache.lucene.analysis.Analyzer;
 
 /**
  * Base Lucene Loader code.
@@ -47,23 +47,20 @@ public abstract class LuceneLoaderCode {
 	/** The lex grid white space index set. */
 	public static char[] lexGridWhiteSpaceIndexSet = new char[] { '-', ';', '(', ')', '{', '}', '[', ']', '<', '>', '|' };
 
-    /** The indexer service_. */
-    protected IndexerService indexerService_;
-    
-    /** The use compound file_. */
+	/** The use compound file_. */
     protected boolean useCompoundFile_ = false;
     
     /** The generator_. */
     private DocumentFromStringsGenerator generator_;
     
     /** The norm enabled_. */
-    protected boolean normEnabled_ = false;
+    protected static boolean normEnabled_ = false;
     
     /** The double metaphone enabled_. */
-    protected boolean doubleMetaphoneEnabled_ = true;
+    protected static boolean doubleMetaphoneEnabled_ = true;
     
     /** The stemming enabled_. */
-    protected boolean stemmingEnabled_ = true;
+    protected static boolean stemmingEnabled_ = true;
     
     /** The logger. */
     protected final Logger logger = Logger.getLogger("CTS.loader");
@@ -136,6 +133,8 @@ public abstract class LuceneLoaderCode {
     /** The store lex big minimum. */
     public static boolean storeLexBIGMinimum = false;
     
+    private LuceneEntityDao luceneEntityDao;
+    
     protected LuceneLoaderCode(){
     	try {
 			this.initIndexes();
@@ -155,34 +154,6 @@ public abstract class LuceneLoaderCode {
     /** The literal analyzer. */
     public static Analyzer literalAnalyzer = new WhiteSpaceLowerCaseAnalyzer(new String[] {},
             new char[]{}, new char[]{}); 
-
-    protected void openIndexesClearExisting(String indexName, String[] codingSchemes) throws Exception {
-        indexerService_.forceUnlockIndex(indexName);
-        indexerService_.openBatchRemover(indexName);
-
-        for (int i = 0; i < codingSchemes.length; i++) {
-            logger.info("clearing index of code system " + codingSchemes[i]);
-            indexerService_.removeDocument(indexName, CODING_SCHEME_NAME_FIELD, codingSchemes[i]);
-        }
-
-        indexerService_.closeBatchRemover(indexName);
-        openIndexes(indexName);
-    }
-
-    protected void openIndexes(String indexName) throws Exception {
-        indexerService_.forceUnlockIndex(indexName);
-        indexerService_.openWriter(indexName, false);
-        indexerService_.setUseCompoundFile(indexName, useCompoundFile_);
-        indexerService_.setMaxBufferedDocs(indexName, 500);
-        indexerService_.setMergeFactor(indexName, 20);
-    }
-
-    protected void closeIndexes(String indexName) throws Exception {
-        indexerService_.optimizeIndex(indexName);
-        indexerService_.closeWriter(indexName);
-    }
-
-
     /**
      * Adds the entity.
      * 
@@ -212,11 +183,11 @@ public abstract class LuceneLoaderCode {
      * 
      * @throws Exception the exception
      */
-    protected void addEntity(String codingSchemeName, String codingSchemeId, String codingSchemeVersion, String entityId, String entityNamespace, String entityType,
+    protected Document addEntity(String codingSchemeName, String codingSchemeId, String codingSchemeVersion, String entityId, String entityNamespace, String entityType,
             String entityDescription, String propertyType, String propertyName, String propertyValue, Boolean isActive, Boolean isAnonymous,
             String format, String language, Boolean isPreferred, String conceptStatus, String propertyId,
             String degreeOfFidelity, Boolean matchIfNoContext, String representationalForm, String[] sources,
-            String[] usageContexts, Qualifier[] qualifiers, String indexName) throws Exception {
+            String[] usageContexts, Qualifier[] qualifiers) throws Exception {
 
         String idFieldName = SQLTableConstants.TBLCOL_ENTITYCODE;
         String  propertyFieldName = SQLTableConstants.TBLCOL_PROPERTYNAME;
@@ -421,7 +392,7 @@ public abstract class LuceneLoaderCode {
 
         generator_.addTextField("fields", fields.toString(), store(), true, true);
 
-        indexerService_.addDocument(indexName, generator_.getDocument(), analyzer_);
+        return generator_.getDocument();
     }
 
     /*
@@ -439,13 +410,12 @@ public abstract class LuceneLoaderCode {
      * 
      * @throws Exception the exception
      */
-    protected void addEntityBoundryDocument(
+    protected Document addEntityBoundryDocument(
     		String codingSchemeName, 
     		String codingSchemeId, 
     		String codingSchemeVersion, 
     		String entityId,
-    		String entityCodeNamespace,
-    		String indexName) throws Exception {
+    		String entityCodeNamespace) throws Exception {
         StringBuffer fields = new StringBuffer();
         generator_.startNewDocument(codingSchemeName + "-" + entityId);
         generator_.addTextField("codingSchemeName", codingSchemeName, store(), true, false);
@@ -461,7 +431,7 @@ public abstract class LuceneLoaderCode {
 
         generator_.addTextField("fields", fields.toString(), store(), true, true);
 
-        indexerService_.addDocument(indexName, generator_.getDocument(), analyzer_);
+        return generator_.getDocument();
     }
 
     /**
@@ -486,59 +456,55 @@ public abstract class LuceneLoaderCode {
      * @throws InternalErrorException the internal error exception
      */
     protected void initIndexes() throws InternalErrorException {
-        // normIndexName_ = indexName + "_Normed";
-
-        // no stop words, default character removal set.
-        analyzer_ = new PerFieldAnalyzerWrapper(new WhiteSpaceLowerCaseAnalyzer(new String[] {},
+    	this.analyzer_ = getAnaylzer();
+        generator_ = new DocumentFromStringsGenerator();
+    }
+    
+    public static PerFieldAnalyzerWrapper getAnaylzer() {
+    	   // no stop words, default character removal set.
+    	PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new WhiteSpaceLowerCaseAnalyzer(new String[] {},
                 WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), lexGridWhiteSpaceIndexSet));
         
         //add a literal analyzer -- keep all special characters
-        analyzer_.addAnalyzer(LITERAL_PROPERTY_VALUE_FIELD, literalAnalyzer); 
-        analyzer_.addAnalyzer(LITERAL_AND_REVERSE_PROPERTY_VALUE_FIELD, literalAnalyzer);    
+        analyzer.addAnalyzer(LITERAL_PROPERTY_VALUE_FIELD, literalAnalyzer); 
+        analyzer.addAnalyzer(LITERAL_AND_REVERSE_PROPERTY_VALUE_FIELD, literalAnalyzer);    
 
         if (doubleMetaphoneEnabled_) {
             EncoderAnalyzer temp = new EncoderAnalyzer(new DoubleMetaphone(), new String[] {},
                     WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), lexGridWhiteSpaceIndexSet);
-            analyzer_.addAnalyzer(DOUBLE_METAPHONE_PROPERTY_VALUE_FIELD, temp);
+            analyzer.addAnalyzer(DOUBLE_METAPHONE_PROPERTY_VALUE_FIELD, temp);
         }
 
         if (normEnabled_) {
             try {
                 NormAnalyzer temp = new NormAnalyzer(false, new String[] {}, WhiteSpaceLowerCaseAnalyzer
                         .getDefaultCharRemovalSet(), lexGridWhiteSpaceIndexSet);
-                analyzer_.addAnalyzer(NORM_PROPERTY_VALUE_FIELD, temp);
+                analyzer.addAnalyzer(NORM_PROPERTY_VALUE_FIELD, temp);
             } catch (NoClassDefFoundError e) {
-                // norm is not available
-                normEnabled_ = false;
-                logger
-                        .warn(
-                                "Normalized index will not be built becaues Norm could not be launched.  Is Norm (lvg) on the classpath?",
-                                e);
+               //
             }
         }
 
         if (stemmingEnabled_) {
             SnowballAnalyzer temp = new SnowballAnalyzer(false, "English", new String[] {}, WhiteSpaceLowerCaseAnalyzer
                     .getDefaultCharRemovalSet(), lexGridWhiteSpaceIndexSet);
-            analyzer_.addAnalyzer(STEMMING_PROPERTY_VALUE_FIELD, temp);
+            analyzer.addAnalyzer(STEMMING_PROPERTY_VALUE_FIELD, temp);
         }
 
         // these fields just get simple analyzing.
         StringAnalyzer sa = new StringAnalyzer(STRING_TOKEINZER_TOKEN);
-        analyzer_.addAnalyzer("sources", sa);
-        analyzer_.addAnalyzer("usageContexts", sa);
-        analyzer_.addAnalyzer("qualifiers", sa);
-
-        generator_ = new DocumentFromStringsGenerator();
+        analyzer.addAnalyzer("sources", sa);
+        analyzer.addAnalyzer("usageContexts", sa);
+        analyzer.addAnalyzer("qualifiers", sa);
+        
+        return analyzer;
     }
     
-    /**
-     * Creates the index.
-     */
+ /*
     protected void createIndex(String indexName) {
         indexerService_.createIndex(indexName, analyzer_);
     }
-    
+  */  
     /**
      * Reverse terms in property value.
      * 
@@ -574,7 +540,19 @@ public abstract class LuceneLoaderCode {
     	return createCodingSchemeUriVersionKey(uri, version) + "-" + code + "-" + namespace;
     }
 
-    /**
+    public void setLuceneEntityDao(LuceneEntityDao luceneEntityDao) {
+		this.luceneEntityDao = luceneEntityDao;
+	}
+
+	public LuceneEntityDao getLuceneEntityDao() {
+		return luceneEntityDao;
+	}
+	
+	public Analyzer getAnalyzer() {
+		return this.analyzer_;
+	}
+
+	/**
      * The Class Qualifier.
      * 
      * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
@@ -597,9 +575,5 @@ public abstract class LuceneLoaderCode {
             this.qualifierName = qualifierName;
             this.qualifierValue = qualifierValue;
         }
-    }
-    
-    public void setIndexerService(IndexerService indexerService) {
-    	this.indexerService_ = indexerService;
     }
 }

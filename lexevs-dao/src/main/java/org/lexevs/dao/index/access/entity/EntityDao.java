@@ -20,9 +20,9 @@ package org.lexevs.dao.index.access.entity;
 
 import java.util.List;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.concepts.Entity;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.access.LexEvsIndexFormatVersionAwareDao;
@@ -33,48 +33,21 @@ import org.lexevs.dao.index.access.LexEvsIndexFormatVersionAwareDao;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface EntityDao extends LexEvsIndexFormatVersionAwareDao {
+	
+	public String getIndexName(String codingSchemeUri, String version);
+	
+	public void optimizeIndex(String codingSchemeUri, String version);
 
-	/**
-	 * Query.
-	 * 
-	 * @param reference the reference
-	 * @param combinedQueries the combined queries
-	 * @param individualQueries the individual queries
-	 * 
-	 * @return the list< score doc>
-	 */
-	public List<ScoreDoc> query(AbsoluteCodingSchemeVersionReference reference, List<? extends Query> combinedQueries, List<? extends Query> individualQueries);
+	public List<ScoreDoc> query(String codingSchemeUri, String version, List<? extends Query> combinedQueries, List<? extends Query> individualQueries);
 
-	/**
-	 * Gets the document by id.
-	 * 
-	 * @param reference the reference
-	 * @param documentId the document id
-	 * 
-	 * @return the document by id
-	 */
-	public Document getDocumentById(AbsoluteCodingSchemeVersionReference reference, int documentId);
+	public void deleteDocuments(String codingSchemeUri, String version, Term term);
 	
-	/**
-	 * Delete documents of coding scheme.
-	 * 
-	 * @param reference the reference
-	 */
-	public void deleteDocumentsOfCodingScheme(AbsoluteCodingSchemeVersionReference reference);
+	public void deleteDocuments(String codingSchemeUri, String version, Query query);
+
+	public void addDocuments(String codingSchemeUri, String version, List<Document> documents, Analyzer analyzer);
 	
-	public void updateDocumentsOfEntity(AbsoluteCodingSchemeVersionReference reference, Entity entity);
-	
-	public void deleteDocumentsOfEntity(AbsoluteCodingSchemeVersionReference reference, Entity entity);
-	
-	public void addEntityToIndex(AbsoluteCodingSchemeVersionReference reference, Entity entity);
-	
-	/**
-	 * Gets the match all docs query.
-	 * 
-	 * @param reference the reference
-	 * 
-	 * @return the match all docs query
-	 */
+	public Document getDocumentById(String codingSchemeUri, String version, int id);
+
 	public Query getMatchAllDocsQuery(
-			AbsoluteCodingSchemeVersionReference reference);
+			String codingSchemeUri, String version);
 }
