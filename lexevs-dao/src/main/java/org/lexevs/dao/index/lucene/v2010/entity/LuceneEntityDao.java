@@ -20,20 +20,20 @@ package org.lexevs.dao.index.lucene.v2010.entity;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.TermsFilter;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.AbstractBaseIndexDao;
 import org.lexevs.dao.index.access.entity.EntityDao;
@@ -61,7 +61,9 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 	private SystemResourceService systemResourceService;
 	
 	private LuceneIndexTemplate luceneIndexTemplate;
-
+	
+	private Map<String,Filter> codingSchemeFilterMap = new HashMap<String,Filter>();
+	private Map<String,Filter> boundaryDocFilterMap = new HashMap<String,Filter>();
 
 	@Override
 	public void addDocuments(String codingSchemeUri, String version,
@@ -99,11 +101,11 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 	public List<ScoreDoc> query(String codingSchemeUri, String version, List<? extends Query> combinedQuery, 
             List<? extends Query> bitSetQueries) {
 		try {
-			String internalCodeSystemName = systemResourceService.
-				getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, 
-						version);
 			
-			return this.buildScoreDocs(internalCodeSystemName, version, combinedQuery, bitSetQueries);
+			Filter codingSchemeFilter = getCodingSchemeFilterForCodingScheme(codingSchemeUri, version);
+			Filter boundaryDocSchemeFilter = getBoundaryDocFilterForCodingScheme(codingSchemeUri, version);
+			
+			return this.buildScoreDocs(boundaryDocSchemeFilter, codingSchemeFilter, combinedQuery, bitSetQueries);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -121,12 +123,17 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 	 * 
 	 * @throws Exception the exception
 	 */
-	protected List<ScoreDoc> buildScoreDocs(String internalCodeSystemName, String internalVersionString, List<? extends Query> combinedQuery, 
+	protected List<ScoreDoc> buildScoreDocs(
+			Filter boundaryDocFilter,
+			Filter codingSchemeFilter,
+			List<? extends Query> combinedQuery, 
             List<? extends Query> bitSetQueries) throws Exception {
 
         int maxDoc = luceneIndexTemplate.getMaxDoc();
 
         List<ScoreDoc> scoreDocs = null;
+        
+        DocIdSet boundaryDocIds = this.luceneIndexTemplate.getDocIdSet(boundaryDocFilter);
 
         List<BitSet> bitSets = new ArrayList<BitSet>();
         
@@ -134,9 +141,9 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
             for(Query query : bitSetQueries){
                 BitSetBestScoreOfEntityHitCollector bitSetCollector =
                     new BitSetBestScoreOfEntityHitCollector(
-                    		createDocIdSet().iterator(), 
+                    		boundaryDocIds.iterator(), 
                                     maxDoc);
-                luceneIndexTemplate.search(query, null, bitSetCollector);
+                luceneIndexTemplate.search(query, codingSchemeFilter, bitSetCollector);
                 bitSets.add(bitSetCollector.getResult());
             }
         }
@@ -145,29 +152,58 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
             BitSetFilteringBestScoreOfEntityHitCollector collector =
                 new BitSetFilteringBestScoreOfEntityHitCollector(
                         this.andBitSets(bitSets),
-                        createDocIdSet().iterator(), 
+                        boundaryDocIds.iterator(), 
                                 maxDoc);
             
-            luceneIndexTemplate.search(combinedQuery.get(0), null, collector);
+            luceneIndexTemplate.search(combinedQuery.get(0), codingSchemeFilter, collector);
             scoreDocs = collector.getResult();
         } else {
             HitCollectorMerger merger = new HitCollectorMerger(
-            		createDocIdSet().iterator(), 
+            		boundaryDocIds.iterator(), 
             		maxDoc);
             for(Query query : combinedQuery){
                 BestScoreOfEntityHitCollector collector =
                     new BitSetFilteringBestScoreOfEntityHitCollector(
                             this.andBitSets(bitSets),
-                            createDocIdSet().iterator(), 
+                            boundaryDocIds.iterator(), 
                                     maxDoc); 
 
-                luceneIndexTemplate.search(query, null, collector);
+                luceneIndexTemplate.search(query, codingSchemeFilter, collector);
                 merger.addHitCollector(collector);
             }
             scoreDocs = merger.getMergedScoreDocs();
         }
         
         return scoreDocs;
+	}
+	
+	protected Filter getBoundaryDocFilterForCodingScheme(String codingSchemeUri, String codingSchemeVersion) {
+		String key = getFilterMapKey(codingSchemeUri, codingSchemeUri);
+		if(!this.boundaryDocFilterMap.containsKey(key)) {
+			TermsFilter filter = new TermsFilter();
+			filter.addTerm(new Term("codeBoundry", "T"));
+			boundaryDocFilterMap.put(key, new CachingWrapperFilter(filter));
+		}
+		return boundaryDocFilterMap.get(key);
+	}
+	
+	protected Filter getCodingSchemeFilterForCodingScheme(String codingSchemeUri, String codingSchemeVersion) {
+		String key = getFilterMapKey(codingSchemeUri, codingSchemeUri);
+		if(!this.codingSchemeFilterMap.containsKey(key)) {
+			Term term = new Term(
+					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
+					LuceneLoaderCode.createCodingSchemeUriVersionKey(
+							codingSchemeUri, codingSchemeVersion));
+			TermsFilter filter = new TermsFilter();
+			filter.addTerm(term);
+			codingSchemeFilterMap.put(key, new CachingWrapperFilter(filter));
+		}
+		return codingSchemeFilterMap.get(key);
+	}
+	
+	private String getFilterMapKey(String codingSchemeUri, String codingSchemeVersion) {
+		return Integer.toString(codingSchemeUri.hashCode())
+			+ Integer.toString(codingSchemeVersion.hashCode());
 	}
 	
 	@Override
@@ -185,15 +221,6 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 				new Term(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
 						LuceneLoaderCode.createCodingSchemeUriVersionKey(codingSchemeUri, 
 								version)));
-	}
-	
-	protected DocIdSet createDocIdSet() {
-		BooleanQuery includesFilterQuery = new BooleanQuery();
-		includesFilterQuery.add(new BooleanClause(new TermQuery(new Term("codeBoundry", "T")), Occur.MUST));
-
-		final Filter filter = new QueryWrapperFilter(includesFilterQuery);
-
-		return luceneIndexTemplate.getDocIdSet(filter);
 	}
 
 	/**
