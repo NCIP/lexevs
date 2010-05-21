@@ -149,8 +149,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 		
 		this.getSqlMapClientTemplate().delete(
 				DELETE_ALL_VSPROPERTIES_ENTRYSTATE_BY_PARENTUID,
-				new PrefixedParameterTuple(prefix, parentUId,
-						ReferenceType.PICKLISTENTRY.name()));
+				new PrefixedParameterTuple(prefix, parentUId, parentType));
 	}
 
 	/**
