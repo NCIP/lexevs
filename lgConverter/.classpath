@@ -41,5 +41,6 @@
 	<classpathentry kind="lib" path="/lgSharedLibraries/protege/protege.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/claml/claml-model.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/jexcelapi/jxl.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lgModel"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
