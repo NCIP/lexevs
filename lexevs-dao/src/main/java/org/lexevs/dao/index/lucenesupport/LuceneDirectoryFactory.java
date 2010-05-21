@@ -1,7 +1,9 @@
 package org.lexevs.dao.index.lucenesupport;
 
+import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.io.Resource;
 
@@ -14,7 +16,11 @@ public class LuceneDirectoryFactory implements FactoryBean {
 	@Override
 	public Object getObject() throws Exception {
 		Directory directory = FSDirectory.getDirectory(this.indexDirectory.getFile());
+		
+		IndexWriter writer = new IndexWriter(directory, LuceneLoaderCode.getAnaylzer(), true, IndexWriter.MaxFieldLength.UNLIMITED);
 
+		writer.close();
+		
 		return new NamedDirectory(
 				directory, indexName);
 	}
