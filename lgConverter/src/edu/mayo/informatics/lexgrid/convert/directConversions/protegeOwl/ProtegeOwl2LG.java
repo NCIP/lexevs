@@ -36,13 +36,13 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
-import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.LexOnt.CsmfCodingSchemeName;
 import org.LexGrid.LexOnt.CsmfCodingSchemeURI;
 import org.LexGrid.LexOnt.CsmfMappings;
+import org.LexGrid.LexOnt.CsmfVersion;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
@@ -2052,6 +2052,15 @@ public class ProtegeOwl2LG {
      * Initialize further metadata about the coding scheme.
      */
     protected void initSchemeMetadata() {
+        // Set the ontology version from the versionInfo tag
+        String version = "";
+        for (Iterator i = owlModel_.getDefaultOWLOntology().getVersionInfo().iterator(); i.hasNext();) {
+            String newVersion = i.next().toString().trim();
+            if (version.length() == 0
+                    || (newVersion.length() > 0 && version.length() > 0 && newVersion.length() < version.length()))
+                version = newVersion;
+        }
+        
         String uri = owlModel_.getDefaultOWLOntology().getURI();
 
         if (uri != null) {
@@ -2105,14 +2114,26 @@ public class ProtegeOwl2LG {
             if (manifest_ != null) {
                 CsmfCodingSchemeName codingscheme = manifest_.getCodingScheme();
                 CsmfCodingSchemeURI csURI = manifest_.getCodingSchemeURI();
+                CsmfVersion mfVersion = manifest_.getRepresentsVersion();
 
                 if (codingscheme != null && codingscheme.getToOverride()) {
                     String mName = codingscheme.getContent();
-                    String mUri = csURI != null ? csURI.getContent() : null;
-                    if (mName != null)
+                    if(mName != null) {
                         schemeName = mName;
-                    if (mUri != null)
-                        uri = mUri;
+                    }
+                }
+                if (csURI != null && csURI.getToOverride()) {
+                    String mURI = csURI.getContent();
+                    if (mURI != null) {
+                        uri = mURI;
+                    }
+                }
+                
+                if (mfVersion != null && mfVersion.getToOverride()) {
+                    String mfVersionContent = mfVersion.getContent();
+                    if (mfVersionContent != null) {
+                        version = mfVersionContent;
+                    }
                 }
             }
 
@@ -2133,14 +2154,7 @@ public class ProtegeOwl2LG {
             emfScheme_.setEntityDescription(ed);
         }
 
-        // Set the ontology version from the versionInfo tag
-        String version = "";
-        for (Iterator i = owlModel_.getDefaultOWLOntology().getVersionInfo().iterator(); i.hasNext();) {
-            String newVersion = i.next().toString().trim();
-            if (version.length() == 0
-                    || (newVersion.length() > 0 && version.length() > 0 && newVersion.length() < version.length()))
-                version = newVersion;
-        }
+      
 
         if (version.length() == 0) {
             version = "UNASSIGNED";
