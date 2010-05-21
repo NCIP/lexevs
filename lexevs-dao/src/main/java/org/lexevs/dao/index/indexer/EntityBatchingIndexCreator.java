@@ -28,6 +28,7 @@ import org.apache.lucene.document.Document;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.access.entity.EntityDao;
+import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
 
@@ -63,7 +64,7 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	
 	private LgLoggerIF logger;
 	
-	private String indexName = "commonIndex";
+	private IndexRegistry indexRegistry;
 	
 	public void index(AbsoluteCodingSchemeVersionReference reference) {
 		this.index(reference, null);
@@ -73,6 +74,11 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	 * @see org.lexevs.dao.index.indexer.IndexCreator#index(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
 	public void index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback) {	
+		String indexName = indexRegistry.
+			registerCodingSchemeIndex(
+					reference.getCodingSchemeURN(),
+					reference.getCodingSchemeVersion());
+		
 		addIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
 		
 		EntityDao entityIndexService = indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
@@ -252,5 +258,13 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 
 	public IndexDaoManager getIndexDaoManager() {
 		return indexDaoManager;
+	}
+
+	public void setIndexRegistry(IndexRegistry indexRegistry) {
+		this.indexRegistry = indexRegistry;
+	}
+
+	public IndexRegistry getIndexRegistry() {
+		return indexRegistry;
 	}
 }
