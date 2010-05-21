@@ -26,6 +26,7 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.concepts.Entity;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.lexevs.dao.database.ibatis.entity.model.IdableEntity;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.access.entity.EntityDao;
@@ -97,10 +98,11 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 			
 			for(Entity entity : entities) {
 				List<Document> docs = 
-					entityIndexer.indexEntity(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), entity);
+					entityIndexer.indexEntity(
+							reference.getCodingSchemeURN(), 
+							reference.getCodingSchemeVersion(), entity);
 				
 				totalDocs.addAll(docs);
-
 				
 				totalIndexedEntities++;
 				

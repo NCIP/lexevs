@@ -28,6 +28,7 @@ import org.LexGrid.commonTypes.Source;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.apache.lucene.document.Document;
+import org.lexevs.dao.database.ibatis.entity.model.IdableEntity;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
@@ -157,11 +158,17 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 			repForm = pres.getRepresentationalForm();
 		}
 
+		String entityUid = null;
+		if(entity instanceof IdableEntity) {
+			entityUid = ((IdableEntity)entity).getId();
+		}
+		
 		return this.addEntity(
 				systemResourceService.
 					getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, codingSchemeVersion), 
 				codingSchemeUri, 
 				codingSchemeVersion,
+				entityUid,
 				entity.getEntityCode(), 
 				entity.getEntityCodeNamespace(), 
 				entity.getEntityType(0), //TODO: Allow multple Entity Types

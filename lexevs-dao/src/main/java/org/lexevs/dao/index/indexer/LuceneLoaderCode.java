@@ -110,6 +110,9 @@ public abstract class LuceneLoaderCode {
     /** The STEMMIN g_ propert y_ valu e_ field. */
     public static String STEMMING_PROPERTY_VALUE_FIELD = STEMMING_PREFIX + PROPERTY_VALUE_FIELD;
     
+    /** The STEMMIN g_ propert y_ valu e_ field. */
+    public static String ENTITY_UID_FIELD = "entityUid";
+    
     /** The DOUBL e_ metaphon e_ propert y_ valu e_ field. */
     public static String DOUBLE_METAPHONE_PROPERTY_VALUE_FIELD = DOUBLE_METAPHONE_PREFIX + PROPERTY_VALUE_FIELD;
     
@@ -183,7 +186,8 @@ public abstract class LuceneLoaderCode {
      * 
      * @throws Exception the exception
      */
-    protected Document addEntity(String codingSchemeName, String codingSchemeId, String codingSchemeVersion, String entityId, String entityNamespace, String entityType,
+    protected Document addEntity(String codingSchemeName, String codingSchemeId, String codingSchemeVersion, 
+    		String entityUid, String entityCode, String entityNamespace, String entityType,
             String entityDescription, String propertyType, String propertyName, String propertyValue, Boolean isActive, Boolean isAnonymous,
             String format, String language, Boolean isPreferred, String conceptStatus, String propertyId,
             String degreeOfFidelity, Boolean matchIfNoContext, String representationalForm, String[] sources,
@@ -194,24 +198,29 @@ public abstract class LuceneLoaderCode {
         String formatFieldName = SQLTableConstants.TBLCOL_FORMAT;
        
         StringBuffer fields = new StringBuffer();
-        generator_.startNewDocument(codingSchemeName + "-" + entityId + "-" + propertyId);
+        generator_.startNewDocument(codingSchemeName + "-" + entityCode + "-" + propertyId);
         generator_.addTextField(CODING_SCHEME_NAME_FIELD, codingSchemeName, store(), true, false);
         fields.append(CODING_SCHEME_NAME_FIELD + " ");
         generator_.addTextField(CODING_SCHEME_ID_FIELD, codingSchemeId, true, true, false);
         fields.append(CODING_SCHEME_ID_FIELD + " ");
-        generator_.addTextField(idFieldName + "Tokenized", entityId, false, true, true);
+        generator_.addTextField(idFieldName + "Tokenized", entityCode, false, true, true);
         fields.append(idFieldName + "Tokenized ");
-        generator_.addTextField(idFieldName, entityId, true, true, false);
+        generator_.addTextField(idFieldName, entityCode, true, true, false);
         fields.append(idFieldName + " ");
-        generator_.addTextField(idFieldName + "LC", entityId.toLowerCase(), false, true, false);
+        generator_.addTextField(idFieldName + "LC", entityCode.toLowerCase(), false, true, false);
         fields.append(idFieldName + "LC ");
         generator_.addTextField("entityType", entityType, true, true, false);
         fields.append("entityType ");
         generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
         fields.append(CODING_SCHEME_URI_VERSION_KEY_FIELD + " ");
-        generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, entityId, entityNamespace), false, true, false);
+        generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, entityCode, entityNamespace), false, true, false);
         fields.append(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD + " ");
        
+        if(StringUtils.isNotBlank(entityUid)) {
+        	generator_.addTextField(ENTITY_UID_FIELD, entityUid, true, false, false);
+            fields.append(ENTITY_UID_FIELD + " ");
+        }
+        
         //If the EntityDescription is an empty String, replace it with a single space.
         //Lucene will not index an empty String but it will index a space.
         if(StringUtils.isBlank(entityDescription)){
