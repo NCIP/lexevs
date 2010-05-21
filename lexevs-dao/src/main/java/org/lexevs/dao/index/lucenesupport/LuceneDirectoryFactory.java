@@ -1,5 +1,6 @@
 package org.lexevs.dao.index.lucenesupport;
 
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -17,13 +18,15 @@ public class LuceneDirectoryFactory implements FactoryBean {
 	public Object getObject() throws Exception {
 		Directory directory = FSDirectory.getDirectory(this.indexDirectory.getFile());
 		
-		IndexWriter writer = new IndexWriter(
-				directory, 
-				LuceneLoaderCode.getAnaylzer(), 
-				IndexWriter.MaxFieldLength.UNLIMITED);
+		if(!IndexReader.indexExists(this.indexDirectory.getFile())){
+			IndexWriter writer = new IndexWriter(
+					directory, 
+					LuceneLoaderCode.getAnaylzer(), 
+					IndexWriter.MaxFieldLength.UNLIMITED);
 
-		writer.close();
-		
+			writer.close();
+		}
+
 		return new NamedDirectory(
 				directory, indexName);
 	}
