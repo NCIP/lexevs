@@ -37,34 +37,90 @@ import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.formatters.XmlCo
  *                           @
  *                         /   \
  *                        /     \ 
- *               Auto Maker     Automobile
- *                            +   +  \     \
- *                           +   +    \     \
- *                      Tires Brakes Truck  Car
- */                             
+ *    Domestic Auto Makers     Automobile
+ *                  /         +   +  \     \
+ *                 /         +   +    \     \
+ *               Ford    Tires Brakes Truck  Car
+ */          
 
 public class LexGridExportTest {
     
+    private static final String SEARCH_STRING_ENTITY_CODE_AUTOMOBILE = "entityCode=\"A0001\"";
+    private static final String SEARCH_STRING_ENTITY_CODE_CAR = "entityCode=\"C0001\"";
+    private static final String SEARCH_STRING_ENTITY_CODE_DOMESTIC_AUTO_MAKERS = "entityCode=\"005\"";
+    private static final String SEARCH_STRING_ENTITY_CODE_FORD = "entityCode=\"Ford\"";
+    private static final String SEARCH_STRING_ENTITY_CODE_TRUCK = "entityCode=\"T0001\"";
+    
+    @Test    
     public void lexGridExportTestCns() throws LBException {
-        String outFileName = "lexGridExportTestCns.xml";
+        StringWriter out = new StringWriter();
         CodingScheme cs = CodingSchemeFactory.createCodingScheme();
         CodedNodeSet cns = MockLexGridObjectFactory.createCns();
         CodedNodeGraph cng = null;
-        LexGridExportTest.lexGridExportTestRunner(cs, cng, cns, outFileName);
-        Assert.assertTrue(true);
+        LexGridExportTest.lexGridExportTestRunner(cs, cng, cns, out);
+        
+        //-----------------------------------------------------
+        // to verify, all entity codes should exist
+        //-----------------------------------------------------
+        String marshaledContent = out.toString();
+        
+        // check for Domestic Auto Makers: entityCode="005"
+        boolean entityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_ENTITY_CODE_DOMESTIC_AUTO_MAKERS);
+        Assert.assertTrue(entityCodeExists);
+        
+        // check for Automobile: entityCode="A0001"
+        entityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_ENTITY_CODE_AUTOMOBILE);
+        Assert.assertTrue(entityCodeExists);        
+        
+        // check for Ford: entityCode="Ford"
+        entityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_ENTITY_CODE_FORD);
+        Assert.assertTrue(entityCodeExists);
+        
+        // check for Truck: entityCode="T0001"
+        entityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_ENTITY_CODE_TRUCK);  
+        Assert.assertTrue(entityCodeExists);
+        
+        // check for Car: entityCode="C0001"
+        entityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_ENTITY_CODE_CAR);
+        Assert.assertTrue(entityCodeExists);
+        
     }
     
     /*
-     * cns.restrictToMatchingDesignations("G*", SearchDesignationOption.ALL, "LuceneQuery", null);
+     * cns.restrictToMatchingDesignations("T*", SearchDesignationOption.ALL, "LuceneQuery", null);
      */
     @Test
     public void lexGridExportTestCnsFilter() throws LBException {
-        String outFileName = "lexGridExportTestCnsFilter.xml";
+        StringWriter out = new StringWriter();
         CodingScheme cs = CodingSchemeFactory.createCodingScheme();
         CodedNodeSet cns = MockLexGridObjectFactory.createCnsFiltered();
         CodedNodeGraph cng = null;
-        LexGridExportTest.lexGridExportTestRunner(cs, cng, cns, outFileName);
-        Assert.assertTrue(true);
+        LexGridExportTest.lexGridExportTestRunner(cs, cng, cns, out);
+        
+        //-----------------------------------------------------
+        // to verify, only the truck entity code should exist
+        //-----------------------------------------------------
+        String marshaledContent = out.toString();
+        
+        // check for Domestic Auto Makers: entityCode="005"
+        boolean entityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_ENTITY_CODE_DOMESTIC_AUTO_MAKERS);
+        Assert.assertFalse(entityCodeExists);
+        
+        // check for Automobile: entityCode="A0001"
+        entityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_ENTITY_CODE_AUTOMOBILE);
+        Assert.assertFalse(entityCodeExists);        
+        
+        // check for Ford: entityCode="Ford"
+        entityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_ENTITY_CODE_FORD);
+        Assert.assertFalse(entityCodeExists);
+        
+        // check for Truck: entityCode="T0001"
+        entityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_ENTITY_CODE_TRUCK);  
+        Assert.assertTrue(entityCodeExists);
+        
+        // check for Car: entityCode="C0001"
+        entityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_ENTITY_CODE_CAR);
+        Assert.assertFalse(entityCodeExists);
     }
     
     
@@ -80,7 +136,7 @@ public class LexGridExportTest {
     }
     
     
-    private static void lexGridExportTestRunner(CodingScheme cs, CodedNodeGraph cng, CodedNodeSet cns, String outFileName) throws LBException {
+    private static void lexGridExportTestRunner(CodingScheme cs, CodedNodeGraph cng, CodedNodeSet cns, StringWriter out) throws LBException {
 
         /*
         File outFile = new File(outFileName);
@@ -94,7 +150,7 @@ public class LexGridExportTest {
             e.printStackTrace();
         }
         */
-        StringWriter out = new StringWriter();
+        
         
         Entities entities = new Entities();
         Entity entity = new Entity();
