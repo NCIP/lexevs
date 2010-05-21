@@ -38,6 +38,7 @@ import org.lexevs.dao.database.constants.classifier.property.PropertyTypeClassif
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollectionTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean;
@@ -218,17 +219,25 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				this.getNonBatchTemplateInserter());	
 	}
 	
-	
-	
 	@SuppressWarnings("unchecked")
+	public List<Property> getPropertiesOfParents(
+			String codingSchemeId, 
+			List<String> propertyNames, 
+			List<String> propertyTypes,
+			List<String> parentUids) {
+		return this.getSqlMapClientTemplate().queryForList(GET_PROPERTIES_OF_PARENT_UIDS_SQL, 
+				new PrefixedParameterCollectionTriple(
+						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+						this.propertyTypeClassifier.classify(PropertyType.ENTITY),
+						propertyNames,
+						propertyTypes,
+						parentUids));
+	}
+
 	@Override
 	public List<Property> getPropertiesOfParents(String codingSchemeId,
 			List<String> parentUids) {
-		return this.getSqlMapClientTemplate().queryForList(GET_PROPERTIES_OF_PARENT_UIDS_SQL, 
-				new PrefixedParameterCollection(
-						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
-						this.propertyTypeClassifier.classify(PropertyType.ENTITY),
-						parentUids));
+		return this.getPropertiesOfParents(codingSchemeId, null, null, parentUids);
 	}
 
 	/* (non-Javadoc)
