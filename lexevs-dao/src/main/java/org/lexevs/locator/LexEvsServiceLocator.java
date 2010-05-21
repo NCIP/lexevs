@@ -70,7 +70,9 @@ public class LexEvsServiceLocator implements ApplicationContextAware {
 	 */
 	public static synchronized LexEvsServiceLocator getInstance(){
 		if(serviceLocator == null){
-			serviceLocator = (LexEvsServiceLocator) new ClassPathXmlApplicationContext(CONTEXT_FILE).getBean(BEAN_NAME);
+			ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONTEXT_FILE);
+			ctx.registerShutdownHook();
+			serviceLocator = (LexEvsServiceLocator) ctx.getBean(BEAN_NAME);
 		}
 		
 		return serviceLocator;
@@ -191,11 +193,9 @@ public class LexEvsServiceLocator implements ApplicationContextAware {
 	 */
 	public void setApplicationContext(ApplicationContext applicationContext)
 		throws BeansException {
-
+		
 		if(serviceLocator == null) {
 			serviceLocator = (LexEvsServiceLocator) applicationContext.getBean(BEAN_NAME);	
 		}
 	}
-
-
 }
