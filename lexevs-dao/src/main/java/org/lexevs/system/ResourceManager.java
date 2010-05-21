@@ -74,6 +74,10 @@ import org.lexevs.system.utility.MyClassLoader;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  * @version subversion $Revision: $ checked in on $Date: $
  */
+/**
+ * @deprecated
+ * Use LexEvsResourceManagingService
+ */
 @Deprecated
 public class ResourceManager implements SystemResourceService {
     
