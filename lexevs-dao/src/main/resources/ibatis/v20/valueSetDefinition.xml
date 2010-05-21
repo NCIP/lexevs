@@ -39,6 +39,22 @@
 		<result property="valueSetDefinition.effectiveDate" column="effectiveDate" />
 		<result property="valueSetDefinition.expirationDate" column="expirationDate" />
 		<result property="entryStateUId" column="entryStateGuid" />
+	</resultMap>
+	
+	<resultMap id="valueSetDefinitionMetaDataWithMultiAttrib" class="valueSetDefinitionBean" groupBy="uid">
+		<result property="uid" column="valueSetDefGuid" />
+		<result property="valueSetDefinition.valueSetDefinitionURI" column="valueSetDefURI" />
+		<result property="valueSetDefinition.valueSetDefinitionName" column="valueSetDefName" />
+		<result property="valueSetDefinition.defaultCodingScheme" column="defaultCodingScheme" />
+		<result property="valueSetDefinition.conceptDomain" column="conceptDomain" />
+		<result property="valueSetDefinition.entityDescription.content" column="description" />
+		<result property="systemReleaseUId" column="releaseGuid" />
+		<result property="valueSetDefinition.isActive" column="isActive" />
+		<result property="valueSetDefinition.owner" column="owner" />
+		<result property="valueSetDefinition.status" column="status" />
+		<result property="valueSetDefinition.effectiveDate" column="effectiveDate" />
+		<result property="valueSetDefinition.expirationDate" column="expirationDate" />
+		<result property="entryStateUId" column="entryStateGuid" />
 		<result property="vsMultiAttribList" resultMap="VSMultiAttrib.vsMultiAttribResultBean"/>
 	</resultMap>
 	
@@ -292,7 +308,7 @@
 	
 	<select id="getValueSetDefinitionMetadataByUId" 		
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultMap="ValueSetDefinition.valueSetDefinitionMetaDataResult">
+		resultMap="ValueSetDefinition.valueSetDefinitionMetaDataWithMultiAttrib">
 		SELECT
 			vs.valueSetDefGuid,
 			vs.valueSetDefURI,

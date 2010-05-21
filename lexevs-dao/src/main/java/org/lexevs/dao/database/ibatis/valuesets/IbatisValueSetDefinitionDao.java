@@ -865,6 +865,6 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	public boolean entryStateExists(String entryStateUId) {
 		String prefix = this.getPrefix();
 		
-		return	super.entryStateExists(prefix, entryStateUId);
+		return	super.vsEntryStateExists(prefix, entryStateUId);
 	}
 }
