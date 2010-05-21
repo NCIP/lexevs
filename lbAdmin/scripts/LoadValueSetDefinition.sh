@@ -1,4 +1,4 @@
-# Loads ValueDomain content, provided in LexGrid canonical xml format.
+# Loads Value Set Definition content, provided in LexGrid canonical xml format.
 #
 # Options:
 #   -in,--input <uri> URI or path specifying location of the source file.
@@ -7,6 +7,6 @@
 #         Supported levels of validation include:
 #         0 = Verify document is well-formed
 #         1 = Verify document is valid
-# Example: LoadValueDomain -in "file:///path/to/file.xml"
+# Example: LoadValueSetDefinition -in "file:///path/to/file.xml"
 #
-java -Xmx1500m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.lexgrid.valuedomain.admin.LoadValueDomain $@
+java -Xmx1500m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.lexgrid.valuesets.admin.LoadValueSetDefinition $@
