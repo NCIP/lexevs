@@ -737,6 +737,136 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
+	public void getPropertiesOfParentsRestrictByName(){
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
+				"values ('pguid1', 'eguid', 'entity', 'pname1', 'pType1', 'pvalue')");
+		
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
+			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pType2', 'pvalue')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		List<Property> props = ibatisPropertyDao.
+			getPropertiesOfParents("csguid", DaoUtility.createNonTypedList("pname1"), null, DaoUtility.createNonTypedList("eguid"));
+		
+		assertEquals(1, props.size());
+		assertEquals("pname1", props.get(0).getPropertyName());
+	}
+	
+	@Test
+	public void getPropertiesOfParentsRestrictByType(){
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
+				"values ('pguid1', 'eguid', 'entity', 'pname1', 'pType1', 'pvalue')");
+		
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
+			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pType2', 'pvalue')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		List<Property> props = ibatisPropertyDao.
+			getPropertiesOfParents("csguid", null, DaoUtility.createNonTypedList("pType2"), DaoUtility.createNonTypedList("eguid"));
+		
+		assertEquals(1, props.size());
+		assertEquals("pType2", props.get(0).getPropertyType());
+	}
+	
+	@Test
+	public void getPropertiesOfParentsRestrictByNameAndType(){
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
+				"values ('pguid1', 'eguid', 'entity', 'pname1', 'pType1', 'pvalue')");
+		
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
+			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pType2', 'pvalue')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		List<Property> props = ibatisPropertyDao.
+			getPropertiesOfParents("csguid", DaoUtility.createNonTypedList("pname2"), DaoUtility.createNonTypedList("pType2"), DaoUtility.createNonTypedList("eguid"));
+		
+		assertEquals(1, props.size());
+		assertEquals("pname2", props.get(0).getPropertyName());
+		assertEquals("pType2", props.get(0).getPropertyType());
+	}
+	
+	@Test
+	public void getPropertiesOfParentsRestrictByNameAndTypeWrongName(){
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
+				"values ('pguid1', 'eguid', 'entity', 'pname1', 'pType1', 'pvalue')");
+		
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
+			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pType2', 'pvalue')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		List<Property> props = ibatisPropertyDao.
+			getPropertiesOfParents("csguid", DaoUtility.createNonTypedList("WRONG_NAME"), DaoUtility.createNonTypedList("pType2"), DaoUtility.createNonTypedList("eguid"));
+		
+		assertEquals(0, props.size());
+	}
+	
+	@Test
+	public void getPropertiesOfParentsRestrictByNameAndTypeWrongType(){
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
+				"values ('pguid1', 'eguid', 'entity', 'pname1', 'pType1', 'pvalue')");
+		
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
+			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pType2', 'pvalue')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		List<Property> props = ibatisPropertyDao.
+			getPropertiesOfParents("csguid", DaoUtility.createNonTypedList("pname2"), DaoUtility.createNonTypedList("WRONG_TYPE"), DaoUtility.createNonTypedList("eguid"));
+		
+		assertEquals(0, props.size());
+	}
+	
+	@Test
+	public void getPropertiesOfParentsRestrictByNameAndTypeWrongMismatched(){
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
+				"values ('pguid1', 'eguid', 'entity', 'pname1', 'pType1', 'pvalue')");
+		
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
+			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pType2', 'pvalue')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		List<Property> props = ibatisPropertyDao.
+			getPropertiesOfParents("csguid", DaoUtility.createNonTypedList("pname1"), DaoUtility.createNonTypedList("pType2"), DaoUtility.createNonTypedList("eguid"));
+		
+		assertEquals(0, props.size());
+	}
+	
+	@Test
 	public void getPropertiesOfParentsWithTwoDifferentEntities(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue) " +
