@@ -40,6 +40,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Export.LexGrid_Exporter;
+import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
@@ -61,9 +62,12 @@ import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
+import org.lexgrid.valuesets.admin.Util;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 import org.lexgrid.valuesets.helper.VSDServiceHelper;
+
+import edu.mayo.informatics.lexgrid.convert.formats.Option;
 
 /**
  * Implementation of Value Set Definition for LexGrid.
@@ -170,14 +174,12 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 			boolean failOnAllErrors) throws LBException {
 		md_.info("Loading value set definitions from file : " + xmlFileLocation);
 		
-		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
-
-        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm
-                .getLoader("LexGrid_Loader");
+		Loader loader = (LexGridMultiLoaderImpl) getLexBIGService().getServiceManager(null).getLoader("LexGrid_Loader");
         
-        // load non-async - this should block
-        loader.load(new File(xmlFileLocation).toURI(), true, false);
-        
+        md_.info("Loading value set definitions from file : " + xmlFileLocation);
+        loader.getOptions().getBooleanOption(Option.getNameForType(Option.FAIL_ON_ERROR)).setOptionValue(failOnAllErrors);
+		loader.load(Util.string2FileURI(xmlFileLocation));
+		
         while (loader.getStatus().getEndTime() == null) {
             try {
 				Thread.sleep(1000);

@@ -26,7 +26,7 @@ import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.lexevs.system.ResourceManager;
+import org.lexevs.system.service.LexEvsResourceManagingService;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
@@ -35,7 +35,7 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  * repository.
  * 
  * <pre>
- * Example: java org.lexgrid.extension.valuedomain.admin.LoadValueDomain
+ * Example: java org.lexgrid.valuesets.admin.LoadValueSetDefinition
  *   -in,--input &lt;uri&gt; URI or path specifying location of the source file
  *   -v, --validate &lt;int&gt; Perform validation of the candidate
  *         resource without loading data.  
@@ -44,15 +44,15 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  *         1 = Verify document is valid
  * 
  * Example: java -Xmx512m -cp lgRuntime.jar
- *  org.lexgrid.extension.valuedomain.admin.LoadValueDomain -in &quot;file:///path/to/file.xml&quot; -v 0
+ *  org.lexgrid.valuesets.admin.LoadValueSetDefinition -in &quot;file:///path/to/file.xml&quot; -v 0
  * </pre>
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
 @LgAdminFunction
 public class LoadValueSetDefinition {
-
-    public static void main(String[] args) {
+	private LexEvsResourceManagingService service = new LexEvsResourceManagingService();
+	public static void main(String[] args) {
         try {
             new LoadValueSetDefinition().run(args);
         } catch (LBResourceUnavailableException e) {
@@ -72,7 +72,7 @@ public class LoadValueSetDefinition {
      * @throws Exception
      */
     public void run(String[] args) throws Exception {
-        synchronized (ResourceManager.instance()) {
+        synchronized (service) {
 
             // Parse the command line ...
             CommandLine cl = null;
@@ -85,10 +85,10 @@ public class LoadValueSetDefinition {
             } catch (Exception e) {
                 Util
                         .displayCommandOptions(
-                                "LoadValueDomain",
+                                "LoadValueSetDefinition",
                                 options,
-                                "\n LoadValueDomain -in \"file:///path/to/file.xml\""
-                                        + "\n LoadValueDomain -in \"file:///path/to/file.xml\" -v 0" + Util.getURIHelp(), e);
+                                "\n LoadValueSetDefinition -in \"file:///path/to/file.xml\""
+                                        + "\n LoadValueSetDefinition -in \"file:///path/to/file.xml\" -v 0" + Util.getURIHelp(), e);
                 return;
             }
 

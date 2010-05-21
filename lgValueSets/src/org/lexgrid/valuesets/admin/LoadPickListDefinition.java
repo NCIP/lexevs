@@ -25,7 +25,7 @@ import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.lexevs.system.ResourceManager;
+import org.lexevs.system.service.LexEvsResourceManagingService;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
 
@@ -34,7 +34,7 @@ import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
  * repository.
  * 
  * <pre>
- * Example: java org.lexgrid.extension.valuedomain.admin.LoadPickList
+ * Example: java org.lexgrid.valuesets.admin.LoadPickList
  *   -in,--input &lt;uri&gt; URI or path specifying location of the source file
  *   -v, --validate &lt;int&gt; Perform validation of the candidate
  *         resource without loading data.  
@@ -43,7 +43,7 @@ import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
  *         1 = Verify document is valid
  * 
  * Example: java -Xmx512m -cp lgRuntime.jar
- *  org.lexgrid.extension.valuedomain.admin.LoadPickList -in &quot;file:///path/to/file.xml&quot; -v 0
+ *  org.lexgrid.valuesets.admin.LoadPickList -in &quot;file:///path/to/file.xml&quot; -v 0
  * </pre>
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
@@ -51,8 +51,10 @@ import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
 @LgAdminFunction
 public class LoadPickListDefinition {
 
+	private LexEvsResourceManagingService service = new LexEvsResourceManagingService();
+	
     public static void main(String[] args) {
-        try {
+    	try {
             new LoadPickListDefinition().run(args);
         } catch (LBResourceUnavailableException e) {
         	Util.displayTaggedMessage(e.getMessage());
@@ -71,7 +73,7 @@ public class LoadPickListDefinition {
      * @throws Exception
      */
     public void run(String[] args) throws Exception {
-        synchronized (ResourceManager.instance()) {
+        synchronized (service) {
 
             // Parse the command line ...
             CommandLine cl = null;

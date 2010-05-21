@@ -45,6 +45,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Export.LexGrid_Exporter;
+import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
@@ -73,6 +74,7 @@ import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
+import org.lexgrid.valuesets.admin.Util;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntry;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntryList;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
@@ -80,6 +82,7 @@ import org.lexgrid.valuesets.helper.PLEntryNodeSortUtil;
 import org.lexgrid.valuesets.helper.VSDServiceHelper;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
+import edu.mayo.informatics.lexgrid.convert.formats.Option;
 import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 
 /**
@@ -179,15 +182,13 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	public void loadPickList(String xmlFileLocation, boolean failOnAllErrors)
 			throws LBException {
 		getLogger().logMethod(new Object[] { xmlFileLocation });
-		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 
-        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm
-                .getLoader("LexGrid_Loader");
+		Loader loader = (LexGridMultiLoaderImpl) getLexBIGService().getServiceManager(null).getLoader("LexGrid_Loader");
         
         md_.info("Loading pick list definitions from file : " + xmlFileLocation);
-        // load non-async - this should block
-        loader.load(new File(xmlFileLocation).toURI(), true, false);
-        
+        loader.getOptions().getBooleanOption(Option.getNameForType(Option.FAIL_ON_ERROR)).setOptionValue(failOnAllErrors);
+		loader.load(Util.string2FileURI(xmlFileLocation));
+		
         while (loader.getStatus().getEndTime() == null) {
             try {
 				Thread.sleep(1000);

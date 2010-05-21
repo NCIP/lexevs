@@ -39,7 +39,7 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.lexevs.system.ResourceManager;
+import org.lexevs.system.service.LexEvsResourceManagingService;
 
 /**
  * Common utility functions required by admin tasks.
@@ -48,7 +48,8 @@ import org.lexevs.system.ResourceManager;
  */
 public class Util {
     static final private String _lineReturn = System.getProperty("line.separator");
-    static final private LgLoggerIF _logger = ResourceManager.instance().getLogger();
+    static private LexEvsResourceManagingService service = new LexEvsResourceManagingService();
+    static final private LgLoggerIF _logger = service.getLogger();
     static final private PrintWriter _printWriter = new PrintWriter(System.out);
 
     /**
@@ -315,6 +316,7 @@ public class Util {
             return new URI(f.toURI().toString().replace(" ", "%20"));
         } catch (Exception e) {
             displayTaggedMessage(e.getMessage());
+            System.out.println(e.getMessage());
             throw new LBResourceUnavailableException("UNABLE TO RESOLVE RESOURCE: " + trimmed);
         }
     }
