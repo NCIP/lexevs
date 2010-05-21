@@ -63,6 +63,8 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	
 	private LgLoggerIF logger;
 	
+	private String indexName = "commonIndex";
+	
 	public void index(AbsoluteCodingSchemeVersionReference reference) {
 		this.index(reference, null);
 	}
@@ -70,10 +72,10 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.indexer.IndexCreator#index(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
-	public void index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback) {
-		EntityDao entityIndexService = indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+	public void index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback) {	
+		addIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
 		
-		addIndexMetadata(reference, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
+		EntityDao entityIndexService = indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
 
 		int totalIndexedEntities = 0;
 
@@ -119,13 +121,8 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	 * @param indexVersion the index version
 	 */
 	protected void addIndexMetadata(
-			AbsoluteCodingSchemeVersionReference reference, String indexVersion) {
+			AbsoluteCodingSchemeVersionReference reference, String indexName, String indexVersion) {
 		try {	  
-			EntityDao entityIndexService = 
-				indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-			
-			String indexName = entityIndexService.getIndexName(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-			
 			String codingSchemeName = 
 				systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
 
