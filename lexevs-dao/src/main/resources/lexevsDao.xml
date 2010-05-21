@@ -673,6 +673,7 @@
 		<property name="entityIndexer" ref="commonIndexLoaderCodeInder"/>
 		<property name="indexDaoManager" ref="indexDaoManager"/>
 		<property name="metaData" ref="luceneIndexMetadataFactory"/>
+		<property name="indexRegistry" ref="indexRegistry"/>
 		<property name="logger" ref="loggerFactory"/>
 	</bean>
 	
@@ -762,5 +763,7 @@
 	<bean id="luceneIndexTemplate" class="org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate">
 		<property name="namedDirectory" ref="commonIndexDirectory"/>
 	</bean>
+
+	<bean id="indexRegistry" class="org.lexevs.dao.index.indexregistry.SingleIndexRegistry"/>
 
 </beans>
