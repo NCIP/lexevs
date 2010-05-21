@@ -221,12 +221,21 @@
   	</sql>
   	
   	<select id="getPropertiesByParentUids" remapResults="true"
-  		resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection">
+  		resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollectionTriple">
 		<include refid="getPropertyFragment"/>
   		WHERE
 			property.referenceType = #param1#
+		<isNotEmpty property="param2" prepend="AND">
+			property.propertyName IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
+		</isNotEmpty>
+		
+		<isNotEmpty property="param3" prepend="AND">
+			property.propertyType IN ( <iterate property="param3" conjunction=",">#param3[]#</iterate> )
+		</isNotEmpty>
+		
 		AND
-			property.referenceGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
+			property.referenceGuid IN ( <iterate property="param4" conjunction=",">#param4[]#</iterate> )
+		
   	</select>
 
   	<select id="getPropertiesByParent" remapResults="true"

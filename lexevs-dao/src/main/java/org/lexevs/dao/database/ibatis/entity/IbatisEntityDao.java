@@ -152,6 +152,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Entity> getEntities(String codingSchemeId,
+			List<String> propertyNames, List<String> propertyTypes,
 			List<String> entityUids) {
 		if(CollectionUtils.isEmpty(entityUids)) {
 			return new ArrayList<Entity>();
@@ -162,11 +163,21 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		Map<String,Entity> entities = (Map<String,Entity>) this.getSqlMapClientTemplate().queryForMap(GET_ENTITIES_BY_UIDS_SQL, 
 				new PrefixedParameterCollection(prefix, codingSchemeId, entityUids), "id");
 		
-		for(Property prop : this.ibatisPropertyDao.getPropertiesOfParents(codingSchemeId, entityUids)){
+		for(Property prop : this.ibatisPropertyDao.getPropertiesOfParents(
+				codingSchemeId, 
+				propertyNames, 
+				propertyTypes, 
+				entityUids)){
 			entities.get(prop.getParent()).addAnyProperty(prop);
 		}
 
 		return new ArrayList<Entity>(entities.values());
+	}
+
+	@Override
+	public List<Entity> getEntities(String codingSchemeId,
+			List<String> entityUids) {
+		return this.getEntities(codingSchemeId, null, null, entityUids);
 	}
 
 	public AssociationEntity getAssociationEntityByCodeAndNamespace(String codingSchemeId, String entityCode, String entityCodeNamespace){

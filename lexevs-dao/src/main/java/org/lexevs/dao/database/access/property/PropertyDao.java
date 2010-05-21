@@ -66,6 +66,11 @@ public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 
 	public List<Property> getPropertiesOfParents(String codingSchemeId, List<String> parentUids);
 
+	public List<Property> getPropertiesOfParents(
+			String codingSchemeId, 
+			List<String> propertyNames, 
+			List<String> propertyTypes,
+			List<String> parentUids);
 	/**
 	 * Insert property qualifier.
 	 * 

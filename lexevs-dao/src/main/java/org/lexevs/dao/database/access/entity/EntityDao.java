@@ -62,6 +62,12 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	
 	public List<Entity> getEntities(String codingSchemeId, List<String> entityUids);
 	
+	public List<Entity> getEntities(
+			String codingSchemeId, 
+			List<String> propertyNames, 
+			List<String> propertyTypes, 
+			List<String> entityUids);
+	
 	public Entity getHistoryEntityByRevision(String codingSchemeUId, String entityUId, String revisionUId);
 	
 	/**
