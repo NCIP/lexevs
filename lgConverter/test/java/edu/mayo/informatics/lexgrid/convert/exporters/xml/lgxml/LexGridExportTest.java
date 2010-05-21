@@ -158,9 +158,16 @@ public class LexGridExportTest {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(outFile != null && outFile.exists() == true){
+            if(out != null){
                 try {
                     out.close();
+                    
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(w != null) {
+                try {
                     w.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -169,12 +176,13 @@ public class LexGridExportTest {
         }
         
         boolean outFileHasContent = LexGridExportTest.verifyOutFileHasContent(outFile);
-        Assert.assertTrue(outFileHasContent);       
-        
         if(outFile != null && outFile.exists()) {
             boolean result = outFile.delete();
             System.out.println("File delete result: " + result);
         }
+        
+        Assert.assertTrue(outFileHasContent);       
+        
 
         
     }
@@ -182,7 +190,7 @@ public class LexGridExportTest {
     private static boolean verifyOutFileHasContent(File outFile) {
         boolean verifyTrue = false;
         final String searchTarget = LexGridExportTest.SEARCH_STRING_ENTITY_CODE_DOMESTIC_AUTO_MAKERS;
-        // final String searchTarget = "blah";
+        //final String searchTarget = "blah";
         Reader r = null;
         BufferedReader in = null;
         try {
@@ -210,6 +218,12 @@ public class LexGridExportTest {
             if(in != null) {
                 try {
                     in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(r != null) {
+                try {
                     r.close();
                 } catch (IOException e) {
                     e.printStackTrace();
