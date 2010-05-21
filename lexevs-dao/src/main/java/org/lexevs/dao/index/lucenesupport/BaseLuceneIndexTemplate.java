@@ -165,6 +165,9 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		IndexWriter writer = 
 			new IndexWriter(namedDirectory.getDirectory(), analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
 		
+		writer.setMergeFactor(20);
+		writer.setRAMBufferSizeMB(500);
+		
 		T result = callback.doInIndexWriter(writer);
 		
 		writer.close();
