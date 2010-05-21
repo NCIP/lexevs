@@ -19,7 +19,6 @@
 package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
-import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.ScoreDoc;
@@ -127,7 +126,7 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
     protected Document buildDocument() throws Exception {
         String uri = this.systemResourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
         return entityIndexService.getDocumentById(
-                Constructors.createAbsoluteCodingSchemeVersionReference(uri, internalVersionString), documentId);
+                uri, internalVersionString, documentId);
     }
 
     /**

@@ -79,7 +79,9 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
 
         AdditiveCodeHolder codeHolder = new DefaultCodeHolder();
 
-        List<ScoreDoc> scoreDocs = entityService.query(ref, 
+        List<ScoreDoc> scoreDocs = entityService.query(
+                ref.getCodingSchemeURN(), 
+                ref.getCodingSchemeVersion(), 
                         combinedQuery, bitSetQueries);
 
         for(ScoreDoc doc : scoreDocs){
