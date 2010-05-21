@@ -81,19 +81,11 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
-import org.lexevs.dao.database.utility.DaoUtility;
-import org.lexevs.dao.index.connection.IndexInterface;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.registry.model.RegistryEntry;
-import org.lexevs.registry.service.Registry;
 import org.lexevs.system.ResourceManager;
-import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
-
-import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
-import edu.mayo.informatics.lexgrid.convert.indexer.SQLEntityIndexer;
 
 /**
  * Implementation of the server side convenience methods.
@@ -1840,68 +1832,8 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     @LgAdminFunction
     public void addEntityLuceneIndexes(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag,
             List<String> entityCodes) throws LBException {
-
-        IndexInterface indexInterface = null;
-        String indexLocation = null;
-        String indexName = null;
-        String internalCodingSchemeName = null;
-        String version = null;
-
-        if (entityCodes == null || entityCodes.size() == 0) {
-            return;
-        }
-
-        try {
-            if (versionOrTag == null) {
-                version = ResourceManager.instance().getInternalVersionStringForTag(codingSchemeName, null);
-            } else {
-                version = versionOrTag.getVersion();
-            }
-
-            internalCodingSchemeName = ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(
-                    codingSchemeName, version);
-        } catch (LBParameterException e2) {
-            throw new LBException("Exception while retrieving version and internal codingscheme name.", e2);
-        }
-
-        try {
-            indexInterface = ResourceManager.instance().getIndexInterface(internalCodingSchemeName,
-                    versionOrTag.getVersion());
-            indexLocation = indexInterface.getBaseIndexerService().getRootLocation();
-
-            indexName = indexInterface.getBaseIndexerService().getMetaData().getIndexMetaDataValue(
-                    internalCodingSchemeName + "[:]" + version);
-
-        } catch (MissingResourceException e) {
-            throw new LBException("Exception while obtaining indexe info for the codingscheme "
-                    + internalCodingSchemeName, e);
-        } catch (InternalErrorException e) {
-            throw new LBException("Exception while obtaining indexe info for the codingscheme "
-                    + internalCodingSchemeName, e);
-        }
-
-        try {
-            Registry sysReg = LexEvsServiceLocator.getInstance().getRegistry();
-            SystemVariables sv = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables();
-            RegistryEntry entry = sysReg.getCodingSchemeEntry(
-                    DaoUtility.createAbsoluteCodingSchemeVersionReference(
-                            internalCodingSchemeName, 
-                            version));
-            
-//            SQLInterface sqlInterface = ResourceManager.instance().getSQLInterface(internalCodingSchemeName, version);
-//            JDBCConnectionDescriptor connDesc = sqlInterface.getConnectionDescriptor();
-
-//            String tablePrefix = sqlInterface.getTablePrefix();
-            String tablePrefix = entry.getPrefix();
-
-            SQLEntityIndexer sqlIndexer = new SQLEntityIndexer(indexName, indexLocation, sv.getAutoLoadDBUsername(), 
-                    sv.getAutoLoadDBPassword(), entry.getDbUri(), sv.getAutoLoadDBDriver(), tablePrefix, getLogger(), true);
-
-            sqlIndexer.addEntityIndexes(internalCodingSchemeName, entityCodes);
-
-        } catch (Exception e) {
-            throw new LBException("Exception while adding entity index.", e);
-        }
+        throw new UnsupportedOperationException("This is handled in the Dao Layer, either as part" +
+            " of the Entity Service itself, or as a Listener.");
     }
 
     /**
@@ -1914,70 +1846,8 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     @LgAdminFunction
     public void removeEntityLuceneIndexes(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag,
             List<String> entityCodes) throws LBException {
-
-        IndexInterface indexInterface = null;
-        String indexLocation = null;
-        String indexName = null;
-        String internalCodingSchemeName = null;
-        String version = null;
-
-        if (entityCodes == null || entityCodes.size() == 0) {
-            return;
-        }
-
-        try {
-            if (versionOrTag == null) {
-                version = ResourceManager.instance().getInternalVersionStringForTag(codingSchemeName, null);
-            } else {
-                version = versionOrTag.getVersion();
-            }
-
-            internalCodingSchemeName = ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(
-                    codingSchemeName, version);
-        } catch (LBParameterException e2) {
-            throw new LBException("Exception while retrieving version and internal codingscheme name.", e2);
-        }
-
-        try {
-            indexInterface = ResourceManager.instance().getIndexInterface(internalCodingSchemeName,
-                    versionOrTag.getVersion());
-            indexLocation = indexInterface.getBaseIndexerService().getRootLocation();
-
-            indexName = indexInterface.getBaseIndexerService().getMetaData().getIndexMetaDataValue(
-                    internalCodingSchemeName + "[:]" + version);
-
-        } catch (MissingResourceException e) {
-            throw new LBException("Exception while obtaining indexe info for the codingscheme "
-                    + internalCodingSchemeName, e);
-        } catch (InternalErrorException e) {
-            throw new LBException("Exception while obtaining indexe info for the codingscheme "
-                    + internalCodingSchemeName, e);
-        }
-
-        try {
-            
-            Registry sysReg = LexEvsServiceLocator.getInstance().getRegistry();
-            SystemVariables sv = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables();
-            RegistryEntry entry = sysReg.getCodingSchemeEntry(
-                    DaoUtility.createAbsoluteCodingSchemeVersionReference(
-                            internalCodingSchemeName, 
-                            version));
-//            
-//            SQLInterface sqlInterface = ResourceManager.instance().getSQLInterface(internalCodingSchemeName, version);
-//            JDBCConnectionDescriptor connDesc = sqlInterface.getConnectionDescriptor();
-//
-//            String tablePrefix = sqlInterface.getTablePrefix();
-            String tablePrefix = entry.getPrefix();
-            
-            SQLEntityIndexer sqlIndexer = new SQLEntityIndexer(indexName, indexLocation, 
-                    sv.getAutoLoadDBUsername(), sv.getAutoLoadDBPassword(), 
-                    entry.getDbUri(), sv.getAutoLoadDBDriver(), tablePrefix, getLogger(), true);
-
-            sqlIndexer.removeEntityIndexes(internalCodingSchemeName, entityCodes);
-
-        } catch (Exception e) {
-            throw new LBException("Exception while adding removing entity index.", e);
-        }
+        throw new UnsupportedOperationException("This is handled in the Dao Layer, either as part" +
+            " of the Entity Service itself, or as a Listener.");
     }
 
     /**
@@ -1990,71 +1860,8 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     @LgAdminFunction
     public void modifyEntityLuceneIndexes(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag,
             List<String> entityCodes) throws LBException {
-
-        IndexInterface indexInterface = null;
-        String indexLocation = null;
-        String indexName = null;
-        String internalCodingSchemeName = null;
-        String version = null;
-
-        if (entityCodes == null || entityCodes.size() == 0) {
-            return;
-        }
-
-        try {
-            if (versionOrTag == null) {
-                version = ResourceManager.instance().getInternalVersionStringForTag(codingSchemeName, null);
-            } else {
-                version = versionOrTag.getVersion();
-            }
-
-            internalCodingSchemeName = ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(
-                    codingSchemeName, version);
-        } catch (LBParameterException e2) {
-            throw new LBException("Exception while retrieving version and internal codingscheme name.", e2);
-        }
-
-        try {
-            indexInterface = ResourceManager.instance().getIndexInterface(internalCodingSchemeName,
-                    versionOrTag.getVersion());
-            indexLocation = indexInterface.getBaseIndexerService().getRootLocation();
-
-            indexName = indexInterface.getBaseIndexerService().getMetaData().getIndexMetaDataValue(
-                    internalCodingSchemeName + "[:]" + version);
-
-        } catch (MissingResourceException e) {
-            throw new LBException("Exception while obtaining indexe info for the codingscheme "
-                    + internalCodingSchemeName, e);
-        } catch (InternalErrorException e) {
-            throw new LBException("Exception while obtaining indexe info for the codingscheme "
-                    + internalCodingSchemeName, e);
-        }
-
-        try {
-            
-            Registry sysReg = LexEvsServiceLocator.getInstance().getRegistry();
-            SystemVariables sv = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables();
-            RegistryEntry entry = sysReg.getCodingSchemeEntry(
-                    DaoUtility.createAbsoluteCodingSchemeVersionReference(
-                            internalCodingSchemeName, 
-                            version));
-            
-//            SQLInterface sqlInterface = ResourceManager.instance().getSQLInterface(internalCodingSchemeName, version);
-//            JDBCConnectionDescriptor connDesc = sqlInterface.getConnectionDescriptor();
-
-//            String tablePrefix = sqlInterface.getTablePrefix();
-            String tablePrefix = entry.getPrefix();
-
-            SQLEntityIndexer sqlIndexer = new SQLEntityIndexer(indexName, indexLocation, 
-                    sv.getAutoLoadDBUsername(), sv.getAutoLoadDBPassword(), 
-                    entry.getDbUri(), sv.getAutoLoadDBDriver(), tablePrefix, getLogger(), true);
-
-            sqlIndexer.removeEntityIndexes(internalCodingSchemeName, entityCodes);
-            sqlIndexer.addEntityIndexes(internalCodingSchemeName, entityCodes);
-
-        } catch (Exception e) {
-            throw new LBException("Exception while modifying entity index.", e);
-        }
+        throw new UnsupportedOperationException("This is handled in the Dao Layer, either as part" +
+            " of the Entity Service itself, or as a Listener.");
     }
 
     
