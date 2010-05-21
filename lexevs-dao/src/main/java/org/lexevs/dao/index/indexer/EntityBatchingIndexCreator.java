@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.index.indexer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -92,14 +93,14 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 				entities.size() > 0; 
 				entities = entityService.getEntities(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), position += batchSize, batchSize)) {
 
+			List<Document> totalDocs = new ArrayList<Document>();
+			
 			for(Entity entity : entities) {
 				List<Document> docs = 
 					entityIndexer.indexEntity(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), entity);
 				
-				entityIndexService.addDocuments(
-						reference.getCodingSchemeURN(), 
-						reference.getCodingSchemeVersion(), 
-						docs, analyzer);
+				totalDocs.addAll(docs);
+
 				
 				totalIndexedEntities++;
 				
@@ -111,6 +112,12 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 					this.getLogger().info("Indexed: " + totalIndexedEntities + " Entities.");
 				}
 			}
+			
+			this.getLogger().info("Flusing " + totalDocs.size() + " Documents to the Index.");
+			entityIndexService.addDocuments(
+					reference.getCodingSchemeURN(), 
+					reference.getCodingSchemeVersion(), 
+					totalDocs, analyzer);
 		}
 		
 		entityIndexService.optimizeIndex(reference.getCodingSchemeURN(), 
