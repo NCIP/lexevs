@@ -316,7 +316,6 @@ public class Util {
             return new URI(f.toURI().toString().replace(" ", "%20"));
         } catch (Exception e) {
             displayTaggedMessage(e.getMessage());
-            System.out.println(e.getMessage());
             throw new LBResourceUnavailableException("UNABLE TO RESOLVE RESOURCE: " + trimmed);
         }
     }

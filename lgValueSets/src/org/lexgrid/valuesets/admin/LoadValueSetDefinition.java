@@ -100,7 +100,7 @@ public class LoadValueSetDefinition {
                 Util.displayTaggedMessage("LOADING FROM URI: " + source.toString());
             }
 
-            LexEVSValueSetDefinitionServices vds = new LexEVSValueSetDefinitionServicesImpl();
+            LexEVSValueSetDefinitionServices vds = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
             
             // Perform the requested load or validate action ...
             if (vl >= 0) {

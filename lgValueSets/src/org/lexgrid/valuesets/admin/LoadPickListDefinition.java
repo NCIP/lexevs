@@ -101,7 +101,7 @@ public class LoadPickListDefinition {
                 Util.displayTaggedMessage("LOADING FROM URI: " + source.toString());
             }
 
-            LexEVSPickListDefinitionServices pls = new LexEVSPickListDefinitionServicesImpl();
+            LexEVSPickListDefinitionServices pls = LexEVSPickListDefinitionServicesImpl.defaultInstance();
             
             // Perform the requested load or validate action ...
             if (vl >= 0) {
