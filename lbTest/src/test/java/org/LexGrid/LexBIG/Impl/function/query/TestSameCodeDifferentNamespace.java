@@ -18,8 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.function.query;
 
-import lexevs.bootcamp.utility.PrintUtility;
-
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -44,7 +42,6 @@ public class TestSameCodeDifferentNamespace extends BaseCodedNodeSetTest{
      */
     public void testNoRestrictions() throws LBInvocationException, LBParameterException{
         ResolvedConceptReference[] refs = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
-        PrintUtility.print(cns);
         assertTrue(contains(refs, "DifferentNamespaceConcept", AUTO_SCHEME, AUTO_SCHEME));
         assertTrue(contains(refs, "DifferentNamespaceConcept", "TestForSameCodeNamespace", AUTO_SCHEME));
     }
