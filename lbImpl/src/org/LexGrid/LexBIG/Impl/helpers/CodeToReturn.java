@@ -44,6 +44,7 @@ public class CodeToReturn implements Serializable {
     private float score_ = 0;
     private String uri_ = null;
     private String version_ = null;
+    private String entityUid;
 
     public CodeToReturn() {
         super();
@@ -168,5 +169,15 @@ public class CodeToReturn implements Serializable {
     
     public String toString(){
         return this.getUri() + " : " + this.getCode();
+    }
+
+    @LgClientSideSafe
+    public void setEntityUid(String entityUid) {
+        this.entityUid = entityUid;
+    }
+
+    @LgClientSideSafe
+    public String getEntityUid() {
+        return entityUid;
     }
 }

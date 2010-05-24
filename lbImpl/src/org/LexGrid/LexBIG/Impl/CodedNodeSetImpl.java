@@ -19,8 +19,8 @@
 package org.LexGrid.LexBIG.Impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
@@ -67,16 +67,12 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
-import org.LexGrid.commonTypes.EntityDescription;
-import org.LexGrid.concepts.Entity;
-import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -485,60 +481,12 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                         + ".  You will need to set the maxToReturn flag, or use the iterator resolve method.");
             }
 
-            Iterator<CodeToReturn> codeToReturnItr = codes.iterator();
+            ResolvedConceptReferencesIterator itr = new ResolvedConceptReferencesIteratorImpl(
+                    codesToInclude_, restrictToProperties, restrictToPropertyTypes, filters, resolveObjects);
             
-            List<ResolvedConceptReference> refs = new ArrayList<ResolvedConceptReference>();
-
-            while (refs.size() < max
-                    && codeToReturnItr.hasNext()) {
-                // Always assign the basics...
-                CodeToReturn code = codeToReturnItr.next();
-                ResolvedConceptReference rcr = new ResolvedConceptReference();
-                if(StringUtils.isNotBlank(code.getUri()) || StringUtils.isNotBlank(code.getVersion())) {
-                    rcr.setCodingSchemeName(
-                            serviceLocator.getSystemResourceService().
-                            getInternalCodingSchemeNameForUserCodingSchemeName(code.getUri(), code.getVersion()));
-                    rcr.setCodingSchemeURI(code.getUri());
-                    rcr.setCodingSchemeVersion(code.getVersion());
-                }
-                rcr.setCode(code.getCode());
-                rcr.setCodeNamespace(code.getNamespace());
-                EntityDescription ed = new EntityDescription();
-                ed.setContent(code.getEntityDescription());
-                rcr.setEntityDescription(ed);
-                rcr.setEntityType(code.getEntityTypes());
-                
-                // Only attach the fully resolved object if instructed...
-                if (resolveObjects) {
-                    // Resolve and assign the item to the coded node reference.
-                    Entity resolvedEntity = buildCodedEntry(
-                            code.getUri(), 
-                            code.getVersion(),
-                            code.getCode(),
-                            code.getNamespace(),
-                            restrictToProperties,
-                            restrictToPropertyTypes);
-                    rcr.setEntity(resolvedEntity);
-                }
-
-                // these (two) stay null by design
-                rcr.setSourceOf(null);
-                rcr.setTargetOf(null);
-
-                if(filters == null || filters.length == 0){
-                    refs.add(rcr);
-                } else {
-                    boolean add = true;
-                    for(Filter filter : filters){
-                        if (!filter.match(rcr)) {
-                            add = false;
-                        }
-                    }
-                    if(add){
-                        refs.add(rcr);
-                    }
-                }
-            }
+            ResolvedConceptReferenceList list = itr.next(max);
+            
+            List<ResolvedConceptReference> refs = Arrays.asList(list.getResolvedConceptReference());
             
             if(sortByProperty != null){
                 ResultComparator<ResolvedConceptReference> postComparator = 
@@ -549,6 +497,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             for(ResolvedConceptReference ref : refs){
                 rcrl.addResolvedConceptReference(ref);
             }
+            
+            itr.release();
  
             return rcrl;
         } catch (LBInvocationException e) {
@@ -587,23 +537,6 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
     private String getInternalVersionString() {
         return ((GetAllConcepts) pendingOperations_.get(0)).getInternalVersionString();
-    }
-
-    /*
-     * method to turn a CodedNodeHolder into an Entity object.
-     */
-    private Entity buildCodedEntry(String uri, String version, String code, String namespace,
-            LocalNameList restrictToProperties, PropertyType[] restrictToPropertyTypes) throws LBInvocationException {
-            if(StringUtils.isBlank(uri) ||
-                    StringUtils.isBlank(version) || 
-                    StringUtils.isBlank(code) ||
-                    StringUtils.isBlank(namespace)) {
-                return null;
-            }
-            
-            EntityService entityService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
-            
-            return entityService.getEntity(uri, version, code, namespace);
     }
 
     /**

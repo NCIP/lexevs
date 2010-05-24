@@ -34,8 +34,8 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.annotations.LgHasRemoteDependencies;
 import org.LexGrid.annotations.LgProxyField;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.system.ResourceManager;
 
 /**
  * Implements iterator behavior for fetching coded node sets.
@@ -82,7 +82,9 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
         restrictToPropertyTypes_ = restrictToPropertyTypes;
         resolveEntities_ = resolveEntities;
         
-        maxSizeSystemLimit = ResourceManager.instance().getSystemVariables().getMaxResultSize();
+        maxSizeSystemLimit = 
+               LexEvsServiceLocator.getInstance().getSystemResourceService().
+                   getSystemVariables().getMaxResultSize();
 
         // launch a clean up thread to recover the memory from this object.
         // this allows the JVM to exit while this thread is still active.
@@ -96,7 +98,9 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
         boolean continueRunning = true;
 
         public void run() {
-            int idleTimeMillis = ResourceManager.instance().getSystemVariables().getIteratorIdleTime() * 60 * 1000;
+            int idleTimeMillis = 
+                LexEvsServiceLocator.getInstance().getSystemResourceService().
+                    getSystemVariables().getIteratorIdleTime() * 60 * 1000;
             while (continueRunning) {
                 try {
                     // 1 minute;
@@ -331,14 +335,13 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
                     }
                 }
             } else {
-                for (int i = start; i < end; i++) {
-                    rcrl.addResolvedConceptReference(codeToReturnResolver.buildResolvedConceptReference(
-                            getCodeToReturnFromCodeHolder(i),
+               return codeToReturnResolver.buildResolvedConceptReference(
+                            getCodeToReturnFromCodeHolder(start, end),
                             this.restrictToProperties_,
                             this.restrictToPropertyTypes_,
                             this.filters_,
-                            this.resolveEntities_));
-                }
+                            this.resolveEntities_);
+
             }
         } catch (LBInvocationException e) {
             throw e;

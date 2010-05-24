@@ -22,6 +22,7 @@ import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.ScoreDoc;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.service.SystemResourceService;
@@ -110,6 +111,8 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
         String codeField = SQLTableConstants.TBLCOL_ENTITYCODE;
         
         this.setCode(doc.get(codeField));
+        
+        this.setEntityUid(doc.get(LuceneLoaderCode.ENTITY_UID_FIELD));
         
         this.setEntityDescription(
                 doc.get(SQLTableConstants.TBLCOL_ENTITYDESCRIPTION));

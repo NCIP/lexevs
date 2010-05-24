@@ -18,10 +18,14 @@
  */
 package org.LexGrid.LexBIG.Impl.helpers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -29,9 +33,17 @@ import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.concepts.Entity;
+import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
+import org.lexevs.dao.database.access.entity.EntityDao;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.service.entity.EntityService;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.service.SystemResourceService;
+import org.springframework.util.Assert;
 
 /**
  * The Class DefaultCodeToReturnResolver.
@@ -43,10 +55,7 @@ public class DefaultCodeToReturnResolver implements CodeToReturnResolver {
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -2128719170709905064L;
 
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.Impl.helpers.CodeToReturnResolverI#buildResolvedConceptReference(org.LexGrid.LexBIG.Impl.helpers.CodeToReturn, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType[], boolean)
-     */
-    public ResolvedConceptReference buildResolvedConceptReference(CodeToReturn codeToReturn, 
+    protected ResolvedConceptReference doBuildResolvedConceptReference(CodeToReturn codeToReturn, 
             LocalNameList restrictToProperties,
             PropertyType[] restrictToPropertyTypes,
             Filter[] filters,
@@ -67,19 +76,6 @@ public class DefaultCodeToReturnResolver implements CodeToReturnResolver {
             rcr.setEntityDescription(ed);
             rcr.setEntityType(codeToReturn.getEntityTypes());
 
-            // Only attach the fully resolved object if instructed...
-            if (resolve) {
-                // Resolve and assign the item to the coded node reference.
-                Entity resolvedEntity = buildCodedEntry(
-                        resourceManager.getInternalCodingSchemeNameForUserCodingSchemeName(codeToReturn.getUri(), codeToReturn.getVersion()),
-                        codeToReturn.getVersion(),
-                        codeToReturn.getCode(),
-                        codeToReturn.getNamespace(),
-                        restrictToProperties,
-                        restrictToPropertyTypes);
-                rcr.setEntityDescription(resolvedEntity.getEntityDescription());
-                rcr.setEntity(resolvedEntity);
-            }
         } catch (LBParameterException e) {
             // this should only happen when the codedNodeSet was constructed
             // from a graph -
@@ -107,47 +103,255 @@ public class DefaultCodeToReturnResolver implements CodeToReturnResolver {
         return rcr;
     }
      
+    public ResolvedConceptReference buildResolvedConceptReference(CodeToReturn codeToReturn,
+            LocalNameList restrictToProperties, PropertyType[] restrictToPropertyTypes, Filter[] filters,
+            boolean resolve) throws LBInvocationException {
+        ResolvedConceptReferenceList returnList = this.buildResolvedConceptReference(
+                DaoUtility.createNonTypedList(codeToReturn), restrictToProperties, restrictToPropertyTypes, filters, resolve);
+   
+        Assert.state(returnList.getResolvedConceptReferenceCount() <= 1);
+        
+        if(returnList.getResolvedConceptReferenceCount() == 1) {
+            return returnList.getResolvedConceptReference(0);
+        } else {
+            return null;
+        }
+    }
+
     public ResolvedConceptReferenceList buildResolvedConceptReference(List<CodeToReturn> codesToReturn,
             LocalNameList restrictToProperties, PropertyType[] restrictToPropertyTypes, Filter[] filters,
             boolean resolve) throws LBInvocationException {
+
         ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
         for(CodeToReturn codeToReturn : codesToReturn){
             returnList.addResolvedConceptReference(
-                    buildResolvedConceptReference(
+                    doBuildResolvedConceptReference(
                             codeToReturn, 
                             restrictToProperties, 
                             restrictToPropertyTypes, 
                             filters, 
                             resolve));
         }
+        
+        if(resolve) {
+            return this.addEntities(returnList, codesToReturn, restrictToProperties, restrictToPropertyTypes);
+        } else {
+            return returnList;
+        }
+    }
+    
+    private ResolvedConceptReferenceList addEntities(
+            ResolvedConceptReferenceList unresolvedList, 
+            List<CodeToReturn> codesToReturn,
+            LocalNameList restrictToProperties, PropertyType[] restrictToPropertyTypes) throws LBInvocationException {
+        Map<String,Entity> entityMap = this.buildCodedEntry(
+                codesToReturn, 
+                restrictToProperties, 
+                restrictToPropertyTypes);
+        
+        for(ResolvedConceptReference ref : unresolvedList.getResolvedConceptReference()) {
+            if(ref == null) {continue;}
+            
+            String refKey = this.getKey(ref);
+            ref.setEntity(entityMap.get(refKey));
+        }
+        
+        return unresolvedList;
+    }
+
+    
+    private Map<String,Entity> buildCodedEntry(List<CodeToReturn> codesToReturn,
+            LocalNameList restrictToProperties, PropertyType[] restrictToPropertyTypes) throws LBInvocationException {
+        Map<String,Entity> entityMap = new HashMap<String,Entity>();
+        
+        Map<UriVersionPair,List<String>> entityUids = new HashMap<UriVersionPair,List<String>>();
+        
+        for(CodeToReturn codeToReturn : codesToReturn){
+            String entityUid = codeToReturn.getEntityUid();
+            if(StringUtils.isNotBlank(entityUid)) {
+                UriVersionPair pair = new UriVersionPair(codeToReturn.getUri(), codeToReturn.getVersion());
+                if(!entityUids.containsKey(pair)) {
+                    entityUids.put(pair, new ArrayList<String>());
+                }
+                entityUids.get(pair).add(entityUid);
+                
+            } else {
+                entityMap.put(
+                        getKey(codeToReturn), 
+                        this.buildCodedEntry(
+                                codeToReturn.getUri(), 
+                                codeToReturn.getVersion(), 
+                                codeToReturn.getCode(), 
+                                codeToReturn.getNamespace(), 
+                                restrictToProperties, 
+                                restrictToPropertyTypes));
+            }
+        }
+        
+        if(!entityUids.isEmpty()) {
+            List<Entity> totalEntities = new ArrayList<Entity>();
+            
+            for(UriVersionPair pair : entityUids.keySet()) {
+                totalEntities.addAll(this.buildCodedEntry(
+                        pair.getUri(), 
+                        pair.getVersion(), 
+                        entityUids.get(pair), 
+                        restrictToProperties, 
+                        restrictToPropertyTypes));
+            }
+            
+            for(Entity entity : totalEntities) {
+                entityMap.put(this.getKey(entity), entity);
+            }
+        }
+        
+      return entityMap;
+    }
+    
+    private String getKey(ConceptReference ref) {
+        return getKey(ref.getCode(), ref.getCodeNamespace());
+    } 
+    
+    private String getKey(CodeToReturn codeToReturn) {
+        return getKey(codeToReturn.getCode(), codeToReturn.getNamespace());
+    } 
+    
+    private String getKey(Entity entity) {
+        return getKey(entity.getEntityCode(), entity.getEntityCodeNamespace());
+    } 
+    
+    private String getKey(String code, String namespace) {
+        return Integer.toString(
+                code.hashCode()) + 
+                Integer.toString(namespace.hashCode());
+    } 
+    
+    private List<Entity> buildCodedEntry(
+            final String codingSchemeUri, 
+            final String codingSchemeVersion, 
+            final List<String> entityUids,
+            final LocalNameList restrictToProperties, 
+            final PropertyType[] restrictToPropertyTypes) throws LBInvocationException {
+        
+        DaoCallbackService callbackService = 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getDaoCallbackService();
+
+        return callbackService.executeInDaoLayer(new DaoCallback<List<Entity>>() {
+
+            @Override
+            public List<Entity> execute(DaoManager daoManager) {
+                CodingSchemeDao codingSchemeDao = daoManager.
+                    getCodingSchemeDao(codingSchemeUri, codingSchemeVersion);
+               
+                String codingSchemeUid = codingSchemeDao.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
+                
+                EntityDao entityDao = daoManager.
+                    getEntityDao(codingSchemeUri, codingSchemeVersion);
+                
+                return entityDao.getEntities(
+                        codingSchemeUid,
+                        propertyNameToString(restrictToProperties),
+                        propertyTypeToString(restrictToPropertyTypes), 
+                        entityUids);
+            }       
+        });   
+    }
+
+    private Entity buildCodedEntry(String codingSchemeUri, String codingSchemeVersion, String code, String namespace,
+            LocalNameList restrictToProperties, PropertyType[] restrictToPropertyTypes) throws LBInvocationException {
+        
+        EntityService entityService = 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
+
+        return entityService.getEntity(
+                codingSchemeUri, 
+                codingSchemeVersion,
+                code,
+                namespace,
+                propertyNameToString(restrictToProperties),
+                propertyTypeToString(restrictToPropertyTypes));
+
+    }
+    
+    private List<String> propertyNameToString(LocalNameList lnl){
+        if(lnl == null || lnl.getEntryCount() == 0) {
+            return null;
+        }
+        List<String> returnList = new ArrayList<String>();
+        for(String name : lnl.getEntry()){
+            returnList.add(name);
+        }
         return returnList;
     }
 
-    /**
-     * Builds the coded entry.
-     * 
-     * @param internalCodingSchemeName the internal coding scheme name
-     * @param internalVersionString the internal version string
-     * @param code the code
-     * @param namespace the namespace
-     * @param restrictToProperties the restrict to properties
-     * @param restrictToPropertyTypes the restrict to property types
-     * 
-     * @return the entity
-     * 
-     * @throws LBInvocationException the LB invocation exception
-     */
-    private Entity buildCodedEntry(String internalCodingSchemeName, String internalVersionString, String code, String namespace,
-            LocalNameList restrictToProperties, PropertyType[] restrictToPropertyTypes) throws LBInvocationException {
+    private List<String> propertyTypeToString(PropertyType[] types){
+        if(types == null || types.length == 0) {
+            return null;
+        }
         
-        SystemResourceService resourceManager = LexEvsServiceLocator.getInstance().getSystemResourceService();
-        EntityService entityService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
-   
-        try {
-            String uri = resourceManager.getUriForUserCodingSchemeName(internalCodingSchemeName);
-            return entityService.getEntity(uri, internalVersionString, code, namespace);
-        } catch (LBParameterException e) {
-            throw new RuntimeException(e);
-        }   
+        List<String> returnList = new ArrayList<String>();
+        for(PropertyType type : types){
+            returnList.add(type.toString());
+        }
+        return returnList;
+    }
+
+    private class UriVersionPair {
+
+        private String uri;
+        private String version;
+
+        public UriVersionPair(String uri, String version) {
+            super();
+            this.uri = uri;
+            this.version = version;
+        }
+        public String getUri() {
+            return uri;
+        }
+        public void setUri(String uri) {
+            this.uri = uri;
+        }
+        public String getVersion() {
+            return version;
+        }
+        public void setVersion(String version) {
+            this.version = version;
+        }
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + getOuterType().hashCode();
+            result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+            result = prime * result + ((version == null) ? 0 : version.hashCode());
+            return result;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            UriVersionPair other = (UriVersionPair) obj;
+            if (!getOuterType().equals(other.getOuterType()))
+                return false;
+            if (uri == null) {
+                if (other.uri != null)
+                    return false;
+            } else if (!uri.equals(other.uri))
+                return false;
+            if (version == null) {
+                if (other.version != null)
+                    return false;
+            } else if (!version.equals(other.version))
+                return false;
+            return true;
+        }
+        private DefaultCodeToReturnResolver getOuterType() {
+            return DefaultCodeToReturnResolver.this;
+        }  
     }
 }
