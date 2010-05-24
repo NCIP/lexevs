@@ -717,6 +717,7 @@
 	
 	<bean id="luceneMetadataDao" class="org.lexevs.dao.index.lucene.v2010.metadata.LuceneMetadataDao">
 		<property name="baseMetaDataLoader" ref="oboMetaDataLoader"/>
+		<property name="luceneIndexTemplate" ref="luceneMetadataIndexTemplate"/>
 	</bean>
 
 	<bean id="luceneMetadataIndexCreator" class="org.lexevs.dao.index.indexer.LuceneMetadataIndexCreator">
@@ -729,12 +730,12 @@
 
 	<bean id="luceneIndexEntityDao" class="org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao">
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
-		<property name="luceneIndexTemplate" ref="luceneIndexTemplate"/>
+		<property name="luceneIndexTemplate" ref="luceneEntityIndexTemplate"/>
 	</bean>
 	
 	<bean id="luceneEntity2009Dao" class="org.lexevs.dao.index.lucene.v2009.entity.LuceneEntity2009Dao">
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
-		<property name="luceneIndexTemplate" ref="luceneIndexTemplate"/>
+		<property name="luceneIndexTemplate" ref="luceneEntityIndexTemplate"/>
 	</bean>
 	
 	<bean id="commonIndexLoaderCodeInder" class="org.lexevs.dao.index.indexer.LuceneLoaderCodeIndexer">
@@ -754,14 +755,29 @@
 		<property name="indexName" value="commonIndex"/>
 		<property name="systemVariables" ref="systemVariables"/> 
 	</bean>
+	
+	<bean id="metadataIndexDirectory"
+		class="org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory">
+		<property name="indexDirectory" ref="metadataIndexLocation" />
+		<property name="indexName" value="MetaDataIndex" />
+	</bean>
+	
+	<bean id="metadataIndexLocation" 
+		class="org.lexevs.dao.index.factory.MetadataIndexLocationFactory">
+		<property name="systemVariables" ref="systemVariables"/> 
+	</bean>
 
 	<bean id="luceneIndexMetadataFactory" class="org.lexevs.dao.index.lucenesupport.LuceneIndexMetadataFactory"
 	depends-on="commonIndexDirectory">
 		<property name="systemVariables" ref="systemVariables"/> 
 	</bean>
 	
-	<bean id="luceneIndexTemplate" class="org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate">
+	<bean id="luceneEntityIndexTemplate" class="org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate">
 		<property name="namedDirectory" ref="commonIndexDirectory"/>
+	</bean>
+	
+	<bean id="luceneMetadataIndexTemplate" class="org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate">
+		<property name="namedDirectory" ref="metadataIndexDirectory"/>
 	</bean>
 
 	<bean id="indexRegistry" class="org.lexevs.dao.index.indexregistry.SingleIndexRegistry"/>
