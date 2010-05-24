@@ -5,7 +5,7 @@
 
 	<typeAlias alias="node" type="org.lexevs.dao.database.access.association.model.Node"/>
 	<typeAlias alias="triple" type="org.lexevs.dao.database.access.association.model.Triple"/>
-	<typeAlias alias="associatedConcept" type="org.lexevs.dao.database.ibatis.codednodegraph.model.QualifierAddingAssociatedConcept"/>
+	<typeAlias alias="associatedConcept" type="org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept"/>
 	<typeAlias alias="associationQualification" type="org.LexGrid.LexBIG.DataModel.Core.NameAndValue"/>
 	<typeAlias alias="associationTarget" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean"/>
 
@@ -29,6 +29,7 @@
 	
 	<resultMap id="associatedConceptResult" class="associatedConcept" groupBy="guid">
 		<result property="guid" column="entityAssnsGuid" />
+		<result property="entityGuid" column="entityGuid" />
 		<result property="code" column="entityCode" />
 		<result property="codeNamespace" column="entityCodeNamespace" />
 		<result property="entityDescription.content" column="description" />
@@ -90,6 +91,7 @@
 		remapResults="true" resultMap="Association.associatedConceptResult">
 		SELECT
 			eate.entityAssnsGuid,
+			entity.entityGuid,
 			entity.description,
 			codingScheme.codingSchemeURI,
 			codingScheme.representsVersion,
