@@ -273,9 +273,10 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#isEntityInConceptDomain(java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList)
+	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#isEntityInConceptDomain(java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.util.List)
 	 */
-	public List<String> isEntityInConceptDomain(String conceptDomainId, String entityCode, AbsoluteCodingSchemeVersionReferenceList codingSchemeVersionList) 
+	public List<String> isEntityInConceptDomain(String conceptDomainId, String entityCode, 
+			AbsoluteCodingSchemeVersionReferenceList codingSchemeVersionList, List<String> usageContext) 
 		throws LBException {
 		if (StringUtils.isEmpty(conceptDomainId) || StringUtils.isEmpty(entityCode))
 			return null;
