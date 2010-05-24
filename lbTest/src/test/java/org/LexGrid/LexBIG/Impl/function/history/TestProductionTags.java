@@ -288,8 +288,8 @@ public void testProductionTags01() throws InterruptedException, LBException {
         ServiceHolder.instance().getLexBIGService().getServiceManager(null).setVersionTag(ref2, KnownTags.PRODUCTION.toString());
         
         // validate change - this is using a non api method
-        assertEquals(LexEvsServiceLocator.getInstance().getRegistry().getCodingSchemeEntry(ref1).getTag(), "");
-        assertEquals(LexEvsServiceLocator.getInstance().getRegistry().getCodingSchemeEntry(ref2).getTag(), KnownTags.PRODUCTION.toString());
+        assertEquals("", LexEvsServiceLocator.getInstance().getRegistry().getCodingSchemeEntry(ref1).getTag());
+        assertEquals(KnownTags.PRODUCTION.toString(), LexEvsServiceLocator.getInstance().getRegistry().getCodingSchemeEntry(ref2).getTag());
 
     }
 
