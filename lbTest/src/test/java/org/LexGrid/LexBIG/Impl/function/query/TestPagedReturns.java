@@ -60,7 +60,7 @@ public class TestPagedReturns extends LexBIGServiceTestCase {
             assertTrue(temp.length <= 100);
         }
 
-        assertTrue("Actual Count: " + count, count == 67);
+        assertTrue("Actual Count: " + count, count == 66);
 
     }
 
