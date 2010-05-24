@@ -21,9 +21,8 @@ package org.lexevs.dao.database.ibatis.codingscheme;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
@@ -593,6 +592,46 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		
 		assertNotNull(returnedCs);
 		assertEquals(2, returnedCs.getSourceCount());
+	}
+	
+	@Test
+	@Transactional
+	public void testGetCodingSchemeSourceWithLocalNames() throws SQLException{
+		
+		CodingScheme cs = new CodingScheme();
+		
+		cs.setCodingSchemeName("csName");
+		cs.setCodingSchemeURI("uri");
+		cs.setRepresentsVersion("1.2");
+		cs.setFormalName("csFormalName");
+		cs.setDefaultLanguage("lang");
+		cs.setApproxNumConcepts(22l);
+		
+		Source source = new Source();
+		source.setContent("a source");
+
+		cs.addSource(source);
+
+		cs.addLocalName("someLocalName");
+		cs.addLocalName("someOtherLocalName");
+		
+		ibatisCodingSchemeDao.insertCodingScheme(cs, null, true);
+		
+		CodingScheme css = new CodingScheme();
+		
+		css.setCodingSchemeName("csName");
+		css.setCodingSchemeURI("uri2");
+		css.setRepresentsVersion("1.3");
+		css.setFormalName("csFormalName");
+		css.setDefaultLanguage("lang");
+		css.setApproxNumConcepts(22l);
+		
+		ibatisCodingSchemeDao.insertCodingScheme(css, null, true);
+		
+		CodingScheme returnedCs = ibatisCodingSchemeDao.getCodingSchemeByNameAndVersion("csName", "1.2");
+		
+		assertNotNull(returnedCs);
+		assertEquals(1, returnedCs.getSourceCount());
 	}
 	
 	/**
