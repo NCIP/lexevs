@@ -52,7 +52,6 @@ import org.LexGrid.LexBIG.Impl.bugs.GForge26741;
 import org.LexGrid.LexBIG.Impl.bugs.TestBugFixes;
 import org.LexGrid.LexBIG.Impl.dataAccess.RegistryTest;
 import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManagerTest;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethodsGraphVersion17Tests;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethodsGraphVersionTests;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethodsTest;
 import org.LexGrid.LexBIG.Impl.dataAccess.TestLoaderPreferences;
@@ -192,7 +191,6 @@ public class AllTestsAllConfigs {
             currentSuite.addTestSuite(TestNCIThesMetadata.class);
             currentSuite.addTestSuite(ResourceManagerTest.class);
             currentSuite.addTestSuite(SQLImplementedMethodsTest.class);
-            currentSuite.addTestSuite(SQLImplementedMethodsGraphVersion17Tests.class);
             currentSuite.addTestSuite(SQLImplementedMethodsGraphVersionTests.class);
             currentSuite.addTestSuite(ResolvedConceptReferencesIteratorImplTest.class);
             
