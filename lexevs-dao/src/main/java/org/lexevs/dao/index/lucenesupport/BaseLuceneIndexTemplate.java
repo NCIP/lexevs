@@ -1,5 +1,6 @@
 package org.lexevs.dao.index.lucenesupport;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -12,6 +13,7 @@ import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.HitCollector;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.springframework.beans.factory.DisposableBean;
@@ -107,6 +109,29 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		});	
 	}
 	
+	public List<ScoreDoc> search(final Query query, final Filter filter){
+		return this.doInIndexSearcher(new IndexSearcherCallback<List<ScoreDoc>>() {
+
+			@Override
+			public List<ScoreDoc> doInIndexSearcher(IndexSearcher indexSearcher)
+					throws Exception {
+				
+				final List<ScoreDoc> docs = new ArrayList<ScoreDoc>();
+				
+				indexSearcher.search(query, filter, new HitCollector() {
+					
+					public void collect(int doc, float score) {
+						ScoreDoc scoreDoc = new ScoreDoc(doc, score);
+						docs.add(scoreDoc);
+					}
+				});
+				
+				return docs;
+			}
+		});	
+		
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate#search(org.apache.lucene.search.Query, org.apache.lucene.search.Filter, org.apache.lucene.search.HitCollector)
 	 */
@@ -197,6 +222,23 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		public T doInIndexWriter(IndexWriter indexWriter) throws Exception;
 	}
 	
+	
+	
+	@Override
+	public <T> T executeInIndexReader(IndexReaderCallback<T> callback) {
+		return this.doInIndexReader(callback);
+	}
+
+	@Override
+	public <T> T executeInIndexSearcher(IndexSearcherCallback<T> callback) {
+		return this.doInIndexSearcher(callback);
+	}
+
+	@Override
+	public <T> T executeInIndexWriter(IndexWriterCallback<T> callback) {
+		return this.doInIndexWriter(callback);
+	}
+
 	@Override
 	public void destroy() throws Exception {
 		this.indexSearcher.close();
