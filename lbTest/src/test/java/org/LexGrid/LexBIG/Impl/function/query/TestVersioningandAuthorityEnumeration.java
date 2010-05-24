@@ -39,7 +39,7 @@ public class TestVersioningandAuthorityEnumeration extends LexBIGServiceTestCase
         CodingScheme cs = ServiceHolder.instance().getLexBIGService().resolveCodingScheme(AUTO_SCHEME, null);
         assertTrue(cs.getCopyright().getContent().equals("Copyright by Mayo Clinic."));
         assertTrue(cs.getRepresentsVersion().equals("1.0"));
-        assertTrue(cs.getSource().length == 1);
+        assertEquals(1,cs.getSource().length);
         assertTrue(cs.getSource()[0].getContent().equals("lexgrid.org"));
 
         ConvenienceMethods cm = new ConvenienceMethods(ServiceHolder.instance().getLexBIGService());
