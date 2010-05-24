@@ -66,9 +66,9 @@ public class ServiceManagerTest extends TestCase {
         lbsm.deactivateCodingSchemeVersion(acsvr, null);
 
         // should not be able to load the same scheme twice:
-        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGridLoader");
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
 
-        loader.load(new File("resources/testData/German Made Parts.xml").toURI(), true, true);
+        loader.load(new File("resources/testData/German_Made_Parts.xml").toURI(), true, true);
 
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(500);
@@ -89,7 +89,7 @@ public class ServiceManagerTest extends TestCase {
 
         // ok, delete worked... now load it back up.
 
-        loader.load(new File("resources/testData/German Made Parts.xml").toURI(), true, true);
+        loader.load(new File("resources/testData/German_Made_Parts.xml").toURI(), true, true);
 
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(500);
