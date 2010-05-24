@@ -95,7 +95,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query, null, null);
+                    query, null, null, null, null);
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
@@ -158,7 +158,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query, null, null);
+                    query, null, null, null, null);
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
@@ -221,7 +221,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                 "'eae-guid3'," +
                 "'qualName'," +
                 "'qualValue'," +
-                "null )");
+                "'1' )");
     
         AssociationListBuilder builder = new AssociationListBuilder();
         builder.setDatabaseServiceManager(manager);
@@ -238,7 +238,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query, null, null);
+                    query, null, null, null, null);
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
@@ -302,7 +302,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                 "'eae-guid3'," +
                 "'qualName'," +
                 "'qualValue'," +
-                "null )");
+                "'1' )");
     
         AssociationListBuilder builder = new AssociationListBuilder();
         builder.setDatabaseServiceManager(manager);
@@ -319,7 +319,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query, null, null);
+                    query, null, null, null, null);
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
@@ -383,7 +383,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                 "'eae-guid3'," +
                 "'qualName'," +
                 "'qualValue'," +
-                "null )");
+                "'1' )");
     
         AssociationListBuilder builder = new AssociationListBuilder();
         builder.setDatabaseServiceManager(manager);
@@ -401,7 +401,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query, null, null);
+                    query, null, null, null, null);
         
         assertNull(list);
     }
@@ -462,7 +462,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                 "'eae-guid3'," +
                 "'qualName'," +
                 "'qualValue'," +
-                "null )");
+                "'1' )");
     
         AssociationListBuilder builder = new AssociationListBuilder();
         builder.setDatabaseServiceManager(manager);
@@ -480,7 +480,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    query, null, null);
+                    query, null, null, null, null);
         
         assertNull(list);
     }
@@ -532,7 +532,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    new GraphQuery(), null, new StubReturningCycleDetectingCallback());
+                    new GraphQuery(), null, null, null, new StubReturningCycleDetectingCallback());
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
@@ -616,7 +616,7 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                     -1,
                     -1, 
                     -1,
-                    new GraphQuery(), null, new StubReturningCycleDetectingCallback());
+                    new GraphQuery(), null, null, null, new StubReturningCycleDetectingCallback());
         
         assertNotNull(list);
         assertEquals(1, list.getAssociationCount());
