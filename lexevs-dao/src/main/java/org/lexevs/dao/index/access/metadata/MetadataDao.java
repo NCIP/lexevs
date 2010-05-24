@@ -19,5 +19,4 @@ public interface MetadataDao {
 	public AbsoluteCodingSchemeVersionReferenceList listCodingSchemes();
 	
 	public void addDocuments(String codingSchemeUri, String version, List<Document> documents, Analyzer analyzer);
-	
 }

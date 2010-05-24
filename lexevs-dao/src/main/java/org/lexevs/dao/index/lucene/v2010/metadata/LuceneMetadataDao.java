@@ -29,8 +29,10 @@ public class LuceneMetadataDao implements MetadataDao {
 	public void addDocuments(String codingSchemeUri, String version,
 			List<Document> documents, Analyzer analyzer) {
 		this.luceneIndexTemplate.addDocuments(documents, analyzer);
+		
+		luceneIndexTemplate.optimize();
 	}
-
+	
 	@Override
 	public AbsoluteCodingSchemeVersionReferenceList listCodingSchemes() {
 	       AbsoluteCodingSchemeVersionReferenceList result = new AbsoluteCodingSchemeVersionReferenceList();
@@ -77,6 +79,8 @@ public class LuceneMetadataDao implements MetadataDao {
 				new Term("codingSchemeNameVersion",
 						codingSchemeUri
 						+ BaseMetaDataLoader.CONCATINATED_VALUE_SPLIT_TOKEN + version));
+		
+		luceneIndexTemplate.optimize();
 	}
 
 	@Override
