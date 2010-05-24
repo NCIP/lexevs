@@ -74,6 +74,8 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 				insertEntity(codingSchemeUId, entity, true);
 		this.firePostEntityInsertEvent(new EntityInsertEvent(codingSchemeUri, version, entity));
 	}
+	
+	
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.entity.EntityService#insertBatchEntities(java.lang.String, java.lang.String, java.util.List)
@@ -278,14 +280,33 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	@Transactional
 	public Entity getEntity(String codingSchemeUri, String version,
 			String entityCode, String entityCodeNamespace) {
-		String codingSchemeId = this.getDaoManager().
-			getCodingSchemeDao(codingSchemeUri, version).
-			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
-		
-		return this.getDaoManager().
-			getEntityDao(codingSchemeUri, version).getEntityByCodeAndNamespace(codingSchemeId, entityCode, entityCodeNamespace);
+		return this.getEntity(codingSchemeUri, version, entityCode, entityCodeNamespace, null, null);
 	}
 	
+	@Override
+	@Transactional
+	public Entity getEntity(
+			String codingSchemeUri, 
+			String version,
+			String entityCode, 
+			String entityCodeNamespace,
+			List<String> propertyNames, 
+			List<String> propertyTypes) {
+		
+		String codingSchemeUid = this.getDaoManager().
+		getCodingSchemeDao(codingSchemeUri, version).
+		getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+	
+	return this.getDaoManager().
+		getEntityDao(codingSchemeUri, version).
+			getEntityByCodeAndNamespace(
+					codingSchemeUid, 
+					entityCode, 
+					entityCodeNamespace, 
+					propertyNames, 
+					propertyTypes);
+	}
+
 	@Transactional
 	public AssociationEntity getAssociationEntity(String codingSchemeUri, String version,
 			String entityCode, String entityCodeNamespace) {

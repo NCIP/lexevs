@@ -238,4 +238,19 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 			// TODO Auto-generated method stub (IMPLEMENT!)
 			throw new UnsupportedOperationException();
 		}
+
+		@Override
+		public Entity getEntityByCodeAndNamespace(String codingSchemeUId,
+				String entityCode, String entityCodeNamespace,
+				List<String> propertyNames, List<String> propertyTypes) {
+			// TODO Auto-generated method stub (IMPLEMENT!)
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Entity getEntityByUId(String codingSchemeUId, String entityUId,
+				List<String> propertyNames, List<String> propertyTypes) {
+			// TODO Auto-generated method stub (IMPLEMENT!)
+			throw new UnsupportedOperationException();
+		}
 }

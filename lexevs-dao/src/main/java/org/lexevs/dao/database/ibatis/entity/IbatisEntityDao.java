@@ -142,11 +142,26 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.entity.EntityDao#getEntityByCodeAndNamespace(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public Entity getEntityByCodeAndNamespace(String codingSchemeId, String entityCode, String entityCodeNamespace){
-	
-		String entityId = this.getEntityUId(codingSchemeId, entityCode, entityCodeNamespace);
+	public Entity getEntityByCodeAndNamespace(String codingSchemeUid, String entityCode, String entityCodeNamespace){
+		return this.getEntityByCodeAndNamespace(
+				codingSchemeUid, 
+				entityCode, 
+				entityCodeNamespace, 
+				null, 
+				null);		
+	}
+
+	@Override
+	public Entity getEntityByCodeAndNamespace(
+			String codingSchemeUid,
+			String entityCode, 
+			String entityCodeNamespace,
+			List<String> propertyNames, 
+			List<String> propertyTypes) {
 		
-		return this.getEntityByUId(codingSchemeId, entityId);
+		String entityId = this.getEntityUId(codingSchemeUid, entityCode, entityCodeNamespace);
+		
+		return this.getEntityByUId(codingSchemeUid, entityId, propertyNames, propertyTypes);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -208,10 +223,24 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				this.getSqlMapClientTemplate().queryForObject(GET_RESOLVED_CODED_NODE_REFERENCE_BY_CODE_AND_NAMESPACE_SQL, triple);
 
 	}
+	
+	public Entity getEntityByUId(
+			String codingSchemeId, 
+			String entityId) {
+		return this.getEntityByUId(codingSchemeId, entityId);
+	}
 
-	public Entity getEntityByUId(String codingSchemeId, String entityId){
+	public Entity getEntityByUId(
+			String codingSchemeId, 
+			String entityId, 
+			List<String> propertyNames, 
+			List<String> propertyTypes){
 		
-		List<Entity> entities = this.getEntities(codingSchemeId, DaoUtility.createNonTypedList(entityId));
+		List<Entity> entities = this.getEntities(
+				codingSchemeId, 
+				propertyNames, 
+				propertyTypes, 
+				DaoUtility.createNonTypedList(entityId));
 		
 		if(CollectionUtils.isEmpty(entities)) {
 			return null;
