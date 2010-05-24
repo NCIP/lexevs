@@ -29,7 +29,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.LexGrid.LexBIG.Exceptions.LBUnsupportedOperationException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.valueSets.PickListDefinition;
@@ -51,8 +50,10 @@ public class LexGridXMLProcessor {
     private static final String REVISION_ENTRY_POINT = "revision";
     private static final String SYSTEM_RELEASE_ENTRY_POINT = "systemRelease";
     private static final String VALUE_SET_ENTRY_POINT = "valueSetDefinition";
-    
     private static final String PICK_LIST_ENTRY_POINT = "pickListDefinition";
+    private static final String REVISION_CHANGE_AGENT = "changeAgent";
+    private static final String REVISION_CHANGE_INTRUCTIONS = "changeIntructions";
+    private static final String REVISION_CHANGED_ENTRY = "changedEntry";
     
     private static final int ENTRY_POINT_NOT_FOUND = 0;
     private static final int CS_ENTRY_POINT_TYPE = 1;
@@ -130,6 +131,7 @@ public class LexGridXMLProcessor {
             if (!validateXML) {
                 umr.setValidation(validateXML);
             }
+            listener.setLastMetaDataType(getLastRevisionElement(path, messages));
             listener.setPropertiesPresent(setPropertiesFlag(path, messages));
             umr.setUnmarshalListener(listener);
             umr.setClass(Revision.class);
@@ -371,7 +373,7 @@ public class LexGridXMLProcessor {
                     .next()) {
 
                 if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("properties")) {
-                    messages.info("This coding scheme contains coding scheme property metadata ... adjusting XML streaming to database");
+                    messages.info("Property metadata detected ... adjusting XML streaming to database");
                     propsPresent = true;
                     break;
                 }
@@ -439,5 +441,52 @@ private boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages
         return schemePresent;
     }
 
+/**
+ * @param path
+ * @param messages
+ * @return int indicating which revision element occurs in the revision meta data
+ * allowing user to get an accurate load of the meta data for Revision.
+ */
+private int getLastRevisionElement(String path,  LgMessageDirectorIF messages) {
+    BufferedReader in = null;
+    int lastMetaDataElement = -1;
+    XMLStreamReader xmlStreamReader;
+
+    try {
+        in = new BufferedReader(new FileReader(path));
+
+        xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
+
+        for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
+                .next()) {
+
+            if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals(REVISION_CHANGE_AGENT)) {
+                lastMetaDataElement = 0;
+            }
+            if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals(REVISION_CHANGE_INTRUCTIONS)) {
+                lastMetaDataElement = 1;
+            }
+            if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals(REVISION_CHANGED_ENTRY)) {
+                lastMetaDataElement = 2;
+                break;
+            }
+        }
+        xmlStreamReader.close();
+        in.close();
+    } catch (XMLStreamException e) {
+        messages.error("While streaming file at " + path + "an error occured");
+        e.printStackTrace();
+    } catch (FactoryConfigurationError e) {
+        messages.error("While streaming file at " + path + "an streaming xml configuration error occured");
+        e.printStackTrace();
+    } catch (FileNotFoundException e) {
+        messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+        e.printStackTrace();
+    } catch (IOException e) {
+        messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
+        e.printStackTrace();
+    }
+    return lastMetaDataElement;
+}
 
 }

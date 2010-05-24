@@ -29,6 +29,7 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
@@ -150,11 +151,23 @@ public class LexGridElementProcessor {
         service.storeValueSet(valueSet, systemReleaseURI, mappings);
     }
 
+    /**
+     * @param service
+     * @param parent
+     * @param child
+     * @throws LBException
+     */
     public static void processValueSetDefinition(XMLDaoServiceAdaptor service, Object parent, Object child) throws LBException {
         ValueSetDefinition valueSet = (ValueSetDefinition) parent;
         service.storeValueSetDefinition(valueSet);
     }
 
+    /**
+     * @param service
+     * @param parent
+     * @param child
+     * @throws LBException
+     */
     public static void processPickListDefinition(XMLDaoServiceAdaptor service, Object parent, Object child) throws LBException {
         PickListDefinition pickList = (PickListDefinition) parent;
         service.storePickListDefinition(pickList);
@@ -216,23 +229,38 @@ public class LexGridElementProcessor {
         entities.removeEntity(e);
     }
     
+    /**
+     * @param isPredicateLoaded
+     * @param service
+     * @param parent
+     * @param child
+     */
     public static void processCodingSchemeAssociationRevision(boolean isPredicateLoaded, XMLDaoServiceAdaptor service,
             Object parent, Object child) {
         AssociationSource source = (AssociationSource) parent;
         AssociationPredicate a = (AssociationPredicate)source.getParent();
         Relations relations = (Relations) a.getParent();
         CodingScheme cs = (CodingScheme) relations.getParent();
+
+
         service.storeRelationsRevision(cs.getCodingSchemeURI(), cs.getRepresentsVersion(), relations);
-        if (!isPredicateLoaded) {
+        //AssociationPredicate is not a version-able element, we can't load it again unless this is a new load of this
+        //coding scheme.
+  //      if (!isPredicateLoaded &&   (cs.getEntryState()== null || cs.getEntryState().getChangeType() == ChangeType.NEW)) {
             service.storeAssociationPredicate(cs.getCodingSchemeURI(), cs.getRepresentsVersion(), relations
                     .getContainerName(), a);
-        } else {
+     //   } else {
             service.storeAssociationRevision(cs.getCodingSchemeURI(), cs.getRepresentsVersion(), relations.getContainerName(),
                     a.getAssociationName(), (AssociationSource)parent, (AssociationTarget)child);
-        }
+    //    }
         a.removeSource((AssociationSource) parent);
     }
 
+    /**
+     * @param service
+     * @param parent
+     * @param child
+     */
     public static void processCodingSchemePropertyRevision(XMLDaoServiceAdaptor service, Object parent, Object child) {
         Property p = (Property)child;
         Properties props = (Properties)parent;
@@ -241,6 +269,10 @@ public class LexGridElementProcessor {
         
     }
 
+    /**
+     * @param service
+     * @param child
+     */
     public static void processValueSetDefinitionRevision(XMLDaoServiceAdaptor service,
             Object child) {
         ValueSetDefinition vsDefinition = (ValueSetDefinition)child;
@@ -248,10 +280,30 @@ public class LexGridElementProcessor {
         
     }
 
+    /**
+     * @param service
+     * @param child
+     */
     public static void processPickListtDefinitionRevision(XMLDaoServiceAdaptor service,
             Object child) {
         PickListDefinition plDefinition = (PickListDefinition)child;
        service.storePickListDefinitionRevision(plDefinition);
+        
+    }
+
+    /**
+     * @param service
+     * @param source
+     * @param data
+     */
+    public static void processAssociationData(XMLDaoServiceAdaptor service, AssociationSource source, AssociationData data) {
+      AssociationPredicate predicate = (AssociationPredicate)source.getParent();
+      Relations relation = (Relations)predicate.getParent();
+      CodingScheme scheme  = (CodingScheme)relation.getParent();
+      service.storeAssociationPredicate(scheme.getCodingSchemeURI(), scheme.getRepresentsVersion(), relation
+              .getContainerName(), predicate);
+      service.storeRelationsRevision(scheme.getCodingSchemeURI(), scheme.getRepresentsVersion(), relation);
+      service.storeAssociatonData(scheme.getCodingSchemeURI(), predicate.getAssociationName(), relation.getContainerName(), scheme.getRepresentsVersion(), source, data);
         
     }
 

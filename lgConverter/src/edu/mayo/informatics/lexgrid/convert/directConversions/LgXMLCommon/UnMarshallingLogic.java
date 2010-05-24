@@ -19,7 +19,6 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.codingSchemes.CodingSchemes;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
@@ -27,6 +26,7 @@ import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
@@ -36,6 +36,7 @@ import org.LexGrid.valueSets.PickListDefinitions;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.LexGrid.versions.ChangedEntry;
+import org.LexGrid.versions.EditHistory;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 
@@ -44,6 +45,8 @@ import org.LexGrid.versions.SystemRelease;
  *
  */
 public class UnMarshallingLogic {
+private static final int CHANGE_AGENT_TYPE = 0;
+private static final int CHANGE_INSTRUCTIONS_TYPE = 1;
 
     /**
      * @param parent
@@ -111,6 +114,10 @@ public class UnMarshallingLogic {
         return parent instanceof Revision && child instanceof Text;
     }
 
+    public static boolean isSystemReleaseRevisionInstance(Object parent, Object child) {
+        return (parent instanceof Revision && child instanceof Text) ||
+        (parent instanceof EditHistory && child instanceof Revision);
+    }
     /**
      * @param parent
      * @param child
@@ -166,6 +173,25 @@ public class UnMarshallingLogic {
     public static boolean isPickListDefinitionRevision(Object parent, Object child) {
     return child instanceof PickListDefinition && parent instanceof ChangedEntry;
     }
+
+    public static boolean isRevisionInstance(Object parent, Object child) {
+       return child instanceof Revision && parent instanceof EditHistory;
+    }
+
+    public static boolean isRevisionWithLastChild(int lastMetaDataType, Object parent, Object child) {
+     if (lastMetaDataType == CHANGE_AGENT_TYPE)
+           return child instanceof String && parent instanceof Revision;
+       else if (lastMetaDataType == CHANGE_INSTRUCTIONS_TYPE){
+           return child instanceof Text && parent instanceof Revision;
+       }
+         return child instanceof ChangedEntry && parent instanceof Revision;
+     
+    }
+
+    public static boolean isCodingSchemeAssociationData(Object parent, Object child) {
+        return child instanceof AssociationData && parent instanceof AssociationSource;
+    }
+
 
 
 }

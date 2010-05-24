@@ -21,6 +21,7 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.versions.Revision;
@@ -42,6 +43,8 @@ public class LgRevisionListener implements UnmarshalListener {
     private boolean isCodingSchemeLoaded = false;
     private boolean isRevisionLoaded = false;
     private boolean isPropertiesPresent = false;
+    private int lastMetaDataType;
+    
     private AssociationPredicate currentPredicate = new AssociationPredicate();
     private Revision revision = new Revision();
     private CodingScheme[] codingSchemes = null;
@@ -62,6 +65,15 @@ public class LgRevisionListener implements UnmarshalListener {
         serviceAdaptor = new XMLDaoServiceAdaptor();
         messages_ = messages;
     }
+    
+    public int getLastMetaDataType() {
+        return lastMetaDataType;
+    }
+
+    public void setLastMetaDataType(int lastMetaDataType) {
+        this.lastMetaDataType = lastMetaDataType;
+    }
+
     /**
      * @return
      */
@@ -154,7 +166,7 @@ public class LgRevisionListener implements UnmarshalListener {
 //        messages_.debug("parent: " + parent.getClass().getSimpleName());
 //        messages_.debug("child: " + child.getClass().getSimpleName());
         
-        if (!isRevisionLoaded && UnMarshallingLogic.isRevisionWithFirstChild(parent, child)) {
+        if (!isRevisionLoaded && UnMarshallingLogic.isRevisionWithLastChild(lastMetaDataType, parent, child)) {
             revision = (Revision)parent;
             try {
                 LexGridElementProcessor.processRevisionMetadata(serviceAdaptor, revision);
@@ -195,7 +207,11 @@ public class LgRevisionListener implements UnmarshalListener {
               modCount = modCount + mod;
               messages_.info("Associations Loaded: " + modCount);}
         }
-        
+        if(UnMarshallingLogic.isCodingSchemeAssociationData(parent, child)){
+            AssociationSource source = (AssociationSource)parent;
+            AssociationData data = (AssociationData)child;
+            LexGridElementProcessor.processAssociationData(serviceAdaptor,source, data);
+        }
         if(UnMarshallingLogic.isValueSetDefinitionRevision(parent, child)){
             LexGridElementProcessor.processValueSetDefinitionRevision(serviceAdaptor, child);
         }

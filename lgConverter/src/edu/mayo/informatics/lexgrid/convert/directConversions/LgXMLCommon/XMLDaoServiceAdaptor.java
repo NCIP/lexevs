@@ -27,20 +27,20 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
-import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.association.AssociationDataService;
 import org.lexevs.dao.database.service.association.AssociationService;
 import org.lexevs.dao.database.service.association.AssociationTargetService;
 import org.lexevs.dao.database.service.association.VersionableEventAssociationService;
@@ -76,6 +76,7 @@ public class XMLDaoServiceAdaptor {
     ValueSetDefinitionService valueSetService;
     AuthoringService authoringService;
     AssociationTargetService assocTargetService = null;
+    AssociationDataService assocDataService = null;
     
     ArrayList<AssociationPredicate> associationList = null;
     ArrayList<String> relationList = null;;
@@ -86,6 +87,7 @@ public class XMLDaoServiceAdaptor {
     public XMLDaoServiceAdaptor() {
         locator = LexEvsServiceLocator.getInstance();
         dbManager = locator.getDatabaseServiceManager();
+        assocDataService = dbManager.getAssociationDataService();
         authoringService = dbManager.getAuthoringService();
         entityService = dbManager.getEntityService();
         codingSchemeService = dbManager.getCodingSchemeService();
@@ -128,7 +130,7 @@ public class XMLDaoServiceAdaptor {
      * @param relation
      */
     public void storeRelation(String codingSchemeUri, String version, Relations relation) {
-        if (relationList.contains(relation))
+        if (relationList.contains(relation.getContainerName()))
             return;
         relationService.insertRelation(codingSchemeUri, version, relation);
         relationList.add(relation.getContainerName());
@@ -164,7 +166,10 @@ public class XMLDaoServiceAdaptor {
                         version);
                 String relationsId = daoManager.getCurrentAssociationDao()
                         .getRelationUId(codingSchemeId, relationsName);
-                daoManager.getCurrentAssociationDao().insertAssociationPredicate(codingSchemeId, relationsId,
+                //Adding this step since predicates are not versionable and may be changed in revisions.
+               String predicateUId = daoManager.getCurrentAssociationDao().getAssociationPredicateUIdByContainerName(codingSchemeId, relationsName, predicate.getAssociationName());
+                if(predicateUId == null)
+               daoManager.getCurrentAssociationDao().insertAssociationPredicate(codingSchemeId, relationsId,
                         predicate, true);
                 return null;
             }
@@ -282,12 +287,18 @@ public class XMLDaoServiceAdaptor {
         try {
             assocTargetService.revise(scheme, containerName , associationName, version, source, target);
         } catch (LBException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         
     }
-    
+    public void storeAssociatonData(String codingSchemeUri, String associationPredicateName, String relationContainerName, String version, AssociationSource source, AssociationData data){
+        try {
+            assocDataService.revise(codingSchemeUri, version, relationContainerName, associationPredicateName, source, data);
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
     public void storeValueSetDefinitionRevision(ValueSetDefinition vsDefinition){
         try {
             valueSetService.revise(vsDefinition, null, null);
@@ -304,4 +315,5 @@ public class XMLDaoServiceAdaptor {
             e.printStackTrace();
         }
     }
+
 }
