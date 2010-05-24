@@ -20,7 +20,6 @@ package org.LexGrid.LexBIG.Impl.pagedgraph;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
