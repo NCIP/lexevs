@@ -177,8 +177,8 @@ public class ResolveTest extends BaseCodedNodeSetTest {
         ResolvedConceptReferencesIterator itr = union.resolve(
                 Constructors.createSortOptionList(new String[]{"matchToQuery"}), null, null);
 
-       assertTrue(itr.next().getCode().equals("R0001"));
-       assertTrue(itr.next().getCode().equals("T0001"));   
+       assertEquals("R0001", itr.next().getCode());
+       assertEquals("T0001", itr.next().getCode());   
      }
     
     /**
