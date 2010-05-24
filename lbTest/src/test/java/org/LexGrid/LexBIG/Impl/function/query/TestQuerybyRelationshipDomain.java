@@ -71,7 +71,7 @@ public class TestQuerybyRelationshipDomain extends LexBIGServiceTestCase {
         Association[] a = rcr[0].getTargetOf().getAssociation();
 
         // one level deep
-        assertTrue(a.length == 1);
+        assertEquals(1,a.length);
         assertTrue(a[0].getAssociationName().equals("subClassOf"));
 
         AssociatedConcept[] ac = a[0].getAssociatedConcepts().getAssociatedConcept();
