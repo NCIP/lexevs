@@ -41,6 +41,7 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.utility.PagedGraphUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.util.CollectionUtils;
 
@@ -109,7 +110,14 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
             focus =
                 LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
                 getEntityService().
-                getResolvedCodedNodeReference(codingSchemeUri, version, graphFocus.getCode(), graphFocus.getCodeNamespace());
+                getResolvedCodedNodeReference(
+                        codingSchemeUri, 
+                        version, 
+                        graphFocus.getCode(), 
+                        graphFocus.getCodeNamespace(),
+                        this.shouldResolveNextLevel(resolveCodedEntryDepth),
+                        DaoUtility.localNameListToString(propertyNames),
+                        DaoUtility.propertyTypeArrayToString(propertyTypes));
             if(focus == null) {
                focus = new ResolvedConceptReference();
                focus.setCode(graphFocus.getCode());
