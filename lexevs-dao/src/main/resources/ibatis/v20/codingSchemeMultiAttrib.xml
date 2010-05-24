@@ -3,7 +3,7 @@
 	"http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap namespace="CodingScheme">
 
-	<resultMap id="sourceResult" class="org.LexGrid.commonTypes.Source">
+	<resultMap id="sourceResult" class="org.LexGrid.commonTypes.Source" groupBy="content">
 		<result property="content" column="attributeValue" />
 		<result property="subRef" column="subRef" />
 		<result property="role" column="role" />
