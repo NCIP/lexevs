@@ -113,7 +113,10 @@ public interface EntityService {
 			String codingSchemeUri, 
 			String version, 
 			String entityCode,
-			String entityCodeNamespace);
+			String entityCodeNamespace,
+			boolean resolve, 
+			List<String> propertyNames,
+			List<String> propertyTypes);
 
 	/**
 	 * Insert batch entities.
