@@ -43,7 +43,7 @@ import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.lexevs.system.ResourceManager;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 public class TestProductionTags extends LexBIGServiceTestCase {
     final static String testID = "T1_HIS_01";
@@ -73,7 +73,7 @@ public void testProductionTags01() throws InterruptedException, LBException {
 
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
-        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGridLoader");
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
 
         loader.load(new File("resources/testData/Automobiles2.xml").toURI(), true, true);
 
@@ -108,8 +108,7 @@ public void testProductionTags01() throws InterruptedException, LBException {
 
         // validate change
         // (this is using a non-public API call...)
-        String foundVersion = ResourceManager.instance().getRegistry().getVersionForTag(ref.getCodingSchemeURN(),
-                tag.getTag());
+        String foundVersion = LexEvsServiceLocator.getInstance().getRegistry().getCodingSchemeEntry(ref).getResourceVersion();
         assertTrue(foundVersion.equals("1.0"));
 
     }
@@ -286,7 +285,7 @@ public void testProductionTags01() throws InterruptedException, LBException {
         assertNotNull(ref);
         ServiceHolder.instance().getLexBIGService().getServiceManager(null).setVersionTag(ref, tag.getTag().toString());
         // validate change - this is using a non api method
-        assertEquals(ResourceManager.instance().getRegistry().getVersionForTag(AUTO_URN, tag.getTag()), updatedVersion);
+        assertEquals(LexEvsServiceLocator.getInstance().getRegistry().getCodingSchemeEntry(ref).getTag(), updatedVersion);
 
     }
 
@@ -440,7 +439,7 @@ public void testProductionTags01() throws InterruptedException, LBException {
         assertNotNull(ref);
         ServiceHolder.instance().getLexBIGService().getServiceManager(null).setVersionTag(ref, tag.getTag().toString());
         // validate change
-        assertEquals(ResourceManager.instance().getRegistry().getTag(AUTO_URN, updatedVersion), tag.getTag());
+        assertEquals(LexEvsServiceLocator.getInstance().getRegistry().getCodingSchemeEntry(ref).getTag(), tag.getTag());
 
     }
 
@@ -481,7 +480,7 @@ public void testProductionTags01() throws InterruptedException, LBException {
         assertNotNull(ref);
         ServiceHolder.instance().getLexBIGService().getServiceManager(null).setVersionTag(ref, tag.getTag().toString());
         // validate change
-        assertEquals(ResourceManager.instance().getRegistry().getTag(AUTO_URN, AUTO_VERSION), tag.getTag());
+        assertEquals(LexEvsServiceLocator.getInstance().getRegistry().getCodingSchemeEntry(ref).getTag(), tag.getTag());
 
     }
 
