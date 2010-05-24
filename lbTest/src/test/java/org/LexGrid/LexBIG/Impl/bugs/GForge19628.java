@@ -23,6 +23,7 @@ import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.SupportedNamespace;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * This class should be used as a place to write JUnit tests which show a bug,
@@ -57,7 +58,7 @@ public class GForge19628 extends LexBIGServiceTestCase {
         
         for(SupportedNamespace namespace : namespaces){
             if(namespace.getLocalId().equals(LexBIGServiceTestCase.AUTO_SCHEME)
-                && namespace.getEquivalentCodingScheme().equals(LexBIGServiceTestCase.AUTO_SCHEME)){
+                && StringUtils.equals(namespace.getEquivalentCodingScheme(), LexBIGServiceTestCase.AUTO_SCHEME)){
                 found = true;
             }
         }
@@ -74,7 +75,7 @@ public class GForge19628 extends LexBIGServiceTestCase {
         
         for(SupportedNamespace namespace : namespaces){
             if(namespace.getLocalId().equals(LexBIGServiceTestCase.AIR_SCHEME)
-                && namespace.getEquivalentCodingScheme().equals(LexBIGServiceTestCase.AIR_SCHEME)){
+                && StringUtils.equals(namespace.getEquivalentCodingScheme(),LexBIGServiceTestCase.AIR_SCHEME)){
                 found = true;
             }
         }
@@ -91,7 +92,7 @@ public class GForge19628 extends LexBIGServiceTestCase {
         
         for(SupportedNamespace namespace : namespaces){
             if(namespace.getLocalId().equals(LexBIGServiceTestCase.META_SCHEME)
-                && namespace.getEquivalentCodingScheme().equals(LexBIGServiceTestCase.META_SCHEME)){
+                && StringUtils.equals(namespace.getEquivalentCodingScheme(),LexBIGServiceTestCase.META_SCHEME)){
                 found = true;
             }
         }    
