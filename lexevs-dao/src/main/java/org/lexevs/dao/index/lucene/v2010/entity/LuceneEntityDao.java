@@ -188,7 +188,7 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 	}
 	
 	protected Filter getCodingSchemeFilterForCodingScheme(String codingSchemeUri, String codingSchemeVersion) {
-		String key = getFilterMapKey(codingSchemeUri, codingSchemeUri);
+		String key = getFilterMapKey(codingSchemeUri, codingSchemeVersion);
 		if(!this.codingSchemeFilterMap.containsKey(key)) {
 			Term term = new Term(
 					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
