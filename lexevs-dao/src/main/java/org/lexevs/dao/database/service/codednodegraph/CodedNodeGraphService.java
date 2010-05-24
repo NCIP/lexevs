@@ -3,8 +3,11 @@ package org.lexevs.dao.database.service.codednodegraph;
 import java.util.List;
 import java.util.Map;
 
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
+import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 
@@ -76,11 +79,17 @@ public interface CodedNodeGraphService {
 	public AssociatedConcept getAssociatedConceptFromUidSource(
 			String codingSchemeUri,
 			String codingSchemeVersion,
+			boolean resolve,
+			LocalNameList propertyNames, 
+	        PropertyType[] propertyTypes, 
 			String tripleUid);
 	
-	public List<AssociatedConcept> getAssociatedConceptsFromUidSource(
+	public List<? extends AssociatedConcept> getAssociatedConceptsFromUidSource(
 			String codingSchemeUri,
 			String codingSchemeVersion,
+			boolean resolve,
+			LocalNameList propertyNames, 
+	        PropertyType[] propertyTypes, 
 			List<String> tripleUid);
 	
 	public List<ConceptReference> getConceptReferencesFromUidSource(
@@ -91,11 +100,17 @@ public interface CodedNodeGraphService {
 	public AssociatedConcept getAssociatedConceptFromUidTarget(
 			String codingSchemeUri,
 			String codingSchemeVersion,
+			boolean resolve,
+			LocalNameList propertyNames, 
+	        PropertyType[] propertyTypes, 
 			String tripleUid);
 	
-	public List<AssociatedConcept> getAssociatedConceptsFromUidTarget(
+	public List<? extends AssociatedConcept> getAssociatedConceptsFromUidTarget(
 			String codingSchemeUri,
 			String codingSchemeVersion,
+			boolean resolve,
+			LocalNameList propertyNames, 
+	        PropertyType[] propertyTypes, 
 			List<String> tripleUid);
 	
 	public List<ConceptReference> getConceptReferencesFromUidTarget(

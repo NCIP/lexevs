@@ -18,11 +18,13 @@
  */
 package org.lexevs.dao.database.service.codednodegraph;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
@@ -186,4 +188,180 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 		assertEquals(0, rels.size());
 	}
 	
+	@Test
+	public void testGetAssociatedConceptResolveTrue() throws Exception {
+		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
+		
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('rel-guid', 'csguid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 's-code', 's-ns')");
+		
+		AssociatedConcept associatedConcept = this.service.
+			getAssociatedConceptFromUidSource("csuri", "csversion", true, null, null, "eae-guid");
+		
+		assertNotNull(associatedConcept.getEntity());
+	}
+	
+	@Test
+	public void testGetAssociatedConceptResolveFalse() throws Exception {
+		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
+		
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('rel-guid', 'csguid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 's-code', 's-ns')");
+		
+		AssociatedConcept associatedConcept = this.service.
+			getAssociatedConceptFromUidSource("csuri", "csversion", false, null, null, "eae-guid");
+		
+		assertNull(associatedConcept.getEntity());
+	}
+	
+	@Test
+	public void testGetAssociatedConceptResolveWithPropertyTypeRestriction() throws Exception {
+		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
+		
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+			"values ('pguid1', 'eguid', 'entity', 'pid1', 'pvalue1', 'presentation')");
+		
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+			"values ('pguid2', 'eguid', 'entity', 'pid2', 'pvalue2', 'definition')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('rel-guid', 'csguid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 's-code', 's-ns')");
+		
+		AssociatedConcept associatedConcept = this.service.
+			getAssociatedConceptFromUidSource(
+					"csuri", 
+					"csversion", 
+					true, 
+					null, 
+					new PropertyType[] {PropertyType.DEFINITION}, 
+					"eae-guid");
+		
+		assertEquals(1,associatedConcept.getEntity().getDefinitionCount());
+		assertEquals(0,associatedConcept.getEntity().getPresentationCount());
+		assertEquals(1,associatedConcept.getEntity().getAllProperties().length);
+	}
+	
+	@Test
+	public void testGetAssociatedConceptResolveWithPropertyNameRestriction() throws Exception {
+		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
+		
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+			"values ('pguid1', 'eguid', 'entity', 'pid1', 'pname1', 'presentation')");
+		
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pvalue', 'definition')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('rel-guid', 'csguid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 's-code', 's-ns')");
+		
+		LocalNameList lnl = new LocalNameList();
+		lnl.addEntry("pname2");
+		
+		AssociatedConcept associatedConcept = this.service.
+			getAssociatedConceptFromUidSource(
+					"csuri", 
+					"csversion", 
+					true, 
+					lnl, 
+					null, 
+					"eae-guid");
+		
+		assertEquals(1,associatedConcept.getEntity().getDefinitionCount());
+		assertEquals(0,associatedConcept.getEntity().getPresentationCount());
+		assertEquals(1,associatedConcept.getEntity().getAllProperties().length);
+	}
 }

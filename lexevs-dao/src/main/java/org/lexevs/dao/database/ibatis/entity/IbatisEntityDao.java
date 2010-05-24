@@ -164,13 +164,27 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		return this.getEntityByUId(codingSchemeUid, entityId, propertyNames, propertyTypes);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<Entity> getEntities(String codingSchemeId,
-			List<String> propertyNames, List<String> propertyTypes,
+	public List<Entity> getEntities(
+			String codingSchemeId,
+			List<String> propertyNames, 
+			List<String> propertyTypes,
 			List<String> entityUids) {
 		if(CollectionUtils.isEmpty(entityUids)) {
 			return new ArrayList<Entity>();
+		}
+		
+		return new ArrayList<Entity>(
+				this.getEntitiesWithUidMap(codingSchemeId, propertyNames, propertyTypes, entityUids).values());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String,Entity> getEntitiesWithUidMap(String codingSchemeId,
+			List<String> propertyNames, List<String> propertyTypes,
+			List<String> entityUids) {
+		if(CollectionUtils.isEmpty(entityUids)) {
+			return new HashMap<String,Entity>();
 		}
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -186,7 +200,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			entities.get(prop.getParent()).addAnyProperty(prop);
 		}
 
-		return new ArrayList<Entity>(entities.values());
+		return entities;
 	}
 
 	@Override

@@ -19,6 +19,7 @@
 package org.lexevs.dao.database.sqlimplementedmethods.entity;
 
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
@@ -250,6 +251,14 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 		@Override
 		public Entity getEntityByUId(String codingSchemeUId, String entityUId,
 				List<String> propertyNames, List<String> propertyTypes) {
+			// TODO Auto-generated method stub (IMPLEMENT!)
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Map<String, Entity> getEntitiesWithUidMap(String codingSchemeId,
+				List<String> propertyNames, List<String> propertyTypes,
+				List<String> entityUids) {
 			// TODO Auto-generated method stub (IMPLEMENT!)
 			throw new UnsupportedOperationException();
 		}

@@ -22,12 +22,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.concepts.Entity;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
+import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
@@ -91,10 +95,16 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 	public AssociatedConcept getAssociatedConceptFromUidSource(
 			String codingSchemeUri, 
 			String codingSchemeVersion,
+			boolean resolve,
+			LocalNameList propertyNames, 
+	        PropertyType[] propertyTypes, 
 			String tripleUid) {
 		return this.getAssociatedConceptsFromUidSource(
 				codingSchemeUri, 
 				codingSchemeVersion, 
+				resolve,
+				propertyNames,
+				propertyTypes,
 				DaoUtility.createNonTypedList(tripleUid)).get(0);
 	}
 	
@@ -103,10 +113,16 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 	public AssociatedConcept getAssociatedConceptFromUidTarget(
 			String codingSchemeUri, 
 			String codingSchemeVersion,
+			boolean resolve,
+			LocalNameList propertyNames, 
+	        PropertyType[] propertyTypes, 
 			String tripleUid) {
 		return this.getAssociatedConceptsFromUidTarget(
 				codingSchemeUri, 
 				codingSchemeVersion, 
+				resolve,
+				propertyNames,
+				propertyTypes,
 				DaoUtility.createNonTypedList(tripleUid)).get(0);
 	}
 
@@ -296,30 +312,89 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 
 	@Override
 	@Transactional
-	public List<AssociatedConcept> getAssociatedConceptsFromUidSource(
-			String codingSchemeUri, String codingSchemeVersion,
+	public List<? extends AssociatedConcept> getAssociatedConceptsFromUidSource(
+			String codingSchemeUri, 
+			String codingSchemeVersion, 
+			boolean resolve,
+			LocalNameList propertyNames, 
+	        PropertyType[] propertyTypes, 
 			List<String> tripleUids) {
-		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
-		
-		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
-			getAssociatedConceptsFromUid(
-					codingSchemeUid, 
+
+			return doGetAssociatedConcepts(
+					codingSchemeUri, 
+					codingSchemeVersion,
+					resolve,
+					propertyNames,
+					propertyTypes,
 					tripleUids, 
 					TripleNode.SUBJECT);
 	}
+	
+	protected List<? extends AssociatedConcept> doGetAssociatedConcepts(
+			String codingSchemeUri, 
+			String codingSchemeVersion,
+			boolean resolve,
+			LocalNameList propertyNames, 
+	        PropertyType[] propertyTypes, 
+			List<String> tripleUids, 
+			TripleNode tripleNode){
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		List<EntityReferencingAssociatedConcept> associatedConcepts = this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
+			getAssociatedConceptsFromUid(
+				codingSchemeUid, 
+				tripleUids, 
+				tripleNode);
+		
+		if(resolve) {
+			List<String> entityUids = this.getEntityUids(associatedConcepts);
+			
+			Map<String,Entity> entityMap = this.getDaoManager().getEntityDao(codingSchemeUri, codingSchemeVersion).
+				getEntitiesWithUidMap(
+						codingSchemeUid, 
+						DaoUtility.localNameListToString(propertyNames), 
+						DaoUtility.propertyTypeArrayToString(propertyTypes), 
+						entityUids);
+			
+			for(EntityReferencingAssociatedConcept associatedConcept : associatedConcepts) {
+				Entity entity = entityMap.get(associatedConcept.getEntityGuid());
+				associatedConcept.setEntity(entity);
+			}
+		}
+		
+		return associatedConcepts;
+	}
+	
+	private List<String> getEntityUids(List<EntityReferencingAssociatedConcept> associatedConcepts){
+		List<String> returnList = new ArrayList<String>();
+		for(EntityReferencingAssociatedConcept assocConcept : associatedConcepts) {
+			String entityGuid = assocConcept.getEntityGuid();
+			if(StringUtils.isNotBlank(entityGuid)) {
+				returnList.add(assocConcept.getEntityGuid());
+			}
+		}
+		return returnList;
+	}
+
 
 	@Override
 	@Transactional
-	public List<AssociatedConcept> getAssociatedConceptsFromUidTarget(
-			String codingSchemeUri, String codingSchemeVersion,
+	public List<? extends AssociatedConcept> getAssociatedConceptsFromUidTarget(
+			String codingSchemeUri, 
+			String codingSchemeVersion, 
+			boolean resolve,
+			LocalNameList propertyNames, 
+	        PropertyType[] propertyTypes, 
 			List<String> tripleUids) {
-		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 		
-		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
-			getAssociatedConceptsFromUid(
-					codingSchemeUid, 
-					tripleUids, 
-					TripleNode.OBJECT);
+		return doGetAssociatedConcepts(
+				codingSchemeUri, 
+				codingSchemeVersion,
+				resolve,
+				propertyNames,
+				propertyTypes,
+				tripleUids, 
+				TripleNode.OBJECT);
 	}
 
 	@Override

@@ -19,6 +19,7 @@
 package org.lexevs.dao.database.access.entity;
 
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.concepts.Entity;
@@ -81,6 +82,10 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 			String codingSchemeId, 
 			List<String> propertyNames, 
 			List<String> propertyTypes, 
+			List<String> entityUids);
+	
+	public Map<String,Entity> getEntitiesWithUidMap(String codingSchemeId,
+			List<String> propertyNames, List<String> propertyTypes,
 			List<String> entityUids);
 	
 	public Entity getHistoryEntityByRevision(String codingSchemeUId, String entityUId, String revisionUId);

@@ -302,7 +302,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 	
 	
-		List<AssociatedConcept> associatedConcepts = 
+		List<? extends AssociatedConcept> associatedConcepts = 
 			ibatisCodedNodeGraphDao.getAssociatedConceptsFromUid(
 					"cs-guid", 
 					DaoUtility.createNonTypedList("eae-guid1", "eae-guid2"),
@@ -343,7 +343,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 	
 	
-		List<AssociatedConcept> associatedConcepts = ibatisCodedNodeGraphDao.getAssociatedConceptsFromUid(
+		List<? extends AssociatedConcept> associatedConcepts = ibatisCodedNodeGraphDao.getAssociatedConceptsFromUid(
 				"cs-guid", 
 				DaoUtility.createNonTypedList("eae-guid1"), TripleNode.OBJECT);
 		

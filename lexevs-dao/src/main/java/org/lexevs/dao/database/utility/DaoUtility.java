@@ -28,10 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
-import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
@@ -278,7 +278,30 @@ public class DaoUtility {
 		
 		return uriMapList;	
 	}
-	
+
+	public static List<String> localNameListToString(LocalNameList lnl){
+		if(lnl == null || lnl.getEntryCount() == 0) {
+			return null;
+		}
+		List<String> returnList = new ArrayList<String>();
+		for(String name : lnl.getEntry()){
+			returnList.add(name);
+		}
+		return returnList;
+	}
+
+	public static List<String> propertyTypeArrayToString(PropertyType[] types){
+		if(types == null || types.length == 0) {
+			return null;
+		}
+
+		List<String> returnList = new ArrayList<String>();
+		for(PropertyType type : types){
+			returnList.add(type.toString());
+		}
+		return returnList;
+	}
+
 	//Ignore this -- just some helpers for generating Ibatis Mapping code. Will go away...
 	/**
 	 * The main method.
