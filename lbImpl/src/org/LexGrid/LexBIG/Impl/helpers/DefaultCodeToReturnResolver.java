@@ -250,8 +250,8 @@ public class DefaultCodeToReturnResolver implements CodeToReturnResolver {
                 
                 return entityDao.getEntities(
                         codingSchemeUid,
-                        propertyNameToString(restrictToProperties),
-                        propertyTypeToString(restrictToPropertyTypes), 
+                        DaoUtility.localNameListToString(restrictToProperties),
+                        DaoUtility.propertyTypeArrayToString(restrictToPropertyTypes), 
                         entityUids);
             }       
         });   
@@ -268,34 +268,10 @@ public class DefaultCodeToReturnResolver implements CodeToReturnResolver {
                 codingSchemeVersion,
                 code,
                 namespace,
-                propertyNameToString(restrictToProperties),
-                propertyTypeToString(restrictToPropertyTypes));
-
+                DaoUtility.localNameListToString(restrictToProperties),
+                DaoUtility.propertyTypeArrayToString(restrictToPropertyTypes));
     }
     
-    private List<String> propertyNameToString(LocalNameList lnl){
-        if(lnl == null || lnl.getEntryCount() == 0) {
-            return null;
-        }
-        List<String> returnList = new ArrayList<String>();
-        for(String name : lnl.getEntry()){
-            returnList.add(name);
-        }
-        return returnList;
-    }
-
-    private List<String> propertyTypeToString(PropertyType[] types){
-        if(types == null || types.length == 0) {
-            return null;
-        }
-        
-        List<String> returnList = new ArrayList<String>();
-        for(PropertyType type : types){
-            returnList.add(type.toString());
-        }
-        return returnList;
-    }
-
     private class UriVersionPair {
 
         private String uri;
