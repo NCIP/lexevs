@@ -18,15 +18,17 @@
  */
 package org.lexevs.dao.index.metadata;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.commons.codec.language.DoubleMetaphone;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
+import org.apache.lucene.document.Document;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.logging.LoggerFactory;
 
-import edu.mayo.informatics.indexer.api.IndexerService;
 import edu.mayo.informatics.indexer.api.generators.DocumentFromStringsGenerator;
 import edu.mayo.informatics.indexer.lucene.analyzers.EncoderAnalyzer;
 import edu.mayo.informatics.indexer.lucene.analyzers.NormAnalyzer;
@@ -41,60 +43,41 @@ import edu.mayo.informatics.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-public class BaseMetaDataLoader extends MetaDataIndex {
-    private String metaDataIndexName_;
-    private IndexerService indexerService_;
-    protected boolean useCompoundFile_ = true;
-    private DocumentFromStringsGenerator generator_;
-    private int indexDocCount = 0;
-    protected boolean normEnabled_ = false;
-    protected boolean doubleMetaphoneEnabled_ = true;
-    protected boolean stemmingEnabled_ = true;
-    private final String normPrefix_ = "norm_";
-    private final String doubleMetaphonePrefix_ = "dm_";
-    private final String stemmingPrefix_ = "stem_";
+public class BaseMetaDataLoader {
 
-    private String codingSchemeRegisteredName_;
-    private String codingSchemeVersion_;
+    private DocumentFromStringsGenerator generator_ = new DocumentFromStringsGenerator();
+    protected static boolean normEnabled_ = false;
+    protected static boolean doubleMetaphoneEnabled_ = true;
+    protected static boolean stemmingEnabled_ = true;
+    private static final String normPrefix_ = "norm_";
+    private static final String doubleMetaphonePrefix_ = "dm_";
+    private static final String stemmingPrefix_ = "stem_";
+    
+    public static final String STRING_TOKEINZER_TOKEN = "<:>";
+    public static final String CONCATINATED_VALUE_SPLIT_TOKEN = ":";
 
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
 
-    public void init() {
-        metaDataIndexName_ = getIndexName();
-        indexerService_ = getIndexerService();
-        initLoader();
-    }
-
-    protected void openIndex(String codingSchemeRegisteredName, String codingSchemeVersion) throws Exception {
-        codingSchemeRegisteredName_ = codingSchemeRegisteredName;
-        codingSchemeVersion_ = codingSchemeVersion;
-
-        indexerService_.openWriter(metaDataIndexName_, false);
-        indexerService_.setUseCompoundFile(metaDataIndexName_, useCompoundFile_);
-        indexerService_.setMaxBufferedDocs(metaDataIndexName_, 500);
-        indexerService_.setMergeFactor(metaDataIndexName_, 20);
-    }
-
-    protected void closeIndexes() throws Exception {
-        indexerService_.optimizeIndex(metaDataIndexName_);
-        indexerService_.closeWriter(metaDataIndexName_);
-    }
-
-    protected void addProperty(ArrayList<String> propertyValueParents, String propertyName, String propertyValue)
+    public Document addProperty(
+    		String codingSchemeUri,
+    		String codingSchemeVersion,
+    		List<String> propertyValueParents, 
+    		String propertyName, 
+    		String propertyValue)
             throws Exception {
         StringBuffer fields = new StringBuffer();
-        generator_.startNewDocument(codingSchemeRegisteredName_ + CONCATINATED_VALUE_SPLIT_TOKEN + codingSchemeVersion_
-                + CONCATINATED_VALUE_SPLIT_TOKEN + indexDocCount);
-        generator_.addTextField("codingSchemeRegisteredName", codingSchemeRegisteredName_, true, true, false);
+        generator_.startNewDocument(codingSchemeUri + CONCATINATED_VALUE_SPLIT_TOKEN + codingSchemeVersion
+                + CONCATINATED_VALUE_SPLIT_TOKEN + UUID.randomUUID().toString());
+        generator_.addTextField("codingSchemeRegisteredName", codingSchemeUri, true, true, false);
         fields.append("codingSchemeRegisteredName ");
-        generator_.addTextField("codingSchemeVersion", codingSchemeVersion_, true, true, false);
+        generator_.addTextField("codingSchemeVersion", codingSchemeVersion, true, true, false);
         fields.append("codingSchemeVersion ");
 
         // this field is used to make deletions easier.
-        generator_.addTextField("codingSchemeNameVersion", codingSchemeRegisteredName_ + CONCATINATED_VALUE_SPLIT_TOKEN
-                + codingSchemeVersion_, false, true, false);
+        generator_.addTextField("codingSchemeNameVersion", codingSchemeUri + CONCATINATED_VALUE_SPLIT_TOKEN
+                + codingSchemeVersion, false, true, false);
         fields.append("codingSchemeNameVersion ");
 
         if (propertyValueParents != null && propertyValueParents.size() > 0) {
@@ -141,12 +124,10 @@ public class BaseMetaDataLoader extends MetaDataIndex {
 
         generator_.addTextField("fields", fields.toString(), true, true, true);
 
-        indexerService_.addDocument(metaDataIndexName_, generator_.getDocument());
-
-        indexDocCount++;
+        return generator_.getDocument();
     }
 
-    private void initLoader() {
+    public static Analyzer getMetadataAnalyzer() {
         // no stop words, default character removal set.
         PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new WhiteSpaceLowerCaseAnalyzer(new String[] {},
                 WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), LuceneLoaderCode.lexGridWhiteSpaceIndexSet));
@@ -165,10 +146,6 @@ public class BaseMetaDataLoader extends MetaDataIndex {
             } catch (NoClassDefFoundError e) {
                 // norm is not available
                 normEnabled_ = false;
-                getLogger()
-                        .warn(
-                                "Normalized index will not be built becaues Norm could not be launched.  Is Norm (lvg) on the classpath?",
-                                e);
             }
         }
 
@@ -182,9 +159,6 @@ public class BaseMetaDataLoader extends MetaDataIndex {
         StringAnalyzer sa = new StringAnalyzer(STRING_TOKEINZER_TOKEN);
         analyzer.addAnalyzer("parentContainers", sa);
 
-        // in case it doesn't exist
-        indexerService_.createIndex(metaDataIndexName_, analyzer);
-
-        generator_ = new DocumentFromStringsGenerator();
+        return analyzer;
     }
 }

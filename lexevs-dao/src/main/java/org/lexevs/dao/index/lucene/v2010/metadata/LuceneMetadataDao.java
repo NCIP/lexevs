@@ -6,6 +6,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionRefer
 import org.LexGrid.LexBIG.DataModel.Collections.MetadataPropertyList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.MetadataProperty;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
@@ -23,6 +24,12 @@ public class LuceneMetadataDao implements MetadataDao {
 	private BaseMetaDataLoader baseMetaDataLoader;
 	
 	private LuceneIndexTemplate luceneIndexTemplate;
+	
+	@Override
+	public void addDocuments(String codingSchemeUri, String version,
+			List<Document> documents, Analyzer analyzer) {
+		this.luceneIndexTemplate.addDocuments(documents, analyzer);
+	}
 
 	@Override
 	public AbsoluteCodingSchemeVersionReferenceList listCodingSchemes() {
@@ -35,8 +42,7 @@ public class LuceneMetadataDao implements MetadataDao {
 				public TermEnum doInIndexReader(IndexReader indexReader)
 						throws Exception {
 					return indexReader.terms(new Term("codingSchemeNameVersion", ""));
-				}
-        		   
+				}  
         	   });
 
 			   boolean hasNext = true;
@@ -67,11 +73,10 @@ public class LuceneMetadataDao implements MetadataDao {
 	
 	@Override
 	public void removeMetadata(String codingSchemeUri, String version) {
-		try {
-			baseMetaDataLoader.removeMeta(codingSchemeUri, version);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} 
+		this.luceneIndexTemplate.removeDocuments(
+				new Term("codingSchemeNameVersion",
+						codingSchemeUri
+						+ BaseMetaDataLoader.CONCATINATED_VALUE_SPLIT_TOKEN + version));
 	}
 
 	@Override
@@ -116,4 +121,6 @@ public class LuceneMetadataDao implements MetadataDao {
 	public LuceneIndexTemplate getLuceneIndexTemplate() {
 		return luceneIndexTemplate;
 	}
+	
+	
 }
