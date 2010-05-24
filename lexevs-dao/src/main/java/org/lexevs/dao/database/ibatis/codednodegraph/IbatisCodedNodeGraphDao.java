@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
@@ -13,6 +12,7 @@ import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
 import org.lexevs.dao.database.ibatis.association.parameter.GetCodeRelationshipsBean;
 import org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsBean;
 import org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCountBean;
+import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
@@ -258,10 +258,10 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<AssociatedConcept> getAssociatedConceptsFromUid(
+	public List<EntityReferencingAssociatedConcept> getAssociatedConceptsFromUid(
 			String codingSchemeUid, List<String> tripleUids, TripleNode tripleNode) {
 		if(CollectionUtils.isEmpty(tripleUids)) {
-			return new ArrayList<AssociatedConcept>();
+			return new ArrayList<EntityReferencingAssociatedConcept>();
 		}
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
