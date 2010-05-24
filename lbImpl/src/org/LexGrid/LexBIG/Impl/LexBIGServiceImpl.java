@@ -210,7 +210,7 @@ public class LexBIGServiceImpl implements LexBIGService {
                 
                 String tag = entry.getStatus();
                 if(StringUtils.isNotBlank(tag)){
-                    detail.setVersionStatus(CodingSchemeVersionStatus.valueOf(tag.toUpperCase()));
+                    detail.setVersionStatus(CodingSchemeVersionStatus.valueOf(tag));
                 }
 
                 CodingSchemeTagList tagList = new CodingSchemeTagList();
