@@ -30,6 +30,7 @@ import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.concepts.Presentation;
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.relations.AssociationEntity;
 import org.junit.Test;
@@ -40,6 +41,7 @@ import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.utility.RegistryUtility;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class VersionableEntityServiceTest.
