@@ -234,8 +234,10 @@
 			codingSchemeGuid = #param1#
 		AND
 			entity.entityCode = #param2#
+		<isNotNull property="param3">
 		AND
 			entity.entityCodeNamespace = #param3#
+		</isNotNull>
      </select>
      
      <select id="getEntitiesByUids" 

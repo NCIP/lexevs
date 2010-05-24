@@ -322,15 +322,34 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	@Override
 	@Transactional
 	public ResolvedConceptReference getResolvedCodedNodeReference(
-			String codingSchemeUri, String version, String entityCode,
-			String entityCodeNamespace) {
+			String codingSchemeUri, 
+			String version, 
+			String entityCode,
+			String entityCodeNamespace,
+			boolean resolve,
+			List<String> propertyNames,
+			List<String> propertyTypes) {
 		String codingSchemeId = this.getDaoManager().
 		getCodingSchemeDao(codingSchemeUri, version).
 		getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 
-		return this.getDaoManager().
+		ResolvedConceptReference ref = this.getDaoManager().
 			getEntityDao(codingSchemeUri, version).
 				getResolvedCodedNodeReferenceByCodeAndNamespace(codingSchemeId, entityCode, entityCodeNamespace);
+		
+		if(resolve) {
+			Entity entity = this.getEntity(
+					codingSchemeUri, 
+					version, 
+					entityCode, 
+					entityCodeNamespace, 
+					propertyNames, 
+					propertyTypes);
+			
+			ref.setEntity(entity);
+		}
+		
+		return ref;
 	}
 
 	/* (non-Javadoc)

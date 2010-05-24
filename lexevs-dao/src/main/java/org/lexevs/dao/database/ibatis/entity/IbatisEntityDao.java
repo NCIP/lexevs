@@ -197,7 +197,10 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				propertyNames, 
 				propertyTypes, 
 				entityUids)){
-			entities.get(prop.getParent()).addAnyProperty(prop);
+			Entity entity = entities.get(prop.getParent());
+			if(entity != null) {
+				entity.addAnyProperty(prop);
+			}
 		}
 
 		return entities;
