@@ -41,6 +41,7 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.LBConstants;
+import org.LexGrid.LexBIG.Utility.LBConstants.KnownTags;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -62,6 +63,8 @@ public class TestProductionTags extends LexBIGServiceTestCase {
      * @throws LBException
      * 
      */
+    
+
 public void testProductionTags01() throws InterruptedException, LBException {
         // info("01 Load/Activate version 1.1 of Automobiles vocabulary (see
         // TestUtil.loadLgXML() as
@@ -275,17 +278,18 @@ public void testProductionTags01() throws InterruptedException, LBException {
      * 
      */
     public void testProductionTags07() throws LBParameterException, LBInvocationException, LBException {
-        // info("07 Assign 'PRODUCTION' tag to 1.1 version; verify tag assignment ");
-        CodingSchemeVersionOrTag tag = new CodingSchemeVersionOrTag();
-        tag.setTag(LBConstants.KnownTags.PRODUCTION.toString());
-        assertTrue(tag.getTag().equals(LBConstants.KnownTags.PRODUCTION.toString()));
-        // write this to registry
-        AbsoluteCodingSchemeVersionReference ref;
-        ref = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(AUTO_URN, updatedVersion);
-        assertNotNull(ref);
-        ServiceHolder.instance().getLexBIGService().getServiceManager(null).setVersionTag(ref, tag.getTag().toString());
+    	 AbsoluteCodingSchemeVersionReference ref1;
+         ref1 = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(AUTO_URN, AUTO_VERSION);
+     
+        AbsoluteCodingSchemeVersionReference ref2;
+        ref2 = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(AUTO_URN, updatedVersion);
+        
+        ServiceHolder.instance().getLexBIGService().getServiceManager(null).setVersionTag(ref1, "");
+        ServiceHolder.instance().getLexBIGService().getServiceManager(null).setVersionTag(ref2, KnownTags.PRODUCTION.toString());
+        
         // validate change - this is using a non api method
-        assertEquals(LexEvsServiceLocator.getInstance().getRegistry().getCodingSchemeEntry(ref).getTag(), updatedVersion);
+        assertEquals(LexEvsServiceLocator.getInstance().getRegistry().getCodingSchemeEntry(ref1).getTag(), "");
+        assertEquals(LexEvsServiceLocator.getInstance().getRegistry().getCodingSchemeEntry(ref2).getTag(), KnownTags.PRODUCTION.toString());
 
     }
 
@@ -307,7 +311,7 @@ public void testProductionTags01() throws InterruptedException, LBException {
         production.setTag(LBConstants.KnownTags.PRODUCTION.toString());
         cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, production);
         cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Chrysler" }, AUTO_SCHEME));
-        assertTrue(cns.resolveToList(null, null, null, 0).getResolvedConceptReference().length == 1);
+        assertEquals(1, cns.resolveToList(null, null, null, 0).getResolvedConceptReference().length);
 
     }
 
@@ -345,7 +349,7 @@ public void testProductionTags01() throws InterruptedException, LBException {
         CodingSchemeVersionOrTag production = new CodingSchemeVersionOrTag();
         production.setTag(LBConstants.KnownTags.PRODUCTION.toString());
         CodedNodeGraph cng = ServiceHolder.instance().getLexBIGService().getNodeGraph(AUTO_SCHEME, production,
-                "relations");
+               null);
 
         // 005 is 'domestic auto makers'
 
@@ -387,7 +391,7 @@ public void testProductionTags01() throws InterruptedException, LBException {
         // that 'Domestic Auto Makers' has
         // subtype 'Ford' and 'Chrysler'");
 
-        CodedNodeGraph cng = ServiceHolder.instance().getLexBIGService().getNodeGraph(AUTO_SCHEME, null, "relations");
+        CodedNodeGraph cng = ServiceHolder.instance().getLexBIGService().getNodeGraph(AUTO_SCHEME, null, null);
 
         // 005 is 'domestic auto makers'
 
