@@ -22,11 +22,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder.AssociationDirection;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
@@ -84,6 +86,10 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
     
     /** The association predicate name. */
     private String associationPredicateName;
+    
+    private LocalNameList propertyNames;
+    
+    private PropertyType[] propertyTypes;
 	
 	/**
 	 * Instantiates a new associated concept iterator.
@@ -117,6 +123,8 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
             int resolveBackwardAssociationDepth,
             int resolveCodedEntryDepth,
             GraphQuery graphQuery,
+            LocalNameList propertyNames, 
+            PropertyType[] propertyTypes, 
             SortOptionList sortAlgorithms,
             CycleDetectingCallback cycleDetectingCallback,
             AssociationDirection direction,
@@ -146,6 +154,8 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 		this.cycleDetectingCallback = cycleDetectingCallback;
 		this.associationPredicateName = associationPredicateName;
 		this.sortAlgorithms = sortAlgorithms;
+		this.propertyNames = propertyNames;
+		this.propertyTypes = propertyTypes;
 	}
 	
 	/* (non-Javadoc)
@@ -174,6 +184,8 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	                            resolveBackwardAssociationDepth, 
 	                            resolveCodedEntryDepth - 1, 
 	                            graphQuery,
+	                            propertyNames,
+	                            propertyTypes,
 	                            sortAlgorithms,
 	                            cycleDetectingCallback));
 	        }
@@ -194,6 +206,8 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	                            resolveBackwardAssociationDepth - 1, 
 	                            resolveCodedEntryDepth - 1, 
 	                            graphQuery,
+	                            propertyNames,
+                                propertyTypes,
 	                            sortAlgorithms,
 	                            cycleDetectingCallback));
 	        }
@@ -240,6 +254,9 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
                     getAssociatedConceptsFromUidTarget(
                             codingSchemeUri, 
                             codingSchemeVersion,
+                            this.shouldResolveNextLevel(resolveCodedEntryDepth),
+                            propertyNames,
+                            propertyTypes,
                             uids));
         } else {
             returnList.addAll(
@@ -247,6 +264,9 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
                     getAssociatedConceptsFromUidSource(
                             codingSchemeUri, 
                             codingSchemeVersion,
+                            this.shouldResolveNextLevel(resolveCodedEntryDepth),
+                            propertyNames,
+                            propertyTypes,
                             uids));
         }
         

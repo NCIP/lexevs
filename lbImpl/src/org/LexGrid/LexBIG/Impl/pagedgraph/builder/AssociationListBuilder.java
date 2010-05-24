@@ -24,11 +24,13 @@ import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparator;
 import org.LexGrid.LexBIG.Impl.pagedgraph.model.LazyLoadableAssociatedConceptList;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
@@ -92,6 +94,8 @@ public class AssociationListBuilder {
             int resolveBackwardAssociationDepth,
             int resolveCodedEntryDepth,
             GraphQuery graphQuery,
+            LocalNameList propertyNames, 
+            PropertyType[] propertyTypes, 
             SortOptionList sortAlgorithms,
             CycleDetectingCallback cycleDetectingCallback) {
         return this.doBuildAssociationList(
@@ -106,6 +110,8 @@ public class AssociationListBuilder {
                 resolveBackwardAssociationDepth,
                 resolveCodedEntryDepth,
                 graphQuery,
+                propertyNames, 
+                propertyTypes,
                 sortAlgorithms,
                 cycleDetectingCallback,
                 AssociationDirection.SOURCE_OF);
@@ -141,6 +147,8 @@ public class AssociationListBuilder {
                 int resolveBackwardAssociationDepth,
                 int resolveCodedEntryDepth,
                 GraphQuery graphQuery,
+                LocalNameList propertyNames, 
+                PropertyType[] propertyTypes, 
                 SortOptionList sortAlgorithms,
                 CycleDetectingCallback cycleDetectingCallback) {
         return this.doBuildAssociationList(
@@ -155,6 +163,8 @@ public class AssociationListBuilder {
                 resolveBackwardAssociationDepth,
                 resolveCodedEntryDepth,
                 graphQuery,
+                propertyNames,
+                propertyTypes,
                 sortAlgorithms,
                 cycleDetectingCallback,
                 AssociationDirection.TARGET_OF); }
@@ -191,6 +201,8 @@ public class AssociationListBuilder {
             int resolveBackwardAssociationDepth,
             int resolveCodedEntryDepth,
             GraphQuery graphQuery,
+            LocalNameList propertyNames, 
+            PropertyType[] propertyTypes, 
             SortOptionList sortAlgorithms,
             CycleDetectingCallback cycleDetectingCallback,
             AssociationDirection direction) {
@@ -242,6 +254,8 @@ public class AssociationListBuilder {
                             resolveBackwardAssociationDepth,
                             resolveCodedEntryDepth,
                             graphQuery,
+                            propertyNames, 
+                            propertyTypes, 
                             sortAlgorithms,
                             cycleDetectingCallback,
                             direction,

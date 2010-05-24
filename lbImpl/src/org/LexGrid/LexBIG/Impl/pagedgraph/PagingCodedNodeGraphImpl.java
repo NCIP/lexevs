@@ -186,6 +186,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     resolveAssociationDepth,
                     resolveCodedEntryDepth,
                     graphQueryBuilder.getQuery(),
+                    propertyNames,
+                    propertyTypes,
                     sortOptions,
                     cycleDetectingCallback));
         }
@@ -204,6 +206,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     resolveAssociationDepth - 1,
                     resolveCodedEntryDepth,
                     graphQueryBuilder.getQuery(),
+                    propertyNames,
+                    propertyTypes,
                     sortOptions,
                     cycleDetectingCallback));
         }

@@ -24,11 +24,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder.AssociationDirection;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.AssociatedConceptIterator;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 
 /**
@@ -90,6 +92,10 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
     private CycleDetectingCallback cycleDetectingCallback;
     
     private SortOptionList sortAlgorithms;
+    
+    private LocalNameList propertyNames;
+    
+    private PropertyType[] propertyTypes;
 
     /**
      * Instantiates a new lazy loadable associated concept list.
@@ -125,6 +131,8 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
             int resolveBackwardAssociationDepth,
             int resolveCodedEntryDepth,
             GraphQuery graphQuery,
+            LocalNameList propertyNames, 
+            PropertyType[] propertyTypes, 
             SortOptionList sortAlgorithms,
             CycleDetectingCallback cycleDetectingCallback,
             AssociationDirection direction,
@@ -147,6 +155,8 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
         this.resolveBackward = resolveBackward;
         this.cycleDetectingCallback = cycleDetectingCallback;
         this.sortAlgorithms = sortAlgorithms;
+        this.propertyTypes = propertyTypes;
+        this.propertyNames = propertyNames;
     }
 
     /* (non-Javadoc)
@@ -240,6 +250,8 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
 	            this.resolveBackwardAssociationDepth,
 	            this.resolveCodedEntryDepth,
 	            this.graphQuery,
+	            this.propertyNames,
+	            this.propertyTypes,
 	            this.sortAlgorithms,
 	            this.cycleDetectingCallback,
 	            this.direction,
