@@ -56,7 +56,7 @@ public class GForge19702 extends LexBIGServiceTestCase {
         CodingScheme cs = lbs.resolveCodingScheme(LexBIGServiceTestCase.AUTO_SCHEME, null);
         Properties csProps = cs.getProperties();
         Property[] props = csProps.getProperty();
-        assertTrue(props.length == 1);
+        assertEquals(1,props.length);
         
         Property csProperty = props[0];
         assertTrue(csProperty.getValue().getContent().equals("Property Text"));
@@ -94,7 +94,7 @@ public class GForge19702 extends LexBIGServiceTestCase {
         Source source = sources[0];
         assertTrue(source.getSubRef().equals("sampleSubRef"));
         assertTrue(source.getRole().equals("sampleRole"));
-        assertTrue(source.getContent().equals("lexgrid.org"));  
+        assertEquals("lexgrid.org", source.getContent());  
     }
     
     public void testGetConceptPropertiesUsageContext() throws LBException {
@@ -110,6 +110,6 @@ public class GForge19702 extends LexBIGServiceTestCase {
         assertTrue(usageContexts.length == 1);
         
         String usageContext = usageContexts[0];
-        assertTrue(usageContext.equals("sampleUsageContext"));
+        assertEquals("sampleUsageContext",usageContext);
     }  
 }
