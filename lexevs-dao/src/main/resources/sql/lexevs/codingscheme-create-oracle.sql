@@ -453,7 +453,8 @@ CREATE TABLE @PREFIX@propertyLinks
 	entityGuid  		VARCHAR2(36) NOT NULL, 	 --  Global unique identifier for a given property link. 
 	sourcePropertyGuid  VARCHAR2(36) NOT NULL,    --  Foreign key to the source property guid. (The identifier of the first property in the link.) 
 	link                VARCHAR2(250) NOT NULL,    --  The local name of the type of link between properties.  (Examples include acronymFor, abbreviationOf, spellingVariantOf, etc. Must be in supportedPropertyLink) propertyLink must match a local id of a supportedPropertyLink in the corresponding mapping section. 
-	targetPropertyGuid  VARCHAR2(36) NOT NULL    --  Foreign key to the target property guid. (The identifier of the second property in the link.) 
+	targetPropertyGuid  VARCHAR2(36) NOT NULL    --  Foreign key to the target property guid. (The identifier of the second property in the link.)
+	entryStateGuid       VARCHAR2(36)    --  Holds the reference to the entry state. 
 )
 ;
 

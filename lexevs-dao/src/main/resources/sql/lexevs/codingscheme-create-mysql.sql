@@ -266,6 +266,7 @@ CREATE TABLE @PREFIX@propertyLinks
 	sourcePropertyGuid VARCHAR(36) NOT NULL,
 	link VARCHAR(250) NOT NULL,
 	targetPropertyGuid VARCHAR(36) NOT NULL,
+	entryStateGuid VARCHAR(36),
 	PRIMARY KEY (propertyLinksGuid),
 	UNIQUE UQ_propLinks(sourcePropertyGuid, link, targetPropertyGuid),
 	INDEX idx_sourcePropertyGuid (sourcePropertyGuid ASC),

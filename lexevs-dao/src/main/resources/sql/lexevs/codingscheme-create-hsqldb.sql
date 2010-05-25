@@ -180,7 +180,8 @@ CREATE TABLE @PREFIX@propertyLinks (
 	entityGuid varchar(36) NOT NULL,
 	sourcePropertyGuid varchar(36) NOT NULL,
 	link varchar(250) NOT NULL,
-	targetPropertyGuid varchar(36) NOT NULL
+	targetPropertyGuid varchar(36) NOT NULL,
+	entryStateGuid varchar(36)
 )
 ;
 
