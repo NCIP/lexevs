@@ -4,6 +4,7 @@
 <sqlMap namespace="PickList">
 
 	<typeAlias alias="pickListDefinition" type="org.LexGrid.valueSets.PickListDefinition" />
+	<typeAlias alias="insertPickListDefinitionBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertPickListDefinitionBean"/>
 	
 	<resultMap id="pickListDefinitionResult" class="pickListDefinition">
 		<result property="pickListId" column="pickListId" />
@@ -18,6 +19,25 @@
 		<result property="status" column="status" />
 		<result property="effectiveDate" column="effectiveDate" />
 		<result property="expirationDate" column="expirationDate" />
+	</resultMap>
+	
+	<resultMap id="pickListDefinitionMetaDataWithMultiAttrib" class="insertPickListDefinitionBean" groupBy="uid">
+		<result property="uid" column="vsPickListGuid" />
+		<result property="pickListDefinition.pickListId" column="pickListId" />
+		<result property="pickListDefinition.representsValueSetDefinition" column="representsValueSetDefinition" />
+		<result property="pickListDefinition.completeSet" column="completeSet"/>
+		<result property="pickListDefinition.defaultEntityCodeNamespace" column="defaultEntityCodeNamespace" />
+		<result property="pickListDefinition.defaultLanguage" column="defaultLanguage" />
+		<result property="pickListDefinition.defaultSortOrder" column="defaultSortOrder"/>		
+		<result property="pickListDefinition.entityDescription.content" column="description" />
+		<result property="systemReleaseUId" column="releaseGuid" />
+		<result property="pickListDefinition.isActive" column="isActive" />
+		<result property="pickListDefinition.owner" column="owner" />
+		<result property="pickListDefinition.status" column="status" />
+		<result property="pickListDefinition.effectiveDate" column="effectiveDate" />
+		<result property="pickListDefinition.expirationDate" column="expirationDate" />
+		<result property="entryStateUId" column="entryStateGuid" />
+		<result property="vsMultiAttribList" resultMap="VSMultiAttrib.vsMultiAttribResultBean"/>
 	</resultMap>
 	
 	<select id="getPickListIds" 
@@ -37,6 +57,43 @@
 			$prefix$vsPickList pickListDef
 		WHERE
 			pickListDef.pickListId = #param1#
+	</select>
+	
+	<select id="getPickListDefinitionMetadataByUId" 		
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultMap="pickListDefinitionMetaDataWithMultiAttrib">
+		SELECT
+			pl.vsPickListGuid,
+			pl.pickListId,
+			pl.representsValueSetDefinition,
+			pl.completeSet,
+			pl.defaultEntityCodeNamespace,
+			pl.defaultLanguage,
+			pl.defaultSortOrder,
+			pl.description,
+			pl.releaseGuid,
+			pl.isActive,
+			pl.owner,
+			pl.status,
+			pl.effectiveDate,
+			pl.expirationDate,
+			pl.entryStateGuid,
+			vsMulti.vsMultiAttribGuid,
+			vsMulti.referenceGuid,
+			vsMulti.referenceType,
+			vsMulti.attributeType,
+			vsMulti.attributeValue,
+			vsMulti.subRef,
+			vsMulti.role,
+			vsMulti.entryStateGuid esGuid				
+		FROM
+			$prefix$vsPickList pl
+		LEFT JOIN
+			$prefix$vsMultiAttrib vsMulti
+		ON
+			vsMulti.referenceGuid = pl.vsPickListGuid
+		WHERE
+			pl.vsPickListGuid = #param1#
 	</select>
 	
 	<select id="getPickListEntryNodeGuidByPickListIdAndPLEntryId" 

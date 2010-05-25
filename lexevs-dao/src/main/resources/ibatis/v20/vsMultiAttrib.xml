@@ -124,4 +124,17 @@
 				vsPickListGuid = #param2#
 			)
 	</delete>
+	
+	<update id="updateMultiAttribEntryStateUId"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
+		UPDATE
+			$prefix$vsMultiAttrib
+		SET
+			entryStateGuid = #param3#
+		WHERE
+			referenceGuid = #param1#
+		AND
+			attributeType = #param2#
+	</update>
+	
 </sqlMap>

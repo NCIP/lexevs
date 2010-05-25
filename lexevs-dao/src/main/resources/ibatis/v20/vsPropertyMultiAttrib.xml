@@ -11,6 +11,19 @@
 		</discriminator>
 	</resultMap>
 	
+	<resultMap id="propertyMultiAttribResultBean"
+		class="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">
+		<result property="uid" column="vsPropMultiAttribGuid" />
+		<result property="propertyUId" column="vsPropertyGuid" />
+		<result property="attributeType" column="attributeType" />
+		<result property="attributeId" column="attributeId" />
+		<result property="attributeValue" column="attributeValue" />
+		<result property="subRef" column="subRef" />
+		<result property="role" column="role" />
+		<result property="qualifierType" column="qualifierType" />
+		<result property="entryStateUId" column="esGuid" />
+	</resultMap>
+	
 	<resultMap id="usageContextResult" class="string">
 		<result property="java.lang.String" column="attributeValue" />
 	</resultMap>
@@ -67,21 +80,25 @@
 		)
 	</insert>
 	
-<!--	<delete id="deletePropertyMultiAttrib" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">-->
-<!--		DELETE FROM-->
-<!--			$prefix$vsPropertyMultiAttrib-->
-<!--		WHERE-->
-<!--			referenceType = #param1#-->
-<!--		AND -->
-<!--			referenceGuid -->
-<!--		IN	(-->
-<!--			SELECT -->
-<!--				vsdEntryGuid-->
-<!--			FROM-->
-<!--				vsdEntry-->
-<!--			WHERE-->
-<!--				valueSetDefGuid = #param2#-->
-<!--			)-->
-<!--	</delete>-->
+	<delete id="deletePropertyMultiAttrib" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$vsPropertyMultiAttrib
+		WHERE
+			vsPropertyGuid = #param1#
+		AND 
+			attributeType = #param2#			
+	</delete>
+
+	<update id="updatePropertyMultiAttribEntryStateUId"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
+		UPDATE
+			$prefix$vsPropertyMultiAttrib
+		SET
+			entryStateGuid = #param3#
+		WHERE
+			vsPropertyGuid = #param1#
+		AND
+			attributeType = #param2#
+	</update>
 
 </sqlMap>

@@ -179,4 +179,28 @@
 		WHERE
 			assnQual.referenceGuid = #param2#
 	</select>
+	
+	<update id="updateAssnQualsEntryStateUId"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		UPDATE
+			$prefix$entityAssnQuals
+		SET
+			entryStateGuid = #param2#
+		WHERE
+			referenceGuid = #param1#
+		AND
+			qualifierName != "usageContext"
+	</update>
+	
+	<update id="updateAssnUsageContextEntryStateUId"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		UPDATE
+			$prefix$entityAssnQuals
+		SET
+			entryStateGuid = #param2#
+		WHERE
+			referenceGuid = #param1#
+		AND
+			qualifierName = "usageContext"
+	</update>
 </sqlMap>

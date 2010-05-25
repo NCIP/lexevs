@@ -108,4 +108,15 @@
 			attributeType = #param2#
 	</delete>
 
+	<update id="updateCSMultiAttribEntryStateUId"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
+		UPDATE
+			$prefix$csMultiAttrib
+		SET
+			entryStateGuid = #param3#
+		WHERE
+			codingSchemeGuid = #param1#
+		AND
+			attributeType = #param2#
+	</update>
 </sqlMap>

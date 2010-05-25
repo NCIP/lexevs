@@ -10,13 +10,15 @@
      		entityGuid,
      		sourcePropertyGuid,
      		link,
-     		targetPropertyGuid
+     		targetPropertyGuid,
+     		entryStateGuid
      	) VALUES (
      		#uid#,
      		#entityUId#,
      		#sourcePropertyUId#,
      		#link#,
-     		#targetPropertyUId#
+     		#targetPropertyUId#,
+     		#entryStateUId#
      	)
      </insert>
 

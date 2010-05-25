@@ -169,4 +169,21 @@
 					plEntry.vsPickListGuid = #param1#	
 			)		
 	</delete>	
+	
+	<delete id="deleteAllPLDefinitionEntryStates"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE FROM
+			$prefix$vsEntryState
+		WHERE
+			entryStateGuid IN
+			(
+				SELECT
+					entryStateGuid
+				FROM
+					$prefix$vsPickList
+				WHERE
+					vsPickListGuid = #param1#	
+			)		
+	</delete>	
+	
 </sqlMap>
