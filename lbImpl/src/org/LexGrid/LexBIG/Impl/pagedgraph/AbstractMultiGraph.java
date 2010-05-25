@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph;
 
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -140,6 +141,24 @@ public abstract class AbstractMultiGraph extends AbstractCodedNodeGraph {
     public CodedNodeGraph restrictToTargetCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
         this.graph1.restrictToTargetCodes(codes);
         this.graph2.restrictToTargetCodes(codes);
+        
+        return this;
+    }
+    
+    @Override
+    public CodedNodeGraph restrictToAnonymous(Boolean restrictToAnonymous) throws LBInvocationException,
+            LBParameterException {
+        this.graph1.restrictToAnonymous(restrictToAnonymous);
+        this.graph2.restrictToAnonymous(restrictToAnonymous);
+        
+        return this;
+    }
+
+    @Override
+    public CodedNodeGraph restrictToEntityTypes(LocalNameList localNameList) throws LBInvocationException,
+            LBParameterException {
+        this.graph1.restrictToEntityTypes(localNameList);
+        this.graph2.restrictToEntityTypes(localNameList);
         
         return this;
     }

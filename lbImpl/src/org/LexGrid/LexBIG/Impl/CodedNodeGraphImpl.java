@@ -299,6 +299,18 @@ public class CodedNodeGraphImpl implements CodedNodeGraph, Cloneable {
         return this;
     }
 
+    @Override
+    public CodedNodeGraph restrictToAnonymous(Boolean restrictToAnonymous) throws LBInvocationException,
+            LBParameterException {
+        throw new UnsupportedOperationException("This feature is only available in LexEvs 6.0.");
+    }
+
+    @Override
+    public CodedNodeGraph restrictToEntityTypes(LocalNameList localNameList) throws LBInvocationException,
+            LBParameterException {
+        throw new UnsupportedOperationException("This feature is only available in LexEvs 6.0.");
+    }
+
     /*
      * (non-Javadoc)
      * 

@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph.query;
 
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -186,4 +187,10 @@ public interface GraphQueryBuilder {
      */
     void restrictToTargetCodeSystem(String codingScheme)
             throws LBInvocationException,LBParameterException;
+    
+    void restrictToEntityTypes(LocalNameList localNameList) throws LBInvocationException,
+        LBParameterException;
+
+    void restrictToAnonymous(Boolean restrictToAnonymous) throws LBInvocationException,
+            LBParameterException;
 }

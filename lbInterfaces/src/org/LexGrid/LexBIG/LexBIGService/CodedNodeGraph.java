@@ -497,6 +497,40 @@ public interface CodedNodeGraph extends Serializable {
 	 */
 	CodedNodeGraph restrictToTargetCodeSystem(String codingScheme)
 			throws LBInvocationException,LBParameterException;
+	
+	/**
+	 * Return a graph that contains only the codes that contain an Entity Type
+	 * in the supplied list, and all edges that still have a source and target code
+	 * remaining.
+	 * 
+	 * @param localNameList the local name list
+	 * 
+	 * @return the coded node graph
+	 * 
+	 * @throws LBInvocationException the LB invocation exception
+	 * @throws LBParameterException the LB parameter exception
+	 */
+	CodedNodeGraph restrictToEntityTypes(LocalNameList localNameList)
+		throws LBInvocationException,LBParameterException;
+	
+	/**
+	 * Return a graph that contains only the codes that are either Anonymous,
+	 * Non-Anonymous, or Not Specified in the supplied list, and all edges 
+	 * that still have a source and target code remaining.
+	 * 
+	 * A True value signifies Anonymouse codes only
+	 * A False value signifies Non-Anonymous only
+	 * A Null value signifies all codes will matched
+	 * 
+	 * @param localNameList the local name list
+	 * 
+	 * @return the coded node graph
+	 * 
+	 * @throws LBInvocationException the LB invocation exception
+	 * @throws LBParameterException the LB parameter exception
+	 */
+	CodedNodeGraph restrictToAnonymous(Boolean restrictToAnonymous)
+		throws LBInvocationException,LBParameterException;
 
 	/**
 	 * Transform the graph into a simple of list of code references,

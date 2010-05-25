@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.Impl.pagedgraph.query;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
@@ -42,6 +43,7 @@ import org.LexGrid.naming.SupportedAssociationQualifier;
 import org.apache.commons.lang.ArrayUtils;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.logging.LoggerFactory;
 import org.springframework.util.StringUtils;
 
@@ -257,6 +259,16 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
             getCodesFromCodedNodeSet(codes);
         
         this.graphQuery.getRestrictToTargetCodes().addAll(foundCodes);
+    }
+
+    @Override
+    public void restrictToAnonymous(Boolean restrictToAnonymous) throws LBInvocationException, LBParameterException {
+        this.graphQuery.setRestrictToAnonymous(restrictToAnonymous);
+    }
+
+    @Override
+    public void restrictToEntityTypes(LocalNameList localNameList) throws LBInvocationException, LBParameterException {
+       this.graphQuery.getRestrictToEntityTypes().addAll(DaoUtility.localNameListToString(localNameList));
     }
 
     public static class InvalidMatchCodeNamspacePair extends ConceptReference {

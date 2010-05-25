@@ -232,6 +232,20 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         return this;
     }
 
+    @Override
+    public CodedNodeGraph restrictToAnonymous(Boolean restrictToAnonymous) throws LBInvocationException,
+            LBParameterException {
+       this.graphQueryBuilder.restrictToAnonymous(restrictToAnonymous);
+       return this;
+    }
+
+    @Override
+    public CodedNodeGraph restrictToEntityTypes(LocalNameList localNameList) throws LBInvocationException,
+            LBParameterException {
+       this.graphQueryBuilder.restrictToEntityTypes(localNameList);
+       return this;
+    }
+
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#restrictToCodes(org.LexGrid.LexBIG.LexBIGService.CodedNodeSet)
      */
