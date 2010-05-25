@@ -405,6 +405,7 @@ public class LexGridXMLProcessor {
 private boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         boolean schemePresent = false;
+        boolean entryStateRemove = false;
         XMLStreamReader xmlStreamReader;
 
         try {
@@ -414,14 +415,28 @@ private boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages
 
             for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
                     .next()) {
-
                 if (event == XMLStreamConstants.START_ELEMENT && 
                         (xmlStreamReader.getLocalName().equals("codingScheme") || 
                                 xmlStreamReader.getLocalName().equals("changedCodingSchemeEntry"))) {
-                  messages.info("This LexGrid XML contains a coding scheme elment, preparing to load coding scheme");
-                    schemePresent = true;
-                    break;
+                  messages.info("This LexGrid XML contains a coding scheme elment");
+                    schemePresent = true;}
+                if(schemePresent && event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("entryState")){
+                    for(int i = 0; i < xmlStreamReader.getAttributeCount(); i++){
+                        //System.out.println(xmlStreamReader.getAttributeLocalName(i) + ": " + xmlStreamReader.getAttributeValue(i));
+                        if(xmlStreamReader.getAttributeLocalName(i).equals("changeType")){
+                            if(xmlStreamReader.getAttributeValue(i).equals("REMOVE")){
+                                messages.info("This LexGrid XML contains a revision that will remove a coding scheme");
+                                entryStateRemove = true;
+                            }
+                        }
+                    }
                 }
+                if(schemePresent && entryStateRemove && event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("mappings"))
+                { 
+                    schemePresent = false;
+                    break;}
+                if(event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("mappings"))        
+                { break;}               
             }
             xmlStreamReader.close();
             in.close();
@@ -438,6 +453,7 @@ private boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages
             messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
             e.printStackTrace();
         }
+        System.out.println("Scheme Present: " + schemePresent);
         return schemePresent;
     }
 
@@ -488,5 +504,8 @@ private int getLastRevisionElement(String path,  LgMessageDirectorIF messages) {
     }
     return lastMetaDataElement;
 }
+public static void main (String[] args){
 
+    new LexGridXMLProcessor().isCodingSchemePresent(args[0],null);
+}
 }
