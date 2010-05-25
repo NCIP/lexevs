@@ -1,0 +1,4 @@
+Value Set Definition and Pick List Definition Design Details can be found at NCI Wiki :
+
+LexEVS 5.1 release : https://wiki.nci.nih.gov/display/EVS/LexEVS+5.1+Design+Document#LexEVS5.1DesignDocument-ValueDomainSupportDetailedDesign
+LexEVS 6.0 release : https://wiki.nci.nih.gov/display/EVS/LexEVS+6.0+Design+Document+-+Detailed+Design+-+Value+Set+Definition
