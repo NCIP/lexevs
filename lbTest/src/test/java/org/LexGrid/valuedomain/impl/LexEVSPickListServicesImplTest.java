@@ -27,7 +27,9 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.naming.Mappings;
@@ -249,7 +251,7 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 	 */
 	@Test
 	public void testResolvePickListForTerm() throws LBException {
-		ResolvedPickListEntryList pickLists = getPickListService().resolvePickListForTerm("SRITEST:AUTO:AllDomesticButGM", "Jaguar", MatchAlgorithms.exactMatch.name(), null, null, false);
+		ResolvedPickListEntryList pickLists = getPickListService().resolvePickListForTerm("SRITEST:AUTO:AllDomesticButGM", "Jaguar", MatchAlgorithms.exactMatch.name(), null, null, false, null, null);
 		assertTrue(pickLists.getResolvedPickListEntryCount() == 1);
 		
 		Iterator<ResolvedPickListEntry> plItr = pickLists.iterateResolvedPickListEntry();
@@ -260,7 +262,7 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 			assertTrue(pickList.getPropertyId().equals("p1"));
 		}
 		
-		pickLists = getPickListService().resolvePickListForTerm("SRITEST:FA:MicrobialStructureOntologyMinusMCell", "cell", MatchAlgorithms.LuceneQuery.name(), null, null, false);
+		pickLists = getPickListService().resolvePickListForTerm("SRITEST:FA:MicrobialStructureOntologyMinusMCell", "cell", MatchAlgorithms.LuceneQuery.name(), null, null, false, null, null);
 		plItr = pickLists.iterateResolvedPickListEntry();
 		while(plItr.hasNext())
 		{
@@ -268,7 +270,7 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 			assertTrue(pickList.getEntityCode().equals("FAO:0000032"));
 		}
 		
-		pickLists = getPickListService().resolvePickListForTerm("SRITEST:FA:MicrobialStructureOntologyMinusMCell", "structure", MatchAlgorithms.LuceneQuery.name(), null, null, false);
+		pickLists = getPickListService().resolvePickListForTerm("SRITEST:FA:MicrobialStructureOntologyMinusMCell", "structure", MatchAlgorithms.LuceneQuery.name(), null, null, false, null, null);
 		plItr = pickLists.iterateResolvedPickListEntry();
 		while(plItr.hasNext())
 		{
@@ -281,7 +283,7 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 	
 	@Test
 	public void testResolvePickListForTermForCompleteDomain() throws LBException {
-		ResolvedPickListEntryList pickLists = getPickListService().resolvePickListForTerm("SRITEST:FA:MSOntologyAndHyphaInMycelium", "hypha", MatchAlgorithms.LuceneQuery.name(), null, null, false);
+		ResolvedPickListEntryList pickLists = getPickListService().resolvePickListForTerm("SRITEST:FA:MSOntologyAndHyphaInMycelium", "hypha", MatchAlgorithms.LuceneQuery.name(), null, null, false, null, null);
 		
 		assertTrue(pickLists.getResolvedPickListEntryCount() == 5);
 		
@@ -302,7 +304,7 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 	
 	@Test
 	public void testResolvePickList() throws LBException {
-		ResolvedPickListEntryList pleList = getPickListService().resolvePickList("SRITEST:AUTO:DomesticAutoMakers", true);
+		ResolvedPickListEntryList pleList = getPickListService().resolvePickList("SRITEST:AUTO:DomesticAutoMakers", true, null, null);
 		
 		assertTrue(pleList.getResolvedPickListEntryCount() == 8);
 		
@@ -349,7 +351,7 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 			}
 		}
 		
-		pleList = getPickListService().resolvePickList("SRITEST:FA:MicrobialStructureOntologyMinusMCell", true);
+		pleList = getPickListService().resolvePickList("SRITEST:FA:MicrobialStructureOntologyMinusMCell", true, null, null);
 		
 		assertTrue(pleList.getResolvedPickListEntryCount() == 8);
 		
@@ -399,11 +401,59 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 	
 	@Test
 	public void testResolvePickListForCompleteDomain() throws LBException {
-		ResolvedPickListEntryList pickLists = getPickListService().resolvePickList("SRITEST:FA:hyphaLeafOnly", true);
+		AbsoluteCodingSchemeVersionReferenceList incsvrl = new AbsoluteCodingSchemeVersionReferenceList();
+	    incsvrl.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0"));
+		
+	    /**
+	     * For version '1.0', only one pick list entry should return, and that is Chevy, 
+	     * Jaguar should not be returned b'cos the only presentation it has is not preferred.
+	     */
+	    ResolvedPickListEntryList pickLists = getPickListService().resolvePickList("SRITEST:AUTO:DomasticLeafOnly", true, incsvrl, null);
+	    assertTrue(pickLists.getResolvedPickListEntryCount() == 1); 
+	    
+	    Iterator<ResolvedPickListEntry> plItr = pickLists.iterateResolvedPickListEntry();
+	    
+	    while(plItr.hasNext())
+		{
+			ResolvedPickListEntry pickList = plItr.next();
+			assertTrue(pickList.getEntityCode().equalsIgnoreCase("chevy"));
+			assertTrue(pickList.getPickText().equalsIgnoreCase("chevy"));
+		}
+	    
+	    incsvrl = new AbsoluteCodingSchemeVersionReferenceList();
+	    incsvrl.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.1"));
+		
+	    /**
+	     * For version '1.1', five pick list entry should return, and they are :windsor, f150, focus, gmc and chevy 
+	     * Jaguar should not be returned b'cos the only presentation it has is not preferred.
+	     */
+	    pickLists = getPickListService().resolvePickList("SRITEST:AUTO:DomasticLeafOnly", true, incsvrl, null);
+	    
+	    assertTrue(pickLists.getResolvedPickListEntryCount() == 5);
+	    
+	    plItr = pickLists.iterateResolvedPickListEntry();
+	    
+	    while(plItr.hasNext())
+		{
+			ResolvedPickListEntry pickList = plItr.next();
+			assertTrue(pickList.getEntityCode().equalsIgnoreCase("Windsor")
+					|| pickList.getEntityCode().equalsIgnoreCase("F150")
+					|| pickList.getEntityCode().equalsIgnoreCase("Focus")
+					|| pickList.getEntityCode().equalsIgnoreCase("GMC")
+					|| pickList.getEntityCode().equalsIgnoreCase("Chevy"));
+			
+			assertTrue(pickList.getPickText().equalsIgnoreCase("Windsor")
+					|| pickList.getPickText().equalsIgnoreCase("F150")
+					|| pickList.getPickText().equalsIgnoreCase("Focus")
+					|| pickList.getPickText().equalsIgnoreCase("GMC trucks")
+					|| pickList.getPickText().equalsIgnoreCase("Chevy"));
+		}
+	    
+		pickLists = getPickListService().resolvePickList("SRITEST:FA:hyphaLeafOnly", true, null, null);
 		
 		assertTrue(pickLists.getResolvedPickListEntryCount() == 3);
 		
-		Iterator<ResolvedPickListEntry> plItr = pickLists.iterateResolvedPickListEntry();
+		plItr = pickLists.iterateResolvedPickListEntry();
 		while(plItr.hasNext())
 		{
 			ResolvedPickListEntry pickList = plItr.next();
