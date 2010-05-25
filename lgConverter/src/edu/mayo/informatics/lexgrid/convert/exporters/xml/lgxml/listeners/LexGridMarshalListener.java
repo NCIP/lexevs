@@ -17,12 +17,9 @@ import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
-import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
-import org.LexGrid.concepts.Presentation;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
@@ -31,8 +28,6 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
-import org.lexevs.dao.database.ibatis.entity.model.IdableEntity;
-import org.springframework.beans.BeanUtils;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
 
@@ -116,7 +111,7 @@ public class LexGridMarshalListener implements MarshalListener
 	@Override
 	public void postMarshal(Object arg0) {
 		if(Entities.class.equals(arg0.getClass()) == true) {
-			System.out.println("POST: found an Entities object");
+			//System.out.println("POST: found an Entities object");
 		}
 		
 	}
@@ -124,14 +119,6 @@ public class LexGridMarshalListener implements MarshalListener
 	@Override
 	public boolean preMarshal(Object arg0) 
 	{
-	    /*System.out.println("PREMARSHAL:" + arg0.getClass().getName());
-		if(Entities.class.equals(arg0.getClass()) == true) 
-		{
-			Entities entities = (Entities)arg0;
-			System.out.println("PRE: Entity count = " + entities.getEntityCount());
-		}
-		*/
-		//if((Entity.class.equals(arg0.getClass()) == true)||(IdableEntity.class.equals(arg0.getClass()) == true))
 		if((Entity.class.equals(arg0.getClass()) == true))
 		{
 		    Entity temp = (Entity)arg0;
@@ -161,7 +148,7 @@ public class LexGridMarshalListener implements MarshalListener
     						{
     							curConRef = (ResolvedConceptReference)blockIterator.next();					
     							curEntity = (Entity) curConRef.getEntity();
-    							System.out.println("**************** Checking Entity=" + curEntity.getEntityCode());
+    							//System.out.println("**************** Checking Entity=" + curEntity.getEntityCode());
 
     							if (curEntity == null)
     							    continue;
@@ -178,7 +165,7 @@ public class LexGridMarshalListener implements MarshalListener
     						    if (transferredEntity == null)
     						        continue;
     						    
-    						    System.out.println("@@@@@@@@@@@@@@@@@@@@@@ Marshalling Entity=" + transferredEntity.getEntityCode());
+    						    //System.out.println("@@@@@@@@@@@@@@@@@@@@@@ Marshalling Entity=" + transferredEntity.getEntityCode());
     						    this.marshaller.marshal(transferredEntity);
     						    ++entityIndex;
     						}			
@@ -217,7 +204,7 @@ public class LexGridMarshalListener implements MarshalListener
 			if (cng != null)
 			{
 				String curAssociationName = ap.getAssociationName();
-				System.out.println("\n$$$$$$$$$$$$$$$   Marshalling " + curAssociationName + "    $$$$$$$$$$$$$$$$$$$\n");
+				//System.out.println("\n$$$$$$$$$$$$$$$   Marshalling " + curAssociationName + "    $$$$$$$$$$$$$$$$$$$\n");
 				try 
 				{
 					ResolvedConceptReferenceList rcrl = cng.resolveAsList(null, true, false, 0, -1, null, null, null, null, -1);
@@ -232,10 +219,10 @@ public class LexGridMarshalListener implements MarshalListener
 							AssociationList asl = curConRef.getSourceOf();
 							if ((userAP == null)||(!curAssociationName.equals(userAP.getAssociationName())))
 							{
-								System.out.println("STARTING ASSOCIATION PREDICATE.... with " + curAssociationName);
+								//System.out.println("STARTING ASSOCIATION PREDICATE.... with " + curAssociationName);
 								userAP = ap;
 							}
-                            System.out.println("CALL processTargets WITH curConRef code..." + curConRef.getCode() + " " + curConRef.getEntityDescription().getContent());
+                            //System.out.println("CALL processTargets WITH curConRef code..." + curConRef.getCode() + " " + curConRef.getEntityDescription().getContent());
 							processTargets(curConRef, curAssociationName, userAP);
 							processAssociationList(asl, userAP);
 							userAP.setParent(new String(stopToken));
@@ -250,12 +237,14 @@ public class LexGridMarshalListener implements MarshalListener
 					e.printStackTrace();
 				} 
 				
-				if(userAP.getSourceCount() > 0) {
+				if(userAP.getSourceCount() > 0) 
+				{
 				    return true;
-				} else {
+				} 
+				else 
+				{
 				    return false;
 				}
-				
 			}
 			
 			return false;
@@ -264,69 +253,13 @@ public class LexGridMarshalListener implements MarshalListener
 		return true;
 	}
 
-	/*
-	private Entity transferEntity(Entity curEntity)
-	{
-	    Entity newEntity = new Entity();
-	    BeanUtils.copyProperties(curEntity, newEntity);
-	    if (curEntity == null)
-	        return null;
-	    
-	    Entity temp = new IdableEntity();
-	    temp.setEntityCode(curEntity.getEntityCode());
-	    temp.setEntityDescription(curEntity.getEntityDescription());
-	    temp.setEntityCodeNamespace(curEntity.getEntityCodeNamespace());
-	    
-	    // add properties
-	    Property[] pps = curEntity.getAllProperties();
-	    if (pps != null)
-	        for(int i=0; i < pps.length; i++)
-	            if (pps[i] != null)
-	                  temp.addAnyProperty(pps[i]);
-	    
-	    
-	    temp.setComment(curEntity.getComment());
-	    temp.setDefinition(curEntity.getDefinition());
-	    temp.setEffectiveDate(curEntity.getEffectiveDate());
-	    temp.setEntityType(curEntity.getEntityType());
-	    temp.setEntityTypeAsReference(curEntity.getEntityTypeAsReference());
-	    temp.setEntryState(curEntity.getEntryState());
-	    temp.setExpirationDate(curEntity.getExpirationDate());
-	    temp.setIsActive(curEntity.getIsActive());
-	    temp.setIsAnonymous(curEntity.getIsAnonymous());
-	    temp.setIsDefined(curEntity.getIsDefined());
-	    temp.setOwner(curEntity.getOwner());
-	    temp.setParent(curEntity.getParent());
-	    
-//	    temp.setPresentation(curEntity.getPresentation());
-        // add properties
-	    Presentation[] presentationAr = curEntity.getPresentation();
-        if (presentationAr != null)
-            for(int i=0; i < presentationAr.length; i++)
-                if (presentationAr[i] != null)
-                      temp.addPresentation(presentationAr[i]);
-	    
-	    
-	    
-	    temp.setPresentationAsReference(curEntity.getPresentationAsReference());
-	    temp.setPropertyAsReference(curEntity.getPropertyAsReference());
-	    temp.setPropertyLink(curEntity.getPropertyLink());
-	    temp.setPropertyLinkAsReference(curEntity.getPropertyLinkAsReference());
-	    temp.setStatus(curEntity.getStatus());
-
-	    
-	    
-	    return temp;
-	}
-	*/
-	
 	private void processAssociationList(AssociationList _asl, AssociationPredicate _asp) 
 	{
 		if(_asl == null) {return ;}
 		if(_asp == null) {return ;}
 		
 		String curAssociationName = _asp.getAssociationName();
-		System.out.println("**** inside processAssociationList with association=" + curAssociationName);
+		//System.out.println("**** inside processAssociationList with association=" + curAssociationName);
 				
 		if(curAssociationName == null){ return; }
 		
@@ -336,16 +269,11 @@ public class LexGridMarshalListener implements MarshalListener
 		while(associationIterator.hasNext())
 		{
 			Association association = (Association) associationIterator.next();
-			System.out.println("\tProcessing Association=" + association.getAssociationName());
-			if(!association.getAssociationName().equals(curAssociationName)) 
-			{
-				// continue;
-				System.out.println("\t####### no addition in this cycle");
-			}
+			//System.out.println("\tProcessing Association=" + association.getAssociationName());
 			
 			// get the source
 			int associatedConcepts = association.getAssociatedConcepts().getAssociatedConceptCount();
-			System.out.println("\tAssociated Concepts=" + associatedConcepts);
+			//System.out.println("\tAssociated Concepts=" + associatedConcepts);
 			
 			if (associatedConcepts > 0)
 			{
@@ -355,7 +283,7 @@ public class LexGridMarshalListener implements MarshalListener
 				while(associatedConceptsIterator.hasNext())
 				{
 					AssociatedConcept source = (AssociatedConcept) associatedConceptsIterator.next();
-					System.out.println("\tProcessing AssociatedConcept (source):" + source.getConceptCode());
+					//System.out.println("\tProcessing AssociatedConcept (source):" + source.getConceptCode());
 				    
 					if (codingSchemeName == null)
 						codingSchemeName = source.getCodingSchemeName();
@@ -367,7 +295,7 @@ public class LexGridMarshalListener implements MarshalListener
 					ResolvedConceptReferenceList localRcrl = null;
 					try 
 					{
-						System.out.println("Focus=" + focus);
+						//System.out.println("Focus=" + focus);
 						localRcrl = cng.resolveAsList(focus, true, false, 0, -1, null, null, null, null, -1);
 					} 
 					catch (LBInvocationException e) 
@@ -389,7 +317,7 @@ public class LexGridMarshalListener implements MarshalListener
 					
 					if (sourceRef == null)
 					{
-						System.out.println("Failed to get Source Ref for " + source.getConceptCode());
+						//System.out.println("Failed to get Source Ref for " + source.getConceptCode());
 						continue;
 					}
 					
@@ -398,7 +326,7 @@ public class LexGridMarshalListener implements MarshalListener
 					
 					if((targets != null)&&(targets.getAssociationCount() > 0)) 
 			        {
-					    System.out.println("\n--------> CALLING AGAIN targets =" + targets.getAssociation().length + " --------->\n");
+					    //System.out.println("\n--------> CALLING AGAIN targets =" + targets.getAssociation().length + " --------->\n");
 					    processAssociationList(targets, _asp);
 			        }
 				}
@@ -433,16 +361,16 @@ public class LexGridMarshalListener implements MarshalListener
 	                AssociationTarget associationTarget = new AssociationTarget();
 	                associationTarget.setTargetEntityCodeNamespace(target.getCodeNamespace());
 	                associationTarget.setTargetEntityCode(target.getConceptCode());
-	                System.out.println("\t\t" + target.getConceptCode() + " with " + targetAssociation.getAssociationName());
+	                //System.out.println("\t\t" + target.getConceptCode() + " with " + targetAssociation.getAssociationName());
 	                if(targetAssociation.getAssociationName().equals(asName)) 
 	                {
 	                    targetsFound = true;
 	                    aS.addTarget(associationTarget);
-	                    System.out.println("\t\t\tAdding Target:" + associationTarget.getTargetEntityCode());
+	                    //System.out.println("\t\t\tAdding Target:" + associationTarget.getTargetEntityCode());
 	                    NameAndValueList assocQuals = target.getAssociationQualifiers();
 	                    if ((assocQuals != null)&&(assocQuals.getNameAndValueCount() > 0))
 	                    {
-	                        System.out.println("Processing Association Qualifiers now...");
+	                        //System.out.println("Processing Association Qualifiers now...");
 	                        Iterator<?> associatedQualItr = assocQuals.iterateNameAndValue();
 	                        while(associatedQualItr.hasNext()) 
 	                        {
@@ -468,7 +396,7 @@ public class LexGridMarshalListener implements MarshalListener
         {
             for (int vi=0; vi < aV.size();vi++)
             {
-                System.out.println("\t Source[" + vi + "] ADDED TO PREDICATE");
+                //System.out.println("\t Source[" + vi + "] ADDED TO PREDICATE");
                 ap.addSource(aV.elementAt(vi));
             }
             aV = new Vector<AssociationSource>();

@@ -54,6 +54,9 @@ public class LexGridExportTest {
     private static final String SEARCH_STRING_ENTITY_CODE_FORD = "entityCode=\"Ford\"";
     private static final String SEARCH_STRING_ENTITY_CODE_TRUCK = "entityCode=\"T0001\"";
     
+    private static final String SEARCH_STRING_SRC_ENTITY_CODE_DOMESTIC_AUTO_MAKERS = "sourceEntityCode=\"005\"";
+    private static final String SEARCH_STRING_TRG_ENTITY_CODE_FORD = "targetEntityCode=\"Ford\"";
+    
     @Test    
     public void lexGridExportTestCns() throws LBException {
         StringWriter out = new StringWriter();
@@ -129,13 +132,24 @@ public class LexGridExportTest {
     
     
     @Test
-    public void lexGridExportTestCng() throws LBException {
-        Assert.assertTrue(false);
-    }
-    
-    @Test
-    public void lexGridExportTestAll() throws LBException {
-        Assert.assertTrue(false);
+    public void lexGridExportTestCng() throws LBException 
+    {
+        StringWriter out = new StringWriter();
+        CodingScheme cs = CodingSchemeFactory.createCodingSchemeWithAssociationPredicate();
+        CodedNodeGraph cng = MockLexGridObjectFactory.createCng();
+        CodedNodeSet cns = null;
+
+        LexGridExportTest.lexGridExportTestRunner(cs, cng, cns, out);
+        
+      //-----------------------------------------------------
+        // to verify, all entity codes should exist
+        //-----------------------------------------------------
+        String marshaledContent = out.toString();
+        
+        // check for Domestic Auto Makers: entityCode="005"
+        boolean srcEntityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_SRC_ENTITY_CODE_DOMESTIC_AUTO_MAKERS);
+        boolean trgEntityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_TRG_ENTITY_CODE_FORD);
+        Assert.assertTrue(srcEntityCodeExists && trgEntityCodeExists);
     }
     
     @Test
@@ -178,7 +192,7 @@ public class LexGridExportTest {
         boolean outFileHasContent = LexGridExportTest.verifyOutFileHasContent(outFile);
         if(outFile != null && outFile.exists()) {
             boolean result = outFile.delete();
-            System.out.println("File delete result: " + result);
+            //System.out.println("File delete result: " + result);
         }
         
         Assert.assertTrue(outFileHasContent);       

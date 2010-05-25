@@ -58,7 +58,14 @@ public class ResolvedConceptReferenceFactory {
    }
    
    private static ResolvedConceptReference createRcrFromEntity(Entity entity) {
+       if (entity == null)
+           return null;
+       
        ResolvedConceptReference rcr = new ResolvedConceptReference();
+       rcr.setCode(entity.getEntityCode());
+       rcr.setCodeNamespace(entity.getEntityCodeNamespace());
+       rcr.setConceptCode(entity.getEntityCode());
+       rcr.setCodingSchemeName(entity.getEntityCodeNamespace());
        rcr.setEntity(entity);      
        return rcr;
    }

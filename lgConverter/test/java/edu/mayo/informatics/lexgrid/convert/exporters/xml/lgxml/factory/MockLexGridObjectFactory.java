@@ -1,13 +1,20 @@
 package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.factory;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
+import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.Association;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.commonTypes.types.EntityTypes;
 import org.easymock.EasyMock;
+import org.hibernate.type.EntityType;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.Constants;
 
@@ -94,19 +101,49 @@ public class MockLexGridObjectFactory {
     /*
      * create mock CNG
      */
-    public static CodedNodeGraph createMockCng() throws LBException {
+    public static CodedNodeGraph createCng() throws LBException {
         
         // ResolvedConceptReferenceList rcrl = cng.resolveAsList(null, true, false, -1, -1, null, null, null, null, -1);
         CodedNodeGraph cng = EasyMock.createNiceMock(CodedNodeGraph.class);
+        
         ResolvedConceptReferenceList rcrlTopNodes = new ResolvedConceptReferenceList();
+
+        // Adding top nodes for case when null as focus node.
+        ResolvedConceptReference rcr = ResolvedConceptReferenceFactory.createRcrAutoMaker();
+        rcrlTopNodes.addResolvedConceptReference(rcr);
         
+        ResolvedConceptReferenceList firstBranchNodes = new ResolvedConceptReferenceList();
+        ResolvedConceptReference rcr2 = ResolvedConceptReferenceFactory.createRcrFord();
+        firstBranchNodes.addResolvedConceptReference(rcr2);
         
-        EasyMock.expect(cng.resolveAsList(null, true, false, -1, -1, null, null, null, null, -1)).andReturn(rcrlTopNodes);
+        AssociatedConcept asc = new AssociatedConcept();
+        asc.setCode(rcr2.getCode());
+        asc.setCodingSchemeName(rcr2.getCodingSchemeName());
+        asc.setCodeNamespace(rcr2.getCodeNamespace());
+        
+        AssociatedConceptList ascl = new AssociatedConceptList();
+        ascl.addAssociatedConcept(asc);
+        
+        Association asn = new Association();
+        asn.setAssociationName("hasSubtype");
+        asn.setAssociatedConcepts(ascl);
+
+        AssociationList asl = new AssociationList();
+        asl.addAssociation(asn);
+
+        rcr.setSourceOf(asl);
+        
+        ConceptReference focus1 = new ConceptReference();
+        focus1.setCode(rcr.getConceptCode());
+        focus1.setCodingSchemeName(rcr.getCodingSchemeName());
+        
+        rcr = ResolvedConceptReferenceFactory.createRcrAutomobile();
+        rcrlTopNodes.addResolvedConceptReference(rcr);
+        
+        EasyMock.expect(cng.resolveAsList(null, true, false, 0, -1, null, null, null, null, -1)).andReturn(rcrlTopNodes);
+        EasyMock.expect(cng.resolveAsList(focus1, true, false, 0, -1, null, null, null, null, -1)).andReturn(firstBranchNodes);
+        
         EasyMock.replay(cng);
         return cng;
     }
-    
-    
-
-
 }

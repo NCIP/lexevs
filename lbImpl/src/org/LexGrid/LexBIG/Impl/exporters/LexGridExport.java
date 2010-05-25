@@ -160,14 +160,14 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
                     Constructors.createCodingSchemeVersionOrTagFromVersion(codingScheme.getRepresentsVersion()),null);
             
             // TEST TEST TEST
-            cng.restrictToAssociations(Constructors.createNameAndValueList("uses"), null);
+            //cng.restrictToAssociations(Constructors.createNameAndValueList("uses"), null);
             
             // create coded node set
             cns = lbsvc.getCodingSchemeConcepts(codingScheme.getCodingSchemeURI(), 
                     Constructors.createCodingSchemeVersionOrTagFromVersion(codingScheme.getRepresentsVersion()) );
             
             // TEST TEST TEST            
-            cns.restrictToMatchingDesignations("G*", SearchDesignationOption.ALL, "LuceneQuery", null);
+            //cns.restrictToMatchingDesignations("G*", SearchDesignationOption.ALL, "LuceneQuery", null);
             
         } catch (IOException e) {
             e.printStackTrace();
