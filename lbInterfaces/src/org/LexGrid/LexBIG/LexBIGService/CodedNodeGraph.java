@@ -518,7 +518,7 @@ public interface CodedNodeGraph extends Serializable {
 	 * Non-Anonymous, or Not Specified in the supplied list, and all edges 
 	 * that still have a source and target code remaining.
 	 * 
-	 * A True value signifies Anonymouse codes only
+	 * A True value signifies Anonymous codes only
 	 * A False value signifies Non-Anonymous only
 	 * A Null value signifies all codes will matched
 	 * 
