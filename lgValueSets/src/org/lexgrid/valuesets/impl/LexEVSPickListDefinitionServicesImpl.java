@@ -251,15 +251,16 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		return this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionIdForValueSetDefinitionUri(valueSetDefURI.toString());		
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#resolvePickListForTerm(java.lang.String, java.lang.String, org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#resolvePickListForTerm(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String[], boolean, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
 	 */
 	public ResolvedPickListEntryList resolvePickListForTerm(String pickListId,
-			String term, String matchAlgorithm, String language, String[] context, boolean sortByText) throws LBException {
+			String term, String matchAlgorithm, String language, String[] context, boolean sortByText,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException {
 		ResolvedPickListEntryList resolvedPLEntryListToReturn = new ResolvedPickListEntryList();
 		
-		ResolvedPickListEntryList plEntryList = resolvePickList(pickListId, sortByText);
+		ResolvedPickListEntryList plEntryList = resolvePickList(pickListId, sortByText, csVersionList, versionTag);
 		
 		if (plEntryList != null)
 		{
@@ -372,10 +373,12 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		return plEntry;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#resolvePickList(java.lang.String, boolean)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#resolvePickList(java.lang.String, boolean, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
 	 */
-	public ResolvedPickListEntryList resolvePickList(String pickListId, boolean sortByText) throws LBException {
+	public ResolvedPickListEntryList resolvePickList(String pickListId, boolean sortByText,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException {
 		ResolvedPickListEntryList plList = new ResolvedPickListEntryList();
         
         List<String> excludeEntityCodes = new ArrayList<String>();
@@ -435,7 +438,8 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
             //if completeDomain is true, resolve value domain and add any missing entities to the list
             if (completeDomain)
             {
-            	ResolvedPickListEntryList vdPLList = internalResolvePickListForTerm(pickList.getRepresentsValueSetDefinition(), sortByText);
+            	ResolvedPickListEntryList vdPLList = internalResolvePickListForTerm(pickList.getRepresentsValueSetDefinition(), 
+            			sortByText, csVersionList, versionTag);
             	if (plList.getResolvedPickListEntryCount() > 0 )
             	{
             		for (int i = 0; i < vdPLList.getResolvedPickListEntryCount(); i++)
@@ -457,22 +461,15 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
         return plList;
     }
     
-	/**
-	 * Resolves pickList definition for supplied pickListId.
-	 * 
-	 * @param pickListId
-	 * 			pickListId of a pickListDefinition.
-	 * @param sortByText
-	 * 			If 1-Ascending, 2-Descending, and 3-Custom;
-	 * @return
-	 * 			Resolved PickListEntries.
-	 * @throws LBException
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#resolvePickList(java.lang.String, java.lang.Integer, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
 	 */
-	public ResolvedPickListEntryList resolvePickList(String pickListId,
-			Integer sortType) throws LBException {
+	public ResolvedPickListEntryList resolvePickList(String pickListId, Integer sortType,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException {
 
 		ResolvedPickListEntryList resolvedPLEntry = resolvePickList(pickListId,
-				true);
+				true, csVersionList, versionTag);
 
 		if( sortType == null ) {
 			sortType = PLEntryNodeSortUtil.CUSTOM;
@@ -486,7 +483,8 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		return resolvedPLEntry;
 	}
 	
-    private ResolvedPickListEntryList internalResolvePickListForTerm(String valueDomainURI, boolean sortByText) throws LBException {
+    private ResolvedPickListEntryList internalResolvePickListForTerm(String valueDomainURI, boolean sortByText,
+    		AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException {
         
         ResolvedPickListEntryList plList = new ResolvedPickListEntryList();
         LexEVSValueSetDefinitionServices vds = new LexEVSValueSetDefinitionServicesImpl();
@@ -494,7 +492,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
         ResolvedValueSetDefinition rvdDef;
         
         try {
-            rvdDef = vds.resolveValueSetDefinition(new URI(valueDomainURI), null, null);
+            rvdDef = vds.resolveValueSetDefinition(new URI(valueDomainURI), csVersionList, versionTag);
         } catch (URISyntaxException e) {
             throw new LBException("Problem with ValueDomain URI", e);
         }

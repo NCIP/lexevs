@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.naming.Mappings;
@@ -107,11 +108,16 @@ public interface LexEVSPickListDefinitionServices extends Serializable {
 	 * 			pickListId of a pickListDefinition.
 	 * @param sortByText
 	 * 			If True; the resolved pickListEntries will be sorted by text in ascending order.
+	 * @param csVersionList        - a list of coding scheme URI's and versions to be used.  These will be used only if they are present in
+	 *                               the service.  If absent, the most recent version will be used instead.
+     * @param versionTag           - the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
+     *                               Note that non-tagged versions will be used if the tagged version is missing.
 	 * @return
 	 * 			Resolved PickListEntries.
 	 * @throws LBException
 	 */
-	public ResolvedPickListEntryList resolvePickList(String pickListId, boolean sortByText) throws LBException;
+	public ResolvedPickListEntryList resolvePickList(String pickListId, boolean sortByText,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException;
 	
 	/**
 	 * Resolves pickList definition for supplied pickListId.
@@ -120,11 +126,16 @@ public interface LexEVSPickListDefinitionServices extends Serializable {
 	 * 			pickListId of a pickListDefinition.
 	 * @param sortByText
 	 * 			If 1-Ascending, 2-Descending, and 3-Custom;
+	 * @param csVersionList        - a list of coding scheme URI's and versions to be used.  These will be used only if they are present in
+	 *                               the service.  If absent, the most recent version will be used instead.
+     * @param versionTag           - the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
+     *                               Note that non-tagged versions will be used if the tagged version is missing.
 	 * @return
 	 * 			Resolved PickListEntries.
 	 * @throws LBException
 	 */
-	public ResolvedPickListEntryList resolvePickList(String pickListId, Integer sortType) throws LBException;
+	public ResolvedPickListEntryList resolvePickList(String pickListId, Integer sortType,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException;
 	
 	/**
 	 * Resolves pickList definition for supplied arguments.
@@ -141,24 +152,17 @@ public interface LexEVSPickListDefinitionServices extends Serializable {
 	 * 			Optional, list of context to restrict.
 	 * @param sortByText
 	 * 			If True; the resolved pickListEntries will be sorted by text in ascending order.
+	 * @param csVersionList        - a list of coding scheme URI's and versions to be used.  These will be used only if they are present in
+	 *                               the service.  If absent, the most recent version will be used instead.
+     * @param versionTag           - the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
+     *                               Note that non-tagged versions will be used if the tagged version is missing.
 	 * @return
 	 * 			Resolved PickListEntries.
 	 * @throws LBException
 	 */
-	public ResolvedPickListEntryList resolvePickListForTerm(String pickListId, String term, String matchAlgorithm, String language, String[] context, boolean sortByText) throws LBException;
-	
-	/**
-	 * Returns the entries with pickList that matches supplied text.
-	 * 
-	 * @param pickListId
-	 * @param term
-	 * @param matchAlgorithm
-	 * @throws LBException
-	 * @return
-	 */
-//	public PickListEntry[] getPickListEntriesForTerm(String pickListId,
-//			String term, MatchAlgorithms matchAlgorithm) throws LBException;
-	
+	public ResolvedPickListEntryList resolvePickListForTerm(String pickListId, String term, String matchAlgorithm, 
+			String language, String[] context, boolean sortByText,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException;
 	
 	/**
 	 * 

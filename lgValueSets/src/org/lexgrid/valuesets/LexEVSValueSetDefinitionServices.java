@@ -298,11 +298,31 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	public List<String> getValueSetDefinitionURIsWithCodingScheme(String codingSchemename);
 	
 	/**
-	 * Returns list of Value Set Definition URIs that references supplied concept domain.
+	 * Returns list of Value Set Definition URIs that are bound to supplied concept domain.
 	 * 
 	 * @param conceptDomain name/id of the conceptDomain
 	 * 
 	 * @return list of URIs
 	 */
 	public List<String> getValueSetDefinitionURIsWithConceptDomain(String conceptDomain);
+	
+	/**
+	 * Returns list of Value Set Definition URIs that can be used with in the supplied list of usage context.
+	 * 
+	 * @param usageContexts list of usage context
+	 * 
+	 * @return list of URIs
+	 */
+	public List<String> getValueSetDefinitionURIsWithUsageContext(List<String> usageContexts);
+	
+	/**
+	 * Returns list of Value Set Definition URIs that are bound to supplied concept domain 
+	 * and in supplied usage context.
+	 * 
+	 * @param conceptDomain name/id of the conceptDomain
+	 * @param usageContexts list of usage context names/IDs
+	 * 
+	 * @return list of URIs
+	 */
+	public List<String> getValueSetDefinitionURIsWithConceptDomainAndUsageContext(String conceptDomain, List<String> usageContexts);
 }

@@ -21,11 +21,13 @@ package org.lexgrid.valuesets.impl;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -303,7 +305,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
             rvddef.setSource(vdDef.getSourceAsReference());
             rvddef.setCodingSchemeVersionRefList(domainNodes.getCodingSchemeVersionRefList());
             if(domainNodes != null && domainNodes.getCodedNodeSet() != null)
-                rvddef.setResolvedConceptReferenceIterator(domainNodes.getCodedNodeSet().restrictToStatus(ActiveOption.ACTIVE_ONLY, null).resolve(null, null, null));
+                rvddef.setResolvedConceptReferenceIterator(domainNodes.getCodedNodeSet().restrictToStatus(ActiveOption.ACTIVE_ONLY, null).resolve(null, null, null, null, true));
             return rvddef;
         } else {
             md_.fatal("No Value DomSet Definition found for URI : " + valueSetDefinitionURI);
@@ -691,6 +693,57 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	public List<String> getValueSetDefinitionURIsWithConceptDomain(
 			String conceptDomain) {
 		getLogger().logMethod(new Object[]{conceptDomain});
+		
 		return this.vsds_.getValueSetDefinitionURIForSupportedTagAndValue(SQLTableConstants.TBLCOLVAL_SUPPTAG_CONCEPTDOMAIN, conceptDomain);
+	}
+	
+	@Override
+	public List<String> getValueSetDefinitionURIsWithUsageContext(
+			List<String> usageContexts) {
+		getLogger().logMethod(new Object[]{usageContexts});
+		
+		Set<String> ucList = new HashSet<String>();
+		if (usageContexts != null)
+			for (String uc : usageContexts)
+			{
+				ucList.addAll(this.vsds_.getValueSetDefinitionURIForSupportedTagAndValue(
+											SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT, uc));
+			}
+		return new ArrayList<String>(ucList);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinitionURIsWithConceptDomainAndUsageContext(java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<String> getValueSetDefinitionURIsWithConceptDomainAndUsageContext(
+			String conceptDomain, List<String> usageContexts) {
+		getLogger().logMethod(new Object[]{conceptDomain, usageContexts});
+		
+		List<String> vsdURIs = new ArrayList<String>();		
+		List<String> cdList = getValueSetDefinitionURIsWithConceptDomain(conceptDomain);		
+		List<String> ucList = getValueSetDefinitionURIsWithUsageContext(usageContexts);
+		
+		if (cdList == null)
+			return ucList;
+		else if (ucList == null)
+			return cdList;
+		else
+		{
+			for (String cduri : cdList)
+			{
+				for (String ucuri : ucList)
+				{
+					if (ucuri.equals(cduri) && !vsdURIs.contains(ucuri))
+						vsdURIs.add(ucuri);
+				}
+			}
+		}
+		
+		cdList = null;
+		ucList = null;
+		
+		return vsdURIs;
 	}	
 }
