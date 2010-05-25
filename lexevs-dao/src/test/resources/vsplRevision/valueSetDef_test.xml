@@ -224,6 +224,36 @@
                         prevRevision="vdTestRelease2010Feb" relativeOrder="0" changeType="REMOVE"/>
                 </changedValueSetDefinitionEntry>
             </changedEntry>
+            <changedEntry>
+                <changedValueSetDefinitionEntry valueSetDefinitionURI="SRITEST:AUTO:EveryThing">
+                    <lgCommon:entryState containingRevision="vdTestRelease2010Apr"
+                        relativeOrder="0" changeType="REMOVE"/>
+                </changedValueSetDefinitionEntry>
+            </changedEntry>
+            <changedEntry>
+                <changedValueSetDefinitionEntry valueSetDefinitionURI="SRITEST:AUTO:DomesticAutoMakers">
+                    <lgCommon:entryState containingRevision="vdTestRelease2010Apr"
+                        relativeOrder="0" changeType="REMOVE"/>
+                </changedValueSetDefinitionEntry>
+            </changedEntry>
+            <changedEntry>
+                <changedValueSetDefinitionEntry valueSetDefinitionURI="SRITEST:AUTO:AutomobilesNoName">
+                    <lgCommon:entryState containingRevision="vdTestRelease2010Apr" prevRevision="vdTestRelease2010Mar"
+                        relativeOrder="0" changeType="REMOVE"/>
+                </changedValueSetDefinitionEntry>
+            </changedEntry>
+            <changedEntry>
+                <changedValueSetDefinitionEntry valueSetDefinitionURI="SRITEST:AUTO:AllDomesticButGM">
+                    <lgCommon:entryState containingRevision="vdTestRelease2010Apr"
+                        relativeOrder="0" changeType="REMOVE"/>
+                </changedValueSetDefinitionEntry>
+            </changedEntry>
+            <changedEntry>
+                <changedValueSetDefinitionEntry valueSetDefinitionURI="SRITEST:AUTO:GM">
+                    <lgCommon:entryState containingRevision="vdTestRelease2010Apr" prevRevision="vdTestRelease2010Jan"
+                        relativeOrder="0" changeType="REMOVE"/>
+                </changedValueSetDefinitionEntry>
+            </changedEntry>
         </revision>
         
     </editHistory>

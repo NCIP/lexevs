@@ -50,6 +50,7 @@
             <lgCS:entities>
                 <lgCon:entity entityCode="005" entityCodeNamespace="Automobiles" isActive="true">
                     <lgCommon:entityDescription>Domestic Auto Makers</lgCommon:entityDescription>
+                    <lgCon:entityType>concept</lgCon:entityType>
                     <lgCon:presentation propertyName="textualPresentation" propertyId="p1"
                         isPreferred="true">
                         <lgCommon:value>Domestic Auto Makers</lgCommon:value>
@@ -62,6 +63,7 @@
                 <lgCon:entity entityCode="73" entityCodeNamespace="Automobiles" status="Retired"
                     isActive="false">
                     <lgCommon:entityDescription>Oldsmobile</lgCommon:entityDescription>
+                    <lgCon:entityType>concept</lgCon:entityType>
                     <lgCon:presentation language="en" propertyName="textualPresentation"
                         propertyId="t1" isPreferred="true">
                         <lgCommon:value dataType="textplain">Oldsmobile</lgCommon:value>
@@ -79,6 +81,7 @@
                 <lgCon:entity entityCode="@" entityCodeNamespace="Automobiles" status="asdf"
                     isActive="true" isAnonymous="true">
                     <lgCommon:entityDescription>Top level node for relationships</lgCommon:entityDescription>
+                    <lgCon:entityType>concept</lgCon:entityType>
                     <lgCon:presentation propertyName="textualPresentation" propertyId="t1"
                         isPreferred="true" matchIfNoContext="true">
                         <lgCommon:source>GermanMadeParts</lgCommon:source>
@@ -88,6 +91,7 @@
                 <lgCon:entity entityCode="A0001" entityCodeNamespace="Automobiles" status="asfd"
                     isActive="true">
                     <lgCommon:entityDescription>Automobile</lgCommon:entityDescription>
+                    <lgCon:entityType>concept</lgCon:entityType>
                     <lgCon:presentation language="en" propertyName="textualPresentation"
                         propertyId="t1" isPreferred="true" matchIfNoContext="true">
                         <lgCommon:source>A0001</lgCommon:source>
@@ -102,6 +106,7 @@
                 <lgCon:entity entityCode="Anonymous-mobile" entityCodeNamespace="Automobiles"
                     isActive="true" isAnonymous="true">
                     <lgCommon:entityDescription>isAnonymous=true</lgCommon:entityDescription>
+                    <lgCon:entityType>concept</lgCon:entityType>
                     <lgCon:presentation propertyName="textualPresentation" propertyId="t2"
                         isPreferred="true">
                         <lgCommon:value>Anonymous-mobile</lgCommon:value>
@@ -115,6 +120,7 @@
                 <lgCon:entity entityCode="C0001" entityCodeNamespace="Automobiles" status="asf"
                     isActive="true">
                     <lgCommon:entityDescription>Car</lgCommon:entityDescription>
+                    <lgCon:entityType>concept</lgCon:entityType>
                     <lgCon:presentation language="en" propertyName="textualPresentation"
                         propertyId="c1" isPreferred="true" matchIfNoContext="true">
                         <lgCommon:value>Car</lgCommon:value>
@@ -122,6 +128,7 @@
                 </lgCon:entity>
                 <lgCon:entity entityCode="Chevy" entityCodeNamespace="Automobiles" isActive="true">
                     <lgCommon:entityDescription>Chevrolet</lgCommon:entityDescription>
+                    <lgCon:entityType>concept</lgCon:entityType>
                     <lgCon:presentation propertyName="textualPresentation" propertyId="p1"
                         isPreferred="true">
                         <lgCommon:value>Chevy</lgCommon:value>
@@ -133,6 +140,7 @@
                 </lgCon:entity>
                 <lgCon:entity entityCode="Ford" entityCodeNamespace="Automobiles" isActive="true">
                     <lgCommon:entityDescription>Ford Motor Company</lgCommon:entityDescription>
+                    <lgCon:entityType>concept</lgCon:entityType>
                     <lgCon:presentation propertyName="textualPresentation" propertyId="p1"
                         isPreferred="true">
                         <lgCommon:value>Ford</lgCommon:value>
@@ -144,6 +152,7 @@
                 </lgCon:entity>
                 <lgCon:entity entityCode="GM" entityCodeNamespace="Automobiles" isActive="true">
                     <lgCommon:entityDescription>General Motors</lgCommon:entityDescription>
+                    <lgCon:entityType>concept</lgCon:entityType>
                     <lgCon:presentation propertyName="textualPresentation" propertyId="p1"
                         isPreferred="true">
                         <lgCommon:value>General Motors</lgCommon:value>
@@ -156,6 +165,7 @@
                 <lgCon:entity entityCode="Chrysler" entityCodeNamespace="Automobiles"
                     isActive="true">
                     <lgCommon:entityDescription>DaimlerChrysler Corporation</lgCommon:entityDescription>
+                    <lgCon:entityType>concept</lgCon:entityType>
                     <lgCon:presentation propertyName="textualPresentation" propertyId="p1"
                         isPreferred="true">
                         <lgCommon:value>DaimlerChrysler Corporation</lgCommon:value>
@@ -167,6 +177,7 @@
                 </lgCon:entity>
                 <lgCon:entity entityCode="Jaguar" entityCodeNamespace="Automobiles" isActive="true">
                     <lgCommon:entityDescription>Jaguar</lgCommon:entityDescription>
+                    <lgCon:entityType>concept</lgCon:entityType>
                     <lgCon:presentation propertyName="textualPresentation" propertyId="p1"
                         isPreferred="false">
                         <lgCommon:value>Jaguar</lgCommon:value>
@@ -174,6 +185,7 @@
                 </lgCon:entity>
                 <lgCon:entity entityCode="LeBaron" entityCodeNamespace="Automobiles" isActive="true">
                     <lgCommon:entityDescription>LeBaron</lgCommon:entityDescription>
+                    <lgCon:entityType>concept</lgCon:entityType>
                     <lgCon:presentation propertyName="textualPresentation" propertyId="p1"
                         isPreferred="false">
                         <lgCommon:value>LeBaron</lgCommon:value>
@@ -182,6 +194,7 @@
                 <lgCon:entity entityCode="T0001" entityCodeNamespace="Automobiles" status="a65"
                     isActive="true">
                     <lgCommon:entityDescription>Truck</lgCommon:entityDescription>
+                    <lgCon:entityType>concept</lgCon:entityType>
                     <lgCon:presentation language="en" propertyName="textualPresentation"
                         propertyId="t1" isPreferred="true" matchIfNoContext="true">
                         <lgCommon:value>Truck</lgCommon:value>
@@ -190,6 +203,7 @@
                 <lgCon:entity entityCode="GearBox" entityCodeNamespace="Automobiles">
                     <lgCommon:entityDescription>GearBox of an
                     automobile.</lgCommon:entityDescription>
+                    <lgCon:entityType>concept</lgCon:entityType>
                 </lgCon:entity>
             </lgCS:entities>
             <lgCS:relations containerName="rel">
@@ -290,6 +304,7 @@
                             isActive="true">
                             <lgCommon:entryState containingRevision="testRelease2010"
                                 relativeOrder="0" changeType="NEW"/>
+                                <lgCon:entityType>concept</lgCon:entityType>
                             <lgCon:presentation propertyName="autoPart" propertyId="p2"
                                 propertyType="presentation" status="active">
                                 <lgCommon:entryState containingRevision="testRelease2010"
@@ -301,6 +316,7 @@
                             isActive="true">
                             <lgCommon:entryState containingRevision="testRelease2010"
                                 relativeOrder="0" changeType="NEW"/>
+                            <lgCon:entityType>concept</lgCon:entityType>    
                             <lgCon:presentation propertyName="autoPart" propertyId="p1"
                                 propertyType="presentation" status="active">
                                 <lgCommon:entryState containingRevision="testRelease2010"

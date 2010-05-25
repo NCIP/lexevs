@@ -82,46 +82,6 @@
                     transitiveClosure="true" targetToSource="false" leafOnly="false"/>
             </lgVD:definitionEntry>
         </lgVD:valueSetDefinition>
-        <lgVD:valueSetDefinition valueSetDefinitionURI="SRITEST:AUTO:DomesticAutoMakers"
-            valueSetDefinitionName="Domestic Auto Makers" defaultCodingScheme="Automobiles"
-            conceptDomain="Autos" effectiveDate="2009-01-01T11:00:00Z" isActive="true"
-            status="ACTIVE">
-            <lgVD:mappings>
-                <lgNaming:supportedConceptDomain localId="Autos" uri="urn:oid:11.11.0.1"
-                    >Autos</lgNaming:supportedConceptDomain>
-            </lgVD:mappings>
-            <lgVD:properties>
-                <lgCommon:property propertyName="textualPresentation">
-                    <lgCommon:value> Domestic Auto Makers</lgCommon:value>
-                </lgCommon:property>
-            </lgVD:properties>
-            <lgVD:definitionEntry ruleOrder="1" operator="OR">
-                <lgVD:entityReference entityCode="005" referenceAssociation="hasSubtype"
-                    transitiveClosure="true" targetToSource="false" leafOnly="false"/>
-            </lgVD:definitionEntry>
-        </lgVD:valueSetDefinition>
-        <lgVD:valueSetDefinition valueSetDefinitionURI="SRITEST:AUTO:Automobiles"
-            valueSetDefinitionName="Automobiles" defaultCodingScheme="Automobiles"
-            conceptDomain="Autos" effectiveDate="2009-01-01T11:00:00Z" isActive="true"
-            status="ACTIVE">
-            <lgVD:mappings>
-                <lgNaming:supportedConceptDomain localId="Autos" uri="urn:oid:11.11.0.1"
-                    >Autos</lgNaming:supportedConceptDomain>
-            </lgVD:mappings>
-            <lgVD:source role="role100" subRef="subRef100">GM007</lgVD:source>
-            <lgVD:source role="role200" subRef="subRef200">Ford007</lgVD:source>
-            <lgVD:representsRealmOrContext>testContext1</lgVD:representsRealmOrContext>
-            <lgVD:representsRealmOrContext>testContext2</lgVD:representsRealmOrContext>
-            <lgVD:properties>
-                <lgCommon:property propertyName="textualPresentation">
-                    <lgCommon:value>Automobiles</lgCommon:value>
-                </lgCommon:property>
-            </lgVD:properties>
-            <lgVD:definitionEntry ruleOrder="1" operator="OR">
-                <lgVD:entityReference entityCode="A0001" referenceAssociation="hasSubtype"
-                    transitiveClosure="true" targetToSource="false" leafOnly="false"/>
-            </lgVD:definitionEntry>
-        </lgVD:valueSetDefinition>
         <lgVD:valueSetDefinition valueSetDefinitionURI="SRITEST:AUTO:AutomobilesNoName"
             valueSetDefinitionName=" " defaultCodingScheme="Automobiles"
             effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
@@ -139,7 +99,13 @@
             valueSetDefinitionName="All Domestic Autos But GM" defaultCodingScheme="Automobiles"
             effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
             <lgVD:properties>
-                <lgCommon:property propertyName="textualPresentation">
+                <lgCommon:property propertyName="textualPresentation" propertyId="p1">
+                    <lgCommon:source>source1</lgCommon:source>
+                    <lgCommon:usageContext>context1</lgCommon:usageContext>
+                    <lgCommon:propertyQualifier propertyQualifierName="qual1"
+                        propertyQualifierType="type1">
+                        <lgCommon:value>value1</lgCommon:value>
+                    </lgCommon:propertyQualifier>
                     <lgCommon:value> Domestic Auto Makers</lgCommon:value>
                 </lgCommon:property>
             </lgVD:properties>
@@ -153,69 +119,326 @@
             </lgVD:definitionEntry>
         </lgVD:valueSetDefinition>
     </lgVer:valueSetDefinitions>
-    
+    <pickListDefinitions>
+        <lgVD:mappings>
+            <lgNaming:supportedAssociation localId="is_a"
+                uri="urn:lsid:bioontology.org:fungal_anatomy:is_a">is_a</lgNaming:supportedAssociation>
+            <lgNaming:supportedAssociation localId="hasSubtype"
+                uri="urn:oid:1.3.6.1.4.1.2114.108.1.8.1">hasSubtype</lgNaming:supportedAssociation>
+            <lgNaming:supportedAssociation localId="uses" uri="urn:oid:11.11.0.1">uses</lgNaming:supportedAssociation>
+            <lgNaming:supportedAssociationQualifier localId="hasEngine" uri="www.something.com"
+                >hasEngine</lgNaming:supportedAssociationQualifier>
+            <lgNaming:supportedCodingScheme localId="Automobiles" uri="urn:oid:11.11.0.1"
+                >Automobiles</lgNaming:supportedCodingScheme>
+            <lgNaming:supportedCodingScheme localId="fungal_anatomy"
+                uri="urn:lsid:bioontology.org:fungal_anatomy">fungal_anatomy</lgNaming:supportedCodingScheme>
+            <lgNaming:supportedCodingScheme localId="ExpendableParts" uri="urn:oid:11.11.0.50"
+                >Expendable Parts</lgNaming:supportedCodingScheme>
+            <lgNaming:supportedCodingScheme localId="GermanMadeParts" uri="urn:oid:11.11.0.2">German
+                Made Parts</lgNaming:supportedCodingScheme>
+            <lgNaming:supportedDataType localId="texthtml">text/html</lgNaming:supportedDataType>
+            <lgNaming:supportedDataType localId="textplain">text/plain</lgNaming:supportedDataType>
+            <lgNaming:supportedHierarchy localId="is_a" associationNames="hasSubtype"
+                isForwardNavigable="true" rootCode="@">hasSubtype</lgNaming:supportedHierarchy>
+            <lgNaming:supportedLanguage localId="en" uri="www.en.org/orsomething">en</lgNaming:supportedLanguage>
+            <lgNaming:supportedNamespace localId="Automobiles" uri="urn:oid:11.11.0.1"
+                equivalentCodingScheme="Automobiles">Automobiles</lgNaming:supportedNamespace>
+            <lgNaming:supportedNamespace localId="ExpendableParts" uri="urn:oid:11.11.0.50"
+                equivalentCodingScheme="ExpendableParts">Expendable Parts</lgNaming:supportedNamespace>
+            <lgNaming:supportedNamespace localId="GermanMadePartsNamespace" uri="urn:oid:11.11.0.2"
+                equivalentCodingScheme="GermanMadeParts">German Made Parts</lgNaming:supportedNamespace>
+            <lgNaming:supportedProperty localId="definition">definition</lgNaming:supportedProperty>
+            <lgNaming:supportedProperty localId="textualPresentation">textualPresentation</lgNaming:supportedProperty>
+            <lgNaming:supportedSource localId="lexgrid.org" assemblyRule="rule1"
+                uri="http://informatics.mayo.edu">lexgrid.org</lgNaming:supportedSource>
+            <lgNaming:supportedSource localId="_111101">11.11.0.1</lgNaming:supportedSource>
+        </lgVD:mappings>
+        <lgVD:pickListDefinition pickListId="SRITEST:AUTO:DomesticAutoMakers"
+            representsValueSetDefinition="SRITEST:AUTO:DomesticAutoMakers" isActive="true"
+            defaultEntityCodeNamespace="Automobiles" defaultLanguage="en" completeSet="false">
+            <lgCommon:owner>Owner for Domestic Auto Makers</lgCommon:owner>
+            <lgCommon:entityDescription>DomesticAutoMakers</lgCommon:entityDescription>
+            <lgVD:mappings>
+                <lgNaming:supportedCodingScheme localId="Automobiles" uri="urn:oid:11.11.0.1"
+                    >Automobiles</lgNaming:supportedCodingScheme>
+                <lgNaming:supportedDataType localId="texthtml">text/html</lgNaming:supportedDataType>
+                <lgNaming:supportedDataType localId="textplain">text/plain</lgNaming:supportedDataType>
+                <lgNaming:supportedLanguage localId="en" uri="www.en.org/orsomething">en</lgNaming:supportedLanguage>
+                <lgNaming:supportedNamespace localId="Automobiles" uri="urn:oid:11.11.0.1"
+                    equivalentCodingScheme="Automobiles">Automobiles</lgNaming:supportedNamespace>
+                <lgNaming:supportedProperty localId="definition">definition</lgNaming:supportedProperty>
+                <lgNaming:supportedProperty localId="textualPresentation">textualPresentation</lgNaming:supportedProperty>
+                <lgNaming:supportedSource assemblyRule="rule1" uri="http://informatics.mayo.edu"
+                    localId="lexgrid.org">lexgrid.org</lgNaming:supportedSource>
+                <lgNaming:supportedSource localId="_111101">11.11.0.1</lgNaming:supportedSource>
+            </lgVD:mappings>
+            <lgVD:pickListEntryNode pickListEntryId="PL005p1" isActive="true">
+                <lgCommon:owner>Owner for PL005p1</lgCommon:owner>
+                <lgVD:inclusionEntry entityCode="005" entityCodeNamespace="Automobiles"
+                    propertyId="p1">
+                    <lgVD:pickText>Domestic Auto Makers</lgVD:pickText>
+                    <lgVD:pickContext>Domestic Auto Makers</lgVD:pickContext>
+                    <lgVD:pickContext>Cars</lgVD:pickContext>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="definition">
+                        <lgCommon:value dataType="textplain">Definition for Domestic Auto
+                        Makers</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="PL005p2" isActive="true">
+                <lgVD:inclusionEntry entityCode="005" entityCodeNamespace="Automobiles"
+                    propertyId="p2">
+                    <lgVD:pickText>American Car Companies</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="definition">
+                        <lgCommon:value dataType="textplain">Definition for Amerocan Auto
+                        Makers</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="PLChevroletp1" isActive="true">
+                <lgCommon:owner>Owner for PLChevroletp1</lgCommon:owner>
+                <lgVD:inclusionEntry entityCode="Chevy" entityCodeNamespace="Automobiles"
+                    propertyId="p1">
+                    <lgVD:pickText>Chevrolet</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="textualPresentation" isActive="true"
+                        language="en" propertyId="p1" propertyType="presentation" status="active"
+                        effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
+                        <lgCommon:owner>Chevrolet</lgCommon:owner>
+                        <lgCommon:source subRef="subref1" role="role1">Chevrolet</lgCommon:source>
+                        <lgCommon:value dataType="textplain">Property for Chevrolet</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="PLOldsmobilep1" isActive="true">
+                <lgCommon:owner>Owner for PLOldsmobilep1</lgCommon:owner>
+                <lgVD:inclusionEntry entityCode="73" entityCodeNamespace="Automobiles"
+                    propertyId="p1">
+                    <lgVD:pickText>Oldsmobile</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="textualPresentation" isActive="true"
+                        language="en" propertyId="p1" propertyType="presentation" status="active"
+                        effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
+                        <lgCommon:owner>Oldsmobile</lgCommon:owner>
+                        <lgCommon:source subRef="subref1" role="role1">Oldsmobile</lgCommon:source>
+                        <lgCommon:value dataType="textplain">Property for
+                        Oldsmobile</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+            <lgVD:source>source1</lgVD:source>
+            <lgVD:source>source2</lgVD:source>
+            <lgVD:defaultPickContext>context1</lgVD:defaultPickContext>
+            <lgVD:defaultPickContext>context2</lgVD:defaultPickContext>
+        </lgVD:pickListDefinition>
+        <lgVD:pickListDefinition pickListId="SRITEST:FA:hyphaLeafOnly"
+            representsValueSetDefinition="SRITEST:FA:hyphaLeafOnly" isActive="true"
+            completeSet="true">
+            <lgCommon:entityDescription>Leaf Only nodes of hypha</lgCommon:entityDescription>
+        </lgVD:pickListDefinition>
+    </pickListDefinitions>
+
     <editHistory>
-        <!-- Test : NEW ValueSet Definition property-->
-        <revision revisionId="vdPropTestRelease2010Jan">
-            <lgCommon:entityDescription>test Description of vdPropTestRelease2010Jan</lgCommon:entityDescription>
+        <!-- Test : NEW vsProperty-->
+        <revision revisionId="vsPropTestRelease2010Jan">
+            <lgCommon:entityDescription>test Description of vsPropTestRelease2010Jan</lgCommon:entityDescription>
+
+            <!-- ////// NEW Valueset Defintiion property //////  -->
             <changedEntry>
-                <changedValueSetDefinitionEntry valueSetDefinitionURI="SRITEST:AUTO:GM"
-                    valueSetDefinitionName="GM" defaultCodingScheme="Automobiles"
-                    effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
-                    <lgCommon:entryState containingRevision="vdTestRelease2010Jan" relativeOrder="0"
-                        changeType="NEW"/>
-                    <lgCommon:entityDescription>test new value set definition</lgCommon:entityDescription>
+                <changedValueSetDefinitionEntry
+                    valueSetDefinitionURI="SRITEST:AUTO:AllDomesticButGM"
+                    valueSetDefinitionName="GM">
+                    <lgCommon:entryState containingRevision="vsPropTestRelease2010Jan"
+                        relativeOrder="0" changeType="DEPENDENT"/>
                     <lgVD:properties>
-                        <lgCommon:property propertyName="textualPresentation" language="en"
-                            isActive="true" propertyId="p1" status="active" propertyType="property"
+                        <lgCommon:property propertyName="textualPresentation" propertyId="prop1" language="es"
+                            isActive="true" status="active" propertyType="property"
                             effectiveDate="2010-01-01T11:00:00" expirationDate="2012-12-01T11:11:11">
-                            <!--lgCommon:entryState containingRevision="vdTestRelease2010Jan"
-                                relativeOrder="0" changeType="NEW"/-->
+                            <lgCommon:entryState containingRevision="vsPropTestRelease2010Jan"
+                                relativeOrder="0" changeType="NEW"/>
+                            <lgCommon:source>source1</lgCommon:source>
+                            <lgCommon:usageContext>context1</lgCommon:usageContext>
+                            <lgCommon:propertyQualifier propertyQualifierName="qualName"
+                                propertyQualifierType="String">
+                                <lgCommon:value>newValue</lgCommon:value>
+                            </lgCommon:propertyQualifier>
+                            <lgCommon:value>PM</lgCommon:value>
+                        </lgCommon:property>
+                    </lgVD:properties>
+                </changedValueSetDefinitionEntry>
+            </changedEntry>
+
+            <!-- ////// NEW PickList Defintiion property //////  -->
+            <changedEntry>
+                <changedPickListDefinitionEntry pickListId="SRITEST:FA:hyphaLeafOnly"
+                    representsValueSetDefinition="">
+                    <lgCommon:entryState containingRevision="vsPropTestRelease2010Jan"
+                        relativeOrder="0" changeType="DEPENDENT"/>
+                    <lgVD:properties>
+                        <lgCommon:property propertyName="textualPresentation" language="es"
+                            isActive="false" status="active" propertyType="property"
+                            propertyId="p100" effectiveDate="2010-01-01T11:20:30"
+                            expirationDate="2012-12-01T11:12:13">
+                            <lgCommon:entryState containingRevision="vsPropTestRelease2010Jan"
+                                relativeOrder="0" changeType="NEW"/>
+                            <lgCommon:source>source2</lgCommon:source>
+                            <lgCommon:usageContext>context2</lgCommon:usageContext>
+                            <lgCommon:propertyQualifier propertyQualifierName="qualName2"
+                                propertyQualifierType="String">
+                                <lgCommon:value>newValue2</lgCommon:value>
+                            </lgCommon:propertyQualifier>
                             <lgCommon:value>GM</lgCommon:value>
                         </lgCommon:property>
                     </lgVD:properties>
-                    <lgVD:definitionEntry ruleOrder="1" operator="OR" isActive="true"
-                        effectiveDate="2010-01-01T11:00:00" status="active">
-                        <!--lgCommon:entryState containingRevision="vdTestRelease2010Jan"
-                            relativeOrder="0" changeType="NEW"/-->
-                        <lgVD:entityReference entityCode="GM" referenceAssociation="hasSubtype"
-                            transitiveClosure="true" targetToSource="false" leafOnly="false"/>
-                    </lgVD:definitionEntry>
-                </changedValueSetDefinitionEntry>
+                </changedPickListDefinitionEntry>
+            </changedEntry>
+
+            <!-- ////// NEW PickList Entry Node Property ////// -->
+            <changedEntry>
+                <changedPickListDefinitionEntry pickListId="SRITEST:AUTO:DomesticAutoMakers"
+                    representsValueSetDefinition="">
+                    <lgCommon:entryState containingRevision="vsPropTestRelease2010Jan"
+                        relativeOrder="0" changeType="DEPENDENT"/>
+                    <lgVD:pickListEntryNode pickListEntryId="PL005p1">
+                        <lgCommon:entryState containingRevision="vsPropTestRelease2010Jan"
+                            relativeOrder="0" changeType="DEPENDENT"/>
+                        <lgVD:exclusionEntry entityCode="asd"/>
+                        <lgVD:properties>
+                            <lgCommon:property propertyName="defintion" propertyId="p200"
+                                effectiveDate="2010-01-01T11:20:30"
+                                expirationDate="2012-12-01T11:12:13" language="en"
+                                propertyType="prop" isActive="true" status="passive">
+                                <lgCommon:entryState containingRevision="vsPropTestRelease2010Jan"
+                                    relativeOrder="0" changeType="NEW"/>
+                                <lgCommon:source>source3</lgCommon:source>
+                                <lgCommon:usageContext>context3</lgCommon:usageContext>
+                                <lgCommon:propertyQualifier propertyQualifierName="qualNam3"
+                                    propertyQualifierType="String">
+                                    <lgCommon:value>newValue3</lgCommon:value>
+                                </lgCommon:propertyQualifier>
+                                <lgCommon:value>GM3</lgCommon:value>
+                            </lgCommon:property>
+                        </lgVD:properties>
+                    </lgVD:pickListEntryNode>
+                </changedPickListDefinitionEntry>
             </changedEntry>
         </revision>
-        
-        <!-- Test: MODIFY ValueSet Definition -->
-        <revision revisionId="vdTestRelease2010Feb">
+
+        <!-- Test: MODIFY vsProperty-->
+        <revision revisionId="vsPropTestRelease2010Feb">
+            <!-- ////// MODIFY Valueset Defintiion property //////  -->
             <changedEntry>
-                <changedValueSetDefinitionEntry valueSetDefinitionURI="SRITEST:AUTO:Automobiles"
-                    valueSetDefinitionName="Automobiles" defaultCodingScheme="Automobiles"
-                    conceptDomain="Autos" effectiveDate="2009-01-01T11:00:00Z" isActive="true"
-                    status="ACTIVE">
-                    <lgCommon:entryState containingRevision="vdTestRelease2010Feb" relativeOrder="0"
-                        changeType="MODIFY"/>
-                    <lgCommon:entityDescription>test MODIFY value set
-                        definition</lgCommon:entityDescription>
-                    <lgVD:source role="role300" subRef="subRef300">Ford003</lgVD:source>
-                    <lgVD:representsRealmOrContext>testContext3</lgVD:representsRealmOrContext>
+                <changedValueSetDefinitionEntry  valueSetDefinitionURI="SRITEST:AUTO:AllDomesticButGM">
+                    <lgCommon:entryState containingRevision="vsPropTestRelease2010Feb"
+                        relativeOrder="0" prevRevision="vsPropTestRelease2010Jan"
+                        changeType="DEPENDENT"/>
+                    <lgVD:properties>
+                        <lgCommon:property propertyName="textualPresentation" propertyId="p1"
+                            propertyType="property" language="bn" isActive="false">
+                            <lgCommon:entryState containingRevision="vsPropTestRelease2010Feb"
+                                relativeOrder="0" changeType="MODIFY"/>
+                            <!--lgCommon:source>source2</lgCommon:source-->
+                            <lgCommon:usageContext>context2</lgCommon:usageContext>
+                            <lgCommon:propertyQualifier propertyQualifierName="qual2"
+                                propertyQualifierType="type2">
+                                <lgCommon:value>value2</lgCommon:value>
+                            </lgCommon:propertyQualifier>
+                            <lgCommon:value> Domestic Auto Makers - mod</lgCommon:value>
+                        </lgCommon:property>
+                    </lgVD:properties>
                 </changedValueSetDefinitionEntry>
+            </changedEntry>
+            
+            <!-- ////// MODIFY PickList Defintiion property //////  -->
+            <changedEntry>
+                <changedPickListDefinitionEntry pickListId="SRITEST:FA:hyphaLeafOnly"
+                    representsValueSetDefinition="">
+                    <lgCommon:entryState containingRevision="vsPropTestRelease2010Feb"
+                        prevRevision="vsPropTestRelease2010Jan" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgVD:properties>
+                        <lgCommon:property propertyName="textualPresentation" language="en"
+                            isActive="false" status="active" propertyType="definition"
+                            propertyId="p100" effectiveDate="2010-01-01T11:20:30"
+                            expirationDate="2012-12-01T11:12:13">
+                            <lgCommon:entryState containingRevision="vsPropTestRelease2010Feb"
+                                prevRevision="vsPropTestRelease2010Jan" relativeOrder="0"
+                                changeType="MODIFY"/>
+                            <lgCommon:source>source2</lgCommon:source>
+                            <lgCommon:source>source3</lgCommon:source>
+                            <lgCommon:usageContext>context2</lgCommon:usageContext>
+                            <lgCommon:usageContext>context3</lgCommon:usageContext>
+                            <lgCommon:propertyQualifier propertyQualifierName="qualName2"
+                                propertyQualifierType="String">
+                                <lgCommon:value>newValue2</lgCommon:value>
+                            </lgCommon:propertyQualifier>
+                            <lgCommon:propertyQualifier propertyQualifierName="qualName3"
+                                propertyQualifierType="String">
+                                <lgCommon:value>newValue3</lgCommon:value>
+                            </lgCommon:propertyQualifier>
+                            <lgCommon:value>GM-mod</lgCommon:value>
+                        </lgCommon:property>
+                    </lgVD:properties>
+                </changedPickListDefinitionEntry>
+            </changedEntry>
+            
+            <!-- ////// MODIFY PickList Entry Node Property ////// -->
+            <changedEntry>
+                <changedPickListDefinitionEntry pickListId="SRITEST:AUTO:DomesticAutoMakers" 
+                    representsValueSetDefinition=" ">
+                    <lgCommon:entryState containingRevision="vsPropTestRelease2010Feb" prevRevision="vsPropTestRelease2010Jan"
+                        relativeOrder="0" changeType="DEPENDENT"/>
+                    <lgVD:pickListEntryNode pickListEntryId="PLChevroletp1">
+                        <lgCommon:entryState containingRevision="vsPropTestRelease2010Feb"
+                            relativeOrder="0" changeType="DEPENDENT"/>
+                        <lgVD:exclusionEntry entityCode="asdf"/>
+                        <lgVD:properties>
+                            <lgCommon:property propertyName="textualPresentation" isActive="false"
+                                language="ht" propertyId="p1" propertyType="comment"
+                                status="inActive" effectiveDate="2001-12-23T09:30:47Z"
+                                expirationDate="2011-12-29T09:30:47Z">
+                                <lgCommon:entryState containingRevision="vsPropTestRelease2010Feb"
+                                    relativeOrder="0" changeType="MODIFY"/>
+                                <lgCommon:source subRef="subref2" role="role2">Chevrolet-mod</lgCommon:source>
+                                <lgCommon:usageContext>context-chevy</lgCommon:usageContext>
+                                <lgCommon:propertyQualifier propertyQualifierName="qual1" propertyQualifierType="chevy">
+                                    <lgCommon:value>chevy-value</lgCommon:value>
+                                </lgCommon:propertyQualifier>
+                                <lgCommon:value dataType="textplain">Property for
+                                    Chevrolet - mod</lgCommon:value>
+                            </lgCommon:property>
+                        </lgVD:properties>
+                    </lgVD:pickListEntryNode>
+                </changedPickListDefinitionEntry>
             </changedEntry>
         </revision>
         
         <!-- Test: VERSIONABLE ValueSet Definition -->
-        <revision revisionId="vdTestRelease2010Mar">
+        <revision revisionId="vsPropTestRelease2010Mar">
             <changedEntry>
                 <changedValueSetDefinitionEntry
-                    valueSetDefinitionURI="SRITEST:AUTO:AutomobilesNoName"
-                    valueSetDefinitionName=" " defaultCodingScheme="Automobiles"
-                    effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="active">
-                    <lgCommon:owner>Mayo</lgCommon:owner>
-                    <lgCommon:entryState containingRevision="vdTestRelease2010Mar" relativeOrder="0"
-                        changeType="VERSIONABLE"/>
+                    valueSetDefinitionURI="SRITEST:AUTO:AllDomesticButGM"
+                    valueSetDefinitionName="GM">
+                    <lgCommon:entryState containingRevision="vsPropTestRelease2010Mar" prevRevision="vsPropTestRelease2010Feb"
+                        relativeOrder="0" changeType="VERSIONABLE"/>
+                    <lgVD:properties>
+                        <lgCommon:property propertyName="textualPresentation" propertyId="prop1" language="es"
+                            isActive="false" status="inActive" propertyType="property"
+                            effectiveDate="2009-01-01T11:00:00" expirationDate="2009-12-01T11:11:11">
+                            <lgCommon:entryState containingRevision="vsPropTestRelease2010Mar" prevRevision="vsPropTestRelease2010Jan"
+                                relativeOrder="0" changeType="VERSIONABLE"/>
+                        </lgCommon:property>
+                    </lgVD:properties>
                 </changedValueSetDefinitionEntry>
             </changedEntry>
         </revision>
-        
+
         <!-- Test: REMOVE ValueSet Definition -->
         <revision revisionId="vdTestRelease2010Apr">
             <changedEntry>
@@ -224,7 +447,6 @@
                         prevRevision="vdTestRelease2010Feb" relativeOrder="0" changeType="REMOVE"/>
                 </changedValueSetDefinitionEntry>
             </changedEntry>
-        </revision>
-        
+        </revision>        
     </editHistory>
 </systemRelease>

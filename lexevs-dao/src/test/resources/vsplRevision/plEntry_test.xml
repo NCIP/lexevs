@@ -63,8 +63,6 @@
             </lgVD:mappings>
             <lgVD:pickListEntryNode pickListEntryId="PL005p1" isActive="true">
                 <lgCommon:owner>Owner for PL005p1</lgCommon:owner>
-                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW"
-                    prevRevision="R00A"/>
                 <lgVD:inclusionEntry entityCode="005" entityCodeNamespace="Automobiles"
                     propertyId="p1">
                     <lgVD:pickText>Domestic Auto Makers</lgVD:pickText>
@@ -73,24 +71,18 @@
                 </lgVD:inclusionEntry>
                 <lgVD:properties>
                     <lgCommon:property propertyName="definition">
-                        <lgCommon:entryState containingRevision="R001" relativeOrder="1"
-                            changeType="NEW" prevRevision="R00A"/>
                         <lgCommon:value dataType="textplain">Definition for Domestic Auto
                         Makers</lgCommon:value>
                     </lgCommon:property>
                 </lgVD:properties>
             </lgVD:pickListEntryNode>
             <lgVD:pickListEntryNode pickListEntryId="PL005p2" isActive="true">
-                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW"
-                    prevRevision="R00A"/>
                 <lgVD:inclusionEntry entityCode="005" entityCodeNamespace="Automobiles"
                     propertyId="p2">
                     <lgVD:pickText>American Car Companies</lgVD:pickText>
                 </lgVD:inclusionEntry>
                 <lgVD:properties>
                     <lgCommon:property propertyName="definition">
-                        <lgCommon:entryState containingRevision="R001" relativeOrder="1"
-                            changeType="NEW" prevRevision="R00A"/>
                         <lgCommon:value dataType="textplain">Definition for Amerocan Auto
                         Makers</lgCommon:value>
                     </lgCommon:property>
@@ -98,8 +90,6 @@
             </lgVD:pickListEntryNode>
             <lgVD:pickListEntryNode pickListEntryId="PLChevroletp1" isActive="true">
                 <lgCommon:owner>Owner for PLChevroletp1</lgCommon:owner>
-                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW"
-                    prevRevision="R00A"/>
                 <lgVD:inclusionEntry entityCode="Chevy" entityCodeNamespace="Automobiles"
                     propertyId="p1">
                     <lgVD:pickText>Chevrolet</lgVD:pickText>
@@ -109,8 +99,6 @@
                         language="en" propertyId="p1" propertyType="presentation" status="active"
                         effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
                         <lgCommon:owner>Chevrolet</lgCommon:owner>
-                        <lgCommon:entryState containingRevision="R001" relativeOrder="1"
-                            changeType="NEW" prevRevision="R00A"/>
                         <lgCommon:source subRef="subref1" role="role1">Chevrolet</lgCommon:source>
                         <lgCommon:value dataType="textplain">Property for Chevrolet</lgCommon:value>
                     </lgCommon:property>
@@ -118,8 +106,6 @@
             </lgVD:pickListEntryNode>
             <lgVD:pickListEntryNode pickListEntryId="PLOldsmobilep1" isActive="true">
                 <lgCommon:owner>Owner for PLOldsmobilep1</lgCommon:owner>
-                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW"
-                    prevRevision="R00A"/>
                 <lgVD:inclusionEntry entityCode="73" entityCodeNamespace="Automobiles"
                     propertyId="p1">
                     <lgVD:pickText>Oldsmobile</lgVD:pickText>
@@ -129,20 +115,16 @@
                         language="en" propertyId="p1" propertyType="presentation" status="active"
                         effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
                         <lgCommon:owner>Oldsmobile</lgCommon:owner>
-                        <lgCommon:entryState containingRevision="R001" relativeOrder="1"
-                            changeType="NEW" prevRevision="R00A"/>
                         <lgCommon:source subRef="subref1" role="role1">Oldsmobile</lgCommon:source>
                         <lgCommon:value dataType="textplain">Property for
                         Oldsmobile</lgCommon:value>
                     </lgCommon:property>
                 </lgVD:properties>
             </lgVD:pickListEntryNode>
-        </lgVD:pickListDefinition>
-        <lgVD:pickListDefinition pickListId="SRITEST:AUTO:DomasticLeafOnly"
-            representsValueSetDefinition="SRITEST:AUTO:DomasticLeafOnly" completeSet="true"
-            defaultEntityCodeNamespace="Automobiles" defaultLanguage="en" isActive="true">
-            <lgCommon:entityDescription>Leaf Only Nodes of Domastic
-            AutoMakers</lgCommon:entityDescription>
+            <lgVD:source>source1</lgVD:source>
+            <lgVD:source>source2</lgVD:source>
+            <lgVD:defaultPickContext>context1</lgVD:defaultPickContext>
+            <lgVD:defaultPickContext>context2</lgVD:defaultPickContext>
         </lgVD:pickListDefinition>
         <lgVD:pickListDefinition pickListId="SRITEST:FA:hyphaLeafOnly"
             representsValueSetDefinition="SRITEST:FA:hyphaLeafOnly" isActive="true"
@@ -224,30 +206,30 @@
     </pickListDefinitions>
 
     <editHistory>
-        <!-- Test: NEW PicklistDefinition -->
-        <revision revisionId="picklistTestRelease2010Jan" editOrder="0"
+        <!-- Test: NEW PLEntry -->
+        <revision revisionId="plEntryTestRelease2010Jan" editOrder="0"
             revisionDate="2010-01-01T01:20:30">
             <changedEntry>
-                <changedPickListDefinitionEntry
-                    pickListId="SRITEST:FA:MicrobialStructureOntologyMinusMCell"
-                    representsValueSetDefinition="SRITEST:FA:MicrobialStructureOntology"
-                    completeSet="false" defaultEntityCodeNamespace="fungal_anatomy"
-                    defaultLanguage="en" defaultSortOrder="Assending" isActive="true"
-                    status="active">
-                    <lgCommon:owner>Owner for FA:MicrobialStructureOntologyMinusMCell</lgCommon:owner>
-                    <lgCommon:entryState containingRevision="picklistTestRelease2010Jan"
-                        relativeOrder="0" changeType="NEW"/>
-                    <lgCommon:entityDescription>Microbial Structure Ontology with out Mating cell</lgCommon:entityDescription>
-                    <lgVD:pickListEntryNode pickListEntryId="FAO:0000001:p1">
-                        <lgVD:inclusionEntry entityCode="FAO:0000001"
-                            entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p1">
+                <changedPickListDefinitionEntry pickListId="SRITEST:FA:hyphaLeafOnly"
+                    representsValueSetDefinition=" ">
+                    <lgCommon:entryState containingRevision="plEntryTestRelease2010Jan"
+                        relativeOrder="0" changeType="DEPENDENT"/>
+                    <lgVD:pickListEntryNode pickListEntryId="FA:hyphaLeafOnly:p1">
+                        <lgCommon:owner>mayooo</lgCommon:owner>
+                        <lgCommon:entryState containingRevision="plEntryTestRelease2010Jan"
+                            relativeOrder="1" changeType="NEW"/>
+                        <lgVD:inclusionEntry entityCode="FA:hyphaLeafOnly"
+                            entityCodeNamespace="hyphaLeafOnly" isDefault="true" propertyId="p1"
+                            entryOrder="1" language="en" matchIfNoContext="true">
                             <lgVD:pickText>microbial structure ontology</lgVD:pickText>
                             <lgVD:pickContext>microbial structure ontology</lgVD:pickContext>
                         </lgVD:inclusionEntry>
                     </lgVD:pickListEntryNode>
-                    <lgVD:pickListEntryNode pickListEntryId="FAO:0000001:p2">
-                        <lgVD:inclusionEntry entityCode="FAO:0000001"
-                            entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p2">
+                    <lgVD:pickListEntryNode pickListEntryId="FA:hyphaLeafOnly:p2">
+                        <lgCommon:entryState containingRevision="plEntryTestRelease2010Jan"
+                            relativeOrder="2" changeType="NEW"/>
+                        <lgVD:inclusionEntry entityCode="FA:hyphaLeafOnly2"
+                            entityCodeNamespace="hyphaLeafOnly" isDefault="true" propertyId="p2">
                             <lgVD:pickText>fungal structure ontology</lgVD:pickText>
                             <lgVD:pickContext>fungal structure ontology</lgVD:pickContext>
                         </lgVD:inclusionEntry>
@@ -255,73 +237,83 @@
                             <lgCommon:property propertyName="property" propertyId="p1"
                                 propertyType="property" isActive="true" language="en"
                                 status="active">
+                                <lgCommon:entryState containingRevision="plEntryTestRelease2010Jan"
+                                    relativeOrder="1" changeType="NEW"/>
                                 <lgCommon:propertyQualifier propertyQualifierName="qualName"
                                     propertyQualifierType="type">
                                     <lgCommon:value>value</lgCommon:value>
                                 </lgCommon:propertyQualifier>
+                                <lgCommon:value>this property belongs to the entry node
+                                    FAO:0000001:p2</lgCommon:value>
                             </lgCommon:property>
                         </lgVD:properties>
                     </lgVD:pickListEntryNode>
-                    <lgVD:source>source1</lgVD:source>
-                    <lgVD:source>source2</lgVD:source>
-                    <lgVD:defaultPickContext>Microbial Structure</lgVD:defaultPickContext>
-                    <lgVD:defaultPickContext>Fungal Anatomy</lgVD:defaultPickContext>
-                    <lgVD:properties>
-                        <lgCommon:property propertyName="property" propertyId="p11"
-                            propertyType="property" isActive="true" language="en" status="active">
-                            <lgCommon:propertyQualifier propertyQualifierName="qualName1"
-                                propertyQualifierType="type1">
-                                <lgCommon:value>value1</lgCommon:value>
-                            </lgCommon:propertyQualifier>
-                        </lgCommon:property>
-                    </lgVD:properties>
                 </changedPickListDefinitionEntry>
             </changedEntry>
         </revision>
 
-        <!-- Test: MODIFY PickListDefinition -->
-        <revision revisionId="picklistTestRelease2010Feb" revisionDate="2010-02-01T01:20:30">
+        <!-- Test: MODIFY PLEntry -->
+        <revision revisionId="plEntryTestRelease2010Feb" revisionDate="2010-02-01T01:20:30">
+            <changedEntry>
+                <changedPickListDefinitionEntry pickListId="SRITEST:FA:MicrobialStructureOntology"
+                    representsValueSetDefinition=" ">
+                    <lgCommon:entryState containingRevision="plEntryTestRelease2010Feb"
+                        relativeOrder="0" changeType="DEPENDENT"/>
+                    <lgVD:pickListEntryNode pickListEntryId="FAO:0000001:p1">
+                        <lgCommon:entryState containingRevision="plEntryTestRelease2010Feb"
+                            relativeOrder="0" changeType="MODIFY"/>
+                        <lgVD:inclusionEntry entityCode="FAO:0000001"
+                            entityCodeNamespace="fungal_anatomy" isDefault="true" propertyId="p1">
+                            <lgVD:pickText>microbial structure ontology-mod</lgVD:pickText>
+                            <lgVD:pickContext>microbial structure ontology-mod</lgVD:pickContext>
+                        </lgVD:inclusionEntry>
+                    </lgVD:pickListEntryNode>
+                    <lgVD:pickListEntryNode pickListEntryId="FAO:0000001:p2">
+                        <lgCommon:entryState containingRevision="plEntryTestRelease2010Feb"
+                            relativeOrder="0" changeType="MODIFY"/>
+                        <lgVD:exclusionEntry entityCode="testExclude"
+                            entityCodeNamespace="testExcludeNS"/>
+                    </lgVD:pickListEntryNode>
+                </changedPickListDefinitionEntry>
+            </changedEntry>
+        </revision>
+
+        <!-- Test: VERSIONABLE PLEntry -->
+        <revision revisionId="plEntryTestRelease2010Mar" editOrder="1">
             <changedEntry>
                 <changedPickListDefinitionEntry pickListId="SRITEST:AUTO:DomesticAutoMakers"
-                    representsValueSetDefinition="SRITEST:AUTO:DomesticAutoMakers-mod"
-                    isActive="false" defaultEntityCodeNamespace="Automobiles-mod"
-                    defaultLanguage="sp" completeSet="true" defaultSortOrder="ASC" status="active">
-                    <lgCommon:entryState containingRevision="picklistTestRelease2010Feb"
-                        relativeOrder="0" changeType="MODIFY"/>
-                    <lgCommon:entityDescription>desc-mod</lgCommon:entityDescription>
-                    <lgVD:source>source1</lgVD:source>
-                    <lgVD:source>source2</lgVD:source>
-                    <lgVD:defaultPickContext>context1</lgVD:defaultPickContext>
-                    <lgVD:defaultPickContext>context2</lgVD:defaultPickContext>
+                    representsValueSetDefinition=" ">
+                    <lgCommon:entryState containingRevision="plEntryTestRelease2010Mar"
+                        relativeOrder="0" changeType="DEPENDENT"/>
+                    <lgVD:pickListEntryNode pickListEntryId="PLOldsmobilep1" isActive="true"
+                        effectiveDate="2010-02-01T01:20:30" expirationDate="2019-02-01T01:20:30"
+                        status="active">
+                        <lgCommon:owner>Owner for PLOldsmobilep1-modified</lgCommon:owner>
+                        <lgCommon:entryState containingRevision="plEntryTestRelease2010Mar"
+                            relativeOrder="1" changeType="VERSIONABLE" prevRevision="R00A"/>
+                        <lgVD:inclusionEntry entityCode="abcd">
+                            <lgVD:pickText>abcd</lgVD:pickText>
+                        </lgVD:inclusionEntry>
+                    </lgVD:pickListEntryNode>
                 </changedPickListDefinitionEntry>
             </changedEntry>
         </revision>
 
-        <!-- Test: VERSIONABLE PickListDefinition -->
-        <revision revisionId="picklistTestRelease2010Mar" editOrder="1">
-            <changedEntry>
-                <changedPickListDefinitionEntry pickListId="SRITEST:FA:hyphaLeafOnly"
-                    representsValueSetDefinition=" " status="active" isActive="true"
-                    effectiveDate="2010-01-01T01:20:30" expirationDate="2010-12-31T01:30:50">
-                    <lgCommon:owner>tester</lgCommon:owner>
-                    <lgCommon:entryState containingRevision="picklistTestRelease2010Mar"
-                        relativeOrder="0" changeType="VERSIONABLE"/>
-                </changedPickListDefinitionEntry>
-            </changedEntry>
-        </revision>
-
-        <!-- Test: REMOVE PickListDefinition -->
-        <revision revisionId="picklistTestRelease2010Apr">
+        <!-- Test: REMOVE PLEntry -->
+        <revision revisionId="plEntryTestRelease2010Apr">
             <changedEntry>
                 <changedPickListDefinitionEntry pickListId="SRITEST:AUTO:DomesticAutoMakers"
-                    representsValueSetDefinition="">
-                    <lgCommon:entryState containingRevision="picklistTestRelease2010Apr"
-                        prevRevision="picklistTestRelease2010Jan" relativeOrder="0"
-                        changeType="REMOVE"/>
+                    representsValueSetDefinition=" ">
+                    <lgCommon:entryState containingRevision="plEntryTestRelease2010Apr"
+                        prevRevision="plEntryTestRelease2010Mar" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgVD:pickListEntryNode pickListEntryId="PL005p2" isActive="true">
+                        <lgCommon:entryState containingRevision="plEntryTestRelease2010Apr"
+                            relativeOrder="0" changeType="REMOVE"/>
+                        <lgVD:exclusionEntry entityCode=" "/>
+                    </lgVD:pickListEntryNode>
                 </changedPickListDefinitionEntry>
             </changedEntry>
         </revision>
-
     </editHistory>
-
 </systemRelease>

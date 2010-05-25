@@ -251,7 +251,7 @@
             </changedEntry>
         </revision>
 
-        <!-- Test: VERSIONABLE ValueSet Definition -->
+        <!-- Test: VERSIONABLE ValueSet Definition entry-->
         <revision revisionId="vdDefEntryTestRelease2010Mar">
             <changedEntry>
                 <changedValueSetDefinitionEntry
@@ -273,15 +273,22 @@
             </changedEntry>
         </revision>
 
-        <!-- Test: REMOVE ValueSet Definition -->
-        <!--revision revisionId="vdTestRelease2010Apr">
+        <!-- Test: REMOVE ValueSet Definition entry-->
+        <revision revisionId="vdDefEntryTestRelease2010Apr">
             <changedEntry>
-                <changedValueSetDefinitionEntry valueSetDefinitionURI="SRITEST:AUTO:Automobiles">
-                    <lgCommon:entryState containingRevision="vdTestRelease2010Apr"
-                        prevRevision="vdTestRelease2010Feb" relativeOrder="0" changeType="REMOVE"/>
+                <changedValueSetDefinitionEntry
+                    valueSetDefinitionURI="SRITEST:AUTO:AllDomesticButGM">
+                    <lgCommon:entryState containingRevision="vdDefEntryTestRelease2010Apr"
+                        relativeOrder="0" changeType="DEPENDENT"/>
+                    <lgVD:definitionEntry ruleOrder="1" operator="OR">
+                        <lgCommon:entryState containingRevision="vdDefEntryTestRelease2010Apr"
+                            relativeOrder="0" changeType="REMOVE"/>
+                        <lgVD:entityReference entityCode="005" referenceAssociation="hasSubtype"
+                            transitiveClosure="true" targetToSource="false" leafOnly="false"/>
+                    </lgVD:definitionEntry>
                 </changedValueSetDefinitionEntry>
             </changedEntry>
-        </revision-->
+        </revision>
 
     </editHistory>
 </systemRelease>
