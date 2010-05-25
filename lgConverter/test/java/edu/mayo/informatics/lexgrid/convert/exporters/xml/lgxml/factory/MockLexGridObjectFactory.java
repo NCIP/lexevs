@@ -125,7 +125,7 @@ public class MockLexGridObjectFactory {
         ascl.addAssociatedConcept(asc);
         
         Association asn = new Association();
-        asn.setAssociationName("hasSubtype");
+        asn.setAssociationName(Constants.VALUE_HAS_SUB_TYPE);
         asn.setAssociatedConcepts(ascl);
 
         AssociationList asl = new AssociationList();
