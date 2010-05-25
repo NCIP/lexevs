@@ -254,6 +254,29 @@
 			$prefix$entityAssnQuals quals
 		ON
 			(eate.entityAssnsGuid = quals.referenceGuid)
+			
+		<isEqual property="needsEntityJoin" compareValue="true">
+		LEFT JOIN
+			$prefix$entity entity
+		ON
+			(
+			<isEqual property="tripleNode" compareValue="SUBJECT">
+				eate.targetEntityCode = entity.entityCode
+				AND
+				eate.targetEntityCodeNamespace = entity.entityCodeNamespace
+			</isEqual>
+			<isEqual property="tripleNode" compareValue="OBJECT">
+				eate.sourceEntityCode = entity.entityCode
+				AND
+				eate.sourceEntityCodeNamespace = entity.entityCodeNamespace
+			</isEqual>
+			)
+		LEFT JOIN
+			$prefix$entityType entityType
+		ON
+			(entity.entityGuid = entityType.entityGuid)
+		</isEqual>
+			
 		WHERE
 			rel.codingSchemeGuid = #codingSchemeUid#
 			
@@ -342,6 +365,16 @@
 			</iterate>
 			)
 		</isNotEmpty>
+		<isNotEmpty property="mustHaveEntityTypes" prepend="AND">
+			(
+			<iterate property="mustHaveEntityTypes" conjunction="OR">
+				entityType.entityType = #mustHaveEntityTypes[]#
+			</iterate>
+			)
+		</isNotEmpty>
+		<isNotNull property="restrictToAnonymous" prepend="AND">
+			entity.isAnonymous = #restrictToAnonymous#
+		</isNotNull>
 	</sql>
 	
 	<sql id="getRelationshipsFragment">
@@ -353,6 +386,34 @@
 			$prefix$relation rel
 		ON
 			(rel.relationGuid = ap.relationGuid)
+			
+		<isEqual property="needsEntityJoin" compareValue="true">
+		LEFT JOIN
+			$prefix$entity sourceEntity
+		ON
+			(
+				eate.sourceEntityCode = sourceEntity.entityCode
+				AND
+				eate.sourceEntityCodeNamespace = sourceEntity.entityCodeNamespace
+			)
+		LEFT JOIN
+			$prefix$entityType sourceEntityType
+		ON
+			(sourceEntity.entityGuid = sourceEntityType.entityGuid)
+
+		LEFT JOIN
+			$prefix$entity targetEntity
+		ON
+			(
+				eate.targetEntityCode = targetEntity.entityCode
+				AND
+				eate.targetEntityCodeNamespace = targetEntity.entityCodeNamespace
+			)
+		LEFT JOIN
+			$prefix$entityType targetEntityType
+		ON
+			(targetEntity.entityGuid = targetEntityType.entityGuid)
+		</isEqual>
 		
 		WHERE
 			rel.codingSchemeGuid = #codingSchemeUid#
@@ -425,6 +486,30 @@
 			</iterate>
 			)
 		</isNotEmpty>
+		
+		<isNotEmpty property="mustHaveEntityTypes" prepend="AND">
+			(
+				(
+				<iterate property="mustHaveEntityTypes" conjunction="OR">
+					sourceEntityType.entityType = #mustHaveEntityTypes[]#
+				</iterate>
+				)
+				AND
+				(
+				<iterate property="mustHaveEntityTypes" conjunction="OR">
+					targetEntityType.entityType = #mustHaveEntityTypes[]#
+				</iterate>
+				)	
+			)
+		</isNotEmpty>
+		
+		<isNotNull property="restrictToAnonymous" prepend="AND">
+			(
+			sourceEntity.isAnonymous = #restrictToAnonymous#
+			AND
+			targetEntity.isAnonymous = #restrictToAnonymous#
+			)
+		</isNotNull>
 	</sql>
 	
 	<sql id="getEntityAssnsToEntityRelationships">

@@ -2,6 +2,7 @@ package org.lexevs.dao.database.ibatis.association.parameter;
 
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
@@ -17,7 +18,21 @@ public class GetEntityAssnUidsCountBean extends PrefixedTableParameterBean {
 	private List<String> associations;
 	private List<CodeNamespacePair> mustHaveCodes;
 	private List<String> mustHaveNamespaces;
-	
+	private List<String> mustHaveEntityTypes;
+	private Boolean restrictToAnonymous;
+
+	public List<String> getMustHaveEntityTypes() {
+		return mustHaveEntityTypes;
+	}
+	public void setMustHaveEntityTypes(List<String> mustHaveEntityTypes) {
+		this.mustHaveEntityTypes = mustHaveEntityTypes;
+	}
+	public Boolean isRestrictToAnonymous() {
+		return restrictToAnonymous;
+	}
+	public void setRestrictToAnonymous(Boolean restrictToAnonymous) {
+		this.restrictToAnonymous = restrictToAnonymous;
+	}
 	private TripleNode tripleNode;
 	
 	public String getEntityCode() {
@@ -74,5 +89,9 @@ public class GetEntityAssnUidsCountBean extends PrefixedTableParameterBean {
 	}
 	public String getRelationsContainerName() {
 		return relationsContainerName;
+	}
+
+	public boolean isNeedsEntityJoin() {
+		return CollectionUtils.isNotEmpty(this.mustHaveEntityTypes) || (this.restrictToAnonymous != null);
 	}
 }

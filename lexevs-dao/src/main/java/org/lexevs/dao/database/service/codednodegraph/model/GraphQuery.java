@@ -13,8 +13,26 @@ public class GraphQuery implements Cloneable {
     private List<QualifierNameValuePair> restrictToAssociationsQualifiers = new ArrayList<QualifierNameValuePair>();
     private List<String> restrictToSourceCodeSystem = new ArrayList<String>();
     private List<String> restrictToTargetCodeSystem = new ArrayList<String>();
- 
-    public List<ConceptReference> getRestrictToSourceCodes() {
+    private List<String> restrictToEntityTypes = new ArrayList<String>();
+    private Boolean restrictToAnonymous;
+
+    public List<String> getRestrictToEntityTypes() {
+		return restrictToEntityTypes;
+	}
+
+	public void setRestrictToEntityTypes(List<String> restrictToEntityTypes) {
+		this.restrictToEntityTypes = restrictToEntityTypes;
+	}
+
+	public Boolean isRestrictToAnonymous() {
+		return restrictToAnonymous;
+	}
+
+	public void setRestrictToAnonymous(Boolean restrictToAnonymous) {
+		this.restrictToAnonymous = restrictToAnonymous;
+	}
+
+	public List<ConceptReference> getRestrictToSourceCodes() {
         return restrictToSourceCodes;
     }
 
@@ -189,6 +207,8 @@ public class GraphQuery implements Cloneable {
 		query.setRestrictToSourceCodeSystem(new ArrayList<String>(this.restrictToSourceCodeSystem));
 		query.setRestrictToTargetCodes(new ArrayList<ConceptReference>(this.restrictToTargetCodes));
 		query.setRestrictToTargetCodeSystem(new ArrayList<String>(this.restrictToTargetCodeSystem));
+		query.setRestrictToEntityTypes(new ArrayList<String>(this.restrictToEntityTypes));
+		query.setRestrictToAnonymous(this.restrictToAnonymous);
 		
 		return query;
 	} 

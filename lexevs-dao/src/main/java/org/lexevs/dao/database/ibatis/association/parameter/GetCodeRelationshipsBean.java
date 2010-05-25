@@ -2,6 +2,7 @@ package org.lexevs.dao.database.ibatis.association.parameter;
 
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
@@ -20,6 +21,8 @@ public class GetCodeRelationshipsBean extends PrefixedTableParameterBean {
 	private List<CodeNamespacePair> mustHaveTargetCodes;
 	private List<String> mustHaveSourceNamespaces;
 	private List<String> mustHaveTargetNamespaces;
+	private List<String> mustHaveEntityTypes;
+	private Boolean restrictToAnonymous;
 	private boolean useTransitive = false;
 	
 	public String getCodingSchemeUid() {
@@ -101,4 +104,20 @@ public class GetCodeRelationshipsBean extends PrefixedTableParameterBean {
 	public String getRelationsContainerName() {
 		return relationsContainerName;
 	}	
+
+	public List<String> getMustHaveEntityTypes() {
+		return mustHaveEntityTypes;
+	}
+	public void setMustHaveEntityTypes(List<String> mustHaveEntityTypes) {
+		this.mustHaveEntityTypes = mustHaveEntityTypes;
+	}
+	public Boolean getRestrictToAnonymous() {
+		return restrictToAnonymous;
+	}
+	public void setRestrictToAnonymous(Boolean restrictToAnonymous) {
+		this.restrictToAnonymous = restrictToAnonymous;
+	}
+	public boolean isNeedsEntityJoin() {
+		return CollectionUtils.isNotEmpty(this.mustHaveEntityTypes) || (this.restrictToAnonymous != null);
+	}
 }

@@ -76,6 +76,8 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 						DaoUtility.toCodeNamespacePair(query.getRestrictToTargetCodes()), 
 						query.getRestrictToSourceCodeSystem(), 
 						query.getRestrictToTargetCodeSystem(), 
+						query.getRestrictToEntityTypes(),
+						query.isRestrictToAnonymous(),
 						useTransitive);
 		
 		
@@ -158,6 +160,8 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					query.getRestrictToAssociationsQualifiers(),
 					DaoUtility.toCodeNamespacePair(query.getRestrictToSourceCodes()),
 					query.getRestrictToSourceCodeSystem(),
+					query.getRestrictToEntityTypes(),
+					query.isRestrictToAnonymous(),
 					start, 
 					pageSize);
 	}
@@ -196,7 +200,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					query.getRestrictToAssociations(),
 					query.getRestrictToAssociationsQualifiers(),
 					DaoUtility.toCodeNamespacePair(query.getRestrictToSourceCodes()),
-					query.getRestrictToSourceCodeSystem());
+					query.getRestrictToSourceCodeSystem(),
+					query.getRestrictToEntityTypes(),
+					query.isRestrictToAnonymous());
 	}
 
 	@Override
@@ -227,6 +233,8 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					query.getRestrictToAssociationsQualifiers(),
 					DaoUtility.toCodeNamespacePair(query.getRestrictToTargetCodes()),
 					query.getRestrictToTargetCodeSystem(),
+					query.getRestrictToEntityTypes(),
+					query.isRestrictToAnonymous(),
 					start,
 					pageSize);
 	}
@@ -252,7 +260,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					query.getRestrictToAssociations(),
 					query.getRestrictToAssociationsQualifiers(),
 					DaoUtility.toCodeNamespacePair(query.getRestrictToTargetCodes()),
-					query.getRestrictToTargetCodeSystem());
+					query.getRestrictToTargetCodeSystem(),
+					query.getRestrictToEntityTypes(),
+					query.isRestrictToAnonymous());
 	}
 
 	@Transactional

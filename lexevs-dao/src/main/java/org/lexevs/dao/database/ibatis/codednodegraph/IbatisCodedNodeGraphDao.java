@@ -53,6 +53,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<CodeNamespacePair> mustHaveTargetCodes,
 			List<String> mustHaveSourceNamespace,
 			List<String> mustHaveTargetNamespace,
+			List<String> mustHaveEntityType,
+			Boolean restrictToAnonymous,
 			boolean useTransitive) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
@@ -70,6 +72,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		bean.setMustHaveTargetCodes(mustHaveTargetCodes);
 		bean.setMustHaveSourceNamespaces(mustHaveSourceNamespace);
 		bean.setMustHaveTargetNamespaces(mustHaveTargetNamespace);
+		bean.setMustHaveEntityTypes(mustHaveEntityType);
+		bean.setRestrictToAnonymous(restrictToAnonymous);
 		bean.setUseTransitive(useTransitive);
 		
 		return this.getSqlMapClientTemplate().queryForList(GET_CODE_RELATIONSHIPS_SQL, bean);
@@ -84,7 +88,9 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveSubjectCodes,
-			List<String> mustHaveSubjectNamespace) {
+			List<String> mustHaveSubjectNamespace,
+			List<String> mustHaveSubjectEntityType,
+			Boolean restrictToAnonymous) {
 		return this.doGetTripleUidsCount(
 				codingSchemeUid, 
 				relationsContainerName,
@@ -94,6 +100,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 				associationQualifiers,
 				mustHaveSubjectCodes,
 				mustHaveSubjectNamespace,
+				mustHaveSubjectEntityType,
+				restrictToAnonymous,
 				TripleNode.OBJECT);
 	}
 
@@ -106,7 +114,9 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveObjectCodes,
-			List<String> mustHaveObjectNamespace){
+			List<String> mustHaveObjectNamespace,
+			List<String> mustHaveObjectEntityType,
+			Boolean restrictToAnonymous){
 		return this.doGetTripleUidsCount(
 				codingSchemeUid,  
 				relationsContainerName,
@@ -116,6 +126,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 				associationQualifiers,
 				mustHaveObjectCodes,
 				mustHaveObjectNamespace,
+				mustHaveObjectEntityType,
+				restrictToAnonymous,
 				TripleNode.SUBJECT);
 	}
 
@@ -129,6 +141,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveCodes,
 			List<String> mustHaveNamespace,
+			List<String> mustHaveEntityType,
+			Boolean restrictToAnonymous,
 			TripleNode tripleNode) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
@@ -142,6 +156,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		bean.setAssociationQualifiers(associationQualifiers);
 		bean.setMustHaveCodes(mustHaveCodes);
 		bean.setMustHaveNamespaces(mustHaveNamespace);
+		bean.setMustHaveEntityTypes(mustHaveEntityType);
+		bean.setRestrictToAnonymous(restrictToAnonymous);
 		bean.setTripleNode(tripleNode);
 		
 		return (Map<String,Integer> ) this.getSqlMapClientTemplate().
@@ -158,6 +174,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveObjectCodes,
 			List<String> mustHaveObjectNamespace,
+			List<String> mustHaveObjectEntityType,
+			Boolean restrictToAnonymous,
 			int start, 
 			int pageSize){
 		return this.doGetTripleUids(
@@ -168,6 +186,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 				associationQualifiers,
 				mustHaveObjectCodes,
 				mustHaveObjectNamespace,
+				mustHaveObjectEntityType,
+				restrictToAnonymous,
 				TripleNode.SUBJECT,
 				start, 
 				pageSize);		
@@ -183,6 +203,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveSubjectCodes,
 			List<String> mustHaveSubjectNamespace,
+			List<String> mustHaveSubjectEntityType,
+			Boolean restrictToAnonymous,
 			int start, 
 			int pageSize){
 		return this.doGetTripleUids(
@@ -193,6 +215,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 				associationQualifiers,
 				mustHaveSubjectCodes,
 				mustHaveSubjectNamespace,
+				mustHaveSubjectEntityType,
+				restrictToAnonymous,
 				TripleNode.OBJECT, 
 				start, 
 				pageSize);
@@ -208,6 +232,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveCodes,
 			List<String> mustHaveNamespaces,
+			List<String> mustHaveEntityType,
+			Boolean restrictToAnonymous,
 			TripleNode tripleNode,
 			int start, 
 			int pageSize){
@@ -223,6 +249,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		bean.setAssociationQualifiers(associationQualifiers);
 		bean.setMustHaveCodes(mustHaveCodes);
 		bean.setMustHaveNamespaces(mustHaveNamespaces);
+		bean.setMustHaveEntityTypes(mustHaveEntityType);
+		bean.setRestrictToAnonymous(restrictToAnonymous);
 		bean.setTripleNode(tripleNode);
 		
 		if(pageSize < 0) {

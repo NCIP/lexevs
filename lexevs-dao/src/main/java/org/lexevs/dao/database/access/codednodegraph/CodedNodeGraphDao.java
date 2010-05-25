@@ -51,6 +51,8 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			List<CodeNamespacePair> mustHaveTargetCodes,
 			List<String> mustHaveSourceNamespace,
 			List<String> mustHaveTargetNamespace,
+			List<String> mustHaveEntityType,
+			Boolean restrictToAnonymous,
 			boolean useTransitive);
 	
 	public List<String> getTripleUidsContainingSubject(
@@ -62,6 +64,8 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveObjectCodes,
 			List<String> mustHaveObjectNamespace,
+			List<String> mustHaveObjectEntityType,
+			Boolean restrictToAnonymous,
 			int start, 
 			int pageSize);
 	
@@ -73,7 +77,9 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveObjectCodes,
-			List<String> mustHaveObjectNamespace);
+			List<String> mustHaveObjectNamespace,
+			List<String> mustHaveObjectEntityType,
+			Boolean restrictToAnonymous);
 	
 	public List<String> getTripleUidsContainingObject(
 			String codingSchemeUid,
@@ -84,6 +90,8 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveSubjectCodes,
 			List<String> mustHaveSubjectNamespace,
+			List<String> mustHaveSubjectEntityType,
+			Boolean restrictToAnonymous,
 			int start, 
 			int pageSize);
 	
@@ -95,7 +103,9 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveSubjectCodes,
-			List<String> mustHaveSubjectNamespace);
+			List<String> mustHaveSubjectNamespace,
+			List<String> mustHaveObjectEntityType,
+			Boolean restrictToAnonymous);
 	
 	public List<EntityReferencingAssociatedConcept> getAssociatedConceptsFromUid(
 			String codingSchemeUid, List<String> tripleUids, TripleNode tripleNode);
