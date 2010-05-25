@@ -24,6 +24,7 @@ import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
+import org.LexGrid.relations.Relations;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
@@ -248,7 +249,12 @@ public class LexGridMarshalListener implements MarshalListener
 			}
 			
 			return false;
+		} else {
+		    if(Relations.class.equals(arg0.getClass()) && cng == null) {
+		        return false;
+		    }
 		}
+		
 		
 		return true;
 	}
