@@ -36,6 +36,9 @@
             <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
             <lgVD:mappings>
                 <lgNaming:supportedConceptDomain localId="Autos" uri="urn:oid:11.11.0.1">Autos</lgNaming:supportedConceptDomain>
+                <lgNaming:supportedContext localId="Automobiles">Automobiles</lgNaming:supportedContext>
+                <lgNaming:supportedContext localId="Ford">Ford</lgNaming:supportedContext>
+                <lgNaming:supportedContext localId="GM">GM</lgNaming:supportedContext>
                 <lgNaming:supportedSource localId="GM">GM</lgNaming:supportedSource>
                 <lgNaming:supportedSource localId="Ford">Ford</lgNaming:supportedSource>
             </lgVD:mappings>
@@ -68,7 +71,8 @@
         </lgVD:valueSetDefinition>
         <lgVD:valueSetDefinition valueSetDefinitionURI="SRITEST:AUTO:DomesticAutoMakers" valueSetDefinitionName="Domestic Auto Makers" defaultCodingScheme="Automobiles" conceptDomain="Autos" effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
             <lgVD:mappings>
-                <lgNaming:supportedConceptDomain localId="Autos" uri="urn:oid:11.11.0.1">Autos</lgNaming:supportedConceptDomain>                
+                <lgNaming:supportedConceptDomain localId="Autos" uri="urn:oid:11.11.0.1">Autos</lgNaming:supportedConceptDomain>
+                <lgNaming:supportedContext localId="GM">GM</lgNaming:supportedContext>                
             </lgVD:mappings>
             <lgVD:properties>
                 <lgCommon:property propertyName="textualPresentation">
