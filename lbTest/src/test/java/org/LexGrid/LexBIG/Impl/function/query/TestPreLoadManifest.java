@@ -37,6 +37,7 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
+import org.LexGrid.LexOnt.CsmfCodingSchemeName;
 import org.LexGrid.LexOnt.CsmfCodingSchemeURI;
 import org.LexGrid.LexOnt.CsmfFormalName;
 import org.LexGrid.LexOnt.CsmfVersion;
@@ -121,6 +122,10 @@ public class TestPreLoadManifest extends LexBIGServiceTestCase {
     private CodingSchemeManifest createOBOCodingSchemeManifest(String version) {
         CodingSchemeManifest csm = new CodingSchemeManifest();
         String registeredName = "http://www.bioontology.org/" + version + "/fungal_anatomy.obo#";
+        CsmfCodingSchemeName name = new CsmfCodingSchemeName();
+        name.setContent(version + ":" + "oboManifestName");
+        name.setToOverride(true);
+        csm.setCodingScheme(name);
         CsmfCodingSchemeURI csmfRegisteredName = new CsmfCodingSchemeURI();
         csmfRegisteredName.setContent(registeredName);
         csm.setCodingSchemeURI(csmfRegisteredName);
@@ -138,6 +143,10 @@ public class TestPreLoadManifest extends LexBIGServiceTestCase {
 
     private CodingSchemeManifest createOWLCodingSchemeManifest(String version) {
         CodingSchemeManifest csm = new CodingSchemeManifest();
+        CsmfCodingSchemeName name = new CsmfCodingSchemeName();
+        name.setContent(version + ":" + "owlManifestName");
+        name.setToOverride(true);
+        csm.setCodingScheme(name);
         CsmfCodingSchemeURI csmfCSURI = new CsmfCodingSchemeURI();
         csm.setId("SomeID");
         csmfCSURI.setContent(AMINO_ACID_URI);
