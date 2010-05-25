@@ -34,13 +34,10 @@ import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
-import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
-import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.service.SystemResourceService;
-import org.springframework.batch.classify.Classifier;
 
 /**
  * The Class VersionableEventValueSetDefinitionService.
@@ -52,8 +49,6 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	VSDefinitionEntryService vsDefinitionEntryService = null;
 	
 	VSPropertyService vsPropertyService = null;
-	
-	private Classifier<EntryStateType, String> entryStateTypeClassifier = new EntryStateTypeClassifier();
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#getValueSetDefinitionURISForName(java.lang.String)
@@ -322,15 +317,20 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 			
 			String valueSetDefLatestRevisionId = valueSetDefDao.getLatestRevision(valueSetDefUId);
 			
+			String currentRevision = entryState.getContainingRevision();
+			String prevRevision = entryState.getPrevRevision();
+			
 			if (entryState.getPrevRevision() == null
 					&& valueSetDefLatestRevisionId != null
+					&& !valueSetDefLatestRevisionId.equals(currentRevision)
 					&& !valueSetDefLatestRevisionId
 							.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
 				throw new LBRevisionException(
 						"All changes of type other than NEW should have previous revisions.");
 			} else if (valueSetDefLatestRevisionId != null
-					&& !valueSetDefLatestRevisionId.equalsIgnoreCase(entryState
-							.getPrevRevision()) && !valueSetDefLatestRevisionId
+					&& !valueSetDefLatestRevisionId.equals(currentRevision)
+					&& !valueSetDefLatestRevisionId.equals(prevRevision)
+					&& !valueSetDefLatestRevisionId
 							.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
 				throw new LBRevisionException(
 						"Revision source is not in sync with the database revisions. "
@@ -367,9 +367,7 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 			entryState.setRelativeOrder(0L);
 	
 			vsEntryStateDao.insertEntryState(prevEntryStateUId, valueSetDefUId,
-					entryStateTypeClassifier
-							.classify(EntryStateType.VALUESETDEFINITION), null,
-					entryState);
+					ReferenceType.VALUESETDEFINITION.name(), null, entryState);
 		}
 	
 		String entryStateUId = vsEntryStateDao.insertEntryState(valueSetDefUId,
@@ -379,6 +377,4 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 		valueSetDefDao.updateValueSetDefEntryStateUId(valueSetDefUId,
 				entryStateUId);
 	}
-
-	
 }

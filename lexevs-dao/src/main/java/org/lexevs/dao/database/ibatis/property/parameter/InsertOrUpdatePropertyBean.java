@@ -18,6 +18,8 @@
  */
 package org.lexevs.dao.database.ibatis.property.parameter;
 
+import java.util.List;
+
 import org.LexGrid.commonTypes.Property;
 import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 
@@ -44,6 +46,8 @@ public class InsertOrUpdatePropertyBean extends IdableParameterBean {
 	private String degreeOfFidelity;
 	
 	private String representationalForm;
+	
+	private List<InsertPropertyMultiAttribBean> propertyMultiAttribList = null;
 
 	/**
 	 * Gets the property.
@@ -153,6 +157,21 @@ public class InsertOrUpdatePropertyBean extends IdableParameterBean {
 	 */
 	public void setDegreeOfFidelity(String degreeOfFidelity) {
 		this.degreeOfFidelity = degreeOfFidelity;
+	}
+
+	/**
+	 * @return the propertyMultiAttribList
+	 */
+	public List<InsertPropertyMultiAttribBean> getPropertyMultiAttribList() {
+		return propertyMultiAttribList;
+	}
+
+	/**
+	 * @param propertyMultiAttribList the propertyMultiAttribList to set
+	 */
+	public void setPropertyMultiAttribList(
+			List<InsertPropertyMultiAttribBean> propertyMultiAttribList) {
+		this.propertyMultiAttribList = propertyMultiAttribList;
 	}
 }
 

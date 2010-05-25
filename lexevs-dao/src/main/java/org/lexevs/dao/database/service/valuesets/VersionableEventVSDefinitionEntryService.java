@@ -31,12 +31,8 @@ public class VersionableEventVSDefinitionEntryService extends AbstractDatabaseSe
 		VSDefinitionEntryDao vsDefinitionEntryDao = this.getDaoManager()
 				.getCurrentVSDefinitionEntryDao();
 
-		String valueSetDefUId = this.getDaoManager()
-				.getCurrentValueSetDefinitionDao()
-				.getGuidFromvalueSetDefinitionURI(valueSetDefinitionURI);
-
 		String vsDefinitionUId = vsDefinitionEntryDao.getDefinitionEntryUId(
-				valueSetDefUId, defEntry.getRuleOrder().toString());
+				valueSetDefinitionURI, defEntry.getRuleOrder().toString());
 
 		/* 1. Delete all definition entry entry states. */
 		this.getDaoManager().getCurrentVsEntryStateDao()
@@ -152,13 +148,17 @@ public class VersionableEventVSDefinitionEntryService extends AbstractDatabaseSe
 
 			String vsEntryLatestRevisionId = entryDao.getLatestRevision(vsDefEntryUId);
 			
+			String currentRevision = entryState.getContainingRevision();
+			String prevRevision = entryState.getPrevRevision();
+			
 			if (entryState.getPrevRevision() == null
-					&& vsEntryLatestRevisionId != null) {
+					&& vsEntryLatestRevisionId != null
+					&& !vsEntryLatestRevisionId.equals(currentRevision)) {
 				throw new LBRevisionException(
 						"All changes of type other than NEW should have previous revisions.");
 			} else if (vsEntryLatestRevisionId != null
-					&& !vsEntryLatestRevisionId.equalsIgnoreCase(entryState
-							.getPrevRevision())) {
+					&& !vsEntryLatestRevisionId.equals(currentRevision)
+					&& !vsEntryLatestRevisionId.equals(prevRevision)) {
 				throw new LBRevisionException(
 						"Revision source is not in sync with the database revisions. " +
 						"Previous revision id does not match with the latest revision id of the vsDefinitionEntry."

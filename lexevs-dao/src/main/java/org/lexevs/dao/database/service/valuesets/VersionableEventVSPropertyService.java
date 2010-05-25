@@ -145,49 +145,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 	public void revisePickListDefinitionProperty(String pickListId,
 			Property property) throws LBException {
 
-		if (property == null)
-			throw new LBParameterException("Property object is not supplied.");
-
-		EntryState entryState = property.getEntryState();
-
-		if (entryState == null) {
-			throw new LBRevisionException("EntryState can't be null.");
-		}
-
-		String revisionId = entryState.getContainingRevision();
-		ChangeType changeType = entryState.getChangeType();
-
-		String pickListDefUId = this.getDaoManager()
-				.getCurrentPickListDefinitionDao()
-				.getPickListGuidFromPickListId(pickListId);
-		
-		VSPropertyDao vsPropertyDao = this.getDaoManager().getCurrentVsPropertyDao();
-		
-		String propertyUId = vsPropertyDao.getPropertyGuidFromParentGuidAndPropertyId(pickListDefUId,
-				property.getPropertyId());
-		
-		String propLatestRevisionId = vsPropertyDao.getLatestRevision(propertyUId);
-		
-		if (revisionId != null && changeType != null) {
-
-			if (changeType == ChangeType.NEW) {
-				if (entryState.getPrevRevision() != null) {
-					throw new LBRevisionException(
-							"Changes of type NEW are not allowed to have previous revisions.");
-				}
-			} else if (propertyUId == null) {
-				throw new LBRevisionException(
-						"The pick list definition property being revised doesn't exist.");
-			} else if (entryState.getPrevRevision() == null) {
-				throw new LBRevisionException(
-						"All changes of type other than NEW should have previous revisions.");
-			} else if (propLatestRevisionId != null
-					&& !propLatestRevisionId.equalsIgnoreCase(entryState
-							.getPrevRevision())) {
-				throw new LBRevisionException(
-						"Revision source is not in sync with the database revisions. Previous revision id does not match with the latest revision id of the pick list definition property."
-								+ "Please update the authoring instance with all the revisions and regenerate the source.");
-			}
+		if( validPickListDefinitionRevision(pickListId, property)) {
+			
+			ChangeType changeType = property.getEntryState().getChangeType();
 			
 			if (changeType == ChangeType.NEW) {
 
@@ -213,49 +173,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 	public void revisePickListEntryNodeProperty(String pickListId,
 			String pickListEntryNodeId, Property property) throws LBException {
 
-		if (property == null)
-			throw new LBParameterException("Property object is not supplied.");
-
-		EntryState entryState = property.getEntryState();
-
-		if (entryState == null) {
-			throw new LBRevisionException("EntryState can't be null.");
-		}
-
-		String revisionId = entryState.getContainingRevision();
-		ChangeType changeType = entryState.getChangeType();
-		
-		String pickListEntryNodeUId = this.getDaoManager()
-				.getCurrentPickListEntryNodeDao().getPickListEntryNodeUId(
-						pickListId, pickListEntryNodeId);
-		
-		VSPropertyDao vsPropertyDao = this.getDaoManager().getCurrentVsPropertyDao();
-		
-		String propertyUId = vsPropertyDao.getPropertyGuidFromParentGuidAndPropertyId(pickListEntryNodeUId,
-				property.getPropertyId());
-		
-		String propLatestRevisionId = vsPropertyDao.getLatestRevision(propertyUId);
-		
-		if (revisionId != null && changeType != null) {
-
-			if (changeType == ChangeType.NEW) {
-				if (entryState.getPrevRevision() != null) {
-					throw new LBRevisionException(
-							"Changes of type NEW are not allowed to have previous revisions.");
-				}
-			} else if (propertyUId == null) {
-				throw new LBRevisionException(
-						"The pick list entry node property being revised doesn't exist.");
-			} else if (entryState.getPrevRevision() == null) {
-				throw new LBRevisionException(
-						"All changes of type other than NEW should have previous revisions.");
-			} else if (propLatestRevisionId != null
-					&& !propLatestRevisionId.equalsIgnoreCase(entryState
-							.getPrevRevision())) {
-				throw new LBRevisionException(
-						"Revision source is not in sync with the database revisions. Previous revision id does not match with the latest revision id of the pick list entry node property."
-								+ "Please update the authoring instance with all the revisions and regenerate the source.");
-			}
+		if( validPLEntryRevision(pickListId, pickListEntryNodeId, property)) {
+			
+			ChangeType changeType = property.getEntryState().getChangeType();
 			
 			if (changeType == ChangeType.NEW) {
 
@@ -281,54 +201,10 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 	public void reviseValueSetDefinitionProperty(String valueSetDefinitionUri,
 			Property property) throws LBException {
 
-		if (property == null)
-			throw new LBParameterException("Property object is not supplied.");
-
-		EntryState entryState = property.getEntryState();
-
-		if (entryState == null) {
-			throw new LBRevisionException("EntryState can't be null.");
-		}
-
-		String revisionId = entryState.getContainingRevision();
-		ChangeType changeType = entryState.getChangeType();
-
-		String valueSetDefUId = this.getDaoManager()
-				.getCurrentValueSetDefinitionDao()
-				.getGuidFromvalueSetDefinitionURI(valueSetDefinitionUri);
-
-		VSPropertyDao vsPropertyDao = this.getDaoManager()
-				.getCurrentVsPropertyDao();
-
-		String propertyUId = vsPropertyDao
-				.getPropertyGuidFromParentGuidAndPropertyId(valueSetDefUId,
-						property.getPropertyId());
-
-		String propLatestRevisionId = vsPropertyDao
-				.getLatestRevision(propertyUId);
-		
-		if (revisionId != null && changeType != null) {
-
-			if (changeType == ChangeType.NEW) {
-				if (entryState.getPrevRevision() != null) {
-					throw new LBRevisionException(
-							"Changes of type NEW are not allowed to have previous revisions.");
-				}
-			} else if (propertyUId == null) {
-				throw new LBRevisionException(
-						"The value set definition property being revised doesn't exist.");
-			} else if (entryState.getPrevRevision() == null) {
-				throw new LBRevisionException(
-						"All changes of type other than NEW should have previous revisions.");
-			} else if (propLatestRevisionId != null
-					&& !propLatestRevisionId.equalsIgnoreCase(entryState
-							.getPrevRevision())) {
-				throw new LBRevisionException(
-						"Revision source is not in sync with the database revisions. " +
-						"Previous revision id does not match with the latest revision id of the value set definition property. " + 
-						"Please update the authoring instance with all the revisions and regenerate the source.");
-			}
-
+		if( validValueSetDefinitionRevision(valueSetDefinitionUri, property)) {
+			
+			ChangeType changeType = property.getEntryState().getChangeType();
+			
 			if (changeType == ChangeType.NEW) {
 
 				this.insertValueSetDefinitionProperty(valueSetDefinitionUri,
@@ -349,24 +225,24 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		}
 	}
 
-	private void updateProperty(Property property, String valueSetDefUId, ReferenceType type) {
+	private void updateProperty(Property property, String parentUId, ReferenceType type) {
 		
 		VSPropertyDao propertyDao = this.getDaoManager()
 				.getCurrentVsPropertyDao();
 	
 		String propertyUId = propertyDao
-				.getPropertyGuidFromParentGuidAndPropertyId(valueSetDefUId,
+				.getPropertyGuidFromParentGuidAndPropertyId(parentUId,
 						property.getPropertyId());
 	
 		String prevEntryStateUId = propertyDao.insertHistoryProperty(
-				valueSetDefUId, propertyUId, type, property);
+				parentUId, propertyUId, type, property);
 	
-		String entryStateUId = propertyDao.updateProperty(valueSetDefUId,
+		String entryStateUId = propertyDao.updateProperty(parentUId,
 				propertyUId, type, property);
 	
 		this.getDaoManager().getCurrentVsEntryStateDao().insertEntryState(
-				entryStateUId, propertyUId, type.name(), prevEntryStateUId,
-				property.getEntryState());
+				entryStateUId, propertyUId, ReferenceType.VSPROPERTY.name(),
+				prevEntryStateUId, property.getEntryState());
 	}
 
 	private void updateVersionableAttributes(Property property,
@@ -388,7 +264,7 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 	
 		this.getDaoManager().getCurrentVsEntryStateDao().insertEntryState(
 				entryStateUId, propertyUId,
-				type.name(), prevEntryStateUId,
+				ReferenceType.VSPROPERTY.name(), prevEntryStateUId,
 				property.getEntryState());
 	}
 
@@ -402,5 +278,140 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 						property.getPropertyId());
 	
 		propertyDao.deletePropertyByUId(propertyUId);
+	}
+	
+	private boolean validValueSetDefinitionRevision(
+			String valueSetDefinitionUri, Property property) throws LBException {
+		
+		String valueSetDefUId = null;
+		
+		if (property == null)
+			throw new LBParameterException("Property object is not supplied.");
+	
+		try {
+			valueSetDefUId = this.getDaoManager()
+					.getCurrentValueSetDefinitionDao()
+					.getGuidFromvalueSetDefinitionURI(valueSetDefinitionUri);
+	
+		} catch (Exception e) {
+			throw new LBRevisionException(
+					"The ValueSet definition to which the property belongs to doesn't exist.");
+		}
+		
+		VSPropertyDao vsPropertyDao = this.getDaoManager()
+				.getCurrentVsPropertyDao();
+	
+		String propertyUId = vsPropertyDao
+				.getPropertyGuidFromParentGuidAndPropertyId(valueSetDefUId,
+						property.getPropertyId());
+	
+		return validate(property, vsPropertyDao, propertyUId);
+	}
+
+	private boolean validPickListDefinitionRevision(String pickListId,
+			Property property) throws LBException {
+	
+		String pickListDefUId = null;
+
+		if (property == null)
+			throw new LBParameterException("Property object is not supplied.");
+
+		try {
+			pickListDefUId = this.getDaoManager()
+					.getCurrentPickListDefinitionDao()
+					.getPickListGuidFromPickListId(pickListId);
+		} catch (Exception e) {
+			throw new LBRevisionException(
+					"The PickList definition to which the property belongs to doesn't exist.");
+		}
+
+		VSPropertyDao vsPropertyDao = this.getDaoManager()
+				.getCurrentVsPropertyDao();
+
+		String propertyUId = vsPropertyDao
+				.getPropertyGuidFromParentGuidAndPropertyId(pickListDefUId,
+						property.getPropertyId());
+
+		return validate(property, vsPropertyDao, propertyUId);
+	}
+
+	private boolean validPLEntryRevision(String pickListId,
+			String pickListEntryNodeId, Property property) throws LBException {
+		
+		String pickListEntryNodeUId = null;
+
+		if (property == null)
+			throw new LBParameterException("Property object is not supplied.");
+
+		try {
+			pickListEntryNodeUId = this.getDaoManager()
+					.getCurrentPickListEntryNodeDao().getPickListEntryNodeUId(
+							pickListId, pickListEntryNodeId);
+
+		} catch (Exception e) {
+			throw new LBRevisionException(
+					"The PickList entry node to which the property belongs to doesn't exist.");
+		}
+
+		VSPropertyDao vsPropertyDao = this.getDaoManager()
+				.getCurrentVsPropertyDao();
+
+		String propertyUId = vsPropertyDao
+				.getPropertyGuidFromParentGuidAndPropertyId(
+						pickListEntryNodeUId, property.getPropertyId());
+
+		return validate(property, vsPropertyDao, propertyUId);
+	}
+
+	private boolean validate(Property property,
+			VSPropertyDao vsPropertyDao, String propertyUId) throws LBException {
+
+		EntryState entryState = property.getEntryState();
+
+		if (entryState == null) {
+			throw new LBRevisionException("EntryState can't be null.");
+		}
+		
+		ChangeType changeType = entryState.getChangeType();
+
+		if (changeType == ChangeType.NEW) {
+			if (entryState.getPrevRevision() != null) {
+				throw new LBRevisionException(
+						"Changes of type NEW are not allowed to have previous revisions.");
+			}
+
+			if (propertyUId != null) {
+				throw new LBRevisionException(
+						"The property being revised already exist.");
+			}
+		} else {
+
+			if (propertyUId == null) {
+				throw new LBRevisionException(
+						"The property being revised doesn't exist.");
+			}
+
+			String propLatestRevisionId = vsPropertyDao
+					.getLatestRevision(propertyUId);
+			
+			String currentRevision = entryState.getContainingRevision();
+			String prevRevision = entryState.getPrevRevision();
+
+			if (entryState.getPrevRevision() == null
+					&& propLatestRevisionId != null
+					&& !propLatestRevisionId.equals(currentRevision)) {
+				throw new LBRevisionException(
+						"All changes of type other than NEW should have previous revisions.");
+			} else if (propLatestRevisionId != null
+					&& !propLatestRevisionId.equals(currentRevision)
+					&& !propLatestRevisionId.equals(prevRevision)) {
+				throw new LBRevisionException(
+						"Revision source is not in sync with the database revisions. "
+								+ "Previous revision id does not match with the latest revision id of the pick list entry node property."
+								+ "Please update the authoring instance with all the revisions and regenerate the source.");
+			}
+		}
+
+		return true;
 	}
 }

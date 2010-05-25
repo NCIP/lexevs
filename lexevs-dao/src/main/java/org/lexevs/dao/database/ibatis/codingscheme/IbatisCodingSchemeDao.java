@@ -172,6 +172,8 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	
 	private static String GET_ALL_CODING_SCHEME_REVISIONS_SQL = CODING_SCHEME_NAMESPACE + "getAllCodingSchemeRevisionsByUId";
 	
+	private static String UPDATE_CS_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL = CODING_SCHEME_NAMESPACE + "updateCSMultiAttribEntryStateUId";
+	
 	/** The class to string mapping classifier. */
 	private ClassToStringMappingClassifier classToStringMappingClassifier = new ClassToStringMappingClassifier();
 	
@@ -460,7 +462,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 				multiAttribBean.setPrefix(prefix);
 				multiAttribBean.setUId(this.createUniqueId());
 				multiAttribBean.setCodingSchemeUId(codingSchemeUId);
-				multiAttribBean.setAttributeType("source");
+				multiAttribBean.setAttributeType(SQLTableConstants.TBLCOLVAL_SOURCE);
 				multiAttribBean.setAttributeValue(sourceList[i].getContent());
 				multiAttribBean.setRole(sourceList[i].getRole());
 				multiAttribBean.setSubRef(sourceList[i].getSubRef());
@@ -469,7 +471,15 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 				this.getSqlMapClientTemplate().insert(
 						INSERT_CODING_SCHEME_MULTIATTRIB_SQL, multiAttribBean);
 			}
+		} else {
+			
+			this.getSqlMapClientTemplate().update(
+					UPDATE_CS_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+					new PrefixedParameterTriple(prefix, codingSchemeUId,
+							SQLTableConstants.TBLCOLVAL_SOURCE,
+							entryStateUId));
 		}
+		
 		String[] localNameList = codingScheme.getLocalName();
 
 		if (localNameList.length != 0) {
@@ -484,13 +494,20 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 				multiAttribBean.setPrefix(prefix);
 				multiAttribBean.setUId(this.createUniqueId());
 				multiAttribBean.setCodingSchemeUId(codingSchemeUId);
-				multiAttribBean.setAttributeType("localName");
+				multiAttribBean.setAttributeType(SQLTableConstants.TBLCOLVAL_LOCALNAME);
 				multiAttribBean.setAttributeValue(localNameList[i]);
 				multiAttribBean.setEntryStateUId(entryStateUId);
 
 				this.getSqlMapClientTemplate().insert(
 						INSERT_CODING_SCHEME_MULTIATTRIB_SQL, multiAttribBean);
 			}
+		} else {
+			
+			this.getSqlMapClientTemplate().update(
+					UPDATE_CS_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+					new PrefixedParameterTriple(prefix, codingSchemeUId,
+							SQLTableConstants.TBLCOLVAL_LOCALNAME,
+							entryStateUId));
 		}
 
 		return entryStateUId;
@@ -510,6 +527,18 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		bean.setEntryStateUId(entryStateUId);
 		
 		this.getSqlMapClientTemplate().update(UPDATE_CODING_SCHEME_VER_ATTRIB_BY_ID_SQL, bean);
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_CS_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+				new PrefixedParameterTriple(prefix, codingSchemeUId,
+						SQLTableConstants.TBLCOLVAL_SOURCE,
+						entryStateUId));
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_CS_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+				new PrefixedParameterTriple(prefix, codingSchemeUId,
+						SQLTableConstants.TBLCOLVAL_LOCALNAME,
+						entryStateUId));
 		
 		return entryStateUId;
 	}
@@ -1040,6 +1069,18 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		this.getSqlMapClientTemplate().update(
 				UPDATE_CODING_SCHEME_ENTRYSTATE_UID, 
 				new PrefixedParameterTuple(prefix, codingSchemeUId, entryStateUId));
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_CS_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+				new PrefixedParameterTriple(prefix, codingSchemeUId,
+						SQLTableConstants.TBLCOLVAL_SOURCE,
+						entryStateUId));
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_CS_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+				new PrefixedParameterTriple(prefix, codingSchemeUId,
+						SQLTableConstants.TBLCOLVAL_LOCALNAME,
+						entryStateUId));
 	}
 
 	@Override

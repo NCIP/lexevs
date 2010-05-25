@@ -308,7 +308,6 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		
 		String codingSchemeUId = codingSchemeDao.
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
-		
 			
 		String prevEntryStateUId = codingSchemeDao.insertHistoryCodingScheme(codingSchemeUId);
 		
@@ -329,26 +328,13 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 
 		String codingSchemeUri = codingScheme.getCodingSchemeURI();
 		String version = codingScheme.getRepresentsVersion();
-
-		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, version);
 		
-		VersionsDao versionsDao = getDaoManager().getVersionsDao(codingSchemeUri, version);
-		
+		/* 1. Add entrystate entry.*/
 		if (codingScheme.getEntryState().getChangeType() == ChangeType.DEPENDENT) {
-			String codingSchemeUId = codingSchemeDao
-					.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
-
-			String prevEntryStateUId = codingSchemeDao
-					.getEntryStateUId(codingSchemeUId);
-
-			String entryStateUId = versionsDao.insertEntryState(
-					codingSchemeUId, entryStateTypeClassifier
-							.classify(EntryStateType.CODINGSCHEME),
-					prevEntryStateUId, codingScheme.getEntryState());
-
-			codingSchemeDao.updateEntryStateUId(codingSchemeUId, entryStateUId);
+			doAddPLEntryDependentEntry(codingScheme);
 		}
 		
+		/* 2. Revise coding scheme properties.*/
 		if (codingScheme.getProperties() != null) {
 			Property[] propertyList = codingScheme.getProperties()
 					.getProperty();
@@ -359,6 +345,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			}
 		}
 
+		/* 3. Revise entities and association entities of coding scheme.*/
 		if (codingScheme.getEntities() != null) {
 
 			Entity[] entityList = codingScheme.getEntities().getEntity();
@@ -374,6 +361,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			}
 		}
 
+		/* 4. Revise relations and triples of coding scheme.*/
 		if (codingScheme.getRelations() != null) {
 
 			Relations[] relationList = codingScheme.getRelations();
@@ -504,7 +492,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 								+ "All changes of type other than NEW should have previous revisions.");
 			} else if (csLatestRevId != null
 					&& !csLatestRevId.equals(currentRevision)
-					&& !csLatestRevId.equalsIgnoreCase(prevRevision)
+					&& !csLatestRevId.equals(prevRevision)
 					&& !csLatestRevId
 							.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
 				throw new LBRevisionException(
@@ -521,5 +509,28 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		}
 		
 		return true;
+	}
+
+	private void doAddPLEntryDependentEntry(CodingScheme codingScheme) {
+		
+		String codingSchemeUri = codingScheme.getCodingSchemeURI();
+		String version = codingScheme.getRepresentsVersion();
+		
+		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, version);
+		
+		VersionsDao versionsDao = getDaoManager().getVersionsDao(codingSchemeUri, version);
+		
+		String codingSchemeUId = codingSchemeDao
+				.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+	
+		String prevEntryStateUId = codingSchemeDao
+				.getEntryStateUId(codingSchemeUId);
+	
+		String entryStateUId = versionsDao.insertEntryState(
+				codingSchemeUId, entryStateTypeClassifier
+						.classify(EntryStateType.CODINGSCHEME),
+				prevEntryStateUId, codingScheme.getEntryState());
+	
+		codingSchemeDao.updateEntryStateUId(codingSchemeUId, entryStateUId);
 	}
 }

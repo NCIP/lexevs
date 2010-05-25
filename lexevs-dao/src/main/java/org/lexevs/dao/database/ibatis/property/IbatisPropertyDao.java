@@ -309,6 +309,11 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 					getPropertyTypeString(property));
 		}
 		
+		if (property.getPropertyId() == null
+				|| property.getPropertyId().trim().equals("")) {
+			property.setPropertyId("@_" + this.createUniqueId());
+		}
+		
 		if (property.getEntryState() != null) {
 			this.ibatisVersionsDao.insertEntryState(prefix, entryStateUId,
 					propertyUId, entryStateTypeClassifier
@@ -589,6 +594,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		bean.setEntityUId(entityUId);
 		bean.setSourcePropertyUId(sourcePropertyUId);
 		bean.setTargetPropertyUId(targetPropertyUId);
+		bean.setEntryStateUId(this.createUniqueId());
 
 
 				inserter.insert(INSERT_PROPERTYLINK_SQL, 

@@ -67,10 +67,10 @@ public class VersionableEventPickListEntryNodeService extends
 		String pickListEntryNodeUId = pickListEntryNodeDao
 				.getPickListEntryNodeUId(pickListId, pickListEntryId);
 
-		String entryStateUId = pickListEntryNodeDao
+		String prevEntryStateUId = pickListEntryNodeDao
 				.insertHistoryPickListEntryNode(pickListEntryNodeUId);
 
-		String prevEntryStateUId = pickListEntryNodeDao
+		String entryStateUId = pickListEntryNodeDao
 				.updatePickListEntryNode(pickListEntryNodeUId,
 						pickListEntryNode);
 
@@ -94,10 +94,10 @@ public class VersionableEventPickListEntryNodeService extends
 		String pickListEntryNodeUId = pickListEntryNodeDao
 				.getPickListEntryNodeUId(pickListId, pickListEntryId);
 
-		String entryStateUId = pickListEntryNodeDao
+		String prevEntryStateUId = pickListEntryNodeDao
 				.insertHistoryPickListEntryNode(pickListEntryNodeUId);
 
-		String prevEntryStateUId = pickListEntryNodeDao
+		String entryStateUId = pickListEntryNodeDao
 				.updateVersionableAttributes(pickListEntryNodeUId,
 						pickListEntryNode);
 
@@ -115,26 +115,12 @@ public class VersionableEventPickListEntryNodeService extends
 
 		String pickListEntryId = pickListEntryNode.getPickListEntryId();
 
-		PickListEntryNodeDao pickListEntryNodeDao = this.getDaoManager()
-				.getCurrentPickListEntryNodeDao();
-
-		String pickListEntryNodeUId = pickListEntryNodeDao
-				.getPickListEntryNodeUId(pickListId, pickListEntryId);
-
 		/* 1. Insert EntryState entry. */
-		String prevEntryStateUId = pickListEntryNodeDao
-				.getPickListEntryStateUId(pickListEntryNodeUId);
+		
+		if (pickListEntryNode.getEntryState().getChangeType() == ChangeType.DEPENDENT) {
 
-		pickListEntryNodeDao.createEntryStateIfAbsent(prevEntryStateUId,
-				pickListEntryNodeUId);
-
-		String entryStateUId = this.getDaoManager().getCurrentVsEntryStateDao()
-				.insertEntryState(pickListEntryNodeUId,
-						ReferenceType.PICKLISTENTRY.name(), prevEntryStateUId,
-						pickListEntryNode.getEntryState());
-
-		pickListEntryNodeDao.updateEntryStateUId(pickListEntryNodeUId,
-				entryStateUId);
+			doAddPLEntryDependentEntry(pickListId, pickListEntryNode);
+		}
 
 		/* 2. Revise dependent pickList definition entry properties. */
 		if (pickListEntryNode.getProperties() != null) {
@@ -232,13 +218,17 @@ public class VersionableEventPickListEntryNodeService extends
 			String pickListEntryNodeLatestRevisionId = pickListEntryDao
 					.getLatestRevision(pickListEntryNodeUId);
 	
+			String currentRevision = entryState.getContainingRevision();
+			String prevRevision = entryState.getPrevRevision();
+			
 			if (entryState.getPrevRevision() == null
-					&& pickListEntryNodeLatestRevisionId != null) {
+					&& pickListEntryNodeLatestRevisionId != null
+					&& !pickListEntryNodeLatestRevisionId.equals(currentRevision)) {
 				throw new LBRevisionException(
 						"All changes of type other than NEW should have previous revisions.");
 			} else if (pickListEntryNodeLatestRevisionId != null
-					&& !pickListEntryNodeLatestRevisionId
-							.equalsIgnoreCase(entryState.getPrevRevision())) {
+					&& !pickListEntryNodeLatestRevisionId.equals(currentRevision)
+					&& !pickListEntryNodeLatestRevisionId.equals(prevRevision)) {
 				throw new LBRevisionException(
 						"Revision source is not in sync with the database revisions. "
 								+ "Previous revision id does not match with the latest revision id of the picklist entry node."
@@ -247,5 +237,31 @@ public class VersionableEventPickListEntryNodeService extends
 		}
 		
 		return true;
+	}
+
+	private void doAddPLEntryDependentEntry(String pickListId,
+			PickListEntryNode pickListEntryNode) {
+	
+		String pickListEntryId = pickListEntryNode.getPickListEntryId();
+	
+		PickListEntryNodeDao pickListEntryNodeDao = this.getDaoManager()
+				.getCurrentPickListEntryNodeDao();
+	
+		String pickListEntryNodeUId = pickListEntryNodeDao
+				.getPickListEntryNodeUId(pickListId, pickListEntryId);
+	
+		String prevEntryStateUId = pickListEntryNodeDao
+				.getPickListEntryStateUId(pickListEntryNodeUId);
+	
+		pickListEntryNodeDao.createEntryStateIfAbsent(prevEntryStateUId,
+				pickListEntryNodeUId);
+	
+		String entryStateUId = this.getDaoManager().getCurrentVsEntryStateDao()
+				.insertEntryState(pickListEntryNodeUId,
+						ReferenceType.PICKLISTENTRY.name(), prevEntryStateUId,
+						pickListEntryNode.getEntryState());
+	
+		pickListEntryNodeDao.updateEntryStateUId(pickListEntryNodeUId,
+				entryStateUId);
 	}
 }

@@ -27,9 +27,11 @@ import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
+import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.constants.classifier.property.PropertyMultiAttributeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
@@ -37,6 +39,7 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean;
+import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.VSPropertyBean;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.inserter.Inserter;
@@ -67,11 +70,17 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	public static String DELETE_ALL_DEFINITIONENTRY_PROPERTIES_OF_VALUESET_SQL = PROPERTY_NAMESPACE + "deleteDefinitionEntryPropertiesByValueSetGuid";
 	public static String DELETE_ALL_VALUESET_DEFINITION_PROPERTIES_OF_VALUESET_SQL = PROPERTY_NAMESPACE + "deleteValueSetDefinitionPropertiesByValueSetGuid";
 	
+	public static String DELETE_PROP_MULTI_ATTRIB_BY_PROP_UID_AND_TYPE_SQL = PROPERTY_NAMESPACE + "deletePropertyMultiAttrib";
+	
+	public static String UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_PROP_ID_TYPE_SQL = PROPERTY_NAMESPACE + "updatePropertyMultiAttribEntryStateUId";
+	
 	public static String INSERT_PROPERTY_QUALIFIER_SQL = PROPERTY_NAMESPACE + "insertPropertyMultiAttrib";
 	
 	public static String INSERT_PROPERTY_SOURCE_SQL = PROPERTY_NAMESPACE + "insertPropertyMultiAttrib";
 	
 	public static String INSERT_PROPERTY_USAGECONTEXT_SQL = PROPERTY_NAMESPACE + "insertPropertyMultiAttrib";
+	
+	public static String INSERT_PROPERTY_MULTIATTRIB_SQL = PROPERTY_NAMESPACE + "insertPropertyMultiAttrib";
 	
 	public static String GET_ALL_PROPERTIES_OF_PARENT_SQL =PROPERTY_NAMESPACE +  "getPropertiesByParent";
 
@@ -128,20 +137,25 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 		
 		this.getNonBatchTemplateInserter().insert(INSERT_PROPERTY_SQL, propertyData);
 		
-		/*for(Source source : property.getSource()) {
-			String propertySourceGuid = this.createUniqueId();
-			this.doInsertPropertySource(propertyGuid, propertySourceGuid, entryStateId, source, inserter);
+		for (InsertPropertyMultiAttribBean propMultiAttrib : propertyData.getPropertyMultiAttribList())
+		{
+			propMultiAttrib.setPrefix(histPrefix);
+			
+			this.getSqlMapClientTemplate().insert(INSERT_PROPERTY_MULTIATTRIB_SQL, propMultiAttrib);
 		}
 		
-		for(String context : property.getUsageContext()) {
-			String propertyUsageContextId = this.createUniqueId();
-			this.doInsertPropertyUsageContext(propertyGuid, propertyUsageContextId, entryStateId, context, inserter);
+		if (!vsEntryStateExists(prefix, propertyData.getEntryStateUId())) {
+
+			EntryState entryState = new EntryState();
+
+			entryState.setChangeType(ChangeType.NEW);
+			entryState.setRelativeOrder(0L);
+
+			vsEntryStateDao
+					.insertEntryState(propertyData.getEntryStateUId(),
+							propertyData.getUId(), ReferenceType.VSPROPERTY.name(), null,
+							entryState);
 		}
-		
-		for(PropertyQualifier qual : property.getPropertyQualifier()) {
-			String propertyQualifierId = this.createUniqueId();
-			this.doInsertPropertyQualifier(propertyGuid, propertyQualifierId, entryStateId, qual, inserter);
-		}*/
 		
 		return propertyData.getEntryStateUId();
 	}
@@ -232,12 +246,17 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 					getPropertyTypeString(property));
 		}
 		
+		if (property.getPropertyId() == null
+				|| property.getPropertyId().trim().equals("")) {
+			property.setPropertyId("@_" + this.createUniqueId());
+		}
+		
 		EntryState entryState = property.getEntryState();
 		
 		if (entryState != null)
 		{
 			this.vsEntryStateDao.insertEntryState(entryStateId, propertyGuid, 
-					type.name(), null, entryState);
+					ReferenceType.VSPROPERTY.name(), null, entryState);
 		}
 		
 		inserter.insert(INSERT_PROPERTY_SQL,
@@ -295,6 +314,71 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 						type, 
 						property),
 						1);	
+		
+		if (property.getSourceCount() != 0) {
+
+			this.getSqlMapClientTemplate().delete(
+					DELETE_PROP_MULTI_ATTRIB_BY_PROP_UID_AND_TYPE_SQL,
+					new PrefixedParameterTuple(prefix, propertyGuid,
+							SQLTableConstants.TBLCOLVAL_SOURCE));
+
+			for (Source source : property.getSource()) {
+				String propertySourceGuid = this.createUniqueId();
+				this.doInsertPropertySource(propertyGuid, propertySourceGuid,
+						entryStateUId, source, this
+								.getNonBatchTemplateInserter());
+			}
+
+		} else {
+			this.getSqlMapClientTemplate().update(
+					UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_PROP_ID_TYPE_SQL,
+					new PrefixedParameterTriple(prefix, propertyGuid,
+							SQLTableConstants.TBLCOLVAL_SOURCE, entryStateUId));
+			
+		}
+
+		if (property.getUsageContextCount() != 0) {
+
+			this.getSqlMapClientTemplate().delete(
+					DELETE_PROP_MULTI_ATTRIB_BY_PROP_UID_AND_TYPE_SQL,
+					new PrefixedParameterTuple(prefix, propertyGuid,
+							SQLTableConstants.TBLCOLVAL_USAGECONTEXT));
+
+			for (String context : property.getUsageContext()) {
+				String propertyUsageContextId = this.createUniqueId();
+				this
+						.doInsertPropertyUsageContext(propertyGuid,
+								propertyUsageContextId, entryStateUId, context,
+								this.getNonBatchTemplateInserter());
+			}
+		} else {
+			this.getSqlMapClientTemplate().update(
+					UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_PROP_ID_TYPE_SQL,
+					new PrefixedParameterTriple(prefix, propertyGuid,
+							SQLTableConstants.TBLCOLVAL_USAGECONTEXT, entryStateUId));
+			
+		}
+		
+		if (property.getPropertyQualifierCount() != 0) {
+
+			this.getSqlMapClientTemplate().delete(
+					DELETE_PROP_MULTI_ATTRIB_BY_PROP_UID_AND_TYPE_SQL,
+					new PrefixedParameterTuple(prefix, propertyGuid,
+							SQLTableConstants.TBLCOLVAL_QUALIFIER));
+
+			for (PropertyQualifier qual : property.getPropertyQualifier()) {
+				String propertyQualifierId = this.createUniqueId();
+				this.doInsertPropertyQualifier(propertyGuid,
+						propertyQualifierId, entryStateUId, qual, this
+								.getNonBatchTemplateInserter());
+			}
+		} else {
+			this.getSqlMapClientTemplate().update(
+					UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_PROP_ID_TYPE_SQL,
+					new PrefixedParameterTriple(prefix, propertyGuid,
+							SQLTableConstants.TBLCOLVAL_QUALIFIER, entryStateUId));
+			
+		}
 		
 		return entryStateUId;
 	}
@@ -655,6 +739,21 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 						type, 
 						property),
 						1);	
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_PROP_ID_TYPE_SQL,
+				new PrefixedParameterTriple(prefix, propertyUId,
+						SQLTableConstants.TBLCOLVAL_SOURCE, entryStateUId));
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_PROP_ID_TYPE_SQL,
+				new PrefixedParameterTriple(prefix, propertyUId,
+						SQLTableConstants.TBLCOLVAL_USAGECONTEXT, entryStateUId));
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_PROP_ID_TYPE_SQL,
+				new PrefixedParameterTriple(prefix, propertyUId,
+						SQLTableConstants.TBLCOLVAL_QUALIFIER, entryStateUId));
 		
 		return entryStateUId;
 	}

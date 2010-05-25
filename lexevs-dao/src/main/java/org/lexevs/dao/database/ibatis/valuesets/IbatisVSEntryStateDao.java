@@ -62,7 +62,9 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 	private static String DELETE_ALL_PLENTRY_PROPERTY_ENTRYSTATE_ENTRIES_OF_PL_DEFINITION = VERSIONS_NAMESPACE + "deleteAllPLEntryPropsEntrySateEntriesOfPLDefinition";
 
 	private static String DELETE_ALL_PLENTRY_ENTRYSTATE_ENTRIES_OF_PL_DEFINITION = VERSIONS_NAMESPACE + "deleteAllPLEntryEntrySateEntriesOfPLDefinition";
-	
+
+	private static String DELETE_ALL_PL_DEFINITION_ENTRYSTATES = VERSIONS_NAMESPACE + "deleteAllPLDefinitionEntryStates";
+
 	/** ibatis revision dao*/
 	private IbatisRevisionDao ibatisRevisionDao = null;
 	
@@ -267,7 +269,8 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 				new PrefixedParameter(prefix, pickListUId));
 		
 		/* 4. Delete all entry states of PL definition.*/
-		this.deleteAllEntryStateEntriesByEntryUId(pickListUId);
+		this.getSqlMapClientTemplate().delete(DELETE_ALL_PL_DEFINITION_ENTRYSTATES,
+				new PrefixedParameter(prefix, pickListUId));
 	}
 
 	@Override

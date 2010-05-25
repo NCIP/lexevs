@@ -59,6 +59,7 @@ import org.lexevs.dao.database.constants.classifier.mapping.ClassToStringMapping
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean;
@@ -134,6 +135,8 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	private static String GET_VALUESET_DEFINITION_METADATA_BY_UID_SQL = VALUESETDEFINITION_NAMESPACE + "getValueSetDefinitionMetadataByUId";
 	
 	private static String UPDATE_VALUE_SET_DEFINITION_BY_ID_SQL = VALUESETDEFINITION_NAMESPACE + "updateValueSetDefinitionByUId";
+	
+	private static String UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "updateMultiAttribEntryStateUId";
 	
 	private static String UPDATE_VALUE_SET_DEFINITION_VERSIONABLE_CHANGES_BY_ID_SQL = VALUESETDEFINITION_NAMESPACE + "updateValueSetDefVersionableChangesByUId";
 	
@@ -434,6 +437,13 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 				
 				this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
 			}
+		} else {
+			
+			this.getSqlMapClientTemplate().update(
+					UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+					new PrefixedParameterTriple(prefix, valueSetDefUId,
+							SQLTableConstants.TBLCOLVAL_SUPPTAG_SOURCE,
+							entryStateUId));
 		}
 		
 		if( valueSetDefinition.getRepresentsRealmOrContextCount() != 0 ) {
@@ -459,6 +469,13 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 				
 				this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
 			}
+		} else {
+			
+			this.getSqlMapClientTemplate().update(
+					UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+					new PrefixedParameterTriple(prefix, valueSetDefUId,
+							SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT,
+							entryStateUId));
 		}
 		
 		return entryStateUId;
@@ -479,6 +496,18 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		bean.setEntryStateUId(entryStateUId);
 		
 		this.getSqlMapClientTemplate().update(UPDATE_VALUE_SET_DEFINITION_VERSIONABLE_CHANGES_BY_ID_SQL, bean);
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+				new PrefixedParameterTriple(prefix, valueSetDefUId,
+						SQLTableConstants.TBLCOLVAL_SUPPTAG_SOURCE,
+						entryStateUId));
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+				new PrefixedParameterTriple(prefix, valueSetDefUId,
+						SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT,
+						entryStateUId));
 		
 		return entryStateUId;
 	}
@@ -715,6 +744,18 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		this.getSqlMapClientTemplate().update(
 				UPDATE_VALUESETDEFINITION_ENTRYSTATE_UID_SQL, 
 				new PrefixedParameterTuple(prefix, valueSetDefUId, entryStateUId));
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+				new PrefixedParameterTriple(prefix, valueSetDefUId,
+						SQLTableConstants.TBLCOLVAL_SUPPTAG_SOURCE,
+						entryStateUId));
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+				new PrefixedParameterTriple(prefix, valueSetDefUId,
+						SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT,
+						entryStateUId));
 	}
 
 	/**

@@ -370,7 +370,7 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 						"All changes of type other than NEW should have previous revisions.");
 			} else if (relationLatestRevisionId != null
 					&& !relationLatestRevisionId.equals(currentRevision)
-					&& !relationLatestRevisionId.equalsIgnoreCase(prevRevision)) {
+					&& !relationLatestRevisionId.equals(prevRevision)) {
 				throw new LBRevisionException(
 						"Revision source is not in sync with the database revisions. "
 								+ "Previous revision id does not match with the latest revision id of the entity. "

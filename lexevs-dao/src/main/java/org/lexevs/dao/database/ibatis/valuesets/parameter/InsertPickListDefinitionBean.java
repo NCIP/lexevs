@@ -18,6 +18,8 @@
  */
 package org.lexevs.dao.database.ibatis.valuesets.parameter;
 
+import java.util.List;
+
 import org.LexGrid.valueSets.PickListDefinition;
 import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 
@@ -33,6 +35,8 @@ public class InsertPickListDefinitionBean extends IdableParameterBean {
 	
 	/** The system release id. */
 	private String systemReleaseUId;
+	
+	private List<InsertOrUpdateValueSetsMultiAttribBean> vsMultiAttribList = null;
 
 	/**
 	 * Sets the pick list definition.
@@ -68,6 +72,21 @@ public class InsertPickListDefinitionBean extends IdableParameterBean {
 	 */
 	public String getSystemReleaseUId() {
 		return systemReleaseUId;
+	}
+
+	/**
+	 * @return the vsMultiAttribList
+	 */
+	public List<InsertOrUpdateValueSetsMultiAttribBean> getVsMultiAttribList() {
+		return vsMultiAttribList;
+	}
+
+	/**
+	 * @param vsMultiAttribList the vsMultiAttribList to set
+	 */
+	public void setVsMultiAttribList(
+			List<InsertOrUpdateValueSetsMultiAttribBean> vsMultiAttribList) {
+		this.vsMultiAttribList = vsMultiAttribList;
 	}
 }
 

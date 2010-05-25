@@ -45,7 +45,10 @@ public interface VSPropertyDao extends LexGridSchemaVersionAwareDao {
 		/** The PICKLISTDEFINITION. */
 		PICKLISTDEFINITION,
 		/** The PICKLISTENTRY. */
-		PICKLISTENTRY}
+		PICKLISTENTRY,
+		/** The VSPROPERTY*/
+		VSPROPERTY
+	}
 	
 	/**
 	 * Gets the all properties of parent.

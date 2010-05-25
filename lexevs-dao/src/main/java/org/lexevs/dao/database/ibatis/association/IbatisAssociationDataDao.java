@@ -66,6 +66,9 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 	private static String DELETE_ASSOC_DATA_BY_UID_SQL = ASSOCIATION_NAMESPACE
 			+ "deleteAssocDataByAssnUId";
 	
+	private static String UPDATE_ASSN_QUALS_ENTRYSTATE_UID_BY_ID_SQL = ASSOCIATION_NAMESPACE
+			+ "updateAssnQualsEntryStateUId";
+	
 	private static String UPDATE_ENTITY_ASSN_TO_DATA_VER_ATTRIB_BY_UID_SQL = ASSOCIATION_NAMESPACE
 			+ "updateEntityAssnToDataVerAttribByUId";
 
@@ -306,6 +309,12 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 				
 				this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
 			}
+		} else {
+			
+			this.getSqlMapClientTemplate().update(
+					UPDATE_ASSN_QUALS_ENTRYSTATE_UID_BY_ID_SQL,
+					new PrefixedParameterTuple(prefix, associationDataUId,
+							entryStateUId));
 		}
 		
 		String[] usageContext = data.getUsageContext();

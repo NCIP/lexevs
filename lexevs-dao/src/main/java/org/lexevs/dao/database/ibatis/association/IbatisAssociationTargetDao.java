@@ -16,6 +16,7 @@ import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
@@ -64,6 +65,12 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 	private static String DELETE_ASSOC_TARGET_BY_UID_SQL = ASSOCIATION_NAMESPACE
 			+ "deleteAssocTargetByAssnUId";
 
+	private static String UPDATE_ASSN_QUALS_ENTRYSTATE_UID_BY_ID_SQL = ASSOCIATION_NAMESPACE
+			+ "updateAssnQualsEntryStateUId";
+	
+	private static String UPDATE_ASSN_USAGECONTEXT_ENTRYSTATE_UID_BY_ID_SQL = ASSOCIATION_NAMESPACE
+			+ "updateAssnUsageContextEntryStateUId";
+	
 	private static String GET_ASSOC_TARGET_LATEST_REVISION_ID_BY_UID = ASSOCIATION_NAMESPACE
 			+ "getAssociationTargetLatestRevisionIdByUId";
 
@@ -141,6 +148,11 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 				
 				this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
 			}
+		} else {
+			this.getSqlMapClientTemplate().update(
+					UPDATE_ASSN_QUALS_ENTRYSTATE_UID_BY_ID_SQL,
+					new PrefixedParameterTuple(prefix, associationTargetUId,
+							entryStateUId));
 		}
 		
 		String[] usageContext = target.getUsageContext();
@@ -166,6 +178,11 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 				
 				this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
 			}
+		} else {
+			this.getSqlMapClientTemplate().update(
+					UPDATE_ASSN_USAGECONTEXT_ENTRYSTATE_UID_BY_ID_SQL,
+					new PrefixedParameterTuple(prefix, associationTargetUId,
+							entryStateUId));
 		}
 
 		return entryStateUId;
@@ -368,6 +385,16 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 		this.getSqlMapClientTemplate().update(
 				UPDATE_ENTITY_ASSN_TO_ENTITY_VER_ATTRIB_BY_UID_SQL, bean);
 
+		this.getSqlMapClientTemplate().update(
+				UPDATE_ASSN_QUALS_ENTRYSTATE_UID_BY_ID_SQL,
+				new PrefixedParameterTuple(prefix, associationTargetUId,
+						entryStateUId));
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_ASSN_USAGECONTEXT_ENTRYSTATE_UID_BY_ID_SQL,
+				new PrefixedParameterTuple(prefix, associationTargetUId,
+						entryStateUId));
+		
 		return entryStateUId;
 	}
 

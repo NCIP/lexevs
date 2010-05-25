@@ -16,8 +16,10 @@ import org.LexGrid.valueSets.PickListEntryNode;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.valuesets.PickListDao;
+import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.service.SystemResourceService;
 import org.springframework.transaction.annotation.Transactional;
@@ -139,9 +141,9 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 		
 		String pickListDefUId = pickListDefDao.getPickListGuidFromPickListId(pickListId);
 		
-		String entryStateUId = pickListDefDao.insertHistoryPickListDefinition(pickListDefUId, pickListId);
+		String prevEntryStateUId = pickListDefDao.insertHistoryPickListDefinition(pickListDefUId, pickListId);
 		
-		String prevEntryStateUId = pickListDefDao.updatePickListDefinition(pickListDefUId, definition);
+		String entryStateUId = pickListDefDao.updatePickListDefinition(pickListDefUId, definition);
 		
 		this.getDaoManager().getCurrentVsEntryStateDao().insertEntryState(
 				entryStateUId, pickListDefUId, ReferenceType.PICKLISTDEFINITION.name(),
@@ -159,9 +161,9 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 		
 		String pickListDefUId = pickListDefDao.getPickListGuidFromPickListId(pickListId);
 		
-		String entryStateUId = pickListDefDao.insertHistoryPickListDefinition(pickListDefUId, pickListId);
+		String prevEntryStateUId = pickListDefDao.insertHistoryPickListDefinition(pickListDefUId, pickListId);
 		
-		String prevEntryStateUId = pickListDefDao.updateVersionableAttributes(pickListDefUId, definition);
+		String entryStateUId = pickListDefDao.updateVersionableAttributes(pickListDefUId, definition);
 		
 		this.getDaoManager().getCurrentVsEntryStateDao().insertEntryState(
 				entryStateUId, pickListDefUId, ReferenceType.PICKLISTDEFINITION.name(),
@@ -175,20 +177,15 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 
 		String pickListId = definition.getPickListId();
 		
-		PickListDao pickListDefDao = this.getDaoManager().getCurrentPickListDefinitionDao();
-		
-		String pickListDefUId = pickListDefDao.getPickListGuidFromPickListId(pickListId);
-		
 		/* 1. Insert EntryState entry.*/
-		String prevEntryStateUId = pickListDefDao.getPickListEntryStateUId(pickListDefUId);
 		
-		String entryStateUId = this.getDaoManager().getCurrentVsEntryStateDao().insertEntryState(
-				pickListDefUId, ReferenceType.PICKLISTDEFINITION.name(),
-				prevEntryStateUId, definition.getEntryState());
-		
-		pickListDefDao.updateEntryStateUId(pickListDefUId, entryStateUId);
+		if (definition.getEntryState().getChangeType() == ChangeType.DEPENDENT) {
+
+			doAddPickListDefinitionDependentEntry(definition);
+		}
 		
 		/* 2. Revise dependent pickList Entry nodes.*/
+		
 		PickListEntryNode[] pickListNode = definition.getPickListEntryNode();
 		
 		for (int i = 0; i < pickListNode.length; i++) {
@@ -197,6 +194,7 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 		}
 		
 		/* 3. Revise dependent pickList definition properties.*/
+		
 		if (definition.getProperties() != null) {
 
 			Property[] propertyList = definition.getProperties().getProperty();
@@ -306,13 +304,21 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 			String pickListDefLatestRevisionId = pickListDao
 					.getLatestRevision(pickListDefUId);
 
+			String currentRevision = entryState.getContainingRevision();
+			String prevRevision = entryState.getPrevRevision();
+			
 			if (entryState.getPrevRevision() == null
-					&& pickListDefLatestRevisionId != null) {
+					&& pickListDefLatestRevisionId != null
+					&& !pickListDefLatestRevisionId.equals(currentRevision)
+					&& !pickListDefLatestRevisionId
+					.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
 				throw new LBRevisionException(
 						"All changes of type other than NEW should have previous revisions.");
 			} else if (pickListDefLatestRevisionId != null
-					&& !pickListDefLatestRevisionId.equalsIgnoreCase(entryState
-							.getPrevRevision())) {
+					&& !pickListDefLatestRevisionId.equals(currentRevision)
+					&& !pickListDefLatestRevisionId.equals(prevRevision)
+					&& !pickListDefLatestRevisionId
+					.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
 				throw new LBRevisionException(
 						"Revision source is not in sync with the database revisions. "
 								+ "Previous revision id does not match with the latest revision id of the picklist definition."
@@ -321,5 +327,41 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 		}
 			
 		return true;
+	}
+
+	private void doAddPickListDefinitionDependentEntry(
+			PickListDefinition definition) {
+	
+		String pickListId = definition.getPickListId();
+		
+		PickListDao pickListDefDao = this.getDaoManager()
+				.getCurrentPickListDefinitionDao();
+		
+		VSEntryStateDao vsEntryStateDao = this.getDaoManager()
+				.getCurrentVsEntryStateDao();
+		
+		String pickListDefUId = pickListDefDao
+				.getPickListGuidFromPickListId(pickListId);
+	
+		String prevEntryStateUId = pickListDefDao
+				.getPickListEntryStateUId(pickListDefUId);
+
+		if (!pickListDefDao.entryStateExists(prevEntryStateUId)) {
+			
+			EntryState entryState = new EntryState();
+	
+			entryState.setChangeType(ChangeType.NEW);
+			entryState.setRelativeOrder(0L);
+	
+			vsEntryStateDao.insertEntryState(prevEntryStateUId, pickListDefUId,
+					ReferenceType.VALUESETDEFINITION.name(), null, entryState);
+		}
+		
+		String entryStateUId = this.getDaoManager().getCurrentVsEntryStateDao()
+				.insertEntryState(pickListDefUId,
+						ReferenceType.PICKLISTDEFINITION.name(),
+						prevEntryStateUId, definition.getEntryState());
+	
+		pickListDefDao.updateEntryStateUId(pickListDefUId, entryStateUId);
 	}
 }

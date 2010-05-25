@@ -18,6 +18,8 @@
  */
 package org.lexevs.dao.database.ibatis.valuesets.parameter;
 
+import java.util.List;
+
 import org.LexGrid.valueSets.PickListEntryNode;
 import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 
@@ -38,19 +40,21 @@ public class InsertOrUpdatePickListEntryBean extends IdableParameterBean {
 	
 	private String entityCode;
 	
-	private long entryOrder;
+	private Long entryOrder;
 	
-	private boolean isDefault;
+	private Boolean isDefault;
 	
-	private boolean matchIfNoContext;
+	private Boolean matchIfNoContext;
 	
 	private String propertyId;
 	
 	private String langauage;
 	
-	private boolean include;
+	private Boolean include;
 	
 	private String pickText;
+	
+	private List<InsertOrUpdateValueSetsMultiAttribBean> vsMultiAttribList = null;
 	
 	/**
 	 * @return the pickListEntryNode
@@ -111,42 +115,42 @@ public class InsertOrUpdatePickListEntryBean extends IdableParameterBean {
 	/**
 	 * @return the entryOrder
 	 */
-	public long getEntryOrder() {
+	public Long getEntryOrder() {
 		return entryOrder;
 	}
 
 	/**
 	 * @param entryOrder the entryOrder to set
 	 */
-	public void setEntryOrder(long entryOrder) {
+	public void setEntryOrder(Long entryOrder) {
 		this.entryOrder = entryOrder;
 	}
 
 	/**
 	 * @return the isDefault
 	 */
-	public boolean isDefault() {
+	public Boolean isDefault() {
 		return isDefault;
 	}
 
 	/**
 	 * @param isDefault the isDefault to set
 	 */
-	public void setDefault(boolean isDefault) {
+	public void setDefault(Boolean isDefault) {
 		this.isDefault = isDefault;
 	}
 
 	/**
 	 * @return the matchIfNoContext
 	 */
-	public boolean isMatchIfNoContext() {
+	public Boolean isMatchIfNoContext() {
 		return matchIfNoContext;
 	}
 
 	/**
 	 * @param matchIfNoContext the matchIfNoContext to set
 	 */
-	public void setMatchIfNoContext(boolean matchIfNoContext) {
+	public void setMatchIfNoContext(Boolean matchIfNoContext) {
 		this.matchIfNoContext = matchIfNoContext;
 	}
 
@@ -167,14 +171,14 @@ public class InsertOrUpdatePickListEntryBean extends IdableParameterBean {
 	/**
 	 * @return the include
 	 */
-	public boolean isInclude() {
+	public Boolean isInclude() {
 		return include;
 	}
 
 	/**
 	 * @param include the include to set
 	 */
-	public void setInclude(boolean include) {
+	public void setInclude(Boolean include) {
 		this.include = include;
 	}
 
@@ -204,6 +208,21 @@ public class InsertOrUpdatePickListEntryBean extends IdableParameterBean {
 	 */
 	public void setLangauage(String langauage) {
 		this.langauage = langauage;
+	}
+
+	/**
+	 * @return the vsMultiAttribList
+	 */
+	public List<InsertOrUpdateValueSetsMultiAttribBean> getVsMultiAttribList() {
+		return vsMultiAttribList;
+	}
+
+	/**
+	 * @param vsMultiAttribList the vsMultiAttribList to set
+	 */
+	public void setVsMultiAttribList(
+			List<InsertOrUpdateValueSetsMultiAttribBean> vsMultiAttribList) {
+		this.vsMultiAttribList = vsMultiAttribList;
 	}
 
 	

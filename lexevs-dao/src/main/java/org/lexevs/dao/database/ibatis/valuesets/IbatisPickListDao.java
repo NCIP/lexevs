@@ -91,10 +91,12 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	/** The GE t_ picklis t_ gui d_ b y_ picklisti d_ sql. */
 	public static String GET_PICKLIST_GUID_BY_PICKLISTID_SQL = PICKLIST_NAMESPACE + "getPickListGuidByPickListId";
 	
-	public static String GET_PICKLIST_ENTRYNODEGUID_BY_PICKLISTID_AND_PLENTRYID_SQL = PICKLIST_NAMESPACE + "getPickListEntryNodeIdByPickListGuidAndPLEntryId";
+	public static String GET_PICKLIST_ENTRYNODEGUID_BY_PICKLISTID_AND_PLENTRYID_SQL = PICKLIST_NAMESPACE + "getPickListEntryNodeGuidByPickListIdAndPLEntryId";
 	
 	/** The GE t_ picklis t_ definitio n_ b y_ picklisti d_ sql. */
 	public static String GET_PICKLIST_DEFINITION_BY_PICKLISTID_SQL = PICKLIST_NAMESPACE + "getPickListDefinitionByPickListId";
+
+	public static String GET_PICKLIST_DEFINITION_METADATA_BY_PICKLISTID_SQL = PICKLIST_NAMESPACE + "getPickListDefinitionMetadataByUId";
 	
 	public static String GET_PICKLIST_DEFINITION_ID_FOR_VALUESET_DEFINITION_URI_SQL = PICKLIST_NAMESPACE + "getPickListDefinitionIdForValueSetDefinitionUri";
 	
@@ -119,6 +121,8 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	public static String DELETE_CONTEXT_BY_PARENT_GUID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "deleteContextByParentGuidAndType";
 	
 	public static String DELETE_PICKLIST_ENTRY_CONTEXT_BY_PICKLIST_GUID_SQL = VS_MULTIATTRIB_NAMESPACE + "deletePickListEntryContextByPickListGuid";
+	
+	private static String UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "updateMultiAttribEntryStateUId";
 	
 	public static String GET_URIMAPS_BY_REFERENCE_GUID_SQL = VS_MAPPING_NAMESPACE + "getURIMaps";
 	
@@ -254,7 +258,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	 * @see org.lexevs.dao.database.access.picklist.PickListDao#getGuidFromPickListId(java.lang.String)
 	 */
 	@Override
-	@CacheMethod
+//	@CacheMethod
 	public String getPickListGuidFromPickListId(String pickListId) {
 		return (String) 
 		this.getSqlMapClientTemplate().queryForObject(GET_PICKLIST_GUID_BY_PICKLISTID_SQL, 
@@ -631,8 +635,8 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		
 		InsertPickListDefinitionBean plDefBean = (InsertPickListDefinitionBean) this
 				.getSqlMapClientTemplate().queryForObject(
-						GET_PICKLIST_DEFINITION_BY_PICKLISTID_SQL,
-						new PrefixedParameter(prefix, pickListId));
+						GET_PICKLIST_DEFINITION_METADATA_BY_PICKLISTID_SQL,
+						new PrefixedParameter(prefix, pickListDefUId));
 	
 		String histPrefix = this.getPrefixResolver().resolveHistoryPrefix();
 		
@@ -640,6 +644,14 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		
 		this.getSqlMapClientTemplate().insert(
 				INSERT_PICKLIST_DEFINITION_SQL, plDefBean);
+		
+		for (InsertOrUpdateValueSetsMultiAttribBean vsMultiAttrib : plDefBean
+				.getVsMultiAttribList()) {
+			vsMultiAttrib.setPrefix(histPrefix);
+
+			this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL,
+					vsMultiAttrib);
+		}
 		
 		if (!vsEntryStateExists(prefix, plDefBean.getEntryStateUId())) {
 
@@ -662,14 +674,78 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 			PickListDefinition definition) {
 
 		String entryStateUId = this.createUniqueId();
+		String prefix = getPrefix();
 		
 		InsertPickListDefinitionBean bean = new InsertPickListDefinitionBean();
-		bean.setPrefix(getPrefix());
+		bean.setPrefix(prefix);
 		bean.setPickListDefinition(definition);
 		bean.setUId(pickListDefUId);
 		bean.setEntryStateUId(entryStateUId);
 		
 		this.getSqlMapClientTemplate().update(UPDATE_PICKLIST_DEFINITION_BY_UID_SQL, bean);
+		
+		if( definition.getSourceCount() != 0 ) {
+			
+			this.getSqlMapClientTemplate().delete(
+					DELETE_SOURCE_BY_PARENT_GUID_AND_TYPE_SQL,
+					new PrefixedParameterTuple(prefix, pickListDefUId, ReferenceType.PICKLISTDEFINITION.name()));
+			
+			Source[] sourceList = definition.getSource();
+			
+			for (int i = 0; i < sourceList.length; i++) {
+				InsertOrUpdateValueSetsMultiAttribBean insertOrUpdateValueSetsMultiAttribBean = new InsertOrUpdateValueSetsMultiAttribBean();
+				insertOrUpdateValueSetsMultiAttribBean.setUId(this.createUniqueId());
+				insertOrUpdateValueSetsMultiAttribBean.setReferenceUId(pickListDefUId);
+				insertOrUpdateValueSetsMultiAttribBean.setReferenceType(ReferenceType.PICKLISTDEFINITION.name());
+				insertOrUpdateValueSetsMultiAttribBean.setAttributeType(SQLTableConstants.TBLCOLVAL_SUPPTAG_SOURCE);
+				insertOrUpdateValueSetsMultiAttribBean.setAttributeValue(sourceList[i].getContent());
+				insertOrUpdateValueSetsMultiAttribBean.setRole(sourceList[i].getRole());
+				insertOrUpdateValueSetsMultiAttribBean.setSubRef(sourceList[i].getSubRef());
+				insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(entryStateUId);
+				insertOrUpdateValueSetsMultiAttribBean.setPrefix(prefix);
+				
+				this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
+			}
+		} else {
+			
+			this.getSqlMapClientTemplate().update(
+					UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+					new PrefixedParameterTriple(prefix, pickListDefUId,
+							SQLTableConstants.TBLCOLVAL_SUPPTAG_SOURCE,
+							entryStateUId));
+		}
+		
+		if( definition.getDefaultPickContextCount() != 0 ) {
+			
+			this.getSqlMapClientTemplate().delete(
+					DELETE_CONTEXT_BY_PARENT_GUID_AND_TYPE_SQL,
+					new PrefixedParameterTuple(prefix, pickListDefUId,
+							ReferenceType.PICKLISTDEFINITION.name()));
+			
+			String[] contextList = definition.getDefaultPickContext();
+			
+			for (int i = 0; i < contextList.length; i++) {
+				InsertOrUpdateValueSetsMultiAttribBean insertOrUpdateValueSetsMultiAttribBean = new InsertOrUpdateValueSetsMultiAttribBean();
+				insertOrUpdateValueSetsMultiAttribBean.setUId(this.createUniqueId());
+				insertOrUpdateValueSetsMultiAttribBean.setReferenceUId(pickListDefUId);
+				insertOrUpdateValueSetsMultiAttribBean.setReferenceType(ReferenceType.PICKLISTDEFINITION.name());
+				insertOrUpdateValueSetsMultiAttribBean.setAttributeType(SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT);
+				insertOrUpdateValueSetsMultiAttribBean.setAttributeValue(contextList[i]);
+				insertOrUpdateValueSetsMultiAttribBean.setRole(null);
+				insertOrUpdateValueSetsMultiAttribBean.setSubRef(null);
+				insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(entryStateUId);
+				insertOrUpdateValueSetsMultiAttribBean.setPrefix(prefix);
+				
+				this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
+			}
+		} else {
+			
+			this.getSqlMapClientTemplate().update(
+					UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+					new PrefixedParameterTriple(prefix, pickListDefUId,
+							SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT,
+							entryStateUId));
+		}
 		
 		return entryStateUId;
 	}
@@ -678,14 +754,27 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	public String updateVersionableAttributes(String pickListDefUId, PickListDefinition definition) {
 
 		String entryStateUId = this.createUniqueId();
+		String prefix = getPrefix();
 		
 		InsertPickListDefinitionBean bean = new InsertPickListDefinitionBean();
-		bean.setPrefix(getPrefix());
+		bean.setPrefix(prefix);
 		bean.setPickListDefinition(definition);
 		bean.setUId(pickListDefUId);
 		bean.setEntryStateUId(entryStateUId);
 		
 		this.getSqlMapClientTemplate().update(UPDATE_PL_VERSIONABLE_ATTRIBUTE_BY_UID_SQL, bean);
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+				new PrefixedParameterTriple(prefix, pickListDefUId,
+						SQLTableConstants.TBLCOLVAL_SUPPTAG_SOURCE,
+						entryStateUId));
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+				new PrefixedParameterTriple(prefix, pickListDefUId,
+						SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT,
+						entryStateUId));
 		
 		return entryStateUId;
 	}
@@ -707,6 +796,18 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		this.getSqlMapClientTemplate().update(
 				UPDATE_PICKLIST_ENTRYSTATE_UID_SQL, 
 				new PrefixedParameterTuple(prefix, pickListDefUId, entryStateUId));
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+				new PrefixedParameterTriple(prefix, pickListDefUId,
+						SQLTableConstants.TBLCOLVAL_SUPPTAG_SOURCE,
+						entryStateUId));
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
+				new PrefixedParameterTriple(prefix, pickListDefUId,
+						SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT,
+						entryStateUId));
 	}
 
 	/**
@@ -730,5 +831,13 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		return (String) this.getSqlMapClientTemplate().queryForObject(
 				GET_PICKLIST_DEFINITION_LATEST_REVISION_ID_BY_UID, 
 				new PrefixedParameter(prefix, pickListDefUId));	
+	}
+
+	@Override
+	public boolean entryStateExists(String entryStateUId) {
+
+		String prefix = this.getPrefix();
+		
+		return	super.vsEntryStateExists(prefix, entryStateUId);
 	}
 }

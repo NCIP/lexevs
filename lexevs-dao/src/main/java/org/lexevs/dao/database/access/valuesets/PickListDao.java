@@ -1,5 +1,4 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -23,7 +22,6 @@ import java.util.List;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
-import org.LexGrid.valueSets.PickListEntryNode;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
 /**
@@ -125,4 +123,6 @@ public interface PickListDao extends LexGridSchemaVersionAwareDao {
 	public void updateEntryStateUId(String pickListDefUId, String entryStateUId);
 
 	public String getLatestRevision(String pickListDefUId);
+
+	public boolean entryStateExists(String entryStateUId);
 }
