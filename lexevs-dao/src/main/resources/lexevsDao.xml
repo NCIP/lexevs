@@ -359,10 +359,12 @@
 		parent="abstractService">
 		<property name="vsPropertyService" ref="vsPropertyService"/>
 	</bean>
+	
 	<bean id="valueSetDefinitionService" 
 		class="org.lexevs.dao.database.service.valuesets.VersionableEventValueSetDefinitionService"
 		parent="abstractService">
-		<property name="vsDefinitionEntryService" ref="vsDefinitionEntryService"></property>
+		<property name="vsDefinitionEntryService" ref="vsDefinitionEntryService"/>
+		<property name="vsPropertyService" ref="vsPropertyService"/>
 	</bean>
 	
 	<bean id="vsDefinitionEntryService" 
