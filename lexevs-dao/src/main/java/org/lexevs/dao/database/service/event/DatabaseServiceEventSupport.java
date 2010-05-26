@@ -28,7 +28,7 @@ import org.apache.commons.lang.ClassUtils;
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PostCodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PreCodingSchemeInsertEvent;
-import org.lexevs.dao.database.service.event.entity.EntityInsertEvent;
+import org.lexevs.dao.database.service.event.entity.EntityInsertOrRemoveEvent;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
@@ -126,7 +126,7 @@ public class DatabaseServiceEventSupport implements InitializingBean {
 		}
 	}
 	
-	protected void firePreEntityInsertEvent(EntityInsertEvent entityInsertEvent){
+	protected void firePreEntityInsertEvent(EntityInsertOrRemoveEvent entityInsertEvent){
 		if(databaseServiceEventListeners != null){
 			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
 				listener.onPreEntityInsert(entityInsertEvent);
@@ -134,11 +134,10 @@ public class DatabaseServiceEventSupport implements InitializingBean {
 		}	
 	}
 	
-	protected void firePostEntityInsertEvent(EntityInsertEvent entityInsertEvent){
+	protected void firePostEntityInsertEvent(EntityInsertOrRemoveEvent entityInsertEvent){
 		if(databaseServiceEventListeners != null){
 			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
-				//TODO
-				//				listener.onPostEntityInsert(entityInsertEvent);
+				listener.onPreEntityInsert(entityInsertEvent);
 			}
 		}	
 	}
@@ -158,6 +157,14 @@ public class DatabaseServiceEventSupport implements InitializingBean {
 				listener.onEntityUpdate(entityUpdateEvent);
 			}
 		}
+	}
+	
+	protected void firePreEntityRemoveEvent(EntityInsertOrRemoveEvent entityRemoveEvent){
+		if(databaseServiceEventListeners != null){
+			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+				listener.onPreEntityRemove(entityRemoveEvent);
+			}
+		}	
 	}
 
 	/**
