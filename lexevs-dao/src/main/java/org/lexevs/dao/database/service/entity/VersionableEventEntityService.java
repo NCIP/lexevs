@@ -39,7 +39,7 @@ import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClass
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.lexevs.dao.database.service.error.ErrorHandlingService;
-import org.lexevs.dao.database.service.event.entity.EntityInsertEvent;
+import org.lexevs.dao.database.service.event.entity.EntityInsertOrRemoveEvent;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.database.service.property.PropertyService;
 import org.springframework.batch.classify.Classifier;
@@ -64,7 +64,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_ERROR)
 	public void insertEntity(String codingSchemeUri, String version,
 			Entity entity) {
-		this.firePreEntityInsertEvent(new EntityInsertEvent(codingSchemeUri, version, entity));	
+		this.firePreEntityInsertEvent(new EntityInsertOrRemoveEvent(codingSchemeUri, version, entity));	
 		String codingSchemeUId = this.getDaoManager().
 			getCodingSchemeDao(codingSchemeUri, version).
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
@@ -72,7 +72,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		this.getDaoManager().
 			getEntityDao(codingSchemeUri, version).
 				insertEntity(codingSchemeUId, entity, true);
-		this.firePostEntityInsertEvent(new EntityInsertEvent(codingSchemeUri, version, entity));
+		this.firePostEntityInsertEvent(new EntityInsertOrRemoveEvent(codingSchemeUri, version, entity));
 	}
 	
 	
@@ -84,7 +84,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	@DatabaseErrorIdentifier(errorCode=INSERT_BATCH_ENTITY_ERROR)
 	public void insertBatchEntities(String codingSchemeUri, String version,
 			List<? extends Entity> entities) {
-		this.firePreEntityInsertEvent(new EntityInsertEvent(codingSchemeUri, version, entities));
+		this.firePreEntityInsertEvent(new EntityInsertOrRemoveEvent(codingSchemeUri, version, entities));
 		String codingSchemeUId = this.getDaoManager().
 			getCodingSchemeDao(codingSchemeUri, version).
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
@@ -155,6 +155,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	@DatabaseErrorIdentifier(errorCode=REMOVE_ENTITY_ERROR)
 	public void removeEntity(String codingSchemeUri, String version,
 			Entity revisedEntity) {
+		this.firePreEntityRemoveEvent(new EntityInsertOrRemoveEvent(codingSchemeUri, version, revisedEntity));	
 
 		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, version);
 		

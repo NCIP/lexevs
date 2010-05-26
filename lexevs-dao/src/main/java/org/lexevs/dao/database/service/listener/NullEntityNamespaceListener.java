@@ -5,14 +5,14 @@ import java.util.List;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.apache.commons.lang.StringUtils;
-import org.lexevs.dao.database.service.event.entity.EntityInsertEvent;
+import org.lexevs.dao.database.service.event.entity.EntityInsertOrRemoveEvent;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 
 public class NullEntityNamespaceListener extends DefaultServiceEventListener{
 
 	@Override
-	public boolean onPreEntityInsert(EntityInsertEvent entityInsertEvent) {
+	public boolean onPreEntityInsert(EntityInsertOrRemoveEvent entityInsertEvent) {
 		String uri = entityInsertEvent.getCodingSchemeUri();
 		String version = entityInsertEvent.getVersion();
 		List<Entity> entityList = entityInsertEvent.getEntityList();

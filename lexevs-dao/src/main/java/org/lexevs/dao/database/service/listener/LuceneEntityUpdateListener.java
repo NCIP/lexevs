@@ -2,7 +2,7 @@ package org.lexevs.dao.database.service.listener;
 
 import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.service.entity.EntityService;
-import org.lexevs.dao.database.service.event.entity.EntityInsertEvent;
+import org.lexevs.dao.database.service.event.entity.EntityInsertOrRemoveEvent;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
@@ -32,7 +32,7 @@ public class LuceneEntityUpdateListener extends DefaultServiceEventListener {
 	}
 
 	@Override
-	public boolean onPostEntityInsert(EntityInsertEvent entityInsertEvent) {
+	public boolean onPostEntityInsert(EntityInsertOrRemoveEvent entityInsertEvent) {
 		IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
 		EntityIndexService entityIndexService = indexServiceManager.getEntityIndexService();
 		

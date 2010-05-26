@@ -21,7 +21,7 @@ package org.lexevs.dao.database.service.listener;
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PostCodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PreCodingSchemeInsertEvent;
-import org.lexevs.dao.database.service.event.entity.EntityInsertEvent;
+import org.lexevs.dao.database.service.event.entity.EntityInsertOrRemoveEvent;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
@@ -68,12 +68,21 @@ public class DefaultServiceEventListener implements DatabaseServiceEventListener
 	}
 
 	@Override
-	public boolean onPreEntityInsert(EntityInsertEvent entityInsertEvent) {
+	public boolean onPreEntityInsert(EntityInsertOrRemoveEvent entityInsertEvent) {
 		return true;
 	}
 	
-	public boolean onPostEntityInsert(EntityInsertEvent entityInsertEvent) {
+	public boolean onPostEntityInsert(EntityInsertOrRemoveEvent entityInsertEvent) {
 		return true;
 	}
 
+	@Override
+	public boolean onPostEntityRemove(EntityInsertOrRemoveEvent entityRemoveEvent) {
+		return true;
+	}
+
+	@Override
+	public boolean onPreEntityRemove(EntityInsertOrRemoveEvent entityRemoveEvent) {
+		return true;
+	}
 }
