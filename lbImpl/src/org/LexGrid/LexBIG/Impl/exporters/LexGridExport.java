@@ -68,10 +68,22 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
     public final static String name = "LexGridExport";
     private final static String description = "This loader exports LexGrid XML files";
     private final int pageSize = 5;
+    
+    private CodedNodeGraph cng;
+    private CodedNodeSet cns;
 
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
+    
+    public void setCns(CodedNodeSet cns) {
+        this.cns = cns;
+    }
+    
+    public void setCng(CodedNodeGraph cng) {
+        this.cng = cng;
+    }
+    
 
     public LexGridExport() {
         super.name_ = LexGridExport.name;
@@ -107,13 +119,10 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         URI destination = super.getResourceUri();
         AbsoluteCodingSchemeVersionReference source = super.getSource();
         
-        BooleanOption temp = (BooleanOption)super.getOptions().getBooleanOption(LexGridConstants.OPTION_FORCE);
-        
         boolean overwrite = super.getOptions().getBooleanOption(LexGridConstants.OPTION_FORCE).getOptionValue().booleanValue();
         String outFileName = destination.getPath();
         String codingSchemeUri = source.getCodingSchemeURN();
         String codingSchemeVersion = source.getCodingSchemeVersion();
-        
         
         File outFile = new File(outFileName);
         
@@ -145,8 +154,6 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         BufferedWriter out = null;
         LexBIGService lbsvc = null;
         CodingScheme codingScheme = null;
-        CodedNodeGraph cng = null;
-        CodedNodeSet cns = null;
         try {
             w = new FileWriter(outFile, false);
             out = new BufferedWriter(w);
@@ -155,20 +162,20 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
             codingScheme = lbsvc.resolveCodingScheme(codingSchemeUri, 
                                         Constructors.createCodingSchemeVersionOrTagFromVersion(codingSchemeVersion));
             
-            // create coded node graph
-            cng = lbsvc.getNodeGraph(codingScheme.getCodingSchemeURI(), 
-                    Constructors.createCodingSchemeVersionOrTagFromVersion(codingScheme.getRepresentsVersion()),null);
+            // cng and cns MUST be set by setter methods 
             
-            // TEST TEST TEST
-            //cng.restrictToAssociations(Constructors.createNameAndValueList("uses"), null);
+            // create coded node graph
+//            if( cng == null) {
+//                cng = lbsvc.getNodeGraph(codingScheme.getCodingSchemeURI(), 
+//                        Constructors.createCodingSchemeVersionOrTagFromVersion(codingScheme.getRepresentsVersion()),null);                
+//            }
             
             // create coded node set
-            cns = lbsvc.getCodingSchemeConcepts(codingScheme.getCodingSchemeURI(), 
-                    Constructors.createCodingSchemeVersionOrTagFromVersion(codingScheme.getRepresentsVersion()) );
-            
-            // TEST TEST TEST            
-            //cns.restrictToMatchingDesignations("G*", SearchDesignationOption.ALL, "LuceneQuery", null);
-            
+//            if(cns == null) {
+//                cns = lbsvc.getCodingSchemeConcepts(codingScheme.getCodingSchemeURI(), 
+//                       Constructors.createCodingSchemeVersionOrTagFromVersion(codingScheme.getRepresentsVersion()) );                
+//            }
+                        
         } catch (IOException e) {
             e.printStackTrace();
         } catch (LBException e) {
