@@ -53,6 +53,8 @@ public interface LexEvsDatabaseOperations {
 	 */
 	public void createValueSetsTables();
 	
+	public void createValueSetHistoryTables();
+	
 	public void createHistoryTables();
 	
 	/**

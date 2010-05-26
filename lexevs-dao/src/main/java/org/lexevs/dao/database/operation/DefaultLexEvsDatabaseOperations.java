@@ -58,6 +58,9 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	/** The lexevs coding scheme schema create script. */
 	private Resource lexevsHistoryCreateScript;
 	
+	/** The lexevs valueset history schema create script. */
+	private Resource lexevsValueSetHistoryCreateScript;
+	
 	/** The prefix resolver. */
 	private PrefixResolver prefixResolver;
 	
@@ -152,6 +155,17 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		try {
 			databaseUtility.executeScript(
 					lexevsHistoryCreateScript, 
+					this.prefixResolver.resolveDefaultPrefix(),
+					this.prefixResolver.resolveDefaultPrefix());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}	
+	}
+	
+	public void createValueSetHistoryTables() {
+		try {
+			databaseUtility.executeScript(
+					lexevsValueSetHistoryCreateScript, 
 					this.prefixResolver.resolveDefaultPrefix(),
 					this.prefixResolver.resolveDefaultPrefix());
 		} catch (Exception e) {

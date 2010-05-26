@@ -507,6 +507,7 @@
    		<property name="lexevsCodingSchemeSchemaDropScript" ref="lexevsCodingSchemeSchemaDropScript"/>
    		<property name="lexevsValueSetsSchemaCreateScript" ref="lexevsValueSetsSchemaCreateScript"/>
    		<property name="lexevsHistoryCreateScript" ref="lexevsHistoryCreateScript"/>
+   		<property name="lexevsValueSetHistoryCreateScript" ref="lexevsValueSetHistoryCreateScript"/>
    		<property name="prefixResolver" ref="defaultPrefixResolver"/>
    		<property name="dataSource" ref="dataSource"/>
    		<property name="databaseType" ref="databaseTypeFactory"/>
@@ -522,6 +523,13 @@
 		<property name="creationScriptPrefix" value="sql/lexevs/codingschemehistory-create-"/>
 	</bean>
    	 
+	<bean id="lexevsValueSetHistoryCreateScript"
+		class="org.lexevs.dao.database.setup.script.ScriptFactory">
+		<property name="scriptType" value="create"/>
+		<property name="databaseType" ref="databaseTypeFactory"/>
+		<property name="creationScriptPrefix" value="sql/lexevs/valuesethistory-create-"/>
+	</bean>
+	
    	<bean id="lexevsCodingSchemeSchemaCreateScript"
 		class="org.lexevs.dao.database.setup.script.ScriptFactory">
 		<property name="scriptType" value="create"/>
