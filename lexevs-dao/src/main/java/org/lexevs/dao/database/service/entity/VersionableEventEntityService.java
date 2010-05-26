@@ -84,7 +84,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	@DatabaseErrorIdentifier(errorCode=INSERT_BATCH_ENTITY_ERROR)
 	public void insertBatchEntities(String codingSchemeUri, String version,
 			List<? extends Entity> entities) {
-		this.firePreEntityInsertEvent(new EntityInsertOrRemoveEvent(codingSchemeUri, version, entities));
+
 		String codingSchemeUId = this.getDaoManager().
 			getCodingSchemeDao(codingSchemeUri, version).
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
@@ -190,8 +190,9 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		entityDao.removeEntityByUId(codingSchemeUId, entityUId);
 		
 		/*3. Remove search (lucene) indexes. */
-		
+		this.firePostEntityRemoveEvent(new EntityInsertOrRemoveEvent(codingSchemeUri, version, revisedEntity));	
 	}
+	
 	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_VERSIONABLE_CHANGES_ERROR)
 	public void insertVersionableChanges(String codingSchemeUri,
 			String version, Entity revisedEntity) throws LBException {

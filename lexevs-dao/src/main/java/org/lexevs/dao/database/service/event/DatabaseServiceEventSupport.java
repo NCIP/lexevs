@@ -166,6 +166,14 @@ public class DatabaseServiceEventSupport implements InitializingBean {
 			}
 		}	
 	}
+	
+	protected void firePostEntityRemoveEvent(EntityInsertOrRemoveEvent entityRemoveEvent){
+		if(databaseServiceEventListeners != null){
+			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+				listener.onPostEntityRemove(entityRemoveEvent);
+			}
+		}	
+	}
 
 	/**
 	 * Gets the database service event listeners.
