@@ -389,4 +389,19 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	public RootBuilder getRootBuilder() {
 		return rootBuilder;
 	}
+
+	/**
+	 * @return the lexevsValueSetHistoryCreateScript
+	 */
+	public Resource getLexevsValueSetHistoryCreateScript() {
+		return lexevsValueSetHistoryCreateScript;
+	}
+
+	/**
+	 * @param lexevsValueSetHistoryCreateScript the lexevsValueSetHistoryCreateScript to set
+	 */
+	public void setLexevsValueSetHistoryCreateScript(
+			Resource lexevsValueSetHistoryCreateScript) {
+		this.lexevsValueSetHistoryCreateScript = lexevsValueSetHistoryCreateScript;
+	}
 }
