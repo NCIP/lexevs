@@ -20,6 +20,7 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
@@ -29,6 +30,7 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
+import org.lexevs.dao.database.ibatis.entity.model.IdableAssociationEntity;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
 
@@ -120,6 +122,11 @@ public class LexGridMarshalListener implements MarshalListener
 	@Override
 	public boolean preMarshal(Object arg0) 
 	{
+	    // mct: 25may2010: hack until we figure out why associationEntity is being marshaled
+	    if(AssociationEntity.class.equals(arg0.getClass()) == true || IdableAssociationEntity.class.equals(arg0.getClass()) == true) {
+	        return false;
+	    }
+	    
 		if((Entity.class.equals(arg0.getClass()) == true))
 		{
 		    Entity temp = (Entity)arg0;
