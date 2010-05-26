@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.admin;
 import java.net.URI;
 import java.util.Enumeration;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
@@ -137,9 +138,20 @@ public class ExportLgXML {
             }
 
             // Find the registered extension handling this type of export ...
-            LexGrid_Exporter exporter = (LexGrid_Exporter) lbsm.getExporter(LexGridExport.name);
+            LexGridExport exporter = (LexGridExport) lbsm.getExporter(LexGridExport.name);
 
             // Perform the requested action ...
+            AbsoluteCodingSchemeVersionReference acsvr = Constructors.createAbsoluteCodingSchemeVersionReference(css);
+            
+            org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph cng = lbs.getNodeGraph(acsvr.getCodingSchemeURN(), 
+                    Constructors.createCodingSchemeVersionOrTagFromVersion(acsvr.getCodingSchemeVersion()),null);
+              
+            org.LexGrid.LexBIG.LexBIGService.CodedNodeSet cns = lbs.getCodingSchemeConcepts(acsvr.getCodingSchemeURN(), 
+                    Constructors.createCodingSchemeVersionOrTagFromVersion(acsvr.getCodingSchemeVersion()) );
+            
+            exporter.setCng(cng);
+            exporter.setCns(cns);
+            
             exporter.export(Constructors.createAbsoluteCodingSchemeVersionReference(css), destination, overwrite,
                     false, true);
             Util.displayExporterStatus(exporter);
