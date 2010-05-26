@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<revision xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/versions http://LexGrid.org/schema/2010/01/LexGrid/versions.xsd"
+    xmlns="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+    xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins"
+    xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+    xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts"
+    xmlns:lgRel="http://LexGrid.org/schema/2010/01/LexGrid/relations"
+    xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
+    xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
+    xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueDomains"
+    xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" revisionId="testRelease2010Apr_testTarget">
+    <changedEntry>
+        <changedCodingSchemeEntry codingSchemeName="Automobiles"
+            codingSchemeURI="urn:oid:22.22.0.2" representsVersion="2.0">
+            <lgCommon:entryState containingRevision="testRelease2010Apr_testTarget"
+                prevRevision="testRelease2010Mar_testTarget" relativeOrder="0"
+                changeType="DEPENDENT"/>
+            <lgCS:mappings/>
+            <lgCS:relations containerName="rel">
+                <lgCommon:entryState containingRevision="testRelease2010Apr_testTarget"
+                    relativeOrder="0" prevRevision="testRelease2010Mar_testTarget"
+                    changeType="DEPENDENT"/>
+                <lgRel:associationPredicate associationName="hasSubtype">
+                    <lgRel:source sourceEntityCodeNamespace="Automobiles"
+                        sourceEntityCode="Chrysler">
+                        <lgRel:target targetEntityCodeNamespace="Automobiles"
+                            targetEntityCode="LeBaron" associationInstanceId="inst003">
+                            <lgCommon:entryState
+                                containingRevision="testRelease2010Apr_testTarget"
+                                relativeOrder="0" changeType="REMOVE"/>
+                        </lgRel:target>
+                    </lgRel:source>
+                </lgRel:associationPredicate>
+            </lgCS:relations>
+        </changedCodingSchemeEntry>
+    </changedEntry>
+</revision>

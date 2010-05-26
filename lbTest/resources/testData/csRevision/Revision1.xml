@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<revision xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/versions http://LexGrid.org/schema/2010/01/LexGrid/versions.xsd"
+    xmlns="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+    xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins"
+    xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+    xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts"
+    xmlns:lgRel="http://LexGrid.org/schema/2010/01/LexGrid/relations"
+    xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
+    xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
+    xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueDomains"
+    xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" revisionId="testRelease2010Jan_testData">
+    <changedEntry>
+        <changedCodingSchemeEntry codingSchemeName="Automobiles"
+            codingSchemeURI="urn:oid:22.22.0.2" representsVersion="2.0">
+            <lgCommon:entryState containingRevision="testRelease2010Jan_testData"
+                relativeOrder="0" changeType="DEPENDENT"/>
+            <lgCS:mappings/>
+            <lgCS:relations containerName="rel">
+                <lgCommon:entryState containingRevision="testRelease2010Jan_testData"
+                    relativeOrder="0" changeType="DEPENDENT"/>
+                <lgRel:associationPredicate associationName="sameAs">
+                    <lgRel:source sourceEntityCode="005"
+                        sourceEntityCodeNamespace="Automobiles">
+                        <lgRel:targetData associationInstanceId="inst00b" isActive="true"
+                            status="high" isInferred="false" isDefining="false"
+                            effectiveDate="2000-12-01T01:29:35"
+                            expirationDate="2019-10-01T01:45:33">
+                            <lgCommon:owner>BSI</lgCommon:owner>
+                            <lgCommon:entryState
+                                containingRevision="testRelease2010Jan_testData"
+                                relativeOrder="0" changeType="NEW"/>
+                            <lgRel:usageContext>contextText001</lgRel:usageContext>
+                            <lgRel:associationQualification associationQualifier="qual001">
+                                <lgRel:qualifierText>qualTextValue001</lgRel:qualifierText>
+                            </lgRel:associationQualification>
+                            <lgRel:associationDataText>testData001</lgRel:associationDataText>
+                        </lgRel:targetData>
+                    </lgRel:source>
+                </lgRel:associationPredicate>
+            </lgCS:relations>
+        </changedCodingSchemeEntry>
+    </changedEntry>
+</revision>

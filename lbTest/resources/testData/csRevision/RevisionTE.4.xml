@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<revision xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/versions http://LexGrid.org/schema/2010/01/LexGrid/versions.xsd"
+    xmlns="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+    xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins"
+    xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+    xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts"
+    xmlns:lgRel="http://LexGrid.org/schema/2010/01/LexGrid/relations"
+    xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
+    xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
+    xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueDomains"
+    xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" revisionId="testRelease2010Apr_testEntity">
+    <changedEntry>
+        <changedCodingSchemeEntry codingSchemeName="Automobiles"
+            codingSchemeURI="urn:oid:22.22.0.2" representsVersion="2.0">
+            <lgCommon:entryState containingRevision="testRelease2010Apr_testEntity"
+                prevRevision="testRelease2010Mar_testEntity" relativeOrder="0"
+                changeType="DEPENDENT"/>
+            <lgCS:mappings/>
+            <lgCS:entities>
+                <lgCon:entity entityCode="midas001" entityCodeNamespace="Automobiles">
+                    <lgCommon:entryState containingRevision="testRelease2010Apr_testEntity" prevRevision="testRelease2010Jan_testEntity"
+                    relativeOrder="0" changeType="REMOVE"/>           
+                    <lgCon:entityType>concept</lgCon:entityType>
+                </lgCon:entity>
+            </lgCS:entities>
+        </changedCodingSchemeEntry>
+    </changedEntry>
+</revision>
