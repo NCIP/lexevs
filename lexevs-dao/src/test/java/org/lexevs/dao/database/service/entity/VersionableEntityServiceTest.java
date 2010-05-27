@@ -231,12 +231,16 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		List<Entity> enList = new ArrayList<Entity>();
 		enList.add(entity1);
 		enList.add(entity2);
+
+		service.setDatabaseServiceEventListeners(DaoUtility.createList(DatabaseServiceEventListener.class, new DuplicatePropertyIdListener()));
 		
 		Assert.assertEquals(2, entity1.getPropertyCount());
 		Assert.assertEquals(2, entity2.getPropertyCount());
 		service.insertBatchEntities("uri", "v1", enList);
 		Assert.assertEquals(1, entity1.getPropertyCount());
 		Assert.assertEquals(1, entity2.getPropertyCount());
+		
+		service.setDatabaseServiceEventListeners(new ArrayList<DatabaseServiceEventListener>());
 	}
 	
 	@Test
@@ -311,11 +315,15 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		enList.add(entity1);
 		enList.add(entity2);
 		
+		service.setDatabaseServiceEventListeners(DaoUtility.createList(DatabaseServiceEventListener.class, new InvalidPropertyLinkListener()));
+		
 		Assert.assertEquals(1, entity1.getPropertyLink().length);
 		Assert.assertEquals(1, entity2.getPropertyLink().length);
 		service.insertBatchEntities("uri", "v1", enList);
 		Assert.assertEquals(0, entity1.getPropertyLink().length);
 		Assert.assertEquals(0, entity2.getPropertyLink().length);
+		
+		service.setDatabaseServiceEventListeners(new ArrayList<DatabaseServiceEventListener>());
 	}
 	
 	@Test
