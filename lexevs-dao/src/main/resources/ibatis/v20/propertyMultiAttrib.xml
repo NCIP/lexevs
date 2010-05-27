@@ -15,13 +15,13 @@
 		<result property="java.lang.String" column="usageContextAttributeId" />
 	</resultMap>
 	
-	<resultMap id="sourceResult" class="org.LexGrid.commonTypes.Source">
+	<resultMap id="sourceResult" class="org.LexGrid.commonTypes.Source" groupBy="content,subRef,role">
 		<result property="content" column="sourceAttributeId"/>
 		<result property="subRef" column="sourceSubRef" />
 		<result property="role" column="sourceRole" />
 	</resultMap>
 	
-	<resultMap id="qualifierResult" class="org.LexGrid.commonTypes.PropertyQualifier">
+	<resultMap id="qualifierResult" class="org.LexGrid.commonTypes.PropertyQualifier" groupBy="propertyQualifierName,propertyQualifierType,value.content">
 		<result property="propertyQualifierName" column="qualifierAttributeId" />
 		<result property="propertyQualifierType" column="qualifierType" />
 		<result property="value.content" column="qualifierAttributeValue" />
