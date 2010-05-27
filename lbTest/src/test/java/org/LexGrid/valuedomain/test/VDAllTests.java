@@ -26,7 +26,7 @@ import org.LexGrid.valuedomain.impl.LexEVSPickListServicesImplTest;
 import org.LexGrid.valuedomain.impl.LexEVSValueDomainServicesImplTest;
 
 /**
- * Main test suite to test Value Domain and PickList.
+ * Main test suite to test Value Set and Pick List Definition.
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
@@ -34,7 +34,7 @@ public class VDAllTests {
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite(
-				"LG Value Domain and Pick List Test");
+				"LG Value Set and Pick List Definition Test");
 		ServiceHolder.configureForSingleConfig();
 		
 		//$JUnit-BEGIN$
