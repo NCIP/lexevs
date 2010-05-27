@@ -21,7 +21,7 @@ package edu.mayo.informatics.lexgrid.convert.inserter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
@@ -29,6 +29,7 @@ import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.Relations;
+import org.apache.commons.beanutils.BeanUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
@@ -81,27 +82,23 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
         return errors;
     }
 
-    protected void doLoadNonPagedItems(final CodingScheme codingScheme) throws LoadValidationException {
+    @SuppressWarnings("deprecation")
+    protected void doLoadNonPagedItems(final CodingScheme codingScheme) throws LoadValidationException { 
+        CodingScheme onlyNonPagedItems;
         try {
-            super.getSystemResourceService().
-                addCodingSchemeResourceToSystem(
-                        codingScheme.getCodingSchemeURI(), 
-                        codingScheme.getRepresentsVersion());
-        } catch (LBParameterException e) {
-            throw new RuntimeException(e);
+            onlyNonPagedItems = (CodingScheme)BeanUtils.cloneBean(codingScheme);
+        } catch (Exception e) {
+           throw new RuntimeException(e);
         }
-      
-        super.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<Object>() {
-
-            public Object execute(DaoManager daoManager) {
-                daoManager.getCurrentCodingSchemeDao().
-                    insertCodingScheme(
-                            codingScheme, null,
-                            false);
-
-                return null;
-            }
-        });
+        
+        onlyNonPagedItems.setEntities(null);
+        onlyNonPagedItems.setRelationsAsReference(new ArrayList<Relations>());
+        
+        try {
+            super.getDatabaseServiceManager().getAuthoringService().loadRevision(onlyNonPagedItems, null);
+        } catch (LBRevisionException e) {
+           throw new RuntimeException(e);
+        }
     }
 
     /* (non-Javadoc)
