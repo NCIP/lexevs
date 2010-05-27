@@ -6,14 +6,14 @@
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="4"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="lbImpl"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="lbTest"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx500M"/>
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
 <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
 <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/lbImpl"/>
+<listEntry value="/lbTest"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value=""/>
 <booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
