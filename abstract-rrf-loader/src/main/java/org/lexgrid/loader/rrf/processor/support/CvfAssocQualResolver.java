@@ -18,6 +18,8 @@
  */
 package org.lexgrid.loader.rrf.processor.support;
 
+import org.LexGrid.commonTypes.Text;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexgrid.loader.processor.support.AbstractAssociationQualifierResolver;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 import org.lexgrid.loader.rrf.model.Mrrel;
@@ -39,7 +41,7 @@ public class CvfAssocQualResolver extends AbstractAssociationQualifierResolver<M
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.AbstractNullValueSkippingOptionalQualifierResolver#getQualifierValue(java.lang.Object)
 	 */
-	public String getQualifierValue(Mrrel item) {
-		return item.getCvf();
+	public Text getQualifierValue(Mrrel item) {
+		return DaoUtility.createText(item.getCvf());
 	}
 }

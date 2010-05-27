@@ -18,6 +18,8 @@
  */
 package org.lexgrid.loader.rrf.processor.support;
 
+import org.LexGrid.commonTypes.Text;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexgrid.loader.processor.support.AbstractPropertyQualifierResolver;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 import org.lexgrid.loader.rrf.model.Mrhier;
@@ -34,7 +36,7 @@ public class MrhierHcdPropertyQualifierResolver extends AbstractPropertyQualifie
 		return RrfLoaderConstants.HCD_QUALIFIER;
 	}
 
-	public String getQualifierValue(Mrhier item) {
-		return item.getHcd() + ":" + item.getPtr();
+	public Text getQualifierValue(Mrhier item) {
+		return DaoUtility.createText(item.getHcd() + ":" + item.getPtr());
 	}
 }

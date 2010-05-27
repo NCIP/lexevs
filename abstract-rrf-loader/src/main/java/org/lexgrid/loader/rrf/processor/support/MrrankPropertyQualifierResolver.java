@@ -1,5 +1,7 @@
 package org.lexgrid.loader.rrf.processor.support;
 
+import org.LexGrid.commonTypes.Text;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexgrid.loader.processor.support.AbstractPropertyQualifierResolver;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 import org.lexgrid.loader.rrf.data.property.MrrankUtility;
@@ -13,9 +15,9 @@ public class MrrankPropertyQualifierResolver extends AbstractPropertyQualifierRe
 		return RrfLoaderConstants.MRRANK_PROPERTY_QUALIFIER_NAME;
 	}
 
-	public String getQualifierValue(Mrconso item) {
+	public Text getQualifierValue(Mrconso item) {
 		int rank = mrRankUtility.getRank(item.getSab(), item.getTty());
-		return Integer.toString(rank);
+		return DaoUtility.createText(Integer.toString(rank));
 	}
 	
 	public MrrankUtility getMrRankUtility() {
