@@ -20,7 +20,7 @@ import org.junit.Test;
 public class LexBIGServiceConvenienceMethodsImplTest {
 
     @Test
-    public void getAssociationForwardNameTest() throws LBException{
+    public void getAssociationForwardNameTest() throws LBException {
         LexBIGService lbs = 
             EasyMock.createMock(LexBIGService.class);
     
