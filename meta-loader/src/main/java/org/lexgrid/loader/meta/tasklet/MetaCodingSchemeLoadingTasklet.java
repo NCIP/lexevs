@@ -16,58 +16,50 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.lexgrid.loader.meta.processor;
+package org.lexgrid.loader.meta.tasklet;
 
-import java.util.Map;
 import java.util.Properties;
 
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.loader.constants.LoaderConstants;
 import org.lexgrid.loader.dao.SupportedAttributeSupport;
-import org.lexgrid.loader.rrf.model.Mrdoc;
-import org.springframework.batch.item.ItemProcessor;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
+import org.springframework.batch.core.StepContribution;
+import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.repeat.RepeatStatus;
 
 /**
  * The Class MetaCodingSchemeProcessor.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MetaCodingSchemeProcessor extends SupportedAttributeSupport implements ItemProcessor<Mrdoc, CodingScheme> {
-	
-	/** The iso map. */
-	private Map<String,String> isoMap;
+public class MetaCodingSchemeLoadingTasklet extends SupportedAttributeSupport implements Tasklet {
 	
 	/** The coding scheme properties. */
 	private Properties codingSchemeProperties;
 	
-	/** The DOCKE y_ value. */
-	private static String DOCKEY_VALUE = "RELEASE";
-	
-	/** The VALU e_ value. */
-	private static String VALUE_VALUE = "umls.release.name";
-	
-	/** The TYP e_ value. */
-	private static String TYPE_VALUE = "release_info";
+	private CodingSchemeIdSetter codingSchemeIdSetter;
 		
-	
-	/**
-	 * |DOCKEY |      VALUE      |    TYPE    | EXPL |
-	 * |RELEASE|umls.release.name|release_info|200808|
-	 * 
-	 * @param mrdoc the mrdoc
-	 * 
-	 * @return the coding scheme
-	 * 
-	 * @throws Exception the exception
-	 */
-	public CodingScheme process(Mrdoc mrdoc) throws Exception {
-		if(processLine(mrdoc)){
+	@Override
+	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1)
+			throws Exception {
+		LexEvsServiceLocator.getInstance().
+			getDatabaseServiceManager().
+			getAuthoringService().
+			loadRevision(process(), null);
+		
+		return RepeatStatus.FINISHED;
+	}
+
+	public CodingScheme process() throws Exception {
 			CodingScheme cs = new CodingScheme();
-			cs.setCodingSchemeName(codingSchemeProperties.getProperty(LoaderConstants.CODING_SCHEME_NAME_PROPERTY));
-			cs.setRepresentsVersion(getVersion(mrdoc));
-			cs.setCodingSchemeURI(isoMap.get(codingSchemeProperties.getProperty(LoaderConstants.CODING_SCHEME_NAME_PROPERTY)));
+			cs.setCodingSchemeName(codingSchemeIdSetter.getCodingSchemeName());
+			cs.setRepresentsVersion(codingSchemeIdSetter.getCodingSchemeVersion());
+			cs.setCodingSchemeURI(codingSchemeIdSetter.getCodingSchemeUri());
 			cs.setFormalName(codingSchemeProperties.getProperty(LoaderConstants.FORMAL_NAME_PROPERTY));
 			cs.setDefaultLanguage(codingSchemeProperties.getProperty(LoaderConstants.DEFAULT_LANGUAGE_PROPERTY));
 			cs.setCopyright(DaoUtility.createText(codingSchemeProperties.getProperty(LoaderConstants.COPYRIGHT_PROPERTY)));
@@ -78,50 +70,6 @@ public class MetaCodingSchemeProcessor extends SupportedAttributeSupport impleme
 			cs.setIsActive(true);
 			
 			return cs;
-		} 
-		return null;
-	}
-	
-	/**
-	 * Process line.
-	 * 
-	 * @param mrdoc the mrdoc
-	 * 
-	 * @return true, if successful
-	 */
-	protected boolean processLine(Mrdoc mrdoc){
-		return mrdoc.getDockey().equals(DOCKEY_VALUE) &&
-			mrdoc.getValue().equals(VALUE_VALUE) &&
-			mrdoc.getType().equals(TYPE_VALUE);
-	}
-	
-	/**
-	 * Gets the version.
-	 * 
-	 * @param mrdoc the mrdoc
-	 * 
-	 * @return the version
-	 */
-	protected String getVersion(Mrdoc mrdoc){
-		return mrdoc.getExpl();
-	}
-
-	/**
-	 * Gets the iso map.
-	 * 
-	 * @return the iso map
-	 */
-	public Map<String, String> getIsoMap() {
-		return isoMap;
-	}
-
-	/**
-	 * Sets the iso map.
-	 * 
-	 * @param isoMap the iso map
-	 */
-	public void setIsoMap(Map<String, String> isoMap) {
-		this.isoMap = isoMap;
 	}
 
 	/**
@@ -140,5 +88,13 @@ public class MetaCodingSchemeProcessor extends SupportedAttributeSupport impleme
 	 */
 	public void setCodingSchemeProperties(Properties codingSchemeProperties) {
 		this.codingSchemeProperties = codingSchemeProperties;
+	}
+
+	public void setCodingSchemeIdSetter(CodingSchemeIdSetter codingSchemeIdSetter) {
+		this.codingSchemeIdSetter = codingSchemeIdSetter;
+	}
+
+	public CodingSchemeIdSetter getCodingSchemeIdSetter() {
+		return codingSchemeIdSetter;
 	}
 }

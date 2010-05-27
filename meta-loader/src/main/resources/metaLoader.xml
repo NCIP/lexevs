@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/batch"
-	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.0.xsd
+		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
 
@@ -23,21 +25,15 @@
 			next="loadCodingScheme" />
 
 		<step id="loadCodingScheme" next="registerCodingScheme">
-			<tasklet>
-				<chunk reader="mrdocReader" processor="metaCodingSchemeProcessor"
-					writer="codingSchemeWriter" commit-interval="1">
-				</chunk>
-			</tasklet>
-
+			<tasklet ref="metaCodingSchemeLoadingTasklet" />
 		</step>
-
 
 		<step id="registerCodingScheme" next="loadHardcodedValues">
 			<tasklet ref="registeringTasklet" />
 		</step>
 
 		<step id="loadHardcodedValues" next="generateMrsabMetadataXml">
-			<tasklet ref="hardcodedValuesLoadingTasklet"/>
+			<tasklet ref="hardcodedValuesLoadingTasklet" />
 		</step>
 
 		<step id="generateMrsabMetadataXml" next="loadMrsabMetadata">
@@ -45,265 +41,84 @@
 				<listeners>
 					<listener ref="stepCompletionListener" />
 				</listeners>
-				<chunk reader="mrsabReader"
-				 writer="mrsabXmlWriter"
+				<chunk reader="mrsabReader" writer="mrsabXmlWriter"
 					commit-interval="1">
 				</chunk>
 			</tasklet>
 		</step>
-		
+
 		<step id="loadMrsabMetadata" next="generateMrdocMetadataXml">
 			<tasklet ref="mrsabMetadataLoadingTasklet" />
 		</step>
-		
+
 		<step id="generateMrdocMetadataXml" next="loadMrdocMetadata">
 			<tasklet>
 				<listeners>
 					<listener ref="stepCompletionListener" />
 				</listeners>
-				<chunk reader="mrdocReader"
-				 writer="mrdocXmlWriter"
+				<chunk reader="mrdocReader" writer="mrdocXmlWriter"
 					commit-interval="1">
 				</chunk>
 			</tasklet>
 		</step>
-		
-		<step id="loadMrdocMetadata" next="loading">
+
+		<step id="loadMrdocMetadata" next="loadEntities">
 			<tasklet ref="mrdocMetadataLoadingTasklet" />
 		</step>
 
-	<split id="loading" task-executor="taskExecutor">
+		<step id="loadEntities" parent="listenerStep" next="loadDefinitions">
+			<tasklet>
+				<chunk reader="metaMrconsoGroupReader" processor="entityListProcessor"
+					writer="entityWriter" commit-interval="500">
+					<streams>
+						<stream ref="mrconsoReader" />
+					</streams>
+				</chunk>
+			</tasklet>
+		</step>
 
-		<flow>
-			<split id="loadAssociationAndComputeTransitivity">
-				<flow>
-					<split id="loadRelationsAndQualifiers" task-executor="taskExecutor">
-					<flow>
-						<step id="loadEntityToEntityRelations" parent="metaLoadAssocsPartioned" next="processMrHierQuals">
-						<!-- Partition this step, pending performance results
-						<tasklet>
-							<chunk reader="metaMrrelSkippingReader"
-								processor="metaRootNodeAddingEntityAssocToEntityProcessor"
-								writer="entityAssnsToEntityListWriter" commit-interval="50">
-								<streams>
-									<stream ref="mrrelReader" />
-								</streams>
-							</chunk>
-						</tasklet>
-						-->
-						</step>
-						
-						<step id="processMrHierQuals">
-							<tasklet>
-								<chunk reader="skippingMrhierReader" processor="mrhierAssocAndPropertyQualProcessor"
-									writer="classifierCompositeItemListWriter" commit-interval="500"
-									skip-limit="1000">
-									<streams>
-										<stream ref="mrhierReader" />
-									</streams>
-									<skippable-exception-classes>
-										org.springframework.dao.DataIntegrityViolationException
-									</skippable-exception-classes>
-								</chunk>
-							</tasklet>
-						</step>
-					</flow>
-					<flow>
-						<step id="loadAssocQualifiers" parent="metaLoadAssocQualifiersPartioned">
-						<!-- Partition this step, pending performance results
-						<tasklet>
-							<chunk reader="metaMrrelSkippingReader"
-								processor="entityAssnEQualsProcessor"
-								writer="entityAssnsToEqualsListWriter" commit-interval="50">
-								<streams>
-									<stream ref="mrrelReader" />
-								</streams>
-							</chunk>
-						</tasklet>
-						-->
-					</step>
-					</flow>
-					</split>
-				</flow>
-					
-				   <flow>
-					<step id="processAssociations" next="buildTransitivityTable">
-						<tasklet>
-							<chunk reader="mrdocAssociationGroupReader" processor="metaAssociationProcessor"
-								writer="lexEvsHibernateListWriter" commit-interval="500"
-								skip-limit="50">
-								<streams>
-									<stream ref="mrdocReader" />
-								</streams>
-								<skippable-exception-classes>
-								org.springframework.dao.DataIntegrityViolationException
-							</skippable-exception-classes>
-							</chunk>
-						</tasklet>
-					</step>		
-			
-					<step id="buildTransitivityTable">
-						<tasklet ref="transitivityBuildingTasklet" />
-					</step>
-				</flow>
-				
-				
-				</split>
-				</flow>
-			
-		
-			<flow>
-				<split id="loadEntitiesAndIndex">
-					<flow>
-						<split id="loadEntitiesAndProperties" task-executor="taskExecutor">
+		<step id="loadDefinitions" parent="listenerStep" next="loadMrstyProperties">
+			<tasklet>
+				<chunk reader="mrdefReader" processor="qualifierAddingMetaDefinitionProcessor"
+					writer="entityPropertyWriter" commit-interval="500">
+					<streams>
+						<stream ref="mrdefReader" />
+					</streams>
+				</chunk>
+			</tasklet>
+		</step>
 
-							<flow>
-								<step id="loadEntities">
-									<tasklet>
-										<chunk reader="metaMrconsoGroupReader" processor="entityListProcessor"
-											writer="entityWriter" commit-interval="500">
-											<streams>
-												<stream ref="mrconsoReader" />
-											</streams>
-										</chunk>
-									</tasklet>
-								</step>
-							</flow>
+		<step id="loadMrstyProperties" next="loadMrsatProperties">
+			<tasklet>
+				<chunk reader="mrstyReader" processor="metaMrstyPropertyProcessor"
+					writer="entityPropertyWriter" commit-interval="500">
+				</chunk>
+			</tasklet>
+		</step>
 
-							<flow>
-								<step id="loadDefinitions">
-									<tasklet>
-										<chunk reader="mrdefReader" processor="metaDefinitionProcessor"
-											writer="entityPropertyWriter" commit-interval="500">
-											<streams>
-												<stream ref="mrdefReader" />
-											</streams>
-										</chunk>
-									</tasklet>
-								</step>
-							</flow>
-							
-							<flow>
-								<step id="loadMrstyProperties">
-									<tasklet>
-										<chunk reader="mrstyReader" processor="metaMrstyPropertyProcessor"
-											writer="entityPropertyWriter" commit-interval="500">
-										</chunk>
-									</tasklet>
-								</step>
-							</flow>
-							
-							<flow>
-								<step id="loadDefinitionQualifiers">
-									<tasklet>
-										<chunk reader="mrdefReader" processor="mrdefPropertyQualifierProcessor"
-											writer="entityPropertyMultiAttribListWriter" commit-interval="500">
-											<streams>
-												<stream ref="mrdefReader" />
-											</streams>
-										</chunk>
-									</tasklet>
-								</step>
-							</flow>
+		<step id="loadMrsatProperties" parent="metaLoadMrsatPropertiesPartioned"
+			next="loadEntityToEntityRelations" />
 
-							<flow>
-								<step id="loadEntityProperties">
-									<tasklet>
-										<chunk reader="metaMrconsoGroupReader" processor="entityPropertyListProcessor"
-											writer="entityPropertyListWriter" commit-interval="500">
-											<streams>
-												<stream ref="mrconsoReader" />
-											</streams>
-										</chunk>
-									</tasklet>
-								</step>
-							</flow>
-							<flow>
-								<step id="loadMrsatProperties" parent="metaLoadMrsatPropertiesPartioned">
-								 <!-- Partition this step, pending performance results
-									<tasklet>
-										<chunk reader="mrsatReader" processor="metaMrsatPropertyProcessor"
-											writer="entityPropertyWriter" commit-interval="100">
-											<streams>
-												<stream ref="mrsatReader" />
-											</streams>
-										</chunk>
-									</tasklet>
-									-->
-								</step>
-							</flow>
+		<step id="loadEntityToEntityRelations" parent="metaLoadAssocsPartioned"
+			next="index" />
 
-							<flow>
-								<step id="loadEntityTypes">
-									<tasklet>
-										<chunk reader="metaMrconsoGroupReader" processor="entityTypeListProcessor"
-											writer="entityTypeWriter" commit-interval="500">
-											<streams>
-												<stream ref="mrconsoReader" />
-											</streams>
-										</chunk>
-									</tasklet>
-								</step>
-							</flow>
 
-							<flow>
-								<step id="loadMrconsPropertyQualifiers" parent="metaLoadMrconsoPropertyQualifiersPartioned">
-									 <!-- Partition this step, pending performance results
-									<tasklet>
-										<chunk reader="mrconsoReader" processor="mrconsoPropertyQualifierProcessor"
-											writer="entityPropertyMultiAttribListWriter" commit-interval="500">
-										</chunk>
-									</tasklet>
-									-->
-								</step>
-							</flow>
-
-							<flow>
-								<step id="loadMrsatPropertyQualifers" parent="metaLoadMrsatPropertyQualifiersPartioned">
-								    <!-- Partition this step, pending performance results
-									<tasklet>
-										<chunk reader="mrsatReader" processor="entityPropertyMrsatMultiAttribProcessor"
-											writer="entityPropertyMultiAttribListWriter" commit-interval="100">
-										</chunk>
-									</tasklet>
-									-->
-								</step>
-							</flow>									
-							
-						</split>
-
-					</flow>
-
-					<flow>
-						<step id="index">
-							<tasklet ref="indexingTasklet" />
-						</step>
-					</flow>
-
-				</split>
-
-			</flow>
-
-		</split>
-
+		<step id="index">
+			<tasklet ref="indexingTasklet" />
+		</step>
 	</job>
 
 	<beans:bean id="codingSchemeNameSettingProcessor" abstract="true">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="metaCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="metaCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
 
 	<beans:bean id="metaRelationResolver" abstract="true">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="metaCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="metaCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
-	
-	
-	
-	
-	
 	
 	<!-- start partitioning -->
 	
@@ -384,8 +199,8 @@
 			<listeners>
 				<listener ref="stepCompletionListener" />
 			</listeners>
-			<chunk reader="metaMrrelPartitionedSkippingReader" processor="metaRootNodeAddingEntityAssocToEntityProcessor"
-				writer="entityAssnsToEntityListWriter" commit-interval="500">
+			<chunk reader="metaMrrelPartitionedSkippingReader" processor="metaEntityAssocToEntityProcessor"
+				writer="associationSourceWriter" commit-interval="500">
 				<streams>
 					<stream ref="mrrelReader" />
 				</streams>
@@ -409,7 +224,7 @@
 	</beans:bean>
 	
 	<!--  Mrsat qualifier processing below -->
-	
+	<!-- 
 	<beans:bean id="metaLoadMrsatPropertyQualifiersPartioned"
 		class="org.springframework.batch.core.partition.support.PartitionStep">
 		<beans:property name="partitionHandler"
@@ -450,9 +265,9 @@
 			</chunk>
 		</tasklet>
 	</step>
-	
+	-->
 	<!--  Mrconso qualifier processing below -->
-	 
+	<!-- 
 	<beans:bean id="metaLoadMrconsoPropertyQualifiersPartioned"
 		class="org.springframework.batch.core.partition.support.PartitionStep">
 		<beans:property name="partitionHandler"
@@ -493,7 +308,7 @@
 			</chunk>
 		</tasklet>
 	</step>
-	
+	-->
 	
 	<!-- Assoc Qualifier processing below -->
 	
@@ -529,12 +344,14 @@
 			<listeners>
 				<listener ref="stepCompletionListener" />
 			</listeners>
+
 			<chunk reader="metaMrrelPartitionedSkippingReader" processor="entityAssnEQualsProcessor"
-				writer="entityAssnsToEqualsListWriter" commit-interval="500">
+				writer="codingSchemeWriter" commit-interval="500">
 					<streams>
 					<stream ref="mrrelReader" />
 				</streams>
 			</chunk>
+
 		</tasklet>
 	</step>
 	
@@ -570,14 +387,35 @@
 			<beans:ref bean="dataSource" />
 		</beans:property>
 	</beans:bean>
+	
+    <beans:bean id="qualifierAddingMetaDefinitionProcessor"
+		class="org.lexgrid.loader.processor.decorator.EntityPropertyQualifierAndSourceAddingDecorator">
+		<beans:constructor-arg ref="metaDefinitionProcessor"/>
+		<beans:property name="sourceResolvers">
+			<beans:list>
+				<beans:ref bean="metaMrdefSourceResolver"/>
+			</beans:list>
+		</beans:property>
+		<beans:property name="qualifierResolvers">
+			<beans:list>
+				<beans:ref bean="mrdefAuiPropertyQualifierResolver" />
+				<beans:ref bean="mrdefAtuiPropertyQualifierResolver" />
+				<beans:ref bean="mrdefSuppressPropertyQualifierResolver" />
+				<beans:ref bean="mrdefCvfPropertyQualifierResolver" />
+				<beans:ref bean="mrdefSatuiPropertyQualifierResolver" />
+			</beans:list>
+		</beans:property>
+	</beans:bean>
 
 	<beans:bean id="metaDefinitionProcessor"
 		class="org.lexgrid.loader.processor.EntityPropertyProcessor" parent="metaDefaultPropertyProcessor">
 		<beans:property name="propertyResolver">
 			<beans:ref bean="metaDefinitionPropertyResolver"/>
 		</beans:property>
+		<beans:property name="entityKeyResolver" ref="databaseServiceEntityKeyResolver"/>
 	</beans:bean>
 
+<!-- 
 	<beans:bean id="metaPresentationProcessor"
 		class="org.lexgrid.loader.processor.EntityPropertyProcessor" parent="metaDefaultPropertyProcessor">
 		<beans:property name="propertyResolver">
@@ -587,6 +425,9 @@
 					<beans:bean
 						class="org.lexgrid.loader.meta.processor.support.MetaMrconsoEntityCodeResolver" />
 				</beans:property>
+				<beans:property name="entityNamespaceResolver">
+					<beans:ref bean="metaEntityNamespaceResolver" />
+				</beans:property>
 				<beans:property name="individualIdSetter">
 					<beans:bean
 						class="org.lexgrid.loader.meta.data.property.MetaMrconsoIndividualIdSetter" />
@@ -594,15 +435,20 @@
 			</beans:bean>
 		</beans:property>
 	</beans:bean>
+	-->
 	
 	<beans:bean id="metaMrsatPropertyProcessor"
 		class="org.lexgrid.loader.processor.EntityPropertyProcessor" parent="metaDefaultPropertyProcessor">
+		<beans:property name="entityKeyResolver" ref="databaseServiceEntityKeyResolver"/>
 		<beans:property name="propertyResolver">
 			<beans:bean
 				class="org.lexgrid.loader.meta.processor.support.MetaMrsatPropertyResolver">
 				<beans:property name="entityCodeResolver">
 					<beans:bean
 						class="org.lexgrid.loader.meta.processor.support.MetaMrsatEntityCodeResolver" />
+				</beans:property>
+				<beans:property name="entityNamespaceResolver">
+					<beans:ref bean="metaEntityNamespaceResolver" />
 				</beans:property>
 				<beans:property name="individualIdSetter">
 					<beans:bean
@@ -614,6 +460,7 @@
 	
 	<beans:bean id="metaMrstyPropertyProcessor"
 		class="org.lexgrid.loader.processor.EntityPropertyProcessor" parent="metaDefaultPropertyProcessor">
+		<beans:property name="entityKeyResolver" ref="databaseServiceEntityKeyResolver"/>
 		<beans:property name="propertyResolver">
 			<beans:bean
 				class="org.lexgrid.loader.meta.processor.support.MetaMrstySemanticTypePropertyResolver">
@@ -621,20 +468,14 @@
 					<beans:bean
 						class="org.lexgrid.loader.meta.processor.support.MetaMrstyEntityCodeResolver" />
 				</beans:property>
+				<beans:property name="entityNamespaceResolver">
+					<beans:ref bean="metaEntityNamespaceResolver" />
+				</beans:property>
 				<beans:property name="individualIdSetter">
 					<beans:bean
 						class="org.lexgrid.loader.meta.data.property.MetaMrstyIndividualIdSetter" />
 				</beans:property>
 			</beans:bean>
-		</beans:property>
-	</beans:bean>
-	
-	<beans:bean id="metaConceptEntityTypeProcessor"
-		class="org.lexgrid.loader.processor.SettableEntityTypeProcessor"
-		parent="codingSchemeNameSettingProcessor">
-		<beans:property name="entityCodeResolver">
-			<beans:bean
-				class="org.lexgrid.loader.meta.processor.support.MetaMrconsoEntityCodeResolver" />
 		</beans:property>
 	</beans:bean>
 
@@ -645,237 +486,190 @@
 		</beans:property>
 	</beans:bean>
 
-	<beans:bean id="mrconsoPropertyQualifierProcessor"
-		class="org.lexgrid.loader.rrf.processor.RrfMultipleEntityPropertyMultiAttribProcessor"
-		parent="codingSchemeNameSettingProcessor">
-		<beans:property name="optionalMultiAttribResolverList">
-			<beans:list>
-				<beans:ref bean="metaSourceCodeMultiAttribResolver" />
-				<beans:ref bean="metaSourceMultiAttribResolver" />
-				<beans:ref bean="mrrankMultiattributeResolver" />
-				<beans:ref bean="mrconsoAuiMultiAttribResolver" />
-				<beans:ref bean="mrconsoLuiMultiAttribResolver" />
-				<beans:ref bean="mrconsoSuiMultiAttribResolver" />
-				<beans:ref bean="mrconsoSauiMultiAttribResolver" />
-				<beans:ref bean="mrconsoScuiMultiAttribResolver" />
-				<beans:ref bean="mrconsoSduiMultiAttribResolver" />	
-				<beans:ref bean="mrconsoSuppressMultiAttribResolver" />
-				<beans:ref bean="mrconsoCvfMultiAttribResolver" />
-			</beans:list>
-		</beans:property>
-		<beans:property name="supportedAttributeTemplate">
-			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
-		</beans:property>
-		<beans:property name="isoMap" ref="isoMap" />
-	</beans:bean>
-	
-	
-	<beans:bean id="mrdefPropertyQualifierProcessor"
-		class="org.lexgrid.loader.rrf.processor.RrfMultipleEntityPropertyMultiAttribProcessor"
-		parent="codingSchemeNameSettingProcessor">
-		<beans:property name="optionalMultiAttribResolverList">
-			<beans:list>
-				<beans:ref bean="mrdefAuiMultiAttribResolver" />
-				<beans:ref bean="mrdefAtuiMultiAttribResolver" />
-				<beans:ref bean="mrdefSuppressMultiAttribResolver" />
-				<beans:ref bean="mrdefCvfMultiAttribResolver" />
-				<beans:ref bean="mrdefSatuiMultiAttribResolver" />
-				<beans:ref bean="mrdefSourceMultiAttribResolver" />
-			</beans:list>
-		</beans:property>
-		<beans:property name="supportedAttributeTemplate">
-			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
-		</beans:property>
-		<beans:property name="isoMap" ref="isoMap" />
-	</beans:bean>
-	
-
 	<!-- Start MRCONSO Qualifier Resolvers -->
-	<beans:bean id="baseMrconsoMultiAttribResolver" abstract="true"
-		class="org.lexgrid.loader.processor.support.AbstractBasicMultiAttribResolver">
-		<beans:property name="entityCodeResolver">
-			<beans:bean
-				class="org.lexgrid.loader.meta.processor.support.MetaMrconsoEntityCodeResolver" />
-		</beans:property>
-		<beans:property name="individualIdSetter">
-			<beans:bean
-				class="org.lexgrid.loader.meta.data.property.MetaMrconsoIndividualIdSetter" />
-		</beans:property>
+	<beans:bean id="baseMrconsoPropertyQualifierResolver" abstract="true"
+		class="org.lexgrid.loader.processor.support.AbstractBasicPropertyQualifierResolver">
 	</beans:bean>
 	
-	<beans:bean id="metaSourceCodeMultiAttribResolver" 
-		class="org.lexgrid.loader.meta.processor.support.MetaSourceCodeMultiAttribResolver"
-		parent="baseMrconsoMultiAttribResolver">
+	<beans:bean id="metaMrconsoSourceResolver" 
+		class="org.lexgrid.loader.meta.processor.support.MetaMrconsoSourceResolver"
+		parent="baseMrconsoPropertyQualifierResolver">
 	</beans:bean>
 	
-	<beans:bean id="metaSourceMultiAttribResolver" 
-		class="org.lexgrid.loader.meta.processor.support.MetaSourceMultiAttribResolver"
-		parent="baseMrconsoMultiAttribResolver">
+	<beans:bean id="mrconsoLuiPropertyQualifierResolver" 
+		class="org.lexgrid.loader.rrf.processor.support.MrconsoLuiPropertyQualifierResolver"
+		parent="baseMrconsoPropertyQualifierResolver">
 	</beans:bean>
 	
-		<beans:bean id="mrconsoLuiMultiAttribResolver" 
-		class="org.lexgrid.loader.rrf.processor.support.MrconsoLuiMultiAttribResolver"
-		parent="baseMrconsoMultiAttribResolver">
-	</beans:bean>
-	
-	<beans:bean id="mrconsoSuiMultiAttribResolver" 
-		class="org.lexgrid.loader.rrf.processor.support.MrconsoSuiMultiAttribResolver"
-		parent="baseMrconsoMultiAttribResolver">
+	<beans:bean id="mrconsoSuiPropertyQualifierResolver" 
+		class="org.lexgrid.loader.rrf.processor.support.MrconsoSuiPropertyQualifierResolver"
+		parent="baseMrconsoPropertyQualifierResolver">
 	</beans:bean>
 		
-		<beans:bean id="mrconsoSauiMultiAttribResolver" 
-		class="org.lexgrid.loader.rrf.processor.support.MrconsoSauiMultiAttribResolver"
-		parent="baseMrconsoMultiAttribResolver">
+		<beans:bean id="mrconsoSauiPropertyQualifierResolver" 
+		class="org.lexgrid.loader.rrf.processor.support.MrconsoSauiPropertyQualifierResolver"
+		parent="baseMrconsoPropertyQualifierResolver">
 	</beans:bean>
 			
-	<beans:bean id="mrconsoSduiMultiAttribResolver" 
-		class="org.lexgrid.loader.rrf.processor.support.MrconsoSduiMultiAttribResolver"
-		parent="baseMrconsoMultiAttribResolver">
+	<beans:bean id="mrconsoSduiPropertyQualifierResolver" 
+		class="org.lexgrid.loader.rrf.processor.support.MrconsoSduiPropertyQualifierResolver"
+		parent="baseMrconsoPropertyQualifierResolver">
 	</beans:bean>
 	
-	<beans:bean id="mrconsoScuiMultiAttribResolver" 
-		class="org.lexgrid.loader.rrf.processor.support.MrconsoScuiMultiAttribResolver"
-		parent="baseMrconsoMultiAttribResolver">
+	<beans:bean id="mrconsoScuiPropertyQualifierResolver" 
+		class="org.lexgrid.loader.rrf.processor.support.MrconsoScuiPropertyQualifierResolver"
+		parent="baseMrconsoPropertyQualifierResolver">
 	</beans:bean>
 		
-		<beans:bean id="mrconsoSuppressMultiAttribResolver" 
-		class="org.lexgrid.loader.rrf.processor.support.MrconsoSuppressMultiAttribResolver"
-		parent="baseMrconsoMultiAttribResolver">
+		<beans:bean id="mrconsoSuppressPropertyQualifierResolver" 
+		class="org.lexgrid.loader.rrf.processor.support.MrconsoSuppressPropertyQualifierResolver"
+		parent="baseMrconsoPropertyQualifierResolver">
 	</beans:bean>
 	
-		<beans:bean id="mrconsoCvfMultiAttribResolver" 
-		class="org.lexgrid.loader.rrf.processor.support.MrconsoCvfMultiAttribResolver"
-		parent="baseMrconsoMultiAttribResolver">
+		<beans:bean id="mrconsoCvfPropertyQualifierResolver" 
+		class="org.lexgrid.loader.rrf.processor.support.MrconsoCvfPropertyQualifierResolver"
+		parent="baseMrconsoPropertyQualifierResolver">
 	</beans:bean>
 	
 	<beans:bean id="mrrankMultiattributeResolver" 
-		class="org.lexgrid.loader.rrf.processor.support.MrrankMultiattributeResolver"
-		parent="baseMrconsoMultiAttribResolver">
+		class="org.lexgrid.loader.rrf.processor.support.MrrankPropertyQualifierResolver"
+		parent="baseMrconsoPropertyQualifierResolver">
 		<beans:property name="mrRankUtility">
 			<beans:ref bean="mrrankUtility" />
 		</beans:property>
 	</beans:bean>
 	
-	<beans:bean id="mrconsoAuiMultiAttribResolver" 
-		class="org.lexgrid.loader.rrf.processor.support.MrconsoAuiMultiAttribResolver"
-		parent="baseMrconsoMultiAttribResolver">
+	<beans:bean id="mrconsoAuiPropertyQualifierResolver" 
+		class="org.lexgrid.loader.rrf.processor.support.MrconsoAuiPropertyQualifierResolver"
+		parent="baseMrconsoPropertyQualifierResolver">
 	</beans:bean>
 	
 	<!-- End MRCONSO Qualifier Resolvers -->
 	
 	<!-- Start MRDEF Qualifier Resolvers -->
-	<beans:bean id="baseMrdefMultiAttribResolver" abstract="true"
-		class="org.lexgrid.loader.processor.support.AbstractBasicMultiAttribResolver">
-		<beans:property name="entityCodeResolver">
-			<beans:bean
-				class="org.lexgrid.loader.meta.processor.support.MetaMrdefEntityCodeResolver" />
-		</beans:property>
-		<beans:property name="individualIdSetter">
-			<beans:bean
-				class="org.lexgrid.loader.rrf.data.property.MrdefAtuiIndividualIdSetter" />
-		</beans:property>
+	<beans:bean id="baseMrdefPropertyQualifierResolver" abstract="true"
+		class="org.lexgrid.loader.processor.support.AbstractBasicPropertyQualifierResolver">
 	</beans:bean>
 	
-	<beans:bean id="mrdefAuiMultiAttribResolver" 
-		class="org.lexgrid.loader.rrf.processor.support.MrdefAuiMultiAttribResolver"
-		parent="baseMrdefMultiAttribResolver">
+	<beans:bean id="metaMrdefSourceResolver"
+		class="org.lexgrid.loader.meta.processor.support.MetaMrdefSourceResolver"
+		parent="baseMrdefPropertyQualifierResolver">
 	</beans:bean>
 	
-	<beans:bean id="mrdefAtuiMultiAttribResolver" 
-		class="org.lexgrid.loader.rrf.processor.support.MrdefAtuiMultiAttribResolver"
-		parent="baseMrdefMultiAttribResolver">
+	<beans:bean id="mrdefAuiPropertyQualifierResolver" 
+		class="org.lexgrid.loader.rrf.processor.support.MrdefAuiPropertyQualifierResolver"
+		parent="baseMrdefPropertyQualifierResolver">
 	</beans:bean>
 	
-	<beans:bean id="mrdefSuppressMultiAttribResolver" 
-		class="org.lexgrid.loader.rrf.processor.support.MrdefSuppressMultiAttribResolver"
-		parent="baseMrdefMultiAttribResolver">
+	<beans:bean id="mrdefAtuiPropertyQualifierResolver" 
+		class="org.lexgrid.loader.rrf.processor.support.MrdefAtuiPropertyQualifierResolver"
+		parent="baseMrdefPropertyQualifierResolver">
 	</beans:bean>
 	
-	<beans:bean id="mrdefCvfMultiAttribResolver" 
-		class="org.lexgrid.loader.rrf.processor.support.MrdefCvfMultiAttribResolver"
-		parent="baseMrdefMultiAttribResolver">
+	<beans:bean id="mrdefSuppressPropertyQualifierResolver" 
+		class="org.lexgrid.loader.rrf.processor.support.MrdefSuppressPropertyQualifierResolver"
+		parent="baseMrdefPropertyQualifierResolver">
 	</beans:bean>
 	
-	<beans:bean id="mrdefSatuiMultiAttribResolver" 
-		class="org.lexgrid.loader.rrf.processor.support.MrdefSatuiMultiAttribResolver"
-		parent="baseMrdefMultiAttribResolver">
+	<beans:bean id="mrdefCvfPropertyQualifierResolver" 
+		class="org.lexgrid.loader.rrf.processor.support.MrdefCvfPropertyQualifierResolver"
+		parent="baseMrdefPropertyQualifierResolver">
 	</beans:bean>
 	
-	<beans:bean id="mrdefSourceMultiAttribResolver" 
-		class="org.lexgrid.loader.meta.processor.support.MetaMrdefSourceMultiAttribResolver"
-		parent="baseMrdefMultiAttribResolver">
+	<beans:bean id="mrdefSatuiPropertyQualifierResolver" 
+		class="org.lexgrid.loader.rrf.processor.support.MrdefSatuiPropertyQualifierResolver"
+		parent="baseMrdefPropertyQualifierResolver">
+	</beans:bean>
+	
+	<beans:bean id="mrdefSourceResolver" 
+		class="org.lexgrid.loader.meta.processor.support.MetaMrdefSourceResolver"
+		parent="baseMrdefPropertyQualifierResolver">
 	</beans:bean>
 
 	<!-- End MRDEF Qualifier Resolvers -->
-
-	<beans:bean id="entityPropertyMrsatMultiAttribProcessor"
-		class="org.lexgrid.loader.meta.processor.MetaMrsattoMultiAttributeListProcessor"
-		parent="codingSchemeNameSettingProcessor">
-		<beans:property name="multiAttribSourceResolver">
-		 	<beans:ref bean="mrsatMultiAttribSourceResolver" />
-		</beans:property>
-		<beans:property name="multiAttribAuiResolver">
-		 	<beans:ref bean="mrsatMultiAttribAuiResolver" />
-		</beans:property>
-		<beans:property name="multiAttribStypeResolver">
-		 	<beans:ref bean="mrsatMultiAttribStypeResolver" />
-		</beans:property>
-		<beans:property name="multiAttribSuppressResolver">
-		 	<beans:ref bean="mrsatMultiAttribSuppressResolver" />
-		</beans:property>
-		<beans:property name="supportedAttributeTemplate">
-			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
-		</beans:property>
-		<beans:property name="isoMap">
-			<beans:ref bean="isoMap" />
-		</beans:property>
-		<beans:property name="resolver">
-		<beans:bean class="org.lexgrid.loader.meta.processor.support.MetaMrSatMultiAttributeResolver" 
-		parent="codingSchemeNameSettingProcessor"
-		/>
-		</beans:property>
-	</beans:bean>
-	 
-	<beans:bean id="mrhierAssocAndPropertyQualProcessor"
-		class="org.lexgrid.loader.meta.processor.MrhierCompositeProcessor"
-		parent="codingSchemeNameSettingProcessor">
-		<beans:property name="lexEvsDao">
-			<beans:ref bean="lexEvsDao" />
-		</beans:property>
-		<beans:property name="mrconsoStagingDao">
-			<beans:ref bean="metaMrconsoStagingDao" />
-		</beans:property>
-		<beans:property name="supportedAttributeTemplate">
-			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
-		</beans:property>
-		<beans:property name="qualifierResolver">
-			<beans:bean
-				class="org.lexgrid.loader.rrf.processor.support.HcdQualifierResolver" />
-		</beans:property>
-		<beans:property name="propertyMultiAttribResolvers">
-			<beans:list>
-				<beans:bean 
-				class="org.lexgrid.loader.rrf.processor.support.MrhierHcdMultiAttribResolver"/>
-				
-				<!-- This is causing duplicates because a PTR may be shared by different HCDs.
-				<beans:bean 
-				class="org.lexgrid.loader.rrf.processor.support.MrhierPtrMultiAttribResolver"/>
-				-->
-				
-			</beans:list>
-		</beans:property>
-	</beans:bean>
-
+	
 	<beans:bean id="entityAssnEQualsProcessor"
 		class="org.lexgrid.loader.processor.EntityAssnToEQualsListProcessor"
 		parent="codingSchemeNameSettingProcessor">
-		<beans:property name="keyResolver">
-			<beans:bean class="org.lexgrid.loader.rrf.data.association.MrrelRuiKeyResolver" />
-		</beans:property>
 		<beans:property name="supportedAttributeTemplate">
 			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
 		</beans:property>
-		<beans:property name="optionalQualifierResolver">
+		
+	</beans:bean>
+
+	<beans:bean id="entityListProcessor"
+		class="org.lexgrid.loader.rrf.processor.MrconsoGroupEntityProcessor">
+		<beans:property name="presentationResolver">
+		<beans:bean
+				class="org.lexgrid.loader.meta.processor.support.MetaPresentationPropertyResolver">
+				<beans:property name="entityCodeResolver">
+					<beans:bean
+						class="org.lexgrid.loader.meta.processor.support.MetaMrconsoEntityCodeResolver" />
+				</beans:property>
+				<beans:property name="entityNamespaceResolver">
+					<beans:ref bean="metaEntityNamespaceResolver" />
+				</beans:property>
+				<beans:property name="individualIdSetter">
+					<beans:bean
+						class="org.lexgrid.loader.meta.data.property.MetaMrconsoIndividualIdSetter" />
+				</beans:property>
+			</beans:bean>
+		</beans:property>
+		
+		<beans:property name="sourceResolvers">
+			<beans:list>
+				<beans:ref bean="metaMrconsoSourceResolver"/>
+			</beans:list>
+		</beans:property>
+		
+		<beans:property name="qualifierResolvers">
+			<beans:list>
+					<beans:ref bean="mrconsoLuiPropertyQualifierResolver"/>
+					<beans:ref bean="mrconsoSuiPropertyQualifierResolver"/>
+					<beans:ref bean="mrconsoSauiPropertyQualifierResolver"/>
+					<beans:ref bean="mrconsoSduiPropertyQualifierResolver"/>
+					<beans:ref bean="mrconsoScuiPropertyQualifierResolver"/>
+					<beans:ref bean="mrconsoSuppressPropertyQualifierResolver" />
+					<beans:ref bean="mrconsoCvfPropertyQualifierResolver" />
+					<beans:ref bean="mrrankMultiattributeResolver" />
+					<beans:ref bean="mrconsoAuiPropertyQualifierResolver" />
+			</beans:list>
+		</beans:property>
+		
+		<beans:property name="supportedAttributeTemplate" ref="cachingSupportedAttribuiteTemplate" />
+		<beans:property name="sortingListProcessor">
+			<beans:bean
+				class="org.lexgrid.loader.processor.SortingListProcessor">
+				<beans:property name="propertyComparator">
+					<beans:ref bean="propertyComparator" />
+				</beans:property>
+				<beans:property name="delegate"
+					ref="entityProcessor" />
+			</beans:bean>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="metaCodingSchemeLoadingTasklet"
+		class="org.lexgrid.loader.meta.tasklet.MetaCodingSchemeLoadingTasklet">
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="metaCodingSchemeIdSetter" />
+		</beans:property>
+		<beans:property name="codingSchemeProperties" ref="codingSchemeProperties"/>
+	</beans:bean>
+	
+	<beans:bean id="metaEntityAssocToEntityProcessor"
+		class="org.lexgrid.loader.processor.EntityAssnsToEntityProcessor"
+		parent="codingSchemeNameSettingProcessor">
+		
+		<beans:property name="associationInstanceIdResolver">
+			<beans:bean class="org.lexgrid.loader.rrf.data.association.MrrelRuiAssociationInstanceIdResolver"/>
+		</beans:property>		
+	
+		<beans:property name="associationPredicateKeyResolver" ref="associationPredicateKeyResolver"/>
+		
+		<beans:property name="databaseServiceManager" ref="databaseServiceManager"/>
+					
+		<beans:property name="qualifierResolvers">
 		<beans:list>
 				<beans:bean
 				class="org.lexgrid.loader.meta.processor.support.MetaSourceQualifierResolver" />
@@ -903,123 +697,31 @@
 				class="org.lexgrid.loader.rrf.processor.support.RuiAssocQualResolver" />		
 		</beans:list>
 		</beans:property>
-	</beans:bean>
-
-	<beans:bean id="entityPropertyListProcessor"
-		class="org.lexgrid.loader.processor.EntityPropertyListProcessor">
-		<beans:property name="delegate">
-			<beans:ref local="metaPresentationProcessor" />
-		</beans:property>
-		<beans:property name="propertyComparator">
-			<beans:ref bean="propertyComparator" />
-		</beans:property>
-		<beans:property name="listIdSetter">
-			<beans:bean class="org.lexgrid.loader.data.property.NoopListIdSetter" />
-		</beans:property>
-		<beans:property name="preferredSetter">
-			<beans:bean
-				class="org.lexgrid.loader.data.property.GroupByLanguagePreferredSetter" />
-		</beans:property>
-	</beans:bean>
 	
-	<beans:bean id="entityTypeListProcessor"
-		class="org.lexgrid.loader.processor.HighestRankingListProcessor">
-		<beans:property name="sortingListProcessor">
-			<beans:bean class="org.lexgrid.loader.processor.SortingListProcessor">
-				<beans:property name="propertyComparator">
-					<beans:ref bean="propertyComparator" />
-				</beans:property>
-				<beans:property name="delegate" ref="metaConceptEntityTypeProcessor" />
-			</beans:bean>
-		</beans:property>
-	</beans:bean>
-
-	<beans:bean id="entityListProcessor"
-		class="org.lexgrid.loader.processor.HighestRankingListProcessor">
-		<beans:property name="sortingListProcessor">
-			<beans:bean class="org.lexgrid.loader.processor.SortingListProcessor">
-				<beans:property name="propertyComparator">
-					<beans:ref bean="propertyComparator" />
-				</beans:property>
-				<beans:property name="delegate" ref="entityProcessor" />
-			</beans:bean>
-		</beans:property>
-	</beans:bean>
-
-	<beans:bean id="metaCodingSchemeProcessor"
-		class="org.lexgrid.loader.meta.processor.MetaCodingSchemeProcessor">
-		<beans:property name="isoMap">
-			<beans:ref bean="isoMap" />
-		</beans:property>
-		<beans:property name="codingSchemeProperties">
-			<beans:ref local="codingSchemeProperties" />
-		</beans:property>
-		<beans:property name="supportedAttributeTemplate">
-			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
-		</beans:property>
-	</beans:bean>
-
-	<beans:bean id="metaRootNodeAddingEntityAssocToEntityProcessor"
-		class="org.lexgrid.loader.processor.decorator.EntityAssnToEntityRootNodeAddingDecorator">
-		<beans:constructor-arg>
-			<beans:ref bean="metaEntityAssocToEntityProcessor" />
-		</beans:constructor-arg>
-		<beans:property name="supportedAttributeTemplate">
-			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
-		</beans:property>
-		<beans:property name="replaceRelation" value="false" />
-		<beans:property name="rootNodeResolver">
+		<beans:property name="sourcePropertyIdResolver">
 			<beans:bean
-				class="org.lexgrid.loader.meta.processor.support.MetaRootNodeResolver">
-				<beans:property name="metaMrconsoStagingDao">
-					<beans:ref bean="metaMrconsoStagingDao" />
-				</beans:property>
+				class="org.lexgrid.loader.rrf.processor.support.MrrelAuiPropertyIdResolver">
+				<beans:property name="aui" value="AUI2" />
 			</beans:bean>
 		</beans:property>
-	</beans:bean>
-
-	<beans:bean id="metaEntityAssocToEntityProcessor"
-		class="org.lexgrid.loader.processor.decorator.PostProcessorValidatingDecorator">
-		<beans:constructor-arg>
-			<beans:bean
-				class="org.lexgrid.loader.meta.processor.MetaEntityAssnsToEntityProcessor">
-				<beans:property name="delegate">
-					<beans:ref local="entityAssnProcessor" />
-				</beans:property>
-			
-				<beans:property name="lexEvsDao">
-					<beans:ref bean="lexEvsDao" />
-				</beans:property>
-
-			</beans:bean>
-
-		</beans:constructor-arg>
-
-		<beans:property name="validator">
-			<beans:bean
-				class="org.lexgrid.loader.processor.support.validator.NamespaceSizeValidator" />
-		</beans:property>
-	</beans:bean>
 	
-	<beans:bean id="entityAssnProcessor"
-		class="org.lexgrid.loader.processor.EntityAssnsToEntityProcessor"
-		parent="codingSchemeNameSettingProcessor">
+		<beans:property name="targetPropertyIdResolver">
+			<beans:bean
+				class="org.lexgrid.loader.rrf.processor.support.MrrelAuiPropertyIdResolver">
+				<beans:property name="aui" value="AUI1" />
+			</beans:bean>
+		</beans:property>
+					
 		<beans:property name="relationResolver">
 			<beans:bean
 				class="org.lexgrid.loader.meta.processor.support.MetaRelationResolver"
 				parent="metaRelationResolver" />
 		</beans:property>
-		<beans:property name="keyResolver">
-			<beans:bean class="org.lexgrid.loader.rrf.data.association.MrrelRuiKeyResolver" />
-		</beans:property>
 	</beans:bean>
 
 	<beans:bean id="metaAssociationProcessor" parent="associationProcessor">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="metaCodingSchemeNameSetter" />
-		</beans:property>
-		<beans:property name="rrfPostProcessingDao">
-			<beans:ref bean="postProcessingDao" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="metaCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
 
@@ -1031,88 +733,35 @@
 		</beans:property>
 	</beans:bean>
 
-	<beans:bean id="metaCodingSchemeNameSetter"
+	<beans:bean id="metaCodingSchemeIdSetter"
 		class="org.lexgrid.loader.meta.data.codingscheme.MetaCodingSchemeIdSetter">
 		<beans:property name="codingSchemeProperties">
 			<beans:ref local="codingSchemeProperties" />
 		</beans:property>
+		<beans:property name="isoMap">
+			<beans:ref bean="isoMap" />
+		</beans:property>
+		<beans:property name="mrsabUtility">
+			<beans:ref bean="mrsabUtility" />
+		</beans:property>
 	</beans:bean>
 
-	<beans:bean id="mrsatMultiAttribSourceResolver"
-		class="org.lexgrid.loader.meta.processor.support.MetaMrsatSourceCodeMultiAttribResolver">
-		<beans:property name="entityCodeResolver">
-			<beans:bean
-				class="org.lexgrid.loader.meta.processor.support.MetaMrsatEntityCodeResolver" />
-		</beans:property>
-		<beans:property name="individualIdSetter">
-			<beans:bean
-				class="org.lexgrid.loader.meta.data.property.MetaMrsatIndividualIdSetter" />
-		</beans:property>
+	<beans:bean id="mrsatSourceResolver"
+		class="org.lexgrid.loader.meta.processor.support.MetaMrsatSourceResolver">
 	</beans:bean>
 			
 	<beans:bean id="mrsatMultiAttribAuiResolver"
-		class="org.lexgrid.loader.meta.processor.support.MetaMrsatMetauiMultiAttribResolver">
-		<beans:property name="entityCodeResolver">
-			<beans:bean
-				class="org.lexgrid.loader.meta.processor.support.MetaMrsatEntityCodeResolver" />
-		</beans:property>
-		<beans:property name="individualIdSetter">
-			<beans:bean
-				class="org.lexgrid.loader.meta.data.property.MetaMrsatIndividualIdSetter" />
-		</beans:property>
+		class="org.lexgrid.loader.meta.processor.support.MetaMrsatMetauiPropertyQualifierResolver">
 	</beans:bean>
 			
 	<beans:bean id="mrsatMultiAttribStypeResolver"
-		class="org.lexgrid.loader.meta.processor.support.MetaMrsatStypeMultiAttribResolver">
-		<beans:property name="entityCodeResolver">
-			<beans:bean
-				class="org.lexgrid.loader.meta.processor.support.MetaMrsatEntityCodeResolver" />
-		</beans:property>
-		<beans:property name="individualIdSetter">
-			<beans:bean
-				class="org.lexgrid.loader.meta.data.property.MetaMrsatIndividualIdSetter" />
-		</beans:property>
+		class="org.lexgrid.loader.meta.processor.support.MetaMrsatStypePropertyQualifierResolver">
 	</beans:bean>
 	
 	<beans:bean id="mrsatMultiAttribSuppressResolver"
-		class="org.lexgrid.loader.meta.processor.support.MetaMrsatSuppressMultiAttribResolver">
-		<beans:property name="entityCodeResolver">
-			<beans:bean
-				class="org.lexgrid.loader.meta.processor.support.MetaMrsatEntityCodeResolver" />
-		</beans:property>
-		<beans:property name="individualIdSetter">
-			<beans:bean
-				class="org.lexgrid.loader.meta.data.property.MetaMrsatIndividualIdSetter" />
-		</beans:property>
+		class="org.lexgrid.loader.meta.processor.support.MetaMrsatSuppressPropertyQualifierResolver">
 	</beans:bean>
-			
-	<beans:bean id="mrrelMetaMultiAttribKeyResolver"
-		class="org.lexgrid.loader.meta.data.association.MetaRelationBasedReproducibleKeyResolver">
-		<beans:property name="relationResolver">
-			<beans:bean
-				class="org.lexgrid.loader.meta.processor.support.MetaRelationResolver"
-				parent="metaRelationResolver"/>
-		</beans:property>
-		<beans:property name="entityCodeResolver">
-			<beans:bean
-				class="org.lexgrid.loader.meta.processor.support.MetaMrrelEntityCodeResolver" />
-		</beans:property>
-		<beans:property name="sourceAuiResolver">
-			<beans:bean
-				class="org.lexgrid.loader.rrf.processor.support.MrrelAuiResolver">
-				<beans:property name="auiToReturn" value="SOURCE_AUI"/>
-			</beans:bean>
-		</beans:property>
-		<beans:property name="targetAuiResolver">
-			<beans:bean
-				class="org.lexgrid.loader.rrf.processor.support.MrrelAuiResolver">
-				<beans:property name="auiToReturn" value="TARGET_AUI"/>
-			</beans:bean>
-		</beans:property>
-		
-	</beans:bean>
-		
-		
+
 	<beans:bean id="metaEntityResolver"
 		class="org.lexgrid.loader.meta.processor.support.MetaEntityResolver">
 		<beans:property name="entityNamespaceResolver">
@@ -1143,16 +792,10 @@
 		</beans:property>
 	</beans:bean>
 
-	<beans:bean id="postProcessingDao" parent="hibernateRrfPostProcessingDao">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref bean="metaCodingSchemeNameSetter" />
-		</beans:property>
-	</beans:bean>
-
 	<beans:bean id="metaEntityNamespaceResolver"
 		class="org.lexgrid.loader.processor.support.SameAsCodingSchemeNameEntityNamespaceResolver">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="metaCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="metaCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
 
@@ -1168,28 +811,26 @@
 
 	<beans:bean id="hardcodedValuesLoadingTasklet" 
 				class="org.lexgrid.loader.meta.hardcodedvalues.MetaHardcodedValuesTasklet">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="metaCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="metaCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="supportedAttributeTemplate">
 			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
 		</beans:property>
-<!--		<beans:property name="lexEvsDao">-->
-<!--			<beans:ref bean="lexEvsDao" />-->
-<!--		</beans:property>-->
+		<beans:property name="databaseServiceManager" ref="databaseServiceManager"/>
 	</beans:bean>
 
 	<beans:bean id="registeringTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.RegisteringTasklet">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="metaCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="metaCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
 
 	<beans:bean id="indexingTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.IndexingTasklet">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="metaCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="metaCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="retry" value="${retry}"/>
 	</beans:bean>
@@ -1197,23 +838,23 @@
 	<beans:bean id="mrsabMetadataLoadingTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.MetadataLoadingTasklet">
 		<beans:property name="inputResource" value="file:/${java.io.tmpdir}/NciMetadata.xml" />
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="metaCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="metaCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
 	
 		<beans:bean id="mrdocMetadataLoadingTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.MetadataLoadingTasklet">
 		<beans:property name="inputResource" value="file:/${java.io.tmpdir}/NciMrdocMetadata.xml" />
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="metaCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="metaCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="deleteXmlAfterLoad" value="false"/>
 	</beans:bean>
 
 	<beans:bean id="metaDefaultPropertyProcessor" abstract="true">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="metaCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="metaCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="supportedAttributeTemplate">
 			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
@@ -1223,7 +864,7 @@
 	<beans:bean id="cleanupListener" parent="abstractCleanupListener"
 	class="org.lexgrid.loader.listener.CleanupListener">
 		<beans:property name="stagingManager" ref="metaStagingManager" />
-		<beans:property name="codingSchemeNameSetter" ref="metaCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter" ref="metaCodingSchemeIdSetter" />
 	</beans:bean>
 	
 	<beans:bean id="metaMrconsoStagingDao" class="org.lexgrid.loader.meta.staging.MetaJdbcMrconsoStagingDao"
@@ -1231,10 +872,9 @@
 		
 	<beans:bean id="transitivityBuildingTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.TransitivityBuildingTasklet">
-		<beans:property name="codingSchemeNameSetter">
-			<beans:ref local="metaCodingSchemeNameSetter" />
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="metaCodingSchemeIdSetter" />
 		</beans:property>
-		<beans:property name="databaseUtility" ref="databaseUtility" />
 		<beans:property name="retry" value="${retry}"/>
 		<beans:property name="skip" value="true"/>
 	</beans:bean>
@@ -1271,26 +911,6 @@
 		</beans:property>
 	</beans:bean>
 
-	<!--
-	<beans:bean id="metaDefinitionPropertyProcessor"
-		class="org.lexgrid.loader.processor.decorator.QualifierAddingPropertyProcessorDecorator">
-		<beans:constructor-arg>
-			<beans:bean parent="codingSchemeNameSettingProcessor"
-				class="org.lexgrid.loader.processor.EntityPropertyProcessor">
-				<beans:property name="propertyResolver" ref="metaDefinitionPropertyResolver" />
-				<beans:property name="supportedAttributeTemplate" ref="cachingSupportedAttribuiteTemplate" />
-			</beans:bean>
-		</beans:constructor-arg>
-		<beans:property name="lexEvsDao" ref="lexEvsDao"/>
-		<beans:property name="decoratorMultiAttribResolver">
-			<beans:list>
-				<beans:ref bean="metaSourceCodeMultiAttribResolver" />
-			</beans:list>
-		</beans:property>
-		<beans:property name="supportedAttributeTemplate" ref="cachingSupportedAttribuiteTemplate" />
-	</beans:bean>
-	-->
-	
 	<beans:bean id="metaDefinitionPropertyResolver"
 		class="org.lexgrid.loader.rrf.processor.support.DefaultDefinitionPropertyResolver">
 		<beans:property name="individualIdSetter">
@@ -1301,6 +921,9 @@
 			<beans:bean
 				class="org.lexgrid.loader.meta.processor.support.MetaMrdefEntityCodeResolver">
 			</beans:bean>
+		</beans:property>
+		<beans:property name="entityNamespaceResolver">
+			<beans:ref bean="metaEntityNamespaceResolver" />
 		</beans:property>
 	</beans:bean>
 	
@@ -1314,5 +937,15 @@
 		</beans:property>	
 	</beans:bean>
 	-->
+	
+	<beans:bean id="associationPredicateKeyResolver" 
+		class="org.lexgrid.loader.database.key.AssociationPredicateCreatingKeyResolver">
+		<beans:property name="databaseServiceManager" ref="databaseServiceManager"/>
+	</beans:bean>
+	
+	<beans:bean id="databaseServiceEntityKeyResolver" 
+		class="org.lexgrid.loader.database.key.DatabaseServiceEntityKeyResolver">
+		<beans:property name="databaseServiceManager" ref="databaseServiceManager"/>
+	</beans:bean>
 	
 </beans:beans>

@@ -18,11 +18,7 @@
  */
 package org.lexgrid.loader.meta.hardcodedvalues;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.management.relation.Relation;
-
+import org.LexGrid.relations.Relations;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.hardcodedvalues.AbstractIntrospectiveHardcodedValues;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
@@ -40,27 +36,23 @@ public class MetaHardcodedValuesTasklet extends AbstractIntrospectiveHardcodedVa
 	 */
 	@Override
 	public void loadObjects() {
-		/*
-		List<Object> hardcodedValues = new ArrayList<Object>();
+		Relations relation = new Relations();
+
+		relation.setContainerName(RrfLoaderConstants.UMLS_RELATIONS_NAME);
+
+		this.getSupportedAttributeTemplate().addSupportedContainerName(
+				this.getCodingSchemeIdSetter().getCodingSchemeUri(), 
+				this.getCodingSchemeIdSetter().getCodingSchemeVersion(), 
+				RrfLoaderConstants.UMLS_RELATIONS_NAME, 
+				null, 
+				RrfLoaderConstants.UMLS_RELATIONS_NAME);		
 		
-		Relation relation = new Relation();
-		RelationId relationId = new RelationId();
-		relationId.setCodingSchemeName(codingSchemeIdSetter.getCodingSchemeName());
-		relationId.setContainerName(RrfLoaderConstants.UMLS_RELATIONS_NAME);
-		relation.setEntityDescription(RrfLoaderConstants.UMLS_RELATIONS_ENTITY_DESCRIPTION);
-		relation.setIsNative(true);
-		relation.setId(relationId);
-		hardcodedValues.add(relation);
-		
-		this.getSupportedAttributeTemplate()
-			.addSupportedNamespace(codingSchemeIdSetter.getCodingSchemeName(), 
-					codingSchemeIdSetter.getCodingSchemeName(), 
-					null, 
-					codingSchemeIdSetter.getCodingSchemeName(), 
-					codingSchemeIdSetter.getCodingSchemeName());
-		
-		return hardcodedValues;	
-		*/
+		this.getDatabaseServiceManager().
+		getRelationService().
+		insertRelation(
+				this.getCodingSchemeIdSetter().getCodingSchemeUri(), 
+				this.getCodingSchemeIdSetter().getCodingSchemeVersion(), 
+				relation);
 	}
 
 	/**

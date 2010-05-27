@@ -19,24 +19,20 @@
 package org.lexgrid.loader.meta.processor.support;
 
 import org.lexgrid.loader.processor.support.SourceResolver;
-import org.lexgrid.loader.rrf.model.Mrdef;
+import org.lexgrid.loader.rrf.model.Mrsat;
 
-/**
- * The Class MetaMrdefSourceMultiAttribResolver.
- * 
- * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
- */
-public class MetaMrdefSourceMultiAttribResolver implements SourceResolver<Mrdef>{
+public class MetaMrsatAuiCodePropertyQualifierResolver implements
+		SourceResolver<Mrsat> {
 
-	public String getRole(Mrdef item) {
+	public String getRole(Mrsat item) {
 		return null;
 	}
 
-	public String getSource(Mrdef item) {
+	public String getSource(Mrsat item) {
 		return item.getSab();
 	}
 
-	public String getSubRef(Mrdef item) {
+	public String getSubRef(Mrsat item) {
 		return null;
 	}
 }

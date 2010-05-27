@@ -18,21 +18,24 @@
  */
 package org.lexgrid.loader.meta.processor.support;
 
-import org.lexgrid.loader.processor.support.SourceResolver;
-import org.lexgrid.loader.rrf.model.Mrsat;
+import org.LexGrid.commonTypes.Text;
+import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexgrid.loader.meta.constants.MetaLoaderConstants;
+import org.lexgrid.loader.processor.support.AbstractPropertyQualifierResolver;
+import org.lexgrid.loader.rrf.model.Mrconso;
 
-public class MetaMrsatAuiCodeMultiAttribResolver implements
-		SourceResolver<Mrsat> {
+/**
+ * The Class MetaSourceCodeMultiAttribResolver.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
+public class MetaSourceCodePropertyQualifierResolver extends AbstractPropertyQualifierResolver<Mrconso>{
 
-	public String getRole(Mrsat item) {
-		return null;
+	public String getQualifierName() {
+		return MetaLoaderConstants.SOURCE_CODE_QUALIFIER;
 	}
 
-	public String getSource(Mrsat item) {
-		return item.getSab();
-	}
-
-	public String getSubRef(Mrsat item) {
-		return null;
+	public Text getQualifierValue(Mrconso item) {
+		return DaoUtility.createText(item.getCode());
 	}
 }

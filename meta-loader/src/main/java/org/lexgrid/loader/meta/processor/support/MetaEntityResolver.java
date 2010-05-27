@@ -18,6 +18,7 @@
  */
 package org.lexgrid.loader.meta.processor.support;
 
+import org.LexGrid.commonTypes.types.EntityTypes;
 import org.lexgrid.loader.processor.support.AbstractBasicEntityResolver;
 import org.lexgrid.loader.rrf.model.Mrconso;
 
@@ -50,7 +51,6 @@ public class MetaEntityResolver extends AbstractBasicEntityResolver<Mrconso>{
 	}
 
 	public String[] getEntityTypes(Mrconso item) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+		return new String[]{EntityTypes.CONCEPT.toString()};
 	}
 }

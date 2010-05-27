@@ -18,6 +18,8 @@
  */
 package org.lexgrid.loader.meta.processor.support;
 
+import org.LexGrid.commonTypes.Text;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexgrid.loader.meta.constants.MetaLoaderConstants;
 import org.lexgrid.loader.processor.support.AbstractAssociationQualifierResolver;
 import org.lexgrid.loader.rrf.model.Mrrel;
@@ -39,7 +41,7 @@ public class MetaSourceQualifierResolver extends AbstractAssociationQualifierRes
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.QualifierResolver#getQualifierValue(java.lang.Object)
 	 */
-	public String getQualifierValue(Mrrel item) {
-		return item.getSab();
+	public Text getQualifierValue(Mrrel item) {
+		return DaoUtility.createText(item.getSab());
 	}
 }

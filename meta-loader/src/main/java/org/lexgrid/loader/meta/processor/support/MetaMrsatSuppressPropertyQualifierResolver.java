@@ -18,25 +18,35 @@
  */
 package org.lexgrid.loader.meta.processor.support;
 
-import org.lexgrid.loader.processor.support.SourceResolver;
-import org.lexgrid.loader.rrf.model.Mrconso;
+import org.LexGrid.commonTypes.Text;
+import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexgrid.loader.meta.constants.MetaLoaderConstants;
+import org.lexgrid.loader.processor.support.OptionalPropertyQualifierResolver;
+import org.lexgrid.loader.rrf.model.Mrsat;
 
 /**
- * The Class MetaSourceMultiAttribResolver.
- * 
- * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
  */
-public class MetaSourceMultiAttribResolver implements SourceResolver<Mrconso>{
+public class MetaMrsatSuppressPropertyQualifierResolver implements
+	OptionalPropertyQualifierResolver<Mrsat> {
+	
+	private static String NO_SUPPRESS_VALUE = "N";
 
-	public String getRole(Mrconso item) {
+	public String getQualifierName() {
+		return MetaLoaderConstants.SUPPRESS_QUALIFIER;
+	}
+
+	public Text getQualifierValue(Mrsat item) {
+		return DaoUtility.createText(item.getSuppress());
+	}
+
+	@Override
+	public String getPropertyQualifierType(Mrsat item) {
 		return null;
 	}
 
-	public String getSource(Mrconso item) {
-		return item.getSab();
-	}
-
-	public String getSubRef(Mrconso item) {
-		return null;
+	@Override
+	public boolean toProcess(Mrsat item) {
+		return !item.getSuppress().equalsIgnoreCase(NO_SUPPRESS_VALUE);
 	}
 }

@@ -18,6 +18,8 @@
  */
 package org.lexgrid.loader.meta.processor.support;
 
+import org.LexGrid.commonTypes.Text;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexgrid.loader.meta.constants.MetaLoaderConstants;
 import org.lexgrid.loader.processor.support.OptionalQualifierResolver;
 import org.lexgrid.loader.rrf.model.Mrrel;
@@ -39,8 +41,8 @@ public class SelfReferencingAssocQualResolver implements OptionalQualifierResolv
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.QualifierResolver#getQualifierValue(java.lang.Object)
 	 */
-	public String getQualifierValue(Mrrel item) {
-		return MetaLoaderConstants.SELF_REFERENCING_QUALIFIER_TRUE_VALUE;
+	public Text getQualifierValue(Mrrel item) {
+		return DaoUtility.createText(MetaLoaderConstants.SELF_REFERENCING_QUALIFIER_TRUE_VALUE);
 	}
 
 	/* (non-Javadoc)

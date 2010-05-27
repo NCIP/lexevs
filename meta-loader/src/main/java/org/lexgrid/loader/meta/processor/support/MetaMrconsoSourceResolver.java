@@ -18,22 +18,25 @@
  */
 package org.lexgrid.loader.meta.processor.support;
 
-import org.lexgrid.loader.meta.constants.MetaLoaderConstants;
-import org.lexgrid.loader.processor.support.AbstractPropertyQualifierResolver;
+import org.lexgrid.loader.processor.support.SourceResolver;
 import org.lexgrid.loader.rrf.model.Mrconso;
 
 /**
- * The Class MetaSourceCodeMultiAttribResolver.
+ * The Class MetaSourceMultiAttribResolver.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MetaSourceCodeMultiAttribResolver extends AbstractPropertyQualifierResolver<Mrconso>{
+public class MetaMrconsoSourceResolver implements SourceResolver<Mrconso>{
 
-	public String getQualifierName() {
-		return MetaLoaderConstants.SOURCE_CODE_QUALIFIER;
+	public String getRole(Mrconso item) {
+		return null;
 	}
 
-	public String getQualifierValue(Mrconso item) {
-		return item.getCode();
+	public String getSource(Mrconso item) {
+		return item.getSab();
+	}
+
+	public String getSubRef(Mrconso item) {
+		return null;
 	}
 }

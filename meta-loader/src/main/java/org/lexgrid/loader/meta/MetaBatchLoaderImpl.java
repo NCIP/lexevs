@@ -24,13 +24,16 @@ import java.util.Properties;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
+import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.lexgrid.loader.AbstractSpringBatchLoader;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.properties.ConnectionPropertiesFactory;
 import org.lexgrid.loader.properties.impl.DefaultLexEVSPropertiesFactory;
 import org.springframework.context.ApplicationContext;
 
+import edu.mayo.informatics.lexgrid.convert.options.StringOption;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
@@ -46,60 +49,75 @@ public class MetaBatchLoaderImpl extends AbstractSpringBatchLoader implements Me
 	/** The MET a_ loade r_ config. */
 	private String META_LOADER_CONFIG = "metaLoader.xml";
 	
+	public MetaBatchLoaderImpl(){
+		super();
+		super.setDoIndexing(false);
+		super.setDoRegister(false);
+		super.setDoComputeTransitiveClosure(false);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.meta.MetaBatchLoader#loadMeta(java.lang.String)
 	 */
 	public void loadMeta(URI rrfDir) throws Exception {
-		Properties connectionProps = connectionPropertiesFactory.getPropertiesForNewLoad();
-		connectionProps.put("rrfDir", rrfDir.toString());
-		connectionProps.put("retry", "false");
-		launchJob(connectionProps, META_LOADER_CONFIG, "metaJob");
+		this.load(rrfDir);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.meta.MetaBatchLoader#resumeMeta(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public void resumeMeta(URI rrfDir, String uri, String version) throws Exception {
-		Properties connectionProps = connectionPropertiesFactory.getPropertiesForExistingLoad(uri, version);
-		connectionProps.put("rrfDir", rrfDir.toString());
-		connectionProps.put("retry", "true");
-		launchJob(connectionProps, META_LOADER_CONFIG, "metaJob");	
+		//TODO:
 	}
 
-	@Override
-	public String getName() {
-		return MetaBatchLoader.NAME;
-	}
-	
-	
 	 public static void main(String[] args) throws Exception { 
 		 MetaBatchLoader mbl = (MetaBatchLoader) LexBIGServiceImpl.defaultInstance().getServiceManager(null).getLoader(
 					"MetaBatchLoader");
 		 mbl.loadMeta(new File("src/test/resources/data/SAMPLEMETA").toURI());
-		// mbl.loadMeta("/home/LargeStorage/ontologies/rrf/LNC/LNC226");
 	 }
 
-	@Override
-	protected URNVersionPair[] getLoadedCodingSchemes(ApplicationContext context) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
-	}
+	  @Override
+		public String getName() {
+			return UmlsBatchLoader.NAME;
+		}
 
-	@Override
-	protected OptionHolder declareAllowedOptions(OptionHolder holder) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
-	}
+		@Override
+		protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+			holder.setIsResourceUriFolder(true);
+			return holder;
+		}
 
-	@Override
-	protected URNVersionPair[] doLoad() throws Exception {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
-	}
+		@Override
+		protected URNVersionPair[] doLoad() {
+			try {
+				Properties connectionProps = connectionPropertiesFactory.getPropertiesForNewLoad();	
+				connectionProps.put("rrfDir", this.getResourceUri().toString());
+				connectionProps.put("retry", "false");
+				launchJob(connectionProps, META_LOADER_CONFIG, "metaJob");
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			return this.getLoadedCodingSchemes();
+		}
 
-	@Override
-	protected ExtensionDescription buildExtensionDescription() {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
-	}
+		@Override
+		protected URNVersionPair[] getLoadedCodingSchemes(ApplicationContext context) {
+			CodingSchemeIdSetter codingSchemeIdSetter = (CodingSchemeIdSetter)context.getBean("metaCodingSchemeIdSetter");
+			
+			URNVersionPair scheme = new URNVersionPair(
+					codingSchemeIdSetter.getCodingSchemeUri(), 
+					codingSchemeIdSetter.getCodingSchemeVersion());
+			return new URNVersionPair[]{scheme};
+		}
+		
+		@Override
+		protected ExtensionDescription buildExtensionDescription() {
+			ExtensionDescription meta = new ExtensionDescription();
+			meta.setExtensionBaseClass(MetaBatchLoader.class.getName());
+			meta.setExtensionClass("org.lexgrid.loader.meta.MetaBatchLoaderImpl");
+			meta.setDescription(MetaBatchLoader.DESCRIPTION);
+			meta.setName(MetaBatchLoader.NAME);
+			meta.setVersion(MetaBatchLoader.VERSION);
+			return meta;
+		}
 }

@@ -18,21 +18,41 @@
  */
 package org.lexgrid.loader.meta.data.codingscheme;
 
+import java.util.Map;
 import java.util.Properties;
-import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 
 import org.lexgrid.loader.constants.LoaderConstants;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
+import org.lexgrid.loader.rrf.data.codingscheme.MrsabUtility;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * The Class MetaCodingSchemeIdSetter.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MetaCodingSchemeIdSetter implements CodingSchemeIdSetter {
+public class MetaCodingSchemeIdSetter implements CodingSchemeIdSetter, InitializingBean  {
 
+	private static String META_SAB = "NCIMTH";
+	
 	/** The coding scheme properties. */
 	private Properties codingSchemeProperties;
 	
+	private MrsabUtility mrsabUtility;
+	
+	private String codingSchemeVersion;
+	
+	private String codingSchemeUri;
+	
+	private Map<String,String> isoMap;
+
+	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		codingSchemeVersion = mrsabUtility.getMrsabRowFromRsab(META_SAB).getImeta();
+		codingSchemeUri = isoMap.get(codingSchemeProperties.getProperty(LoaderConstants.CODING_SCHEME_NAME_PROPERTY));
+	}
+
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter#getCodingSchemeName()
 	 */
@@ -41,13 +61,11 @@ public class MetaCodingSchemeIdSetter implements CodingSchemeIdSetter {
 	}
 
 	public String getCodingSchemeUri() {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+		return codingSchemeUri;
 	}
 
 	public String getCodingSchemeVersion() {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+		return this.codingSchemeVersion;
 	}
 	
 	/**
@@ -66,5 +84,21 @@ public class MetaCodingSchemeIdSetter implements CodingSchemeIdSetter {
 	 */
 	public void setCodingSchemeProperties(Properties codingSchemeProperties) {
 		this.codingSchemeProperties = codingSchemeProperties;
+	}
+
+	public MrsabUtility getMrsabUtility() {
+		return mrsabUtility;
+	}
+
+	public void setMrsabUtility(MrsabUtility mrsabUtility) {
+		this.mrsabUtility = mrsabUtility;
+	}
+
+	public Map<String, String> getIsoMap() {
+		return isoMap;
+	}
+
+	public void setIsoMap(Map<String, String> isoMap) {
+		this.isoMap = isoMap;
 	}
 }

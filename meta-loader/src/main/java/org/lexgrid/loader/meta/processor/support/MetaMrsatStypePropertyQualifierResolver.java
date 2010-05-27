@@ -18,6 +18,8 @@
  */
 package org.lexgrid.loader.meta.processor.support;
 
+import org.LexGrid.commonTypes.Text;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexgrid.loader.meta.constants.MetaLoaderConstants;
 import org.lexgrid.loader.processor.support.AbstractPropertyQualifierResolver;
 import org.lexgrid.loader.rrf.model.Mrsat;
@@ -25,14 +27,14 @@ import org.lexgrid.loader.rrf.model.Mrsat;
 /**
  * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
  */
-public class MetaMrsatSuppressMultiAttribResolver extends
-	AbstractPropertyQualifierResolver<Mrsat> {
+public class MetaMrsatStypePropertyQualifierResolver extends
+		AbstractPropertyQualifierResolver<Mrsat> {
 
 	public String getQualifierName() {
-		return MetaLoaderConstants.SUPPRESS_QUALIFIER;
+		return MetaLoaderConstants.STYPE_QUALIFIER;
 	}
 
-	public String getQualifierValue(Mrsat item) {
-		return item.getSuppress().equals("N")? null: item.getSuppress();
+	public Text getQualifierValue(Mrsat item) {
+		return DaoUtility.createText(item.getStype());
 	}
 }
