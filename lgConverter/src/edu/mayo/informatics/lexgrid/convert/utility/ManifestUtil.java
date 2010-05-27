@@ -53,7 +53,9 @@ import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedLanguage;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.relations.AssociationEntity;
+import org.LexGrid.relations.Relations;
 import org.LexGrid.util.Utility;
+import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
 import org.exolab.castor.xml.Marshaller;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
@@ -267,13 +269,17 @@ public class ManifestUtil {
         String version = versionPair.getVersion();
 
         CodingScheme codingScheme = codingSchemeService.getCodingSchemeByUriAndVersion(uri, version);
+        
+        codingScheme.setRelations(new Relations[0]);
+        
+        codingScheme.getEntryState().setChangeType(ChangeType.MODIFY);
 
         try {
             
             this.doApplyCommonManifestElements(manifest, codingScheme, true);
             this.postLoadAssociationDefinitions(codingScheme, manifest.getAssociationDefinitions());
        
-            codingSchemeService.updateCodingScheme(codingScheme);
+            codingSchemeService.revise(codingScheme, null);
         } catch (LBException e) {
            throw new RuntimeException(e);
         }
