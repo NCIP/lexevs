@@ -127,10 +127,6 @@ public class LoadTestDataTest extends TestCase {
         assertFalse(hloader.getStatus().getErrorsLogged().booleanValue());
     }
 
-    /**
-     * @throws InterruptedException
-     * @throws LBException
-     */
     public void testLoadObo() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
@@ -258,13 +254,17 @@ public class LoadTestDataTest extends TestCase {
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
     }
-    
+
     public void testLoadNCIMeta2() throws Exception {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
         MetaBatchLoader loader = (MetaBatchLoader) lbsm.getLoader("MetaBatchLoader");
 
         loader.loadMeta(new File("resources/testData/SAMPLEMETA").toURI());
+        
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(500);
+        }
 
         assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
@@ -332,7 +332,6 @@ public class LoadTestDataTest extends TestCase {
         assertFalse(metaLoader.getStatus().getErrorsLogged().booleanValue());
     }
     
-   
     public void testLoadUMLS() throws Exception {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
@@ -350,5 +349,4 @@ public class LoadTestDataTest extends TestCase {
 
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
-    
 }
