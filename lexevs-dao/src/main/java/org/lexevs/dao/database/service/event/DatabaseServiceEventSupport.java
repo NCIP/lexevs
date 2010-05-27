@@ -28,6 +28,7 @@ import org.apache.commons.lang.ClassUtils;
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PostCodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PreCodingSchemeInsertEvent;
+import org.lexevs.dao.database.service.event.entity.EntityBatchInsertEvent;
 import org.lexevs.dao.database.service.event.entity.EntityInsertOrRemoveEvent;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
@@ -137,7 +138,23 @@ public class DatabaseServiceEventSupport implements InitializingBean {
 	protected void firePostEntityInsertEvent(EntityInsertOrRemoveEvent entityInsertEvent){
 		if(databaseServiceEventListeners != null){
 			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
-				listener.onPreEntityInsert(entityInsertEvent);
+				listener.onPostEntityInsert(entityInsertEvent);
+			}
+		}	
+	}
+	
+	protected void firePreBatchEntityInsertEvent(EntityBatchInsertEvent entityInsertEvent){
+		if(databaseServiceEventListeners != null){
+			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+				listener.onPreBatchEntityInsert(entityInsertEvent);
+			}
+		}	
+	}
+	
+	protected void firePostBatchEntityInsertEvent(EntityBatchInsertEvent entityInsertEvent){
+		if(databaseServiceEventListeners != null){
+			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+				listener.onPostBatchEntityInsert(entityInsertEvent);
 			}
 		}	
 	}

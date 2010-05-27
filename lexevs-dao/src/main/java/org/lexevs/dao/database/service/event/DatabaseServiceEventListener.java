@@ -21,6 +21,7 @@ package org.lexevs.dao.database.service.event;
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PostCodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PreCodingSchemeInsertEvent;
+import org.lexevs.dao.database.service.event.entity.EntityBatchInsertEvent;
 import org.lexevs.dao.database.service.event.entity.EntityInsertOrRemoveEvent;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
@@ -66,6 +67,12 @@ public interface DatabaseServiceEventListener {
 	public boolean onPropertyUpdate(PropertyUpdateEvent event);
 	
 	public boolean onPreEntityInsert(EntityInsertOrRemoveEvent event);
+	
+	public boolean onPostEntityInsert(EntityInsertOrRemoveEvent event);
+	
+	public boolean onPreBatchEntityInsert(EntityBatchInsertEvent event);
+	
+	public boolean onPostBatchEntityInsert(EntityBatchInsertEvent event);
 
 	public boolean onPreEntityRemove(EntityInsertOrRemoveEvent entityRemoveEvent);
 	

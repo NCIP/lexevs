@@ -6,37 +6,30 @@ import java.util.List;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.PropertyLink;
-import org.lexevs.dao.database.service.event.entity.EntityInsertOrRemoveEvent;
 
 
-public class InvalidPropertyLinkListener extends DefaultServiceEventListener{
+public class InvalidPropertyLinkListener extends AbstractPreEntityInsertValidatingListener{
 
-	@Override
-	public boolean onPreEntityInsert(EntityInsertOrRemoveEvent entityInsertEvent) {
-		List<Entity> entityList = entityInsertEvent.getEntityList();
+	protected boolean doValidate(String uri, String version, Entity entity) {
 		
-		for(Entity entity : entityList) {
-			Property[] properties = entity.getProperty();
-			List<PropertyLink> propLinkList = entity.getPropertyLinkAsReference();
-			List<PropertyLink> validList = new ArrayList<PropertyLink>();
-			
-			for(PropertyLink propLink : propLinkList) {
-				boolean srcFlag = false, tgtFlag = false;
-				for (Property property : properties) {
-					if (srcFlag == false && property.getPropertyId().equalsIgnoreCase(propLink.getSourceProperty()))
-						srcFlag = true;
-					if (tgtFlag == false && property.getPropertyId().equalsIgnoreCase(propLink.getTargetProperty()))
-						tgtFlag = true;
-				}
-				if (srcFlag == true && tgtFlag == true)
-					validList.add(propLink);
+		Property[] properties = entity.getProperty();
+		List<PropertyLink> propLinkList = entity.getPropertyLinkAsReference();
+		List<PropertyLink> validList = new ArrayList<PropertyLink>();
+
+		for(PropertyLink propLink : propLinkList) {
+			boolean srcFlag = false, tgtFlag = false;
+			for (Property property : properties) {
+				if (srcFlag == false && property.getPropertyId().equalsIgnoreCase(propLink.getSourceProperty()))
+					srcFlag = true;
+				if (tgtFlag == false && property.getPropertyId().equalsIgnoreCase(propLink.getTargetProperty()))
+					tgtFlag = true;
 			}
-			
-			entity.setPropertyLink(validList);
-			
+			if (srcFlag == true && tgtFlag == true)
+				validList.add(propLink);
 		}
-		
+
+		entity.setPropertyLink(validList);
+
 		return true;
 	}
-
 }

@@ -36,7 +36,7 @@ public class LuceneEntityUpdateListener extends DefaultServiceEventListener {
 		IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
 		EntityIndexService entityIndexService = indexServiceManager.getEntityIndexService();
 		
-		Entity entity = entityInsertEvent.getEntityList().get(0);
+		Entity entity = entityInsertEvent.getEntity();
 		
 		entityIndexService.addEntityToIndex(entityInsertEvent.getCodingSchemeUri(), entityInsertEvent.getVersion(), entity);
 		

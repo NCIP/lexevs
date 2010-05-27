@@ -5,26 +5,21 @@ import java.util.List;
 
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
-import org.lexevs.dao.database.service.event.entity.EntityInsertOrRemoveEvent;
 
-public class DuplicatePropertyIdListener extends DefaultServiceEventListener {
+public class DuplicatePropertyIdListener extends AbstractPreEntityInsertValidatingListener {
 	@Override
-	public boolean onPreEntityInsert(EntityInsertOrRemoveEvent entityInsertEvent) {
-		List<Entity> entityList = entityInsertEvent.getEntityList();
+	protected boolean doValidate(String uri, String version, Entity entity) {
+		Property[] props = entity.getProperty();
+		List<Property> validList = new ArrayList<Property>();
+		List<String> propIdList = new ArrayList<String>();
 
-		for (Entity entity : entityList) {
-			Property[] props = entity.getProperty();
-			List<Property> validList = new ArrayList<Property>();
-			List<String> propIdList = new ArrayList<String>();
-
-			for (Property prop : props) {
-				if (!propIdList.contains(prop.getPropertyId().toLowerCase())) {
-					validList.add(prop);
-					propIdList.add(prop.getPropertyId().toLowerCase());
-				}
+		for (Property prop : props) {
+			if (!propIdList.contains(prop.getPropertyId().toLowerCase())) {
+				validList.add(prop);
+				propIdList.add(prop.getPropertyId().toLowerCase());
 			}
-			entity.setProperty(validList);
 		}
+		entity.setProperty(validList);
 
 		return true;
 	}
