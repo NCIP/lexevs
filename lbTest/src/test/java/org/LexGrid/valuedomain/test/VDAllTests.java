@@ -35,10 +35,7 @@ public class VDAllTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite(
 				"LG Value Set and Pick List Definition Test");
-		ServiceHolder.configureForSingleConfig();
-		
 		//$JUnit-BEGIN$
-		//suite.addTestSuite(CleanUpTest.class);
 		suite.addTestSuite(LoadTestDataTest.class);
 		suite.addTestSuite(LexEVSValueDomainServicesImplTest.class);
 		suite.addTestSuite(LexEVSPickListServicesImplTest.class);
