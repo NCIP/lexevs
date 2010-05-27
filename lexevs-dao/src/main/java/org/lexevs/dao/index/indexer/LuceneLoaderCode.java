@@ -187,7 +187,7 @@ public abstract class LuceneLoaderCode {
      * @throws Exception the exception
      */
     protected Document addEntity(String codingSchemeName, String codingSchemeId, String codingSchemeVersion, 
-    		String entityUid, String entityCode, String entityNamespace, String entityType,
+    		String entityUid, String entityCode, String entityNamespace, String[] entityTypes,
             String entityDescription, String propertyType, String propertyName, String propertyValue, Boolean isActive, Boolean isAnonymous,
             String format, String language, Boolean isPreferred, String conceptStatus, String propertyId,
             String degreeOfFidelity, Boolean matchIfNoContext, String representationalForm, String[] sources,
@@ -209,7 +209,13 @@ public abstract class LuceneLoaderCode {
         fields.append(idFieldName + " ");
         generator_.addTextField(idFieldName + "LC", entityCode.toLowerCase(), false, true, false);
         fields.append(idFieldName + "LC ");
-        generator_.addTextField("entityType", entityType, true, true, false);
+        
+        if(entityTypes != null) {
+        	for(String entityType : entityTypes) {
+        		generator_.addTextField("entityType", entityType, true, true, false);
+        	}
+        }
+        
         fields.append("entityType ");
         generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
         fields.append(CODING_SCHEME_URI_VERSION_KEY_FIELD + " ");

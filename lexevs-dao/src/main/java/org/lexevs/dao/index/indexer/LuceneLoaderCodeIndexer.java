@@ -171,7 +171,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 				entityUid,
 				entity.getEntityCode(), 
 				entity.getEntityCodeNamespace(), 
-				entity.getEntityType(0), //TODO: Allow multple Entity Types
+				entity.getEntityType(),
 				DaoUtility.getEntityDescriptionText(entity.getEntityDescription()),
 				prop.getPropertyType(), 
 				prop.getPropertyName(), 
