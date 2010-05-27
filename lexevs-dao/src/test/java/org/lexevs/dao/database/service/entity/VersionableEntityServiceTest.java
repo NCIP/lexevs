@@ -30,18 +30,20 @@ import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entity;
-import org.LexGrid.concepts.Presentation;
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.relations.AssociationEntity;
 import org.junit.Test;
-import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.database.service.codingscheme.VersionableEventCodingSchemeService;
 import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
+import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListener;
+import org.lexevs.dao.database.service.listener.InvalidPropertyLinkListener;
+import org.lexevs.dao.database.service.listener.NullEntityNamespaceListener;
 import org.lexevs.dao.database.service.version.AuthoringService;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.utility.RegistryUtility;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class VersionableEntityServiceTest.
@@ -56,7 +58,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 	
 	/** The coding schemeservice. */
 	@Resource
-	private CodingSchemeService codingSchemeservice;
+	private VersionableEventCodingSchemeService codingSchemeservice;
 	
 	@Resource
 	private AuthoringService authoringService;
@@ -101,9 +103,6 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		
 		authoringService.loadRevision(scheme, null);
 		
-		CodingScheme cs = codingSchemeservice.getCodingSchemeByUriAndVersion("uri", "v1");
-		System.out.println(cs);
-		
 		Entity entity1 = new Entity();
 		entity1.setEntityCode("c1");
 		Entity entity2 = new Entity();
@@ -113,11 +112,15 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		entities.add(entity1);
 		entities.add(entity2);
 		
+		service.setDatabaseServiceEventListeners(DaoUtility.createList(DatabaseServiceEventListener.class, new NullEntityNamespaceListener()));
+		
 		service.insertBatchEntities("uri", "v1", entities);
 		
 		for(Entity en : entities) {
 			Assert.assertEquals("testName", en.getEntityCodeNamespace());
 		}
+		
+		service.setDatabaseServiceEventListeners(new ArrayList<DatabaseServiceEventListener>());
 	}
 	
 	@Test
@@ -137,8 +140,12 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		Entity entity = new Entity();
 		entity.setEntityCode("c1");
 		
+		service.setDatabaseServiceEventListeners(DaoUtility.createList(DatabaseServiceEventListener.class, new NullEntityNamespaceListener()));
+		
 		service.insertEntity("uri", "v1", entity);
 		Assert.assertEquals("testName", entity.getEntityCodeNamespace());
+		
+		service.setDatabaseServiceEventListeners(new ArrayList<DatabaseServiceEventListener>());
 	}
 	
 	@Test
@@ -156,6 +163,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		
 		Entity entity = new Entity();
 		entity.setEntityCode("c1");
+		entity.setEntityCodeNamespace("c-ns");
 		
 		Text text = new Text();
 		text.setContent("value");
@@ -173,8 +181,13 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		entity.addProperty(prop1);
 		entity.addProperty(prop2);
 		Assert.assertEquals(2, entity.getPropertyCount());
+		
+		service.setDatabaseServiceEventListeners(DaoUtility.createList(DatabaseServiceEventListener.class, new DuplicatePropertyIdListener()));
+		
 		service.insertEntity("uri", "v1", entity);
 		Assert.assertEquals(1, entity.getPropertyCount());
+		
+		service.setDatabaseServiceEventListeners(new ArrayList<DatabaseServiceEventListener>());
 	}
 	
 	@Test
@@ -253,9 +266,13 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		
 		entity.setPropertyLink(plList);
 		
+		service.setDatabaseServiceEventListeners(DaoUtility.createList(DatabaseServiceEventListener.class, new InvalidPropertyLinkListener()));
+		
 		Assert.assertEquals(1, entity.getPropertyLink().length);
 		service.insertEntity("uri", "v1", entity);
 		Assert.assertEquals(0, entity.getPropertyLink().length);
+		
+		service.setDatabaseServiceEventListeners(new ArrayList<DatabaseServiceEventListener>());
 	}
 	
 	@Test
