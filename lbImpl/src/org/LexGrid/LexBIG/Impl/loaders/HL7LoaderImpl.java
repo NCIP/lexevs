@@ -175,19 +175,6 @@ public class HL7LoaderImpl extends BaseLoader implements HL7_Loader {
         return temp;
     }
 
-    // Will only be called after load method
-    // Overrides BaseLoader method
-    public AbsoluteCodingSchemeVersionReference[] getCodingSchemeReferences() {
-        AbsoluteCodingSchemeVersionReference[] schemesToActivate = new AbsoluteCodingSchemeVersionReference[hl7CodingSchemes
-                .size()];
-        for (int i = 0; i < hl7CodingSchemes.size(); i++) {
-            schemesToActivate[i] = new AbsoluteCodingSchemeVersionReference();
-            schemesToActivate[i].setCodingSchemeURN(urns.get(i));
-            schemesToActivate[i].setCodingSchemeVersion(hl7CodingSchemes.get(i).getVersion());
-        }
-        return schemesToActivate;
-    }
-
     public String getMetaDataFileLocation() {
         return metaDataFileLocation;
     }

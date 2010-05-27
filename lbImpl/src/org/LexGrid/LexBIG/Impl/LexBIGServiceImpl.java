@@ -39,6 +39,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
+import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Extensions.Query.Sort;
@@ -549,11 +550,6 @@ public class LexBIGServiceImpl implements LexBIGService {
         // load extensions
         new TextLoaderImpl().register();
 
-        //UMLSLoaderImpl.register();
-        //IndexLoaderImpl.register();
-        //NCIMetaThesaurusLoaderImpl.register();
-        //NCIHistoryLoaderImpl.register();
-        //UMLSHistoryLoaderImpl.register();
         new LexGridMultiLoaderImpl().register();
         new OWLLoaderImpl().register();
         new OBOLoaderImpl().register();
@@ -562,7 +558,6 @@ public class LexBIGServiceImpl implements LexBIGService {
         new HL7LoaderImpl().register();
         new ClaMLLoaderImpl().register();
         
-        /*
         //Meta Batch Loader Extension
         ExtensionDescription meta = new ExtensionDescription();
         meta.setExtensionBaseClass(MetaBatchLoader.class.getName());
@@ -575,7 +570,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         } catch (Exception e) {
             getLogger().warn(meta.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
         }
-        */
+
         //Umls Batch Loader Extension
         ExtensionDescription umls = new ExtensionDescription();
         umls.setExtensionBaseClass(UmlsBatchLoader.class.getName());
