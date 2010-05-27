@@ -41,7 +41,7 @@
 		<!-- Create the distribution directory -->
 		<mkdir dir="${dist.dir}" />
 		<!-- Put everything in ${classes} into .jar file -->
-		<jar jarfile="${dist.dir}/lgValueDomain.jar" basedir="${classes.dir}" duplicate="preserve">
+		<jar jarfile="${dist.dir}/lgValueSets.jar" basedir="${classes.dir}" duplicate="preserve">
 			<manifest>
 				<attribute name="Build-Date" value="${DSTAMP} ${TSTAMP}" />
 			</manifest>
@@ -51,7 +51,7 @@
 	</target>
 
 	<target name="jar-source" depends="init" description="generate the jar with source">
-		<jar destfile="${dist.dir}/lgValueDomain-src.jar" basedir="${src.dir}"/>
+		<jar destfile="${dist.dir}/lgValueSets-src.jar" basedir="${src.dir}"/>
 	</target>
 
 	<target name="clean" depends="init" description="clean up">
@@ -59,8 +59,8 @@
 		<delete dir="${classes.dir}" />
 		<delete>
 			<fileset dir="${dist.dir}">
-				<include name="lgValueDomain.jar" />
-				<include name="lgValueDomain-src.jar" />
+				<include name="lgValueSets.jar" />
+				<include name="lgValueSets-src.jar" />
 			</fileset>
 		</delete>
 	</target>
@@ -81,11 +81,11 @@
 	<target name="docs" depends="init, compile" description="Generate the javadocs">
 			<mkdir dir="${doc.dir}"/>
 			<!--Create the javadocs-->
-			<javadoc destdir="${doc.dir}" windowtitle="LGValueDomain" additionalparam="-breakiterator">
+			<javadoc destdir="${doc.dir}" windowtitle="LGValueSets" additionalparam="-breakiterator">
 				<package name="*"/>
 				<classpath>
 				     <path refid="classpath"/>
-				     <pathelement location="${dist}/lgValueDomain.jar"/>
+				     <pathelement location="${dist}/lgValueSets.jar"/>
 				</classpath>
 
 				<sourcepath location="${src.dir}"/>
@@ -95,20 +95,20 @@
 	<target name="all" depends="cleanAll, init, compile, jar, jar-source, docs" description="do everything for an external build">
 		<ant antfile="${test.dir}/build.xml" target="all" inheritall="false"/>
 		
-		<zip destfile="${dist.dir}/valueDomainDeploy.zip">
-			<zipfileset dir="${basedir}/admin" includes="LoadValueDomain.bat" prefix="admin" filemode="777"/>
-			<zipfileset dir="${basedir}/admin" includes="LoadValueDomain.sh" prefix="admin" filemode="777"/>
-			<zipfileset dir="${basedir}/admin" includes="LoadPickList.bat" prefix="admin" filemode="777"/>
-			<zipfileset dir="${basedir}/admin" includes="LoadPickList.sh" prefix="admin" filemode="777"/>
-			<zipfileset dir="${dist.dir}" includes="lgValueDomain.jar" prefix="runtime"/>
-			<zipfileset dir="${dist.dir}" includes="lgValueDomain-src.jar" prefix="source"/>
-			<zipfileset dir="${dist.dir}" includes="lgValueDomain-test.jar" prefix="test"/>
-			<zipfileset dir="${test.dir}/extlib" prefix="test/valueDomain-extlib"/>
+		<zip destfile="${dist.dir}/valueSetsDeploy.zip">
+			<zipfileset dir="${basedir}/admin" includes="LoadValueSetDefinition.bat" prefix="admin" filemode="777"/>
+			<zipfileset dir="${basedir}/admin" includes="LoadValueSetDefinition.sh" prefix="admin" filemode="777"/>
+			<zipfileset dir="${basedir}/admin" includes="LoadPickListDefinition.bat" prefix="admin" filemode="777"/>
+			<zipfileset dir="${basedir}/admin" includes="LoadPickListDefinition.sh" prefix="admin" filemode="777"/>
+			<zipfileset dir="${dist.dir}" includes="lgValueSets.jar" prefix="runtime"/>
+			<zipfileset dir="${dist.dir}" includes="lgValueSets-src.jar" prefix="source"/>
+			<zipfileset dir="${dist.dir}" includes="lgValueSets-test.jar" prefix="test"/>
+			<zipfileset dir="${test.dir}/extlib" prefix="test/valueSets-extlib"/>
 			<zipfileset dir="${basedir}/resources/testData/valueDomain" prefix="test/resources/testData/valueDomain"/>
-			<zipfileset dir="${test.dir}" includes="valueDomain-GenerateReport.xml" prefix="test"/>
-			<zipfileset dir="${test.dir}" includes="valueDomain-TestRunner.bat" prefix="test" filemode="777"/>
-			<zipfileset dir="${test.dir}" includes="valueDomain-TestRunner.sh" prefix="test" filemode="777"/>
-			<zipfileset dir="${doc.dir}" prefix="doc/javadoc/valueDomain"/>
+			<zipfileset dir="${test.dir}" includes="valueSets-GenerateReport.xml" prefix="test"/>
+			<zipfileset dir="${test.dir}" includes="valueSets-TestRunner.bat" prefix="test" filemode="777"/>
+			<zipfileset dir="${test.dir}" includes="valueSets-TestRunner.sh" prefix="test" filemode="777"/>
+			<zipfileset dir="${doc.dir}" prefix="doc/javadoc/valueSets"/>
 			<zipfileset dir="${basedir}" includes="VD-readme.txt"/>
 		</zip>
 	</target>
