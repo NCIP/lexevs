@@ -42,5 +42,6 @@
 	<classpathentry kind="lib" path="/lgSharedLibraries/claml/claml-model.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/jexcelapi/jxl.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgModel"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/apache/commons/commons-beanutils-1.8.0.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
