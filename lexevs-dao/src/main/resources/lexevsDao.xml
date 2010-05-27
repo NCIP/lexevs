@@ -683,6 +683,7 @@
 		<property name="indexCreator" ref="entityBatchingIndexCreator"/>
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="entityIndexer" ref="commonIndexLoaderCodeIndexer"/>
+		<property name="metaData" ref="luceneIndexMetadataFactory"/>
 	</bean>
 	
 	<bean id="luceneMetadataIndexService" 
