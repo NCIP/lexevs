@@ -7,14 +7,17 @@ import java.util.Map.Entry;
 
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
+import org.LexGrid.commonTypes.Source;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
+import org.lexgrid.loader.data.DataUtils;
 import org.lexgrid.loader.processor.HighestRankingListProcessor;
 import org.lexgrid.loader.processor.support.ListFilter;
+import org.lexgrid.loader.processor.support.OptionalPropertyQualifierResolver;
 import org.lexgrid.loader.processor.support.PropertyResolver;
-import org.lexgrid.loader.processor.support.QualifierResolver;
+import org.lexgrid.loader.processor.support.SourceResolver;
 import org.lexgrid.loader.rrf.model.Mrconso;
 import org.lexgrid.loader.wrappers.CodingSchemeIdHolder;
 
@@ -26,9 +29,11 @@ public class MrconsoGroupEntityProcessor extends HighestRankingListProcessor<Mrc
 	
 	private Map<ListFilter<Mrconso>,PropertyResolver<Mrconso>> filteredPropertyResolvers;
 	
-	private List<QualifierResolver<Mrconso>> qualifierResolvers;
+	private List<OptionalPropertyQualifierResolver<Mrconso>> qualifierResolvers;
 	
-	private List<QualifierResolver<List<Mrconso>>> qualifierListResolvers;
+	private List<OptionalPropertyQualifierResolver<List<Mrconso>>> qualifierListResolvers;
+	
+	private List<SourceResolver<Mrconso>> sourceResolvers;
 	
 	private SupportedAttributeTemplate supportedAttributeTemplate;
 	
@@ -85,9 +90,7 @@ public class MrconsoGroupEntityProcessor extends HighestRankingListProcessor<Mrc
 		prop.setPropertyType(resolver.getPropertyType(mrconso));
 		prop.setValue(DaoUtility.createText(resolver.getPropertyValue(mrconso)));
 		
-		if(this.qualifierResolvers != null){
-			prop.setPropertyQualifier(buildPropertyQualifiers(uri, version, mrconso).toArray(new PropertyQualifier[0]));
-		}
+		addSourcesAndQualifiers(uri, version, mrconso, prop);
 
 		this.getSupportedAttributeTemplate().addSupportedProperty(uri, version, prop.getPropertyName(), null, prop.getPropertyName());
 		return prop;	
@@ -104,34 +107,54 @@ public class MrconsoGroupEntityProcessor extends HighestRankingListProcessor<Mrc
 		pres.setValue(DaoUtility.createText(presentationResolver.getPropertyValue(mrconso)));
 		pres.setIsPreferred(preferred);
 		
-		if(this.qualifierResolvers != null){
-			pres.setPropertyQualifier(buildPropertyQualifiers(uri, version, mrconso).toArray(new PropertyQualifier[0]));
-		}
+		addSourcesAndQualifiers(uri, version, mrconso, pres);
 
 		this.getSupportedAttributeTemplate().addSupportedProperty(uri, version, pres.getPropertyName(), null, pres.getPropertyName());
 		return pres;
 	}
 	
+	private void addSourcesAndQualifiers(String uri, String version, Mrconso mrconso, Property property){
+		if(this.qualifierResolvers != null){
+			property.setPropertyQualifier(buildPropertyQualifiers(uri, version, mrconso));
+		}
+		
+		if(this.sourceResolvers != null) {
+			property.setSource(this.buildPropertySources(uri, version, mrconso));
+		}
+	}
+	
+	protected List<Source> buildPropertySources(String uri, String version, Mrconso mrconso){
+		List<Source> returnList = new ArrayList<Source>();
+		
+		for(SourceResolver<Mrconso> sourceResolver : this.sourceResolvers){
+			Source source = DataUtils.createSource(sourceResolver, mrconso);
+
+			this.getSupportedAttributeTemplate().addSupportedSource(uri, version, source.getContent(), null, source.getContent(), null);
+			returnList.add(source);
+		}
+		return returnList;
+	}
+	
 	protected List<PropertyQualifier> buildPropertyQualifiers(String uri, String version, Mrconso mrconso){
 		List<PropertyQualifier> returnList = new ArrayList<PropertyQualifier>();
 		
-		for(QualifierResolver<Mrconso> qualResolver : this.qualifierResolvers){
-			PropertyQualifier qual = new PropertyQualifier();
-			qual.setPropertyQualifierName(qualResolver.getQualifierName());
-			qual.setValue(DaoUtility.createText(qualResolver.getQualifierValue(mrconso)));
-			
-			this.getSupportedAttributeTemplate().addSupportedPropertyQualifier(uri, version, qual.getPropertyQualifierName(), null, qual.getPropertyQualifierName());
-			returnList.add(qual);
+		for(OptionalPropertyQualifierResolver<Mrconso> qualResolver : this.qualifierResolvers){
+			if(qualResolver.toProcess(mrconso)) {
+				PropertyQualifier qual = DataUtils.createPropertyQualifier(qualResolver, mrconso);
+
+				this.getSupportedAttributeTemplate().addSupportedPropertyQualifier(uri, version, qual.getPropertyQualifierName(), null, qual.getPropertyQualifierName());
+				returnList.add(qual);
+			}
 		}
 		return returnList;
 	}
 
-	public List<QualifierResolver<Mrconso>> getQualifierResolvers() {
+	public List<OptionalPropertyQualifierResolver<Mrconso>> getQualifierResolvers() {
 		return qualifierResolvers;
 	}
 
 	public void setQualifierResolvers(
-			List<QualifierResolver<Mrconso>> qualifierResolvers) {
+			List<OptionalPropertyQualifierResolver<Mrconso>> qualifierResolvers) {
 		this.qualifierResolvers = qualifierResolvers;
 	}
 
@@ -153,12 +176,12 @@ public class MrconsoGroupEntityProcessor extends HighestRankingListProcessor<Mrc
 		this.propertyResolvers = propertyResolvers;
 	}
 
-	public List<QualifierResolver<List<Mrconso>>> getQualifierListResolvers() {
+	public List<OptionalPropertyQualifierResolver<List<Mrconso>>> getQualifierListResolvers() {
 		return qualifierListResolvers;
 	}
 
 	public void setQualifierListResolvers(
-			List<QualifierResolver<List<Mrconso>>> qualifierListResolvers) {
+			List<OptionalPropertyQualifierResolver<List<Mrconso>>> qualifierListResolvers) {
 		this.qualifierListResolvers = qualifierListResolvers;
 	}
 
@@ -177,5 +200,13 @@ public class MrconsoGroupEntityProcessor extends HighestRankingListProcessor<Mrc
 
 	public SupportedAttributeTemplate getSupportedAttributeTemplate() {
 		return supportedAttributeTemplate;
+	}
+
+	public void setSourceResolvers(List<SourceResolver<Mrconso>> sourceResolvers) {
+		this.sourceResolvers = sourceResolvers;
+	}
+
+	public List<SourceResolver<Mrconso>> getSourceResolvers() {
+		return sourceResolvers;
 	}
 }
