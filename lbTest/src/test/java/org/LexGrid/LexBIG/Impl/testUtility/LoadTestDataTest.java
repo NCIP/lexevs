@@ -57,7 +57,7 @@ public class LoadTestDataTest extends TestCase {
 
     public void testLoadAutombiles() throws LBParameterException, LBInvocationException, InterruptedException,
             LBException {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
 
@@ -76,7 +76,7 @@ public class LoadTestDataTest extends TestCase {
     }
 
     public void testLoadGermanMadeParts() throws LBException {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
 
@@ -93,7 +93,7 @@ public class LoadTestDataTest extends TestCase {
     }
     
     public void testLoadNCIMeta() throws Exception {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         MetaBatchLoader loader = (MetaBatchLoader) lbsm.getLoader("MetaBatchLoader");
 
@@ -112,7 +112,7 @@ public class LoadTestDataTest extends TestCase {
 
     public void testLoadHistory() throws InterruptedException, LBException {
  
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         NCIHistoryLoader hloader = (NCIHistoryLoader) lbsm.getLoader("NCIThesaurusHistoryLoader");
 
@@ -128,7 +128,7 @@ public class LoadTestDataTest extends TestCase {
     }
 
     public void testLoadObo() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         OBO_Loader loader = (OBO_Loader) lbsm.getLoader("OBOLoader");
 
@@ -146,7 +146,7 @@ public class LoadTestDataTest extends TestCase {
     }
 
     public void testLoadOwl() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         OWL_Loader loader = (OWL_Loader) lbsm.getLoader("OWLLoader");
  
@@ -173,7 +173,7 @@ public class LoadTestDataTest extends TestCase {
     }
 
     public void testLoadOwlLoaderPreferences() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         OWL_Loader loader = (OWL_Loader) lbsm.getLoader("OWLLoader");
 
@@ -194,7 +194,7 @@ public class LoadTestDataTest extends TestCase {
     }
 
     public void testLoadGenericOwl() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
         loader.load(new File("resources/testData/amino-acid.owl").toURI(), new File(
@@ -213,7 +213,7 @@ public class LoadTestDataTest extends TestCase {
     }
 
     public void testLoadGenericOwlWithInstanceData() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
         loader.load(new File("resources/testData/OvarianMass_SNOMED_ValueSets.owl").toURI(), null,  1, false, true);
@@ -230,7 +230,7 @@ public class LoadTestDataTest extends TestCase {
     }
     
     public void testLoadCompPropsOwl() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
         loader.setLoaderPreferences(new File("resources/testData/OWLPrefs.xml").toURI());
@@ -256,7 +256,7 @@ public class LoadTestDataTest extends TestCase {
     }
 
     public void testLoadNCIMeta2() throws Exception {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         MetaBatchLoader loader = (MetaBatchLoader) lbsm.getLoader("MetaBatchLoader");
 
@@ -281,7 +281,7 @@ public class LoadTestDataTest extends TestCase {
             // application.
             return;
         }
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         HL7LoaderImpl loader = (HL7LoaderImpl) lbsm.getLoader("HL7Loader");
         loader.load(new File("resources/testData/rimSample.mdb").toURI().toString(), true, true);
@@ -299,7 +299,7 @@ public class LoadTestDataTest extends TestCase {
     }
 
     public void testLoadMeta1() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         MetaData_Loader metaLoader = (MetaData_Loader) lbsm.getLoader("MetaDataLoader");
 
@@ -316,7 +316,7 @@ public class LoadTestDataTest extends TestCase {
     }
 
     public void testLoadMeta2() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         MetaData_Loader metaLoader = (MetaData_Loader) lbsm.getLoader("MetaDataLoader");
 
@@ -333,7 +333,7 @@ public class LoadTestDataTest extends TestCase {
     }
     
     public void testLoadUMLS() throws Exception {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         UmlsBatchLoader loader = (UmlsBatchLoader) lbsm.getLoader("UmlsBatchLoader");
 
@@ -348,5 +348,9 @@ public class LoadTestDataTest extends TestCase {
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
 
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+    }
+    
+    private LexBIGServiceManager getLexBIGServiceManager() throws LBParameterException, LBInvocationException{
+    	return LexBIGServiceImpl.defaultInstance().getServiceManager(null);
     }
 }
