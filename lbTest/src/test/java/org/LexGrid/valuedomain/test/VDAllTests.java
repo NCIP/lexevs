@@ -21,7 +21,6 @@ package org.LexGrid.valuedomain.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.valuedomain.impl.LexEVSPickListServicesImplTest;
 import org.LexGrid.valuedomain.impl.LexEVSValueDomainServicesImplTest;
 
