@@ -22,8 +22,10 @@ import org.LexGrid.relations.AssociationQualification;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
+import org.lexgrid.loader.data.DataUtils;
 import org.lexgrid.loader.data.association.AssociationInstanceIdResolver;
 import org.lexgrid.loader.database.key.AssociationInstanceKeyResolver;
+import org.lexgrid.loader.processor.support.OptionalQualifierResolver;
 import org.lexgrid.loader.processor.support.QualifierResolver;
 import org.lexgrid.loader.wrappers.ParentIdHolder;
 
@@ -40,22 +42,17 @@ public class EntityAssnToEQualsProcessor<I> extends AbstractSupportedAttributeRe
 	private AssociationInstanceKeyResolver associationInstanceKeyResolver;
 	
 	/** The qualifier resolver. */
-	private QualifierResolver<I> qualifierResolver;
-	
-	private boolean skipNullValueQualifiers = true;
+	private OptionalQualifierResolver<I> qualifierResolver;
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.item.ItemProcessor#process(java.lang.Object)
 	 */
 	public ParentIdHolder<AssociationQualification> doProcess(I item) throws Exception {
-		String qualifierValue = qualifierResolver.getQualifierValue(item);
-		if(StringUtils.isEmpty(qualifierValue) && skipNullValueQualifiers) {
+		if(!qualifierResolver.toProcess(item)) {
 			return null;
 		}
-		AssociationQualification qual = new AssociationQualification();
 		
-		qual.setAssociationQualifier(qualifierResolver.getQualifierName());
-		qual.setQualifierText(DaoUtility.createText(qualifierValue));
+		AssociationQualification qual = DataUtils.createAssociationQualifier(qualifierResolver, item);
 
 		String associationInstanceId = associationInstanceIdResolver.resolveAssociationInstanceId(item);
 		return new ParentIdHolder<AssociationQualification>(
@@ -100,7 +97,7 @@ public class EntityAssnToEQualsProcessor<I> extends AbstractSupportedAttributeRe
 	 * 
 	 * @return the qualifier resolver
 	 */
-	public QualifierResolver<I> getQualifierResolver() {
+	public OptionalQualifierResolver<I> getQualifierResolver() {
 		return qualifierResolver;
 	}
 
@@ -109,15 +106,7 @@ public class EntityAssnToEQualsProcessor<I> extends AbstractSupportedAttributeRe
 	 * 
 	 * @param qualifierResolver the new qualifier resolver
 	 */
-	public void setQualifierResolver(QualifierResolver<I> qualifierResolver) {
+	public void setQualifierResolver(OptionalQualifierResolver<I> qualifierResolver) {
 		this.qualifierResolver = qualifierResolver;
 	}
-
-	public boolean isSkipNullValueQualifiers() {
-		return skipNullValueQualifiers;
-	}
-
-	public void setSkipNullValueQualifiers(boolean skipNullValueQualifiers) {
-		this.skipNullValueQualifiers = skipNullValueQualifiers;
-	}	
 }

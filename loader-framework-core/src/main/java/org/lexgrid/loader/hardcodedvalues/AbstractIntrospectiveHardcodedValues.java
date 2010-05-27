@@ -25,19 +25,27 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.Assert;
 
 /**
  * The Class AbstractIntrospectiveHardcodedValues.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractIntrospectiveHardcodedValues extends SupportedAttributeSupport implements Tasklet {
+public abstract class AbstractIntrospectiveHardcodedValues extends SupportedAttributeSupport implements Tasklet, InitializingBean {
 
 	/** The coding scheme name setter. */
 	private CodingSchemeIdSetter codingSchemeIdSetter;
 	
 	private DatabaseServiceManager databaseServiceManager;
 	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		Assert.notNull(codingSchemeIdSetter);
+		Assert.notNull(databaseServiceManager);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.core.step.tasklet.Tasklet#execute(org.springframework.batch.core.StepContribution, org.springframework.batch.core.scope.context.ChunkContext)
 	 */

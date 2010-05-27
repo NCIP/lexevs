@@ -23,8 +23,14 @@ import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.PropertyQualifier;
+import org.LexGrid.commonTypes.Source;
+import org.LexGrid.relations.AssociationQualification;
 import org.apache.commons.lang.StringUtils;
 import org.exolab.castor.xml.Unmarshaller;
+import org.lexgrid.loader.processor.support.PropertyQualifierResolver;
+import org.lexgrid.loader.processor.support.QualifierResolver;
+import org.lexgrid.loader.processor.support.SourceResolver;
 
 /**
  * The Class DataUtils.
@@ -72,5 +78,31 @@ public class DataUtils {
 		} else {
 			return value;
 		}
+	}
+	
+	public static <T> PropertyQualifier createPropertyQualifier(PropertyQualifierResolver<T> resolver, T item) {
+		PropertyQualifier qual = new PropertyQualifier();
+		qual.setPropertyQualifierName(resolver.getQualifierName());
+		qual.setPropertyQualifierType(resolver.getPropertyQualifierType(item));
+		qual.setValue(resolver.getQualifierValue(item));
+		
+		return qual;
+	}
+	
+	public static <T> Source createSource(SourceResolver<T> resolver, T item) {
+		Source source = new Source();
+		source.setContent(resolver.getSource(item));
+		source.setRole(resolver.getRole(item));
+		source.setSubRef(resolver.getRole(item));
+		
+		return source;
+	}
+	
+	public static <T> AssociationQualification createAssociationQualifier(QualifierResolver<T> resolver, T item) {
+		AssociationQualification qual = new AssociationQualification();
+		qual.setAssociationQualifier(resolver.getQualifierName());
+		qual.setQualifierText(resolver.getQualifierValue(item));
+		
+		return qual;
 	}
 }

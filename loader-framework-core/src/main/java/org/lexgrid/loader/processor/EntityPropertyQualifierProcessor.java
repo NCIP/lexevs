@@ -20,6 +20,7 @@ package org.lexgrid.loader.processor;
 
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
+import org.lexgrid.loader.data.DataUtils;
 import org.lexgrid.loader.database.key.EntityPropertyKeyResolver;
 import org.lexgrid.loader.processor.support.PropertyQualifierResolver;
 import org.lexgrid.loader.processor.support.PropertyResolver;
@@ -39,10 +40,7 @@ public class EntityPropertyQualifierProcessor<I> extends AbstractSupportedAttrib
 	
 	@Override
 	public ParentIdHolder<PropertyQualifier> doProcess(I item) throws Exception {
-		PropertyQualifier qual = new PropertyQualifier();
-		qual.setPropertyQualifierName(propertyQualifierResolver.getPropertyQualifierName(item));
-		qual.setPropertyQualifierType(propertyQualifierResolver.getPropertyQualifierType(item));
-		qual.setValue(propertyQualifierResolver.getPropertyQualifierValue(item));
+		PropertyQualifier qual = DataUtils.createPropertyQualifier(propertyQualifierResolver, item);
 		
 		String parentId = 
 			entityPropertyKeyResolver.

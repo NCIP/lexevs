@@ -1,5 +1,9 @@
 package org.lexgrid.loader.database.key;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.LexGrid.relations.AssociationPredicate;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.AssociationDao;
@@ -11,40 +15,43 @@ public class AssociationPredicateCreatingKeyResolver implements AssociationPredi
 
 	private DatabaseServiceManager databaseServiceManager;
 	
-	public String resolveKey(
+	private Map<String,String> associationPrediateIdMap = Collections.synchronizedMap(new HashMap<String,String>());
+	
+	public synchronized String resolveKey(
 			final String codingSchemeUri, 
 			final String version, 
 			final String relationContainerName,
 			final String associationName) {
-		return databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>(){
 
-			public String execute(DaoManager daoManager) {
-				
-				CodingSchemeDao codingSchemedao = daoManager.getCodingSchemeDao(codingSchemeUri, version);
-				AssociationDao associationDao = daoManager.getAssociationDao(codingSchemeUri, version);
-				
-				String codingSchemeId = 
-					codingSchemedao.
+		if(!associationPrediateIdMap.containsKey(associationName)) {
+			databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<Object>(){
+
+				public Object execute(DaoManager daoManager) {
+					CodingSchemeDao codingSchemedao = daoManager.getCodingSchemeDao(codingSchemeUri, version);
+					AssociationDao associationDao = daoManager.getAssociationDao(codingSchemeUri, version);
+
+					String codingSchemeId = 
+						codingSchemedao.
 						getCodingSchemeUIdByUriAndVersion(
 								codingSchemeUri, version);
-				
-				String relationId = associationDao.getRelationUId(codingSchemeId, relationContainerName);
-				
-				String associationPredicateId = associationDao.
-							getAssociationPredicateUIdByContainerUId(codingSchemeId, relationId, associationName);
-				
-				if(associationPredicateId == null){
-					return associationDao.
-						insertAssociationPredicate(
-								codingSchemeId, 
-								relationId, 
-								buildDefaultAssociationPredicate(associationName),
-								false);
-				} else {
-					return associationPredicateId;
+
+					String relationId = associationDao.getRelationUId(codingSchemeId, relationContainerName);
+
+					String id = associationDao.
+					insertAssociationPredicate(
+							codingSchemeId, 
+							relationId, 
+							buildDefaultAssociationPredicate(associationName),
+							false);
+
+					associationPrediateIdMap.put(associationName, id);
+
+					return null;
 				}
-			}	
-		});
+			});
+		}
+		
+		return associationPrediateIdMap.get(associationName);
 	}
 	
 	protected AssociationPredicate buildDefaultAssociationPredicate(String name){

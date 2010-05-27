@@ -21,28 +21,29 @@ package org.lexgrid.loader.processor;
 import java.util.List;
 
 import org.LexGrid.concepts.PropertyLink;
-import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
-import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexgrid.loader.data.DataUtils;
 import org.lexgrid.loader.data.association.AssociationInstanceIdResolver;
 import org.lexgrid.loader.database.key.AssociationPredicateKeyResolver;
+import org.lexgrid.loader.processor.support.OptionalQualifierResolver;
 import org.lexgrid.loader.processor.support.PropertyIdResolver;
-import org.lexgrid.loader.processor.support.QualifierResolver;
 import org.lexgrid.loader.processor.support.RelationResolver;
 import org.lexgrid.loader.wrappers.ParentIdHolder;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.Assert;
 
 /**
  * The Class EntityAssnsToEntityProcessor.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcessor implements ItemProcessor<I,ParentIdHolder<AssociationSource>> {
+public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcessor implements ItemProcessor<I,ParentIdHolder<AssociationSource>>, InitializingBean {
 	
 	public enum SelfReferencingAssociationPolicy {IGNORE, AS_ASSOCIATIONS, AS_PROPERTY_LINKS, BOTH }
 	
@@ -63,10 +64,18 @@ public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcesso
 	
 	private PropertyIdResolver<I> targetPropertyIdResolver;
 	
-	private List<QualifierResolver<I>> qualifierResolvers;
-	
-	private boolean skipNullValueQualifiers = true;
-	
+	private List<OptionalQualifierResolver<I>> qualifierResolvers;
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		Assert.notNull(relationResolver);
+		Assert.notNull(associationInstanceIdResolver);
+		Assert.notNull(associationPredicateKeyResolver);
+		Assert.notNull(databaseServiceManager);
+		Assert.notNull(sourcePropertyIdResolver);
+		Assert.notNull(targetPropertyIdResolver);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.item.ItemProcessor#process(java.lang.Object)
 	 */
@@ -121,17 +130,9 @@ public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcesso
 		target.setIsDefining(true);
 		
 		if(qualifierResolvers != null) {
-			for(QualifierResolver<I> qualResolver : qualifierResolvers) {
-				String qualName = qualResolver.getQualifierName();
-				String qualValue = qualResolver.getQualifierValue(item);
-
-				if(StringUtils.isNotBlank(qualValue) || !skipNullValueQualifiers) {
-					AssociationQualification qual = new AssociationQualification();
-
-					qual.setAssociationQualifier(qualName);
-					qual.setQualifierText(DaoUtility.createText(qualValue));
-
-					target.addAssociationQualification(qual);	
+			for(OptionalQualifierResolver<I> qualResolver : qualifierResolvers) {
+				if(qualResolver.toProcess(item)) {
+					target.addAssociationQualification(DataUtils.createAssociationQualifier(qualResolver, item));	
 				}
 			}
 		}
@@ -252,19 +253,11 @@ public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcesso
 		this.targetPropertyIdResolver = targetPropertyIdResolver;
 	}
 
-	public void setQualifierResolvers(List<QualifierResolver<I>> qualifierResolvers) {
+	public void setQualifierResolvers(List<OptionalQualifierResolver<I>> qualifierResolvers) {
 		this.qualifierResolvers = qualifierResolvers;
 	}
 
-	public List<QualifierResolver<I>> getQualifierResolvers() {
+	public List<OptionalQualifierResolver<I>> getQualifierResolvers() {
 		return qualifierResolvers;
-	}
-
-	public void setSkipNullValueQualifiers(boolean skipNullValueQualifiers) {
-		this.skipNullValueQualifiers = skipNullValueQualifiers;
-	}
-
-	public boolean isSkipNullValueQualifiers() {
-		return skipNullValueQualifiers;
 	}
 }

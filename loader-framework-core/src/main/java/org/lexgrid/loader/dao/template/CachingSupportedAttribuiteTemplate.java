@@ -18,6 +18,7 @@
  */
 package org.lexgrid.loader.dao.template;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 	private DatabaseServiceManager databaseServiceManager;
 
 	/** The attribute cache. */
-	private Map<String,URIMap> attributeCache = new HashMap<String,URIMap>();
+	private Map<String,URIMap> attributeCache = Collections.synchronizedMap(new HashMap<String,URIMap>());
 
 	
 	/** The max cache size. */
@@ -44,12 +45,12 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 	 * @see org.lexgrid.loader.dao.template.AbstractSupportedAttributeTemplate#insert(org.LexGrid.persistence.model.CodingSchemeSupportedAttrib)
 	 */
 	@Override
-	protected void insert(String codingSchemeUri, String codingSchemeVersion, URIMap uriMap){
+	protected synchronized void insert(String codingSchemeUri, String codingSchemeVersion, URIMap uriMap){
 		String key = this.buildCacheKey(uriMap);
 
 		if(! attributeCache.containsKey(key)){
 			this.getDatabaseServiceManager().getCodingSchemeService().
-				updateURIMap(codingSchemeUri, codingSchemeVersion, uriMap);
+				insertURIMap(codingSchemeUri, codingSchemeVersion, uriMap);
 			attributeCache.put(key, uriMap);
 		}
 		

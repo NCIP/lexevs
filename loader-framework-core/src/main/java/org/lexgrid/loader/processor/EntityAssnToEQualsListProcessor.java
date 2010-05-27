@@ -78,7 +78,7 @@ public class EntityAssnToEQualsListProcessor<I> extends AbstractSupportedAttribu
 		AssociationQualification qual = new AssociationQualification();
 		
 		qual.setAssociationQualifier(qualifierResolver.getQualifierName());
-		qual.setQualifierText(DaoUtility.createText(qualifierResolver.getQualifierValue(item)));
+		qual.setQualifierText(qualifierResolver.getQualifierValue(item));
 
 		String associationInstanceId = associationInstanceIdResolver.resolveAssociationInstanceId(item);
 		return new ParentIdHolder<AssociationQualification>(
