@@ -1,7 +1,15 @@
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-    <info organisation="lexevs" module="lgUtil"/>
+    <info organisation="lexevs" module="lgUtil" revision="6.0.0-SNAPSHOT"/>
+    
+     <configurations>
+  		<conf name="compile" description="Build Time dependencies"/>
+  		<conf name="test" description="Test Time dependencies"/>
+  		<conf name="runtime" description="Run Time dependencies"/>
+  		<conf name="sources" description="Source code"/>
+	</configurations>
 
 	<dependencies>
+		<dependency org="lexevs" name="lbInterfaces" rev="6.0.0-SNAPSHOT"/>
     	<dependency org="commons-collections" name="commons-collections" rev="3.2.1"/>
     	<dependency org="commons-pool" name="commons-pool" rev="1.4" />
     	<dependency org="commons-lang" name="commons-lang" rev="2.4"/>
