@@ -469,10 +469,6 @@ CREATE INDEX idx_propertyMultiAttrib ON @PREFIX@propertyMultiAttrib
 (propertyGuid ASC)
 ;
 
-ALTER TABLE @PREFIX@relation
-	ADD CONSTRAINT UQ_relation_codingSchemeGuid UNIQUE (codingSchemeGuid)
-;
-
 
 
 --  Create Foreign Key Constraints 
