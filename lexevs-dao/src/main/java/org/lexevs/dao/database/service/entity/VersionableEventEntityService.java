@@ -343,7 +343,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 			getEntityDao(codingSchemeUri, version).
 				getResolvedCodedNodeReferenceByCodeAndNamespace(codingSchemeId, entityCode, entityCodeNamespace);
 		
-		if(resolve) {
+		if(ref != null && resolve) {
 			Entity entity = this.getEntity(
 					codingSchemeUri, 
 					version, 
