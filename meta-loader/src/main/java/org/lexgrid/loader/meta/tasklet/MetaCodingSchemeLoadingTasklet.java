@@ -63,6 +63,7 @@ public class MetaCodingSchemeLoadingTasklet extends SupportedAttributeSupport im
 			cs.setFormalName(codingSchemeProperties.getProperty(LoaderConstants.FORMAL_NAME_PROPERTY));
 			cs.setDefaultLanguage(codingSchemeProperties.getProperty(LoaderConstants.DEFAULT_LANGUAGE_PROPERTY));
 			cs.setCopyright(DaoUtility.createText(codingSchemeProperties.getProperty(LoaderConstants.COPYRIGHT_PROPERTY)));
+			cs.addLocalName(codingSchemeProperties.getProperty(LoaderConstants.DEPRECATED_NAME_PROPERTY));
 			
 			EntityDescription ed = new EntityDescription();
 			ed.setContent(codingSchemeProperties.getProperty(LoaderConstants.ENTITY_DESCRIPTION_PROPERTY));
