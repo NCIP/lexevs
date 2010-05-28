@@ -865,38 +865,38 @@ public class ProtegeOwl2LG {
 
         String label = resolveLabel(rdfResource);
 
-        // Create the raw EMF concept and assign label as initial description,
+        // Create the concept and assign label as initial description,
         // which may be overridden later by preferred text.
-        Entity emfConcept = new Entity();
-        emfConcept.setEntityType(new String[]{EntityTypes.CONCEPT.toString()});
+        Entity concept = new Entity();
+        concept.setEntityType(new String[]{EntityTypes.CONCEPT.toString()});
         EntityDescription ed = new EntityDescription();
         ed.setContent(label);
-        emfConcept.setEntityDescription(ed);
-        emfConcept.setEntityCode(rdfName);
-        emfConcept.setIsAnonymous(Boolean.FALSE);
+        concept.setEntityDescription(ed);
+        concept.setEntityCode(rdfName);
+        concept.setIsAnonymous(Boolean.FALSE);
 
         String nameSpace = getNameSpace(rdfResource.getNamespace());
-        emfConcept.setEntityCodeNamespace(nameSpace);
+        concept.setEntityCodeNamespace(nameSpace);
 
         // Is deprecated? If so, mark as inactive.
         if (rdfResource instanceof OWLNamedClass
                 && OWLNames.Cls.DEPRECATED_CLASS.equals(rdfResource.getRDFType().getName()))
-            emfConcept.setIsActive(Boolean.FALSE);
+            concept.setIsActive(Boolean.FALSE);
 
         // Set the 'isDefined' property.
         if (rdfResource instanceof OWLNamedClass) {
             OWLNamedClass owlNamedClass = (OWLNamedClass) rdfResource;
-            emfConcept.setIsDefined(owlNamedClass.isDefinedClass());
+            concept.setIsDefined(owlNamedClass.isDefinedClass());
         }
 
         // Resolve all the concept properties and add to entities.
-        resolveEntityProperties(emfConcept, rdfResource);
-        addEntity(emfConcept);
+        resolveEntityProperties(concept, rdfResource);
+        addEntity(concept);
 
         // Remember the rdf to code mapping and return.
-        owlClassName2Conceptcode_.put(rdfName, emfConcept.getEntityCode());
+        owlClassName2Conceptcode_.put(rdfName, concept.getEntityCode());
 
-        return emfConcept;
+        return concept;
     }
 
     /**
