@@ -146,4 +146,69 @@ public class MockLexGridObjectFactory {
         EasyMock.replay(cng);
         return cng;
     }
+    
+    /*
+     * create mock CNG
+     */
+    public static CodedNodeGraph createCngWith2AssociationPredicates() throws LBException {
+        
+        // ResolvedConceptReferenceList rcrl = cng.resolveAsList(null, true, false, -1, -1, null, null, null, null, -1);
+        CodedNodeGraph cng = EasyMock.createNiceMock(CodedNodeGraph.class);
+        
+        ResolvedConceptReferenceList rcrlTopNodes = new ResolvedConceptReferenceList();
+
+        // Adding top nodes for case when null as focus node.
+        ResolvedConceptReference rcr = ResolvedConceptReferenceFactory.createRcrAutoMaker();
+        rcrlTopNodes.addResolvedConceptReference(rcr);
+        
+        ResolvedConceptReferenceList firstBranchNodes = new ResolvedConceptReferenceList();
+        ResolvedConceptReference rcr2 = ResolvedConceptReferenceFactory.createRcrFord();
+        
+        ResolvedConceptReference rcr3 = ResolvedConceptReferenceFactory.createRcrTires();
+        
+        firstBranchNodes.addResolvedConceptReference(rcr2);
+        
+        AssociatedConcept asc = new AssociatedConcept();
+        asc.setCode(rcr2.getCode());
+        asc.setCodingSchemeName(rcr2.getCodingSchemeName());
+        asc.setCodeNamespace(rcr2.getCodeNamespace());
+        
+        AssociatedConcept asc2 = new AssociatedConcept();
+        asc2.setCode(rcr3.getCode());
+        asc2.setCodingSchemeName(rcr3.getCodingSchemeName());
+        asc2.setCodeNamespace(rcr3.getCodeNamespace());
+        
+        AssociatedConceptList ascl = new AssociatedConceptList();
+        ascl.addAssociatedConcept(asc);
+        
+        AssociatedConceptList ascl2 = new AssociatedConceptList();
+        ascl2.addAssociatedConcept(asc2);
+        
+        Association asn = new Association();
+        asn.setAssociationName(Constants.VALUE_HAS_SUB_TYPE);
+        asn.setAssociatedConcepts(ascl);
+
+        Association asn2 = new Association();
+        asn2.setAssociationName(Constants.VALUE_USES);
+        asn2.setAssociatedConcepts(ascl2);
+        
+        AssociationList asl = new AssociationList();
+        asl.addAssociation(asn);
+        asl.addAssociation(asn2);
+
+        rcr.setSourceOf(asl);
+        
+        ConceptReference focus1 = new ConceptReference();
+        focus1.setCode(rcr.getConceptCode());
+        focus1.setCodingSchemeName(rcr.getCodingSchemeName());
+        
+        rcr = ResolvedConceptReferenceFactory.createRcrAutomobile();
+        rcrlTopNodes.addResolvedConceptReference(rcr);
+        
+        EasyMock.expect(cng.resolveAsList(null, true, false, 0, -1, null, null, null, null, -1)).andReturn(rcrlTopNodes);
+        EasyMock.expect(cng.resolveAsList(focus1, true, false, 0, -1, null, null, null, null, -1)).andReturn(firstBranchNodes);
+        
+        EasyMock.replay(cng);
+        return cng;
+    }
 }

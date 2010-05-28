@@ -334,5 +334,39 @@ public class EntityFactory {
         entity.setPresentation(presentationAr);
         return entity;
         
+    }
+    
+    public static Entity createEntityTires() {
+        Entity entity = new Entity();
+        entity.setEntityCode("Tires");
+        entity.setStatus("a66");
+        entity.setIsActive(new Boolean(true));
+        entity.setEntityCodeNamespace(Constants.VALUE_AUTOMOBILES_NAME_SPACE);
+        
+        // description
+        EntityDescription ed = new EntityDescription();
+        ed.setContent("Tires");
+        entity.setEntityDescription(ed);
+        
+        // entityType
+        String[] stringAr = {Constants.VALUE_ENTITY_TYPE_CONCEPT};
+        entity.setEntityType(stringAr);
+        
+        // presentations
+        Presentation p1 = new Presentation();
+        p1.setLanguage(Constants.VALUE_LANG_EN);
+        p1.setPropertyName(Constants.VALUE_PROP_NAME_TEXT_PRES);
+        p1.setPropertyId("t1");
+        p1.setIsPreferred(new Boolean(true));
+        p1.setMatchIfNoContext(new Boolean(true));
+        
+        // set the value
+        Text text = new Text();
+        text.setContent("Tires");
+        p1.setValue(text);
+        
+        Presentation[] presentationAr = {p1};
+        entity.setPresentation(presentationAr);
+        return entity;
     }    
 }

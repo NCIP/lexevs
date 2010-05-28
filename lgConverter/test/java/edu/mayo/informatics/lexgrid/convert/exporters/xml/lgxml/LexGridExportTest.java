@@ -12,10 +12,11 @@ import java.io.Writer;
 
 import junit.framework.Assert;
 
+import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
+import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
@@ -56,6 +57,7 @@ public class LexGridExportTest {
     
     private static final String SEARCH_STRING_SRC_ENTITY_CODE_DOMESTIC_AUTO_MAKERS = "sourceEntityCode=\"005\"";
     private static final String SEARCH_STRING_TRG_ENTITY_CODE_FORD = "targetEntityCode=\"Ford\"";
+    private static final String SEARCH_STRING_TRG_ENTITY_CODE_TIRES = "targetEntityCode=\"Tires\"";
     
     @Test    
     public void lexGridExportTestCns() throws LBException {
@@ -151,7 +153,39 @@ public class LexGridExportTest {
         boolean trgEntityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_TRG_ENTITY_CODE_FORD);
         Assert.assertTrue(srcEntityCodeExists && trgEntityCodeExists);
     }
-    
+
+    @Test
+    public void lexGridExportTestCngFilter() throws LBException 
+    {
+        StringWriter out = new StringWriter();
+        CodingScheme cs = CodingSchemeFactory.createCodingSchemeWithAssociationPredicate();
+        CodedNodeGraph cng = MockLexGridObjectFactory.createCngWith2AssociationPredicates();
+        
+        NameAndValue nv = new NameAndValue();
+        nv.setName("uses");
+        NameAndValueList assocNames = new NameAndValueList();
+        assocNames.addNameAndValue(nv);
+        CodedNodeGraph cng2 = cng.restrictToAssociations(assocNames, null);
+        CodedNodeSet cns = null;
+
+        LexGridExportTest.lexGridExportTestRunner(cs, cng2, cns, out);
+        
+      //-----------------------------------------------------
+        // to verify, all entity codes should exist
+        //-----------------------------------------------------
+        String marshaledContent = out.toString();
+        
+     // check for "Domestic Auto Makers" --> "Ford"  (MUST NOT Exists)
+        boolean srcEntityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_SRC_ENTITY_CODE_DOMESTIC_AUTO_MAKERS);
+        boolean trgEntityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_TRG_ENTITY_CODE_FORD);
+        Assert.assertFalse(srcEntityCodeExists && trgEntityCodeExists);
+        
+        // check for "Domestic Auto Makers" --> "Tires"  (MUST Exists)
+        srcEntityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_SRC_ENTITY_CODE_DOMESTIC_AUTO_MAKERS);
+        trgEntityCodeExists = marshaledContent.contains(LexGridExportTest.SEARCH_STRING_TRG_ENTITY_CODE_TIRES);
+        Assert.assertTrue(srcEntityCodeExists && trgEntityCodeExists);
+    }
+
     @Test
     public void lexGridExportTestFileWriter() {
         

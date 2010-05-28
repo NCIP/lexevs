@@ -16,6 +16,11 @@ public class ResolvedConceptReferenceFactory {
        Entity entity = EntityFactory.createEntityFord();
        return ResolvedConceptReferenceFactory.createRcrFromEntity(entity);       
    }   
+  
+   public static ResolvedConceptReference createRcrTires() {
+       Entity entity = EntityFactory.createEntityTires();
+       return ResolvedConceptReferenceFactory.createRcrFromEntity(entity);       
+   }   
    
    public static ResolvedConceptReference createRcrAutomobile_original() {
        Entity entity = EntityFactory.createEntityAutomobile();
