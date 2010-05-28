@@ -43,7 +43,7 @@ abstract public class LexBIGServiceTestCase extends TestCase {
     protected final static String THES_SCHEME = "Thesaurus.owl";
     protected final static String THES_URN = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
     protected final static String THES_VERSION = "05.09.bvt";
-    protected final static String META_SCHEME = "NCI MetaThesaurus";
+    protected final static String META_SCHEME = "NCI Metathesaurus";
     public final static String META_URN = "urn:oid:2.16.840.1.113883.3.26.1.2";
     protected final static String META_VERSION = "200510.bvt";
     protected final static String CELL_SCHEME = "cell";
