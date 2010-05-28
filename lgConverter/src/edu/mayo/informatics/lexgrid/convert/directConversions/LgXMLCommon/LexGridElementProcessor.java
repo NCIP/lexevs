@@ -19,6 +19,7 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -48,7 +49,7 @@ public class LexGridElementProcessor {
     
     private static ArrayList<CodingScheme> codingSchemes = new ArrayList<CodingScheme>();
     private static  CodingScheme[] cs = null;
-    
+    private static HashMap<String, ArrayList<String>> relMap = new HashMap<String, ArrayList<String>>();
 
 
     public static CodingScheme[] setAndRetrieveCodingSchemes() {
@@ -236,24 +237,16 @@ public class LexGridElementProcessor {
      * @param child
      */
     public static void processCodingSchemeAssociationRevision(boolean isPredicateLoaded, XMLDaoServiceAdaptor service,
-            Object parent, Object child) {
-        AssociationSource source = (AssociationSource) parent;
+            AssociationSource source, Object child) {
         AssociationPredicate a = (AssociationPredicate)source.getParent();
         Relations relations = (Relations) a.getParent();
         CodingScheme cs = (CodingScheme) relations.getParent();
-
-
         service.storeRelationsRevision(cs.getCodingSchemeURI(), cs.getRepresentsVersion(), relations);
-        //AssociationPredicate is not a version-able element, we can't load it again unless this is a new load of this
-        //coding scheme.
-  //      if (!isPredicateLoaded &&   (cs.getEntryState()== null || cs.getEntryState().getChangeType() == ChangeType.NEW)) {
             service.storeAssociationPredicate(cs.getCodingSchemeURI(), cs.getRepresentsVersion(), relations
                     .getContainerName(), a);
-     //   } else {
             service.storeAssociationRevision(cs.getCodingSchemeURI(), cs.getRepresentsVersion(), relations.getContainerName(),
-                    a.getAssociationName(), (AssociationSource)parent, (AssociationTarget)child);
-    //    }
-        a.removeSource((AssociationSource) parent);
+                    a.getAssociationName(), source, (AssociationTarget)child);
+        a.removeSource(source);
     }
 
     /**
@@ -261,14 +254,27 @@ public class LexGridElementProcessor {
      * @param parent
      * @param child
      */
-    public static void processCodingSchemePropertyRevision(XMLDaoServiceAdaptor service, Object parent, Object child) {
-        Property p = (Property)child;
+    public static void processCodingSchemePropertyRevision(XMLDaoServiceAdaptor service, CodingScheme c, Object parent, Object child) {
         Properties props = (Properties)parent;
-        CodingScheme c = (CodingScheme)props.getParent();
+        Property p = (Property)child;
         service.storeCodingSchemePropertyRevision(p, c);
         
     }
-
+    public static void processRelationsPropertyRevision(XMLDaoServiceAdaptor service, Object parent, Object child) {
+        Properties props = (Properties)child;
+        Property p = (Property)child;
+        Relations r = (Relations)parent;
+        CodingScheme c = (CodingScheme)r.getParent();
+        service.storeRelationsPropertyRevision(c.getCodingSchemeURI(), c.getRepresentsVersion(), r.getContainerName(), p);
+        
+    }
+   
+    public static void processEntityPropertyRevision(XMLDaoServiceAdaptor service, CodingScheme cs, Object parent, Property p){
+        Entity e = (Entity)parent;
+        //Property p = (Property)child;
+         
+        service.storeEntityPropertyRevision(cs.getCodingSchemeURI(), cs.getRepresentsVersion(), e.getEntityCode(), e.getEntityCodeNamespace(), p);
+    }
     /**
      * @param service
      * @param child
@@ -305,6 +311,24 @@ public class LexGridElementProcessor {
       service.storeRelationsRevision(scheme.getCodingSchemeURI(), scheme.getRepresentsVersion(), relation);
       service.storeAssociatonData(scheme.getCodingSchemeURI(), predicate.getAssociationName(), relation.getContainerName(), scheme.getRepresentsVersion(), source, data);
         
+    }
+
+    public static void processRelationsRevision(XMLDaoServiceAdaptor service, Object parent, Object child) {
+        AssociationPredicate ap = (AssociationPredicate)parent;
+        Relations r = (Relations)ap.getParent();
+        CodingScheme cs = (CodingScheme)r.getParent();
+       //This is a new instance of a relation container with an empty predicate
+     if(!relMap.containsKey(r.getContainerName())){
+         ArrayList<String> newPredicateList = new ArrayList<String>();
+         newPredicateList.add(ap.getAssociationName());
+         relMap.put(r.getContainerName(), newPredicateList);
+         service.storeRelationsRevision(cs.getCodingSchemeURI(), cs.getRepresentsVersion(), r);
+         service.storeAssociationPredicate(cs.getCodingSchemeURI(), cs.getRepresentsVersion(), r.getContainerName(), ap);
+     }
+        
+     if(!relMap.get(r.getContainerName()).contains(ap.getAssociationName())){
+         service.storeAssociationPredicate(cs.getCodingSchemeURI(), cs.getRepresentsVersion(), r.getContainerName(), ap);
+     }
     }
 
 

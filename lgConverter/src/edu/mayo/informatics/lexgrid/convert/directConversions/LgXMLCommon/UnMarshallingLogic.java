@@ -31,6 +31,7 @@ import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
+import org.LexGrid.relations.Relations;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListDefinitions;
 import org.LexGrid.valueSets.ValueSetDefinition;
@@ -187,9 +188,24 @@ private static final int CHANGE_INSTRUCTIONS_TYPE = 1;
          return child instanceof ChangedEntry && parent instanceof Revision;
      
     }
-
+    public static boolean isCodingSchemePropertiesRevision(Object parent, Object child) {
+        return parent instanceof Properties && child instanceof Property;
+    }
     public static boolean isCodingSchemeAssociationData(Object parent, Object child) {
         return child instanceof AssociationData && parent instanceof AssociationSource;
+    }
+
+    public static boolean isCodingSchemeEntityProperty(Object parent, Object child) {
+       return child instanceof Property && parent instanceof Entity;
+    }
+    
+    public static boolean isCodingSchemeRelation(Object parent, Object child) {
+        return child instanceof EntityDescription && parent instanceof Relations;
+    }
+    //Looking for an empty predicate just because the model allows it.
+    //runs the risk of allowing a large predicate to be populated.
+    public static boolean isCodingSchemeRelationWithEmptyPredicate(Object parent, Object child) {
+        return parent instanceof AssociationPredicate && child == null;
     }
 
 

@@ -18,12 +18,21 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Entity;
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.relations.Relations;
 import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.valueSets.PickListDefinition;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.Revision;
 import org.castor.xml.UnmarshalListener;
 import org.mayo.edu.lgModel.LexGridBase;
@@ -39,6 +48,9 @@ public class LgRevisionListener implements UnmarshalListener {
     private int nassociations = 0;
     int modCount = 0;
     private static final int mod = 10;
+    CodingScheme cs = null;
+    Entity currentEntity = null;
+    ArrayList<Property> entityProperties = new ArrayList<Property>();
     
     private boolean isCodingSchemeLoaded = false;
     private boolean isRevisionLoaded = false;
@@ -115,6 +127,13 @@ public class LgRevisionListener implements UnmarshalListener {
      * @return
      */
     boolean isPredicateLoaded(AssociationPredicate e) {
+//        if(predicateMetadata.contains(e))
+//            return true;
+//        else
+//        {
+//            predicateMetadata.add(e);
+//            return false;
+//        }
         if (currentPredicate.equals(e))
             return true;
         else {
@@ -155,6 +174,26 @@ public class LgRevisionListener implements UnmarshalListener {
            messages_.info("Entity Count: " + nentities);
            messages_.info("Association Count: " + nassociations);
         }
+        if(target instanceof Entity  && parent instanceof Entities){
+            Entities entities = (Entities)parent;
+            CodingScheme cs = (CodingScheme)entities.getParent();
+            LexGridElementProcessor.processCodingSchemeEntityRevision(serviceAdaptor, parent, target);
+            for (Property o :entityProperties ){
+                LexGridElementProcessor.processEntityPropertyRevision(serviceAdaptor, cs, target, o);
+            }
+            entityProperties.clear();
+        nentities++;
+        if(nentities%mod == mod-1){  
+            modCount = modCount + mod;
+            messages_.info("Entities Loaded: " + modCount);}
+        }
+        if(target instanceof ValueSetDefinition){
+            LexGridElementProcessor.processValueSetDefinitionRevision(serviceAdaptor,target);
+        }
+        if(target instanceof PickListDefinition){
+            LexGridElementProcessor.processPickListtDefinitionRevision(serviceAdaptor, target);
+        }
+        
     }
 
     /* (non-Javadoc)
@@ -180,28 +219,40 @@ public class LgRevisionListener implements UnmarshalListener {
             
 
             LexGridElementProcessor.processCodingSchemeMetadataRevision(serviceAdaptor, parent, child);
+            cs = (CodingScheme)parent;
             isCodingSchemeLoaded = true;
         }
         if (!isCodingSchemeLoaded && UnMarshallingLogic.isCodingSchemeProperties(parent, child)) {
 
             LexGridElementProcessor.processCodingSchemeMetadataRevision(serviceAdaptor, parent, child);
+            cs = (CodingScheme)parent;
             isCodingSchemeLoaded = true;
         }
-
+        if(isCodingSchemeLoaded && UnMarshallingLogic.isCodingSchemePropertiesRevision(parent, child)){
+            LexGridElementProcessor.processCodingSchemePropertyRevision(serviceAdaptor, cs, parent, child);
+        }
         
-        if (UnMarshallingLogic.isCodingSchemeEntity(parent, child)) {
+        if (isCodingSchemeLoaded && UnMarshallingLogic.isCodingSchemeEntity(parent, child)) {
             LexGridElementProcessor.processCodingSchemeEntityRevision(serviceAdaptor, parent, child);
             nentities++;
             if(nentities%mod == mod-1){  
                 modCount = modCount + mod;
                 messages_.info("Entities Loaded: " + modCount);}
-         
         } 
         
+        if(UnMarshallingLogic.isCodingSchemeEntityProperty(parent, child)){
+           // LexGridElementProcessor.processEntityPropertyRevision(serviceAdaptor, cs, parent, child);
+            entityProperties.add((Property)child);
+        }
+        // This is an unlikely revision scenario, but since our model allows it, we'll create a conditional
+        // to manage it.
+//        if(UnMarshallingLogic.isCodingSchemeRelationWithEmptyPredicate(parent, child)){
+//            LexGridElementProcessor.processRelationsRevision(serviceAdaptor, parent, child);
+//        }
         if(UnMarshallingLogic.isCodingSchemeAssociationSource(parent,child)){
             AssociationSource source = (AssociationSource)parent;
             AssociationPredicate predicate = (AssociationPredicate) source.getParent();
-            LexGridElementProcessor.processCodingSchemeAssociationRevision(isPredicateLoaded(predicate), serviceAdaptor, parent, child);
+            LexGridElementProcessor.processCodingSchemeAssociationRevision(isPredicateLoaded(predicate), serviceAdaptor, source, child);
           nassociations++;
           if(nassociations%mod == mod-1){  
               modCount = modCount + mod;
@@ -212,12 +263,12 @@ public class LgRevisionListener implements UnmarshalListener {
             AssociationData data = (AssociationData)child;
             LexGridElementProcessor.processAssociationData(serviceAdaptor,source, data);
         }
-        if(UnMarshallingLogic.isValueSetDefinitionRevision(parent, child)){
-            LexGridElementProcessor.processValueSetDefinitionRevision(serviceAdaptor, child);
-        }
-        if(UnMarshallingLogic.isPickListDefinitionRevision(parent, child)){
-            LexGridElementProcessor.processPickListtDefinitionRevision(serviceAdaptor, child);
-        }
+//        if(UnMarshallingLogic.isValueSetDefinitionRevision(parent, child)){
+//            LexGridElementProcessor.processValueSetDefinitionRevision(serviceAdaptor, child);
+//        }
+//        if(UnMarshallingLogic.isPickListDefinitionRevision(parent, child)){
+//            LexGridElementProcessor.processPickListtDefinitionRevision(serviceAdaptor, child);
+//        }
     }
    
 }

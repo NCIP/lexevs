@@ -26,8 +26,11 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.codingSchemes.CodingSchemes;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationPredicate;
+import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.LexGrid.versions.EditHistory;
+import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 import org.castor.xml.UnmarshalListener;
 import org.mayo.edu.lgModel.LexGridBase;
@@ -45,6 +48,7 @@ public class LgSystemReleaseListener implements UnmarshalListener {
     private boolean isCodingSchemeLoaded = false;
     private boolean isPropertiesPresent = false;
     private boolean isSystemReleaseSet = false;
+    private boolean inEditHistory = false;
     private Mappings currentPickListMappings = new Mappings();
     private Mappings currentValueSetMappings;
     private SystemRelease systemRelease = new SystemRelease();
@@ -52,6 +56,8 @@ public class LgSystemReleaseListener implements UnmarshalListener {
     private XMLDaoServiceAdaptor serviceAdaptor = null;
     private CodingScheme[] codingSchemes = null;
     private LgMessageDirectorIF messages_;
+    private boolean isRevisionLoaded;
+    private Revision revision;
     private static final int mod = 10;
     /**
      * 
@@ -140,6 +146,15 @@ public class LgSystemReleaseListener implements UnmarshalListener {
         if(target instanceof CodingScheme && parent instanceof CodingSchemes){
             setCodingSchemes(LexGridElementProcessor.setAndRetrieveCodingSchemes());
         }
+        if(target instanceof EditHistory){
+            inEditHistory = false;
+        }
+        if(target instanceof ValueSetDefinition){
+            LexGridElementProcessor.processValueSetDefinitionRevision(serviceAdaptor,target);
+        }
+        if(target instanceof PickListDefinition){
+            LexGridElementProcessor.processPickListtDefinitionRevision(serviceAdaptor, target);
+        }
     }
 
 
@@ -159,7 +174,8 @@ public class LgSystemReleaseListener implements UnmarshalListener {
 //        messages_.debug("fieldName:" + fieldName);
 //        messages_.debug("parent: " + parent.getClass().getSimpleName());
 //        messages_.debug("child: " + child.getClass().getSimpleName());
-        
+
+        if(!inEditHistory){
         if (!isSystemReleaseSet && UnMarshallingLogic.isSytemRelease(parent, child)) {
            try {
             LexGridElementProcessor.processSystemReleaseMetadata(serviceAdaptor, parent);
@@ -177,13 +193,13 @@ public class LgSystemReleaseListener implements UnmarshalListener {
             LexGridElementProcessor.processCodingSchemeMetadata(serviceAdaptor, parent, child);
             isCodingSchemeLoaded = true;
         }
-        if (UnMarshallingLogic.isCodingSchemeEntity(parent, child)) {
+        if (!inEditHistory && UnMarshallingLogic.isCodingSchemeEntity(parent, child)) {
             LexGridElementProcessor.processCodingSchemeEntity(serviceAdaptor, parent, child);
             nentities++;
             if(nentities%mod == mod-1){  
                 modCount = modCount + mod;
                 messages_.info("Entities Loaded: " + modCount);}
-        } else if (UnMarshallingLogic.isCodingSchemeEntities(parent, child)) {
+        } else if ( UnMarshallingLogic.isCodingSchemeEntities(parent, child)) {
             LexGridElementProcessor.removeEntitiesContainer(parent);
             modCount = 0;
         } else if (UnMarshallingLogic.isCodingSchemeAssociation(parent, child)) {
@@ -224,6 +240,61 @@ public class LgSystemReleaseListener implements UnmarshalListener {
                 messages_.error("Error loading PickList : " + pickListId, e);
                 e.printStackTrace();  
             }
+        }}
+        if (UnMarshallingLogic.isRevisionInstance(parent, child) || inEditHistory){
+            inEditHistory = true;
+            if (!isRevisionLoaded && UnMarshallingLogic.isSystemReleaseRevisionInstance(parent, child)) {
+                if(child instanceof Revision)
+                revision = (Revision)child;
+                else{
+                    revision = (Revision)parent;
+                }
+                try {
+                    LexGridElementProcessor.processRevisionMetadata(serviceAdaptor, revision);
+                } catch (LBRevisionException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                //isRevisionLoaded = true;
+            }
+            if (!isPropertiesPresent && UnMarshallingLogic.isCodingSchemeMappings(parent, child)) {
+                
+
+                LexGridElementProcessor.processCodingSchemeMetadataRevision(serviceAdaptor, parent, child);
+                isCodingSchemeLoaded = true;
+            }
+            if (!isCodingSchemeLoaded && UnMarshallingLogic.isCodingSchemeProperties(parent, child)) {
+
+                LexGridElementProcessor.processCodingSchemeMetadataRevision(serviceAdaptor, parent, child);
+                isCodingSchemeLoaded = true;
+            }
+
+            
+            if (UnMarshallingLogic.isCodingSchemeEntity(parent, child)) {
+                LexGridElementProcessor.processCodingSchemeEntityRevision(serviceAdaptor, parent, child);
+                nentities++;
+                if(nentities%mod == mod-1){  
+                    modCount = modCount + mod;
+                    messages_.info("Entities Loaded: " + modCount);}
+             
+            } 
+            
+            if(UnMarshallingLogic.isCodingSchemeAssociationSource(parent,child)){
+                AssociationSource source = (AssociationSource)parent;
+                AssociationPredicate predicate = (AssociationPredicate) source.getParent();
+                LexGridElementProcessor.processCodingSchemeAssociationRevision(isPredicateLoaded(predicate), serviceAdaptor,source, child);
+              nassociations++;
+              if(nassociations%mod == mod-1){  
+                  modCount = modCount + mod;
+                  messages_.info("Associations Loaded: " + modCount);}
+            }
+            
+//            if(UnMarshallingLogic.isValueSetDefinitionRevision(parent, child)){
+//                LexGridElementProcessor.processValueSetDefinitionRevision(serviceAdaptor, child);
+//            }
+//            if(UnMarshallingLogic.isPickListDefinitionRevision(parent, child)){
+//                LexGridElementProcessor.processPickListtDefinitionRevision(serviceAdaptor, child);
+//            }
         }
 
     }

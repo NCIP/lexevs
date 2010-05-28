@@ -79,7 +79,7 @@ public class XMLDaoServiceAdaptor {
     AssociationDataService assocDataService = null;
     
     ArrayList<AssociationPredicate> associationList = null;
-    ArrayList<String> relationList = null;;
+    ArrayList<String> relationList = null;
     
     /**
      * constructor initializes all DAO services
@@ -173,7 +173,6 @@ public class XMLDaoServiceAdaptor {
                         predicate, true);
                 return null;
             }
-
         });
     }
 
@@ -271,6 +270,36 @@ public class XMLDaoServiceAdaptor {
             e.printStackTrace();
         }
         
+    }
+    
+//    public void storeCodingSchemePropertyRevision(String codingSchemeUri, String version,
+//            Property property) {
+//        try {
+//            propertyService.reviseCodingSchemeProperty(codingSchemeUri, version, property);
+//        } catch (LBException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//    }
+    
+    public void storeRelationsPropertyRevision(String codingSchemeUri, String version,String relationContainerName,
+            Property property) {
+        try {
+            propertyService.reviseRelationProperty(codingSchemeUri, version, relationContainerName, property);
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
+    public void storeEntityPropertyRevision(String codingSchemeUri, String version, String entityCode, String entityCodeNamespace,
+            Property property) {
+        try {
+            propertyService.reviseEntityProperty(codingSchemeUri, version, entityCode, entityCodeNamespace, property);
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     public void storeRelationsRevision(String URI, String version, Relations relations){
         try {

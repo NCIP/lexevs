@@ -362,6 +362,8 @@ public class LexGridXMLProcessor {
     private boolean setPropertiesFlag(String path,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         boolean propsPresent = false;
+        boolean codingSchemePresent = false;
+        boolean csPropsPresent = false;
         XMLStreamReader xmlStreamReader;
 
         try {
@@ -371,10 +373,18 @@ public class LexGridXMLProcessor {
 
             for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
                     .next()) {
-
-                if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("properties")) {
-                    messages.info("Property metadata detected ... adjusting XML streaming to database");
+                if (event == XMLStreamConstants.START_ELEMENT &&( xmlStreamReader.getLocalName().equals("codingScheme")
+                        || xmlStreamReader.getLocalName().equals("changedCodingSchemeEntry"))) {
+                 //   messages.info("Property metadata detected ... adjusting XML streaming to database");
+                    codingSchemePresent = true;
+                }
+                if (codingSchemePresent && event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("properties")) {
+                 //   messages.info("Property metadata detected ... adjusting XML streaming to database");
                     propsPresent = true;
+                }
+                if (codingSchemePresent && propsPresent && event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("entities")) {
+                 //   messages.info("Property metadata detected ... adjusting XML streaming to database");
+                    csPropsPresent = true;
                     break;
                 }
             }
@@ -393,9 +403,60 @@ public class LexGridXMLProcessor {
             messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
             e.printStackTrace();
         }
-        return propsPresent;
+        return csPropsPresent;
     }
     
+    
+    /**
+     * @param path
+     * @return boolean indicating if a coding scheme contains a property
+     */
+    private boolean setRelationsPropertiesFlag(String path,  LgMessageDirectorIF messages) {
+        BufferedReader in = null;
+        boolean propsPresent = false;
+        boolean relationsPresent = false;
+        boolean relPropsPresent = false;
+        XMLStreamReader xmlStreamReader;
+
+        try {
+            in = new BufferedReader(new FileReader(path));
+
+            xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
+
+            for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
+                    .next()) {
+                if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("relations")) {
+                  //  messages.info("Property metadata detected ... adjusting XML streaming to database");
+                    relationsPresent = true;
+                }
+                if (relationsPresent && event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("properties")) {
+                  //  messages.info("Property metadata detected ... adjusting XML streaming to database");
+                    //propsPresent = true;
+                    relPropsPresent = true;
+                    break;                }
+//                if (relationsPresent && propsPresent && event == XMLStreamConstants.END_ELEMENT && xmlStreamReader.getLocalName().equals("relations")) {
+//                  //  messages.info("Property metadata detected ... adjusting XML streaming to database");
+//                    relPropsPresent = true;
+//                    break;
+//                }
+            }
+            xmlStreamReader.close();
+            in.close();
+        } catch (XMLStreamException e) {
+            messages.error("While streaming file at " + path + "an error occured");
+            e.printStackTrace();
+        } catch (FactoryConfigurationError e) {
+            messages.error("While streaming file at " + path + "an streaming xml configuration error occured");
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+            e.printStackTrace();
+        } catch (IOException e) {
+            messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
+            e.printStackTrace();
+        }
+        return relPropsPresent;
+    }
     
    /**
  * @param path represents a path to the xml file to load
@@ -506,6 +567,9 @@ private int getLastRevisionElement(String path,  LgMessageDirectorIF messages) {
 }
 public static void main (String[] args){
 
-    new LexGridXMLProcessor().isCodingSchemePresent(args[0],null);
+   // new LexGridXMLProcessor().isCodingSchemePresent(args[0],null);
+   LexGridXMLProcessor lp = new LexGridXMLProcessor();
+   System.out.println("CodingSchemeProps: " + lp.setPropertiesFlag(args[0],null));
+   System.out.println("RelationsProps: " + lp.setRelationsPropertiesFlag(args[0],null));
 }
 }
