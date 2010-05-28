@@ -612,7 +612,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 					List<URIMap> urimapList = (List<URIMap>) field.get(mappings);
 					this.insertURIMap(referenceGuid, urimapList);
 				} catch (Exception e) {
-					if (e.getMessage().indexOf("Duplicate") == -1)
+					if (e.getMessage().indexOf("Duplicate") == -1 && e.getMessage().indexOf("unique constraint") == -1)
 						throw new RuntimeException(e);
 				} 
 			}
