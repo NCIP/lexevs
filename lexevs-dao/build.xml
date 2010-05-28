@@ -15,7 +15,7 @@
 <!--                                                                        -->
 <!-- ====================================================================== -->
 
-<project name="lexevs-dao" default="package" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
+<project name="lexevs-dao" default="publish" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
 
   <!-- ====================================================================== -->
   <!-- Build environment properties                                           -->
