@@ -2,10 +2,12 @@ package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.factory;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
+import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
@@ -154,12 +156,18 @@ public class MockLexGridObjectFactory {
         
         // ResolvedConceptReferenceList rcrl = cng.resolveAsList(null, true, false, -1, -1, null, null, null, null, -1);
         CodedNodeGraph cng = EasyMock.createNiceMock(CodedNodeGraph.class);
+        CodedNodeGraph cng2 = EasyMock.createNiceMock(CodedNodeGraph.class);
         
         ResolvedConceptReferenceList rcrlTopNodes = new ResolvedConceptReferenceList();
+        ResolvedConceptReferenceList rcrlTopNodesFiltered = new ResolvedConceptReferenceList();
 
         // Adding top nodes for case when null as focus node.
         ResolvedConceptReference rcr = ResolvedConceptReferenceFactory.createRcrAutoMaker();
         rcrlTopNodes.addResolvedConceptReference(rcr);
+        
+        ResolvedConceptReference rcrDup = ResolvedConceptReferenceFactory.createRcrAutoMaker();
+        rcrlTopNodesFiltered.addResolvedConceptReference(rcrDup);
+
         
         ResolvedConceptReferenceList firstBranchNodes = new ResolvedConceptReferenceList();
         ResolvedConceptReference rcr2 = ResolvedConceptReferenceFactory.createRcrFord();
@@ -196,17 +204,30 @@ public class MockLexGridObjectFactory {
         asl.addAssociation(asn);
         asl.addAssociation(asn2);
 
+        AssociationList asl2 = new AssociationList();
+        asl2.addAssociation(asn2);
+        
         rcr.setSourceOf(asl);
+        rcrDup.setSourceOf(asl2);
         
         ConceptReference focus1 = new ConceptReference();
         focus1.setCode(rcr.getConceptCode());
         focus1.setCodingSchemeName(rcr.getCodingSchemeName());
+        
+        NameAndValue nv = new NameAndValue();
+        nv.setName("uses");
+        NameAndValueList assocNames = new NameAndValueList();
+        assocNames.addNameAndValue(nv);
         
         rcr = ResolvedConceptReferenceFactory.createRcrAutomobile();
         rcrlTopNodes.addResolvedConceptReference(rcr);
         
         EasyMock.expect(cng.resolveAsList(null, true, false, 0, -1, null, null, null, null, -1)).andReturn(rcrlTopNodes);
         EasyMock.expect(cng.resolveAsList(focus1, true, false, 0, -1, null, null, null, null, -1)).andReturn(firstBranchNodes);
+        EasyMock.expect(cng2.resolveAsList(null, true, false, 0, -1, null, null, null, null, -1)).andReturn(rcrlTopNodesFiltered);
+        EasyMock.replay(cng2);
+        
+        EasyMock.expect(cng.restrictToAssociations(assocNames, null)).andReturn(cng2);
         
         EasyMock.replay(cng);
         return cng;
