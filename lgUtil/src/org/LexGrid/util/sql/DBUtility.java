@@ -18,25 +18,15 @@
  */
 package org.LexGrid.util.sql;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
 
 import org.LexGrid.util.sql.sqlReconnect.WrappedConnection;
 import org.apache.commons.lang.StringUtils;
-
-import access.LocateAccessDB;
 
 /**
  * This class holds many utility type methods for common DB related tasks -
@@ -47,16 +37,7 @@ import access.LocateAccessDB;
 public class DBUtility {
     public static Connection connectToDatabase(String server, String driver, String user, String password)
             throws Exception {
-        if (server.indexOf("Microsoft Access Driver") != -1) {
-            // check to see if the Access database exists, if not, create it.
-            int x = server.indexOf("DBQ=");
-            File temp = new File(server.substring(x + 4));
-            {
-                if (!temp.exists()) {
-                    DBUtility.createBlankAccessDB(temp);
-                }
-            }
-        }
+
         return new WrappedConnection(user, password, driver, server, true);
     }
 
@@ -274,25 +255,6 @@ public class DBUtility {
         } else {
             props.setProperty("charSet", "utf-8");
         }
-    }
-
-    public static void createBlankAccessDB(File file) throws IOException {
-        JarFile jar = new JarFile(convertEncodedSpaceToSpace(LocateAccessDB.class.getProtectionDomain().getCodeSource()
-                .getLocation().getFile()));
-        ZipEntry entry = jar.getEntry("blank.mdb");
-
-        InputStream in = new BufferedInputStream(jar.getInputStream(entry));
-        OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
-        byte[] buffer = new byte[2048];
-        for (;;) {
-            int nBytes = in.read(buffer);
-            if (nBytes <= 0)
-                break;
-            out.write(buffer, 0, nBytes);
-        }
-        out.flush();
-        out.close();
-        in.close();
     }
 
     // TODO - this method has not been tested on DB2 or Oracle, or MSSQLServer
