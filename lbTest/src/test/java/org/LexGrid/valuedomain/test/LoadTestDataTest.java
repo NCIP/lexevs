@@ -76,7 +76,7 @@ public class LoadTestDataTest extends TestCase {
         loader.load(new File(fileName).toURI(), true, false);
         
         while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         }
         assertTrue(loader.getStatus().getEndTime() != null);
         assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
@@ -101,7 +101,7 @@ public class LoadTestDataTest extends TestCase {
 				null, true, true);
 
 		while (loader.getStatus().getEndTime() == null) {
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 		}
 		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
 		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
