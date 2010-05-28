@@ -18,62 +18,38 @@
  */
 package edu.mayo.informatics.indexer.utility;
 
-import edu.mayo.informatics.indexer.lucene.analyzers.NormAnalyzer;
-import gov.nih.nlm.nls.lvg.Api.NormApi;
-import gov.nih.nlm.nls.lvg.Trie.RamTrie;
-
-import java.sql.Connection;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import org.apache.commons.collections.map.LRUMap;
+
+import edu.mayo.informatics.indexer.lucene.analyzers.NormAnalyzer;
 
 /**
  * Puts a Least-recently-used cache in front of calls to norm.Mutate.
  * 
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust </A>
  */
-public class CachedNormApi extends NormApi {
+public class CachedNormApi {
     private LRUMap cache_ = new LRUMap(NormAnalyzer.LVG_CACHE_SIZE);
 
     public CachedNormApi() {
-        super();
+        throw new UnsupportedOperationException();
     }
 
     public CachedNormApi(String arg0) {
-        super(arg0);
-
+        throw new UnsupportedOperationException();
     }
 
     public CachedNormApi(String arg0, Hashtable arg1) {
-        super(arg0, arg1);
-
+        throw new UnsupportedOperationException();
     }
-
-    public CachedNormApi(Connection arg0, RamTrie arg1) {
-        super(arg0, arg1);
-    }
-
+    
     public Vector Mutate(String arg0, boolean arg1) throws Exception {
-        Vector temp = (Vector) cache_.get(arg0);
-        if (temp != null) {
-            return temp;
-        } else {
-            temp = super.Mutate(arg0, arg1);
-            cache_.put(arg0, temp);
-            return temp;
-        }
+        throw new UnsupportedOperationException();
     }
 
     public Vector Mutate(String arg0) throws Exception {
-        Vector temp = (Vector) cache_.get(arg0);
-        if (temp != null) {
-            return temp;
-        } else {
-            temp = super.Mutate(arg0);
-            cache_.put(arg0, temp);
-            return temp;
-        }
-
+        throw new UnsupportedOperationException();
     }
 }
