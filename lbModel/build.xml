@@ -1,4 +1,4 @@
-<project name="LexBIG Model" default="all" basedir=".">
+<project name="LexBIG Model" default="all" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 	<description>
 		Buildfile for the Castor Rendering of the LexBIG data model
 	</description>
@@ -13,31 +13,60 @@
 	<property name="collections"   location="Castor/src/org/LexGrid/LexBIG/DataModel/Collections"/>
 	<property name="annotations"   location="annotations/src"/>
 	<property name="loaderXSDs"	   location="master.preferences"/>
+	<property name="lib.dir" value="build/lib"/>
 
 	<!-- bda related properties -->
 	<property name="bda.build.dir" location="../../lexevs_bda/lbPackager"/>
 	<property file="bda.properties" location="${bda.build.dir}"/>
 	<property name="lgSharedLibs.dir" location="../lgSharedLibraries"/>	
 	<property name="lgModel.project.dir" location="../lgModel"/>
-
+	<property name="lbPackager.dir" value="../lbPackager"/>
 	
-	<target name="init">
-		<path id="classpath">
-			<fileset dir="${lgSharedLibs.dir}/castor/">
-				<include name="castor-*.jar"/>
-			</fileset>
-			<fileset dir="${lgSharedLibs.dir}/apache/" >  
-				<include name="commons/commons-logging*.jar"/>
-				<include name="log4j/log4j*.jar"/>
-				<include name="velocity/velocity*.jar"/>
-				<include name="xerces/xercesImpl*.jar"/>
-			</fileset>
-			<fileset dir="${lgModel.project.dir}/lib/">
-				<include name="lgModelCastor.jar"/>
-			</fileset>			
-		</path>
-	</target>
+	<!--*******************************************************************-->
+		<!--** IVY TARGETS AND DEPENDENCY PATHS **-->
+		<!--*******************************************************************-->
+		<property name="ivy.settings.file" location="${lbPackager.dir}/ivysettings.xml" />
+		<property name="ivy.def.file" location="ivy.xml" />
 
+		<property name="ivy.jar.dir" value="${lbPackager.dir}/ivy/lib" />
+		<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-2.1.0-rc1.jar" />
+
+		<target name="ivy:init">
+
+		<path id="ivy.lib.path">
+				<fileset dir="${ivy.jar.dir}" includes="*.jar" />
+			</path>
+			<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant"
+				classpathref="ivy.lib.path" />
+			<ivy:settings file="${ivy.settings.file}" />
+		</target>
+
+		<target name="ivy:clean" depends="clean:dependencies"
+			description="Clean">
+			<ivy:settings file="${ivy.settings.file}" />
+			<ivy:cleancache />
+			<delete dir="${lib.dir}" />
+		</target>
+
+		<target name="clean:dependencies">
+			<delete dir="${genepattern-service.jar.compile.lib.dir}" />
+		</target>
+
+		<target name="ivy:setup" depends="ivy:setup-compile"
+			description="Updates the local ivy repository for all build and test dependencies." />
+
+		<target name="ivy:setup-compile" depends="ivy:init">
+			<ivy:cachepath pathid="classpath" />
+			<ivy:resolve refresh="true" conf="compile" />
+			<ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]"
+				conf="compile" />
+		</target>
+		<!--*******************************************************************-->
+		<!--** END IVY TARGETS AND DEPENDENCY PATHS **-->
+		<!--*******************************************************************-->
+	
+	<target name="init" depends="ivy:setup">
+	</target>
 
 	<target name="clean"  description="clean up" >
 		<!-- Delete the ${generated} and ${docs} directory trees -->
@@ -206,5 +235,9 @@ public class]]></replacevalue>
 		</replace>
 	</target>
 	
-	<target name="all" depends="init, clean, genCastorFromXSD, core.aliases, annotate.class, compile, jar, docs" description="all - init, clean, genCastorXML, compile, jar, docs"/>
+	<target name="all" depends="init, clean, genCastorFromXSD, core.aliases, annotate.class, compile, jar, docs" description="all - init, clean, genCastorXML, compile, jar, docs">
+		<ivy:publish resolver="user-local-repo" pubrevision="6.0.0-SNAPSHOT" overwrite="true">
+			<artifacts pattern="${dist}/[artifact].[ext]" />
+		</ivy:publish>
+	</target>
 </project>
