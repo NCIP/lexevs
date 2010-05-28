@@ -194,7 +194,7 @@
 		SELECT 
 			vsd.valueSetDefURI
 		FROM 
-			$prefix$valueSetdefinition vsd, 
+			$prefix$valueSetDefinition vsd, 
 			$prefix$vsSupportedAttrib vss
 		WHERE 
 			vss.supportedAttributeTag = #param1#
