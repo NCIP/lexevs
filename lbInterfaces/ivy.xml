@@ -1,5 +1,5 @@
 <ivy-module version="2.0">
-    <info organisation="lexevs" module="lbInterfaces"/>
+    <info organisation="lexevs" module="lbInterfaces" revision="6.0.0-SNAPSHOT"/>
      <configurations>
   		<conf name="compile" description="Build Time dependencies"/>
   		<conf name="test" description="Test Time dependencies"/>
@@ -12,8 +12,8 @@
 		<artifact name="lbInterfaces-sources" type="jar" conf="sources" ext="jar"/>
 	</publications>
     <dependencies>
-    	<dependency org="lexevs" name="lgModel" rev="1.0-SNAPSHOT"/>
-    	<dependency org="lexevs" name="lbModel" rev="1.0-SNAPSHOT"/>
+    	<dependency org="lexevs" name="lgModel" rev="6.0.0-SNAPSHOT"/>
+    	<dependency org="lexevs" name="lbModel" rev="6.0.0-SNAPSHOT"/>
    		<dependency org="org.apache.lucene" name="lucene-core" rev="2.4.0"/> 	
     	<dependency org="org.springframework.batch" name="spring-batch-core" rev="2.0.1.RELEASE" />
     </dependencies>
