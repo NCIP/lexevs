@@ -43,5 +43,6 @@
 	<classpathentry kind="lib" path="/lgSharedLibraries/apache/commons/commons-beanutils-1.8.0.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/protege/protege-3.4.4.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/protege/protege-owl-3.4.4.jar"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/eclipse/swt/windows/swt.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
