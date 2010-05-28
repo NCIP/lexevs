@@ -22,6 +22,7 @@ CREATE TABLE @PREFIX@valueSetDefinition
 	INDEX idx_vsdName (valueSetDefName ASC),
 	INDEX idx_vsdURI (valueSetDefURI ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -55,6 +56,7 @@ CREATE TABLE @PREFIX@vsdEntry
 	INDEX idx_valueSetDefGuid (valueSetDefGuid ASC),
 	INDEX idx_vsdEnt_entityCode (entityCode ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -73,6 +75,7 @@ CREATE TABLE @PREFIX@vsEntryState
 	KEY (revisionGuid),
 	KEY (prevRevisionGuid)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -88,6 +91,7 @@ CREATE TABLE @PREFIX@vsMultiAttrib
 	entryStateGuid VARCHAR(36),
 	PRIMARY KEY (vsMultiAttribGuid)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -113,6 +117,7 @@ CREATE TABLE @PREFIX@vsPickList
 	INDEX idx_pickListId (pickListId ASC),
 	INDEX idx_representsVSD (representsValueSetDefinition ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -141,6 +146,7 @@ CREATE TABLE @PREFIX@vsPLEntry
 	INDEX idx_vsPickListGuid (vsPickListGuid ASC),
 	INDEX idx_entityCode (entityCode ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -169,6 +175,7 @@ CREATE TABLE @PREFIX@vsProperty
 	UNIQUE UQ_vsProperty(referenceGuid, propertyId, propertyName),
 	INDEX idx_vsProperty (referenceGuid ASC, propertyId ASC, propertyName ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -186,6 +193,7 @@ CREATE TABLE @PREFIX@vsPropertyMultiAttrib
 	PRIMARY KEY (vsPropMultiAttribGuid),
 	INDEX idx_vsPropertyGuid (vsPropertyGuid ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -212,6 +220,7 @@ CREATE TABLE @PREFIX@vsSupportedAttrib
 	UNIQUE UQ_vsMapping(referenceGuid, supportedAttributeTag, id),
 	INDEX idx_saReferenceGuid (referenceGuid ASC)
 ) 
+TYPE=INNODB
 ;
 
 

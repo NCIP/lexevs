@@ -108,9 +108,9 @@
   			currentRevision.revisionId currentRevisionId,
   			previousRevision.revisionId previousRevisionId  			
   		FROM
-  			$prefix$vsproperty property
+  			$prefix$vsProperty property
   		LEFT JOIN
-  			$prefix$vsentryState entryState
+  			$prefix$vsEntryState entryState
   		ON
   			property.entryStateGuid =
   			entryState.entryStateGuid	

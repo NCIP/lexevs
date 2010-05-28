@@ -20,6 +20,7 @@ CREATE TABLE @PREFIX@h_valueSetDefinition
 	INDEX idx_vsdName (valueSetDefName ASC),
 	INDEX idx_vsdURI (valueSetDefURI ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -51,6 +52,7 @@ CREATE TABLE @PREFIX@h_vsdEntry
 	INDEX idx_valueSetDefGuid (valueSetDefGuid ASC),
 	INDEX idx_vsdEnt_entityCode (entityCode ASC)
 ) 
+TYPE=INNODB
 ;
 
 CREATE TABLE @PREFIX@h_vsMultiAttrib
@@ -64,6 +66,7 @@ CREATE TABLE @PREFIX@h_vsMultiAttrib
 	role VARCHAR(250),
 	entryStateGuid VARCHAR(36)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -87,6 +90,7 @@ CREATE TABLE @PREFIX@h_vsPickList
 	INDEX idx_pickListId (pickListId ASC),
 	INDEX idx_representsVSD (representsValueSetDefinition ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -113,6 +117,7 @@ CREATE TABLE @PREFIX@h_vsPLEntry
 	INDEX idx_vsPickListGuid (vsPickListGuid ASC),
 	INDEX idx_entityCode (entityCode ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -139,6 +144,7 @@ CREATE TABLE @PREFIX@h_vsProperty
 	entryStateGuid VARCHAR(36) NOT NULL,
 	INDEX idx_vsProperty (referenceGuid ASC, propertyId ASC, propertyName ASC)
 ) 
+TYPE=INNODB
 ;
 
 
@@ -155,6 +161,7 @@ CREATE TABLE @PREFIX@h_vsPropertyMultiAttrib
 	entryStateGuid VARCHAR(36),
 	INDEX idx_vsPropertyGuid (vsPropertyGuid ASC)
 ) 
+TYPE=INNODB
 ;
 
 SET FOREIGN_KEY_CHECKS=1;

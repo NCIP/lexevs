@@ -194,8 +194,8 @@
 		SELECT 
 			vsd.valueSetDefURI
 		FROM 
-			$prefix$valuesetdefinition vsd, 
-			$prefix$vssupportedattrib vss
+			$prefix$valueSetdefinition vsd, 
+			$prefix$vsSupportedAttrib vss
 		WHERE 
 			vss.supportedAttributeTag = #param1#
 		AND 
@@ -211,7 +211,7 @@
 			pld.pickListId
 		FROM 
 			$prefix$vsPickList pld, 
-			$prefix$vssupportedattrib vss
+			$prefix$vsSupportedAttrib vss
 		WHERE 
 			vss.supportedAttributeTag = #param1#
 		AND 
