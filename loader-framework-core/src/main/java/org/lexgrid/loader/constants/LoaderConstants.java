@@ -43,6 +43,9 @@ public class LoaderConstants {
 	/** The FORMA l_ nam e_ property. */
 	public static String FORMAL_NAME_PROPERTY = "FormalName";
 	
+	/** The FORMA l_ nam e_ property. */
+	public static String DEPRECATED_NAME_PROPERTY = "DeprecatedName";
+	
 	/** The DEFAUL t_ languag e_ property. */
 	public static String DEFAULT_LANGUAGE_PROPERTY = "DefaultLanguage";
 	
