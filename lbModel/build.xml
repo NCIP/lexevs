@@ -236,7 +236,7 @@ public class]]></replacevalue>
 	</target>
 	
 	<target name="all" depends="init, clean, genCastorFromXSD, core.aliases, annotate.class, compile, jar, docs" description="all - init, clean, genCastorXML, compile, jar, docs">
-		<ivy:publish resolver="user-local-repo" pubrevision="6.0.0-SNAPSHOT" overwrite="true">
+		<ivy:publish resolver="local-repo" pubrevision="6.0.0-SNAPSHOT" overwrite="true">
 			<artifacts pattern="${dist}/[artifact].[ext]" />
 		</ivy:publish>
 	</target>
