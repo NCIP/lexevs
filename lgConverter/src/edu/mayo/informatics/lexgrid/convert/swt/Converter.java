@@ -48,7 +48,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import org.lexevs.logging.messaging.impl.StyledTextMessageDirector;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
 import edu.mayo.informatics.lexgrid.convert.exceptions.UnexpectedError;
@@ -109,7 +108,6 @@ public class Converter {
     private InputFormatSWTInterface selectedInputFormat;
     private OutputFormatSWTInterface selectedOutputFormat;
     private OptionHolder currentOptions;
-    private StyledTextMessageDirector md;
 
     Group conversionOptionsGrp, terminologyChoiceGrp;
     private DialogHandler errorHandler;
@@ -382,7 +380,6 @@ public class Converter {
 
         conversionOutput = new StyledText(conversionOutputGrp, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL
                 | SWT.BORDER);
-        md = new StyledTextMessageDirector(conversionOutput, shell_);
     }
 
     /*
@@ -504,7 +501,7 @@ public class Converter {
                 previous.setEnabled(true);
                 terminologyChoiceComposite.setEnabled(true);
                 optionsComposite.setEnabled(true);
-                md.info("Conversion Process Complete");
+
             }
         });
     }
