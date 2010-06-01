@@ -235,7 +235,7 @@ public class ResourceManager implements SystemResourceService {
      * 
      * @throws Exception the exception
      */
-    private void init() throws Exception {
+    public void init() throws Exception {
         cache_ = Collections.synchronizedMap(new LRUMap(systemVars_.getCacheSize()));  
         
         // This increases the ability of Lucene to do queries against
@@ -697,6 +697,18 @@ public class ResourceManager implements SystemResourceService {
         String csKey = lcs.getKey();
         String serverKey = codingSchemeToServerMap_.get(csKey);
         if (serverKey == null) {
+        	String uri;
+			try {
+				uri = LexEvsServiceLocator.getInstance().getSystemResourceService().
+        			getUriForUserCodingSchemeName(internalCodingSchemeName);
+				
+				SQLInterface sqlInterface = new SQLInterface(uri, internalVersionString);
+				
+				sqlServerInterfaces_.put(serverKey, sqlInterface);
+			} catch (LBParameterException e) {
+				logger_.warn("Unexpected Error", e);
+			}
+        	
             throw new MissingResourceException("No server available for " + lcs.getKey());
         }
 
