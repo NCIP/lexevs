@@ -18,8 +18,6 @@
  */
 package org.LexGrid.LexBIG.admin;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.Enumeration;
 
@@ -39,6 +37,9 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.lexevs.system.ResourceManager;
+
+import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.util.CnsCngPair;
+import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.util.FilterParser;
 
 /**
  * Exports content from the repository to a file in the LexGrid cononical XML
@@ -104,9 +105,7 @@ public class ExportLgXML {
             }
 
             // Interpret provided values ...
-            // URI destination = Util.string2FileURI(cl.getOptionValue("out"));
-            URI destination = ExportLgXML.lgXmlExportString2FileURI(cl.getOptionValue("out"));
-            
+            URI destination = Util.string2FileURI(cl.getOptionValue("out"));
             String urn = cl.getOptionValue("u");
             String ver = cl.getOptionValue("v");
             boolean overwrite = cl.hasOption("f");
@@ -145,53 +144,15 @@ public class ExportLgXML {
             LexGridExport exporter = (LexGridExport) lbsm.getExporter(LexGridExport.name);
 
             // Perform the requested action ...
-            AbsoluteCodingSchemeVersionReference acsvr = Constructors.createAbsoluteCodingSchemeVersionReference(css);
-            
-            org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph cng = lbs.getNodeGraph(acsvr.getCodingSchemeURN(), 
-                    Constructors.createCodingSchemeVersionOrTagFromVersion(acsvr.getCodingSchemeVersion()),null);
-              
-            org.LexGrid.LexBIG.LexBIGService.CodedNodeSet cns = lbs.getCodingSchemeConcepts(acsvr.getCodingSchemeURN(), 
-                    Constructors.createCodingSchemeVersionOrTagFromVersion(acsvr.getCodingSchemeVersion()) );
-            
-            exporter.setCng(cng);
-            exporter.setCns(cns);
+            CnsCngPair cngCngPair = FilterParser.parse(lbs, cl);
+            exporter.setCng(cngCngPair.getCng());
+            exporter.setCns(cngCngPair.getCns());
             
             exporter.export(Constructors.createAbsoluteCodingSchemeVersionReference(css), destination, overwrite,
                     false, true);
             Util.displayExporterStatus(exporter);
         }
     }
-    
-    /**
-     * Taken from org.LexGrid.LexBIG.admin.Util
-     * added f.createNewFile()
-     * 
-     * Returns a file URI corresponding to the given string.
-     * 
-     * @param s
-     * @return java.net.URI
-     * @throws org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException
-     */
-    private static URI lgXmlExportString2FileURI(String s) throws LBResourceUnavailableException {
-        String trimmed = s.trim();
-        try {
-            // Resolve to file, treating the string as either a
-            // standard file path or URI.
-            File f;
-            if (!(f = new File(trimmed)).exists()) {
-                f = new File(new URI(trimmed.replace(" ", "%20")));
-                f.createNewFile();
-                if (!f.exists())
-                    throw new FileNotFoundException();
-            }
-
-            // Accomodate embedded spaces ...
-            return new URI(f.toURI().toString().replace(" ", "%20"));
-        } catch (Exception e) {
-            Util.displayTaggedMessage(e.getMessage());
-            throw new LBResourceUnavailableException("UNABLE TO RESOLVE RESOURCE: " + trimmed);
-        }
-    }    
 
     /**
      * Return supported command options.
@@ -210,18 +171,36 @@ public class ExportLgXML {
 
         o = new Option("u", "urn", true, "URN or local name of the coding scheme to export.");
         o.setArgName("name");
-        o.setRequired(false);
+        o.setRequired(true);
         options.addOption(o);
 
         o = new Option("v", "version", true,
                 "The assigned tag/label or absolute version identifier of the coding scheme.");
-        o.setRequired(false);
+        o.setRequired(true);
         options.addOption(o);
 
         o = new Option("f", "force", false, "If specified, allows the destination file to be overwritten "
                 + "if present.");
         o.setRequired(false);
         options.addOption(o);
+        
+        o = new Option("xall", "exportAll", false, "Type of export: export all content. Default behavior." );
+        o.setRequired(false);
+        options.addOption(o);
+        
+        o = new Option("xc", "exportConcepts", false, "Type of export: export only concepts.");
+        o.setRequired(false);
+        options.addOption(o);
+        
+        o = new Option("xa", "exportAssociations", false, "Type of export:  export only associations.");
+        o.setRequired(false);
+        options.addOption(o);
+        
+        o = new Option("an", "associationsName", true, "Export associations with this name. Only valid with export type \'xa\'");
+        o.setRequired(false);
+        options.addOption(o);
+        
+        
 
         return options;
     }
