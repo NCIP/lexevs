@@ -106,8 +106,6 @@ public class LoadTestDataTest extends TestCase {
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
-        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
 
     public void testLoadHistory() throws InterruptedException, LBException {
