@@ -45,12 +45,14 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 	 * @see org.lexgrid.loader.dao.template.AbstractSupportedAttributeTemplate#insert(org.LexGrid.persistence.model.CodingSchemeSupportedAttrib)
 	 */
 	@Override
-	protected synchronized void insert(String codingSchemeUri, String codingSchemeVersion, URIMap uriMap){
+	protected void insert(String codingSchemeUri, String codingSchemeVersion, URIMap uriMap){
 		String key = this.buildCacheKey(uriMap);
 
 		if(! attributeCache.containsKey(key)){
+			/*TODO: This is causing deadlocks... 
 			this.getDatabaseServiceManager().getCodingSchemeService().
 				insertURIMap(codingSchemeUri, codingSchemeVersion, uriMap);
+			*/
 			attributeCache.put(key, uriMap);
 		}
 		
