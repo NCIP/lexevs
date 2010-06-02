@@ -18,7 +18,9 @@
  */
 package edu.mayo.informatics.lexgrid.convert.utility.loaderPreferences.loaders;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Preferences.loader.OWLLoadPreferences.OWLLoaderPreferences;
@@ -87,7 +89,11 @@ public class OWLPreferenceLoader extends BasePreferenceLoader implements Prefere
      * @return false if the XML does not validate, otherwise true.
      */
     public boolean validate() {
-        return validate(prefs, ClassLoader.getSystemResource(PreferenceLoaderConstants.OWL_XSD));
+        try {
+            return validate(prefs, new URL(PreferenceLoaderConstants.OWL_XSD));
+        } catch (MalformedURLException e) {
+            return false;
+        }
     }
 
     public LoaderPreferences load() throws LgConvertException {
