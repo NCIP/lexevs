@@ -162,7 +162,7 @@ public class LexGridExportTest {
         CodedNodeGraph cng = MockLexGridObjectFactory.createCngWith2AssociationPredicates();
         
         NameAndValue nv = new NameAndValue();
-        nv.setName("uses");
+        nv.setName(Constants.VALUE_USES);
         NameAndValueList assocNames = new NameAndValueList();
         assocNames.addNameAndValue(nv);
         CodedNodeGraph cng2 = cng.restrictToAssociations(assocNames, null);
