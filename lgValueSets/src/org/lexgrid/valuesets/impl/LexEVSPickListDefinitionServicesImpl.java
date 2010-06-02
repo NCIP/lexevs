@@ -33,6 +33,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionRefer
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -491,10 +492,14 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
         
         ResolvedValueSetDefinition rvdDef;
         
+        SortOptionList sortCriteria = null;
+        if (BooleanUtils.isTrue(sortByText))
+        	sortCriteria = Constructors.createSortOptionList(new String[] { "entityDescription" });
+        
         try {
-            rvdDef = vds.resolveValueSetDefinition(new URI(valueDomainURI), csVersionList, versionTag);
+            rvdDef = vds.resolveValueSetDefinition(new URI(valueDomainURI), csVersionList, versionTag, sortCriteria);
         } catch (URISyntaxException e) {
-            throw new LBException("Problem with ValueDomain URI", e);
+            throw new LBException("Problem with ValueSet URI", e);
         }
         
         ResolvedConceptReferencesIterator rcrItr = rvdDef.getResolvedConceptReferenceIterator();

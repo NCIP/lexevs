@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
+import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
@@ -277,13 +278,13 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#resolveValueSetDefinition(java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#resolveValueSetDefinition(java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String, org.LexGrid.LexBIG.DataModel.Collections.SortOptionList)
 	 */
 	@Override
 	public ResolvedValueSetDefinition resolveValueSetDefinition(
 			URI valueSetDefinitionURI,
 			AbsoluteCodingSchemeVersionReferenceList csVersionList,
-			String versionTag) throws LBException {
+			String versionTag, SortOptionList sortOptionList) throws LBException {
 		getLogger().logMethod(new Object[] { valueSetDefinitionURI, csVersionList, versionTag });
         
  
@@ -305,7 +306,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
             rvddef.setSource(vdDef.getSourceAsReference());
             rvddef.setCodingSchemeVersionRefList(domainNodes.getCodingSchemeVersionRefList());
             if(domainNodes != null && domainNodes.getCodedNodeSet() != null)
-                rvddef.setResolvedConceptReferenceIterator(domainNodes.getCodedNodeSet().restrictToStatus(ActiveOption.ACTIVE_ONLY, null).resolve(null, null, null, null, true));
+                rvddef.setResolvedConceptReferenceIterator(domainNodes.getCodedNodeSet().restrictToStatus(ActiveOption.ACTIVE_ONLY, null).resolve(sortOptionList, null, null, null, true));
             return rvddef;
         } else {
             md_.fatal("No Value DomSet Definition found for URI : " + valueSetDefinitionURI);
@@ -315,13 +316,13 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#resolveValueSetDefinition(org.LexGrid.valueSets.ValueSetDefinition, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#resolveValueSetDefinition(org.LexGrid.valueSets.ValueSetDefinition, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String, org.LexGrid.LexBIG.DataModel.Collections.SortOptionList)
 	 */
 	@Override
 	public ResolvedValueSetDefinition resolveValueSetDefinition(
 			ValueSetDefinition vsDef,
 			AbsoluteCodingSchemeVersionReferenceList csVersionList,
-			String versionTag) throws LBException {
+			String versionTag, SortOptionList sortOptionList) throws LBException {
 		getLogger().logMethod(new Object[] { vsDef, csVersionList, versionTag });
         
 		if(vsDef != null) {
@@ -341,7 +342,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
             rvddef.setSource(vsDef.getSourceAsReference());
             rvddef.setCodingSchemeVersionRefList(domainNodes.getCodingSchemeVersionRefList());
             if(domainNodes != null && domainNodes.getCodedNodeSet() != null)
-                rvddef.setResolvedConceptReferenceIterator(domainNodes.getCodedNodeSet().restrictToStatus(ActiveOption.ACTIVE_ONLY, null).resolve(null, null, null));
+                rvddef.setResolvedConceptReferenceIterator(domainNodes.getCodedNodeSet().restrictToStatus(ActiveOption.ACTIVE_ONLY, null).resolve(sortOptionList, null, null));
             return rvddef;
         }
 		return null;

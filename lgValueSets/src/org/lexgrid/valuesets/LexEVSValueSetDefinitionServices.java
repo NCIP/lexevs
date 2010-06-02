@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
@@ -129,11 +130,20 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 *            that was used as a default for the resolution. 
 	 * @param versionTag 
 	 *            the tag (e.g. "devel", "production", ...) to be used to determine which coding scheme to be used
-	 * @return Resolved Value Domain Definition
+	 * @param sortOptionList
+	 *            List of sort options to apply during resolution. If supplied,
+	 *            the sort algorithms will be applied in the order provided. Any
+	 *            algorithms not valid to be applied in context of node set
+	 *            iteration, as specified in the sort extension description,
+	 *            will result in a parameter exception. Available algorithms can
+	 *            be retrieved through the LexBIGService getSortExtensions()
+	 *            method after being defined to the LexBIGServiceManager
+	 *            extension registry.            
+	 * @return Resolved Value Set Definition
 	 * @throws LBException
 	 */
 	public ResolvedValueSetDefinition resolveValueSetDefinition(URI valueSetDefinitionURI,
-			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException;
+			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag, SortOptionList sortOptionList) throws LBException;
 	
 	/**
 	 * Resolve a value set definition provided using the supplied set of coding scheme versions.
@@ -147,11 +157,20 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 *            that was used as a default for the resolution. 
 	 * @param versionTag 
 	 *            the tag (e.g. "devel", "production", ...) to be used to determine which coding scheme to be used
+	 * @param sortOptionList
+	 *            List of sort options to apply during resolution. If supplied,
+	 *            the sort algorithms will be applied in the order provided. Any
+	 *            algorithms not valid to be applied in context of node set
+	 *            iteration, as specified in the sort extension description,
+	 *            will result in a parameter exception. Available algorithms can
+	 *            be retrieved through the LexBIGService getSortExtensions()
+	 *            method after being defined to the LexBIGServiceManager
+	 *            extension registry. 
 	 * @return Resolved Value Domain Definition
 	 * @throws LBException
 	 */
 	public ResolvedValueSetDefinition resolveValueSetDefinition(ValueSetDefinition vsDef,
-			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException;
+			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag, SortOptionList sortOptionList) throws LBException;
 
 	/**
 	 * Check whether childValueDSetDefinitionURI is a child of parentValueSetDefinitionURI.
