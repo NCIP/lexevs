@@ -14,7 +14,7 @@ CREATE TABLE @PREFIX@registry (
 	deactivationDate timestamp,
 	baseRevision varchar(50),
 	fixedAtRevision varchar(50),
-	isLocked char(1),
+	isLocked boolean,
 	dbSchemaVersion varchar(50),
 	dbSchemaDescription varchar(255)
 )
