@@ -209,7 +209,7 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 		this.versionsDao.insertEntryState(entryStateUId, associationTargetUId,
 				entryStateClassifier
 						.classify(EntryStateType.ENTITYASSNSTOENTITY), null,
-				target.getEntryState());
+				target.getEntryState(), inserter);
 
 		return associationTargetUId;
 	}
