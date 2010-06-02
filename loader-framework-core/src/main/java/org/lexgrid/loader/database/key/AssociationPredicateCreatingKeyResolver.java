@@ -10,6 +10,7 @@ import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
+import org.lexevs.logging.LoggerFactory;
 
 public class AssociationPredicateCreatingKeyResolver implements AssociationPredicateKeyResolver{
 
@@ -17,7 +18,7 @@ public class AssociationPredicateCreatingKeyResolver implements AssociationPredi
 	
 	private Map<String,String> associationPrediateIdMap = Collections.synchronizedMap(new HashMap<String,String>());
 	
-	public synchronized String resolveKey(
+	public String resolveKey(
 			final String codingSchemeUri, 
 			final String version, 
 			final String relationContainerName,
@@ -37,14 +38,18 @@ public class AssociationPredicateCreatingKeyResolver implements AssociationPredi
 
 					String relationId = associationDao.getRelationUId(codingSchemeId, relationContainerName);
 
-					String id = associationDao.
-					insertAssociationPredicate(
-							codingSchemeId, 
-							relationId, 
-							buildDefaultAssociationPredicate(associationName),
-							false);
+					try {
+						String id = associationDao.
+						insertAssociationPredicate(
+								codingSchemeId, 
+								relationId, 
+								buildDefaultAssociationPredicate(associationName),
+								false);
 
-					associationPrediateIdMap.put(associationName, id);
+						associationPrediateIdMap.put(associationName, id);
+					} catch (Exception e) {
+						LoggerFactory.getLogger().loadLogWarn("Cannot insert AssociationPredicate:", e);
+					}
 
 					return null;
 				}
