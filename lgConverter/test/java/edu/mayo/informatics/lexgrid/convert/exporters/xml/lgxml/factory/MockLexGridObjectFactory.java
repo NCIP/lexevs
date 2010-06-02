@@ -215,7 +215,7 @@ public class MockLexGridObjectFactory {
         focus1.setCodingSchemeName(rcr.getCodingSchemeName());
         
         NameAndValue nv = new NameAndValue();
-        nv.setName("uses");
+        nv.setName(Constants.VALUE_USES);
         NameAndValueList assocNames = new NameAndValueList();
         assocNames.addNameAndValue(nv);
         
