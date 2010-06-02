@@ -18,6 +18,8 @@
  */
 package org.LexGrid.LexBIG.admin;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.Enumeration;
 
@@ -105,7 +107,8 @@ public class ExportLgXML {
             }
 
             // Interpret provided values ...
-            URI destination = Util.string2FileURI(cl.getOptionValue("out"));
+            URI destination = ExportLgXML.lgXmlExportString2FileURI(cl.getOptionValue("out"));
+            
             String urn = cl.getOptionValue("u");
             String ver = cl.getOptionValue("v");
             boolean overwrite = cl.hasOption("f");
@@ -153,6 +156,37 @@ public class ExportLgXML {
             Util.displayExporterStatus(exporter);
         }
     }
+    
+    
+    /**
+     * Taken from org.LexGrid.LexBIG.admin.Util
+     * added f.createNewFile()
+     * 
+     * Returns a file URI corresponding to the given string.
+     * 
+     * @param s
+     * @return java.net.URI
+     * @throws org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException
+     */
+    private static URI lgXmlExportString2FileURI(String s) throws LBResourceUnavailableException {
+        String trimmed = s.trim();
+        try {
+            // Resolve to file, treating the string as either a
+            // standard file path or URI.
+            File f;
+            if (!(f = new File(trimmed)).exists()) {
+                f = new File(new URI(trimmed.replace(" ", "%20")));
+            }
+
+            // Accomodate embedded spaces ...
+            return new URI(f.toURI().toString().replace(" ", "%20"));
+        } catch (Exception e) {
+            Util.displayTaggedMessage(e.getMessage());
+            throw new LBResourceUnavailableException("UNABLE TO RESOLVE RESOURCE: " + trimmed);
+        }
+    }    
+
+    
 
     /**
      * Return supported command options.
