@@ -312,10 +312,9 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 			}
 			
 			if(taggedEntries.size() > 1){
-				
-				try {
+				if(StringUtils.isBlank(tag)) {
 					return this.getInternalVersionStringForTag(codingSchemeName, KnownTags.PRODUCTION.toString());
-				} catch (LBParameterException e) {
+				} else {
 					 throw new LBParameterException("Multiple Coding Schemes were found for the values you provided: ",
 			                 SQLTableConstants.TBLCOL_CODINGSCHEMENAME + ", " + SQLTableConstants.TBLCOL_VERSION,
 			                 codingSchemeName + ", " + tag);
