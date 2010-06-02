@@ -177,6 +177,19 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 
 	}
 
+	@Override
+	public void insertEntryState(String entryStateUId, String entryUId,
+			String entryType, String previousEntryStateUId,
+			EntryState entryState, Inserter inserter) {
+		this.insertEntryState(
+				entryStateUId, 
+				entryUId, 
+				entryType, 
+				previousEntryStateUId, 
+				entryState, 
+				inserter);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

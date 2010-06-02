@@ -23,6 +23,7 @@ import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
+import org.lexevs.dao.database.inserter.Inserter;
 
 /**
  * The Interface VersionsDao.
@@ -99,6 +100,14 @@ public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 	public void insertEntryState( String entryStateUId,
 			String entryUId, String entryType, String previousEntryStateUId,
 			EntryState entryState);
+	
+	public void insertEntryState(
+			String entryStateUId,
+			String entryUId, 
+			String entryType, 
+			String previousEntryStateUId,
+			EntryState entryState,
+			Inserter inserter);
 	
 	/**
 	 * Insert revision.
