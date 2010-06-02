@@ -2650,7 +2650,9 @@ public class ProtegeOwl2LG {
      */
     protected Map<String, String> resolveXMLTagsAndValues(String src) {
         Map<String, String> tags2vals = new HashMap<String, String>();
-        tags2vals = bxp.parseDocument(src, messages_);
+        if(StringUtils.isNotBlank(src)) {
+            tags2vals = bxp.parseDocument(src, messages_);
+        }
         return tags2vals;
     }
 
