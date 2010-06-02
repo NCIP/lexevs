@@ -182,6 +182,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 			String entryType, String previousEntryStateUId,
 			EntryState entryState, Inserter inserter) {
 		this.insertEntryState(
+				this.getPrefixResolver().resolveDefaultPrefix(),
 				entryStateUId, 
 				entryUId, 
 				entryType, 
