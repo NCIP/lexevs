@@ -99,8 +99,16 @@
 		<step id="loadMrsatProperties" parent="metaLoadMrsatPropertiesPartioned"
 			next="loadEntityToEntityRelations" />
 
-		<step id="loadEntityToEntityRelations" parent="metaLoadAssocsPartioned"
-			next="index" />
+		<step id="loadEntityToEntityRelations" next="index">
+			<tasklet>
+				<chunk reader="metaMrrelSkippingReader" processor="metaEntityAssocToEntityProcessor"
+					writer="associationSourceWriter" commit-interval="500">
+					<streams>
+						<stream ref="mrrelReader" />
+					</streams>
+				</chunk>
+			</tasklet>
+		</step>
 
 
 		<step id="index">
@@ -222,7 +230,7 @@
 			<beans:ref bean="partitionedMrrelReader" />
 		</beans:property>
 	</beans:bean>
-	
+
 	<!--  Mrsat qualifier processing below -->
 	<!-- 
 	<beans:bean id="metaLoadMrsatPropertyQualifiersPartioned"
