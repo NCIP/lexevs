@@ -202,20 +202,6 @@ public class TestSubString extends BaseSearchAlgorithmTest {
          assertTrue("Highest Ranked Code: " + ref.getCode(),
         		 ref.getCode().equals("005"));
     }
-    
-    public void testSubStringPreferredMatchScoring() throws Exception {
-   	 CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("ar", SearchDesignationOption.ALL, getAlgorithm(), null);
-
-        ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
-
-        assertTrue("Length: " + rcrl.length, rcrl.length > 0);
-
-        ResolvedConceptReference ref = rcrl[0];
-        
-        assertTrue("Highest Ranked Code: " + ref.getCode(),
-       		 ref.getCode().equals("C0001"));
-   }
 
     /**
      * Test starts with no match.
