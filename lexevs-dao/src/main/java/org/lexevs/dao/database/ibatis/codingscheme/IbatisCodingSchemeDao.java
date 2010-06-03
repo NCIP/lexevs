@@ -73,7 +73,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@Cacheable(cacheName = "IbatisCodingSchemeDao")
+@Cacheable(cacheName = "ResourceCache")
 public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSchemeDao {
 	
 	/** The supported datebase version. */
@@ -334,6 +334,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
 	 */
+	@ClearCache
 	public String insertCodingScheme(
 			CodingScheme codingScheme, String releaseUId,
 			boolean cascade) {
