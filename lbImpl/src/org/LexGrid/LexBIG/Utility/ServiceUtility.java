@@ -18,10 +18,20 @@
  */
 package org.LexGrid.LexBIG.Utility;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortDescription;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.SortContext;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Query.Filter;
+import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.naming.URIMap;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -84,5 +94,51 @@ public class ServiceUtility {
         if(! codingSchemeService.validatedSupportedAttribute(codingSchemeUri, codingSchemeVersion, localId, supportedAttributeClass)) {
             throw new LBParameterException(localId + " is not a valid Parameter.");
         }
+    }
+    
+    public static Filter[] validateFilters(LocalNameList filterOptions) throws LBParameterException {
+        if (filterOptions != null && filterOptions.getEntryCount() > 0) {
+            Filter[] temp = new Filter[filterOptions.getEntryCount()];
+            for (int i = 0; i < temp.length; i++) {
+                temp[i] = ExtensionRegistryImpl.instance().getFilter(filterOptions.getEntry(i));
+            }
+            return temp;
+        } else {
+            return null;
+        }
+    }
+    
+    public static boolean isSortAlgorithmValid(String algorithm, SortContext context) {
+        if (ExtensionRegistryImpl.instance().getSortExtension(algorithm) != null) {
+            if (context != null) {
+                SortDescription sd  = ExtensionRegistryImpl.instance().getSortExtension(algorithm);
+
+                SortContext[] temp = sd.getRestrictToContext();
+                for (int i = 0; i < temp.length; i++) {
+                    if (temp[i].equals(context)) {
+                        return true;
+                    }
+                }
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+    
+    public static boolean passFilters(ResolvedConceptReference candidate, Filter[] filterOptions ){
+        
+        if(ArrayUtils.isEmpty(filterOptions)) {
+            return true;
+        }
+
+        boolean pass = true;
+        for(Filter filter : filterOptions) {
+            pass = ( pass && filter.match(candidate) );
+        }
+
+        return pass;
     }
 }

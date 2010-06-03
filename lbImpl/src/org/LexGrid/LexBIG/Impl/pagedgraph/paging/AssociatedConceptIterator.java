@@ -25,10 +25,13 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder.AssociationDirection;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
@@ -89,6 +92,8 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
     
     private LocalNameList propertyNames;
     
+    private LocalNameList filterOptions;
+    
     private PropertyType[] propertyTypes;
 	
 	/**
@@ -108,6 +113,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	 * @param resolveBackwardAssociationDepth the resolve backward association depth
 	 * @param resolveCodedEntryDepth the resolve coded entry depth
 	 * @param graphQuery the graph query
+	 * @param filterOptions 
 	 * @param cycleDetectingCallback the cycle detecting callback
 	 */
 	public AssociatedConceptIterator(
@@ -126,6 +132,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
             LocalNameList propertyNames, 
             PropertyType[] propertyTypes, 
             SortOptionList sortAlgorithms,
+            LocalNameList filterOptions, 
             CycleDetectingCallback cycleDetectingCallback,
             AssociationDirection direction,
             int pageSize){
@@ -154,11 +161,12 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 		this.cycleDetectingCallback = cycleDetectingCallback;
 		this.associationPredicateName = associationPredicateName;
 		this.sortAlgorithms = sortAlgorithms;
+		this.filterOptions = filterOptions;
 		this.propertyNames = propertyNames;
 		this.propertyTypes = propertyTypes;
 	}
-	
-	/* (non-Javadoc)
+
+    /* (non-Javadoc)
 	 * @see org.lexevs.paging.AbstractPageableIterator#next()
 	 */
 	@Override
@@ -187,6 +195,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	                            propertyNames,
 	                            propertyTypes,
 	                            sortAlgorithms,
+	                            filterOptions,
 	                            cycleDetectingCallback));
 	        }
 	    }
@@ -209,6 +218,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	                            propertyNames,
                                 propertyTypes,
 	                            sortAlgorithms,
+	                            filterOptions,
 	                            cycleDetectingCallback));
 	        }
 	    }
@@ -270,6 +280,57 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
                             uids));
         }
         
+        if(this.filterOptions != null && this.filterOptions.getEntryCount() > 0) {
+            List<AssociatedConcept> filteredList = filterList(returnList);
+            
+            while(this.tripleUidIterator.hasNext() && filteredList.size() < pageSize) {
+                String uid = tripleUidIterator.next();
+                
+                if(direction.equals(AssociationDirection.SOURCE_OF)) {
+                    filteredList.add(
+                            codedNodeGraphSerivce.
+                            getAssociatedConceptFromUidTarget(
+                                    codingSchemeUri, 
+                                    codingSchemeVersion,
+                                    this.shouldResolveNextLevel(resolveCodedEntryDepth),
+                                    propertyNames,
+                                    propertyTypes,
+                                    uid));
+                } else {
+                    filteredList.add(
+                            codedNodeGraphSerivce.
+                            getAssociatedConceptFromUidSource(
+                                    codingSchemeUri, 
+                                    codingSchemeVersion,
+                                    this.shouldResolveNextLevel(resolveCodedEntryDepth),
+                                    propertyNames,
+                                    propertyTypes,
+                                    uid));
+                }
+            } 
+            return filteredList;
+        } else {
+            return returnList;
+        }
+    }
+    
+    protected List<AssociatedConcept> filterList(List<AssociatedConcept> list){
+        List<AssociatedConcept> returnList = new ArrayList<AssociatedConcept>();
+        try {
+            for(AssociatedConcept candidate : list) {
+                boolean pass = true;
+                for(Filter filter : ServiceUtility.validateFilters(this.filterOptions)) {
+                    pass = ( pass && filter.match(candidate) );
+                }
+                
+                if(pass) {
+                    returnList.add(candidate);
+                }
+            }
+        } catch (LBParameterException e) {
+            //This should have been validated already.
+           throw new RuntimeException(e);
+        }
         return returnList;
     }
 	

@@ -78,6 +78,7 @@ public class AssociationListBuilder {
      * @param resolveBackwardAssociationDepth the resolve backward association depth
      * @param resolveCodedEntryDepth the resolve coded entry depth
      * @param graphQuery the graph query
+     * @param filterOptions 
      * @param cycleDetectingCallback the cycle detecting callback
      * 
      * @return the association list
@@ -97,6 +98,7 @@ public class AssociationListBuilder {
             LocalNameList propertyNames, 
             PropertyType[] propertyTypes, 
             SortOptionList sortAlgorithms,
+            LocalNameList filterOptions, 
             CycleDetectingCallback cycleDetectingCallback) {
         return this.doBuildAssociationList(
                 codingSchemeUri, 
@@ -113,6 +115,7 @@ public class AssociationListBuilder {
                 propertyNames, 
                 propertyTypes,
                 sortAlgorithms,
+                filterOptions,
                 cycleDetectingCallback,
                 AssociationDirection.SOURCE_OF);
     }
@@ -150,6 +153,7 @@ public class AssociationListBuilder {
                 LocalNameList propertyNames, 
                 PropertyType[] propertyTypes, 
                 SortOptionList sortAlgorithms,
+                LocalNameList filterOptions, 
                 CycleDetectingCallback cycleDetectingCallback) {
         return this.doBuildAssociationList(
                 codingSchemeUri, 
@@ -166,6 +170,7 @@ public class AssociationListBuilder {
                 propertyNames,
                 propertyTypes,
                 sortAlgorithms,
+                filterOptions,
                 cycleDetectingCallback,
                 AssociationDirection.TARGET_OF); }
     
@@ -185,6 +190,7 @@ public class AssociationListBuilder {
      * @param resolveBackwardAssociationDepth the resolve backward association depth
      * @param resolveCodedEntryDepth the resolve coded entry depth
      * @param graphQuery the graph query
+     * @param filterOptions 
      * @param cycleDetectingCallback the cycle detecting callback
      * 
      * @return the association list
@@ -204,6 +210,7 @@ public class AssociationListBuilder {
             LocalNameList propertyNames, 
             PropertyType[] propertyTypes, 
             SortOptionList sortAlgorithms,
+            LocalNameList filterOptions, 
             CycleDetectingCallback cycleDetectingCallback,
             AssociationDirection direction) {
         Assert.notNull(graphQuery, "Must pass in a GraphQuery.");
@@ -257,6 +264,7 @@ public class AssociationListBuilder {
                             propertyNames, 
                             propertyTypes, 
                             sortAlgorithms,
+                            filterOptions,
                             cycleDetectingCallback,
                             direction,
                             associatedConceptPageSize);

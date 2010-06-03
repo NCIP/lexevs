@@ -95,6 +95,8 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
     
     private LocalNameList propertyNames;
     
+    private LocalNameList filterOptions;
+    
     private PropertyType[] propertyTypes;
 
     /**
@@ -115,6 +117,7 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
      * @param resolveBackwardAssociationDepth the resolve backward association depth
      * @param resolveCodedEntryDepth the resolve coded entry depth
      * @param graphQuery the graph query
+     * @param filterOptions 
      * @param cycleDetectingCallback the cycle detecting callback
      */
     public LazyLoadableAssociatedConceptList(
@@ -134,6 +137,7 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
             LocalNameList propertyNames, 
             PropertyType[] propertyTypes, 
             SortOptionList sortAlgorithms,
+            LocalNameList filterOptions, 
             CycleDetectingCallback cycleDetectingCallback,
             AssociationDirection direction,
             int pageSize) {
@@ -157,6 +161,7 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
         this.sortAlgorithms = sortAlgorithms;
         this.propertyTypes = propertyTypes;
         this.propertyNames = propertyNames;
+        this.filterOptions = filterOptions;
     }
 
     /* (non-Javadoc)
@@ -253,6 +258,7 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
 	            this.propertyNames,
 	            this.propertyTypes,
 	            this.sortAlgorithms,
+	            this.filterOptions,
 	            this.cycleDetectingCallback,
 	            this.direction,
 	            this.pageSize);

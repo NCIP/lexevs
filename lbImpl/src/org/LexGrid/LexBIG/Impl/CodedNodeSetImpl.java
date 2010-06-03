@@ -64,6 +64,7 @@ import org.LexGrid.LexBIG.Impl.helpers.lazyloading.CodeHolderFactory;
 import org.LexGrid.LexBIG.Impl.helpers.lazyloading.NonProxyCodeHolderFactory;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
@@ -445,7 +446,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         // isActive.  However - matchToQuery can not be combined with entityDescription,
         // conceptStatus, or isActive.  All other combinations are legal.
         try {
-            Filter[] filters = validateFilters(filterOptions);
+            Filter[] filters = ServiceUtility.validateFilters(filterOptions);
 
            runPendingOps();
            
@@ -517,7 +518,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
         for (SortOption sortOption : sortOptionList.getEntry()) {
             String algorithm = sortOption.getExtensionName();
-            if (isSortAlgorithmValid(algorithm, sortContext)) {
+            if (ServiceUtility.isSortAlgorithmValid(algorithm, sortContext)) {
                 if(comparator.validateSortOptionForClass(sortOption, clazz)){
                     comparator.addSortOption(sortOption);
                     comparator.setSortClazz(clazz);
@@ -578,7 +579,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         // That cuts the list to:
         // matchToQuery, code, codeSystem
         try {
-            Filter[] filters = validateFilters(filterOptions);
+            Filter[] filters = ServiceUtility.validateFilters(filterOptions);
 
             // we are not validating the properties at all, as they would have
             // to specify which properties
@@ -587,7 +588,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             if (sortByProperty != null && sortByProperty.getEntryCount() > 0) {
                 for (int i = 0; i < sortByProperty.getEntryCount(); i++) {
                     String entry = sortByProperty.getEntry(i).getExtensionName();
-                    if (!isSortAlgorithmValid(entry, SortContext.SETITERATION)) {
+                    if (! ServiceUtility.isSortAlgorithmValid(entry, SortContext.SETITERATION)) {
                         throw new LBParameterException(
                                 "The provided sort algorithm is invalid.  Please call LexBIGService.getSortAlgorithms to see the valid algorithms.  Sort algorithm choices are restricted to 'matchToQuery', 'code', and 'codeSystem' when you ask for an iterator.",
                                 "sortByProperty", entry);
@@ -843,38 +844,6 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      */
     private void addPendingOperation(Operation operation) {
         pendingOperations_.add(operation);
-    }
-
-    private Filter[] validateFilters(LocalNameList filterOptions) throws LBParameterException {
-        if (filterOptions != null && filterOptions.getEntryCount() > 0) {
-            Filter[] temp = new Filter[filterOptions.getEntryCount()];
-            for (int i = 0; i < temp.length; i++) {
-                temp[i] = ExtensionRegistryImpl.instance().getFilter(filterOptions.getEntry(i));
-            }
-            return temp;
-        } else {
-            return null;
-        }
-    }
-    
-    protected boolean isSortAlgorithmValid(String algorithm, SortContext context) {
-        if (ExtensionRegistryImpl.instance().getSortExtension(algorithm) != null) {
-            if (context != null) {
-                SortDescription sd  = ExtensionRegistryImpl.instance().getSortExtension(algorithm);
-
-                SortContext[] temp = sd.getRestrictToContext();
-                for (int i = 0; i < temp.length; i++) {
-                    if (temp[i].equals(context)) {
-                        return true;
-                    }
-                }
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            return false;
-        }
     }
 
     public CodeHolderFactory getCodeHolderFactory() {
