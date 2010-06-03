@@ -49,7 +49,7 @@ public class TestChildIndicator extends LexBIGServiceTestCase {
         AssociatedConcept ac = getMatchingAssociatedConcept(a, "develops_from", "CL:0000133");
         assertTrue(ac.getSourceOf().getAssociation().length > 0);
 
-        assertTrue(ac.getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConceptCount() == 0);
+        assertEquals(1,ac.getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConceptCount());
         assertTrue(contains(a, "is_a", "CL:0000048"));
 
         cng = ServiceHolder.instance().getLexBIGService().getNodeGraph(CELL_SCHEME, null, null);
