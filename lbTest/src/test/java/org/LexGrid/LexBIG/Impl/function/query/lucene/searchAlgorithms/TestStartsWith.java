@@ -134,9 +134,10 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
-        assertTrue("Length: " + rcrl.length, rcrl.length == 1);
+        assertTrue("Length: " + rcrl.length, rcrl.length == 2);
 
         assertTrue(checkForMatch(rcrl, "C0001"));
+        assertTrue(checkForMatch(rcrl, "C0011(5564)"));
     }
     
     /**
