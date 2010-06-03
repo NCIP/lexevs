@@ -50,6 +50,11 @@
 		<result property="csMultiAttribList" resultMap="CodingScheme.csMultiAttribResultBean"/>
 	</resultMap>
 	
+	<resultMap id="propertyNameAndTypeResult" class="org.LexGrid.LexBIG.DataModel.Core.NameAndValue">
+		<result property="name" column="propertyName"/>
+		<result property="content" column="propertyType"/>
+	</resultMap>
+	
 	<delete id="deleteCodingSchemeByUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
 			$prefix$codingScheme
@@ -405,6 +410,26 @@
      	resultClass="string">
      SELECT DISTINCT
      	prop.propertyName
+     FROM
+     	$prefix$property prop
+	 INNER JOIN 
+	 	$prefix$entity entity
+	 ON 
+	 	prop.referenceGuid = entity.entityGuid
+	 INNER JOIN
+		$prefix$codingScheme cs
+	 ON 
+	 	entity.codingSchemeGuid = cs.codingSchemeGuid
+	 WHERE
+		cs.codingSchemeGuid = #param1#
+     </select>
+     
+     <select id="getDistinctPropertyNamdAndType" 
+		remapResults="true"
+     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
+     	resultMap="propertyNameAndTypeResult">
+     SELECT DISTINCT
+     	prop.propertyName, prop.propertyType
      FROM
      	$prefix$property prop
 	 INNER JOIN 
