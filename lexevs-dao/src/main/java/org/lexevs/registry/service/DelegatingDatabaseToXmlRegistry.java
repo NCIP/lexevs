@@ -36,7 +36,7 @@ import org.lexevs.registry.model.RegistryEntry;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@Cacheable(cacheName="RegistryServiceCache", cacheSize=100)
+//@Cacheable(cacheName="ResourceCache", cacheSize=100)
 public class DelegatingDatabaseToXmlRegistry implements Registry {
 	
 	/** The database registry. */
