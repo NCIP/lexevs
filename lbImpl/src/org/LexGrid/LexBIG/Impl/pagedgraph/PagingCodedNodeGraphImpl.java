@@ -30,6 +30,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
@@ -39,6 +40,7 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver.ResolveDirection;
 import org.LexGrid.LexBIG.Impl.pagedgraph.utility.PagedGraphUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.utility.DaoUtility;
@@ -98,6 +100,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         String relationsContainerName = this.getRelationsContainerName();
         GraphQueryBuilder graphQueryBuilder = this.getGraphQueryBuilder(); 
         
+        Filter[] filters = ServiceUtility.validateFilters(filterOptions);
+        
         if (graphFocus == null && resolveForward && resolveBackward) {
             throw new LBParameterException(
                     "If you do not provide a focus node, you must choose resolve forward or resolve reverse, not both."
@@ -132,7 +136,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                
                focus.setCodingSchemeName(graphFocus.getCodingSchemeName());
             }
-            boolean isValidFocus = this.checkFocus(focus);
+            boolean isValidFocus = this.checkFocus(focus, filters);
             
             if(! isValidFocus) {
                 return new ResolvedConceptReferenceList();
@@ -197,6 +201,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     propertyNames,
                     propertyTypes,
                     sortOptions,
+                    filterOptions,
                     cycleDetectingCallback));
         }
         
@@ -217,6 +222,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     propertyNames,
                     propertyTypes,
                     sortOptions,
+                    filterOptions,
                     cycleDetectingCallback));
         }
         
@@ -253,15 +259,25 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         return returnList;
     }
 
-    protected boolean checkFocus(ConceptReference focus) {
+    protected boolean checkFocus(ResolvedConceptReference focus, Filter[] filters) {
  
         boolean hasReferenceToSourceCodeRestriction = hasReferenceToSourceCodeRestriction(focus);
         boolean hasReferenceToTargetCodeRestriction = hasReferenceToTargetCodeRestriction(focus);
         boolean isInvalidMatchConceptReference = isNotInvalidMatchConceptReference(focus);
+        boolean isNotFilteredOut = isNotFilteredConceptReference(focus, filters);
      
-        return hasReferenceToSourceCodeRestriction && hasReferenceToTargetCodeRestriction && isInvalidMatchConceptReference;  
+        return 
+            hasReferenceToSourceCodeRestriction && 
+            hasReferenceToTargetCodeRestriction && 
+            isInvalidMatchConceptReference &&
+            isNotFilteredOut;  
     }
     
+    private boolean isNotFilteredConceptReference(ResolvedConceptReference focus, Filter[] filters) {
+        return ServiceUtility.passFilters(focus, filters);
+    }
+
+
     private boolean isNotInvalidMatchConceptReference(ConceptReference focus) {
         return !PagedGraphUtils.areCodedNodeReferencesEquals(focus, DefaultGraphQueryBuilder.INVALID_MATCH_CONCEPT_REFERENCE);
     }
