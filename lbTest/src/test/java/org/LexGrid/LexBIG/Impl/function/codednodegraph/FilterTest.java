@@ -24,7 +24,6 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.Impl.helpers.TestFilter2;
 import org.LexGrid.LexBIG.Utility.Constructors;
 
 /**
@@ -88,6 +87,33 @@ public class FilterTest extends BaseCodedNodeGraphTest {
         assertEquals(0,rcr.length);
     }
     
+    public void testFilterNoFocus() throws Exception {
+
+    	try {
+			ExtensionRegistryImpl.instance().registerFilterExtension(new AllButFordFilter().getExtensionDescription());
+		} catch (Exception e) {
+			// may be already registered.
+		}
+		
+		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("uses"), null);
+    	
+        ResolvedConceptReference[] rcr = 
+            cng.resolveAsList(
+            		null, 
+                    true, 
+                    false, 
+                    -1, 
+                    -1, 
+                    null, 
+                    null, 
+                    null, 
+                    Constructors.createLocalNameList("allButFord"),
+                    -1).getResolvedConceptReference();
+        
+        assertEquals(1,rcr.length);
+        assertEquals("A0001",rcr[0].getCode());
+    }
+    
     private boolean contains(AssociatedConcept[] assocCons, String code) {
     	for(AssociatedConcept con : assocCons) {
     		if(con.getCode().equals(code)) {
@@ -97,13 +123,13 @@ public class FilterTest extends BaseCodedNodeGraphTest {
     	return false;
     }
     
-    private static class AllButGMFilter extends AbstractExtendable implements Filter {
+    public static class AllButGMFilter extends AbstractExtendable implements Filter {
 
 		@Override
 		protected ExtensionDescription buildExtensionDescription() {
 			ExtensionDescription ed = new ExtensionDescription();
-			ed.setExtensionBaseClass(TestFilter2.class.getInterfaces()[0].getName());
-			ed.setExtensionClass(TestFilter2.class.getName());
+			ed.setExtensionBaseClass(AllButGMFilter.class.getName());
+			ed.setExtensionClass("org.LexGrid.LexBIG.Impl.function.codednodegraph.FilterTest$AllButGMFilter");
 			ed.setDescription("allButGM");
 			ed.setName("allButGM");
 			
@@ -114,6 +140,26 @@ public class FilterTest extends BaseCodedNodeGraphTest {
 		@Override
 		public boolean match(ResolvedConceptReference ref) {
 			return ! ref.getCode().equalsIgnoreCase("GM");
+		}
+    }
+    
+    public static class AllButFordFilter extends AbstractExtendable implements Filter {
+
+		@Override
+		protected ExtensionDescription buildExtensionDescription() {
+			ExtensionDescription ed = new ExtensionDescription();
+			ed.setExtensionBaseClass(AllButFordFilter.class.getName());
+			ed.setExtensionClass("org.LexGrid.LexBIG.Impl.function.codednodegraph.FilterTest$AllButFordFilter");
+			ed.setDescription("allButFord");
+			ed.setName("allButFord");
+			
+			return ed;
+
+		}
+
+		@Override
+		public boolean match(ResolvedConceptReference ref) {
+			return ! ref.getCode().equalsIgnoreCase("Ford");
 		}
     }
 }
