@@ -19,6 +19,7 @@ import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
@@ -542,15 +543,42 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 		}	
 		
 		private void flush() {
-			databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<Object>(){
+			DaoCallbackService callbackService = databaseServiceManager.getDaoCallbackService();
+			try {
+				callbackService.executeInDaoLayer(new DaoCallback<Object>(){
 
-				@Override
-				public String execute(DaoManager daoManager) {
-					daoManager.getCurrentAssociationDao().
+					@Override
+					public String execute(DaoManager daoManager) {
+						daoManager.getCurrentAssociationDao().
 						insertBatchTransitiveClosure(codingSchemeUid, batch);
-					return null;
+						return null;
+					}
+				});
+			} catch (Exception e1) {
+				logger.debug("Batch insert of Transitive closure times failed -- falling back to inserting one at a time.");
+				
+				for(final TransitiveClosureBatchInsertItem item : batch) {
+					
+					try {
+						callbackService.executeInDaoLayer(new DaoCallback<Object>() {
+
+							@Override
+							public Object execute(DaoManager daoManager) {
+								daoManager.getCurrentAssociationDao().insertIntoTransitiveClosure(
+										codingSchemeUid, 
+										item.getAssociationPredicateId(), 
+										item.getSourceEntityCode(), 
+										item.getSourceEntityCodeNamespace(), 
+										item.getTargetEntityCode(), 
+										item.getTargetEntityCodeNamespace());
+								return null;
+							}
+						});
+					} catch (Exception e2) {
+						logger.warn("Error inserting Transitive closure item.", e2);
+					}
 				}
-			});
+			}
 			batch.clear();
 		}
 	}
