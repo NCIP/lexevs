@@ -27,6 +27,8 @@
 	<typeAlias alias="supportedSourceRole" type="org.LexGrid.naming.SupportedSourceRole" />
 	<typeAlias alias="supportedStatus" type="org.LexGrid.naming.SupportedStatus" />
 	<typeAlias alias="StringArrayTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.StringArrayTypeHandler"/>
+	<typeAlias alias="propertyTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.PropertyTypeHandler"/>
+	<typeAlias alias="propertyTypes" type="org.LexGrid.commonTypes.types.PropertyTypes"/>
 
 	<resultMap id="uriMapResult" class="uriMap">
 		<result property="localId" column="id" />
@@ -102,7 +104,7 @@
 	</resultMap>
 	<resultMap id="supportedPropertyResult" class="supportedProperty"
 		extends="uriMapResult">
-		<result property="propertyType" column="propertyType" />
+		<result property="propertyType" column="propertyType" typeHandler="propertyTypeHandler"/>
 	</resultMap>
 	<resultMap id="supportedPropertyLinkResult" class="supportedPropertyLink"
 		extends="uriMapResult">
@@ -356,7 +358,7 @@
 			
 			<isPropertyAvailable property="uriMap.propertyType">
 				<isNotNull prepend="," property="uriMap.propertyType">
-					propertyType =#uriMap.propertyType#
+					propertyType =#uriMap.propertyType.name#
 				</isNotNull>
 			</isPropertyAvailable>
 		</dynamic>
