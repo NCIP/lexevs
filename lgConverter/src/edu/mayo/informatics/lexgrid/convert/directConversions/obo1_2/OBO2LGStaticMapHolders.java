@@ -168,7 +168,6 @@ public class OBO2LGStaticMapHolders {
         properties.clear();
         properties.put(OBO2LGConstants.PROPERTY_COMMENT, OBO2LGConstants.PROPERTY_COMMENT);
         properties.put(OBO2LGConstants.PROPERTY_DEFINITION, OBO2LGConstants.PROPERTY_DEFINITION);
-        properties.put(OBO2LGConstants.PROPERTY_INSTRUCTION, OBO2LGConstants.PROPERTY_INSTRUCTION);
         properties.put(OBO2LGConstants.PROPERTY_TEXTPRESENTATION, OBO2LGConstants.PROPERTY_TEXTPRESENTATION);
         properties.put(OBO2LGConstants.PROPERTY_SYNONYM, OBO2LGConstants.PROPERTY_SYNONYM);
         properties.put(OBO2LGConstants.PROPERTY_ALTID, OBO2LGConstants.PROPERTY_ALTID);
