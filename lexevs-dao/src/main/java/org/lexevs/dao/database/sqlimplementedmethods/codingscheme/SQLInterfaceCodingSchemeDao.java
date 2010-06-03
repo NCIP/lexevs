@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
+import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -501,5 +502,11 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	public List<String> getAllCodingSchemeRevisions(String csUId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<NameAndValue> getDistinctPropertyNameAndType(
+			String codingSchemeId) {
+		throw new UnsupportedOperationException();
 	}
 }
