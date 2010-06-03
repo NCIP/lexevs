@@ -53,6 +53,7 @@
 		<dependency org="javax.annotation" name="jsr250-api" rev="1.0" />
 		<dependency org="log4j" name="log4j" rev="1.2.15" />
 		<dependency org="mysql" name="mysql-connector-java" rev="5.1.10" />
+		<dependency org="dom4j" name="dom4j" rev="1.6.1" transitive="false"/>
 		<dependency org="org.slf4j" name="slf4j-api" rev="1.5.6" />
 		<dependency org="org.slf4j" name="slf4j-log4j12" rev="1.5.6" />
 		<dependency org="javax.transaction" name="jta" rev="1.1" />
