@@ -34,7 +34,7 @@ import org.lexevs.system.utility.MyClassLoader;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@Cacheable(cacheName = "RegistryServiceCache")
+@Cacheable(cacheName = "ResourceCache")
 public class DelegatingSystemResourceService extends SystemEventSupport implements SystemResourceService {
 	
 	/** The primary system resource service. */
