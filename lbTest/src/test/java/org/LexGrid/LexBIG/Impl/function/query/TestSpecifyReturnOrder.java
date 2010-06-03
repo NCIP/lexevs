@@ -60,7 +60,7 @@ public class TestSpecifyReturnOrder extends LexBIGServiceTestCase {
         assertTrue(rcr[0].getConceptCode().equals("NoRelationsConcept"));
         assertTrue(rcr[1].getConceptCode().equals("A0001"));
         assertTrue(rcr[2].getConceptCode().equals("C0001"));
-        assertTrue(rcr[3].getConceptCode().equals("Chevy"));
+        assertTrue(rcr[3].getConceptCode().equals("C0011(5564)"));
 
         // reverse sort 1.
         rcr = cns.resolveToList(
