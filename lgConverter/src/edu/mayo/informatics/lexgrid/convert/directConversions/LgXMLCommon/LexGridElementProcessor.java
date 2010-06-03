@@ -70,10 +70,8 @@ public class LexGridElementProcessor {
         try {
             codingSchemes.add(scheme);
             service.storeCodingScheme(scheme);
-        } catch (CodingSchemeAlreadyLoadedException e) {
-            e.printStackTrace();
-        } catch (LBRevisionException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

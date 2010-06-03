@@ -246,8 +246,7 @@ public class XMLDaoServiceAdaptor {
         try {
             codingSchemeService.revise(scheme ,null);
         } catch (LBException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         
     }
