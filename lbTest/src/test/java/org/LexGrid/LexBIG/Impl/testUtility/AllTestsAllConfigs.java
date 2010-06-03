@@ -265,6 +265,7 @@ public class AllTestsAllConfigs {
             codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.SortGraphTest.class);
             codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.ToNodeListTest.class);
             codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.IntersectionTest.class);
+            codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.FilterTest.class);
             currentSuite.addTest(codedNodeGraphSuite);         
 
             TestSuite functionalTests = new TestSuite("Functional Tests");
