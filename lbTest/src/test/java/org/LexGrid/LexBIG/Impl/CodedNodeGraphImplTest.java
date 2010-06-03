@@ -357,25 +357,16 @@ public class CodedNodeGraphImplTest extends TestCase {
 
         assertTrue(rcr.length == 1);
         ResolvedConceptReference ref = null;
-        for (int i = 0; i < rcr.length && ref == null; i++)
-            if (rcr[i].getConceptCode().equals("005"))
+        for (int i = 0; i < rcr.length && ref == null; i++) {
+            if (rcr[i].getConceptCode().equals("005")) {
                 ref = rcr[i];
+            }
+        }
         assertTrue(ref != null);
         assertTrue(ref.getConceptCode().equals("005"));
         
         Association assoc = DataTestUtils.getAssociation(ref.getSourceOf().getAssociation(), "hasSubtype");
         
         assertTrue(DataTestUtils.isAssociatedConceptPresent(assoc.getAssociatedConcepts().getAssociatedConcept(), "Ford"));
-    }
-
-    private boolean contains(ConceptReference[] cr, String code, String codeSystem) {
-        boolean contains = false;
-        for (int i = 0; i < cr.length; i++) {
-            if (cr[i].getConceptCode().equals(code) && cr[i].getCodingSchemeName().equals(codeSystem)) {
-                contains = true;
-                break;
-            }
-        }
-        return contains;
     }
 }
