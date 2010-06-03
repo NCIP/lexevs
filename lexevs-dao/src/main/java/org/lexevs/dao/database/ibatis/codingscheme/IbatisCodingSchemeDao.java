@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
+import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
@@ -117,6 +118,8 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	
 	/** The GE t_ distinc t_ propert y_ name s_ o f_ c s_ sql. */
 	private static String GET_DISTINCT_PROPERTY_NAMES_OF_CS_SQL = CODING_SCHEME_NAMESPACE + "getDistinctPropertyNames";
+	
+	private static String GET_DISTINCT_PROPERTY_NAME_AND_TYPE_SQL = CODING_SCHEME_NAMESPACE + "getDistinctPropertyNamdAndType";
 	
 	/** The GE t_ distinc t_ entit y_ type s_ o f_ c s_ sql. */
 	private static String GET_DISTINCT_ENTITY_TYPES_OF_CS_SQL = CODING_SCHEME_NAMESPACE + "getDistinctEntityTypes";
@@ -754,6 +757,20 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 				GET_DISTINCT_PROPERTY_NAMES_OF_CS_SQL, codingSchemeId);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getDistinctPropertyNameAndType(java.lang.String)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<NameAndValue> getDistinctPropertyNameAndType(
+			String codingSchemeId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_DISTINCT_PROPERTY_NAME_AND_TYPE_SQL, 
+				new PrefixedParameter(prefix, codingSchemeId));
+	}
+	
 	/**
 	 * Do distinct query.
 	 * 
@@ -1121,4 +1138,6 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 
 		return revisionList;
 	}
+
+	
 }
