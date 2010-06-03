@@ -25,6 +25,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Intersect;
+import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToAnonymous;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToEntityTypes;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToMatchingDesignations;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToMatchingProperties;
@@ -70,40 +71,45 @@ public class CodedNodeSetImplTest extends TestCase {
         cns.restrictToProperties(null, new PropertyType[] { PropertyType.DEFINITION });
 
         assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(1) instanceof RestrictToEntityTypes);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(2) instanceof RestrictToMatchingDesignations);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(3) instanceof Union);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(4) instanceof RestrictToProperties);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.size() == 5);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(2) instanceof RestrictToAnonymous);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(3) instanceof RestrictToMatchingDesignations);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(4) instanceof Union);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(5) instanceof RestrictToProperties);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.size() == 6);
 
         assertTrue(((CodedNodeSetImpl) cns2).pendingOperations_.get(1) instanceof RestrictToEntityTypes);
-        assertTrue(((CodedNodeSetImpl) cns2).pendingOperations_.get(2) instanceof RestrictToMatchingProperties);
-        assertTrue(((CodedNodeSetImpl) cns2).pendingOperations_.size() == 3);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(2) instanceof RestrictToAnonymous);
+        assertTrue(((CodedNodeSetImpl) cns2).pendingOperations_.get(3) instanceof RestrictToMatchingProperties);
+        assertTrue(((CodedNodeSetImpl) cns2).pendingOperations_.size() == 4);
 
         ((CodedNodeSetImpl) cns).optimizePendingOpsOrder();
 
         // restrictions should be above union.
         assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(1) instanceof RestrictToEntityTypes);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(2) instanceof RestrictToMatchingDesignations);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(3) instanceof RestrictToProperties);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(4) instanceof Union);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.size() == 5);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(2) instanceof RestrictToAnonymous);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(3) instanceof RestrictToMatchingDesignations);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(4) instanceof RestrictToProperties);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(5) instanceof Union);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.size() == 6);
 
         // cns2 shouldn't change, because it is cloned. - would be confusing if
         // it changed.
         assertTrue(((CodedNodeSetImpl) cns2).pendingOperations_.get(1) instanceof RestrictToEntityTypes);
-        assertTrue(((CodedNodeSetImpl) cns2).pendingOperations_.get(2) instanceof RestrictToMatchingProperties);
-        assertTrue(((CodedNodeSetImpl) cns2).pendingOperations_.size() == 3);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(2) instanceof RestrictToAnonymous);
+        assertTrue(((CodedNodeSetImpl) cns2).pendingOperations_.get(3) instanceof RestrictToMatchingProperties);
+        assertTrue(((CodedNodeSetImpl) cns2).pendingOperations_.size() == 4);
 
         // but the one inside of the cns union op should have changed.
-        System.out.println(((CodedNodeSetImpl)cns).pendingOperations_.get(3).getClass().getName());
-        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(4))).getCodes()).pendingOperations_
+        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(5))).getCodes()).pendingOperations_
                 .get(1) instanceof RestrictToEntityTypes);
-        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(4))).getCodes()).pendingOperations_
-                .get(2) instanceof RestrictToMatchingProperties);
-        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(4))).getCodes()).pendingOperations_
-                .get(3) instanceof RestrictToProperties);
-        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(4))).getCodes()).pendingOperations_
-                .size() == 4);
+        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(5))).getCodes()).pendingOperations_
+                .get(2) instanceof RestrictToAnonymous);
+        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(5))).getCodes()).pendingOperations_
+                .get(3) instanceof RestrictToMatchingProperties);
+        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(5))).getCodes()).pendingOperations_
+                .get(4) instanceof RestrictToProperties);
+        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(5))).getCodes()).pendingOperations_
+                .size() == 5);
 
         // so far so good, lets make it more complex.
 
@@ -120,69 +126,76 @@ public class CodedNodeSetImplTest extends TestCase {
         cns.restrictToProperties(Constructors.createLocalNameList("definition"), null);
         
         assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(1) instanceof RestrictToEntityTypes);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(2) instanceof RestrictToMatchingDesignations);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(3) instanceof RestrictToProperties);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(4) instanceof Union);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(2) instanceof RestrictToAnonymous);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(3) instanceof RestrictToMatchingDesignations);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(4) instanceof RestrictToProperties);
         assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(5) instanceof Union);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(6) instanceof RestrictToMatchingProperties);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(7) instanceof Intersect);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(8) instanceof RestrictToProperties);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(6) instanceof Union);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(7) instanceof RestrictToMatchingProperties);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(8) instanceof Intersect);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(9) instanceof RestrictToProperties);
 
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.size() == 9);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.size() == 10);
 
         ((CodedNodeSetImpl) cns).optimizePendingOpsOrder();
 
         // one of the restrictions should have moved up, but nothing changes
         // below the intersection.
         assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(1) instanceof RestrictToEntityTypes);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(2) instanceof RestrictToMatchingDesignations);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(3) instanceof RestrictToProperties);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(4) instanceof RestrictToMatchingProperties);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(5) instanceof RestrictToProperties);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(6) instanceof Union);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(2) instanceof RestrictToAnonymous);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(3) instanceof RestrictToMatchingDesignations);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(4) instanceof RestrictToProperties);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(5) instanceof RestrictToMatchingProperties);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(6) instanceof RestrictToProperties);
         assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(7) instanceof Union);
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(8) instanceof Intersect);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(8) instanceof Union);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(9) instanceof Intersect);
 
 
-        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.size() == 9);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.size() == 10);
 
         // cns2 shouldn't change, because it is cloned. - would be confusing if
         // it changed.
         assertTrue(((CodedNodeSetImpl) cns2).pendingOperations_.get(1) instanceof RestrictToEntityTypes);
-        assertTrue(((CodedNodeSetImpl) cns2).pendingOperations_.get(2) instanceof RestrictToMatchingProperties);
-        assertTrue(((CodedNodeSetImpl) cns2).pendingOperations_.size() == 3);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(2) instanceof RestrictToAnonymous);
+        assertTrue(((CodedNodeSetImpl) cns2).pendingOperations_.get(3) instanceof RestrictToMatchingProperties);
+        assertTrue(((CodedNodeSetImpl) cns2).pendingOperations_.size() == 4);
 
         // cns3 shouldn't change, because it is cloned. - would be confusing if
         // it changed.
         assertTrue(((CodedNodeSetImpl) cns2).pendingOperations_.get(1) instanceof RestrictToEntityTypes);
-        assertTrue(((CodedNodeSetImpl) cns3).pendingOperations_.get(2) instanceof RestrictToMatchingDesignations);
-        assertTrue(((CodedNodeSetImpl) cns3).pendingOperations_.size() == 3);
+        assertTrue(((CodedNodeSetImpl) cns).pendingOperations_.get(2) instanceof RestrictToAnonymous);
+        assertTrue(((CodedNodeSetImpl) cns3).pendingOperations_.get(3) instanceof RestrictToMatchingDesignations);
+        assertTrue(((CodedNodeSetImpl) cns3).pendingOperations_.size() == 4);
 
         // both existing unions should have had one restriction added.
-        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(6))).getCodes()).pendingOperations_
-                .get(1) instanceof RestrictToEntityTypes);
-        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(6))).getCodes()).pendingOperations_
-                .get(2) instanceof RestrictToMatchingProperties);
-        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(6))).getCodes()).pendingOperations_
-                .get(3) instanceof RestrictToProperties);
-        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(6))).getCodes()).pendingOperations_
-                .get(4) instanceof RestrictToMatchingProperties);
-        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(6))).getCodes()).pendingOperations_
-                .get(5) instanceof RestrictToProperties);
-        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(6))).getCodes()).pendingOperations_
-                .size() == 6);
-
         assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(7))).getCodes()).pendingOperations_
                 .get(1) instanceof RestrictToEntityTypes);
         assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(7))).getCodes()).pendingOperations_
-                .get(2) instanceof RestrictToMatchingDesignations);
+                .get(2) instanceof RestrictToAnonymous);
         assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(7))).getCodes()).pendingOperations_
                 .get(3) instanceof RestrictToMatchingProperties);
         assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(7))).getCodes()).pendingOperations_
                 .get(4) instanceof RestrictToProperties);
         assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(7))).getCodes()).pendingOperations_
-                .size() == 5);
+                .get(5) instanceof RestrictToMatchingProperties);
+        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(7))).getCodes()).pendingOperations_
+                .get(6) instanceof RestrictToProperties);
+        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(7))).getCodes()).pendingOperations_
+                .size() == 7);
 
+        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(8))).getCodes()).pendingOperations_
+                .get(1) instanceof RestrictToEntityTypes);
+        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(8))).getCodes()).pendingOperations_
+                .get(2) instanceof RestrictToAnonymous);
+        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(8))).getCodes()).pendingOperations_
+                .get(3) instanceof RestrictToMatchingDesignations);
+        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(8))).getCodes()).pendingOperations_
+                .get(4) instanceof RestrictToMatchingProperties);
+        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(8))).getCodes()).pendingOperations_
+                .get(5) instanceof RestrictToProperties);
+        assertTrue(((CodedNodeSetImpl) ((Union) (((CodedNodeSetImpl) cns).pendingOperations_.get(8))).getCodes()).pendingOperations_
+                .size() == 6);
     }
 
 
@@ -201,7 +214,7 @@ public class CodedNodeSetImplTest extends TestCase {
 
         ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
         // no filters - length of 17
-        assertTrue(rcr.length == 17);
+        assertEquals(18,rcr.length);
 
         try {
             TestFilter.register();
@@ -212,11 +225,12 @@ public class CodedNodeSetImplTest extends TestCase {
         rcr = cns.resolveToList(null, Constructors.createLocalNameList(TestFilter.name_), null, null, 0)
                 .getResolvedConceptReference();
         // filter for second letter of entity description being 'a'- length of 2
-        assertTrue(rcr.length == 3);
+        assertEquals(4,rcr.length);
 
         assertTrue(contains(rcr, "C0001", "Automobiles"));
         assertTrue(contains(rcr, "C0002", "Automobiles"));
         assertTrue(contains(rcr, "Jaguar", "Automobiles"));
+        assertTrue(contains(rcr, "C0011(5564)", "Automobiles"));
 
         // test with iterator
 
@@ -232,14 +246,28 @@ public class CodedNodeSetImplTest extends TestCase {
         rcr = new ResolvedConceptReference[] { rcri.next() };
         assertTrue(contains(rcr, "C0001", "Automobiles") || contains(rcr, "Jaguar", "Automobiles") ||
                 contains(rcr, "C0002", "Automobiles"));
+       
         assertTrue(rcri.hasNext());
         rcr = new ResolvedConceptReference[] { rcri.next() };
-        assertTrue(contains(rcr, "C0001", "Automobiles") || contains(rcr, "Jaguar", "Automobiles") ||
-                contains(rcr, "C0002", "Automobiles"));
+        assertTrue(contains(rcr, 
+        		"C0001", "Automobiles") || 
+        		contains(rcr, "Jaguar", "Automobiles") ||
+                contains(rcr, "C0002", "Automobiles") ||
+                contains(rcr, "C0011(5564)", "Automobiles"));
+        
         assertTrue(rcri.hasNext());
         rcr = new ResolvedConceptReference[] { rcri.next() };
-        assertTrue(contains(rcr, "C0001", "Automobiles") || contains(rcr, "Jaguar", "Automobiles") ||
-                contains(rcr, "C0002", "Automobiles"));
+        assertTrue(contains(rcr, "C0001", "Automobiles") || 
+        		contains(rcr, "Jaguar", "Automobiles") ||
+                contains(rcr, "C0002", "Automobiles") ||
+                contains(rcr, "C0011(5564)", "Automobiles"));
+        
+        assertTrue(rcri.hasNext());
+        rcr = new ResolvedConceptReference[] { rcri.next() };
+        assertTrue(contains(rcr, "C0001", "Automobiles") || 
+        		contains(rcr, "Jaguar", "Automobiles") ||
+                contains(rcr, "C0002", "Automobiles") ||
+                contains(rcr, "C0011(5564)", "Automobiles"));
 
         // another call to next should return null - they all got removed by the
         // filter.
@@ -274,13 +302,17 @@ public class CodedNodeSetImplTest extends TestCase {
         rcr = rcri.get(1, 2).getResolvedConceptReference();
         assertTrue(rcr.length == 1);
         assertTrue(rcrEquals(rcr[0], "C0002", "Automobiles"));
-
+        
         rcr = rcri.get(2, 3).getResolvedConceptReference();
+        assertTrue(rcr.length == 1);
+        assertTrue(rcrEquals(rcr[0], "C0011(5564)", "Automobiles"));
+
+        rcr = rcri.get(3, 4).getResolvedConceptReference();
         assertTrue(rcr.length == 1);
         assertTrue(rcrEquals(rcr[0], "Jaguar", "Automobiles"));
 
         try {
-            rcr = rcri.get(3, 4).getResolvedConceptReference();
+            rcr = rcri.get(4, 5).getResolvedConceptReference();
             fail("Didn't throw LBParameterException");
         } catch (LBParameterException e) {
             // expected path
@@ -320,10 +352,11 @@ public class CodedNodeSetImplTest extends TestCase {
                 Constructors.createLocalNameList(new String[] { TestFilter.name_, TestFilter2.name_ }), null, null, 0)
                 .getResolvedConceptReference();
         // only 1 should pass both filters
-        assertTrue(rcr.length == 2);
+        assertEquals(3,rcr.length);
 
         assertTrue(contains(rcr, "C0001", "Automobiles"));
         assertTrue(contains(rcr, "C0002", "Automobiles"));
+        assertTrue(contains(rcr, "C0011(5564)", "Automobiles"));
     }
 
     public void testRestrictPropertyTypeReturns() throws LBException {
