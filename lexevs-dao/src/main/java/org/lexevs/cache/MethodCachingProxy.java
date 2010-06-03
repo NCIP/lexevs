@@ -127,7 +127,8 @@ public class MethodCachingProxy implements InitializingBean {
 		
 		if(cache.containsKey(key)){
 			logger.debug("Cache hit on: " + key);
-			return cache.get(key);
+			Object obj = cache.get(key);
+			return obj;
 		} else {
 			logger.debug("Caching miss on: " + key);
 		}
