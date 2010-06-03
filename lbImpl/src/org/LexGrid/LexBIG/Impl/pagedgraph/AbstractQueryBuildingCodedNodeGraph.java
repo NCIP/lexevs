@@ -35,6 +35,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
+import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.ReferenceReturningCycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
@@ -148,8 +149,13 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         ServiceUtility.validateParameter(this.getCodingSchemeUri(), this.getVersion(), propertyNames, SupportedProperty.class);
         
         //Implementation to return either the full reference or a stub upon detecting a cycle
-        //CycleDetectingCallback cycleDetectingCallback = new ReferenceReturningCycleDetectingCallback();
-        CycleDetectingCallback cycleDetectingCallback = new StubReturningCycleDetectingCallback();
+        CycleDetectingCallback cycleDetectingCallback;
+        
+        if(resolveForward && resolveBackward) {
+            cycleDetectingCallback = new ReferenceReturningCycleDetectingCallback();
+        } else {
+            cycleDetectingCallback = new StubReturningCycleDetectingCallback();
+        }
         
         return this.doResolveAsValidatedParameterList(
                 graphFocus, resolveForward, resolveBackward, 
