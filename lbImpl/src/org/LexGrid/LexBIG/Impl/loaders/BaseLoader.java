@@ -38,6 +38,7 @@ import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
+import org.LexGrid.LexBIG.Impl.loaders.postprocessor.SupportedAttributePostProcessor;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
@@ -135,7 +136,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         
         //TODO: Do we want to enable these by default?
         //loaderPostProcessorOption.getOptionValue().add(ApproxNumOfConceptsPostProcessor.EXTENSION_NAME);
-        //loaderPostProcessorOption.getOptionValue().add(SupportedAttributePostProcessor.EXTENSION_NAME);
+        loaderPostProcessorOption.getOptionValue().add(SupportedAttributePostProcessor.EXTENSION_NAME);
         
         holder.getStringArrayOptions().add(loaderPostProcessorOption);
         
