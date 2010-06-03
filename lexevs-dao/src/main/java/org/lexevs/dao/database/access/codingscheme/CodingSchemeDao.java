@@ -21,6 +21,7 @@ package org.lexevs.dao.database.access.codingscheme;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
+import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.types.PropertyTypes;
@@ -257,6 +258,16 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	 * @return the distinct property names of coding scheme
 	 */
 	public List<String> getDistinctPropertyNamesOfCodingScheme(
+			String codingSchemeId);
+	
+	/**
+	 * Gets the distinct property name and type.
+	 * 
+	 * @param codingSchemeId the coding scheme id
+	 * 
+	 * @return the distinct property name and type
+	 */
+	public List<NameAndValue> getDistinctPropertyNameAndType(
 			String codingSchemeId);
 	
 	/**
