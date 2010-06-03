@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -12,6 +13,7 @@ import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedDataType;
@@ -162,20 +164,21 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
     }
     
     protected void addSupportedProperties(final String uri, final String version, DaoCallbackService daoCallbackService) {
-        List<String> items = daoCallbackService.executeInDaoLayer(new DaoCallback<List<String>>(){
+        List<NameAndValue> items = daoCallbackService.executeInDaoLayer(new DaoCallback<List<NameAndValue>>(){
 
-            public List<String> execute(DaoManager daoManager) {
+            public List<NameAndValue> execute(DaoManager daoManager) {
                CodingSchemeDao csDao = daoManager.getCodingSchemeDao(uri, version);
                String csId = csDao.getCodingSchemeUIdByUriAndVersion(uri, version);
                
-               return daoManager.getCodingSchemeDao(uri, version).getDistinctPropertyNamesOfCodingScheme(csId);
+               return daoManager.getCodingSchemeDao(uri, version).getDistinctPropertyNameAndType(csId);
             }  
         });
         
-        for(String item : items) {
+        for(NameAndValue item : items) {
             SupportedProperty uriMap = new SupportedProperty();
-            uriMap.setContent(item);
-            uriMap.setLocalId(item);
+            uriMap.setContent(item.getName());
+            uriMap.setLocalId(item.getName());
+            uriMap.setPropertyType(PropertyTypes.fromValue(item.getContent().toLowerCase()));
             insertURIMap(uri, version, uriMap);
         }
     }
