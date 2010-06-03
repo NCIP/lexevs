@@ -336,6 +336,9 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		
 //		insertNonSuppliedMappings(valueSetDefinitionGuid, vsdef);
 		
+		// insert missing concept domain and usage context mappings
+		insertConceptDomainAndUsageContextMappings(valueSetDefinitionGuid, vsdef);
+		
 		return valueSetDefinitionGuid;		
 	}
 
@@ -897,6 +900,32 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 					}
 				}
 			}
+		}
+		
+		insertMappings(vsdGuid, mappings);
+	}
+	
+	private void insertConceptDomainAndUsageContextMappings(String vsdGuid, ValueSetDefinition vsDef){
+		if (vsDef == null)
+			return;
+		
+		Mappings mappings = new Mappings();
+		
+		for (String ctx : vsDef.getRepresentsRealmOrContextAsReference())
+		{
+			SupportedContext suppCtx = new SupportedContext();
+			suppCtx.setLocalId(ctx);
+			suppCtx.setContent(ctx);
+			suppCtx.setUri(null);
+			mappings.addSupportedContext(suppCtx);
+		}
+		if (vsDef.getConceptDomain() != null)
+		{
+			SupportedConceptDomain suppCD = new SupportedConceptDomain();
+			suppCD.setLocalId(vsDef.getConceptDomain());
+			suppCD.setContent(vsDef.getConceptDomain());
+			suppCD.setUri(null);
+			mappings.addSupportedConceptDomain(suppCD);
 		}
 		
 		insertMappings(vsdGuid, mappings);
