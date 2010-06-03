@@ -202,8 +202,8 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#updateCodingScheme(java.lang.String, java.lang.String, org.LexGrid.codingSchemes.CodingScheme)
 	 */
-	@Transactional  
 	@Override
+	@Transactional(rollbackFor=Exception.class)  
 	@DatabaseErrorIdentifier(errorCode=UPDATE_CODINGSCHEME_ERROR)
 	public void updateCodingScheme(
 			CodingScheme codingScheme) throws LBException {
@@ -266,6 +266,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	}
 
 	@Override
+	@Transactional(rollbackFor=Exception.class)
 	public void revise(CodingScheme revisedCodingScheme, String releaseURI) throws LBException {
 		
 		if (validRevision(revisedCodingScheme)) {
@@ -296,6 +297,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	}
 
 	@Override
+	@Transactional(rollbackFor=Exception.class)
 	@DatabaseErrorIdentifier(errorCode=INSERT_CODINGSCHEME_VERSIONABLE_CHANGES_ERROR)
 	public void insertVersionableChanges(CodingScheme codingScheme) throws LBException {
 		
@@ -322,6 +324,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	}
 	
 	@Override
+	@Transactional(rollbackFor=Exception.class)
 	@DatabaseErrorIdentifier(errorCode=INSERT_CODINGSCHEME_DEPENDENT_CHANGES_ERROR)
 	public void insertDependentChanges(CodingScheme codingScheme)
 			throws LBException {
@@ -374,6 +377,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	}
 
 	@Override
+	@Transactional
 	@DatabaseErrorIdentifier(errorCode=REMOVE_CODINGSCHEME_ERROR)
 	public void removeCodingScheme(CodingScheme codingScheme) {
 
