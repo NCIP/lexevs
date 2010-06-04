@@ -5,9 +5,10 @@
 
 	<typeAlias alias="nciChangeEvent" type="org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent" />
 	<typeAlias alias="systemRelease" type="org.LexGrid.versions.SystemRelease" />
+	<typeAlias alias="changeTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.NCIHistoryChangeTypeTypeHandler"/>
 
 	<resultMap id="nciChangeEventResult" class="nciChangeEvent">
-		<result property="editaction" column="editAction"/>
+		<result property="editaction" column="editAction" typeHandler="changeTypeHandler"/>
 		<result property="conceptcode" column="entityCode"/>
 		<result property="conceptName" column="conceptName"/>
 		<result property="editDate" column="editDate"/>
@@ -38,6 +39,55 @@
 			systemRelease.codingSchemeGuid = #param1#
 		
 	</sql>
+	
+	<sql id="getChangeEventFragment">
+		SELECT 
+			entityCode,
+			conceptName,
+			editAction,
+			editDate,
+			releaseAgency,
+			referenceCode,
+			referenceName
+		FROM
+			${defaultPrefix}nciHist nciHist
+		INNER JOIN
+			${defaultPrefix}nciHistSystemRelease systemRelease
+		ON
+			nciHist.releaseGuid = systemRelease.releaseGuid
+		WHERE
+			systemRelease.codingSchemeGuid = #param1#
+	</sql>
+	
+	<select id="getDecendants"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultMap="nciChangeEventResult">
+		
+		<include refid="getChangeEventFragment"/>
+		AND
+			nciHist.entityCode = #param2#
+		AND
+			(
+				nciHist.editAction = 'split'
+				OR
+				nciHist.editAction = 'merge'
+			)
+	</select> 
+	
+	<select id="getAncestors"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultMap="nciChangeEventResult">
+		
+		<include refid="getChangeEventFragment"/>
+		AND
+			nciHist.referenceCode = #param2#
+		AND
+			(
+				nciHist.editAction = 'split'
+				OR
+				nciHist.editAction = 'merge'
+			)
+	</select> 
 
 	<select id="getBaseLines"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"

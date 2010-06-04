@@ -26,6 +26,10 @@ public class IbatisNciHistoryDao extends AbstractIbatisDao implements NciHistory
 	
 	private static String INSERT_SYSTEM_RELEASE_SQL = NCI_HISTORY_NAMESPACE + "insertSystemRelease";
 	
+	private static String GET_DECENDANTS_SQL = NCI_HISTORY_NAMESPACE + "getDecendants";
+	
+	private static String GET_ANCESTORS_SQL = NCI_HISTORY_NAMESPACE + "getAncestors";
+	
 	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 
@@ -40,10 +44,13 @@ public class IbatisNciHistoryDao extends AbstractIbatisDao implements NciHistory
 				new SequentialMappedParameterBean(systemReleaseGuid,codingSchemeUid, systemRelease));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<NCIChangeEvent> getAncestors(String codingSchemeUid, String conceptCode) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+		return this.getSqlMapClientTemplate().queryForList(GET_ANCESTORS_SQL, 
+				new SequentialMappedParameterBean(
+						codingSchemeUid,
+						conceptCode));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -72,10 +79,13 @@ public class IbatisNciHistoryDao extends AbstractIbatisDao implements NciHistory
 		throw new UnsupportedOperationException();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<NCIChangeEvent> getDescendants(String codingSchemeUid, String conceptCode) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+		return this.getSqlMapClientTemplate().queryForList(GET_DECENDANTS_SQL, 
+				new SequentialMappedParameterBean(
+						codingSchemeUid,
+						conceptCode));
 	}
 
 	@Override

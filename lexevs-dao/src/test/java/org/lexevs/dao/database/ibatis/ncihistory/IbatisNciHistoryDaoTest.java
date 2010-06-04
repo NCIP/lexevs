@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.versions.SystemRelease;
 import org.LexGrid.versions.types.ChangeType;
@@ -123,9 +124,8 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 	public void testGetEarliestBaseline() throws InterruptedException {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
-		Timestamp date1 = new Timestamp(new Date().getTime());
-		Thread.sleep(1000);
-		Timestamp date2 = new Timestamp(new Date().getTime());
+		Timestamp date1 = new Timestamp(1l);
+		Timestamp date2 = new Timestamp(10000l);
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
 		"values ('csguid', 'csname', 'csuri', 'csversion')");
@@ -146,9 +146,8 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 	public void testGetLatestBaseline() throws InterruptedException {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
-		Timestamp date1 = new Timestamp(new Date().getTime());
-		Thread.sleep(1000);
-		Timestamp date2 = new Timestamp(new Date().getTime());
+		Timestamp date1 = new Timestamp(1l);
+		Timestamp date2 = new Timestamp(10000l);
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
 		"values ('csguid', 'csname', 'csuri', 'csversion')");
@@ -202,9 +201,67 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 				
 				return null;
 			}
-		});
-		
+		});		
 	}
 	
+	@Test
+	@Transactional
+	public void testGetDescendants() throws InterruptedException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		Timestamp date = new Timestamp(new Date().getTime());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('csguid', 'csname', 'csuri', 'csversion')");
+	
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeGuid, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+				" values ('123', 'csguid', 'releaseuri', 'releaseid',  ' " + date + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
+		
+		template.execute("insert into nciHist (ncitHistGuid, releaseGuid, entityCode, conceptName, editDate, editAction, referenceCode, referenceName)" +
+				" values ('1', '123', 'C1234', 'name1', '" + date + "', 'merge', 'C3333', 'name2')");
+
+		List<NCIChangeEvent> changeEvents = ibatisNciHistoryDao.getDescendants("csguid", "C1234");
+		
+		assertEquals(1,changeEvents.size());
+		
+		NCIChangeEvent event = changeEvents.get(0);
+
+		assertEquals("C1234", event.getConceptcode());
+		assertEquals("name1", event.getConceptName());
+		assertEquals("C3333", event.getReferencecode());
+		assertEquals(org.LexGrid.LexBIG.DataModel.NCIHistory.types.ChangeType.MERGE, event.getEditaction());
+		assertEquals(date.getTime(), event.getEditDate().getTime());
+
+	}
+	
+	@Test
+	@Transactional
+	public void testGetAncestors() throws InterruptedException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		Timestamp date = new Timestamp(new Date().getTime());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('csguid', 'csname', 'csuri', 'csversion')");
+	
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeGuid, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+				" values ('123', 'csguid', 'releaseuri', 'releaseid',  ' " + date + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
+		
+		template.execute("insert into nciHist (ncitHistGuid, releaseGuid, entityCode, conceptName, editDate, editAction, referenceCode, referenceName)" +
+				" values ('1', '123', 'C1234', 'name1', '" + date + "', 'merge', 'C3333', 'name2')");
+
+		List<NCIChangeEvent> changeEvents = ibatisNciHistoryDao.getAncestors("csguid", "C3333");
+		
+		assertEquals(1,changeEvents.size());
+		
+		NCIChangeEvent event = changeEvents.get(0);
+
+		assertEquals("C1234", event.getConceptcode());
+		assertEquals("name1", event.getConceptName());
+		assertEquals("C3333", event.getReferencecode());
+		assertEquals(org.LexGrid.LexBIG.DataModel.NCIHistory.types.ChangeType.MERGE, event.getEditaction());
+		assertEquals(date.getTime(), event.getEditDate().getTime());
+
+	}
 	
 }
