@@ -44,6 +44,9 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.relations.AssociationPredicate;
+import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.Relations;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
@@ -188,10 +191,44 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         entities.addEntity(entity);
         codingScheme.setEntities(entities);
         
+        addStopFlagsToAssociationPredicates(codingScheme);
+        
         
         XmlContentWriter xmlContentWriter = new XmlContentWriter();
-        xmlContentWriter.marshalToXml(codingScheme, cng, cns, out, this.pageSize);
+        xmlContentWriter.marshalToXml(codingScheme, cng, cns, out, this.pageSize, true);
     }
+    
+    private void addStopFlagsToAssociationPredicates(CodingScheme cs) {
+        if(cs == null) return;
+        
+        Relations[] relationsList = cs.getRelations();
+        if(relationsList == null || relationsList.length == 0) return;
+        
+        for(int i=0; i<relationsList.length; ++i) {
+            Relations relations = relationsList[i];
+            processRelationsObject(relations);
+        }
+    }
+    
+    private void processRelationsObject(Relations relations) {
+        if(relations == null) return;
+        
+        AssociationPredicate[] apList = relations.getAssociationPredicate();
+        
+        for(int i=0; i<apList.length; ++i) {
+            AssociationPredicate ap = apList[i];
+            processAssociationPredicateObject(ap);
+        }
+    }
+    
+    private void processAssociationPredicateObject(AssociationPredicate ap) {
+        if(ap == null) return;
+        AssociationSource as = new AssociationSource();
+        as.setSourceEntityCode(LexGridConstants.MR_FLAG);
+        ap.addSource(as);
+    }
+    
+    
     
     protected void exportValueSetDefinitionData(){
         URI destination = super.getResourceUri();
@@ -243,7 +280,7 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         vsd = vsdSer.getValueSetDefinitionByUri(vsdURI);
         
         XmlContentWriter xmlContentWriter = new XmlContentWriter();
-        xmlContentWriter.marshalToXml(vsd, null, null, out, this.pageSize);
+        xmlContentWriter.marshalToXml(vsd, null, null, out, this.pageSize, true);
     }
     
     protected void exportPickListDefinitionData(){
@@ -295,7 +332,7 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         pld = pldSer.getPickListDefinitionByPickListId(pickListId);
         
         XmlContentWriter xmlContentWriter = new XmlContentWriter();
-        xmlContentWriter.marshalToXml(pld, null, null, out, this.pageSize);
+        xmlContentWriter.marshalToXml(pld, null, null, out, this.pageSize, true);
     }
 
     public URI getSchemaURL() {
