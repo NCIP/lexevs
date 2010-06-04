@@ -24,10 +24,12 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.proxy.CastorProxy;
 import org.castor.xml.XMLProperties;
+import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.listeners.LexGridMarshalListener;
+import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.listeners.StreamingLexGridMarshalListener;
 
 /**
  * The Class AbstractXmlMessageBodyWriter.
@@ -87,7 +89,8 @@ public class XmlContentWriter {
 			throw new RuntimeException(e);
 		} 
 	}
-	
+
+	/*
 	public void marshalToXml(Object obj, CodedNodeGraph cng, CodedNodeSet cns, Writer writer, int pageSize) {
 		 Marshaller marshaller = ns_marshaller;
 		 LexGridMarshalListener listener = new LexGridMarshalListener(marshaller, cng, cns, pageSize);
@@ -99,5 +102,23 @@ public class XmlContentWriter {
 			throw new RuntimeException(e);
 		} 
 	}
+*/	
+    public void marshalToXml(Object obj, CodedNodeGraph cng, CodedNodeSet cns, Writer writer, int pageSize, boolean useStreaming) {
+        Marshaller marshaller = ns_marshaller;
+        MarshalListener listener = null;
+        if(useStreaming == true) {
+            listener = new StreamingLexGridMarshalListener(marshaller, cng, cns, pageSize);
+        } else {
+            listener = new LexGridMarshalListener(marshaller, cng, cns, pageSize); 
+        }        
+       try {
+           marshaller.setMarshalListener(listener);
+           marshaller.setWriter(writer);
+           marshaller.marshal(obj);
+       } catch (Exception e) {
+           throw new RuntimeException(e);
+       } 
+   }
+	
 	
 }
