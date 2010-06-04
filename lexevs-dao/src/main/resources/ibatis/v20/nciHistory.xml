@@ -99,5 +99,28 @@
 			AND
 			releaseUri = #param2#
 	</select> 
+	
+	<insert id="insertSystemRelease" parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean">
+		INSERT INTO ${defaultPrefix}nciHistSystemRelease (
+			releaseGuid,
+			codingSchemeGuid,
+			releaseURI,
+			releaseId,
+			releaseDate,
+			basedOnRelease,
+			releaseAgency,
+			description
+			)
+		VALUES (
+			#param1#,
+			#param2#,
+			#param3.releaseURI#,
+			#param3.releaseId#,
+			#param3.releaseDate#,
+			#param3.basedOnRelease#,
+			#param3.releaseAgency#,
+			#param3.entityDescription.content#
+			)
+ 	</insert>
 		
 </sqlMap>

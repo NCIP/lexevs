@@ -24,8 +24,21 @@ public class IbatisNciHistoryDao extends AbstractIbatisDao implements NciHistory
 	
 	private static String GET_SYSTEMRELEASE_FOR_URI_SQL = NCI_HISTORY_NAMESPACE + "getSystemReleaseForUri";
 	
+	private static String INSERT_SYSTEM_RELEASE_SQL = NCI_HISTORY_NAMESPACE + "insertSystemRelease";
+	
 	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
+
+	@Override
+	public void insertSystemRelease(String codingSchemeUid,
+			SystemRelease systemRelease) {
+		
+		String systemReleaseGuid = this.createUniqueId();
+		
+		this.getSqlMapClientTemplate().insert(
+				INSERT_SYSTEM_RELEASE_SQL, 
+				new SequentialMappedParameterBean(systemReleaseGuid,codingSchemeUid, systemRelease));
+	}
 
 	@Override
 	public List<NCIChangeEvent> getAncestors(String codingSchemeUid, String conceptCode) {

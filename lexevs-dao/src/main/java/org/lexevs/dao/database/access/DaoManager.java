@@ -30,6 +30,7 @@ import org.lexevs.dao.database.access.association.AssociationTargetDao;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
+import org.lexevs.dao.database.access.ncihistory.NciHistoryDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.revision.RevisionDao;
 import org.lexevs.dao.database.access.systemRelease.SystemReleaseDao;
@@ -100,6 +101,9 @@ public class DaoManager {
 	
 	/** The versions daos. */
 	private List<CodedNodeGraphDao> codedNodeGraphDaos;
+	
+	/** The versions daos. */
+	private List<NciHistoryDao> nciHistoryDaos;
 	
 	/** The registry. */
 	private Registry registry;
@@ -254,6 +258,10 @@ public class DaoManager {
 	
 	public RevisionDao getRevisionDao(){
 		return this.getRevisionDaos().get(0);
+	}
+	
+	public NciHistoryDao getNciHistoryDao(String codingSchemeUri, String version){
+		return this.doGetDao(codingSchemeUri, version, this.getNciHistoryDaos());
 	}
 	
 	/**
@@ -631,5 +639,13 @@ public class DaoManager {
 	 */
 	public VSEntryStateDao getCurrentVsEntryStateDao(){
 		return this.getCorrectDaoForSchemaVersion(this.getVsEntryStateDaos(), CURRENT_VERSION);
+	}
+
+	public void setNciHistoryDaos(List<NciHistoryDao> nciHistoryDaos) {
+		this.nciHistoryDaos = nciHistoryDaos;
+	}
+
+	public List<NciHistoryDao> getNciHistoryDaos() {
+		return nciHistoryDaos;
 	}
 }

@@ -50,4 +50,6 @@ public interface NciHistoryDao extends LexGridSchemaVersionAwareDao {
 	public List<NCIChangeEvent> getDescendants(String codingSchemeUid, String conceptCode);
 
 	public List<NCIChangeEvent> getAncestors(String codingSchemeUid, String conceptCode);
+
+	public void insertSystemRelease(String codingSchemeUid, SystemRelease systemRelease);
 }

@@ -18,15 +18,20 @@
  */
 package org.lexevs.dao.database.ibatis.ncihistory;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.versions.SystemRelease;
+import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -158,4 +163,48 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 		
 		assertEquals("releaseid2" ,systemRelease.getReleaseId());
 	}
+	
+	@Test
+	@Transactional
+	public void testInsertSystemRelease() throws InterruptedException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		final Timestamp date = new Timestamp(new Date().getTime());
+		
+		SystemRelease release = new SystemRelease();
+		release.setReleaseAgency("testAgency");
+		release.setReleaseURI("uri");
+		release.setReleaseDate(date);
+		release.setReleaseId("id");
+		release.setBasedOnRelease("basedOn");
+		
+		EntityDescription ed = new EntityDescription();
+		ed.setContent("desc");
+		release.setEntityDescription(ed);
+		
+		ibatisNciHistoryDao.insertSystemRelease("csguid", release);
+		
+		template.queryForObject("Select * from ncihistsystemrelease", new RowMapper(){
+
+			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
+				int i=1;
+				
+				assertNotNull(rs.getString(i++));
+				assertEquals("csguid", rs.getString(i++));
+				assertEquals("id", rs.getString(i++));
+				assertEquals("uri", rs.getString(i++));
+				assertEquals("basedOn", rs.getString(i++));
+				assertEquals(date, rs.getTimestamp(i++));		
+				assertEquals("testAgency", rs.getString(i++));
+				assertEquals("desc", rs.getString(i++));
+				
+				return null;
+			}
+		});
+		
+	}
+	
+	
 }
