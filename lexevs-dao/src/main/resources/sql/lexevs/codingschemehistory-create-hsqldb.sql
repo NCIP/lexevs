@@ -1,14 +1,3 @@
-CREATE TABLE h_associationEntity ( 
-	associationEntityGuid varchar(36) NOT NULL,
-	entityGuid varchar(36) NOT NULL,
-	forwardName varchar(100),
-	reverseName varchar(100),
-	isNavigable char(1),
-	isTransitive char(1),
-	isTranslationAssociation char(1),
-	entryStateGuid varchar(36) NOT NULL
-)
-;
 
 CREATE TABLE @PREFIX@h_codingScheme ( 
 	codingSchemeGuid varchar(36) NOT NULL,
@@ -54,7 +43,11 @@ CREATE TABLE @PREFIX@h_entity (
 	status varchar(50),
 	effectiveDate timestamp,
 	expirationDate timestamp,
-	entryStateGuid varchar(36) NOT NULL
+	entryStateGuid varchar(36) NOT NULL,
+	forwardName VARCHAR(100),
+	reverseName VARCHAR(100),
+	isNavigable CHAR(1),
+	isTransitive CHAR(1)
 )
 ;
 
@@ -168,84 +161,95 @@ CREATE TABLE @PREFIX@h_relation (
 )
 ;
 
+CREATE TABLE @PREFIX@h_associationEntity
+(
+   associationEntityGuid     VARCHAR(36) NOT NULL,
+   entityGuid                VARCHAR(36) NOT NULL,
+   forwardName               VARCHAR(100),    --SQLWAYS_EVAL# that the "from" entity plays with respect to the "to" entry.  Should be phrased in terms of the default language of the association and imply direction. 
+   reverseName               VARCHAR(100),    --SQLWAYS_EVAL# should be represented when reading from target to source 
+   isNavigable               BOOLEAN,    --SQLWAYS_EVAL# the reverse direction of the associaton is "navigable", meaning that it is makes sense to represent the target to source side of the association. 
+   isTransitive              BOOLEAN,    --SQLWAYS_EVAL# association is transitive ( r(a,b), r(b,c) -> r(a,c)). False means not transitive. If absent, transitivity is unknown or not applicable. 
+   isTranslationAssociation  BOOLEAN,    --SQLWAYS_EVAL# association set represents a translation mapping from source to the target. 
+   entryStateGuid            VARCHAR(36) NOT NULL
+)
 
-ALTER TABLE h_associationEntity ADD CONSTRAINT PK_h_associationEntity 
+ALTER TABLE @PREFIX@h_associationEntity ADD CONSTRAINT PK_h_associationEntity 
 	PRIMARY KEY (entryStateGuid)
 ;
 
 
-ALTER TABLE h_codingScheme ADD CONSTRAINT PK_h_codingScheme 
+ALTER TABLE @PREFIX@h_codingScheme ADD CONSTRAINT PK_h_codingScheme 
 	PRIMARY KEY (entryStateGuid)
 ;
 
 
-ALTER TABLE h_entity ADD CONSTRAINT PK_h_entity 
+ALTER TABLE @PREFIX@h_entity ADD CONSTRAINT PK_h_entity 
 	PRIMARY KEY (entryStateGuid)
 ;
 
 
-ALTER TABLE h_entityAssnsToData ADD CONSTRAINT PK_h_entityAssnsToData 
+ALTER TABLE @PREFIX@h_entityAssnsToData ADD CONSTRAINT PK_h_entityAssnsToData 
 	PRIMARY KEY (entryStateGuid)
 ;
 
 
-ALTER TABLE h_entityAssnsToEntity ADD CONSTRAINT PK_h_entityAssnsToEntity 
+ALTER TABLE @PREFIX@h_entityAssnsToEntity ADD CONSTRAINT PK_h_entityAssnsToEntity 
 	PRIMARY KEY (entryStateGuid)
 ;
 
 
-ALTER TABLE h_property ADD CONSTRAINT PK_h_property 
+ALTER TABLE @PREFIX@h_property ADD CONSTRAINT PK_h_property 
 	PRIMARY KEY (entryStateGuid)
 ;
 
 
-ALTER TABLE h_propertyLinks ADD CONSTRAINT PK_h_propertyLinks 
+ALTER TABLE @PREFIX@h_propertyLinks ADD CONSTRAINT PK_h_propertyLinks 
 	PRIMARY KEY (entryStateGuid)
 ;
 
 
-ALTER TABLE h_relation ADD CONSTRAINT PK_h_relation 
+ALTER TABLE @PREFIX@h_relation ADD CONSTRAINT PK_h_relation 
 	PRIMARY KEY (entryStateGuid)
 ;
 
 
 
 CREATE INDEX idx_h_codingSchemeURI
-ON h_codingScheme (codingSchemeURI)
+ON @PREFIX@h_codingScheme (codingSchemeURI)
 ;
 CREATE INDEX idx_h_csMultiAttrib
-ON h_csMultiAttrib (codingSchemeGuid, attributeType)
+ON @PREFIX@h_csMultiAttrib (codingSchemeGuid, attributeType)
 ;
 CREATE INDEX idx_h_entity
-ON h_entity (codingSchemeGuid, entityCode)
+ON @PREFIX@h_entity (codingSchemeGuid, entityCode)
 ;
 CREATE INDEX idx_h_entityNS
-ON h_entity (codingSchemeGuid, entityCode, entityCodeNamespace)
+ON @PREFIX@h_entity (codingSchemeGuid, entityCode, entityCodeNamespace)
 ;
 CREATE INDEX idx_h_entAsToData_source
-ON h_entityAssnsToData (associationPredicateGuid, sourceEntityCode)
+ON @PREFIX@h_entityAssnsToData (associationPredicateGuid, sourceEntityCode)
 ;
 CREATE INDEX idx_h_entAsToEnt_source
-ON h_entityAssnsToEntity (associationPredicateGuid, sourceEntityCode)
+ON @PREFIX@h_entityAssnsToEntity (associationPredicateGuid, sourceEntityCode)
 ;
 CREATE INDEX idx_h_entAsToEnt_sourceNS
-ON h_entityAssnsToEntity (associationPredicateGuid, sourceEntityCode, sourceEntityCodeNamespace)
+ON @PREFIX@h_entityAssnsToEntity (associationPredicateGuid, sourceEntityCode, sourceEntityCodeNamespace)
 ;
 CREATE INDEX idx_h_entAsToEnt_target
-ON h_entityAssnsToEntity (associationPredicateGuid, targetEntityCode)
+ON @PREFIX@h_entityAssnsToEntity (associationPredicateGuid, targetEntityCode)
 ;
 CREATE INDEX idx_h_entAsToEnt_targetNS
-ON h_entityAssnsToEntity (associationPredicateGuid, targetEntityCode, targetEntityCodeNamespace)
+ON @PREFIX@h_entityAssnsToEntity (associationPredicateGuid, targetEntityCode, targetEntityCodeNamespace)
 ;
 CREATE INDEX idx_h_referenceGuid
-ON h_property (referenceGuid)
+ON @PREFIX@h_property (referenceGuid)
 ;
 CREATE INDEX idx_h_sourcePropertyGuid
-ON h_propertyLinks (sourcePropertyGuid)
+ON @PREFIX@h_propertyLinks (sourcePropertyGuid)
 ;
 CREATE INDEX idx_h_targetPropertyGuid
-ON h_propertyLinks (targetPropertyGuid)
+ON @PREFIX@h_propertyLinks (targetPropertyGuid)
 ;
 CREATE INDEX idx_h_propertyMultiAttrib
-ON h_propertyMultiAttrib (propertyGuid)
+ON @PREFIX@h_propertyMultiAttrib (propertyGuid)
 ;

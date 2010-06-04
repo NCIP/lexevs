@@ -601,7 +601,7 @@ FOREIGN KEY(relationGuid) REFERENCES @PREFIX@relation(relationGuid)
 ON DELETE CASCADE;
 
 ALTER TABLE @PREFIX@codingScheme ADD CONSTRAINT FK_CS_RELEASEGUID 
-FOREIGN KEY(releaseGuid) REFERENCES @PREFIX@systemRelease(releaseGuid);
+FOREIGN KEY(releaseGuid) REFERENCES @DEFAULT_PREFIX@systemRelease(releaseGuid);
 
 ALTER TABLE @PREFIX@csMultiAttrib ADD CONSTRAINT FK_CSMULTI_CSGUID 
 FOREIGN KEY(codingSchemeGuid) REFERENCES @PREFIX@codingScheme(codingSchemeGuid)
@@ -636,10 +636,10 @@ FOREIGN KEY(prevEntryStateGuid) REFERENCES @PREFIX@entryState(entryStateGuid)
 ON DELETE CASCADE;
 
 ALTER TABLE @PREFIX@entryState ADD CONSTRAINT FK_ES_REVISIONGUID 
-FOREIGN KEY(revisionGuid) REFERENCES @PREFIX@revision(revisionGuid);
+FOREIGN KEY(revisionGuid) REFERENCES @DEFAULT_PREFIX@revision(revisionGuid);
 
 ALTER TABLE @PREFIX@entryState ADD CONSTRAINT FK_ES_PREVREVISIONGUID 
-FOREIGN KEY(prevRevisionGuid) REFERENCES @PREFIX@revision(revisionGuid);
+FOREIGN KEY(prevRevisionGuid) REFERENCES @DEFAULT_PREFIX@revision(revisionGuid);
 
 ALTER TABLE @PREFIX@propertyLinks ADD CONSTRAINT FK_PLINKS_SPROPGUID 
 FOREIGN KEY(sourcePropertyGuid) REFERENCES @PREFIX@property(propertyGuid)

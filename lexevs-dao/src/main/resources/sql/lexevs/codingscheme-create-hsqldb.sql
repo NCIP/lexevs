@@ -203,6 +203,7 @@ CREATE TABLE @PREFIX@relation (
 	codingSchemeGuid varchar(36) NOT NULL,
 	containerName varchar(50) NOT NULL,
 	isMapping char(1),
+	representsVersion varchar(50),
 	sourceCodingScheme varchar(50),
 	sourceCodingSchemeVersion varchar(50),
 	targetCodingScheme varchar(50),
@@ -226,6 +227,9 @@ ALTER TABLE @PREFIX@codingScheme ADD CONSTRAINT PK_codingScheme
 	PRIMARY KEY (codingSchemeGuid)
 ;
 
+ALTER TABLE @PREFIX@codingScheme ADD CONSTRAINT @PREFIX@FK_cs_releaseGuid 
+	FOREIGN KEY (releaseGuid) REFERENCES @DEFAULT_PREFIX@systemRelease (releaseGuid)
+;
 
 ALTER TABLE @PREFIX@csMultiAttrib ADD CONSTRAINT PK_csMultiAttribGuid 
 	PRIMARY KEY (csMultiAttribGuid)
@@ -376,9 +380,6 @@ ALTER TABLE @PREFIX@propertyMultiAttrib
 	ADD CONSTRAINT UQ_propertyMultiAttrib UNIQUE (propertyGuid, attributeType, attributeId)
 ;
 
-ALTER TABLE @PREFIX@relation
-	ADD CONSTRAINT UQ_relation_containerName UNIQUE (containerName)
-;
 
 ALTER TABLE @PREFIX@associationPredicate ADD CONSTRAINT @PREFIX@FK_associationPredica_relation 
 	FOREIGN KEY (relationGuid) REFERENCES @PREFIX@relation (relationGuid)
@@ -424,6 +425,13 @@ ALTER TABLE @PREFIX@entryState ADD CONSTRAINT @PREFIX@FK_es_prevEntryStateGuid
 	FOREIGN KEY (prevEntryStateGuid) REFERENCES @PREFIX@entryState (entryStateGuid)
 ;
 
+ALTER TABLE @PREFIX@entryState ADD CONSTRAINT @PREFIX@FK_es_revisionGuid 
+	FOREIGN KEY (revisionGuid) REFERENCES @DEFAULT_PREFIX@revision (revisionGuid)
+;
+
+ALTER TABLE @PREFIX@entryState ADD CONSTRAINT @PREFIX@FK_es_prevRevisionGuid 
+	FOREIGN KEY (prevRevisionGuid) REFERENCES @DEFAULT_PREFIX@revision (revisionGuid)
+;
 
 ALTER TABLE @PREFIX@propertyLinks ADD CONSTRAINT @PREFIX@FK_pLinks_sPropGuid 
 	FOREIGN KEY (sourcePropertyGuid) REFERENCES @PREFIX@property (propertyGuid)
