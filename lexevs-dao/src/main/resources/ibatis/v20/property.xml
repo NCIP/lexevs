@@ -119,19 +119,19 @@
   			entryState.relativeOrder,
   			entryState.relativeOrder,
   			
-  			currentRevision.revisionId currentRevisionId,
-  			previousRevision.revisionId previousRevisionId,
+  			currentRevision.revisionId AS currentRevisionId,
+  			previousRevision.revisionId AS previousRevisionId,
   			
-  			usageContext.attributeId usageContextAttributeId,
+  			usageContext.attributeId AS usageContextAttributeId,
   			
-  			source.attributeId sourceAttributeId,
-  			source.subRef sourceSubRef,
-  			source.role sourceRole,
+  			source.attributeId AS sourceAttributeId,
+  			source.subRef AS sourceSubRef,
+  			source.role AS sourceRole,
   			
-  			qualifier.attributeType qualifierAttributeType,
-  			qualifier.attributeId qualifierAttributeId,
-  			qualifier.attributeValue qualifierAttributeValue,
-  			qualifier.qualifierType qualifierType
+  			qualifier.attributeType AS qualifierAttributeType,
+  			qualifier.attributeId AS qualifierAttributeId,
+  			qualifier.attributeValue AS qualifierAttributeValue,
+  			qualifier.qualifierType AS qualifierType
   			
   		FROM
   			$prefix$property property
