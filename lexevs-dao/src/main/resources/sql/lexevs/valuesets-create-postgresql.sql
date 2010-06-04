@@ -17,7 +17,7 @@ CREATE TABLE @PREFIX@valueSetDefinition
    conceptDomain        VARCHAR(200),
    description          TEXT,    --SQLWAYS_EVAL# the content of the value set definition. 
    releaseGuid          VARCHAR(36),    --SQLWAYS_EVAL# release in which the given value set definition is loaded. This field is a null able field as a value set definition can be loaded alone, with out a system release. 
-   isActive             CHAR(1),    --SQLWAYS_EVAL# to indicate the given value set definition is active or not. 
+   isActive             BOOLEAN,    --SQLWAYS_EVAL# to indicate the given value set definition is active or not. 
    owner                VARCHAR(250),    --SQLWAYS_EVAL# the resource. The specific semantics of owner is defined by the busniess rules of the implementor, including the rules of the owner field is absent. 
    status               VARCHAR(50),    --SQLWAYS_EVAL# associated with the particular resource. The semantics and business rules of entryStatus are defined by the containing system, but there needs to be a mapping into isActive above. 
    effectiveDate        TIMESTAMP,    --SQLWAYS_EVAL# time that this resource is considered to be active.  To be considered active, isActive must be true, and the temporal context of the operation must be greater than effectiveDate. If omitted, all temporal contexts are considered to be valid. 
@@ -49,16 +49,16 @@ CREATE TABLE @PREFIX@vsdEntry
    valueSetDefReference     VARCHAR(250),    --SQLWAYS_EVAL# the set of codes defined in another value set definition. 
    entityCode               VARCHAR(200),    --SQLWAYS_EVAL# being referenced. 
    entityCodeNamespace      VARCHAR(50),    --SQLWAYS_EVAL# of the namespace of the entityCode. entityCodeNamespace must match a local id of a supportedNamespace in the corresponding mappings section.  If omitted, the URI of the defaultCodingScheme will be used as the URI of the entity code. 
-   leafOnly                 CHAR(1),    --SQLWAYS_EVAL# is supplied and referenceAssociation is defined as transitive, include all entity codes that are "leaves" in  transitive closure of referenceAssociation as applied to entity code. Default: false 
+   leafOnly                 BOOLEAN,    --SQLWAYS_EVAL# is supplied and referenceAssociation is defined as transitive, include all entity codes that are "leaves" in  transitive closure of referenceAssociation as applied to entity code. Default: false 
    referenceAssociation     VARCHAR(50),    --SQLWAYS_EVAL# of an association that appears in the native relations collection in the default coding scheme.  This association is used to describe a set of entity codes. If absent, only the entityCode itself is included in this definition. 
-   targetToSource           CHAR(1),    --SQLWAYS_EVAL# is supplied, navigate from entityCode as the association target to the corresponding sources. If transitiveClosure is true and the referenceAssociation is transitive, include all the ancestors in the list rather than just the direct "parents" (sources). 
-   transitiveClosure        CHAR(1),    --SQLWAYS_EVAL# is supplied and referenceAssociation is defined as transitive, include all entity codes that belong to  transitive closure of referenceAssociation as applied to entity code. Default: false 
+   targetToSource           BOOLEAN,    --SQLWAYS_EVAL# is supplied, navigate from entityCode as the association target to the corresponding sources. If transitiveClosure is true and the referenceAssociation is transitive, include all the ancestors in the list rather than just the direct "parents" (sources). 
+   transitiveClosure        BOOLEAN,    --SQLWAYS_EVAL# is supplied and referenceAssociation is defined as transitive, include all entity codes that belong to  transitive closure of referenceAssociation as applied to entity code. Default: false 
    propertyRefCodingScheme  VARCHAR(50),    --SQLWAYS_EVAL# localId to check property reference. 
    propertyName             VARCHAR(50),
    propertyMatchValue       TEXT,
    matchAlgorithm           VARCHAR(250),
    format                   VARCHAR(50),    --SQLWAYS_EVAL# Ex. XML, blob, text etc. 
-   isActive                 CHAR(1),    --SQLWAYS_EVAL# to indicate the given vsdEntry is active or not. 
+   isActive                 BOOLEAN,    --SQLWAYS_EVAL# to indicate the given vsdEntry is active or not. 
    owner                    VARCHAR(250),    --SQLWAYS_EVAL# the resource. The specific semantics of owner is defined by the busniess rules of the implementor, including the rules of the owner field is absent. 
    status                   VARCHAR(50),    --SQLWAYS_EVAL# associated with the particular resource. The semantics and business rules of entryStatus are defined by the containing system, but there needs to be a mapping into isActive above. 
    effectiveDate            TIMESTAMP,    --SQLWAYS_EVAL# time that this resource is considered to be active.  To be considered active, isActive must be true, and the temporal context of the operation must be greater than effectiveDate. If omitted, all temporal contexts are considered to be valid. 
@@ -137,13 +137,13 @@ CREATE TABLE @PREFIX@vsPickList
    vsPickListGuid                VARCHAR(36) NOT NULL,    --SQLWAYS_EVAL# identifier for the pick list. 
    pickListId                    VARCHAR(50) NOT NULL,    --SQLWAYS_EVAL# that uniquely names this list within the context of the collection. 
    representsValueSetDefinition  VARCHAR(250) NOT NULL,    --SQLWAYS_EVAL# value set definition that is represented by this pick list. 
-   completeSet                   CHAR(1),    --SQLWAYS_EVAL# this pick list should represent all of the entries in the value set definition.  Any active entry codes that aren't in the specific pick list entries are added to the end, using the designations identified by the defaultLanguage, defaultSortOrder and defaultPickContext.  Default: false 
+   completeSet                   BOOLEAN,    --SQLWAYS_EVAL# this pick list should represent all of the entries in the value set definition.  Any active entry codes that aren't in the specific pick list entries are added to the end, using the designations identified by the defaultLanguage, defaultSortOrder and defaultPickContext.  Default: false 
    defaultEntityCodeNamespace    VARCHAR(50),    --SQLWAYS_EVAL# the namespace to which the entry codes in this list belong. defaultEntityCodeNamespace must match a local id of a supportedNamespace in the mappings section. 
    defaultLanguage               VARCHAR(32),    --SQLWAYS_EVAL# of the language that is used to generate the text of this pick list if not otherwise specified. Note that this language does NOT necessarily have any coorelation with the language of a pickListEntry itself or the language of the target user. defaultLanguage must match a local id of a supportedLanguage in the supportedAttributes section. 
    defaultSortOrder              VARCHAR(50),    --SQLWAYS_EVAL# of a sort order that is used as the default in the definition of the pick list. 
    description                   TEXT,    --SQLWAYS_EVAL# the content of the pick list. 
    releaseGuid                   VARCHAR(36),    --SQLWAYS_EVAL# release in which the given pick list is loaded. This field is a null able field as a pick list can be loaded alone, with out a system release. 
-   isActive                      CHAR(1),    --SQLWAYS_EVAL# to indicate the given pick list is active or not. 
+   isActive                      BOOLEAN,    --SQLWAYS_EVAL# to indicate the given pick list is active or not. 
    owner                         VARCHAR(250),    --SQLWAYS_EVAL# the resource. The specific semantics of owner is defined by the busniess rules of the implementor, including the rules of the owner field is absent. 
    status                        VARCHAR(50),    --SQLWAYS_EVAL# associated with the particular resource. The semantics and business rules of entryStatus are defined by the containing system, but there needs to be a mapping into isActive above. 
    effectiveDate                 TIMESTAMP,    --SQLWAYS_EVAL# time that this resource is considered to be active.  To be considered active, isActive must be true, and the temporal context of the operation must be greater than effectiveDate. If omitted, all temporal contexts are considered to be valid. 
@@ -176,13 +176,13 @@ CREATE TABLE @PREFIX@vsPLEntry
    entityCodeNamespace  VARCHAR(50),    --SQLWAYS_EVAL# of the namespace of the entity code if different than the pickListDefinition defaultEntityCodeNamespace. entityCodeNamespace must match a local id of a supportedNamespace in the mappings section. 
    entityCode           VARCHAR(200) NOT NULL,    --SQLWAYS_EVAL# that this entry represents, if any. If not present, this entry is not selectable. 
    entryOrder           BIGINT,    --SQLWAYS_EVAL# of this entry in the list.  If absent, this entry follows any ordered entries, but is unordered beyond that 
-   isDefault            CHAR(1),    --SQLWAYS_EVAL# this is the default entry for the supplied language and context. 
-   matchIfNoContext     CHAR(1),    --SQLWAYS_EVAL# this entry can be used if no contexts are supplied, even though pickContext ispresent. 
+   isDefault            BOOLEAN,    --SQLWAYS_EVAL# this is the default entry for the supplied language and context. 
+   matchIfNoContext     BOOLEAN,    --SQLWAYS_EVAL# this entry can be used if no contexts are supplied, even though pickContext ispresent. 
    propertyId           VARCHAR(50),    --SQLWAYS_EVAL# identifier associated with the entityCode and entityCodeNamespace that the pickText was derived from.  If absent, the pick text can be anything. Some terminologies may have business rules requiring this attribute to be present. 
    language             VARCHAR(32),    --SQLWAYS_EVAL# of the language to be used when the application/user supplies a selection language matches. If absent, this matches all languages. language must match a local id od of a supportedLanguage in the mappings section. 
-   include              CHAR(1),    --SQLWAYS_EVAL# to indicate the given PL entry node has to be included or not when the pick list is resolved. 
+   include              BOOLEAN,    --SQLWAYS_EVAL# to indicate the given PL entry node has to be included or not when the pick list is resolved. 
    pickText             TEXT,    --SQLWAYS_EVAL# represents this node in the pick list. Some business rules may require that this string match a presentation associated with the entityCode. 
-   isActive             CHAR(1),    --SQLWAYS_EVAL# to indicate the given PL entry is active or not. 
+   isActive             BOOLEAN,    --SQLWAYS_EVAL# to indicate the given PL entry is active or not. 
    owner                VARCHAR(250),    --SQLWAYS_EVAL# the resource. The specific semantics of owner is defined by the busniess rules of the implementor, including the rules of the owner field is absent. 
    status               VARCHAR(50),    --SQLWAYS_EVAL# associated with the particular resource. The semantics and business rules of entryStatus are defined by the containing system, but there needs to be a mapping into isActive above. 
    effectiveDate        TIMESTAMP,    --SQLWAYS_EVAL# time that this resource is considered to be active.  To be considered active, isActive must be true, and the temporal context of the operation must be greater than effectiveDate. If omitted, all temporal contexts are considered to be valid. 
@@ -220,12 +220,12 @@ CREATE TABLE @PREFIX@vsProperty
    propertyName          VARCHAR(50) NOT NULL,    --SQLWAYS_EVAL# that defines the meaning of this particular property entry. Must match a local id of a supportedProperty in the corresponding supportedAttributes section. 
    language              VARCHAR(32),    --SQLWAYS_EVAL# of the language of the property value. Must match a local id of a supportedLanguage in the corresponding mappings section. If omitted, and language is applicable to this property, the defaultLanguage of the surrounding resource is used. 
    format                VARCHAR(50),    --SQLWAYS_EVAL# of the property value. 
-   isPreferred           CHAR(1),    --SQLWAYS_EVAL# if the text meets the selection criteria, it should be the preferred form. For a given language there should be only one preferred presentation. 
-   matchIfNoContext      CHAR(1),    --SQLWAYS_EVAL# this presentation is valid in a acontextual setting - that it is always valid in the given language.  Default: true  if there are no property usageContexts, false otherwise. 
+   isPreferred           BOOLEAN,    --SQLWAYS_EVAL# if the text meets the selection criteria, it should be the preferred form. For a given language there should be only one preferred presentation. 
+   matchIfNoContext      BOOLEAN,    --SQLWAYS_EVAL# this presentation is valid in a acontextual setting - that it is always valid in the given language.  Default: true  if there are no property usageContexts, false otherwise. 
    degreeOfFidelity      VARCHAR(50),    --SQLWAYS_EVAL# that states how closely a term approximates the intended meaning of an entry code. degreeOfFidelity must match a local id of a supportedDegreeOfFidelity in the corresponding mappings section. 
    representationalForm  VARCHAR(50),    --SQLWAYS_EVAL# that states how the term represents the concept (abbrev, acronym, etc.) representationalForm must match a local id of a representationalForm in the corresponding mappings section. 
    propertyValue         TEXT NOT NULL,    --SQLWAYS_EVAL# the property associated with this particular resource.  Note that "text" may be any type, including a URI, html fragment, etc. 
-   isActive              CHAR(1),    --SQLWAYS_EVAL# to indicate the given property is active or not. 
+   isActive              BOOLEAN,    --SQLWAYS_EVAL# to indicate the given property is active or not. 
    owner                 VARCHAR(250),    --SQLWAYS_EVAL# the resource. The specific semantics of owner is defined by the busniess rules of the implementor, including the rules of the owner field is absent. 
    status                VARCHAR(50),    --SQLWAYS_EVAL# associated with the particular resource. The semantics and business rules of entryStatus are defined by the containing system, but there needs to be a mapping into isActive above. 
    effectiveDate         TIMESTAMP,    --SQLWAYS_EVAL# time that this resource is considered to be active.  To be considered active, isActive must be true, and the temporal context of the operation must be greater than effectiveDate. If omitted, all temporal contexts are considered to be valid. 
@@ -289,8 +289,8 @@ CREATE TABLE @PREFIX@vsSupportedAttrib
    idValue                 VARCHAR(250),    --SQLWAYS_EVAL# supported attribute (most cases it is same as the id) 
    associationNames        VARCHAR(250),
    rootCode                VARCHAR(250),  
-   isForwardNavigable      CHAR(1),   
-   isImported              CHAR(1),  
+   isForwardNavigable      BOOLEAN,   
+   isImported              BOOLEAN,  
    equivalentCodingScheme  VARCHAR(250), 
    assemblyRule            VARCHAR(250), 
    assnCodingScheme        VARCHAR(250),

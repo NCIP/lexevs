@@ -25,7 +25,7 @@ CREATE TABLE @PREFIX@registry
    deactivationDate     TIMESTAMP,    --SQLWAYS_EVAL# a given record was (or will be) deactivated. 
    baseRevision         VARCHAR(50),    --SQLWAYS_EVAL# id of the resource when the revision record was created 
    fixedAtRevision      VARCHAR(50),    --SQLWAYS_EVAL# version is "fixed" at this revision.  If the coding scheme isn't "at" the same revision, rollback must be done to reach this.  If absent,  this version is represented by the latest revision of the coding scheme, whatever it may be. 
-   isLocked             CHAR(1),    --SQLWAYS_EVAL#  updates are not allowed in the coding scheme. Default: false 
+   isLocked             BOOLEAN,    --SQLWAYS_EVAL#  updates are not allowed in the coding scheme. Default: false 
    dbSchemaVersion      VARCHAR(50),    --SQLWAYS_EVAL# database schema structure. 
    dbSchemaDescription  VARCHAR(255)    --SQLWAYS_EVAL# version description. 
 ) WITH OIDS;
@@ -50,7 +50,7 @@ COMMENT ON COLUMN @PREFIX@registry.dbSchemaDescription  IS 'SQLWAYS_EVAL# versio
 
 CREATE TABLE @PREFIX@registryMetaData
 (
-   id                        CHAR(1),
+   id                        INTEGER,
    lastUpdateTime            TIMESTAMP,
    lastUsedDBIdentifer       VARCHAR(50),
    lastUsedHistoryIdentifer  VARCHAR(50)

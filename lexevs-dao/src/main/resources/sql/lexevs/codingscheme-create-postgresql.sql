@@ -31,7 +31,7 @@ CREATE TABLE @PREFIX@codingScheme
    approxNumConcepts  BIGINT,    --SQLWAYS_EVAL# number of entries in the lexical portion of this scheme. This is used as a hint for browsers and services. (optional) 
    description        TEXT,    --SQLWAYS_EVAL# the content of the coding scheme. 
    copyright          TEXT,    --SQLWAYS_EVAL# rights held in and over the resource. Typically, copyright information includes a statement about various property rights associated with the resource, including intellectual property rights. (optional) 
-   isActive           CHAR(1) DEFAULT 1,    --SQLWAYS_EVAL# to indicate the given coding scheme is active or not. 
+   isActive           BOOLEAN DEFAULT TRUE,    --SQLWAYS_EVAL# to indicate the given coding scheme is active or not. 
    owner              VARCHAR(250),    --SQLWAYS_EVAL# the resource. The specific semantics of owner is defined by the busniess rules of the implementor, including the rules of the owner field is absent. 
    status             VARCHAR(50),    --SQLWAYS_EVAL# associated with the particular resource. The semantics and business rules of entryStatus are defined by the containing system, but there needs to be a mapping into isActive above. 
    effectiveDate      TIMESTAMP,    --SQLWAYS_EVAL# time that this resource is considered to be active.  To be considered active, isActive must be true, and the temporal context of the operation must be greater than effectiveDate.  If omitted, all temporal contexts are considered to be valid. 
@@ -88,8 +88,8 @@ CREATE TABLE @PREFIX@csSupportedAttrib
    idValue                 VARCHAR(250),    --SQLWAYS_EVAL# supported attribute (most cases it is same as the id) 
    associationNames        VARCHAR(250),    --SQLWAYS_EVAL# for supported Hierarchy. 
    rootCode                VARCHAR(250),     
-   isForwardNavigable      CHAR(1),     
-   isImported              CHAR(1),     
+   isForwardNavigable      BOOLEAN,     
+   isImported              BOOLEAN,     
    equivalentCodingScheme  VARCHAR(250),     
    assemblyRule            VARCHAR(250),    --SQLWAYS_EVAL# value for supportedSource. Rule for combining source-specific information such as page numbers, sections and the like with the source URL. Syntax: [ID] - names the identifier. Everything else is literal. 
    assnCodingScheme        VARCHAR(250),    --SQLWAYS_EVAL# of coding scheme this association is defined. 
@@ -117,10 +117,10 @@ CREATE TABLE @PREFIX@entity
    codingSchemeGuid     VARCHAR(36) NOT NULL,    --SQLWAYS_EVAL# the corresponding codingScheme. 
    entityCode           VARCHAR(200) NOT NULL,    --SQLWAYS_EVAL# code within coding system 
    entityCodeNamespace  VARCHAR(50) NOT NULL,    --SQLWAYS_EVAL# of the namespace of the entityCode. entityCodeNamespace must match a local id of a supportedNamespace in the corresponding mapping section.  If omitted, the URI of the defaultCodingScheme will be used as the namespace for the entity code. 
-   isDefined            CHAR(1),    --SQLWAYS_EVAL# this entityCode is considered to be completely defined (i.e. necessary and sufficient) within the context of the containing code system. False means that only the necessary components are present.  If omitted, the state of the entityCode definition is not known. 
-   isAnonymous          CHAR(1),    --SQLWAYS_EVAL# the entityCode is synthetic, and doesn't actually exist in the namespace.  isAnonymous is used for synthetic top and bottom nodes as well as blank or anonymous inner class definitions.  Default: False 
+   isDefined            BOOLEAN,    --SQLWAYS_EVAL# this entityCode is considered to be completely defined (i.e. necessary and sufficient) within the context of the containing code system. False means that only the necessary components are present.  If omitted, the state of the entityCode definition is not known. 
+   isAnonymous          BOOLEAN,    --SQLWAYS_EVAL# the entityCode is synthetic, and doesn't actually exist in the namespace.  isAnonymous is used for synthetic top and bottom nodes as well as blank or anonymous inner class definitions.  Default: False 
    description          TEXT,    --SQLWAYS_EVAL# the entity. 
-   isActive             CHAR(1) DEFAULT 1,    --SQLWAYS_EVAL# to indicate the given entity is active or not. 
+   isActive             BOOLEAN DEFAULT TRUE,    --SQLWAYS_EVAL# to indicate the given entity is active or not. 
    owner                VARCHAR(250),    --SQLWAYS_EVAL# the resource. The specific semantics of owner is defined by the busniess rules of the implementor, including the rules of the owner field is absent. 
    status               VARCHAR(50),    --SQLWAYS_EVAL# associated with the particular resource. The semantics and business rules of entryStatus are defined by the containing system, but there needs to be a mapping into isActive above. 
    effectiveDate        TIMESTAMP,    --SQLWAYS_EVAL# time that this resource is considered to be active.  To be considered active, isActive must be true, and the temporal context of the operation must be greater than effectiveDate.  If omitted, all temporal contexts are considered to be valid. 
@@ -128,8 +128,8 @@ CREATE TABLE @PREFIX@entity
    entryStateGuid       VARCHAR(36),    --SQLWAYS_EVAL# to the entry state details of the given entity. 
    forwardName          VARCHAR(250),    --SQLWAYS_EVAL# of a defined association. 
    reverseName          VARCHAR(250),    --SQLWAYS_EVAL# of a defined association. 
-   isTransitive         CHAR(1),
-   isNavigable          CHAR(1)
+   isTransitive         BOOLEAN,
+   isNavigable          BOOLEAN
 ) WITH OIDS;
 
 COMMENT ON TABLE @PREFIX@entity IS 'SQLWAYS_EVAL# entity related information. A set of lexical assertions about the intended meaning of a particular entity code.';
@@ -171,10 +171,10 @@ CREATE TABLE @PREFIX@entityAssnsToData
    sourceEntityCode           VARCHAR(200) NOT NULL,    --SQLWAYS_EVAL# of the source entity. 
    sourceEntityCodeNamespace  VARCHAR(50) NOT NULL,    --SQLWAYS_EVAL# the namespace of the sourceEntityCode. sourceEntityCodeNamespace must match a local id of a supportedNamespace in the corresponding mappings section.  If omitted, the URI of sourceEntityCode namespace is the codingSchemeURI of the containing coding scheme. 
    associationInstanceId      VARCHAR(50),    --SQLWAYS_EVAL# uniqely names this entry within the context of the associationInstance. 
-   isDefining                 CHAR(1),    --SQLWAYS_EVAL# this association instance is considered to be part of the definition of source entity, false means that it is an "accidental" characteristic. If omitted (null), this information is not known. 
-   isInferred                 CHAR(1),    --SQLWAYS_EVAL# this association instance isn't asserted in the scheme, but is inferred by a classifier.  Default: false 
+   isDefining                 BOOLEAN,    --SQLWAYS_EVAL# this association instance is considered to be part of the definition of source entity, false means that it is an "accidental" characteristic. If omitted (null), this information is not known. 
+   isInferred                 BOOLEAN,    --SQLWAYS_EVAL# this association instance isn't asserted in the scheme, but is inferred by a classifier.  Default: false 
    dataValue                  TEXT,    --SQLWAYS_EVAL# value 
-   isActive                   CHAR(1),    --SQLWAYS_EVAL# to indicate the given instance is active or not. 
+   isActive                   BOOLEAN,    --SQLWAYS_EVAL# to indicate the given instance is active or not. 
    owner                      VARCHAR(250),    --SQLWAYS_EVAL# the resource. The specific semantics of owner is defined by the busniess rules of the implementor, including the rules of the owner field is absent. 
    status                     VARCHAR(50),    --SQLWAYS_EVAL# associated with the particular resource. The semantics and business rules of entryStatus are defined by the containing system, but there needs to be a mapping into isActive above. 
    effectiveDate              TIMESTAMP,    --SQLWAYS_EVAL# time that this resource is considered to be active.  To be considered active, isActive must be true, and the temporal context of the operation must be greater than effectiveDate. If omitted, all temporal contexts are considered to be valid. 
@@ -207,9 +207,9 @@ CREATE TABLE @PREFIX@entityAssnsToEntity
    targetEntityCode           VARCHAR(200) NOT NULL,    --SQLWAYS_EVAL# of the target entity. 
    targetEntityCodeNamespace  VARCHAR(50) NOT NULL,    --SQLWAYS_EVAL# the namespace of the targetEntityCode. targetEntityCodeNamespace must match a local id of a supportedNamespace in the corresponding mappings section.  If omitted, the URI of targetEntityCode namespace is the codingSchemeURI of the containing coding scheme. 
    associationInstanceId      VARCHAR(50),    --SQLWAYS_EVAL# assigned to the particular relation, from, to triple. 
-   isDefining                 CHAR(1),    --SQLWAYS_EVAL# this association instance is considered to be part of the definition of source entity, false means that it is an "accidental" characteristic. If omitted, this information is not known. 
-   isInferred                 CHAR(1),    --SQLWAYS_EVAL# this association instance isn't asserted in the scheme, but is inferred by a classifier.  Default: false 
-   isActive                   CHAR(1),    --SQLWAYS_EVAL# to indicate the given instance is active or not. 
+   isDefining                 BOOLEAN,    --SQLWAYS_EVAL# this association instance is considered to be part of the definition of source entity, false means that it is an "accidental" characteristic. If omitted, this information is not known. 
+   isInferred                 BOOLEAN,    --SQLWAYS_EVAL# this association instance isn't asserted in the scheme, but is inferred by a classifier.  Default: false 
+   isActive                   BOOLEAN,    --SQLWAYS_EVAL# to indicate the given instance is active or not. 
    owner                      VARCHAR(250),    --SQLWAYS_EVAL# the resource. The specific semantics of owner is defined by the busniess rules of the implementor, including the rules of the owner field is absent. 
    status                     VARCHAR(50),    --SQLWAYS_EVAL# associated with the particular resource. The semantics and business rules of entryStatus are defined by the containing system, but there needs to be a mapping into isActive above. 
    effectiveDate              TIMESTAMP,    --SQLWAYS_EVAL# time that this resource is considered to be active.  To be considered active, isActive must be true, and the temporal context of the operation must be greater than effectiveDate. If omitted, all temporal contexts are considered to be valid. 
@@ -294,12 +294,12 @@ CREATE TABLE @PREFIX@property
    propertyName          VARCHAR(250) NOT NULL,    --SQLWAYS_EVAL# that defines the meaning of this particular property entry. Must match a local id of a supportedProperty in the corresponding mapping section. 
    language              VARCHAR(32),    --SQLWAYS_EVAL# of the language of the property value. Must match a local id of a supportedLanguage in the corresponding mappings section. If omitted, and language is applicable to this property, the defaultLanguage of the surrounding resource is used. 
    format                VARCHAR(50),    --SQLWAYS_EVAL# of the property value. 
-   isPreferred           CHAR(1),    --SQLWAYS_EVAL# if the text meets the selection criteria, it should be the preferred form. For a given language there should be only one preferred presentation. 
-   matchIfNoContext      CHAR(1),    --SQLWAYS_EVAL# this presentation is valid in a acontextual setting - that it is always valid in the given language.  Default: true  if there are no property usageContexts, false otherwise. 
+   isPreferred           BOOLEAN,    --SQLWAYS_EVAL# if the text meets the selection criteria, it should be the preferred form. For a given language there should be only one preferred presentation. 
+   matchIfNoContext      BOOLEAN,    --SQLWAYS_EVAL# this presentation is valid in a acontextual setting - that it is always valid in the given language.  Default: true  if there are no property usageContexts, false otherwise. 
    degreeOfFidelity      VARCHAR(50),    --SQLWAYS_EVAL# that states how closely a term approximates the intended meaning of an entry code. degreeOfFidelity must match a local id of a supportedDegreeOfFidelity in the corresponding mappings section. 
    representationalForm  VARCHAR(50),    --SQLWAYS_EVAL# that states how the term represents the concept (abbrev, acronym, etc.) representationalForm must match a local id of a representationalForm in the corresponding mappings section. 
    propertyValue         TEXT NOT NULL,    --SQLWAYS_EVAL# the property associated with this particular resource.  Note that "text" may be any type, including a URI, html fragment, etc. 
-   isActive              CHAR(1) DEFAULT 1,    --SQLWAYS_EVAL# to indicate the given property is active or not. 
+   isActive              BOOLEAN DEFAULT TRUE,    --SQLWAYS_EVAL# to indicate the given property is active or not. 
    owner                 VARCHAR(250),    --SQLWAYS_EVAL# the resource. The specific semantics of owner is defined by the busniess rules of the implementor, including the rules of the owner field is absent. 
    status                VARCHAR(50),    --SQLWAYS_EVAL# associated with the particular resource. The semantics and business rules of entryStatus are defined by the containing system, but there needs to be a mapping into isActive above. 
    effectiveDate         TIMESTAMP,    --SQLWAYS_EVAL# time that this resource is considered to be active.  To be considered active, isActive must be true, and the temporal context of the operation must be greater than effectiveDate.  If omitted, all temporal contexts are considered to be valid. 
@@ -373,14 +373,14 @@ CREATE TABLE @PREFIX@relation
    relationGuid               VARCHAR(36) NOT NULL,    --SQLWAYS_EVAL# identifier for a given relation. 
    codingSchemeGuid           VARCHAR(36) NOT NULL,    --SQLWAYS_EVAL# the corresponding coding scheme. 
    containerName              VARCHAR(50) NOT NULL,    --SQLWAYS_EVAL# of a collection of associations. Required if there is one or more collection of relations in a coding scheme. Must be in supportedContainerName. 
-   isMapping                  CHAR(1),    --SQLWAYS_EVAL# that a set of associations represents a mapping between two terminologies if value is true. 
+   isMapping                  BOOLEAN,    --SQLWAYS_EVAL# that a set of associations represents a mapping between two terminologies if value is true. 
    representsVersion          VARCHAR(50),
    sourceCodingScheme         VARCHAR(50),    --SQLWAYS_EVAL# in associationInstance, this is the default source codingScheme. 
    sourceCodingSchemeVersion  VARCHAR(50),    --SQLWAYS_EVAL# in associationInstance, this is the default source codingScheme version. 
    targetCodingScheme         VARCHAR(50),    --SQLWAYS_EVAL# in associationInstance, this is the default target codingScheme. 
    targetCodingSchemeVersion  VARCHAR(50),    --SQLWAYS_EVAL# in associationInstance, this is the default source codingScheme version. 
    description                TEXT,    --SQLWAYS_EVAL# the relation container. 
-   isActive                   CHAR(1),    --SQLWAYS_EVAL# to indicate the given relation is active or not. 
+   isActive                   BOOLEAN,    --SQLWAYS_EVAL# to indicate the given relation is active or not. 
    owner                      VARCHAR(250),    --SQLWAYS_EVAL# the resource. The specific semantics of owner is defined by the busniess rules of the implementor, including the rules of the owner field is absent. 
    status                     VARCHAR(50),    --SQLWAYS_EVAL# associated with the particular resource. The semantics and business rules of entry Status are defined by the containing system, but there needs to be a mapping into isActive above. 
    effectiveDate              TIMESTAMP,    --SQLWAYS_EVAL# time that this resource is considered to be active.  To be considered active, isActive must be true, and the temporal context of the operation must be greater than effectiveDate.  If omitted, all temporal contexts are considered to be valid. 

@@ -14,9 +14,9 @@ CREATE TABLE @PREFIX@h_associationEntity
    entityGuid                VARCHAR(36) NOT NULL,
    forwardName               VARCHAR(100),    --SQLWAYS_EVAL# that the "from" entity plays with respect to the "to" entry.  Should be phrased in terms of the default language of the association and imply direction. 
    reverseName               VARCHAR(100),    --SQLWAYS_EVAL# should be represented when reading from target to source 
-   isNavigable               CHAR(1),    --SQLWAYS_EVAL# the reverse direction of the associaton is "navigable", meaning that it is makes sense to represent the target to source side of the association. 
-   isTransitive              CHAR(1),    --SQLWAYS_EVAL# association is transitive ( r(a,b), r(b,c) -> r(a,c)). False means not transitive. If absent, transitivity is unknown or not applicable. 
-   isTranslationAssociation  CHAR(1),    --SQLWAYS_EVAL# association set represents a translation mapping from source to the target. 
+   isNavigable               BOOLEAN,    --SQLWAYS_EVAL# the reverse direction of the associaton is "navigable", meaning that it is makes sense to represent the target to source side of the association. 
+   isTransitive              BOOLEAN,    --SQLWAYS_EVAL# association is transitive ( r(a,b), r(b,c) -> r(a,c)). False means not transitive. If absent, transitivity is unknown or not applicable. 
+   isTranslationAssociation  BOOLEAN,    --SQLWAYS_EVAL# association set represents a translation mapping from source to the target. 
    entryStateGuid            VARCHAR(36) NOT NULL
 ) WITH OIDS;
 
@@ -38,7 +38,7 @@ CREATE TABLE @PREFIX@h_codingScheme
    approxNumConcepts  BIGINT,    --SQLWAYS_EVAL# system about the approximate number of concepts in the scheme (optional) 
    description        TEXT,
    copyright          TEXT,    --SQLWAYS_EVAL# (optional) 
-   isActive           CHAR(1) DEFAULT 1,
+   isActive           BOOLEAN DEFAULT TRUE,
    owner              VARCHAR(250),
    status             VARCHAR(50),
    effectiveDate      TIMESTAMP,
@@ -77,10 +77,10 @@ CREATE TABLE @PREFIX@h_entity
    codingSchemeGuid     VARCHAR(36) NOT NULL,
    entityCode           VARCHAR(200) NOT NULL,    --SQLWAYS_EVAL# code within coding system 
    entityCodeNamespace  VARCHAR(50) NOT NULL,    --SQLWAYS_EVAL# of the namespace for the entrycode.  Defaults to the codingSchemeName of the containing codedEntry 
-   isDefined            CHAR(1),    --SQLWAYS_EVAL# the concept has at least one set of necessary and sufficient condition. 
-   isAnonymous          CHAR(1),    --SQLWAYS_EVAL# this node doesn't have an actual code in the code system 
+   isDefined            BOOLEAN,    --SQLWAYS_EVAL# the concept has at least one set of necessary and sufficient condition. 
+   isAnonymous          BOOLEAN,    --SQLWAYS_EVAL# this node doesn't have an actual code in the code system 
    description          TEXT,
-   isActive             CHAR(1) DEFAULT 1,
+   isActive             BOOLEAN DEFAULT TRUE,
    owner                VARCHAR(250),
    status               VARCHAR(50),
    effectiveDate        TIMESTAMP,
@@ -112,10 +112,10 @@ CREATE TABLE @PREFIX@h_entityAssnsToData
    sourceEntityCode           VARCHAR(200) NOT NULL,
    sourceEntityCodeNamespace  VARCHAR(50) NOT NULL,
    associationInstanceId      VARCHAR(50),    --SQLWAYS_EVAL# uniqely names this entry within the context of the associationInstance. 
-   isDefining                 CHAR(1),
-   isInferred                 CHAR(1),
+   isDefining                 BOOLEAN,
+   isInferred                 BOOLEAN,
    dataValue                  TEXT,    --SQLWAYS_EVAL# value 
-   isActive                   CHAR(1),
+   isActive                   BOOLEAN,
    owner                      VARCHAR(250),
    status                     VARCHAR(50),
    effectiveDate              TIMESTAMP,
@@ -136,9 +136,9 @@ CREATE TABLE @PREFIX@h_entityAssnsToEntity
    targetEntityCode           VARCHAR(200) NOT NULL,
    targetEntityCodeNamespace  VARCHAR(50) NOT NULL,
    associationInstanceId      VARCHAR(50),    --SQLWAYS_EVAL# to identify association instance.  
-   isDefining                 CHAR(1),
-   isInferred                 CHAR(1),
-   isActive                   CHAR(1),
+   isDefining                 BOOLEAN,
+   isInferred                 BOOLEAN,
+   isActive                   BOOLEAN,
    owner                      VARCHAR(250),
    status                     VARCHAR(50),
    effectiveDate              TIMESTAMP,
@@ -159,12 +159,12 @@ CREATE TABLE @PREFIX@h_property
    propertyName          VARCHAR(250) NOT NULL,    --SQLWAYS_EVAL# or tag of the property. Must be in supportedProperty 
    language              VARCHAR(32),    --SQLWAYS_EVAL# spoken language of the property. Must be in supportedLanguage. Default- defaultLanguage for coding Scheme 
    format                VARCHAR(50),
-   isPreferred           CHAR(1),    --SQLWAYS_EVAL# *if* the text meets the selection criteria, it should be the preferred form. 
-   matchIfNoContext      CHAR(1),    --SQLWAYS_EVAL# entry matches if no context is supplied 
+   isPreferred           BOOLEAN,    --SQLWAYS_EVAL# *if* the text meets the selection criteria, it should be the preferred form. 
+   matchIfNoContext      BOOLEAN,    --SQLWAYS_EVAL# entry matches if no context is supplied 
    degreeOfFidelity      VARCHAR(50),    --SQLWAYS_EVAL# term approximates the meaning of a concept 
    representationalForm  VARCHAR(50),    --SQLWAYS_EVAL# represents the concept (abbrev, acronym, etc.) - Must be in supportedRepresentationalForm 
    propertyValue         TEXT NOT NULL,    --SQLWAYS_EVAL# and associated value that further identifies or describes the intent of the entity code. 
-   isActive              CHAR(1),
+   isActive              BOOLEAN,
    owner                 VARCHAR(250),
    status                VARCHAR(50),
    effectiveDate         TIMESTAMP,
@@ -218,13 +218,13 @@ CREATE TABLE @PREFIX@h_relation
    relationGuid               VARCHAR(36) NOT NULL,
    codingSchemeGuid           VARCHAR(36) NOT NULL,
    containerName              VARCHAR(50) NOT NULL,    --SQLWAYS_EVAL# collection of relations. Must be in supportedContainerName. 
-   isMapping                  CHAR(1),    --SQLWAYS_EVAL# that this set of associations represents a mapping between two terminologies if value is true. 
+   isMapping                  BOOLEAN,    --SQLWAYS_EVAL# that this set of associations represents a mapping between two terminologies if value is true. 
    sourceCodingScheme         VARCHAR(50),    --SQLWAYS_EVAL# in associationInstance, this is the default source codingScheme. 
    sourceCodingSchemeVersion  VARCHAR(50),
    targetCodingScheme         VARCHAR(50),    --SQLWAYS_EVAL# in associationInstance, this is the default target codingScheme. 
    targetCodingSchemeVersion  VARCHAR(50),
    description                TEXT,
-   isActive                   CHAR(1),
+   isActive                   BOOLEAN,
    owner                      VARCHAR(250),
    status                     VARCHAR(50),
    effectiveDate              TIMESTAMP,
