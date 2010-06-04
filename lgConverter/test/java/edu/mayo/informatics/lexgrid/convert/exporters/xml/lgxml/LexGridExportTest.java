@@ -291,6 +291,6 @@ public class LexGridExportTest {
         cs.setEntities(entities);
         
         XmlContentWriter xmlContentWriter = new XmlContentWriter();
-        xmlContentWriter.marshalToXml(cs, cng, cns, out, Constants.VALUE_PAGE_SIZE);
+        xmlContentWriter.marshalToXml(cs, cng, cns, out, Constants.VALUE_PAGE_SIZE, false);
     }
 }
