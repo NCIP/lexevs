@@ -82,10 +82,10 @@
 			es.changeType,
 			es.relativeOrder,
 			es.revisionGuid,
-			currentRevision.revisionId currentRevisionId,
-			previousRevision.revisionId previousRevisionId,
+			currentRevision.revisionId AS currentRevisionId,
+			previousRevision.revisionId AS previousRevisionId,
 			csmaSource.*,
-			csmaLocalName.attributeValue localNameValue
+			csmaLocalName.attributeValue AS localNameValue
 		FROM
 			$prefix$codingScheme cs
 			
@@ -178,12 +178,12 @@
 			cs.releaseGuid,
 			cs.entryStateGuid,
 			csMulti.csMultiAttribGuid,
-			csMulti.codingSchemeGuid csGuid,
+			csMulti.codingSchemeGuid AS csGuid,
 			csMulti.attributeType,
 			csMulti.attributeValue,
 			csMulti.subRef,
 			csMulti.role,	
-			csMulti.entryStateGuid esGuid		
+			csMulti.entryStateGuid AS esGuid		
 		FROM
 			$prefix$codingScheme cs
 		LEFT JOIN
