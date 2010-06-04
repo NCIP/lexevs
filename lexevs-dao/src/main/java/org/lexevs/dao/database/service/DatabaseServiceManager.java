@@ -27,13 +27,13 @@ import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.error.ErrorCallbackDatabaseServiceFactory;
 import org.lexevs.dao.database.service.error.ErrorCallbackListener;
+import org.lexevs.dao.database.service.ncihistory.NciHistoryService;
 import org.lexevs.dao.database.service.property.PropertyService;
 import org.lexevs.dao.database.service.relation.RelationService;
 import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
 import org.lexevs.dao.database.service.valuesets.VSPropertyService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.dao.database.service.version.AuthoringService;
-//import org.lexevs.dao.database.service.version.AuthoringService;
 
 /**
  * The Class DatabaseServiceManager.
@@ -79,6 +79,8 @@ public class DatabaseServiceManager {
 	private AuthoringService authoringService;
 	
 	private CodedNodeGraphService codedNodeGraphService;
+	
+	private NciHistoryService nciHistoryService;
 	
 	private DaoCallbackService daoCallbackService;
 	
@@ -263,6 +265,12 @@ public class DatabaseServiceManager {
 			AssociationDataService associationDataService) {
 		this.associationDataService = associationDataService;
 	}
+
+	public NciHistoryService getNciHistoryService() {
+		return nciHistoryService;
+	}
+
+	public void setNciHistoryService(NciHistoryService nciHistoryService) {
+		this.nciHistoryService = nciHistoryService;
+	}
 }
-
-
