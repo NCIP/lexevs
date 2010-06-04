@@ -41,6 +41,7 @@ import org.lexevs.registry.service.XmlRegistry.HistoryEntry;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+
 @Entity
 @Table(name=DatabaseConstants.PREFIX_PLACEHOLDER + "registry")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -78,7 +79,7 @@ public class RegistryEntry {
 	private String fixedAtRevision;
 	
 	/** The is locked. */
-	private boolean isLocked;
+	private Boolean isLocked;
 	
 	/** The last update date. */
 	private Timestamp lastUpdateDate;
@@ -267,21 +268,11 @@ public class RegistryEntry {
 		this.fixedAtRevision = fixedAtRevision;
 	}
 
-	/**
-	 * Checks if is locked.
-	 * 
-	 * @return true, if is locked
-	 */
-	public boolean isLocked() {
+	public Boolean getIsLocked() {
 		return isLocked;
 	}
 
-	/**
-	 * Sets the locked.
-	 * 
-	 * @param isLocked the new locked
-	 */
-	public void setLocked(boolean isLocked) {
+	public void setIsLocked(Boolean isLocked) {
 		this.isLocked = isLocked;
 	}
 
@@ -625,6 +616,4 @@ public class RegistryEntry {
 			return false;
 		return true;
 	}
-	
-	
 }
