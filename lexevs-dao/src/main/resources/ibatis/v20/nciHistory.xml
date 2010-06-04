@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="NciHistory">
+
+	<typeAlias alias="nciChangeEvent" type="org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent" />
+	<typeAlias alias="systemRelease" type="org.LexGrid.versions.SystemRelease" />
+
+	<resultMap id="nciChangeEventResult" class="nciChangeEvent">
+		<result property="editaction" column="editAction"/>
+		<result property="conceptcode" column="entityCode"/>
+		<result property="conceptName" column="conceptName"/>
+		<result property="editDate" column="editDate"/>
+		<result property="referencecode" column="referenceCode"/>
+		<result property="referencename" column="referenceName"/>
+	</resultMap>
+
+	<resultMap id="systemReleaseResult" class="systemRelease">
+		<result property="entityDescription.content" column="description"/>
+		<result property="releaseId" column="releaseId" />
+		<result property="releaseURI" column="releaseURI" />
+		<result property="releaseDate" column="releaseDate"/>
+		<result property="releaseAgency" column="releaseAgency" />
+		<result property="basedOnRelease" column="basedOnRelease" />
+	</resultMap>
+	
+	<sql id="getBaseLineFragment">
+		SELECT 
+			releaseURI,
+			releaseId,
+			releaseDate,
+			basedOnRelease,
+			releaseAgency,
+			description
+		FROM
+			${defaultPrefix}nciHistSystemRelease systemRelease
+		WHERE
+			systemRelease.codingSchemeGuid = #param1#
+		
+	</sql>
+
+	<select id="getBaseLines"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultMap="systemReleaseResult">
+		
+		<include refid="getBaseLineFragment"/>
+		
+		<isNotNull property="param2">
+		AND
+			releaseDate >= #param2#
+		</isNotNull>
+		<isNotNull property="param3">
+		AND
+			#param3# >= releaseDate
+		</isNotNull>
+	</select> 
+	
+	<select id="getEarliestBaseLine"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultMap="systemReleaseResult">
+		
+		<include refid="getBaseLineFragment"/>
+		
+		AND
+			releaseDate = (
+			SELECT
+      			MIN (releaseDate)
+    		FROM
+        		${defaultPrefix}nciHistSystemRelease sysReleaseDate
+        	WHERE
+				sysReleaseDate.codingSchemeGuid = #param1#
+			)    	
+	</select> 
+	
+	<select id="getLatestBaseLine"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultMap="systemReleaseResult">
+		
+		<include refid="getBaseLineFragment"/>
+		
+		AND
+			releaseDate = (
+			SELECT
+      			MAX (releaseDate)
+    		FROM
+        		${defaultPrefix}nciHistSystemRelease sysReleaseDate
+        	WHERE
+				sysReleaseDate.codingSchemeGuid = #param1#
+			)    	
+	</select> 
+	
+
+	<select id="getSystemReleaseForUri"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultMap="systemReleaseResult">
+	
+		<include refid="getBaseLineFragment" />
+	
+			AND
+			releaseUri = #param2#
+	</select> 
+		
+</sqlMap>

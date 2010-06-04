@@ -30,4 +30,5 @@
     <sqlMap resource="ibatis/v20/vsMapping.xml"/>
     <sqlMap resource="ibatis/v20/vsEntryState.xml"/>
     <sqlMap resource="ibatis/v20/associationEntity.xml"/>
+    <sqlMap resource="ibatis/v20/nciHistory.xml"/>
 </sqlMapConfig>
