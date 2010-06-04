@@ -243,6 +243,10 @@
 		class="org.lexevs.dao.database.ibatis.revision.IbatisRevisionDao" parent="abstractIbatisDao">
 		<property name="systemReleaseDao" ref="ibatisSystemReleaseDao"/>
 	</bean>
+	
+	<bean id="ibatisNciHistoryDao"
+		class="org.lexevs.dao.database.ibatis.ncihistory.IbatisNciHistoryDao" parent="abstractIbatisDao">
+	</bean>
 
 	<bean id="databaseServiceManager" class="org.lexevs.dao.database.service.DatabaseServiceManager">
 		<property name="codingSchemeService" ref="codingSchemeService"/>
