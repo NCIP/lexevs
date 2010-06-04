@@ -55,6 +55,8 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
  	private static final String CREATE_VD_PICKLIST_SCRIPT = "sql/lexevs/valuesets-create-hsqldb.sql";
 	
  	private static final String CREATE_CODINGSCHEME_HISTORY_SCRIPT = "sql/lexevs/codingschemehistory-create-hsqldb.sql";
+ 	
+ 	private static final String CREATE_NCI_HISTORY_SCRIPT = "sql/lexevs/ncihistory-create-hsqldb.sql";
 	
 	/** The data source. */
 	@Resource
@@ -97,6 +99,7 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_CODINGSCHEME_SCRIPT), prefix, prefix);
 		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_VD_PICKLIST_SCRIPT), prefix, prefix);
 		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_CODINGSCHEME_HISTORY_SCRIPT), prefix, prefix);
+		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_NCI_HISTORY_SCRIPT), prefix);
 	}
 	
 	/* (non-Javadoc)
