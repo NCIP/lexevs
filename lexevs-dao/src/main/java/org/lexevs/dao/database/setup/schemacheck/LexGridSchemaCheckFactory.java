@@ -54,20 +54,7 @@ public class LexGridSchemaCheckFactory implements FactoryBean, InitializingBean 
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
 	public void afterPropertiesSet() throws Exception {
-		LexGridSchemaCheck schemaCheck = null;
-		if(databaseType.equals(DatabaseType.HSQL)){
-			schemaCheck = new CountBasedLexGridSchemaCheck(dataSource, systemVariables);
-		}
-		
-		if(databaseType.equals(DatabaseType.MYSQL)){
-			schemaCheck = new CountBasedLexGridSchemaCheck(dataSource, systemVariables);
-		}
-		
-		if(databaseType.equals(DatabaseType.ORACLE)){
-			schemaCheck = new CountBasedLexGridSchemaCheck(dataSource, systemVariables);
-		}
-		
-		//TODO: Add Oracle, DB2, etc
+		LexGridSchemaCheck schemaCheck = new CountBasedLexGridSchemaCheck(dataSource, systemVariables);
 		
 		Assert.notNull(schemaCheck);
 		
