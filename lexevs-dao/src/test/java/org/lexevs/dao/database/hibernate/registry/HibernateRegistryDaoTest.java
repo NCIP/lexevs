@@ -73,7 +73,7 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 		entry.setDeactivationDate(deActivationDate);
 		entry.setFixedAtRevision("2");
 		entry.setLastUpdateDate(lastUpdateDate);
-		entry.setLocked(true);
+		entry.setIsLocked(true);
 		entry.setPrefix("prefix");
 		entry.setResourceUri("uri://");
 		entry.setResourceVersion("v1");
