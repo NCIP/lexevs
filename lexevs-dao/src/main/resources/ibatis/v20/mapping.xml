@@ -290,7 +290,7 @@
 	<update id="updateUriMapByLocalId"
 		parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean">
 		UPDATE
-			$prefix$csSupportedAttrib cssupportedattrib
+			$prefix$csSupportedAttrib
 		SET
 		
 		<dynamic prepend=" ">
@@ -364,11 +364,11 @@
 		</dynamic>
 		
 		WHERE
-			cssupportedattrib.codingSchemeGuid = #codingSchemeUId#
+			codingSchemeGuid = #codingSchemeUId#
 		AND
-			cssupportedattrib.supportedAttributeTag = #supportedAttributeTag#
+			supportedAttributeTag = #supportedAttributeTag#
 		AND
-			cssupportedattrib.id = #uriMap.localId#	
+			id = #uriMap.localId#	
 	</update>
 	
 	
