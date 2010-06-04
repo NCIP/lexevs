@@ -108,8 +108,8 @@
 		resultMap="Entity.propertyLinkResult" remapResults="true">
 		SELECT
 			entity.entityGuid,
-		  	sourceProperty.propertyId sourcePropId,
-  			targetProperty.propertyId targetPropId,
+		  	sourceProperty.propertyId AS sourcePropId,
+  			targetProperty.propertyId AS targetPropId,
   			propertyLinks.link
 		FROM
 			$prefix$propertyLinks propertyLinks
@@ -160,11 +160,11 @@
   			
   			propertyLinks.link,
   			
-  			sourcePropertyLinksProperty.propertyId sourcePropId,
-  			targetPropertyLinksProperty.propertyId targetPropId,
+  			sourcePropertyLinksProperty.propertyId AS sourcePropId,
+  			targetPropertyLinksProperty.propertyId AS targetPropId,
 			
-			currentRevision.revisionId currentRevisionId,
-  			previousRevision.revisionId previousRevisionId
+			currentRevision.revisionId AS currentRevisionId,
+  			previousRevision.revisionId AS previousRevisionId
   			
 		FROM
 			$prefix$entity entity
