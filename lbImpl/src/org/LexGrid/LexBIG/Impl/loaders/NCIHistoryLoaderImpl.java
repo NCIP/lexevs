@@ -186,7 +186,8 @@ public class NCIHistoryLoaderImpl extends AbstractExtendable implements NCIHisto
     }
     
     private void removePreviousHistory() {
-        //
+        LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().getNciHistoryService().removeNciHistory(NCI_URN);
     }
 
     public void setOptions(OptionHolder options) {
