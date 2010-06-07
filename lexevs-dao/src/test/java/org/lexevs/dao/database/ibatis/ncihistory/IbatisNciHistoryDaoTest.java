@@ -53,11 +53,8 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		Timestamp date = new Timestamp(new Date().getTime());
-		
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
-	
-		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeGuid, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
 				" values ('123', 'csguid', 'releaseuri', 'releaseid',  ' " + date + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
 	
 		List<SystemRelease> systemReleases = ibatisNciHistoryDao.getBaseLines("csguid", null, null);
@@ -81,10 +78,8 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 		
 		Timestamp date = new Timestamp(new Date().getTime());
 		
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
-	
-		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeGuid, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+		
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
 				" values ('123', 'csguid', 'releaseuri', 'releaseid',  ' " + date + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
 	
 		SystemRelease systemRelease = ibatisNciHistoryDao.getSystemReleaseForReleaseUri("csguid", "releaseuri");
@@ -105,13 +100,11 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 		
 		Timestamp date = new Timestamp(new Date().getTime());
 		
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-				"values ('csguid', 'csname', 'csuri', 'csversion')");
 	
-		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeGuid, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
 				" values ('123', 'csguid', 'releaseuri', 'releaseid',  ' " + date + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
 		
-		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeGuid, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
 				" values ('1234', 'csguid', 'releaseuri', 'releaseid2',  ' " + date + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease2')");
 	
 		List<SystemRelease> systemReleases = ibatisNciHistoryDao.getBaseLines("csguid", null, null);
@@ -127,13 +120,11 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 		Timestamp date1 = new Timestamp(1l);
 		Timestamp date2 = new Timestamp(10000l);
 		
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('csguid', 'csname', 'csuri', 'csversion')");
 	
-		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeGuid, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
 				" values ('123', 'csguid', 'releaseuri', 'releaseid',  ' " + date1 + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
 		
-		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeGuid, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
 				" values ('1234', 'csguid', 'releaseuri', 'releaseid2',  ' " + date2 + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease2')");
 	
 		SystemRelease systemRelease = ibatisNciHistoryDao.getEarliestBaseLine("csguid");
@@ -149,13 +140,11 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 		Timestamp date1 = new Timestamp(1l);
 		Timestamp date2 = new Timestamp(10000l);
 		
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('csguid', 'csname', 'csuri', 'csversion')");
 	
-		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeGuid, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
 				" values ('123', 'csguid', 'releaseuri', 'releaseid',  ' " + date1 + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
 		
-		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeGuid, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
 				" values ('1234', 'csguid', 'releaseuri', 'releaseid2',  ' " + date2 + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease2')");
 	
 		SystemRelease systemRelease = ibatisNciHistoryDao.getLatestBaseLine("csguid");
@@ -167,8 +156,6 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 	@Transactional
 	public void testInsertSystemRelease() throws InterruptedException {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('csguid', 'csname', 'csuri', 'csversion')");
 		
 		final Timestamp date = new Timestamp(new Date().getTime());
 		
@@ -211,10 +198,8 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 		
 		Timestamp date = new Timestamp(new Date().getTime());
 		
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('csguid', 'csname', 'csuri', 'csversion')");
 	
-		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeGuid, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
 				" values ('123', 'csguid', 'releaseuri', 'releaseid',  ' " + date + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
 		
 		template.execute("insert into nciHist (ncitHistGuid, releaseGuid, entityCode, conceptName, editDate, editAction, referenceCode, referenceName)" +
@@ -241,10 +226,8 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 		
 		Timestamp date = new Timestamp(new Date().getTime());
 		
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('csguid', 'csname', 'csuri', 'csversion')");
 	
-		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeGuid, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
 				" values ('123', 'csguid', 'releaseuri', 'releaseid',  ' " + date + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
 		
 		template.execute("insert into nciHist (ncitHistGuid, releaseGuid, entityCode, conceptName, editDate, editAction, referenceCode, referenceName)" +
@@ -262,6 +245,193 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals(org.LexGrid.LexBIG.DataModel.NCIHistory.types.ChangeType.MERGE, event.getEditaction());
 		assertEquals(date.getTime(), event.getEditDate().getTime());
 
+	}
+	
+	@Test
+	@Transactional
+	public void testInsertNciChangeEvent() throws InterruptedException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		final Timestamp date = new Timestamp(new Date().getTime());
+		
+	
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+				" values ('123', 'csguid', 'releaseuri', 'releaseid',  NOW() , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
+
+		NCIChangeEvent event = new NCIChangeEvent();
+		event.setConceptcode("C1");
+		event.setConceptName("name1");
+		event.setEditaction(org.LexGrid.LexBIG.DataModel.NCIHistory.types.ChangeType.MERGE);
+		event.setEditDate(date);
+		event.setReferencecode("C2");
+		event.setReferencename("name2");
+		
+		ibatisNciHistoryDao.insertNciChangeEvent("123", event);
+		
+		template.queryForObject("Select * from ncihist", new RowMapper(){
+
+			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
+				int i=1;
+				
+				assertNotNull(rs.getString(i++));
+				assertEquals("123", rs.getString(i++));
+				assertEquals("C1", rs.getString(i++));
+				assertEquals("name1", rs.getString(i++));
+				assertEquals("merge", rs.getString(i++));
+				assertEquals(date, rs.getTimestamp(i++));		
+				assertEquals("C2", rs.getString(i++));
+				assertEquals("name2", rs.getString(i++));
+				
+				return null;
+			}
+		});		
+
+	}
+	
+	@Test
+	@Transactional
+	public void testSystemReleaseForDateBetween() throws InterruptedException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		Timestamp date1 = new Timestamp(1l);
+		Timestamp date2 = new Timestamp(10000l);
+	
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+				" values ('123', 'csguid', 'releaseuri', 'releaseid',  ' " + date1 + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
+		
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+				" values ('1234', 'csguid', 'releaseuri', 'releaseid2',  ' " + date2 + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease2')");
+	
+		String systemReleaseUid = ibatisNciHistoryDao.getSystemReleaseUidForDate("csguid", new Timestamp(50l));
+		
+		assertEquals("1234", systemReleaseUid);
+	}
+	
+	@Test
+	@Transactional
+	public void testSystemReleaseForDateEqualsFirst() throws InterruptedException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		Timestamp date1 = new Timestamp(1l);
+		Timestamp date2 = new Timestamp(10000l);
+		
+	
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+				" values ('123', 'csguid', 'releaseuri', 'releaseid',  ' " + date1 + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
+		
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+				" values ('1234', 'csguid', 'releaseuri', 'releaseid2',  ' " + date2 + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease2')");
+	
+		String systemReleaseUid = ibatisNciHistoryDao.getSystemReleaseUidForDate("csguid", date1);
+		
+		assertEquals("123", systemReleaseUid);
+	}
+	
+	@Test
+	@Transactional
+	public void testSystemReleaseForDateEqualsSecond() throws InterruptedException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		Timestamp date1 = new Timestamp(1l);
+		Timestamp date2 = new Timestamp(10000l);
+		
+		
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+				" values ('123', 'csguid', 'releaseuri', 'releaseid',  ' " + date1 + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
+		
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+				" values ('1234', 'csguid', 'releaseuri', 'releaseid2',  ' " + date2 + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease2')");
+	
+		String systemReleaseUid = ibatisNciHistoryDao.getSystemReleaseUidForDate("csguid", date2);
+		
+		assertEquals("1234", systemReleaseUid);
+	}
+	
+	@Test
+	@Transactional
+	public void testGetEditActionListWithUriSourceCode() throws InterruptedException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		Timestamp date1 = new Timestamp(1l);
+		
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+				" values ('sr1', 'csuri', 'releaseuri', 'releaseid',  ' " + date1 + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
+		
+		template.execute("insert into nciHist (ncithistguid, releaseguid, entitycode, conceptname, editaction, editdate, referencecode, referencename)" +
+				" values ('h1', 'sr1', 'sc1', 'name1', 'merge', '" + date1 + "', 'rc1', 'name2')");
+	
+		List<NCIChangeEvent> event = ibatisNciHistoryDao.getEditActionList("csuri", "sc1", "releaseuri");
+		
+		assertEquals(1, event.size());
+		
+		assertEquals("sc1", event.get(0).getConceptcode());
+	}
+	
+	@Test
+	@Transactional
+	public void testGetEditActionListWithUriReferenceCode() throws InterruptedException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		Timestamp date1 = new Timestamp(1l);
+		
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+				" values ('sr1', 'csuri', 'releaseuri', 'releaseid',  ' " + date1 + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
+		
+		template.execute("insert into nciHist (ncithistguid, releaseguid, entitycode, conceptname, editaction, editdate, referencecode, referencename)" +
+				" values ('h1', 'sr1', 'sc1', 'name1', 'merge', '" + date1 + "', 'rc1', 'name2')");
+	
+		List<NCIChangeEvent> event = ibatisNciHistoryDao.getEditActionList("csuri", "rc1", "releaseuri");
+		
+		assertEquals(1, event.size());
+		
+		assertEquals("sc1", event.get(0).getConceptcode());
+	}
+	
+	@Test
+	@Transactional
+	public void testGetEditActionListWithUriSourceAndReferenceCode() throws InterruptedException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		Timestamp date1 = new Timestamp(1l);
+		
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+				" values ('sr1', 'csuri', 'releaseuri', 'releaseid',  ' " + date1 + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
+		
+		template.execute("insert into nciHist (ncithistguid, releaseguid, entitycode, conceptname, editaction, editdate, referencecode, referencename)" +
+				" values ('h1', 'sr1', 'sc1', 'name1', 'merge', '" + date1 + "', 'rc1', 'name2')");
+		
+		template.execute("insert into nciHist (ncithistguid, releaseguid, entitycode, conceptname, editaction, editdate, referencecode, referencename)" +
+				" values ('h2', 'sr1', 'sc2', 'name2', 'merge', '" + date1 + "', 'sc1', 'name2')");
+	
+		List<NCIChangeEvent> event = ibatisNciHistoryDao.getEditActionList("csuri", "sc1", "releaseuri");
+		
+		assertEquals(2, event.size());
+	}
+	
+	@Test
+	@Transactional
+	public void testSystemReleaseForDateWithThree() throws InterruptedException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		Timestamp date1 = new Timestamp(1l);
+		Timestamp date2 = new Timestamp(10000l);
+		Timestamp date3 = new Timestamp(1000000l);
+		
+		
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+				" values ('12', 'csguid', 'releaseuri1', 'releaseid1',  ' " + date1 + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease')");
+		
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+				" values ('2', 'csguid', 'releaseuri2', 'releaseid2',  ' " + date2 + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease2')");
+	
+		template.execute("insert into nciHistSystemRelease (releaseGuid, codingSchemeUri, releaseURI, releaseId, releaseDate, basedOnRelease, releaseAgency, description)" +
+				" values ('3', 'csguid', 'releaseuri3', 'releaseid3',  ' " + date3 + "' , 'basedonsomerelease', 'testagency', 'testsystemrelease2')");
+		
+		Date searchDate = new Timestamp(100000l);
+		
+		String systemReleaseUid = ibatisNciHistoryDao.getSystemReleaseUidForDate("csguid", searchDate);
+		
+		assertEquals("3", systemReleaseUid);
 	}
 	
 }
