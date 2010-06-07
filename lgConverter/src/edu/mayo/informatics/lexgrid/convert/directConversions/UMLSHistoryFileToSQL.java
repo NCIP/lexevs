@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -36,45 +35,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent;
+import org.LexGrid.LexBIG.DataModel.NCIHistory.types.ChangeType;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
-import org.LexGrid.util.sql.DBUtility;
-import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
+import org.LexGrid.versions.SystemRelease;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
 
 public class UMLSHistoryFileToSQL {
 
-/** Holds reference to SQL Connection. */
-private Connection sqlConnection_;
     /** Holds reference to message director. */
     private LgMessageDirectorIF message_;
     /** Holds the token which seperates the fields in a flat file. */
     private static String token_ = "|";
-    /** Holds reference to SQLTableUtilities */
-    private SQLTableUtilities tableUtility_;
     /** Holds a boolean value failOnAllErrors */
     private boolean failOnAllErrors_ = true;
     /** Holds reference to a map containing concept name and description. */
     private Map<String, String> mrconsoConceptName_ = new HashMap<String, String>();
     /** Holds the reference for the DB table prefix */
-    private String tablePrefix_ = null;
     private Map<String, Date> systemReleaseDates_ = new HashMap<String, Date>();
-    /** Holds a static string constant. */
-    private static final String codingSchemeName_ = "UMLS History File";
-    /** Holds the URN for the NCI MetaThesaurus. */
-    private static final String metaURN = "urn:oid:2.16.840.1.113883.3.26.1.2";
     /** Holds string constant "http://nlm.gov" */
     private static final String releaseAgency = "http://nlm.gov";
-
-    /**
-     * @return the codingSchemeName
-     */
-    public String getCodingSchemeName() {
-        return codingSchemeName_;
-    }
-
+  
+    private String codingSchemeUri;
+    
     /**
      * NCI Thesaurus History File to SQL Converter.
      * 
@@ -95,58 +82,18 @@ private Connection sqlConnection_;
      * @throws SQLException
      * @throws Exception
      */
-    public UMLSHistoryFileToSQL(boolean failOnAllErrors, LgMessageDirectorIF messageDirector, String token)
+    public UMLSHistoryFileToSQL(
+            String codingSchemeUri, 
+            boolean failOnAllErrors, 
+            LgMessageDirectorIF 
+            messageDirector, String token)
             throws SQLException {
         message_ = messageDirector;
         failOnAllErrors_ = failOnAllErrors;
         if (token != null && token.length() > 0) {
             token_ = token;
         }
-    }
-
-    /**
-     * Method creates the database tables for NCI MetaThesaurus History load.
-     * 
-     * @param sqlServer
-     * @param sqlDriver
-     * @param sqlUsername
-     * @param sqlPassword
-     * @param tablePrefix
-     * @throws Exception
-     */
-    public void prepareDatabase(String sqlServer, String sqlDriver, String sqlUsername, String sqlPassword,
-            String tablePrefix) throws Exception {
-        try {
-            message_.info("Connecting to database.");
-            sqlConnection_ = DBUtility.connectToDatabase(sqlServer, sqlDriver, sqlUsername, sqlPassword);
-            message_.info("Connected to database successfully.");
-            tablePrefix_ = tablePrefix;
-        } catch (Exception e) {
-            message_.fatal("Could not connect to the database.");
-            if (failOnAllErrors_) {
-                throw new Exception("Could not connect to the database.", e);
-            }
-        }
-
-        try {
-            tableUtility_ = new SQLTableUtilities(sqlConnection_, tablePrefix);
-
-            message_.info("Creating 'NCI MetaThesaurus History' DB tables if not already exists.");
-
-            tableUtility_.createMetaDataTable();
-
-            tableUtility_.createSystemReleaseTables();
-
-            tableUtility_.createConceptHistoryTable();
-
-            message_.info("Done creating tables.");
-
-        } catch (Exception e) {
-            message_.error("Exception while initializing database tables : " + e.getMessage());
-            if (failOnAllErrors_) {
-                throw new Exception(e);
-            }
-        }
+        this.codingSchemeUri = codingSchemeUri;
     }
 
     /**
@@ -156,22 +103,16 @@ private Connection sqlConnection_;
      * @param metaFolderPath
      * @throws SQLException
      */
-    public void loadUMLSHistory(URI metaFolderPath) throws Exception {
+    public void loadUMLSHistory(URI folderPath) throws Exception {
 
-        if (sqlConnection_ == null) {
-            throw new SQLException(
-                    "SQL Connection is unavaliable, use prepareDatabase method to obtain the Connection.");
-        }
-
-        BufferedReader reader = getReader(metaFolderPath.resolve("MRCUI.RRF"));
+        BufferedReader reader = getReader(folderPath.resolve("MRCUI.RRF"));
 
         try {
             String line = reader.readLine();
-            HistoryLoadDBUtil historyInfo = new HistoryLoadDBUtil(sqlConnection_, tablePrefix_, message_);
-
+            
             int lineNo = 0;
 
-            readMrConso(metaFolderPath);
+            readMrConso(folderPath);
 
             message_.info("Loading History info...");
 
@@ -186,7 +127,7 @@ private Connection sqlConnection_;
                 List<String> elements = deTokenizeString(line, token_);
 
                 try {
-                    loadSystemReleaseInfo(historyInfo, elements);
+                    loadSystemReleaseInfo(elements);
 
                 } catch (Exception e) {
                     if (failOnAllErrors_) {
@@ -202,7 +143,7 @@ private Connection sqlConnection_;
                 }
 
                 try {
-                    loadUMLSHistoryInfo(historyInfo, elements);
+                    loadUMLSHistoryInfo(elements);
 
                 } catch (Exception e) {
                     if (failOnAllErrors_) {
@@ -297,25 +238,6 @@ private Connection sqlConnection_;
     }
 
     /**
-     * 
-     * @param sqlConnection
-     * @param tablePrefix
-     * @param metaFolderPath
-     * @throws SQLException
-     */
-    public void loadUMLSHistory(Connection sqlConnection, String tablePrefix, URI metaFolderPath) throws SQLException {
-
-        sqlConnection_ = sqlConnection;
-        tablePrefix_ = tablePrefix;
-        try {
-            tableUtility_ = new SQLTableUtilities(sqlConnection_, tablePrefix_);
-            loadUMLSHistory(metaFolderPath);
-        } catch (Exception e) {
-            message_.error("Exception while loading NCI MetaThesaurus History: " + e.getMessage());
-        }
-    }
-
-    /**
      * Method reads MRDOC RRF file and loads RELEASE data into systemRelease DB
      * table.
      * 
@@ -323,22 +245,28 @@ private Connection sqlConnection_;
      * @param elements
      * @throws Exception
      */
-    private void loadSystemReleaseInfo(HistoryLoadDBUtil historyInfo, List<String> elements) throws Exception {
+    private void loadSystemReleaseInfo(List<String> elements) throws Exception {
 
-        Date releaseDate = getSystemReleaseDate(elements.get(1));
-        String key = "0";
-        if (!systemReleaseDates_.keySet().contains(elements.get(1))) {
-            systemReleaseDates_.put(elements.get(1), releaseDate);
-            historyInfo.setSysRelReleaseID(key, elements.get(1));
-            historyInfo.setSysRelReleaseURN(key, metaURN + ":" + elements.get(1));
-            historyInfo.setSysRelBasedOnRelease(key, "");
-            historyInfo.setSysRelReleaseDate(key, releaseDate);
-            historyInfo.setSysRelReleaseAgency(key, releaseAgency);
-            historyInfo.setSysRelEntityDescription(key, "");
+        String releaseId = elements.get(1);
+        
+        Date releaseDate = getSystemReleaseDate(releaseId);
 
-            historyInfo.loadSystemReleaseTable();
+        if (!systemReleaseDates_.keySet().contains(releaseId)) {
+            systemReleaseDates_.put(releaseId, releaseDate);
+            
+            SystemRelease systemRelease = new SystemRelease();
+            systemRelease.setReleaseURI(releaseId);
+            systemRelease.setReleaseId(releaseId);
+            systemRelease.setReleaseDate(releaseDate);
+            systemRelease.setReleaseAgency(releaseAgency);
+            
+            LexEvsServiceLocator.getInstance().
+                getDatabaseServiceManager().
+                    getNciHistoryService().
+                        insertSystemRelease(
+                                   codingSchemeUri, 
+                                   systemRelease);
         }
-
     }
 
     /**
@@ -348,47 +276,45 @@ private Connection sqlConnection_;
      * @param metaFolderPath
      * @throws Exception
      */
-    private void loadUMLSHistoryInfo(HistoryLoadDBUtil historyInfo, List<String> elements) throws Exception {
-
-        String key = "0";
-        historyInfo.setHistEntityID(key, elements.get(0));
+    private void loadUMLSHistoryInfo(List<String> elements) throws Exception {
+        NCIChangeEvent nciChangeEvent = new NCIChangeEvent();
+        
+        nciChangeEvent.setConceptcode(elements.get(0));
 
         if (mrconsoConceptName_.keySet().contains(elements.get(0))) {
-            historyInfo.setHistConceptName(key, mrconsoConceptName_.get(elements.get(0)));
+            nciChangeEvent.setConceptName(mrconsoConceptName_.get(elements.get(0)));
         } else {
-            historyInfo.setHistConceptName(key, "Not Available.");
+            nciChangeEvent.setConceptName("Not Available.");
         }
 
         if ("DEL".equalsIgnoreCase(elements.get(2)) || "SUBX".equalsIgnoreCase(elements.get(2))
                 || "RB".equalsIgnoreCase(elements.get(2)) || "RN".equalsIgnoreCase(elements.get(2))
                 || "RO".equalsIgnoreCase(elements.get(2))) {
-            historyInfo.setHistEditAction(key, "retire");
+            nciChangeEvent.setEditaction(ChangeType.RETIRE);
         } else if ("SY".equalsIgnoreCase(elements.get(2))) {
-            historyInfo.setHistEditAction(key, "merge");
+            nciChangeEvent.setEditaction(ChangeType.MERGE);
         } else {
             throw new Exception("Relation field is not in required format.");
         }
 
         if (systemReleaseDates_.keySet().contains(elements.get(1))) {
-            historyInfo.setHistEditDate(key, systemReleaseDates_.get(elements.get(1)));
+            nciChangeEvent.setEditDate(systemReleaseDates_.get(elements.get(1)));
         } else {
             throw new Exception("Couldn't find Edit Date for the concept'" + elements.get(0) + "'");
         }
 
-        historyInfo.setHistReferenceCode(key, (String) elements.get(5));
+        nciChangeEvent.setReferencecode(elements.get(5));
 
         if (mrconsoConceptName_.keySet().contains(elements.get(5))) {
-            historyInfo.setHistReferenceName(key, mrconsoConceptName_.get(elements.get(5)));
+            nciChangeEvent.setReferencename(mrconsoConceptName_.get(elements.get(5)));
         } else {
-            historyInfo.setHistReferenceName(key, "Not Available.");
+            nciChangeEvent.setReferencename("Not Available.");
         }
 
-        try {
-            historyInfo.loadHistoryTable();
-        } catch (SQLException e) {
-
-            message_.fatalAndThrowException("Exception occured while loading history info: " + e.getMessage());
-        }
+        LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().
+                getNciHistoryService().
+                    insertNCIChangeEvent(codingSchemeUri, nciChangeEvent);
     }
 
     /**
@@ -514,18 +440,6 @@ private Connection sqlConnection_;
         Snapshot snap2 = SimpleMemUsageReporter.snapshot();
         message_.info("Done reading 'MRCONSO.RRF': Time taken: "
                 + SimpleMemUsageReporter.formatTimeDiff(snap2.getTimeDelta(snap1)));
-
-    }
-
-    /**
-     * This method closes the SQL connection if not already closed.
-     * 
-     * @throws SQLException
-     */
-    public void closeDBConnection() throws SQLException {
-        if (sqlConnection_ != null && !sqlConnection_.isClosed()) {
-            sqlConnection_.close();
-        }
 
     }
 
