@@ -150,4 +150,7 @@ public interface RegistryDao {
 	 * @param entry the entry
 	 */
 	public void deleteRegistryEntry(RegistryEntry entry);
+
+	List<RegistryEntry> getAllRegistryEntriesOfUriAndTypes(String uri,
+			ResourceType[] types);
 }
