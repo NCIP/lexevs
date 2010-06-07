@@ -172,11 +172,17 @@ public class NCIHistoryLoaderImpl extends AbstractExtendable implements NCIHisto
                     this.messageDirector);
 
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            this.loadStatus.setEndTime(new Date());
+            this.loadStatus.setState(ProcessState.FAILED);
+            this.messageDirector.fatal("Error loading NCI History", e);
+            this.loadStatus.setErrorsLogged(true);
+ 
+            return;
         }
         
         this.loadStatus.setEndTime(new Date());
+        this.loadStatus.setState(ProcessState.COMPLETED);
+        this.loadStatus.setErrorsLogged(false);
     }
     
     private void removePreviousHistory() {
