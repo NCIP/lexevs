@@ -117,11 +117,7 @@ public class LoadTestDataTest extends TestCase {
         hloader.load(new File("resources/testData/Filtered_pipe_out_12f.txt").toURI(), new File(
                 "resources/testData/SystemReleaseHistory.txt").toURI(), false, true, true);
 
-        while (hloader.getStatus().getEndTime() == null) {
-            Thread.sleep(500);
-        }
-
-        assertTrue(hloader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertEquals(ProcessState.COMPLETED,hloader.getStatus().getState());
         assertFalse(hloader.getStatus().getErrorsLogged().booleanValue());
     }
 
