@@ -73,12 +73,14 @@ import org.LexGrid.LexBIG.Impl.Extensions.Sort.isActiveSort;
 import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistorySQLQueries;
 import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistoryServiceImpl;
 import org.LexGrid.LexBIG.Impl.History.UMLSHistoryServiceImpl;
+import org.LexGrid.LexBIG.Impl.History.UriBasedHistoryServiceImpl;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
 import org.LexGrid.LexBIG.Impl.loaders.ClaMLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MetaDataLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.NCIHistoryLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OBOLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.RadLexProtegeFramesLoaderImpl;
@@ -408,9 +410,9 @@ public class LexBIGServiceImpl implements LexBIGService {
         }
 
         if (urn.equals(NCIThesaurusHistorySQLQueries.NCIThesaurusURN)) {
-            return new NCIThesaurusHistoryServiceImpl(urn);
+            return new UriBasedHistoryServiceImpl(urn);
         } else if (urn.equals(HistoryService.metaURN)) {
-            return new UMLSHistoryServiceImpl(urn);
+            return new UriBasedHistoryServiceImpl(urn);
         } else {
             throw new LBParameterException("No history service could be located for", "codingScheme", codingScheme);
         }
@@ -557,6 +559,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         new RadLexProtegeFramesLoaderImpl().register();
         new HL7LoaderImpl().register();
         new ClaMLLoaderImpl().register();
+        NCIHistoryLoaderImpl.register();
         
         //Meta Batch Loader Extension
         ExtensionDescription meta = new ExtensionDescription();
@@ -607,6 +610,11 @@ public class LexBIGServiceImpl implements LexBIGService {
         new ApproxNumOfConceptsPostProcessor().register();
         LexBIGServiceConvenienceMethodsImpl.register();
  
+    }
+
+    private LexBIGServiceConvenienceMethodsImpl NCIHistoryLoaderImpl() {
+        // TODO Auto-generated method stub (IMPLEMENT!)
+        throw new UnsupportedOperationException();
     }
 
 }
