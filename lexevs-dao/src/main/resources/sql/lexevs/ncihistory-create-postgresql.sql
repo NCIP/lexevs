@@ -9,13 +9,13 @@
 
 CREATE TABLE @PREFIX@nciHistSystemRelease ( 
 	releaseGuid varchar(36) NOT NULL,
-	codingSchemeUri varchar(36) NOT NULL,
+	codingSchemeUri varchar(250) NOT NULL,
 	releaseId varchar(50) NOT NULL,
 	releaseURI varchar(250) NOT NULL,
 	basedOnRelease varchar(250),
 	releaseDate timestamp NOT NULL,
 	releaseAgency varchar(250) NOT NULL,
-	description varchar
+	description TEXT
 )
 ;
 
