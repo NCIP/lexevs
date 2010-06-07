@@ -23,6 +23,7 @@ import java.io.File;
 import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
@@ -73,7 +74,7 @@ public class ServiceManagerTest extends TestCase {
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(500);
         }
-        if (!loader.getStatus().getMessage().equals("Cannot load a terminology that is already loaded.")) {
+        if (!loader.getStatus().getState().equals(ProcessState.FAILED)) {
 
             fail("Should not be able to load the same coding system twice");
         }
