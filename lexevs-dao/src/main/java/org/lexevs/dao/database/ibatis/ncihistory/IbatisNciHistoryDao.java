@@ -50,8 +50,15 @@ public class IbatisNciHistoryDao extends AbstractIbatisDao implements NciHistory
 	
 	private static String GET_SYSTEMRELEASE_FOR_UID_SQL = NCI_HISTORY_NAMESPACE + "getSystemReleaseForUid";
 	
+	private static String DELETE_SYSTEMRELEASE_SQL = NCI_HISTORY_NAMESPACE + "deleteSystemRelease";
+	
 	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
+	
+	@Override
+	public void removeNciHistory(String codingSchemeUri) {
+		this.getSqlMapClientTemplate().delete(DELETE_SYSTEMRELEASE_SQL, new SequentialMappedParameterBean(codingSchemeUri));
+	}
 
 	@Override
 	public void insertSystemRelease(String codingSchemeUri,
