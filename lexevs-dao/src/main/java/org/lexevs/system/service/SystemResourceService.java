@@ -87,7 +87,7 @@ public interface SystemResourceService {
 	 * 
 	 * @throws LBParameterException the LB parameter exception
 	 */
-	//public void addCodingSchemeResourceToSystem(CodingScheme codingScheme) throws LBParameterException;
+	public void addNciHistoryResourceToSystem(String uri) throws LBParameterException;
 	
 	/**
 	 * Removes the coding scheme resource from system.

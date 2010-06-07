@@ -263,6 +263,11 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 		primarySystemResourceService.addCodingSchemeResourceToSystem(uri, version);
 	}
 	
+	public void addNciHistoryResourceToSystem(String uri)
+		throws LBParameterException {
+		primarySystemResourceService.addNciHistoryResourceToSystem(uri);
+	}
+	
 	@ClearCache
 	public void addValueSetDefinitionResourceToSystem(String uri, String version)
 		throws LBParameterException {

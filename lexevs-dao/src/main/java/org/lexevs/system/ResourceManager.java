@@ -1678,6 +1678,13 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 	}
 
 	@Override
+	public void addNciHistoryResourceToSystem(String uri)
+			throws LBParameterException {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public void initialize() {
 		// should already be initialized here.
 	}  
