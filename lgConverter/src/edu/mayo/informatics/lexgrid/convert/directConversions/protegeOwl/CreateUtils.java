@@ -36,7 +36,7 @@ import org.LexGrid.relations.AssociationTarget;
 //import org.LexGrid.emf.relations.RelationsFactory;
 import org.apache.commons.lang.StringUtils;
 
-import edu.mayo.informatics.lexgrid.convert.emfConversions.EMFSupportedMappings;
+import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.stanford.smi.protegex.owl.model.RDFProperty;
 
 public class CreateUtils {
@@ -50,7 +50,7 @@ public class CreateUtils {
         return emfData;
     }
 
-    public static AssociationQualification createAssociationQualification(RDFProperty rdfProp, EMFSupportedMappings emfSupportedMappings_) {
+    public static AssociationQualification createAssociationQualification(RDFProperty rdfProp, SupportedMappings emfSupportedMappings_) {
         String brText = rdfProp.getBrowserText();
         Collection labels = rdfProp.getLabels();
         AssociationQualification emfQual = createAssociationQualification(brText, rdfProp.getURI(),
@@ -58,7 +58,7 @@ public class CreateUtils {
         return emfQual;
     }
 
-    public static AssociationQualification createAssociationQualification(String name, String uri, String descriptiveText, EMFSupportedMappings emfSupportedMappings_) {
+    public static AssociationQualification createAssociationQualification(String name, String uri, String descriptiveText, SupportedMappings emfSupportedMappings_) {
         AssociationQualification emfQual = new AssociationQualification();
         emfQual.setAssociationQualifier(name);
         emfSupportedMappings_.registerSupportedAssociationQualifier(name, uri, descriptiveText, false);
@@ -83,7 +83,7 @@ public class CreateUtils {
         return emfTgt;
     }
 
-    public static Comment createComment(String propID, String propName, String text, EMFSupportedMappings emfSupportedMappings_) {
+    public static Comment createComment(String propID, String propName, String text, SupportedMappings emfSupportedMappings_) {
         Comment emfComment = new Comment();
         emfComment.setPropertyId(propID);
         emfComment.setPropertyName(propName);
@@ -92,7 +92,7 @@ public class CreateUtils {
         return emfComment;
     }
 
-    public static Definition createDefinition(String propID, String propName, String text, Boolean isPreferred, EMFSupportedMappings emfSupportedMappings_) {
+    public static Definition createDefinition(String propID, String propName, String text, Boolean isPreferred, SupportedMappings emfSupportedMappings_) {
         Definition emfDefn = new Definition();
         emfDefn.setPropertyId(propID);
         emfDefn.setPropertyName(propName);
@@ -103,7 +103,7 @@ public class CreateUtils {
         return emfDefn;
     }
 
-    public static Presentation createPresentation(String propID, String propName, String text, Boolean isPreferred, EMFSupportedMappings emfSupportedMappings_) {
+    public static Presentation createPresentation(String propID, String propName, String text, Boolean isPreferred, SupportedMappings emfSupportedMappings_) {
         Presentation emfPres = new Presentation();
         emfPres.setPropertyId(propID);
         emfPres.setPropertyName(propName);
@@ -114,7 +114,7 @@ public class CreateUtils {
         return emfPres;
     }
 
-    public static Property createProperty(String propID, String propName, String text, EMFSupportedMappings emfSupportedMappings_) {
+    public static Property createProperty(String propID, String propName, String text, SupportedMappings emfSupportedMappings_) {
         Property emfProp = new Property();
         emfProp.setPropertyName(propName);
         emfProp.setPropertyId(propID);
@@ -123,7 +123,7 @@ public class CreateUtils {
         return emfProp;
     }
 
-    public static PropertyQualifier createPropertyQualifier(String tag, String text, EMFSupportedMappings emfSupportedMappings_) {
+    public static PropertyQualifier createPropertyQualifier(String tag, String text, SupportedMappings emfSupportedMappings_) {
         PropertyQualifier emfPropQual = new PropertyQualifier();
         emfPropQual.setPropertyQualifierName(tag);
         emfPropQual.setValue(createText(text));
@@ -131,7 +131,7 @@ public class CreateUtils {
         return emfPropQual;
     }
 
-    public static Source createSource(String value, String role, String subref, EMFSupportedMappings emfSupportedMappings_) {
+    public static Source createSource(String value, String role, String subref, SupportedMappings emfSupportedMappings_) {
         Source emfSource = new Source();
         emfSource.setContent(value);
         emfSource.setRole(role);

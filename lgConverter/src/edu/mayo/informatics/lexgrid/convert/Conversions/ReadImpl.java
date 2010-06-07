@@ -16,12 +16,12 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package edu.mayo.informatics.lexgrid.convert.emfConversions;
+package edu.mayo.informatics.lexgrid.convert.Conversions;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 
-public class EMFReadImpl {
+public class ReadImpl {
     CodingSchemeManifest codingSchemeManifest;
     LoaderPreferences loaderPreferences;
 

@@ -16,7 +16,7 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package edu.mayo.informatics.lexgrid.convert.emfConversions;
+package edu.mayo.informatics.lexgrid.convert.Conversions;
 
 import java.util.List;
 import java.util.Map;
@@ -53,7 +53,7 @@ import org.LexGrid.naming.URIMap;
  * Helper class to maintain supported mappings during EMF conversions
  * and apply them to an EMF-based CodingScheme.
  */
-public class EMFSupportedMappings {
+public class SupportedMappings {
     private Map<String, SupportedAssociation> supportedAssociations = null;
     private Map<String, SupportedAssociationQualifier> supportedAssociationQualifiers = null;
     private Map<String, SupportedCodingScheme> supportedCodingSchemes = null;
@@ -78,7 +78,7 @@ public class EMFSupportedMappings {
 
     private LgMessageDirectorIF messages_ = null;
 
-    public EMFSupportedMappings(LgMessageDirectorIF messages) {
+    public SupportedMappings(LgMessageDirectorIF messages) {
         messages_ = messages;
     }
 

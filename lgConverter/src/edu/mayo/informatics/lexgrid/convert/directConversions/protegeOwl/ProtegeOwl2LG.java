@@ -72,7 +72,7 @@ import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.locator.LexEvsServiceLocator;
 
-import edu.mayo.informatics.lexgrid.convert.emfConversions.EMFSupportedMappings;
+import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protege.model.Project;
 import edu.stanford.smi.protege.storage.database.DatabaseKnowledgeBaseFactory;
@@ -141,7 +141,7 @@ public class ProtegeOwl2LG {
 
     // Generated EMF objects ...
     private CodingScheme emfScheme_ = null;
-    private EMFSupportedMappings emfSupportedMappings_ = null;
+    private SupportedMappings emfSupportedMappings_ = null;
 
     private Relations emfRelationsContainer_Assoc = null;
     private Relations emfRelationsContainer_Roles = null;
@@ -250,7 +250,7 @@ public class ProtegeOwl2LG {
                 databaseServiceManager.getAuthoringService().loadRevision(emfScheme_, null);
             }
 
-            // Populate the EMF coding scheme from the OWL model
+            // Populate the coding scheme from the OWL model
             initSubtypeRoot();
             processOWL();
 
@@ -1984,7 +1984,7 @@ public class ProtegeOwl2LG {
      */
     protected void initSupportedMappings() {
         // Create a helper class used to accumulate mappings
-        emfSupportedMappings_ = new EMFSupportedMappings(messages_);
+        emfSupportedMappings_ = new SupportedMappings(messages_);
 
         // Register mappings that will not be explicitly built
         // while processing the OWL source...

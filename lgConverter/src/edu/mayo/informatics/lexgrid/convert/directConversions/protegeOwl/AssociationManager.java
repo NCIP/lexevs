@@ -27,7 +27,7 @@ import java.util.Map;
 import org.LexGrid.custom.relations.RelationsUtil;
 import org.LexGrid.relations.Relations;
 
-import edu.mayo.informatics.lexgrid.convert.emfConversions.EMFSupportedMappings;
+import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.stanford.smi.protegex.owl.model.OWLNames;
 import edu.stanford.smi.protegex.owl.model.RDFNames;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
@@ -50,13 +50,13 @@ public class AssociationManager {
     private AssociationWrapper datatypeValue = null;
     private Relations emfRelationsContainer_Assoc = null;
     private Relations emfRelationsContainer_Roles = null;
-    private EMFSupportedMappings emfSupportedMappings_ = null;
+    private SupportedMappings emfSupportedMappings_ = null;
     // owl relation name to emf container for associations
     private Map<String, AssociationWrapper> owlRelName2emfRoles_ = new HashMap<String, AssociationWrapper>();
     // owl relation name to emf container for roles
     private Map<String, AssociationWrapper> owlRelName2emfAssoc_ = new HashMap<String, AssociationWrapper>();
 
-    public AssociationManager(EMFSupportedMappings emfSupportedMappings_, Relations emfRelationsContainer_Assoc,
+    public AssociationManager(SupportedMappings emfSupportedMappings_, Relations emfRelationsContainer_Assoc,
             Relations emfRelationsContainer_Roles) {
         this.emfSupportedMappings_ = emfSupportedMappings_;
         this.emfRelationsContainer_Assoc = emfRelationsContainer_Assoc;
