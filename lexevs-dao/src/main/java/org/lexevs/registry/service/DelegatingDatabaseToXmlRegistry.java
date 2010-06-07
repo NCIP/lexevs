@@ -175,7 +175,11 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	 */
 	public RegistryEntry getNonCodingSchemeEntry(String uri)
 			throws LBParameterException {
-		throw new UnsupportedOperationException();
+		if(this.databaseRegistry.containsNonCodingSchemeEntry(uri)) {
+			return databaseRegistry.getNonCodingSchemeEntry(uri);
+		} else {
+			return this.xmlRegistry.getNonCodingSchemeEntry(uri);
+		}
 	}
 
 	/* (non-Javadoc)

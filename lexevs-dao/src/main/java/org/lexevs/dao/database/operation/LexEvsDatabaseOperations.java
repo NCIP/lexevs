@@ -145,6 +145,8 @@ public interface LexEvsDatabaseOperations {
 	 * @throws Exception the exception
 	 */
 	public void cleanupFailedLoad(String dbName, String prefix) throws Exception;
+
+	public void createNciHistoryTables();
 	
 }
 

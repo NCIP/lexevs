@@ -59,6 +59,7 @@ public class LexEvsSchemaInstallationSetup extends AbstractLoggingBean implement
 				this.registryDao.initRegistryMetadata();
 				this.getLexEvsDatabaseOperations().createValueSetsTables();
 				this.getLexEvsDatabaseOperations().createValueSetHistoryTables();
+				this.getLexEvsDatabaseOperations().createNciHistoryTables();
 		}	
 	}
 

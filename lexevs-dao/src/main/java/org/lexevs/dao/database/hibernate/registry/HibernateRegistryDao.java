@@ -23,6 +23,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.registry.model.Registry;
 import org.lexevs.registry.model.RegistryEntry;
@@ -120,6 +123,22 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		return entries.get(0);
 	}
 	
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RegistryEntry> getAllRegistryEntriesOfUriAndTypes(String uri,
+			ResourceType... types) {
+		DetachedCriteria criteria = DetachedCriteria.forClass(RegistryEntry.class);
+
+		Criterion typeRestriction = Restrictions.in("resourceType", types);
+		
+		Criterion uriRestriction = Restrictions.eq("resourceUri", uri);
+		
+		return this.getHibernateTemplate().findByCriteria(		
+				criteria.add(Restrictions.and(typeRestriction, uriRestriction)));
+	}
+
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.registry.RegistryDao#updateRegistryEntry(org.lexevs.registry.model.RegistryEntry)
 	 */

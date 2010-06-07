@@ -260,8 +260,8 @@ public class DaoManager {
 		return this.getRevisionDaos().get(0);
 	}
 	
-	public NciHistoryDao getNciHistoryDao(String codingSchemeUri, String version){
-		return this.doGetDao(codingSchemeUri, version, this.getNciHistoryDaos());
+	public NciHistoryDao getNciHistoryDao(String codingSchemeUri){
+		return this.doGetDao(codingSchemeUri, this.getNciHistoryDaos());
 	}
 	
 	/**
@@ -277,6 +277,12 @@ public class DaoManager {
 		Assert.assertNotNull("No DAOs have been registered for the requested type.", daos);	
 		return getCorrectDaoForSchemaVersion(daos, 
 				getLexGridSchemaVersion(codingSchemeUri, version));
+	}
+	
+	protected <T extends LexGridSchemaVersionAwareDao> T doGetDao(String codingSchemeUri, List<T> daos){
+		Assert.assertNotNull("No DAOs have been registered for the requested type.", daos);	
+		return getCorrectDaoForSchemaVersion(daos, 
+				getLexGridSchemaVersion(codingSchemeUri));
 	}
 	
 	/**
@@ -296,6 +302,17 @@ public class DaoManager {
 			return LexGridSchemaVersion.parseStringToVersion(
 					registry.getCodingSchemeEntry(ref).getDbSchemaVersion()
 			);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	protected LexGridSchemaVersion getLexGridSchemaVersion(String uri){
+		
+		try {
+			return LexGridSchemaVersion.parseStringToVersion(
+					registry.getNonCodingSchemeEntry(uri).getDbSchemaVersion());
+		
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

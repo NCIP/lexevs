@@ -61,6 +61,8 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	/** The lexevs valueset history schema create script. */
 	private Resource lexevsValueSetHistoryCreateScript;
 	
+	private Resource lexevsNciHistorySchemaCreateScript;
+	
 	/** The prefix resolver. */
 	private PrefixResolver prefixResolver;
 	
@@ -126,6 +128,19 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		}	
 	}
 	
+	
+	
+	@Override
+	public void createNciHistoryTables() {
+		try {
+			databaseUtility.executeScript(
+					lexevsNciHistorySchemaCreateScript, 
+					this.prefixResolver.resolveDefaultPrefix());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}	
+	}
+
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#createCodingSchemeTables(java.lang.String)
 	 */
@@ -403,5 +418,14 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	public void setLexevsValueSetHistoryCreateScript(
 			Resource lexevsValueSetHistoryCreateScript) {
 		this.lexevsValueSetHistoryCreateScript = lexevsValueSetHistoryCreateScript;
+	}
+
+	public Resource getLexevsNciHistorySchemaCreateScript() {
+		return lexevsNciHistorySchemaCreateScript;
+	}
+
+	public void setLexevsNciHistorySchemaCreateScript(
+			Resource lexevsNciHistorySchemaCreateScript) {
+		this.lexevsNciHistorySchemaCreateScript = lexevsNciHistorySchemaCreateScript;
 	}
 }

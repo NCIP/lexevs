@@ -75,6 +75,17 @@ public class RegistryUtility {
 		return entry;
 	}
 	
+	public static RegistryEntry nciHistoryToRegistryEntry(String uri){
+		RegistryEntry entry = new RegistryEntry();
+		entry.setResourceType(ResourceType.NCI_HISTORY);
+		entry.setDbSchemaDescription(DatabaseConstants.CURRENT_LEXGRID_SCHEMA_DESCRIPTION);
+		entry.setDbSchemaVersion(DatabaseConstants.CURRENT_LEXGRID_SCHEMA_VERSION);
+		entry.setResourceUri(uri);
+		entry.setLastUpdateDate(new Timestamp(new Date().getTime()));
+		
+		return entry;
+	}
+	
 	/**
 	 * Value Set Definition to registry entry.
 	 * 

@@ -47,7 +47,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 		builder.setDatabaseServiceManager(LexEvsServiceLocator.getInstance().getDatabaseServiceManager());
 		builder.setSystemResourceService(LexEvsServiceLocator.getInstance().getSystemResourceService());
 		
-		builder.computeTransitivityTable("urn:lsid:bioontology.org:BrendaTissue.txt", "UNASSIGNED");
+		builder.computeTransitivityTable("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl", "10.05d");
 		
 	}
 
@@ -66,7 +66,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 			String targetECNS = null;
 			String targetEC = null;
 
-			LRUMap insertedCache = new LRUMap(50000);
+			LRUMap insertedCache = new LRUMap(10000000);
 
 			TripleIterator tripleIterator = new TripleIterator(codingSchemeUri, version, associationPredicateId);
 

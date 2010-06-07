@@ -26,6 +26,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.cache.annotation.ParameterKey;
 import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.dao.database.prefix.NextDatabasePrefixGenerator;
@@ -193,7 +194,18 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	 */
 	public RegistryEntry getNonCodingSchemeEntry(String uri)
 			throws LBParameterException {
-		throw new UnsupportedOperationException();
+		List<RegistryEntry> entries = registryDao.getAllRegistryEntriesOfUriAndTypes(uri, getNonCodingSchemeResourceTypes());
+		
+		if(CollectionUtils.isNotEmpty(entries)) {
+			if(entries.size() > 1) {
+				throw new LBParameterException("More than one Non-CodingScheme Resource is registered in the system " +
+						"with a URI of: " + uri);
+			}
+			return entries.get(0);
+		}
+		
+		throw new LBParameterException("No Non-CodingScheme Resource is registered in the system " +
+				"with a URI of: " + uri);	
 	}
 
 	/* (non-Javadoc)
@@ -208,7 +220,15 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	 * @see org.lexevs.registry.service.Registry#containsNonCodingSchemeEntry(java.lang.String)
 	 */
 	public boolean containsNonCodingSchemeEntry(String uri) {
-		throw new UnsupportedOperationException();
+		return CollectionUtils.isNotEmpty(
+				registryDao.getAllRegistryEntriesOfUriAndTypes(uri, getNonCodingSchemeResourceTypes()));
+	}
+	
+	protected ResourceType[] getNonCodingSchemeResourceTypes() {
+		return new ResourceType[] {
+				ResourceType.NCI_HISTORY,
+				ResourceType.PICKLIST_DEFINITION,
+				ResourceType.VALUESET_DEFINITION};
 	}
 	
 	/**
