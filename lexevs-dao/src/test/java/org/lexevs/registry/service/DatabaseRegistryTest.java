@@ -18,9 +18,6 @@
  */
 package org.lexevs.registry.service;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +30,7 @@ import org.easymock.classextension.EasyMock;
 import org.junit.Test;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.registry.xmltransfer.RegistryXmlToDatabaseTransfer;
 import org.lexevs.system.constants.SystemVariables;
 
@@ -47,6 +45,30 @@ public class DatabaseRegistryTest extends LexEvsDbUnitTestBase {
 	/** The database registry. */
 	@Resource
 	DatabaseRegistry databaseRegistry;
+	
+	@Test
+	public void testContainsNonCodingSchemeResource() throws Exception {
+		RegistryEntry entry = new RegistryEntry();
+		entry.setResourceUri("uri");
+		entry.setResourceVersion("v1");
+		entry.setResourceType(ResourceType.NCI_HISTORY);
+		
+		databaseRegistry.addNewItem(entry);
+		
+		assertTrue(databaseRegistry.containsNonCodingSchemeEntry("uri"));
+	}
+	
+	@Test
+	public void testContainsNonCodingSchemeResourceInvalid() throws Exception {
+		RegistryEntry entry = new RegistryEntry();
+		entry.setResourceUri("uri");
+		entry.setResourceVersion("v1");
+		entry.setResourceType(ResourceType.NCI_HISTORY);
+		
+		databaseRegistry.addNewItem(entry);
+		
+		assertFalse(databaseRegistry.containsNonCodingSchemeEntry("INVALID"));
+	}
 	
 	/**
 	 * Test activate.

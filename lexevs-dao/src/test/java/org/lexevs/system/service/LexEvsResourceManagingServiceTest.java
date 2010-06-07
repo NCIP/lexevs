@@ -18,7 +18,10 @@
  */
 package org.lexevs.system.service;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +39,8 @@ import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.registry.setup.LexEvsDatabaseSchemaSetup;
 import org.lexevs.system.service.LexEvsResourceManagingService.CodingSchemeAliasHolder;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class LexEvsResourceManagingServiceTest.
@@ -494,6 +499,28 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		assertTrue(found);
 		assertTrue("Actual time: " + time, time < 20l);
+	}
+	
+	@Test
+	public void testAddNciHistoryResource() throws Exception {
+		this.lexEvsResourceManagingService.addNciHistoryResourceToSystem("someUri");
+		
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		assertEquals(1,template.queryForInt("select count(*) from registry"));
+	}
+	
+	@Test
+	public void testRemoveNciHistoryResource() throws Exception {
+		this.lexEvsResourceManagingService.addNciHistoryResourceToSystem("someUri");
+		
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		assertEquals(1,template.queryForInt("select count(*) from registry"));
+		
+		this.lexEvsResourceManagingService.removeNciHistoryResourceToSystemFromSystem("someUri");
+		
+		assertEquals(0,template.queryForInt("select count(*) from registry"));
 	}
 
 }
