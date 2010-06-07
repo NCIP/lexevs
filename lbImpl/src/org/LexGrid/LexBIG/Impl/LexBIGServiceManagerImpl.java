@@ -39,7 +39,6 @@ import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
-import org.lexevs.system.ResourceManager;
 import org.lexevs.system.service.SystemResourceService;
 
 /**
@@ -135,18 +134,18 @@ public class LexBIGServiceManagerImpl implements LexBIGServiceManager {
     @LgAdminFunction
     public void removeHistoryService(String codingScheme) throws LBParameterException, LBInvocationException {
         getLogger().logMethod(new Object[] { codingScheme });
-        String urn;
+        String uri;
         try {
-            urn = ResourceManager.instance().getURNForExternalCodingSchemeName(codingScheme);
+            uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(codingScheme);
         } catch (LBParameterException e) {
             // this means that no coding scheme that was loaded could map to a
             // URN - but
             // we could still work right iff they provided a urn as the coding
             // scheme.
-            urn = codingScheme;
+            uri = codingScheme;
         }
 
-        ResourceManager.instance().removeHistoryService(urn);
+        LexEvsServiceLocator.getInstance().getSystemResourceService().removeNciHistoryResourceToSystemFromSystem(uri);
     }
 
     public ExtensionDescriptionList getLoadExtensions() {
