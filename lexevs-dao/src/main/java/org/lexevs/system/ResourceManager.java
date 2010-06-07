@@ -1158,7 +1158,16 @@ public class ResourceManager implements SystemResourceService {
 
     }
 
-    /**
+    @Override
+	public void removeNciHistoryResourceToSystemFromSystem(String uri) {
+		try {
+			this.removeHistoryService(uri);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} 
+	}
+
+	/**
      * Removes the history service.
      * 
      * @param urn the urn

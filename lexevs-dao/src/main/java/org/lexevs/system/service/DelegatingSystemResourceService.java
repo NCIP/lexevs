@@ -141,6 +141,21 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 		}
 	}
 	
+	
+	
+	@Override
+	public void removeNciHistoryResourceToSystemFromSystem(String uri) {
+		try {
+			if(primarySystemResourceService.containsNonCodingSchemeResource(uri)){
+				primarySystemResourceService.removeNciHistoryResourceToSystemFromSystem(uri);
+			} else {
+				this.delegateSystemResourceService.removeNciHistoryResourceToSystemFromSystem(uri);
+			}
+		} catch (LBParameterException e) {
+			this.delegateSystemResourceService.removeNciHistoryResourceToSystemFromSystem(uri);
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#removeCodingSchemeResourceFromSystem(java.lang.String, java.lang.String)
 	 */

@@ -45,4 +45,6 @@ public interface NciHistoryService {
 	public NCIChangeEventList getDescendants(String uri, ConceptReference conceptReference);
 
 	public NCIChangeEventList getAncestors(String uri, ConceptReference conceptReference);
+	
+	public void removeNciHistory(String codingSchemeUri);
 }

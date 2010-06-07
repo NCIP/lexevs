@@ -131,12 +131,14 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 			ResourceType... types) {
 		DetachedCriteria criteria = DetachedCriteria.forClass(RegistryEntry.class);
 
-		Criterion typeRestriction = Restrictions.in("resourceType", types);
+		Criterion typeRestriction = Restrictions.eq("resourceUri", uri);
 		
 		Criterion uriRestriction = Restrictions.eq("resourceUri", uri);
 		
-		return this.getHibernateTemplate().findByCriteria(		
-				criteria.add(Restrictions.and(typeRestriction, uriRestriction)));
+		List<RegistryEntry> entries = this.getHibernateTemplate().findByCriteria(		
+				criteria.add(Restrictions.and(uriRestriction, typeRestriction)));
+		
+		return entries;
 	}
 
 	/* (non-Javadoc)

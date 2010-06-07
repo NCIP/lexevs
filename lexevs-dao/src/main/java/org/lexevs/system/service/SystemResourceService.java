@@ -119,6 +119,7 @@ public interface SystemResourceService {
 	 */
 	public void removePickListDefinitionResourceFromSystem(String pickListId, String version) throws LBParameterException;
 	
+	public void removeNciHistoryResourceToSystemFromSystem(String uri);
 	/**
 	 * Gets the internal version string for tag.
 	 * 

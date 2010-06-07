@@ -193,6 +193,17 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 			this.getRegistry().removeEntry(entry);
 		}
 	}
+	
+	public void removeNciHistoryResourceToSystemFromSystem(String uri) {
+		try {
+			this.databaseServiceManager.getNciHistoryService().removeNciHistory(uri);
+			
+			RegistryEntry entry = registry.getNonCodingSchemeEntry(uri);
+			this.registry.removeEntry(entry);
+		} catch (LBParameterException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#getInternalCodingSchemeNameForUserCodingSchemeName(java.lang.String, java.lang.String)

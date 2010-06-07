@@ -59,4 +59,6 @@ public interface NciHistoryDao extends LexGridSchemaVersionAwareDao {
 
 	public SystemRelease getSystemReleaseForReleaseUid(String codingSchemeUri,
 			String releaseUid);
+	
+	public void removeNciHistory(String codingSchemeUri);
 }

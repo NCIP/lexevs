@@ -219,9 +219,12 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#containsNonCodingSchemeEntry(java.lang.String)
 	 */
+	@Transactional
 	public boolean containsNonCodingSchemeEntry(String uri) {
-		return CollectionUtils.isNotEmpty(
-				registryDao.getAllRegistryEntriesOfUriAndTypes(uri, getNonCodingSchemeResourceTypes()));
+		List<RegistryEntry> entries =
+				registryDao.getAllRegistryEntriesOfUriAndTypes(uri, getNonCodingSchemeResourceTypes());
+				
+		return CollectionUtils.isNotEmpty(entries);
 	}
 	
 	protected ResourceType[] getNonCodingSchemeResourceTypes() {
