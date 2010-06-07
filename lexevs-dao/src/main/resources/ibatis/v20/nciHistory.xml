@@ -25,6 +25,15 @@
 		<result property="basedOnRelease" column="basedOnRelease" />
 	</resultMap>
 	
+	<delete id="deleteSystemRelease"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean">
+		DELETE 
+		FROM
+			${defaultPrefix}nciHistSystemRelease
+		WHERE
+			codingSchemeUri = #param1#
+	</delete>
+	
 	<sql id="getBaseLineFragment">
 		SELECT 
 			releaseURI,
