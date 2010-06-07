@@ -25,17 +25,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent;
+import org.LexGrid.LexBIG.DataModel.NCIHistory.types.ChangeType;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
-import org.LexGrid.util.sql.DBUtility;
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
+import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.versions.SystemRelease;
+import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.service.ncihistory.NciHistoryService;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
  * Converstion tool for loading a delimited text format into SQL.
@@ -46,20 +47,10 @@ import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
  */
 public class NCIThesaurusHistoryFileToSQL {
     private static String token_ = "|";
-    private static SimpleDateFormat dateFormat_ = new SimpleDateFormat("dd-MMM-yy");
+    private static SimpleDateFormat dateFormat_ = NciHistoryService.dateFormat;
     private LgMessageDirectorIF md_;
-    private Connection sqlConnection_;
-    private SQLTableUtilities tableUtility_;
-    private SQLTableConstants stc_;
 
-    private static String codingSchemeName_ = "NCI Thesaurus History File";
-
-    /**
-     * @return the codingSchemeName
-     */
-    public String getCodingSchemeName() {
-        return codingSchemeName_;
-    }
+    private String codingSchemeUri;
 
     /**
      * NCI Thesaurus History File to SQL Converter.
@@ -80,25 +71,19 @@ public class NCIThesaurusHistoryFileToSQL {
      *            log message output
      * @throws Exception
      */
-    public NCIThesaurusHistoryFileToSQL(URI filePath, URI versionsFilePath, String token, boolean failOnAllErrors,
-            String sqlServer, String sqlDriver, String sqlUsername, String sqlPassword, String tablePrefix,
+    public NCIThesaurusHistoryFileToSQL(String uri, URI filePath, URI versionsFilePath, String token, boolean failOnAllErrors,
             LgMessageDirectorIF messageDirector) throws Exception {
         md_ = messageDirector;
         if (token != null && token.length() > 0) {
             token_ = token;
         }
-
-        // set up the sql tables
-        prepareDatabase(sqlServer, sqlDriver, sqlUsername, sqlPassword, tablePrefix);
+        this.codingSchemeUri = uri;
 
         // load the data, verify the description status.
 
         loadSystemReleaseFile(versionsFilePath, failOnAllErrors);
 
         loadFile(filePath, failOnAllErrors);
-
-        sqlConnection_.close();
-
     }
 
     /**
@@ -194,9 +179,6 @@ public class NCIThesaurusHistoryFileToSQL {
     private void loadFile(URI filePath, boolean failOnAllErrors) throws Exception {
         BufferedReader reader = getReader(filePath);
 
-        PreparedStatement insert = sqlConnection_.prepareStatement(stc_
-                .getInsertStatementSQL(SQLTableConstants.NCI_THESAURUS_HISTORY));
-
         int lineNo = 0;
         String line = reader.readLine();
         while (line != null) {
@@ -207,6 +189,8 @@ public class NCIThesaurusHistoryFileToSQL {
                 continue;
             }
             try {
+                NCIChangeEvent event = new NCIChangeEvent();
+                
                 String[] vals = new String[6];
                 int startPos = 0;
                 int endPos = 0;
@@ -220,29 +204,27 @@ public class NCIThesaurusHistoryFileToSQL {
 
                 }
 
-                insert.setString(1, vals[0]);
-                insert.setString(2, useValueOrSpace(vals[1]));
-                insert.setString(3, vals[2].toLowerCase());
+                event.setConceptcode(vals[0]);
+                event.setConceptName(useValueOrSpace(vals[1]));
+                event.setEditaction(ChangeType.fromValue(vals[2].toLowerCase()));
 
                 try {
-                    insert.setTimestamp(4, new Timestamp(dateFormat_.parse(vals[3]).getTime()));
+                    event.setEditDate(new Timestamp(dateFormat_.parse(vals[3]).getTime()));
                 } catch (ParseException e) {
                     md_.fatalAndThrowException("Invalid date on line " + lineNo, e);
                 }
 
-                if (vals[4].equals("(null)")) {
-                    insert.setString(5, null);
-                } else {
-                    insert.setString(5, vals[4]);
+                if (! vals[4].equals("(null)")) {
+                    event.setReferencecode(vals[4]);
                 }
 
-                if (vals[5].equals("(null)")) {
-                    insert.setString(6, null);
-                } else {
-                    insert.setString(6, useValueOrSpace(vals[5]));
+                if (! vals[5].equals("(null)")) {
+                    event.setReferencename(useValueOrSpace(vals[5]));
                 }
 
-                insert.executeUpdate();
+                LexEvsServiceLocator.getInstance().
+                    getDatabaseServiceManager().
+                        getNciHistoryService().insertNCIChangeEvent(codingSchemeUri, event);
 
                 lineNo++;
                 line = reader.readLine();
@@ -258,19 +240,12 @@ public class NCIThesaurusHistoryFileToSQL {
             }
 
         }
-        insert.close();
     }
 
     private void loadSystemReleaseFile(URI filePath, boolean failOnAllErrors) throws Exception {
         BufferedReader reader = getReader(filePath);
 
-        PreparedStatement insert = sqlConnection_.prepareStatement(stc_
-                .getInsertStatementSQL(SQLTableConstants.SYSTEM_RELEASE));
-
-        PreparedStatement update = sqlConnection_.prepareStatement(stc_
-                .getUpdateStatementSQL(SQLTableConstants.SYSTEM_RELEASE));
-
-        int lineNo = 0;
+        int lineNumber = 0;
         String line = reader.readLine();
         while (line != null) {
             // format of line is
@@ -279,113 +254,38 @@ public class NCIThesaurusHistoryFileToSQL {
                 line = reader.readLine();
                 continue;
             }
+            
+            String[] tokens = StringUtils.splitPreserveAllTokens(line, token_);
+            
+            SystemRelease systemRelease = new SystemRelease();
             try {
-                String[] vals = new String[6];
-                int startPos = 0;
-                int endPos = 0;
-                for (int i = 0; i < 6; i++) {
-                    endPos = line.indexOf(token_, startPos);
-                    if (endPos == -1) {
-                        endPos = line.length();
-                    }
-                    vals[i] = line.substring(startPos, endPos);
-                    startPos = endPos + 1;
-
-                }
-
-                try {
-                    insert.setString(1, vals[3]);
-                    insert.setString(2, vals[2]);
-                    if (vals[4] == null || vals[4].length() == 0) {
-                        insert.setString(3, null);
-                    } else {
-                        insert.setString(3, vals[4]);
-                    }
-                    try {
-                        insert.setTimestamp(4, new Timestamp(dateFormat_.parse(vals[0]).getTime()));
-                    } catch (ParseException e) {
-                        md_.fatalAndThrowException("Invalid date on line " + lineNo, e);
-                    }
-                    insert.setString(5, vals[1]);
-
-                    if (vals[5] == null || vals[5].length() == 0) {
-                        insert.setString(6, null);
-                    } else {
-                        insert.setString(6, vals[5]);
-                    }
-
-                    insert.executeUpdate();
-                } catch (SQLException e) {
-                    try {
-                        // assume that this means that we had a key violation
-                        // reloading info that is already loaded. Do an update
-                        // instead
-                        // latest file wins.
-                        // If an exception happens on the update, rethrow the
-                        // origional exception.
-                        update.setString(6, vals[3]);
-                        update.setString(1, vals[2]);
-                        if (vals[4] == null || vals[4].length() == 0) {
-                            update.setString(2, null);
-                        } else {
-                            update.setString(2, vals[4]);
-                        }
-                        try {
-                            update.setTimestamp(3, new Timestamp(dateFormat_.parse(vals[0]).getTime()));
-                        } catch (ParseException e1) {
-                            md_.fatalAndThrowException("Invalid date on line " + lineNo, e);
-                        }
-                        update.setString(4, vals[1]);
-
-                        if (vals[5] == null || vals[5].length() == 0) {
-                            update.setString(5, null);
-                        } else {
-                            update.setString(5, vals[5]);
-                        }
-
-                        update.executeUpdate();
-                    } catch (SQLException e1) {
-                        // throw the origional...
-                        throw e;
-                    }
-                }
-
-                lineNo++;
-                line = reader.readLine();
-            } catch (Exception e) {
-                if (failOnAllErrors) {
-                    // this call rethrow the exception
-                    md_.fatalAndThrowException("Failure on line " + lineNo, e);
-                } else {
-                    md_.error("Error reading line " + lineNo, e);
-                    // go to next line, continue.
-                    line = reader.readLine();
-                }
+                systemRelease.setReleaseDate(new Timestamp(dateFormat_.parse(tokens[0]).getTime()));
+            } catch (ParseException e) {
+                md_.fatalAndThrowException("Invalid date on line " + lineNumber, e);
             }
-
+            systemRelease.setReleaseAgency(tokens[1]);
+            systemRelease.setReleaseURI(tokens[2]);
+            systemRelease.setReleaseId(tokens[3]);
+            systemRelease.setBasedOnRelease(tokens[4]);
+            
+            EntityDescription ed = new EntityDescription();
+            
+            
+            ed.setContent(tokens[5]);
+            systemRelease.setEntityDescription(ed);
+            
+            LexEvsServiceLocator.getInstance().
+                getDatabaseServiceManager().
+                    getNciHistoryService().
+                        insertSystemRelease(
+                                this.codingSchemeUri, 
+                                systemRelease);    
+            
+            lineNumber++;
+            line = reader.readLine();
         }
-        insert.close();
-        update.close();
     }
 
-    private void prepareDatabase(String sqlServer, String sqlDriver, String sqlUsername, String sqlPassword,
-            String tablePrefix) throws Exception {
-        try {
-            md_.info("Connecting to database");
-            sqlConnection_ = DBUtility.connectToDatabase(sqlServer, sqlDriver, sqlUsername, sqlPassword);
-        } catch (ClassNotFoundException e) {
-            md_
-                    .fatalAndThrowException("FATAL ERROR - The class you specified for your sql driver could not be found on the path.");
-        }
-
-        tableUtility_ = new SQLTableUtilities(sqlConnection_, tablePrefix);
-        stc_ = tableUtility_.getSQLTableConstants();
-
-        tableUtility_.createMetaDataTable();
-        tableUtility_.createSystemReleaseTables();
-        tableUtility_.createNCIHistoryTable();
-    }
-    
     private String useValueOrSpace(String s) {
         String rv = null;
         if(s == null || s.equalsIgnoreCase("")) {
