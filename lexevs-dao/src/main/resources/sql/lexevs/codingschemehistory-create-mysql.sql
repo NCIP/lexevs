@@ -16,8 +16,8 @@ CREATE TABLE @PREFIX@h_codingScheme
 	isActive CHAR(1) DEFAULT 1,
 	owner VARCHAR(250),
 	status VARCHAR(50),
-	effectiveDate TIMESTAMP,
-	expirationDate TIMESTAMP,
+	effectiveDate TIMESTAMP NULL,
+	expirationDate TIMESTAMP NULL,
 	releaseGuid VARCHAR(36),
 	entryStateGuid VARCHAR(36) NOT NULL,
 	PRIMARY KEY (entryStateGuid),
@@ -53,8 +53,8 @@ CREATE TABLE @PREFIX@h_entity
 	isActive CHAR(1) DEFAULT 1,
 	owner VARCHAR(250),
 	status VARCHAR(50),
-	effectiveDate TIMESTAMP,
-	expirationDate TIMESTAMP,
+	effectiveDate TIMESTAMP NULL,
+	expirationDate TIMESTAMP NULL,
 	entryStateGuid VARCHAR(36) NOT NULL,
 	forwardName VARCHAR(100),
 	reverseName VARCHAR(100),
@@ -91,8 +91,8 @@ CREATE TABLE @PREFIX@h_entityAssnsToData
 	isActive CHAR(1),
 	owner VARCHAR(250),
 	status VARCHAR(50),
-	effectiveDate TIMESTAMP,
-	expirationDate TIMESTAMP,
+	effectiveDate TIMESTAMP NULL,
+	expirationDate TIMESTAMP NULL,
 	entryStateGuid VARCHAR(36) NOT NULL,
 	PRIMARY KEY (entryStateGuid),
 	INDEX idx_h_entAsToData_source (associationPredicateGuid ASC, sourceEntityCode ASC)
@@ -114,8 +114,8 @@ CREATE TABLE @PREFIX@h_entityAssnsToEntity
 	isActive CHAR(1),
 	owner VARCHAR(250),
 	status VARCHAR(50),
-	effectiveDate TIMESTAMP,
-	expirationDate TIMESTAMP,
+	effectiveDate TIMESTAMP NULL,
+	expirationDate TIMESTAMP NULL,
 	entryStateGuid VARCHAR(36) NOT NULL,
 	PRIMARY KEY (entryStateGuid),
 	INDEX idx_h_entAsToEnt_source (associationPredicateGuid ASC, sourceEntityCode ASC),
@@ -144,8 +144,8 @@ CREATE TABLE @PREFIX@h_property
 	isActive CHAR(1),
 	owner VARCHAR(250),
 	status VARCHAR(50),
-	effectiveDate TIMESTAMP,
-	expirationDate TIMESTAMP,
+	effectiveDate TIMESTAMP NULL,
+	expirationDate TIMESTAMP NULL,
 	entryStateGuid VARCHAR(36) NOT NULL,
 	PRIMARY KEY (entryStateGuid),
 	INDEX idx_h_referenceGuid (referenceGuid ASC)
@@ -197,13 +197,63 @@ CREATE TABLE @PREFIX@h_relation
 	isActive CHAR(1),
 	owner VARCHAR(250),
 	status VARCHAR(50),
-	effectiveDate TIMESTAMP,
-	expirationDate TIMESTAMP,
+	effectiveDate TIMESTAMP NULL,
+	expirationDate TIMESTAMP NULL,
 	entryStateGuid VARCHAR(36) NOT NULL,
 	PRIMARY KEY (entryStateGuid)
 ) 
 ;
 
 
+
+ALTER TABLE @PREFIX@h_codingScheme ADD CONSTRAINT FK_h_codingScheme_codingScheme 
+	FOREIGN KEY (codingSchemeGuid) REFERENCES @PREFIX@codingScheme (codingSchemeGuid)
+ON DELETE CASCADE
+;
+
+ALTER TABLE @PREFIX@h_csMultiAttrib ADD CONSTRAINT FK_h_csMultiAttr_csMultiAttrib 
+	FOREIGN KEY (csMultiAttribGuid) REFERENCES @PREFIX@csMultiAttrib (csMultiAttribGuid)
+ON DELETE CASCADE
+;
+
+ALTER TABLE @PREFIX@h_entity ADD CONSTRAINT FK_h_entity_entity 
+	FOREIGN KEY (entityGuid) REFERENCES @PREFIX@entity (entityGuid)
+ON DELETE CASCADE
+;
+
+ALTER TABLE @PREFIX@h_entityAssnQuals ADD CONSTRAINT FK_h_entityAssnQ_entityAssnQua 
+	FOREIGN KEY (entityAssnQualsGuid) REFERENCES @PREFIX@entityAssnQuals (entityAssnQualsGuid)
+ON DELETE CASCADE
+;
+
+ALTER TABLE @PREFIX@h_entityAssnsToData ADD CONSTRAINT FK_h_entityAssnsD_entityAssnsD 
+	FOREIGN KEY (entityAssnsDataGuid) REFERENCES @PREFIX@entityAssnsToData (entityAssnsDataGuid)
+ON DELETE CASCADE
+;
+
+ALTER TABLE @PREFIX@h_entityAssnsToEntity ADD CONSTRAINT FK_h_entityAssnsE_entityAssnsE 
+	FOREIGN KEY (entityAssnsGuid) REFERENCES @PREFIX@entityAssnsToEntity (entityAssnsGuid)
+ON DELETE CASCADE
+;
+
+ALTER TABLE @PREFIX@h_property ADD CONSTRAINT FK_h_property_property 
+	FOREIGN KEY (propertyGuid) REFERENCES @PREFIX@property (propertyGuid)
+ON DELETE CASCADE
+;
+
+ALTER TABLE @PREFIX@h_propertyLinks ADD CONSTRAINT FK_h_propertyLin_propertyLinks 
+	FOREIGN KEY (propertyLinksGuid) REFERENCES @PREFIX@propertyLinks (propertyLinksGuid)
+ON DELETE CASCADE
+;
+
+ALTER TABLE @PREFIX@h_propertyMultiAttrib ADD CONSTRAINT FK_h_propertyMul_propertyMulti 
+	FOREIGN KEY (propMultiAttribGuid) REFERENCES @PREFIX@propertyMultiAttrib (propMultiAttribGuid)
+ON DELETE CASCADE
+;
+
+ALTER TABLE @PREFIX@h_relation ADD CONSTRAINT FK_h_relation_relation 
+	FOREIGN KEY (relationGuid) REFERENCES @PREFIX@relation (relationGuid)
+ON DELETE CASCADE
+;
 
 SET FOREIGN_KEY_CHECKS=1;
