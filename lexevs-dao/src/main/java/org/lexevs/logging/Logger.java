@@ -20,6 +20,7 @@ package org.lexevs.logging;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.ArrayList;
 
@@ -43,9 +44,11 @@ import org.lexevs.system.constants.SystemVariables;
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-public class Logger implements LgLoggerIF {
-    
-    /** The gui log_. */
+public class Logger implements LgLoggerIF, Serializable {
+
+	private static final long serialVersionUID = -4792431175428737078L;
+
+	/** The gui log_. */
     private org.apache.log4j.Logger fatal_, error_, warn_, info_, debug_, loadLog_, apiLog_, sqlLog_, guiLog_, vsGUILog_;
 
     /** The log message id_. */
@@ -551,9 +554,11 @@ public class Logger implements LgLoggerIF {
      * 
      * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
      */
-    private class MessageHolder {
-        
-        /**
+    private class MessageHolder implements Serializable {
+     
+		private static final long serialVersionUID = 3293868011576100366L;
+
+		/**
          * Instantiates a new message holder.
          * 
          * @param message the message
