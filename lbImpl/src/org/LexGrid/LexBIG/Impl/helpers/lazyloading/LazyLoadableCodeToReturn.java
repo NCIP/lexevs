@@ -49,9 +49,9 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
     /** The is hydrated. */
     private boolean isHydrated = false;
     
-    private EntityIndexService entityIndexService;
+    private transient EntityIndexService entityIndexService;
     
-    private SystemResourceService systemResourceService;
+    private transient SystemResourceService systemResourceService;
     
     
     /**
@@ -127,9 +127,23 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
     }
     
     protected Document buildDocument() throws Exception {
-        String uri = this.systemResourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
-        return entityIndexService.getDocumentById(
+        String uri = getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName);
+        return getEntityIndexService().getDocumentById(
                 uri, internalVersionString, documentId);
+    }
+    
+    private EntityIndexService getEntityIndexService() {
+        if(this.entityIndexService == null) {
+            this.entityIndexService = LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService();
+        }
+        return this.entityIndexService;
+    }
+    
+    private SystemResourceService getSystemResourceService() {
+        if(this.systemResourceService == null) {
+            this.systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+        }
+        return this.systemResourceService;
     }
 
     /**
