@@ -359,7 +359,7 @@ public class LexGridXMLProcessor {
      * @param path
      * @return boolean indicating if a coding scheme contains a property
      */
-    private boolean setPropertiesFlag(String path,  LgMessageDirectorIF messages) {
+   public boolean setPropertiesFlag(String path,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         boolean propsPresent = false;
         boolean codingSchemePresent = false;
@@ -411,7 +411,7 @@ public class LexGridXMLProcessor {
      * @param path
      * @return boolean indicating if a coding scheme contains a property
      */
-    private boolean setRelationsPropertiesFlag(String path,  LgMessageDirectorIF messages) {
+    public boolean setRelationsPropertiesFlag(String path,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         boolean propsPresent = false;
         boolean relationsPresent = false;
@@ -463,7 +463,7 @@ public class LexGridXMLProcessor {
  * @param messages
  * @return flag indicating there is a coding scheme element somewhere in this xml source
  */
-private boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages) {
+public boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         boolean schemePresent = false;
         boolean entryStateRemove = false;
@@ -524,7 +524,7 @@ private boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages
  * @return int indicating which revision element occurs in the revision meta data
  * allowing user to get an accurate load of the meta data for Revision.
  */
-private int getLastRevisionElement(String path,  LgMessageDirectorIF messages) {
+public int getLastRevisionElement(String path,  LgMessageDirectorIF messages) {
     BufferedReader in = null;
     int lastMetaDataElement = -1;
     XMLStreamReader xmlStreamReader;
