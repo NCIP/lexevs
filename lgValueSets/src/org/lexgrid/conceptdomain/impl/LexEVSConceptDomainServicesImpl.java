@@ -31,6 +31,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
@@ -41,6 +42,8 @@ import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.entity.EntityService;
@@ -139,12 +142,13 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 		return getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomain(conceptDomainId);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#insertConceptDomain(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.commonTypes.Properties)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#insertConceptDomain(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.commonTypes.Properties)
 	 */
 	@Override
 	public void insertConceptDomain(String conceptDomainId,
-			String conceptDomainName, String description, String status,
+			String conceptDomainName, String revisionId, String description, String status,
 			Properties properties) throws LBException {
 		// create an entity object for concept domain
 		Entity entity = new Entity();
@@ -155,6 +159,14 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 		entity.setEntityDescription(ed);
 		entity.setStatus(status);
 		entity.addEntityType(ConceptDomainConstants.CONCEPT_DOMAIN_ENTITY_TYPE);
+		
+		if (StringUtils.isNotEmpty(revisionId))
+		{
+			EntryState es = new EntryState();
+			es.setContainingRevision(revisionId);
+			es.setChangeType(ChangeType.NEW);
+			entity.setEntryState(es);
+		}
 		
 		if (StringUtils.isNotEmpty(conceptDomainName))
 		{
@@ -245,17 +257,18 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 				ConceptDomainConstants.CONCEPT_DOMAIN_CODING_SCHEME_FORMAL_NAME);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#getConceptDomainEntitiesWithName(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#getConceptDomainEntitisWithName(java.lang.String, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<Entity> getConceptDomainEntitisWithName(String conceptDomainName) throws LBException {		
+	public List<Entity> getConceptDomainEntitisWithName(String conceptDomainName, SearchDesignationOption option, String matchAlgorithm, String language) throws LBException {		
 		List<Entity> entityList = new ArrayList<Entity>();		
 		CodedNodeSet cns = getConceptDomainCodedNodeSet();
 		
 		if (cns != null)
 		{
-			cns.restrictToMatchingDesignations(conceptDomainName, null, MatchAlgorithms.LuceneQuery.name(), null);
+			cns.restrictToMatchingDesignations(conceptDomainName, option, MatchAlgorithms.valueOf(matchAlgorithm).name(), language);
 			
 			if (cns != null)
 			{
@@ -295,8 +308,7 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 				if (csvr != null)
 					vsdURIs.add(vsdURI);
 			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new LBException("Problem resolving isEntityInConceptDomain", e);
 			}		
 		}		
 		

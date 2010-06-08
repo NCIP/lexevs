@@ -5,6 +5,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.concepts.Entity;
@@ -30,11 +31,21 @@ public interface LexEVSConceptDomainServices {
 	
 	/**
 	 * Returns list of concept domain entities matching the name provided.
-	 * @param conceptDomainName - match name of concept domain
+	 * @param conceptDomainName 
+	 * 			  match name of concept domain
+	 * @param option 
+	 *            Indicates the designations to search (one of the enumerated
+	 *            type SearchDesignationOption).
+	 * @param matchAlgorithm
+	 *            Local name of the match algorithm - possible algorithms are
+	 *            returned in LexBigService.getMatchAlgorithms().
+	 * @param language
+	 *            Language of search string. If missing, use the default
+	 *            language specified in the context.
 	 * @return list of entities containing matching concept domain name
 	 * @throws LBException
 	 */
-	public List<Entity> getConceptDomainEntitisWithName(String conceptDomainName) throws LBException;
+	public List<Entity> getConceptDomainEntitisWithName(String conceptDomainName, SearchDesignationOption option, String matchAlgorithm, String language) throws LBException;
 	
 	/**
 	 * Returns coded node set for concept domain entities.
@@ -67,6 +78,8 @@ public interface LexEVSConceptDomainServices {
 	 * 				Id of concept domain
 	 * @param conceptDomainName -
 	 * 				concept domain name
+	 * @param revisionId - 
+	 * 				revision id of concept domain
 	 * @param description - 
 	 * 				concept domain description
 	 * @param status - 
@@ -77,7 +90,7 @@ public interface LexEVSConceptDomainServices {
 	 * @throws LBException
 	 */
 	public void insertConceptDomain(String conceptDomainId, String conceptDomainName, 
-			String description, String status, Properties properties) throws LBException;
+			String revisionId, String description, String status, Properties properties) throws LBException;
 	
 	/**
 	 * Inserts concept domain entity into concept domain coding scheme.
