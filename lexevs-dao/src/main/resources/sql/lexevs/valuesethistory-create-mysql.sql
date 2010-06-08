@@ -14,8 +14,8 @@ CREATE TABLE @PREFIX@h_valueSetDefinition
 	isActive CHAR(1),
 	owner VARCHAR(250),
 	status VARCHAR(50),
-	effectiveDate TIMESTAMP,
-	expirationDate TIMESTAMP,
+	effectiveDate TIMESTAMP NULL ,
+	expirationDate TIMESTAMP NULL ,
 	entryStateGuid VARCHAR(36),
 	INDEX idx_vsdName (valueSetDefName ASC),
 	INDEX idx_vsdURI (valueSetDefURI ASC)
@@ -46,8 +46,8 @@ CREATE TABLE @PREFIX@h_vsdEntry
 	isActive CHAR(1),
 	owner VARCHAR(250),
 	status VARCHAR(50),
-	effectiveDate TIMESTAMP,
-	expirationDate TIMESTAMP,
+	effectiveDate TIMESTAMP NULL ,
+	expirationDate TIMESTAMP NULL ,
 	entryStateGuid VARCHAR(36),
 	INDEX idx_valueSetDefGuid (valueSetDefGuid ASC),
 	INDEX idx_vsdEnt_entityCode (entityCode ASC)
@@ -84,8 +84,8 @@ CREATE TABLE @PREFIX@h_vsPickList
 	isActive CHAR(1),
 	owner VARCHAR(250),
 	status VARCHAR(50),
-	effectiveDate TIMESTAMP,
-	expirationDate TIMESTAMP,
+	effectiveDate TIMESTAMP NULL ,
+	expirationDate TIMESTAMP NULL ,
 	entryStateGuid VARCHAR(36),
 	INDEX idx_pickListId (pickListId ASC),
 	INDEX idx_representsVSD (representsValueSetDefinition ASC)
@@ -111,8 +111,8 @@ CREATE TABLE @PREFIX@h_vsPLEntry
 	isActive CHAR(1),
 	owner VARCHAR(250),
 	status VARCHAR(50),
-	effectiveDate TIMESTAMP,
-	expirationDate TIMESTAMP,
+	effectiveDate TIMESTAMP NULL ,
+	expirationDate TIMESTAMP NULL ,
 	entryStateGuid VARCHAR(36),
 	INDEX idx_vsPickListGuid (vsPickListGuid ASC),
 	INDEX idx_entityCode (entityCode ASC)
@@ -139,8 +139,8 @@ CREATE TABLE @PREFIX@h_vsProperty
 	isActive CHAR(1),
 	owner VARCHAR(250),
 	status VARCHAR(50),
-	effectiveDate TIMESTAMP,
-	expirationDate TIMESTAMP,
+	effectiveDate TIMESTAMP NULL ,
+	expirationDate TIMESTAMP NULL ,
 	entryStateGuid VARCHAR(36) NOT NULL,
 	INDEX idx_vsProperty (referenceGuid ASC, propertyId ASC, propertyName ASC)
 ) 
