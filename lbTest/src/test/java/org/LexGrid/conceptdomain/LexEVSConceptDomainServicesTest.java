@@ -3,18 +3,15 @@
  */
 package org.LexGrid.conceptdomain;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.util.Date;
 import java.util.List;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.junit.Test;
 import org.lexgrid.conceptdomain.LexEVSConceptDomainServices;
@@ -37,7 +34,7 @@ public class LexEVSConceptDomainServicesTest {
 	 */
 	@Test
 	public void testInsertConceptDomainStringStringStringStringProperties() throws LBException {
-		getConceptDomainService().insertConceptDomain("cd001", "cd1 name", "cd1 desc", "cd1 status", null);
+		getConceptDomainService().insertConceptDomain("cd001", "cd1 name", null, "cd1 desc", "cd1 status", null);
 	}
 
 	
