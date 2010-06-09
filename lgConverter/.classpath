@@ -7,7 +7,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/apache/commons/commons-cli-1.0.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/sqlDrivers/restricted-license/db2jcc.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/sqlDrivers/postgresql-8.1-405.jdbc3.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/sqlDrivers/restricted-license/msbase.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/sqlDrivers/restricted-license/mssqlserver.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/sqlDrivers/restricted-license/msutil.jar"/>
@@ -44,5 +43,6 @@
 	<classpathentry kind="lib" path="/lgSharedLibraries/protege/protege-3.4.4.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/protege/protege-owl-3.4.4.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/eclipse/swt/windows/swt.jar"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/sqlDrivers/postgresql-8.4-701.jdbc3.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
