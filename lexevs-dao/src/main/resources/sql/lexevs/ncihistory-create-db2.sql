@@ -6,7 +6,7 @@ CREATE TABLE @PREFIX@nciHistSystemRelease (
 	basedOnRelease VARCHAR(250),
 	releaseDate TIMESTAMP NOT NULL,
 	releaseAgency varchar(250) NOT NULL,
-	description description CLOB(2G) NOT LOGGED
+	description CLOB(2G) NOT LOGGED
 )
 ;
 
@@ -14,11 +14,11 @@ CREATE TABLE @PREFIX@nciHist (
 	ncitHistGuid VARCHAR(36) NOT NULL,
 	releaseGuid VARCHAR(36) NOT NULL,
 	entityCode VARCHAR(100) NOT NULL,
-	conceptName VARCHAR NOT NULL,
+	conceptName CLOB(2G) NOT LOGGED NOT NULL,
 	editAction VARCHAR(10) NOT NULL,
 	editDate TIMESTAMP NOT NULL,
 	referenceCode VARCHAR(100),
-	referenceName description CLOB(2G) NOT LOGGED
+	referenceName CLOB(2G) NOT LOGGED
 )
 ;
 
