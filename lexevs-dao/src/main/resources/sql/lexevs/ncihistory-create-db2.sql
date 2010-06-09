@@ -17,7 +17,7 @@ CREATE TABLE @PREFIX@nciHist (
 	conceptName CLOB(2G) NOT LOGGED NOT NULL,
 	editAction VARCHAR(10) NOT NULL,
 	editDate TIMESTAMP NOT NULL,
-	referenceCode VARCHAR(100),
+	referenceCode VARCHAR(100) NOT NULL,
 	referenceName CLOB(2G) NOT LOGGED
 )
 ;
