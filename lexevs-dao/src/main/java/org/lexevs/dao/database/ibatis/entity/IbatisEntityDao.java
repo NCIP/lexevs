@@ -475,6 +475,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			Entity entity, 
 			Inserter inserter,
 			boolean cascade) {
+		Assert.notNull(entityUId);
 
 		String historyPrefix = this.getPrefixResolver().resolveHistoryPrefix();
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
@@ -482,6 +483,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		InsertOrUpdateEntityBean entityData = (InsertOrUpdateEntityBean) this.getSqlMapClientTemplate()
 				.queryForObject(GET_ENTITY_ATTRIBUTES_BY_UID_SQL,
 						new PrefixedParameter(prefix, entityUId));
+		
+		Assert.notNull(entityData);
 		
 		entityData.setPrefix(historyPrefix);
 		
