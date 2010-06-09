@@ -34,6 +34,7 @@ import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.batch.classify.Classifier;
+import org.springframework.util.Assert;
 
 /**
  * The Class IbatisVersionsDao.
@@ -301,6 +302,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 
 	public void deleteAllEntryStateEntriesByEntryUId(String codingSchemeUId,
 			String entryUId) {
+		Assert.notNull(entryUId);
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
