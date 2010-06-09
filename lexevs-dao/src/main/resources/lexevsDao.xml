@@ -578,7 +578,7 @@
 		class="org.lexevs.dao.database.setup.script.ScriptFactory">
 		<property name="scriptType" value="create"/>
 		<property name="databaseType" ref="databaseTypeFactory"/>
-		<property name="creationScriptPrefix" value="sql/lexevs/nciHistory-create-"/>
+		<property name="creationScriptPrefix" value="sql/lexevs/ncihistory-create-"/>
 	</bean>
 	
 	<bean id="registryXmlToDatabaseTransfer" 
