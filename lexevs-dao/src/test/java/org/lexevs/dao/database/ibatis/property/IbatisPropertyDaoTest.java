@@ -342,6 +342,16 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	 */
 	@Test
 	public void insertHistoryProperty(){
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId, entryStateGuid) " +
+				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'propId', 'esguid')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
 		
 		Property property = new Property();
 		property.setPropertyId("pId");
@@ -358,43 +368,13 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		text.setDataType("format");
 		property.setValue(text);
 		
-		ibatisPropertyDao.insertHistoryProperty("fake-cs-id", "pguid", property);
-	
-		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		
-		assertEquals(1, template.queryForInt("select count(*) from h_property"));
-	}
-	
-	@Test
-	public void insertHistoryPropertyWithQualifier(){
-		
-		Property property = new Property();
-		property.setPropertyId("pId");
-		property.setPropertyName("propName");
-		property.setPropertyType("propType");
-		property.setLanguage("lang");
-		property.setIsActive(true);
-		
-		property.setOwner("property owner");
-		
-		property.setStatus("testing");
-		Text text = new Text();
-		text.setContent("prop value");
-		text.setDataType("format");
-		property.setValue(text);
-		
-		PropertyQualifier qual = new PropertyQualifier();
-		qual.setPropertyQualifierName("qualName");
-		qual.setPropertyQualifierType("qualType");
-		qual.setValue(DaoUtility.createText("qualContent"));
-		property.addPropertyQualifier(qual);
+		EntryState es = new EntryState();
+		es.setChangeType(ChangeType.MODIFY);
+		property.setEntryState(es);
 		
 		ibatisPropertyDao.insertHistoryProperty("fake-cs-id", "pguid", property);
-	
-		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		assertEquals(1, template.queryForInt("select count(*) from h_property"));
-		assertEquals(1, template.queryForInt("select count(*) from h_propertymultiattrib"));
 	}
 	
 	@Test
@@ -562,7 +542,6 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 				assertEquals(rs.getString(5), "qual text");
 				assertNull(rs.getString(6));
 				assertNull(rs.getString(7));
-				assertNull(rs.getString(8));
 				
 				return null;
 			}
@@ -598,8 +577,8 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 				assertNotNull(rs.getString(1));
 				assertEquals(rs.getString(2), "pguid");
 				assertEquals(rs.getString(3), SQLTableConstants.TBLCOLVAL_SOURCE);
-				assertEquals(rs.getString(4), SQLTableConstants.TBLCOLVAL_SOURCE);
-				assertEquals(rs.getString(5), "test source");
+				assertEquals("test source", rs.getString(4));
+				assertEquals("test source", rs.getString(5));
 				assertEquals(rs.getString(6), "test subref");
 				assertEquals(rs.getString(7), "test role");
 				assertNull(rs.getString(8));
@@ -635,11 +614,10 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 				assertNotNull(rs.getString(1));
 				assertEquals(rs.getString(2), "pguid");
 				assertEquals(rs.getString(3), SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
-				assertEquals(rs.getString(4), SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
+				assertEquals("test usageContext", rs.getString(4));
 				assertEquals(rs.getString(5), "test usageContext");
 				assertNull(rs.getString(6));
 				assertNull(rs.getString(7));
-				assertNull(rs.getString(8));
 				
 				return null;
 			}
