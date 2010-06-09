@@ -36,6 +36,8 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.error.DatabaseError;
@@ -263,6 +265,12 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		source.setLocalId("someId");
 		cs.getMappings().addSupportedSource(source);
 		
+		EntryState es = new EntryState();
+		es.setChangeType(ChangeType.MODIFY);
+		es.setRelativeOrder(1l);
+		
+		cs.setEntryState(es);
+		
 		service.updateCodingScheme(cs);
 		
 		assertEquals(2, template.queryForInt("Select count(*) from cssupportedattrib"));
@@ -289,6 +297,12 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		registry.addNewItem(entry);
 		
 		CodingScheme cs = service.getCodingSchemeByUriAndVersion("csuri", "csversion");
+		
+		EntryState es = new EntryState();
+		es.setChangeType(ChangeType.MODIFY);
+		es.setRelativeOrder(1l);
+		
+		cs.setEntryState(es);
 		
 		SupportedCodingScheme scs = new SupportedCodingScheme();
 		scs.setLocalId("id");
