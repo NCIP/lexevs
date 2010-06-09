@@ -8,19 +8,17 @@ public class PropertyUpdateEvent {
 	private String codingSchemeVersion;
 	private String entityCode;
 	private String entityCodeNamespace;
-	private Property origninalProperty;
 	private Property propertyUpdates;
 	
 	public PropertyUpdateEvent(String codingSchemeUri,
 			String codingSchemeVersion, String entityCode,
-			String entityCodeNamespace, Property origninalProperty,
+			String entityCodeNamespace,
 			Property propertyUpdates) {
 		super();
 		this.codingSchemeUri = codingSchemeUri;
 		this.codingSchemeVersion = codingSchemeVersion;
 		this.entityCode = entityCode;
 		this.entityCodeNamespace = entityCodeNamespace;
-		this.origninalProperty = origninalProperty;
 		this.propertyUpdates = propertyUpdates;
 	}
 
@@ -58,14 +56,6 @@ public class PropertyUpdateEvent {
 
 	public void setEntityCodeNamespace(String entityCodeNamespace) {
 		this.entityCodeNamespace = entityCodeNamespace;
-	}
-
-	public Property getOrigninalProperty() {
-		return origninalProperty;
-	}
-
-	public void setOrigninalProperty(Property origninalProperty) {
-		this.origninalProperty = origninalProperty;
 	}
 
 	public Property getPropertyUpdates() {

@@ -50,6 +50,7 @@ import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.batch.classify.Classifier;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
@@ -208,6 +209,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				this.getNonBatchTemplateInserter());	
 	}
 	
+	@Transactional
 	public String insertHistoryProperty(String codingSchemeUId,
 			String propertyUId, Property property) {
 		
@@ -354,6 +356,8 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			String propertyUId,
 			Property property, 
 			Inserter inserter) {
+		
+		Assert.notNull(propertyUId);
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		String historyPrefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
@@ -361,6 +365,8 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		InsertOrUpdatePropertyBean propertyData = (InsertOrUpdatePropertyBean) this.getSqlMapClientTemplate()
 				.queryForObject(GET_PROPERTY_ATTRIBUTES_BY_UID_SQL,
 						new PrefixedParameter(prefix, propertyUId));
+		
+		Assert.notNull(propertyData);
 		
 		inserter.insert(INSERT_PROPERTY_SQL, 
 				buildInsertPropertyBean(
@@ -400,23 +406,19 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				"in order to be updated.");
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
-		
-		/*String propertyGuid = this.getPropertyUIdFromParentUIdAndPropId(
-				codingSchemeUId, 
-				parentUId, 
-				property.getPropertyId());*/
-		String entryStateUId = this.createUniqueId();
-		
+
 		this.getSqlMapClientTemplate().update(
 				UPDATE_PROPERTY_BY_UID_SQL, 
 				this.buildInsertPropertyBean(
 						prefix, 
 						parentUId, 
 						propertyUId, 
-						entryStateUId, 
+						null, 
 						type, 
 						property),
 						1);	
+		
+		this.updatePropertyVersionableAttrib(codingSchemeUId, parentUId, propertyUId, type, property);
 	}
 	
 	/* (non-Javadoc)

@@ -37,7 +37,10 @@ import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClass
 import org.lexevs.dao.database.constants.classifier.property.PropertyTypeClassifier;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
+import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
 import org.springframework.batch.classify.Classifier;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 /**
  * The Class VersionableEventPropertyService.
@@ -533,10 +536,15 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	 * (java.lang.String, java.lang.String, java.lang.String, java.lang.String,
 	 * org.LexGrid.commonTypes.Property)
 	 */
+	@Transactional
 	@Override
 	@DatabaseErrorIdentifier(errorCode=UPDATE_ENTITY_PROPERTY_ERROR)
 	public void updateEntityProperty(String codingSchemeUri, String version,
 			String entityCode, String entityCodeNamespace, Property property) {
+		
+		Assert.notNull(property);
+		Assert.notNull(property.getPropertyId());
+		Assert.notNull(property.getPropertyName());
 
 		PropertyDao propertyDao = this.getDaoManager().getPropertyDao(
 				codingSchemeUri, version);
@@ -566,12 +574,12 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 						.classify(EntryStateType.PROPERTY), prevEntryStateUId,
 						property.getEntryState());
 
-		/* 4. Update search (Lucene) indexes. */
-
-		/*
-		 * this.firePropertyUpdateEvent(new PropertyUpdateEvent(codingSchemeUri,
-		 * version, entityCode, entityCodeNamespace, null, property));
-		 */
+		this.firePropertyUpdateEvent(new PropertyUpdateEvent(
+				codingSchemeUri,
+				version, 
+				entityCode,
+				entityCodeNamespace, 
+				property));
 	}
 
 	/*
