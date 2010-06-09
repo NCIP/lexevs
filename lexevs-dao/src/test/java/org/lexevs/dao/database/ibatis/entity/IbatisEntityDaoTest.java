@@ -321,80 +321,6 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	/**
-	 * Insert entity.
-	 */
-	@Test
-	public void insertHistoryEntityWithProperty(){
-		Entity entity = new Entity();
-		entity.setEntityCode("code");
-		entity.setEntityCodeNamespace("namespace");
-		entity.setIsDefined(true);
-		entity.setIsAnonymous(true);
-		entity.setIsActive(false);
-		
-		EntityDescription ed = new EntityDescription();
-		ed.setContent("a description");
-		entity.setEntityDescription(ed);
-		
-		Property prop = new Property();
-		prop.setPropertyId("someId");
-		prop.setPropertyName("name");
-		prop.setValue(DaoUtility.createText("content"));
-		
-		entity.addProperty(prop);
-		
-		ibatisEntityDao.insertHistoryEntity(csId, "entityId", entity);
-		
-		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		assertEquals(1, template.queryForInt("select count(*) from h_entity"));
-		assertEquals(1, template.queryForInt("select count(*) from h_property"));
-	}
-	
-	/**
-	 * Insert entity.
-	 */
-	@Test
-	public void insertHistoryEntityWithPropertyAndQualifier(){
-		Entity entity = new Entity();
-		entity.setEntityCode("code");
-		entity.setEntityCodeNamespace("namespace");
-		entity.setIsDefined(true);
-		entity.setIsAnonymous(true);
-		entity.setIsActive(false);
-		
-		EntryState es = new EntryState();
-		es.setChangeType(ChangeType.DEPENDENT);
-		es.setRelativeOrder(23l);
-		entity.setEntryState(es);
-		
-		entity.setEntryState(es);
-		
-		EntityDescription ed = new EntityDescription();
-		ed.setContent("a description");
-		entity.setEntityDescription(ed);
-		
-		Property prop = new Property();
-		prop.setPropertyId("someId");
-		prop.setPropertyName("name");
-		prop.setValue(DaoUtility.createText("content"));
-		
-		PropertyQualifier qual = new PropertyQualifier();
-		qual.setPropertyQualifierName("qualName");
-		qual.setPropertyQualifierType("qualType");
-		qual.setValue(DaoUtility.createText("text"));
-		prop.addPropertyQualifier(qual);
-		
-		entity.addProperty(prop);
-		
-		ibatisEntityDao.insertHistoryEntity(csId, "entityId", entity);
-		
-		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		assertEquals(1, template.queryForInt("select count(*) from h_entity"));
-		assertEquals(1, template.queryForInt("select count(*) from h_property"));
-		assertEquals(1, template.queryForInt("select count(*) from h_propertymultiattrib"));
-	}
-	
-	/**
 	 * Test get all entities of coding scheme.
 	 */
 	@Test
@@ -705,10 +631,10 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 			"values ('eguid', 'concept')");
 		
 		template.execute("Insert into propertylinks " +
-			"values ('plguid1', 'eguid', 'pguid1', 'propertyLink1', 'pguid2')");
+			"values ('plguid1', 'eguid', 'pguid1', 'propertyLink1', 'pguid2', null)");
 		
 		template.execute("Insert into propertylinks " +
-			"values ('plguid2', 'eguid', 'pguid2', 'propertyLink2', 'pguid1')");
+			"values ('plguid2', 'eguid', 'pguid2', 'propertyLink2', 'pguid1', null)");
 			
 		Entity entity = ibatisEntityDao.getEntityByCodeAndNamespace("csguid", "ecode", "ens");
 		
