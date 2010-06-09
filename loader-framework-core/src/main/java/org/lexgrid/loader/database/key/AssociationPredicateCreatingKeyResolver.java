@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.LexGrid.relations.AssociationPredicate;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
@@ -30,21 +31,28 @@ public class AssociationPredicateCreatingKeyResolver implements AssociationPredi
 					CodingSchemeDao codingSchemedao = daoManager.getCodingSchemeDao(codingSchemeUri, version);
 					AssociationDao associationDao = daoManager.getAssociationDao(codingSchemeUri, version);
 
-					String codingSchemeId = 
+					String codingSchemeUid = 
 						codingSchemedao.
 						getCodingSchemeUIdByUriAndVersion(
 								codingSchemeUri, version);
 
-					String relationId = associationDao.getRelationUId(codingSchemeId, relationContainerName);
+					String relationUid = associationDao.getRelationUId(codingSchemeUid, relationContainerName);
+					
+					String associationPredicateUid = associationDao.getAssociationPredicateUIdByContainerUId(
+							codingSchemeUid, 
+							relationUid, 
+							associationName);
+					
+					if(StringUtils.isBlank(associationPredicateUid)) {
+						associationPredicateUid = associationDao.
+							insertAssociationPredicate(
+								codingSchemeUid, 
+								relationUid, 
+								buildDefaultAssociationPredicate(associationName),
+								false);
+					}
 
-					String id = associationDao.
-					insertAssociationPredicate(
-							codingSchemeId, 
-							relationId, 
-							buildDefaultAssociationPredicate(associationName),
-							false);
-
-					associationPrediateIdMap.put(associationName, id);
+					associationPrediateIdMap.put(associationName, associationPredicateUid);
 
 					return null;
 				}
