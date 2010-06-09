@@ -123,7 +123,7 @@ CREATE TABLE @PREFIX@entityAssnQuals
 	referenceGuid VARCHAR(36) NOT NULL,
 	qualifierName VARCHAR(50) NOT NULL,
 	qualifierValue VARCHAR(250),
-	entryStateGuid VARCHAR(36) NOT NULL,
+	entryStateGuid VARCHAR(36),
 	PRIMARY KEY (entityAssnQualsGuid),
 	UNIQUE UQ_entityAssnQuals(referenceGuid, qualifierName, qualifierValue)
 ) 
