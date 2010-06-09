@@ -65,6 +65,7 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 	 * (org.LexGrid.versions.SystemRelease)
 	 */
 	@Override
+	@Transactional(rollbackFor=Exception.class)
 	public void loadSystemRelease(SystemRelease systemRelease) throws LBRevisionException {
 
 		if (systemRelease == null) {
@@ -177,7 +178,7 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 	 * .versions.Revision)
 	 */
 	@Override
-	@Transactional  
+	@Transactional(rollbackFor=Exception.class)
 	public void loadRevision(Revision revision, String releaseURI) throws LBRevisionException {
 
 		if (revision == null)
@@ -246,6 +247,7 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 		}
 	}
 
+	@Transactional(rollbackFor=Exception.class)
 	public void loadRevision(Versionable versionable, String releaseURI)
 			throws LBRevisionException {
 
