@@ -249,7 +249,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				assertNotNull(rs.getString(1));
 				assertEquals(rs.getString(2), "cs-guid");
 				assertEquals(rs.getString(3), "container name");
-				assertEquals(rs.getString(9), "a description");
+				assertEquals(rs.getString(10), "a description");
 
 				return true;
 			}
@@ -382,7 +382,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				"'eae-guid'," +
 				"'qualName'," +
 				"'qualValue'," +
-				"null )");
+				"'esguid' )");
 		
 		template.execute("insert into " +
 				"entityassnquals values ( " +
@@ -390,7 +390,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				"'ead-guid'," +
 				"'qualName'," +
 				"'qualValue'," +
-				"null )");
+				"'esguid' )");
 		
 		assertEquals(2, template.queryForInt("select count(*) from entityassnquals"));
 		
