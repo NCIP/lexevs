@@ -513,6 +513,13 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 							SQLTableConstants.TBLCOLVAL_LOCALNAME,
 							entryStateUId));
 		}
+		
+		if(codingScheme.getMappings() != null) {
+			List<URIMap> maps = DaoUtility.getAllURIMappings(codingScheme.getMappings());
+			for(URIMap uriMap : maps) {
+				this.insertOrUpdateURIMap(codingSchemeUId, uriMap);
+			}
+		}
 
 		return entryStateUId;
 	}
