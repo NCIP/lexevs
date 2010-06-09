@@ -170,14 +170,7 @@
 		DELETE FROM
 			$prefix$entryState
 		WHERE
-			entryStateGuid IN
-			( SELECT
-					entryStateGuid 
-				FROM					
-					$prefix$codingScheme
-				WHERE					
-					codingSchemeGuid = #param1#
-			)					
+			entryGuid = #param1#
 	</delete>
 	
 	<delete id="deletaAllCSPropEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
@@ -405,4 +398,15 @@
 				rel.relationGuid = #param2#
 			)
 	</delete>	
+	
+	<select id="isValidRevision" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultClass="string">
+		SELECT
+			count(1)
+		FROM
+			$prefix$revision rev
+		WHERE
+			rev.revisionId = #param1#
+     </select>
 </sqlMap>
