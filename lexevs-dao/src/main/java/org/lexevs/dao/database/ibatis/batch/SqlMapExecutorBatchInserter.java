@@ -19,10 +19,14 @@
 package org.lexevs.dao.database.ibatis.batch;
 
 import java.sql.SQLException;
+import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.inserter.BatchInserter;
+import org.lexevs.logging.LoggerFactory;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
+import com.ibatis.sqlmap.engine.execution.BatchResult;
 
 /**
  * The Class SqlMapExecutorBatchInserter.
@@ -48,8 +52,30 @@ public class SqlMapExecutorBatchInserter implements BatchInserter {
 	 */
 	public void executeBatch() {
 		try {
-			sqlMapExecutor.executeBatch();
-		} catch (SQLException e) {
+			List<BatchResult> list = sqlMapExecutor.executeBatchDetailed();
+			
+			if(CollectionUtils.isNotEmpty(list)) {
+
+				float totalInserts = 0;
+
+				float batches = list.size();
+
+				for(BatchResult result : list) {
+					if(result.getUpdateCounts() != null) {
+						totalInserts += result.getUpdateCounts().length;
+					}
+				}
+
+				//Some db drivers won't report batch statistics -- so only report if
+				//something is there.
+				if( totalInserts > 0 && batches > 0) {
+					LoggerFactory.getLogger().info("\nBatch Insert Results:\n" + 
+							" -Batches: " + batches + "\n" +
+							" -Inserts: " + totalInserts + "\n" +
+							" " + (1 - (batches/totalInserts) + " Batch Efficiency (1.0 is best)" ));
+				}
+			}
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		

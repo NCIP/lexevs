@@ -19,6 +19,7 @@
 package org.lexevs.dao.database.ibatis.batch;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class InOrderOrderingBatchInserterDecorator implements BatchInserter {
 	private BatchOrderClassifier batchOrderClassifier;
 	
 	/** The statement map. */
-	private Map<Integer,List<SqlParameterPair>> statementMap = new LinkedHashMap<Integer,List<SqlParameterPair>>();
+	private Map<Integer,Map<String,List<Object>>> statementMap = new LinkedHashMap<Integer,Map<String,List<Object>>>();
 	/**
 	 * Instantiates a new ordering batch inserter decorator.
 	 * 
@@ -53,10 +54,6 @@ public class InOrderOrderingBatchInserterDecorator implements BatchInserter {
 			BatchOrderClassifier batchOrderClassifier){
 		this.delegate = delegate;
 		this.batchOrderClassifier = batchOrderClassifier;
-		
-		for(Integer groupNumber : this.batchOrderClassifier.getOrderedGroups()) {
-			statementMap.put(groupNumber, new ArrayList<SqlParameterPair>());
-		}
 	}
 	
 	/* (non-Javadoc)
@@ -66,8 +63,10 @@ public class InOrderOrderingBatchInserterDecorator implements BatchInserter {
 	public void executeBatch() {
 		
 		for(Integer group : statementMap.keySet()) {
-			for(SqlParameterPair pair : statementMap.get(group)){
-				delegate.insert(pair.getSql(), pair.getParameter());
+			for(String sql : statementMap.get(group).keySet()){
+				for(Object insertObj : statementMap.get(group).get(sql)) {
+					delegate.insert(sql, insertObj);
+				}
 			}
 		}
 		delegate.executeBatch();
@@ -87,35 +86,16 @@ public class InOrderOrderingBatchInserterDecorator implements BatchInserter {
 	@Override
 	public void insert(String sql, Object parameter) {
 		Integer groupNumber = this.batchOrderClassifier.classify(sql);
-		this.statementMap.get(groupNumber).add(
-				new SqlParameterPair(sql,parameter));
+		if(! this.statementMap.containsKey(groupNumber)) {
+			this.statementMap.put(groupNumber, new HashMap<String,List<Object>>() );
+		}
+		
+		Map<String,List<Object>> groupMap = this.statementMap.get(groupNumber);
+		
+		if(!groupMap.containsKey(sql)) {
+			groupMap.put(sql, new ArrayList<Object>() );
+		}
+		
+		groupMap.get(sql).add(parameter);
 	}
-
-	private class SqlParameterPair {
-		private String sql;
-		private Object parameter;
-		
-		public SqlParameterPair(String sql, Object parameter) {
-			super();
-			this.sql = sql;
-			this.parameter = parameter;
-		}
-		public String getSql() {
-			return sql;
-		}
-		public void setSql(String sql) {
-			this.sql = sql;
-		}
-		public Object getParameter() {
-			return parameter;
-		}
-		public void setParameter(Object parameter) {
-			this.parameter = parameter;
-		}
-		
-		
-	}
-
-	
-
 }
