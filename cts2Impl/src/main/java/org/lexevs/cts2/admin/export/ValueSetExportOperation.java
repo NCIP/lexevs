@@ -16,9 +16,7 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.lexevs.cts2.admin;
+package org.lexevs.cts2.admin.export;
 
-public interface ValueSetAdminOperation {
-	public int importValueSetVersion();	
-	
+public interface ValueSetExportOperation {
 }

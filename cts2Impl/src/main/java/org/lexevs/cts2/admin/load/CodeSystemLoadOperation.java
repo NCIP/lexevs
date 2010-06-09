@@ -15,12 +15,13 @@
  * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.lexevs.cts2.admin;
+package org.lexevs.cts2.admin.load;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.versions.Revision;
 
-public interface CodeSystemAdminOperation {
+public interface CodeSystemLoadOperation extends Loader{
 	
 	/**
 	 * Installs a code system (aka terminology) into the terminology service 
@@ -51,10 +52,5 @@ public interface CodeSystemAdminOperation {
 	
 	public int importCodeSystemRevsion(String xmlFileLocation) throws LBException;
 	
-	public void exportCodeSystemContent() throws LBException;
-	
-	public void changeCodeSystemStatus()throws LBException;
-	
-	
-	
+	public void changeCodeSystemStatus()throws LBException;	
 }

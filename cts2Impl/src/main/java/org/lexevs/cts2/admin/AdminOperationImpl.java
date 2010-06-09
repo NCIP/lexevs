@@ -17,6 +17,13 @@
  */
 package org.lexevs.cts2.admin;
 
+import org.lexevs.cts2.admin.export.AssociationExportOperation;
+import org.lexevs.cts2.admin.export.CodeSystemExportOperation;
+import org.lexevs.cts2.admin.export.ValueSetExportOperation;
+import org.lexevs.cts2.admin.load.AssociationLoadOperation;
+import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
+import org.lexevs.cts2.admin.load.ValueSetLoadOperation;
+
 /**
  * Class returns individual CTS 2 Administration Operation interfaces.
  * 
@@ -25,38 +32,44 @@ package org.lexevs.cts2.admin;
  */
 public class AdminOperationImpl implements AdminOperation {
 	
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.admin.AdminOperation#getAssociationAdminOperation()
-	 */
 	@Override
-	public AssociationAdminOperation getAssociationAdminOperation() {
+	public AssociationExportOperation getAssociationExportOperation() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.admin.AdminOperation#getCodeSystemAdminOperation()
-	 */
 	@Override
-	public CodeSystemAdminOperation getCodeSystemAdminOperation() {
+	public AssociationLoadOperation getAssociationLoadOperation() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.admin.AdminOperation#getNotificationAdminOperation()
-	 */
+	@Override
+	public CodeSystemExportOperation getCodeSystemExportOperation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeSystemLoadOperation getCodeSystemLoadOperation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	@Override
 	public NotificationAdminOperation getNotificationAdminOperation() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.admin.AdminOperation#getValueSetAdminOperation()
-	 */
 	@Override
-	public ValueSetAdminOperation getValueSetAdminOperation() {
+	public ValueSetExportOperation getValueSetExportOperation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ValueSetLoadOperation getValueSetLoadOperation() {
 		// TODO Auto-generated method stub
 		return null;
 	}

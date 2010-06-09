@@ -26,7 +26,7 @@ import org.lexevs.cts2.query.QueryOperation;
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
-public interface LexEvsCTS2 {
+public interface LexEvsCTS2{
 	/**
 	 * Returns LexEVS implementation of CTS2 Administration Operations.
 	 * 
@@ -47,4 +47,24 @@ public interface LexEvsCTS2 {
 	 * @return QueryOperation
 	 */
 	public QueryOperation getQueryOperation();
+	
+	/**
+	 * @return the serviceName
+	 */
+	public String getServiceName();
+	
+	/**
+	 * @return the serviceDescription
+	 */
+	public String getServiceDescription();
+	
+	/**
+	 * @return the serviceProvider
+	 */
+	public String getServiceProvider();
+	
+	/**
+	 * @return the serviceVersion
+	 */
+	public String getServiceVersion();
 }

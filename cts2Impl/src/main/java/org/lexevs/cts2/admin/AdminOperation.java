@@ -17,6 +17,13 @@
  */
 package org.lexevs.cts2.admin;
 
+import org.lexevs.cts2.admin.export.AssociationExportOperation;
+import org.lexevs.cts2.admin.export.CodeSystemExportOperation;
+import org.lexevs.cts2.admin.export.ValueSetExportOperation;
+import org.lexevs.cts2.admin.load.AssociationLoadOperation;
+import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
+import org.lexevs.cts2.admin.load.ValueSetLoadOperation;
+
 /**
  * LexEVS implementation of CTS2 Administration Operations.
  * 
@@ -24,18 +31,32 @@ package org.lexevs.cts2.admin;
  */
 public interface AdminOperation {
 	/**
-	 * Returns Association Administration Operation interface.
+	 * Returns Association Export Operation interface.
 	 * 
-	 * @return AssociationAdminOperation
+	 * @return AssociationExportOperation
 	 */
-	public AssociationAdminOperation getAssociationAdminOperation();
+	public AssociationExportOperation getAssociationExportOperation();
 	
 	/**
-	 * Returns Code System Administration Operation interface.
+	 * Returns Association Load Operation interface.
 	 * 
-	 * @return CodeSystemAdminOperation
+	 * @return AssociationLoadOperation
 	 */
-	public CodeSystemAdminOperation getCodeSystemAdminOperation();
+	public AssociationLoadOperation getAssociationLoadOperation();
+	
+	/**
+	 * Returns Code System Load Operation interface.
+	 * 
+	 * @return CodeSystemLoadOperation
+	 */
+	public CodeSystemLoadOperation getCodeSystemLoadOperation();
+	
+	/**
+	 * Returns Code System Export Operation interface.
+	 * 
+	 * @return CodeSystemExportOperation
+	 */
+	public CodeSystemExportOperation getCodeSystemExportOperation();
 	
 	/**
 	 * Returns Notification Administration Operation interface.
@@ -45,9 +66,16 @@ public interface AdminOperation {
 	public NotificationAdminOperation getNotificationAdminOperation();
 	
 	/**
-	 * Returns Value Set Administration Operation interface.
+	 * Returns Value Set Load Operation interface.
 	 * 
 	 * @return ValueSetAdminOperation
 	 */
-	public ValueSetAdminOperation getValueSetAdminOperation();
+	public ValueSetLoadOperation getValueSetLoadOperation();
+	
+	/**
+	 * Returns Value Set Export Operation interface.
+	 * 
+	 * @return ValueSetExportOperation
+	 */
+	public ValueSetExportOperation getValueSetExportOperation();
 }

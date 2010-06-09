@@ -15,12 +15,8 @@
  * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.lexevs.cts2.admin;
+package org.lexevs.cts2.admin.load;
 
-public interface AssociationAdminOperation {
+public interface AssociationLoadOperation {
 	public int importAssociationVersion();
-	
-	public void exportAssociation();
-	
-	
 }
