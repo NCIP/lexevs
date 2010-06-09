@@ -50,6 +50,7 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 	}
 	
 	@Override
+	@Transactional(rollbackFor=Exception.class)
 	@DatabaseErrorIdentifier(errorCode=UPDATE_RELATION_ERROR)
 	public void updateRelation(String codingSchemeUri, String version,
 			Relations relation) throws LBException {
@@ -84,6 +85,7 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 	
 	@Override
 	@DatabaseErrorIdentifier(errorCode=REMOVE_RELATION_ERROR)
+	@Transactional
 	public void removeRelation(String codingSchemeUri, String version,
 			Relations relation) {
 
@@ -116,6 +118,7 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 	
 	@Override
 	@DatabaseErrorIdentifier(errorCode=INSERT_RELATION_DEPENDENT_CHANGES_ERROR)
+	@Transactional(rollbackFor=Exception.class)
 	public void insertRelationDependentChanges(String codingSchemeUri,
 			String version, Relations relation) throws LBException {
 
@@ -202,6 +205,7 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 
 	@Override
 	@DatabaseErrorIdentifier(errorCode=INSERT_RELATION_VERSIONABLE_CHANGES_ERROR)
+	@Transactional(rollbackFor=Exception.class)
 	public void insertRelationVersionableChanges(String codingSchemeUri,
 			String version, Relations relation) throws LBException {
 
@@ -234,6 +238,7 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 	}
 
 	@Override
+	@Transactional(rollbackFor=Exception.class)
 	public void revise(String codingSchemeUri, String version,
 			Relations relation) throws LBException {
 
