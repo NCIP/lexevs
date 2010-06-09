@@ -27,6 +27,8 @@ import javax.annotation.Resource;
 
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
 import org.lexevs.dao.database.hibernate.registry.HibernateRegistryDao;
 import org.lexevs.dao.database.service.entity.EntityService;
@@ -73,8 +75,14 @@ public class VersionablePropertyServiceTest extends LexEvsDbUnitTestBase {
 
 		JdbcTemplate template = new JdbcTemplate(getDataSource());
 
-		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId) " +
-		"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'propId')");
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId, entryStateGuid) " +
+		"values ('pguid', 'eguid', 'entity', 'pname', 'pvalue', 'propId', 'esguid')");
+		
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+			"values ('rguid', 'rid', NOW() )");
+		
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+			"values ('esguid', 'pguid', 'property', 'NEW', '0', 'rguid')");
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
 		"values ('csguid', 'csname', 'csuri', 'csversion')");
@@ -93,6 +101,7 @@ public class VersionablePropertyServiceTest extends LexEvsDbUnitTestBase {
 
 		Property property = new Property();
 		property.setPropertyId("propId");
+		property.setPropertyName("pname");
 		property.setValue(DaoUtility.createText("updated prop value"));
 
 		List<DatabaseServiceEventListener> original = service.getDatabaseServiceEventListeners();
@@ -154,8 +163,6 @@ public class VersionablePropertyServiceTest extends LexEvsDbUnitTestBase {
 		} finally {
 			assertTrue(exceptionThrown);
 		}
-
-		assertTrue(testListener.foundUpdate);
 		
 		template.queryForObject("Select * from property", new RowMapper(){
 
