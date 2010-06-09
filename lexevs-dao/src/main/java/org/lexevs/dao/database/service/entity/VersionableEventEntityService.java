@@ -123,10 +123,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		
 		/* 2. update the attributes of the entity. */
 		String entryStateUId = entityDao.updateEntity(codingSchemeUId, entityUId, entity);
-		
-		/* 3. update search (lucene) indexes */
-		
-
+	
 		/* 4. register entrystate details for the entity.*/
 		versionsDao.insertEntryState(entryStateUId, entityUId,
 				entryStateTypeClassifier.classify(EntryStateType.ENTITY),
