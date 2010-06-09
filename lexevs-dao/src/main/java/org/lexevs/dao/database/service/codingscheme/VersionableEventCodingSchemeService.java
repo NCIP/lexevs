@@ -208,6 +208,8 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	public void updateCodingScheme(
 			CodingScheme codingScheme) throws LBException {
 		
+		Assert.notNull(codingScheme.getEntryState());
+		
 		String codingSchemeUri = codingScheme.getCodingSchemeURI();
 		String codingSchemeVersion = codingScheme.getRepresentsVersion();
 
@@ -328,6 +330,8 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	@DatabaseErrorIdentifier(errorCode=INSERT_CODINGSCHEME_DEPENDENT_CHANGES_ERROR)
 	public void insertDependentChanges(CodingScheme codingScheme)
 			throws LBException {
+		
+		Assert.notNull(codingScheme.getEntryState());
 
 		String codingSchemeUri = codingScheme.getCodingSchemeURI();
 		String version = codingScheme.getRepresentsVersion();
