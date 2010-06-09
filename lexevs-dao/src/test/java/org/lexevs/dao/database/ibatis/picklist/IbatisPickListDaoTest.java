@@ -89,10 +89,10 @@ public class IbatisPickListDaoTest extends LexEvsDbUnitTestBase {
 		ibatisPickListDao.insertPickListDefinition(def, "releaseuri", null);
 		
 		
-		int count = template.queryForInt("Select count(*) from vdpicklist");
+		int count = template.queryForInt("Select count(*) from vspicklist");
 		assertEquals(1, count);
 		
-		template.queryForObject("Select * from vdpicklist", new RowMapper(){
+		template.queryForObject("Select * from vspicklist", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				assertNotNull(rs.getString(1));
@@ -111,8 +111,8 @@ public class IbatisPickListDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("insert into systemrelease (releaseGuid, releaseURI, releaseDate) values ('123', 'releaseuri', NOW())");
 		
-		template.execute("insert into vdPickList (vdPickListGuid, pickListId, representsvaluedomain) values ('pl1', 'id1', 'vd')");
-		template.execute("insert into vdPickList (vdPickListGuid, pickListId, representsvaluedomain) values ('pl2', 'id2', 'vd')");
+		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('pl1', 'id1', 'vd')");
+		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('pl2', 'id2', 'vd')");
 		
 		List<String> ids = this.ibatisPickListDao.getPickListIds();
 		
@@ -129,8 +129,8 @@ public class IbatisPickListDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("insert into systemrelease (releaseGuid, releaseURI, releaseDate) values ('123', 'releaseuri', NOW())");
 		
-		template.execute("insert into vdPickList (vdPickListGuid, pickListId, representsvaluedomain) values ('pl1', 'id1', 'vd')");
-		template.execute("insert into vdPickList (vdPickListGuid, pickListId, representsvaluedomain) values ('pl2', 'id2', 'vd')");
+		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('pl1', 'id1', 'vd')");
+		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('pl2', 'id2', 'vd')");
 		
 		PickListDefinition definition = this.ibatisPickListDao.getPickListDefinitionById("id1");
 		
@@ -145,8 +145,8 @@ public class IbatisPickListDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("insert into systemrelease (releaseGuid, releaseURI, releaseDate) values ('123', 'releaseuri', NOW())");
 		
-		template.execute("insert into vdPickList (vdPickListGuid, pickListId, representsvaluedomain) values ('pl1', 'id1', 'vd')");
-		template.execute("insert into vdPickList (vdPickListGuid, pickListId, representsvaluedomain) values ('pl2', 'id2', 'vd')");
+		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('pl1', 'id1', 'vd')");
+		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('pl2', 'id2', 'vd')");
 		
 		String guid = this.ibatisPickListDao.getPickListGuidFromPickListId("id2");
 		
