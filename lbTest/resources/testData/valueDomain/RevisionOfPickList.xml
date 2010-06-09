@@ -18,7 +18,9 @@
     <changeInstructions>revised SRITEST entry</changeInstructions>
     <changedEntry>
  <changedPickListDefinitionEntry  pickListId="SRITEST:AUTO:DomesticAutoMakers" representsValueSetDefinition="SRITEST:AUTO:DomesticAutoMakers" isActive="true" defaultEntityCodeNamespace="Automobiles" defaultLanguage="en" completeSet="false">
+
    <lgCommon:owner>lgCommon:owner for Domestic Auto Makers</lgCommon:owner>
+   <lgCommon:entryState containingRevision="SRITEST_REV_1" relativeOrder="1" changeType="DEPENDENT"/>
    <lgCommon:entityDescription>DomesticAutoMakers</lgCommon:entityDescription>
    <lgVD:mappings>
      <lgNaming:supportedCodingScheme localId="Automobiles" uri="urn:oid:11.11.0.1">Automobiles</lgNaming:supportedCodingScheme>
@@ -33,7 +35,7 @@
    </lgVD:mappings>
    <lgVD:pickListEntryNode pickListEntryId="PL005p1" isActive="true">
        <lgCommon:owner>lgCommon:owner for PL005p1</lgCommon:owner>
-       <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+     <lgCommon:entryState containingRevision="SRITEST_REV_1" relativeOrder="1" changeType="DEPENDENT"/>
        <lgVD:inclusionEntry entityCode="005" entityCodeNamespace="Automobiles" propertyId="p1">
          <lgVD:pickText>Domestic Auto Makers</lgVD:pickText>
          <lgVD:pickContext>Domestic Auto Makers</lgVD:pickContext>
@@ -41,113 +43,11 @@
        </lgVD:inclusionEntry>
        <lgVD:properties>
          <lgCommon:property propertyName="definition">
-           <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
-           <lgCommon:value dataType="textplain">Definition for Domestic Auto Makers</lgCommon:value>
+           <lgCommon:entryState containingRevision="SRITEST_REV_1" relativeOrder="1" changeType="NEW"/>
+           <lgCommon:value dataType="textplain">Revised Definition</lgCommon:value>
          </lgCommon:property>
        </lgVD:properties>
    </lgVD:pickListEntryNode>
-     <lgVD:pickListEntryNode pickListEntryId="PL005p2" isActive="true">
-       <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
-       <lgVD:inclusionEntry entityCode="005" entityCodeNamespace="Automobiles" propertyId="p2">
-         <lgVD:pickText>American Car Companies</lgVD:pickText>
-       </lgVD:inclusionEntry>
-       <lgVD:properties>
-         <lgCommon:property propertyName="definition">
-           <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
-           <lgCommon:value dataType="textplain">Definition for Amerocan Auto Makers</lgCommon:value>
-           </lgCommon:property>
-       </lgVD:properties>
-     </lgVD:pickListEntryNode>
-     <lgVD:pickListEntryNode pickListEntryId="PLFordp1" isActive="true">
-       <lgCommon:owner>lgCommon:owner for PLFordp1</lgCommon:owner>
-       <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
-       <lgVD:inclusionEntry entityCode="Ford" entityCodeNamespace="Automobiles" propertyId="p1">
-         <lgVD:pickText>Ford</lgVD:pickText>
-       </lgVD:inclusionEntry>
-       <lgVD:properties>
-         <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
-           <lgCommon:owner>Ford</lgCommon:owner>
-           <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
-           <lgCommon:source subRef="subref1" role="role1">Ford</lgCommon:source>
-           <lgCommon:value dataType="textplain">lgVD:propertyfor Ford</lgCommon:value>
-         </lgCommon:property>
-       </lgVD:properties>
-     </lgVD:pickListEntryNode>
-     <lgVD:pickListEntryNode pickListEntryId="PLGMp1" isActive="true">
-       <lgCommon:owner>lgCommon:owner for PLGMp1</lgCommon:owner>
-       <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
-       <lgVD:inclusionEntry entityCode="GM" entityCodeNamespace="Automobiles" propertyId="p1">
-         <lgVD:pickText>General Motors</lgVD:pickText>
-       </lgVD:inclusionEntry>
-       <lgVD:properties>
-         <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
-           <lgCommon:owner>General Motors</lgCommon:owner>
-           <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
-           <lgCommon:source subRef="subref1" role="role1">General Motors</lgCommon:source>
-           <lgCommon:value dataType="textplain">lgVD:propertyfor General Motors</lgCommon:value>
-         </lgCommon:property>
-       </lgVD:properties>
-     </lgVD:pickListEntryNode>
-     <lgVD:pickListEntryNode pickListEntryId="PLGMp2" isActive="true">
-       <lgCommon:owner>lgCommon:owner for PLGMp2</lgCommon:owner>
-       <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
-       <lgVD:inclusionEntry entityCode="GM" entityCodeNamespace="Automobiles" propertyId="p2">
-         <lgVD:pickText>GM</lgVD:pickText>
-       </lgVD:inclusionEntry>
-       <lgVD:properties>
-         <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
-           <lgCommon:owner >GM</lgCommon:owner>
-           <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
-           <lgCommon:source subRef="subref1" role="role1">GM</lgCommon:source>
-           <lgCommon:value dataType="textplain">lgVD:propertyfor GM</lgCommon:value>
-         </lgCommon:property>
-       </lgVD:properties>
-     </lgVD:pickListEntryNode>
-     <lgVD:pickListEntryNode pickListEntryId="PLJaguarp1" isActive="true">
-       <lgCommon:owner>lgCommon:owner for PLJaguarp1</lgCommon:owner>
-       <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
-       <lgVD:inclusionEntry entityCode="Jaguar" entityCodeNamespace="Automobiles" propertyId="p1">
-         <lgVD:pickText>Jaguar</lgVD:pickText>
-       </lgVD:inclusionEntry>
-       <lgVD:properties>
-         <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
-           <lgCommon:owner>Jaguar</lgCommon:owner>
-           <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
-           <lgCommon:source subRef="subref1" role="role1">Jaguar</lgCommon:source>
-           <lgCommon:value dataType="textplain">lgVD:propertyfor Jaguar</lgCommon:value>
-         </lgCommon:property>
-       </lgVD:properties>
-     </lgVD:pickListEntryNode>
-     <lgVD:pickListEntryNode pickListEntryId="PLChevroletp1" isActive="true">
-       <lgCommon:owner>lgCommon:owner for PLChevroletp1</lgCommon:owner>
-       <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
-       <lgVD:inclusionEntry entityCode="Chevy" entityCodeNamespace="Automobiles" propertyId="p1">
-         <lgVD:pickText>Chevrolet</lgVD:pickText>
-       </lgVD:inclusionEntry>
-       <lgVD:properties>
-         <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
-           <lgCommon:owner>Chevrolet</lgCommon:owner>
-           <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
-           <lgCommon:source subRef="subref1" role="role1">Chevrolet</lgCommon:source>
-           <lgCommon:value dataType="textplain">lgVD:propertyfor Chevrolet</lgCommon:value>
-         </lgCommon:property>
-       </lgVD:properties>
-     </lgVD:pickListEntryNode>
-     <lgVD:pickListEntryNode pickListEntryId="PLOldsmobilep1" isActive="true">
-       <lgCommon:owner>lgCommon:owner for PLOldsmobilep1</lgCommon:owner>
-       <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
-       <lgVD:inclusionEntry entityCode="73" entityCodeNamespace="Automobiles" propertyId="p1">
-         <lgVD:pickText>Oldsmobile</lgVD:pickText>
-       </lgVD:inclusionEntry>
-       <lgVD:properties>
-         <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
-           <lgCommon:owner>Oldsmobile</lgCommon:owner>
-           <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
-           <lgCommon:source subRef="subref1" role="role1">Oldsmobile</lgCommon:source>
-           <lgCommon:value dataType="textplain">lgVD:propertyfor Oldsmobile</lgCommon:value>
-           </lgCommon:property>
-       </lgVD:properties>
-     </lgVD:pickListEntryNode>
  </changedPickListDefinitionEntry>
     </changedEntry>
 </revision>
