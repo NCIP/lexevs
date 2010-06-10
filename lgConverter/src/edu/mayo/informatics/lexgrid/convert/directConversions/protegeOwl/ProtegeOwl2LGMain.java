@@ -37,7 +37,7 @@ import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
  */
 public class ProtegeOwl2LGMain {
 
-    private ProtegeOwl2LG owl2emf = null;
+    private ProtegeOwl2LG owl2lg = null;
     private LgMessageDirectorIF messages = null;
 
     public ProtegeOwl2LGMain(URI owlOntologyURI, CodingSchemeManifest manifest, LoaderPreferences loadPrefs,
@@ -63,7 +63,7 @@ public class ProtegeOwl2LGMain {
 
             }
 
-            owl2emf = new ProtegeOwl2LG(owlOntologyURI, manifest, loadPrefs, memorySafe, messages);
+            owl2lg = new ProtegeOwl2LG(owlOntologyURI, manifest, loadPrefs, memorySafe, messages);
         } catch (Exception e) {
             messages.fatalAndThrowException("Conversion failed", e);
         }
@@ -94,7 +94,7 @@ public class ProtegeOwl2LGMain {
             }
 
             // Perform the conversion from OWL to LexGrid EMF model.
-            cs = owl2emf.run();
+            cs = owl2lg.run();
 
         } catch (Exception e) {
             messages.fatalAndThrowException("Conversion failed", e);
@@ -110,7 +110,7 @@ public class ProtegeOwl2LGMain {
 //        LgXMLResourceImpl xml = null;
 //        try {
 //
-//            xml = new LgXMLResourceImpl(org.eclipse.emf.common.util.URI.createURI(output_filename.toURL().toString()));
+//            xml = new LgXMLResourceImpl(org.eclipse.lg.common.util.URI.createURI(output_filename.toURL().toString()));
 //            xml.getContents().add(codingScheme);
 //
 //            // Perform the save ...

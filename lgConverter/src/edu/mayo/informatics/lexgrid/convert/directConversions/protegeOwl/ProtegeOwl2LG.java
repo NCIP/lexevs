@@ -95,6 +95,7 @@ import edu.stanford.smi.protegex.owl.model.OWLNAryLogicalClass;
 import edu.stanford.smi.protegex.owl.model.OWLNamedClass;
 import edu.stanford.smi.protegex.owl.model.OWLNames;
 import edu.stanford.smi.protegex.owl.model.OWLObjectProperty;
+import edu.stanford.smi.protegex.owl.model.OWLProperty;
 import edu.stanford.smi.protegex.owl.model.OWLQuantifierRestriction;
 import edu.stanford.smi.protegex.owl.model.OWLRestriction;
 import edu.stanford.smi.protegex.owl.model.OWLUnionClass;
@@ -140,11 +141,11 @@ public class ProtegeOwl2LG {
     private int memoryProfile_ = ProtegeOwl2LGConstants.MEMOPT_LEXGRID_DIRECT_DB;
 
     // Generated EMF objects ...
-    private CodingScheme emfScheme_ = null;
-    private SupportedMappings emfSupportedMappings_ = null;
+    private CodingScheme lgScheme_ = null;
+    private SupportedMappings lgSupportedMappings_ = null;
 
-    private Relations emfRelationsContainer_Assoc = null;
-    private Relations emfRelationsContainer_Roles = null;
+    private Relations lgRelationsContainer_Assoc = null;
+    private Relations lgRelationsContainer_Roles = null;
 
     private CodingScheme tempEmfScheme_ = null;
     private Entities tempEmfEntityList_ = null;
@@ -152,11 +153,11 @@ public class ProtegeOwl2LG {
     // Shared mapping information ...
     private Map<String, Object> attributeMap_ = null;
     private Map<String, String> owlDatatypeName2label_ = null;
-    private Map<String, String> owlDatatypeName2emfPropClass_ = null;
-    private Map<String, String> owlDatatypeName2emfDatatype_ = null;
+    private Map<String, String> owlDatatypeName2lgPropClass_ = null;
+    private Map<String, String> owlDatatypeName2lgDatatype_ = null;
     private Map<String, String> owlClassName2Conceptcode_ = new HashMap<String, String>();
     private Map<String, String> entityCode2NameSpace_ = new HashMap<String, String>();
-    private Map<String, AssociationSource> emfAssocToAssocSrc_ = new HashMap<String, AssociationSource>();
+    private Map<String, AssociationSource> lgAssocToAssocSrc_ = new HashMap<String, AssociationSource>();
     private Map<String, String> owlInstanceName2code_ = null;
 
     // OWL type references
@@ -170,7 +171,7 @@ public class ProtegeOwl2LG {
 
     // Complex property parser
     private BasicXMLParser bxp;
-    
+
     private DatabaseServiceManager databaseServiceManager;
 
     /**
@@ -230,24 +231,23 @@ public class ProtegeOwl2LG {
         // Create the EMF model
         try {
             // Disable unnecessary notifications
-//            LgModelUtil.setNotifyRequired(false);
+            // LgModelUtil.setNotifyRequired(false);
 
             // Initialize structures referenced during conversion ...
             initSupportedMappings();
             initScheme();
             initSupportedDatatypes();
-            assocManager = new AssociationManager(emfSupportedMappings_, emfRelationsContainer_Assoc,
-                    emfRelationsContainer_Roles);
+            assocManager = new AssociationManager(lgSupportedMappings_, lgRelationsContainer_Assoc,
+                    lgRelationsContainer_Roles);
             initSupportedDatatypeProperties();
             initSupportedObjectProperties();
             initSupportedAssociationAnnotationProperties();
             initAssociationEntities();
 
-
             // If we are streaming the LexGrid model to database, write
             // the coding scheme metadata as defined so far.
             if (memoryProfile_ != ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
-                databaseServiceManager.getAuthoringService().loadRevision(emfScheme_, null);
+                databaseServiceManager.getAuthoringService().loadRevision(lgScheme_, null);
             }
 
             // Populate the coding scheme from the OWL model
@@ -256,39 +256,40 @@ public class ProtegeOwl2LG {
 
             // Apply all supported attributes that have been registered
             // over the course of processing the OWL model ...
-            if (emfSupportedMappings_.getSupportedAssociations().size() > 0) {
+            if (lgSupportedMappings_.getSupportedAssociations().size() > 0) {
                 String name = EntityTypes.ASSOCIATION.toString();
-                
-                emfSupportedMappings_.registerSupportedEntityType(name, null, name, false);
+
+                lgSupportedMappings_.registerSupportedEntityType(name, null, name, false);
             }
-            
-            emfSupportedMappings_.applyToCodingScheme(emfScheme_);
-            
+
+            lgSupportedMappings_.applyToCodingScheme(lgScheme_);
+
             if (memoryProfile_ != ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
-                final String uri = emfScheme_.getCodingSchemeURI();
-                final String version = emfScheme_.getRepresentsVersion();
-                
+                final String uri = lgScheme_.getCodingSchemeURI();
+                final String version = lgScheme_.getRepresentsVersion();
+
                 databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<Object>() {
 
                     public Object execute(DaoManager daoManager) {
-                        String codingSchemeId = 
-                            daoManager.getCodingSchemeDao(uri, version).getCodingSchemeUIdByUriAndVersion(uri, version);
-                        
-                        daoManager.getCodingSchemeDao(uri, version).insertMappings(codingSchemeId, emfScheme_.getMappings());
-                        
+                        String codingSchemeId = daoManager.getCodingSchemeDao(uri, version)
+                                .getCodingSchemeUIdByUriAndVersion(uri, version);
+
+                        daoManager.getCodingSchemeDao(uri, version).insertMappings(codingSchemeId,
+                                lgScheme_.getMappings());
+
                         return null;
-                    }   
+                    }
                 });
             }
 
             // Register the number of concepts found and return the scheme
             updateApproximateConceptNumber();
-            return emfScheme_;
+            return lgScheme_;
         } catch (Exception e) {
             throw new LgConvertException(e);
         } finally {
             // Restore state and cleanup resources ...
-//            LgModelUtil.setNotifyRequired(true);
+            // LgModelUtil.setNotifyRequired(true);
             if (owlModel_ != null) {
                 owlModel_.flushCache();
                 owlModel_.getJenaModel().close();
@@ -296,11 +297,25 @@ public class ProtegeOwl2LG {
         }
     }
 
+    private void procesAnnotationProperties() {
+        for (Iterator props = owlModel_.getUserDefinedOWLDatatypeProperties().iterator(); props.hasNext();) {
+            OWLDatatypeProperty prop = (OWLDatatypeProperty) props.next();
+            
+            // Check if the data type property is an annotation property. We do
+            // not treat annotation properties as associations.
+            if (prop.isAnnotationProperty()) {
+                System.out.println(); 
+                for (Iterator iterator = prop.getLabels().iterator(); iterator.hasNext();) {
+                    System.out.println(); 
+                }
+            }
+        }
+    }
+    
     // ////////////////////////////////////////////////
     // //////////// CORE METHODS /////////////////////
     // //////////////////////////////////////////////
 
-    
     /**
      * Create and populate the EMF representation of the coding scheme.
      * 
@@ -321,6 +336,7 @@ public class ProtegeOwl2LG {
         // ensure all concept codes are correctly resolved (sometimes buried
         // in class definition) before setting source and target references.
 
+//        procesAnnotationProperties();
         messages_.info("Processing OWL Classes.....");
         processAllConceptsAndProperties(snap);
 
@@ -385,9 +401,9 @@ public class ProtegeOwl2LG {
         // If we found at least one, register the supported entity type.
         if (count > 0) {
             String name = EntityTypes.CONCEPT.toString();
-            emfSupportedMappings_.registerSupportedEntityType(name, null, name, false);
+            lgSupportedMappings_.registerSupportedEntityType(name, null, name, false);
         }
-       
+
     }
 
     protected void processAllConceptsRelations() {
@@ -395,17 +411,17 @@ public class ProtegeOwl2LG {
 
         for (Iterator namedClasses = owlModel_.getUserDefinedRDFSNamedClasses().iterator(); namedClasses.hasNext();) {
             RDFSNamedClass namedClass = (RDFSNamedClass) namedClasses.next();
-            String emfConceptCode = resolveConceptID(namedClass);
-            if (emfConceptCode != null) {
-                AssociationSource source = CreateUtils.createAssociationSource(emfConceptCode, entityCode2NameSpace_
-                        .get(emfConceptCode));
+            String lgConceptCode = resolveConceptID(namedClass);
+            if (lgConceptCode != null) {
+                AssociationSource source = CreateUtils.createAssociationSource(lgConceptCode, entityCode2NameSpace_
+                        .get(lgConceptCode));
                 resolveEquivalentClassRelations(source, namedClass);
                 resolveSubClassOfRelations(source, namedClass);
                 resolveDisjointWithRelations(source, namedClass);
                 resolveComplementOfRelations(source, namedClass);
                 resolveOWLObjectPropertyRelations(source, namedClass);
                 resolveAnnotationPropertyRelations(source, namedClass);
-                //resolveDatatypePropertyRelations(source, namedClass);
+                // resolveDatatypePropertyRelations(source, namedClass);
             }
         }
 
@@ -430,9 +446,9 @@ public class ProtegeOwl2LG {
         // as well as find out additional associations (e.g,. From)
         for (Iterator individuals = owlModel_.getOWLIndividuals().iterator(); individuals.hasNext();) {
             OWLIndividual individual = (OWLIndividual) individuals.next();
-            Entity emfInstance = resolveIndividual(individual);
-            if (emfInstance != null) {
-                addEntity(emfInstance);
+            Entity lgInstance = resolveIndividual(individual);
+            if (lgInstance != null) {
+                addEntity(lgInstance);
             }
             if (count % 1000 == 0)
                 messages_.info("OWL individuals processed: " + count);
@@ -450,8 +466,8 @@ public class ProtegeOwl2LG {
 
         // If we found at least one, register the supported entity type.
         if (!owlInstanceName2code_.isEmpty()) {
-            String name = EntityTypes.INSTANCE.toString();            
-            emfSupportedMappings_.registerSupportedEntityType(name, null, name, false);
+            String name = EntityTypes.INSTANCE.toString();
+            lgSupportedMappings_.registerSupportedEntityType(name, null, name, false);
         }
     } // end of the method.
 
@@ -462,15 +478,15 @@ public class ProtegeOwl2LG {
         for (Iterator individuals = owlModel_.getOWLIndividuals().iterator(); individuals.hasNext();) {
             OWLIndividual individual = (OWLIndividual) individuals.next();
             String nameSpace = getNameSpace(individual.getNamespace());
-            String emfCode = resolveInstanceID(individual);
-            if (emfCode != null) {
-                AssociationSource source = CreateUtils.createAssociationSource(emfCode, nameSpace);
+            String lgCode = resolveInstanceID(individual);
+            if (lgCode != null) {
+                AssociationSource source = CreateUtils.createAssociationSource(lgCode, nameSpace);
                 resolveRdfTypeRelations(source, individual);
                 resolveDifferentFromRelations(source, individual);
                 resolveSameAsRelations(source, individual);
                 resolveOWLObjectPropertyRelations(source, individual);
                 resolveAnnotationPropertyRelations(source, individual);
-                //resolveDatatypePropertyRelations(source, individual);
+                // resolveDatatypePropertyRelations(source, individual);
             }
         }
 
@@ -492,9 +508,7 @@ public class ProtegeOwl2LG {
             relateAssociationSourceTarget(assocManager.getAllDifferent(), source, target);
         }
 
-    }    
-    
-    
+    }
 
     /**
      * This method is responsible for processing of all the OWL concepts.
@@ -529,10 +543,10 @@ public class ProtegeOwl2LG {
 
         for (Iterator namedClasses = owlModel_.getUserDefinedRDFSNamedClasses().iterator(); namedClasses.hasNext();) {
             RDFSNamedClass namedClass = (RDFSNamedClass) namedClasses.next();
-            String emfConceptCode = resolveConceptID(namedClass);
-            if (emfConceptCode != null) {
-                AssociationSource source = CreateUtils.createAssociationSource(emfConceptCode, entityCode2NameSpace_
-                        .get(emfConceptCode));
+            String lgConceptCode = resolveConceptID(namedClass);
+            if (lgConceptCode != null) {
+                AssociationSource source = CreateUtils.createAssociationSource(lgConceptCode, entityCode2NameSpace_
+                        .get(lgConceptCode));
                 resolveEquivalentClassRelations(source, namedClass);
                 resolveSubClassOfRelations(source, namedClass);
                 resolveDisjointWithRelations(source, namedClass);
@@ -544,7 +558,7 @@ public class ProtegeOwl2LG {
         // If we found at least one, register the supported entity type.
         if (count > 0) {
             String name = EntityTypes.CONCEPT.toString();
-            emfSupportedMappings_.registerSupportedEntityType(name, null, name, false);
+            lgSupportedMappings_.registerSupportedEntityType(name, null, name, false);
         }
     }
 
@@ -566,10 +580,10 @@ public class ProtegeOwl2LG {
         // them
         // as well as find out additional associations (e.g,. From)
         for (Iterator individuals = owlModel_.getOWLIndividuals().iterator(); individuals.hasNext();) {
-            OWLIndividual individual = (OWLIndividual) individuals.next();            
-            Entity emfInstance = resolveIndividual(individual);
-            if (emfInstance != null) {
-                addEntity(emfInstance);
+            OWLIndividual individual = (OWLIndividual) individuals.next();
+            Entity lgInstance = resolveIndividual(individual);
+            if (lgInstance != null) {
+                addEntity(lgInstance);
             }
             if (count % 1000 == 0)
                 messages_.info("OWL individuals processed: " + count);
@@ -585,25 +599,32 @@ public class ProtegeOwl2LG {
                 + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage()) + " Heap Delta:"
                 + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
 
-        // Pradip: This is not needed anymore...replaced with resolveRdfTypeRelations. We decided
-        // to stop using the manufactured relation instanceOf and substitute that with rdf:type
+        // Pradip: This is not needed anymore...replaced with
+        // resolveRdfTypeRelations. We decided
+        // to stop using the manufactured relation instanceOf and substitute
+        // that with rdf:type
         // Step 1: once the instances have been registered, associate them to
         // specific classes.
-//        for (Iterator namedClasses = owlModel_.getUserDefinedOWLNamedClasses().iterator(); namedClasses.hasNext();) {
-//            RDFSClass namedClass = (RDFSClass) namedClasses.next();
-//
-//            String sourceCode = resolveConceptID(namedClass);
-//            String nameSpace = getNameSpace(namedClass.getNamespace());
-//
-//            AssociationSource source = EMFCreateUtils.createAssociationSource(sourceCode, nameSpace);
-//
-//            for (Iterator instances = namedClass.getInstances(false).iterator(); instances.hasNext();) {
-//                RDFResource instance = (RDFResource) instances.next();
-//                relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE_LITERAL, assocManager.getRdfType(),
-//                        source, instance);
-//            }
-//
-//        }
+        // for (Iterator namedClasses =
+        // owlModel_.getUserDefinedOWLNamedClasses().iterator();
+        // namedClasses.hasNext();) {
+        // RDFSClass namedClass = (RDFSClass) namedClasses.next();
+        //
+        // String sourceCode = resolveConceptID(namedClass);
+        // String nameSpace = getNameSpace(namedClass.getNamespace());
+        //
+        // AssociationSource source =
+        // EMFCreateUtils.createAssociationSource(sourceCode, nameSpace);
+        //
+        // for (Iterator instances = namedClass.getInstances(false).iterator();
+        // instances.hasNext();) {
+        // RDFResource instance = (RDFResource) instances.next();
+        // relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE_LITERAL,
+        // assocManager.getRdfType(),
+        // source, instance);
+        // }
+        //
+        // }
 
         // Step 2: for every individual, we also need to have associations
         // with other individuals depending on the definition of the class.
@@ -625,7 +646,8 @@ public class ProtegeOwl2LG {
          * for this. We will handle them as individualProperties as opposed to
          * associations.
          */
-        /** Updated 02/25/2010: Replaced "resolveIndividualProperties" method
+        /**
+         * Updated 02/25/2010: Replaced "resolveIndividualProperties" method
          * with resolveEntityProperties.
          */
 
@@ -634,10 +656,9 @@ public class ProtegeOwl2LG {
         for (Iterator individuals = owlModel_.getOWLIndividuals().iterator(); individuals.hasNext();) {
             OWLIndividual individual = (OWLIndividual) individuals.next();
             String nameSpace = getNameSpace(individual.getNamespace());
-            String emfCode = resolveInstanceID(individual);
-            if (emfCode != null) {
-                AssociationSource source = CreateUtils.createAssociationSource(emfCode,
-                        nameSpace);
+            String lgCode = resolveInstanceID(individual);
+            if (lgCode != null) {
+                AssociationSource source = CreateUtils.createAssociationSource(lgCode, nameSpace);
                 resolveRdfTypeRelations(source, individual);
                 resolveDifferentFromRelations(source, individual);
                 resolveSameAsRelations(source, individual);
@@ -666,7 +687,7 @@ public class ProtegeOwl2LG {
         // If we found at least one, register the supported entity type.
         if (!owlInstanceName2code_.isEmpty()) {
             String name = EntityTypes.INSTANCE.toString();
-            emfSupportedMappings_.registerSupportedEntityType(name, null, name, false);
+            lgSupportedMappings_.registerSupportedEntityType(name, null, name, false);
         }
     } // end of the method.
 
@@ -700,9 +721,10 @@ public class ProtegeOwl2LG {
             // Get the appropriate association name initialized earlier
             // (initSupportedObjectProperties)
             String propertyName = getRDFResourceLocalName(prop);
-            AssociationWrapper emfAssoc = assocManager.getAssociation(propertyName);
+            AssociationWrapper lgAssoc = assocManager.getAssociation(propertyName);
             String nameSpace = getNameSpace(prop.getNamespace());
-            AssociationSource source = CreateUtils.createAssociationSource(emfAssoc.getAssociationEntity().getEntityCode(), nameSpace);
+            AssociationSource source = CreateUtils.createAssociationSource(lgAssoc.getAssociationEntity()
+                    .getEntityCode(), nameSpace);
 
             // The idea is to create a new association called "domain", whose
             // LHS will be the OWLObjectProperty and RHS will be the domain.
@@ -712,13 +734,13 @@ public class ProtegeOwl2LG {
                     if (domain instanceof OWLUnionClass) {
                         for (Iterator domainList = ((OWLUnionClass) domain).listOperands(); domainList.hasNext();) {
                             RDFSNamedClass domainClass = (RDFSNamedClass) domainList.next();
-                            relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager
-                                    .getDomain(), source, domainClass);
+                            relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getDomain(),
+                                    source, domainClass);
                         }
                     }// end of OWLUnionClass
                     else {
-                        relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getDomain(),
-                                source, domain);
+                        relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getDomain(), source,
+                                domain);
                     }
                 }
             }
@@ -732,13 +754,13 @@ public class ProtegeOwl2LG {
                     if (range instanceof OWLUnionClass) {
                         for (Iterator rangeList = ((OWLUnionClass) range).listOperands(); rangeList.hasNext();) {
                             RDFSNamedClass rangeClass = (RDFSNamedClass) rangeList.next();
-                            relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT,
-                                    assocManager.getRange(), source, rangeClass);
+                            relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getRange(),
+                                    source, rangeClass);
                         }
 
                     } else { // end of OWLUnionClass
-                        relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getRange(),
-                                source, range);
+                        relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getRange(), source,
+                                range);
                     }
                 }
 
@@ -753,21 +775,21 @@ public class ProtegeOwl2LG {
 
             for (Iterator superProperties = prop.getSuperproperties(false).iterator(); superProperties.hasNext();) {
                 RDFProperty superProp = (RDFProperty) superProperties.next();
-                relateAssocSourceWithRDFResourceTarget(EntityTypes.ASSOCIATION,
-                        assocManager.getSubPropertyOf(), source, superProp);
+                relateAssocSourceWithRDFResourceTarget(EntityTypes.ASSOCIATION, assocManager.getSubPropertyOf(),
+                        source, superProp);
             }
 
             // Step 2: process inverseProperties
             if (prop.getInverseProperty() != null) {
-                relateAssocSourceWithRDFResourceTarget(EntityTypes.ASSOCIATION, assocManager.getInverseOf(),
-                        source, prop.getInverseProperty());
+                relateAssocSourceWithRDFResourceTarget(EntityTypes.ASSOCIATION, assocManager.getInverseOf(), source,
+                        prop.getInverseProperty());
             }
 
             // Step 3: process equivalentProperties
             for (Iterator equivProperties = prop.getEquivalentProperties().iterator(); equivProperties.hasNext();) {
                 OWLObjectProperty equivalent = (OWLObjectProperty) equivProperties.next();
-                relateAssocSourceWithRDFResourceTarget(EntityTypes.ASSOCIATION, assocManager
-                        .getEquivalentProperty(), source, equivalent);
+                relateAssocSourceWithRDFResourceTarget(EntityTypes.ASSOCIATION, assocManager.getEquivalentProperty(),
+                        source, equivalent);
             }
         } // end of for.
     }
@@ -800,9 +822,10 @@ public class ProtegeOwl2LG {
             // Get the appropriate association name initialized earlier
             // (initSupportedObjectProperties)
             String propertyName = getRDFResourceLocalName(prop);
-            AssociationWrapper emfAssoc = assocManager.getAssociation(propertyName);
+            AssociationWrapper lgAssoc = assocManager.getAssociation(propertyName);
             String nameSpace = getNameSpace(prop.getNamespace());
-            AssociationSource source = CreateUtils.createAssociationSource(emfAssoc.getAssociationEntity().getEntityCode(), nameSpace);
+            AssociationSource source = CreateUtils.createAssociationSource(lgAssoc.getAssociationEntity()
+                    .getEntityCode(), nameSpace);
 
             // The idea is to create a new association called "hasDomain", whose
             // LHS will be the OWLDatatyeProperty and RHS will be the
@@ -810,13 +833,13 @@ public class ProtegeOwl2LG {
             if (prop.getDomain(false) != null) {
                 for (Iterator domains = prop.getDomains(false).iterator(); domains.hasNext();) {
                     RDFResource domain = (RDFResource) domains.next();
-                    relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getDomain(),
-                            source, domain);
+                    relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getDomain(), source,
+                            domain);
                 }
             }
 
             if (prop.getRangeDatatype() != null) {
-                AssociationData data = CreateUtils.createAssociationTextData(owlDatatypeName2emfDatatype_
+                AssociationData data = CreateUtils.createAssociationTextData(owlDatatypeName2lgDatatype_
                         .get(propertyName));
                 relateAssociationSourceData(assocManager.getDatatype(), source, data);
             }
@@ -828,21 +851,21 @@ public class ProtegeOwl2LG {
             // Step 1: process subPropertyOf relationships
             for (Iterator superProperties = prop.getSuperproperties(false).iterator(); superProperties.hasNext();) {
                 OWLDatatypeProperty superProp = (OWLDatatypeProperty) superProperties.next();
-                relateAssocSourceWithRDFResourceTarget(EntityTypes.ASSOCIATION,
-                        assocManager.getSubPropertyOf(), source, superProp);
+                relateAssocSourceWithRDFResourceTarget(EntityTypes.ASSOCIATION, assocManager.getSubPropertyOf(),
+                        source, superProp);
             }
 
             // Step 2: process inverseProperties
             if (prop.getInverseProperty() != null) {
-                relateAssocSourceWithRDFResourceTarget(EntityTypes.ASSOCIATION, assocManager.getInverseOf(),
-                        source, prop.getInverseProperty());
+                relateAssocSourceWithRDFResourceTarget(EntityTypes.ASSOCIATION, assocManager.getInverseOf(), source,
+                        prop.getInverseProperty());
             }
 
             // Step 3: process equivalentProperties
             for (Iterator equivProperties = prop.getEquivalentProperties().iterator(); equivProperties.hasNext();) {
                 OWLDatatypeProperty equivalent = (OWLDatatypeProperty) equivProperties.next();
-                relateAssocSourceWithRDFResourceTarget(EntityTypes.ASSOCIATION, assocManager
-                        .getEquivalentProperty(), source, equivalent);
+                relateAssocSourceWithRDFResourceTarget(EntityTypes.ASSOCIATION, assocManager.getEquivalentProperty(),
+                        source, equivalent);
             }
         } // end of for
     }
@@ -868,7 +891,7 @@ public class ProtegeOwl2LG {
         // Create the concept and assign label as initial description,
         // which may be overridden later by preferred text.
         Entity concept = new Entity();
-        concept.setEntityType(new String[]{EntityTypes.CONCEPT.toString()});
+        concept.setEntityType(new String[] { EntityTypes.CONCEPT.toString() });
         EntityDescription ed = new EntityDescription();
         ed.setContent(label);
         concept.setEntityDescription(ed);
@@ -919,35 +942,35 @@ public class ProtegeOwl2LG {
 
         // Create the raw EMF concept and assign label as initial description,
         // which may be overridden later by preferred text.
-        Entity emfEntity = EntityFactory.createAssociation();
+        Entity lgEntity = EntityFactory.createAssociation();
         EntityDescription ed = new EntityDescription();
         ed.setContent(label);
-        emfEntity.setEntityDescription(ed);
-        emfEntity.setEntityCode(rdfName);
-        emfEntity.setIsAnonymous(Boolean.FALSE);
+        lgEntity.setEntityDescription(ed);
+        lgEntity.setEntityCode(rdfName);
+        lgEntity.setIsAnonymous(Boolean.FALSE);
 
         String nameSpace = getNameSpace(rdfResource.getNamespace());
-        emfEntity.setEntityCodeNamespace(nameSpace);
+        lgEntity.setEntityCodeNamespace(nameSpace);
 
         // Is deprecated? If so, mark as inactive.
         if (rdfResource instanceof OWLNamedClass
                 && OWLNames.Cls.DEPRECATED_CLASS.equals(rdfResource.getRDFType().getName()))
-            emfEntity.setIsActive(Boolean.FALSE);
+            lgEntity.setIsActive(Boolean.FALSE);
 
         // Set the 'isDefined' property.
         if (rdfResource instanceof OWLNamedClass) {
             OWLNamedClass owlNamedClass = (OWLNamedClass) rdfResource;
-            emfEntity.setIsDefined(owlNamedClass.isDefinedClass());
+            lgEntity.setIsDefined(owlNamedClass.isDefinedClass());
         }
 
         // Resolve all the concept properties and add to entities.
-        resolveEntityProperties(emfEntity, rdfResource);
-        addEntity(emfEntity);
+        resolveEntityProperties(lgEntity, rdfResource);
+        addEntity(lgEntity);
 
         // Remember the rdf to code mapping and return.
-        owlClassName2Conceptcode_.put(rdfName, emfEntity.getEntityCode());
+        owlClassName2Conceptcode_.put(rdfName, lgEntity.getEntityCode());
 
-        return emfEntity;
+        return lgEntity;
     }
 
     /**
@@ -959,8 +982,8 @@ public class ProtegeOwl2LG {
         // Does this concept represent the root of a concept branch that should
         // be centrally linked to the top node for subclass traversal?
         if (isRootNode(rdfsNamedClass)) {
-            AssociationTarget target = CreateUtils.createAssociationTarget(ProtegeOwl2LGConstants.ROOT_CODE, 
-                    getNameSpace(rdfsNamedClass.getNamespace() ));
+            AssociationTarget target = CreateUtils.createAssociationTarget(ProtegeOwl2LGConstants.ROOT_CODE,
+                    getNameSpace(rdfsNamedClass.getNamespace()));
             relateAssociationSourceTarget(assocManager.getSubClassOf(), source, target);
         }
 
@@ -984,9 +1007,8 @@ public class ProtegeOwl2LG {
      */
     protected void resolveEquivalentClassRelations(AssociationSource source, RDFSNamedClass rdfsNamedClass) {
         for (Iterator equivClasses = rdfsNamedClass.getEquivalentClasses().iterator(); equivClasses.hasNext();) {
-            String emfCode = resolveAnonymousClass((OWLClass) equivClasses.next(), source);
-            AssociationTarget target = CreateUtils.createAssociationTarget(emfCode, entityCode2NameSpace_
-                    .get(emfCode));
+            String lgCode = resolveAnonymousClass((OWLClass) equivClasses.next(), source);
+            AssociationTarget target = CreateUtils.createAssociationTarget(lgCode, entityCode2NameSpace_.get(lgCode));
             relateAssociationSourceTarget(assocManager.getEquivalentClass(), source, target);
         }
     }
@@ -1001,8 +1023,8 @@ public class ProtegeOwl2LG {
             newOwlClass = (OWLNamedClass) rdfsNamedClass;
             for (Iterator disjointClasses = newOwlClass.getDisjointClasses().iterator(); disjointClasses.hasNext();) {
                 RDFResource disjointClass = (RDFResource) disjointClasses.next();
-                relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getDisjointWith(),
-                        source, disjointClass);
+                relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getDisjointWith(), source,
+                        disjointClass);
             }
         }
     }
@@ -1029,17 +1051,17 @@ public class ProtegeOwl2LG {
                 // Lookup the LexGrid association; ignore if this property does
                 // not match a defined association ...
                 String relationName = getRDFResourceLocalName(rdfProp);
-                AssociationWrapper emfAssoc = assocManager.getAssociation(relationName);
+                AssociationWrapper lgAssoc = assocManager.getAssociation(relationName);
                 // Determine the targets ...
                 Collection propVals = rdfResource.getPropertyValues(rdfProp);
                 if (propVals != null) {
                     for (Iterator vals = propVals.iterator(); vals.hasNext();) {
                         Object val = vals.next();
                         if (val instanceof OWLNamedClass) {
-                            relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, emfAssoc, source,
+                            relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, lgAssoc, source,
                                     (OWLNamedClass) val);
                         } else if (val instanceof OWLIndividual) {
-                            relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE, emfAssoc, source,
+                            relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE, lgAssoc, source,
                                     (OWLIndividual) val);
                         }
                     }
@@ -1056,8 +1078,8 @@ public class ProtegeOwl2LG {
 
         for (Iterator differentFrom = individual.getDifferentFrom().iterator(); differentFrom.hasNext();) {
             OWLIndividual different = (OWLIndividual) differentFrom.next();
-            relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE, assocManager.getDifferentFrom(),
-                    source, different);
+            relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE, assocManager.getDifferentFrom(), source,
+                    different);
         }
 
     }
@@ -1079,23 +1101,25 @@ public class ProtegeOwl2LG {
      */
     protected void resolveRdfTypeRelations(AssociationSource source, OWLIndividual individual) {
         for (Iterator iter = individual.getDirectTypes().iterator(); iter.hasNext();) {
-            Object item= iter.next();
+            Object item = iter.next();
             if (item instanceof RDFSClass) {
-               RDFSClass typeClass= (RDFSClass) item; 
-               relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getRdfType(), source, typeClass);
+                RDFSClass typeClass = (RDFSClass) item;
+                relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getRdfType(), source,
+                        typeClass);
             }
         }
-    }    
+    }
+
     /**
      * Resolve and assign all property information contained by the given RDF
      * resource to the EMF Entity.
      * 
-     * @param emfEntity
+     * @param lgEntity
      * @param rdfResource
      * 
      *            Last updated: 05/28/2008
      */
-    protected void resolveEntityProperties(Entity emfEntity, RDFResource rdfResource) {
+    protected void resolveEntityProperties(Entity lgEntity, RDFResource rdfResource) {
         String rdfName = rdfResource.getLocalName();
 
         // Temporary container for EMF properties.
@@ -1118,13 +1142,13 @@ public class ProtegeOwl2LG {
                 continue;
 
             // Do we have an EMF class match?
-            String propClass = owlDatatypeName2emfPropClass_.get(propName);
+            String propClass = owlDatatypeName2lgPropClass_.get(propName);
             if (isNoop(propClass))
                 continue;
 
             // Determine the EMF property name and datatype ...
-            String emfDType = owlDatatypeName2emfDatatype_.get(propName);
-            String emfLabel = owlDatatypeName2label_.get(propName);
+            String lgDType = owlDatatypeName2lgDatatype_.get(propName);
+            String lgLabel = owlDatatypeName2label_.get(propName);
 
             // Interpret RDF property value(s) ...
             for (Iterator values = rdfResource.getPropertyValues(prop).iterator(); values.hasNext();) {
@@ -1134,16 +1158,16 @@ public class ProtegeOwl2LG {
                 // Special case for handling concept code and status, which are
                 // set directly as attributes on the LexGrid concept.
                 if (propName.matches(prefManager.getMatchPattern_conceptCode())) {
-                    emfEntity.setEntityCode(resolvedText);
-                } else if (emfLabel != null && emfLabel.matches(prefManager.getMatchPattern_conceptStatus())) {
-                    emfEntity.setStatus(resolvedText);
+                    lgEntity.setEntityCode(resolvedText);
+                } else if (lgLabel != null && lgLabel.matches(prefManager.getMatchPattern_conceptStatus())) {
+                    lgEntity.setStatus(resolvedText);
                     if (resolvedText.matches(prefManager.getMatchPattern_inactiveStatus()))
-                        emfEntity.setIsActive(false);
+                        lgEntity.setIsActive(false);
                 }
                 // Otherwise instantiate a new EMF property and add the new
                 // property to the list to eventually add to the concept.
                 else {
-                    Property newProp = resolveProp(prop, propClass, generatePropertyID(++i), emfLabel, emfDType, prop
+                    Property newProp = resolveProp(prop, propClass, generatePropertyID(++i), lgLabel, lgDType, prop
                             .getNamespace(), resolvedText);
                     if (newProp.getValue() != null) {
                         sortedProps.add(newProp);
@@ -1157,13 +1181,13 @@ public class ProtegeOwl2LG {
         // Indicate whether the concept is primitive (no equivalent classes) ...
         Collection values = rdfResource.getPropertyValues(rdfResource.getOWLModel().getOWLEquivalentClassProperty());
         if (values == null || values.isEmpty()) {
-            Property emfProp = CreateUtils.createProperty(generatePropertyID(++i), prefManager
-                    .getPropertyName_primitive(), "true", emfSupportedMappings_);
-            sortedProps.add(emfProp);
+            Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), prefManager
+                    .getPropertyName_primitive(), "true", lgSupportedMappings_);
+            sortedProps.add(lgProp);
         } else {
-            Property emfProp = CreateUtils.createProperty(generatePropertyID(++i), prefManager
-                    .getPropertyName_primitive(), "false", emfSupportedMappings_);
-            sortedProps.add(emfProp);
+            Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), prefManager
+                    .getPropertyName_primitive(), "false", lgSupportedMappings_);
+            sortedProps.add(lgProp);
         }
 
         // The LexGrid model requires a matching presentation for the entity
@@ -1175,10 +1199,10 @@ public class ProtegeOwl2LG {
                 || ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL.equalsIgnoreCase(prefManager
                         .getPrioritized_presentation_names().get(0)) || presentationCount == 0;
         if (generatePreferred) {
-            String entityDesc = emfEntity.getEntityDescription().getContent();
+            String entityDesc = lgEntity.getEntityDescription().getContent();
             sortedProps.add(CreateUtils.createPresentation(generatePropertyID(++i),
                     rdfName.equals(entityDesc) ? ProtegeOwl2LGConstants.PROPNAME_RDF_ID
-                            : ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL, entityDesc, true, emfSupportedMappings_));
+                            : ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL, entityDesc, true, lgSupportedMappings_));
         }
 
         // Track assignment of preferred presentation and definition.
@@ -1200,7 +1224,7 @@ public class ProtegeOwl2LG {
                 // presentation.
                 EntityDescription ed = new EntityDescription();
                 ed.setContent(((Presentation) prop).getValue().getContent());
-                emfEntity.setEntityDescription(ed);
+                lgEntity.setEntityDescription(ed);
 
                 // Remember that a preferred presentation was assigned ...
                 assignedPreferredPres = true;
@@ -1237,18 +1261,18 @@ public class ProtegeOwl2LG {
                     RDFSDatatype range = prop.getRangeDatatype();
                     if (range != null) {
                         String propertyRangeName = getRDFResourceLocalName(range);
-                        Property emfProp = CreateUtils.createProperty(generatePropertyID(++i), propertyName,
-                                propertyRangeName, emfSupportedMappings_);
-                        sortedProps.add(emfProp);
+                        Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), propertyName,
+                                propertyRangeName, lgSupportedMappings_);
+                        sortedProps.add(lgProp);
                     }
                 }
             }
         }
 
         // Now add all the sorted properties to the concept.
-        for (Iterator<? extends Property> emfProps = sortedProps.iterator(); emfProps.hasNext();) {
-            Property emfProp = emfProps.next();
-            emfEntity.addAnyProperty(emfProp);
+        for (Iterator<? extends Property> lgProps = sortedProps.iterator(); lgProps.hasNext();) {
+            Property lgProp = lgProps.next();
+            lgEntity.addAnyProperty(lgProp);
         }
 
     }
@@ -1267,34 +1291,34 @@ public class ProtegeOwl2LG {
         // Create the raw EMF individual and assign label as initial
         // description,
         // which may be overridden later by preferred text.
-        Entity emfInstance = new Entity();
-        emfInstance.setEntityType(new String[]{EntityTypes.INSTANCE.toString()});
+        Entity lgInstance = new Entity();
+        lgInstance.setEntityType(new String[] { EntityTypes.INSTANCE.toString() });
         EntityDescription ed = new EntityDescription();
         ed.setContent(label);
-        emfInstance.setEntityDescription(ed);
-        emfInstance.setEntityCode(rdfName);
+        lgInstance.setEntityDescription(ed);
+        lgInstance.setEntityCode(rdfName);
         String nameSpace = getNameSpace(rdfResource.getNamespace());
-        emfInstance.setEntityCodeNamespace(nameSpace);
+        lgInstance.setEntityCodeNamespace(nameSpace);
 
         // Is deprecated? If so, mark as inactive.
         if (rdfResource instanceof OWLIndividual
                 && OWLNames.Cls.DEPRECATED_CLASS.equals(rdfResource.getRDFType().getName()))
-            emfInstance.setIsActive(Boolean.FALSE);
+            lgInstance.setIsActive(Boolean.FALSE);
 
         // Set the 'isDefined' property.
         if (rdfResource instanceof OWLNamedClass) {
             OWLNamedClass owlNamedClass = (OWLNamedClass) rdfResource;
-            emfInstance.setIsDefined(owlNamedClass.isDefinedClass());
+            lgInstance.setIsDefined(owlNamedClass.isDefinedClass());
         }
 
         // Updated 05/28/2008: handle the individual OWLObjectProperties
         // and OWLDatatypeProperties. Essentially, both are represented
         // as instanceProperties.
-        resolveEntityProperties(emfInstance, rdfResource);
+        resolveEntityProperties(lgInstance, rdfResource);
 
         // Remember the rdf to code mapping and return.
-        owlInstanceName2code_.put(rdfName, emfInstance.getEntityCode());
-        return emfInstance;
+        owlInstanceName2code_.put(rdfName, lgInstance.getEntityCode());
+        return lgInstance;
     }
 
     /**
@@ -1302,10 +1326,10 @@ public class ProtegeOwl2LG {
      * and OWLObject. Essentially, the is to tag each individual with the
      * property so that it helps in visualization and navigation.
      * 
-     * @param emfInstance
+     * @param lgInstance
      * @param rdfResource
      */
-    protected void resolveIndividualProperties(Entity emfInstance, RDFResource rdfResource) {
+    protected void resolveIndividualProperties(Entity lgInstance, RDFResource rdfResource) {
 
         // Temporary container for EMF properties.
         // Note: The EMF object does not enforce order. However, the XSD models
@@ -1325,9 +1349,9 @@ public class ProtegeOwl2LG {
                 String className = getRDFResourceLocalName(myClass);
 
                 // Add this information as an instanceProperty.
-                Property emfProp = CreateUtils.createProperty(generatePropertyID(++i), "isInstanceOf", className,
-                        emfSupportedMappings_);
-                sortedProps.add(emfProp);
+                Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), "isInstanceOf", className,
+                        lgSupportedMappings_);
+                sortedProps.add(lgProp);
 
                 break;
             }
@@ -1346,13 +1370,13 @@ public class ProtegeOwl2LG {
                 continue;
 
             // Do we have an EMF class match?
-            String propClass = owlDatatypeName2emfPropClass_.get(propName);
+            String propClass = owlDatatypeName2lgPropClass_.get(propName);
             if (isNoop(propClass))
                 continue;
 
             // Determine the EMF property name and datatype ...
-            String emfDType = owlDatatypeName2emfDatatype_.get(propName);
-            String emfLabel = owlDatatypeName2label_.get(propName);
+            String lgDType = owlDatatypeName2lgDatatype_.get(propName);
+            String lgLabel = owlDatatypeName2label_.get(propName);
 
             // Interpret RDF property value(s) ...
             for (Iterator values = rdfResource.getPropertyValues(prop).iterator(); values.hasNext();) {
@@ -1362,16 +1386,16 @@ public class ProtegeOwl2LG {
                 // Special case for handling concept code and status, which are
                 // set directly as attributes on the LexGrid instance.
                 if (propName.matches(prefManager.getMatchPattern_conceptCode())) {
-                    emfInstance.setEntityCode(resolvedText);
-                } else if (emfLabel != null && emfLabel.matches(prefManager.getMatchPattern_conceptStatus())) {
-                    emfInstance.setStatus(resolvedText);
+                    lgInstance.setEntityCode(resolvedText);
+                } else if (lgLabel != null && lgLabel.matches(prefManager.getMatchPattern_conceptStatus())) {
+                    lgInstance.setStatus(resolvedText);
                     if (resolvedText.matches(prefManager.getMatchPattern_inactiveStatus()))
-                        emfInstance.setIsActive(false);
+                        lgInstance.setIsActive(false);
                 }
                 // Otherwise instantiate a new EMF property and add the new
                 // property to the list to eventually add to the instance.
                 else {
-                    Property newProp = resolveProp(prop, propClass, generatePropertyID(++i), emfLabel, emfDType, prop
+                    Property newProp = resolveProp(prop, propClass, generatePropertyID(++i), lgLabel, lgDType, prop
                             .getNamespace(), resolvedText);
                     if (newProp.getValue() != null) {
                         sortedProps.add(newProp);
@@ -1386,13 +1410,13 @@ public class ProtegeOwl2LG {
         // ...
         Collection values = rdfResource.getPropertyValues(rdfResource.getOWLModel().getOWLEquivalentClassProperty());
         if (values == null || values.isEmpty()) {
-            Property emfProp = CreateUtils.createProperty(generatePropertyID(++i), prefManager
-                    .getPropertyName_primitive(), "true", emfSupportedMappings_);
-            sortedProps.add(emfProp);
+            Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), prefManager
+                    .getPropertyName_primitive(), "true", lgSupportedMappings_);
+            sortedProps.add(lgProp);
         } else {
-            Property emfProp = CreateUtils.createProperty(generatePropertyID(++i), prefManager
-                    .getPropertyName_primitive(), "false", emfSupportedMappings_);
-            sortedProps.add(emfProp);
+            Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), prefManager
+                    .getPropertyName_primitive(), "false", lgSupportedMappings_);
+            sortedProps.add(lgProp);
         }
 
         // The LexGrid model requires a matching presentation for the entity
@@ -1404,10 +1428,10 @@ public class ProtegeOwl2LG {
                 || ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL.equalsIgnoreCase(prefManager
                         .getPrioritized_presentation_names().get(0)) || presentationCount == 0;
         if (generatePreferred) {
-            String entityDesc = emfInstance.getEntityDescription().getContent();
+            String entityDesc = lgInstance.getEntityDescription().getContent();
             sortedProps.add(CreateUtils.createPresentation(generatePropertyID(++i),
                     rdfName.equals(entityDesc) ? ProtegeOwl2LGConstants.PROPNAME_RDF_ID
-                            : ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL, entityDesc, true, emfSupportedMappings_));
+                            : ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL, entityDesc, true, lgSupportedMappings_));
         }
 
         // Track assignment of preferred presentation and definition.
@@ -1428,7 +1452,7 @@ public class ProtegeOwl2LG {
                 // presentation.
                 EntityDescription ed = new EntityDescription();
                 ed.setContent(((Presentation) prop).getValue().getContent());
-                emfInstance.setEntityDescription(ed);
+                lgInstance.setEntityDescription(ed);
                 // Remember that a preferred presentation was assigned ...
                 assignedPreferredPres = true;
             }
@@ -1441,9 +1465,9 @@ public class ProtegeOwl2LG {
         }
 
         // Now add all the sorted properties to the instance.
-        for (Iterator<? extends Property> emfProps = sortedProps.iterator(); emfProps.hasNext();) {
-            Property emfProp = (Property) emfProps.next();
-            emfInstance.addAnyProperty(emfProp);
+        for (Iterator<? extends Property> lgProps = sortedProps.iterator(); lgProps.hasNext();) {
+            Property lgProp = (Property) lgProps.next();
+            lgInstance.addAnyProperty(lgProp);
         }
     }
 
@@ -1466,51 +1490,65 @@ public class ProtegeOwl2LG {
                     for (Iterator vals = propVals.iterator(); vals.hasNext();) {
                         Object val = vals.next();
                         if (val instanceof OWLNamedClass) {
-                            AssociationWrapper emfAssoc = assocManager.getAssociation(relationName);
-                            relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, emfAssoc, source,
+                            AssociationWrapper lgAssoc = assocManager.getAssociation(relationName);
+                            relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, lgAssoc, source,
                                     (OWLNamedClass) val);
                         } else if (val instanceof OWLIndividual) {
-                            AssociationWrapper emfAssoc = assocManager.getAssociation(relationName);
-                            relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE, emfAssoc, source,
+                            AssociationWrapper lgAssoc = assocManager.getAssociation(relationName);
+                            relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE, lgAssoc, source,
                                     (OWLIndividual) val);
                         }
                     }
                 }
             }
         }
-    }    
-    
+    }
+
     /**
      * Instantiate and return a new EMF property based on the provided values.
      * 
-     * @param emfClass
+     * @param lgClass
      *            The EMF property class to instantiate (presentation, comment,
      *            etc).
-     * @param emfID
+     * @param lgID
      *            The identifier to assign to the new property; not null.
-     * @param emfLabel
+     * @param lgLabel
      *            The name or label for the new property; not null.
-     * @param emfDType
+     * @param lgDType
      *            The data type of the new property; null if not applicable.
      * @param rdfNamespace
      *            Namespace of the RDF property being converted.
      * @param rdfText
      *            Text from the RDF property being converted.
-     * @return org.LexGrid.emf.concepts.ConceptProperty
+     * @return org.LexGrid.lg.concepts.ConceptProperty
      */
-    protected Property resolveProp(RDFProperty prop, String emfClass, String emfID, String emfLabel, String emfDType,
+    protected Property resolveProp(RDFProperty prop, String lgClass, String lgID, String lgLabel, String lgDType,
             String rdfNamespace, String rdfText) {
 
-        Property emfProp;
+        Property lgProp;
         String propName = prop.getName();
-        if (RDFSNames.Slot.LABEL.equals(propName) || emfClass == PropertyTypes.PRESENTATION.toString())
-            emfProp = CreateUtils.createPresentation(emfID, emfLabel, rdfText, null, emfSupportedMappings_);
-        else if (RDFSNames.Slot.COMMENT.equals(propName) || emfClass == PropertyTypes.COMMENT.toString())
-            emfProp = CreateUtils.createComment(emfID, emfLabel, rdfText, emfSupportedMappings_);
-        else if (emfClass == PropertyTypes.DEFINITION.toString())
-            emfProp = CreateUtils.createDefinition(emfID, emfLabel, rdfText, null, emfSupportedMappings_);
-        else
-            emfProp = CreateUtils.createProperty(emfID, emfLabel, null, emfSupportedMappings_);
+        if (RDFSNames.Slot.LABEL.equals(propName) || lgClass == PropertyTypes.PRESENTATION.toString())
+            lgProp = CreateUtils.createPresentation(lgID, lgLabel, rdfText, null, lgSupportedMappings_);
+        else if (RDFSNames.Slot.COMMENT.equals(propName) || lgClass == PropertyTypes.COMMENT.toString())
+            lgProp = CreateUtils.createComment(lgID, lgLabel, rdfText, lgSupportedMappings_);
+        else if (lgClass == PropertyTypes.DEFINITION.toString())
+            lgProp = CreateUtils.createDefinition(lgID, lgLabel, rdfText, null, lgSupportedMappings_);
+        else {
+            lgProp = CreateUtils.createProperty(lgID, lgLabel, null, lgSupportedMappings_);
+            if (prop.getLabels().isEmpty() == false) {
+                for(Iterator in = prop.getLabels().iterator(); in.hasNext();) {
+                    String label = (String) in.next();
+                    lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier("label", label, lgSupportedMappings_));
+                }
+            }
+            if (prop.getComments().isEmpty() == false) {
+                for (Iterator in = prop.getComments().iterator(); in.hasNext();){
+                    String comment = (String)in.next();
+                    lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier("comment", comment, lgSupportedMappings_));
+                }
+            }
+            
+        }
 
         // Handle imbedded XML if present ...
         Map<String, String> xmlTagsAndVals = resolveXMLTagsAndValues(rdfText);
@@ -1523,7 +1561,7 @@ public class ProtegeOwl2LG {
                 String tag = tags.next();
 
                 if (tag == null) {
-                    messages_.info("Skipping " + emfID + ", " + emfLabel + ", " + emfDType + ", " + rdfNamespace + ", "
+                    messages_.info("Skipping " + lgID + ", " + lgLabel + ", " + lgDType + ", " + rdfNamespace + ", "
                             + rdfText);
                     continue;
                 }
@@ -1531,20 +1569,20 @@ public class ProtegeOwl2LG {
                 String text = xmlTagsAndVals.get(tag);
 
                 if (tag.matches(prefManager.getMatchPattern_xmlTextNames())) {
-                    emfProp.setValue(CreateUtils.createText(text));
+                    lgProp.setValue(CreateUtils.createText(text));
                 } else if (tag.matches(prefManager.getMatchPattern_xmlSourceNames())) {
-                    emfProp.addSource(CreateUtils.createSource(text, null, null, emfSupportedMappings_));
+                    lgProp.addSource(CreateUtils.createSource(text, null, null, lgSupportedMappings_));
 
                     // Register the source as supported if not already
                     // defined.
-                    emfSupportedMappings_.registerSupportedSource(text, rdfNamespace + text, text, null, false);
+                    lgSupportedMappings_.registerSupportedSource(text, rdfNamespace + text, text, null, false);
                 } else if (tag.matches("language")) {
-                    emfProp.setLanguage(text);
+                    lgProp.setLanguage(text);
 
                     // Register the source as supported if not already
                     // defined.
-                    emfSupportedMappings_.registerSupportedLanguage(text,
-                            ProtegeOwl2LGConstants.LANG_URI + ':' + text, text, false);
+                    lgSupportedMappings_.registerSupportedLanguage(text, ProtegeOwl2LGConstants.LANG_URI + ':' + text,
+                            text, false);
                 }
                 // specific to the new complex props implementation
                 else if (prefManager.isComplexProps_isDbxRefSource()
@@ -1556,41 +1594,40 @@ public class ProtegeOwl2LG {
                         val = sourceWithRef[0];
                         ref = sourceWithRef[1];
                     }
-                    emfProp.addSource(CreateUtils.createSource(val, null, ref, emfSupportedMappings_));
+                    lgProp.addSource(CreateUtils.createSource(val, null, ref, lgSupportedMappings_));
 
                     // Register the source as supported if not already
                     // defined.
-                    emfSupportedMappings_.registerSupportedSource(text, rdfNamespace + text, text, null, false);
+                    lgSupportedMappings_.registerSupportedSource(text, rdfNamespace + text, text, null, false);
 
-                } else if (emfProp instanceof Presentation
-                        && tag.matches(prefManager.getMatchPattern_xmlRepFormNames())) {
-                    ((Presentation) emfProp).setRepresentationalForm(text);
+                } else if (lgProp instanceof Presentation && tag.matches(prefManager.getMatchPattern_xmlRepFormNames())) {
+                    ((Presentation) lgProp).setRepresentationalForm(text);
 
                     // Register the source as supported if not already
                     // defined.
-                    emfSupportedMappings_.registerSupportedRepresentationalForm(text, rdfNamespace + text, text, false);
+                    lgSupportedMappings_.registerSupportedRepresentationalForm(text, rdfNamespace + text, text, false);
                 }
                 // specific to the new complex props implementation
-                else if (prefManager.isComplexProps_isDbxRefRepForm() && emfProp instanceof Presentation
+                else if (prefManager.isComplexProps_isDbxRefRepForm() && lgProp instanceof Presentation
                         && text.matches(ProtegeOwl2LGConstants.MATCH_XMLREPFORM_VALUES)) {
-                    ((Presentation) emfProp).setRepresentationalForm(text);
+                    ((Presentation) lgProp).setRepresentationalForm(text);
 
                     // Register the source as supported if not already
                     // defined.
-                    emfSupportedMappings_.registerSupportedRepresentationalForm(text, rdfNamespace + text, text, false);
+                    lgSupportedMappings_.registerSupportedRepresentationalForm(text, rdfNamespace + text, text, false);
                 } else {
-                    emfProp.addPropertyQualifier(CreateUtils.createPropertyQualifier(tag, text, emfSupportedMappings_));
+                    lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier(tag, text, lgSupportedMappings_));
 
                     // Register the qualifier as supported if not already
                     // defined.
-                    emfSupportedMappings_.registerSupportedPropertyQualifier(tag, rdfNamespace + tag, tag, false);
+                    lgSupportedMappings_.registerSupportedPropertyQualifier(tag, rdfNamespace + tag, tag, false);
                 }
             }
         } else {
             // No XML; interpret text as complete property text.
-            emfProp.setValue(CreateUtils.createText(rdfText));
+            lgProp.setValue(CreateUtils.createText(rdfText));
         }
-        return emfProp;
+        return lgProp;
     }
 
     /**
@@ -1608,19 +1645,19 @@ public class ProtegeOwl2LG {
             return code;
         }
 
-        Entity emfClass = new Entity();
-        emfClass.setEntityType(new String[]{EntityTypes.CONCEPT.toString()});
-        emfClass.setEntityCode(code);
-        emfClass.setIsAnonymous(Boolean.TRUE);
-        
+        Entity lgClass = new Entity();
+        lgClass.setEntityType(new String[] { EntityTypes.CONCEPT.toString() });
+        lgClass.setEntityCode(code);
+        lgClass.setIsAnonymous(Boolean.TRUE);
+
         String nameSpace = getNameSpace(owlClass.getNamespace());
-        emfClass.setEntityCodeNamespace(nameSpace);
-        
+        lgClass.setEntityCodeNamespace(nameSpace);
+
         EntityDescription ed = new EntityDescription();
         ed.setContent(owlClass.getBrowserText());
-        emfClass.setEntityDescription(ed);
+        lgClass.setEntityDescription(ed);
 
-        int emfPropNum = 0;
+        int lgPropNum = 0;
         int dataTypeNumber = 0;
 
         AssociationSource source = CreateUtils.createAssociationSource(code, nameSpace);
@@ -1630,9 +1667,9 @@ public class ProtegeOwl2LG {
             OWLNAryLogicalClass logicalClass = (OWLNAryLogicalClass) owlClass;
             // Add the type prop ...
             RDFProperty opProp = logicalClass.getOperandsProperty();
-            Property emfProp = CreateUtils.createProperty(generatePropertyID(++emfPropNum), prefManager
-                    .getPropertyName_type(), opProp.getLocalName(), emfSupportedMappings_);
-            emfClass.addProperty(emfProp);
+            Property lgProp = CreateUtils.createProperty(generatePropertyID(++lgPropNum), prefManager
+                    .getPropertyName_type(), opProp.getLocalName(), lgSupportedMappings_);
+            lgClass.addProperty(lgProp);
 
             // Evaluate the operands defined for the anonymous node to determine
             // relations.
@@ -1640,11 +1677,11 @@ public class ProtegeOwl2LG {
                 Object operand = operands.next();
                 if (operand instanceof OWLComplementClass) {
                     OWLComplementClass complement = (OWLComplementClass) operand;
-                    String emfCode = resolveAnonymousClass((OWLClass) complement.getComplement(), assocSource);
-                    
+                    String lgCode = resolveAnonymousClass((OWLClass) complement.getComplement(), assocSource);
+
                     String targetNameSpace = getNameSpace(complement.getNamespace());
-                    
-                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(emfCode, targetNameSpace);
+
+                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
                     relateAssociationSourceTarget(assocManager.getComplementOf(), source, opTarget);
 
                 } else if (operand instanceof OWLRestriction) {
@@ -1657,26 +1694,27 @@ public class ProtegeOwl2LG {
                     // Operand defines a direct participant in the anonymous
                     // node...
                     OWLNamedClass op = (OWLNamedClass) operand;
-                    
+
                     String targetNameSpace = getNameSpace(op.getNamespace());
-                    
-                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(op.getLocalName(), targetNameSpace);
+
+                    AssociationTarget opTarget = CreateUtils
+                            .createAssociationTarget(op.getLocalName(), targetNameSpace);
                     relateAssociationSourceTarget(assocManager.getSubClassOf(), source, opTarget);
 
                 } else if (operand instanceof OWLEnumeratedClass) {
-                    String emfCode = resolveAnonymousClass((OWLEnumeratedClass) operand, assocSource);
+                    String lgCode = resolveAnonymousClass((OWLEnumeratedClass) operand, assocSource);
 
-                    String targetNameSpace = getNameSpace( ((OWLEnumeratedClass)operand).getNamespace() );
-                    
-                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(emfCode, targetNameSpace);
+                    String targetNameSpace = getNameSpace(((OWLEnumeratedClass) operand).getNamespace());
+
+                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
 
                     relateAssociationSourceTarget(assocManager.getSubClassOf(), source, opTarget);
                 } else if (operand instanceof OWLNAryLogicalClass) {
-                    String emfCode = resolveAnonymousClass((OWLNAryLogicalClass) operand, assocSource);
-                    
-                    String targetNameSpace = getNameSpace( ((OWLNAryLogicalClass)operand).getNamespace() );
+                    String lgCode = resolveAnonymousClass((OWLNAryLogicalClass) operand, assocSource);
 
-                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(emfCode, targetNameSpace);
+                    String targetNameSpace = getNameSpace(((OWLNAryLogicalClass) operand).getNamespace());
+
+                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
 
                     relateAssociationSourceTarget(assocManager.getSubClassOf(), source, opTarget);
                 }
@@ -1684,26 +1722,26 @@ public class ProtegeOwl2LG {
         }
 
         if (owlClass instanceof OWLEnumeratedClass) {
-            Property emfProp = CreateUtils.createProperty(generatePropertyID(++emfPropNum), prefManager
-                    .getPropertyName_type(), "owl:oneOf", emfSupportedMappings_);
-            emfClass.addProperty(emfProp);
+            Property lgProp = CreateUtils.createProperty(generatePropertyID(++lgPropNum), prefManager
+                    .getPropertyName_type(), "owl:oneOf", lgSupportedMappings_);
+            lgClass.addProperty(lgProp);
         }
 
         if (owlClass instanceof OWLRestriction) {
             OWLRestriction restriction = (OWLRestriction) owlClass;
-            Property emfProperty = CreateUtils.createProperty(generatePropertyID(++emfPropNum), prefManager
-                    .getPropertyName_type(), "owl:Restriction", emfSupportedMappings_);
-            emfClass.addProperty(emfProperty);
+            Property lgProperty = CreateUtils.createProperty(generatePropertyID(++lgPropNum), prefManager
+                    .getPropertyName_type(), "owl:Restriction", lgSupportedMappings_);
+            lgClass.addProperty(lgProperty);
             processRestriction(restriction, assocSource, source);
         }
 
         if (owlClass instanceof OWLComplementClass) {
             OWLComplementClass complement = (OWLComplementClass) owlClass;
-            String emfCode = resolveAnonymousClass((OWLClass) complement.getComplement(), assocSource);
-            
-            String targetNameSpace = getNameSpace( complement.getNamespace() );
-            
-            AssociationTarget opTarget = CreateUtils.createAssociationTarget(emfCode, targetNameSpace);
+            String lgCode = resolveAnonymousClass((OWLClass) complement.getComplement(), assocSource);
+
+            String targetNameSpace = getNameSpace(complement.getNamespace());
+
+            AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
             relateAssociationSourceTarget(assocManager.getComplementOf(), source, opTarget);
         }
 
@@ -1711,13 +1749,13 @@ public class ProtegeOwl2LG {
         // the browser text we get from the Protege API.
         // Note: text was derived from the browser text. Since it is unclear
         // what property it was derived from, we document as 'label'.
-        Presentation pres = CreateUtils.createPresentation(generatePropertyID(++emfPropNum), "label", emfClass
-                .getEntityDescription().getContent(), Boolean.TRUE, emfSupportedMappings_);
-        emfClass.addPresentation(pres);
+        Presentation pres = CreateUtils.createPresentation(generatePropertyID(++lgPropNum), "label", lgClass
+                .getEntityDescription().getContent(), Boolean.TRUE, lgSupportedMappings_);
+        lgClass.addPresentation(pres);
         // Add to the concept container or write to db...
-        addEntity(emfClass);
-        // Return the emf class name
-        return emfClass.getEntityCode();
+        addEntity(lgClass);
+        // Return the lg class name
+        return lgClass.getEntityCode();
     }
 
     /**
@@ -1737,17 +1775,18 @@ public class ProtegeOwl2LG {
                         Object value = values.next();
                         String resolvedText = resolveRDFText(rdfResource, value);
 
-                        AssociationWrapper emfAssoc = assocManager.getAssociation(propertyName);
-                        if (emfAssoc != null) {
+                        AssociationWrapper lgAssoc = assocManager.getAssociation(propertyName);
+                        if (lgAssoc != null) {
                             AssociationData data = CreateUtils.createAssociationTextData(resolvedText);
-                            relateAssociationSourceData(emfAssoc, source, data);
+                            relateAssociationSourceData(lgAssoc, source, data);
                         }
                     }
                 }
             }
         }
 
-    }    
+    }
+
     /**
      * 
      * @param restriction
@@ -1830,7 +1869,7 @@ public class ProtegeOwl2LG {
                 // indicates the kind of restriction (e.g., owl:cardinality).
                 if (fillerProp != null) {
                     AssociationQualification opQual = CreateUtils.createAssociationQualification(fillerProp,
-                            emfSupportedMappings_);
+                            lgSupportedMappings_);
                     if (opData != null) {
                         opData.addAssociationQualification(opQual);
                     }
@@ -1984,19 +2023,19 @@ public class ProtegeOwl2LG {
      */
     protected void initSupportedMappings() {
         // Create a helper class used to accumulate mappings
-        emfSupportedMappings_ = new SupportedMappings(messages_);
+        lgSupportedMappings_ = new SupportedMappings(messages_);
 
         // Register mappings that will not be explicitly built
         // while processing the OWL source...
-        emfSupportedMappings_.registerSupportedDataType(ProtegeOwl2LGConstants.DATATYPE_BOOLEAN,
+        lgSupportedMappings_.registerSupportedDataType(ProtegeOwl2LGConstants.DATATYPE_BOOLEAN,
                 ProtegeOwl2LGConstants.DATATYPE_BOOLEAN_URI, ProtegeOwl2LGConstants.DATATYPE_BOOLEAN, false);
-        emfSupportedMappings_.registerSupportedDataType(ProtegeOwl2LGConstants.DATATYPE_STRING,
+        lgSupportedMappings_.registerSupportedDataType(ProtegeOwl2LGConstants.DATATYPE_STRING,
                 ProtegeOwl2LGConstants.DATATYPE_STRING_URI, ProtegeOwl2LGConstants.DATATYPE_STRING, false);
-        emfSupportedMappings_.registerSupportedPropertyQualifierType(ProtegeOwl2LGConstants.DATATYPE_STRING,
+        lgSupportedMappings_.registerSupportedPropertyQualifierType(ProtegeOwl2LGConstants.DATATYPE_STRING,
                 ProtegeOwl2LGConstants.DATATYPE_STRING_URI, ProtegeOwl2LGConstants.DATATYPE_STRING, false);
-        emfSupportedMappings_.registerSupportedPropertyType(ProtegeOwl2LGConstants.DATATYPE_STRING,
+        lgSupportedMappings_.registerSupportedPropertyType(ProtegeOwl2LGConstants.DATATYPE_STRING,
                 ProtegeOwl2LGConstants.DATATYPE_STRING_URI, ProtegeOwl2LGConstants.DATATYPE_STRING, false);
-        emfSupportedMappings_.registerSupportedHierarchy(ProtegeOwl2LGConstants.SUPP_HIERARCHY_ISA,
+        lgSupportedMappings_.registerSupportedHierarchy(ProtegeOwl2LGConstants.SUPP_HIERARCHY_ISA,
                 ProtegeOwl2LGConstants.SUPP_HIERARCHY_ISA_URI, ProtegeOwl2LGConstants.SUPP_HIERARCHY_ISA,
                 ProtegeOwl2LGConstants.ROOT_CODE, Arrays
                         .asList(ProtegeOwl2LGConstants.SUPP_HIERARCHY_ISA_ASSOCIATION_LIST), false, false);
@@ -2009,37 +2048,36 @@ public class ProtegeOwl2LG {
      */
     protected void initScheme() {
         // Basics
-        emfScheme_ = new CodingScheme();
+        lgScheme_ = new CodingScheme();
 
         // Create top-level container for assigned entities ...
-        emfScheme_.setEntities(new Entities());
+        lgScheme_.setEntities(new Entities());
 
         // Create top-level containers for relations.
-        emfRelationsContainer_Assoc = new Relations();
-        emfRelationsContainer_Assoc.setContainerName(ProtegeOwl2LGConstants.DC_ASSOCIATIONS);
-        emfScheme_.addRelations(emfRelationsContainer_Assoc);
-        
+        lgRelationsContainer_Assoc = new Relations();
+        lgRelationsContainer_Assoc.setContainerName(ProtegeOwl2LGConstants.DC_ASSOCIATIONS);
+        lgScheme_.addRelations(lgRelationsContainer_Assoc);
+
         // Add this Container to the Supported Mappings
-        emfSupportedMappings_
-                .registerSupportedContainerName(ProtegeOwl2LGConstants.DC_ASSOCIATIONS, null, null, false);
+        lgSupportedMappings_.registerSupportedContainerName(ProtegeOwl2LGConstants.DC_ASSOCIATIONS, null, null, false);
 
         // Create top-level "Roles" containers for relations.
-        emfRelationsContainer_Roles = new Relations();
-        emfRelationsContainer_Roles.setContainerName(ProtegeOwl2LGConstants.DC_ROLES);
-        emfScheme_.addRelations(emfRelationsContainer_Roles);
+        lgRelationsContainer_Roles = new Relations();
+        lgRelationsContainer_Roles.setContainerName(ProtegeOwl2LGConstants.DC_ROLES);
+        lgScheme_.addRelations(lgRelationsContainer_Roles);
         // Add this Container to the Supported Mappings
-        emfSupportedMappings_.registerSupportedContainerName(ProtegeOwl2LGConstants.DC_ROLES, null, null, false);
+        lgSupportedMappings_.registerSupportedContainerName(ProtegeOwl2LGConstants.DC_ROLES, null, null, false);
 
         Mappings mappings = new Mappings();
-        emfScheme_.setMappings(mappings);
+        lgScheme_.setMappings(mappings);
 
         NamespaceManager nm = owlModel_.getNamespaceManager();
         for (Iterator i = nm.getPrefixes().iterator(); i.hasNext();) {
             String prefix = i.next().toString();
             if (StringUtils.isNotEmpty(prefix)) {
-                emfSupportedMappings_.registerSupportedSource(prefix, nm.getNamespaceForPrefix(prefix), prefix, null,
+                lgSupportedMappings_.registerSupportedSource(prefix, nm.getNamespaceForPrefix(prefix), prefix, null,
                         false);
-                emfSupportedMappings_.registerSupportedNamespace(prefix, nm.getNamespaceForPrefix(prefix), prefix, "",
+                lgSupportedMappings_.registerSupportedNamespace(prefix, nm.getNamespaceForPrefix(prefix), prefix, "",
                         false);
             }
         }
@@ -2060,7 +2098,7 @@ public class ProtegeOwl2LG {
                     || (newVersion.length() > 0 && version.length() > 0 && newVersion.length() < version.length()))
                 version = newVersion;
         }
-        
+
         String uri = owlModel_.getDefaultOWLOntology().getURI();
 
         if (uri != null) {
@@ -2076,15 +2114,15 @@ public class ProtegeOwl2LG {
                 localProtocol = localProtocol.substring(0, localProtocol.length() - 1);
 
             if (localProtocol.toLowerCase().startsWith("http://"))
-                emfScheme_.addLocalName(localProtocol.substring("http://".length()));
+                lgScheme_.addLocalName(localProtocol.substring("http://".length()));
             else if (localProtocol.toLowerCase().startsWith("urn:oid:"))
-                emfScheme_.addLocalName(localProtocol.substring("urn:oid:".length()));
+                lgScheme_.addLocalName(localProtocol.substring("urn:oid:".length()));
             else if (localProtocol.toLowerCase().startsWith("urn:iso:"))
-                emfScheme_.addLocalName(localProtocol.substring("urn:oid:".length()));
+                lgScheme_.addLocalName(localProtocol.substring("urn:oid:".length()));
             else if (localProtocol.toLowerCase().startsWith("urn:lsid:"))
-                emfScheme_.addLocalName(localProtocol.substring("urn:lsid:".length()));
+                lgScheme_.addLocalName(localProtocol.substring("urn:lsid:".length()));
             else
-                emfScheme_.addLocalName(localProtocol);
+                lgScheme_.addLocalName(localProtocol);
 
             // The rightmost part of the urn is a third local name if it doesn't
             // match the coding scheme
@@ -2092,7 +2130,7 @@ public class ProtegeOwl2LG {
             if (localProtocol.contains("/")) {
                 localProtocol_csname = localProtocol.substring(localProtocol.lastIndexOf("/") + 1);
                 if (!localName.equals(localProtocol_csname))
-                    emfScheme_.addLocalName(localProtocol_csname);
+                    lgScheme_.addLocalName(localProtocol_csname);
             }
 
             if (localName.trim().length() == 0) {
@@ -2103,7 +2141,7 @@ public class ProtegeOwl2LG {
                 }
 
             } else {
-                emfScheme_.addLocalName(localName);
+                lgScheme_.addLocalName(localName);
             }
 
             // Override with manifest values, if provided. Note that we only
@@ -2118,7 +2156,7 @@ public class ProtegeOwl2LG {
 
                 if (codingscheme != null && codingscheme.getToOverride()) {
                     String mName = codingscheme.getContent();
-                    if(mName != null) {
+                    if (mName != null) {
                         schemeName = mName;
                     }
                 }
@@ -2128,7 +2166,7 @@ public class ProtegeOwl2LG {
                         uri = mURI;
                     }
                 }
-                
+
                 if (mfVersion != null && mfVersion.getToOverride()) {
                     String mfVersionContent = mfVersion.getContent();
                     if (mfVersionContent != null) {
@@ -2145,16 +2183,14 @@ public class ProtegeOwl2LG {
 
             if (manifest_ == null || mappings == null || !mappings.getToUpdate()
                     || mappings.getSupportedCodingScheme().length <= 0)
-                emfSupportedMappings_.registerSupportedCodingScheme(schemeName, uri, schemeName, false, false);
-            emfScheme_.setCodingSchemeURI(uri);
-            emfScheme_.setCodingSchemeName(schemeName);
-            emfScheme_.setFormalName(localName);
+                lgSupportedMappings_.registerSupportedCodingScheme(schemeName, uri, schemeName, false, false);
+            lgScheme_.setCodingSchemeURI(uri);
+            lgScheme_.setCodingSchemeName(schemeName);
+            lgScheme_.setFormalName(localName);
             EntityDescription ed = new EntityDescription();
             ed.setContent(localName);
-            emfScheme_.setEntityDescription(ed);
+            lgScheme_.setEntityDescription(ed);
         }
-
-      
 
         if (version.length() == 0) {
             version = "UNASSIGNED";
@@ -2162,15 +2198,15 @@ public class ProtegeOwl2LG {
         if (version.length() > 50) {
             version = version.substring(0, 49);
         }
-        emfScheme_.setRepresentsVersion(version);
+        lgScheme_.setRepresentsVersion(version);
 
         // Set the default language
         String defaultLanguage = owlModel_.getDefaultLanguage();
         if (StringUtils.isBlank(defaultLanguage)) {
             defaultLanguage = ProtegeOwl2LGConstants.LANG_ENGLISH;
         }
-        emfScheme_.setDefaultLanguage(defaultLanguage);
-        emfSupportedMappings_.registerSupportedLanguage(defaultLanguage, ProtegeOwl2LGConstants.LANG_URI + ':'
+        lgScheme_.setDefaultLanguage(defaultLanguage);
+        lgSupportedMappings_.registerSupportedLanguage(defaultLanguage, ProtegeOwl2LGConstants.LANG_URI + ':'
                 + defaultLanguage, defaultLanguage, false);
     }
 
@@ -2182,7 +2218,7 @@ public class ProtegeOwl2LG {
     protected void initSupportedDatatypeProperties() {
         // Initialize OWL to EMF mapping structures ...
         owlDatatypeName2label_ = new HashMap<String, String>();
-        owlDatatypeName2emfPropClass_ = new HashMap<String, String>();
+        owlDatatypeName2lgPropClass_ = new HashMap<String, String>();
 
         int dataTypePropertyCounter = 0;
 
@@ -2207,28 +2243,27 @@ public class ProtegeOwl2LG {
                         || prefManager.getDataTypePropertySwitch().equals("association")) {
                     // Create and register a new association ...
                     AssociationWrapper aw = new AssociationWrapper();
-                    
+
                     aw.setAssociationName(label);
                     aw.setEntityCode(propertyName);
-                    
+
                     aw.setIsTransitive(Boolean.FALSE);
                     String nameSpace = getNameSpace(((OWLDatatypeProperty) prop).getNamespace());
                     aw.setEntityCodeNamespace(nameSpace);
-                    aw = assocManager.addAssociation(emfRelationsContainer_Roles, aw);
+                    aw = assocManager.addAssociation(lgRelationsContainer_Roles, aw);
 
                     // Add to supported associations ...
-                    emfSupportedMappings_.registerSupportedAssociation(propertyName,
-                            prop.getNamespace() + propertyName, propertyName, propertyName, nameSpace, true);
+                    lgSupportedMappings_.registerSupportedAssociation(propertyName, prop.getNamespace() + propertyName,
+                            propertyName, propertyName, nameSpace, true);
 
                     // Add the information that this is an datatype
                     // association, and not an objectType property.
-                    Property assocDataProp = CreateUtils.createProperty(
-                            generatePropertyID(++dataTypePropertyCounter),
-                            ProtegeOwl2LGConstants.PROPNAME_DATATYPEPROPERTY, "true", emfSupportedMappings_);
+                    Property assocDataProp = CreateUtils.createProperty(generatePropertyID(++dataTypePropertyCounter),
+                            ProtegeOwl2LGConstants.PROPNAME_DATATYPEPROPERTY, "true", lgSupportedMappings_);
                     aw.addProperty(assocDataProp);
                     Property assocObjectProp = CreateUtils.createProperty(
                             generatePropertyID(++dataTypePropertyCounter),
-                            ProtegeOwl2LGConstants.PROPNAME_OBJECTPROPERTY, "false", emfSupportedMappings_);
+                            ProtegeOwl2LGConstants.PROPNAME_OBJECTPROPERTY, "false", lgSupportedMappings_);
                     aw.addProperty(assocObjectProp);
                     resolveAssociationProperty(aw.getAssociationEntity(), prop);
                 }
@@ -2251,30 +2286,30 @@ public class ProtegeOwl2LG {
          * later based on rule-based approach. Refer to email thread with Tom,
          * Deepak and Pradip on 05/01/2008.
          */
-        String emfClass = null;
+        String lgClass = null;
         if (prefManager.getPrioritized_presentation_names().contains(label))
-            emfClass = PropertyTypes.PRESENTATION.value();
+            lgClass = PropertyTypes.PRESENTATION.value();
         else if (prefManager.getPrioritized_definition_names().contains(label))
-            emfClass = PropertyTypes.DEFINITION.value();
+            lgClass = PropertyTypes.DEFINITION.value();
         else if (prefManager.getPrioritized_comment_names().contains(label))
-            emfClass = PropertyTypes.COMMENT.value();
+            lgClass = PropertyTypes.COMMENT.value();
         else
-            emfClass = PropertyTypes.PROPERTY.value();
+            lgClass = PropertyTypes.PROPERTY.value();
 
         // Register in supported properties
-        emfSupportedMappings_.registerSupportedProperty(propertyName, rdfProp.getNamespace() + propertyName,
+        lgSupportedMappings_.registerSupportedProperty(propertyName, rdfProp.getNamespace() + propertyName,
                 propertyName, false);
 
         // Register the ID to EMF class mapping; default to
         // generic property class if not mapped above.
-        owlDatatypeName2emfPropClass_.put(propertyName, emfClass);
+        owlDatatypeName2lgPropClass_.put(propertyName, lgClass);
     }
-    
+
     protected void initAssociationEntities() {
-        Map<String,AssociationWrapper> associations = this.assocManager.getAllAssociations();
-        for(Entry<String,AssociationWrapper> association : associations.entrySet()) {
+        Map<String, AssociationWrapper> associations = this.assocManager.getAllAssociations();
+        for (Entry<String, AssociationWrapper> association : associations.entrySet()) {
             AssociationEntity associationEntity = association.getValue().getAssociationEntity();
-            if(associationEntity != null) {
+            if (associationEntity != null) {
                 this.addEntity(association.getValue().getAssociationEntity());
             }
         }
@@ -2287,7 +2322,7 @@ public class ProtegeOwl2LG {
      */
     protected void initSupportedDatatypes() {
         // Initialize Datatype to EMF mapping structures.
-        owlDatatypeName2emfDatatype_ = new HashMap();
+        owlDatatypeName2lgDatatype_ = new HashMap();
 
         // Iterate through available datatypes and store for later reference
         for (Iterator props = owlModel_.getRDFProperties().iterator(); props.hasNext();) {
@@ -2306,16 +2341,16 @@ public class ProtegeOwl2LG {
                         if (isNoop(typeURI)) {
                             typeURI = range.getNamespace() + rangeName;
                         }
-                        String emfType = null;
+                        String lgType = null;
                         if (typeURI.indexOf("#") >= 0) {
-                            emfType = typeURI.substring(typeURI.lastIndexOf("#") + 1);
+                            lgType = typeURI.substring(typeURI.lastIndexOf("#") + 1);
                         }
-                        if (isNoop(emfType)) {
-                            emfType = owlDatatypeName2label_.get(propertyName);
+                        if (isNoop(lgType)) {
+                            lgType = owlDatatypeName2label_.get(propertyName);
                             typeURI = prop.getNamespace() + propertyName;
                         }
-                        owlDatatypeName2emfDatatype_.put(propertyName, emfType);
-                        emfSupportedMappings_.registerSupportedDataType(emfType, typeURI, emfType, false);
+                        owlDatatypeName2lgDatatype_.put(propertyName, lgType);
+                        lgSupportedMappings_.registerSupportedDataType(lgType, typeURI, lgType, false);
                     }
                 }
             }
@@ -2346,7 +2381,7 @@ public class ProtegeOwl2LG {
             label = getFromLastIndexOfColonOrHash(label);
             // Create and register a new association ...
             AssociationWrapper aw = new AssociationWrapper();
-            
+
             aw.setEntityCode(propertyName);
             aw.setAssociationName(label);
             aw.setForwardName(getAssociationLabel(label, true));
@@ -2357,14 +2392,14 @@ public class ProtegeOwl2LG {
             // Register as role or association and, if applicable,
             // create a target of owl:AnnotationProperty.
             if (owlProp.getRDFTypes().contains(annotationType_)) {
-                aw = assocManager.addAssociation(emfRelationsContainer_Assoc, aw);
+                aw = assocManager.addAssociation(lgRelationsContainer_Assoc, aw);
             } else {
-                aw = assocManager.addAssociation(emfRelationsContainer_Roles, aw);
+                aw = assocManager.addAssociation(lgRelationsContainer_Roles, aw);
             }
 
             // Add to supported associations ...
 
-            emfSupportedMappings_.registerSupportedAssociation(propertyName, owlProp.getNamespace() + propertyName,
+            lgSupportedMappings_.registerSupportedAssociation(propertyName, owlProp.getNamespace() + propertyName,
                     label, propertyName, nameSpace, true);
 
             // Update 05/13/2008: I am adding this, even though
@@ -2372,17 +2407,17 @@ public class ProtegeOwl2LG {
             // only contain information about datatype properties.
             // Pradip: taking it out.....not sure why we need to add this to
             // supportedProperties
-            // emfSupportedMappings_.registerSupportedProperty(propertyName,
+            // lgSupportedMappings_.registerSupportedProperty(propertyName,
             // prop.getNamespace() + propertyName,
             // propertyName, false);
 
             // Add the information that this is an object property
             // association, and not an datatype property.
             Property assocDataProp = CreateUtils.createProperty(generatePropertyID(++objectPropertyCounter),
-                    ProtegeOwl2LGConstants.PROPNAME_DATATYPEPROPERTY, "false", emfSupportedMappings_);
+                    ProtegeOwl2LGConstants.PROPNAME_DATATYPEPROPERTY, "false", lgSupportedMappings_);
             aw.addProperty(assocDataProp);
             Property assocObjectProp = CreateUtils.createProperty(generatePropertyID(++objectPropertyCounter),
-                    ProtegeOwl2LGConstants.PROPNAME_OBJECTPROPERTY, "true", emfSupportedMappings_);
+                    ProtegeOwl2LGConstants.PROPNAME_OBJECTPROPERTY, "true", lgSupportedMappings_);
             aw.addProperty(assocObjectProp);
             resolveAssociationProperty(aw.getAssociationEntity(), owlProp);
         }
@@ -2422,15 +2457,15 @@ public class ProtegeOwl2LG {
                     for (Iterator vals = propVals.iterator(); vals.hasNext();) {
                         Object val = vals.next();
                         if (val instanceof OWLNamedClass) {
-                            AssociationWrapper emfAssoc = assocManager.getAssociation(relationName);
-                            if (emfAssoc == null) {
-                                emfAssoc = addAssociation(rdfProp);
+                            AssociationWrapper lgAssoc = assocManager.getAssociation(relationName);
+                            if (lgAssoc == null) {
+                                lgAssoc = addAssociation(rdfProp);
                             }
 
                         } else if (val instanceof OWLIndividual) {
-                            AssociationWrapper emfAssoc = assocManager.getAssociation(relationName);
-                            if (emfAssoc == null) {
-                                emfAssoc = addAssociation(rdfProp);
+                            AssociationWrapper lgAssoc = assocManager.getAssociation(relationName);
+                            if (lgAssoc == null) {
+                                lgAssoc = addAssociation(rdfProp);
                             }
 
                         }
@@ -2447,29 +2482,25 @@ public class ProtegeOwl2LG {
         assoc.setEntityCode(propertyName);
         String label = resolveLabel(rdfProp);
         assoc.setAssociationName(label);
-        assoc.setForwardName(getAssociationLabel(label, true));        
+        assoc.setForwardName(getAssociationLabel(label, true));
         String nameSpace = getNameSpace(rdfProp.getNamespace());
         assoc.setEntityCodeNamespace(nameSpace);
         // Register as role or association and, if applicable,
         // create a target of owl:AnnotationProperty.
         if (rdfProp.isAnnotationProperty()) {
-            assoc = assocManager.addAssociation(emfRelationsContainer_Assoc, assoc);
+            assoc = assocManager.addAssociation(lgRelationsContainer_Assoc, assoc);
         } else {
-            assoc = assocManager.addAssociation(emfRelationsContainer_Roles, assoc);
+            assoc = assocManager.addAssociation(lgRelationsContainer_Roles, assoc);
         }
 
         // Add to supported associations ...
 
-        emfSupportedMappings_.registerSupportedAssociation(propertyName, 
-                rdfProp.getNamespace() + propertyName, 
-                label,
-                propertyName,
-                nameSpace,
-                true);
+        lgSupportedMappings_.registerSupportedAssociation(propertyName, rdfProp.getNamespace() + propertyName, label,
+                propertyName, nameSpace, true);
         return assoc;
 
     }
-    
+
     /**
      * Initialize and return the root node for the subclass hierarchy.
      * 
@@ -2477,7 +2508,7 @@ public class ProtegeOwl2LG {
      */
     protected Entity initSubtypeRoot() {
         Entity topThing = new Entity();
-        topThing.setEntityType(new String[]{EntityTypes.CONCEPT.toString()});
+        topThing.setEntityType(new String[] { EntityTypes.CONCEPT.toString() });
         topThing.setEntityCode(ProtegeOwl2LGConstants.ROOT_CODE);
         topThing.setEntityCodeNamespace(this.getNameSpace(null));
         EntityDescription ed = new EntityDescription();
@@ -2485,7 +2516,7 @@ public class ProtegeOwl2LG {
         topThing.setEntityDescription(ed);
         topThing.setIsAnonymous(Boolean.TRUE);
         Presentation p = CreateUtils.createPresentation(generatePropertyID(1), ProtegeOwl2LGConstants.ROOT_NAME,
-                ProtegeOwl2LGConstants.ROOT_DESCRIPTION, Boolean.TRUE, emfSupportedMappings_);
+                ProtegeOwl2LGConstants.ROOT_DESCRIPTION, Boolean.TRUE, lgSupportedMappings_);
         topThing.addPresentation(p);
         addEntity(topThing);
         return topThing;
@@ -2591,7 +2622,7 @@ public class ProtegeOwl2LG {
             String propName = getRDFResourceLocalName(property);
             String resolvedText = resolveRDFText(rdfProp, property);
             Property pro = CreateUtils.createProperty(generatePropertyID(++i), propName, resolvedText,
-                    emfSupportedMappings_);
+                    lgSupportedMappings_);
             assocEntity.addProperty(pro);
         }
     }
@@ -2650,7 +2681,7 @@ public class ProtegeOwl2LG {
      */
     protected Map<String, String> resolveXMLTagsAndValues(String src) {
         Map<String, String> tags2vals = new HashMap<String, String>();
-        if(StringUtils.isNotBlank(src)) {
+        if (StringUtils.isNotBlank(src)) {
             tags2vals = bxp.parseDocument(src, messages_);
         }
         return tags2vals;
@@ -2693,10 +2724,10 @@ public class ProtegeOwl2LG {
     protected AssociationSource addAssocSrc2Assoc(AssociationWrapper aw, AssociationSource assocSource) {
         String qName = aw.getAssociationEntity().getEntityCode() + "::" + assocSource.getSourceEntityCode();
         AssociationSource source = null;
-        if (emfAssocToAssocSrc_.containsKey(qName)) {
-            source = (AssociationSource) emfAssocToAssocSrc_.get(qName);
+        if (lgAssocToAssocSrc_.containsKey(qName)) {
+            source = (AssociationSource) lgAssocToAssocSrc_.get(qName);
         } else {
-            emfAssocToAssocSrc_.put(qName, assocSource);
+            lgAssocToAssocSrc_.put(qName, assocSource);
             aw.getAssociationPredicate().addSource(assocSource);
             source = assocSource;
         }
@@ -2738,7 +2769,7 @@ public class ProtegeOwl2LG {
     protected String getNameSpace(String str) {
         String nameSpace = owlModel_.getNamespaceManager().getPrefix(str);
         if ((nameSpace == null) || (nameSpace.trim().length() == 0)) {
-            nameSpace = emfScheme_.getCodingSchemeName();
+            nameSpace = lgScheme_.getCodingSchemeName();
         }
         return nameSpace;
     }
@@ -2754,43 +2785,43 @@ public class ProtegeOwl2LG {
     // /////////// STORAGE METHODS /////////////////
     // /////////////////////////////////////////////
 
-    protected void addEntity(Entity emfEntity) {
-        if (isEntityCodeRegistered(emfEntity.getEntityCode())) {
-            messages_.info("Entity " + emfEntity.getEntityCode() + " already exists.");
+    protected void addEntity(Entity lgEntity) {
+        if (isEntityCodeRegistered(lgEntity.getEntityCode())) {
+            messages_.info("Entity " + lgEntity.getEntityCode() + " already exists.");
             return;
         }
         if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
-            emfScheme_.getEntities().addEntity(emfEntity);
+            lgScheme_.getEntities().addEntity(lgEntity);
         } else {
             try {
-                writeEntity(emfEntity);
+                writeEntity(lgEntity);
             } catch (Exception e) {
                 // Exception logged by SQLReadWrite
                 return;
             }
         }
-        entityCode2NameSpace_.put(emfEntity.getEntityCode(), emfEntity.getEntityCodeNamespace());
-        if (emfEntity instanceof Entity)
+        entityCode2NameSpace_.put(lgEntity.getEntityCode(), lgEntity.getEntityCodeNamespace());
+        if (lgEntity instanceof Entity)
             conceptCount_++;
     }
-    
-    protected void addEntity(AssociationEntity emfEntity) {
-        if (isEntityCodeRegistered(emfEntity.getEntityCode())) {
-            messages_.info("Entity " + emfEntity.getEntityCode() + " already exists.");
+
+    protected void addEntity(AssociationEntity lgEntity) {
+        if (isEntityCodeRegistered(lgEntity.getEntityCode())) {
+            messages_.info("Entity " + lgEntity.getEntityCode() + " already exists.");
             return;
         }
         if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
-            emfScheme_.getEntities().addAssociationEntity(emfEntity);
+            lgScheme_.getEntities().addAssociationEntity(lgEntity);
         } else {
             try {
-                writeEntity(emfEntity);
+                writeEntity(lgEntity);
             } catch (Exception e) {
                 // Exception logged by SQLReadWrite
                 return;
             }
         }
-        entityCode2NameSpace_.put(emfEntity.getEntityCode(), emfEntity.getEntityCodeNamespace());
-        if (emfEntity instanceof Entity)
+        entityCode2NameSpace_.put(lgEntity.getEntityCode(), lgEntity.getEntityCodeNamespace());
+        if (lgEntity instanceof Entity)
             conceptCount_++;
     }
 
@@ -2798,19 +2829,18 @@ public class ProtegeOwl2LG {
         try {
             if (tempEmfScheme_ == null) {
                 tempEmfScheme_ = new CodingScheme();
-                tempEmfScheme_.setCodingSchemeName(emfScheme_.getCodingSchemeName());
+                tempEmfScheme_.setCodingSchemeName(lgScheme_.getCodingSchemeName());
             }
             if (tempEmfEntityList_ == null) {
                 tempEmfEntityList_ = new Entities();
                 tempEmfScheme_.setEntities(tempEmfEntityList_);
             }
             tempEmfEntityList_.addEntity(entity);
-            
-            String uri = emfScheme_.getCodingSchemeURI();
-            String version = emfScheme_.getRepresentsVersion();
-            
-            databaseServiceManager.getEntityService().
-                insertEntity(uri, version, entity);
+
+            String uri = lgScheme_.getCodingSchemeURI();
+            String version = lgScheme_.getRepresentsVersion();
+
+            databaseServiceManager.getEntityService().insertEntity(uri, version, entity);
 
         } finally {
             tempEmfEntityList_.removeEntity(entity);
@@ -2845,7 +2875,8 @@ public class ProtegeOwl2LG {
         }
     }
 
-    protected void relateAssociationSourceTarget(AssociationWrapper aw, AssociationSource source, AssociationTarget target) {
+    protected void relateAssociationSourceTarget(AssociationWrapper aw, AssociationSource source,
+            AssociationTarget target) {
         if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
             source = addAssocSrc2Assoc(aw, source);
             if (target != null) {
@@ -2869,7 +2900,8 @@ public class ProtegeOwl2LG {
         }
     }
 
-    protected void writeAssociationSourceTarget(AssociationPredicate assoc, AssociationSource source, AssociationTarget target) {
+    protected void writeAssociationSourceTarget(AssociationPredicate assoc, AssociationSource source,
+            AssociationTarget target) {
         try {
             if (StringUtils.isEmpty(source.getSourceEntityCode())) {
                 messages_.warn("Unable to write sourceTarget relationship: Source entity code not assigned.");
@@ -2891,14 +2923,13 @@ public class ProtegeOwl2LG {
             }
 
             assoc.addSource(source);
-            
-            String uri = emfScheme_.getCodingSchemeURI();
-            String version = emfScheme_.getRepresentsVersion();
-            
+
+            String uri = lgScheme_.getCodingSchemeURI();
+            String version = lgScheme_.getRepresentsVersion();
+
             AssociationWrapper wrapper = this.assocManager.getAssociation(assoc.getAssociationName());
-            databaseServiceManager.getAssociationService().
-                insertAssociationSource(uri, version, 
-                        wrapper.getRelationsContainerName(), assoc.getAssociationName(), source);
+            databaseServiceManager.getAssociationService().insertAssociationSource(uri, version,
+                    wrapper.getRelationsContainerName(), assoc.getAssociationName(), source);
 
         } catch (Exception e) {
             this.messages_.warn("Error Inserting AssociationSource.", e);
@@ -2911,12 +2942,13 @@ public class ProtegeOwl2LG {
 
     protected void updateApproximateConceptNumber() {
         if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
-            emfScheme_.setApproxNumConcepts(new Long(emfScheme_.getEntities().getEntity().length));
+            lgScheme_.setApproxNumConcepts(new Long(lgScheme_.getEntities().getEntity().length));
         } else {
-            CodingSchemeService service = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
-            emfScheme_.setApproxNumConcepts(new Long(conceptCount_));
+            CodingSchemeService service = LexEvsServiceLocator.getInstance().getDatabaseServiceManager()
+                    .getCodingSchemeService();
+            lgScheme_.setApproxNumConcepts(new Long(conceptCount_));
             try {
-                service.updateCodingScheme(emfScheme_);
+                service.updateCodingScheme(lgScheme_);
             } catch (Exception e) {
                 this.messages_.warn("Failed to update the Approximate Number of Concepts.");
             }

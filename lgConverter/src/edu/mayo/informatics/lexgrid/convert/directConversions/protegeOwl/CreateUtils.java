@@ -20,20 +20,17 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.protegeOwl;
 
 import java.util.Collection;
 
-//import org.LexGrid.emf.commonTypes.CommontypesFactory;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Comment;
-//import org.LexGrid.concepts.ConceptsFactory;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
-//import org.LexGrid.emf.relations.RelationsFactory;
 import org.apache.commons.lang.StringUtils;
 
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
@@ -45,108 +42,108 @@ public class CreateUtils {
     // /////////////////////////////////////////////
 
     public static AssociationData createAssociationTextData(String data) {
-        AssociationData emfData = new AssociationData();
-        emfData.setAssociationDataText(createText(data));
-        return emfData;
+        AssociationData lgData = new AssociationData();
+        lgData.setAssociationDataText(createText(data));
+        return lgData;
     }
 
-    public static AssociationQualification createAssociationQualification(RDFProperty rdfProp, SupportedMappings emfSupportedMappings_) {
+    public static AssociationQualification createAssociationQualification(RDFProperty rdfProp, SupportedMappings lgSupportedMappings_) {
         String brText = rdfProp.getBrowserText();
         Collection labels = rdfProp.getLabels();
-        AssociationQualification emfQual = createAssociationQualification(brText, rdfProp.getURI(),
-                labels.isEmpty() ? brText : labels.iterator().next().toString(), emfSupportedMappings_);
-        return emfQual;
+        AssociationQualification lgQual = createAssociationQualification(brText, rdfProp.getURI(),
+                labels.isEmpty() ? brText : labels.iterator().next().toString(), lgSupportedMappings_);
+        return lgQual;
     }
 
-    public static AssociationQualification createAssociationQualification(String name, String uri, String descriptiveText, SupportedMappings emfSupportedMappings_) {
-        AssociationQualification emfQual = new AssociationQualification();
-        emfQual.setAssociationQualifier(name);
-        emfSupportedMappings_.registerSupportedAssociationQualifier(name, uri, descriptiveText, false);
-        return emfQual;
+    public static AssociationQualification createAssociationQualification(String name, String uri, String descriptiveText, SupportedMappings lgSupportedMappings_) {
+        AssociationQualification lgQual = new AssociationQualification();
+        lgQual.setAssociationQualifier(name);
+        lgSupportedMappings_.registerSupportedAssociationQualifier(name, uri, descriptiveText, false);
+        return lgQual;
     }
 
-    public static AssociationSource createAssociationSource(String emfConceptCode, String namespace) {
-        AssociationSource emfSrc = new AssociationSource();
-        if (StringUtils.isNotBlank(emfConceptCode))
-            emfSrc.setSourceEntityCode(emfConceptCode);
+    public static AssociationSource createAssociationSource(String lgConceptCode, String namespace) {
+        AssociationSource lgSrc = new AssociationSource();
+        if (StringUtils.isNotBlank(lgConceptCode))
+            lgSrc.setSourceEntityCode(lgConceptCode);
         if (StringUtils.isNotBlank(namespace))
-            emfSrc.setSourceEntityCodeNamespace(namespace);
-        return emfSrc;
+            lgSrc.setSourceEntityCodeNamespace(namespace);
+        return lgSrc;
     }
 
-    public static AssociationTarget createAssociationTarget(String emfConceptCode, String namespace) {
-        AssociationTarget emfTgt = new AssociationTarget();
-        if (emfConceptCode != null)
-            emfTgt.setTargetEntityCode(emfConceptCode);
+    public static AssociationTarget createAssociationTarget(String lgConceptCode, String namespace) {
+        AssociationTarget lgTgt = new AssociationTarget();
+        if (lgConceptCode != null)
+            lgTgt.setTargetEntityCode(lgConceptCode);
         if (namespace != null)
-            emfTgt.setTargetEntityCodeNamespace(namespace);
-        return emfTgt;
+            lgTgt.setTargetEntityCodeNamespace(namespace);
+        return lgTgt;
     }
 
-    public static Comment createComment(String propID, String propName, String text, SupportedMappings emfSupportedMappings_) {
-        Comment emfComment = new Comment();
-        emfComment.setPropertyId(propID);
-        emfComment.setPropertyName(propName);
-        emfComment.setValue(createText(text));
-        emfSupportedMappings_.registerSupportedProperty(propName, null, propName, false);
-        return emfComment;
+    public static Comment createComment(String propID, String propName, String text, SupportedMappings lgSupportedMappings_) {
+        Comment lgComment = new Comment();
+        lgComment.setPropertyId(propID);
+        lgComment.setPropertyName(propName);
+        lgComment.setValue(createText(text));
+        lgSupportedMappings_.registerSupportedProperty(propName, null, propName, false);
+        return lgComment;
     }
 
-    public static Definition createDefinition(String propID, String propName, String text, Boolean isPreferred, SupportedMappings emfSupportedMappings_) {
-        Definition emfDefn = new Definition();
-        emfDefn.setPropertyId(propID);
-        emfDefn.setPropertyName(propName);
-        emfDefn.setValue(createText(text));
+    public static Definition createDefinition(String propID, String propName, String text, Boolean isPreferred, SupportedMappings lgSupportedMappings_) {
+        Definition lgDefn = new Definition();
+        lgDefn.setPropertyId(propID);
+        lgDefn.setPropertyName(propName);
+        lgDefn.setValue(createText(text));
         if (isPreferred != null)
-            emfDefn.setIsPreferred(isPreferred);
-        emfSupportedMappings_.registerSupportedProperty(propName, null, propName, false);
-        return emfDefn;
+            lgDefn.setIsPreferred(isPreferred);
+        lgSupportedMappings_.registerSupportedProperty(propName, null, propName, false);
+        return lgDefn;
     }
 
-    public static Presentation createPresentation(String propID, String propName, String text, Boolean isPreferred, SupportedMappings emfSupportedMappings_) {
-        Presentation emfPres = new Presentation();
-        emfPres.setPropertyId(propID);
-        emfPres.setPropertyName(propName);
-        emfPres.setValue(createText(text));
+    public static Presentation createPresentation(String propID, String propName, String text, Boolean isPreferred, SupportedMappings lgSupportedMappings_) {
+        Presentation lgPres = new Presentation();
+        lgPres.setPropertyId(propID);
+        lgPres.setPropertyName(propName);
+        lgPres.setValue(createText(text));
         if (isPreferred != null)
-            emfPres.setIsPreferred(isPreferred);
-        emfSupportedMappings_.registerSupportedProperty(propName, null, propName, false);
-        return emfPres;
+            lgPres.setIsPreferred(isPreferred);
+        lgSupportedMappings_.registerSupportedProperty(propName, null, propName, false);
+        return lgPres;
     }
 
-    public static Property createProperty(String propID, String propName, String text, SupportedMappings emfSupportedMappings_) {
-        Property emfProp = new Property();
-        emfProp.setPropertyName(propName);
-        emfProp.setPropertyId(propID);
-        emfProp.setValue(createText(text));
-        emfSupportedMappings_.registerSupportedProperty(propName, null, propName, false);
-        return emfProp;
+    public static Property createProperty(String propID, String propName, String text, SupportedMappings lgSupportedMappings_) {
+        Property lgProp = new Property();
+        lgProp.setPropertyName(propName);
+        lgProp.setPropertyId(propID);
+        lgProp.setValue(createText(text));
+        lgSupportedMappings_.registerSupportedProperty(propName, null, propName, false);
+        return lgProp;
     }
 
-    public static PropertyQualifier createPropertyQualifier(String tag, String text, SupportedMappings emfSupportedMappings_) {
-        PropertyQualifier emfPropQual = new PropertyQualifier();
-        emfPropQual.setPropertyQualifierName(tag);
-        emfPropQual.setValue(createText(text));
-        emfSupportedMappings_.registerSupportedPropertyQualifier(tag, null, tag, false);
-        return emfPropQual;
+    public static PropertyQualifier createPropertyQualifier(String tag, String text, SupportedMappings lgSupportedMappings_) {
+        PropertyQualifier lgPropQual = new PropertyQualifier();
+        lgPropQual.setPropertyQualifierName(tag);
+        lgPropQual.setValue(createText(text));
+        lgSupportedMappings_.registerSupportedPropertyQualifier(tag, null, tag, false);
+        return lgPropQual;
     }
 
-    public static Source createSource(String value, String role, String subref, SupportedMappings emfSupportedMappings_) {
-        Source emfSource = new Source();
-        emfSource.setContent(value);
-        emfSource.setRole(role);
-        emfSource.setSubRef(subref);
+    public static Source createSource(String value, String role, String subref, SupportedMappings lgSupportedMappings_) {
+        Source lgSource = new Source();
+        lgSource.setContent(value);
+        lgSource.setRole(role);
+        lgSource.setSubRef(subref);
         if (value != null)
-            emfSupportedMappings_.registerSupportedSource(value, null, value, null, false);
+            lgSupportedMappings_.registerSupportedSource(value, null, value, null, false);
         if (role != null)
-            emfSupportedMappings_.registerSupportedSourceRole(role, null, role, false);
-        return emfSource;
+            lgSupportedMappings_.registerSupportedSourceRole(role, null, role, false);
+        return lgSource;
     }
 
     public static Text createText(String value) {
-        Text emfText = new Text();
-        emfText.setContent(value);
-        emfText.setDataType(ProtegeOwl2LGConstants.DATATYPE_STRING);
-        return emfText;
+        Text lgText = new Text();
+        lgText.setContent(value);
+        lgText.setDataType(ProtegeOwl2LGConstants.DATATYPE_STRING);
+        return lgText;
     }
 }
