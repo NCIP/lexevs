@@ -364,35 +364,10 @@
 			#property.propertyName#,
 			#property.language:VARCHAR#,
 			#property.value.dataType:VARCHAR#,
-			
-			<isPropertyAvailable property="property.isPreferred">
-				#property.isPreferred:CHAR#,
-			</isPropertyAvailable>
-			<isNotPropertyAvailable property="property.isPreferred">
-				null,
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable property="property.matchIfNoContext">
-				#property.matchIfNoContext:CHAR#,
-			</isPropertyAvailable>
-			<isNotPropertyAvailable property="property.matchIfNoContext">
-				null,
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable property="property.degreeOfFidelity">
-				#property.degreeOfFidelity:VARCHAR#,
-			</isPropertyAvailable>
-			<isNotPropertyAvailable property="property.degreeOfFidelity">
-				null,
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable property="property.representationalForm">
-				#property.representationalForm:VARCHAR#,
-			</isPropertyAvailable>
-			<isNotPropertyAvailable property="property.representationalForm">
-				null,
-			</isNotPropertyAvailable>
-			
+			#isPreferred:CHAR#,
+			#matchIfNoContext:CHAR#,
+			#degreeOfFidelity:VARCHAR#,
+			#representationalForm:VARCHAR#,
 			#property.value.content:VARCHAR#,	
 			#property.isActive:CHAR#,
 			#property.owner:VARCHAR#,
