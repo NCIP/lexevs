@@ -359,46 +359,46 @@
 			#uid#, 
 			#parentUId#,
 			#parentType#, 
-			#property.propertyId#, 
-			#property.propertyType#,
+			#property.propertyId:VARCHAR#, 
+			#property.propertyType:VARCHAR#,
 			#property.propertyName#,
-			#property.language#,
-			#property.value.dataType#,
+			#property.language:VARCHAR#,
+			#property.value.dataType:VARCHAR#,
 			
 			<isPropertyAvailable property="property.isPreferred">
-				#property.isPreferred#,
+				#property.isPreferred:CHAR#,
 			</isPropertyAvailable>
 			<isNotPropertyAvailable property="property.isPreferred">
 				null,
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable property="property.matchIfNoContext">
-				#property.matchIfNoContext#,
+				#property.matchIfNoContext:CHAR#,
 			</isPropertyAvailable>
 			<isNotPropertyAvailable property="property.matchIfNoContext">
 				null,
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable property="property.degreeOfFidelity">
-				#property.degreeOfFidelity#,
+				#property.degreeOfFidelity:VARCHAR#,
 			</isPropertyAvailable>
 			<isNotPropertyAvailable property="property.degreeOfFidelity">
 				null,
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable property="property.representationalForm">
-				#property.representationalForm#,
+				#property.representationalForm:VARCHAR#,
 			</isPropertyAvailable>
 			<isNotPropertyAvailable property="property.representationalForm">
 				null,
 			</isNotPropertyAvailable>
 			
-			#property.value.content#,	
-			#property.isActive#,
-			#property.owner#,
-			#property.status#,
-			#property.effectiveDate#,
-			#property.expirationDate#,
+			#property.value.content:VARCHAR#,	
+			#property.isActive:CHAR#,
+			#property.owner:VARCHAR#,
+			#property.status:VARCHAR#,
+			#property.effectiveDate:TIMESTAMP#,
+			#property.expirationDate:TIMESTAMP#,
 			#entryStateUId#
 		)
   </insert>
