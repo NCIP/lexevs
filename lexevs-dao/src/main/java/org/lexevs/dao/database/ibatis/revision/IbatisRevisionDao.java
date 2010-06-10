@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.versions.Revision;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.revision.RevisionDao;
 import org.lexevs.dao.database.access.systemRelease.SystemReleaseDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
@@ -61,8 +62,12 @@ public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao 
 		
 		if (getRevisionUIdById(revision.getRevisionId()) == null) {
 
-			String releaseUId = systemReleaseDao
-					.getSystemReleaseUIdByUri(releaseURI);
+			String releaseUId;
+			if(StringUtils.isNotBlank(releaseURI)){
+				releaseUId = systemReleaseDao.getSystemReleaseUIdByUri(releaseURI);
+			} else {
+				releaseUId = null;
+			}
 
 			InsertRevisionBean insertRevisionBean = new InsertRevisionBean();
 
