@@ -16,7 +16,7 @@
 		<result property="approxNumConcepts" column="approxNumConcepts" />
 		<result property="entityDescription.content" column="description" />
 		<result property="copyright.content" column="copyright" />
-		<result property="isActive" column="isActive" />
+		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
 		<result property="entryState" resultMap="Versions.entryStateResult" />
 		<result property="_sourceList" resultMap="CodingScheme.sourceResult"/>
 		<result property="_localNameList" resultMap="CodingScheme.localNameResult"/>
@@ -330,7 +330,7 @@
 			
    		  <dynamic prepend=" ">
 			<isNotNull prepend="," property="codingScheme.isActive">
-				isActive = #codingScheme.isActive#
+				isActive = #codingScheme.isActive,handler=numericBooleanTypeHandler#,
 			</isNotNull>
 			<isNotNull prepend="," property="codingScheme.owner">
 				owner = #codingScheme.owner#
@@ -392,7 +392,7 @@
 			#codingScheme.approxNumConcepts:NUMERIC#,
 			#codingScheme.entityDescription.content:VARCHAR#,
 			#codingScheme.copyright.content:VARCHAR#,
-			#codingScheme.isActive:CHAR#,
+			#codingScheme.isActive,handler=numericBooleanTypeHandler#,
 			#codingScheme.owner:VARCHAR#,
 			#codingScheme.status:VARCHAR#,
 			#codingScheme.effectiveDate:TIMESTAMP#,

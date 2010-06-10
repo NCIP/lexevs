@@ -364,12 +364,12 @@
 			#property.propertyName#,
 			#property.language:VARCHAR#,
 			#property.value.dataType:VARCHAR#,
-			#isPreferred:CHAR#,
-			#matchIfNoContext:CHAR#,
+			#isPreferred,handler=numericBooleanTypeHandler#,
+			#matchIfNoContext,handler=numericBooleanTypeHandler#,
 			#degreeOfFidelity:VARCHAR#,
 			#representationalForm:VARCHAR#,
 			#property.value.content:VARCHAR#,	
-			#property.isActive:CHAR#,
+			#property.isActive,handler=numericBooleanTypeHandler#,
 			#property.owner:VARCHAR#,
 			#property.status:VARCHAR#,
 			#property.effectiveDate:TIMESTAMP#,
@@ -399,13 +399,13 @@
 			
 			<isPropertyAvailable property="property.isPreferred">
 				<isNotNull prepend="," property="property.isPreferred">
-					isPreferred = #property.isPreferred#
+					isPreferred = #property.isPreferred,handler=numericBooleanTypeHandler#
 				</isNotNull>
 			</isPropertyAvailable>
 			
 			<isPropertyAvailable property="property.matchIfNoContext">
 				<isNotNull prepend="," property="property.matchIfNoContext">
-					matchIfNoContext = #property.matchIfNoContext#
+					matchIfNoContext = #property.matchIfNoContext,handler=numericBooleanTypeHandler#
 				</isNotNull>
 			</isPropertyAvailable>
 			

@@ -257,14 +257,14 @@
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="uriMap.isForwardNavigable">
-				#uriMap.isForwardNavigable#
+				#uriMap.isForwardNavigable,handler=numericBooleanTypeHandler#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="uriMap.isForwardNavigable">
 				null
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="uriMap.isImported">
-				#uriMap.isImported#
+				#uriMap.isImported,handler=numericBooleanTypeHandler#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="uriMap.isImported">
 				null

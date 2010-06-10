@@ -49,17 +49,17 @@
 		<result property="codingSchemeUId" column="codingSchemeGuid" />
 		<result property="entity.entityCode" column="entityCode" />
 		<result property="entity.entityCodeNamespace" column="entityCodeNamespace" />
-		<result property="entity.isDefined" column="isDefined" />
-		<result property="entity.isAnonymous" column="isAnonymous" />
+		<result property="entity.isDefined" column="isDefined" typeHandler="numericBooleanTypeHandler"/>
+		<result property="entity.isAnonymous" column="isAnonymous" typeHandler="numericBooleanTypeHandler"/>
 		<result property="entity.entityDescription.content" column="description" />
-		<result property="entity.isActive" column="isActive" />
+		<result property="entity.isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
 		<result property="entity.owner" column="owner" />
 		<result property="entity.status" column="status" />
 		<result property="entity.effectiveDate" column="effectiveDate" />
 		<result property="entity.expirationDate" column="expirationDate" />
 		<result property="forwardName" column="forwardName"/>
 		<result property="reverseName" column="reverseName"/>
-		<result property="isNavigable" column="isNavigable"/>
+		<result property="isNavigable" column="isNavigable" typeHandler="numericBooleanTypeHandler"/>
 		<result property="isTransitive" column="isTransitive"/>
 		<result property="entryStateUId" column="entryStateGuid" />
 	</resultMap>
@@ -348,10 +348,10 @@
 			#codingSchemeUId#,
 			#entity.entityCode#, 
 			#entity.entityCodeNamespace#, 
-			#entity.isDefined:CHAR#,
-			#entity.isAnonymous:CHAR#,
+			#entity.isDefined,handler=numericBooleanTypeHandler#,
+			#entity.isAnonymous,handler=numericBooleanTypeHandler#,
 			#entity.entityDescription.content:VARCHAR#,
-			#entity.isActive:CHAR#,
+			#entity.isActive,handler=numericBooleanTypeHandler#,
 			#entity.owner:VARCHAR#,
 			#entity.status:VARCHAR#,
 			#entity.effectiveDate:TIMESTAMP#,
@@ -373,14 +373,14 @@
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="isNavigable">
-				#isNavigable:CHAR#
+				#isNavigable,handler=numericBooleanTypeHandler#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="isNavigable">
 				null
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="isTransitive">
-				#isTransitive:CHAR#
+				#isTransitive,handler=numericBooleanTypeHandler#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="isTransitive">
 				null

@@ -70,7 +70,7 @@
 		extends="uriMapResult">
 	</resultMap>
 	<resultMap id="supportedCodingSchemeResult" class="supportedCodingScheme" extends="uriMapResult">
-		<result property="isImported" column="isImported" />	
+		<result property="isImported" column="isImported" typeHandler="numericBooleanTypeHandler"/>
 	</resultMap>
 	<resultMap id="supportedConceptDomainResult" class="supportedConceptDomain"
 		extends="uriMapResult">
@@ -94,7 +94,7 @@
 		extends="uriMapResult">
 		<result property="associationNames" column="associationNames" typeHandler="StringArrayTypeHandler"/>
 		<result property="rootCode" column="rootCode" />
-		<result property="isForwardNavigable" column="isForwardNavigable"/>
+		<result property="isForwardNavigable" column="isForwardNavigable" typeHandler="numericBooleanTypeHandler"/>
 	</resultMap>
 	<resultMap id="supportedLanguageResult" class="supportedLanguage"
 		extends="uriMapResult">
@@ -230,14 +230,14 @@
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="uriMap.isForwardNavigable">
-				#uriMap.isForwardNavigable:CHAR#
+				#uriMap.isForwardNavigable,handler=numericBooleanTypeHandler#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="uriMap.isForwardNavigable">
 				null
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="uriMap.isImported">
-				#uriMap.isImported:CHAR#
+				#uriMap.isImported,handler=numericBooleanTypeHandler#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="uriMap.isImported">
 				null
@@ -316,13 +316,13 @@
 			
 			<isPropertyAvailable property="uriMap.isForwardNavigable">
 				<isNotNull prepend="," property="uriMap.isForwardNavigable">
-					isForwardNavigable = #uriMap.isForwardNavigable#
+					isForwardNavigable = #uriMap.isForwardNavigable,handler=numericBooleanTypeHandler#
 				</isNotNull>
 			</isPropertyAvailable>
 			
 			<isPropertyAvailable property="uriMap.isImported">
 				<isNotNull prepend="," property="uriMap.isImported">
-					isImported = #uriMap.isImported#
+					isImported = #uriMap.isImported,handler=numericBooleanTypeHandler#
 				</isNotNull>
 			</isPropertyAvailable>
 			
