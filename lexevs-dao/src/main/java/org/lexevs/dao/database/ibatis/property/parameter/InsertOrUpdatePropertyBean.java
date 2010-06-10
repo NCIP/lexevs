@@ -21,6 +21,8 @@ package org.lexevs.dao.database.ibatis.property.parameter;
 import java.util.List;
 
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Presentation;
 import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 
 /**
@@ -107,56 +109,47 @@ public class InsertOrUpdatePropertyBean extends IdableParameterBean {
 	 * @return the isPreferred
 	 */
 	public Boolean getIsPreferred() {
-		return isPreferred;
+		if(this.property != null && property instanceof Presentation) {
+			return ((Presentation)property).getIsPreferred();
+		} else if(this.property != null && property instanceof Definition) {
+			return ((Definition)property).getIsPreferred();
+		} else {
+			return null;
+		}
 	}
+	
 
 	/**
-	 * @param isPreferred the isPreferred to set
+	 * @return the representationalForm
 	 */
-	public void setIsPreferred(Boolean isPreferred) {
-		this.isPreferred = isPreferred;
+	public String getDegreeOfFidelity() {
+		if(this.property != null && property instanceof Presentation) {
+			return ((Presentation)property).getDegreeOfFidelity();
+		} else {
+			return null;
+		}
 	}
 
 	/**
 	 * @return the representationalForm
 	 */
 	public String getRepresentationalForm() {
-		return representationalForm;
-	}
-
-	/**
-	 * @param representationalForm the representationalForm to set
-	 */
-	public void setRepresentationalForm(String representationalForm) {
-		this.representationalForm = representationalForm;
+		if(this.property != null && property instanceof Presentation) {
+			return ((Presentation)property).getRepresentationalForm();
+		} else {
+			return null;
+		}
 	}
 
 	/**
 	 * @return the matchIfNoContext
 	 */
 	public Boolean getMatchIfNoContext() {
-		return matchIfNoContext;
-	}
-
-	/**
-	 * @param matchIfNoContext the matchIfNoContext to set
-	 */
-	public void setMatchIfNoContext(Boolean matchIfNoContext) {
-		this.matchIfNoContext = matchIfNoContext;
-	}
-
-	/**
-	 * @return the degreeOfFidelity
-	 */
-	public String getDegreeOfFidelity() {
-		return degreeOfFidelity;
-	}
-
-	/**
-	 * @param degreeOfFidelity the degreeOfFidelity to set
-	 */
-	public void setDegreeOfFidelity(String degreeOfFidelity) {
-		this.degreeOfFidelity = degreeOfFidelity;
+		if(this.property != null && property instanceof Presentation) {
+			return ((Presentation)property).getMatchIfNoContext();
+		} else {
+			return null;
+		}
 	}
 
 	/**
