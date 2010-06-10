@@ -125,10 +125,10 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 				assertTrue(rs.getString(2).equals(csId));
 				assertTrue(rs.getString(3).equals("code"));
 				assertTrue(rs.getString(4).equals("namespace"));
-				assertTrue(rs.getBoolean(5) == true);
-				assertTrue(rs.getBoolean(6) == true);
+				assertTrue(rs.getBoolean(5));
+				assertTrue(rs.getBoolean(6));
 				assertTrue(rs.getString(7).equals("a description"));
-				assertTrue(rs.getBoolean(8) == false);
+				assertFalse(rs.getBoolean(8));
 				assertTrue(rs.getString(9).equals("entity owner"));
 				assertTrue(rs.getString(10).equals("testing"));
 				assertTrue(rs.getTimestamp(11).equals(effectiveDate));
