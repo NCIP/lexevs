@@ -58,12 +58,12 @@
 			#uid#,
 			#propertyUId#,
 			#attributeType#,
-			#attributeId#,
-			#attributeValue#,
-			#subRef#,
-			#role#,
-			#qualifierType#,
-			#entryStateUId#
+			#attributeId:VARCHAR#,
+			#attributeValue:VARCHAR#,
+			#subRef:VARCHAR#,
+			#role:VARCHAR#,
+			#qualifierType:VARCHAR#,
+			#entryStateUId:VARCHAR#
 		)
 	</insert>
 

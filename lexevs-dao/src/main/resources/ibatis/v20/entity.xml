@@ -348,39 +348,39 @@
 			#codingSchemeUId#,
 			#entity.entityCode#, 
 			#entity.entityCodeNamespace#, 
-			#entity.isDefined#,
-			#entity.isAnonymous#,
-			#entity.entityDescription.content#,
-			#entity.isActive#,
-			#entity.owner#,
-			#entity.status#,
-			#entity.effectiveDate#,
-			#entity.expirationDate#,
-			#entryStateUId#
+			#entity.isDefined:CHAR#,
+			#entity.isAnonymous:CHAR#,
+			#entity.entityDescription.content:VARCHAR#,
+			#entity.isActive:CHAR#,
+			#entity.owner:VARCHAR#,
+			#entity.status:VARCHAR#,
+			#entity.effectiveDate:TIMESTAMP#,
+			#entity.expirationDate:TIMESTAMP#,
+			#entryStateUId:VARCHAR#
 			
 			<isPropertyAvailable prepend="," property="forwardName">
-				#forwardName#
+				#forwardName:VARCHAR#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="forwardName">
 				null
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="reverseName">
-				#reverseName#
+				#reverseName:VARCHAR#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="reverseName">
 				null
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="isNavigable">
-				#isNavigable#
+				#isNavigable:CHAR#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="isNavigable">
 				null
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="isTransitive">
-				#isTransitive#
+				#isTransitive:CHAR#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="isTransitive">
 				null
