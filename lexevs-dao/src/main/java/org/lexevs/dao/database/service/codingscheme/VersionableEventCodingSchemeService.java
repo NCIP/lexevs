@@ -34,6 +34,7 @@ import org.LexGrid.naming.URIMap;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
@@ -160,8 +161,13 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		CodingSchemeDao codingSchemeDao = this.getDaoManager()
 				.getCurrentCodingSchemeDao();
 
-		String releaseUId = this.getDaoManager().getSystemReleaseDao()
+		String releaseUId;
+		if(StringUtils.isNotBlank(releaseURI)){
+			releaseUId = this.getDaoManager().getSystemReleaseDao()
 				.getSystemReleaseUIdByUri(releaseURI);
+		} else {
+			releaseUId = null;
+		}
 
 		codingSchemeDao.insertCodingScheme(scheme, releaseUId, true);
 
