@@ -387,18 +387,18 @@
 			#codingScheme.codingSchemeName#, 
 			#codingScheme.codingSchemeURI#, 
 			#codingScheme.representsVersion#,
-			#codingScheme.formalName#,
-			#codingScheme.defaultLanguage#,
-			#codingScheme.approxNumConcepts#,
-			#codingScheme.entityDescription.content#,
-			#codingScheme.copyright.content#,
-			#codingScheme.isActive#,
-			#codingScheme.owner#,
-			#codingScheme.status#,
-			#codingScheme.effectiveDate#,
-			#codingScheme.expirationDate#,
-			#releaseUId#,
-			#entryStateUId#
+			#codingScheme.formalName:VARCHAR#,
+			#codingScheme.defaultLanguage:VARCHAR#,
+			#codingScheme.approxNumConcepts:NUMERIC#,
+			#codingScheme.entityDescription.content:VARCHAR#,
+			#codingScheme.copyright.content:VARCHAR#,
+			#codingScheme.isActive:CHAR#,
+			#codingScheme.owner:VARCHAR#,
+			#codingScheme.status:VARCHAR#,
+			#codingScheme.effectiveDate:TIMESTAMP#,
+			#codingScheme.expirationDate:TIMESTAMP#,
+			#releaseUId:VARCHAR#,
+			#entryStateUId:VARCHAR#
 		)
   </insert>
   

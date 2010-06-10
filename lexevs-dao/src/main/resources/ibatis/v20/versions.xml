@@ -74,45 +74,53 @@
 			description
 			)
 		VALUES (
-			#revisionGuid#,			
-			<isPropertyAvailable property="releaseGuid">
+			#revisionGuid#,	
+					
+			<isNotNull property="releaseGuid">
 				#releaseGuid#,
-			</isPropertyAvailable>	
-			<isNotPropertyAvailable property="releaseGuid">
+			</isNotNull>	
+			<isNull property="releaseGuid">
 				null,
-			</isNotPropertyAvailable>		
-			#revision.revisionId#,			
-			<isPropertyAvailable property="revision.changeAgent[0]">
-				#revision.changeAgent[0]#,
-			</isPropertyAvailable>	
-			<isNotPropertyAvailable property="revision.changeAgent[0]">
+			</isNull>
+					
+			#revision.revisionId#,	
+					
+			<isNotNull property="revision.changeAgent">
+				#revision.changeAgent#,
+			</isNotNull>	
+			<isNull property="revision.changeAgent">
 				null,
-			</isNotPropertyAvailable>		
-			<isPropertyAvailable property="revision.revisionDate">
-				#revision.revisionDate#,
-			</isPropertyAvailable>	
-			<isNotPropertyAvailable property="revision.revisionDate">
+			</isNull>	
+				
+			<isNotNull property="revision.revisionDate">
+				#revision.revisionDate#, 
+			</isNotNull>	
+			<isNull property="revision.revisionDate">
 				null,
-			</isNotPropertyAvailable>		
-			#revAppliedDate#,			
-			<isPropertyAvailable property="revision.editOrder">
-				#revision.editOrder#,
-			</isPropertyAvailable>
-			<isNotPropertyAvailable property="revision.editOrder">
+			</isNull>	
+				
+			#revAppliedDate#,	
+					
+			<isNotNull property="revision.editOrder">
+				#revision.editOrder#, 
+			</isNotNull>
+			<isNull property="revision.editOrder">
 				null,
-			</isNotPropertyAvailable>				
-			<isPropertyAvailable property="revision.changeInstructions">
+			</isNull>	
+						
+			<isNotNull property="revision.changeInstructions">
 				#revision.changeInstructions.content#,
-			</isPropertyAvailable>
-			<isNotPropertyAvailable property="revision.changeInstructions">
+			</isNotNull>
+			<isNull property="revision.changeInstructions">
 				null,
-			</isNotPropertyAvailable>
-			<isPropertyAvailable property="revision.entityDescription">
+			</isNull>
+			
+			<isNotNull property="revision.entityDescription">
 				#revision.entityDescription.content#				
-			</isPropertyAvailable>
-			<isNotPropertyAvailable property="revision.entityDescription">
+			</isNotNull>
+			<isNull property="revision.entityDescription">
 				null
-			</isNotPropertyAvailable>
+			</isNull>
 			)
  	</insert>
  	
@@ -130,12 +138,12 @@
 		VALUES (
 			#entryStateUId#,
 			#entryUId#,
-			#entryType#,
-			#entryState.changeType#,
-			#entryState.relativeOrder#,
-			#revisionUId#,
-			#prevRevisionUId#,
-			#previousEntryStateUId#
+			#entryType:VARCHAR#,
+			#entryState.changeType:VARCHAR#,
+			#entryState.relativeOrder:NUMERIC#,
+			#revisionUId:VARCHAR#,
+			#prevRevisionUId:VARCHAR#,
+			#previousEntryStateUId:VARCHAR#
 			)
  	</insert>
  	

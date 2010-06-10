@@ -33,29 +33,5 @@
 		where
 			entryStateId = #id#
  	</update>
- 	
- 	<insert id="insertEntryState" parameterClass="org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean">
-		INSERT INTO $prefix$entryState (
-			entryStateGuid,
-			entryGuid,
-			entryType,
-			changeType,
-			relativeOrder,
-			revisionGuid,
-			prevRevisionGuid,
-			prevEntryStateGuid
-			)
-		VALUES (
-			#entryStateId#,
-			#entryId#,
-			#entryType#,
-			#entryState.changeType#,
-			#entryState.relativeOrder#,
-			#entryState.containingRevision#,
-			#entryState.prevRevision#,
-			#previousEntryStateId#
-			)
- 	</insert>
- 
     
 </sqlMap>
