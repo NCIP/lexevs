@@ -48,7 +48,7 @@ CREATE INDEX idx_referenceCode
 ON @PREFIX@nciHist (referenceCode)
 ;
 
-ALTER TABLE @PREFIX@systemRelease
+ALTER TABLE @PREFIX@nciHistSystemRelease
 	ADD CONSTRAINT UQ_ncih_sysRel UNIQUE (releaseId, releaseURI)
 ;
 
