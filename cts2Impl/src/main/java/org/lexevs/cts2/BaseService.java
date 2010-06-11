@@ -1,40 +1,27 @@
 package org.lexevs.cts2;
 
-public abstract class BaseService {
-	private String serviceName;
-	private String serviceDescription;
-	private String serviceProvider;
-	private String serviceVersion;
+
+public abstract interface BaseService {
+
+	public static enum LoadFormats {
+		LexGridXML, OBO, OWL, HL7, CLAML, RadLexFrames, UMLS
+	};
 	
-	public BaseService(){
-		serviceName = "LexEVS CTS2 Implementation";
-		serviceDescription = "LexEVS CTS2 Implementation";
-		serviceProvider = "Mayo Clinic";
-		serviceVersion = "1.0";
-	}
+	public static enum ExportFormats {
+		LexGridXML, OBO, OWL
+	};
 	
-	/**
-	 * @return the serviceName
-	 */
-	public String getServiceName() {
-		return serviceName;
-	}
-	/**
-	 * @return the serviceDescription
-	 */
-	public String getServiceDescription() {
-		return serviceDescription;
-	}
-	/**
-	 * @return the serviceProvider
-	 */
-	public String getServiceProvider() {
-		return serviceProvider;
-	}
-	/**
-	 * @return the serviceVersion
-	 */
-	public String getServiceVersion() {
-		return serviceVersion;
-	}
+	public static enum SortableProperties {
+        matchToQuery, code, codeSystem, entityDescription, conceptStatus, isActive
+    };
+
+    public static enum MatchAlgorithms {
+        exactMatch, startsWith, LuceneQuery, NormalizedLuceneQuery, DoubleMetaphoneLuceneQuery, contains, RegExp
+    };
+
+    public static enum KnownTags {
+        PRODUCTION
+    };
+    
+    public ServiceInfo getServiceInfo();    
 }

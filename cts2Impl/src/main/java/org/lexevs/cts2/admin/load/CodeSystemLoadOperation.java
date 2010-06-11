@@ -17,12 +17,38 @@
  */
 package org.lexevs.cts2.admin.load;
 
+import java.net.URI;
+
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.versions.Revision;
+import org.lexevs.cts2.BaseService.LoadFormats;
 
 public interface CodeSystemLoadOperation extends Loader{
 	
+	/**
+	 * Load the content and meta data.  If the async flag is true, return an URI that
+	 * gives access to the load progress
+	 * 
+	 * @param source
+	 * @param metadata
+	 * @param stopOnErrors
+	 * @param async
+	 */
+	public abstract URI load(URI source, URI metadata, LoadFormats sourceFormat, Boolean stopOnErrors, Boolean async) throws LBException;
+	
+	/**
+	 * Load the content and meta data.  If the async flag is true, return an URI that
+	 * gives access to the load progress
+	 * 
+	 * @param codeSystem
+	 * @param metadata
+	 * @param stopOnErrors
+	 * @param async
+	 */
+	public abstract URI load(CodingScheme codeSystem, URI metadata, Boolean stopOnErrors, Boolean async) throws LBException;
+
 	/**
 	 * Installs a code system (aka terminology) into the terminology service 
 	 * for subsequent access by other service functions. This operation is used 
@@ -53,4 +79,21 @@ public interface CodeSystemLoadOperation extends Loader{
 	public int importCodeSystemRevsion(String xmlFileLocation) throws LBException;
 	
 	public void changeCodeSystemStatus()throws LBException;	
+	
+	/**
+	 * Validate resource without performing a load.
+	 * 
+	 * Returns without exception if validation succeeds.
+	 *  
+	 * @param source
+	 *            URI corresponding to the source code system file.
+	 * @param metatData
+	 *            URI corresponding to the source meta data file.
+	 * @param validationLevel
+	 *            Supported levels of validation include: 0 = Verify top 10
+	 *            lines are correct format. 1 = Verify entire file.
+	 * @throws LBException
+	 */
+	public void validate(URI source, URI metaData, int validationLevel)
+			throws LBException;	
 }

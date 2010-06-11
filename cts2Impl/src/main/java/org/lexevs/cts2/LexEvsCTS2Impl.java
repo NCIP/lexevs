@@ -29,7 +29,7 @@ import org.lexevs.cts2.query.QueryOperationImpl;
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
-public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
+public class LexEvsCTS2Impl implements LexEvsCTS2 {
 	private AdminOperation adminOp_;
 	private AuthoringOperation authOp_;
 	private QueryOperation queryOp_;
@@ -64,12 +64,16 @@ public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
 		return queryOp_;
 	}
 	
+	@Override
+	public ServiceInfo getServiceInfo() {
+		return new ServiceInfo();
+	}
+	
 	public static void main(String[] args){
 		LexEvsCTS2 cts2 = new LexEvsCTS2Impl();
-		System.out.println(cts2.getServiceDescription());
-		System.out.println(cts2.getServiceName());
-		System.out.println(cts2.getServiceProvider());
-		System.out.println(cts2.getServiceVersion());
-		
-	}
+		System.out.println(cts2.getServiceInfo().getServiceName());
+		System.out.println(cts2.getServiceInfo().getServiceProvider());
+		System.out.println(cts2.getServiceInfo().getServiceDescription());
+		System.out.println(cts2.getServiceInfo().getServiceVersion());
+	}	
 }
