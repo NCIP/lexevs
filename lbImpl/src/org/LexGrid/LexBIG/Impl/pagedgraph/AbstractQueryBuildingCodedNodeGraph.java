@@ -19,6 +19,7 @@
 package org.LexGrid.LexBIG.Impl.pagedgraph;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
@@ -321,7 +322,7 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
                 resolveAssociationDepth,
                 null, null, null, null, maxToReturn, false);
         
-        ConceptReferenceList codeList = this.traverseGraph(list, resolveForward, resolveBackward);
+        ConceptReferenceList codeList = this.traverseGraph(list, resolveForward, resolveBackward, maxToReturn);
 
         try {
             CodedNodeSet cns = new CodedNodeSetImpl(
@@ -336,11 +337,16 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         }
     }
     
-    private ConceptReferenceList traverseGraph(ResolvedConceptReferenceList list, boolean resolveForward, boolean resolveBackward){
+    private ConceptReferenceList traverseGraph(
+            ResolvedConceptReferenceList list, 
+            boolean resolveForward, 
+            boolean resolveBackward, 
+            int maxToReturn){
+          
         List<ConceptReference> returnList = new ArrayList<ConceptReference>();
         
         for(ResolvedConceptReference ref : list.getResolvedConceptReference()) {
-            returnList.addAll(traverseGraph(ref, resolveForward, resolveBackward));
+            returnList.addAll(traverseGraph(ref, resolveForward, resolveBackward, maxToReturn));
         }
         
         ConceptReferenceList refList = new ConceptReferenceList();
@@ -349,16 +355,20 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         return refList;
     }
     
-    private List<ConceptReference> traverseGraph(ResolvedConceptReference ref, boolean resolveForward, boolean resolveBackward){
+    private List<ConceptReference> traverseGraph(
+            ResolvedConceptReference ref, 
+            boolean resolveForward, 
+            boolean resolveBackward,
+            int maxToReturn){
         List<ConceptReference> returnList = new ArrayList<ConceptReference>();
         returnList.add(ref);
         
         if(resolveForward) {
             if(ref.getSourceOf() != null) {
                 for(Association assoc : ref.getSourceOf().getAssociation()) {
-                    for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()) {
+                    for(AssociatedConcept ac : buildAssociatedConceptArray(assoc, maxToReturn)) {
                         returnList.addAll(
-                                this.traverseGraph(ac, resolveForward, resolveBackward));
+                                this.traverseGraph(ac, resolveForward, resolveBackward, maxToReturn));
                     }
                 }
             }
@@ -367,15 +377,27 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         if(resolveBackward) {
             if(ref.getTargetOf() != null) {
                 for(Association assoc : ref.getTargetOf().getAssociation()) {
-                    for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()) {
+                    for(AssociatedConcept ac : buildAssociatedConceptArray(assoc, maxToReturn)) {
                         returnList.addAll(
-                                this.traverseGraph(ac, resolveForward, resolveBackward));
+                                this.traverseGraph(ac, resolveForward, resolveBackward, maxToReturn));
                     }
                 }
             }
         }
         
         return returnList;
+    }
+    
+    private AssociatedConcept[] buildAssociatedConceptArray(Association association, int maxToReturn) {
+        Iterator<? extends AssociatedConcept> itr =  association.getAssociatedConcepts().iterateAssociatedConcept();
+        
+        List<AssociatedConcept> list = new ArrayList<AssociatedConcept>();
+        
+        for(int i=0;i<maxToReturn && itr.hasNext();i++) {
+            list.add(itr.next());
+        }
+
+        return list.toArray(new AssociatedConcept[list.size()]);
     }
 
     /**
