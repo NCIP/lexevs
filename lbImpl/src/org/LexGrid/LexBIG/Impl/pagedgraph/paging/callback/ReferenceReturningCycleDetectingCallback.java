@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public class ReferenceReturningCycleDetectingCallback extends AbstractCycleDetec
 
     /** The associated concept map. */
     private Map<AssociatedConceptKey,AssociatedConcept> associatedConceptMap = 
-        new HashMap<AssociatedConceptKey,AssociatedConcept>();
+        Collections.synchronizedMap(new HashMap<AssociatedConceptKey,AssociatedConcept>());
 
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallbackI#getAssociatedConceptInGraph(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept)
