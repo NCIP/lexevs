@@ -51,9 +51,7 @@ public class DefaultCodeHolder implements AdditiveCodeHolder, Serializable {
 
     @LgClientSideSafe
     public void add(CodeToReturn code) {
-        if(! this.contains(code)) {
-            codes_.add(code);
-        }
+        codes_.add(code);
     }
 
     @LgClientSideSafe
