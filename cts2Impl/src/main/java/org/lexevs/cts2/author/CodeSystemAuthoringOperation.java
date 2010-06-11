@@ -17,8 +17,30 @@
  */
 package org.lexevs.cts2.author;
 
+import java.net.URI;
+
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.versions.Revision;
+
 public interface CodeSystemAuthoringOperation {
-	public void createCodeSystem();
+	/**
+	 * 
+	 * @param csURIAndVersion
+	 * @param codeSystemProperties
+	 * @return
+	 * @throws LBException
+	 */
+	public CodingScheme createCodeSystem(AbsoluteCodingSchemeVersionReference csURIAndVersion, Properties codeSystemProperties) throws LBException;
+	
+	public int commitCodeSystem(CodingScheme codeSystem, URI metaMata, Boolean stopOnErrors, Boolean async) throws LBException;
+	
+	public Revision createCodeSystemChangeSet(String agent, String changeInstruction);
+	
+	public int commitChangeSet(Revision changeSet);
+	
 	public void updateCodeSystemVersion();
 	public void updateCodeSystemVersionStatus();
 	public void createCodeSystemSuppliment();
