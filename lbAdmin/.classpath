@@ -9,5 +9,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lgConverter"/>
 	<classpathentry kind="lib" path="/lbModel/lib/lbModel.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/loader-framework-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
