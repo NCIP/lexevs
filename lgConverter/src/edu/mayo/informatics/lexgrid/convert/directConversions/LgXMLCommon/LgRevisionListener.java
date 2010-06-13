@@ -241,14 +241,8 @@ public class LgRevisionListener implements UnmarshalListener {
         } 
         
         if(UnMarshallingLogic.isCodingSchemeEntityProperty(parent, child)){
-           // LexGridElementProcessor.processEntityPropertyRevision(serviceAdaptor, cs, parent, child);
             entityProperties.add((Property)child);
         }
-        // This is an unlikely revision scenario, but since our model allows it, we'll create a conditional
-        // to manage it.
-//        if(UnMarshallingLogic.isCodingSchemeRelationWithEmptyPredicate(parent, child)){
-//            LexGridElementProcessor.processRelationsRevision(serviceAdaptor, parent, child);
-//        }
         if(UnMarshallingLogic.isCodingSchemeAssociationSource(parent,child)){
             AssociationSource source = (AssociationSource)parent;
             AssociationPredicate predicate = (AssociationPredicate) source.getParent();
@@ -263,12 +257,7 @@ public class LgRevisionListener implements UnmarshalListener {
             AssociationData data = (AssociationData)child;
             LexGridElementProcessor.processAssociationData(serviceAdaptor,source, data);
         }
-//        if(UnMarshallingLogic.isValueSetDefinitionRevision(parent, child)){
-//            LexGridElementProcessor.processValueSetDefinitionRevision(serviceAdaptor, child);
-//        }
-//        if(UnMarshallingLogic.isPickListDefinitionRevision(parent, child)){
-//            LexGridElementProcessor.processPickListtDefinitionRevision(serviceAdaptor, child);
-//        }
+
     }
    
 }
