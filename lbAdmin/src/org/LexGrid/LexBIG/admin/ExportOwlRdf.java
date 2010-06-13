@@ -18,19 +18,14 @@
  */
 package org.LexGrid.LexBIG.admin;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.Enumeration;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
-import org.LexGrid.LexBIG.Extensions.Export.LexGrid_Exporter;
 import org.LexGrid.LexBIG.Extensions.Export.OwlRdf_Exporter;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
 import org.LexGrid.LexBIG.Impl.exporters.OwlRdfExport;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
@@ -41,9 +36,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.lexevs.system.ResourceManager;
-
-import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.util.CnsCngPair;
-import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.util.FilterParser;
 
 /**
  * Exports content from the repository to a file in OWL/RDF format.
