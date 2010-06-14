@@ -75,6 +75,31 @@ public class OwlRdfExport extends BaseExporter implements OwlRdf_Exporter {
         exportCodingSchemeData();
     }
     
+    private void verifyOutputDirectory(String directory) {
+        if(directory == null) {
+            String msg = "Output location value is null.";
+            this.getLogger().fatal(msg);
+            this.getStatus().setErrorsLogged(true);
+            throw new RuntimeException(msg);            
+        }
+        
+        File F_directory = new File(directory);
+        
+        if(F_directory.exists() == false) {
+            String msg = F_directory.getAbsolutePath() + " does not exist.";
+            this.getLogger().fatal(msg);
+            this.getStatus().setErrorsLogged(true);
+            throw new RuntimeException(msg);                        
+        }
+        
+        if(F_directory.isDirectory() == false) {
+            String msg = F_directory.getAbsolutePath() + " is not a directory.";
+            this.getLogger().fatal(msg);
+            this.getStatus().setErrorsLogged(true);
+            throw new RuntimeException(msg);                        
+        }
+    }    
+    
     private String getCodingSchemeName(String csUri, String csVersion) {
         String rv = null;
         try {
@@ -86,7 +111,7 @@ public class OwlRdfExport extends BaseExporter implements OwlRdf_Exporter {
         }
         return rv;
     }
-    
+        
     protected void exportCodingSchemeData(){
         URI destination = super.getResourceUri();
         AbsoluteCodingSchemeVersionReference source = super.getSource();
@@ -95,7 +120,9 @@ public class OwlRdfExport extends BaseExporter implements OwlRdf_Exporter {
         
         // construct out file name
         String separator = File.separator;
-        String outDirWithEndingPathSeparator = destination.getPath();
+        String directory = destination.getPath();
+        this.verifyOutputDirectory(directory);
+        String outDirWithEndingPathSeparator = directory;
         if(outDirWithEndingPathSeparator.endsWith(separator) == false) {
             outDirWithEndingPathSeparator = outDirWithEndingPathSeparator + separator;
         }
@@ -110,7 +137,7 @@ public class OwlRdfExport extends BaseExporter implements OwlRdf_Exporter {
         
         System.out.println("Content will be exported to file: " + outFile.getAbsolutePath());
                 
-        if(outFile.exists() == true && overwrite == true) 
+        if(outFile.exists() == true && overwrite == true)
         {
             outFile.delete();
         } else if (outFile.exists() == true && overwrite == false) {
@@ -130,7 +157,7 @@ public class OwlRdfExport extends BaseExporter implements OwlRdf_Exporter {
     @Override
     protected OptionHolder declareAllowedOptions(OptionHolder holder) {
        holder.getResourceUriAllowedFileTypes().add("xml");
-       holder.setIsResourceUriFolder(false);
+       holder.setIsResourceUriFolder(true);
        holder.getBooleanOptions().add(new BooleanOption(LexGridConstants.OPTION_FORCE, (new Boolean(false))));
        return holder;
     }
