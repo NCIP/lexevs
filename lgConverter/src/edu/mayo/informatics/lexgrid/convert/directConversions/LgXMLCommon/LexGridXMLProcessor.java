@@ -22,6 +22,11 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -29,6 +34,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.valueSets.PickListDefinition;
@@ -54,6 +60,9 @@ public class LexGridXMLProcessor {
     private static final String REVISION_CHANGE_AGENT = "changeAgent";
     private static final String REVISION_CHANGE_INTRUCTIONS = "changeIntructions";
     private static final String REVISION_CHANGED_ENTRY = "changedEntry";
+    private static final String CODING_SCHEMES = "codingSchemes";
+    private static final String VALUE_SETS = "valueSetDefinitions";
+    private static final String PICK_LISTS = "pickListDefinitions";
     
     private static final int ENTRY_POINT_NOT_FOUND = 0;
     private static final int CS_ENTRY_POINT_TYPE = 1;
@@ -63,7 +72,8 @@ public class LexGridXMLProcessor {
     private static final int PL_ENTRY_POINT_TYPE = 5;
     public static final String NO_SCHEME_URL = "http://no.scheme.found";
     public static final String NO_SCHEME_VERSION = "0.0";
-
+    public static final HashMap<CodingScheme, Boolean> systemCSProperties = null;
+    public static final HashMap<CodingScheme, Boolean> systemRelationsProperties = null;
     /**
      * @param path
      * @param messages
@@ -178,12 +188,14 @@ public class LexGridXMLProcessor {
 
             in = new BufferedReader(new FileReader(path));
             umr = new Unmarshaller();
-            LgSystemReleaseListener listener = new LgSystemReleaseListener(messages);
+            LgSystemReleaseListener listener = 
+                new LgSystemReleaseListener(messages, systemReleaseCodingSchemePropertiesSurvey(path, messages));
             // default is true -- no need to set the validation flag if the user
             // wants to validate.
             if (!validateXML) {
                 umr.setValidation(validateXML);
             }
+            listener.setSystemReleaseMetaData(getSystemReleaseMetadata(path, messages));
             listener.setPropertiesPresent(setPropertiesFlag(path, messages));
             listener.setMessages_(messages);
             umr.setUnmarshalListener(listener);
@@ -258,6 +270,8 @@ public class LexGridXMLProcessor {
         return cs;
 
     }
+    
+    
     public org.LexGrid.codingSchemes.CodingScheme[] loadPickListDefinition(String path, LgMessageDirectorIF messages,
             boolean validateXML){
         BufferedReader in = null;
@@ -342,7 +356,7 @@ public class LexGridXMLProcessor {
             messages.error("While streaming file at " + path + "an error occured");
             e.printStackTrace();
         } catch (FactoryConfigurationError e) {
-            messages.error("While streaming file at " + path + "an streaming xml configuration error occured");
+            messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
             e.printStackTrace();
         } catch (FileNotFoundException e) {
             messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
@@ -394,7 +408,7 @@ public class LexGridXMLProcessor {
             messages.error("While streaming file at " + path + "an error occured");
             e.printStackTrace();
         } catch (FactoryConfigurationError e) {
-            messages.error("While streaming file at " + path + "an streaming xml configuration error occured");
+            messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
             e.printStackTrace();
         } catch (FileNotFoundException e) {
             messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
@@ -413,7 +427,6 @@ public class LexGridXMLProcessor {
      */
     public boolean setRelationsPropertiesFlag(String path,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
-        boolean propsPresent = false;
         boolean relationsPresent = false;
         boolean relPropsPresent = false;
         XMLStreamReader xmlStreamReader;
@@ -446,7 +459,7 @@ public class LexGridXMLProcessor {
             messages.error("While streaming file at " + path + "an error occured");
             e.printStackTrace();
         } catch (FactoryConfigurationError e) {
-            messages.error("While streaming file at " + path + "an streaming xml configuration error occured");
+            messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
             e.printStackTrace();
         } catch (FileNotFoundException e) {
             messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
@@ -505,7 +518,7 @@ public boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages)
             messages.error("While streaming file at " + path + "an error occured");
             e.printStackTrace();
         } catch (FactoryConfigurationError e) {
-            messages.error("While streaming file at " + path + "an streaming xml configuration error occured");
+            messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
             e.printStackTrace();
         } catch (FileNotFoundException e) {
             messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
@@ -554,7 +567,7 @@ public int getLastRevisionElement(String path,  LgMessageDirectorIF messages) {
         messages.error("While streaming file at " + path + "an error occured");
         e.printStackTrace();
     } catch (FactoryConfigurationError e) {
-        messages.error("While streaming file at " + path + "an streaming xml configuration error occured");
+        messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
         e.printStackTrace();
     } catch (FileNotFoundException e) {
         messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
@@ -565,11 +578,236 @@ public int getLastRevisionElement(String path,  LgMessageDirectorIF messages) {
     }
     return lastMetaDataElement;
 }
-public static void main (String[] args){
 
-   // new LexGridXMLProcessor().isCodingSchemePresent(args[0],null);
+/**
+ * We are pre-processing the System Release Meta data to avoid having to load this at
+ * the end of the System Release load.
+ * @param path
+ * @param messages
+ * @return
+ */
+public SystemRelease getSystemReleaseMetadata(String path, LgMessageDirectorIF messages){
+    BufferedReader in = null;
+    XMLStreamReader xmlStreamReader;  
+    SystemRelease systemRelease = new SystemRelease();
+    try {
+        in = new BufferedReader(new FileReader(path));
+
+        xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
+
+        for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
+                .next()) {
+            if(event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("systemRelease")){
+                for (int i = 0; i < xmlStreamReader.getAttributeCount(); i++) {
+                    if (xmlStreamReader.getAttributeLocalName(i).equals("releaseId")) {
+                        systemRelease.setReleaseId(xmlStreamReader.getAttributeValue(i));
+                    }
+                    if (xmlStreamReader.getAttributeLocalName(i).equals("releaseURI")) {
+                        systemRelease.setReleaseURI(xmlStreamReader.getAttributeValue(i));
+                    }
+                    if (xmlStreamReader.getAttributeLocalName(i).equals("releaseDate")) {
+                  
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy"); 
+                        Date date = formatter.parse(xmlStreamReader.getAttributeValue(i));
+                        systemRelease.setReleaseDate(date);
+                    }
+                    if (xmlStreamReader.getAttributeLocalName(i).equals("releaseAgency")) {
+                        systemRelease.setReleaseAgency(xmlStreamReader.getAttributeValue(i));
+                    }
+                    if (xmlStreamReader.getAttributeLocalName(i).equals("basedOnRelease")) {
+                        systemRelease.setReleaseAgency(xmlStreamReader.getAttributeValue(i));
+                    }
+            }
+        }
+        
+        xmlStreamReader.close();
+        in.close();}
+    } catch (XMLStreamException e) {
+       messages.error("While streaming file at " + path + "an error occured");
+        e.printStackTrace();
+    } catch (FactoryConfigurationError e) {
+       messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
+        e.printStackTrace();
+    } catch (FileNotFoundException e) {
+       messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+        e.printStackTrace();
+    } catch (IOException e) {
+       messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
+        e.printStackTrace();
+    } catch (ParseException e) {
+        messages.error("Problems parsing the system release date --- please check your source formatting for format dd-mm-yyyy");
+        e.printStackTrace();
+    }
+    return systemRelease;
+}
+
+/**
+ * This does preprocessing to indicate whether the current system release has
+ * a given list of schemes, pick lists or value sets.
+ * @param path
+ * @param messages
+ * @return
+ */
+public HashMap<String, Boolean> surveySystemRelease(String path,  LgMessageDirectorIF messages) {
+    BufferedReader in = null;
+    XMLStreamReader xmlStreamReader;
+    
+    //initialize to false
+    HashMap<String, Boolean> systemReleaseSurvey = new HashMap<String, Boolean>();
+    systemReleaseSurvey.put(CODING_SCHEMES,false);
+    systemReleaseSurvey.put(VALUE_SETS,false);
+    systemReleaseSurvey.put(PICK_LISTS,false);
+    try {
+        in = new BufferedReader(new FileReader(path));
+
+        xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
+
+        for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
+                .next()) {
+
+            if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals(CODING_SCHEMES)) {
+                systemReleaseSurvey.put(CODING_SCHEMES,Boolean.TRUE);
+            }
+            if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals(VALUE_SETS)) {
+                systemReleaseSurvey.put(VALUE_SETS,Boolean.TRUE);
+            }
+            if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals(PICK_LISTS)) {
+                systemReleaseSurvey.put(PICK_LISTS,Boolean.TRUE);
+                break;
+            }
+        }
+        xmlStreamReader.close();
+        in.close();
+    } catch (XMLStreamException e) {
+       messages.error("While streaming file at " + path + "an error occured");
+        e.printStackTrace();
+    } catch (FactoryConfigurationError e) {
+       messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
+        e.printStackTrace();
+    } catch (FileNotFoundException e) {
+       messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+        e.printStackTrace();
+    } catch (IOException e) {
+      messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
+        e.printStackTrace();
+    }
+    return systemReleaseSurvey;
+}
+
+    /**
+     *  Surveying the xml of a system release to allow accurate streaming to the data base.  
+     *  We need to know if optional properties are present in the coding scheme or it's relations
+     *  As well monitor what schemes and revisions have been loaded.
+     * @param path
+     * @param messages
+     * @return
+     */
+    public ArrayList<SystemReleaseSurvey> systemReleaseCodingSchemePropertiesSurvey(String path,
+            LgMessageDirectorIF messages) {
+        BufferedReader in = null;
+        XMLStreamReader xmlStreamReader;
+        boolean inCodingScheme = false;
+        boolean propsPresent = false;
+        boolean inRelations = false;
+        boolean relPropsPresent = false;
+        boolean entryStateSet = false;
+        AbsoluteCodingSchemeVersionReference cs = null;
+        String entryStateId = "NEW";
+        ArrayList<SystemReleaseSurvey> systemReleaseSurvey = new ArrayList<SystemReleaseSurvey>();
+        messages.info("Surveying for optional coding scheme elements");
+        try {
+            in = new BufferedReader(new FileReader(path));
+
+            xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
+
+            for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
+                    .next()) {
+                if (event == XMLStreamConstants.START_ELEMENT
+                        && (xmlStreamReader.getLocalName().equals("codingScheme") || xmlStreamReader.getLocalName()
+                                .equals("changedCodingSchemeEntry"))) {
+                    inCodingScheme = true;
+
+                     cs = new AbsoluteCodingSchemeVersionReference();
+                    for (int i = 0; i < xmlStreamReader.getAttributeCount(); i++) {
+                        if (xmlStreamReader.getAttributeLocalName(i).equals("codingSchemeURI")) {
+                            cs.setCodingSchemeURN(xmlStreamReader.getAttributeValue(i));
+                        }
+                        if (xmlStreamReader.getAttributeLocalName(i).equals("representsVersion"))
+                        { cs.setCodingSchemeVersion(xmlStreamReader.getAttributeValue(i));}
+                    }
+                }
+                if((event == XMLStreamConstants.START_ELEMENT ) && inCodingScheme
+                        && !entryStateSet && xmlStreamReader.getLocalName().equals("entryState")){
+                    for (int i = 0; i < xmlStreamReader.getAttributeCount(); i++) {
+
+                        if (xmlStreamReader.getAttributeLocalName(i).equals("containingRevision"))
+                        { entryStateId = xmlStreamReader.getAttributeValue(i);
+                          entryStateSet = true;
+                        }
+                    }
+                }
+                if (event == XMLStreamConstants.START_ELEMENT && (xmlStreamReader.getLocalName().equals("relations"))) {
+
+                    inRelations = true;
+                }
+                if (event == XMLStreamConstants.START_ELEMENT && (xmlStreamReader.getLocalName().equals("properties"))) {
+                    messages.info("This LexGrid XML contains a coding scheme properties element");
+                    propsPresent = true;
+                }
+                //Set relations properties to indicate properties will be present on this coding scheme.
+                if (event == XMLStreamConstants.END_ELEMENT
+                        && (xmlStreamReader.getLocalName().equals("relations"))) {
+                    inRelations = false;
+                }
+                if (inRelations && (event == XMLStreamConstants.START_ELEMENT && (xmlStreamReader.getLocalName().equals("properties")))) {
+                    System.out.println("This LexGrid XML contains a coding scheme relations properties element");
+                    relPropsPresent = true;
+                }
+                if (event == XMLStreamConstants.END_ELEMENT
+                        && (xmlStreamReader.getLocalName().equals("codingScheme") || xmlStreamReader.getLocalName()
+                                .equals("changedCodingSchemeEntry"))) {
+                    inCodingScheme = false;
+                    SystemReleaseSurvey survey = new SystemReleaseSurvey();
+                    survey.setCodingScheme(cs);
+                    survey.setPropertiesPresent(propsPresent);
+                    survey.setRelationsPropertiesPresent(relPropsPresent);
+                    survey.setRevisionId(entryStateId);
+                    systemReleaseSurvey.add(survey);
+                    relPropsPresent = false;
+                    propsPresent = false;
+                    entryStateSet = false;
+                }
+            }
+            xmlStreamReader.close();
+            in.close();
+        } catch (XMLStreamException e) {
+            messages.error("While streaming file at " + path + "an error occured");
+            e.printStackTrace();
+        } catch (FactoryConfigurationError e) {
+         messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+          messages.error("Problem reading file at: " + (path == null ? "path appears to be null" : path));
+            e.printStackTrace();
+        } catch (IOException e) {
+          messages.error("IO Problem reading file at: " + (path == null ? "path appears to be null" : path));
+            e.printStackTrace();
+        }
+        return systemReleaseSurvey;
+    }
+
+public static void main (String[] args){
+  //  LoadStatus ls = new LoadStatus();
+  //  LgMessageDirectorIF messages = new CachingMessageDirectorImpl( new MessageDirector("Test XML",ls));
    LexGridXMLProcessor lp = new LexGridXMLProcessor();
-   System.out.println("CodingSchemeProps: " + lp.setPropertiesFlag(args[0],null));
-   System.out.println("RelationsProps: " + lp.setRelationsPropertiesFlag(args[0],null));
+   ArrayList<SystemReleaseSurvey> survey = null;
+   //System.out.println("CodingSchemeProps: " + lp.setPropertiesFlag(args[0],null));
+   //System.out.println("RelationsProps: " + lp.systemReleaseCodingSchemePropertiesSurvey(args[0],null));
+  survey =  lp.systemReleaseCodingSchemePropertiesSurvey(args[0],null);
+  for(SystemReleaseSurvey srs : survey){
+      
+      System.out.println(srs.toString());
+
+  }
 }
 }
