@@ -18,18 +18,20 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
+import java.util.ArrayList;
+
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.codingSchemes.CodingSchemes;
+import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationPredicate;
-import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
-import org.LexGrid.versions.EditHistory;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 import org.castor.xml.UnmarshalListener;
@@ -42,54 +44,43 @@ import org.mayo.edu.lgModel.LexGridBase;
  */
 public class LgSystemReleaseListener implements UnmarshalListener {
 
-    private int nentities = 0;
-    private int nassociations = 0;
-    private int modCount = 0;
-    private boolean isCodingSchemeLoaded = false;
     private boolean isPropertiesPresent = false;
     private boolean isSystemReleaseSet = false;
     private boolean inEditHistory = false;
     private Mappings currentPickListMappings = new Mappings();
     private Mappings currentValueSetMappings;
+    ArrayList<Property> entityProperties = new ArrayList<Property>();
     private SystemRelease systemRelease = new SystemRelease();
     private AssociationPredicate currentPredicate = new AssociationPredicate();
     private XMLDaoServiceAdaptor serviceAdaptor = null;
     private CodingScheme[] codingSchemes = null;
+    CodingScheme cs = null;
     private LgMessageDirectorIF messages_;
-    private boolean isRevisionLoaded;
-    private Revision revision;
-    private static final int mod = 10;
+    private ArrayList<SystemReleaseSurvey> survey = null;
     /**
      * 
      */
     public LgSystemReleaseListener() {
         super();
-        serviceAdaptor = new XMLDaoServiceAdaptor();
-
+        serviceAdaptor = new XMLDaoServiceAdaptor();    
     }
     
     /**
      * @param messages
      */
-    public LgSystemReleaseListener(LgMessageDirectorIF messages) {
+    public LgSystemReleaseListener(LgMessageDirectorIF messages, ArrayList<SystemReleaseSurvey> survey) {
         super();
         serviceAdaptor = new XMLDaoServiceAdaptor();
         messages_ = messages;
+        this.survey = survey;
     }
-    
-
-    /**
-     * @return
-     */
-    int getNentities() {
-        return nentities;
-    }
-
-    /**
-     * @return
-     */
-    int getNassociations() {
-        return nassociations;
+    public void initializeSystemReleaseLoad(SystemRelease release){
+        try {
+            LexGridElementProcessor.processSystemReleaseMetadata(serviceAdaptor, getSystemRelease());
+        } catch (LBRevisionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -127,6 +118,7 @@ public class LgSystemReleaseListener implements UnmarshalListener {
             ((LexGridBase) target).setParent(parent);
         else
             messages_.error(target.getClass().getName() + " is not an instance of LexGridBase");
+
     }
 
     public void attributesProcessed(Object target, Object parent) {
@@ -142,18 +134,8 @@ public class LgSystemReleaseListener implements UnmarshalListener {
 //                + (target != null ? target.getClass().getSimpleName() : "target is null"));
 //       messages_.debug("parent of Unmarshalled target: "
 //                + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
-        
-        if(target instanceof CodingScheme && parent instanceof CodingSchemes){
+        if(target instanceof CodingSchemes && parent instanceof SystemRelease){
             setCodingSchemes(LexGridElementProcessor.setAndRetrieveCodingSchemes());
-        }
-        if(target instanceof EditHistory){
-            inEditHistory = false;
-        }
-        if(target instanceof ValueSetDefinition){
-            LexGridElementProcessor.processValueSetDefinitionRevision(serviceAdaptor,target);
-        }
-        if(target instanceof PickListDefinition){
-            LexGridElementProcessor.processPickListtDefinitionRevision(serviceAdaptor, target);
         }
     }
 
@@ -166,138 +148,92 @@ public class LgSystemReleaseListener implements UnmarshalListener {
         this.codingSchemes = codingSchemes;
     }
 
-    /* (non-Javadoc)
-     * @see org.castor.xml.UnmarshalListener#fieldAdded(java.lang.String, java.lang.Object, java.lang.Object)
-     */
+//    /* (non-Javadoc)
+//     * @see org.castor.xml.UnmarshalListener#fieldAdded(java.lang.String, java.lang.Object, java.lang.Object)
+//     */
     public void fieldAdded(String fieldName, Object parent, Object child) {
 
-//        messages_.debug("fieldName:" + fieldName);
-//        messages_.debug("parent: " + parent.getClass().getSimpleName());
-//        messages_.debug("child: " + child.getClass().getSimpleName());
-
-        if(!inEditHistory){
-        if (!isSystemReleaseSet && UnMarshallingLogic.isSytemRelease(parent, child)) {
-           try {
-            LexGridElementProcessor.processSystemReleaseMetadata(serviceAdaptor, parent);
-        } catch (LBRevisionException e) {
-            messages_.error("System release element reading and writing has failed.", e);
-            e.printStackTrace();
-        }
-            isSystemReleaseSet = true;
-        }
-        if (!isPropertiesPresent && UnMarshallingLogic.isCodingSchemeMappings(parent, child)) {
-            LexGridElementProcessor.processCodingSchemeMetadata(serviceAdaptor, parent, child);
-            isCodingSchemeLoaded = true;
-        }
-        if (!isCodingSchemeLoaded && UnMarshallingLogic.isCodingSchemeProperties(parent, child)) {
-            LexGridElementProcessor.processCodingSchemeMetadata(serviceAdaptor, parent, child);
-            isCodingSchemeLoaded = true;
-        }
-        if (!inEditHistory && UnMarshallingLogic.isCodingSchemeEntity(parent, child)) {
-            LexGridElementProcessor.processCodingSchemeEntity(serviceAdaptor, parent, child);
-            nentities++;
-            if(nentities%mod == mod-1){  
-                modCount = modCount + mod;
-                messages_.info("Entities Loaded: " + modCount);}
-        } else if ( UnMarshallingLogic.isCodingSchemeEntities(parent, child)) {
-            LexGridElementProcessor.removeEntitiesContainer(parent);
-            modCount = 0;
-        } else if (UnMarshallingLogic.isCodingSchemeAssociation(parent, child)) {
-            LexGridElementProcessor.processCodingSchemeAssociation(this
-                    .isPredicateLoaded((AssociationPredicate) parent), serviceAdaptor, parent, child);
-            nassociations++;
-            if(nassociations%mod == mod-1){  
-                modCount = modCount + mod;
-                messages_.info("Associations Loaded: " + modCount);}
-        }
-        if (UnMarshallingLogic.isValueSetMappings(parent, child)) {
-            currentValueSetMappings = LexGridElementProcessor.processValueSetMappings(serviceAdaptor, parent, child);
-        }
-        if (UnMarshallingLogic.isValueSet(parent, child)) {
-            String vsdURI = ((ValueSetDefinition) child).getValueSetDefinitionURI();
-            messages_.info("Loading value set definition uri : " + vsdURI);
-            try {
-                LexGridElementProcessor.processValueSet(serviceAdaptor, parent, child, currentValueSetMappings,
-                        systemRelease.getReleaseURI());
-            } catch (LBException e) {
-                messages_.error("Error loading VSD : " + vsdURI, e);
-                e.printStackTrace();                
-            }
-        }
-        if (UnMarshallingLogic.isPickListMappings(parent, child)) {
-            currentPickListMappings = LexGridElementProcessor.processPickListMappings(serviceAdaptor, parent, child);
-        }
-        if (UnMarshallingLogic.isPickListDefinition(parent, child)) {
-            String pickListId = ((PickListDefinition) child).getPickListId();
-            try {                
-                messages_.info("Loading pick list definition id : " + pickListId);
-                LexGridElementProcessor.processPickListDefinition(serviceAdaptor, child, currentPickListMappings,
-                        systemRelease.getReleaseURI());
-            } catch (LBParameterException e) {
-                messages_.error("Error loading PickList : " + pickListId, e);
-                e.printStackTrace();  
-            } catch (LBException e) {
-                messages_.error("Error loading PickList : " + pickListId, e);
-                e.printStackTrace();  
-            }
-        }}
-        if (UnMarshallingLogic.isRevisionInstance(parent, child) || inEditHistory){
+        // messages_.debug("fieldName:" + fieldName);
+        // messages_.debug("PARENT: " + parent.getClass().getSimpleName());
+        // messages_.debug("CHILD: " + child.getClass().getSimpleName());
+        // messages_.debug("");
+        if (!inEditHistory && parent instanceof Revision && child instanceof EntityDescription) {
             inEditHistory = true;
-            if (!isRevisionLoaded && UnMarshallingLogic.isSystemReleaseRevisionInstance(parent, child)) {
-                if(child instanceof Revision)
-                revision = (Revision)child;
-                else{
-                    revision = (Revision)parent;
-                }
+        }
+        if (!inEditHistory) {
+            if (!isSystemReleaseSet) {
+                systemRelease = getSystemRelease();
+                initializeSystemReleaseLoad(getSystemRelease());
+                isSystemReleaseSet = true;
+            }
+            if (UnMarshallingLogic.loadSystemReleaseCodingSchemeWithNoProperties(parent, child, survey)) {
+                LexGridElementProcessor.processCodingSchemeMetadata(serviceAdaptor, parent, child);
+            }
+            if (UnMarshallingLogic.loadSystemReleaseCodingSchemeWithProperties(parent, child, survey)) {
+                LexGridElementProcessor.processCodingSchemeMetadata(serviceAdaptor, parent, child);
+            }
+
+            if (!inEditHistory && UnMarshallingLogic.isCodingSchemeEntity(parent, child)) {
+                LexGridElementProcessor.processCodingSchemeEntity(serviceAdaptor, parent, child);
+
+            } else if (UnMarshallingLogic.isCodingSchemeEntities(parent, child)) {
+                LexGridElementProcessor.removeEntitiesContainer(parent);
+
+            } else if (UnMarshallingLogic.isCodingSchemeAssociation(parent, child)) {
+                LexGridElementProcessor.processCodingSchemeAssociation(this
+                        .isPredicateLoaded((AssociationPredicate) parent), serviceAdaptor, parent, child);
+
+            }
+
+            if (UnMarshallingLogic.isValueSetMappings(parent, child)) {
+                currentValueSetMappings = LexGridElementProcessor
+                        .processValueSetMappings(serviceAdaptor, parent, child);
+            }
+            if (UnMarshallingLogic.isValueSet(parent, child)) {
+                String vsdURI = ((ValueSetDefinition) child).getValueSetDefinitionURI();
+                messages_.info("Loading value set definition uri : " + vsdURI);
                 try {
-                    LexGridElementProcessor.processRevisionMetadata(serviceAdaptor, revision);
-                } catch (LBRevisionException e) {
-                    // TODO Auto-generated catch block
+                    LexGridElementProcessor.processValueSet(serviceAdaptor, parent, child, currentValueSetMappings,
+                            systemRelease.getReleaseURI());
+                } catch (LBException e) {
+                    messages_.error("Error loading VSD : " + vsdURI, e);
                     e.printStackTrace();
                 }
-                //isRevisionLoaded = true;
             }
-            if (!isPropertiesPresent && UnMarshallingLogic.isCodingSchemeMappings(parent, child)) {
-                
+            if (UnMarshallingLogic.isPickListMappings(parent, child)) {
+                currentPickListMappings = LexGridElementProcessor
+                        .processPickListMappings(serviceAdaptor, parent, child);
+            }
+            if (UnMarshallingLogic.isPickListDefinition(parent, child)) {
+                String pickListId = ((PickListDefinition) child).getPickListId();
+                try {
+                    messages_.info("Loading pick list definition id : " + pickListId);
+                    LexGridElementProcessor.processPickListDefinition(serviceAdaptor, child, currentPickListMappings,
+                            systemRelease.getReleaseURI());
+                } catch (LBParameterException e) {
+                    messages_.error("Error loading PickList : " + pickListId, e);
+                    e.printStackTrace();
+                } catch (LBException e) {
+                    messages_.error("Error loading PickList : " + pickListId, e);
+                    e.printStackTrace();
+                }
+            }
+        }
 
-                LexGridElementProcessor.processCodingSchemeMetadataRevision(serviceAdaptor, parent, child);
-                isCodingSchemeLoaded = true;
-            }
-            if (!isCodingSchemeLoaded && UnMarshallingLogic.isCodingSchemeProperties(parent, child)) {
+        if (UnMarshallingLogic.isSystemReleaseCodingSchemeRevision(parent, child)) {
+            LexGridElementProcessor.processCodingSchemeSystemReleaseRevision(serviceAdaptor, parent, child,
+                    systemRelease.getReleaseURI());
+        }
+        if (UnMarshallingLogic.isSystemReleaseValueSetRevision(parent, child)) {
+            LexGridElementProcessor.processValueSetDefinitionSystemReleaseRevision(serviceAdaptor, parent, child, null);
+        }
+        if (UnMarshallingLogic.isSystemReleasePickListRevision(parent, child)) {
 
-                LexGridElementProcessor.processCodingSchemeMetadataRevision(serviceAdaptor, parent, child);
-                isCodingSchemeLoaded = true;
-            }
-
-            
-            if (UnMarshallingLogic.isCodingSchemeEntity(parent, child)) {
-                LexGridElementProcessor.processCodingSchemeEntityRevision(serviceAdaptor, parent, child);
-                nentities++;
-                if(nentities%mod == mod-1){  
-                    modCount = modCount + mod;
-                    messages_.info("Entities Loaded: " + modCount);}
-             
-            } 
-            
-            if(UnMarshallingLogic.isCodingSchemeAssociationSource(parent,child)){
-                AssociationSource source = (AssociationSource)parent;
-                AssociationPredicate predicate = (AssociationPredicate) source.getParent();
-                LexGridElementProcessor.processCodingSchemeAssociationRevision(isPredicateLoaded(predicate), serviceAdaptor,source, child);
-              nassociations++;
-              if(nassociations%mod == mod-1){  
-                  modCount = modCount + mod;
-                  messages_.info("Associations Loaded: " + modCount);}
-            }
-            
-//            if(UnMarshallingLogic.isValueSetDefinitionRevision(parent, child)){
-//                LexGridElementProcessor.processValueSetDefinitionRevision(serviceAdaptor, child);
-//            }
-//            if(UnMarshallingLogic.isPickListDefinitionRevision(parent, child)){
-//                LexGridElementProcessor.processPickListtDefinitionRevision(serviceAdaptor, child);
-//            }
+            LexGridElementProcessor.processPickListDefinitionSystemReleaseRevision(serviceAdaptor, parent, child, null);
         }
 
     }
+
 
     /**
      * @return the messages_
@@ -311,6 +247,14 @@ public class LgSystemReleaseListener implements UnmarshalListener {
      */
     public void setMessages_(LgMessageDirectorIF messages) {
         messages_ = messages;
+    }
+
+    public void setSystemReleaseMetaData(SystemRelease systemReleaseMetadata) {
+     systemRelease = systemReleaseMetadata;
+        
+    }
+    public SystemRelease getSystemRelease(){
+        return systemRelease;
     }
 
 }
