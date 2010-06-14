@@ -27,7 +27,6 @@ import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.codingSchemes.CodingSchemes;
 import org.LexGrid.commonTypes.EntityDescription;
-import org.LexGrid.commonTypes.Property;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.valueSets.PickListDefinition;
@@ -49,12 +48,10 @@ public class LgSystemReleaseListener implements UnmarshalListener {
     private boolean inEditHistory = false;
     private Mappings currentPickListMappings = new Mappings();
     private Mappings currentValueSetMappings;
-    ArrayList<Property> entityProperties = new ArrayList<Property>();
     private SystemRelease systemRelease = new SystemRelease();
     private AssociationPredicate currentPredicate = new AssociationPredicate();
     private XMLDaoServiceAdaptor serviceAdaptor = null;
     private CodingScheme[] codingSchemes = null;
-    CodingScheme cs = null;
     private LgMessageDirectorIF messages_;
     private ArrayList<SystemReleaseSurvey> survey = null;
     /**
