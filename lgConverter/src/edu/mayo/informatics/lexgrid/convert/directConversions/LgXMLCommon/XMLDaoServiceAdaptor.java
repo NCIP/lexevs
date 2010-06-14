@@ -113,7 +113,9 @@ public class XMLDaoServiceAdaptor {
     public void storeCodingScheme(CodingScheme scheme) throws CodingSchemeAlreadyLoadedException, LBRevisionException {
         authoringService.loadRevision(scheme, null);
     }
-
+    public void storeCodingSchemeSystemReleaseRevision(Revision revision, String releaseId) throws CodingSchemeAlreadyLoadedException, LBRevisionException {
+        authoringService.loadRevision(revision, releaseId);
+    }
     /**
      * Store an Entity using the DAO service
      * @param entity
@@ -338,6 +340,24 @@ public class XMLDaoServiceAdaptor {
     public void storePickListDefinitionRevision(PickListDefinition plDefinition){
         try {
             pickListService.revise(plDefinition, null, null);
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public void storePickListDefinitionSystemReleaseRevision(PickListDefinition plDefinition, Mappings mappings,  String revisionId ) {
+        try {
+            pickListService.revise(plDefinition, mappings, revisionId);
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public void storeValueSetDefinitionSystemReleaseRevision(ValueSetDefinition vsDefinition, Mappings mappings,  String revisionId) {
+        try {
+            valueSetService.revise(vsDefinition, mappings, revisionId);
         } catch (LBException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

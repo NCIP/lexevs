@@ -18,6 +18,9 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
+import java.util.ArrayList;
+
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Properties;
@@ -42,6 +45,9 @@ import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 
 /**
+ * This class contains a number of methods to determine places in a LexGrid xml
+ * file where the parser should stop and some kind of load processing should take 
+ * place. 
  * @author  <A HREF="mailto:scott.bauer@mayo.edu">Scott Bauer </A>
  *
  */
@@ -52,7 +58,7 @@ private static final int CHANGE_INSTRUCTIONS_TYPE = 1;
     /**
      * @param parent
      * @param child
-     * @return
+     * @return boolean
      */
     public static boolean isCodingSchemeMappings(Object parent, Object child) {
         return parent instanceof CodingScheme && child instanceof Mappings;
@@ -61,16 +67,17 @@ private static final int CHANGE_INSTRUCTIONS_TYPE = 1;
     /**
      * @param parent
      * @param child
-     * @return
+     * @return boolean
      */
     public static boolean isCodingSchemeProperties(Object parent, Object child) {
         return parent instanceof CodingScheme && child instanceof Properties;
     }
 
     /**
+     * Checks for any kind of entity
      * @param parent
      * @param child
-     * @return
+     * @return boolean
      */
     public static boolean isCodingSchemeEntity(Object parent, Object child) {
         return child instanceof Entity && parent instanceof Entities || child instanceof AssociationEntity && parent instanceof Entities;
@@ -79,7 +86,7 @@ private static final int CHANGE_INSTRUCTIONS_TYPE = 1;
     /**
      * @param parent
      * @param child
-     * @return
+     * @return boolean
      */
     public static boolean isCodingSchemeEntities(Object parent, Object child) {
         return child instanceof Entities && parent instanceof CodingScheme;
@@ -88,7 +95,7 @@ private static final int CHANGE_INSTRUCTIONS_TYPE = 1;
     /**
      * @param parent
      * @param child
-     * @return
+     * @return boolean
      */
     public static boolean isCodingSchemeAssociation(Object parent, Object child) {
         return child instanceof AssociationSource && parent instanceof AssociationPredicate;
@@ -96,12 +103,18 @@ private static final int CHANGE_INSTRUCTIONS_TYPE = 1;
     /**
      * @param parent
      * @param child
-     * @return
+     * @return boolean
      */
     public static boolean isCodingSchemeAssociationSource(Object parent, Object child) {
         return child instanceof AssociationTarget && parent instanceof AssociationSource;
     }
     
+    /**
+     * @param serviceAdaptor
+     * @param parent
+     * @param child
+     * @return boolean
+     */
     public static boolean isCodingSchemeProperty(XMLDaoServiceAdaptor serviceAdaptor, Object parent, Object child) {
         return child instanceof Property && parent instanceof Properties;
        }
@@ -109,7 +122,7 @@ private static final int CHANGE_INSTRUCTIONS_TYPE = 1;
     /**
      * @param parent
      * @param child
-     * @return
+     * @return boolean
      */
     public static boolean isRevisionWithFirstChild(Object parent, Object child) {
         return parent instanceof Revision && child instanceof Text;
@@ -122,7 +135,7 @@ private static final int CHANGE_INSTRUCTIONS_TYPE = 1;
     /**
      * @param parent
      * @param child
-     * @return
+     * @return boolean
      */
     public static boolean isSytemRelease(Object parent, Object child) {
         return (parent instanceof SystemRelease && child instanceof EntityDescription );
@@ -131,19 +144,24 @@ private static final int CHANGE_INSTRUCTIONS_TYPE = 1;
     /**
      * @param parent
      * @param child
-     * @return
+     * @return boolean
      */
     public static boolean isValueSet(Object parent, Object child) {
         return child instanceof ValueSetDefinition && parent instanceof ValueSetDefinitions;
     }
     
+    /**
+     * @param parent
+     * @param child
+     * @return boolean
+     */
     public static boolean isValueSetDefinition(Object parent, Object child) {
         return child instanceof ValueSetDefinition && parent == null;
     }
     /**
      * @param parent
      * @param child
-     * @return
+     * @return boolean
      */
     public static boolean isValueSetMappings(Object parent, Object child) {
         return child instanceof Mappings && parent instanceof ValueSetDefinitions;
@@ -152,7 +170,7 @@ private static final int CHANGE_INSTRUCTIONS_TYPE = 1;
     /**
      * @param parent
      * @param child
-     * @return
+     * @return boolean
      */
     public static boolean isPickListMappings(Object parent, Object child) {
         return child instanceof Mappings && parent instanceof PickListDefinitions;
@@ -161,12 +179,17 @@ private static final int CHANGE_INSTRUCTIONS_TYPE = 1;
     /**
      * @param parent
      * @param child
-     * @return
+     * @return boolean
      */
     public static boolean isPickListDefinition(Object parent, Object child) {
         return child instanceof PickListDefinition && parent instanceof PickListDefinitions;
     }
 
+    /**
+     * @param parent
+     * @param child
+     * @return boolean
+     */
     public static boolean isValueSetDefinitionRevision(Object parent, Object child) {
         return child instanceof ValueSetDefinition && parent instanceof ChangedEntry;
     }
@@ -175,10 +198,22 @@ private static final int CHANGE_INSTRUCTIONS_TYPE = 1;
     return child instanceof PickListDefinition && parent instanceof ChangedEntry;
     }
 
+    /**
+     * @param parent
+     * @param child
+     * @return boolean
+     */
     public static boolean isRevisionInstance(Object parent, Object child) {
        return child instanceof Revision && parent instanceof EditHistory;
     }
 
+    /**
+     * Checking for optional elements in the Revision meta data
+     * @param lastMetaDataType
+     * @param parent
+     * @param child
+     * @return boolean indicator to load Revision meta data at a given point. 
+     */
     public static boolean isRevisionWithLastChild(int lastMetaDataType, Object parent, Object child) {
      if (lastMetaDataType == CHANGE_AGENT_TYPE)
            return child instanceof String && parent instanceof Revision;
@@ -188,25 +223,124 @@ private static final int CHANGE_INSTRUCTIONS_TYPE = 1;
          return child instanceof ChangedEntry && parent instanceof Revision;
      
     }
+    
+    /**
+     * @param parent
+     * @param child
+     * @return boolean
+     */
+    public static boolean isSystemReleaseRevision(Object parent, Object child){
+        return parent instanceof EditHistory && child instanceof Revision;
+    }
     public static boolean isCodingSchemePropertiesRevision(Object parent, Object child) {
         return parent instanceof Properties && child instanceof Property;
     }
+    /**
+     * @param parent
+     * @param child
+     * @return boolean
+     */
     public static boolean isCodingSchemeAssociationData(Object parent, Object child) {
         return child instanceof AssociationData && parent instanceof AssociationSource;
     }
 
+    /**
+     * @param parent
+     * @param child
+     * @return boolean
+     */
     public static boolean isCodingSchemeEntityProperty(Object parent, Object child) {
        return child instanceof Property && parent instanceof Entity;
     }
     
+    /**
+     * @param parent
+     * @param child
+     * @return boolean
+     */
     public static boolean isCodingSchemeRelation(Object parent, Object child) {
         return child instanceof EntityDescription && parent instanceof Relations;
     }
-    //Looking for an empty predicate just because the model allows it.
-    //runs the risk of allowing a large predicate to be populated.
+    
+    /**
+     *Looking for an empty predicate just because the model allows it.
+     *runs the risk of allowing a large predicate to be populated.
+     * @param parent
+     * @param child
+     * @return boolean
+     */
     public static boolean isCodingSchemeRelationWithEmptyPredicate(Object parent, Object child) {
         return parent instanceof AssociationPredicate && child == null;
     }
+
+    
+    /**
+     * @param parent
+     * @param child
+     * @param survey
+     * @return boolean
+     */
+    public static boolean loadSystemReleaseCodingSchemeWithNoProperties(Object parent, Object child,
+            ArrayList<SystemReleaseSurvey> survey) {
+        if (parent instanceof CodingScheme && child instanceof Mappings) {
+            AbsoluteCodingSchemeVersionReference csr = new AbsoluteCodingSchemeVersionReference();
+            CodingScheme cs = (CodingScheme)parent;
+            csr.setCodingSchemeURN(cs.getCodingSchemeURI());
+            csr.setCodingSchemeVersion(cs.getRepresentsVersion());
+            for (SystemReleaseSurvey srs : survey) {
+                if (srs.getCodingScheme().getCodingSchemeURN().equals(csr.getCodingSchemeURN()) 
+                        && srs.getCodingScheme().getCodingSchemeVersion().equals(csr.getCodingSchemeVersion())  
+                        && srs.getRevisionId() == "NEW"
+                        && srs.isPropertiesPresent() == false 
+                        && srs.isLoaded() == false) {
+                    srs.setLoaded(true);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param parent
+     * @param child
+     * @param survey
+     * @return boolean
+     */
+    public static boolean loadSystemReleaseCodingSchemeWithProperties(Object parent, Object child,
+            ArrayList<SystemReleaseSurvey> survey) {
+        if (parent instanceof CodingScheme && child instanceof Properties) {
+            AbsoluteCodingSchemeVersionReference csr = new AbsoluteCodingSchemeVersionReference();
+            CodingScheme cs = (CodingScheme) parent;
+            csr.setCodingSchemeURN(cs.getCodingSchemeURI());
+            csr.setCodingSchemeVersion(cs.getRepresentsVersion());
+            for (SystemReleaseSurvey srs : survey) {
+                if (srs.getCodingScheme().getCodingSchemeURN().equals(csr.getCodingSchemeURN()) 
+                        && srs.getCodingScheme().getCodingSchemeVersion().equals(csr.getCodingSchemeVersion())
+                        && srs.getRevisionId() == "NEW"
+                        && srs.isPropertiesPresent() == true 
+                        && srs.isLoaded() == false) {
+                    srs.setLoaded(true);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean isSystemReleaseCodingSchemeRevision(Object parent, Object child) {
+       return parent instanceof ChangedEntry && child instanceof CodingScheme; 
+    }
+
+    public static boolean isSystemReleaseValueSetRevision(Object parent, Object child) {
+      return parent instanceof ChangedEntry && child instanceof ValueSetDefinition;
+    }
+
+    public static boolean isSystemReleasePickListRevision(Object parent, Object child) {
+        return parent instanceof ChangedEntry && child instanceof PickListDefinition;
+    }
+
+
 
 
 
