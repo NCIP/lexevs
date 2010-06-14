@@ -25,7 +25,6 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
@@ -37,9 +36,9 @@ import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
-import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 
 /**
  * @author  <A HREF="mailto:scott.bauer@mayo.edu">Scott Bauer </A>
@@ -47,11 +46,25 @@ import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedExcept
  */
 public class LexGridElementProcessor {
     
+    /**
+     * This list of coding schemes is eventually passed to the baseloader for post processing
+     */
     private static ArrayList<CodingScheme> codingSchemes = new ArrayList<CodingScheme>();
+    
+    /**
+     * We'll convert the array list to an array eventually
+     */
     private static  CodingScheme[] cs = null;
+    
+    /**
+     * Map of relations and their predicates to track what has been loaded and when.
+     */
     private static HashMap<String, ArrayList<String>> relMap = new HashMap<String, ArrayList<String>>();
 
 
+    /**
+     * @return
+     */
     public static CodingScheme[] setAndRetrieveCodingSchemes() {
         cs = new CodingScheme[codingSchemes.size()];
         for (int i = 0; i < codingSchemes.size(); i++) {
@@ -74,7 +87,25 @@ public class LexGridElementProcessor {
             throw new RuntimeException(e);
         }
     }
-
+    /**
+     * @param service
+     * @param parent
+     * @param child
+     * @param systemReleaseUI
+     */
+    public static void processCodingSchemeSystemReleaseRevision(XMLDaoServiceAdaptor service, Object parent, Object child, String systemReleaseUI) {
+        CodingScheme scheme = (CodingScheme) child;
+        ChangedEntry change = (ChangedEntry)parent;
+        Revision revision = (Revision)change.getParent();
+        change.setChangedCodingSchemeEntry(scheme);
+        revision.addChangedEntry(change);
+        try {
+            codingSchemes.add(scheme);
+            service.storeCodingSchemeSystemReleaseRevision(revision, systemReleaseUI);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     /**
      * @param service
      * @param parent
@@ -207,6 +238,11 @@ public class LexGridElementProcessor {
         service.storePickList(picklist, systemReleaseURI, mappings);
     }
 
+    /**
+     * @param service
+     * @param parent
+     * @param child
+     */
     public static void processCodingSchemeMetadataRevision(XMLDaoServiceAdaptor service, Object parent,
             Object child) {
         CodingScheme scheme = (CodingScheme)parent;
@@ -253,13 +289,16 @@ public class LexGridElementProcessor {
      * @param child
      */
     public static void processCodingSchemePropertyRevision(XMLDaoServiceAdaptor service, CodingScheme c, Object parent, Object child) {
-        Properties props = (Properties)parent;
         Property p = (Property)child;
         service.storeCodingSchemePropertyRevision(p, c);
         
     }
+    /**
+     * @param service
+     * @param parent
+     * @param child
+     */
     public static void processRelationsPropertyRevision(XMLDaoServiceAdaptor service, Object parent, Object child) {
-        Properties props = (Properties)child;
         Property p = (Property)child;
         Relations r = (Relations)parent;
         CodingScheme c = (CodingScheme)r.getParent();
@@ -267,10 +306,14 @@ public class LexGridElementProcessor {
         
     }
    
+    /**
+     * @param service
+     * @param cs
+     * @param parent
+     * @param p
+     */
     public static void processEntityPropertyRevision(XMLDaoServiceAdaptor service, CodingScheme cs, Object parent, Property p){
         Entity e = (Entity)parent;
-        //Property p = (Property)child;
-         
         service.storeEntityPropertyRevision(cs.getCodingSchemeURI(), cs.getRepresentsVersion(), e.getEntityCode(), e.getEntityCodeNamespace(), p);
     }
     /**
@@ -283,7 +326,20 @@ public class LexGridElementProcessor {
       service.storeValueSetDefinitionRevision(vsDefinition);
         
     }
-
+    /**
+     * @param service
+     * @param parent
+     * @param child
+     * @param mappings
+     */
+    public static void processValueSetDefinitionSystemReleaseRevision(XMLDaoServiceAdaptor service,
+            Object parent, Object child, Mappings mappings) {
+        ChangedEntry entry = (ChangedEntry)parent;
+        Revision revision = (Revision)entry.getParent();
+        ValueSetDefinition vsDefinition = (ValueSetDefinition)child;
+      service.storeValueSetDefinitionSystemReleaseRevision(vsDefinition, mappings, revision.getRevisionId());
+        
+    }
     /**
      * @param service
      * @param child
@@ -294,7 +350,20 @@ public class LexGridElementProcessor {
        service.storePickListDefinitionRevision(plDefinition);
         
     }
-
+    /**
+     * @param service
+     * @param parent
+     * @param child
+     * @param mappings
+     */
+    public static void processPickListDefinitionSystemReleaseRevision(XMLDaoServiceAdaptor service,
+           Object parent,  Object child, Mappings mappings) {
+        ChangedEntry entry = (ChangedEntry)parent;
+        Revision revision = (Revision)entry.getParent();
+        PickListDefinition plDefinition = (PickListDefinition)child;
+       service.storePickListDefinitionSystemReleaseRevision(plDefinition, mappings, revision.getRevisionId());
+        
+    }
     /**
      * @param service
      * @param source
@@ -311,6 +380,11 @@ public class LexGridElementProcessor {
         
     }
 
+    /**
+     * @param service
+     * @param parent
+     * @param child
+     */
     public static void processRelationsRevision(XMLDaoServiceAdaptor service, Object parent, Object child) {
         AssociationPredicate ap = (AssociationPredicate)parent;
         Relations r = (Relations)ap.getParent();
