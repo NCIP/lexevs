@@ -118,28 +118,66 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
             exportPickListDefinitionData();
     }
     
+    private void verifyOutputDirectory(String directory) {
+        if(directory == null) {
+            String msg = "Output location value is null.";
+            this.getLogger().fatal(msg);
+            this.getStatus().setErrorsLogged(true);
+            throw new RuntimeException(msg);            
+        }
+        
+        File F_directory = new File(directory);
+        
+        if(F_directory.exists() == false) {
+            String msg = F_directory.getAbsolutePath() + " does not exist.";
+            this.getLogger().fatal(msg);
+            this.getStatus().setErrorsLogged(true);
+            throw new RuntimeException(msg);                        
+        }
+        
+        if(F_directory.isDirectory() == false) {
+            String msg = F_directory.getAbsolutePath() + " is not a directory.";
+            this.getLogger().fatal(msg);
+            this.getStatus().setErrorsLogged(true);
+            throw new RuntimeException(msg);                        
+        }
+    }    
+    
+    private String getCodingSchemeName(String csUri, String csVersion) {
+        String rv = null;
+        try {
+            CodingScheme cs = LexBIGServiceImpl.defaultInstance().resolveCodingScheme(csUri, 
+                    Constructors.createCodingSchemeVersionOrTagFromVersion(csVersion));
+            rv = cs.getCodingSchemeName();
+        } catch (LBException e) {
+            e.printStackTrace();
+        }
+        return rv;
+    }
+    
     protected void exportCodingSchemeData(){
         URI destination = super.getResourceUri();
         AbsoluteCodingSchemeVersionReference source = super.getSource();
         
         boolean overwrite = super.getOptions().getBooleanOption(LexGridConstants.OPTION_FORCE).getOptionValue().booleanValue();
-        String outFileName = destination.getPath();
+        // construct out file name
+        String separator = File.separator;
+        String directory = destination.getPath();
+        this.verifyOutputDirectory(directory);
+        String outDirWithEndingPathSeparator = directory;
+        if(outDirWithEndingPathSeparator.endsWith(separator) == false) {
+            outDirWithEndingPathSeparator = outDirWithEndingPathSeparator + separator;
+        }
+        
         String codingSchemeUri = source.getCodingSchemeURN();
         String codingSchemeVersion = source.getCodingSchemeVersion();
+        String codingSchemeName = this.getCodingSchemeName(codingSchemeUri, codingSchemeVersion);
+        String outFileName = outDirWithEndingPathSeparator + codingSchemeName + 
+                    "_" + codingSchemeVersion + ".xml";  
         
         File outFile = new File(outFileName);
         
-        // if file does not end with xml, exit
-        boolean endsWithXmlLc = outFile.getName().endsWith(".xml");
-        boolean endsWithXmlUc = outFile.getName().endsWith(".XML");
-        if(endsWithXmlLc == true || endsWithXmlUc == true) {
-            // do nothing
-        } else {
-            String msg = "File should end with .xml";
-            this.getLogger().fatal(msg);
-            this.getStatus().setErrorsLogged(true);
-            throw new RuntimeException(msg);                        
-        }
+        System.out.println("Content will be exported to file: " + outFile.getAbsolutePath());
         
         if(outFile.exists() == true && overwrite == true) 
         {
