@@ -21,7 +21,9 @@ package org.LexGrid.LexBIG.Impl.History;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 
 import junit.framework.TestCase;
@@ -55,9 +57,8 @@ public class NCIThesaurusHistoryServiceTest extends TestCase {
         HistoryService hs = lbsi.getHistoryService("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
 
         SystemReleaseList srl = hs.getBaselines(null, null);
+
         assertTrue(srl.getSystemReleaseCount() == 29);
-        assertTrue(srl.getSystemRelease(0).getReleaseId().equals("v1.0"));
-        assertTrue(srl.getSystemRelease(28).getReleaseId().equals("06.01c"));
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2005);
@@ -120,8 +121,8 @@ public class NCIThesaurusHistoryServiceTest extends TestCase {
                 .getContent()
                 .equals(
                         "Editing of NCI Thesaurus 05.12f was completed on January 3, 2006.  Version 05.12f was December's sixth build in our development cycle."));
-        assertEquals(NciHistoryService.dateFormat.parse("16-DEC-05"), ev[0].getVersionDate());
-        assertEquals("16-DEC-05",ev[0].getVersion());
+        assertEquals(NciHistoryService.dateFormat.parse("03-JAN-06"), ev[0].getVersionDate());
+        assertEquals("03-JAN-06",ev[0].getVersion());
     }
 
     public void testGetConceptCreationVersion() throws LBException {
@@ -152,14 +153,6 @@ public class NCIThesaurusHistoryServiceTest extends TestCase {
                 .getContent()
                 .equals(
                         "Editing of NCI Thesaurus 05.12f was completed on January 3, 2006.  Version 05.12f was December's sixth build in our development cycle."));
-
-        try {
-            csv = hs.getConceptCreationVersion(Constructors.createConceptReference("C49239", "urn:oid:25.5.5."));
-            fail("Did not throw exception it should have");
-        } catch (LBParameterException e) {
-            // expected path
-        }
-
     }
 
     public void testGetConceptChangeVersions() throws LBException {
