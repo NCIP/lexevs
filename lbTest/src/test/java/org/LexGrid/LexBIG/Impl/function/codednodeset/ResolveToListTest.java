@@ -127,7 +127,7 @@ public class ResolveToListTest extends BaseCodedNodeSetTest {
         ResolvedConceptReferenceList rcrl = cns.resolveToList(Constructors.createSortOptionList(new String[]{"codePost"}, new Boolean[]{false}), null, null, 2);
         assertTrue(rcrl.getResolvedConceptReference().length == 2);
         
-        assertEquals(1,
+        assertTrue(1 <=
         		rcrl.getResolvedConceptReference(0).getCode().compareTo(
       
         		rcrl.getResolvedConceptReference(1).getCode()));
@@ -203,7 +203,7 @@ public class ResolveToListTest extends BaseCodedNodeSetTest {
         }
         
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, Constructors.createLocalNameList("JUnit Test Filter"), null, null, -1);
-        assertTrue(rcrl.getResolvedConceptReference().length == 3);    
+        assertEquals(4,rcrl.getResolvedConceptReference().length);    
     }
     
     /**
