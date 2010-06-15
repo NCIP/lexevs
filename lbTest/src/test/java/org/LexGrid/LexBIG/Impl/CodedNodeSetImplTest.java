@@ -244,8 +244,10 @@ public class CodedNodeSetImplTest extends TestCase {
 
         assertTrue(rcri.hasNext());
         rcr = new ResolvedConceptReference[] { rcri.next() };
-        assertTrue(contains(rcr, "C0001", "Automobiles") || contains(rcr, "Jaguar", "Automobiles") ||
-                contains(rcr, "C0002", "Automobiles"));
+        assertTrue(contains(rcr, "C0001", "Automobiles") || 
+        		contains(rcr, "Jaguar", "Automobiles") ||
+                contains(rcr, "C0002", "Automobiles") ||
+                contains(rcr, "C0011(5564)", "Automobiles"));
        
         assertTrue(rcri.hasNext());
         rcr = new ResolvedConceptReference[] { rcri.next() };
