@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!DOCTYPE database SYSTEM "http://db.apache.org/torque/dtd/database">
+  <database name="common">
+
+    <table name="@PREFIX@registry">
+      <column name="registryGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="resourceURI" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="resourceVersion" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="resourceType" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="dbURI" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="dbName" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="prefix" primaryKey="false" required="false" type="VARCHAR" size="20" autoIncrement="false"/>
+      <column name="stagingPrefix" primaryKey="false" required="false" type="VARCHAR" size="20" autoIncrement="false"/>
+      <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="tag" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="lastUpdateDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="activationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="deactivationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="baseRevision" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="fixedAtRevision" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="isLocked" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="dbSchemaVersion" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="dbSchemaDescription" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <unique name="@PREFIX@UQ_registry">
+        <unique-column name="resourceURI"/>
+        <unique-column name="resourceVersion"/>
+        <unique-column name="resourceType"/>
+      </unique>
+    </table>
+    <table name="@PREFIX@registryMetadata">
+      <column name="id" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="lastUpdateTime" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="lastUsedDBIdentifer" primaryKey="false" required="false" type="VARCHAR" size="4" autoIncrement="false"/>
+      <column name="lastUsedHistoryIdentifer" primaryKey="false" required="false" type="VARCHAR" size="4" autoIncrement="false"/>
+    </table>
+    
+    <table name="@PREFIX@revision">
+      <column name="revisionGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="releaseGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="revisionId" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="changeAgent" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="revisionDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="revAppliedDate" primaryKey="false" required="true" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="editOrder" primaryKey="false" required="false" type="DECIMAL" size="18" autoIncrement="false"/>
+      <column name="changeInstructions" primaryKey="false" required="false" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <index name="@PREFIX@idx_releaseGuid">
+        <index-column name="releaseGuid"/>
+      </index>
+    </table>
+    <table name="@PREFIX@systemRelease">
+      <column name="releaseGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="releaseURI" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="releaseId" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="releaseDate" primaryKey="false" required="true" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="basedOnRelease" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="releaseAgency" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <index name="@PREFIX@idx_releaseId">
+        <index-column name="releaseId"/>
+      </index>
+      <index name="@PREFIX@idx_releaseDate">
+        <index-column name="releaseDate"/>
+      </index>
+    </table>
+  </database>

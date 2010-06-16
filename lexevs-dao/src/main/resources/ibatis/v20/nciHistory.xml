@@ -62,7 +62,7 @@
 				releaseDate = 
 					(
 					SELECT
-		      			MIN (sysReleaseDate.releaseDate)
+		      			MIN(sysReleaseDate.releaseDate)
 		    		FROM
 		        		${defaultPrefix}nciHistSystemRelease sysReleaseDate
 		        	WHERE
@@ -242,7 +242,7 @@
 		AND
 			releaseDate = (
 			SELECT
-      			MIN (releaseDate)
+      			MIN(releaseDate)
     		FROM
         		${defaultPrefix}nciHistSystemRelease sysReleaseDate
         	WHERE
@@ -259,7 +259,7 @@
 		AND
 			releaseDate = (
 			SELECT
-      			MAX (releaseDate)
+      			MAX(releaseDate)
     		FROM
         		${defaultPrefix}nciHistSystemRelease sysReleaseDate
         	WHERE

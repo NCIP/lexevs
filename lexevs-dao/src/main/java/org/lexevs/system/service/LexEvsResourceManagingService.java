@@ -162,7 +162,7 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 		ref.setCodingSchemeVersion(version);
 
 		if(! isSingleTableMode() ){
-			lexEvsDatabaseOperations.dropTables(uri, version);
+			lexEvsDatabaseOperations.dropCodingSchemeTables(uri, version);
 		} else {
 			this.databaseServiceManager.getCodingSchemeService().removeCodingScheme(uri, version);
 		}

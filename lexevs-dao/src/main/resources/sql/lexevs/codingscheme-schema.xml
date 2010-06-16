@@ -1,0 +1,410 @@
+<?xml version="1.0"?>
+<!DOCTYPE database SYSTEM "http://db.apache.org/torque/dtd/database">
+
+  <database name="codingScheme">
+    <table name="@PREFIX@associationPredicate">
+      <column name="associationPredicateGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="relationGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="associationName" primaryKey="false" required="true" type="VARCHAR" size="100" autoIncrement="false"/>
+      <foreign-key foreignTable="@PREFIX@relation" name="lb_FK_associationPredica_relation" onDelete="cascade">
+        <reference local="relationGuid" foreign="relationGuid"/>
+      </foreign-key>
+      <unique name="@PREFIX@UQ_association">
+        <unique-column name="relationGuid"/>
+        <unique-column name="associationName"/>
+      </unique>
+      <index name="@PREFIX@idx_ap_relationGuid">
+        <index-column name="relationGuid"/>
+      </index>
+    </table>
+    <table name="@PREFIX@codingScheme">
+      <column name="codingSchemeGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="codingSchemeName" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="codingSchemeURI" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="representsVersion" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="formalName" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="defaultLanguage" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false"/>
+      <column name="approxNumConcepts" primaryKey="false" required="false" type="DECIMAL" size="18" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <column name="copyright" primaryKey="false" required="false" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <column name="isActive" primaryKey="false" required="false" type="CHAR" size="1" default="1" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="releaseGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="@DEFAULT_PREFIX@systemRelease" name="@PREFIX@FK_cs_releaseGuid" onDelete="cascade">
+        <reference local="releaseGuid" foreign="releaseGuid"/>
+      </foreign-key>
+      <unique name="@PREFIX@UQ_URIVersionPair">
+        <unique-column name="codingSchemeURI"/>
+        <unique-column name="representsVersion"/>
+      </unique>
+      <index name="@PREFIX@idx_csReleaseGuid">
+        <index-column name="releaseGuid"/>
+      </index>
+      <index name="@PREFIX@idx_csURI">
+        <index-column name="codingSchemeURI"/>
+      </index>
+      <index name="@PREFIX@idx_csURIVersion">
+        <index-column name="codingSchemeURI"/>
+        <index-column name="representsVersion"/>
+      </index>
+      <index name="@PREFIX@idx_csName">
+        <index-column name="codingSchemeName"/>
+      </index>
+      <index name="@PREFIX@idx_csNameVersion">
+        <index-column name="codingSchemeName"/>
+        <index-column name="representsVersion"/>
+      </index>
+    </table>
+    <table name="@PREFIX@csMultiAttrib">
+      <column name="csMultiAttribGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="codingSchemeGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="attributeType" primaryKey="false" required="true" type="VARCHAR" size="30" autoIncrement="false"/>
+      <column name="attributeValue" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="subRef" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="role" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_csMulti_csGuid" onDelete="cascade">
+        <reference local="codingSchemeGuid" foreign="codingSchemeGuid"/>
+      </foreign-key>
+      <index name="@PREFIX@idx_csma_csGuid">
+        <index-column name="codingSchemeGuid"/>
+      </index>
+      <index name="@PREFIX@idx_csma_csG_at">
+        <index-column name="codingSchemeGuid"/>
+        <index-column name="attributeType"/>
+      </index>
+    </table>
+    <table name="@PREFIX@csSupportedAttrib">
+      <column name="csSuppAttribGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="codingSchemeGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="supportedAttributeTag" primaryKey="false" required="true" type="VARCHAR" size="30" autoIncrement="false"/>
+      <column name="id" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="uri" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="idValue" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="associationNames" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="rootCode" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="isForwardNavigable" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="isImported" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="equivalentCodingScheme" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="assemblyRule" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="assnCodingScheme" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="assnNamespace" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="assnEntityCode" primaryKey="false" required="false" type="VARCHAR" size="200" autoIncrement="false"/>
+      <column name="propertyType" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_map_csGuid" onDelete="cascade">
+        <reference local="codingSchemeGuid" foreign="codingSchemeGuid"/>
+      </foreign-key>
+      <unique name="@PREFIX@UQ_mapping">
+        <unique-column name="codingSchemeGuid"/>
+        <unique-column name="supportedAttributeTag"/>
+        <unique-column name="id"/>
+      </unique>
+      <index name="@PREFIX@idx_cssa_cS_Guid">
+        <index-column name="codingSchemeGuid"/>
+      </index>
+    </table>
+    <table name="@PREFIX@entity">
+      <column name="entityGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="codingSchemeGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entityCode" primaryKey="false" required="true" type="VARCHAR" size="200" autoIncrement="false"/>
+      <column name="entityCodeNamespace" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="isDefined" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="isAnonymous" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <column name="isActive" primaryKey="false" required="false" type="CHAR" size="1" default="1" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="forwardName" primaryKey="false" required="false" type="VARCHAR" size="100" autoIncrement="false"/>
+      <column name="reverseName" primaryKey="false" required="false" type="VARCHAR" size="100" autoIncrement="false"/>
+      <column name="isNavigable" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="isTransitive" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_ent_csGuid" onDelete="cascade">
+        <reference local="codingSchemeGuid" foreign="codingSchemeGuid"/>
+      </foreign-key>
+      <unique name="@PREFIX@UQ_entity">
+        <unique-column name="codingSchemeGuid"/>
+        <unique-column name="entityCode"/>
+        <unique-column name="entityCodeNamespace"/>
+      </unique>
+      <index name="@PREFIX@idx_entity_csGuid">
+        <index-column name="codingSchemeGuid"/>
+      </index>
+      <index name="@PREFIX@idx_entity_code_cs">
+        <index-column name="entityCode"/>
+        <index-column name="codingSchemeGuid"/>
+      </index>
+      <index name="@PREFIX@idx_entityNS">
+        <index-column name="entityCodeNamespace"/>
+        <index-column name="entityCode"/>
+        <index-column name="codingSchemeGuid"/>
+      </index>
+    </table>
+    <table name="@PREFIX@entityAssnQuals">
+      <column name="entityAssnQualsGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="referenceGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="qualifierName" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="qualifierValue" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <unique name="UQ_entityAssnQuals">
+        <unique-column name="referenceGuid"/>
+        <unique-column name="qualifierName"/>
+        <unique-column name="qualifierValue"/>
+      </unique>
+    </table>
+    <table name="@PREFIX@entityAssnsToData">
+      <column name="entityAssnsDataGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="associationPredicateGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="sourceEntityCode" primaryKey="false" required="true" type="VARCHAR" size="200" autoIncrement="false"/>
+      <column name="sourceEntityCodeNamespace" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="associationInstanceId" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="isDefining" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="isInferred" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="dataValue" primaryKey="false" required="false" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <column name="isActive" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="@PREFIX@associationPredicate" name="@PREFIX@FK_entAsToData_assnGuid" onDelete="cascade">
+        <reference local="associationPredicateGuid" foreign="associationPredicateGuid"/>
+      </foreign-key>
+      <unique name="@PREFIX@UQ_entAsToData_source">
+        <unique-column name="sourceEntityCode"/>
+        <unique-column name="sourceEntityCodeNamespace"/>
+      </unique>
+      <index name="@PREFIX@idx_entAsToData_apGuid">
+        <index-column name="associationPredicateGuid"/>
+      </index>
+      <index name="@PREFIX@idx_entAsToData_source">
+        <index-column name="associationPredicateGuid"/>
+        <index-column name="sourceEntityCode"/>
+      </index>
+    </table>
+    <table name="@PREFIX@entityAssnsToEntity">
+      <column name="entityAssnsGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="associationPredicateGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="sourceEntityCode" primaryKey="false" required="true" type="VARCHAR" size="200" autoIncrement="false"/>
+      <column name="sourceEntityCodeNamespace" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="targetEntityCode" primaryKey="false" required="true" type="VARCHAR" size="200" autoIncrement="false"/>
+      <column name="targetEntityCodeNamespace" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="associationInstanceId" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="isDefining" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="isInferred" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="isActive" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="@PREFIX@associationPredicate" name="@PREFIX@FK_entAsToEnt_assnGuid" onDelete="cascade">
+        <reference local="associationPredicateGuid" foreign="associationPredicateGuid"/>
+      </foreign-key>
+      <index name="@PREFIX@idx_entAsToEnt_apGuid">
+        <index-column name="associationPredicateGuid"/>
+      </index>
+      <index name="@PREFIX@idx_entAsToEnt_source">
+        <index-column name="sourceEntityCode"/>
+        <index-column name="associationPredicateGuid"/>
+      </index>
+      <index name="@PREFIX@idx_entAsToEnt_sourceNS">
+        <index-column name="sourceEntityCodeNamespace"/>
+        <index-column name="sourceEntityCode"/>
+        <index-column name="associationPredicateGuid"/>
+      </index>
+      <index name="idx_entAsToEnt_target">
+        <index-column name="targetEntityCode"/>
+        <index-column name="associationPredicateGuid"/>
+      </index>
+      <index name="@PREFIX@idx_entAsToEnt_targetNS">
+        <index-column name="targetEntityCodeNamespace"/>
+        <index-column name="targetEntityCode"/>
+        <index-column name="associationPredicateGuid"/>
+      </index>
+    </table>
+    <table name="@PREFIX@entityAssnsToEntitytr">
+      <column name="entityAssnsTrGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="associationPredicateGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="sourceEntityCode" primaryKey="false" required="true" type="VARCHAR" size="200" autoIncrement="false"/>
+      <column name="sourceEntityCodeNamespace" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="targetEntityCode" primaryKey="false" required="true" type="VARCHAR" size="200" autoIncrement="false"/>
+      <column name="targetEntityCodeNamespace" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <foreign-key foreignTable="@PREFIX@associationPredicate" name="@PREFIX@FK_entAsToEntTr_assnGuid" onDelete="cascade">
+        <reference local="associationPredicateGuid" foreign="associationPredicateGuid"/>
+      </foreign-key>
+      <unique name="@PREFIX@UQ_sourceTargetCombo">
+        <unique-column name="sourceEntityCode"/>
+        <unique-column name="sourceEntityCodeNamespace"/>
+        <unique-column name="targetEntityCode"/>
+        <unique-column name="targetEntityCodeNamespace"/>
+        <unique-column name="associationPredicateGuid"/>
+      </unique>
+      <index name="@PREFIX@idx_entAsToEntTr_apGuid">
+        <index-column name="associationPredicateGuid"/>
+      </index>
+      <index name="@PREFIX@idx_entAsToEntTr_source">
+        <index-column name="associationPredicateGuid"/>
+        <index-column name="sourceEntityCode"/>
+        <index-column name="sourceEntityCodeNamespace"/>
+      </index>
+      <index name="@PREFIX@idx_entAsToEntTr_target">
+        <index-column name="associationPredicateGuid"/>
+        <index-column name="targetEntityCode"/>
+        <index-column name="targetEntityCodeNamespace"/>
+      </index>
+    </table>
+    <table name="@PREFIX@entityType">
+      <column name="entityGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entityType" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <foreign-key foreignTable="@PREFIX@entity" name="@PREFIX@FK_eType_entityGuid" onDelete="cascade">
+        <reference local="entityGuid" foreign="entityGuid"/>
+      </foreign-key>
+      <index name="@PREFIX@idx_entityGuid">
+        <index-column name="entityGuid"/>
+      </index>
+    </table>
+    <table name="@PREFIX@entryState">
+      <column name="entryStateGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entryGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entryType" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="changeType" primaryKey="false" required="true" type="VARCHAR" size="15" autoIncrement="false"/>
+      <column name="relativeOrder" primaryKey="false" required="true" type="DECIMAL" size="18" autoIncrement="false"/>
+      <column name="revisionGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="prevRevisionGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="prevEntryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="@DEFAULT_PREFIX@revision" name="@PREFIX@FK_es_prevRevisionGuid" onDelete="cascade">
+        <reference local="prevRevisionGuid" foreign="revisionGuid"/>
+      </foreign-key>
+      <foreign-key foreignTable="@PREFIX@entryState" name="@PREFIX@FK_es_prevEntryStateGuid" onDelete="cascade">
+        <reference local="prevEntryStateGuid" foreign="entryStateGuid"/>
+      </foreign-key>
+      <foreign-key foreignTable="@DEFAULT_PREFIX@revision" name="@PREFIX@FK_es_revisionGuid" onDelete="cascade">
+        <reference local="revisionGuid" foreign="revisionGuid"/>
+      </foreign-key>
+      <index name="@PREFIX@idx_es_prevEntryStateGuid">
+        <index-column name="prevEntryStateGuid"/>
+      </index>
+      <index name="@PREFIX@idx_es_revisionGuid">
+        <index-column name="revisionGuid"/>
+      </index>
+      <index name="@PREFIX@idx_es_prevRevisionGuid">
+        <index-column name="prevRevisionGuid"/>
+      </index>
+    </table>
+    
+    <table name="@PREFIX@property">
+      <column name="propertyGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="referenceGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="referenceType" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="propertyId" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="propertyType" primaryKey="false" required="false" type="VARCHAR" size="15" autoIncrement="false"/>
+      <column name="propertyName" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="language" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false"/>
+      <column name="format" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="isPreferred" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="matchIfNoContext" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="degreeOfFidelity" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="representationalForm" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="propertyValue" primaryKey="false" required="true" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <column name="isActive" primaryKey="false" required="false" type="CHAR" size="1" default="1" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <unique name="@PREFIX@UQ_property">
+        <unique-column name="referenceGuid"/>
+        <unique-column name="propertyName"/>
+        <unique-column name="propertyId"/>
+      </unique>
+      <index name="@PREFIX@idx_p_referenceGuid">
+        <index-column name="referenceGuid"/>
+      </index>
+    </table>
+    <table name="@PREFIX@propertyLinks">
+      <column name="propertyLinksGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entityGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="sourcePropertyGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="link" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="targetPropertyGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="@PREFIX@property" name="@PREFIX@FK_pLinks_tPropGuid" onDelete="cascade">
+        <reference local="targetPropertyGuid" foreign="propertyGuid"/>
+      </foreign-key>
+      <foreign-key foreignTable="@PREFIX@entity" name="@PREFIX@FK_pLinks_EntityGuid" onDelete="cascade">
+        <reference local="entityGuid" foreign="entityGuid"/>
+      </foreign-key>
+      <foreign-key foreignTable="@PREFIX@property" name="@PREFIX@FK_pLinks_sPropGuid" onDelete="cascade">
+        <reference local="sourcePropertyGuid" foreign="propertyGuid"/>
+      </foreign-key>
+      <unique name="@PREFIX@UQ_propLinks">
+        <unique-column name="sourcePropertyGuid"/>
+        <unique-column name="link"/>
+        <unique-column name="targetPropertyGuid"/>
+      </unique>
+      <index name="@PREFIX@idx_pl_sourcePropertyGuid">
+        <index-column name="sourcePropertyGuid"/>
+      </index>
+      <index name="@PREFIX@idx_pl_targetPropertyGuid">
+        <index-column name="targetPropertyGuid"/>
+      </index>
+    </table>
+    <table name="@PREFIX@propertyMultiAttrib">
+      <column name="propMultiAttribGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="propertyGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="attributeType" primaryKey="false" required="true" type="VARCHAR" size="30" autoIncrement="false"/>
+      <column name="attributeId" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="attributeValue" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="subRef" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="role" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="qualifierType" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="@PREFIX@property" name="@PREFIX@FK_pma_propertyGuid" onDelete="cascade">
+        <reference local="propertyGuid" foreign="propertyGuid"/>
+      </foreign-key>
+      <index name="@PREFIX@idx_pma_guid_at_id">
+        <index-column name="propertyGuid"/>
+        <index-column name="attributeType"/>
+        <index-column name="attributeId"/>
+      </index>
+      <index name="i@PREFIX@dx_pma_pGuid">
+        <index-column name="propertyGuid"/>
+      </index>
+    </table>
+    <table name="@PREFIX@relation">
+      <column name="relationGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="codingSchemeGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="containerName" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="isMapping" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="representsVersion" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="sourceCodingScheme" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="sourceCodingSchemeVersion" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="targetCodingScheme" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="targetCodingSchemeVersion" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <column name="isActive" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_relation_codingScheme" onDelete="cascade">
+        <reference local="codingSchemeGuid" foreign="codingSchemeGuid"/>
+      </foreign-key>
+      <unique name="@PREFIX@UQ_csGuid_rel_containerName">
+        <unique-column name="codingSchemeGuid"/>
+        <unique-column name="containerName"/>
+      </unique>
+      <index name="@PREFIX@idx_codingSchemeGuid">
+        <index-column name="codingSchemeGuid"/>
+      </index>
+    </table>
+  
+  </database>

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE database SYSTEM "http://db.apache.org/torque/dtd/database">
+  <database name="nciHistory">
+    <table name="@PREFIX@nciHist">
+      <column name="ncitHistGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="releaseGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entityCode" primaryKey="false" required="true" type="VARCHAR" size="100" autoIncrement="false"/>
+      <column name="conceptName" primaryKey="false" required="true" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <column name="editAction" primaryKey="false" required="true" type="VARCHAR" size="10" autoIncrement="false"/>
+      <column name="editDate" primaryKey="false" required="true" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="referenceCode" primaryKey="false" required="false" type="VARCHAR" size="100" autoIncrement="false"/>
+      <column name="referenceName" primaryKey="false" required="false" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <foreign-key foreignTable="@PREFIX@nciHistSystemRelease" name="@PREFIX@FK_nciHist" onDelete="cascade">
+        <reference local="releaseGuid" foreign="releaseGuid"/>
+      </foreign-key>
+      <index name="@PREFIX@idx_ncitHist">
+        <index-column name="entityCode"/>
+        <index-column name="editAction"/>
+      </index>
+      <index name="@PREFIX@idx_editDate">
+        <index-column name="editDate"/>
+      </index>
+      <index name="@PREFIX@idx_referenceCode">
+        <index-column name="referenceCode"/>
+      </index>
+    </table>
+    <table name="@PREFIX@nciHistSystemRelease">
+      <column name="releaseGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="codingSchemeUri" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="releaseId" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="releaseURI" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="basedOnRelease" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="releaseDate" primaryKey="false" required="true" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="releaseAgency" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <unique name="@PREFIX@UQ_ncih_sysRel">
+        <unique-column name="releaseId"/>
+        <unique-column name="releaseURI"/>
+      </unique>
+    </table>
+  </database>

@@ -517,19 +517,20 @@
     
     <bean id="defaultLexEvsDatabaseOperations" class="org.lexevs.dao.database.operation.DefaultLexEvsDatabaseOperations">
    	 	<property name="databaseUtility" ref="defaultDatabaseUtility" />
-   		<property name="lexevsCommonSchemaCreateScript" ref="lexevsCommonSchemaCreateScript"/>
-   		<property name="lexevsCodingSchemeSchemaCreateScript" ref="lexevsCodingSchemeSchemaCreateScript"/>
-   		<property name="lexevsCodingSchemeSchemaDropScript" ref="lexevsCodingSchemeSchemaDropScript"/>
-   		<property name="lexevsValueSetsSchemaCreateScript" ref="lexevsValueSetsSchemaCreateScript"/>
-   		<property name="lexevsHistoryCreateScript" ref="lexevsHistoryCreateScript"/>
-   		<property name="lexevsValueSetHistoryCreateScript" ref="lexevsValueSetHistoryCreateScript"/>
-   		<property name="lexevsNciHistorySchemaCreateScript" ref="lexevsNciHistorySchemaCreateScript"/>
    		<property name="prefixResolver" ref="defaultPrefixResolver"/>
    		<property name="dataSource" ref="dataSource"/>
    		<property name="databaseType" ref="databaseTypeFactory"/>
    		<property name="transactionManager" ref="transactionManager"/>
    		<property name="transitivityBuilder" ref="defaultTransitivityBuilder"/>
    		<property name="rootBuilder" ref="defaultRootBuilder"/>
+   		<property name="systemVariables" ref="systemVariables"/>
+   		
+   		<property name="commonXmlDdl" value="classpath:sql/lexevs/common-schema.xml"/>
+   		<property name="nciHistoryXmlDdl" value="classpath:sql/lexevs/ncihistory-schema.xml"/>
+   		<property name="valueSetXmlDdl" value="classpath:sql/lexevs/valueset-schema.xml"/>
+   		<property name="valueSetHistoryXmlDdl" value="classpath:sql/lexevs/valuesethistory-schema.xml"/>
+   		<property name="codingSchemeHistoryXmlDdl" value="classpath:sql/lexevs/codingschemehistory-schema.xml"/>
+   		<property name="codingSchemeXmlDdl" value="classpath:sql/lexevs/codingscheme-schema.xml"/>
    	 </bean>
    	 
    	<bean id="lexevsHistoryCreateScript"

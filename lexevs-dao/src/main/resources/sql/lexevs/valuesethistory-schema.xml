@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<!DOCTYPE database SYSTEM "http://db.apache.org/torque/dtd/database">
+  <database name="valueSetHistory">
+    <table name="@PREFIX@h_valueSetDefinition">
+      <column name="valueSetDefGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="valueSetDefURI" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="valueSetDefName" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="defaultCodingScheme" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="conceptDomain" primaryKey="false" required="false" type="VARCHAR" size="200" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <column name="releaseGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="isActive" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="@PREFIX@idx_h_vsdName">
+        <index-column name="valueSetDefName"/>
+      </index>
+      <index name="@PREFIX@idx_h_vsdURI">
+        <index-column name="valueSetDefURI"/>
+      </index>
+    </table>
+    <table name="@PREFIX@h_vsdEntry">
+      <column name="vsdEntryGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="valueSetDefGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="ruleOrder" primaryKey="false" required="true" type="DECIMAL" size="18" autoIncrement="false"/>
+      <column name="operator" primaryKey="false" required="true" type="VARCHAR" size="15" autoIncrement="false"/>
+      <column name="codingSchemeReference" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="valueSetDefReference" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="entityCode" primaryKey="false" required="false" type="VARCHAR" size="200" autoIncrement="false"/>
+      <column name="entityCodeNamespace" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="leafOnly" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="referenceAssociation" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="targetToSource" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="transitiveClosure" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="propertyRefCodingScheme" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="propertyName" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="propertyMatchValue" primaryKey="false" required="false" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <column name="matchAlgorithm" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="format" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="isActive" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="idx_h_valueSetDefGuid">
+        <index-column name="valueSetDefGuid"/>
+      </index>
+      <index name="idx_h_vsdEnt_entityCode">
+        <index-column name="entityCode"/>
+      </index>
+    </table>
+    <table name="@PREFIX@h_vsMultiAttrib">
+      <column name="vsMultiAttribGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="referenceGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="referenceType" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="attributeType" primaryKey="false" required="true" type="VARCHAR" size="30" autoIncrement="false"/>
+      <column name="attributeValue" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="subRef" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="role" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+    </table>
+    <table name="@PREFIX@h_vsPickList">
+      <column name="vsPickListGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="pickListId" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="representsValueSetDefinition" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="completeSet" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="defaultEntityCodeNamespace" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="defaultLanguage" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false"/>
+      <column name="defaultSortOrder" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="description" primaryKey="false" required="false" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <column name="releaseGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="isActive" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="idx_h_pickListId">
+        <index-column name="pickListId"/>
+      </index>
+      <index name="idx_h_representsVSD">
+        <index-column name="representsValueSetDefinition"/>
+      </index>
+    </table>
+    <table name="@PREFIX@h_vsPLEntry">
+      <column name="vsPLEntryGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="vsPickListGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="plEntryId" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="entityCodeNamespace" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="entityCode" primaryKey="false" required="true" type="VARCHAR" size="200" autoIncrement="false"/>
+      <column name="entryOrder" primaryKey="false" required="false" type="DECIMAL" size="18" autoIncrement="false"/>
+      <column name="isDefault" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="matchIfNoContext" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="propertyId" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="language" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false"/>
+      <column name="include" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="pickText" primaryKey="false" required="false" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <column name="isActive" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="idx_h_vsPickListGuid">
+        <index-column name="vsPickListGuid"/>
+      </index>
+      <index name="idx_vs_h_entityCode">
+        <index-column name="entityCode"/>
+      </index>
+    </table>
+    <table name="@PREFIX@h_vsProperty">
+      <column name="vsPropertyGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="referenceGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="referenceType" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="propertyId" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="propertyType" primaryKey="false" required="false" type="VARCHAR" size="15" autoIncrement="false"/>
+      <column name="propertyName" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="language" primaryKey="false" required="false" type="VARCHAR" size="32" autoIncrement="false"/>
+      <column name="format" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="isPreferred" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="matchIfNoContext" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="degreeOfFidelity" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="representationalForm" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="propertyValue" primaryKey="false" required="true" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
+      <column name="isActive" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="owner" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="idx_h_vsProperty">
+        <index-column name="referenceGuid"/>
+        <index-column name="propertyId"/>
+        <index-column name="propertyName"/>
+      </index>
+    </table>
+    <table name="@PREFIX@h_vsPropertyMultiAttrib">
+      <column name="vsPropMultiAttribGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="vsPropertyGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="attributeType" primaryKey="false" required="true" type="VARCHAR" size="30" autoIncrement="false"/>
+      <column name="attributeId" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="attributeValue" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="subRef" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="role" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="qualifierType" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="idx_h_vsPropertyGuid">
+        <index-column name="vsPropertyGuid"/>
+      </index>
+    </table>
+  </database>
