@@ -108,6 +108,10 @@ public class DaoUtility {
 		return returnList;
 	}
 	
+	public static CodeNamespacePair toCodeNamespacePair(ConceptReference ref){
+		return toCodeNamespacePair(createNonTypedList(ref)).get(0);
+	}
+	
 	public static List<CodeNamespacePair> toCodeNamespacePair(List<ConceptReference> list){
 		List<CodeNamespacePair> returnList = new ArrayList<CodeNamespacePair>();
 		for(ConceptReference ref : list) {

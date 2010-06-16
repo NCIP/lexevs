@@ -18,16 +18,32 @@
  */
 package org.lexevs.dao.database.operation;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.ddlutils.DdlUtilsException;
+import org.apache.ddlutils.Platform;
+import org.apache.ddlutils.PlatformFactory;
+import org.apache.ddlutils.io.DatabaseIO;
+import org.apache.ddlutils.model.Database;
+import org.apache.ddlutils.model.Table;
+import org.apache.ddlutils.platform.CreationParameters;
+import org.lexevs.dao.database.constants.DatabaseConstants;
 import org.lexevs.dao.database.operation.root.RootBuilder;
 import org.lexevs.dao.database.operation.transitivity.TransitivityBuilder;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.type.DatabaseType;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.database.utility.DatabaseUtility;
 import org.lexevs.dao.index.service.IndexServiceManager;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.service.Registry.ResourceType;
+import org.lexevs.system.constants.SystemVariables;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -38,30 +54,36 @@ import org.springframework.transaction.PlatformTransactionManager;
  */
 public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations{
 	
+	private interface PlatformActor {
+		
+		String getSqlFromPlatform(Platform platform, Database database);
+	}
+	
+	private static CreationParameters MYSQL_CREATION_PARAMETERS = new CreationParameters();
+	{
+		MYSQL_CREATION_PARAMETERS.addParameter(null, "ENGINE", "INNODB");
+	}
+	
+	private class CreateSchemaPlatformActor implements PlatformActor {
+
+		public String getSqlFromPlatform(Platform platform,
+			Database database) {
+				return platform.getCreateTablesSql(database, MYSQL_CREATION_PARAMETERS, false, true);
+		}	
+	}
+	
+	private class DropSchemaPlatformActor implements PlatformActor {
+
+		public String getSqlFromPlatform(Platform platform,
+			Database database) {
+				return platform.getDropTablesSql(database, true);
+		}	
+	}
+	
 	/** The database utility. */
 	private DatabaseUtility databaseUtility;
 	
 	private IndexServiceManager indexServiceManager;
-	
-	/** The lexevs common schema create script. */
-	private Resource lexevsCommonSchemaCreateScript;
-	
-	/** The lexevs coding scheme schema create script. */
-	private Resource lexevsCodingSchemeSchemaCreateScript;
-	
-	/** The lexevs coding scheme schema create script. */
-	private Resource lexevsCodingSchemeSchemaDropScript;
-	
-	/** The lexevs value sets schema create script. */
-	private Resource lexevsValueSetsSchemaCreateScript;
-	
-	/** The lexevs coding scheme schema create script. */
-	private Resource lexevsHistoryCreateScript;
-	
-	/** The lexevs valueset history schema create script. */
-	private Resource lexevsValueSetHistoryCreateScript;
-	
-	private Resource lexevsNciHistorySchemaCreateScript;
 	
 	/** The prefix resolver. */
 	private PrefixResolver prefixResolver;
@@ -72,13 +94,29 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	/** The transaction manager. */
 	private PlatformTransactionManager transactionManager;
 	
+	private Registry registry;
+	
 	/** The database type. */
 	private DatabaseType databaseType;
+	
+	private SystemVariables systemVariables;
 	
 	private TransitivityBuilder transitivityBuilder;
 	
 	private RootBuilder rootBuilder;
 	
+	private Resource codingSchemeXmlDdl;
+	
+	private Resource codingSchemeHistoryXmlDdl;
+	
+	private Resource commonXmlDdl;
+	
+	private Resource valueSetXmlDdl;
+	
+	private Resource valueSetHistoryXmlDdl;
+	
+	private Resource nciHistoryXmlDdl;
+
 	@Override
 	public void addRootRelationNode(String codingSchemeUri,
 			String codingSchemeVersion, List<String> associationNames,
@@ -98,103 +136,203 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	public boolean isCodingSchemeLoaded(String codingScheme, String version) {
 		return false;
 	}
+
+	@Override
+	public void createAllTables() {
+		this.createCommonTables();
+		this.createNciHistoryTables();
+		this.createValueSetsTables();
+		this.createValueSetHistoryTables();
+		if(this.systemVariables.isSingleTableMode()) {
+			this.createCodingSchemeTables();
+			this.createCodingSchemeHistoryTables();
+		}
+	}
+
+	@Override
+	public void dropAllTables() {
+		if(!this.systemVariables.isSingleTableMode()) {
+			for(RegistryEntry entry :
+				this.registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)) {
+				
+				String uri = entry.getResourceUri();
+				String version = entry.getResourceVersion();
+				this.dropCodingSchemeTables(uri, version);
+				this.dropCodingSchemeHistoryTables(uri, version);
+			}
+		} else {
+			this.dropCodingSchemeHistoryTables();
+			this.dropCodingSchemeTables();
+		}
+		
+		this.dropNciHistoryTables();
+		this.dropValueSetHistoryTables();
+		this.dropValueSetsTables();
+		this.dropCommonTables();
+	}
+
+	@Override
+	public void createCodingSchemeHistoryTables(String prefix) {
+		this.doExecuteSql(this.codingSchemeHistoryXmlDdl, new CreateSchemaPlatformActor(), prefix);	
+	}
+
+	@Override
+	public void dropCodingSchemeHistoryTables(String codingSchemeUri,
+			String version) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version);
+		this.doExecuteSql(this.codingSchemeHistoryXmlDdl, new DropSchemaPlatformActor(), prefix);	
+	}
+
+	@Override
+	public void dropCodingSchemeTables(String codingSchemeUri, String version) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version);
+		this.doExecuteSql(this.codingSchemeXmlDdl, new DropSchemaPlatformActor(), prefix);	
+	}
 	
+	@Override
+	public void dropCodingSchemeHistoryTables() {
+		this.doExecuteSql(this.codingSchemeHistoryXmlDdl, new DropSchemaPlatformActor());	
+	}
+
+	@Override
+	public void dropCodingSchemeTables() {
+		this.doExecuteSql(this.codingSchemeXmlDdl, new DropSchemaPlatformActor());	
+	}
+
+	@Override
+	public void dropCommonTables() {
+		this.doExecuteSql(this.commonXmlDdl, new DropSchemaPlatformActor());	
+	}
+
+	@Override
+	public void dropNciHistoryTables() {
+		this.doExecuteSql(this.nciHistoryXmlDdl, new DropSchemaPlatformActor());	
+	}
+
+	@Override
+	public void dropValueSetHistoryTables() {
+		this.doExecuteSql(this.valueSetHistoryXmlDdl, new DropSchemaPlatformActor());	
+	}
+
+	@Override
+	public void dropValueSetsTables() {
+		this.doExecuteSql(this.valueSetXmlDdl, new DropSchemaPlatformActor());	
+	}
+
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#createCommonTables()
 	 */
 	public void createCommonTables() {
-		try {
-			databaseUtility.executeScript(
-					lexevsCommonSchemaCreateScript, 
-					this.prefixResolver.resolveDefaultPrefix(),
-					this.prefixResolver.resolveDefaultPrefix()
-			);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}	
+		this.doExecuteSql(this.commonXmlDdl, new CreateSchemaPlatformActor());
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#createCodingSchemeTables()
 	 */
 	public void createCodingSchemeTables() {
-		try {
-			databaseUtility.executeScript(
-					lexevsCodingSchemeSchemaCreateScript, 
-					this.prefixResolver.resolveDefaultPrefix(),
-					this.prefixResolver.resolveDefaultPrefix());
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}	
+		this.createCodingSchemeTables(this.prefixResolver.resolveDefaultPrefix());
 	}
-	
-	
 	
 	@Override
 	public void createNciHistoryTables() {
-		try {
-			databaseUtility.executeScript(
-					lexevsNciHistorySchemaCreateScript, 
-					this.prefixResolver.resolveDefaultPrefix());
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}	
+		this.doExecuteSql(this.nciHistoryXmlDdl, new CreateSchemaPlatformActor());
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#createCodingSchemeTables(java.lang.String)
 	 */
 	public void createCodingSchemeTables(String prefix) {
+		this.doExecuteSql(this.codingSchemeXmlDdl, new CreateSchemaPlatformActor(), prefix);
+	}
+	
+	protected void doExecuteSql(Resource xmlSchema, PlatformActor actor) {
+		this.doExecuteSql(xmlSchema, actor, null);
+	}
+	
+	protected void doExecuteSql(Resource xmlSchema, PlatformActor actor, String prefix) {
 		try {
-			databaseUtility.executeScript(
-					lexevsCodingSchemeSchemaCreateScript, 
-					this.prefixResolver.resolveDefaultPrefix(),
-					getCombinedPrefix(prefix));
+			String sql = this.doGetSql(xmlSchema.getFile(), actor);
+			if(prefix == null) {
+				databaseUtility.executeScript(sql, this.getPrefixResolver().resolveDefaultPrefix());
+			} else {
+				databaseUtility.executeScript(sql, this.getPrefixResolver().resolveDefaultPrefix(), prefix);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}	
 	}
 	
-	public void createValueSetsTables() {
-		try {
-			databaseUtility.executeScript(
-					lexevsValueSetsSchemaCreateScript, 
-					this.prefixResolver.resolveDefaultPrefix(),
-					this.prefixResolver.resolveDefaultPrefix());
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}	
+	protected String doGetSql(File xmlSchema, PlatformActor actor) {
+		return this.doGetSql(null, xmlSchema, actor);
+	}
+	
+	protected String doGetSql(DatabaseType databaseType, File xmlSchema, PlatformActor actor) {
+		Database db = readDatabase(xmlSchema);
+		
+		Platform platform;
+		if(databaseType == null) {
+			platform = PlatformFactory.createNewPlatformInstance(this.dataSource);
+		} else {
+			platform = PlatformFactory.createNewPlatformInstance(databaseType.getProductName());
+		}
+
+		return actor.getSqlFromPlatform(platform, db);
+	}
+	
+	private Database readDatabase(File xmlSchema) {
+		DatabaseIO dbio = new NonValidatingDatabaseIO();
+		
+		return dbio.read(xmlSchema);
+	}
+	
+	public void dumpSqlScripts(DatabaseType databaseType, String path, String prefix) throws IOException {
+		List<Resource> scriptResources = 
+			DaoUtility.createNonTypedList(
+					codingSchemeXmlDdl,
+					codingSchemeHistoryXmlDdl,
+					commonXmlDdl,
+					nciHistoryXmlDdl,
+					valueSetXmlDdl
+					);
+		for(Resource resource : scriptResources) {
+			this.doDumpSqlScripts(databaseType, resource, path, prefix);
+		}
+	}
+	
+	protected void doDumpSqlScripts(DatabaseType databaseType, Resource resource, String destination, String prefix) throws IOException {
+		File xml = resource.getFile();
+		Database db = this.readDatabase(xml);
+		String name = db.getName();
+		
+		String createSql = this.doGetSql(databaseType, xml, new CreateSchemaPlatformActor());
+		
+		File createFile = new File(destination + File.separator + name + "-" + databaseType.getProductName().toLowerCase() + "-create.sql");
+		writeStringToFile(createFile, createSql, prefix);
+		
+		String dropSql = this.doGetSql(databaseType, xml, new DropSchemaPlatformActor());
+		
+		File dropFile = new File(destination + File.separator + name + "-" +  databaseType.getProductName().toLowerCase() +  "-drop.sql");
+		writeStringToFile(dropFile, dropSql, prefix);	
+	}
+	
+	private void writeStringToFile(File file, String content, String prefix) throws IOException {
+		content = content.replaceAll(DatabaseConstants.PREFIX_PLACEHOLDER, prefix);
+		
+		FileWriter out = new FileWriter(file);
+        out.write(content);
+        out.close();
 	}
 
-	public void createHistoryTables() {
-		try {
-			databaseUtility.executeScript(
-					lexevsHistoryCreateScript, 
-					this.prefixResolver.resolveDefaultPrefix(),
-					this.prefixResolver.resolveDefaultPrefix());
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}	
+	public void createValueSetsTables() {
+		this.doExecuteSql(this.valueSetXmlDdl, new CreateSchemaPlatformActor());
+	}
+
+	public void createCodingSchemeHistoryTables() {
+		this.doExecuteSql(this.codingSchemeHistoryXmlDdl, new CreateSchemaPlatformActor());
 	}
 	
 	public void createValueSetHistoryTables() {
-		try {
-			databaseUtility.executeScript(
-					lexevsValueSetHistoryCreateScript, 
-					this.prefixResolver.resolveDefaultPrefix(),
-					this.prefixResolver.resolveDefaultPrefix());
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}	
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#cleanupFailedLoad(java.lang.String, java.lang.String)
-	 */
-	public void cleanupFailedLoad(String dbName, String prefix)
-			throws Exception {
-		// TODO Auto-generated method stub
-		
+		this.doExecuteSql(this.valueSetHistoryXmlDdl, new CreateSchemaPlatformActor());
 	}
 
 	/* (non-Javadoc)
@@ -203,27 +341,6 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	public void computeTransitiveTable(String codingSchemeUri,
 			String codingSchemeVersion) {
 		transitivityBuilder.computeTransitivityTable(codingSchemeUri, codingSchemeVersion);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#dropTables(java.lang.String, java.lang.String)
-	 */
-	public void dropTables(String codingSchemeUri, String version) {
-		String prefix = prefixResolver.resolvePrefixForCodingScheme(codingSchemeUri, version);
-		
-		try {
-			this.databaseUtility.executeScript(lexevsCodingSchemeSchemaDropScript, prefix);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}	
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#dropCommonTables()
-	 */
-	public void dropCommonTables() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	/**
@@ -235,44 +352,6 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	 */
 	protected String getCombinedPrefix(String codingSchemePrefix){
 		return prefixResolver.resolveDefaultPrefix() + codingSchemePrefix;
-	}
-	
-	/**
-	 * Gets the lexevs common schema create script.
-	 * 
-	 * @return the lexevs common schema create script
-	 */
-	public Resource getLexevsCommonSchemaCreateScript() {
-		return lexevsCommonSchemaCreateScript;
-	}
-
-	/**
-	 * Sets the lexevs common schema create script.
-	 * 
-	 * @param lexevsCommonSchemaCreateScript the new lexevs common schema create script
-	 */
-	public void setLexevsCommonSchemaCreateScript(
-			Resource lexevsCommonSchemaCreateScript) {
-		this.lexevsCommonSchemaCreateScript = lexevsCommonSchemaCreateScript;
-	}
-
-	/**
-	 * Gets the lexevs coding scheme schema create script.
-	 * 
-	 * @return the lexevs coding scheme schema create script
-	 */
-	public Resource getLexevsCodingSchemeSchemaCreateScript() {
-		return lexevsCodingSchemeSchemaCreateScript;
-	}
-
-	/**
-	 * Sets the lexevs coding scheme schema create script.
-	 * 
-	 * @param lexevsCodingSchemeSchemaCreateScript the new lexevs coding scheme schema create script
-	 */
-	public void setLexevsCodingSchemeSchemaCreateScript(
-			Resource lexevsCodingSchemeSchemaCreateScript) {
-		this.lexevsCodingSchemeSchemaCreateScript = lexevsCodingSchemeSchemaCreateScript;
 	}
 	
 	/* (non-Javadoc)
@@ -363,38 +442,12 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		return transitivityBuilder;
 	}
 
-	public void setLexevsHistoryCreateScript(Resource lexevsHistoryCreateScript) {
-		this.lexevsHistoryCreateScript = lexevsHistoryCreateScript;
-	}
-
-	public Resource getLexevsHistoryCreateScript() {
-		return lexevsHistoryCreateScript;
-	}
-
 	public void setIndexServiceManager(IndexServiceManager indexServiceManager) {
 		this.indexServiceManager = indexServiceManager;
 	}
 
 	public IndexServiceManager getIndexServiceManager() {
 		return indexServiceManager;
-	}
-
-	public void setLexevsValueSetsSchemaCreateScript(
-			Resource lexevsValueSetsSchemaCreateScript) {
-		this.lexevsValueSetsSchemaCreateScript = lexevsValueSetsSchemaCreateScript;
-	}
-
-	public Resource getLexevsValueSetsSchemaCreateScript() {
-		return lexevsValueSetsSchemaCreateScript;
-	}
-
-	public void setLexevsCodingSchemeSchemaDropScript(
-			Resource lexevsCodingSchemeSchemaDropScript) {
-		this.lexevsCodingSchemeSchemaDropScript = lexevsCodingSchemeSchemaDropScript;
-	}
-
-	public Resource getLexevsCodingSchemeSchemaDropScript() {
-		return lexevsCodingSchemeSchemaDropScript;
 	}
 
 	public void setRootBuilder(RootBuilder rootBuilder) {
@@ -405,27 +458,112 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		return rootBuilder;
 	}
 
-	/**
-	 * @return the lexevsValueSetHistoryCreateScript
-	 */
-	public Resource getLexevsValueSetHistoryCreateScript() {
-		return lexevsValueSetHistoryCreateScript;
+	public Resource getCodingSchemeXmlDdl() {
+		return codingSchemeXmlDdl;
 	}
 
-	/**
-	 * @param lexevsValueSetHistoryCreateScript the lexevsValueSetHistoryCreateScript to set
-	 */
-	public void setLexevsValueSetHistoryCreateScript(
-			Resource lexevsValueSetHistoryCreateScript) {
-		this.lexevsValueSetHistoryCreateScript = lexevsValueSetHistoryCreateScript;
+	public void setCodingSchemeXmlDdl(Resource codingSchemeXmlDdl) {
+		this.codingSchemeXmlDdl = codingSchemeXmlDdl;
 	}
 
-	public Resource getLexevsNciHistorySchemaCreateScript() {
-		return lexevsNciHistorySchemaCreateScript;
+	public Resource getCommonXmlDdl() {
+		return commonXmlDdl;
 	}
 
-	public void setLexevsNciHistorySchemaCreateScript(
-			Resource lexevsNciHistorySchemaCreateScript) {
-		this.lexevsNciHistorySchemaCreateScript = lexevsNciHistorySchemaCreateScript;
+	public void setCommonXmlDdl(Resource commonXmlDdl) {
+		this.commonXmlDdl = commonXmlDdl;
+	}
+
+	public Resource getCodingSchemeHistoryXmlDdl() {
+		return codingSchemeHistoryXmlDdl;
+	}
+
+	public void setCodingSchemeHistoryXmlDdl(Resource codingSchemeHistoryXmlDdl) {
+		this.codingSchemeHistoryXmlDdl = codingSchemeHistoryXmlDdl;
+	}
+
+	public Resource getValueSetXmlDdl() {
+		return valueSetXmlDdl;
+	}
+
+	public void setValueSetXmlDdl(Resource valueSetXmlDdl) {
+		this.valueSetXmlDdl = valueSetXmlDdl;
+	}
+
+	public Resource getValueSetHistoryXmlDdl() {
+		return valueSetHistoryXmlDdl;
+	}
+
+	public void setValueSetHistoryXmlDdl(Resource valueSetHistoryXmlDdl) {
+		this.valueSetHistoryXmlDdl = valueSetHistoryXmlDdl;
+	}
+
+	public Resource getNciHistoryXmlDdl() {
+		return nciHistoryXmlDdl;
+	}
+
+	public void setNciHistoryXmlDdl(Resource nciHistoryXmlDdl) {
+		this.nciHistoryXmlDdl = nciHistoryXmlDdl;
+	}
+
+	public SystemVariables getSystemVariables() {
+		return systemVariables;
+	}
+
+	public void setSystemVariables(SystemVariables systemVariables) {
+		this.systemVariables = systemVariables;
+	}
+
+
+
+	private static class NonValidatingDatabaseIO extends DatabaseIO {
+		   
+		  public Database read(File file) throws DdlUtilsException
+		    {
+		        Database model = null;
+
+		        try
+		        {
+		            model = (Database)getReader().parse(file);
+		        }
+		        catch (Exception ex)
+		        {
+		            throw new DdlUtilsException(ex);
+		        }
+		      
+		        Database db = new AliasingDatabase();
+		       
+		        db.addTables(DaoUtility.createNonTypedList(model.getTables()));
+		        db.setName(model.getName());
+		        
+				return db;
+		    }
+		
+	}
+	
+	private static class AliasingDatabase extends Database {
+	
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public Table findTable(String name) {
+
+				try {
+					Table table = super.findTable(name);
+					if(table == null) {
+						return this.createAliasTable(name);
+					} else {
+						return table;
+					}
+				} catch (Exception e) {
+					return this.createAliasTable(name);
+				}
+		}
+		
+		private Table createAliasTable(String alias) {
+			Table temp = new Table();
+			temp.setName(alias);
+			return temp;
+		}
 	}
 }

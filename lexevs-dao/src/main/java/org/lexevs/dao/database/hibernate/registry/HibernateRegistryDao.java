@@ -123,15 +123,12 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		return entries.get(0);
 	}
 	
-	
-
 	@SuppressWarnings("unchecked")
-	@Override
 	public List<RegistryEntry> getAllRegistryEntriesOfUriAndTypes(String uri,
 			ResourceType... types) {
 		DetachedCriteria criteria = DetachedCriteria.forClass(RegistryEntry.class);
 
-		Criterion typeRestriction = Restrictions.eq("resourceUri", uri);
+		Criterion typeRestriction = Restrictions.in("resourceType", types);
 		
 		Criterion uriRestriction = Restrictions.eq("resourceUri", uri);
 		

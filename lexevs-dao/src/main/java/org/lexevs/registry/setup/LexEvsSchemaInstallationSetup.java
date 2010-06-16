@@ -51,16 +51,9 @@ public class LexEvsSchemaInstallationSetup extends AbstractLoggingBean implement
 		this.getLogger().info("Checking for installed LexEVS Database Schema.");
 
 		if(!isLexGridSchemaInstalled){
-				this.getLexEvsDatabaseOperations().createCommonTables();
-				if(this.systemVariables.isSingleTableMode()){
-					lexEvsDatabaseOperations.createCodingSchemeTables();					
-				}
-				this.getLexEvsDatabaseOperations().createHistoryTables();
+				this.getLexEvsDatabaseOperations().createAllTables();	
 				this.registryDao.initRegistryMetadata();
-				this.getLexEvsDatabaseOperations().createValueSetsTables();
-				this.getLexEvsDatabaseOperations().createValueSetHistoryTables();
-				this.getLexEvsDatabaseOperations().createNciHistoryTables();
-		}	
+		}		
 	}
 
 	/**

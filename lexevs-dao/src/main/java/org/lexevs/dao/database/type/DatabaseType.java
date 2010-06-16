@@ -33,15 +33,12 @@ import org.springframework.jdbc.support.MetaDataAccessException;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public enum DatabaseType {
-
-	/** The DERBY. */
-	DERBY("Apache Derby"),
 	
 	/** The D b2. */
 	DB2("DB2"),
 	
 	/** The HSQL. */
-	HSQL("HSQL Database Engine"),
+	HSQL("HSQL"),
 	
 	/** The MYSQL. */
 	MYSQL("MySQL"),
@@ -63,6 +60,16 @@ public enum DatabaseType {
 		for(DatabaseType type: values()){
 			nameMap.put(type.getProductName(), type);
 		}
+	}
+	
+	public static DatabaseType toDatabaseType(String databaseType) {
+		for(String name : nameMap.keySet()) {
+			if(name.equalsIgnoreCase(databaseType)){
+				return nameMap.get(name);
+			}
+		}
+		
+		throw new RuntimeException(databaseType + " could not be found.");
 	}
 
 	/**
@@ -99,13 +106,14 @@ public enum DatabaseType {
 		} catch (MetaDataAccessException e) {
 			throw new LBResourceUnavailableException("Error fetching database information.", e);
 		}
-		 
+
 		 String commonName = JdbcUtils.commonDatabaseName(databaseProductName);
 		 
-		 if(nameMap.containsKey(commonName)){
-			 return nameMap.get(commonName);
-		 } else {
-			 throw new LBResourceUnavailableException("The underlying database " + commonName + " is not supported by LexEVS.");
+		 for(String dbName : nameMap.keySet()) {
+			 if(commonName.toLowerCase().contains(dbName.toLowerCase())){
+				 return nameMap.get(dbName);
+			 }
 		 }
+		 throw new LBResourceUnavailableException("The underlying database " + commonName + " is not supported by LexEVS.");
 	 }
 }

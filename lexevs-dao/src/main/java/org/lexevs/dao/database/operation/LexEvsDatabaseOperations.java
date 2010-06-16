@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.database.operation;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -38,53 +39,44 @@ public interface LexEvsDatabaseOperations {
 	
 	public enum TraverseAssociations {TOGETHER,INDIVIDUALLY}
 	
-	/**
-	 * Creates the common tables.
-	 */
 	public void createCommonTables();
 	
-	/**
-	 * Creates the coding scheme tables.
-	 */
 	public void createCodingSchemeTables();
 	
-	/**
-	 * Creates the Value Sets (Value Set and Pick List Definition) tables.
-	 */
 	public void createValueSetsTables();
 	
 	public void createValueSetHistoryTables();
 	
-	public void createHistoryTables();
+	public void createCodingSchemeHistoryTables();
 	
-	/**
-	 * Creates the coding scheme tables.
-	 * 
-	 * @param prefix the prefix
-	 */
+	public void createCodingSchemeHistoryTables(String prefix);
+	
 	public void createCodingSchemeTables(String prefix);
 	
-	/**
-	 * Drop common tables.
-	 */
+	public void createNciHistoryTables();
+
+	public void dropAllTables();
+	
+	public void createAllTables();
+	
 	public void dropCommonTables();
 	
-	/**
-	 * Drop tables.
-	 * 
-	 * @param codingSchemeUri the coding scheme uri
-	 * @param version the version
-	 */
-	public void dropTables(String codingSchemeUri, String version);
+	public void dropValueSetsTables();
 	
-	/**
-	 * Checks if is coding scheme loaded.
-	 * 
-	 * @param codingSchemeUri the coding scheme uri
-	 * @param version the version
-	 * 
-	 * @return true, if is coding scheme loaded
-	 */
+	public void dropValueSetHistoryTables();
+	
+	public void dropCodingSchemeHistoryTables(String codingSchemeUri, String version);
+	
+	public void dropCodingSchemeTables(String codingSchemeUri, String version);
+	
+	public void dropCodingSchemeHistoryTables();
+	
+	public void dropCodingSchemeTables();
+	
+	public void dropNciHistoryTables();
+	
+	public void dumpSqlScripts(DatabaseType databaseType, String outputPath, String prefix) throws IOException;
+	
 	public boolean isCodingSchemeLoaded(String codingSchemeUri, String version);
 
 	/**
@@ -134,19 +126,7 @@ public interface LexEvsDatabaseOperations {
 	public void addRootRelationNode(String codingSchemeUri, String codingSchemeVersion, 
 			List<String> associationNames, String relationContainerName, 
 			RootOrTail rootOrTail, TraverseAssociations traverse);
-	
-	
-	/**
-	 * Cleanup failed load.
-	 * 
-	 * @param dbName the db name
-	 * @param prefix the prefix
-	 * 
-	 * @throws Exception the exception
-	 */
-	public void cleanupFailedLoad(String dbName, String prefix) throws Exception;
 
-	public void createNciHistoryTables();
 	
 }
 

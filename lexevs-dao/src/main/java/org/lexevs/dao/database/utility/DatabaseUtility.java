@@ -73,6 +73,8 @@ public interface DatabaseUtility {
 	 */
 	public void executeScript(Resource creationScript, String commonPrefix, String tableSetPrefix) throws Exception;
 	
+	public void executeScript(String creationScript, String commonPrefix, String tableSetPrefix) throws Exception;
+	
 	public void executeScript(Resource creationScript, String tableSetPrefix) throws Exception;
 	
 	/**
