@@ -48,10 +48,16 @@ public abstract class AbstractPagingCodingSchemeInserter extends AbstractCodingS
         String uri = codingScheme.getCodingSchemeURI();
         String version = codingScheme.getRepresentsVersion();
         
-        errors.addAll(pageEntities(uri, version, codingScheme.getEntities()));
+        if (codingScheme.getEntities() != null)
+        {
+            errors.addAll(pageEntities(uri, version, codingScheme.getEntities()));
+        }
         
-        for(Relations relations : codingScheme.getRelations()) {
-            errors.addAll(pageRelations(uri, version, relations));
+        if (codingScheme.getRelations() != null)
+        {
+            for(Relations relations : codingScheme.getRelations()) {
+                errors.addAll(pageRelations(uri, version, relations));
+            }
         }
         
         return doResolveErrors(errors);
