@@ -18,11 +18,7 @@
  */
 package org.LexGrid.LexBIG.Utility;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
-import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortDescription;
@@ -30,6 +26,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.SortContext;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
+import org.LexGrid.LexBIG.Impl.pagedgraph.root.NullFocusRootsResolver;
 import org.LexGrid.naming.URIMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -131,6 +128,10 @@ public class ServiceUtility {
     public static boolean passFilters(ResolvedConceptReference candidate, Filter[] filterOptions ){
         
         if(ArrayUtils.isEmpty(filterOptions)) {
+            return true;
+        }
+        
+        if(NullFocusRootsResolver.isRefRootOrTail(candidate)) {
             return true;
         }
 

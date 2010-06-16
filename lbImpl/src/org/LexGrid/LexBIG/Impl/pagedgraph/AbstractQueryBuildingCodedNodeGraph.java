@@ -389,6 +389,9 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
     }
     
     private AssociatedConcept[] buildAssociatedConceptArray(Association association, int maxToReturn) {
+        if(maxToReturn < 0) {
+            maxToReturn = Integer.MAX_VALUE;
+        }
         Iterator<? extends AssociatedConcept> itr =  association.getAssociatedConcepts().iterateAssociatedConcept();
         
         List<AssociatedConcept> list = new ArrayList<AssociatedConcept>();

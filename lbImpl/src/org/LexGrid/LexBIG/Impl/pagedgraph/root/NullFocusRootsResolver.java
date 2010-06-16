@@ -48,7 +48,12 @@ public class NullFocusRootsResolver implements RootsResolver {
         return returnList;
     }
     
+    @Override
     public boolean isRootOrTail(ConceptReference ref) {
+       return isRefRootOrTail(ref);
+    }
+    
+    public static boolean isRefRootOrTail(ConceptReference ref) {
         boolean isRootOrTail = (ref.getCode().equals(AbstractEndNode.ROOT) || ref.getCode().equals(AbstractEndNode.TAIL));
         
         return isRootOrTail;
