@@ -25,6 +25,8 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.versions.Revision;
 import org.lexevs.cts2.BaseService.LoadFormats;
 
+import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
+
 public interface CodeSystemLoadOperation extends Loader{
 	
 	/**
@@ -33,10 +35,15 @@ public interface CodeSystemLoadOperation extends Loader{
 	 * 
 	 * @param source
 	 * @param metadata
+	 * @param manifest
+	 * @param releaseURI
 	 * @param stopOnErrors
 	 * @param async
+	 * @param overwriteMetadata
+	 * @param versionTag - the tag (e.g "devel", "production", ...) to be set for the this code system
+	 * @param activate - True: activates the code system after the load.
 	 */
-	public abstract URI load(URI source, URI metadata, LoadFormats sourceFormat, Boolean stopOnErrors, Boolean async) throws LBException;
+	public abstract URNVersionPair[] load(URI source, URI metadata, URI manifest, URI releaseURI, LoadFormats sourceFormat, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException;
 	
 	/**
 	 * Load the content and meta data.  If the async flag is true, return an URI that
@@ -44,10 +51,14 @@ public interface CodeSystemLoadOperation extends Loader{
 	 * 
 	 * @param codeSystem
 	 * @param metadata
+	 * @param manifest
 	 * @param stopOnErrors
 	 * @param async
+	 * @param overwriteMetadata
+	 * @param versionTag - the tag (e.g "devel", "production", ...) to be set for the this code system
+	 * @param activate - True: activates the code system after the load.
 	 */
-	public abstract URI load(CodingScheme codeSystem, URI metadata, Boolean stopOnErrors, Boolean async) throws LBException;
+	public abstract URI load(CodingScheme codeSystem, URI metadata, URI manifest, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException;
 
 	/**
 	 * Installs a code system (aka terminology) into the terminology service 

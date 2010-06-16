@@ -19,9 +19,11 @@ package org.lexevs.cts2.admin;
 
 import org.lexevs.cts2.admin.export.AssociationExportOperation;
 import org.lexevs.cts2.admin.export.CodeSystemExportOperation;
+import org.lexevs.cts2.admin.export.CodeSystemExportOperationImpl;
 import org.lexevs.cts2.admin.export.ValueSetExportOperation;
 import org.lexevs.cts2.admin.load.AssociationLoadOperation;
 import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
+import org.lexevs.cts2.admin.load.CodeSystemLoadOperationImpl;
 import org.lexevs.cts2.admin.load.ValueSetLoadOperation;
 
 /**
@@ -31,6 +33,8 @@ import org.lexevs.cts2.admin.load.ValueSetLoadOperation;
  *
  */
 public class AdminOperationImpl implements AdminOperation {
+	private CodeSystemLoadOperation csLoadOp_;
+	private CodeSystemExportOperation csExportOp_;
 	
 	@Override
 	public AssociationExportOperation getAssociationExportOperation() {
@@ -46,14 +50,18 @@ public class AdminOperationImpl implements AdminOperation {
 
 	@Override
 	public CodeSystemExportOperation getCodeSystemExportOperation() {
-		// TODO Auto-generated method stub
-		return null;
+		if (csExportOp_ == null)
+			csExportOp_ = new CodeSystemExportOperationImpl();
+		
+		return csExportOp_;
 	}
 
 	@Override
 	public CodeSystemLoadOperation getCodeSystemLoadOperation() {
-		// TODO Auto-generated method stub
-		return null;
+		if (csLoadOp_ == null)
+			csLoadOp_ = new CodeSystemLoadOperationImpl();
+		
+		return csLoadOp_;
 	}
 
 	@Override
