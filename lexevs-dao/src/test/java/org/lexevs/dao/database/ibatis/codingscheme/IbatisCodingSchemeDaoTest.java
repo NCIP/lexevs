@@ -182,6 +182,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		CodingScheme codingScheme = new CodingScheme();
 		codingScheme.setCodingSchemeName("name");
 		codingScheme.setCodingSchemeURI("uri");
+		codingScheme.setRepresentsVersion("version");
 		final String csKey = ibatisCodingSchemeDao.insertCodingScheme(codingScheme, null, true);
 		
 		SupportedCodingScheme cs = new SupportedCodingScheme();
@@ -218,6 +219,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		CodingScheme codingScheme = new CodingScheme();
 		codingScheme.setCodingSchemeName("name");
 		codingScheme.setCodingSchemeURI("uri");
+		codingScheme.setRepresentsVersion("version");
 		final String csKey = ibatisCodingSchemeDao.insertCodingScheme(codingScheme, null, true);
 		
 		SupportedCodingScheme cs = new SupportedCodingScheme();
@@ -256,6 +258,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		CodingScheme codingScheme = new CodingScheme();
 		codingScheme.setCodingSchemeName("name");
 		codingScheme.setCodingSchemeURI("uri");
+		codingScheme.setRepresentsVersion("version");
 		final String csKey = ibatisCodingSchemeDao.insertCodingScheme(codingScheme, null, true);
 		
 		Source source = new Source();
@@ -325,6 +328,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		CodingScheme codingScheme = new CodingScheme();
 		codingScheme.setCodingSchemeName("name");
 		codingScheme.setCodingSchemeURI("uri");
+		codingScheme.setRepresentsVersion("version");
 		final String csKey = ibatisCodingSchemeDao.insertCodingScheme(codingScheme, null, true);
 		
 		final String localName = "LocalName";

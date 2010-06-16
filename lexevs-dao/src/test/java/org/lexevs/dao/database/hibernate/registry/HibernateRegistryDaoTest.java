@@ -104,7 +104,7 @@ public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 				assertEquals(rs.getTimestamp(13), deActivationDate);
 				assertEquals(rs.getString(14), "1");
 				assertEquals(rs.getString(15), "2");
-				assertEquals(rs.getBoolean(16), true);
+				assertEquals("1", rs.getString(16));
 				assertEquals(rs.getString(17), "1.1");
 				assertEquals(rs.getString(18), "description");
 			

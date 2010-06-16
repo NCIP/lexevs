@@ -27,7 +27,6 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.versions.SystemRelease;
-import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +65,7 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals("basedonsomerelease", systemRelease.getBasedOnRelease() );
 		assertEquals("testsystemrelease", systemRelease.getEntityDescription().getContent() );
 		assertEquals("testagency",  systemRelease.getReleaseAgency() );
-		assertEquals(date, new Timestamp(systemRelease.getReleaseDate().getTime()));
+		assertEquals(date.getTime(), systemRelease.getReleaseDate().getTime());
 		assertEquals("releaseid", systemRelease.getReleaseId() );
 		assertEquals("releaseuri", systemRelease.getReleaseURI() );
 	}
@@ -87,7 +86,7 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals("basedonsomerelease", systemRelease.getBasedOnRelease() );
 		assertEquals("testsystemrelease", systemRelease.getEntityDescription().getContent() );
 		assertEquals("testagency",  systemRelease.getReleaseAgency() );
-		assertEquals(date, new Timestamp(systemRelease.getReleaseDate().getTime()));
+		assertEquals(date.getTime(), systemRelease.getReleaseDate().getTime());
 		assertEquals("releaseid", systemRelease.getReleaseId() );
 		assertEquals("releaseuri", systemRelease.getReleaseURI() );
 	}
@@ -182,7 +181,7 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 				assertEquals("id", rs.getString(i++));
 				assertEquals("uri", rs.getString(i++));
 				assertEquals("basedOn", rs.getString(i++));
-				assertEquals(date, rs.getTimestamp(i++));		
+				assertEquals(date.getTime(), rs.getTimestamp(i++).getTime());		
 				assertEquals("testAgency", rs.getString(i++));
 				assertEquals("desc", rs.getString(i++));
 				
@@ -278,7 +277,7 @@ public class IbatisNciHistoryDaoTest extends LexEvsDbUnitTestBase {
 				assertEquals("C1", rs.getString(i++));
 				assertEquals("name1", rs.getString(i++));
 				assertEquals("merge", rs.getString(i++));
-				assertEquals(date, rs.getTimestamp(i++));		
+				assertEquals(date.getTime(), rs.getTimestamp(i++).getTime());		
 				assertEquals("C2", rs.getString(i++));
 				assertEquals("name2", rs.getString(i++));
 				
