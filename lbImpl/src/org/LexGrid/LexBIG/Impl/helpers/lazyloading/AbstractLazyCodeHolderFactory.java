@@ -18,7 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -29,12 +28,9 @@ import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -65,17 +61,6 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
         AbsoluteCodingSchemeVersionReference ref =
             Constructors.createAbsoluteCodingSchemeVersionReference(
                 uri, internalVersionString);
-
-        //Match all docs (excluding code boundry docs) if no queries are provided
-        if(combinedQuery == null || combinedQuery.size() == 0){
-            combinedQuery = new ArrayList<BooleanQuery>();
-            BooleanQuery booleanQuery = new BooleanQuery();
-            booleanQuery.add(
-            		entityService.getMatchAllDocsQuery(ref), Occur.MUST);
-            booleanQuery.add(
-                    new TermQuery(new Term("codeBoundry", "T")), Occur.MUST_NOT);
-            combinedQuery.add(booleanQuery);
-        }          
 
         AdditiveCodeHolder codeHolder = new DefaultCodeHolder();
 
