@@ -330,7 +330,7 @@
 			
    		  <dynamic prepend=" ">
 			<isNotNull prepend="," property="codingScheme.isActive">
-				isActive = #codingScheme.isActive,handler=numericBooleanTypeHandler#,
+				isActive = #codingScheme.isActive,handler=numericBooleanTypeHandler#
 			</isNotNull>
 			<isNotNull prepend="," property="codingScheme.owner">
 				owner = #codingScheme.owner#
