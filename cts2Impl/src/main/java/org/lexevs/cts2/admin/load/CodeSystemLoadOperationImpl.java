@@ -18,13 +18,11 @@
 package org.lexevs.cts2.admin.load;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
@@ -68,6 +66,7 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
     private Boolean async_;
     private LoadFormats loadFormat_ = null;
     private LexBIGServiceManager lbsm_ = null;
+    private LexBIGService lbs_ = null;
     
 	/* (non-Javadoc)
 	 * @see org.LexGrid.LexBIG.Impl.loaders.BaseLoader#declareAllowedOptions(org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder)
@@ -169,11 +168,10 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#load(org.LexGrid.codingSchemes.CodingScheme, java.net.URI, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean, java.lang.String, java.lang.Boolean)
 	 */
 	@Override
-	public URI load(CodingScheme codeSystem, URI metadata, URI manifest, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException {
+	public URNVersionPair[] load(CodingScheme codeSystem, URI metadata, URI manifest, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException {
 		if (codeSystem == null)
 			throw new LBException("Code System can not be empty");
 		
-		URI csURI = null;
 		this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
         this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
         codeSystem_ = codeSystem;
@@ -185,12 +183,6 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 		stopOnErrors_ = stopOnErrors;
 		manifest_ = manifest;
 		
-		try {
-			csURI = new URI(codeSystem.getCodingSchemeURI());
-		} catch (URISyntaxException e) {
-			throw new LBException(e.getMessage());
-		}
-        
 		this.load(null);		
 		
 		while (this.getStatus().getEndTime() == null) {
@@ -200,7 +192,7 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 			}
 		}
 		
-		// load code system metadata if provided
+		// load code system meta data if provided
 		if (metadata_ != null)
 		{
 			
@@ -219,9 +211,34 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 			activateCS(codeSystem_.getCodingSchemeURI(), codeSystem_.getRepresentsVersion());
 		}		
         
-		return csURI;
+		URNVersionPair urnVersionPair = new URNVersionPair(codeSystem.getCodingSchemeURI(), codeSystem.getRepresentsVersion());
+		return new URNVersionPair[] {urnVersionPair};
 	}	
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#applyMetadataToCodeSystem(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, java.net.URI, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean)
+	 */
+	@Override
+	public URNVersionPair applyMetadataToCodeSystem(String codeSystemNameOrURI, CodingSchemeVersionOrTag codeSystemVersionOrTag, URI metadata, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata) throws LBException
+	{
+		CodingScheme codeSystem = getLexBIGService().resolveCodingScheme(codeSystemNameOrURI, codeSystemVersionOrTag);
+		
+		URNVersionPair urnVersionPair = null;
+		if (codeSystem != null)
+		{
+			loadCSMetaData(codeSystem.getCodingSchemeURI(), codeSystem.getRepresentsVersion(), metadata, overwriteMetadata, stopOnErrors, async);
+			
+			urnVersionPair = new URNVersionPair(codeSystem.getCodingSchemeURI(), codeSystem.getRepresentsVersion());
+		}
+		
+		return urnVersionPair;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#load(java.net.URI, java.net.URI, java.net.URI, java.net.URI, org.lexevs.cts2.BaseService.LoadFormats, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean, java.lang.String, java.lang.Boolean)
+	 */
 	@Override
 	public URNVersionPair[] load(URI source, URI metadata, URI manifest, URI releaseURI, LoadFormats loadFormat, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
 		if (loadFormat == null)
@@ -349,10 +366,17 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
         }
 	}
 	
-	private LexBIGServiceManager getLexBIGServiceManager() throws LBParameterException, LBInvocationException{
+	private LexBIGServiceManager getLexBIGServiceManager() throws LBException{
 		if (lbsm_ == null)
-			lbsm_ = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+			lbsm_ = getLexBIGService().getServiceManager(null);
 		
 		return lbsm_;
+	}
+	
+	private LexBIGService getLexBIGService(){
+		if (lbs_ == null)
+			lbs_ = LexBIGServiceImpl.defaultInstance();
+		
+		return lbs_;
 	}
 }

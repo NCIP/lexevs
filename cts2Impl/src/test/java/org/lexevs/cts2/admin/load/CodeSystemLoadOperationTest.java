@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.naming.Mappings;
@@ -82,6 +83,14 @@ public class CodeSystemLoadOperationTest {
         csLoadOp.load(cs, null, null, true, true, true, "DEV", true);
 	}
 
+	@Test
+	public void testLoadCSMetaData() throws LBException {
+		LexEvsCTS2 cts2 = new LexEvsCTS2Impl();
+		CodeSystemLoadOperation csLoad = cts2.getAdminOperation().getCodeSystemLoadOperation();
+		csLoad.applyMetadataToCodeSystem("miniautomobiles", Constructors.createCodingSchemeVersionOrTag("DEV", null), (new File(
+				"../lbTest/resources/testData/metadata1.xml").toURI()), true, true, true);
+	}
+	
 	/**
 	 * Test method for {@link org.lexevs.cts2.admin.load.CodeSystemLoadOperation#importCodeSystem()}.
 	 */

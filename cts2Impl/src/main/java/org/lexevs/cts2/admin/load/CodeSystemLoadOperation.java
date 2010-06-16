@@ -19,6 +19,7 @@ package org.lexevs.cts2.admin.load;
 
 import java.net.URI;
 
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -58,8 +59,22 @@ public interface CodeSystemLoadOperation extends Loader{
 	 * @param versionTag - the tag (e.g "devel", "production", ...) to be set for the this code system
 	 * @param activate - True: activates the code system after the load.
 	 */
-	public abstract URI load(CodingScheme codeSystem, URI metadata, URI manifest, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException;
+	public abstract URNVersionPair[] load(CodingScheme codeSystem, URI metadata, URI manifest, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException;
 
+	/**
+	 * Loads code system metadata.
+	 * 
+	 * @param codeSystemNameOrURI
+	 * @param codeSystemVersionOrTag
+	 * @param metadata
+	 * @param stopOnErrors
+	 * @param async
+	 * @param overwriteMetadata
+	 * @return
+	 * @throws LBException
+	 */
+	public URNVersionPair applyMetadataToCodeSystem(String codeSystemNameOrURI, CodingSchemeVersionOrTag codeSystemVersionOrTag, URI metadata, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata) throws LBException;
+	
 	/**
 	 * Installs a code system (aka terminology) into the terminology service 
 	 * for subsequent access by other service functions. This operation is used 
