@@ -522,13 +522,13 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 
 	private static class NonValidatingDatabaseIO extends DatabaseIO {
 		   
-		  public Database read(File file) throws DdlUtilsException
+		  public Database read(InputSource inputSource) throws DdlUtilsException
 		    {
 		        Database model = null;
 
 		        try
 		        {
-		            model = (Database)getReader().parse(file);
+		            model = (Database)getReader().parse(inputSource);
 		        }
 		        catch (Exception ex)
 		        {
