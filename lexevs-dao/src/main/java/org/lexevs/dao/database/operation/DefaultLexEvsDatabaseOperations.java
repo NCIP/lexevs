@@ -46,6 +46,7 @@ import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.constants.SystemVariables;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.xml.sax.InputSource;
 
 /**
  * The Class LexEvsPersistenceConnectionManager.
@@ -251,7 +252,7 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	
 	protected void doExecuteSql(Resource xmlSchema, PlatformActor actor, String prefix) {
 		try {
-			String sql = this.doGetSql(xmlSchema.getFile(), actor);
+			String sql = this.doGetSql(xmlSchema, actor);
 			if(prefix == null) {
 				databaseUtility.executeScript(sql, this.getPrefixResolver().resolveDefaultPrefix());
 			} else {
@@ -262,11 +263,11 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		}	
 	}
 	
-	protected String doGetSql(File xmlSchema, PlatformActor actor) {
+	protected String doGetSql(Resource xmlSchema, PlatformActor actor) {
 		return this.doGetSql(null, xmlSchema, actor);
 	}
 	
-	protected String doGetSql(DatabaseType databaseType, File xmlSchema, PlatformActor actor) {
+	protected String doGetSql(DatabaseType databaseType, Resource xmlSchema, PlatformActor actor) {
 		Database db = readDatabase(xmlSchema);
 		
 		Platform platform;
@@ -279,10 +280,14 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		return actor.getSqlFromPlatform(platform, db);
 	}
 	
-	private Database readDatabase(File xmlSchema) {
+	private Database readDatabase(Resource xmlSchema) {
 		DatabaseIO dbio = new NonValidatingDatabaseIO();
 		
-		return dbio.read(xmlSchema);
+		try {
+			return dbio.read(new InputSource(xmlSchema.getInputStream()));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public void dumpSqlScripts(DatabaseType databaseType, String path, String prefix) throws IOException {
@@ -300,16 +305,15 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	}
 	
 	protected void doDumpSqlScripts(DatabaseType databaseType, Resource resource, String destination, String prefix) throws IOException {
-		File xml = resource.getFile();
-		Database db = this.readDatabase(xml);
+		Database db = this.readDatabase(resource);
 		String name = db.getName();
 		
-		String createSql = this.doGetSql(databaseType, xml, new CreateSchemaPlatformActor());
+		String createSql = this.doGetSql(databaseType, resource, new CreateSchemaPlatformActor());
 		
 		File createFile = new File(destination + File.separator + name + "-" + databaseType.getProductName().toLowerCase() + "-create.sql");
 		writeStringToFile(createFile, createSql, prefix);
 		
-		String dropSql = this.doGetSql(databaseType, xml, new DropSchemaPlatformActor());
+		String dropSql = this.doGetSql(databaseType, resource, new DropSchemaPlatformActor());
 		
 		File dropFile = new File(destination + File.separator + name + "-" +  databaseType.getProductName().toLowerCase() +  "-drop.sql");
 		writeStringToFile(dropFile, dropSql, prefix);	
