@@ -704,7 +704,10 @@ public class ResourceManager implements SystemResourceService {
 				
 				SQLInterface sqlInterface = new SQLInterface(uri, internalVersionString);
 				
-				sqlServerInterfaces_.put(serverKey, sqlInterface);
+				sqlServerInterfaces_.put(csKey, sqlInterface);
+				
+				return sqlInterface;
+				
 			} catch (LBParameterException e) {
 				logger_.warn("Unexpected Error", e);
 			}
