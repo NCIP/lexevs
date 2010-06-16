@@ -33,6 +33,7 @@ import org.LexGrid.commonTypes.Text;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedHierarchy;
+import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.EntryState;
@@ -698,6 +699,29 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		
 		assertNotNull(mappings);
 		assertEquals(1, mappings.getSupportedAssociationCount());
+	}
+	
+	@Test
+	public void testGetSupportedNamespaceUriMap() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, idValue, uri, equivalentCodingScheme) " +
+		"values ('cssa-guid', 'cs-guid', 'Namespace', 'test-ns', 'test-ns', 'a-uri', 'eq-cs')");
+		
+		Mappings mappings = ibatisCodingSchemeDao.getMappings("cs-guid");
+		
+		assertNotNull(mappings);
+		assertEquals(1, mappings.getSupportedNamespaceCount());
+		
+		SupportedNamespace ns = mappings.getSupportedNamespace()[0];
+		
+		assertEquals("test-ns", ns.getContent());
+		assertEquals("test-ns", ns.getLocalId());
+		assertEquals("a-uri", ns.getUri());
+		assertEquals("eq-cs", ns.getEquivalentCodingScheme());
 	}
 	
 	/**

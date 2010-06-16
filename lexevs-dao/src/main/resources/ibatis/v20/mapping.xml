@@ -101,6 +101,7 @@
 	</resultMap>
 	<resultMap id="supportedNamespaceResult" class="supportedNamespace"
 		extends="uriMapResult">
+		<result property="equivalentCodingScheme" column="equivalentCodingScheme" />
 	</resultMap>
 	<resultMap id="supportedPropertyResult" class="supportedProperty"
 		extends="uriMapResult">
