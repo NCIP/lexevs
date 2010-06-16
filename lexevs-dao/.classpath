@@ -11,5 +11,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lbModel"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
+	<classpathentry kind="lib" path="ddlutils/lib/DdlUtils-1.0-PATCHED.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

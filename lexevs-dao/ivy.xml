@@ -13,6 +13,11 @@
 			 m:classifier="test" />
 	</publications>
 	<dependencies>
+		<dependency org="args4j" name="args4j" rev="2.0.12"/>
+		<dependency org="oro" name="oro" rev="2.0.8"/>
+		<dependency org="commons-digester" name="commons-digester" rev="1.8"/>
+		<dependency org="commons-betwixt" name="commons-betwixt" rev="0.8"/>
+		<dependency org="commons-beanutils" name="commons-beanutils" rev="1.8.3"/>
 		<dependency org="lexevs" name="lgModel" rev="6.0.0-SNAPSHOT"/>
 		<dependency org="lexevs" name="lbModel" rev="6.0.0-SNAPSHOT"/>
 		<dependency org="lexevs" name="lbInterfaces" rev="6.0.0-SNAPSHOT"/>
