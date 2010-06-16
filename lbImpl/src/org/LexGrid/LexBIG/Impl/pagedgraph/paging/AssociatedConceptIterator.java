@@ -30,6 +30,7 @@ import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder.AssociationDirection;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
+import org.LexGrid.LexBIG.Impl.pagedgraph.root.NullFocusRootsResolver;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
@@ -318,9 +319,10 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
         List<AssociatedConcept> returnList = new ArrayList<AssociatedConcept>();
         try {
             for(AssociatedConcept candidate : list) {
+                
                 boolean pass = true;
                 for(Filter filter : ServiceUtility.validateFilters(this.filterOptions)) {
-                    pass = ( pass && filter.match(candidate) );
+                    pass = ( pass && filter.match(candidate) || NullFocusRootsResolver.isRefRootOrTail(candidate));
                 }
                 
                 if(pass) {
