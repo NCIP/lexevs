@@ -525,12 +525,12 @@
    		<property name="rootBuilder" ref="defaultRootBuilder"/>
    		<property name="systemVariables" ref="systemVariables"/>
    		
-   		<property name="commonXmlDdl" value="classpath:sql/lexevs/common-schema.xml"/>
-   		<property name="nciHistoryXmlDdl" value="classpath:sql/lexevs/ncihistory-schema.xml"/>
-   		<property name="valueSetXmlDdl" value="classpath:sql/lexevs/valueset-schema.xml"/>
-   		<property name="valueSetHistoryXmlDdl" value="classpath:sql/lexevs/valuesethistory-schema.xml"/>
-   		<property name="codingSchemeHistoryXmlDdl" value="classpath:sql/lexevs/codingschemehistory-schema.xml"/>
-   		<property name="codingSchemeXmlDdl" value="classpath:sql/lexevs/codingscheme-schema.xml"/>
+   		<property name="commonXmlDdl" value="classpath*:sql/lexevs/common-schema.xml"/>
+   		<property name="nciHistoryXmlDdl" value="classpath*:sql/lexevs/ncihistory-schema.xml"/>
+   		<property name="valueSetXmlDdl" value="classpath*:sql/lexevs/valueset-schema.xml"/>
+   		<property name="valueSetHistoryXmlDdl" value="classpath*:sql/lexevs/valuesethistory-schema.xml"/>
+   		<property name="codingSchemeHistoryXmlDdl" value="classpath*:sql/lexevs/codingschemehistory-schema.xml"/>
+   		<property name="codingSchemeXmlDdl" value="classpath*:sql/lexevs/codingscheme-schema.xml"/>
    	 </bean>
    	 
    	<bean id="lexevsHistoryCreateScript"
