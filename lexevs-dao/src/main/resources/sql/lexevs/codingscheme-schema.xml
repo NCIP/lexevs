@@ -229,7 +229,7 @@
         <index-column name="associationPredicateGuid"/>
       </index>
     </table>
-    <table name="@PREFIX@entityAssnsToEntitytr">
+    <table name="@PREFIX@entityAssnsToEntityTr">
       <column name="entityAssnsTrGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
       <column name="associationPredicateGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
       <column name="sourceEntityCode" primaryKey="false" required="true" type="VARCHAR" size="200" autoIncrement="false"/>
