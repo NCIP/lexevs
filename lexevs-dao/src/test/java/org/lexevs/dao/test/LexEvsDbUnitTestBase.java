@@ -31,7 +31,9 @@ import org.junit.runner.RunWith;
 import org.lexevs.cache.MethodCachingProxy;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.prefix.PrefixResolver;
-import org.springframework.core.io.ClassPathResource;
+import org.lexevs.dao.database.setup.schemacheck.CountBasedLexGridSchemaCheck;
+import org.lexevs.dao.database.type.DatabaseType;
+import org.lexevs.system.constants.SystemVariables;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -45,19 +47,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations={"/lexevsDao-test.xml"})
 public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 
-	/** The Constant CREATE_COMMON_SCRIPT. */
- 	private static final String CREATE_COMMON_SCRIPT = "sql/lexevs/common-create-hsqldb.sql";
-	
-	/** The Constant CREATE_CODINGSCHEME_SCRIPT. */
- 	private static final String CREATE_CODINGSCHEME_SCRIPT = "sql/lexevs/codingscheme-create-hsqldb.sql";
-	
-	/** The Constant CREATE_VD_PICKLIST_SCRIPT. */
- 	private static final String CREATE_VD_PICKLIST_SCRIPT = "sql/lexevs/valuesets-create-hsqldb.sql";
-	
- 	private static final String CREATE_CODINGSCHEME_HISTORY_SCRIPT = "sql/lexevs/codingschemehistory-create-hsqldb.sql";
- 	
- 	private static final String CREATE_NCI_HISTORY_SCRIPT = "sql/lexevs/ncihistory-create-hsqldb.sql";
-	
 	/** The data source. */
 	@Resource
 	protected DataSource dataSource;
@@ -72,6 +61,12 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	
 	@Resource
 	protected MethodCachingProxy methodCachingProxy;
+	
+	@Resource
+	protected DatabaseType databaseType;
+	
+	@Resource
+	protected SystemVariables systemVariables;
 	
     @BeforeClass
     public static void setSystemProp() {
@@ -92,14 +87,11 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	@Before
 	public void setUp() throws Exception {
 		methodCachingProxy.clearAll();
-		String prefix = prefixResolver.resolveDefaultPrefix();
+		CountBasedLexGridSchemaCheck check = new CountBasedLexGridSchemaCheck(dataSource, systemVariables);
 		
-		new SimpleJdbcTemplate(dataSource).getJdbcOperations().execute("DROP SCHEMA PUBLIC CASCADE");
-		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_COMMON_SCRIPT), prefix, prefix);
-		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_CODINGSCHEME_SCRIPT), prefix, prefix);
-		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_VD_PICKLIST_SCRIPT), prefix, prefix);
-		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_CODINGSCHEME_HISTORY_SCRIPT), prefix, prefix);
-		lexEvsDatabaseOperations.getDatabaseUtility().executeScript(new ClassPathResource(CREATE_NCI_HISTORY_SCRIPT), prefix);
+		if(! check.isCommonLexGridSchemaInstalled()) {
+			lexEvsDatabaseOperations.createAllTables();
+		}	
 	}
 	
 	/* (non-Javadoc)
@@ -108,7 +100,11 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	@After
 	public void tearDown() throws Exception {
 		super.tearDown();
-		new SimpleJdbcTemplate(dataSource).getJdbcOperations().execute("SHUTDOWN");
+		if(this.databaseType.equals(DatabaseType.HSQL)) {
+			new SimpleJdbcTemplate(dataSource).getJdbcOperations().execute("SHUTDOWN");
+		} else {
+			lexEvsDatabaseOperations.dropAllTables();
+		}
 	}
 	
 	/* (non-Javadoc)
