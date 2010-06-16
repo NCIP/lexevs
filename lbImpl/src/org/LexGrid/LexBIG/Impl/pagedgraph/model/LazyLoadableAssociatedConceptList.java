@@ -99,6 +99,8 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
     
     private PropertyType[] propertyTypes;
 
+    private AssociatedConcept[] cache;
+    
     /**
      * Instantiates a new lazy loadable associated concept list.
      * 
@@ -209,15 +211,19 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
 	 */
 	@Override
 	public AssociatedConcept[] getAssociatedConcept() {
-	    List<AssociatedConcept> list = new ArrayList<AssociatedConcept>();
-	    
-	    Iterator<AssociatedConcept> itr = iterateAssociatedConcept();
-	    
-	    while(itr.hasNext()) {
-	        list.add(itr.next());
+	    if(this.cache == null) {
+	        List<AssociatedConcept> list = new ArrayList<AssociatedConcept>();
+
+	        Iterator<AssociatedConcept> itr = iterateAssociatedConcept();
+
+	        while(itr.hasNext()) {
+	            list.add(itr.next());
+	        }
+
+	        cache = list.toArray(new AssociatedConcept[list.size()]);
 	    }
 	    
-	    return list.toArray(new AssociatedConcept[list.size()]);
+	    return cache;
 	}
 
 	/* (non-Javadoc)
