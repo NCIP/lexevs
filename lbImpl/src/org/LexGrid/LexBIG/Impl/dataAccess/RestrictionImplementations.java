@@ -44,6 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
@@ -161,8 +162,7 @@ public class RestrictionImplementations {
             }
             
             BooleanQuery masterQuery = new BooleanQuery();
-            masterQuery.add(new BooleanClause(new TermQuery(new Term(SQLTableConstants.TBLCOL_CODINGSCHEMENAME,
-                    internalCodeSystemName)), Occur.MUST));
+            masterQuery.add(new MatchAllDocsQuery(), Occur.MUST);
 
             if (textQueryPart != null) {
                 masterQuery.add(new BooleanClause(textQueryPart, Occur.MUST));
