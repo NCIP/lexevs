@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.ResourceManager;
 
 /**
@@ -39,13 +40,14 @@ public class GForge21923 extends LexBIGServiceTestCase {
         return testID;
     }
     
+   //TODO: This only is useful for backward compatibility tests.
    public void testMapNamespaceToCodingScheme() throws Exception {
        Method method = SQLImplementedMethods.class.getDeclaredMethod("mapToCodingSchemeName", new Class[]{SQLInterface.class, String.class, String.class});
        method.setAccessible(true);
        
        SQLInterface sqlInterface = ResourceManager.instance().getSQLInterface(THES_SCHEME, THES_VERSION);
        
-       int maxConnectionsPerDb = ResourceManager.instance().getSystemVariables().getMaxConnectionsPerDB();
+       int maxConnectionsPerDb = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables().getMaxConnectionsPerDB();
        
        //This used to leak one connection per call -- we'll call it 3x the defined maxConnectionsPerDb, just to make sure.
        //If this reaches the end, the JUnit will have passed. If it blocks (i.e., the pool is exhausted) this will never complete.
