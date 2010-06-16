@@ -65,6 +65,7 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
        this.setDoComputeTransitiveClosure(false);
        this.setDoIndexing(false);
        this.setDoRegister(false);
+       this.getOptions().getStringArrayOption(LOADER_POST_PROCESSOR_OPTION).getOptionValue().clear();
     }
 
     protected ExtensionDescription buildExtensionDescription(){
