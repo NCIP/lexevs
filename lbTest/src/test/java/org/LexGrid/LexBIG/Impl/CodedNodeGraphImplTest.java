@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
-import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -197,6 +196,31 @@ public class CodedNodeGraphImplTest extends TestCase {
         // no more below it
         assertTrue(ac[0].getSourceOf() == null);
     }
+    
+    public void testIntersectionSubTree() throws LBException {
+        ConvenienceMethods cm = new ConvenienceMethods(lbsi);
+
+        CodedNodeGraph cng = lbsi.getNodeGraph("Automobiles", null, "relations");
+
+        // create a graph that contains everything....
+        cng.restrictToSourceCodes(cm.createCodedNodeSet(new String[] { "005" }, "Automobiles", null));
+
+        // create a graph that contains 005 -> Ford
+        CodedNodeGraph cng2 = lbsi.getNodeGraph("Automobiles", null, "relations");
+        cng2.restrictToSourceCodes(cm.createCodedNodeSet(new String[] { "Jaguar" }, "Automobiles", null));
+
+        // intersect them
+        CodedNodeGraph cng3 = cng.intersect(cng2);
+
+        // result should only contain 005 -> Ford
+        // result should be 005 -> Ford -> Jaguar
+        ResolvedConceptReference[] rcr = cng3.resolveAsList(null, true, false, -1, -1, null, null, null, 50)
+                .getResolvedConceptReference();
+        
+        assertEquals(1, rcr.length);
+        // top node
+        assertTrue(rcr[0].getConceptCode().equals("Jaguar"));
+    }
 
     public void testIsCodeInGraph() throws LBException {
         ConvenienceMethods cm = new ConvenienceMethods(lbsi);
@@ -274,7 +298,7 @@ public class CodedNodeGraphImplTest extends TestCase {
         // code system)
         CodedNodeGraph cng2 = lbsi.getNodeGraph("Automobiles", null, "relations");
         cng2.restrictToSourceCodes(cm.createCodedNodeSet(new String[] { "Ford" }, "Automobiles", null));
-        cng2.restrictToTargetCodes(cm.createCodedNodeSet(new String[] { "Jaguar" }, "Automobiles", null));
+        cng2.restrictToTargetCodes(cm.createCodedNodeSet(new String[] { "Jaguar", "73" }, "Automobiles", null));
 
         // join them
         CodedNodeGraph unionGraph = cng.union(cng2);
@@ -301,7 +325,7 @@ public class CodedNodeGraphImplTest extends TestCase {
         assn = ac[0].getSourceOf().getAssociation();
         
         // ford has a 'uses' and 'hasSubtype' association
-        assertTrue(assn.length == 3);
+        assertEquals(2,assn.length);
         
         //dig out the 'hasSubtype' Association
         Association hasSubtypeAssoc = null;
