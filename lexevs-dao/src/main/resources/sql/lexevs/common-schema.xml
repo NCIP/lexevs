@@ -27,7 +27,7 @@
         <unique-column name="resourceType"/>
       </unique>
     </table>
-    <table name="@PREFIX@registryMetadata">
+    <table name="@PREFIX@registryMetaData">
       <column name="id" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
       <column name="lastUpdateTime" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="lastUsedDBIdentifer" primaryKey="false" required="false" type="VARCHAR" size="4" autoIncrement="false"/>
