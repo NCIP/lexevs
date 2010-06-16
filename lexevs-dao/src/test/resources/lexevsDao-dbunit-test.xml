@@ -5,9 +5,9 @@
 
 	<import resource="classpath:lexevsDao-test.xml" />
 	
-<!--	<bean id="lexGridSchemaCheckFactory"-->
-<!--		class="java.lang.Boolean">-->
-<!--		<constructor-arg value="true"/>-->
-<!--	</bean>-->
+	<bean id="lexGridSchemaCheckFactory"
+		class="java.lang.Boolean">
+		<constructor-arg value="true"/>
+	</bean>
 	
 </beans>
