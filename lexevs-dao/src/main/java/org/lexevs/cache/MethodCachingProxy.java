@@ -135,11 +135,11 @@ public class MethodCachingProxy implements InitializingBean {
 				cacheableAnnotation.cacheSize());
 		
 		if(cache.containsKey(key)){
-			logger.info("Cache hit on: " + key);
+			logger.debug("Cache hit on: " + key);
 			Object obj = cache.get(key);
 			return obj;
 		} else {
-			logger.info("Caching miss on: " + key);
+			logger.debug("Caching miss on: " + key);
 		}
 
 		Object result = pjp.proceed();
