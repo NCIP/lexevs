@@ -172,7 +172,7 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
                     this.getOptions().getStringOption(URI_OPTION).getOptionValue(), 
                     this.getOptions().getStringOption(VERSION_OPTION).getOptionValue(), 
                     this.getResourceUri(), 
-                    this.getOptions().getBooleanOption(OVERWRITE_OPTION).getOptionValue());
+                    !this.getOptions().getBooleanOption(OVERWRITE_OPTION).getOptionValue());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
