@@ -87,10 +87,17 @@ public class MethodCachingProxy implements InitializingBean {
 			"@annotation(org.lexevs.cache.annotation.ClearCache)")
 	public Object clearCache(ProceedingJoinPoint pjp) throws Throwable {
 		logger.debug("Clearing cache.");
+		
+		logCacheState(pjp);
+		
 		Cacheable cacheableAnnotation = AnnotationUtils.findAnnotation(pjp.getThis().getClass(), Cacheable.class);
 		Map<String,Object> cache = this.getCacheFromName(cacheableAnnotation.cacheName(), cacheableAnnotation.cacheSize());
+		
+		Object returnObj = pjp.proceed();
+		
 		cache.clear();
-		return pjp.proceed();
+		
+		return returnObj;
 	}
 	
 	public void clearAll() {
@@ -109,6 +116,8 @@ public class MethodCachingProxy implements InitializingBean {
 	@Around("@within(org.lexevs.cache.annotation.Cacheable) && " +
 			"@annotation(org.lexevs.cache.annotation.CacheMethod)")
 	public Object cacheMethod(ProceedingJoinPoint pjp) throws Throwable {
+		logCacheState(pjp);
+		
 		MethodSignature sig = (MethodSignature)pjp.getSignature();
 
 		Annotation[][] parameterAnnotations = sig.getMethod().getParameterAnnotations();
@@ -126,11 +135,11 @@ public class MethodCachingProxy implements InitializingBean {
 				cacheableAnnotation.cacheSize());
 		
 		if(cache.containsKey(key)){
-			logger.debug("Cache hit on: " + key);
+			logger.info("Cache hit on: " + key);
 			Object obj = cache.get(key);
 			return obj;
 		} else {
-			logger.debug("Caching miss on: " + key);
+			logger.info("Caching miss on: " + key);
 		}
 
 		Object result = pjp.proceed();
@@ -290,6 +299,21 @@ public class MethodCachingProxy implements InitializingBean {
 	 */
 	protected void setCaches(Map<String, Map<String, Object>> caches) {
 		this.caches = caches;
+	}
+	
+	private void logCacheState(ProceedingJoinPoint pjp) {
+		this.logger.debug("Called: " + pjp.toLongString());
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("Cache State: ");
+		sb.append(" - Caches: " );
+		
+		for(String key : this.caches.keySet()) {
+			sb.append(" -- Cache: " + key);
+			sb.append(" -- CacheSize: " + this.caches.get(key).size());
+		}
+		
+		this.logger.debug(sb.toString());
 	}
 
 }
