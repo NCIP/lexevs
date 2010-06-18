@@ -41,9 +41,9 @@ public class TestEnumerateConceptsbyRelationship extends LexBIGServiceTestCase {
         cng.restrictToAssociations(Constructors.createNameAndValueList("Anatomic_Structure_is_Physical_Part_of"), null);
 
         ResolvedConceptReference[] rcr = cng.toNodeList(Constructors.createConceptReference("External_Lip", THES_SCHEME),
-                true, false, -1, 0).resolveToList(null, null, null, 0).getResolvedConceptReference();
+                true, false, -1, -1).resolveToList(null, null, null, -1).getResolvedConceptReference();
 
-        assertTrue(rcr.length == 3);
+        assertEquals(3,rcr.length);
 
     }
 
