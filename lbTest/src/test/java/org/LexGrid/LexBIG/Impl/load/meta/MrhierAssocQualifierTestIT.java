@@ -90,21 +90,6 @@ public class MrhierAssocQualifierTestIT extends DataLoadTestBase {
 		assertTrue(BaseCodedNodeGraphTest.associatedConceptListContains(acons, "CL385598"));
 	}
 	
-	@Test
-	public void testIsC0000005toC0036775AssocQualifierPresent() throws Exception {	
-		Association[] assocs = refC0000005.getSourceOf().getAssociation();
-		AssociatedConcept acon = assocs[0].getAssociatedConcepts().getAssociatedConcept()[0];
-		assertTrue(DataTestUtils.isQualifierNameAndValuePresent(RrfLoaderConstants.HCD_QUALIFIER, "testHierarchy:A3586555.A5703273.A5784826",  acon.getAssociationQualifiers()));	
-	}
-	
-	@Test
-	public void testIsC0036775toC0001555AssocQualifierPresent() throws Exception {	
-		Association[] assocs = refC0036775.getSourceOf().getAssociation();
-		AssociatedConcept[] acons = assocs[0].getAssociatedConcepts().getAssociatedConcept();
-		AssociatedConcept concept = DataTestUtils.getAssociatedConcept(acons, "C0001555");
-		assertTrue(DataTestUtils.isQualifierNameAndValuePresent(RrfLoaderConstants.HCD_QUALIFIER, "testHierarchy:A3586555.A5703273.A5784826",  concept.getAssociationQualifiers()));	
-	}
-	
 	public static junit.framework.Test suite() {  
 		return new JUnit4TestAdapter(MrhierAssocQualifierTestIT.class);  
 	}  

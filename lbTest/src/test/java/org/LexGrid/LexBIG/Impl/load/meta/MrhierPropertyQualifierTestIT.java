@@ -58,6 +58,7 @@ public class MrhierPropertyQualifierTestIT extends DataLoadTestBase {
 		assertNotNull(refCL385598);
 	}
 	
+	/*
 	@Test
 	public void testIsC0000005HcdPropQualifierPresent() throws Exception {	
 		Property prop = DataTestUtils.getPropertyWithValue(refC0000005.getEntity(), "(131)I-Macroaggregated Albumin");
