@@ -18,15 +18,19 @@
  */
 package org.LexGrid.LexBIG.Impl.load.meta;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import junit.framework.JUnit4TestAdapter;
 
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
-import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.Before;
 import org.junit.Test;
+import org.lexgrid.loader.meta.constants.MetaLoaderConstants;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
+
+import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
 
 /**
  * The Class EntityAssnsToEntityQualsDataTestIT.
@@ -49,7 +53,7 @@ public class EntityAssnsToEntityQualsDataTestIT extends DataLoadTestBase {
 		associatedConcept = cng.resolveAsList(Constructors.createConceptReference("C0000005", 
 				"NCI MetaThesaurus"), true, true, 1, 1, null, null, null, -1)
 				.getResolvedConceptReference(0)
-				.getSourceOf()
+				.getTargetOf()
 				.getAssociation()[0]
 				.getAssociatedConcepts()
 				.getAssociatedConcept(0);
@@ -64,17 +68,15 @@ public class EntityAssnsToEntityQualsDataTestIT extends DataLoadTestBase {
 	@Test
 	public void testSourceAuiQual() throws Exception {	
 		NameAndValueList quals = associatedConcept.getAssociationQualifiers();
-		//TODO:
-		//assertTrue(
-		//		DataTestUtils.isQualifierNameAndValuePresent(MetaLoaderConstants.SOURCE_AUI_QUALIFIER, "A4345877", quals));
+		assertTrue(
+				DataTestUtils.isQualifierNameAndValuePresent(MetaLoaderConstants.SOURCE_AUI_QUALIFIER, "A3586555", quals));
 	}
 	
 	@Test
 	public void testTargetAuiQual() throws Exception {	
 		NameAndValueList quals = associatedConcept.getAssociationQualifiers();
-		//TODO:
-		//assertTrue(
-		//DataTestUtils.isQualifierNameAndValuePresent(MetaLoaderConstants.TARGET_AUI_QUALIFIER, "A3586555", quals));
+		assertTrue(
+		DataTestUtils.isQualifierNameAndValuePresent(MetaLoaderConstants.TARGET_AUI_QUALIFIER, "A4345877", quals));
 	}
 	
 	@Test
@@ -136,9 +138,8 @@ public class EntityAssnsToEntityQualsDataTestIT extends DataLoadTestBase {
 	@Test
 	public void testSourceQual() throws Exception {	
 		NameAndValueList quals = associatedConcept.getAssociationQualifiers();
-		//TODO:
-		//assertTrue(
-		//DataTestUtils.isQualifierNameAndValuePresent(MetaLoaderConstants.SOURCE_QUALIFIER, "MSH", quals));
+		assertTrue(
+		DataTestUtils.isQualifierNameAndValuePresent(MetaLoaderConstants.SOURCE_QUALIFIER, "MSH", quals));
 	}
 	
 	public static junit.framework.Test suite() {  

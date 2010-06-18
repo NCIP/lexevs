@@ -48,7 +48,7 @@ public class DefinitionPropertyDataTestIT extends DataLoadTestBase {
 	
 		testEntityWithDefinition = rcr1.getEntity();
 		
-		cns = lbs.getCodingSchemeConcepts("NCI Metathesaurus", null);
+		cns = lbs.getCodingSchemeConcepts("NCI MetaThesaurus", null);
 		cns.restrictToCodes(Constructors.createConceptReferenceList("C0000097"));
 		ResolvedConceptReference rcr2 = cns.resolveToList(null, null, null, -1).getResolvedConceptReference()[0];
 	

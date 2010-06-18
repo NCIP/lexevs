@@ -18,9 +18,9 @@
  */
 package org.LexGrid.LexBIG.Impl.load.meta;
 
-import static org.junit.Assert.assertTrue;
 import junit.framework.JUnit4TestAdapter;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -66,7 +66,7 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 	 */
 	@Test
 	public void testSourceAssociationName() throws Exception {	
-		assertTrue(graphFocus.getSourceOf().getAssociation()[0].getAssociationName().equals("RB"));	
+		assertTrue(graphFocus.getSourceOf().getAssociation()[0].getAssociationName().equals("RN"));	
 	}
 	
 	/**
@@ -75,8 +75,15 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 	 * @throws Exception the exception
 	 */
 	@Test
-	public void testSourceAssociatedConceptCount() throws Exception {	
-		assertTrue(graphFocus.getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConceptCount() == 1);	
+	public void testSourceAssociatedConceptCountFromArray() throws Exception {
+		AssociatedConcept[] acs = graphFocus.getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConcept();
+		assertEquals(1, acs.length);	
+	}
+	
+	@Test
+	public void testSourceAssociatedConceptCountFromList() throws Exception {
+		AssociatedConceptList acs = graphFocus.getSourceOf().getAssociation()[0].getAssociatedConcepts();
+		assertEquals(1, acs.getAssociatedConceptCount());
 	}
 	
 	/**
@@ -89,17 +96,7 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 		AssociatedConcept concept = graphFocus.getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConcept(0);	
 		assertTrue(concept.getCode().equals("C0036775"));
 	}
-	
-	/**
-	 * Test target count.
-	 * 
-	 * @throws Exception the exception
-	 */
-	@Test
-	public void testTargetCount() throws Exception {	
-		assertTrue(graphFocus.getTargetOf() == null);
-	}
-	
+
 	public static junit.framework.Test suite() {  
 		return new JUnit4TestAdapter(EntityAssnsToEntityDataTestIT.class);  
 	}  

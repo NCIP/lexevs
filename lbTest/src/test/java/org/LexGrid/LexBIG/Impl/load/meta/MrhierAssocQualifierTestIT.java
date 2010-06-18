@@ -83,7 +83,7 @@ public class MrhierAssocQualifierTestIT extends DataLoadTestBase {
 	public void testIsrefC0001555TargetOfCL385598() throws Exception {	
 		Association[] assocs = refC0001555.getTargetOf().getAssociation();
 
-		Association assoc = DataTestUtils.getAssociation(assocs, "CHD");
+		Association assoc = DataTestUtils.getAssociation(assocs, "PAR");
 		
 		AssociatedConcept[] acons = assoc.getAssociatedConcepts().getAssociatedConcept();
 		
@@ -102,14 +102,6 @@ public class MrhierAssocQualifierTestIT extends DataLoadTestBase {
 		Association[] assocs = refC0036775.getSourceOf().getAssociation();
 		AssociatedConcept[] acons = assocs[0].getAssociatedConcepts().getAssociatedConcept();
 		AssociatedConcept concept = DataTestUtils.getAssociatedConcept(acons, "C0001555");
-		assertTrue(DataTestUtils.isQualifierNameAndValuePresent(RrfLoaderConstants.HCD_QUALIFIER, "testHierarchy:A3586555.A5703273.A5784826",  concept.getAssociationQualifiers()));	
-	}
-	
-	@Test
-	public void testIsC0001555toCL385598AssocQualifierPresent() throws Exception {	
-		Association[] assocs = refC0001555.getTargetOf().getAssociation();
-		AssociatedConcept[] acons = DataTestUtils.getAssociation(assocs, "CHD").getAssociatedConcepts().getAssociatedConcept();
-		AssociatedConcept concept = DataTestUtils.getAssociatedConcept(acons, "CL385598");
 		assertTrue(DataTestUtils.isQualifierNameAndValuePresent(RrfLoaderConstants.HCD_QUALIFIER, "testHierarchy:A3586555.A5703273.A5784826",  concept.getAssociationQualifiers()));	
 	}
 	
