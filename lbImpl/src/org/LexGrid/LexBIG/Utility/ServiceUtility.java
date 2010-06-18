@@ -32,6 +32,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry;
 import org.lexevs.system.service.SystemResourceService;
 
 /**
@@ -141,5 +143,18 @@ public class ServiceUtility {
         }
 
         return pass;
+    }
+    
+    public static String getSchemaVersionForCodingScheme(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag) throws LBParameterException {
+
+        String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(codingSchemeName);
+        String version = ServiceUtility.getVersion(codingSchemeName, versionOrTag);
+
+        Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
+
+        RegistryEntry entry = 
+            registry.getCodingSchemeEntry(Constructors.createAbsoluteCodingSchemeVersionReference(uri, version));
+
+        return entry.getDbSchemaVersion();
     }
 }
