@@ -55,7 +55,8 @@ import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.RestrictToSourceCodes;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.RestrictToTargetCodes;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.interfaces.Operation;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
-import org.LexGrid.LexBIG.Impl.helpers.CountConceptReference;
+import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
+import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -63,6 +64,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.ObjectToString;
+import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgAdminFunction;
 import org.LexGrid.annotations.LgClientSideSafe;
@@ -78,9 +80,15 @@ import org.LexGrid.relations.AssociationEntity;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
+import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
@@ -629,6 +637,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         ConceptReferenceList crl = new ConceptReferenceList();
         crl.addConceptReference(conceptRef);
         ConceptReferenceList countRefList = getHierarchyLevelNextCount(codingSchemeName, versionOrTag, hierarchyID, crl);
+               
         if (countRefList != null && countRefList.getConceptReferenceCount() > 0) {
             ConceptReference cr = (countRefList.getConceptReference())[0];
             if (cr instanceof CountConceptReference)
@@ -653,32 +662,27 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     }
 
     protected ConceptReferenceList getHierarchyLevelNextCount(String codingSchemeName,
-            CodingSchemeVersionOrTag versionOrTag, String hierarchyID, ConceptReferenceList conceptCodes,
+            CodingSchemeVersionOrTag versionOrTag, String hierarchyID, final ConceptReferenceList conceptCodes,
             boolean forward) throws LBException {
-        String internalCodingSchemeName = null;
-        String version = null;
-        long startTime = System.currentTimeMillis();
-        if (versionOrTag == null) {
-            version = ResourceManager.instance().getInternalVersionStringForTag(codingSchemeName, null);
-        } else {
-            version = versionOrTag.getVersion();
-        }
+        SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+ 
+        final String version = ServiceUtility.getVersion(codingSchemeName, versionOrTag);
 
-        internalCodingSchemeName = ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(
+        String internalCodingSchemeName = systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(
                 codingSchemeName, version);
+        
         SupportedHierarchy[] shs = getSupportedHierarchies(codingSchemeName, versionOrTag, hierarchyID);
         SupportedHierarchy sh = shs[0];
-        String assocs[] = sh.getAssociationNames();
+        final String assocs[] = sh.getAssociationNames();
         ArrayList<Operation> pendingOperations = new ArrayList<Operation>();
 
         RestrictToAssociations rta = new RestrictToAssociations(ConvenienceMethods.createNameAndValueList(assocs), null);
         pendingOperations.add(rta);
-        boolean resolveFwd = sh.isIsForwardNavigable();
+        
         // If we want to get the prev level, we need to flip the resolve
         // direction
-        if (!forward) {
-            resolveFwd = !resolveFwd;
-        }
+        final boolean resolveFwd = !sh.isIsForwardNavigable() ? !forward : forward;
+
         if (resolveFwd) {
             RestrictToSourceCodes rsc = new RestrictToSourceCodes(conceptCodes);
             pendingOperations.add(rsc);
@@ -686,30 +690,85 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             RestrictToTargetCodes rtc = new RestrictToTargetCodes(conceptCodes);
             pendingOperations.add(rtc);
         }
-        try {
-            SQLInterface si = ResourceManager.instance().getSQLInterface(internalCodingSchemeName, version);
-            ConceptReferenceList crl = SQLImplementedMethods.countQuery(si, pendingOperations, resolveFwd,
-                    internalCodingSchemeName, version, null);
-            //If we are searching for the child count of concept C1 and C1 has no children, 
-            //it would not be in the list. Add C1 to the list with count 0, indicating we couldn't find
-            //a match in the database.
-            HashMap<String, ConceptReference> lookup= new HashMap<String, ConceptReference>();
-            for (ConceptReference cr: crl.getConceptReference()) {
-                lookup.put(cr.getConceptCode(), cr);
+        
+            final String uri = systemResourceService.getUriForUserCodingSchemeName(internalCodingSchemeName);
+            
+            DaoCallbackService daoCallbackService = 
+                LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getDaoCallbackService();
+            
+            GraphQueryBuilder queryBuilder = new DefaultGraphQueryBuilder(uri, version);
+            queryBuilder.restrictToAssociations(
+                    ConvenienceMethods.createNameAndValueList(assocs), null);
+            
+            if (resolveFwd) {
+                queryBuilder.getQuery().setRestrictToSourceCodes(
+                        Arrays.asList(conceptCodes.getConceptReference()));
+ 
+            } else {
+                queryBuilder.getQuery().setRestrictToTargetCodes(
+                        Arrays.asList(conceptCodes.getConceptReference()));
             }
-            //If we do not find the concept in the list, we assume it is because it has no children. 
-            for (ConceptReference cr: conceptCodes.getConceptReference()) {
-                if (!lookup.containsKey(cr.getConceptCode())) {
-                    CountConceptReference ccr= new CountConceptReference(cr, 0);
-                    crl.addConceptReference(ccr);
-                }
-            }
-            //getLogger().debug("Time to execute getHierarchyLevelNextCount=" + (System.currentTimeMillis() - startTime));
-            return crl;
+            
+            List<CountConceptReference> conceptCountList = daoCallbackService.executeInDaoLayer(
+                    new DaoCallback<List<CountConceptReference>>(){
 
-        } catch (MissingResourceException e) {
-            throw new LBException(e.getMessage(), e);
+                        @Override
+                        public List<CountConceptReference> execute(DaoManager daoManager) {
+                            CodingSchemeDao csDao = daoManager.getCodingSchemeDao(uri, version);
+                            CodedNodeGraphDao cngDao = daoManager.getCodedNodeGraphDao(uri, version);
+                            
+                            String codingSchemeUid = csDao.getCodingSchemeUIdByUriAndVersion(uri, version);
+                            
+                            if(resolveFwd) {
+                            return cngDao.getCountConceptReferencesContainingSubject(
+                                    codingSchemeUid, 
+                                    null, 
+                                    Arrays.asList(conceptCodes.getConceptReference()), 
+                                    Arrays.asList(assocs), 
+                                    null, 
+                                    null, 
+                                    null, 
+                                    null, 
+                                    null);
+                            } else {
+                                return cngDao.getCountConceptReferencesContainingObject(
+                                        codingSchemeUid, 
+                                        null, 
+                                        Arrays.asList(conceptCodes.getConceptReference()), 
+                                        Arrays.asList(assocs), 
+                                        null, 
+                                        null, 
+                                        null, 
+                                        null, 
+                                        null);
+                            }
+                        }
+                
+                    });
+        
+        ConceptReferenceList crl = new ConceptReferenceList();
+        crl.setConceptReference(conceptCountList.toArray(new ConceptReference[conceptCountList.size()]));
+            
+            
+        //If we are searching for the child count of concept C1 and C1 has no children, 
+        //it would not be in the list. Add C1 to the list with count 0, indicating we couldn't find
+        //a match in the database.
+        HashMap<String, ConceptReference> lookup = new HashMap<String, ConceptReference>();
+        for (ConceptReference cr: crl.getConceptReference()) {
+            lookup.put(cr.getConceptCode(), cr);
         }
+        
+        
+        
+        //If we do not find the concept in the list, we assume it is because it has no children. 
+        for (ConceptReference cr: conceptCodes.getConceptReference()) {
+            if (!lookup.containsKey(cr.getConceptCode())) {
+                CountConceptReference ccr= new CountConceptReference(cr, 0);
+                crl.addConceptReference(ccr);
+            }
+        }
+        //getLogger().debug("Time to execute getHierarchyLevelNextCount=" + (System.currentTimeMillis() - startTime));
+        return crl;
 
     }
 
