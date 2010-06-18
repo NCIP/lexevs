@@ -10,6 +10,7 @@ import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
 import org.lexevs.dao.database.ibatis.association.parameter.GetCodeRelationshipsBean;
+import org.lexevs.dao.database.ibatis.association.parameter.GetCountConceptReferenceBean;
 import org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsBean;
 import org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCountBean;
 import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
@@ -19,6 +20,7 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
+import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 import org.lexevs.dao.database.utility.DaoUtility;
@@ -39,7 +41,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	private static String GET_TAIL_ENTITY_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTailEntityAssnsToEntityUids";
 	private static String GET_ROOT_ENTITY_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getRootEntityAssnsToEntityUids";
 	private static String GET_CODE_RELATIONSHIPS_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getCodeRelationships";
-
+	private static String GET_COUNT_CONCEPTREFERENCES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getCountConceptReferences";
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> listCodeRelationships(
@@ -380,5 +383,79 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		
 		return this.getSqlMapClientTemplate().
 			queryForList(GET_TAIL_ENTITY_ASSNSTOENTITY_UID_SQL, bean);
+	}
+
+	@Override
+	public List<CountConceptReference> getCountConceptReferencesContainingObject(
+			String codingSchemeUid, 
+			String relationsContainerName,
+			List<ConceptReference> objects, 
+			List<String> associationNames,
+			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveSubjectCodes,
+			List<String> mustHaveSubjectNamespace,
+			List<String> mustHaveObjectEntityType, 
+			Boolean restrictToAnonymous) {
+		return this.doGetCountConceptReferencesContainingSubject(
+				codingSchemeUid, 
+				relationsContainerName, 
+				objects, 
+				associationNames, 
+				associationQualifiers, 
+				mustHaveSubjectCodes, 
+				mustHaveSubjectNamespace, 
+				mustHaveObjectEntityType, 
+				restrictToAnonymous, 
+				TripleNode.OBJECT);
+	}
+
+	@Override
+	public List<CountConceptReference> getCountConceptReferencesContainingSubject(
+			String codingSchemeUid, String relationsContainerName,
+			List<ConceptReference> subjects, List<String> associationNames,
+			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveObjectCodes,
+			List<String> mustHaveObjectNamespace,
+			List<String> mustHaveObjectEntityType, Boolean restrictToAnonymous) {
+		return this.doGetCountConceptReferencesContainingSubject(
+				codingSchemeUid, 
+				relationsContainerName, 
+				subjects, 
+				associationNames, 
+				associationQualifiers, 
+				mustHaveObjectCodes, 
+				mustHaveObjectNamespace, 
+				mustHaveObjectEntityType, 
+				restrictToAnonymous, TripleNode.SUBJECT);
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected List<CountConceptReference> doGetCountConceptReferencesContainingSubject(
+			String codingSchemeUid, 
+			String relationsContainerName,
+			List<ConceptReference> conceptReferences, 
+			List<String> associationNames,
+			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveCodes,
+			List<String> mustHaveNamespace,
+			List<String> mustHaveEntityType, 
+			Boolean restrictToAnonymous, 
+			TripleNode tripleNode){
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
+		
+		GetCountConceptReferenceBean bean = new GetCountConceptReferenceBean();
+		bean.setPrefix(prefix);
+		bean.setCodingSchemeUid(codingSchemeUid);
+		bean.setRelationsContainerName(relationsContainerName);
+		bean.setConceptReferences(conceptReferences);
+		bean.setAssociations(associationNames);
+		bean.setAssociationQualifiers(associationQualifiers);
+		bean.setMustHaveCodes(mustHaveCodes);
+		bean.setMustHaveNamespaces(mustHaveNamespace);
+		bean.setMustHaveEntityTypes(mustHaveEntityType);
+		bean.setRestrictToAnonymous(restrictToAnonymous);
+		bean.setTripleNode(tripleNode);
+		
+		return this.getSqlMapClientTemplate().queryForList(GET_COUNT_CONCEPTREFERENCES_SQL, bean);
 	}
 }

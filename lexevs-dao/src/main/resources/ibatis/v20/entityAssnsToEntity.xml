@@ -8,7 +8,14 @@
 	<typeAlias alias="associatedConcept" type="org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept"/>
 	<typeAlias alias="associationQualification" type="org.LexGrid.LexBIG.DataModel.Core.NameAndValue"/>
 	<typeAlias alias="associationTarget" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean"/>
-
+	<typeAlias alias="countConceptReference" type="org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference"/>
+	
+	<resultMap id="countConceptReferenceResult" class="countConceptReference">
+		<result property="code" column="entityCode" />
+		<result property="codeNamespace" column="entityCodeNamespace" />
+		<result property="childCount" column="relationshipsCount" />
+	</resultMap>
+	
 	<resultMap id="nodeResult" class="node">
 		<result property="entityCode" column="entityCode" />
 		<result property="entityCodeNamespace" column="entityCodeNamespace" />
@@ -314,19 +321,6 @@
 			)
 		</isNotEmpty>
 
-		<isEqual property="tripleNode" compareValue="SUBJECT" prepend="AND">
-			eate.sourceEntityCode = #entityCode#
-			<isNotNull property="entityCodeNamespace" prepend="AND">
-				eate.sourceEntityCodeNamespace = #entityCodeNamespace#
-			</isNotNull>
-		</isEqual>
-		<isEqual property="tripleNode" compareValue="OBJECT" prepend="AND">
-			eate.targetEntityCode = #entityCode#
-			<isNotNull property="entityCodeNamespace" prepend="AND">
-				eate.targetEntityCodeNamespace = #entityCodeNamespace#
-			</isNotNull>
-		</isEqual>
-
 		<isNotEmpty property="mustHaveCodes" prepend="AND">
 			(
 			<iterate property="mustHaveCodes" conjunction="OR">
@@ -375,6 +369,52 @@
 		<isNotNull property="restrictToAnonymous" prepend="AND">
 			entity.isAnonymous = #restrictToAnonymous#
 		</isNotNull>
+	</sql>
+	
+	<sql id="restrictEntityAssnsToEntityUidsBySingleCodeFragment">
+		
+		<isEqual property="tripleNode" compareValue="SUBJECT" prepend="AND">
+			eate.sourceEntityCode = #entityCode#
+			<isNotNull property="entityCodeNamespace" prepend="AND">
+				eate.sourceEntityCodeNamespace = #entityCodeNamespace#
+			</isNotNull>
+		</isEqual>
+		<isEqual property="tripleNode" compareValue="OBJECT" prepend="AND">
+			eate.targetEntityCode = #entityCode#
+			<isNotNull property="entityCodeNamespace" prepend="AND">
+				eate.targetEntityCodeNamespace = #entityCodeNamespace#
+			</isNotNull>
+		</isEqual>
+		
+	</sql>
+	
+	<sql id="restrictEntityAssnsToEntityUidsByMultipleCodesFragment">
+	
+		<isEqual property="tripleNode" compareValue="SUBJECT" prepend="AND">
+			(
+			<iterate property="conceptReferences" conjunction="OR">
+				(	
+				eate.sourceEntityCode = #conceptReferences[].code#
+				<isNotNull property="conceptReferences[].codeNamespace" prepend="AND">
+					eate.sourceEntityCodeNamespace = #conceptReferences[].codeNamespace#
+				</isNotNull>
+				)
+			</iterate>
+			)
+		</isEqual>
+		<isEqual property="tripleNode" compareValue="OBJECT" prepend="AND">
+			(
+			<iterate property="conceptReferences" conjunction="OR">
+				(
+				eate.targetEntityCode = #conceptReferences[].code#
+				<isNotNull property="conceptReferences[].codeNamespace" prepend="AND">
+					eate.targetEntityCodeNamespace = #conceptReferences[].codeNamespace#
+				</isNotNull>
+				)
+			</iterate>
+			)
+		</isEqual>
+	
 	</sql>
 	
 	<sql id="getRelationshipsFragment">
@@ -634,6 +674,7 @@
 		SELECT DISTINCT 
 			(eate.entityAssnsGuid)
 		<include refid="getEntityAssnsToEntityUidsFragment"/>
+		<include refid="restrictEntityAssnsToEntityUidsBySingleCodeFragment"/>
 	</select>
 	
 	<select id="getEntityAssnsToEntityUidsCount"
@@ -643,8 +684,42 @@
 			COUNT( DISTINCT eate.entityAssnsGuid ) AS relationshipsCount,
 			ap.associationName AS associationName
 		<include refid="getEntityAssnsToEntityUidsFragment"/>
+		<include refid="restrictEntityAssnsToEntityUidsBySingleCodeFragment"/>
 		GROUP BY
 			associationName
+	</select>
+	
+	<select id="getCountConceptReferences"
+				parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCountBean"
+				resultMap="countConceptReferenceResult">
+		SELECT 
+			COUNT( DISTINCT eate.entityAssnsGuid ) AS relationshipsCount,
+			<isEqual property="tripleNode" compareValue="SUBJECT">
+				eate.sourceEntityCode AS entityCode,
+				eate.sourceEntityCodeNamespace AS entityCodeNamespace
+			</isEqual>
+			<isEqual property="tripleNode" compareValue="OBJECT">
+				eate.targetEntityCode AS entityCode,
+				eate.targetEntityCodeNamespace AS entityCodeNamespace
+			</isEqual>
+			
+		<include refid="getEntityAssnsToEntityUidsFragment"/>
+		<include refid="restrictEntityAssnsToEntityUidsByMultipleCodesFragment"/>
+		
+		AND
+			eate.sourceEntityCode NOT IN ('@' , '@@')
+		AND
+			eate.targetEntityCode NOT IN ('@' , '@@')
+		
+		GROUP BY
+			<isEqual property="tripleNode" compareValue="SUBJECT">
+				eate.sourceEntityCode,
+				eate.sourceEntityCodeNamespace
+			</isEqual>
+			<isEqual property="tripleNode" compareValue="OBJECT">
+				eate.targetEntityCode,
+				eate.targetEntityCodeNamespace
+			</isEqual>
 	</select>
 	
 	<select id="getDistinctSources" 
