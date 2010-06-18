@@ -115,6 +115,7 @@ public class XmlContentWriter {
            marshaller.setMarshalListener(listener);
            marshaller.setWriter(writer);
            marshaller.marshal(obj);
+           writer.close(); //close the writer after the marshaling job done
        } catch (Exception e) {
            throw new RuntimeException(e);
        } 
