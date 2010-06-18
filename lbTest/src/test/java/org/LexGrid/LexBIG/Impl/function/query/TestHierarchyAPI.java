@@ -29,12 +29,12 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
-import org.LexGrid.LexBIG.Impl.helpers.CountConceptReference;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
+import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
 
 /**
  * This testcase checks that the hierarchy api works as desired.
@@ -198,7 +198,7 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
                 .getGenericExtension("LexBIGServiceConvenienceMethods");
 
         // Iterate through all hierarchies ...
-        CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTagFromVersion(CELL_VERSION);
+        CodingSchemeVersionOrTag csvt = null;
         String[] hierarchyIDs = lbscm.getHierarchyIDs(CELL_URN, csvt);
         String hierarchyId = (hierarchyIDs.length > 0) ? hierarchyIDs[0] : null;
 
@@ -265,7 +265,7 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
                 .getGenericExtension("LexBIGServiceConvenienceMethods");
 
         // Iterate through all hierarchies ...
-        CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTagFromVersion(CELL_VERSION);
+        CodingSchemeVersionOrTag csvt = null;
         String[] hierarchyIDs = lbscm.getHierarchyIDs(CELL_URN, csvt);
         String hierarchyId = (hierarchyIDs.length > 0) ? hierarchyIDs[0] : null;
 
@@ -290,7 +290,7 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
                 .getGenericExtension("LexBIGServiceConvenienceMethods");
 
         // Iterate through all hierarchies ...
-        CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTagFromVersion(AIR_VERSION);
+        CodingSchemeVersionOrTag csvt = null;
         String[] hierarchyIDs = lbscm.getHierarchyIDs(AIR_SCHEME, csvt);
         String hierarchyId = (hierarchyIDs.length > 0) ? hierarchyIDs[0] : null;
 
@@ -329,7 +329,7 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
                 .getGenericExtension("LexBIGServiceConvenienceMethods");
 
         // Iterate through all hierarchies ...
-        CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTagFromVersion(AMINOACID_VERSION);
+        CodingSchemeVersionOrTag csvt = null;
         String[] hierarchyIDs = lbscm.getHierarchyIDs(AMINOACID_SCHEME, csvt);
         String hierarchyId = (hierarchyIDs.length > 0) ? hierarchyIDs[0] : null;
 
@@ -340,7 +340,7 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
         
         ConceptReference cr= ConvenienceMethods.createConceptReference("RefiningFeature", AMINOACID_SCHEME);       
         int count = lbscm.getHierarchyLevelNextCount(AMINOACID_SCHEME, csvt, hierarchyId, cr);
-        assertTrue(count== 5);
+        assertEquals(5,count);
         
         //This prev of concept of root, should have no parent
         cr= ConvenienceMethods.createConceptReference("RefiningFeature", AMINOACID_SCHEME);       
@@ -363,7 +363,7 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
                 .getGenericExtension("LexBIGServiceConvenienceMethods");
 
         // Iterate through all hierarchies ...
-        CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTagFromVersion(CELL_VERSION);
+        CodingSchemeVersionOrTag csvt = null;
         String[] hierarchyIDs = lbscm.getHierarchyIDs(CELL_URN, csvt);
         String hierarchyId = (hierarchyIDs.length > 0) ? hierarchyIDs[0] : null;
 
@@ -375,7 +375,7 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
         
         ConceptReferenceList countList = lbscm.getHierarchyLevelNextCount(CELL_URN, csvt, hierarchyId, crl);
         int count= findMatchingConcept("CL:0000000", countList);
-        assertTrue(count== 2);
+        assertEquals(2,count);
         
         count= findMatchingConcept("CL:0000003", countList);
         assertTrue(count== 2);
@@ -414,7 +414,7 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
         // Iterate through all hierarchies ...
        
         String codingschemeURI=CELL_URN;
-        CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTagFromVersion(CELL_VERSION);
+        CodingSchemeVersionOrTag csvt = null;
         String[] hierarchyIDs = lbscm.getHierarchyIDs(codingschemeURI, csvt);
         String hierarchyId = (hierarchyIDs.length > 0) ? hierarchyIDs[0] : null;
 
