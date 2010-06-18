@@ -87,7 +87,7 @@ public class SameCodeDifferentCuiTestIT extends DataLoadTestBase {
 	 */
 	@Test
 	public void testPresPopertyNameCui1() throws Exception {	
-		Property prop = DataTestUtils.getPropertyWithValue(testEntity.getPresentation(), "Alopecia");
+		Property prop = DataTestUtils.getPropertyWithValue(testEntity.getPresentation(), "Alopecia - Different CUI");
 		assertNotNull(prop);
 		assertTrue(prop instanceof Presentation);
 		Presentation pres = (Presentation)prop;
