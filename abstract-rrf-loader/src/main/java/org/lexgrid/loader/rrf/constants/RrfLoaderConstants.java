@@ -103,6 +103,8 @@ REL, /** The RELA. */
 	
 	public static String MRRANK_PROPERTY_QUALIFIER_NAME = "mrrank";
 	
+	public static String SIB = "SIB";
+	
 	/** The TRANSITIV e_ associations. */
 	public static List<String> TRANSITIVE_ASSOCIATIONS = Arrays.asList(new String[]{"PAR", "CHD", "isa", "inverse_isa"});
 	
