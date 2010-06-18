@@ -44,7 +44,7 @@ public class TestRetrieveRelationsforConcept extends LexBIGServiceTestCase {
 
         CodedNodeGraph cng = ServiceHolder.instance().getLexBIGService().getNodeGraph(THES_SCHEME, null, "roles");
 
-        cng.restrictToCodes(cns);
+        cng.restrictToSourceCodes(cns);
         cng.restrictToAssociations(Constructors.createNameAndValueList("Anatomic_Structure_is_Physical_Part_of"), null);
 
         ResolvedConceptReference[] rcr = cng.resolveAsList(Constructors.createConceptReference("External_Lip", THES_SCHEME),
