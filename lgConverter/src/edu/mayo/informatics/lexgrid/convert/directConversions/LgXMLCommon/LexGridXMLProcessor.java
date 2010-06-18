@@ -492,7 +492,7 @@ public boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages)
                 if (event == XMLStreamConstants.START_ELEMENT && 
                         (xmlStreamReader.getLocalName().equals("codingScheme") || 
                                 xmlStreamReader.getLocalName().equals("changedCodingSchemeEntry"))) {
-                  messages.info("This LexGrid XML contains a coding scheme elment");
+       
                     schemePresent = true;}
                 if(schemePresent && event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("entryState")){
                     for(int i = 0; i < xmlStreamReader.getAttributeCount(); i++){
@@ -606,7 +606,6 @@ public SystemRelease getSystemReleaseMetadata(String path, LgMessageDirectorIF m
                         systemRelease.setReleaseURI(xmlStreamReader.getAttributeValue(i));
                     }
                     if (xmlStreamReader.getAttributeLocalName(i).equals("releaseDate")) {
-                  
                         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy"); 
                         Date date = formatter.parse(xmlStreamReader.getAttributeValue(i));
                         systemRelease.setReleaseDate(date);
@@ -619,9 +618,9 @@ public SystemRelease getSystemReleaseMetadata(String path, LgMessageDirectorIF m
                     }
             }
         }
-        
+    }
         xmlStreamReader.close();
-        in.close();}
+        in.close();
     } catch (XMLStreamException e) {
        messages.error("While streaming file at " + path + "an error occured");
         e.printStackTrace();
