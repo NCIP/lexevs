@@ -93,6 +93,12 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
                 returnList.add(sn.getLocalId());
             }
         }
+        
+        if(CollectionUtils.isEmpty(returnList)) {
+            throw new LBParameterException("The Coding Scheme Name: " + codingSchemeNameOfSearchCodingScheme
+                    + " cannot be mapped to any Supported Namespaces, so it cannot be used as a restriction.");
+        }
+        
         return returnList;   
     }
 }
