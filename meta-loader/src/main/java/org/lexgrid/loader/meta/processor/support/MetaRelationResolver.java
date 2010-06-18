@@ -33,14 +33,14 @@ public class MetaRelationResolver extends AbstractRrfRelationResolver {
 	 * @see org.lexgrid.loader.rrf.processor.support.AbstractRrfRelationResolver#getSource(org.lexgrid.loader.rrf.model.Mrrel)
 	 */
 	public String getSource(Mrrel item) {
-		return item.getCui1();
+		return item.getCui2();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.rrf.processor.support.AbstractRrfRelationResolver#getTarget(org.lexgrid.loader.rrf.model.Mrrel)
 	 */
 	public String getTarget(Mrrel item) {
-		return item.getCui2();
+		return item.getCui1();
 	}
 
 	/* (non-Javadoc)
