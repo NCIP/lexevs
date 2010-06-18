@@ -21,6 +21,7 @@ package org.lexgrid.loader.lexbigadmin;
 import java.net.URI;
 
 import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.apache.commons.io.FileUtils;
 import org.springframework.batch.core.StepContribution;
@@ -63,17 +64,21 @@ public class MetadataLoadingTasklet extends AbstractLexEvsUtilityTasklet impleme
 			ChunkContext chunkContext) throws Exception {
 		getLogger().info("Loading Metadata.");
 		
-		//TODO:
-		//MetaData_Loader metadataLoader =
-		//	getConnectionManager().getLexEvsLoader(loaderName, loaderClass);
+		MetaData_Loader metadataLoader =
+			(MetaData_Loader) LexBIGServiceImpl.defaultInstance().getServiceManager(null).getLoader(loaderName);
 		
 		//we know this URI is always going to be a file, so to make
 		//it easier for our loader down the line we'll convert this
 		//URI to a pure File URI, and eliminate any Authority errors.
 		URI inputUri = inputResource.getFile().toURI();
 		
-		//TODO:
-		/*
+		getLogger().info("Reading Metadata from: " + inputUri);
+		if(deleteXmlAfterLoad){
+			getLogger().info("Metadata XML file will be deleted after load.");
+		} else {
+			getLogger().info("Metadata XML file will NOT be deleted after load.");
+		}
+		
 		metadataLoader.loadAuxiliaryData(
 				inputUri, 
 				Constructors.createAbsoluteCodingSchemeVersionReference(
@@ -81,7 +86,6 @@ public class MetadataLoadingTasklet extends AbstractLexEvsUtilityTasklet impleme
 						getCurrentCodingSchemeVersion()), 
 						overwrite, 
 						stopOnErrors, async);
-						*/
 		
 		if(deleteXmlAfterLoad){
 			FileUtils.forceDelete(this.inputResource.getFile());
@@ -185,7 +189,7 @@ public class MetadataLoadingTasklet extends AbstractLexEvsUtilityTasklet impleme
 	public boolean isDeleteXmlAfterLoad() {
 		return deleteXmlAfterLoad;
 	}
-	
+
 	public void setDeleteXmlAfterLoad(boolean deleteXmlAfterLoad) {
 		this.deleteXmlAfterLoad = deleteXmlAfterLoad;
 	}
