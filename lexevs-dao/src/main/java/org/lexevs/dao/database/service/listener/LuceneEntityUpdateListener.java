@@ -1,9 +1,7 @@
 package org.lexevs.dao.database.service.listener;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.service.entity.EntityService;
-import org.lexevs.dao.database.service.event.entity.EntityInsertOrRemoveEvent;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
@@ -28,25 +26,6 @@ public class LuceneEntityUpdateListener extends DefaultServiceEventListener {
 				event.getCodingSchemeUri(), 
 				event.getCodingSchemeVersion(), 
 				updatedEntity);
-		
-		return true;
-	}
-
-	@Override
-	public boolean onPostEntityInsert(EntityInsertOrRemoveEvent entityInsertEvent) {
-		IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
-		
-		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
-		ref.setCodingSchemeURN(entityInsertEvent.getCodingSchemeUri());
-		ref.setCodingSchemeVersion(entityInsertEvent.getVersion());
-		
-		if(indexServiceManager.getEntityIndexService().doesIndexExist(ref)) {
-			EntityIndexService entityIndexService = indexServiceManager.getEntityIndexService();
-
-			Entity entity = entityInsertEvent.getEntity();
-
-			entityIndexService.addEntityToIndex(entityInsertEvent.getCodingSchemeUri(), entityInsertEvent.getVersion(), entity);
-		}
 		
 		return true;
 	}
