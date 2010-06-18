@@ -26,6 +26,7 @@ import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
+import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 
@@ -81,6 +82,17 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			List<String> mustHaveObjectEntityType,
 			Boolean restrictToAnonymous);
 	
+	public List<CountConceptReference> getCountConceptReferencesContainingSubject(
+			String codingSchemeUid,
+			String relationsContainerName,
+			List<ConceptReference> subjects,
+			List<String> associationNames,
+			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveObjectCodes,
+			List<String> mustHaveObjectNamespace,
+			List<String> mustHaveObjectEntityType,
+			Boolean restrictToAnonymous);
+	
 	public List<String> getTripleUidsContainingObject(
 			String codingSchemeUid,
 			String associationPredicateUid,
@@ -100,6 +112,17 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			String relationsContainerName,
 			String objectEntityCode,
 			String objectEntityCodeNamespace,
+			List<String> associationNames,
+			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveSubjectCodes,
+			List<String> mustHaveSubjectNamespace,
+			List<String> mustHaveObjectEntityType,
+			Boolean restrictToAnonymous);
+	
+	public List<CountConceptReference> getCountConceptReferencesContainingObject(
+			String codingSchemeUid,
+			String relationsContainerName,
+			List<ConceptReference> objects,
 			List<String> associationNames,
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveSubjectCodes,
