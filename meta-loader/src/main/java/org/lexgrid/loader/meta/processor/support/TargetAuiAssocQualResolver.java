@@ -42,6 +42,6 @@ public class TargetAuiAssocQualResolver extends AbstractAssociationQualifierReso
 	 * @see org.lexgrid.loader.processor.support.AbstractNullValueSkippingOptionalQualifierResolver#getQualifierValue(java.lang.Object)
 	 */
 	public Text getQualifierValue(Mrrel item) {
-		return DaoUtility.createText(item.getAui2());
+		return DaoUtility.createText(item.getAui1());
 	}
 }

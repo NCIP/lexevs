@@ -789,11 +789,7 @@
 		class="org.lexgrid.loader.reader.SkippingItemReader">
 		<beans:property name="skipPolicy">
 			<beans:bean
-				class="org.lexgrid.loader.rrf.reader.support.MrrelRelationBasedSkipPolicy">
-				<beans:property name="forwardNameList">
-					<beans:ref bean="relationForwardNameFactory" />
-				</beans:property>
-			</beans:bean>
+				class="org.lexgrid.loader.meta.reader.support.MetaMrrelRelationSkipPolicy"/>
 		</beans:property>
 		<beans:property name="delegate">
 			<beans:ref bean="mrrelReader" />
@@ -845,15 +841,16 @@
 	
 	<beans:bean id="mrsabMetadataLoadingTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.MetadataLoadingTasklet">
-		<beans:property name="inputResource" value="file:/${java.io.tmpdir}/NciMetadata.xml" />
+		<beans:property name="inputResource" value="file:/${user.home}/NciMetadata.xml" />
 		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="metaCodingSchemeIdSetter" />
 		</beans:property>
+		<beans:property name="deleteXmlAfterLoad" value="false"/>
 	</beans:bean>
 	
-		<beans:bean id="mrdocMetadataLoadingTasklet" parent="abstractLexEvsUtilityTasklet"
+	<beans:bean id="mrdocMetadataLoadingTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.MetadataLoadingTasklet">
-		<beans:property name="inputResource" value="file:/${java.io.tmpdir}/NciMrdocMetadata.xml" />
+		<beans:property name="inputResource" value="file:/${user.home}/NciMrdocMetadata.xml" />
 		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="metaCodingSchemeIdSetter" />
 		</beans:property>
