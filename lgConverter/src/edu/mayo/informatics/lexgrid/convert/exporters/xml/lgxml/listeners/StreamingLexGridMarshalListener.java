@@ -209,10 +209,15 @@ public class StreamingLexGridMarshalListener implements MarshalListener
     						{
     							curConRef = (ResolvedConceptReference)blockIterator.next();					
     							curEntity = (Entity) curConRef.getEntity();
-    							//System.out.println("**************** Checking Entity=" + curEntity.getEntityCode());
+    							
 
-    							if (curEntity == null)
+    							if (curEntity == null) {
+    							    System.out.println("*************  curEntity is null");
     							    continue;
+    							} else {
+    							    System.out.println("************* curEntity is \"" + curEntity.getEntityCode() + "\"");
+    							}
+    							    
     							
                                 if ((curEntity.getIsAnonymous() != null)&&(curEntity.getIsAnonymous().booleanValue()))
                                     continue;
@@ -226,13 +231,14 @@ public class StreamingLexGridMarshalListener implements MarshalListener
     						    if (transferredEntity == null)
     						        continue;
     						    
-    						    //System.out.println("@@@@@@@@@@@@@@@@@@@@@@ Marshalling Entity=" + transferredEntity.getEntityCode());
+    						    System.out.println("******************  Marshalling Entity=" + transferredEntity.getEntityCode());
     						    this.marshaller.marshal(transferredEntity);
     						    ++entityIndex;
     						}			
     
     						if(rcri_iterator.hasNext() == false) 
     						{
+    						    System.out.println("@@@@@@@  rcri_iterator is empty");
     							done = true;
     						}
     					}
