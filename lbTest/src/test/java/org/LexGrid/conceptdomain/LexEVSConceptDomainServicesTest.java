@@ -3,10 +3,10 @@
  */
 package org.LexGrid.conceptdomain;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.Date;
 import java.util.List;
+
+import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -28,7 +28,7 @@ import org.lexgrid.conceptdomain.util.ConceptDomainConstants;
  * @author m004181
  *
  */
-public class LexEVSConceptDomainServicesTest {
+public class LexEVSConceptDomainServicesTest extends TestCase {
 
 	private LexEVSConceptDomainServices cdServ_;
 	private LexBIGService lbServ_;
