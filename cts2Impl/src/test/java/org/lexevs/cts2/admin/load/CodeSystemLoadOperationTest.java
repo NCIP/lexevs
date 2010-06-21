@@ -33,11 +33,19 @@ public class CodeSystemLoadOperationTest {
 	 * @throws LBException 
 	 */
 	@Test
-	public void testLoadCSResource() throws LBException {
+	public void testLoadCSResourceOBO() throws LBException {
 		LexEvsCTS2 cts2 = new LexEvsCTS2Impl();
 		CodeSystemLoadOperation csLoad = cts2.getAdminOperation().getCodeSystemLoadOperation();
 		csLoad.load(new File(
 				"../lbTest/resources/testData/fungal_anatomy.obo").toURI(), null, null, null, "OBOLoader", true, true, true, "DEV", true);
+	}
+	
+	@Test
+	public void testLoadCSResourceXML() throws LBException {
+		LexEvsCTS2 cts2 = new LexEvsCTS2Impl();
+		CodeSystemLoadOperation csLoad = cts2.getAdminOperation().getCodeSystemLoadOperation();
+		csLoad.load(new File(
+				"../lbTest/resources/testData/ValueDomain/Automobiles.xml").toURI(), null, null, null, "LexGrid_Loader", true, true, true, "DEV", true);
 	}
 
 	/**

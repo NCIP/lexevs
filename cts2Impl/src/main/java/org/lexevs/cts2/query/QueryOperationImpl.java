@@ -17,6 +17,7 @@
  */
 package org.lexevs.cts2.query;
 
+import org.lexevs.cts2.BaseService;
 import org.lexevs.cts2.LexEvsCTS2;
 
 /**
@@ -24,13 +25,11 @@ import org.lexevs.cts2.LexEvsCTS2;
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
-public class QueryOperationImpl implements QueryOperation {
+public class QueryOperationImpl extends BaseService implements QueryOperation {
 	private ValueSetQueryOperation valueSetQueryOp_;
 	
-	private LexEvsCTS2 lexEvsCts2_;
-	
 	public QueryOperationImpl(LexEvsCTS2 lexEvsCts2) {
-		this.lexEvsCts2_ = lexEvsCts2;
+		lexevsCTS2_ = lexEvsCts2;
 	}
 	
 	/* (non-Javadoc)
@@ -75,7 +74,7 @@ public class QueryOperationImpl implements QueryOperation {
 	@Override
 	public ValueSetQueryOperation getValueSetQueryOperation() {
 		if (valueSetQueryOp_ == null)
-			valueSetQueryOp_ = new ValueSetQueryOperationImpl(lexEvsCts2_);
+			valueSetQueryOp_ = new ValueSetQueryOperationImpl(lexevsCTS2_);
 		return valueSetQueryOp_;
 	}
 

@@ -17,7 +17,8 @@ public abstract class BaseService {
 	private LexBIGServiceManager lbsm_ = null;
     private LexBIGService lbs_ = null;
     private ServiceInfo serviceInfo_ = null;
-    
+    protected static LexEvsCTS2 lexevsCTS2_ = null;
+	
 	public static enum SortableProperties {
         matchToQuery, code, codeSystem, entityDescription, conceptStatus, isActive
     };

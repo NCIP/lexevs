@@ -36,7 +36,6 @@ public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
 	private AdminOperation adminOp_;
 	private AuthoringOperation authOp_;
 	private QueryOperation queryOp_;
-	private static LexEvsCTS2 lexevsCTS2_ = null;
 	
 	public static LexEvsCTS2 defaultInstance(){
 		if (lexevsCTS2_ == null)

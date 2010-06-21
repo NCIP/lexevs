@@ -17,6 +17,7 @@
  */
 package org.lexevs.cts2.author;
 
+import org.lexevs.cts2.BaseService;
 import org.lexevs.cts2.LexEvsCTS2;
 
 /**
@@ -24,12 +25,11 @@ import org.lexevs.cts2.LexEvsCTS2;
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
-public class AuthoringOperationImpl implements AuthoringOperation {
+public class AuthoringOperationImpl extends BaseService implements AuthoringOperation {
 
-	private LexEvsCTS2 lexEvsCts2_;
 	
 	public AuthoringOperationImpl(LexEvsCTS2 lexEvsCts2) {
-		this.lexEvsCts2_ = lexEvsCts2;
+		lexevsCTS2_ = lexEvsCts2;
 	}
 	
 	/* (non-Javadoc)
