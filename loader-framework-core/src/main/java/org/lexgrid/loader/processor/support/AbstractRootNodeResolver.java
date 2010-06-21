@@ -1,5 +1,6 @@
 package org.lexgrid.loader.processor.support;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import org.LexGrid.relations.AssociationTarget;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
+import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.wrappers.ParentIdHolder;
 import org.springframework.util.Assert;
@@ -19,6 +21,8 @@ public abstract class AbstractRootNodeResolver implements RootNodeResolver<Paren
 	private CodingSchemeIdSetter codingSchemeIdSetter;
 	
 	private Map<String,String> associationKeyToNameMap = new HashMap<String,String>();
+	
+	private SupportedAttributeTemplate supportedAttributeTemplate;
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.RootNodeResolver#isRootNode(java.lang.Object)
@@ -94,6 +98,8 @@ public abstract class AbstractRootNodeResolver implements RootNodeResolver<Paren
 			source.setSourceEntityCodeNamespace(item.getItem().getSourceEntityCodeNamespace());
 			
 			source.addTarget(target);
+			
+			this.register(false, this.getAssociationName(item.getParentId()), "@@");
 		}
 		else if(pointsToRoot(item)){
 			source.setSourceEntityCode("@");
@@ -103,9 +109,22 @@ public abstract class AbstractRootNodeResolver implements RootNodeResolver<Paren
 			target.setTargetEntityCodeNamespace(item.getItem().getTarget(0).getTargetEntityCodeNamespace());
 			
 			source.addTarget(target);
+			
+			this.register(true, this.getAssociationName(item.getParentId()), "@");
 		}	
 		
 		return new ParentIdHolder<AssociationSource>(item.getCodingSchemeIdSetter(),item.getParentId(), source);
+	}
+	
+	protected void register(boolean resolveForward, String association, String rootCode) {
+		supportedAttributeTemplate.addSupportedHierarchy(
+				this.getCodingSchemeIdSetter().getCodingSchemeUri(),
+				this.getCodingSchemeIdSetter().getCodingSchemeVersion(),
+				"is_a", 
+				null, 
+				Arrays.asList(association), 
+				resolveForward, 
+				rootCode);
 	}
 	
 	/**
@@ -128,8 +147,7 @@ public abstract class AbstractRootNodeResolver implements RootNodeResolver<Paren
 	 * @return true, if successful
 	 */
 	protected boolean pointsToTail(ParentIdHolder<AssociationSource> item){
-		//TODO: Fix this
-		String targetCode = null;
+		String targetCode = item.getItem().getTarget()[0].getTargetEntityCode();
 		return isSourceRootNode(targetCode);	
 	}
 	
@@ -164,5 +182,13 @@ public abstract class AbstractRootNodeResolver implements RootNodeResolver<Paren
 
 	public void setCodingSchemeIdSetter(CodingSchemeIdSetter codingSchemeIdSetter) {
 		this.codingSchemeIdSetter = codingSchemeIdSetter;
+	}
+
+	public void setSupportedAttributeTemplate(SupportedAttributeTemplate supportedAttributeTemplate) {
+		this.supportedAttributeTemplate = supportedAttributeTemplate;
+	}
+
+	public SupportedAttributeTemplate getSupportedAttributeTemplate() {
+		return supportedAttributeTemplate;
 	}
 }
