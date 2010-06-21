@@ -19,12 +19,11 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
+import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.castor.xml.UnmarshalListener;
 import org.mayo.edu.lgModel.LexGridBase;
-
-import com.sun.corba.se.impl.protocol.giopmsgheaders.Message_1_0;
 
 /**
  * @author  <A HREF="mailto:scott.bauer@mayo.edu">Scott Bauer </A>
@@ -44,6 +43,8 @@ public class LgCodingSchemeListener implements UnmarshalListener {
     boolean isPropertiesPresent = false;
     Entity currentEntity = new Entity();
     AssociationPredicate currentPredicate = new AssociationPredicate();
+    
+    private CodingSchemeManifest codingSchemeManifest;
 
     XMLDaoServiceAdaptor serviceAdaptor = null;
     LgMessageDirectorIF messages_;
@@ -58,6 +59,13 @@ public class LgCodingSchemeListener implements UnmarshalListener {
         super();
         serviceAdaptor = new XMLDaoServiceAdaptor();
         messages_ = messages;
+    }
+    
+    public LgCodingSchemeListener(LgMessageDirectorIF messages, CodingSchemeManifest codingSchemeManifest) {
+        super();
+        serviceAdaptor = new XMLDaoServiceAdaptor();
+        messages_ = messages;
+        this.codingSchemeManifest = codingSchemeManifest;
     }
     /**
      * @return
@@ -138,11 +146,11 @@ public class LgCodingSchemeListener implements UnmarshalListener {
 //        messages_.debug("child: " + child.getClass().getSimpleName());
         
         if (!isPropertiesPresent && UnMarshallingLogic.isCodingSchemeMappings(parent, child)) {
-            LexGridElementProcessor.processCodingSchemeMetadata(serviceAdaptor, parent, child);
+            LexGridElementProcessor.processCodingSchemeMetadata(serviceAdaptor, parent, child, this.codingSchemeManifest);
             isCodingSchemeLoaded = true;
         }
         if (!isCodingSchemeLoaded && UnMarshallingLogic.isCodingSchemeProperties(parent, child)) {
-            LexGridElementProcessor.processCodingSchemeMetadata(serviceAdaptor, parent, child);
+            LexGridElementProcessor.processCodingSchemeMetadata(serviceAdaptor, parent, child, this.codingSchemeManifest);
             isCodingSchemeLoaded = true;
         }
         if (UnMarshallingLogic.isCodingSchemeEntity(parent, child)) {

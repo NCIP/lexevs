@@ -36,6 +36,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
+import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
@@ -82,7 +83,7 @@ public class LexGridXMLProcessor {
      * @throws CodingSchemeAlreadyLoadedException
      */
     public org.LexGrid.codingSchemes.CodingScheme[] loadCodingScheme(String path, LgMessageDirectorIF messages,
-            boolean validateXML) throws CodingSchemeAlreadyLoadedException {
+            boolean validateXML, CodingSchemeManifest manifest) throws CodingSchemeAlreadyLoadedException {
         BufferedReader in = null;
         Unmarshaller umr = null;
         CodingScheme[] cs = null;
@@ -91,7 +92,7 @@ public class LexGridXMLProcessor {
 
             in = new BufferedReader(new FileReader(path));
             umr = new Unmarshaller();
-            LgCodingSchemeListener listener = new LgCodingSchemeListener(messages);
+            LgCodingSchemeListener listener = new LgCodingSchemeListener(messages, manifest);
             // default is true -- no need to set the validation flag if the user
             // wants to validate.
             if (!validateXML) {

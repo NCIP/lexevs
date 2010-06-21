@@ -24,6 +24,7 @@ import java.util.HashMap;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
+import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entities;
@@ -39,6 +40,8 @@ import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
+
+import edu.mayo.informatics.lexgrid.convert.utility.ManifestUtil;
 
 /**
  * @author  <A HREF="mailto:scott.bauer@mayo.edu">Scott Bauer </A>
@@ -61,6 +64,7 @@ public class LexGridElementProcessor {
      */
     private static HashMap<String, ArrayList<String>> relMap = new HashMap<String, ArrayList<String>>();
 
+    private static ManifestUtil manifestUtil = new ManifestUtil();
 
     /**
      * @return
@@ -78,14 +82,29 @@ public class LexGridElementProcessor {
      * @param parent
      * @param child
      */
-    public static void processCodingSchemeMetadata(XMLDaoServiceAdaptor service, Object parent, Object child) {
+    public static void processCodingSchemeMetadata(
+            XMLDaoServiceAdaptor service, 
+            Object parent, 
+            Object child, 
+            CodingSchemeManifest codingSchemeManifest) {
         CodingScheme scheme = (CodingScheme) parent;
+        
+        if(codingSchemeManifest != null) {
+            manifestUtil.applyManifest(codingSchemeManifest, scheme);
+        }
         try {
             codingSchemes.add(scheme);
             service.storeCodingScheme(scheme);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    public static void processCodingSchemeMetadata(
+            XMLDaoServiceAdaptor service, 
+            Object parent, 
+            Object child) {
+        processCodingSchemeMetadata(service, parent, child, null);
     }
     /**
      * @param service
