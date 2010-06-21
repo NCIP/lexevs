@@ -47,10 +47,6 @@
       <index name="@PREFIX@idx_csURI">
         <index-column name="codingSchemeURI"/>
       </index>
-      <index name="@PREFIX@idx_csURIVersion">
-        <index-column name="codingSchemeURI"/>
-        <index-column name="representsVersion"/>
-      </index>
       <index name="@PREFIX@idx_csName">
         <index-column name="codingSchemeName"/>
       </index>

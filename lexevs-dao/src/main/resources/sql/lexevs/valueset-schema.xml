@@ -179,11 +179,6 @@
         <unique-column name="propertyId"/>
         <unique-column name="propertyName"/>
       </unique>
-      <index name="@PREFIX@idx_vsProperty">
-        <index-column name="referenceGuid"/>
-        <index-column name="propertyId"/>
-        <index-column name="propertyName"/>
-      </index>
     </table>
     <table name="@PREFIX@vsPropertyMultiAttrib">
       <column name="vsPropMultiAttribGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
