@@ -724,6 +724,30 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals("eq-cs", ns.getEquivalentCodingScheme());
 	}
 	
+	@Test
+	public void testGetSupportedHierarchyUriMap() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, idValue, associationNames, rootCode, isForwardNavigable) " +
+		"values ('cssa-guid', 'cs-guid', 'Hierarchy', 'test-h', 'test-h', 'test-assoc', 'root', true)");
+		
+		Mappings mappings = ibatisCodingSchemeDao.getMappings("cs-guid");
+		
+		assertNotNull(mappings);
+		assertEquals(1, mappings.getSupportedHierarchyCount());
+		
+		SupportedHierarchy ns = mappings.getSupportedHierarchy()[0];
+		
+		assertEquals("test-h", ns.getContent());
+		assertEquals("test-h", ns.getLocalId());
+		assertEquals("test-assoc", ns.getAssociationNames(0));
+		assertEquals("root", ns.getRootCode());
+		assertTrue(ns.getIsForwardNavigable());
+	}
+	
 	/**
 	 * Test get coding scheme id by uri and version.
 	 * 
