@@ -73,8 +73,10 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
         setResourceUri(uri);
         try {
            boolean async = this.getOptions().getBooleanOption(ASYNC_OPTION).getOptionValue();
+           this.setCodingSchemeManifestURI(this.getOptions().getURIOption(MANIFEST_FILE_OPTION).getOptionValue());
+           this.setLoaderPreferences(this.getOptions().getURIOption(LOADER_PREFERENCE_FILE_OPTION).getOptionValue());
             LexGridMultiLoaderbaseLoad(async);
-        } catch (LBInvocationException e) {
+        } catch (LBException e) {
             throw new RuntimeException(e);
         }
     }
@@ -99,7 +101,8 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
         CodingScheme[] codingScheme = loader.load(
                 this.getResourceUri(),
                 this.getMd_(),
-                this.getOptions().getBooleanOption(LexGridMultiLoaderImpl.VALIDATE).getOptionValue());
+                this.getOptions().getBooleanOption(LexGridMultiLoaderImpl.VALIDATE).getOptionValue(),
+                this.getCodingSchemeManifest());
    
         return this.constructVersionPairsFromCodingSchemes(codingScheme);
     }
