@@ -51,7 +51,6 @@ import org.LexGrid.LexBIG.Impl.bugs.GForge26741;
 import org.LexGrid.LexBIG.Impl.bugs.TestBugFixes;
 import org.LexGrid.LexBIG.Impl.dataAccess.RegistryTest;
 import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManagerTest;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethodsGraphVersionTests;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethodsTest;
 import org.LexGrid.LexBIG.Impl.dataAccess.TestLoaderPreferences;
 import org.LexGrid.LexBIG.Impl.dataAccess.TestPasswordEncryption;
@@ -186,7 +185,6 @@ public class AllTestsNormalConfig {
         mainSuite.addTestSuite(TestNCIThesMetadata.class);
         mainSuite.addTestSuite(ResourceManagerTest.class); 
         mainSuite.addTestSuite(SQLImplementedMethodsTest.class);  
-        mainSuite.addTestSuite(SQLImplementedMethodsGraphVersionTests.class);
         mainSuite.addTestSuite(ResolvedConceptReferencesIteratorImplTest.class);
         
         mainSuite.addTestSuite(AbstractSortTest.class);
@@ -379,7 +377,10 @@ public class AllTestsNormalConfig {
         mainSuite.addTestSuite(CleanUpTest.class);
        
         //ValueDomain tests
-        //mainSuite.addTest(org.LexGrid.valuedomain.test.VDAllTests.suite());
+        mainSuite.addTest(org.LexGrid.valuedomain.test.VDAllTests.suite());
+        
+        //ConceptDomain tests
+        mainSuite.addTestSuite(org.LexGrid.conceptdomain.LexEVSConceptDomainServicesTest.class);
 
         // $JUnit-END$
 
