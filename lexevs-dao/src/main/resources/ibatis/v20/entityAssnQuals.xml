@@ -143,7 +143,7 @@
 		WHERE
 			referenceGuid = #param1#
 		AND
-			qualifierName != "usageContext"
+			qualifierName != 'usageContext'
 	</delete>
 	
 	<delete id="deleteAssocUsageContextByAssocUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
@@ -152,7 +152,7 @@
 		WHERE
 			referenceGuid = #param1#
 		AND
-			qualifierName = "usageContext"
+			qualifierName = 'usageContext'
 	</delete>
 	
 	<resultMap
@@ -189,7 +189,7 @@
 		WHERE
 			referenceGuid = #param1#
 		AND
-			qualifierName != "usageContext"
+			qualifierName != 'usageContext'
 	</update>
 	
 	<update id="updateAssnUsageContextEntryStateUId"
