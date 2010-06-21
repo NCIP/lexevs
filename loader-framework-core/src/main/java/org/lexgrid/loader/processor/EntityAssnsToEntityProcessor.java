@@ -21,12 +21,15 @@ package org.lexgrid.loader.processor;
 import java.util.List;
 
 import org.LexGrid.concepts.PropertyLink;
+import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
+import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
 import org.lexgrid.loader.data.DataUtils;
 import org.lexgrid.loader.data.association.AssociationInstanceIdResolver;
 import org.lexgrid.loader.database.key.AssociationPredicateKeyResolver;
@@ -34,7 +37,6 @@ import org.lexgrid.loader.processor.support.OptionalQualifierResolver;
 import org.lexgrid.loader.processor.support.PropertyIdResolver;
 import org.lexgrid.loader.processor.support.RelationResolver;
 import org.lexgrid.loader.wrappers.ParentIdHolder;
-import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
@@ -43,7 +45,7 @@ import org.springframework.util.Assert;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcessor implements ItemProcessor<I,ParentIdHolder<AssociationSource>>, InitializingBean {
+public class EntityAssnsToEntityProcessor<I> extends AbstractSupportedAttributeRegisteringProcessor<I,ParentIdHolder<AssociationSource>> implements InitializingBean {
 	
 	public enum SelfReferencingAssociationPolicy {IGNORE, AS_ASSOCIATIONS, AS_PROPERTY_LINKS, BOTH }
 	
@@ -79,7 +81,7 @@ public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcesso
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.item.ItemProcessor#process(java.lang.Object)
 	 */
-	public ParentIdHolder<AssociationSource> process(I item) throws Exception {
+	public ParentIdHolder<AssociationSource> doProcess(I item) throws Exception {
 		String rel = relationResolver.getRelation(item);
 		if(StringUtils.isEmpty(rel)){
 			return null;
@@ -179,6 +181,25 @@ public class EntityAssnsToEntityProcessor<I> extends CodingSchemeIdAwareProcesso
 				return null;
 			}
 		});
+	}
+	
+	@Override
+	protected void registerSupportedAttributes(SupportedAttributeTemplate template,
+			ParentIdHolder<AssociationSource> item) {
+		if(! ArrayUtils.isEmpty(item.getItem().getTarget())){
+			for(AssociationTarget target : item.getItem().getTarget()){
+				if(! ArrayUtils.isEmpty(target.getAssociationQualification())){
+					for(AssociationQualification qual : target.getAssociationQualification()) {
+						template.addSupportedAssociationQualifier(
+								this.getCodingSchemeIdSetter().getCodingSchemeUri(), 
+								this.getCodingSchemeIdSetter().getCodingSchemeVersion(), 
+								qual.getAssociationQualifier(), 
+								null, 
+								qual.getAssociationQualifier());
+					}
+				}
+			}
+		}
 	}
 
 	/**
