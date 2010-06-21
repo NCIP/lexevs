@@ -27,7 +27,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -38,7 +37,6 @@ import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -71,7 +69,7 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
     public final static String name = "LexGridExport";
     private final static String description = "This loader exports LexGrid XML files";
     private final int pageSize = 5;
-    
+
     private CodedNodeGraph cng;
     private CodedNodeSet cns;
 
@@ -406,6 +404,7 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         // TODO: not sure how we should handle stopOnError and async
         //       - currently, async gets set to true by the super
         //       - not sure how stopOneErrors is used
+        super.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
         super.getOptions().getBooleanOption(LexGridConstants.OPTION_FORCE).setOptionValue(overwrite);
         super.export(source, destination);
 
@@ -415,6 +414,7 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
     @Override
     public void exportPickListDefinition(String pickListId, URI destination, boolean overwrite, boolean stopOnErros,
             boolean async) throws LBException {
+        super.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
         super.getOptions().getBooleanOption(LexGridConstants.OPTION_FORCE).setOptionValue(overwrite);
         super.exportPickListDefinition(pickListId, destination);
     }
@@ -422,6 +422,7 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
     @Override
     public void exportValueSetDefinition(URI valueSetDefinitionURI, URI destination, boolean overwrite,
             boolean stopOnErros, boolean async) throws LBException {
+        super.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
         super.getOptions().getBooleanOption(LexGridConstants.OPTION_FORCE).setOptionValue(overwrite);
         super.exportValueSetDefinition(valueSetDefinitionURI, destination);
     }    

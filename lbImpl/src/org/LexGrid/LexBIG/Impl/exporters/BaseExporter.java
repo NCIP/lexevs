@@ -30,6 +30,8 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
 
+import edu.mayo.informatics.lexgrid.convert.formats.Option;
+import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 import edu.mayo.informatics.lexgrid.convert.options.DefaultOptionHolder;
 
 /**
@@ -53,9 +55,14 @@ public abstract class BaseExporter {
     private URI valueSetDefinitionURI;
     private String pickListId;
 
+    public static String ASYNC_OPTION = "Async Load";
+    public static String FAIL_ON_ERROR_OPTION = Option.getNameForType(Option.FAIL_ON_ERROR);
+    
     private OptionHolder holder = new DefaultOptionHolder();
     
     protected BaseExporter() {
+        holder.getBooleanOptions().add(new BooleanOption(ASYNC_OPTION));
+        holder.getBooleanOptions().add(new BooleanOption(FAIL_ON_ERROR_OPTION));
         this.holder = this.declareAllowedOptions(holder);
     }
 
@@ -105,7 +112,7 @@ public abstract class BaseExporter {
         } catch (LBInvocationException e) {
            throw new RuntimeException(e);
         }
-        baseExport(true);
+        baseExport(this.getOptions().getBooleanOption(ASYNC_OPTION).getOptionValue());
     }
     
     public void exportValueSetDefinition(URI valueSetDefinitionURI, URI destination) {
@@ -116,7 +123,7 @@ public abstract class BaseExporter {
         } catch (LBInvocationException e) {
            throw new RuntimeException(e);
         }
-        baseExport(true);
+        baseExport(this.getOptions().getBooleanOption(ASYNC_OPTION).getOptionValue());
     }
     
     public void exportPickListDefinition(String pickListId, URI destination) {
@@ -127,7 +134,7 @@ public abstract class BaseExporter {
         } catch (LBInvocationException e) {
            throw new RuntimeException(e);
         }
-        baseExport(true);
+        baseExport(this.getOptions().getBooleanOption(ASYNC_OPTION).getOptionValue());
     }
 
     private void setInUse() throws LBInvocationException {
