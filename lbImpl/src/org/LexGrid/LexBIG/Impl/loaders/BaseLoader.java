@@ -561,6 +561,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
      * @param csm
      */
     public void setCodingSchemeManifestURI(URI codingSchemeManifestURI) {
+        if(codingSchemeManifestURI == null) {return;}
         this.codingSchemeManifestURI_ = codingSchemeManifestURI;
         
         codingSchemeManifest_ = manifestUtil.getManifest(codingSchemeManifestURI);
@@ -607,6 +608,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
      * @throws LBParameterException
      */
     public void setLoaderPreferences(URI loaderPreferences) throws LBParameterException {
+        if(loaderPreferences == null) {return;}
         try {
             PreferenceLoader prefLoader = PreferenceLoaderFactory.createPreferenceLoader(loaderPreferences);
             if (!prefLoader.validate()) {
@@ -627,8 +629,10 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         this.resourceUri = resource;
         try {
             boolean async = this.getOptions().getBooleanOption(ASYNC_OPTION).getOptionValue();
+            this.setCodingSchemeManifestURI(this.getOptions().getURIOption(MANIFEST_FILE_OPTION).getOptionValue());
+            this.setLoaderPreferences(this.getOptions().getURIOption(LOADER_PREFERENCE_FILE_OPTION).getOptionValue());
             baseLoad(async);
-        } catch (LBInvocationException e) {
+        } catch (LBException e) {
             throw new RuntimeException(e);
         }
     }
