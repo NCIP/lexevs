@@ -54,15 +54,15 @@ public class GForge17019 extends LexBIGServiceTestCase {
         cng.restrictToAssociations(Constructors.createNameAndValueList("RB", null), 
                 Constructors.createNameAndValueList("RG", "testRG"));
         ConceptReference cr = Constructors.createConceptReference("C0000005", META_SCHEME);
-        ResolvedConceptReferenceList rcrl = cng.resolveAsList(cr, true, false, 1, 1, null, null, null, null, -1);
+        ResolvedConceptReferenceList rcrl = cng.resolveAsList(cr, false, true, 1, 1, null, null, null, null, -1);
 
         assertTrue(rcrl.getResolvedConceptReferenceCount()>0);   
         ResolvedConceptReference[] rcrList = rcrl.getResolvedConceptReference();
         ArrayList<String> al = new ArrayList<String>();
 
         for(ResolvedConceptReference rcr: rcrList){
-            AssociationList sourceof = rcr.getSourceOf();
-            Association[] associations = sourceof.getAssociation();
+            AssociationList targetof = rcr.getTargetOf();
+            Association[] associations = targetof.getAssociation();
             for (int i = 0; i < associations.length; i++) {
                 Association assoc = associations[i];
                 AssociatedConcept[] acl = assoc.getAssociatedConcepts().getAssociatedConcept();
