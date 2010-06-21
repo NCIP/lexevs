@@ -210,6 +210,8 @@
 				<beans:bean	id="umlsEntityAssnsToEntityProcessor" 
 					class="org.lexgrid.loader.processor.EntityAssnsToEntityProcessor">		
 					
+					<beans:property name="supportedAttributeTemplate" ref="cachingSupportedAttribuiteTemplate" />
+					
 					<beans:property name="associationInstanceIdResolver">
 						<beans:bean class="org.lexgrid.loader.rrf.data.association.MrrelRuiAssociationInstanceIdResolver"/>
 					</beans:property>		
