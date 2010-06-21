@@ -381,6 +381,16 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	@Transactional
 	public void testGetHistoryProperty() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+			"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+	
 		template.execute("Insert into h_property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, entryStateGuid) " +
 				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation', 'esguid')");
 		
@@ -402,6 +412,18 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	@Transactional
 	public void testGetHistoryPropertyWithQualifier() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+			"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+		
+		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId, attributeValue, entryStateGuid) " +
+			"values ('pmaguid', 'pguid', 'qualifier', 'aqual', 'some_qual', 'esguid')");
+	
 		template.execute("Insert into h_property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, entryStateGuid) " +
 				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation', 'esguid')");
 		
@@ -428,6 +450,18 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	@Test
 	public void testGetHistoryPropertyWithTwoQualifiers() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+			"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+	
+		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId, attributeValue, entryStateGuid) " +
+			"values ('pmaguid', 'pguid', 'qualifier', 'aqual', 'some_qual', 'esguid')");
+	
 		template.execute("Insert into h_property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, entryStateGuid) " +
 				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation', 'esguid1')");
 		
@@ -480,6 +514,16 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	@Transactional
 	public void testGetHistoryPropertyWithTwoProperties() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
+			"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens')");
+
 		template.execute("Insert into h_property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, entryStateGuid) " +
 				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue1', 'presentation', 'esguid1')");
 		
