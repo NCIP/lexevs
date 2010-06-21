@@ -7,7 +7,7 @@
     xmlns:data="data"
     xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueSets"
     xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
-    releaseURI="http://testRelease/04"
+    releaseURI="http://testRelease/05"
     releaseDate="2008-11-07T14:55:51.615-06:00">
     <lgCommon:entityDescription>Sample value domains</lgCommon:entityDescription>
     <pickListDefinitions>
