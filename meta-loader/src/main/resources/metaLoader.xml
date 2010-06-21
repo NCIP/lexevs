@@ -669,6 +669,8 @@
 		class="org.lexgrid.loader.processor.EntityAssnsToEntityProcessor"
 		parent="codingSchemeNameSettingProcessor">
 		
+		<beans:property name="supportedAttributeTemplate" ref="cachingSupportedAttribuiteTemplate" />
+		
 		<beans:property name="associationInstanceIdResolver">
 			<beans:bean class="org.lexgrid.loader.rrf.data.association.MrrelRuiAssociationInstanceIdResolver"/>
 		</beans:property>		
