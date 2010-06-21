@@ -1,6 +1,8 @@
 package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.listeners;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
@@ -46,6 +48,8 @@ public class StreamingLexGridMarshalListener implements MarshalListener
 	Iterator<ResolvedConceptReference> blockIterator;
 	ResolvedConceptReference curConRef;
 	Entity curEntity;
+	List<AssociationSource> sourceList = new ArrayList<AssociationSource>();
+	
 
 	AssociationPredicate userAP = null;
 	String stopToken = "$$TEST$$";
@@ -395,7 +399,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener
 						sourceRef = (ResolvedConceptReference)innterIterator.next();
 					}
 					
-					if (sourceRef == null)
+					if (sourceRef == null || this.sourceExist(sourceRef))
 					{
 						//System.out.println("Failed to get Source Ref for " + source.getConceptCode());
 						continue;
@@ -414,6 +418,14 @@ public class StreamingLexGridMarshalListener implements MarshalListener
 		}
 	}
 	
+	private boolean sourceExist(ResolvedConceptReference rcr) {
+	    for (AssociationSource source : sourceList) {
+	        if (source.getSourceEntityCode().equalsIgnoreCase(rcr.getCode()) && source.getSourceEntityCodeNamespace().equalsIgnoreCase(rcr.getCodeNamespace())) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
 	private void processTargets(ResolvedConceptReference sRef, String asName) throws MarshalException, ValidationException
 	{
 //	    Vector<AssociationSource> aV = new Vector<AssociationSource>();
@@ -469,6 +481,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener
 	                        }
 	                    }
 	                    this.marshaller.marshal(aS);
+	                    sourceList.add(aS);
 	                }
 	            }
 	        }
