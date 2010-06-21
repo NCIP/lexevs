@@ -17,6 +17,8 @@
  */
 package org.lexevs.cts2.author;
 
+import org.lexevs.cts2.LexEvsCTS2;
+
 /**
  * Class returns individual CTS 2 Authoring Operation interfaces.
  * 
@@ -24,6 +26,12 @@ package org.lexevs.cts2.author;
  */
 public class AuthoringOperationImpl implements AuthoringOperation {
 
+	private LexEvsCTS2 lexEvsCts2_;
+	
+	public AuthoringOperationImpl(LexEvsCTS2 lexEvsCts2) {
+		this.lexEvsCts2_ = lexEvsCts2;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.lexevs.cts2.author.AuthoringOperation#getAssociationAuthoringOperation()
 	 */

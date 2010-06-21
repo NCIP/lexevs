@@ -23,6 +23,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 import org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
@@ -37,9 +38,11 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.Revision;
 import org.apache.commons.lang.StringUtils;
-import org.lexevs.cts2.BaseService.LoadFormats;
+import org.lexevs.cts2.LexEvsCTS2;
+import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.RootOrTail;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
+import org.lexevs.system.utility.MyClassLoader;
 import org.springframework.util.Assert;
 
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
@@ -64,9 +67,13 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
     private Boolean overwriteMetadata_;
     private Boolean stopOnErrors_;
     private Boolean async_;
-    private LoadFormats loadFormat_ = null;
     private LexBIGServiceManager lbsm_ = null;
     private LexBIGService lbs_ = null;
+    private LexEvsCTS2 lexEvsCts2_;
+    
+    public CodeSystemLoadOperationImpl(LexEvsCTS2 lexEvsCts2){
+    	this.lexEvsCts2_ = lexEvsCts2;
+    }
     
 	/* (non-Javadoc)
 	 * @see org.LexGrid.LexBIG.Impl.loaders.BaseLoader#declareAllowedOptions(org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder)
@@ -237,29 +244,32 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#load(java.net.URI, java.net.URI, java.net.URI, java.net.URI, org.lexevs.cts2.BaseService.LoadFormats, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean, java.lang.String, java.lang.Boolean)
+	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#load(java.net.URI, java.net.URI, java.net.URI, java.net.URI, java.lang.String, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean, java.lang.String, java.lang.Boolean)
 	 */
 	@Override
-	public URNVersionPair[] load(URI source, URI metadata, URI manifest, URI releaseURI, LoadFormats loadFormat, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
-		if (loadFormat == null)
-			throw new LBException("Load Format is not specified");
+	public URNVersionPair[] load(URI source, URI metadata, URI manifest, URI releaseURI, String loaderName, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
+		if (loaderName == null)
+			throw new LBException("Code System loader must be specified. Use LexEVSCTS2.getSupportedCodeSystemLoaders for supported list of loaders in the service.");
+		
 		
 		this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
         this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
         
 		URNVersionPair[] urnVersions = null;
 		
-		urnVersions = loadOBO(source, metadata, manifest, releaseURI, loadFormat, stopOnErrors, async, overwriteMetadata, versionTag, activate);
+		urnVersions = loadOBO(source, metadata, manifest, releaseURI, stopOnErrors, async, overwriteMetadata, versionTag, activate);
 		
 		return urnVersions;
 	}
 	
-	private URNVersionPair[] loadOBO(URI source, URI metadata, URI manifest, URI releaseURI, LoadFormats loadFormat, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
-        OBO_Loader loader = (OBO_Loader) getLexBIGServiceManager().getLoader(org.LexGrid.LexBIG.Impl.loaders.OBOLoaderImpl.name);
+	private URNVersionPair[] loadOBO(URI source, URI metadata, URI manifest, URI releaseURI, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
+		Loader loader = getLexBIGServiceManager().getLoader("OBOLoader");
+//        OBO_Loader loader = (OBO_Loader) getLexBIGServiceManager().getLoader(org.LexGrid.LexBIG.Impl.loaders.OBOLoaderImpl.name);
         loader.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
         loader.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
         loader.setCodingSchemeManifestURI(manifest);
-        loader.load(source, metadata, stopOnErrors, async);
+//        loader.load(source, metadata, stopOnErrors, async);
+        loader.load(source);
         
         while (loader.getStatus().getEndTime() == null) {
 			try {
@@ -268,6 +278,11 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 			}
 		}
 		
+        if (metadata != null)
+        {
+        	loadCSMetaData(loader, metadata, overwriteMetadata, stopOnErrors, async);
+        }
+        
         if (activate)
         {
         	activateCS(loader);
@@ -288,17 +303,17 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
     	return new URNVersionPair[]{urnVersion};
 	}
 	
-	private URI loadOWL(URI source, URI metadata, URI manifest, URI releaseURI, LoadFormats loadFormat, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
+	private URI loadOWL(URI source, URI metadata, URI manifest, URI releaseURI, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
 		
 		return null;
 	}
 	
-	private URI loadRRF(URI source, URI metadata, URI manifest, URI releaseURI, LoadFormats loadFormat, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
+	private URI loadRRF(URI source, URI metadata, URI manifest, URI releaseURI, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
 		
 		return null;
 	}
 	
-	private URI loadLGXML(URI source, URI metadata, URI manifest, URI releaseURI, LoadFormats loadFormat, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
+	private URI loadLGXML(URI source, URI metadata, URI manifest, URI releaseURI, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
 		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
         LexGrid_Loader loader = (LexGrid_Loader) getLexBIGServiceManager().getLoader(org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl.name);
         
@@ -318,12 +333,12 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 		return null;
 	}
 	
-	private URI loadClaML(URI source, URI metadata, URI manifest, URI releaseURI, LoadFormats loadFormat, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
+	private URI loadClaML(URI source, URI metadata, URI manifest, URI releaseURI, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
 		
 		return null;
 	}
 	
-	private URI loadHL7(URI source, URI metadata, URI manifest, URI releaseURI, LoadFormats loadFormat, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
+	private URI loadHL7(URI source, URI metadata, URI manifest, URI releaseURI, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
 		
 		return null;
 	}
@@ -334,6 +349,15 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 		acsvr.setCodingSchemeVersion(csVersion);
         MetaData_Loader loader = (MetaData_Loader) getLexBIGServiceManager().getLoader("MetaDataLoader");
         loader.loadAuxiliaryData(metadata, acsvr, overwriteMetadata, stopOnErrors, async);
+	}
+	
+	private void loadCSMetaData(Loader loader, URI metadata, boolean overwriteMetadata, boolean stopOnErrors, boolean async) throws LBException{
+		AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
+        for (int i = 0; i < refs.length; i++) {
+            AbsoluteCodingSchemeVersionReference ref = refs[i];
+            MetaData_Loader metaLoader = (MetaData_Loader) getLexBIGServiceManager().getLoader("MetaDataLoader");
+            metaLoader.loadAuxiliaryData(metadata, ref, overwriteMetadata, stopOnErrors, async);
+		}
 	}
 	
 	private void applyCSTag(String csURI, String csVersion, String versionTag) throws LBException{
@@ -378,5 +402,11 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 			lbs_ = LexBIGServiceImpl.defaultInstance();
 		
 		return lbs_;
+	}
+	
+	public static void main(String[] args){
+		LexEvsCTS2 lexevsCTS2 = LexEvsCTS2Impl.defaultInstance();
+		CodeSystemLoadOperation csLoad = lexevsCTS2.getAdminOperation().getCodeSystemLoadOperation();
+		
 	}
 }

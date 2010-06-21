@@ -17,6 +17,10 @@
  */
 package org.lexevs.cts2;
 
+import java.util.List;
+
+import org.LexGrid.LexBIG.DataModel.Collections.ExtensionDescriptionList;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.lexevs.cts2.admin.AdminOperation;
 import org.lexevs.cts2.author.AuthoringOperation;
 import org.lexevs.cts2.query.QueryOperation;
@@ -26,7 +30,7 @@ import org.lexevs.cts2.query.QueryOperation;
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
-public interface LexEvsCTS2 extends BaseService{
+public interface LexEvsCTS2{
 	/**
 	 * Returns LexEVS implementation of CTS2 Administration Operations.
 	 * 
@@ -48,5 +52,21 @@ public interface LexEvsCTS2 extends BaseService{
 	 */
 	public QueryOperation getQueryOperation();
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public ServiceInfo getServiceInfo();
+	
+	public ExtensionDescriptionList getSupportedSearchAlgorithms() throws LBException;
+    
+    public ExtensionDescriptionList getSupportedCodeSystemLoaders() throws LBException;
+    
+    public ExtensionDescriptionList getSupportedCodeSystemExporters() throws LBException;
+    
+    public List<String> getSupportedSearchAlgorithmNames() throws LBException;
+    
+    public List<String> getSupportedCodeSystemLoaderNames() throws LBException;
+    
+    public List<String> getSupportedCodeSystemExporterNames() throws LBException;
 }

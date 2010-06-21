@@ -17,6 +17,7 @@
  */
 package org.lexevs.cts2.admin;
 
+import org.lexevs.cts2.LexEvsCTS2;
 import org.lexevs.cts2.admin.export.AssociationExportOperation;
 import org.lexevs.cts2.admin.export.CodeSystemExportOperation;
 import org.lexevs.cts2.admin.export.CodeSystemExportOperationImpl;
@@ -35,6 +36,11 @@ import org.lexevs.cts2.admin.load.ValueSetLoadOperation;
 public class AdminOperationImpl implements AdminOperation {
 	private CodeSystemLoadOperation csLoadOp_;
 	private CodeSystemExportOperation csExportOp_;
+	private LexEvsCTS2 lexEvsCts2_;
+	
+	public AdminOperationImpl(LexEvsCTS2 lexEvsCts2) {
+		this.lexEvsCts2_ = lexEvsCts2;
+	}
 	
 	@Override
 	public AssociationExportOperation getAssociationExportOperation() {
@@ -59,7 +65,7 @@ public class AdminOperationImpl implements AdminOperation {
 	@Override
 	public CodeSystemLoadOperation getCodeSystemLoadOperation() {
 		if (csLoadOp_ == null)
-			csLoadOp_ = new CodeSystemLoadOperationImpl();
+			csLoadOp_ = new CodeSystemLoadOperationImpl(lexEvsCts2_);
 		
 		return csLoadOp_;
 	}

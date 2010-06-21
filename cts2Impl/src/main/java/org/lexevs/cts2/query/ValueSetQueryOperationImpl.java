@@ -30,6 +30,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.cts2.LexEvsCTS2;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
@@ -44,6 +45,11 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 public class ValueSetQueryOperationImpl implements ValueSetQueryOperation {
 	private LexEVSValueSetDefinitionServices valueSetService_;
 	private DatabaseServiceManager databaseServiceManager_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
+	private LexEvsCTS2 lexEvsCts2_;
+	
+	public ValueSetQueryOperationImpl(LexEvsCTS2 lexEvsCts2) {
+		this.lexEvsCts2_ = lexEvsCts2;
+	}
 	
 	
 	/* (non-Javadoc)

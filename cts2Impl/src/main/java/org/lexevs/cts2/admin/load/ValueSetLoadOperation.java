@@ -19,6 +19,6 @@
 package org.lexevs.cts2.admin.load;
 
 public interface ValueSetLoadOperation {
-	public int importValueSetVersion();	
+	public int load();	
 	
 }

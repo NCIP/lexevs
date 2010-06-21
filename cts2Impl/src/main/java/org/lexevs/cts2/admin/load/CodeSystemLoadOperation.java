@@ -20,11 +20,11 @@ package org.lexevs.cts2.admin.load;
 import java.net.URI;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.versions.Revision;
-import org.lexevs.cts2.BaseService.LoadFormats;
 
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
@@ -38,13 +38,14 @@ public interface CodeSystemLoadOperation extends Loader{
 	 * @param metadata
 	 * @param manifest
 	 * @param releaseURI
+	 * @param loaderName
 	 * @param stopOnErrors
 	 * @param async
 	 * @param overwriteMetadata
 	 * @param versionTag - the tag (e.g "devel", "production", ...) to be set for the this code system
 	 * @param activate - True: activates the code system after the load.
 	 */
-	public abstract URNVersionPair[] load(URI source, URI metadata, URI manifest, URI releaseURI, LoadFormats sourceFormat, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException;
+	public abstract URNVersionPair[] load(URI source, URI metadata, URI manifest, URI releaseURI, String loaderName, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException;
 	
 	/**
 	 * Load the content and meta data.  If the async flag is true, return an URI that

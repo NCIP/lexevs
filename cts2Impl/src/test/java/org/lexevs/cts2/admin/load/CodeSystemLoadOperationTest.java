@@ -3,7 +3,7 @@
  */
 package org.lexevs.cts2.admin.load;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 
@@ -18,7 +18,6 @@ import org.LexGrid.relations.Relations;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2;
 import org.lexevs.cts2.LexEvsCTS2Impl;
-import org.lexevs.cts2.BaseService.LoadFormats;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.Constants;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.factory.SupportedAssociationFactory;
@@ -38,7 +37,7 @@ public class CodeSystemLoadOperationTest {
 		LexEvsCTS2 cts2 = new LexEvsCTS2Impl();
 		CodeSystemLoadOperation csLoad = cts2.getAdminOperation().getCodeSystemLoadOperation();
 		csLoad.load(new File(
-				"../lbTest/resources/testData/fungal_anatomy.obo").toURI(), null, null, null, LoadFormats.OBO, true, true, true, "DEV", true);
+				"../lbTest/resources/testData/fungal_anatomy.obo").toURI(), null, null, null, "OBOLoader", true, true, true, "DEV", true);
 	}
 
 	/**
@@ -79,7 +78,7 @@ public class CodeSystemLoadOperationTest {
         
         cs.addRelations(rels);
         
-        CodeSystemLoadOperation csLoadOp = new CodeSystemLoadOperationImpl();
+        CodeSystemLoadOperation csLoadOp = getLexEvsCTS2().getAdminOperation().getCodeSystemLoadOperation();
         csLoadOp.load(cs, null, null, true, true, true, "DEV", true);
 	}
 
@@ -129,6 +128,10 @@ public class CodeSystemLoadOperationTest {
 	@Test
 	public void testValidate() {
 		fail("Not yet implemented"); // TODO
+	}
+	
+	private LexEvsCTS2 getLexEvsCTS2(){
+		return LexEvsCTS2Impl.defaultInstance();
 	}
 
 }
