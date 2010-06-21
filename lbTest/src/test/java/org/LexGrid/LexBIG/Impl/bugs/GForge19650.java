@@ -54,7 +54,7 @@ public class GForge19650 extends LexBIGServiceTestCase {
     private LexBIGService lbs;
     
     private static String AUTO_EXPORT_FILE_DIR = "resources/testData/testExport";
-    private static String AUTO_EXPORT_FILE = AUTO_EXPORT_FILE_DIR + "/Automobiles.xml";
+    private static String AUTO_EXPORT_FILE = AUTO_EXPORT_FILE_DIR + "/Automobiles_1.0.xml";
     private static String AUTO_EXPORT_MANIFEST = AUTO_EXPORT_FILE_DIR + "/export-autos-manifest.xml";
     
     @Override
@@ -86,7 +86,7 @@ public class GForge19650 extends LexBIGServiceTestCase {
     
     public void testLoadExportedAutombiles() throws LBParameterException, LBInvocationException, InterruptedException,
     LBException {
-        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGridLoader");
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
         loader.setCodingSchemeManifestURI(new File(AUTO_EXPORT_MANIFEST).toURI());
         
         loader.load(new File(AUTO_EXPORT_FILE).toURI(), true, true);
