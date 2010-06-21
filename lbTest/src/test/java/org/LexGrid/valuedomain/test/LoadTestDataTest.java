@@ -53,12 +53,12 @@ public class LoadTestDataTest extends TestCase {
 
 	public void testLoadAutombilesV1() throws LBParameterException,
 			LBInvocationException, InterruptedException, LBException {
-	    loadXML("resources/testData/ValueDomain/Automobiles.xml", "devel");
+	    loadXML("resources/testData/valueDomain/Automobiles.xml", "devel");
 	}
 	
 	public void testLoadAutombilesV2() throws LBParameterException,
             LBInvocationException, InterruptedException, LBException {
-	     loadXML("resources/testData/ValueDomain/AutomobilesV2.xml", LBConstants.KnownTags.PRODUCTION.toString());
+	     loadXML("resources/testData/valueDomain/AutomobilesV2.xml", LBConstants.KnownTags.PRODUCTION.toString());
 	}
 
 	public void testLoadGermanMadeParts() throws LBParameterException,
