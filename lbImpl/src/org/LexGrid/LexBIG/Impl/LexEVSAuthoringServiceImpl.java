@@ -50,6 +50,7 @@ import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.version.AuthoringService;
+import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.ResourceManager;
 
@@ -63,6 +64,8 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
     AuthoringService service;
     DatabaseServiceManager dbManager;
     LexEvsServiceLocator locator;
+    IndexServiceManager indexService;
+    
     
     //Coding Scheme Mapping Code System Defaults
     public static String CODING_SCHEME_NAME = "Mapping_Container";
@@ -87,6 +90,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         locator = LexEvsServiceLocator.getInstance();
         dbManager = locator.getDatabaseServiceManager();
         service = dbManager.getAuthoringService();
+        indexService = locator.getIndexServiceManager();
         setCodingSchemes();
     }
     
@@ -340,6 +344,10 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
             sourceCodingSchemeVersion, targetCodingScheme,targetCodingSchemeVersion,
             associationName, null, null));
         service.loadRevision(newScheme, "MappingRelease");
+        AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
+        reference.setCodingSchemeURN(newScheme.getCodingSchemeURI());
+        reference.setCodingSchemeVersion(newScheme.getRepresentsVersion());
+        indexService.getEntityIndexService().createIndex(reference);
     }
     
     private Mappings processMappingsForAssociationMappings(String sourceCodingScheme,
