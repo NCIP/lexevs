@@ -117,6 +117,9 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 	@Test
 	public void getHistoryCodingSchemeByRevisionWithHistoryFromHistoryWithMultiple() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion1', 'esguid1')");
+		
 		template.execute("Insert into h_codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
 			"values ('csguid', 'csname', 'csuri', 'csversion1', 'esguid1')");
 		
@@ -144,6 +147,12 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 	@Test
 	public void getHistoryCodingSchemeByRevisionWithLocalName() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion1', 'esguid1')");
+		
+		template.execute("Insert into csmultiattrib (csMultiAttribGuid, codingSchemeGuid, attributetype, attributevalue, entrystateguid) " +
+			"values ('csmaguid', 'csguid', 'localName', 'local name', 'esguid2')");
+		
 		template.execute("Insert into h_codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
 			"values ('csguid', 'csname', 'csuri', 'csversion1', 'esguid1')");
 		
@@ -174,6 +183,12 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 	@Test
 	public void getHistoryCodingSchemeByRevisionWithSource() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion1', 'esguid1')");
+		
+		template.execute("Insert into csmultiattrib (csMultiAttribGuid, codingSchemeGuid, attributetype, attributevalue, entrystateguid) " +
+			"values ('csmaguid', 'csguid', 'source', 'a source', 'esguid2')");
+		
 		template.execute("Insert into h_codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
 			"values ('csguid', 'csname', 'csuri', 'csversion1', 'esguid1')");
 		
