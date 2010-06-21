@@ -203,6 +203,7 @@
 				<beans:property name="databaseServiceManager" 
 					ref="databaseServiceManager"/>
 				<beans:property name="mrconsoStagingDao" ref="mrconsoStagingDao"/>
+				<beans:property name="supportedAttributeTemplate" ref="cachingSupportedAttribuiteTemplate" />
 			</beans:bean>
 		</beans:property>
 	</beans:bean>
