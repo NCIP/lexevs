@@ -39,20 +39,19 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 
 	
 	/** The max cache size. */
-	private int maxCacheSize = 100;
+	private int maxCacheSize = 1000;
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.AbstractSupportedAttributeTemplate#insert(org.LexGrid.persistence.model.CodingSchemeSupportedAttrib)
 	 */
 	@Override
-	protected void insert(String codingSchemeUri, String codingSchemeVersion, URIMap uriMap){
+	protected synchronized void insert(String codingSchemeUri, String codingSchemeVersion, URIMap uriMap){
 		String key = this.buildCacheKey(uriMap);
 
 		if(! attributeCache.containsKey(key)){
-			/*TODO: This is causing deadlocks... 
 			this.getDatabaseServiceManager().getCodingSchemeService().
 				insertURIMap(codingSchemeUri, codingSchemeVersion, uriMap);
-			*/
+			
 			attributeCache.put(key, uriMap);
 		}
 		
