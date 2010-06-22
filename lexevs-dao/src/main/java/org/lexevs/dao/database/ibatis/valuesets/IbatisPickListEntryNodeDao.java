@@ -2,13 +2,16 @@ package org.lexevs.dao.database.ibatis.valuesets;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
+import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
-import org.LexGrid.commonTypes.Source;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.valueSets.PickListEntry;
 import org.LexGrid.valueSets.PickListEntryExclusion;
 import org.LexGrid.valueSets.PickListEntryNode;
+import org.LexGrid.valueSets.PickListEntryNodeChoice;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.valuesets.PickListEntryNodeDao;
@@ -64,6 +67,15 @@ public class IbatisPickListEntryNodeDao extends AbstractIbatisDao implements
 	private static String GET_PICKLIST_ENTRYNODE_LATEST_REVISION_ID_BY_UID = PICKLIST_ENTRY_NODE_NAMESPACE + "getPickListEntryNodeLatestRevisionIdByUId";
 	
 	private static String DELETE_PL_ENTRY_NODE_BY_UID_SQL = PICKLIST_ENTRY_NODE_NAMESPACE + "deletePickListEntryNodeByUId";
+	
+	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_PLENTRY_SQL = PICKLIST_ENTRY_NODE_NAMESPACE + "getPrevRevIdFromGivenRevIdForPLEntry";
+	
+	private static String GET_PICKLIST_ENTRY_METADATA_FROM_HISTORY_BY_REVISION_SQL = PICKLIST_ENTRY_NODE_NAMESPACE + "getPickListEntryMetaDataByRevision";
+	
+	private static String GET_CONTEXT_LIST_FROM_HISTORY_BY_PARENT_ENTRYSTATEGUID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "getContextListFromHistoryByParentEntryStateGuidandType";
+	
+	private static String GET_ENTRYNODE_PROPERTY_IDS_LIST_BY_ENTRYNODE_UID_SQL = PICKLIST_ENTRY_NODE_NAMESPACE + "getEntryNodePropertyIdsListByEntryNodeUId";
+	
 	
 	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
@@ -463,5 +475,204 @@ public class IbatisPickListEntryNodeDao extends AbstractIbatisDao implements
 				DELETE_PL_ENTRY_NODE_BY_UID_SQL,
 				new PrefixedParameterTuple(prefix, pickListEntryNodeUId,
 						ReferenceType.PICKLISTENTRY.name()));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public PickListEntryNode resolvePLEntryNodeByRevision(
+			String pickListId, String plEntryId, String revisionId) throws LBRevisionException {
+		
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		String vsPLEntryUId = this.getPickListEntryNodeUId(pickListId, plEntryId);
+		
+		String tempRevId = revisionId;
+		
+		if (vsPLEntryUId == null) {
+			throw new LBRevisionException(
+					"PLEntry "
+							+ plEntryId
+							+ " doesn't exist in lexEVS. "
+							+ "Please check the plEntryId. Its possible that the given pickListEntry "
+							+ "has been REMOVEd from the lexEVS system in the past.");
+		}
+		
+		String plEntryRevisionId = this.getLatestRevision(vsPLEntryUId);
+		
+		// 1. If 'revisionId' is null or 'revisionId' is the latest revision of the picklistEntry
+		// then use getPLEntryById to get the PLEntry object and return.
+		
+		if (revisionId == null || plEntryRevisionId == null
+				|| revisionId.equals(plEntryRevisionId)) {
+			return getPLEntryByUId(vsPLEntryUId);
+		}
+		
+		// 2. Get the earliest revisionId on which change was applied on given 
+		// PLEntry with reference given revisionId.
+		
+		TreeMap revisionIdMap = (TreeMap) this.getSqlMapClientTemplate()
+				.queryForMap(
+						GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_PLENTRY_SQL,
+						new PrefixedParameterTuple(prefix, vsPLEntryUId,
+								revisionId), "revId", "revAppliedDate");
+		
+		if( revisionIdMap.isEmpty() ) {
+			throw new LBRevisionException("Invalid Revision : " + tempRevId);
+		}
+		
+		revisionId = (String) revisionIdMap.keySet().toArray()[0];
+		
+		// 3. Get the pick list entry data from history.
+		PickListEntryNode pickListEntryNode = null;
+		InsertOrUpdatePickListEntryBean plEntryBean = null;
+			
+		plEntryBean = (InsertOrUpdatePickListEntryBean) this
+				.getSqlMapClientTemplate().queryForObject(
+						GET_PICKLIST_ENTRY_METADATA_FROM_HISTORY_BY_REVISION_SQL,
+						new PrefixedParameterTuple(prefix, vsPLEntryUId,
+								revisionId));
+		
+		if (plEntryBean != null) {
+
+			pickListEntryNode = getPLEntryNode(plEntryBean);
+
+			// Get pick list definition context
+			if (pickListEntryNode != null) {
+				PickListEntryNodeChoice entryNodeChoice = pickListEntryNode
+						.getPickListEntryNodeChoice();
+
+				if (entryNodeChoice.getInclusionEntry() != null) {
+					List<String> contextList = this
+							.getSqlMapClientTemplate()
+							.queryForList(
+									GET_CONTEXT_LIST_FROM_HISTORY_BY_PARENT_ENTRYSTATEGUID_AND_TYPE_SQL,
+									new PrefixedParameterTuple(prefix,
+											plEntryBean.getEntryStateUId(),
+											ReferenceType.PICKLISTENTRY.name()));
+
+					entryNodeChoice.getInclusionEntry().setPickContext(
+							contextList);
+				}
+			}
+		}
+		
+		// 4. If pick list entry is not in history, get it from base table.
+		if (pickListEntryNode == null) {
+
+			InsertOrUpdatePickListEntryBean plEntryNodeBean = (InsertOrUpdatePickListEntryBean) this
+					.getSqlMapClientTemplate().queryForObject(
+							GET_PICKLIST_ENTRYNODE_METADATA_BY_PLENTRY_GUID_SQL,
+							new PrefixedParameter(prefix, vsPLEntryUId));
+
+			if (plEntryNodeBean != null) {
+
+				pickListEntryNode = getPLEntryNode(plEntryNodeBean);
+			}
+		}
+		
+		// 5. Get all pick list entry node property.
+		List<String> propertyIdList = this.getSqlMapClientTemplate()
+				.queryForList(
+						GET_ENTRYNODE_PROPERTY_IDS_LIST_BY_ENTRYNODE_UID_SQL,
+						new PrefixedParameterTuple(prefix, vsPLEntryUId,
+								ReferenceType.PICKLISTENTRY.name()));
+			
+		Properties properties = new Properties();
+		
+		for (String propId : propertyIdList) {
+			Property pickListEntryProperty = null;
+
+			try {
+				pickListEntryProperty = vsPropertyDao
+						.resolveVSPropertyByRevision(vsPLEntryUId, propId,
+								revisionId);
+			} catch (LBRevisionException e) {
+				continue;
+			}
+
+			properties.addProperty(pickListEntryProperty);
+		}
+		
+		pickListEntryNode.setProperties(properties);
+		
+		return pickListEntryNode;
+	}
+
+	public PickListEntryNode getPLEntryByUId(String vsPLEntryUId) {
+
+		PickListEntryNode plEntryNode = null;
+
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+
+		InsertOrUpdatePickListEntryBean plEntryNodeBean = (InsertOrUpdatePickListEntryBean) this
+				.getSqlMapClientTemplate().queryForObject(
+						GET_PICKLIST_ENTRYNODE_METADATA_BY_PLENTRY_GUID_SQL,
+						new PrefixedParameter(prefix, vsPLEntryUId));
+
+		if (plEntryNodeBean != null) {
+
+			plEntryNode = getPLEntryNode(plEntryNodeBean);
+			
+			List<Property> props = this.vsPropertyDao.getAllPropertiesOfParent(
+					plEntryNodeBean.getUId(), ReferenceType.PICKLISTENTRY);
+			if (props != null) {
+				Properties properties = new Properties();
+				properties.getPropertyAsReference().addAll(props);
+				plEntryNode.setProperties(properties);
+			}
+		}
+
+		return plEntryNode;
+	}
+	
+	private PickListEntryNode getPLEntryNode(
+			InsertOrUpdatePickListEntryBean plEntryNodeBean) {
+		PickListEntryNode plEntryNode = plEntryNodeBean.getPickListEntryNode();
+
+		PickListEntryNodeChoice plEntryNodeChoice = new PickListEntryNodeChoice();
+
+		if (plEntryNodeBean.isInclude()) {
+			PickListEntry plEntry = new PickListEntry();
+
+			plEntry.setEntityCode(plEntryNodeBean.getEntityCode());
+			plEntry.setEntityCodeNamespace(plEntryNodeBean
+					.getEntityCodeNamespace());
+			plEntry.setEntryOrder(plEntryNodeBean.getEntryOrder());
+			plEntry.setIsDefault(plEntryNodeBean.isDefault());
+			plEntry.setLanguage(plEntryNodeBean.getLangauage());
+			plEntry.setMatchIfNoContext(plEntryNodeBean.isMatchIfNoContext());
+			plEntry.setPropertyId(plEntryNodeBean.getPropertyId());
+			plEntry.setPickText(plEntryNodeBean.getPickText());
+
+			List<InsertOrUpdateValueSetsMultiAttribBean> multiAttribList = plEntryNodeBean
+					.getVsMultiAttribList();
+
+			List<String> contextList = new ArrayList<String>();
+
+			for (InsertOrUpdateValueSetsMultiAttribBean multiAttibBean : multiAttribList) {
+
+				if (SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT
+						.equals(multiAttibBean.getAttributeType())) {
+					contextList.add(multiAttibBean.getAttributeValue());
+				}
+			}
+
+			if (contextList != null)
+				plEntry.setPickContext(contextList);
+
+			plEntryNodeChoice.setInclusionEntry(plEntry);
+		} else {
+			PickListEntryExclusion plEntryExclude = new PickListEntryExclusion();
+
+			plEntryExclude.setEntityCode(plEntryNodeBean.getEntityCode());
+			plEntryExclude.setEntityCodeNamespace(plEntryNodeBean
+					.getEntityCodeNamespace());
+
+			plEntryNodeChoice.setExclusionEntry(plEntryExclude);
+		}
+
+		plEntryNode.setPickListEntryNodeChoice(plEntryNodeChoice);
+
+		return plEntryNode;
 	}
 }

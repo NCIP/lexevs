@@ -1,7 +1,9 @@
 package org.lexevs.dao.database.ibatis.valuesets;
 
+import java.util.HashMap;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
@@ -41,6 +43,12 @@ public class IbatisVSDefinitionEntryDao extends AbstractIbatisDao implements
 	private static String UPDATE_DEFINITION_ENTRY_VER_ATTRIBUTES_BY_UID_SQL = VSDEFINITIONENTRY_NAMESPACE + "updateDefinitionEntryVerAttribByUId";
 	
 	private static String GET_DEFINITION_ENTRY_LATEST_REVISION_ID_BY_UID = VSDEFINITIONENTRY_NAMESPACE + "getDefinitionEntryLatestRevisionIdByUId";
+	
+	private static String GET_DEFINITION_ENTRY_BY_UID_SQL = VSDEFINITIONENTRY_NAMESPACE + "getDefinitionEntryByUId";
+	
+	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_DEFINITIONENTRY_SQL = VSDEFINITIONENTRY_NAMESPACE + "getPrevRevIdFromGivenRevIdForDefinitionEntry";
+
+	private static String GET_DEFINITION_ENTRY_FROM_HISTORY_BY_REVISION_SQL = VSDEFINITIONENTRY_NAMESPACE + "getDefinitionEntryByRevision";
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.AbstractBaseDao#doGetSupportedLgSchemaVersions()
@@ -234,5 +242,89 @@ public class IbatisVSDefinitionEntryDao extends AbstractIbatisDao implements
 	 */
 	public void setVsPropertyDao(VSPropertyDao vsPropertyDao) {
 		this.vsPropertyDao = vsPropertyDao;
+	}
+
+	@Override
+	public DefinitionEntry resolveDefinitionEntryByRevision(
+			String valueSetDefURI, String ruleOrder, String revisionId)
+			throws LBRevisionException {
+
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+
+		String vsdEntryUId = this.getDefinitionEntryUId(valueSetDefURI,
+				ruleOrder);
+
+		String tempRevId = revisionId;
+
+		if (vsdEntryUId == null) {
+			throw new LBRevisionException(
+					"Definition entry "
+							+ valueSetDefURI
+							+ "#"
+							+ ruleOrder
+							+ " doesn't exist in lexEVS. "
+							+ "Please check the valueSetDefURI and rule order. Its possible that the given definition entry "
+							+ "has been REMOVEd from the lexEVS system in the past.");
+		}
+
+		String definitionEntryRevisionId = this.getLatestRevision(vsdEntryUId);
+
+		// 1. If 'revisionId' is null or 'revisionId' is the latest revision of
+		// the definition entry
+		// then use getVSDefinitionEntryByUId to get the DefinitionEntry object
+		// and return.
+
+		if (revisionId == null || definitionEntryRevisionId == null ) {
+			return getVSDefinitionEntryByUId(vsdEntryUId);
+		}
+
+		// 2. Get the earliest revisionId on which change was applied on given
+		// PLEntry with reference given revisionId.
+
+		HashMap revisionIdMap = (HashMap) this
+				.getSqlMapClientTemplate()
+				.queryForMap(
+						GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_DEFINITIONENTRY_SQL,
+						new PrefixedParameterTuple(prefix, vsdEntryUId,
+								revisionId), "revId", "revAppliedDate");
+
+		if (revisionIdMap.isEmpty()) {
+			revisionId = null;
+		} else {
+			revisionId = (String) revisionIdMap.keySet().toArray()[0];
+			
+			if( definitionEntryRevisionId.equals(revisionId) ) {
+				this.getVSDefinitionEntryByUId(vsdEntryUId);
+			}
+		}
+
+		// 3. Get the definition entry data from history.
+		DefinitionEntry definitionEntry = null;
+
+		definitionEntry = (DefinitionEntry) this.getSqlMapClientTemplate()
+				.queryForObject(
+						GET_DEFINITION_ENTRY_FROM_HISTORY_BY_REVISION_SQL,
+						new PrefixedParameterTuple(prefix, vsdEntryUId,
+								revisionId));
+
+		// 4. If pick list entry is not in history, get it from base table.
+		if (definitionEntry == null) {
+
+			definitionEntry = getVSDefinitionEntryByUId(vsdEntryUId);
+		}
+
+		return definitionEntry;
+	}
+
+	public DefinitionEntry getVSDefinitionEntryByUId(String vsdEntryUId) {
+		
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		DefinitionEntry definitionEntry = (DefinitionEntry) this
+				.getSqlMapClientTemplate().queryForObject(
+						GET_DEFINITION_ENTRY_BY_UID_SQL,
+						new PrefixedParameter(prefix, vsdEntryUId));
+		
+		return definitionEntry;
 	}
 }

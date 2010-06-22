@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.PropertyLink;
@@ -120,6 +121,14 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	private static String GET_ENTRYSTATE_UID_BY_ENTITY_UID_SQL = ENTITY_NAMESPACE + "getEntryStateUIdByEntityUId";
 	
 	private static String UPDATE_ENTITY_ENTRYSTATE_UID = ENTITY_NAMESPACE + "updateEntityEntryStateUId";
+	
+	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_ENTITY_SQL = ENTITY_NAMESPACE + "getPrevRevIdFromGivenRevIdForEntity";
+	
+	private static String GET_ENTITY_METADATA_FROM_HISTORY_BY_REVISION_SQL = ENTITY_NAMESPACE + "getEntityMetaDataByRevision";
+	
+	private static String GET_ENTITY_PROPERTY_IDS_LIST_BY_ENTITY_UID_SQL = ENTITY_NAMESPACE + "getEntityPropertyIdsListByEntityUId";
+	
+	private static String GET_ENTITY_TYPE_BY_ENTITYUID_SQL = ENTITY_NAMESPACE + "getEntityTypeByEntityUId";
 	
 	private EntryStateTypeClassifier entryStateClassifier = new EntryStateTypeClassifier();
 	
@@ -244,7 +253,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	public Entity getEntityByUId(
 			String codingSchemeId, 
 			String entityId) {
-		return this.getEntityByUId(codingSchemeId, entityId);
+		return this.getEntityByUId(codingSchemeId, entityId, null, null);
 	}
 
 	public Entity getEntityByUId(
@@ -757,5 +766,111 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			return true;
 		else
 			return false;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Entity resolveEntityByRevision(
+			String codingSchemeUId, String entityCode, String entityCodeNamespace, String revisionId) throws LBRevisionException {
+		
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		String entityUId = this.getEntityUId(codingSchemeUId, entityCode, entityCodeNamespace);
+		
+		if (entityUId == null) {
+			throw new LBRevisionException(
+					"Entity "
+							+ entityCode
+							+ " doesn't exist in lexEVS. "
+							+ "Please check the entityCode and namespace. Its possible that the given entity "
+							+ "has been REMOVEd from the lexEVS system in the past.");
+		}
+		
+		String entityLatestRevisionId = this.getLatestRevision(codingSchemeUId, entityUId);
+		
+		// 1. If 'revisionId' is null or 'revisionId' is the latest revision of the entity
+		// then use getEntityByUId to get the PLEntry object and return.
+		
+		if (revisionId == null || entityLatestRevisionId == null ) {
+			return getEntityByUId(codingSchemeUId, entityUId);
+		}
+		
+		// 2. Get the earliest revisionId on which change was applied on given 
+		// Entity with reference given revisionId.
+		
+		HashMap revisionIdMap = (HashMap) this.getSqlMapClientTemplate()
+				.queryForMap(
+						GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_ENTITY_SQL,
+						new PrefixedParameterTuple(prefix, entityUId,
+								revisionId), "revId", "revAppliedDate");
+		
+		if( revisionIdMap.isEmpty() ) {
+			revisionId = null;
+		} else {
+			revisionId = (String) revisionIdMap.keySet().toArray()[0];
+			
+			if( revisionId.equals(entityLatestRevisionId) ) {
+				return getEntityByUId(codingSchemeUId, entityUId);
+			}
+		}
+		
+
+		Entity entity = null;
+		InsertOrUpdateEntityBean entityBean = null;
+		List<String> entityTypeList = null;
+		
+		entityTypeList = this.getSqlMapClientTemplate().queryForList(
+				GET_ENTITY_TYPE_BY_ENTITYUID_SQL,
+				new PrefixedParameter(prefix, entityUId));
+		
+		// 3. Get the entity data from history.
+		entityBean = (InsertOrUpdateEntityBean) this.getSqlMapClientTemplate()
+				.queryForObject(
+						GET_ENTITY_METADATA_FROM_HISTORY_BY_REVISION_SQL,
+						new PrefixedParameterTuple(prefix, entityUId,
+								revisionId));
+
+		if (entityBean != null) {
+
+			entity = entityBean.getEntity();
+			entity.setEntityType(entityTypeList);
+		}
+
+		// 4. If entity is not in history, get it from base table.
+		if (entity == null) {
+
+			InsertOrUpdateEntityBean entityData = (InsertOrUpdateEntityBean) this
+					.getSqlMapClientTemplate().queryForObject(
+							GET_ENTITY_ATTRIBUTES_BY_UID_SQL,
+							new PrefixedParameter(prefix, entityUId));
+
+			if (entityData != null) {
+
+				entity = entityData.getEntity();
+				entity.setEntityType(entityTypeList);
+			}
+		}
+		
+		// 5. Get all entity property.
+		List<String> propertyIdList = this.getSqlMapClientTemplate()
+				.queryForList(
+						GET_ENTITY_PROPERTY_IDS_LIST_BY_ENTITY_UID_SQL,
+						new PrefixedParameterTuple(prefix, entityUId,
+								PropertyType.ENTITY.name()));
+			
+		for (String propId : propertyIdList) {
+			Property entityProperty = null;
+
+			try {
+				entityProperty = ibatisPropertyDao.resolvePropertyByRevision(
+						codingSchemeUId, entityUId, propId, revisionId);
+			} catch (LBRevisionException e) {
+				continue;
+			}
+
+			entity.addProperty(entityProperty);
+		}
+		
+		return entity;
 	}
 }

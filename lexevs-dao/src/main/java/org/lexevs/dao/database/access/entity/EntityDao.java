@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationEntity;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
@@ -167,4 +168,8 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 			String entryStateUId);
 
 	public boolean entryStateExists(String codingSchemeUId, String entryStateUId);
+	
+	public Entity resolveEntityByRevision(String codingSchemeUId,
+			String entityCode, String entityCodeNamespace, String revisionId)
+			throws LBRevisionException;
 }

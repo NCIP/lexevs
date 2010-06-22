@@ -19,11 +19,17 @@
 package org.lexevs.dao.database.ibatis.property;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.Text;
+import org.LexGrid.concepts.Comment;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Presentation;
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.EntryState;
@@ -95,6 +101,8 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	/** The INSER t_ propert y_ usagecontex t_ sql. */
 	public static String INSERT_PROPERTY_USAGECONTEXT_SQL = PROPERTY_NAMESPACE + "insertPropertyMultiAttrib";
 	
+	public static String INSERT_PROPERTY_MULTIATTRIB_SQL = PROPERTY_NAMESPACE + "insertPropertyMultiAttrib";
+	
 	/** The INSER t_ propertylin k_ sql. */
 	public static String INSERT_PROPERTYLINK_SQL = PROPERTY_NAMESPACE + "insertPropertyLink";
 	
@@ -121,6 +129,12 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	public static String GET_PROPERTY_UID_BY_ID_AND_NAME = PROPERTY_NAMESPACE + "getPropertyUIdByPropIdAndName";
 			
 	private static String GET_PROPERTY_LATEST_REVISION_ID_BY_UID = PROPERTY_NAMESPACE + "getLatestPropertyRevisionIdByUId";
+	
+	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_PROPERTY_SQL = PROPERTY_NAMESPACE + "getPrevRevIdFromGivenRevIdForProperty";
+	
+	private static String GET_PROPERTY_FROM_HISTORY_BY_REVISION_SQL = PROPERTY_NAMESPACE + "getPropertyFromHistoryByRevision";
+	
+	private static String GET_PROPERTY_MULTIATTRIB_FROM_HISTORY_BY_ENTRYSTATEUID_SQL = PROPERTY_NAMESPACE + "getPropertyMultiAttribFromHistoryByEntryStateUId";
 	
 	PropertyMultiAttributeClassifier propertyMultiAttributeClassifier = new PropertyMultiAttributeClassifier();
 	
@@ -365,19 +379,21 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		InsertOrUpdatePropertyBean propertyData = (InsertOrUpdatePropertyBean) this.getSqlMapClientTemplate()
 				.queryForObject(GET_PROPERTY_ATTRIBUTES_BY_UID_SQL,
 						new PrefixedParameter(prefix, propertyUId));
-		
-		Assert.notNull(propertyData);
-		
-		inserter.insert(INSERT_PROPERTY_SQL, 
-				buildInsertPropertyBean(
-						historyPrefix,
-						propertyData.getParentUId(),
-						propertyData.getUId(),
-						propertyData.getEntryStateUId(),
-						PropertyTypeClassifier.getPropertyType(propertyData.getParentType()),
-						propertyData.getProperty()
-						));
 
+		propertyData.setPrefix(historyPrefix);
+		
+		this.getNonBatchTemplateInserter().insert(INSERT_PROPERTY_SQL, propertyData);
+		
+		for (InsertPropertyMultiAttribBean propMultiAttrib : propertyData.getPropertyMultiAttribList())
+		{
+			if (propMultiAttrib.getUId() != null) {
+				propMultiAttrib.setPrefix(historyPrefix);
+
+				this.getSqlMapClientTemplate().insert(
+						INSERT_PROPERTY_MULTIATTRIB_SQL, propMultiAttrib);
+			}
+		}
+		
 		if (!entryStateExists(prefix, propertyData.getEntryStateUId())) {
 
 			EntryState entryState = new EntryState();
@@ -418,7 +434,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						property),
 						1);	
 		
-		this.updatePropertyVersionableAttrib(codingSchemeUId, parentUId, propertyUId, type, property);
+//		this.updatePropertyVersionableAttrib(codingSchemeUId, parentUId, propertyUId, type, property);
 	}
 	
 	/* (non-Javadoc)
@@ -859,5 +875,182 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 */
 	public void setIbatisVersionsDao(IbatisVersionsDao ibatisVersionsDao) {
 		this.ibatisVersionsDao = ibatisVersionsDao;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Property resolvePropertyByRevision(String codingSchemeUId, String parentGuid,
+			String propertyId, String revisionId) throws LBRevisionException {
+
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+
+		String propertyUId = this.getPropertyUIdFromParentUIdAndPropId(codingSchemeUId,
+				parentGuid, propertyId);
+
+		String tempRevId = revisionId;
+
+		if (propertyUId == null) {
+			throw new LBRevisionException(
+					"Property "
+							+ propertyUId
+							+ " doesn't exist in lexEVS. "
+							+ "Please check the propertyId and its parent Id. Its possible that the given property "
+							+ "has been REMOVEd from the lexEVS system in the past.");
+		}
+
+		String propertyRevisionId = this.getLatestRevision(codingSchemeUId, propertyUId);
+
+		// 1. If 'revisionId' is null or 'revisionId' is the latest revision of
+		// the property
+		// then use getPropertyByUId to get the Property object and return.
+
+		if (revisionId == null || propertyRevisionId == null ) {
+			return getPropertyByUId(propertyUId);
+		}
+
+		// 2. Get the earliest revisionId on which change was applied on given
+		// property with reference to given revisionId.
+
+		HashMap revisionIdMap = (HashMap) this.getSqlMapClientTemplate()
+				.queryForMap(
+						GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_PROPERTY_SQL,
+						new PrefixedParameterTuple(prefix, propertyUId,
+								revisionId), "revId", "revAppliedDate");
+
+		if (revisionIdMap.isEmpty()) {
+			revisionId = null;
+		} else {
+			
+			revisionId = (String) revisionIdMap.keySet().toArray()[0];
+			
+			if( revisionId.equals(propertyRevisionId)) {
+				return getPropertyByUId(propertyUId);
+			}
+		}
+
+		// 3. Get property data from history.
+		Property property = null;
+		InsertOrUpdatePropertyBean propertyBean = null;
+
+		propertyBean = (InsertOrUpdatePropertyBean) this
+				.getSqlMapClientTemplate().queryForObject(
+						GET_PROPERTY_FROM_HISTORY_BY_REVISION_SQL,
+						new PrefixedParameterTuple(prefix, propertyUId,
+								revisionId));
+
+		if (propertyBean != null) {
+
+			List multiAttribList = this.getSqlMapClientTemplate().queryForList(
+					GET_PROPERTY_MULTIATTRIB_FROM_HISTORY_BY_ENTRYSTATEUID_SQL,
+					new PrefixedParameterTuple(prefix, propertyBean.getUId(),
+							propertyBean.getEntryStateUId()));
+
+			propertyBean.setPropertyMultiAttribList(multiAttribList);
+
+			property = getProperty(propertyBean);
+		}
+
+		// 4. If property is not in history, get it from base table.
+		if (property == null) {
+
+			property = getPropertyByUId(propertyUId);
+		}
+
+		return property;
+	}
+	
+	public Property getPropertyByUId(String vsPropertyUId) {
+		
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		InsertOrUpdatePropertyBean propertyBean = (InsertOrUpdatePropertyBean) this
+				.getSqlMapClientTemplate().queryForObject(
+						GET_PROPERTY_ATTRIBUTES_BY_UID_SQL,
+						new PrefixedParameter(prefix, vsPropertyUId));
+		
+		return getProperty(propertyBean);
+	}
+	
+	private Property getProperty(InsertOrUpdatePropertyBean propertyBean) {
+		
+		Property property = propertyBean.getProperty();
+		
+		Property prop = null;
+		
+		if (SQLTableConstants.TBLCOLVAL_PRESENTATION.equals(property
+				.getPropertyType())) {
+			
+			prop = new Presentation();
+			
+			((Presentation)prop).setIsPreferred(propertyBean.getIsPreferred());
+			((Presentation)prop).setMatchIfNoContext(propertyBean.getMatchIfNoContext());
+			((Presentation)prop).setDegreeOfFidelity(propertyBean.getDegreeOfFidelity());
+			((Presentation)prop).setRepresentationalForm(propertyBean.getRepresentationalForm());
+		} else if (SQLTableConstants.TBLCOLVAL_DEFINITION.equals(property
+				.getPropertyType())) {
+			
+			prop = new Definition();
+			
+			((Definition)prop).setIsPreferred(propertyBean.getIsPreferred());
+		} else if (SQLTableConstants.TBLCOLVAL_COMMENT.equals(property
+				.getPropertyType())) {
+			
+			prop = new Comment();
+			
+		} else {
+			
+			prop = new Property();
+		}
+		
+		prop.setPropertyId(property.getPropertyId());
+		prop.setPropertyName(property.getPropertyName());
+		prop.setPropertyType(property.getPropertyType());
+		prop.setEffectiveDate(property.getEffectiveDate());
+		prop.setExpirationDate(property.getExpirationDate());
+		prop.setIsActive(property.getIsActive());
+		prop.setOwner(property.getOwner());
+		prop.setStatus(property.getStatus());
+		prop.setLanguage(property.getLanguage());
+		prop.setValue(property.getValue());
+		
+		List<InsertPropertyMultiAttribBean> multiAttribList = propertyBean.getPropertyMultiAttribList();
+		
+		for (InsertPropertyMultiAttribBean multiAttribBean : multiAttribList) {
+
+			if (SQLTableConstants.TBLCOLVAL_SOURCE.equals(multiAttribBean
+					.getAttributeType())) {
+				Source source = new Source();
+
+				source.setRole(multiAttribBean.getRole());
+				source.setSubRef(multiAttribBean.getSubRef());
+				source.setContent(multiAttribBean.getAttributeValue());
+
+				prop.addSource(source);
+			} else if (SQLTableConstants.TBLCOLVAL_QUALIFIER
+					.equals(multiAttribBean.getAttributeType())) {
+
+				PropertyQualifier qualifier = new PropertyQualifier();
+
+				qualifier.setPropertyQualifierName(multiAttribBean
+						.getAttributeId());
+				qualifier
+						.setPropertyQualifierType(SQLTableConstants.TBLCOLVAL_QUALIFIER);
+
+				if (multiAttribBean.getAttributeValue() != null) {
+					Text value = new Text();
+
+					value.setContent(multiAttribBean.getAttributeValue());
+
+					qualifier.setValue(value);
+				}
+				prop.addPropertyQualifier(qualifier);
+			} else if (SQLTableConstants.TBLCOLVAL_USAGECONTEXT
+					.equals(multiAttribBean.getAttributeType())) {
+				
+				prop.addUsageContext(multiAttribBean.getAttributeValue());
+			}
+		}
+		
+		return prop;
 	}
 }

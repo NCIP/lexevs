@@ -1,6 +1,7 @@
 package org.lexevs.dao.database.ibatis.revision;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
@@ -21,6 +22,8 @@ public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao 
 	
 	private String SELECT_REVISION_GUID_BY_ID = VERSIONS_NAMESPACE + "getRevisionGuidFromId";
 
+	private String GET_REVISION_ID_BY_DATE = VERSIONS_NAMESPACE + "getRevisionIdByDate";
+	
 	/** system release dao*/
 	private SystemReleaseDao systemReleaseDao = null;
 	
@@ -60,6 +63,11 @@ public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao 
 
 		String revisionUId = this.createUniqueId();
 		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		}
+		
 		if (getRevisionUIdById(revision.getRevisionId()) == null) {
 
 			String releaseUId;
@@ -87,6 +95,21 @@ public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao 
 		return revisionUId;
 	}
 
+	public String getRevisionIdForDate(Timestamp dateTime) {
+	
+		String revisionId = null;
+		
+		HashMap revisionIdMap = (HashMap) this.getSqlMapClientTemplate()
+				.queryForMap(GET_REVISION_ID_BY_DATE, dateTime, "revId",
+						"revAppliedDate");
+		
+		if( revisionIdMap != null && !revisionIdMap.isEmpty()) {
+			revisionId = (String) revisionIdMap.keySet().toArray()[0];
+		}
+		
+		return revisionId;
+	}
+	
 	@Override
 	public <T> T executeInTransaction(IndividualDaoCallback<T> callback) {
 		// TODO Auto-generated method stub

@@ -1,5 +1,6 @@
 package org.lexevs.dao.database.access.valuesets;
 
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
@@ -31,5 +32,9 @@ public interface VSDefinitionEntryDao extends LexGridSchemaVersionAwareDao {
 			String vsDefinitionUId, DefinitionEntry defEntry);
 
 	public String getLatestRevision(String vsDefEntryUId);
+
+	public DefinitionEntry resolveDefinitionEntryByRevision(
+			String valueSetDefURI, String ruleOrder, String revisionId)
+			throws LBRevisionException;
 
 }

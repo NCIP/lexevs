@@ -20,6 +20,7 @@ package org.lexevs.dao.database.access.valuesets;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
@@ -125,4 +126,8 @@ public interface PickListDao extends LexGridSchemaVersionAwareDao {
 	public String getLatestRevision(String pickListDefUId);
 
 	public boolean entryStateExists(String entryStateUId);
+	
+	public PickListDefinition resolvePickListByRevision(String pickListId,
+			String revisionId, Integer sortType) throws LBRevisionException;
+
 }

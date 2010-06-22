@@ -1,5 +1,6 @@
 package org.lexevs.dao.database.access.valuesets;
 
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.valueSets.PickListEntryNode;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
@@ -37,5 +38,8 @@ public interface PickListEntryNodeDao extends LexGridSchemaVersionAwareDao {
 	public String getLatestRevision(String pickListEntryNodeUId);
 
 	public void deletePLEntryNodeByUId(String pickListEntryNodeUId);
+
+	public PickListEntryNode resolvePLEntryNodeByRevision(
+			String pickListId, String plEntryId, String revisionId) throws LBRevisionException;
 
 }

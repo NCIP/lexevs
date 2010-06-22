@@ -21,17 +21,19 @@ package org.lexevs.dao.database.ibatis.valuesets;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.Text;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
-import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.constants.classifier.property.PropertyMultiAttributeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
@@ -39,7 +41,6 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean;
-import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.VSPropertyBean;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.inserter.Inserter;
@@ -101,6 +102,12 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	private static String DELETE_ALL_PICKLIST_ENTRYNODE_PROPERTIES_BY_PICKLISTENTRYUID = PROPERTY_NAMESPACE + "deletePickListEntryPropertiesByPlEntryGuid";	
 	
 	private static String GET_VSPROPERTY_LATEST_REVISION_ID_BY_UID = PROPERTY_NAMESPACE + "getVSPropertyLatestRevisionIdByUId";
+	
+	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_VSPROPERTY_SQL = PROPERTY_NAMESPACE + "getPrevRevIdFromGivenRevIdForVSProperty";
+	
+	private static String GET_VSPROPERTY_FROM_HISTORY_BY_REVISION_SQL = PROPERTY_NAMESPACE + "getVSPropertyFromHistoryByRevision";
+	
+	private static String GET_VSPROPERTY_MULTIATTRIB_FROM_HISTORY_BY_ENTRYSTATEUID_SQL = PROPERTY_NAMESPACE + "getVSPropertyMultiAttribFromHistoryByEntryStateUId";
 	
 	PropertyMultiAttributeClassifier propertyMultiAttributeClassifier = new PropertyMultiAttributeClassifier();
 	
@@ -782,5 +789,143 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 				new PrefixedParameter(prefix, propertyUId));
 		
 		return revId;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Property resolveVSPropertyByRevision(String parentGuid,
+			String propertyId, String revisionId) throws LBRevisionException {
+
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+
+		String vsPropertyUId = this.getPropertyGuidFromParentGuidAndPropertyId(
+				parentGuid, propertyId);
+
+		String tempRevId = revisionId;
+
+		if (vsPropertyUId == null) {
+			throw new LBRevisionException(
+					"Property "
+							+ vsPropertyUId
+							+ " doesn't exist in lexEVS. "
+							+ "Please check the propertyId and its parent id. Its possible that the given property "
+							+ "has been REMOVEd from the lexEVS system in the past.");
+		}
+
+		String vsPropertyRevisionId = this.getLatestRevision(vsPropertyUId);
+
+		// 1. If 'revisionId' is null or 'revisionId' is the latest revision of
+		// the vsProperty
+		// then use getPropertyByUId to get the Property object and return.
+
+		if (revisionId == null || vsPropertyRevisionId == null ) {
+			return getPropertyByUId(vsPropertyUId);
+		}
+
+		// 2. Get the earliest revisionId on which change was applied on given
+		// property with reference given revisionId.
+
+		TreeMap revisionIdMap = (TreeMap) this.getSqlMapClientTemplate()
+				.queryForMap(
+						GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_VSPROPERTY_SQL,
+						new PrefixedParameterTuple(prefix, vsPropertyUId,
+								revisionId), "revId", "revAppliedDate");
+
+		if (revisionIdMap.isEmpty()) {
+			revisionId = null;
+		} else {
+			revisionId = (String) revisionIdMap.keySet().toArray()[0];
+			
+			if( vsPropertyRevisionId.equals(revisionId)) {
+				return getPropertyByUId(vsPropertyUId);
+			}
+		}
+
+		// 3. Get vsProperty data from history.
+		Property property = null;
+		InsertOrUpdatePropertyBean propertyBean = null;
+
+		propertyBean = (InsertOrUpdatePropertyBean) this
+				.getSqlMapClientTemplate().queryForObject(
+						GET_VSPROPERTY_FROM_HISTORY_BY_REVISION_SQL,
+						new PrefixedParameterTuple(prefix, vsPropertyUId,
+								revisionId));
+
+		if (propertyBean != null) {
+
+			List multiAttribList = this.getSqlMapClientTemplate().queryForList(
+					GET_VSPROPERTY_MULTIATTRIB_FROM_HISTORY_BY_ENTRYSTATEUID_SQL,
+					new PrefixedParameterTuple(prefix, propertyBean.getUId(),
+							propertyBean.getEntryStateUId()));
+
+			propertyBean.setPropertyMultiAttribList(multiAttribList);
+			
+			property = getProperty(propertyBean);
+		}
+
+		// 4. If vsProperty is not in history, get it from base table.
+		if (property == null) {
+
+			property = getPropertyByUId(vsPropertyUId);
+		}
+
+		return property;
+	}
+
+	public Property getPropertyByUId(String vsPropertyUId) {
+		
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		InsertOrUpdatePropertyBean propertyBean = (InsertOrUpdatePropertyBean) this
+				.getSqlMapClientTemplate().queryForObject(
+						GET_PROPERTY_ATTRIBUTES_BY_UID_SQL,
+						new PrefixedParameter(prefix, vsPropertyUId));
+		
+		return getProperty(propertyBean);
+	}
+	
+	private Property getProperty(InsertOrUpdatePropertyBean propertyBean) {
+		
+		Property property = propertyBean.getProperty();
+		
+		List<InsertPropertyMultiAttribBean> multiAttribList = propertyBean.getPropertyMultiAttribList();
+		
+		for (InsertPropertyMultiAttribBean multiAttribBean : multiAttribList) {
+
+			if (SQLTableConstants.TBLCOLVAL_SOURCE.equals(multiAttribBean
+					.getAttributeType())) {
+				Source source = new Source();
+
+				source.setRole(multiAttribBean.getRole());
+				source.setSubRef(multiAttribBean.getSubRef());
+				source.setContent(multiAttribBean.getAttributeValue());
+
+				property.addSource(source);
+			} else if (SQLTableConstants.TBLCOLVAL_QUALIFIER
+					.equals(multiAttribBean.getAttributeType())) {
+
+				PropertyQualifier qualifier = new PropertyQualifier();
+
+				qualifier.setPropertyQualifierName(multiAttribBean
+						.getAttributeId());
+				qualifier
+						.setPropertyQualifierType(SQLTableConstants.TBLCOLVAL_QUALIFIER);
+
+				if (multiAttribBean.getAttributeValue() != null) {
+					Text value = new Text();
+
+					value.setContent(multiAttribBean.getAttributeValue());
+
+					qualifier.setValue(value);
+				}
+				property.addPropertyQualifier(qualifier);
+			} else if (SQLTableConstants.TBLCOLVAL_USAGECONTEXT
+					.equals(multiAttribBean.getAttributeType())) {
+				
+				property.addUsageContext(multiAttribBean.getAttributeValue());
+			}
+		}
+		
+		return property;
 	}
 }

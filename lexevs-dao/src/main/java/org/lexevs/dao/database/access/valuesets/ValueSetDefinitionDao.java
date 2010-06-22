@@ -18,9 +18,11 @@
  */
 package org.lexevs.dao.database.access.valuesets;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
@@ -152,4 +154,7 @@ public interface ValueSetDefinitionDao extends LexGridSchemaVersionAwareDao {
 	public void insertMappings(String referenceGuid, Mappings mappings);
 
 	public boolean entryStateExists(String entryStateUId);
+	
+	public ValueSetDefinition resolveValueSetDefinitionByRevision(String valueSetDefURI,
+			String revisionId) throws LBRevisionException;
 }

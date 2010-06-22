@@ -20,6 +20,7 @@ package org.lexevs.dao.database.access.property;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
@@ -212,6 +213,9 @@ public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 
 	public void removePropertyByUId(String codingSchemeUId, String propertyUId);
 
-	public String getLatestRevision(String csUId, String propertyUId);	
+	public String getLatestRevision(String csUId, String propertyUId);
+	
+	public Property resolvePropertyByRevision(String codingSchemeUId, String parentGuid,
+			String propertyId, String revisionId) throws LBRevisionException;
 }
 

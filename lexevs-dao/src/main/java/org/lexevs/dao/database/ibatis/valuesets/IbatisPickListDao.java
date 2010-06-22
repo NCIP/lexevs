@@ -20,9 +20,11 @@ package org.lexevs.dao.database.ibatis.valuesets;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
@@ -112,7 +114,11 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	
 	public static String GET_SOURCE_LIST_BY_PARENT_GUID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "getSourceListByParentGuidandType";
 	
+	public static String GET_SOURCE_LIST_FROM_HISTORY_BY_PARENT_ENTRYSTATEGUID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "getSourceListFromHistoryByParentEntryStateGuidandType";
+	
 	public static String GET_CONTEXT_LIST_BY_PARENT_GUID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "getContextListByParentGuidandType";
+	
+	public static String GET_CONTEXT_LIST_FROM_HISTORY_BY_PARENT_ENTRYSTATEGUID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "getContextListFromHistoryByParentEntryStateGuidandType";
 	
 	public static String INSERT_MULTI_ATTRIB_SQL = VS_MULTIATTRIB_NAMESPACE + "insertMultiAttrib";
 	
@@ -145,6 +151,15 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	private static String UPDATE_PICKLIST_ENTRYSTATE_UID_SQL = PICKLIST_NAMESPACE + "updateEntryStateUIdByPickListUId";
 	
 	private static String GET_PICKLIST_DEFINITION_LATEST_REVISION_ID_BY_UID = PICKLIST_NAMESPACE + "getPickListDefinitionLatestRevisionIdByUId";
+	
+	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_PLDEF_SQL = PICKLIST_NAMESPACE + "getPrevRevIdFromGivenRevIdForPLDef";
+	
+	private static String GET_PICKLIST_DEFINITION_METADATA_FROM_HISTORY_BY_REVISION_SQL = PICKLIST_NAMESPACE + "getPickListDefinitionMetaDataByRevision";
+	
+	private static String GET_PL_ENTRY_NODES_LIST_BY_PICKLIST_ID_SQL = PICKLIST_NAMESPACE + "getPickListEntryNodeListByPickListId";
+	
+	private static String GET_PICKLIST_DEF_PROPERTY_LIST_BY_PICKLIST_ID_SQL = PICKLIST_NAMESPACE + "getPickListDefinitionPropertyListByPickListId";
+	
 	
 	/** The class to string mapping classifier. */
 	private ClassToStringMappingClassifier classToStringMappingClassifier = new ClassToStringMappingClassifier();
@@ -839,5 +854,169 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		String prefix = this.getPrefix();
 		
 		return	super.vsEntryStateExists(prefix, entryStateUId);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public PickListDefinition resolvePickListByRevision(String pickListId,
+			String revisionId, Integer sortType) throws LBRevisionException {
+		
+		String prefix = this.getPrefix();
+		String tempRevId = revisionId;
+		
+		String pickListDefinitionUId = this
+				.getPickListGuidFromPickListId(pickListId);
+
+		if (pickListDefinitionUId == null) {
+			throw new LBRevisionException(
+					"PickListDefinition "
+							+ pickListId
+							+ " doesn't exist in lexEVS. "
+							+ "Please check the pickListId. Its possible that the given pickListDefinition "
+							+ "has been REMOVEd from the lexEVS system in the past.");
+		}
+
+		String plDefRevisionId = this
+				.getLatestRevision(pickListDefinitionUId);
+
+		// 1. If 'revisionId' is null or 'revisionId' is the latest revision of the picklistDefinition
+		// then use getPickListDefinitionById to get the pickListDefinition object and return.
+		
+		if ( revisionId == null || plDefRevisionId == null ) {
+			return this.getPickListDefinitionById(pickListId);
+		}
+		
+		// 2. Get the earliest revisionId on which change was applied on given 
+		// pickList with reference to given revisionId.
+		
+		HashMap revisionIdMap = (HashMap) this.getSqlMapClientTemplate()
+				.queryForMap(
+						GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_PLDEF_SQL,
+						new PrefixedParameterTuple(prefix, pickListId,
+								revisionId), "revId", "revAppliedDate");
+		
+		if( revisionIdMap.isEmpty() ) {
+			revisionId = null;
+		} else {
+			
+			revisionId = (String) revisionIdMap.keySet().toArray()[0];
+			
+			if( plDefRevisionId.equals(revisionId)) {
+				return this.getPickListDefinitionById(pickListId);
+			}
+		}
+			
+		// 3. Get the pick list definition data from history.
+		PickListDefinition pickListDefinition = null;
+		InsertPickListDefinitionBean plDefBean = null;
+			
+		plDefBean = (InsertPickListDefinitionBean) this
+				.getSqlMapClientTemplate().queryForObject(
+						GET_PICKLIST_DEFINITION_METADATA_FROM_HISTORY_BY_REVISION_SQL,
+						new PrefixedParameterTuple(getPrefix(), pickListId,
+								revisionId));
+		
+		if (plDefBean != null) {
+			
+			pickListDefinition = plDefBean.getPickListDefinition();
+			
+			// Get pick list definition source
+			List<Source> sourceList = this
+					.getSqlMapClientTemplate()
+					.queryForList(
+							GET_SOURCE_LIST_FROM_HISTORY_BY_PARENT_ENTRYSTATEGUID_AND_TYPE_SQL,
+							new PrefixedParameterTuple(prefix, plDefBean
+									.getEntryStateUId(),
+									ReferenceType.PICKLISTDEFINITION.name()));
+
+			if (sourceList != null)
+				pickListDefinition.setSource(sourceList);
+
+			// Get pick list definition context
+			List<String> contextList = this
+					.getSqlMapClientTemplate()
+					.queryForList(
+							GET_CONTEXT_LIST_FROM_HISTORY_BY_PARENT_ENTRYSTATEGUID_AND_TYPE_SQL,
+							new PrefixedParameterTuple(prefix, plDefBean
+									.getEntryStateUId(),
+									ReferenceType.PICKLISTDEFINITION.name()));
+
+			if (contextList != null)
+				pickListDefinition.setDefaultPickContext(contextList);
+		}
+		
+		// 4. If pick list is not in history, get it from base table.
+		if (pickListDefinition == null) {
+			pickListDefinition = (PickListDefinition) this
+					.getSqlMapClientTemplate().queryForObject(
+							GET_PICKLIST_DEFINITION_BY_PICKLISTID_SQL,
+							new PrefixedParameterTuple(prefix, pickListId,
+									revisionId));
+
+			// Get pick list definition source
+			List<Source> sourceList = this.getSqlMapClientTemplate()
+					.queryForList(
+							GET_SOURCE_LIST_BY_PARENT_GUID_AND_TYPE_SQL,
+							new PrefixedParameterTuple(prefix,
+									pickListDefinitionUId,
+									ReferenceType.PICKLISTDEFINITION.name()));
+
+			if (sourceList != null)
+				pickListDefinition.setSource(sourceList);
+
+			// Get pick list definition context
+			List<String> contextList = this.getSqlMapClientTemplate()
+					.queryForList(
+							GET_CONTEXT_LIST_BY_PARENT_GUID_AND_TYPE_SQL,
+							new PrefixedParameterTuple(prefix,
+									pickListDefinitionUId,
+									ReferenceType.PICKLISTDEFINITION.name()));
+
+			if (contextList != null)
+				pickListDefinition.setDefaultPickContext(contextList);
+		}
+		
+		// 5. Get all pick list entry nodes.
+		List<String> entryNodeList = this.getSqlMapClientTemplate().queryForList(
+				GET_PL_ENTRY_NODES_LIST_BY_PICKLIST_ID_SQL,
+				new PrefixedParameter(prefix, pickListId));
+			
+		for (String plEntryId : entryNodeList) {
+			PickListEntryNode pickListEntryNode = null;
+
+			try {
+				pickListEntryNode = pickListEntryNodeDao
+						.resolvePLEntryNodeByRevision(pickListId, plEntryId,
+								revisionId);
+			} catch (LBRevisionException e) {
+				continue;
+			}
+
+			pickListDefinition.addPickListEntryNode(pickListEntryNode);
+		}
+		
+		// 6. Get all pick list definition properties.
+		
+		List<String> propertyList = this.getSqlMapClientTemplate().queryForList(
+				GET_PICKLIST_DEF_PROPERTY_LIST_BY_PICKLIST_ID_SQL,
+				new PrefixedParameter(prefix, pickListId));
+		
+		Properties properties = new Properties();
+		
+		for (String propId : propertyList) {
+			Property prop = null;
+			
+			try {
+				prop = vsPropertyDao.resolveVSPropertyByRevision(
+						pickListDefinitionUId, propId, revisionId);
+			} catch (LBRevisionException e) {
+				continue;
+			}
+			properties.addProperty(prop);
+		}
+		
+		pickListDefinition.setProperties(properties);
+		
+		return pickListDefinition;
 	}
 }

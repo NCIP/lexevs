@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.database.access.revision;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
@@ -72,5 +73,7 @@ public interface RevisionDao extends LexGridSchemaVersionAwareDao {
 	public String getRevisionUIdById(String revisionId);
 
 	public String getNewRevisionId();
+	
+	public String getRevisionIdForDate(Timestamp dateTime);
 
 }
