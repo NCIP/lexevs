@@ -26,6 +26,7 @@ import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
 import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
@@ -67,6 +68,7 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			List<String> mustHaveObjectNamespace,
 			List<String> mustHaveObjectEntityType,
 			Boolean restrictToAnonymous,
+			List<Sort> sorts,
 			int start, 
 			int pageSize);
 	
@@ -104,6 +106,7 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			List<String> mustHaveSubjectNamespace,
 			List<String> mustHaveSubjectEntityType,
 			Boolean restrictToAnonymous,
+			List<Sort> sorts,
 			int start, 
 			int pageSize);
 	
@@ -131,7 +134,7 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			Boolean restrictToAnonymous);
 	
 	public List<EntityReferencingAssociatedConcept> getAssociatedConceptsFromUid(
-			String codingSchemeUid, List<String> tripleUids, TripleNode tripleNode);
+			String codingSchemeUid, List<String> tripleUids, List<Sort> sorts, TripleNode tripleNode);
 	
 	public List<ConceptReference> getConceptReferencesFromUid(
 			String codingSchemeUid, List<String> tripleUids, TripleNode tripleNode);

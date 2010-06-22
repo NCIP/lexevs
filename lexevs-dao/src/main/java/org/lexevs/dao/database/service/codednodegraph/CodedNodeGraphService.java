@@ -4,14 +4,35 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
-import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
+import org.lexevs.dao.database.service.codednodegraph.model.ColumnSortType;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 
 public interface CodedNodeGraphService {
+	
+	public enum Order {ASC, DESC}
+	
+	public static class Sort {
+		private ColumnSortType columnSortType;
+		private Order order;
+		
+		public Sort(ColumnSortType columnSortType, Order order) {
+			super();
+			this.columnSortType = columnSortType;
+			this.order = order;
+		}
+
+		public ColumnSortType getColumnSortType() {
+			return columnSortType;
+		}
+
+		public Order getOrder() {
+			return order;
+		}
+	}
 	
 	public List<String> listCodeRelationships(
 			String codingSchemeUri,
@@ -46,6 +67,7 @@ public interface CodedNodeGraphService {
 			String subjectEntityCode,
 			String subjectEntityCodeNamespace, 
 			GraphQuery query,
+			List<Sort> sorts,
 			int start, 
 			int pageSize);
 	
@@ -65,6 +87,7 @@ public interface CodedNodeGraphService {
 			String objectEntityCode,
 			String objectEntityCodeNamespace, 
 			GraphQuery query,
+			List<Sort> sorts,
 			int start, 
 			int pageSize);
 	
@@ -90,6 +113,7 @@ public interface CodedNodeGraphService {
 			boolean resolve,
 			LocalNameList propertyNames, 
 	        PropertyType[] propertyTypes, 
+			List<Sort> list, 
 			List<String> tripleUid);
 	
 	public List<ConceptReference> getConceptReferencesFromUidSource(
@@ -111,6 +135,7 @@ public interface CodedNodeGraphService {
 			boolean resolve,
 			LocalNameList propertyNames, 
 	        PropertyType[] propertyTypes, 
+	        List<Sort> sorts,
 			List<String> tripleUid);
 	
 	public List<ConceptReference> getConceptReferencesFromUidTarget(

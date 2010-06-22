@@ -20,6 +20,7 @@ public class GetEntityAssnUidsCountBean extends PrefixedTableParameterBean {
 	private List<String> mustHaveNamespaces;
 	private List<String> mustHaveEntityTypes;
 	private Boolean restrictToAnonymous;
+	private TripleNode tripleNode;
 
 	public List<String> getMustHaveEntityTypes() {
 		return mustHaveEntityTypes;
@@ -33,7 +34,6 @@ public class GetEntityAssnUidsCountBean extends PrefixedTableParameterBean {
 	public void setRestrictToAnonymous(Boolean restrictToAnonymous) {
 		this.restrictToAnonymous = restrictToAnonymous;
 	}
-	private TripleNode tripleNode;
 	
 	public String getEntityCode() {
 		return entityCode;

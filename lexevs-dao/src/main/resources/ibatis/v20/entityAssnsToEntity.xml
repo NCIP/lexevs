@@ -71,7 +71,7 @@
 	</resultMap>
 
 	<select id="getConceptReferenceFromEntityAssnsToEntityUid" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
 		remapResults="true" 
 		resultMap="Entity.conceptReferenceResult">
 		SELECT
@@ -94,7 +94,7 @@
 	
 	
 	<select id="getAssociatedConcpetFromEntityAssnsToEntityUid" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
 		remapResults="true" resultMap="Association.associatedConceptResult">
 		SELECT
 			eate.entityAssnsGuid,
@@ -139,6 +139,19 @@
 		
 		WHERE
 			eate.entityAssnsGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
+			
+		<isNotEmpty property="param3">
+			ORDER BY
+			<iterate property="param3" conjunction=",">
+				<isEqual property="param1" compareValue="SUBJECT">
+					$param3[].columnSortType.objectColumn$
+				</isEqual>
+				<isEqual property="param1" compareValue="OBJECT">
+					$param3[].columnSortType.subjectColumn$
+				</isEqual>
+				$param3[].order$
+			</iterate>
+		</isNotEmpty>
 	</select>
 
 	<select id="getAccociationInstanceKey" remapResults="true" resultClass="string">
@@ -670,11 +683,37 @@
   
   	<select id="getEntityAssnsToEntityUids"
 				parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsBean"
+				remapResults="true"
 				resultClass="string">
 		SELECT DISTINCT 
 			(eate.entityAssnsGuid)
+			
+		<isNotEmpty property="sorts" prepend=",">
+			<iterate property="sorts" conjunction=",">
+				<isEqual property="tripleNode" compareValue="SUBJECT">
+					$sorts[].columnSortType.subjectColumn$
+				</isEqual>
+				<isEqual property="tripleNode" compareValue="OBJECT">
+					$sorts[].columnSortType.objectColumn$
+				</isEqual>
+			</iterate>
+		</isNotEmpty>
+		
 		<include refid="getEntityAssnsToEntityUidsFragment"/>
 		<include refid="restrictEntityAssnsToEntityUidsBySingleCodeFragment"/>
+		
+		<isNotEmpty property="sorts">
+			ORDER BY
+			<iterate property="sorts" conjunction=",">
+				<isEqual property="tripleNode" compareValue="SUBJECT">
+					$sorts[].columnSortType.subjectColumn$
+				</isEqual>
+				<isEqual property="tripleNode" compareValue="OBJECT">
+					$sorts[].columnSortType.objectColumn$
+				</isEqual>
+				$sorts[].order$
+			</iterate>
+		</isNotEmpty>
 	</select>
 	
 	<select id="getEntityAssnsToEntityUidsCount"

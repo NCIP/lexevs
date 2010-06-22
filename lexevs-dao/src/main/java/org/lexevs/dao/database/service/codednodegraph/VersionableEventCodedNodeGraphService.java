@@ -107,6 +107,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 				resolve,
 				propertyNames,
 				propertyTypes,
+				null,
 				DaoUtility.createNonTypedList(tripleUid)).get(0);
 	}
 	
@@ -125,6 +126,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 				resolve,
 				propertyNames,
 				propertyTypes,
+				null,
 				DaoUtility.createNonTypedList(tripleUid)).get(0);
 	}
 
@@ -138,6 +140,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			String objectEntityCode,
 			String objectEntityCodeNamespace, 
 			GraphQuery query, 
+			List<Sort> sorts,
 			int start,
 			int pageSize) {
 		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
@@ -162,6 +165,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					query.getRestrictToSourceCodeSystem(),
 					query.getRestrictToEntityTypes(),
 					query.isRestrictToAnonymous(),
+					sorts,
 					start, 
 					pageSize);
 	}
@@ -207,10 +211,16 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 
 	@Override
 	@Transactional
-	public List<String> getTripleUidsContainingSubject(String codingSchemeUri,
-			String codingSchemeVersion, String relationsContainerName,
-			String associationPredicateName, String subjectEntityCode,
-			String subjectEntityCodeNamespace, GraphQuery query, int start,
+	public List<String> getTripleUidsContainingSubject(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			String relationsContainerName,
+			String associationPredicateName, 
+			String subjectEntityCode,
+			String subjectEntityCodeNamespace, 
+			GraphQuery query, 
+			List<Sort> sorts,
+			int start,
 			int pageSize) {
 	String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 		
@@ -235,6 +245,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					query.getRestrictToTargetCodeSystem(),
 					query.getRestrictToEntityTypes(),
 					query.isRestrictToAnonymous(),
+					sorts,
 					start,
 					pageSize);
 	}
@@ -328,6 +339,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			boolean resolve,
 			LocalNameList propertyNames, 
 	        PropertyType[] propertyTypes, 
+	        List<Sort> sorts,
 			List<String> tripleUids) {
 
 			return doGetAssociatedConcepts(
@@ -337,6 +349,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					propertyNames,
 					propertyTypes,
 					tripleUids, 
+					sorts,
 					TripleNode.SUBJECT);
 	}
 	
@@ -347,6 +360,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			LocalNameList propertyNames, 
 	        PropertyType[] propertyTypes, 
 			List<String> tripleUids, 
+			List<Sort> sorts,
 			TripleNode tripleNode){
 		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 		
@@ -354,6 +368,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			getAssociatedConceptsFromUid(
 				codingSchemeUid, 
 				tripleUids, 
+				sorts,
 				tripleNode);
 		
 		if(resolve) {
@@ -394,7 +409,8 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			String codingSchemeVersion, 
 			boolean resolve,
 			LocalNameList propertyNames, 
-	        PropertyType[] propertyTypes, 
+	        PropertyType[] propertyTypes,
+	        List<Sort> sorts,
 			List<String> tripleUids) {
 		
 		return doGetAssociatedConcepts(
@@ -404,13 +420,15 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 				propertyNames,
 				propertyTypes,
 				tripleUids, 
+				sorts,
 				TripleNode.OBJECT);
 	}
 
 	@Override
 	@Transactional
 	public List<ConceptReference> getConceptReferencesFromUidSource(
-			String codingSchemeUri, String codingSchemeVersion,
+			String codingSchemeUri, 
+			String codingSchemeVersion,
 			List<String> tripleUids) {
 		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 
@@ -423,7 +441,8 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 
 	@Override
 	public List<ConceptReference> getConceptReferencesFromUidTarget(
-			String codingSchemeUri, String codingSchemeVersion,
+			String codingSchemeUri, 
+			String codingSchemeVersion,
 			List<String> tripleUids) {
 		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 

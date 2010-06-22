@@ -29,8 +29,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
+import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
@@ -43,6 +45,9 @@ import org.LexGrid.naming.URIMap;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.SerializationUtils;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Order;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
+import org.lexevs.dao.database.service.codednodegraph.model.ColumnSortType;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.ReflectionUtils;
@@ -82,6 +87,35 @@ public class DaoUtility {
 		propertyClassToTypeMap.put(Presentation.class, PropertyType.PRESENTATION);
 		propertyClassToTypeMap.put(Definition.class, PropertyType.DEFINITION);
 		propertyClassToTypeMap.put(Property.class, PropertyType.GENERIC);
+	}
+	
+	public static List<Sort> mapSortOptionListToSort(SortOptionList list){
+		Boolean DEFAULT_ASCENDING = new Boolean(true);
+		
+		if(list == null || list.getEntryCount() == 0) {return null;}
+		
+		List<Sort> returnList = new ArrayList<Sort>();
+
+		for(SortOption option : list.getEntry()) {
+			
+			Boolean ascending;
+			if(option.getAscending() != null) {
+				ascending = option.getAscending();
+			} else {
+				ascending = DEFAULT_ASCENDING;
+			}
+
+			ColumnSortType type = 
+				ColumnSortType.getColumnSortTypeForName(option.getExtensionName());
+			if(type != null) {
+				Sort sort = new Sort(
+					type,
+					ascending ? Order.ASC : Order.DESC);
+	
+				returnList.add(sort);
+			}
+		}
+		return returnList;
 	}
 
 	/**

@@ -7,6 +7,7 @@ import org.junit.Assert;
 public class SequentialMappedParameterBean extends HashMap<String,Object>{
 
 	private static String PARAMETER_PREFIX = "param";
+	private static String PREFIX_PARAMETER = "prefix";
 
 	private static final long serialVersionUID = 4510691698169582467L;
 
@@ -18,5 +19,9 @@ public class SequentialMappedParameterBean extends HashMap<String,Object>{
 		for(Object param : parameters) {
 			this.put(PARAMETER_PREFIX + Integer.toString(currentIndex++), param);
 		}
+	}
+
+	public void setPrefix(String prefix) {
+		this.put(PREFIX_PARAMETER, prefix);
 	}
 }

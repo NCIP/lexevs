@@ -18,8 +18,10 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
+import org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
 import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
@@ -179,6 +181,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<String> mustHaveObjectNamespace,
 			List<String> mustHaveObjectEntityType,
 			Boolean restrictToAnonymous,
+			List<Sort> sorts,
 			int start, 
 			int pageSize){
 		return this.doGetTripleUids(
@@ -192,6 +195,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 				mustHaveObjectEntityType,
 				restrictToAnonymous,
 				TripleNode.SUBJECT,
+				sorts,
 				start, 
 				pageSize);		
 	}
@@ -208,6 +212,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<String> mustHaveSubjectNamespace,
 			List<String> mustHaveSubjectEntityType,
 			Boolean restrictToAnonymous,
+			List<Sort> sorts,
 			int start, 
 			int pageSize){
 		return this.doGetTripleUids(
@@ -221,6 +226,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 				mustHaveSubjectEntityType,
 				restrictToAnonymous,
 				TripleNode.OBJECT, 
+				sorts,
 				start, 
 				pageSize);
 		
@@ -238,6 +244,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<String> mustHaveEntityType,
 			Boolean restrictToAnonymous,
 			TripleNode tripleNode,
+			List<Sort> sorts,
 			int start, 
 			int pageSize){
 		
@@ -255,7 +262,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		bean.setMustHaveEntityTypes(mustHaveEntityType);
 		bean.setRestrictToAnonymous(restrictToAnonymous);
 		bean.setTripleNode(tripleNode);
-		
+		bean.setSorts(sorts);
+
 		if(pageSize < 0) {
 			pageSize = Integer.MAX_VALUE;
 		}
@@ -271,17 +279,17 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<ConceptReference> getConceptReferencesFromUid(
-			String codingSchemeUid, List<String> tripleUids,
+			String codingSchemeUid, 
+			List<String> tripleUids,
 			TripleNode tripleNode) {
 		if(CollectionUtils.isEmpty(tripleUids)) {
 			return new ArrayList<ConceptReference>();
 		}
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
-		PrefixedParameterCollection bean = new PrefixedParameterCollection();
+		SequentialMappedParameterBean bean = 
+			new SequentialMappedParameterBean(tripleNode.toString(), tripleUids);
 		bean.setPrefix(prefix);
-		bean.setParam1(tripleNode.toString());
-		bean.setParam2(tripleUids);
 		
 		return this.getSqlMapClientTemplate().queryForList(
 				GET_CONCEPTREFERENCE_FROM_ASSNSTOENTITY_UID_SQL, bean);
@@ -290,16 +298,18 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<EntityReferencingAssociatedConcept> getAssociatedConceptsFromUid(
-			String codingSchemeUid, List<String> tripleUids, TripleNode tripleNode) {
+			String codingSchemeUid, 
+			List<String> tripleUids, 
+			List<Sort> sorts,
+			TripleNode tripleNode) {
 		if(CollectionUtils.isEmpty(tripleUids)) {
 			return new ArrayList<EntityReferencingAssociatedConcept>();
 		}
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
-		PrefixedParameterCollection bean = new PrefixedParameterCollection();
+		SequentialMappedParameterBean bean = 
+			new SequentialMappedParameterBean(tripleNode.toString(), tripleUids, sorts);
 		bean.setPrefix(prefix);
-		bean.setParam1(tripleNode.toString());
-		bean.setParam2(tripleUids);
 		
 		return this.getSqlMapClientTemplate().queryForList(
 				GET_ASSOCIATEDCONCEPT_FROM_ASSNSTOENTITY_UID_SQL, bean);
