@@ -18,7 +18,42 @@
  */
 package org.lexevs.cts2.admin.load;
 
+import java.net.URI;
+
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.valueSets.PickListDefinition;
+import org.LexGrid.valueSets.ValueSetDefinition;
+
+import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
+
 public interface ValueSetLoadOperation {
-	public int load();	
+	
+	/**
+	 * Load the value set definition or pick list definition.
+	 * 
+	 * @param source
+	 * @param releaseURI
+	 * @param loaderName
+	 * @param stopOnErrors
+	 */
+	public abstract URNVersionPair[] load(URI source, URI releaseURI, String loaderName, Boolean stopOnErrors) throws LBException;
+	
+	/**
+	 * Load value set definition.
+	 * 
+	 * @param valueSetDefinition
+	 * @param releaseURI
+	 * @param stopOnErrors
+	 */
+	public abstract String load(ValueSetDefinition valueSetDefinition, URI releaseURI, Boolean stopOnErrors) throws LBException;
+
+	/**
+	 * Load pick list definition.
+	 * 
+	 * @param pickListDefinition
+	 * @param releaseURI
+	 * @param stopOnErrors
+	 */
+	public abstract String load(PickListDefinition pickListDefinition, URI releaseURI, Boolean stopOnErrors) throws LBException;
 	
 }

@@ -57,7 +57,7 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 	@Override
 	public CodeSystemExportOperation getCodeSystemExportOperation() {
 		if (csExportOp_ == null)
-			csExportOp_ = new CodeSystemExportOperationImpl();
+			csExportOp_ = new CodeSystemExportOperationImpl(lexevsCTS2_);
 		
 		return csExportOp_;
 	}

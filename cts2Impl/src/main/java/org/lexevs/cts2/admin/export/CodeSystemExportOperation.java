@@ -17,8 +17,27 @@
  */
 package org.lexevs.cts2.admin.export;
 
+import java.net.URI;
+import java.util.List;
+
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 
 public interface CodeSystemExportOperation {
-	public void exportCodeSystemContent() throws LBException;
+	public URI exportCodeSystemContent(String codeSystemNameOrURI, String codeSystemVersion, 
+			URI exportDestination, String exporter) throws LBException;
+	
+	public CodedNodeSet getCodeSystemCodedNodeSet(String codeSystemNameOrURI, String codeSystemVersion) throws LBException;
+	
+	public CodedNodeGraph getCodeSystemCodedNodeGraph(String codeSystemNameOrURI, String codeSystemVersion) throws LBException;
+	
+	public URI exportCodedNodeSet(String codeSystemNameOrURI,
+			String codeSystemVersion, CodedNodeSet cns, URI exportDestination, boolean overwrite, boolean stopOnErrors, boolean async) throws LBException;
+	
+	public URI exportCodedNodeGraph(String codeSystemNameOrURI,
+			String codeSystemVersion, CodedNodeGraph cng, URI exportDestination, boolean overwrite, boolean stopOnErrors, boolean async) throws LBException;
+	
+	public List<String> getSupportedCodeSystemExporterNames() throws LBException;
+	
 }

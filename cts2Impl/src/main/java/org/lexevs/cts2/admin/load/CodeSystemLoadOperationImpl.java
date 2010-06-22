@@ -18,6 +18,7 @@
 package org.lexevs.cts2.admin.load;
 
 import java.net.URI;
+import java.util.Date;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -120,15 +121,6 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 	}
 
 	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#changeCodeSystemStatus()
-	 */
-	@Override
-	public void changeCodeSystemStatus() throws LBException {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
 	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#importCodeSystem()
 	 */
 	@Override
@@ -209,7 +201,7 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 		// activate loaded code system if specified
 		if (activate_)
 		{
-			activateCS(codeSystem_.getCodingSchemeURI(), codeSystem_.getRepresentsVersion());
+			activateCodeSystem(codeSystem_.getCodingSchemeURI(), codeSystem_.getRepresentsVersion());
 		}		
         
 		URNVersionPair urnVersionPair = new URNVersionPair(codeSystem.getCodingSchemeURI(), codeSystem.getRepresentsVersion());
@@ -260,6 +252,21 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 		return urnVersions;
 	}
 	
+	public boolean activateCodeSystem(String codeSystemURI, String codeSyatemVersion) throws LBException{
+		AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
+		acsvr.setCodingSchemeURN(codeSystemURI);
+		acsvr.setCodingSchemeVersion(codeSyatemVersion);
+		getLexBIGServiceManager().activateCodingSchemeVersion(acsvr);
+		return true;
+	}
+	
+	public boolean deactivateCodeSystem(String codeSystemURI, String codeSyatemVersion) throws LBException{
+		AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
+		acsvr.setCodingSchemeURN(codeSystemURI);
+		acsvr.setCodingSchemeVersion(codeSyatemVersion);
+		getLexBIGServiceManager().deactivateCodingSchemeVersion(acsvr, new Date());
+		return true;
+	}
 	private URNVersionPair[] loadSource(URI source, String loaderName, URI metadata, URI manifest, URI releaseURI, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
 		Loader loader = getLexBIGServiceManager().getLoader(loaderName);
         loader.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
@@ -299,26 +306,6 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
     	return new URNVersionPair[]{urnVersion};
 	}
 	
-//	private URI loadLGXML(URI source, URI metadata, URI manifest, URI releaseURI, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
-//		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-//        LexGrid_Loader loader = (LexGrid_Loader) getLexBIGServiceManager().getLoader(org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl.name);
-//        
-//        loader.setCodingSchemeManifestURI(manifest);
-//        loader.load(source, stopOnErrors, async);
-//        
-//        if (metadata != null)
-//        {
-//        	AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
-//        	for (int i = 0; i < refs.length; i++) {
-//        		AbsoluteCodingSchemeVersionReference ref = refs[i];
-//        		loadCSMetaData(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion(), metadata, overwriteMetadata, stopOnErrors, async);
-//        	}
-//        }
-//        
-//        
-//		return null;
-//	}
-	
 	private void loadCSMetaData(String csURI, String csVersion, URI metadata, boolean overwriteMetadata, boolean stopOnErrors, boolean async) throws LBException{
 		AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
 		acsvr.setCodingSchemeURN(csURI);
@@ -341,13 +328,6 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 		acsvr.setCodingSchemeURN(csURI);
 		acsvr.setCodingSchemeVersion(csVersion);
 		getLexBIGServiceManager().setVersionTag(acsvr, versionTag);
-	}
-	
-	private void activateCS(String csURI, String csVersion) throws LBException{
-		AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
-		acsvr.setCodingSchemeURN(csURI);
-		acsvr.setCodingSchemeVersion(csVersion);
-		getLexBIGServiceManager().activateCodingSchemeVersion(acsvr);
 	}
 	
 	private void activateCS(Loader loader) throws LBException{

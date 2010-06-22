@@ -47,6 +47,14 @@ public class CodeSystemLoadOperationTest {
 		csLoad.load(new File(
 				"../lbTest/resources/testData/ValueDomain/Automobiles.xml").toURI(), null, null, null, "LexGrid_Loader", true, true, true, "DEV", true);
 	}
+	
+	@Test
+	public void testLoadCSResourceVSDXML() throws LBException {
+		LexEvsCTS2 cts2 = new LexEvsCTS2Impl();
+		CodeSystemLoadOperation csLoad = cts2.getAdminOperation().getCodeSystemLoadOperation();
+		csLoad.load(new File(
+				"../lbTest/resources/testData/ValueDomain/vdTestData.xml").toURI(), null, null, null, "LexGrid_Loader", true, true, true, "DEV", true);
+	}
 
 	/**
 	 * Test method for {@link org.lexevs.cts2.admin.load.CodeSystemLoadOperation#load(org.LexGrid.codingSchemes.CodingScheme, java.net.URI, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean, java.lang.String, java.lang.Boolean)}.

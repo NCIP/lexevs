@@ -104,7 +104,9 @@ public interface CodeSystemLoadOperation extends Loader{
 	
 	public int importCodeSystemRevsion(String xmlFileLocation) throws LBException;
 	
-	public void changeCodeSystemStatus()throws LBException;	
+	public boolean activateCodeSystem(String codeSystemURI, String codeSyatemVersion) throws LBException;
+	
+	public boolean deactivateCodeSystem(String codeSystemURI, String codeSyatemVersion) throws LBException;
 	
 	/**
 	 * Validate resource without performing a load.
