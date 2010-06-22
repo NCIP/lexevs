@@ -20,6 +20,8 @@ package org.LexGrid.LexBIG.Extensions.Load;
 
 import java.net.URI;
 
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+
 /**
  * The Interface MetaBatchLoader.
  * 
@@ -53,6 +55,8 @@ public interface MetaBatchLoader extends SpringBatchLoader {
 	 * 
 	 * @throws Exception the exception
 	 */
-	public void resumeMeta(URI rrfDir, String uri, String version) throws Exception;	
+	public void resumeMeta(URI rrfDir, String uri, String version) throws Exception;
+
+	public void removeLoad(String uri, String version) throws LBParameterException;	
 
 }
