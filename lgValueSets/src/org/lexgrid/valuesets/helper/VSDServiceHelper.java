@@ -637,7 +637,21 @@ public class VSDServiceHelper {
 
             // Take whatever is most appropriate from the service
             AbsoluteCodingSchemeVersionReferenceList serviceCsVersions = getAbsoluteCodingSchemeVersionReference(csURI);
-            if(serviceCsVersions.getAbsoluteCodingSchemeVersionReferenceCount() > 0) {
+            
+            if (serviceCsVersions == null)
+            	return null;
+            
+            if (refVersions != null && refVersions.size() > 0)
+            {
+	            for (AbsoluteCodingSchemeVersionReference serviceCsVersion : serviceCsVersions.getAbsoluteCodingSchemeVersionReference())
+	            {
+	            	if (refVersions.containsValue(serviceCsVersion.getCodingSchemeVersion()))
+	            		return serviceCsVersion;
+	            }
+            }
+            
+            if(serviceCsVersions.getAbsoluteCodingSchemeVersionReferenceCount() > 0) 
+            {
                 refVersions.put(csURI, serviceCsVersions.getAbsoluteCodingSchemeVersionReference(0).getCodingSchemeVersion());
                 return serviceCsVersions.getAbsoluteCodingSchemeVersionReference(0);
             }   
