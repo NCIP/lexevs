@@ -60,7 +60,7 @@
                 <lgNaming:supportedSource assemblyRule="rule1" uri="http://informatics.mayo.edu"
                     localId="lexgrid.org">lexgrid.org</lgNaming:supportedSource>
                 <lgNaming:supportedSource localId="_111101">11.11.0.1</lgNaming:supportedSource>
-            </lgVD:mappings>           
+            </lgVD:mappings>
             <lgVD:pickListEntryNode pickListEntryId="PL005p1" isActive="true">
                 <lgCommon:owner>Owner for PL005p1</lgCommon:owner>
                 <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW"
@@ -263,7 +263,8 @@
                                     propertyQualifierType="type">
                                     <lgCommon:value>value</lgCommon:value>
                                 </lgCommon:propertyQualifier>
-                                <lgCommon:value>this property belongs to the entry node FAO:0000001:p2</lgCommon:value>
+                                <lgCommon:value>this property belongs to the entry node
+                                    FAO:0000001:p2</lgCommon:value>
                             </lgCommon:property>
                         </lgVD:properties>
                     </lgVD:pickListEntryNode>
@@ -278,7 +279,8 @@
                                 propertyQualifierType="type1">
                                 <lgCommon:value>value1</lgCommon:value>
                             </lgCommon:propertyQualifier>
-                            <lgCommon:value>this property belongs to the pick list definition.</lgCommon:value>
+                            <lgCommon:value>this property belongs to the pick list
+                            definition.</lgCommon:value>
                         </lgCommon:property>
                     </lgVD:properties>
                 </changedPickListDefinitionEntry>
@@ -295,8 +297,8 @@
                     <lgCommon:entryState containingRevision="picklistTestRelease2010Feb"
                         relativeOrder="0" changeType="MODIFY"/>
                     <lgCommon:entityDescription>desc-mod</lgCommon:entityDescription>
-                    <lgVD:source>source3</lgVD:source>                    
-                    <lgVD:defaultPickContext>context3</lgVD:defaultPickContext>                    
+                    <lgVD:source>source3</lgVD:source>
+                    <lgVD:defaultPickContext>context3</lgVD:defaultPickContext>
                 </changedPickListDefinitionEntry>
             </changedEntry>
         </revision>
@@ -317,11 +319,10 @@
         <!-- Test: REMOVE PickListDefinition -->
         <revision revisionId="picklistTestRelease2010Apr">
             <changedEntry>
-                <changedPickListDefinitionEntry pickListId="SRITEST:AUTO:DomesticAutoMakers"
+                <changedPickListDefinitionEntry pickListId="SRITEST:AUTO:DomasticLeafOnly"
                     representsValueSetDefinition="">
                     <lgCommon:entryState containingRevision="picklistTestRelease2010Apr"
-                        prevRevision="picklistTestRelease2010Feb" relativeOrder="0"
-                        changeType="REMOVE"/>
+                        relativeOrder="0" changeType="REMOVE"/>
                 </changedPickListDefinitionEntry>
             </changedEntry>
         </revision>
