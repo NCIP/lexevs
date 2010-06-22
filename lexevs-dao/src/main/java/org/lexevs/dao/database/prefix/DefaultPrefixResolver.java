@@ -82,7 +82,7 @@ public class DefaultPrefixResolver implements PrefixResolver {
 			
 			entryPrefix = allowForNullPrefixValue(entryPrefix);
 			
-			return resolveDefaultPrefix() + entryPrefix;
+			return entryPrefix;
 
 		} catch (LBParameterException e) {
 			throw new RuntimeException("CodingScheme Uri: " + codingSchemeUri + " Version: " + version + " not found.");
@@ -114,7 +114,7 @@ public class DefaultPrefixResolver implements PrefixResolver {
 		
 		prefix = allowForNullPrefixValue(prefix);
 
-		return this.resolveDefaultPrefix() + prefix;
+		return prefix;
 	}
 
 	private String allowForNullPrefixValue(String prefix) {
