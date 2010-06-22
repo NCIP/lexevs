@@ -86,7 +86,7 @@ public class FilterParser {
         csVerOrTag.setVersion(ver);
         
         org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph cng = null;
-        org.LexGrid.LexBIG.LexBIGService.CodedNodeSet cns = lbs.getCodingSchemeConcepts(urn, csVerOrTag);
+        org.LexGrid.LexBIG.LexBIGService.CodedNodeSet cns = lbs.getNodeSet(urn, csVerOrTag, null);
         
         CnsCngPair result = new CnsCngPair(cns, cng);
         return result;
@@ -99,7 +99,7 @@ public class FilterParser {
         csVerOrTag.setVersion(ver);
         
         org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph cng = lbs.getNodeGraph(urn, csVerOrTag ,null);
-        org.LexGrid.LexBIG.LexBIGService.CodedNodeSet cns = lbs.getCodingSchemeConcepts(urn, csVerOrTag);
+        org.LexGrid.LexBIG.LexBIGService.CodedNodeSet cns = lbs.getNodeSet(urn, csVerOrTag, null);
         
         CnsCngPair result = new CnsCngPair(cns, cng);
         return result;
