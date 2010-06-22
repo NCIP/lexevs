@@ -26,6 +26,7 @@ import java.util.Map;
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntryList;
@@ -228,4 +229,7 @@ public interface LexEVSPickListDefinitionServices extends Serializable {
 			String xmlFolderLocation, boolean overwrite, boolean failOnAllErrors)
 			throws LBException;
 	public LogEntry[] getLogEntries();
+	
+	public PickListDefinition resolvePickListByRevision(String pickListId,
+			String revisionId, Integer sortOrder) throws LBRevisionException;
 }

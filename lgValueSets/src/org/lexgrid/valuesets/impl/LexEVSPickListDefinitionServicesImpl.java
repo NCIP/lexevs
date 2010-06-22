@@ -45,6 +45,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Extensions.Export.LexGrid_Exporter;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -772,5 +773,13 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 			}
 		}
 		return sh_;
+	}
+
+	@Override
+	public PickListDefinition resolvePickListByRevision(String pickListId,
+			String revisionId, Integer sortOrder ) throws LBRevisionException {
+
+		return this.databaseServiceManager.getPickListDefinitionService()
+				.resolvePickListDefinitionByRevision(pickListId, revisionId, sortOrder);
 	}	
 }
