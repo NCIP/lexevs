@@ -61,7 +61,7 @@ public abstract class BaseExporter {
     private OptionHolder holder = new DefaultOptionHolder();
     
     protected BaseExporter() {
-        holder.getBooleanOptions().add(new BooleanOption(ASYNC_OPTION));
+        holder.getBooleanOptions().add(new BooleanOption(ASYNC_OPTION, true));
         holder.getBooleanOptions().add(new BooleanOption(FAIL_ON_ERROR_OPTION));
         this.holder = this.declareAllowedOptions(holder);
     }
