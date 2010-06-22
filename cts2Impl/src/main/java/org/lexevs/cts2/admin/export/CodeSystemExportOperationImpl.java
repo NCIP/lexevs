@@ -36,6 +36,7 @@ import org.lexevs.cts2.LexEvsCTS2;
  */
 public class CodeSystemExportOperationImpl extends BaseService implements CodeSystemExportOperation {
 
+	@SuppressWarnings("unused")
 	private LexEvsCTS2 lexevsCts2_;
 	
 	public CodeSystemExportOperationImpl(LexEvsCTS2 lexevsCts2){
@@ -53,6 +54,13 @@ public class CodeSystemExportOperationImpl extends BaseService implements CodeSy
 		
 		Exporter exporter = getLexBIGServiceManager().getExporter(exporterName);
 		exporter.export(Constructors.createAbsoluteCodingSchemeVersionReference(codeSystemNameOrURI, codeSystemVersion), exportDestination);
+		
+		while (exporter.getStatus().getEndTime() == null) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {				
+			}
+		}
 		
 		if (exporter.getReferences() != null)
 		{
@@ -83,12 +91,14 @@ public class CodeSystemExportOperationImpl extends BaseService implements CodeSy
         exporter.setCng(cng);
         exporter.export(Constructors.createAbsoluteCodingSchemeVersionReference(codeSystemNameOrURI, codeSystemVersion), exportDestination, overwrite, stopOnErrors, async);
             
-        if (exporter.getReferences() != null)
-		{
-			URI[] uris = exporter.getReferences();
-			return uris[0];
+        while (exporter.getStatus().getEndTime() == null) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {				
+			}
 		}
-		return null;
+        
+		return exporter.getResourceUri();
 	}
 
 	@Override
@@ -110,12 +120,14 @@ public class CodeSystemExportOperationImpl extends BaseService implements CodeSy
         exporter.setCns(cns);
         exporter.export(Constructors.createAbsoluteCodingSchemeVersionReference(codeSystemNameOrURI, codeSystemVersion), exportDestination, overwrite, stopOnErrors, async);
             
-        if (exporter.getReferences() != null)
-		{
-			URI[] uris = exporter.getReferences();
-			return uris[0];
+        while (exporter.getStatus().getEndTime() == null) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {				
+			}
 		}
-		return null;
+        
+		return exporter.getResourceUri();
 	}
 
 	@Override
