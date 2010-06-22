@@ -80,6 +80,7 @@ public class NullFocusRootsResolver implements RootsResolver {
                     ref.getCode(), 
                     ref.getCodeNamespace(), 
                     query, 
+                    null,
                     0, 
                     -1));
         }
@@ -108,6 +109,7 @@ public class NullFocusRootsResolver implements RootsResolver {
                     ref.getCode(), 
                     ref.getCodeNamespace(), 
                     query, 
+                    null,
                     0, 
                     -1));
         }

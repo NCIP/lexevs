@@ -36,6 +36,7 @@ import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.paging.AbstractPageableIterator;
 import org.lexevs.paging.codednodegraph.TripleUidIterator;
@@ -137,6 +138,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
             CycleDetectingCallback cycleDetectingCallback,
             AssociationDirection direction,
             int pageSize){
+
 		super(pageSize);
 		tripleUidIterator = new 
 		    TripleUidIterator(
@@ -148,6 +150,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	                entityCodeNamespace, 
 		    		graphQuery,
 		    		getTripleUidIteratorNode(direction), 
+		    		sortAlgorithms,
 		    		pageSize);
 		this.codingSchemeUri = codingSchemeUri;
 		this.codingSchemeVersion = codingSchemeVersion;
@@ -268,6 +271,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
                             this.shouldResolveNextLevel(resolveCodedEntryDepth),
                             propertyNames,
                             propertyTypes,
+                            DaoUtility.mapSortOptionListToSort(sortAlgorithms),
                             uids));
         } else {
             returnList.addAll(
@@ -278,6 +282,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
                             this.shouldResolveNextLevel(resolveCodedEntryDepth),
                             propertyNames,
                             propertyTypes,
+                            DaoUtility.mapSortOptionListToSort(sortAlgorithms),
                             uids));
         }
         
