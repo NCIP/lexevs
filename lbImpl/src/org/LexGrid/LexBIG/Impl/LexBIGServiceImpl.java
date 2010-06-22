@@ -71,10 +71,7 @@ import org.LexGrid.LexBIG.Impl.Extensions.Sort.MatchToQuerySort;
 import org.LexGrid.LexBIG.Impl.Extensions.Sort.NumberOfChildrenSort;
 import org.LexGrid.LexBIG.Impl.Extensions.Sort.isActiveSort;
 import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistorySQLQueries;
-import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistoryServiceImpl;
-import org.LexGrid.LexBIG.Impl.History.UMLSHistoryServiceImpl;
 import org.LexGrid.LexBIG.Impl.History.UriBasedHistoryServiceImpl;
-import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
 import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
 import org.LexGrid.LexBIG.Impl.exporters.OwlRdfExport;
 import org.LexGrid.LexBIG.Impl.loaders.ClaMLLoaderImpl;
@@ -100,13 +97,11 @@ import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.lexevs.exceptions.InternalException;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
-import org.lexevs.system.ResourceManager;
 import org.lexevs.system.event.SystemEventListener;
 import org.lexevs.system.service.SystemResourceService;
 
@@ -176,7 +171,7 @@ public class LexBIGServiceImpl implements LexBIGService {
      * 
      */
     public LexBIGServiceImpl() throws LBInvocationException {
-        ResourceManager r = ResourceManager.instance();
+        LexEvsServiceLocator r = LexEvsServiceLocator.getInstance();
         if (r == null) {
             System.err.println("Initialization Failure.  Beginning debug print:");
             System.out.println("Initialization Failure.  Beginning debug print:");
@@ -184,7 +179,6 @@ public class LexBIGServiceImpl implements LexBIGService {
                     "There was a problem starting up.  Please see the log files and / or system.out", "");
 
         }
-        r.getLogger().logMethod();
     }
 
     /**
@@ -280,27 +274,8 @@ public class LexBIGServiceImpl implements LexBIGService {
     public String resolveCodingSchemeCopyright(String codingSchemeName, CodingSchemeVersionOrTag tagOrVersion)
             throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { codingSchemeName, tagOrVersion });
-        String version = null;
-        if (tagOrVersion == null || tagOrVersion.getVersion() == null || tagOrVersion.getVersion().length() == 0) {
-            version = systemResourceService.getInternalVersionStringForTag(codingSchemeName,
-                    (tagOrVersion == null ? null : tagOrVersion.getTag()));
-        } else {
-            version = tagOrVersion.getVersion();
-        }
 
-        try {
-            return SQLImplementedMethods.getCodingSchemeCopyright(ResourceManager.instance()
-                    .getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeName, version), version);
-        }
-
-        catch (InternalException e) {
-            throw new LBInvocationException("There was an unexpected error", e.getLogId());
-        } catch (LBParameterException e) {
-            throw e;
-        } catch (Exception e) {
-            String id = getLogger().error("There was an unexpected error", e);
-            throw new LBInvocationException("There was an unexpected error", id);
-        }
+        return this.resolveCodingScheme(codingSchemeName, tagOrVersion).getCopyright().getContent();
     }
 
     /**
@@ -571,6 +546,19 @@ public class LexBIGServiceImpl implements LexBIGService {
         meta.setVersion(MetaBatchLoader.VERSION);
         try {
             ExtensionRegistryImpl.instance().registerLoadExtension(meta);
+            
+            LexEvsServiceLocator.getInstance().getSystemResourceService().addSystemEventListeners(new SystemEventListener() {
+                //register a listener to clean up all the batch stuff on delete
+                public void onRemoveCodingSchemeResourceFromSystemEvent(String uri,
+                        String version) {
+                    try {
+                        MetaBatchLoader metaLoader = (MetaBatchLoader) getServiceManager(null).getLoader(MetaBatchLoader.NAME);
+                        metaLoader.removeLoad(uri, version);
+                    } catch (Exception e) {
+                        //if its not there, just skip it.
+                    }
+                }
+            });
         } catch (Exception e) {
             getLogger().warn(meta.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
         }
@@ -613,10 +601,4 @@ public class LexBIGServiceImpl implements LexBIGService {
         LexBIGServiceConvenienceMethodsImpl.register();
  
     }
-
-    private LexBIGServiceConvenienceMethodsImpl NCIHistoryLoaderImpl() {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
-    }
-
 }
