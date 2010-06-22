@@ -6,8 +6,10 @@ import java.net.URI;
 
 import javax.annotation.Resource;
 
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.versions.SystemRelease;
 import org.junit.Test;
+import org.lexevs.dao.database.service.entity.VersionableEventEntityService;
 import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 
@@ -21,21 +23,6 @@ public class VersionableEventAuthoringServiceTest extends LexEvsDbUnitTestBase {
 
 		URI sourceURI = new File(
 				"src/test/resources/csRevision/Automobiles2010_Test_CS.xml").toURI();
-
-		org.exolab.castor.xml.Unmarshaller um = new org.exolab.castor.xml.Unmarshaller(
-				SystemRelease.class);
-		SystemRelease systemRelease = (SystemRelease) um
-				.unmarshal(new InputStreamReader(sourceURI.toURL()
-						.openConnection().getInputStream()));
-
-		service.loadSystemRelease(systemRelease);
-	}
-
-	@Test
-	public void testEntityRevisions() throws Exception {
-
-		URI sourceURI = new File(
-				"src/test/resources/csRevision/Automobiles2010_Test_Entity.xml").toURI();
 
 		org.exolab.castor.xml.Unmarshaller um = new org.exolab.castor.xml.Unmarshaller(
 				SystemRelease.class);
@@ -61,7 +48,7 @@ public class VersionableEventAuthoringServiceTest extends LexEvsDbUnitTestBase {
 		service.loadSystemRelease(systemRelease);
 	}
 	
-	@Test
+		@Test
 	public void testRelationRevisions() throws Exception {
 
 		URI sourceURI = new File(
@@ -107,40 +94,10 @@ public class VersionableEventAuthoringServiceTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
-	public void testValueSetRevisions() throws Exception {
-
-		URI sourceURI = new File(
-				"src/test/resources/vsplRevision/valueSetDef_test.xml").toURI();
-
-		org.exolab.castor.xml.Unmarshaller um = new org.exolab.castor.xml.Unmarshaller(
-				SystemRelease.class);
-		SystemRelease systemRelease = (SystemRelease) um
-				.unmarshal(new InputStreamReader(sourceURI.toURL()
-						.openConnection().getInputStream()));
-
-		service.loadSystemRelease(systemRelease);
-	}
-	
-	@Test
 	public void testVSDefinitionEntryRevisions() throws Exception {
 
 		URI sourceURI = new File(
 				"src/test/resources/vsplRevision/definitionEntry_test.xml").toURI();
-
-		org.exolab.castor.xml.Unmarshaller um = new org.exolab.castor.xml.Unmarshaller(
-				SystemRelease.class);
-		SystemRelease systemRelease = (SystemRelease) um
-				.unmarshal(new InputStreamReader(sourceURI.toURL()
-						.openConnection().getInputStream()));
-
-		service.loadSystemRelease(systemRelease);
-	}
-	
-	@Test
-	public void testPickListDefinitionRevisions() throws Exception {
-
-		URI sourceURI = new File(
-				"src/test/resources/vsplRevision/pickListDef_test.xml").toURI();
 
 		org.exolab.castor.xml.Unmarshaller um = new org.exolab.castor.xml.Unmarshaller(
 				SystemRelease.class);
