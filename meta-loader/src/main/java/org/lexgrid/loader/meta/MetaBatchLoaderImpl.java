@@ -23,14 +23,18 @@ import java.net.URI;
 import java.util.Properties;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.lexevs.dao.database.spring.DynamicPropertyApplicationContext;
 import org.lexgrid.loader.AbstractSpringBatchLoader;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.properties.ConnectionPropertiesFactory;
 import org.lexgrid.loader.properties.impl.DefaultLexEVSPropertiesFactory;
+import org.lexgrid.loader.setup.JobRepositoryManager;
+import org.lexgrid.loader.staging.StagingManager;
 import org.springframework.context.ApplicationContext;
 
 import edu.mayo.informatics.lexgrid.convert.options.StringOption;
@@ -67,10 +71,35 @@ public class MetaBatchLoaderImpl extends AbstractSpringBatchLoader implements Me
 	 * @see org.lexgrid.loader.meta.MetaBatchLoader#resumeMeta(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public void resumeMeta(URI rrfDir, String uri, String version) throws Exception {
-		//TODO:
+		Properties connectionProps = connectionPropertiesFactory.getPropertiesForExistingLoad(uri, version);
+		connectionProps.put("rrfDir", rrfDir.toString());
+		connectionProps.put("retry", "true");
+		launchJob(connectionProps, META_LOADER_CONFIG, "metaJob");
 	}
 
-	 public static void main(String[] args) throws Exception { 
+	@Override
+	public void removeLoad(String uri, String version) throws LBParameterException {
+		 Properties connectionProps = connectionPropertiesFactory.getPropertiesForExistingLoad(uri, version);
+			connectionProps.put("retry", "true");
+			
+			DynamicPropertyApplicationContext ctx = new DynamicPropertyApplicationContext("metaLoaderStaging.xml", connectionProps);
+			
+			JobRepositoryManager jobRepositoryManager = (JobRepositoryManager)ctx.getBean("jobRepositoryManager");
+			try {
+				jobRepositoryManager.dropJobRepositoryDatabases();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			
+			StagingManager stagingManager = (StagingManager)ctx.getBean("metaStagingManager");
+			try {
+				stagingManager.dropAllStagingDatabases();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}		
+	}
+
+	public static void main(String[] args) throws Exception { 
 		 MetaBatchLoader mbl = (MetaBatchLoader) LexBIGServiceImpl.defaultInstance().getServiceManager(null).getLoader(
 					"MetaBatchLoader");
 		 mbl.loadMeta(new File("src/test/resources/data/SAMPLEMETA").toURI());

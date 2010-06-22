@@ -11,7 +11,8 @@
 		http://www.springframework.org/schema/aop classpath:springxsds/spring-aop-2.0.xsd
 		http://www.springframework.org/schema/tx classpath:springxsds/spring-tx-2.0.xsd">
 
-	<beans:import resource="rrfBaseLoader.xml" />
+	<beans:import resource="classpath:rrfBaseLoader.xml" />
+	<beans:import resource="classpath:metaLoaderStaging.xml" />
 
 	<beans:bean class="org.springframework.batch.core.scope.StepScope" />
 
@@ -802,16 +803,6 @@
 		class="org.lexgrid.loader.processor.support.SameAsCodingSchemeNameEntityNamespaceResolver">
 		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="metaCodingSchemeIdSetter" />
-		</beans:property>
-	</beans:bean>
-
-	<beans:bean id="metaStagingManager" parent="stagingManager">
-		<beans:property name="registeredStagingDatabases">
-			<beans:map>
-				<beans:entry key="${prefix}mrconsoStaging">
-					<beans:ref bean="mrconsoStagingCreateScriptFactory" />
-				</beans:entry>
-			</beans:map>
 		</beans:property>
 	</beans:bean>
 
