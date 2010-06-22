@@ -367,5 +367,113 @@
 			vsDef.entryStateGuid = es.entryStateGuid	
 		AND
 			es.revisionGuid = rev.revisionGuid	
-	</select>  	
+	</select>
+
+	<select id="getPrevRevisionIdFromGivenRevIdForValueSetDefinition" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="java.util.TreeMap">
+		<![CDATA[
+			SELECT DISTINCT
+				r1.revisionId AS revId,
+				r1.revAppliedDate AS revAppliedDate
+			FROM
+				$prefix$valueSetDefinition vs,
+				$prefix$vsEntryState es,
+				${defaultPrefix}revision r1, 
+				${defaultPrefix}revision r2			
+			WHERE
+				vs.valueSetDefURI = #param1# AND
+				(
+					NOT EXISTS 
+					(
+						SELECT 
+							es1.entryStateGuid 
+						FROM 
+							$prefix$vsEntryState es1 
+						WHERE 
+							vs.entryStateGuid = es1.entryStateGuid
+					)
+					OR
+					(
+						vs.valueSetDefGuid = es.entryGuid AND 
+						es.revisionGuid = r1.revisionGuid AND
+						r1.revAppliedDate <= r2.revAppliedDate AND
+						r2.revisionID = #param2#
+					)
+				)
+			ORDER BY
+				revAppliedDate DESC			
+			LIMIT 1
+		]]>			
+	</select>
+
+	<select id="getValueSetDefinitionMetaDataByRevision" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultMap="valueSetDefinitionMetaDataResult">
+		<![CDATA[
+			SELECT 
+				vs.valueSetDefGuid,
+				vs.valueSetDefURI,
+				vs.valueSetDefName,
+				vs.defaultCodingScheme,
+				vs.conceptDomain,
+				vs.description,
+				vs.releaseGuid,
+				vs.isActive,
+				vs.owner,
+				vs.status,
+				vs.effectiveDate,
+				vs.expirationDate,
+				vs.entryStateGuid,
+				r1.revAppliedDate as revAppliedDate
+			FROM
+				$prefix$h_valueSetDefinition vs,
+				$prefix$vsEntryState es,
+				${defaultPrefix}revision r1,			
+				${defaultPrefix}revision r2		
+			WHERE
+				vs.valueSetDefURI = #param1# AND
+				vs.entryStateGuid = es.entryStateGuid AND
+				(
+					(						
+						es.revisionGuid = r1.revisionGuid AND
+						r1.revAppliedDate >= r2.revAppliedDate AND
+						r2.revisionID = #param2#
+					)
+					OR
+					(
+						es.revisionGuid IS NULL
+					)
+				)
+			Order BY
+				revAppliedDate DESC		
+			LIMIT 1	
+		]]>			
+	</select>
+
+	<select id="getDefinitionEntryListByValSetDefURI" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultClass="string">
+			SELECT 
+				defEntry.ruleOrder
+			FROM
+				$prefix$valueSetDefinition vs,
+				$prefix$vsdEntry defEntry
+			WHERE
+				vs.valueSetDefURI = #param1# AND
+				vs.valueSetDefGuid = defEntry.valueSetDefGuid
+	</select>	
+	
+	<select id="getValueSetDefPropertyListByValSetDefURI" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultClass="string">
+			SELECT 
+				vsProp.propertyId
+			FROM
+				$prefix$valueSetDefinition vs,
+				$prefix$vsProperty vsProp
+			WHERE
+				vs.valueSetDefURI = #param1# AND
+				vs.valueSetDefGuid = vsProp.referenceGuid
+	</select>	
 </sqlMap>

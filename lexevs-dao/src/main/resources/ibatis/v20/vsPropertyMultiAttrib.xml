@@ -101,4 +101,23 @@
 			attributeType = #param2#
 	</update>
 
+	<select id="getVSPropertyMultiAttribFromHistoryByEntryStateUId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultMap="propertyMultiAttribResultBean">
+			SELECT 
+				multiAttrib.propMultiAttribGuid,
+				multiAttrib.propertyGuid,
+				multiAttrib.attributeType,
+				multiAttrib.attributeId,
+				multiAttrib.attributeValue,
+				multiAttrib.subRef,
+				multiAttrib.role,
+				multiAttrib.qualifierType,
+				multiAttrib.entryStateGuid esGuid
+			FROM 
+				$prefix$h_vsPropertyMultiAttrib multiAttrib
+			WHERE
+				multiAttrib.entryStateGuid = #param1#
+	</select>
+
 </sqlMap>

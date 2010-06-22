@@ -43,7 +43,28 @@
 		<result property="entryStateUId" column="entryStateGuid"/>
 		<result property="vsMultiAttribList" resultMap="VSMultiAttrib.vsMultiAttribResultBean"/>
 	</resultMap>
-	
+
+	<resultMap  id="pickListEntryNodeMetaData" class="insertOrUpdatePickListEntryNodeBean" groupBy="uid">
+		<result property="uid" column="vsPLEntryGuid"/>
+		<result property="pickListUId" column="vsPickListGuid"/>
+		<result property="pickListEntryNode.pickListEntryId" column="plEntryId"/>
+		<result property="entityCodeNamespace" column="entityCodeNamespace"/>
+		<result property="entityCode" column="entityCode"/>
+		<result property="entryOrder" column="entryOrder"/>
+		<result property="isDefault" column="isDefault"/>
+		<result property="matchIfNoContext" column="matchIfNoContext"/>
+		<result property="propertyId" column="propertyId"/>
+		<result property="langauage" column="language"/>
+		<result property="include" column="include" />
+		<result property="pickText" column="pickText"/>
+		<result property="pickListEntryNode.isActive" column="isActive" />
+		<result property="pickListEntryNode.owner" column="owner" />
+		<result property="pickListEntryNode.status" column="status" />
+		<result property="pickListEntryNode.effectiveDate" column="effectiveDate" />
+		<result property="pickListEntryNode.expirationDate" column="expirationDate" />
+		<result property="entryStateUId" column="entryStateGuid"/>
+	</resultMap>
+		
 	<resultMap  id="pickListEntryResult" class="pickListEntry">
 		<result property="entityCode" column="entityCode"/>
 		<result property="entityCodeNamespace" column="entityCodeNamespace"/>
@@ -327,5 +348,98 @@
 			$prefix$vsPLEntry
 		WHERE
 			vsPLEntryGuid = #param1#
-	</delete>	
+	</delete>
+
+	<select id="getPrevRevIdFromGivenRevIdForPLEntry" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="java.util.TreeMap">
+		<![CDATA[
+			SELECT DISTINCT
+				r1.revisionId AS revId,
+				r1.revAppliedDate AS revAppliedDate
+			FROM
+				$prefix$vsPLEntry plEntry,
+				$prefix$vsEntryState es,
+				${defaultPrefix}revision r1, 
+				${defaultPrefix}revision r2			
+			WHERE
+				plEntry.plEntryGuid = #param1# AND
+				(
+					NOT EXISTS 
+					(
+						SELECT 
+							es1.entryStateGuid 
+						FROM 
+							$prefix$vsEntryState es1 
+						WHERE 
+							plEntry.entryStateGuid = es1.entryStateGuid
+					)
+					OR
+					(
+						plEntry.vsPLEntryGuid = es.entryGuid AND 
+						es.revisionGuid = r1.revisionGuid AND
+						r1.revAppliedDate <= r2.revAppliedDate AND
+						r2.revisionID = #param2#
+					)
+				)
+			ORDER BY
+				revAppliedDate DESC			
+			LIMIT 1
+		]]>			
+	</select>	
+	
+	<select id="getPickListEntryMetaDataByRevision" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultMap="pickListEntryNodeMetaData">
+		<![CDATA[
+			SELECT 
+				plEntry.vsPLEntryGuid,
+				plEntry.vsPickListGuid,
+				plEntry.plEntryId,
+				plEntry.entityCodeNamespace,
+				plEntry.entityCode,
+				plEntry.entryOrder,
+				plEntry.isDefault,
+				plEntry.matchIfNoContext,
+				plEntry.propertyId,
+				plEntry.language,
+				plEntry.include,
+				plEntry.pickText,
+				plEntry.isActive,
+				plEntry.owner,
+				plEntry.status,
+				plEntry.effectiveDate,
+				plEntry.expirationDate,
+				plEntry.entryStateGuid,
+				r1.revAppliedDate revAppliedDate
+			FROM
+				$prefix$h_vsPLEntry plEntry,
+				$prefix$vsEntryState es,
+				${defaultPrefix}revision r1,			
+				${defaultPrefix}revision r2		
+			WHERE
+				plEntry.vsPLEntryGuid = #param1# AND
+				plEntry.entryStateGuid = es.entryStateGuid AND
+				es.revisionGuid = r1.revisionGuid AND
+				r1.revAppliedDate >= r2.revAppliedDate AND
+				r2.revisionID = #param2#
+			ORDER BY
+				revAppliedDate DESC		
+			LIMIT 1	
+		]]>			
+	</select>
+	
+	<select id="getEntryNodePropertyIdsListByEntryNodeUId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="string">
+			SELECT
+				propertyId
+			FROM
+				$prefix$vsProperty
+			WHERE
+				referenceGuid = #param1#
+			AND
+				referenceType = #param2#
+	</select>
+	
 </sqlMap>

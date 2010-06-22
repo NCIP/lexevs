@@ -4,7 +4,22 @@
 <sqlMap namespace="vsDefinitionEntry">
 
 	<typeAlias alias="insertOrUpdateDefinitionEntryBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateDefinitionEntryBean" />
+	<typeAlias alias="definitionEntry" type="org.LexGrid.valueSets.DefinitionEntry" />
 	
+	<resultMap  id="definitionEntryResult" class="definitionEntry">
+		<result property="ruleOrder" column="ruleOrder"/>
+		<result property="operator" column="operator"/>
+		<result property="isActive" column="isActive" />
+		<result property="owner" column="owner" />
+		<result property="status" column="status" />
+		<result property="effectiveDate" column="effectiveDate" />
+		<result property="expirationDate" column="expirationDate" />
+		<result property="codingSchemeReference" resultMap="ValueSetDefinition.codingSchemeReferenceResult" />
+		<result property="valueSetDefinitionReference" resultMap="ValueSetDefinition.valueSetDefinitionReferenceResult" />
+		<result property="entityReference" resultMap="ValueSetDefinition.entityReferenceResult" />
+		<result property="propertyReference" resultMap="ValueSetDefinition.propertyReferenceResult" />
+	</resultMap>
+		
 	<resultMap id="definitionEntry" class="insertOrUpdateDefinitionEntryBean">
 		<result property="uid" column="vsdEntryGuid" />
 		<result property="valueSetDefUId" column="valueSetDefGuid" />
@@ -233,5 +248,127 @@
 			vsdEntry.entryStateGuid = es.entryStateGuid	
 		AND
 			es.revisionGuid = rev.revisionGuid	
-	</select>  	     
+	</select>
+	
+	<select id="getDefinitionEntryByUId" 
+		resultMap="definitionEntryResult" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		SELECT
+			ruleOrder,
+			operator,
+			codingSchemeReference,
+			valueSetDefReference,
+			entityCode,
+			entityCodeNamespace,
+			leafOnly,
+			referenceAssociation,
+			targetToSource,
+			transitiveClosure,
+			propertyRefCodingScheme,
+			propertyName,
+			propertyMatchValue,
+			matchAlgorithm,
+			format,
+			isActive,
+			owner,
+			status,
+			effectiveDate,
+			expirationDate,
+			entryStateGuid
+		FROM
+			$prefix$vsdEntry
+		WHERE
+			vsdEntryGuid = #param1#
+	</select>
+	     
+	<select id="getPrevRevIdFromGivenRevIdForDefinitionEntry" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="java.util.TreeMap">
+		<![CDATA[
+			SELECT DISTINCT
+				r1.revisionId AS revId,
+				r1.revAppliedDate AS revAppliedDate
+			FROM
+				$prefix$vsdEntry vsdEntry,
+				$prefix$vsEntryState es,
+				${defaultPrefix}revision r1, 
+				${defaultPrefix}revision r2			
+			WHERE
+				vsdEntry.vsdEntryGuid = #param1# AND
+				(
+					NOT EXISTS 
+					(
+						SELECT 
+							es1.entryStateGuid 
+						FROM 
+							$prefix$vsEntryState es1 
+						WHERE 
+							vsdEntry.entryStateGuid = es1.entryStateGuid
+					)
+					OR
+					(
+						vsdEntry.vsdEntryGuid = es.entryGuid AND 
+						es.revisionGuid = r1.revisionGuid AND
+						r1.revAppliedDate <= r2.revAppliedDate AND
+						r2.revisionID = #param2#
+					)
+				)
+			ORDER BY
+				revAppliedDate DESC			
+			LIMIT 1
+		]]>			
+	</select>	
+	
+	<select id="getDefinitionEntryByRevision" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultMap="definitionEntryResult">
+		<![CDATA[
+			SELECT 
+				vsdEntry.ruleOrder,
+				vsdEntry.operator,
+				vsdEntry.codingSchemeReference,
+				vsdEntry.valueSetDefReference,
+				vsdEntry.entityCode,
+				vsdEntry.entityCodeNamespace,
+				vsdEntry.leafOnly,
+				vsdEntry.referenceAssociation,
+				vsdEntry.targetToSource,
+				vsdEntry.transitiveClosure,
+				vsdEntry.propertyRefCodingScheme,
+				vsdEntry.propertyName,
+				vsdEntry.propertyMatchValue,
+				vsdEntry.matchAlgorithm,
+				vsdEntry.format,
+				vsdEntry.isActive,
+				vsdEntry.owner,
+				vsdEntry.status,
+				vsdEntry.effectiveDate,
+				vsdEntry.expirationDate,
+				vsdEntry.entryStateGuid
+				r1.revAppliedDate revAppliedDate
+			FROM
+				$prefix$h_vsdEntry vsdEntry,
+				$prefix$vsEntryState es,
+				${defaultPrefix}revision r1,			
+				${defaultPrefix}revision r2		
+			WHERE
+				vsdEntry.vsdEntryGuid = #param1# AND
+				vsdEntry.entryStateGuid = es.entryStateGuid AND
+				(
+					(
+						es.revisionGuid = r1.revisionGuid AND
+						r1.revAppliedDate >= r2.revAppliedDate AND
+						r2.revisionID = #param2#
+					)
+					OR
+					(
+						es.revisionGuid IS NULL
+					)
+				)
+				
+			ORDER BY
+				revAppliedDate DESC		
+			LIMIT 1	
+		]]>			
+	</select>	     
 </sqlMap>

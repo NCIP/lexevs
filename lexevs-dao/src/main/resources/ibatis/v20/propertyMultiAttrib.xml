@@ -27,6 +27,19 @@
 		<result property="value.content" column="qualifierAttributeValue" />
 	</resultMap>
 	
+	<resultMap id="propertyMultiAttribResultBean"
+		class="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">
+		<result property="uid" column="propMultiAttribGuid" />
+		<result property="propertyUId" column="propertyGuid" />
+		<result property="attributeType" column="attributeType" />
+		<result property="attributeId" column="attributeId" />
+		<result property="attributeValue" column="attributeValue" />
+		<result property="subRef" column="subRef" />
+		<result property="role" column="role" />
+		<result property="qualifierType" column="qualifierType" />
+		<result property="entryStateUId" column="esGuid" />
+	</resultMap>
+	
 <!--	<select id="getPropertyMultiAttribById" -->
 <!--		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"-->
 <!--		resultMap="Property.multiAttribResult">-->
@@ -66,5 +79,24 @@
 			#entryStateUId:VARCHAR#
 		)
 	</insert>
-
+	
+	<select id="getPropertyMultiAttribFromHistoryByEntryStateUId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultMap="propertyMultiAttribResultBean">
+			SELECT 
+				multiAttrib.propMultiAttribGuid,
+				multiAttrib.propertyGuid,
+				multiAttrib.attributeType,
+				multiAttrib.attributeId,
+				multiAttrib.attributeValue,
+				multiAttrib.subRef,
+				multiAttrib.role,
+				multiAttrib.qualifierType,
+				multiAttrib.entryStateGuid esGuid
+			FROM 
+				$prefix$h_propertyMultiAttrib multiAttrib
+			WHERE
+				multiAttrib.entryStateGuid = #param1#
+			
+	</select>
 </sqlMap>

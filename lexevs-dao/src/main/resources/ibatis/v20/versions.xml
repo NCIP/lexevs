@@ -10,13 +10,13 @@
 		<result property="prevRevision" column="previousRevisionId" />
 	</resultMap>
 	
-	<select id="getSystemReleaseGuidByUri" parameterClass="string" resultClass="string">
+	<select id="getSystemReleaseGuidByUri" parameterClass="string" resultClass="string" remapResults="true" >
 		SELECT
-			releaseGuid
+			sysRel.releaseGuid
 		FROM
-			${defaultPrefix}systemRelease
+			${defaultPrefix}systemRelease sysRel
 		WHERE
-			releaseURI = #param1#	
+			sysRel.releaseURI = #param1#	
      </select>
 
 	<select id="getEntryStateById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Versions.entryStateResult">
@@ -417,4 +417,20 @@
 		WHERE
 			rev.revisionId = #param1#
      </select>
+    
+    <select id="getRevisionIdByDate" remapResults="true"
+		resultClass="java.util.TreeMap" parameterClass="java.sql.Timestamp">
+		<![CDATA[
+			SELECT
+				revisionId AS revId,
+				revAppliedDate AS revAppliedDate
+			FROM
+				${defaultPrefix}revision
+			WHERE
+				revAppliedDate <= #param1#
+			ORDER BY
+				revAppliedDate DESC			
+			LIMIT 1
+		]]>	
+     </select> 
 </sqlMap>

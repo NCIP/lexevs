@@ -532,4 +532,115 @@
 		WHERE 
 			entityGuid = #param1#
  	</update>
+ 	
+	<select id="getPrevRevIdFromGivenRevIdForEntity" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="java.util.TreeMap">
+		<![CDATA[
+			SELECT DISTINCT
+				r1.revisionId AS revId,
+				r1.revAppliedDate AS revAppliedDate
+			FROM
+				$prefix$entity entity,
+				$prefix$entryState es,
+				${defaultPrefix}revision r1, 
+				${defaultPrefix}revision r2			
+			WHERE
+				entity.entityGuid = #param1# AND
+				(
+					NOT EXISTS 
+					(
+						SELECT 
+							es1.entryStateGuid 
+						FROM 
+							$prefix$entryState es1 
+						WHERE 
+							entity.entryStateGuid = es1.entryStateGuid
+					)
+					OR
+					(
+						entity.entityGuid = es.entryGuid AND 
+						es.revisionGuid = r1.revisionGuid AND
+						r1.revAppliedDate <= r2.revAppliedDate AND
+						r2.revisionID = #param2#
+					)
+				)
+				
+			ORDER BY
+				revAppliedDate DESC			
+			LIMIT 1
+		]]>			
+	</select>	
+	
+	<select id="getEntityMetaDataByRevision" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultMap="entityAttributes">
+		<![CDATA[
+			SELECT
+				entity.codingSchemeGuid,
+				entity.entityGuid,
+				entity.entityCode,
+				entity.entityCodeNamespace,
+				entity.isDefined,
+				entity.isAnonymous,
+				entity.description,
+				entity.isActive,
+				entity.owner,
+				entity.status,
+				entity.effectiveDate,
+				entity.expirationDate,
+				entity.forwardName,
+				entity.reverseName,
+				entity.isNavigable,
+				entity.isTransitive,
+				entity.entryStateGuid,
+				r1.revAppliedDate revAppliedDate
+			FROM
+				$prefix$h_entity entity,
+				$prefix$entryState es,
+				${defaultPrefix}revision r1,			
+				${defaultPrefix}revision r2		
+			WHERE
+				entity.entityGuid = #param1# AND
+				entity.entryStateGuid = es.entryStateGuid AND
+				(
+					(
+						es.revisionGuid = r1.revisionGuid AND
+						r1.revAppliedDate >= r2.revAppliedDate AND
+						r2.revisionID = #param2#
+					)
+					OR
+					(
+						es.revisionGuid IS NULL
+					)
+				)
+			ORDER BY
+				revAppliedDate DESC		
+			LIMIT 1	
+		]]>			
+	</select>
+
+	<select id="getEntityPropertyIdsListByEntityUId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="string">
+			SELECT
+				propertyId
+			FROM
+				$prefix$property
+			WHERE
+				referenceGuid = #param1#
+			AND
+				referenceType = #param2#
+	</select>
+
+	<select id="getEntityTypeByEntityUId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultClass="string">
+			SELECT
+				entityType
+			FROM
+				$prefix$entityType
+			WHERE
+				entityGuid = #param1#
+	</select>	
 </sqlMap>

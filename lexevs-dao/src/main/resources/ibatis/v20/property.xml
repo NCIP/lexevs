@@ -53,6 +53,7 @@
 		<result property="property.effectiveDate" column="effectiveDate" />
 		<result property="property.expirationDate" column="expirationDate" />
 		<result property="entryStateUId" column="entryStateGuid" />
+		<result property="propertyMultiAttribList" resultMap="Property.propertyMultiAttribResultBean"/>
 	</resultMap>
 	
 	<resultMap id="presentationResult" class="presentation" extends="propertyResult" >
@@ -249,9 +250,43 @@
   	
   	<select id="getPropertyAttributesByUId" remapResults="true"
   		resultMap="propertyAttributes" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
-		<include refid="getPropertyFragment"/>
-  		WHERE			
-			property.propertyGuid = #param1# 
+		SELECT 
+			prop.propertyGuid,
+			prop.referenceGuid,
+			prop.referenceType,
+			prop.propertyId,
+			prop.propertyType,
+			prop.propertyName,
+			prop.language,
+			prop.format,
+			prop.isPreferred,
+			prop.matchIfNoContext,
+			prop.degreeOfFidelity,
+			prop.representationalForm,
+			prop.propertyValue,
+			prop.isActive,
+			prop.owner,
+			prop.status,
+			prop.effectiveDate,
+			prop.expirationDate,
+			prop.entryStateGuid,
+			multiAttrib.propMultiAttribGuid,
+			multiAttrib.propertyGuid,
+			multiAttrib.attributeType,
+			multiAttrib.attributeId,
+			multiAttrib.attributeValue,
+			multiAttrib.subRef,
+			multiAttrib.role,
+			multiAttrib.qualifierType,
+			multiAttrib.entryStateGuid esGuid
+		FROM 
+			$prefix$property	prop		
+		LEFT JOIN
+			$prefix$propertyMultiAttrib multiAttrib
+		ON 
+			multiAttrib.propertyGuid = prop.propertyGuid			
+  		WHERE
+			prop.propertyGuid = #param1#
   	</select>
   	
   	<select id="getPropertiesByParentAndRevisionId" remapResults="true"
@@ -485,5 +520,91 @@
 			prop.entryStateGuid = es.entryStateGuid	
 		AND
 			es.revisionGuid = rev.revisionGuid	
-	</select>     
+	</select>
+	
+	<select id="getPrevRevIdFromGivenRevIdForProperty" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="java.util.TreeMap">
+		<![CDATA[
+			SELECT DISTINCT
+				r1.revisionId AS revId,
+				r1.revAppliedDate AS revAppliedDate
+			FROM
+				$prefix$property property,
+				$prefix$entryState es,
+				${defaultPrefix}revision r1, 
+				${defaultPrefix}revision r2			
+			WHERE
+				property.propertyGuid = #param1# AND
+				(
+					NOT EXISTS 
+					(
+						SELECT 
+							es1.entryStateGuid 
+						FROM 
+							$prefix$vsEntryState es1 
+						WHERE 
+							property.entryStateGuid = es1.entryStateGuid
+					)
+					OR
+					(
+						property.propertyGuid = es.entryGuid AND 
+						es.revisionGuid = r1.revisionGuid AND
+						r1.revAppliedDate <= r2.revAppliedDate AND
+						r2.revisionID = #param2#
+					)
+				)
+			ORDER BY
+				revAppliedDate DESC			
+			LIMIT 1
+		]]>			
+	</select>
+	
+	<select id="getPropertyFromHistoryByRevision" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultMap="propertyAttributes">
+		<![CDATA[
+			SELECT 
+				prop.propertyGuid,
+				prop.referenceGuid,
+				prop.referenceType,
+				prop.propertyId,
+				prop.propertyType,
+				prop.propertyName,
+				prop.language,
+				prop.format,
+				prop.isPreferred,
+				prop.matchIfNoContext,
+				prop.degreeOfFidelity,
+				prop.representationalForm,
+				prop.propertyValue,
+				prop.isActive,
+				prop.owner,
+				prop.status,
+				prop.effectiveDate,
+				prop.expirationDate,
+				prop.entryStateGuid,
+				rev.revAppliedDate revAppliedDate
+			FROM 
+				$prefix$h_property prop,
+				$prefix$entryState es,
+				${defaultPrefix}revision rev		
+			WHERE
+				prop.propertyGuid = #param1# AND
+				prop.entryStateGuid = es.entryStateGuid AND
+				(
+					(
+						es.revisionGuid = rev.revisionGuid AND						
+						rev.revisionID = #param2#
+					)
+					OR
+					(
+						es.revisionGuid IS NULL
+					)
+				)
+			ORDER BY
+				revAppliedDate DESC		
+			LIMIT 1	
+		]]>			
+	</select>		     
 </sqlMap>

@@ -43,6 +43,24 @@
 			
 	</select>
 	
+	<select id="getSourceListFromHistoryByParentEntryStateGuidandType" remapResults="true"
+			parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+			resultMap="sourceResult">
+		SELECT 
+			attributeValue,
+			subRef,
+			role
+		FROM 
+			$prefix$h_vsMultiAttrib
+		WHERE
+			entryStateGuid = #param1#
+		AND
+			referenceType = #param2#
+		AND
+			attributeType = 'Source'
+			
+	</select>
+		
 	<select id="getContextListByParentGuidandType" remapResults="true"
 			parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
 			resultClass="string">
@@ -58,6 +76,22 @@
 			attributeType = 'Context'
 			
 	</select>
+
+	<select id="getContextListFromHistoryByParentEntryStateGuidandType" remapResults="true"
+			parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+			resultClass="string">
+		SELECT 
+			attributeValue
+		FROM 
+			$prefix$h_vsMultiAttrib
+		WHERE
+			entryStateGuid = #param1#
+		AND
+			referenceType = #param2#
+		AND
+			attributeType = 'Context'
+			
+	</select>	
 	
 	<insert id="insertMultiAttrib" 
 		parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean">
