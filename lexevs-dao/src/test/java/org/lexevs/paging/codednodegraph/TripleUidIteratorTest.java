@@ -79,7 +79,7 @@ public class TripleUidIteratorTest extends LexEvsDbUnitTestBase {
 				" 't-ns1'," +
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
-		TripleUidIterator itr = new TripleUidIterator("csuri", "csversion", "c-name", "aname", "s-code", "s-ns", new GraphQuery(), TripleNode.SUBJECT, 5);
+		TripleUidIterator itr = new TripleUidIterator("csuri", "csversion", "c-name", "aname", "s-code", "s-ns", new GraphQuery(), TripleNode.SUBJECT, null, 5);
 		
 		assertTrue(itr.hasNext());
 		assertEquals(itr.next(), "eae-guid1");

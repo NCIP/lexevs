@@ -31,6 +31,9 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.junit.Test;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Order;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
+import org.lexevs.dao.database.service.codednodegraph.model.ColumnSortType;
 import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
@@ -464,6 +467,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 					null,
 					null,
 					null,
+					null,
 					0, 
 					-1);
 		
@@ -598,9 +602,112 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 			ibatisCodedNodeGraphDao.getAssociatedConceptsFromUid(
 					"cs-guid", 
 					DaoUtility.createNonTypedList("eae-guid1", "eae-guid2"),
+					null,
 					TripleNode.SUBJECT);
 		
 		assertEquals(2,associatedConcepts.size());
+	}
+	
+	@Test
+	public void testAssociatedConceptsSourceOfWithSortDesc() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'cs-guid', 's-code', 's-ns')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid1'," +
+				" 'ap-guid'," +
+				" 'as-code', " +
+				" 'as-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid2'," +
+				" 'ap-guid'," +
+				" 'bs-code', " +
+				" 'bs-ns'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		Sort sort = new Sort(ColumnSortType.CODE, Order.DESC);
+	
+		List<? extends AssociatedConcept> associatedConcepts = 
+			ibatisCodedNodeGraphDao.getAssociatedConceptsFromUid(
+					"cs-guid", 
+					DaoUtility.createNonTypedList("eae-guid1", "eae-guid2"),
+					Arrays.asList(sort),
+					TripleNode.SUBJECT);
+		
+		assertEquals(2,associatedConcepts.size());
+		assertEquals("bs-code", associatedConcepts.get(0).getCode());
+		assertEquals("as-code", associatedConcepts.get(1).getCode());
+	}
+	
+	@Test
+	public void testAssociatedConceptsSourceOfWithSortAsc() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid', 'cs-guid', 's-code', 's-ns')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid1'," +
+				" 'ap-guid'," +
+				" 'as-code', " +
+				" 'as-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid2'," +
+				" 'ap-guid'," +
+				" 'bs-code', " +
+				" 'bs-ns'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		Sort sort = new Sort(ColumnSortType.CODE, Order.ASC);
+	
+		List<? extends AssociatedConcept> associatedConcepts = 
+			ibatisCodedNodeGraphDao.getAssociatedConceptsFromUid(
+					"cs-guid", 
+					DaoUtility.createNonTypedList("eae-guid1", "eae-guid2"),
+					Arrays.asList(sort),
+					TripleNode.SUBJECT);
+		
+		assertEquals(2,associatedConcepts.size());
+		assertEquals("as-code", associatedConcepts.get(0).getCode());
+		assertEquals("bs-code", associatedConcepts.get(1).getCode());
 	}
 	
 	@Test
@@ -637,7 +744,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		List<? extends AssociatedConcept> associatedConcepts = ibatisCodedNodeGraphDao.getAssociatedConceptsFromUid(
 				"cs-guid", 
-				DaoUtility.createNonTypedList("eae-guid1"), TripleNode.OBJECT);
+				DaoUtility.createNonTypedList("eae-guid1"), null, TripleNode.OBJECT);
 		
 		assertEquals(1,associatedConcepts.size());
 		AssociatedConcept associatedConcept = associatedConcepts.get(0);
@@ -1220,7 +1327,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		List<String> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubject(
-					"cs-guid", "ap-guid", "s-code", "s-ns", null, null, null, DaoUtility.createNonTypedList("t-ns2"), null, null, 0, -1);
+					"cs-guid", "ap-guid", "s-code", "s-ns", null, null, null, DaoUtility.createNonTypedList("t-ns2"), null, null, null, 0, -1);
 		
 		assertEquals(1, uids.size());
 		assertEquals("eae-guid2", uids.get(0));
@@ -1653,5 +1760,55 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		assertEquals("t-code", refs.get(0).getCode());
 		assertEquals("t-ns", refs.get(0).getCodeNamespace());
+	}
+	
+	@Test
+	public void testGetTripleUidsContainingSubjectWithSort() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('eguid1', 'cs-guid', 's-code', 's-ns')");
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('eguid1', 'concept')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('rel-guid', 'cs-guid', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid1'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid2'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id2', null, null, null, null, null, null, null, null)");
+	
+		Sort sort = new Sort(ColumnSortType.CODE, Order.DESC);
+		
+		List<String> uids = 
+			ibatisCodedNodeGraphDao.getTripleUidsContainingSubject("cs-guid", null, "s-code", "s-ns", null, null, null, null, null, null, Arrays.asList(sort), 0, -1);
+	
+		assertEquals(2, uids.size());
+		assertEquals("eae-guid2", uids.get(0));
+		assertEquals("eae-guid1", uids.get(1));
 	}
 }
