@@ -136,18 +136,19 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	 * @see org.lexevs.system.service.SystemResourceService#createNewTablesForLoad()
 	 */
 	public String createNewTablesForLoad() {
-		String prefix = prefixResolver.resolveDefaultPrefix();
 		if( isSingleTableMode() ){
 			this.getLogger().info("In single-table mode -- not creating a new set of tables.");
+			return "";
 		} else {
 			this.getLogger().info("In multi-table mode -- creating a new set of tables.");
 			
-			prefix = prefix + prefixResolver.getNextCodingSchemePrefix();
+			String prefix = prefixResolver.getNextCodingSchemePrefix();
 			
-			lexEvsDatabaseOperations.createCodingSchemeTables(prefix);
+			lexEvsDatabaseOperations.createCodingSchemeTables(
+					prefixResolver.resolveDefaultPrefix() + prefix);
+			
+			return prefix;
 		}
-
-		return prefix;
 	}
 	
 	/* (non-Javadoc)
