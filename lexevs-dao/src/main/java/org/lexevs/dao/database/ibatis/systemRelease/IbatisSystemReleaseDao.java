@@ -3,6 +3,7 @@ package org.lexevs.dao.database.ibatis.systemRelease;
 import java.util.List;
 
 import org.LexGrid.versions.SystemRelease;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.systemRelease.SystemReleaseDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.versions.parameter.InsertSystemReleaseBean;
@@ -52,8 +53,19 @@ public class IbatisSystemReleaseDao extends AbstractIbatisDao implements SystemR
 
 	@Override
 	public String insertSystemReleaseEntry(SystemRelease systemRelease) {
+		if (systemRelease == null)
+			return null;
 		
-		String releaseGuid = this.createUniqueId();
+		// check if this system release is already loaded.
+		String releaseGuid = getSystemReleaseUIdByUri(systemRelease.getReleaseURI());
+		
+		if (StringUtils.isNotEmpty(releaseGuid))
+		{
+			return releaseGuid;
+		}
+		
+		// Load new system release.
+		releaseGuid = this.createUniqueId();
 		
 		InsertSystemReleaseBean insertSysRelBean = new InsertSystemReleaseBean();
 		
