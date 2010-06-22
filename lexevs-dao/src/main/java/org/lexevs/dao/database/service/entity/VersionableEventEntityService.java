@@ -18,6 +18,8 @@
  */
 package org.lexevs.dao.database.service.entity;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
@@ -33,6 +35,7 @@ import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
+import org.lexevs.dao.database.access.revision.RevisionDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
 import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
@@ -118,6 +121,9 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		
 		String entityUId = entityDao.getEntityUId(codingSchemeUId, entity.getEntityCode(), entity.getEntityCodeNamespace());
 		
+		Entity currentEntity = this.getEntity(codingSchemeUri, version, entity
+				.getEntityCode(), entity.getEntityCodeNamespace());
+		
 		/* 1. insert current entity data into history.*/	
 		String prevEntryStateUId = entityDao.insertHistoryEntity(codingSchemeUId, entityUId, entity);
 		
@@ -128,6 +134,9 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		versionsDao.insertEntryState(entryStateUId, entityUId,
 				entryStateTypeClassifier.classify(EntryStateType.ENTITY),
 				prevEntryStateUId, entity.getEntryState());
+		
+		/*this.fireEntityUpdateEvent(new EntityUpdateEvent(codingSchemeUri,
+				version, currentEntity, entity));*/
 		
 		/* 5. apply dependent changes for the entity.*/
 		this.insertDependentChanges(codingSchemeUri, version, entity);
@@ -191,7 +200,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		entityDao.removeEntityByUId(codingSchemeUId, entityUId);
 		
 		/*3. Remove search (lucene) indexes. */
-		this.firePostEntityRemoveEvent(new EntityInsertOrRemoveEvent(codingSchemeUri, version, revisedEntity));	
+//		this.firePostEntityRemoveEvent(new EntityInsertOrRemoveEvent(codingSchemeUri, version, revisedEntity));	
 	}
 	
 	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_VERSIONABLE_CHANGES_ERROR)
@@ -493,5 +502,46 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		} 
 		
 		return true;
+	}
+
+	@Override 
+	public Entity resolveEntityByRevision(String codingSchemeURI,
+			String version, String entityCode, String entityCodeNamespace,
+			String revisionId) throws LBRevisionException {
+
+		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(
+				codingSchemeURI, version);
+
+		EntityDao entityDao = getDaoManager().getEntityDao(codingSchemeURI,
+				version);
+
+		String codingSchemeUId = codingSchemeDao
+				.getCodingSchemeUIdByUriAndVersion(codingSchemeURI, version);
+
+		return entityDao.resolveEntityByRevision(codingSchemeUId, entityCode,
+				entityCodeNamespace, revisionId);
+	}
+	
+	@Override 
+	public Entity resolveEntityByDate(String codingSchemeURI,
+			String version, String entityCode, String entityCodeNamespace,
+			Date date) throws LBRevisionException {
+		
+		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(
+				codingSchemeURI, version);
+
+		EntityDao entityDao = getDaoManager().getEntityDao(codingSchemeURI,
+				version);
+		
+		RevisionDao revisionDao = getDaoManager().getRevisionDao();
+
+		
+		String revisionId = revisionDao.getRevisionIdForDate(new Timestamp(date.getTime()));
+		
+		String codingSchemeUId = codingSchemeDao
+				.getCodingSchemeUIdByUriAndVersion(codingSchemeURI, version);
+		
+		return entityDao.resolveEntityByRevision(codingSchemeUId, entityCode,
+				entityCodeNamespace, revisionId);
 	}
 }

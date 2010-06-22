@@ -22,10 +22,10 @@ public class LuceneEntityUpdateListener extends DefaultServiceEventListener {
 				event.getOriginalEntity().getEntityCode(),
 				event.getOriginalEntity().getEntityCodeNamespace());
 
-		entityIndexService.updateIndexForEntity(
+		/*entityIndexService.updateIndexForEntity(
 				event.getCodingSchemeUri(), 
 				event.getCodingSchemeVersion(), 
-				updatedEntity);
+				updatedEntity);*/
 		
 		return true;
 	}

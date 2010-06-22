@@ -4,9 +4,11 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListEntryNode;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.lexevs.dao.database.access.valuesets.PickListDao;
 import org.lexevs.dao.database.access.valuesets.PickListEntryNodeDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
@@ -163,6 +165,17 @@ public class VersionableEventPickListEntryNodeService extends
 		}
 	}
 
+	@Override
+	public PickListEntryNode resolvePickListEntryNodeByRevision(
+			String pickListId, String plEntryId, String revisionId)
+			throws LBRevisionException {
+		PickListEntryNodeDao pickListEntryNodeDao = this.getDaoManager()
+				.getCurrentPickListEntryNodeDao();
+
+		return pickListEntryNodeDao.resolvePLEntryNodeByRevision(pickListId,
+				plEntryId, revisionId);
+	}
+	
 	/**
 	 * @return the vsPropertyService
 	 */
@@ -238,7 +251,7 @@ public class VersionableEventPickListEntryNodeService extends
 		
 		return true;
 	}
-
+	
 	private void doAddPLEntryDependentEntry(String pickListId,
 			PickListEntryNode pickListEntryNode) {
 	

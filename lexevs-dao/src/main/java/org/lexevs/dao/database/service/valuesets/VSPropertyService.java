@@ -19,6 +19,7 @@
 package org.lexevs.dao.database.service.valuesets;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Property;
 
 /**
@@ -132,4 +133,16 @@ public interface VSPropertyService {
 			String pickListId,
 			String pickListEntryNodeId, 
 			Property property) throws LBException;
+	
+	public Property resolveValueSetDefinitionPropertyByRevision(
+			String valueSetDefURI, String propertyId, String revisionId)
+			throws LBRevisionException;
+
+	public Property resolvePickListDefinitionPropertyByRevision(
+			String pickListId, String propertyId, String revisionId)
+			throws LBRevisionException;
+
+	public Property resolvePickListEntryNodePropertyByRevision(
+			String pickListId, String plEntryId, String propertyId,
+			String revisionId) throws LBRevisionException;
 }

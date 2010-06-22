@@ -101,9 +101,11 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 	@Override
 	public void insertPickListEntryNodeProperty(String pickListId,
 			String pickListEntryNodeId, Property property) {
-		String pickListEntryNodeGuid = this.getDaoManager().getCurrentPickListDefinitionDao().getPickListEntryNodeGuidByPickListIdAndPLEntryId(pickListId, pickListEntryNodeId);
+		String pickListEntryNodeUId = this.getDaoManager()
+				.getCurrentPickListEntryNodeDao().getPickListEntryNodeUId(
+						pickListId, pickListEntryNodeId);
 		
-		this.getDaoManager().getCurrentVsPropertyDao().insertProperty(pickListEntryNodeGuid, ReferenceType.PICKLISTENTRY, property);
+		this.getDaoManager().getCurrentVsPropertyDao().insertProperty(pickListEntryNodeUId, ReferenceType.PICKLISTENTRY, property);
 		
 	}
 
@@ -112,8 +114,8 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 			String pickListEntryNodeId, Property property) {
 
 		String pickListEntryNodeUId = this.getDaoManager()
-				.getCurrentPickListDefinitionDao()
-				.getPickListEntryNodeGuidByPickListIdAndPLEntryId(pickListId, pickListEntryNodeId);
+				.getCurrentPickListEntryNodeDao().getPickListEntryNodeUId(
+						pickListId, pickListEntryNodeId);
 
 		updateProperty(property, pickListEntryNodeUId, ReferenceType.PICKLISTENTRY);
 	}
@@ -122,11 +124,11 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 	public void removePickListEntryNodeProperty(String pickListId,
 			String pickListEntryNodeId, Property property) {
 		
-		String pickListDefUId = this.getDaoManager()
-				.getCurrentPickListEntryNodeDao()
-				.getPickListEntryNodeUId(pickListId, pickListEntryNodeId);
+		String pickListEntryNodeUId = this.getDaoManager()
+				.getCurrentPickListEntryNodeDao().getPickListEntryNodeUId(
+						pickListId, pickListEntryNodeId);
 
-		removeProperty(property, pickListDefUId);
+		removeProperty(property, pickListEntryNodeUId);
 	}
 
 	@Override
@@ -225,6 +227,49 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		}
 	}
 
+	@Override
+	public Property resolveValueSetDefinitionPropertyByRevision(String valueSetDefURI, String propertyId,
+			String revisionId) throws LBRevisionException {
+		
+		String valueSetDefUId = this.getDaoManager()
+				.getCurrentValueSetDefinitionDao()
+				.getGuidFromvalueSetDefinitionURI(valueSetDefURI);
+		
+		VSPropertyDao vsPropertyDao = this.getDaoManager()
+				.getCurrentVsPropertyDao();
+
+		return vsPropertyDao.resolveVSPropertyByRevision(valueSetDefUId, propertyId, revisionId);
+	}
+	
+	@Override
+	public Property resolvePickListDefinitionPropertyByRevision(String pickListId, String propertyId,
+			String revisionId) throws LBRevisionException {
+		
+		String pickListUId = this.getDaoManager()
+				.getCurrentPickListDefinitionDao()
+				.getPickListGuidFromPickListId(pickListId);
+		
+		VSPropertyDao vsPropertyDao = this.getDaoManager()
+				.getCurrentVsPropertyDao();
+
+		return vsPropertyDao.resolveVSPropertyByRevision(pickListUId, propertyId, revisionId);
+	}
+
+	@Override
+	public Property resolvePickListEntryNodePropertyByRevision(String pickListId, String plEntryId, String propertyId,
+			String revisionId) throws LBRevisionException {
+		
+		String pickListEntryNodeUId = this.getDaoManager()
+				.getCurrentPickListEntryNodeDao().getPickListEntryNodeUId(
+						pickListId, plEntryId);
+
+		VSPropertyDao vsPropertyDao = this.getDaoManager()
+				.getCurrentVsPropertyDao();
+
+		return vsPropertyDao.resolveVSPropertyByRevision(pickListEntryNodeUId,
+				propertyId, revisionId);
+	}
+	
 	private void updateProperty(Property property, String parentUId, ReferenceType type) {
 		
 		VSPropertyDao propertyDao = this.getDaoManager()

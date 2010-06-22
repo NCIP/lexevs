@@ -18,13 +18,19 @@
  */
 package org.lexevs.dao.database.service.valuesets;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListDefinitions;
+import org.LexGrid.valueSets.PickListEntryNode;
+import org.LexGrid.valueSets.ValueSetDefinition;
+import org.lexevs.dao.database.access.revision.RevisionDao;
+import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
 
 /**
  * The Interface PickListService.
@@ -111,5 +117,10 @@ public interface PickListDefinitionService {
 	public void insertDependentChanges(PickListDefinition definition) throws LBException;
 	
 	public void revise(PickListDefinition pickListDefinition, Mappings mapping, String releaseURI) throws LBException;
-	
+
+	public PickListDefinition resolvePickListDefinitionByRevision(String pickListId,
+			String revisionId, Integer sortType) throws LBRevisionException;
+
+	public PickListDefinition resolvePickListDefinitionByDate(String pickListId,
+			Date date, Integer sortType) throws LBRevisionException;
 }

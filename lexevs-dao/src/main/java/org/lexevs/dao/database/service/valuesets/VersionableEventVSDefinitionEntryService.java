@@ -168,4 +168,15 @@ public class VersionableEventVSDefinitionEntryService extends AbstractDatabaseSe
 		
 		return true;
 	}
+	
+	@Override
+	public DefinitionEntry resolveDefinitionEntryByRevision(
+			String valueSetDefURI, String ruleOrder, String revisionId)
+			throws LBRevisionException {
+		VSDefinitionEntryDao vsDefinitionEntryDao = this.getDaoManager()
+				.getCurrentVSDefinitionEntryDao();
+
+		return vsDefinitionEntryDao.resolveDefinitionEntryByRevision(valueSetDefURI,
+				ruleOrder, revisionId);
+	}
 }

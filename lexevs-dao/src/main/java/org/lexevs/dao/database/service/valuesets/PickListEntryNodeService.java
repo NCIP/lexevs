@@ -1,6 +1,7 @@
 package org.lexevs.dao.database.service.valuesets;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.valueSets.PickListEntryNode;
 
 public interface PickListEntryNodeService {
@@ -16,5 +17,8 @@ public interface PickListEntryNodeService {
 	public void updateVersionableAttributes(String pickListId, PickListEntryNode pickListEntryNode) throws LBException;
 	
 	public void revise(String pickListId, PickListEntryNode pickListEntryNode) throws LBException;
+
+	public PickListEntryNode resolvePickListEntryNodeByRevision(String pickListId,
+			String plEntryId, String revisionId) throws LBRevisionException;
 
 }

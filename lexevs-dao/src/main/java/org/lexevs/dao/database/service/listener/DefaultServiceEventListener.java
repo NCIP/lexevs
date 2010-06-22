@@ -26,6 +26,9 @@ import org.lexevs.dao.database.service.event.entity.EntityInsertOrRemoveEvent;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+import org.lexevs.dao.index.service.IndexServiceManager;
+import org.lexevs.dao.index.service.entity.EntityIndexService;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 
 /**
@@ -74,11 +77,26 @@ public class DefaultServiceEventListener implements DatabaseServiceEventListener
 	}
 	
 	public boolean onPostEntityInsert(EntityInsertOrRemoveEvent entityInsertEvent) {
+		IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
+		EntityIndexService entityIndexService = indexServiceManager.getEntityIndexService();
+		
+		/*entityIndexService.addEntityToIndex(
+				entityInsertEvent.getCodingSchemeUri(), 
+				entityInsertEvent.getVersion(), 
+				entityInsertEvent.getEntity());*/
 		return true;
 	}
 
 	@Override
 	public boolean onPostEntityRemove(EntityInsertOrRemoveEvent entityRemoveEvent) {
+		IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
+		EntityIndexService entityIndexService = indexServiceManager.getEntityIndexService();
+		
+		entityIndexService.deleteEntityFromIndex(
+				entityRemoveEvent.getCodingSchemeUri(), 
+				entityRemoveEvent.getVersion(), 
+				entityRemoveEvent.getEntity());
+		
 		return true;
 	}
 

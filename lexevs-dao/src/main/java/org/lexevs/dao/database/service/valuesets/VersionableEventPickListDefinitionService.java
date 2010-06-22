@@ -3,6 +3,8 @@
  */
 package org.lexevs.dao.database.service.valuesets;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -15,6 +17,7 @@ import org.LexGrid.valueSets.PickListDefinitions;
 import org.LexGrid.valueSets.PickListEntryNode;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.lexevs.dao.database.access.revision.RevisionDao;
 import org.lexevs.dao.database.access.valuesets.PickListDao;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
@@ -363,5 +366,30 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 						prevEntryStateUId, definition.getEntryState());
 	
 		pickListDefDao.updateEntryStateUId(pickListDefUId, entryStateUId);
+	}
+
+	@Override
+	public PickListDefinition resolvePickListDefinitionByRevision(String pickListId,
+			String revisionId, Integer sortType) throws LBRevisionException {
+		PickListDao pickListDefDao = this.getDaoManager()
+				.getCurrentPickListDefinitionDao();
+
+		return pickListDefDao.resolvePickListByRevision(pickListId, revisionId,
+				sortType);
+	}
+
+	@Override
+	public PickListDefinition resolvePickListDefinitionByDate(String pickListId,
+			Date date, Integer sortType) throws LBRevisionException {
+		
+		RevisionDao revisionDao = getDaoManager().getRevisionDao();
+
+		String revisionId = revisionDao.getRevisionIdForDate(new Timestamp(date.getTime()));
+		
+		PickListDao pickListDefDao = this.getDaoManager()
+				.getCurrentPickListDefinitionDao();
+		
+		return pickListDefDao.resolvePickListByRevision(pickListId, revisionId,
+				sortType);
 	}
 }

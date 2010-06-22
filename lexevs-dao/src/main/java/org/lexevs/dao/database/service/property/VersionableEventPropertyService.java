@@ -37,7 +37,6 @@ import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClass
 import org.lexevs.dao.database.constants.classifier.property.PropertyTypeClassifier;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
-import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
 import org.springframework.batch.classify.Classifier;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -156,6 +155,13 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 		this.getDaoManager().getPropertyDao(codingSchemeUri, version)
 				.insertProperty(codingSchemeUId, entityUId,
 						PropertyType.ENTITY, property);
+		
+		/*this.firePropertyUpdateEvent(new PropertyUpdateEvent(
+				codingSchemeUri,
+				version, 
+				entityCode,
+				entityCodeNamespace, 
+				property));*/
 	}
 
 	/*
@@ -337,8 +343,13 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 		/* 2. Remove property. */
 		propertyDao.removePropertyByUId(codingSchemeUId, propertyUId);
 
-		/* 3. Remove search (lucene) indexes. */
-
+		/* 3. Update search (lucene) indexes. */
+		/*this.firePropertyUpdateEvent(new PropertyUpdateEvent(
+				codingSchemeUri,
+				version, 
+				entityCode,
+				entityCodeNamespace, 
+				property));*/
 	}
 
 	/*
@@ -574,12 +585,12 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 						.classify(EntryStateType.PROPERTY), prevEntryStateUId,
 						property.getEntryState());
 
-		this.firePropertyUpdateEvent(new PropertyUpdateEvent(
+		/*this.firePropertyUpdateEvent(new PropertyUpdateEvent(
 				codingSchemeUri,
 				version, 
 				entityCode,
 				entityCodeNamespace, 
-				property));
+				property));*/
 	}
 
 	/*

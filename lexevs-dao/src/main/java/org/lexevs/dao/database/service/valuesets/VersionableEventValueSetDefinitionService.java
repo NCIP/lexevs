@@ -19,6 +19,8 @@
 package org.lexevs.dao.database.service.valuesets;
 
 import java.net.URI;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -31,6 +33,7 @@ import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.lexevs.dao.database.access.revision.RevisionDao;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
@@ -376,5 +379,28 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	
 		valueSetDefDao.updateValueSetDefEntryStateUId(valueSetDefUId,
 				entryStateUId);
+	}
+	
+	@Override
+	public ValueSetDefinition resolveValueSetDefinitionByRevision(String valueSetDefURI,
+			String revisionId) throws LBRevisionException {
+		ValueSetDefinitionDao valueSetDefDao = this.getDaoManager()
+				.getCurrentValueSetDefinitionDao();
+
+		return valueSetDefDao.resolveValueSetDefinitionByRevision(valueSetDefURI, revisionId);
+	}
+	
+	@Override
+	public ValueSetDefinition resolveValueSetDefinitionByDate(String valueSetDefURI,
+			Date date) throws LBRevisionException {
+		
+		RevisionDao revisionDao = getDaoManager().getRevisionDao();
+
+		String revisionId = revisionDao.getRevisionIdForDate(new Timestamp(date.getTime()));
+		
+		ValueSetDefinitionDao valueSetDefDao = this.getDaoManager()
+				.getCurrentValueSetDefinitionDao();
+
+		return valueSetDefDao.resolveValueSetDefinitionByRevision(valueSetDefURI, revisionId);
 	}
 }

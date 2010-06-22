@@ -18,10 +18,12 @@
  */
 package org.lexevs.dao.database.service.entity;
 
+import java.sql.Date;
 import java.util.List;
 
-import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationEntity;
 
@@ -142,7 +144,7 @@ public interface EntityService {
 	 */
 	public void updateEntity(
 			String codingSchemeUri, 
-			String version,
+			String version, 
 			Entity entity) throws LBException;
 	
 	public void removeEntity(
@@ -152,4 +154,11 @@ public interface EntityService {
 	
 	public void revise(String codingSchemeUri, String version,
 			Entity revisedEntity) throws LBException;
+	
+	public Entity resolveEntityByRevision(String codingSchemeURI,
+			String version, String entityCode, String entityCodeNamespace, String revisionId) throws LBRevisionException;
+	
+	public Entity resolveEntityByDate(String codingSchemeURI,
+			String version, String entityCode, String entityCodeNamespace,
+			Date date) throws LBRevisionException;
 }

@@ -19,9 +19,11 @@
 package org.lexevs.dao.database.service.valuesets;
 
 import java.net.URI;
+import java.sql.Date;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
@@ -117,4 +119,10 @@ public interface ValueSetDefinitionService {
 	public void updateVersionableAttributes(ValueSetDefinition valueSetDefinition) throws LBException;
 	
 	public void revise(ValueSetDefinition valueSetDefinition, Mappings mapping, String releaseURI) throws LBException;
+	
+	public ValueSetDefinition resolveValueSetDefinitionByRevision(String valueSetDefURI,
+			String revisionId) throws LBRevisionException;
+	
+	public ValueSetDefinition resolveValueSetDefinitionByDate(String valueSetDefURI,
+			Date date) throws LBRevisionException;
 }
