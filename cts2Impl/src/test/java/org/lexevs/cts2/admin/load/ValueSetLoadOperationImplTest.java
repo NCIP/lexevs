@@ -38,7 +38,7 @@ public class ValueSetLoadOperationImplTest {
 		LexEvsCTS2 cts2 = LexEvsCTS2Impl.defaultInstance();
 		ValueSetLoadOperation vsLoadOp = cts2.getAdminOperation().getValueSetLoadOperation();
 		URNVersionPair[] urns = vsLoadOp.load(new File(
-				"../lbTest/resources/testData/valueDomain/vdTestData.xml").toURI(), null, "LexGrid_Loader", true);
+				"src/test/resources/testData/VSDTestData.xml").toURI(), null, "LexGrid_Loader", true);
 		for(URNVersionPair urn : urns)
 		{
 			System.out.println("vsd loaded : " + urn);
