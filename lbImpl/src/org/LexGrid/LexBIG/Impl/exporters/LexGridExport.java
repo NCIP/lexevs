@@ -54,6 +54,7 @@ import org.lexevs.logging.LoggerFactory;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.formatters.XmlContentWriter;
+import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.postprocessor.FileFormatter;
 import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 
 /**
@@ -232,6 +233,11 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         
         XmlContentWriter xmlContentWriter = new XmlContentWriter();
         xmlContentWriter.marshalToXml(codingScheme, cng, cns, out, this.pageSize, true);
+        
+        // do post processing
+        FileFormatter ff = new FileFormatter();
+        ff.process(outFile);
+        
     }
     
     private void addStopFlagsToAssociationPredicates(CodingScheme cs) {
