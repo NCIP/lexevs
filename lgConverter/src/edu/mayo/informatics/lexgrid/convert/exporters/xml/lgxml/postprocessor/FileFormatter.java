@@ -19,9 +19,14 @@ import java.util.Date;
  *  Tag(s) that get changed:
  *  
  *    Before:
- *          <lgRel:associationSource
+ *      <lgRel:associationSource
  *    After:
- *          <lgRel:source
+ *      <lgRel:source
+ *          
+ *    Before:
+ *      <lgRel:associationEntity
+ *    After:
+ *      <lgCon:associationEntity
  *  
  *  Extra Data to be removed:
  *    Entity tags extra schema information:
@@ -46,6 +51,9 @@ public class FileFormatter {
     private final String TEXT_SOURCE = "lgRel:source";
     private final String TEXT_XML_NS_XSI = "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
     private final String TEXT_XSI_SCHEMA_LOCATION="xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"";
+    private final String TEXT_ASSOCIATION_ENTITY_LGREL = "lgRel:associationEntity";
+    private final String TEXT_ASSOCIATION_ENTITY_LGCON = "lgCon:associationEntity";
+    
     
     private boolean retainXmlNsXsi = true;
     private boolean retainXsiSchemaLocation = true;
@@ -164,23 +172,40 @@ public class FileFormatter {
     
     private String processLine(String lineOfText) {
         String newText = null;
-        if(lineOfText.indexOf(this.TEXT_ASSOCIATION_SOURCE) != -1) {
+        if(lineOfText.indexOf(this.TEXT_ASSOCIATION_SOURCE) != -1) 
+        {
             newText = lineOfText.replace(this.TEXT_ASSOCIATION_SOURCE, this.TEXT_SOURCE);
-        } else if(lineOfText.indexOf(this.TEXT_XML_NS_XSI) != -1) {
-            if(this.retainXmlNsXsi == true) {
+        }
+        else if(lineOfText.indexOf(this.TEXT_ASSOCIATION_ENTITY_LGREL) != -1) 
+        {
+            newText = lineOfText.replace(this.TEXT_ASSOCIATION_ENTITY_LGREL, this.TEXT_ASSOCIATION_ENTITY_LGCON);
+        }
+        else if(lineOfText.indexOf(this.TEXT_XML_NS_XSI) != -1) 
+        {
+            if(this.retainXmlNsXsi == true) 
+            {
                 this.retainXmlNsXsi = false;
                 newText = lineOfText;
-            } else {
+            } 
+            else 
+            {
                 newText = null;
             }
-        } else if(lineOfText.indexOf(this.TEXT_XSI_SCHEMA_LOCATION) != -1) {
-            if(this.retainXsiSchemaLocation == true) {
+        } 
+        else if(lineOfText.indexOf(this.TEXT_XSI_SCHEMA_LOCATION) != -1) 
+        {
+            if(this.retainXsiSchemaLocation == true) 
+            {
                 this.retainXsiSchemaLocation = false;
                 newText = lineOfText;
-            } else {
+            } 
+            else 
+            {
                 newText = null;
             }
-        } else {
+        } 
+        else 
+        {
             newText = lineOfText;
         }
         
@@ -248,7 +273,7 @@ public class FileFormatter {
     public static void main(String[] args) {
         final String INPUT_FILE_NAME1 = "resources/testData/Automobiles999-exported.xml";
         final String INPUT_FILE_NAME2 = "Automobiles999-exported.xml";
-        final String INPUT_FILE_NAME3 = "Automobiles2-exported.xml";
+        final String INPUT_FILE_NAME3 = "colors_1.0.1.xml";
         
         FileFormatter ff = new FileFormatter();
         ff.test(INPUT_FILE_NAME3);
