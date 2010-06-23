@@ -35,6 +35,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.Revision;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cts2.LexEvsCTS2;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.RootOrTail;
@@ -237,19 +238,12 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 		if (loaderName == null)
 			throw new LBException("Code System loader must be specified. Use LexEVSCTS2.getSupportedCodeSystemLoaders for supported list of loaders in the service.");
 		
-		if (!lexEvsCts2_.getSupportedCodeSystemLoaderNames().contains(loaderName))
+		if (!lexEvsCts2_.getSupportedLoaderNames().contains(loaderName))
 		{
 			throw new LBException("Provided Code System loader not supported. Use LexEVSCTS2.getSupportedCodeSystemLoaders/LoaderNames for supported list of loaders in the service.");
 		}
 		
-		this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
-        this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
-        
-		URNVersionPair[] urnVersions = null;
-		
-		urnVersions = loadSource(source, loaderName, metadata, manifest, releaseURI, stopOnErrors, async, overwriteMetadata, versionTag, activate);
-		
-		return urnVersions;
+		return loadSource(source, loaderName, metadata, manifest, releaseURI, stopOnErrors, async, overwriteMetadata, versionTag, activate);
 	}
 	
 	public boolean activateCodeSystem(String codeSystemURI, String codeSyatemVersion) throws LBException{
@@ -286,7 +280,7 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
         	loadCSMetaData(loader, metadata, overwriteMetadata, stopOnErrors, async);
         }
         
-        if (activate)
+        if (BooleanUtils.isTrue(activate))
         {
         	activateCS(loader);
         }

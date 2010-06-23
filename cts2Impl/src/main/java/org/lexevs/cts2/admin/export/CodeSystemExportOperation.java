@@ -38,6 +38,6 @@ public interface CodeSystemExportOperation {
 	public URI exportCodedNodeGraph(String codeSystemNameOrURI,
 			String codeSystemVersion, CodedNodeGraph cng, URI exportDestination, boolean overwrite, boolean stopOnErrors, boolean async) throws LBException;
 	
-	public List<String> getSupportedCodeSystemExporterNames() throws LBException;
+	public List<String> getSupportedExporterNames() throws LBException;
 	
 }

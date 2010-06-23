@@ -87,7 +87,7 @@ public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
 		System.out.println(cts2.getServiceInfo().getServiceVersion());
 		
 		try {
-			ExtensionDescriptionList loaders = cts2.getSupportedCodeSystemLoaders();
+			ExtensionDescriptionList loaders = cts2.getSupportedLoaders();
 			if (loaders != null)
 			{
 				for (ExtensionDescription loader : loaders.getExtensionDescription())
@@ -104,7 +104,7 @@ public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
 		}
 		
 		try {
-			ExtensionDescriptionList exporters = cts2.getSupportedCodeSystemExporters();
+			ExtensionDescriptionList exporters = cts2.getSupportedExporters();
 			if (exporters != null)
 			{
 				for (ExtensionDescription exporter : exporters.getExtensionDescription())

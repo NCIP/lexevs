@@ -53,7 +53,7 @@ public abstract class BaseService {
     	return searchAlgNames;
     }
     
-    public ExtensionDescriptionList getSupportedCodeSystemLoaders() throws LBException{
+    public ExtensionDescriptionList getSupportedLoaders() throws LBException{
     	ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
     	if (extensionRegistry != null)
     		return extensionRegistry.getLoadExtensions();
@@ -61,7 +61,7 @@ public abstract class BaseService {
     	return null;
     }
     
-    public List<String> getSupportedCodeSystemLoaderNames() throws LBException{
+    public List<String> getSupportedLoaderNames() throws LBException{
     	List<String> loaderNames = new ArrayList<String>();
     	ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
     	if (extensionRegistry != null && extensionRegistry.getLoadExtensions() != null)
@@ -72,7 +72,7 @@ public abstract class BaseService {
     	return loaderNames;
     }
     
-    public ExtensionDescriptionList getSupportedCodeSystemExporters() throws LBException{
+    public ExtensionDescriptionList getSupportedExporters() throws LBException{
     	ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
     	if (extensionRegistry != null)
     		return extensionRegistry.getExportExtensions();
@@ -80,7 +80,7 @@ public abstract class BaseService {
     	return null;
     }
     
-    public List<String> getSupportedCodeSystemExporterNames() throws LBException{
+    public List<String> getSupportedExporterNames() throws LBException{
     	List<String> exporterNames = new ArrayList<String>();
     	ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
     	if (extensionRegistry != null && extensionRegistry.getExportExtensions() != null)

@@ -49,7 +49,7 @@ public class CodeSystemExportOperationImpl extends BaseService implements CodeSy
 		if (StringUtils.isEmpty(exporterName))
 			throw new LBException("Code system exporterName is not specified. Call getSupportedCodeSystemExporterNames() to get supported exporters.");
 		
-		if (!getSupportedCodeSystemExporterNames().contains(exporterName))
+		if (!getSupportedExporterNames().contains(exporterName))
 			throw new LBException("Exporter name specified is not supported. Call getSupportedCodeSystemExporterNames() to get supported exporters.");
 		
 		Exporter exporter = getLexBIGServiceManager().getExporter(exporterName);

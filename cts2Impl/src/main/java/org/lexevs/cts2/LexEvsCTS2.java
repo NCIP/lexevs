@@ -60,13 +60,13 @@ public interface LexEvsCTS2{
 	
 	public ExtensionDescriptionList getSupportedSearchAlgorithms() throws LBException;
     
-    public ExtensionDescriptionList getSupportedCodeSystemLoaders() throws LBException;
+    public ExtensionDescriptionList getSupportedLoaders() throws LBException;
     
-    public ExtensionDescriptionList getSupportedCodeSystemExporters() throws LBException;
+    public ExtensionDescriptionList getSupportedExporters() throws LBException;
     
     public List<String> getSupportedSearchAlgorithmNames() throws LBException;
     
-    public List<String> getSupportedCodeSystemLoaderNames() throws LBException;
+    public List<String> getSupportedLoaderNames() throws LBException;
     
-    public List<String> getSupportedCodeSystemExporterNames() throws LBException;
+    public List<String> getSupportedExporterNames() throws LBException;
 }

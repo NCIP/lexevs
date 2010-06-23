@@ -123,5 +123,5 @@ public interface CodeSystemLoadOperation extends Loader{
 	 * @throws LBException
 	 */
 	public void validate(URI source, URI metaData, int validationLevel)
-			throws LBException;	
+			throws LBException;
 }

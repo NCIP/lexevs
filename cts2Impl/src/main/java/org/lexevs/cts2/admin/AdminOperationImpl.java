@@ -27,6 +27,7 @@ import org.lexevs.cts2.admin.load.AssociationLoadOperation;
 import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
 import org.lexevs.cts2.admin.load.CodeSystemLoadOperationImpl;
 import org.lexevs.cts2.admin.load.ValueSetLoadOperation;
+import org.lexevs.cts2.admin.load.ValueSetLoadOperationImpl;
 
 /**
  * Class returns individual CTS 2 Administration Operation interfaces.
@@ -37,6 +38,7 @@ import org.lexevs.cts2.admin.load.ValueSetLoadOperation;
 public class AdminOperationImpl extends BaseService implements AdminOperation {
 	private CodeSystemLoadOperation csLoadOp_;
 	private CodeSystemExportOperation csExportOp_;
+	private ValueSetLoadOperation vsLoadOp_;
 	
 	public AdminOperationImpl(LexEvsCTS2 lexEvsCts2) {
 		lexevsCTS2_ = lexEvsCts2;
@@ -84,8 +86,10 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 
 	@Override
 	public ValueSetLoadOperation getValueSetLoadOperation() {
-		// TODO Auto-generated method stub
-		return null;
+		if (vsLoadOp_ == null)
+			vsLoadOp_ = new ValueSetLoadOperationImpl(lexevsCTS2_);
+		
+		return vsLoadOp_;
 	}
 
 }

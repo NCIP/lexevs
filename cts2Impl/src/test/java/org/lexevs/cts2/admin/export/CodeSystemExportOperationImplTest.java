@@ -74,7 +74,7 @@ public class CodeSystemExportOperationImplTest {
 	}
 
 	/**
-	 * Test method for {@link org.lexevs.cts2.BaseService#getSupportedCodeSystemExporters()}.
+	 * Test method for {@link org.lexevs.cts2.BaseService#getSupportedExporters()}.
 	 */
 	@Test
 	public void testGetSupportedCodeSystemExporters() {
@@ -82,7 +82,7 @@ public class CodeSystemExportOperationImplTest {
 	}
 
 	/**
-	 * Test method for {@link org.lexevs.cts2.BaseService#getSupportedCodeSystemExporterNames()}.
+	 * Test method for {@link org.lexevs.cts2.BaseService#getSupportedExporterNames()}.
 	 * @throws LBException 
 	 */
 	@Test
@@ -90,7 +90,7 @@ public class CodeSystemExportOperationImplTest {
 		LexEvsCTS2 lexevsCTS2 = LexEvsCTS2Impl.defaultInstance();
 		CodeSystemExportOperation csExportOp = lexevsCTS2.getAdminOperation().getCodeSystemExportOperation();
 		
-		List<String> exporterNames = csExportOp.getSupportedCodeSystemExporterNames();
+		List<String> exporterNames = csExportOp.getSupportedExporterNames();
 		
 		for(String exporterName : exporterNames)
 		{
