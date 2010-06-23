@@ -37,7 +37,8 @@ public interface LexEVSAuthoringService {
 			Mappings mappings, 
 			Properties properties,
 			Entities entities, 
-			List<Relations> relationsList) throws LBException;
+			List<Relations> relationsList,
+			EntryState entryState) throws LBException;
 	
 	public void createMappingWithDefaultValues(
 			AssociationSource[] sourcesAndTargets, String sourceCodingScheme,
@@ -77,10 +78,7 @@ public interface LexEVSAuthoringService {
             String targetConceptCodeIdentifier)throws LBException;
 	
 	public Association createAssociation()throws LBException;
-	 public EntryState createMappingsEntryState(
-			 String revisionId, 
-			 Long relativeOrder, 
-			 ChangeType changeType, 
+	 public EntryState createDefaultMappingsEntryState(
 			 String prevRevisionId );
 	public AssociationSource mapTargetsToSource(
 			EntryState entryState,
