@@ -442,7 +442,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
             {
             	ResolvedPickListEntryList vdPLList = internalResolvePickListForTerm(pickList.getRepresentsValueSetDefinition(), 
             			sortByText, csVersionList, versionTag);
-            	if (plList.getResolvedPickListEntryCount() > 0 )
+            	if (vdPLList.getResolvedPickListEntryCount() > 0 )
             	{
             		for (int i = 0; i < vdPLList.getResolvedPickListEntryCount(); i++)
             		{
@@ -512,15 +512,18 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
             rpl.setEntityCode(rcr.getCode());
             rpl.setEntityCodeNamespace(rcr.getCodeNamespace());
             Entity entity = rcr.getEntity();
-            Presentation[] presentations = entity.getPresentation();
-            for (Presentation pres : presentations)
+            if (entity != null)
             {
-                if (BooleanUtils.toBoolean(pres.isIsPreferred()))
-                {
-                    rpl.setPickText(pres.getValue().getContent());
-                    rpl.setPropertyId(pres.getPropertyId());
-                    plList.addResolvedPickListEntry(rpl);
-                }               
+	            Presentation[] presentations = entity.getPresentation();
+	            for (Presentation pres : presentations)
+	            {
+	                if (BooleanUtils.toBoolean(pres.isIsPreferred()))
+	                {
+	                    rpl.setPickText(pres.getValue().getContent());
+	                    rpl.setPropertyId(pres.getPropertyId());
+	                    plList.addResolvedPickListEntry(rpl);
+	                }               
+	            }
             }
         }
         
