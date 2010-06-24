@@ -83,7 +83,8 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 	 */
 	@Override
 	protected URNVersionPair[] doLoad() throws Exception {
-		this.setCodingSchemeManifestURI(manifest_);
+		if (manifest_ != null)
+			this.setCodingSchemeManifestURI(manifest_);
 		this.persistCodingSchemeToDatabase(codeSystem_);
         
 		URNVersionPair urnVersion = new URNVersionPair(codeSystem_.getCodingSchemeURI(), codeSystem_.getRepresentsVersion());
@@ -133,21 +134,10 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#validate(java.net.URI, java.net.URI, java.lang.String, int)
-	 */
-	@Override
-	public void validate(URI source, URI metaData, String loaderName, int validationLevel)
-			throws LBException {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	/*
-	 * (non-Javadoc)
 	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#load(org.LexGrid.codingSchemes.CodingScheme, java.net.URI, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean, java.lang.String, java.lang.Boolean)
 	 */
 	@Override
-	public URNVersionPair[] load(CodingScheme codeSystem, URI metadata, URI manifest, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException {
+	public URNVersionPair[] load(CodingScheme codeSystem, URI metadata, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException {
 		if (codeSystem == null)
 			throw new LBException("Code System can not be empty");
 		
@@ -160,7 +150,6 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 		overwriteMetadata_ = overwriteMetadata;
 		async_ = async;
 		stopOnErrors_ = stopOnErrors;
-		manifest_ = manifest;
 		
 		this.load(null);		
 		
@@ -216,10 +205,10 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#load(java.net.URI, java.net.URI, java.net.URI, java.net.URI, java.lang.String, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean, java.lang.String, java.lang.Boolean)
+	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#load(java.net.URI, java.net.URI, java.net.URI, java.lang.String, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean, java.lang.String, java.lang.Boolean)
 	 */
 	@Override
-	public URNVersionPair[] load(URI source, URI metadata, URI manifest, URI releaseURI, String loaderName, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
+	public URNVersionPair[] load(URI source, URI metadata, URI manifest, String loaderName, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
 		if (loaderName == null)
 			throw new LBException("Code System loader must be specified. Use LexEVSCTS2.getSupportedCodeSystemLoaders for supported list of loaders in the service.");
 		
@@ -228,7 +217,7 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 			throw new LBException("Provided Code System loader not supported. Use LexEVSCTS2.getSupportedCodeSystemLoaders/LoaderNames for supported list of loaders in the service.");
 		}
 		
-		return loadSource(source, loaderName, metadata, manifest, releaseURI, stopOnErrors, async, overwriteMetadata, versionTag, activate);
+		return loadSource(source, loaderName, metadata, manifest, stopOnErrors, async, overwriteMetadata, versionTag, activate);
 	}
 	
 	public boolean activateCodeSystem(String codeSystemURI, String codeSyatemVersion) throws LBException{
@@ -246,7 +235,7 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 		getLexBIGServiceManager().deactivateCodingSchemeVersion(acsvr, new Date());
 		return true;
 	}
-	private URNVersionPair[] loadSource(URI source, String loaderName, URI metadata, URI manifest, URI releaseURI, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
+	private URNVersionPair[] loadSource(URI source, String loaderName, URI metadata, URI manifest, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
 		Loader loader = getLexBIGServiceManager().getLoader(loaderName);
         loader.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
         loader.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);

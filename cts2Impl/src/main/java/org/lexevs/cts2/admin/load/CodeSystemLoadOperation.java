@@ -55,7 +55,6 @@ public interface CodeSystemLoadOperation extends Loader{
 	 * 				the manifest definition replaces or supplements original values provided
 	 * 				in the terminology source.  Like the LexGrid Terminology model, the manifest
 	 * 				is defined by a formal model mastered as XML Schema.
-	 * @param releaseURI
 	 * @param loaderName
 	 * 				Loader to use for loading the code system. 
 	 * 				LexEvsCTS2.getSupportedLoaders method returns all the loaders supported 
@@ -79,34 +78,77 @@ public interface CodeSystemLoadOperation extends Loader{
 	 * 				The tag (e.g "devel", "production", ...) to be set for the this code system
 	 * @param activate 
 	 * 				True: activates the code system after the load.
+	 * @return URN and Version of the loaded code system
+	 * @throws LBException
 	 */
-	public abstract URNVersionPair[] load(URI source, URI metadata, URI manifest, URI releaseURI, String loaderName, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException;
+	public abstract URNVersionPair[] load(URI source, URI metadata, URI manifest, String loaderName, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException;
 	
 	/**
-	 * Load the content and meta data.  If the async flag is true, return an URI that
-	 * gives access to the load progress
+	 * Installs a code system (aka terminology) into the terminology service 
+	 * for subsequent access by other service functions. This operation is used 
+	 * for the initial install of the overall terminology structure itself. 
+	 * This may include the full set of concepts, relationships and so on, or 
+	 * some of these elements may be loaded using the Import Code System Revision 
+	 * operation. 
 	 * 
 	 * @param codeSystem
+	 * 				code system object to be loaded into the terminology service.
 	 * @param metadata
-	 * @param manifest
+	 *				(Optional) URI of the XML file containing custom code system meta data.
+	 * 				loads additional data to be maintained and queried as
+	 * 				terminology meta-information within the system.
+	 * 				All tags and values are interpreted as simple text-based key/value
+	 * 				pairs.
 	 * @param stopOnErrors
+	 * 				True means stop if any load error is detected. False means
+	 *            attempt to load what can be loaded if recoverable errors are
+	 *            encountered.
 	 * @param async
+	 * 				Flag controlling whether load occurs in the calling thread.  
+	 *            If true, the load will occur in a separate asynchronous process.
+	 *            If false, this method blocks until the load operation
+	 *            completes or fails. Regardless of setting, the getStatus and
+	 *            getLog calls are used to fetch results.
 	 * @param overwriteMetadata
-	 * @param versionTag - the tag (e.g "devel", "production", ...) to be set for the this code system
-	 * @param activate - True: activates the code system after the load.
+	 * 				If true, existing meta data for the code system will be erased.
+     *            If false, new meta data will be appended to existing meta data.
+	 * @param versionTag 
+	 * 				The tag (e.g "devel", "production", ...) to be set for the this code system
+	 * @param activate 
+	 * 				True: activates the code system after the load.
+	 * @return URN and Version of the loaded code system
+	 * @throws LBException
 	 */
-	public abstract URNVersionPair[] load(CodingScheme codeSystem, URI metadata, URI manifest, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException;
+	public abstract URNVersionPair[] load(CodingScheme codeSystem, URI metadata, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException;
 
 	/**
-	 * Loads code system metadata.
+	 * Loads custom code system meta data. This is to load additional data to be maintained and queried as
+	 * terminology meta-information within the system.
 	 * 
 	 * @param codeSystemNameOrURI
+	 * 				Code system name or URI.
 	 * @param codeSystemVersionOrTag
+	 * 				Code system version or tag.
 	 * @param metadata
+	 * 				URI of the XML file containing custom code system meta data.
+	 * 				loads additional data to be maintained and queried as
+	 * 				terminology meta-information within the system.
+	 * 				All tags and values are interpreted as simple text-based key/value
+	 * 				pairs.
 	 * @param stopOnErrors
+	 * 				True means stop if any load error is detected. False means
+	 *            attempt to load what can be loaded if recoverable errors are
+	 *            encountered.
 	 * @param async
+	 * 				Flag controlling whether load occurs in the calling thread.  
+	 *            If true, the load will occur in a separate asynchronous process.
+	 *            If false, this method blocks until the load operation
+	 *            completes or fails. Regardless of setting, the getStatus and
+	 *            getLog calls are used to fetch results.
 	 * @param overwriteMetadata
-	 * @return
+	 * 				If true, existing meta data for the code system will be erased.
+     *            If false, new meta data will be appended to existing meta data.
+	 * @return URN and Version of the code system
 	 * @throws LBException
 	 */
 	public URNVersionPair applyMetadataToCodeSystem(String codeSystemNameOrURI, CodingSchemeVersionOrTag codeSystemVersionOrTag, URI metadata, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata) throws LBException;
@@ -123,30 +165,29 @@ public interface CodeSystemLoadOperation extends Loader{
 	 */
 	public URNVersionPair loadCodeSystemRevsion() throws LBException;
 	
-	public boolean activateCodeSystem(String codeSystemURI, String codeSyatemVersion) throws LBException;
-	
-	public boolean deactivateCodeSystem(String codeSystemURI, String codeSyatemVersion) throws LBException;
-	
 	/**
-	 * Validate resource without performing a load.
+	 * Activates the loaded code system version. Only activated code system version will be available
+	 * for access by other other terminology service functions.
 	 * 
-	 * Returns without exception if validation succeeds.
-	 *  
-	 * @param source
-	 *            URI corresponding to the source code system file.
-	 * @param metatData
-	 *            URI corresponding to the source meta data file.
-	 * @param loaderName
-	 * 				Loader to use for loading the code system. 
-	 * 				LexEvsCTS2.getSupportedLoaders method returns all the loaders supported 
-	 * 				by the service.
-	 * 				For example, 'OBOLoader' could be used to load code system source that is in OBO format,
-	 * 				'OWLLoader' for code system source in OWL format, etc.
-	 * @param validationLevel
-	 *            Supported levels of validation include: 0 = Verify top 10
-	 *            lines are correct format. 1 = Verify entire file.
+	 * @param codeSystemURI
+	 * 				URI corresponding to the code system.
+	 * @param codeSyatemVersion
+	 * 				version of the code system.
+	 * @return true if activated
 	 * @throws LBException
 	 */
-	public void validate(URI source, URI metaData, String loaderName, int validationLevel)
-			throws LBException;
+	public boolean activateCodeSystem(String codeSystemURI, String codeSyatemVersion) throws LBException;
+	
+	/**
+	 * Deactivates the loaded code system version. Deactivated code system version will not be available
+	 * for access by other other terminology service functions.
+	 * 
+	 * @param codeSystemURI
+	 * 				URI corresponding to the code system.
+	 * @param codeSyatemVersion
+	 * 				version of the code system.
+	 * @return true if deactivated
+	 * @throws LBException
+	 */
+	public boolean deactivateCodeSystem(String codeSystemURI, String codeSyatemVersion) throws LBException;
 }

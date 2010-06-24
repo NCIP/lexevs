@@ -51,7 +51,7 @@ public class ValueSetLoadOperationImpl implements ValueSetLoadOperation {
 	@Override
 	public URNVersionPair[] load(URI source, URI releaseURI, String loaderName,
 			Boolean stopOnErrors) throws LBException {
-		return lexEvsCts2_.getAdminOperation().getCodeSystemLoadOperation().load(source, null, null, releaseURI, loaderName, stopOnErrors, true, false, null, null);
+		return lexEvsCts2_.getAdminOperation().getCodeSystemLoadOperation().load(source, null, null, loaderName, stopOnErrors, true, false, null, null);
 	}
 
 	@Override
