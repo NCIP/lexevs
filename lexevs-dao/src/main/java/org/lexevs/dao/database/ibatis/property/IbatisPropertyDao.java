@@ -38,7 +38,6 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
-import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.constants.classifier.property.PropertyMultiAttributeClassifier;
 import org.lexevs.dao.database.constants.classifier.property.PropertyTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
@@ -70,9 +69,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	
 	/** The property type classifier. */
 	private Classifier<PropertyType,String> propertyTypeClassifier = new PropertyTypeClassifier();
-	
-	private Classifier<EntryStateType,String> entryStateTypeClassifier = new EntryStateTypeClassifier();
-	
+		
 	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
@@ -148,8 +145,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			final String codingSchemeId, 
 			final PropertyType type,
 			final List<PropertyBatchInsertItem> batch) {
-		final String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		
+
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
 
 			public Object doInSqlMapClient(SqlMapExecutor executor)
@@ -161,8 +157,8 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				for(PropertyBatchInsertItem item : batch){
 					String propertyId = createUniqueId();
 					
-					doInsertProperty(
-							prefix,
+					insertProperty(
+							codingSchemeId,
 							item.getParentId(),
 							propertyId,
 							type,
@@ -190,12 +186,11 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			final PropertyType type,
 			final List<PropertyBatchInsertItem> batch, 
 			BatchInserter inserter) {
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		String propertyId = this.createUniqueId();
 		
 		for(PropertyBatchInsertItem item : batch){
-			this.doInsertProperty(
-					prefix, 
+			this.insertProperty(
+					codingSchemeId, 
 					item.getParentId(), 
 					propertyId, 
 					type, 
@@ -207,15 +202,15 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#insertProperty(java.lang.String, java.lang.String, org.lexevs.dao.database.access.property.PropertyDao.PropertyType, org.LexGrid.commonTypes.Property)
 	 */
-	public String insertProperty(String codingSchemeUId,
+	public String insertProperty(
+			String codingSchemeUId,
 			String parentUId, 
 			PropertyType type, 
 			Property property) {
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		String propertyUId = this.createUniqueId();
 		
-		return this.doInsertProperty(
-				prefix, 
+		return this.insertProperty(
+				codingSchemeUId, 
 				parentUId, 
 				propertyUId, 
 				type, 
@@ -310,13 +305,14 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * 
 	 * @return the string
 	 */
-	public String doInsertProperty(
-			String prefix,
+	public String insertProperty(
+			String codingSchemeUId,
 			String referenceUId, 
 			String propertyUId,
 			PropertyType referenceType, 
 			Property property, 
 			Inserter inserter) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
 		String entryStateUId = this.createUniqueId();
 		
@@ -331,10 +327,15 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		}
 		
 		if (property.getEntryState() != null) {
-			this.ibatisVersionsDao.insertEntryState(prefix, entryStateUId,
-					propertyUId, entryStateTypeClassifier
-							.classify(EntryStateType.PROPERTY), null, property
-							.getEntryState(), inserter);
+			this.ibatisVersionsDao.insertEntryState(
+					codingSchemeUId, 
+					entryStateUId,
+					propertyUId, 
+					EntryStateType.PROPERTY, 
+					null, 
+					property
+							.getEntryState(), 
+					inserter);
 		}
 		
 		inserter.insert(INSERT_PROPERTY_SQL,
@@ -366,7 +367,8 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		
 	}
 	
-	protected String doInsertHistoryProperty(String codingSchemeUId,
+	protected String doInsertHistoryProperty(
+			String codingSchemeUId,
 			String propertyUId,
 			Property property, 
 			Inserter inserter) {
@@ -382,14 +384,14 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 
 		propertyData.setPrefix(historyPrefix);
 		
-		this.getNonBatchTemplateInserter().insert(INSERT_PROPERTY_SQL, propertyData);
+		inserter.insert(INSERT_PROPERTY_SQL, propertyData);
 		
 		for (InsertPropertyMultiAttribBean propMultiAttrib : propertyData.getPropertyMultiAttribList())
 		{
 			if (propMultiAttrib.getUId() != null) {
 				propMultiAttrib.setPrefix(historyPrefix);
 
-				this.getSqlMapClientTemplate().insert(
+				inserter.insert(
 						INSERT_PROPERTY_MULTIATTRIB_SQL, propMultiAttrib);
 			}
 		}
@@ -401,10 +403,14 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			entryState.setChangeType(ChangeType.NEW);
 			entryState.setRelativeOrder(0L);
 
-			ibatisVersionsDao.insertEntryState(propertyData.getEntryStateUId(),
-					propertyData.getUId(), entryStateTypeClassifier
-							.classify(EntryStateType.PROPERTY), null,
-					entryState);
+			ibatisVersionsDao.insertEntryState(
+					codingSchemeUId,
+					propertyData.getEntryStateUId(),
+					propertyData.getUId(),
+					EntryStateType.PROPERTY, 
+					null,
+					entryState,
+					inserter);
 		}
 		
 		return propertyData.getEntryStateUId();
@@ -433,8 +439,6 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						type, 
 						property),
 						1);	
-		
-//		this.updatePropertyVersionableAttrib(codingSchemeUId, parentUId, propertyUId, type, property);
 	}
 	
 	/* (non-Javadoc)

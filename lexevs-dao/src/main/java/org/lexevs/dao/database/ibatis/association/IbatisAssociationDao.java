@@ -317,8 +317,12 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setRelations(relations);
 		bean.setPrefix(prefix);
 		
-		this.ibatisVersionsDao.insertEntryState(entryStateUId, relationsUId,
-				entryStateClassifier.classify(EntryStateType.RELATION), null,
+		this.ibatisVersionsDao.insertEntryState(
+				codingSchemeUId, 
+				entryStateUId, 
+				relationsUId,
+				EntryStateType.RELATION, 
+				null,
 				relations.getEntryState());
 		
 		this.getSqlMapClientTemplate().insert(INSERT_RELATIONS_SQL, bean);
@@ -738,9 +742,12 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			entryState.setChangeType(ChangeType.NEW);
 			entryState.setRelativeOrder(0L);
 
-			ibatisVersionsDao.insertEntryState(relationData.getEntryStateUId(),
-					relationData.getUId(), entryStateClassifier
-							.classify(EntryStateType.RELATION), null,
+			ibatisVersionsDao.insertEntryState(
+					codingSchemeUId, 
+					relationData.getEntryStateUId(),
+					relationData.getUId(), 
+					EntryStateType.RELATION, 
+					null,
 					entryState);
 		}
 		

@@ -11,14 +11,11 @@ import org.lexevs.dao.database.access.association.AssociationDataDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
-import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 
 public class VersionableEventAssociationDataService extends
 		AbstractDatabaseService implements AssociationDataService {
-
-	private EntryStateTypeClassifier entryStateClassifier = new EntryStateTypeClassifier();
 	
 	@Override
 	@DatabaseErrorIdentifier(errorCode=INSERT_ASSOCIATIONDATA_ERROR)
@@ -69,10 +66,12 @@ public class VersionableEventAssociationDataService extends
 	
 		/* 3. register entrystate details for the association data. */
 		versionsDao
-				.insertEntryState(entryStateUId, associationDataUId,
-						entryStateClassifier
-								.classify(EntryStateType.ENTITYASSNSTODATA),
-						prevEntryStateUId, data.getEntryState());
+				.insertEntryState(
+						codingSchemeUId,
+						entryStateUId, associationDataUId,
+						EntryStateType.ENTITYASSNSTODATA,
+						prevEntryStateUId, 
+						data.getEntryState());
 	}
 
 	@Override
@@ -134,10 +133,12 @@ public class VersionableEventAssociationDataService extends
 
 		/* 3. register entrystate details for the association data. */
 		versionsDao
-				.insertEntryState(entryStateUId, associationDataUId,
-						entryStateClassifier
-								.classify(EntryStateType.ENTITYASSNSTODATA),
-						prevEntryStateUId, data.getEntryState());
+				.insertEntryState(
+						codingSchemeUId,
+						entryStateUId, associationDataUId,
+						EntryStateType.ENTITYASSNSTODATA,
+						prevEntryStateUId, 
+						data.getEntryState());
 	}
 
 	@Override

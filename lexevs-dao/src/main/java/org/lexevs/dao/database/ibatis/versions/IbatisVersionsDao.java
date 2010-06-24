@@ -145,51 +145,42 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * Insert entry state.
-	 * 
-	 * @param prefix
-	 *            the prefix
-	 * @param entryStateUId
-	 *            the entry state id
-	 * @param entryUId
-	 *            the entry id
-	 * @param entryType
-	 *            the entry type
-	 * @param previousEntryStateUId
-	 *            the previous entry state id
-	 * @param entryState
-	 *            the entry state
-	 * @param inserter
-	 *            the ibatis inserter
-	 */
-	public void insertEntryState(String prefix, String entryStateUId,
-			String entryUId, String entryType, String previousEntryStateUId,
-			EntryState entryState, Inserter inserter) {
-		InsertEntryStateBean insertEntryStateBean = buildInsertEntryStateBean(
-				prefix, entryStateUId, entryUId, entryType,
-				previousEntryStateUId, entryState);
-
+	@Override
+	public void insertEntryState(
+			String codingSchemeUId,
+			String entryStateUId, 
+			String entryUId,
+			EntryStateType entryType, 
+			String previousEntryStateUId,
+			EntryState entryState, 
+			Inserter inserter) {
 		if (entryState == null) {
 			return;
 		}
+		
+		Assert.state(entryType != null);
+		Assert.state(
+				!entryType.equals(EntryStateType.VALUESETDEFINITION)
+				&&
+				!entryType.equals(EntryStateType.VALUESETDEFINITIONENTRY)
+				&&
+				!entryType.equals(EntryStateType.PICKLISTDEFINITION)
+				&&
+				!entryType.equals(EntryStateType.PICKLISTENTRYNODE),
+				"For inserting a ValueSet/Picklist EntryState, use the " +
+				" ValueSet DAOs.");
 
-		inserter.insert(INSERT_ENTRY_STATE_SQL, insertEntryStateBean);
-
-	}
-
-	@Override
-	public void insertEntryState(String entryStateUId, String entryUId,
-			String entryType, String previousEntryStateUId,
-			EntryState entryState, Inserter inserter) {
-		this.insertEntryState(
-				this.getPrefixResolver().resolveDefaultPrefix(),
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		InsertEntryStateBean insertEntryStateBean = buildInsertEntryStateBean(
+				prefix, 
 				entryStateUId, 
 				entryUId, 
-				entryType, 
+				entryStateTypeClassifier.classify(entryType),
 				previousEntryStateUId, 
-				entryState, 
-				inserter);
+				entryState);
+
+		inserter.insert(INSERT_ENTRY_STATE_SQL, insertEntryStateBean);
 	}
 
 	/*
@@ -226,14 +217,23 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
 	 * java.lang.String, org.LexGrid.versions.EntryState)
 	 */
-	public String insertEntryState(String entryUId, String entryType,
-			String previousEntryStateUId, EntryState entryState) {
+	public String insertEntryState(
+			String codingSchemeUId,
+			String entryUId, 
+			EntryStateType entryType,
+			String previousEntryStateUId, 
+			EntryState entryState) {
 
 		String entryStateUId = this.createUniqueId();
 
-		this.insertEntryState(this.getPrefixResolver().resolveDefaultPrefix(),
-				entryStateUId, entryUId, entryType, previousEntryStateUId,
-				entryState, this.getNonBatchTemplateInserter());
+		this.insertEntryState(
+				codingSchemeUId,
+				entryStateUId, 
+				entryUId, 
+				entryType, 
+				previousEntryStateUId,
+				entryState, 
+				this.getNonBatchTemplateInserter());
 
 		return entryStateUId;
 	}
@@ -246,13 +246,22 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
 	 * java.lang.String, org.LexGrid.versions.EntryState)
 	 */
-	public void insertEntryState(String entryStateUId, String entryUId,
-			String entryType, String previousEntryStateUId,
+	public void insertEntryState(
+			String codingSchemeUId,
+			String entryStateUId, 
+			String entryUId,
+			EntryStateType entryType, 
+			String previousEntryStateUId,
 			EntryState entryState) {
 
-		this.insertEntryState(this.getPrefixResolver().resolveDefaultPrefix(),
-				entryStateUId, entryUId, entryType, previousEntryStateUId,
-				entryState, this.getNonBatchTemplateInserter());
+		this.insertEntryState(
+				codingSchemeUId,
+				entryStateUId, 
+				entryUId, 
+				entryType, 
+				previousEntryStateUId,
+				entryState, 
+				this.getNonBatchTemplateInserter());
 	}
 
 	/**

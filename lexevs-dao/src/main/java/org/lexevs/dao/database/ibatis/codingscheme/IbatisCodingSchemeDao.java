@@ -53,7 +53,6 @@ import org.lexevs.dao.database.access.systemRelease.SystemReleaseDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
 import org.lexevs.dao.database.constants.classifier.mapping.ClassToStringMappingClassifier;
-import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean;
 import org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeMultiAttribBean;
@@ -192,8 +191,6 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	private AssociationDao associationDao;
 	
 	private PropertyDao propertyDao = null;
-	
-	private EntryStateTypeClassifier entryStateClassifier = new EntryStateTypeClassifier();
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeById(java.lang.String)
@@ -382,9 +379,13 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 			previousRevisionId = codingScheme.getEntryState().getPrevRevision();
 		}*/
 		
-		versionsDao.insertEntryState(entryStateUId, codingSchemeUId,
-				entryStateClassifier.classify(EntryStateType.CODINGSCHEME),
-				null, codingScheme.getEntryState());
+		versionsDao.insertEntryState(
+				codingSchemeUId,
+				entryStateUId, 
+				codingSchemeUId,
+				EntryStateType.CODINGSCHEME,
+				null, 
+				codingScheme.getEntryState());
 		
 		for(Source source : codingScheme.getSource()){
 			String sourceUId = this.createUniqueId();
@@ -1067,9 +1068,12 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 			entryState.setChangeType(ChangeType.NEW);
 			entryState.setRelativeOrder(0L);
 
-			versionsDao.insertEntryState(codingSchemeData.getEntryStateUId(),
-					codingSchemeData.getUId(), entryStateClassifier
-							.classify(EntryStateType.CODINGSCHEME), null,
+			versionsDao.insertEntryState(
+					codingSchemeUId,
+					codingSchemeData.getEntryStateUId(),
+					codingSchemeData.getUId(),
+					EntryStateType.CODINGSCHEME, 
+					null,
 					entryState);
 		}
 		

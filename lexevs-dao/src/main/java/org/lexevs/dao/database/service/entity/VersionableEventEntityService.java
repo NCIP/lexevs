@@ -38,7 +38,6 @@ import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.revision.RevisionDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
-import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.lexevs.dao.database.service.error.ErrorHandlingService;
@@ -46,7 +45,6 @@ import org.lexevs.dao.database.service.event.entity.EntityBatchInsertEvent;
 import org.lexevs.dao.database.service.event.entity.EntityInsertOrRemoveEvent;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.database.service.property.PropertyService;
-import org.springframework.batch.classify.Classifier;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -59,7 +57,6 @@ import org.springframework.util.Assert;
 public class VersionableEventEntityService extends AbstractDatabaseService implements EntityService {
 
 	private PropertyService propertyService = null;
-	private Classifier<EntryStateType, String> entryStateTypeClassifier = new EntryStateTypeClassifier();
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.entity.EntityService#insertEntity(java.lang.String, java.lang.String, org.LexGrid.concepts.Entity)
@@ -103,7 +100,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.entity.EntityService#updateEntity(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.concepts.Entity)
 	 */
-	@Transactional
+	@Transactional(rollbackFor=Exception.class)
 	@DatabaseErrorIdentifier(errorCode=UPDATE_ENTITY_ERROR)
 	public void updateEntity(
 			String codingSchemeUri, 
@@ -131,15 +128,22 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		String entryStateUId = entityDao.updateEntity(codingSchemeUId, entityUId, entity);
 	
 		/* 4. register entrystate details for the entity.*/
-		versionsDao.insertEntryState(entryStateUId, entityUId,
-				entryStateTypeClassifier.classify(EntryStateType.ENTITY),
-				prevEntryStateUId, entity.getEntryState());
-		
-		/*this.fireEntityUpdateEvent(new EntityUpdateEvent(codingSchemeUri,
-				version, currentEntity, entity));*/
-		
+		versionsDao.insertEntryState(
+				codingSchemeUId,
+				entryStateUId, 
+				entityUId,
+				EntryStateType.ENTITY,
+				prevEntryStateUId, 
+				entity.getEntryState());
+
 		/* 5. apply dependent changes for the entity.*/
 		this.insertDependentChanges(codingSchemeUri, version, entity);
+		
+		this.fireEntityUpdateEvent(new EntityUpdateEvent(
+				codingSchemeUri,
+				version, 
+				currentEntity, 
+				entity));
 	}
 	
 	@Transactional
@@ -163,6 +167,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	}
 
 	@DatabaseErrorIdentifier(errorCode=REMOVE_ENTITY_ERROR)
+	@Transactional
 	public void removeEntity(String codingSchemeUri, String version,
 			Entity revisedEntity) {
 		this.firePreEntityRemoveEvent(new EntityInsertOrRemoveEvent(codingSchemeUri, version, revisedEntity));	
@@ -199,12 +204,11 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		/*2. Remove the entity. */
 		entityDao.removeEntityByUId(codingSchemeUId, entityUId);
 		
-		/*3. Remove search (lucene) indexes. */
-//		this.firePostEntityRemoveEvent(new EntityInsertOrRemoveEvent(codingSchemeUri, version, revisedEntity));	
+		this.firePostEntityRemoveEvent(new EntityInsertOrRemoveEvent(codingSchemeUri, version, revisedEntity));	
 	}
 	
 	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_VERSIONABLE_CHANGES_ERROR)
-	public void insertVersionableChanges(String codingSchemeUri,
+	protected void insertVersionableChanges(String codingSchemeUri,
 			String version, Entity revisedEntity) throws LBException {
 		
 		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, version);
@@ -226,15 +230,20 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 			updateEntityVersionableAttrib(codingSchemeUId, entityUId, revisedEntity);	
 		
 		/* 3. register entrystate details for the entity.*/
-		versionsDao.insertEntryState(entryStateUId, entityUId,
-				entryStateTypeClassifier.classify(EntryStateType.ENTITY),
-				prevEntryStateUId, revisedEntity.getEntryState());
+		versionsDao.insertEntryState(
+				codingSchemeUId,
+				entryStateUId, 
+				entityUId,
+				EntryStateType.ENTITY,
+				prevEntryStateUId, 
+				revisedEntity.getEntryState());
 		
 		/* 4. apply dependent changes for the entity.*/
 		this.insertDependentChanges(codingSchemeUri, version, revisedEntity);
 	}
+	
 	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_DEPENDENT_CHANGES_ERROR)
-	public void insertDependentChanges(String codingSchemeUri, String version,
+	protected void insertDependentChanges(String codingSchemeUri, String version,
 			Entity revisedEntity) throws LBException {
 
 		Property[] entityProperties = revisedEntity.getAllProperties();
@@ -263,16 +272,21 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 				entryState.setChangeType(ChangeType.NEW);
 				entryState.setRelativeOrder(0L);
 
-				versionsDao.insertEntryState(prevEntryStateUId, entityUId,
-						entryStateTypeClassifier
-								.classify(EntryStateType.ENTITY), null,
+				versionsDao.insertEntryState(
+						codingSchemeUId,
+						prevEntryStateUId, 
+						entityUId,
+						EntryStateType.ENTITY, 
+						null,
 						entryState);
 			}
 
 			String entryStateUId = versionsDao.insertEntryState(
-					codingSchemeUId, entryStateTypeClassifier
-							.classify(EntryStateType.ENTITY),
-					prevEntryStateUId, revisedEntity.getEntryState());
+					codingSchemeUId,
+					codingSchemeUId, 
+					EntryStateType.ENTITY,
+					prevEntryStateUId, 
+					revisedEntity.getEntryState());
 
 			entityDao.updateEntryStateUId(codingSchemeUId, entityUId,
 					entryStateUId);
@@ -392,7 +406,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		return this.getDaoManager().getCurrentEntityDao().getEntityCount(codingSchemeId);
 	}
 	
-	@Transactional
+	@Transactional(rollbackFor=Exception.class)
 	@Override
 	public void revise(String codingSchemeUri, String version, Entity entity) throws LBException {
 
@@ -448,19 +462,16 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 					version);
 		} catch (Exception e) {
 			throw new LBRevisionException(
-					"The coding scheme to which the entity belongs to doesn't exist.");
+			"The coding scheme to which the entity belongs to doesn't exist.");
 		}
-		
-		try {
-			entityDao = this.getDaoManager().getEntityDao(
-					codingSchemeUri, version);
-	
-			entityUId = entityDao.getEntityUId(csUId, entity
-					.getEntityCode(), entity.getEntityCodeNamespace());
-		} catch (Exception e) {
-			//do nothing.
-		}
-		
+
+		entityDao = this.getDaoManager().getEntityDao(
+				codingSchemeUri, version);
+
+		entityUId = entityDao.getEntityUId(csUId, entity
+				.getEntityCode(), entity.getEntityCodeNamespace());
+
+
 		ChangeType changeType = entryState.getChangeType();
 	
 		if (changeType == ChangeType.NEW) {
@@ -505,6 +516,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	}
 
 	@Override 
+	@Transactional(rollbackFor=Exception.class)
 	public Entity resolveEntityByRevision(String codingSchemeURI,
 			String version, String entityCode, String entityCodeNamespace,
 			String revisionId) throws LBRevisionException {
@@ -523,6 +535,7 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	}
 	
 	@Override 
+	@Transactional(rollbackFor=Exception.class)
 	public Entity resolveEntityByDate(String codingSchemeURI,
 			String version, String entityCode, String entityCodeNamespace,
 			Date date) throws LBRevisionException {

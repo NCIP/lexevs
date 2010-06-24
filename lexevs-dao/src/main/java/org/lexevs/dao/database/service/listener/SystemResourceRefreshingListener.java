@@ -18,8 +18,11 @@
  */
 package org.lexevs.dao.database.service.listener;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.lexevs.dao.database.service.event.codingscheme.PostCodingSchemeInsertEvent;
+import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.service.SystemResourceService;
 
 /**
@@ -43,6 +46,26 @@ public class SystemResourceRefreshingListener extends DefaultServiceEventListene
 		SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
 		
 		systemResourceService.refresh();
+		
+		String uri = event.getCodingScheme().getCodingSchemeURI();
+		String version = event.getCodingScheme().getRepresentsVersion();
+		
+		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+		ref.setCodingSchemeURN(uri);
+		ref.setCodingSchemeVersion(version);
+		
+		EntityIndexService indexService = 
+			LexEvsServiceLocator.getInstance().
+				getIndexServiceManager().getEntityIndexService();
+		
+		if(indexService.doesIndexExist(ref)){
+
+			LoggerFactory.getLogger().warn("Detected an existing Lucene indes for URI: " + uri + " Version: " + version +
+					" -- the old index will be overwritten.");
+			
+			indexService.dropIndex(ref);
+			indexService.createIndex(ref);
+		}
 		
 		return true;
 	}

@@ -33,11 +33,9 @@ import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
-import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
-import org.lexevs.dao.database.constants.classifier.property.PropertyTypeClassifier;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
-import org.springframework.batch.classify.Classifier;
+import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -49,11 +47,6 @@ import org.springframework.util.Assert;
  */
 public class VersionableEventPropertyService extends AbstractDatabaseService
 		implements PropertyService {
-
-	/** The property type classifier. */
-	private Classifier<PropertyType,String> propertyTypeClassifier = new PropertyTypeClassifier();
-	
-	private Classifier<EntryStateType, String> entryStateTypeClassifier = new EntryStateTypeClassifier();
 	
 	/*
 	 * (non-Javadoc)
@@ -129,8 +122,11 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 						PropertyType.CODINGSCHEME, property);
 
 		this.getDaoManager().getVersionsDao(codingSchemeUri, version)
-				.insertEntryState(propertyUId, entryStateTypeClassifier
-						.classify(EntryStateType.PROPERTY), prevEntryStateUId,
+				.insertEntryState(
+						codingSchemeUId,
+						propertyUId, 
+						EntryStateType.PROPERTY, 
+						prevEntryStateUId,
 						property.getEntryState());
 	}
 
@@ -156,12 +152,12 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 				.insertProperty(codingSchemeUId, entityUId,
 						PropertyType.ENTITY, property);
 		
-		/*this.firePropertyUpdateEvent(new PropertyUpdateEvent(
+		this.firePropertyUpdateEvent(new PropertyUpdateEvent(
 				codingSchemeUri,
 				version, 
 				entityCode,
 				entityCodeNamespace, 
-				property));*/
+				property));
 	}
 
 	/*
@@ -199,9 +195,9 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 
 		this.getDaoManager().getVersionsDao(codingSchemeUri, version)
 				.insertEntryState(
+						codingSchemeUId,
 						propertyUId,
-						entryStateTypeClassifier
-								.classify(EntryStateType.PROPERTY),
+						EntryStateType.PROPERTY,
 						prevEntryStateUId, property.getEntryState());
 	}
 
@@ -262,8 +258,11 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 				relationUId, propertyUId, PropertyType.RELATION, property);
 
 		this.getDaoManager().getVersionsDao(codingSchemeUri, version)
-				.insertEntryState(propertyUId, entryStateTypeClassifier
-						.classify(EntryStateType.PROPERTY), prevEntryStateUId,
+				.insertEntryState(
+						codingSchemeUId,
+						propertyUId,
+						EntryStateType.PROPERTY, 
+						prevEntryStateUId,
 						property.getEntryState());
 	}
 
@@ -343,13 +342,12 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 		/* 2. Remove property. */
 		propertyDao.removePropertyByUId(codingSchemeUId, propertyUId);
 
-		/* 3. Update search (lucene) indexes. */
-		/*this.firePropertyUpdateEvent(new PropertyUpdateEvent(
+		this.firePropertyUpdateEvent(new PropertyUpdateEvent(
 				codingSchemeUri,
 				version, 
 				entityCode,
 				entityCodeNamespace, 
-				property));*/
+				property));
 	}
 
 	/*
@@ -532,8 +530,11 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 
 		/* 3. Insert entryState details. */
 		this.getDaoManager().getVersionsDao(codingSchemeUri, version)
-				.insertEntryState(propertyUId, entryStateTypeClassifier
-						.classify(EntryStateType.PROPERTY), prevEntryStateUId,
+				.insertEntryState(
+						codingSchemeUId,
+						propertyUId, 
+						EntryStateType.PROPERTY, 
+						prevEntryStateUId,
 						property.getEntryState());
 
 		/* 4. Update search (Lucene) indexes. */
@@ -581,16 +582,19 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 
 		/* 3. Insert entryState details. */
 		this.getDaoManager().getVersionsDao(codingSchemeUri, version)
-				.insertEntryState(propertyUId, entryStateTypeClassifier
-						.classify(EntryStateType.PROPERTY), prevEntryStateUId,
+				.insertEntryState(
+						codingSchemeUId,
+						propertyUId, 
+						EntryStateType.PROPERTY, 
+						prevEntryStateUId,
 						property.getEntryState());
 
-		/*this.firePropertyUpdateEvent(new PropertyUpdateEvent(
+		this.firePropertyUpdateEvent(new PropertyUpdateEvent(
 				codingSchemeUri,
 				version, 
 				entityCode,
 				entityCodeNamespace, 
-				property));*/
+				property));
 	}
 
 	/*
@@ -629,8 +633,10 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 
 		/* 3. Insert entryState details. */
 		this.getDaoManager().getVersionsDao(codingSchemeUri, version)
-				.insertEntryState(propertyUId,
-						propertyTypeClassifier.classify(PropertyType.RELATION),
+				.insertEntryState(
+						codingSchemeUId,
+						propertyUId,
+						EntryStateType.PROPERTY,
 						prevEntryStateUId, property.getEntryState());
 
 		/* 4. Update search (Lucene) indexes. */
@@ -678,20 +684,17 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 							version);
 		} catch (Exception e) {
 			throw new LBRevisionException(
-					"he coding scheme to which the property belongs to doesnt exist.");
+					"The coding scheme to which the property belongs to doesnt exist.");
 		}
-		
-		try {
-			propertyDao = this.getDaoManager().getPropertyDao(codingSchemeUri, version);
-			
-			propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(csUId,csUId,
-					property.getPropertyId(), property.getPropertyName());
-		} catch (Exception e) {
-			//do nothing.
-		}
-		
+
+		propertyDao = this.getDaoManager().getPropertyDao(codingSchemeUri, version);
+
+		propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(csUId,csUId,
+				property.getPropertyId(), property.getPropertyName());
+
+
 		ChangeType changeType = property.getEntryState().getChangeType();
-		
+
 		if (changeType == ChangeType.NEW) {
 			if (entryState.getPrevRevision() != null) {
 				throw new LBRevisionException(
@@ -754,23 +757,19 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 					version);
 		} catch (Exception e) {
 			throw new LBRevisionException(
-					"The coding scheme to which the property belongs to doesn't exist.");
+			"The coding scheme to which the property belongs to doesn't exist.");
 		}
-		
-		try {
-			propertyDao = this.getDaoManager().getPropertyDao(codingSchemeUri,
-					version);
 
-			entityUId = this.getDaoManager().getEntityDao(codingSchemeUri,
-					version).getEntityUId(csUId, entityCode,
-					entityCodeNamespace);
+		propertyDao = this.getDaoManager().getPropertyDao(codingSchemeUri,
+				version);
 
-			propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(csUId,
-					entityUId, property.getPropertyId(), property
-							.getPropertyName());
-		} catch (Exception e) {
-			// do nothing.
-		}
+		entityUId = this.getDaoManager().getEntityDao(codingSchemeUri,
+				version).getEntityUId(csUId, entityCode,
+						entityCodeNamespace);
+
+		propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(csUId,
+				entityUId, property.getPropertyId(), property
+				.getPropertyName());
 		
 		ChangeType changeType = property.getEntryState().getChangeType();
 		
@@ -840,24 +839,20 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 			throw new LBRevisionException(
 					"The coding scheme to which the property belongs to doesn't exist.");
 		}
-		
-		try {
-			relationUId = this.getDaoManager().getAssociationDao(
-					codingSchemeUri, version).getRelationUId(csUId,
-					containerRelationName);
-	
-			propertyDao = this.getDaoManager().getPropertyDao(
-					codingSchemeUri, version);
-	
-			propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(
-					csUId, relationUId, property.getPropertyId(), property
-							.getPropertyName());
-		} catch (Exception e) {
-			//do nothing.
-		}
+
+		relationUId = this.getDaoManager().getAssociationDao(
+				codingSchemeUri, version).getRelationUId(csUId,
+						containerRelationName);
+
+		propertyDao = this.getDaoManager().getPropertyDao(
+				codingSchemeUri, version);
+
+		propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(
+				csUId, relationUId, property.getPropertyId(), property
+				.getPropertyName());
 
 		ChangeType changeType = property.getEntryState().getChangeType();
-		
+
 		if (changeType == ChangeType.NEW) {
 			if (entryState.getPrevRevision() != null) {
 				throw new LBRevisionException(

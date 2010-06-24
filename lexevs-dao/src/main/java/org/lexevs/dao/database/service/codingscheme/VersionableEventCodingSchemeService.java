@@ -40,7 +40,6 @@ import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
-import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
@@ -50,7 +49,6 @@ import org.lexevs.dao.database.service.property.PropertyService;
 import org.lexevs.dao.database.service.relation.RelationService;
 import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.springframework.batch.classify.Classifier;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -65,7 +63,6 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 	private PropertyService propertyService = null;
 	private EntityService entityService = null;
 	private RelationService relationService = null;
-	private Classifier<EntryStateType, String> entryStateTypeClassifier = new EntryStateTypeClassifier();
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#getCodingSchemeByUriAndVersion(java.lang.String, java.lang.String)
@@ -238,9 +235,13 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 				codingSchemeUId, codingScheme);
 
 		/* 3. register entrystate details for the codingScheme.*/
-		versionsDao.insertEntryState(entryStateUId, codingSchemeUId,
-				entryStateTypeClassifier.classify(EntryStateType.CODINGSCHEME),
-				prevEntryStateUId, codingScheme.getEntryState());
+		versionsDao.insertEntryState(
+				codingSchemeUId,
+				entryStateUId, 
+				codingSchemeUId,
+				EntryStateType.CODINGSCHEME,
+				prevEntryStateUId, 
+				codingScheme.getEntryState());
 			
 		this.insertDependentChanges(codingScheme);
 		
@@ -324,9 +325,13 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		String entryStateUId = codingSchemeDao.
 			updateCodingSchemeVersionableAttrib(codingSchemeUId, codingScheme);	
 		
-		versionsDao.insertEntryState(entryStateUId, codingSchemeUId,
-				entryStateTypeClassifier.classify(EntryStateType.CODINGSCHEME),
-				prevEntryStateUId, codingScheme.getEntryState());
+		versionsDao.insertEntryState(
+				codingSchemeUId,
+				entryStateUId, 
+				codingSchemeUId,
+				EntryStateType.CODINGSCHEME,
+				prevEntryStateUId, 
+				codingScheme.getEntryState());
 			
 		this.insertDependentChanges(codingScheme);
 	}
@@ -370,7 +375,7 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			Entity[] assocEntityList = codingScheme.getEntities().getAssociationEntity();
 
 			for (int i = 0; i < assocEntityList.length; i++) {
-				entityService.revise(codingSchemeUri, version, assocEntityList[i]);
+				//entityService.revise(codingSchemeUri, version, assocEntityList[i]);
 			}
 		}
 
@@ -397,22 +402,6 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		removeCodingScheme(codingSchemeUri, version);
 	}
 
-	public EntityService getEntityService() {
-		return entityService;
-	}
-
-	public void setEntityService(EntityService entityService) {
-		this.entityService = entityService;
-	}
-
-	public PropertyService getPropertyService() {
-		return propertyService;
-	}
-
-	public void setPropertyService(PropertyService propertyService) {
-		this.propertyService = propertyService;
-	}
-
 	@Override
 	public List<SupportedProperty> getSupportedPropertyForPropertyType(
 			String codingSchemeUri, String codingSchemeVersion, PropertyTypes propertyType) {
@@ -422,20 +411,6 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 		getCodingSchemeUIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
 		
 		return (List<SupportedProperty>) codingSchemeDao.getPropertyUriMapForPropertyType(codingSchemeId, propertyType);
-	}
-
-	/**
-	 * @return the relationService
-	 */
-	public RelationService getRelationService() {
-		return relationService;
-	}
-
-	/**
-	 * @param relationService the relationService to set
-	 */
-	public void setRelationService(RelationService relationService) {
-		this.relationService = relationService;
 	}
 
 	private boolean validRevision(CodingScheme codingScheme) throws LBException {
@@ -458,33 +433,31 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 			throw new LBRevisionException(invalid
 					+ "Revision identifier is null for the versionable object.");
 		}
-		
+
 		ChangeType changeType = entryState.getChangeType();
-		String csUId = null;
-		CodingSchemeDao codingSchemeDao = null;
-		
-		try { 
-			codingSchemeDao = this.getDaoManager()
-					.getCodingSchemeDao(csURI, version);
-	
-			csUId = codingSchemeDao.getCodingSchemeUIdByUriAndVersion(csURI,
-					version);
-		} catch (Exception e) {
-			//do nothing.
-		}
-		
+
 		if (changeType == ChangeType.NEW) {
 			if (entryState.getPrevRevision() != null) {
 				throw new LBRevisionException(
 						invalid + "Changes of type NEW are not allowed to have previous revisions.");
 			}
 			
-			if (csUId != null) {
+			//Use the service locator to avoid dependency deadlocks on startup.
+			boolean alreadyLoaded = LexEvsServiceLocator.getInstance().getSystemResourceService().
+				containsCodingSchemeResource(csURI, version);
+			
+			if (alreadyLoaded) {
 				throw new LBRevisionException(invalid +
 						"The codingScheme being added already exist.");
 			} 
 			
 		} else {
+			CodingSchemeDao codingSchemeDao = 
+				this.getDaoManager()
+					.getCodingSchemeDao(csURI, version);
+
+			String csUId = codingSchemeDao.getCodingSchemeUIdByUriAndVersion(csURI,
+					version);
 			
 			if (csUId == null) {
 				throw new LBRevisionException(invalid +
@@ -541,10 +514,35 @@ public class VersionableEventCodingSchemeService extends AbstractDatabaseService
 				.getEntryStateUId(codingSchemeUId);
 	
 		String entryStateUId = versionsDao.insertEntryState(
-				codingSchemeUId, entryStateTypeClassifier
-						.classify(EntryStateType.CODINGSCHEME),
+				codingSchemeUId,
+				codingSchemeUId,
+					EntryStateType.CODINGSCHEME,
 				prevEntryStateUId, codingScheme.getEntryState());
 	
 		codingSchemeDao.updateEntryStateUId(codingSchemeUId, entryStateUId);
+	}
+
+	public EntityService getEntityService() {
+		return entityService;
+	}
+
+	public void setEntityService(EntityService entityService) {
+		this.entityService = entityService;
+	}
+
+	public PropertyService getPropertyService() {
+		return propertyService;
+	}
+
+	public void setPropertyService(PropertyService propertyService) {
+		this.propertyService = propertyService;
+	}
+
+	public RelationService getRelationService() {
+		return relationService;
+	}
+
+	public void setRelationService(RelationService relationService) {
+		this.relationService = relationService;
 	}
 }

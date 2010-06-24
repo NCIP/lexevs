@@ -74,9 +74,7 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 
 	private static String GET_ASSOC_DATA_LATEST_REVISION_ID_BY_UID = ASSOCIATION_NAMESPACE
 			+ "getAssociationDataLatestRevisionIdByUId";
-	
-	private EntryStateTypeClassifier entryStateClassifier = new EntryStateTypeClassifier();
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -123,10 +121,13 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 				inserter);
 
 		this.versionsDao
-				.insertEntryState(entryStateUId, associationDataUId,
-						entryStateClassifier
-								.classify(EntryStateType.ENTITYASSNSTODATA),
-						null, data.getEntryState());
+				.insertEntryState(
+						codingSchemeUId, 
+						entryStateUId, 
+						associationDataUId,
+						EntryStateType.ENTITYASSNSTODATA,
+						null, 
+						data.getEntryState());
 
 		return associationDataUId;
 	}
@@ -259,8 +260,12 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 			entryState.setRelativeOrder(0L);
 
 			this.versionsDao.insertEntryState(
-					assnDataBean.getEntryStateUId(), assnDataBean.getUId(),
-					entryStateClassifier.classify(EntryStateType.ENTITYASSNSTODATA), null, entryState);
+					codingSchemeUId,
+					assnDataBean.getEntryStateUId(), 
+					assnDataBean.getUId(),
+					EntryStateType.ENTITYASSNSTODATA, 
+					null,
+					entryState);
 		}
 
 		return assnDataBean.getEntryStateUId();

@@ -45,6 +45,7 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
+import org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean;
 import org.lexevs.dao.database.ibatis.property.IbatisPropertyDao;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.inserter.BatchInserter;
@@ -277,12 +278,12 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	}
 	
 	@Override
-	public Entity getHistoryEntityByRevision(String codingSchemeId, String entityId, String revisionId) {
+	public Entity getHistoryEntityByRevision(String codingSchemeUid, String entityUid, String revisionId) {
 		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
-		String actualTableSetPrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		String actualTableSetPrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
 		PrefixedParameterTuple tuple = 
-			new PrefixedParameterTuple(prefix, entityId, revisionId);
+			new PrefixedParameterTuple(prefix, entityUid, revisionId);
 		
 		tuple.setActualTableSetPrefix(actualTableSetPrefix);
 		
@@ -423,8 +424,13 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		String entityUId = this.createUniqueId();
 		String entryStateUId = this.createUniqueId();
 		
-		this.ibatisVersionsDao.insertEntryState(entryStateUId, 
-				entityUId, entryStateClassifier.classify(EntryStateType.ENTITY), null, entity.getEntryState());
+		this.ibatisVersionsDao.insertEntryState(
+				codingSchemeUId,
+				entryStateUId, 
+				entityUId, 
+				EntryStateType.ENTITY, 
+				null, 
+				entity.getEntryState());
 		
 		inserter.insert(INSERT_ENTITY_SQL, 
 				buildInsertEntityParamaterBean(
@@ -454,8 +460,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		if(cascade) {
 			for(Property prop : entity.getAllProperties()) {
 				String propertyId = this.createUniqueId();
-				ibatisPropertyDao.doInsertProperty(
-						prefix, 
+				ibatisPropertyDao.insertProperty(
+						codingSchemeUId, 
 						entityUId, 
 						propertyId, 
 						PropertyType.ENTITY, 
@@ -506,9 +512,13 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			entryState.setChangeType(ChangeType.NEW);
 			entryState.setRelativeOrder(0L);
 
-			ibatisVersionsDao.insertEntryState(entityData.getEntryStateUId(),
-					entityData.getUId(), entryStateClassifier
-							.classify(EntryStateType.ENTITY), null, entryState);
+			ibatisVersionsDao.insertEntryState(
+					codingSchemeUId,
+					entityData.getEntryStateUId(),
+					entityData.getUId(), 
+					EntryStateType.ENTITY, 
+					null, 
+					entryState);
 		}
 		
 		return entityData.getEntryStateUId();
@@ -768,12 +778,11 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			return false;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public Entity resolveEntityByRevision(
 			String codingSchemeUId, String entityCode, String entityCodeNamespace, String revisionId) throws LBRevisionException {
 		
-		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
 		String entityUId = this.getEntityUId(codingSchemeUId, entityCode, entityCodeNamespace);
 		
@@ -791,86 +800,40 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		// 1. If 'revisionId' is null or 'revisionId' is the latest revision of the entity
 		// then use getEntityByUId to get the PLEntry object and return.
 		
-		if (revisionId == null || entityLatestRevisionId == null ) {
+		if (revisionId == null || 
+				entityLatestRevisionId == null || 
+				revisionId.equals(entityLatestRevisionId)) {
 			return getEntityByUId(codingSchemeUId, entityUId);
-		}
-		
-		// 2. Get the earliest revisionId on which change was applied on given 
-		// Entity with reference given revisionId.
-		
-		HashMap revisionIdMap = (HashMap) this.getSqlMapClientTemplate()
-				.queryForMap(
-						GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_ENTITY_SQL,
-						new PrefixedParameterTuple(prefix, entityUId,
-								revisionId), "revId", "revAppliedDate");
-		
-		if( revisionIdMap.isEmpty() ) {
-			revisionId = null;
 		} else {
-			revisionId = (String) revisionIdMap.keySet().toArray()[0];
+			String adjustedRevisionId = 
+				this.getPreviousRevisionIdFromGivenRevisionIdForEntity(prefix, revisionId, entityUId);
 			
-			if( revisionId.equals(entityLatestRevisionId) ) {
+			if(adjustedRevisionId != null &&
+					entityLatestRevisionId.equals(adjustedRevisionId)) {
 				return getEntityByUId(codingSchemeUId, entityUId);
+			} else {
+				Entity entity = this.getHistoryEntityByRevision(
+						codingSchemeUId, 
+						entityUId, 
+						adjustedRevisionId);
+				if(entity == null) {
+					entity = getEntityByUId(codingSchemeUId, entityUId);
+				}
+				return entity;
 			}
 		}
+	}
+	
+	protected String getPreviousRevisionIdFromGivenRevisionIdForEntity(
+			String prefix, 
+			String revisionId, 
+			String entityUid) {
 		
-
-		Entity entity = null;
-		InsertOrUpdateEntityBean entityBean = null;
-		List<String> entityTypeList = null;
+		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(entityUid, revisionId);
 		
-		entityTypeList = this.getSqlMapClientTemplate().queryForList(
-				GET_ENTITY_TYPE_BY_ENTITYUID_SQL,
-				new PrefixedParameter(prefix, entityUId));
-		
-		// 3. Get the entity data from history.
-		entityBean = (InsertOrUpdateEntityBean) this.getSqlMapClientTemplate()
-				.queryForObject(
-						GET_ENTITY_METADATA_FROM_HISTORY_BY_REVISION_SQL,
-						new PrefixedParameterTuple(prefix, entityUId,
-								revisionId));
+		bean.setPrefix(prefix);
 
-		if (entityBean != null) {
-
-			entity = entityBean.getEntity();
-			entity.setEntityType(entityTypeList);
-		}
-
-		// 4. If entity is not in history, get it from base table.
-		if (entity == null) {
-
-			InsertOrUpdateEntityBean entityData = (InsertOrUpdateEntityBean) this
-					.getSqlMapClientTemplate().queryForObject(
-							GET_ENTITY_ATTRIBUTES_BY_UID_SQL,
-							new PrefixedParameter(prefix, entityUId));
-
-			if (entityData != null) {
-
-				entity = entityData.getEntity();
-				entity.setEntityType(entityTypeList);
-			}
-		}
-		
-		// 5. Get all entity property.
-		List<String> propertyIdList = this.getSqlMapClientTemplate()
-				.queryForList(
-						GET_ENTITY_PROPERTY_IDS_LIST_BY_ENTITY_UID_SQL,
-						new PrefixedParameterTuple(prefix, entityUId,
-								PropertyType.ENTITY.name()));
-			
-		for (String propId : propertyIdList) {
-			Property entityProperty = null;
-
-			try {
-				entityProperty = ibatisPropertyDao.resolvePropertyByRevision(
-						codingSchemeUId, entityUId, propId, revisionId);
-			} catch (LBRevisionException e) {
-				continue;
-			}
-
-			entity.addProperty(entityProperty);
-		}
-		
-		return entity;
+		return (String) this.getSqlMapClientTemplate().
+			queryForObject(GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_ENTITY_SQL, bean);
 	}
 }

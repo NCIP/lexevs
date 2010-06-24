@@ -206,10 +206,14 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 				target,
 				inserter);
 
-		this.versionsDao.insertEntryState(entryStateUId, associationTargetUId,
-				entryStateClassifier
-						.classify(EntryStateType.ENTITYASSNSTOENTITY), null,
-				target.getEntryState(), inserter);
+		this.versionsDao.insertEntryState(
+				codingSchemeUId,
+				entryStateUId, 
+				associationTargetUId,
+				EntryStateType.ENTITYASSNSTOENTITY, 
+				null,
+				target.getEntryState(), 
+				inserter);
 
 		return associationTargetUId;
 	}
@@ -345,10 +349,12 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 			entryState.setRelativeOrder(0L);
 
 			this.versionsDao.insertEntryState(
-					assnTargetBean.getEntryStateUId(), assnTargetBean.getUId(),
-					entryStateClassifier
-							.classify(EntryStateType.ENTITYASSNSTOENTITY),
-					null, entryState);
+					codingSchemeUId,
+					assnTargetBean.getEntryStateUId(), 
+					assnTargetBean.getUId(),
+					EntryStateType.ENTITYASSNSTOENTITY,
+					null,
+					entryState);
 		}
 
 		return assnTargetBean.getEntryStateUId();

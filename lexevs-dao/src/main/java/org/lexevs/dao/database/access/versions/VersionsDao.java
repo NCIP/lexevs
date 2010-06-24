@@ -22,7 +22,6 @@ import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
-import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.inserter.Inserter;
 
 /**
@@ -54,25 +53,6 @@ public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 		/** PICKLISTENTRYNODE */
 		PICKLISTENTRYNODE
 	}
-	
-	/**
-	 * Gets the entry state by id.
-	 * 
-	 * @param codingSchemeName the coding scheme name
-	 * @param codingSchemeVersion the coding scheme version
-	 * @param entryStateId the entry state id
-	 * 
-	 * @return the entry state by id
-	 */
-	public EntryState getEntryStateById(String entryStateId);
-
-	/**
-	 * Update entry state.
-	 * 
-	 * @param entryStateId the entry state id
-	 * @param entryState the entry state
-	 */
-	public void updateEntryState(String entryStateId, EntryState entryState);
 
 	/**
 	 * Insert entry state.
@@ -83,8 +63,9 @@ public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 	 * @param entryState the entry state
 	 */
 	public String insertEntryState(
+			String codingSchemeUId,
 			String entryUId,
-			String entryType,
+			EntryStateType entryType,
 			String previousEntryStateUId,
 			EntryState entryState);
 	
@@ -97,14 +78,19 @@ public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 	 * @param previousEntryStateUId the previous entry state id
 	 * @param entryState the entry state
 	 */
-	public void insertEntryState( String entryStateUId,
-			String entryUId, String entryType, String previousEntryStateUId,
+	public void insertEntryState( 
+			String codingSchemeUId,
+			String entryStateUId,
+			String entryUId, 
+			EntryStateType entryType, 
+			String previousEntryStateUId,
 			EntryState entryState);
 	
 	public void insertEntryState(
+			String codingSchemeUId,
 			String entryStateUId,
 			String entryUId, 
-			String entryType, 
+			EntryStateType entryType, 
 			String previousEntryStateUId,
 			EntryState entryState,
 			Inserter inserter);

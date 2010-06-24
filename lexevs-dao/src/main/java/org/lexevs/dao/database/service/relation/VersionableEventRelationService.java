@@ -17,7 +17,6 @@ import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
-import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.association.AssociationDataService;
 import org.lexevs.dao.database.service.association.AssociationTargetService;
@@ -30,7 +29,6 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 	private PropertyService propertyService = null;
 	private AssociationTargetService assocTargetService = null;
 	private AssociationDataService assocDataService = null;
-	private EntryStateTypeClassifier entryStateTypeClassifier = new EntryStateTypeClassifier();
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.association.AssociationService#insertRelation(java.lang.String, java.lang.String, org.LexGrid.relations.Relations)
@@ -75,9 +73,12 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 		String entryStateUId = associationDao.updateRelation(codingSchemeUId, relationUId, relation);
 		
 		/* 3. register entrystate details for the entity.*/
-		versionsDao.insertEntryState(entryStateUId, relationUId,
-				entryStateTypeClassifier.classify(EntryStateType.RELATION),
-				prevEntryStateUId, relation.getEntryState());
+		versionsDao.insertEntryState(
+				codingSchemeUId,
+				entryStateUId, relationUId,
+				EntryStateType.RELATION,
+				prevEntryStateUId, 
+				relation.getEntryState());
 		
 		/* 4. apply dependent changes for the entity.*/			
 		this.insertRelationDependentChanges(codingSchemeUri, version, relation);
@@ -229,8 +230,13 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 		String entryStateUId = associationDao.updateRelationVersionableChanges(codingSchemeUId, relationUId, relation);
 		
 		/* 3. register entrystate details for the entity.*/
-		versionsDao.insertEntryState(entryStateUId, relationUId, entryStateTypeClassifier
-				.classify(EntryStateType.RELATION), prevEntryStateUId, relation
+		versionsDao.insertEntryState(
+				codingSchemeUId,
+				entryStateUId, 
+				relationUId,
+				EntryStateType.RELATION, 
+				prevEntryStateUId, 
+				relation
 				.getEntryState());
 		
 		/* 4. apply dependent changes for the entity.*/
@@ -397,14 +403,21 @@ public class VersionableEventRelationService extends AbstractDatabaseService imp
 			entryState.setChangeType(ChangeType.NEW);
 			entryState.setRelativeOrder(0L);
 	
-			versionsDao.insertEntryState(prevEntryStateUId,
-					relationUId, entryStateTypeClassifier 
-							.classify(EntryStateType.RELATION), null, entryState);	
+			versionsDao.insertEntryState(
+					codingSchemeUId,
+					prevEntryStateUId,
+					relationUId, 
+					EntryStateType.RELATION, 
+					null, 
+					entryState);	
 		}
 		
-		String entryStateUId = versionsDao.insertEntryState(relationUId,
-				entryStateTypeClassifier.classify(EntryStateType.RELATION),
-				prevEntryStateUId, relation.getEntryState());
+		String entryStateUId = versionsDao.insertEntryState(
+				codingSchemeUId,
+				relationUId,
+				EntryStateType.RELATION,
+				prevEntryStateUId, 
+				relation.getEntryState());
 		
 		associationDao.updateRelationEntryStateUId(codingSchemeUId, relationUId, entryStateUId);
 		

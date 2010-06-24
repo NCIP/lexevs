@@ -11,15 +11,11 @@ import org.lexevs.dao.database.access.association.AssociationTargetDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
-import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
-import org.springframework.batch.classify.Classifier;
 
 public class VersionableEventAssociationTargetService extends
 		AbstractDatabaseService implements AssociationTargetService {
-
-	private Classifier<EntryStateType, String> entryStateTypeClassifier = new EntryStateTypeClassifier();
 
 	@Override
 	@DatabaseErrorIdentifier(errorCode=INSERT_ASSOCIATIONTARGET_ERROR)
@@ -72,10 +68,12 @@ public class VersionableEventAssociationTargetService extends
 				codingSchemeUId, associationTargetUId, source, target);
 
 		/* 3. register entrystate details for the association target. */
-		versionsDao.insertEntryState(entryStateUId, associationTargetUId,
-				entryStateTypeClassifier
-						.classify(EntryStateType.ENTITYASSNSTOENTITY),
-				prevEntryStateUId, target.getEntryState());
+		versionsDao.insertEntryState(
+				codingSchemeUId,
+				entryStateUId, associationTargetUId,
+				EntryStateType.ENTITYASSNSTOENTITY,
+				prevEntryStateUId, 
+				target.getEntryState());
 	}
 
 	@Override
@@ -146,10 +144,12 @@ public class VersionableEventAssociationTargetService extends
 				codingSchemeUId, associationTargetUId, source, target);
 
 		/* 3. register entrystate details for the association target. */
-		versionsDao.insertEntryState(entryStateUId, associationTargetUId,
-				entryStateTypeClassifier
-						.classify(EntryStateType.ENTITYASSNSTOENTITY),
-				prevEntryStateUId, target.getEntryState());
+		versionsDao.insertEntryState(
+				codingSchemeUId,
+				entryStateUId, associationTargetUId,
+				EntryStateType.ENTITYASSNSTOENTITY,
+				prevEntryStateUId, 
+				target.getEntryState());
 	}
 
 	@Override
