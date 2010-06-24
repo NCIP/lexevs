@@ -34,7 +34,6 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.versions.Revision;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cts2.LexEvsCTS2;

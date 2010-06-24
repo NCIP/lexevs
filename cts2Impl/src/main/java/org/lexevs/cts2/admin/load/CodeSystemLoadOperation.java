@@ -23,7 +23,6 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.versions.Revision;
 
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
