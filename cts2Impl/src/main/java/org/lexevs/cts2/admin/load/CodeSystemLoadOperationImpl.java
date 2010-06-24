@@ -121,37 +121,23 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
         return temp;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#importCodeSystem()
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#loadCodeSystemRevsion()
 	 */
 	@Override
-	public int importCodeSystem() throws LBException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#importCodeSystemRevsion(org.LexGrid.versions.Revision)
-	 */
-	@Override
-	public int importCodeSystemRevsion(Revision codeSystemRevision)
+	public URNVersionPair loadCodeSystemRevsion()
 			throws LBException {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#importCodeSystemRevsion(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#validate(java.net.URI, java.net.URI, java.lang.String, int)
 	 */
 	@Override
-	public int importCodeSystemRevsion(String xmlFileLocation)
-			throws LBException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	@Override
-	public void validate(URI source, URI metaData, int validationLevel)
+	public void validate(URI source, URI metaData, String loaderName, int validationLevel)
 			throws LBException {
 		// TODO Auto-generated method stub
 		
