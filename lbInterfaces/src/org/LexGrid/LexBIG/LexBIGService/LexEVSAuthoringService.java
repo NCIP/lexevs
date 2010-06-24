@@ -66,14 +66,18 @@ public interface LexEVSAuthoringService {
 	
 	public Properties createCodingSchemeProperties(CodingScheme scheme)throws LBException;
 	
-	public AssociationSource createAssociationSource(CodingScheme scheme, Relations relations, AssociationPredicate predicate,
+	public AssociationSource createAssociationSource( 
+			EntryState entryState,
 			AbsoluteCodingSchemeVersionReference sourceCodeSystemIdentifier,
-			String sourceConceptCodeIdentifier, AssociationTarget[] targetList
+			String sourceConceptCodeIdentifier,
+			String relationsContainerName,
+            String associationName,
+			AssociationTarget[] targetList
 			)throws LBException;
 	
 	public AssociationTarget createAssociationTarget(
 	        EntryState entryState,
-			CodingScheme scheme, 
+			//CodingScheme scheme, 
 			AbsoluteCodingSchemeVersionReference targetCodeSystemIdentifier,
             String targetConceptCodeIdentifier)throws LBException;
 	
@@ -83,7 +87,7 @@ public interface LexEVSAuthoringService {
 	public AssociationSource mapTargetsToSource(
 			EntryState entryState,
 			CodingScheme scheme, 
-	        String sourceCode,
+	        AssociationSource source,
 	        AbsoluteCodingSchemeVersionReference codingSchemeIdentifier,
 	        AssociationTarget[] associationTargets)throws LBException;
 	
