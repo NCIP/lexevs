@@ -298,8 +298,15 @@
 		<include refid="getEntityFragment"/>
 		WHERE
 			entity.entityGuid = #param1#
+			
+		<isNotNull property="param2">
 		AND
-			entryState.revisionGuid = #param2#
+			currentRevision.revisionId = #param2#
+		</isNotNull>
+		<isNull property="param2">
+		AND
+			currentRevision.revisionId IS NULL
+		</isNull>
      </select>
      
      <select id="getEntityAttributesByEntityUId" 
@@ -534,42 +541,48 @@
  	</update>
  	
 	<select id="getPrevRevIdFromGivenRevIdForEntity" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultClass="java.util.TreeMap">
-		<![CDATA[
-			SELECT DISTINCT
-				r1.revisionId AS revId,
-				r1.revAppliedDate AS revAppliedDate
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultClass="string">
+	<![CDATA[
+	
+			SELECT
+				r0.revisionId
 			FROM
-				$prefix$entity entity,
-				$prefix$entryState es,
-				${defaultPrefix}revision r1, 
-				${defaultPrefix}revision r2			
+				$prefix$entryState es0
+			INNER JOIN
+				${defaultPrefix}revision r0		
+			ON
+				es0.revisionGuid = r0.revisionGuid
 			WHERE
-				entity.entityGuid = #param1# AND
+				es0.entryGuid = #param1#  
+			AND
 				(
-					NOT EXISTS 
-					(
-						SELECT 
-							es1.entryStateGuid 
-						FROM 
-							$prefix$entryState es1 
-						WHERE 
-							entity.entryStateGuid = es1.entryStateGuid
-					)
-					OR
-					(
-						entity.entityGuid = es.entryGuid AND 
-						es.revisionGuid = r1.revisionGuid AND
-						r1.revAppliedDate <= r2.revAppliedDate AND
-						r2.revisionID = #param2#
-					)
-				)
-				
-			ORDER BY
-				revAppliedDate DESC			
-			LIMIT 1
-		]]>			
+				r0.revAppliedDate = (
+	
+				SELECT
+					MAX(r1.revAppliedDate)
+				FROM
+					$prefix$entryState es1
+				LEFT JOIN
+					${defaultPrefix}revision r1		
+				ON
+					es1.revisionGuid = r1.revisionGuid
+				WHERE
+					es1.entryGuid = #param1#  
+				AND 
+	        		r1.revAppliedDate <=
+			      		( 
+			      		SELECT
+				      		r2.revAppliedDate
+						FROM
+							$prefix$revision r2
+			      		WHERE
+			        		r2.revisionId = #param2#
+			     		)
+
+		     	)
+	     	)
+	]]>	
 	</select>	
 	
 	<select id="getEntityMetaDataByRevision" remapResults="true"
