@@ -20,6 +20,8 @@ package org.lexevs.cts2;
 import org.LexGrid.LexBIG.DataModel.Collections.ExtensionDescriptionList;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.lexevs.cts2.admin.AdminOperation;
 import org.lexevs.cts2.admin.AdminOperationImpl;
 import org.lexevs.cts2.author.AuthoringOperation;
@@ -33,13 +35,28 @@ import org.lexevs.cts2.query.QueryOperationImpl;
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
 public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private AdminOperation adminOp_;
 	private AuthoringOperation authOp_;
 	private QueryOperation queryOp_;
 	
 	public static LexEvsCTS2 defaultInstance(){
 		if (lexevsCTS2_ == null)
+		{
 			lexevsCTS2_ = new LexEvsCTS2Impl();
+			try {
+				LexEvsCTS2Impl.register();
+			} catch (LBParameterException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (LBException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 		return lexevsCTS2_;			
 	}
@@ -79,8 +96,43 @@ public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
 		return new ServiceInfo();
 	}
 	
+	@Override
+	public String getDescription() {
+		return getServiceInfo().getServiceDescription();
+	}
+
+	@Override
+	public String getName() {
+		return getServiceInfo().getServiceName();
+	}
+
+	@Override
+	public String getProvider() {
+		return getServiceInfo().getServiceProvider();
+	}
+
+	@Override
+	public String getVersion() {
+		return getServiceInfo().getServiceVersion();
+	}
+	
+	public static void register() throws LBParameterException, LBException {
+        ExtensionDescription temp = new ExtensionDescription();
+        temp.setExtensionBaseClass(LexEvsCTS2Impl.class.getInterfaces()[0].getName());
+        temp.setExtensionClass(LexEvsCTS2Impl.class.getName());
+        ServiceInfo serviceInfo = new ServiceInfo();
+        temp.setDescription(serviceInfo.getServiceDescription());
+        temp.setName(serviceInfo.getServiceName());
+        temp.setVersion(serviceInfo.getServiceVersion());
+
+        // Registered here as part of the impl to avoid the LexBig service
+        // manager API. If writing an add-on extension, registration should be
+        // performed through the proper interface.
+        ExtensionRegistryImpl.instance().registerGenericExtension(temp);
+    }
+	
 	public static void main(String[] args){
-		LexEvsCTS2 cts2 = new LexEvsCTS2Impl();
+		LexEvsCTS2Impl cts2 = new LexEvsCTS2Impl();
 		System.out.println(cts2.getServiceInfo().getServiceName());
 		System.out.println(cts2.getServiceInfo().getServiceProvider());
 		System.out.println(cts2.getServiceInfo().getServiceDescription());
@@ -112,6 +164,23 @@ public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
 					System.out.println("exporter getExtensionBaseClass : " + exporter.getExtensionBaseClass());
 					System.out.println("exporter getExtensionClass : " + exporter.getExtensionClass());
 					System.out.println("exporter getName : " + exporter.getName());
+					System.out.println("--------------------------");
+				}
+			}
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			ExtensionDescriptionList exporters = cts2.getLexBIGServiceManager().getExtensionRegistry().getGenericExtensions();
+			if (exporters != null)
+			{
+				for (ExtensionDescription exporter : exporters.getExtensionDescription())
+				{
+					System.out.println("generic getExtensionBaseClass : " + exporter.getExtensionBaseClass());
+					System.out.println("generic getExtensionClass : " + exporter.getExtensionClass());
+					System.out.println("generic getName : " + exporter.getName());
 					System.out.println("--------------------------");
 				}
 			}

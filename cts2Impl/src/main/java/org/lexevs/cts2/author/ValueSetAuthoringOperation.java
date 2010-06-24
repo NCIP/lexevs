@@ -17,8 +17,16 @@
  */
 package org.lexevs.cts2.author;
 
+import java.net.URI;
+
+import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.valueSets.DefinitionEntry;
+import org.LexGrid.versions.Revision;
+
 public interface ValueSetAuthoringOperation {
-	public void createValueSet();
+	public URI createValueSet(URI valueSetURI, String valueSetName, Revision version, Properties properties, DefinitionEntry ruleSet);
+	
 	public void updateValueSet();
+	
 	public void updateValueSetStatus();
 }

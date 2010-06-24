@@ -2,7 +2,7 @@ package org.lexevs.cts2;
 
 public class ServiceInfo {
 
-	private String serviceName = "LexEVS CTS2 Implementation";
+	private String serviceName = "LexEVSCTS2Impl";
 	private String serviceDescription = "LexEVS CTS2 Implementation";;
 	private String serviceProvider = "Mayo Clinic";
 	private String serviceVersion = "1.0";
