@@ -26,6 +26,7 @@ import javax.annotation.Resource;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
+import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
 import org.lexevs.dao.database.service.codingscheme.VersionableEventCodingSchemeService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,7 @@ public class IbatisVersionsDaoTest extends LexEvsDbUnitTestBase {
 	 */
 	@Test
 	public void insertEntryState(){
-		System.out.println(codingSchemeService.getDatabaseServiceEventListeners().size());
+
 		EntryState es = new EntryState();
 		es.setChangeType(ChangeType.REMOVE);
 		es.setRelativeOrder(24l);
@@ -67,9 +68,10 @@ public class IbatisVersionsDaoTest extends LexEvsDbUnitTestBase {
 		"values ('csguid', 'csname', 'csuri', 'csversion')");
 		
 		ibatisVersionsDao.insertEntryState(
+				"csguid",
 				"entryStateUId",
 				"entryUId", 
-				"entryType", 
+				EntryStateType.CODINGSCHEME, 
 				null, 
 				es);
 		
@@ -78,7 +80,7 @@ public class IbatisVersionsDaoTest extends LexEvsDbUnitTestBase {
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				assertEquals(rs.getString(1), "entryStateUId");
 				assertEquals(rs.getString(2), "entryUId");
-				assertEquals(rs.getString(3), "entryType");
+				assertEquals("codingScheme", rs.getString(3));
 				assertEquals(rs.getString(4), ChangeType.REMOVE.toString());
 				assertEquals(rs.getLong(5), 24l);
 				assertEquals(rs.getString(6), null);

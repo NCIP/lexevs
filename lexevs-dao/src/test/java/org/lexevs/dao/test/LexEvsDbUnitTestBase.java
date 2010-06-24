@@ -89,9 +89,11 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 		methodCachingProxy.clearAll();
 		CountBasedLexGridSchemaCheck check = new CountBasedLexGridSchemaCheck(dataSource, systemVariables);
 		
-		if(! check.isCommonLexGridSchemaInstalled()) {
-			lexEvsDatabaseOperations.createAllTables();
+		if(check.isCommonLexGridSchemaInstalled()) {
+			lexEvsDatabaseOperations.dropAllTables();
 		}	
+		
+		lexEvsDatabaseOperations.createAllTables();
 	}
 	
 	/* (non-Javadoc)

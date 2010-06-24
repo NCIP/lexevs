@@ -192,19 +192,20 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 				assertEquals(rs.getString(11), "dof");
 				assertEquals(rs.getString(12), "testRepForm");
 				assertEquals(rs.getString(13), "some updated value");
+				/* These are being handled by another api call
 				assertEquals(rs.getBoolean(14), true);
 				assertEquals(rs.getString(15), "me");
 				assertEquals(rs.getString(16), "testing");
 				assertEquals(timestamp1.getTime(), rs.getTimestamp(17).getTime());
 				assertEquals(timestamp2.getTime(), rs.getTimestamp(18).getTime());
-
+				 */
 				return null;
 			}
 		});
 	}
 	
 	@Test
-	public void updatePropert(){
+	public void updateProperty(){
 		final Timestamp timestamp1 = new Timestamp(1l);
 		final Timestamp timestamp2 = new Timestamp(2l);
 		
@@ -246,11 +247,13 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 				assertEquals(rs.getString(7), "Lang");
 				assertEquals(rs.getString(8), "testFormat");
 				assertEquals(rs.getString(13), "some updated value");
+				/* These are being handled by another api call
 				assertEquals(rs.getBoolean(14), true);
 				assertEquals(rs.getString(15), "me");
 				assertEquals(rs.getString(16), "testing");
 				assertEquals(timestamp1.getTime(), rs.getTimestamp(17).getTime());
 				assertEquals(timestamp2.getTime(), rs.getTimestamp(18).getTime());
+				*/
 
 				return null;
 			}

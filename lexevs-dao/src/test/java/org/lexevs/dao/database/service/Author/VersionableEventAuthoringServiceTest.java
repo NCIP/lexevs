@@ -3,13 +3,14 @@ package org.lexevs.dao.database.service.Author;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.LexGrid.concepts.Entity;
 import org.LexGrid.versions.SystemRelease;
 import org.junit.Test;
-import org.lexevs.dao.database.service.entity.VersionableEventEntityService;
+import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
+import org.lexevs.dao.database.service.property.VersionableEventPropertyService;
 import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 
@@ -17,6 +18,9 @@ public class VersionableEventAuthoringServiceTest extends LexEvsDbUnitTestBase {
 
 	@Resource(name = "authoringService")
 	private VersionableEventAuthoringService service;
+	
+	@Resource
+	private VersionableEventPropertyService propertyService;
 
 	@Test
 	public void testCodingSchemeRevisions() throws Exception {
@@ -44,8 +48,13 @@ public class VersionableEventAuthoringServiceTest extends LexEvsDbUnitTestBase {
 		SystemRelease systemRelease = (SystemRelease) um
 				.unmarshal(new InputStreamReader(sourceURI.toURL()
 						.openConnection().getInputStream()));
-
+	
+		List<DatabaseServiceEventListener> listeners = propertyService.getDatabaseServiceEventListeners();
+		propertyService.getDatabaseServiceEventListeners().clear();
+		
 		service.loadSystemRelease(systemRelease);
+		
+		propertyService.setDatabaseServiceEventListeners(listeners);
 	}
 	
 		@Test
