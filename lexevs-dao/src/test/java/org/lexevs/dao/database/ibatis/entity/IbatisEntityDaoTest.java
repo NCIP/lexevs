@@ -635,7 +635,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
 				"values ('esguid', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
 		
-		Entity entity = ibatisEntityDao.getHistoryEntityByRevision("csguid", "eguid", "rguid1");
+		Entity entity = ibatisEntityDao.getHistoryEntityByRevision("csguid", "eguid", "rid1");
 		
 		assertNotNull(entity);
 	}
@@ -674,7 +674,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
 				"values ('esguid2', 'eguid', 'entity', 'MODIFY', '0', 'rguid2')");
 		
-		Entity entity = ibatisEntityDao.getHistoryEntityByRevision("csguid", "eguid", "rguid2");
+		Entity entity = ibatisEntityDao.getHistoryEntityByRevision("csguid", "eguid", "rid2");
 		
 		assertNotNull(entity);
 		
