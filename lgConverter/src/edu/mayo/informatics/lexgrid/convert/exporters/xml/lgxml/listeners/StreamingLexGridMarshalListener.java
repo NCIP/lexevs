@@ -127,7 +127,6 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                             processAssociationList(asl);
                         }
                     }
-
                 } catch (LBInvocationException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -167,10 +166,10 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                             curEntity = (Entity) curConRef.getEntity();
 
                             if (curEntity == null) {
-                                System.out.println("*************  curEntity is null");
+//                                System.out.println("*************  curEntity is null");
                                 continue;
                             } else {
-                                System.out.println("************* curEntity is \"" + curEntity.getEntityCode() + "\"");
+//                                System.out.println("************* curEntity is \"" + curEntity.getEntityCode() + "\"");
                             }
 
                             if ((curEntity.getIsAnonymous() != null) && (curEntity.getIsAnonymous().booleanValue()))
@@ -179,7 +178,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                             if (curEntity.getEntityCode().startsWith("@"))
                                 continue;
 
-                            System.out.println("******************  Marshalling Entity=" + curEntity.getEntityCode());
+//                            System.out.println("******************  Marshalling Entity=" + curEntity.getEntityCode());
 
                             if (curEntity instanceof AssociationEntity) {
                                 associationEntityList.add((AssociationEntity) curEntity);
@@ -384,6 +383,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                                 associationTarget.addAssociationQualification(qlf);
                             }
                         }
+                        this.marshaller.setRootElement("source");
                         this.marshaller.marshal(aS);
                         sourceList.add(aS);
                     }
