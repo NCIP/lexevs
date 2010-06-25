@@ -1,5 +1,6 @@
 package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.listeners;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +29,8 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
@@ -189,6 +192,18 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                         }
                     }
 
+                    //load the mapping for association entity
+                    try {
+                        Mapping mapping = new Mapping();
+                        mapping.loadMapping("file:///c:/xml_exp/mapping.xml");
+                        this.marshaller.setMapping(mapping);
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (MappingException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }    
                     // now marshal the AssociationEntity
                     for (AssociationEntity associationEntity : associationEntityList) {
                         this.marshaller.marshal(associationEntity);
@@ -383,7 +398,20 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                                 associationTarget.addAssociationQualification(qlf);
                             }
                         }
-                        this.marshaller.setRootElement("source");
+//                        this.marshaller.setRootElement("source");
+                        
+                        try {
+                            Mapping mapping = new Mapping();
+                            mapping.loadMapping("file:///c:/xml_exp/mapping.xml");
+                            this.marshaller.setMapping(mapping);
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        } catch (MappingException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }    
+                        
                         this.marshaller.marshal(aS);
                         sourceList.add(aS);
                     }
