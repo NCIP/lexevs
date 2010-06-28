@@ -18,13 +18,7 @@
  */
 package org.lexevs.dao.database.service.event;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.apache.commons.lang.ClassUtils;
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PostCodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PreCodingSchemeInsertEvent;
@@ -32,47 +26,18 @@ import org.lexevs.dao.database.service.event.entity.EntityBatchInsertEvent;
 import org.lexevs.dao.database.service.event.entity.EntityInsertOrRemoveEvent;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
+import org.lexevs.dao.database.service.event.registry.ListenerRegistry;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
-import org.lexevs.system.utility.MyClassLoader;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * The Class DatabaseServiceEventSupport.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class DatabaseServiceEventSupport implements InitializingBean {
+public class DatabaseServiceEventSupport {
 
-	/** The database service event listeners. */
-	private List<DatabaseServiceEventListener> databaseServiceEventListeners = new ArrayList<DatabaseServiceEventListener>();
+	private ListenerRegistry listenerRegistry;
 
-	private MyClassLoader myClassLoader;
-	
-	private LgLoggerIF logger;
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		for(ExtensionDescription ed :
-			myClassLoader.getExtensionDescriptions()){
-
-			Class<?> extensionBaseClass;
-			try {
-				extensionBaseClass = Class.forName(ed.getExtensionBaseClass(), true, myClassLoader);
-			} catch (ClassNotFoundException e1) {
-				getLogger().warn("Extension: " + ed.getName() + " cannot be loaded, " +
-						"class: " + ed.getExtensionClass() + " could not be found.");
-				continue;
-			}
-
-			if(ClassUtils.isAssignable(extensionBaseClass, DatabaseServiceEventListener.class)){
-				this.getDatabaseServiceEventListeners().add(
-						(DatabaseServiceEventListener)
-						Class.forName(ed.getExtensionClass(), true, myClassLoader).newInstance()
-						);
-			}
-		}
-	}
-	
 	/**
 	 * Fire coding scheme update event.
 	 * 
@@ -86,8 +51,7 @@ public class DatabaseServiceEventSupport implements InitializingBean {
 			String entryStateId,
 			CodingScheme originalCodingScheme,
 			CodingScheme updatedCodingScheme){
-		if(databaseServiceEventListeners != null){
-			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onCodingSchemeUpdate(
 						new CodingSchemeUpdateEvent(
 								revisionId,
@@ -95,7 +59,6 @@ public class DatabaseServiceEventSupport implements InitializingBean {
 								originalCodingScheme,
 								updatedCodingScheme));
 			}
-		}
 	}
 	
 	/**
@@ -107,123 +70,76 @@ public class DatabaseServiceEventSupport implements InitializingBean {
 	 */
 	protected void firePreCodingSchemeInsertEvent(
 			CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException{
-		if(databaseServiceEventListeners != null){
-			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onPreCodingSchemeInsert(
 						new PreCodingSchemeInsertEvent(
 								codingScheme));
 			}
-		}
 	}
 	
 	protected void firePostCodingSchemeInsertEvent(
 			CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException{
-		if(databaseServiceEventListeners != null){
-			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onPostCodingSchemeInsert(
 						new PostCodingSchemeInsertEvent(
 								codingScheme));
-			}
 		}
 	}
 	
 	protected void firePreEntityInsertEvent(EntityInsertOrRemoveEvent entityInsertEvent){
-		if(databaseServiceEventListeners != null){
-			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onPreEntityInsert(entityInsertEvent);
 			}
-		}	
 	}
 	
 	protected void firePostEntityInsertEvent(EntityInsertOrRemoveEvent entityInsertEvent){
-		if(databaseServiceEventListeners != null){
-			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onPostEntityInsert(entityInsertEvent);
 			}
-		}	
 	}
 	
 	protected void firePreBatchEntityInsertEvent(EntityBatchInsertEvent entityInsertEvent){
-		if(databaseServiceEventListeners != null){
-			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onPreBatchEntityInsert(entityInsertEvent);
 			}
-		}	
 	}
 	
 	protected void firePostBatchEntityInsertEvent(EntityBatchInsertEvent entityInsertEvent){
-		if(databaseServiceEventListeners != null){
-			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onPostBatchEntityInsert(entityInsertEvent);
 			}
-		}	
 	}
 	
 	protected void firePropertyUpdateEvent(
 			PropertyUpdateEvent event) {
-		if(databaseServiceEventListeners != null){
-			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onPropertyUpdate(event);
 			}
-		}
 	}
 	
 	protected void fireEntityUpdateEvent(EntityUpdateEvent entityUpdateEvent) {
-		if(databaseServiceEventListeners != null){
-			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onEntityUpdate(entityUpdateEvent);
 			}
-		}
 	}
 	
 	protected void firePreEntityRemoveEvent(EntityInsertOrRemoveEvent entityRemoveEvent){
-		if(databaseServiceEventListeners != null){
-			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onPreEntityRemove(entityRemoveEvent);
 			}
-		}	
 	}
 	
 	protected void firePostEntityRemoveEvent(EntityInsertOrRemoveEvent entityRemoveEvent){
-		if(databaseServiceEventListeners != null){
-			for(DatabaseServiceEventListener listener : this.databaseServiceEventListeners){
+			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onPostEntityRemove(entityRemoveEvent);
 			}
-		}	
 	}
 
-	/**
-	 * Gets the database service event listeners.
-	 * 
-	 * @return the database service event listeners
-	 */
-	public List<DatabaseServiceEventListener> getDatabaseServiceEventListeners() {
-		return databaseServiceEventListeners;
+	public void setListenerRegistry(ListenerRegistry listenerRegistry) {
+		this.listenerRegistry = listenerRegistry;
 	}
 
-	/**
-	 * Sets the database service event listeners.
-	 * 
-	 * @param databaseServiceEventListeners the new database service event listeners
-	 */
-	public void setDatabaseServiceEventListeners(
-			List<DatabaseServiceEventListener> databaseServiceEventListeners) {
-		this.databaseServiceEventListeners = databaseServiceEventListeners;
-	}
-
-	public void setMyClassLoader(MyClassLoader myClassLoader) {
-		this.myClassLoader = myClassLoader;
-	}
-
-	public MyClassLoader getMyClassLoader() {
-		return myClassLoader;
-	}
-
-	public LgLoggerIF getLogger() {
-		return logger;
-	}
-
-	public void setLogger(LgLoggerIF logger) {
-		this.logger = logger;
+	public ListenerRegistry getListenerRegistry() {
+		return listenerRegistry;
 	}
 }
