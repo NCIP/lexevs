@@ -17,11 +17,54 @@
  */
 package org.lexevs.cts2.admin;
 
+import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
+
+/**
+ * The Interface NotificationAdminOperation controls the registration and maintenence of Content
+ * Notification Listeners.
+ */
 public interface NotificationAdminOperation {
 	
-	public void registerForNotification();
+	/**
+	 * The Enum NotificationStatus.
+	 * 
+	 * SUSPEND: Notifications will cease being processed until further notice.
+	 * REINSTATE: Notifications will resume processing.
+	 * REMOVE: The Notification will be removed, and cannot be REINSTATE'd.
+	 */
+	public enum NotificationStatus {	
+			SUSPEND, 
+			REINSTATE,
+			REMOVE}
 	
-	public void updateNotificationRegistration();
+	/**
+	 * Register the given Notification Listener in the system.
+	 * 
+	 * @param listener 
+	 * 		The Notification Listener
+	 * 
+	 * @return 
+	 * 		The Notification Identifier: The unique identifier of the particular Notification
+	 * 		in the system.
+	 */
+	public String registerForNotification(DatabaseServiceEventListener listener);
 	
-	public void updateNotificationRegistrationStatus();
+	/**
+	 * Replaces a Notification Listener with an Updated Notification Listener
+	 * 
+	 * @param notificationId 
+	 * 		The Notification Identifier of the Notification to be updated.
+	 * @param listener the listener
+	 */
+	public void updateNotificationRegistration(String notificationId, DatabaseServiceEventListener listener);
+	
+	/**
+	 * Update the Notification Registration Status of a Notification Listener.
+	 * 
+	 * @param status 
+	 * 		The new Notification Registration Status
+	 * @param notificationId
+	 * 		The Notification Identifier of the Notification to be updated.
+	 */
+	public void updateNotificationRegistrationStatus(String notificationId, NotificationStatus status);
 }
