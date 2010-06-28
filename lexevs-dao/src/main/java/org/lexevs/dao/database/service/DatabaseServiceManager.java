@@ -27,6 +27,7 @@ import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.error.ErrorCallbackDatabaseServiceFactory;
 import org.lexevs.dao.database.service.error.ErrorCallbackListener;
+import org.lexevs.dao.database.service.event.registry.ListenerRegistry;
 import org.lexevs.dao.database.service.ncihistory.NciHistoryService;
 import org.lexevs.dao.database.service.property.PropertyService;
 import org.lexevs.dao.database.service.relation.RelationService;
@@ -44,6 +45,8 @@ public class DatabaseServiceManager {
 	
 	private ErrorCallbackDatabaseServiceFactory errorCallbackDatabaseServiceFactory = 
 		new ErrorCallbackDatabaseServiceFactory();
+	
+	private ListenerRegistry listenerRegistry;
 	
 	/** The coding scheme service. */
 	private CodingSchemeService codingSchemeService;
@@ -272,5 +275,13 @@ public class DatabaseServiceManager {
 
 	public void setNciHistoryService(NciHistoryService nciHistoryService) {
 		this.nciHistoryService = nciHistoryService;
+	}
+
+	public void setListenerRegistry(ListenerRegistry listenerRegistry) {
+		this.listenerRegistry = listenerRegistry;
+	}
+
+	public ListenerRegistry getListenerRegistry() {
+		return listenerRegistry;
 	}
 }

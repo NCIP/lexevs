@@ -20,6 +20,7 @@ package org.lexevs.dao.database.service;
 
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.event.DatabaseServiceEventSupport;
+import org.lexevs.logging.Logger;
 
 /**
  * The Class AbstractDatabaseService.
@@ -30,6 +31,8 @@ public class AbstractDatabaseService extends DatabaseServiceEventSupport {
 
 	/** The dao manager. */
 	private DaoManager daoManager;
+	
+	private Logger logger;
 
 	/**
 	 * Gets the coding scheme id.
@@ -61,5 +64,13 @@ public class AbstractDatabaseService extends DatabaseServiceEventSupport {
 	 */
 	public void setDaoManager(DaoManager daoManager) {
 		this.daoManager = daoManager;
+	}
+
+	public void setLogger(Logger logger) {
+		this.logger = logger;
+	}
+
+	public Logger getLogger() {
+		return logger;
 	}
 }

@@ -269,13 +269,32 @@
 		<property name="codedNodeGraphService" ref="codedNodeGraphService"/>
 		<property name="authoringService" ref="authoringService"></property>
 		<property name="nciHistoryService" ref="nciHistoryService"/>
+		<property name="listenerRegistry" ref="extensionLoadingListenerRegistry"/>
+	</bean>
+	
+	<bean id="extensionLoadingListenerRegistry" 
+		class="org.lexevs.dao.database.service.event.registry.ExtensionLoadingListenerRegistry">
+		<property name="logger" ref="loggerFactory"/>
+		<property name="myClassLoader" ref="myClassLoader"/>
+		<property name="databaseServiceEventListeners">
+			<list>
+				<ref bean="codingSchemeRegisteringListener"/>
+				<bean class="org.lexevs.dao.database.service.listener.LucenePropertyUpdateListener"/>
+				<bean class="org.lexevs.dao.database.service.listener.SystemResourceRefreshingListener"/>	
+				<bean class="org.lexevs.dao.database.service.listener.LuceneEntityUpdateListener"/>
+				<bean class="org.lexevs.dao.database.service.listener.HistoryTableReplicatingListener"/>
+				<bean class="org.lexevs.dao.database.service.listener.NullEntityNamespaceListener"/>
+				<bean class="org.lexevs.dao.database.service.listener.InvalidPropertyLinkListener"/>
+				<bean class="org.lexevs.dao.database.service.listener.DuplicatePropertyIdListener"/>
+			</list>
+		</property>
 	</bean>
 	
 	<bean id="abstractService" class="org.lexevs.dao.database.service.event.DatabaseServiceEventSupport"
 		abstract="true">
 		<property name="daoManager" ref="daoManager"/>
 		<property name="logger" ref="loggerFactory"/>
-		<property name="myClassLoader" ref="myClassLoader"/>
+		<property name="listenerRegistry" ref="extensionLoadingListenerRegistry"/>
 	</bean>
 	
 	<bean id="daoManagerDaoCallbackService" 
@@ -302,12 +321,6 @@
 	<bean id="codingSchemeService" 
 		class="org.lexevs.dao.database.service.codingscheme.VersionableEventCodingSchemeService"
 		parent="abstractService">
-		<property name="databaseServiceEventListeners">
-			<list>
-				<ref bean="codingSchemeRegisteringListener"/>
-				<bean class="org.lexevs.dao.database.service.listener.SystemResourceRefreshingListener"/>	
-			</list>
-		</property>
 		<property name="propertyService" ref="propertyService"/>
 		<property name="entityService" ref="entityService"/>
 		<property name="relationService" ref="relationService"/>
@@ -316,25 +329,11 @@
 	<bean id="propertyService" 
 		class="org.lexevs.dao.database.service.property.VersionableEventPropertyService"
 		parent="abstractService">
-		<property name="databaseServiceEventListeners">
-			<list>
-				<bean class="org.lexevs.dao.database.service.listener.LucenePropertyUpdateListener"/>
-			</list>
-		</property>
 	</bean>
 		
 	<bean id="entityService" 
 		class="org.lexevs.dao.database.service.entity.VersionableEventEntityService"
 		parent="abstractService">
-		<property name="databaseServiceEventListeners">
-			<list>
-				<bean class="org.lexevs.dao.database.service.listener.LuceneEntityUpdateListener"/>
-				<bean class="org.lexevs.dao.database.service.listener.HistoryTableReplicatingListener"/>
-				<bean class="org.lexevs.dao.database.service.listener.NullEntityNamespaceListener"/>
-				<bean class="org.lexevs.dao.database.service.listener.InvalidPropertyLinkListener"/>
-				<bean class="org.lexevs.dao.database.service.listener.DuplicatePropertyIdListener"/>
-			</list>
-		</property>
 		<property name="propertyService" ref="propertyService"/>
 	</bean>
 	
@@ -701,6 +700,11 @@
 		<property name="indexRegistry" ref="indexRegistry"/>
 		<property name="logger" ref="loggerFactory"/>
 	</bean>
+	
+	<bean id="defaultLexEvsIndexOperations"
+		 class="org.lexevs.dao.index.operation.DefaultLexEvsIndexOperations">
+	 	<property name="indexCreator" ref="entityBatchingIndexCreator"/>
+	 </bean>
 	
 	<bean id="luceneEntityIndexService" class="org.lexevs.dao.index.service.entity.LuceneEntityIndexService">
 		<property name="indexDaoManager" ref="indexDaoManager"/> 
