@@ -29,7 +29,7 @@ public class ExtensionLoadingListenerRegistry extends BaseListenerRegistry imple
 			}
 
 			if(ClassUtils.isAssignable(extensionBaseClass, DatabaseServiceEventListener.class)){
-				this.getDatabaseServiceEventListeners().add(
+				this.registerListener(
 						(DatabaseServiceEventListener)
 						Class.forName(ed.getExtensionClass(), true, myClassLoader).newInstance()
 						);
