@@ -55,12 +55,15 @@ public class NotificationAdminOperationImpl implements NotificationAdminOperatio
 		switch (status) {
 			case REMOVE: {
 				this.getListenerRegistry().unregisterListener(listenerId);
+				break;
 			}
 			case REINSTATE: {
 				this.getListenerRegistry().getRegisteredListener(listenerId).setActive(true);
+				break;
 			}
 			case SUSPEND: {
 				this.getListenerRegistry().getRegisteredListener(listenerId).setActive(false);
+				break;
 			}
 		}
 	}
@@ -70,7 +73,7 @@ public class NotificationAdminOperationImpl implements NotificationAdminOperatio
 	 * 
 	 * @return the listener registry
 	 */
-	private ListenerRegistry getListenerRegistry() {
+	protected ListenerRegistry getListenerRegistry() {
 		return LexEvsServiceLocator.getInstance().
 			getDatabaseServiceManager().getListenerRegistry();
 	}
