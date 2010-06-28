@@ -17,6 +17,7 @@
  */
 package org.lexevs.cts2.admin;
 
+import org.lexevs.cts2.exception.admin.NotificationNotRegisteredException;
 import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
 import org.lexevs.dao.database.service.event.registry.ListenerRegistry;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -41,7 +42,8 @@ public class NotificationAdminOperationImpl implements NotificationAdminOperatio
 	 */
 	@Override
 	public void updateNotificationRegistration(String listenerId,
-			DatabaseServiceEventListener listener) {
+			DatabaseServiceEventListener listener) throws NotificationNotRegisteredException {
+		verifyListener(listenerId);
 		this.getListenerRegistry().registerListener(listenerId, listener);
 	}
 
@@ -50,7 +52,8 @@ public class NotificationAdminOperationImpl implements NotificationAdminOperatio
 	 */
 	@Override
 	public void updateNotificationRegistrationStatus(
-			String listenerId, NotificationStatus status) {
+			String listenerId, NotificationStatus status) throws NotificationNotRegisteredException {
+		verifyListener(listenerId);
 		
 		switch (status) {
 			case REMOVE: {
@@ -77,4 +80,12 @@ public class NotificationAdminOperationImpl implements NotificationAdminOperatio
 		return LexEvsServiceLocator.getInstance().
 			getDatabaseServiceManager().getListenerRegistry();
 	}
+
+	private void verifyListener(String listenerId)
+		throws NotificationNotRegisteredException {
+		if(this.getListenerRegistry().getRegisteredListener(listenerId) == null) {
+			throw new NotificationNotRegisteredException(listenerId);
+		}
+	}
+
 }

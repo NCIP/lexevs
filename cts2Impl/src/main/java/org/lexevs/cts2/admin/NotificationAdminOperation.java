@@ -17,6 +17,7 @@
  */
 package org.lexevs.cts2.admin;
 
+import org.lexevs.cts2.exception.admin.NotificationNotRegisteredException;
 import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
 
 /**
@@ -56,7 +57,8 @@ public interface NotificationAdminOperation {
 	 * 		The Notification Identifier of the Notification to be updated.
 	 * @param listener the listener
 	 */
-	public void updateNotificationRegistration(String notificationId, DatabaseServiceEventListener listener);
+	public void updateNotificationRegistration(String notificationId, DatabaseServiceEventListener listener)
+		throws NotificationNotRegisteredException;
 	
 	/**
 	 * Update the Notification Registration Status of a Notification Listener.
@@ -66,5 +68,6 @@ public interface NotificationAdminOperation {
 	 * @param notificationId
 	 * 		The Notification Identifier of the Notification to be updated.
 	 */
-	public void updateNotificationRegistrationStatus(String notificationId, NotificationStatus status);
+	public void updateNotificationRegistrationStatus(String notificationId, NotificationStatus status)
+		throws NotificationNotRegisteredException;
 }
