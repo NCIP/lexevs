@@ -1,14 +1,18 @@
 package org.lexevs.dao.database.service.event.registry;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
 
 public interface ListenerRegistry {
 
-	public void registerListener(DatabaseServiceEventListener listener);
+	public String registerListener(DatabaseServiceEventListener listener);
 	
-	public void unregisterListener(DatabaseServiceEventListener listener);
+	public void unregisterListener(String listenerId);
 	
-	public List<DatabaseServiceEventListener> getRegisteredListeners();
+	public Collection<DatabaseServiceEventListener> getRegisteredListeners();
+	
+	public DatabaseServiceEventListener getRegisteredListener(String listenerId);
+	
+	public void registerListener(String listenerId, DatabaseServiceEventListener listener);
 }

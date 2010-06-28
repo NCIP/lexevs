@@ -39,6 +39,10 @@ import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedExcept
  * @see DatabaseServiceEventEvent
  */
 public interface DatabaseServiceEventListener {
+	
+	public boolean isActive();
+	
+	public void setActive(boolean isActive);
 
 	/**
 	 * On coding scheme update.
