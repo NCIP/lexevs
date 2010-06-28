@@ -20,7 +20,6 @@ package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.formatters;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URL;
 
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -30,12 +29,10 @@ import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.XMLContext;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.listeners.LexGridMarshalListener;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.listeners.StreamingLexGridMarshalListener;
-import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.listeners.TestMarshalListener;
 
 /**
  * The Class AbstractXmlMessageBodyWriter.
