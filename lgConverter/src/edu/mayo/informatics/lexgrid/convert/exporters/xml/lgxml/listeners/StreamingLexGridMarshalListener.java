@@ -121,13 +121,28 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                 try {
                     ResolvedConceptReferenceList rcrl = cng.resolveAsList(null, true, false, 0, -1, null, null, null,
                             null, -1);
-                    if (rcrl != null) {
+                    if (rcrl != null && rcrl.getResolvedConceptReferenceCount() > 0) {
                         blockIterator = (Iterator<ResolvedConceptReference>) rcrl.iterateResolvedConceptReference();
                         while (blockIterator.hasNext()) {
                             curConRef = (ResolvedConceptReference) blockIterator.next();
                             AssociationList asl = curConRef.getSourceOf();
                             processTargets(curConRef, curAssociationName);
                             processAssociationList(asl);
+                        }
+                    }
+                    else{ // there is no association found, try to find the association source 
+                        CodedNodeGraph restrictCng = cng.restrictToSourceCodes(cns);
+                        rcrl = restrictCng.resolveAsList(null, true, false, 0, -1, null, null, null,
+                                null, -1);
+                        if (rcrl != null)
+                            blockIterator = (Iterator<ResolvedConceptReference>) rcrl.iterateResolvedConceptReference();
+                        while (blockIterator.hasNext()) {
+                            curConRef = (ResolvedConceptReference) blockIterator.next();
+                            if (this.sourceExist(curConRef) == false) {
+                                AssociationList asl = curConRef.getSourceOf();
+                                processTargets(curConRef, curAssociationName);
+                                processAssociationList(asl);
+                            }
                         }
                     }
                 } catch (LBInvocationException e) {
@@ -262,8 +277,6 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
         }
 
         String localCurAssociationName = this.curAssociationName;
-        // System.out.println("**** inside processAssociationList with association="
-        // + curAssociationName);
 
         if (localCurAssociationName == null) {
             return;
@@ -412,8 +425,8 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                             e.printStackTrace();
                         }    
                         
-                        this.marshaller.marshal(aS);
                         sourceList.add(aS);
+                        this.marshaller.marshal(aS);
                     }
                 }
             }
