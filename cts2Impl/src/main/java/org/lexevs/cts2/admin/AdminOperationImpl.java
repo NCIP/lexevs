@@ -39,6 +39,7 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 	private CodeSystemLoadOperation csLoadOp_;
 	private CodeSystemExportOperation csExportOp_;
 	private ValueSetLoadOperation vsLoadOp_;
+	private NotificationAdminOperation notificationAdminOp_;
 	
 	public AdminOperationImpl(LexEvsCTS2 lexEvsCts2) {
 		lexevsCTS2_ = lexEvsCts2;
@@ -74,8 +75,10 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 
 	@Override
 	public NotificationAdminOperation getNotificationAdminOperation() {
-		// TODO Auto-generated method stub
-		return null;
+		if(this.notificationAdminOp_ == null) {
+			notificationAdminOp_ = new NotificationAdminOperationImpl();
+		}
+		return this.notificationAdminOp_;
 	}
 
 	@Override
