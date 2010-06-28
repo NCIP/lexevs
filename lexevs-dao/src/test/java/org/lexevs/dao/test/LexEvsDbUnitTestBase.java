@@ -31,6 +31,7 @@ import org.junit.runner.RunWith;
 import org.lexevs.cache.MethodCachingProxy;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.prefix.PrefixResolver;
+import org.lexevs.dao.database.service.event.registry.ExtensionLoadingListenerRegistry;
 import org.lexevs.dao.database.setup.schemacheck.CountBasedLexGridSchemaCheck;
 import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.system.constants.SystemVariables;
@@ -72,6 +73,9 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
     public static void setSystemProp() {
         System.setProperty("LG_CONFIG_FILE", "src/test/resources/lbconfig.props");
     }
+    
+	@Resource
+	private ExtensionLoadingListenerRegistry extensionLoadingListenerRegistry;
 
     @Test
     public void checkSetUp(){
@@ -86,6 +90,7 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		extensionLoadingListenerRegistry.setEnableListeners(false);
 		methodCachingProxy.clearAll();
 		CountBasedLexGridSchemaCheck check = new CountBasedLexGridSchemaCheck(dataSource, systemVariables);
 		
