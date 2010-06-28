@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexevs.cts2.admin.NotificationAdminOperation.NotificationStatus;
+import org.lexevs.cts2.exception.admin.NotificationNotRegisteredException;
 import org.lexevs.dao.database.service.event.registry.BaseListenerRegistry;
 import org.lexevs.dao.database.service.listener.DefaultServiceEventListener;
 import org.springframework.test.context.ContextConfiguration;
@@ -40,7 +41,7 @@ public class NotificationAdminOperationImplTest {
 	}
 	
 	@Test
-	public void testRemoveNotification() {
+	public void testRemoveNotification() throws NotificationNotRegisteredException {
 		String id = notificationAdminOperationImpl.registerForNotification(new DefaultServiceEventListener());
 		
 		notificationAdminOperationImpl.updateNotificationRegistrationStatus(id, NotificationStatus.REMOVE);
@@ -50,8 +51,13 @@ public class NotificationAdminOperationImplTest {
 		assertEquals(0,listenerRegistry.getRegisteredListeners().size());
 	}
 	
+	@Test(expected=NotificationNotRegisteredException.class)
+	public void testRemoveNotificationException() throws NotificationNotRegisteredException {	
+		notificationAdminOperationImpl.updateNotificationRegistrationStatus("BOGUS_ID", NotificationStatus.REMOVE);
+	}
+	
 	@Test
-	public void testSuspendNotification() {
+	public void testSuspendNotification() throws NotificationNotRegisteredException {
 		String id = notificationAdminOperationImpl.registerForNotification(new DefaultServiceEventListener());
 		
 		notificationAdminOperationImpl.updateNotificationRegistrationStatus(id, NotificationStatus.SUSPEND);
@@ -62,7 +68,7 @@ public class NotificationAdminOperationImplTest {
 	}
 	
 	@Test
-	public void testReinstateNotification() {
+	public void testReinstateNotification() throws NotificationNotRegisteredException {
 		String id = notificationAdminOperationImpl.registerForNotification(new DefaultServiceEventListener());
 		
 		notificationAdminOperationImpl.updateNotificationRegistrationStatus(id, NotificationStatus.SUSPEND);
@@ -77,7 +83,7 @@ public class NotificationAdminOperationImplTest {
 	}
 	
 	@Test
-	public void testUpdateNotification() {
+	public void testUpdateNotification() throws NotificationNotRegisteredException {
 		DefaultServiceEventListener listener1 = new DefaultServiceEventListener();
 		DefaultServiceEventListener listener2 = new DefaultServiceEventListener();
 		String id = notificationAdminOperationImpl.registerForNotification(listener1);
@@ -87,6 +93,11 @@ public class NotificationAdminOperationImplTest {
 		notificationAdminOperationImpl.updateNotificationRegistration(id, listener2);
 		
 		assertEquals(listener2, listenerRegistry.getRegisteredListener(id));
+	}
+	
+	@Test(expected=NotificationNotRegisteredException.class)
+	public void testUpdateNotificationException() throws NotificationNotRegisteredException {	
+		notificationAdminOperationImpl.updateNotificationRegistration("BOGUS_ID", new DefaultServiceEventListener());
 	}
 
 }
