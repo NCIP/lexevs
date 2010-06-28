@@ -27,8 +27,6 @@ import javax.annotation.Resource;
 
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
-import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
 import org.lexevs.dao.database.hibernate.registry.HibernateRegistryDao;
 import org.lexevs.dao.database.service.entity.EntityService;
@@ -41,8 +39,6 @@ import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.model.RegistryEntry;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class VersionableEntityServiceTest.
@@ -61,10 +57,6 @@ public class VersionablePropertyServiceTest extends LexEvsDbUnitTestBase {
 	@Resource
 	private HibernateRegistryDao registryDao;
 	
-	@Resource
-	private HibernateTransactionManager txmgr;
-	
-
 	/**
 	 * Insert entity.
 	 * 
@@ -104,19 +96,14 @@ public class VersionablePropertyServiceTest extends LexEvsDbUnitTestBase {
 		property.setPropertyName("pname");
 		property.setValue(DaoUtility.createText("updated prop value"));
 
-		List<DatabaseServiceEventListener> original = service.getDatabaseServiceEventListeners();
-
 		TestListener testListener = new TestListener(entityService, false);
 
 		List<DatabaseServiceEventListener> testListeners = new ArrayList<DatabaseServiceEventListener>();
 		testListeners.add(testListener);
-		service.setDatabaseServiceEventListeners(testListeners);
-
+	
 		service.updateEntityProperty("csuri", "csversion", "ecode", "ens", property);
 
 		assertTrue(testListener.foundUpdate);
-
-		service.setDatabaseServiceEventListeners(original);
 	}
 
 	
@@ -147,14 +134,11 @@ public class VersionablePropertyServiceTest extends LexEvsDbUnitTestBase {
 		property.setPropertyId("propId");
 		property.setValue(DaoUtility.createText("updated prop value"));
 
-		List<DatabaseServiceEventListener> original = service.getDatabaseServiceEventListeners();
-
 		TestListener testListener = new TestListener(entityService, true);
 
 		List<DatabaseServiceEventListener> testListeners = new ArrayList<DatabaseServiceEventListener>();
 		testListeners.add(testListener);
-		service.setDatabaseServiceEventListeners(testListeners);
-
+	
 		boolean exceptionThrown = false;
 		try {
 			service.updateEntityProperty("csuri", "csversion", "ecode", "ens", property);
@@ -173,8 +157,6 @@ public class VersionablePropertyServiceTest extends LexEvsDbUnitTestBase {
 				return null;
 			}
 		});
-
-		service.setDatabaseServiceEventListeners(original);
 	}
 
 	private static class TestListener extends DefaultServiceEventListener {

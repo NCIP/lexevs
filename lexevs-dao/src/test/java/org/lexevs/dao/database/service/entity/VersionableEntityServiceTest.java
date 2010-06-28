@@ -32,14 +32,11 @@ import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.relations.AssociationEntity;
+import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.VersionableEventCodingSchemeService;
-import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
-import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListener;
-import org.lexevs.dao.database.service.listener.InvalidPropertyLinkListener;
-import org.lexevs.dao.database.service.listener.NullEntityNamespaceListener;
 import org.lexevs.dao.database.service.version.AuthoringService;
-import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.utility.RegistryUtility;
@@ -111,16 +108,13 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		List<Entity> entities = new ArrayList<Entity>();
 		entities.add(entity1);
 		entities.add(entity2);
-		
-		service.setDatabaseServiceEventListeners(DaoUtility.createList(DatabaseServiceEventListener.class, new NullEntityNamespaceListener()));
-		
+				
 		service.insertBatchEntities("uri", "v1", entities);
 		
 		for(Entity en : entities) {
 			Assert.assertEquals("testName", en.getEntityCodeNamespace());
 		}
-		
-		service.setDatabaseServiceEventListeners(new ArrayList<DatabaseServiceEventListener>());
+	
 	}
 	
 	@Test
@@ -140,12 +134,8 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		Entity entity = new Entity();
 		entity.setEntityCode("c1");
 		
-		service.setDatabaseServiceEventListeners(DaoUtility.createList(DatabaseServiceEventListener.class, new NullEntityNamespaceListener()));
-		
-		service.insertEntity("uri", "v1", entity);
+			service.insertEntity("uri", "v1", entity);
 		Assert.assertEquals("testName", entity.getEntityCodeNamespace());
-		
-		service.setDatabaseServiceEventListeners(new ArrayList<DatabaseServiceEventListener>());
 	}
 	
 	@Test
@@ -182,12 +172,8 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		entity.addProperty(prop2);
 		Assert.assertEquals(2, entity.getPropertyCount());
 		
-		service.setDatabaseServiceEventListeners(DaoUtility.createList(DatabaseServiceEventListener.class, new DuplicatePropertyIdListener()));
-		
 		service.insertEntity("uri", "v1", entity);
 		Assert.assertEquals(1, entity.getPropertyCount());
-		
-		service.setDatabaseServiceEventListeners(new ArrayList<DatabaseServiceEventListener>());
 	}
 	
 	@Test
@@ -232,15 +218,11 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		enList.add(entity1);
 		enList.add(entity2);
 
-		service.setDatabaseServiceEventListeners(DaoUtility.createList(DatabaseServiceEventListener.class, new DuplicatePropertyIdListener()));
-		
 		Assert.assertEquals(2, entity1.getPropertyCount());
 		Assert.assertEquals(2, entity2.getPropertyCount());
 		service.insertBatchEntities("uri", "v1", enList);
 		Assert.assertEquals(1, entity1.getPropertyCount());
 		Assert.assertEquals(1, entity2.getPropertyCount());
-		
-		service.setDatabaseServiceEventListeners(new ArrayList<DatabaseServiceEventListener>());
 	}
 	
 	@Test
@@ -270,13 +252,9 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		
 		entity.setPropertyLink(plList);
 		
-		service.setDatabaseServiceEventListeners(DaoUtility.createList(DatabaseServiceEventListener.class, new InvalidPropertyLinkListener()));
-		
 		Assert.assertEquals(1, entity.getPropertyLink().length);
 		service.insertEntity("uri", "v1", entity);
 		Assert.assertEquals(0, entity.getPropertyLink().length);
-		
-		service.setDatabaseServiceEventListeners(new ArrayList<DatabaseServiceEventListener>());
 	}
 	
 	@Test
@@ -315,22 +293,15 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		enList.add(entity1);
 		enList.add(entity2);
 		
-		service.setDatabaseServiceEventListeners(DaoUtility.createList(DatabaseServiceEventListener.class, new InvalidPropertyLinkListener()));
-		
 		Assert.assertEquals(1, entity1.getPropertyLink().length);
 		Assert.assertEquals(1, entity2.getPropertyLink().length);
 		service.insertBatchEntities("uri", "v1", enList);
 		Assert.assertEquals(0, entity1.getPropertyLink().length);
 		Assert.assertEquals(0, entity2.getPropertyLink().length);
-		
-		service.setDatabaseServiceEventListeners(new ArrayList<DatabaseServiceEventListener>());
 	}
 	
 	@Test
 	public void updateEntity() throws Exception{
-		List<DatabaseServiceEventListener> listeners = service.getDatabaseServiceEventListeners();
-		service.getDatabaseServiceEventListeners().clear();
-
 		CodingScheme scheme = new CodingScheme();
 		scheme.setApproxNumConcepts(111l);
 		scheme.setCodingSchemeName("testName");
@@ -364,15 +335,10 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		Entity moddedEntity = service.getEntity("uri", "v1", "c1", "ns");
 		
 		Assert.assertEquals("post-update", moddedEntity.getEntityDescription().getContent());
-		
-		service.setDatabaseServiceEventListeners(listeners);
 	}
 	
 	@Test
 	public void getAssociationEntity() throws Exception{
-		List<DatabaseServiceEventListener> listeners = service.getDatabaseServiceEventListeners();
-		service.getDatabaseServiceEventListeners().clear();
-
 		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
 
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
@@ -395,19 +361,13 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		assertEquals(entity.getReverseName(), "reverseName");
 		assertTrue(entity.getIsNavigable());
 		assertTrue(entity.getIsTransitive());
-		
-		service.setDatabaseServiceEventListeners(listeners);
 	}
 
 	public void getAssociationEntityWithWrongType() throws Exception{
-		List<DatabaseServiceEventListener> listeners = service.getDatabaseServiceEventListeners();
-		service.getDatabaseServiceEventListeners().clear();
-
 		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
 
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		service.setDatabaseServiceEventListeners(listeners);
-		
+			
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
 			"values ('csguid', 'csname', 'csuri', 'csversion')");
 	
@@ -443,5 +403,75 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		entity.setEntityCodeNamespace("ns");
 		
 		service.insertEntity("uri", "v1", entity);
+	}
+	
+	@Test
+	public void testInsertDependentChanges() throws Exception {
+		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
+
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+	
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid1')");
+			
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+			"values ('rguid1', 'rid1', NOW() )");
+
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid, entryStateGuidInHistory) " +
+			"values ('esguid1', 'eguid', 'entity', 'NEW', '0', 'rguid1', 'esguid1')");
+		
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+			"values ('rguid2', 'rid2', NOW() )");
+		
+		Entity entity = new Entity();
+		entity.setEntityCode("ecode");
+		entity.setEntityCodeNamespace("ens");
+		
+		entity.setEntryState(new EntryState());
+		entity.getEntryState().setChangeType(ChangeType.DEPENDENT);
+		entity.getEntryState().setContainingRevision("rid2");
+		entity.getEntryState().setRelativeOrder(0l);
+		
+		service.insertDependentChanges("csuri", "csversion", entity);
+		
+		assertEquals(0, template.queryForInt("select count(*) from h_entity"));
+	}
+	
+	@Test
+	public void testInsertDependentChangesWithOneInHistory() throws Exception {
+		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
+
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+	
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid1')");
+			
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+			"values ('rguid1', 'rid1', NOW() )");
+
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid, entryStateGuidInHistory) " +
+			"values ('esguid1', 'eguid', 'entity', 'NEW', '0', 'rguid1', 'esguid1')");
+		
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+			"values ('rguid2', 'rid2', NOW() )");
+		
+		Entity entity = new Entity();
+		entity.setEntityCode("ecode");
+		entity.setEntityCodeNamespace("ens");
+		
+		entity.setEntryState(new EntryState());
+		entity.getEntryState().setChangeType(ChangeType.DEPENDENT);
+		entity.getEntryState().setContainingRevision("rid2");
+		entity.getEntryState().setRelativeOrder(0l);
+		
+		service.insertDependentChanges("csuri", "csversion", entity);
+		
+		assertEquals(0, template.queryForInt("select count(*) from h_entity"));
 	}
 }
