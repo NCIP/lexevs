@@ -1,18 +1,15 @@
 package org.LexGrid.LexBIG.load.xml;
 
-import java.util.ArrayList;
-
 import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.versions.EntryState;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.AssociationTargetDao;
-import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
-import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.ibatis.codingscheme.IbatisCodingSchemeDao;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
@@ -46,27 +43,17 @@ public class TestEntryStateAccess extends TestCase {
 	
 	public void testEntryState(){
 		assertTrue(getEntryStateForCodingScheme().getContainingRevision().equals("testRelease2010Feb_testData"));
-
-
 	}
 	
 	private EntryState getEntryStateForCodingScheme(){
-		
+        return daoCallbackService.executeInDaoLayer(new DaoCallback<EntryState>() {
 
-        daoCallbackService.executeInDaoLayer(new DaoCallback<Object>() {
-
-            public Object execute(DaoManager daoManager) {
+            public EntryState execute(DaoManager daoManager) {
               
                 csDao = (IbatisCodingSchemeDao)daoManager.getCodingSchemeDao("urn:oid:22.22.0.2", "2.0");
-                String codingSchemeUId = csDao .getCodingSchemeUIdByUriAndVersion("urn:oid:22.22.0.2", "2.0");
-                String entryStateUID =   csDao.getEntryStateUId(codingSchemeUId);
-               VersionsDao versions = daoManager.getVersionsDao("urn:oid:22.22.0.2", "2.0");
-               
-                es = versions.getEntryStateById(entryStateUID);
-            return null;
+                CodingScheme cs = csDao .getCodingSchemeByUriAndVersion("urn:oid:22.22.0.2", "2.0");
+                return cs.getEntryState();
             }
         });
-        
-       return es;
 	}
 }
