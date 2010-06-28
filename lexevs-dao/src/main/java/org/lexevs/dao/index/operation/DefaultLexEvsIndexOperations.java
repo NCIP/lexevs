@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -16,33 +16,29 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.lexevs.dao.index.indexer;
+package org.lexevs.dao.index.operation;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.concepts.Entity;
+import org.lexevs.dao.index.indexer.IndexCreator;
 
-/**
- * The Interface IndexCreator.
- * 
- * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
- */
-public interface IndexCreator {
-
-	/**
-	 * Index.
-	 * 
-	 * @param reference the reference
-	 */
-	public void index(AbsoluteCodingSchemeVersionReference reference);
+public class DefaultLexEvsIndexOperations implements LexEvsIndexOperations {
 	
-	public void index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback);
+	private IndexCreator indexCreator;
 	
-	public void index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, boolean onlyRegister);
+	@Override
+	public void registerCodingSchemeEntityIndex(String codingSchemeUri,
+			String version) {
+		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+		ref.setCodingSchemeURN(codingSchemeUri);
+		ref.setCodingSchemeVersion(version);
+		
+		indexCreator.index(ref, null, true);
+	}
 	
-	public interface EntityIndexerProgressCallback {
-		public void onEntityIndex(Entity entity);
+	public void setIndexCreator(IndexCreator indexCreator) {
+		this.indexCreator = indexCreator;
+	}
+	public IndexCreator getIndexCreator() {
+		return indexCreator;
 	}
 }
-
-
-

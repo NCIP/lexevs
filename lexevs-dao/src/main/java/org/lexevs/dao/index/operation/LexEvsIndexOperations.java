@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -16,33 +16,21 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.lexevs.dao.index.indexer;
-
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.concepts.Entity;
+package org.lexevs.dao.index.operation;
 
 /**
- * The Interface IndexCreator.
+ * The Interface LexEvsIndexOperations.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface IndexCreator {
+public interface LexEvsIndexOperations {
 
 	/**
-	 * Index.
+	 * Register coding scheme in the index. No information is actually indexed, but all metadata
+	 * and information is created and stored, enabling future indexing to occur on this coding scheme.
 	 * 
-	 * @param reference the reference
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param version the version
 	 */
-	public void index(AbsoluteCodingSchemeVersionReference reference);
-	
-	public void index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback);
-	
-	public void index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, boolean onlyRegister);
-	
-	public interface EntityIndexerProgressCallback {
-		public void onEntityIndex(Entity entity);
-	}
+	public void registerCodingSchemeEntityIndex(String codingSchemeUri, String version);
 }
-
-
-

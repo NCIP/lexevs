@@ -26,7 +26,6 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.concepts.Entity;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import org.lexevs.dao.database.ibatis.entity.model.IdableEntity;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.access.entity.EntityDao;
@@ -69,63 +68,67 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	private IndexRegistry indexRegistry;
 	
 	public void index(AbsoluteCodingSchemeVersionReference reference) {
-		this.index(reference, null);
+		this.index(reference, null, false);
+	}
+	
+	public void index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback) {	
+		this.index(reference, callback, false);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.indexer.IndexCreator#index(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
-	public void index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback) {	
+	public void index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, boolean onlyRegister) {	
 		String indexName = indexRegistry.
-			registerCodingSchemeIndex(
-					reference.getCodingSchemeURN(),
-					reference.getCodingSchemeVersion());
-		
-		addIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
-		
-		EntityDao entityIndexService = indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-
-		int totalIndexedEntities = 0;
-
-		int position = 0;
-		for(
-				List<? extends Entity> entities = 
-					entityService.getEntities(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), position, batchSize);
-				entities.size() > 0; 
-				entities = entityService.getEntities(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), position += batchSize, batchSize)) {
-
-			List<Document> totalDocs = new ArrayList<Document>();
-			
-			for(Entity entity : entities) {
-				List<Document> docs = 
-					entityIndexer.indexEntity(
-							reference.getCodingSchemeURN(), 
-							reference.getCodingSchemeVersion(), entity);
-				
-				totalDocs.addAll(docs);
-				
-				totalIndexedEntities++;
-				
-				if(callback != null) {
-					callback.onEntityIndex(entity);
-				}
-				
-				if(totalIndexedEntities % 1000 == 0) {
-					this.getLogger().info("Indexed: " + totalIndexedEntities + " Entities.");
-				}
-			}
-			
-			this.getLogger().info("Flusing " + totalDocs.size() + " Documents to the Index.");
-			entityIndexService.addDocuments(
-					reference.getCodingSchemeURN(), 
-					reference.getCodingSchemeVersion(), 
-					totalDocs, analyzer);
-		}
-		
-		entityIndexService.optimizeIndex(reference.getCodingSchemeURN(), 
+		registerCodingSchemeIndex(
+				reference.getCodingSchemeURN(),
 				reference.getCodingSchemeVersion());
-		
-		this.getLogger().info("Indexing Complete. Indexed: " + totalIndexedEntities + " Entities.");
+
+		addIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
+
+		if(!onlyRegister) {
+
+			EntityDao entityIndexService = indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+
+			int totalIndexedEntities = 0;
+
+			int position = 0;
+			for(
+					List<? extends Entity> entities = 
+						entityService.getEntities(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), position, batchSize);
+					entities.size() > 0; 
+					entities = entityService.getEntities(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), position += batchSize, batchSize)) {
+
+				List<Document> totalDocs = new ArrayList<Document>();
+
+				for(Entity entity : entities) {
+					List<Document> docs = 
+						entityIndexer.indexEntity(
+								reference.getCodingSchemeURN(), 
+								reference.getCodingSchemeVersion(), entity);
+
+					totalDocs.addAll(docs);
+
+					totalIndexedEntities++;
+
+					if(callback != null) {
+						callback.onEntityIndex(entity);
+					}
+
+					if(totalIndexedEntities % 1000 == 0) {
+						this.getLogger().info("Indexed: " + totalIndexedEntities + " Entities.");
+					}
+				}
+
+				this.getLogger().info("Flusing " + totalDocs.size() + " Documents to the Index.");
+				entityIndexService.addDocuments(
+						reference.getCodingSchemeURN(), 
+						reference.getCodingSchemeVersion(), 
+						totalDocs, analyzer);
+			}
+
+			this.getLogger().info("Indexing Complete. Indexed: " + totalIndexedEntities + " Entities.");
+		}
 	}
 
 	/**
