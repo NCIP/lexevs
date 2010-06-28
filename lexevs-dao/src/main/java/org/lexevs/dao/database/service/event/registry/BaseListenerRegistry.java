@@ -23,7 +23,7 @@ public class BaseListenerRegistry implements ListenerRegistry {
 	
 	public void setDatabaseServiceEventListeners(
 			List<DatabaseServiceEventListener> databaseServiceEventListeners) {
-		databaseServiceEventListeners.clear();
+		this.databaseServiceEventListeners.clear();
 		if(CollectionUtils.isNotEmpty(databaseServiceEventListeners)) {
 			for(DatabaseServiceEventListener listener : databaseServiceEventListeners) {
 				this.registerListener(listener);
