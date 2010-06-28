@@ -40,6 +40,8 @@ import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedExcept
  * @see DefaultServiceEventEvent
  */
 public class DefaultServiceEventListener implements DatabaseServiceEventListener {
+	
+	private boolean isActive = true;
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.event.DatabaseServiceEventListener#onCodingSchemeUpdate(org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent)
@@ -95,5 +97,14 @@ public class DefaultServiceEventListener implements DatabaseServiceEventListener
 	@Override
 	public boolean onPreBatchEntityInsert(EntityBatchInsertEvent event) {
 		return true;
-	}	
+	}
+
+	@Override
+	public boolean isActive() {
+		return this.isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 }
