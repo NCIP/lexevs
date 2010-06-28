@@ -1,7 +1,5 @@
 package edu.mayo.informatics.lexgrid.convert.utility;
 
-import java.util.ArrayList;
-
 import javax.annotation.Resource;
 
 import org.LexGrid.LexOnt.CodingSchemeManifest;
@@ -21,8 +19,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
-import org.lexevs.dao.database.service.entity.VersionableEventEntityService;
-import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
+import org.lexevs.dao.database.service.event.registry.BaseListenerRegistry;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 
@@ -35,11 +32,11 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
     private AuthoringService authoringService;
     
     @Resource
-    private VersionableEventEntityService entityService;
+    private BaseListenerRegistry baseListenerRegistry;
     
     @Before
     public void clearEntityListeners() {
-        entityService.setDatabaseServiceEventListeners(new ArrayList<DatabaseServiceEventListener>());
+        baseListenerRegistry.setEnableListeners(false);
     }
     
     @BeforeClass
