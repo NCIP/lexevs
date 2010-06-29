@@ -1,11 +1,12 @@
 package org.LexGrid.LexBIG.Impl.pagedgraph.root;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 
-public interface RootsResolver {
+public interface RootsResolver extends Serializable {
     
     public enum ResolveDirection {FORWARD, BACKWARD}
     

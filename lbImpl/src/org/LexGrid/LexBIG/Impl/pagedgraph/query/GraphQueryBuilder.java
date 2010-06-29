@@ -18,6 +18,8 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph.query;
 
+import java.io.Serializable;
+
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -30,7 +32,7 @@ import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface GraphQueryBuilder {
+public interface GraphQueryBuilder extends Serializable {
     
     /**
      * Gets the query.

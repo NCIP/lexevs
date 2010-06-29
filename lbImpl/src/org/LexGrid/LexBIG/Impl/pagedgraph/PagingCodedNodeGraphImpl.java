@@ -61,7 +61,11 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
     
     private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
     
-  /**
+    public PagingCodedNodeGraphImpl() {
+        super();
+    }         
+    
+    /**
      * Instantiates a new paging coded node graph impl.
      * 
      * @param codingSchemeUri the coding scheme uri

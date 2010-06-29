@@ -19,6 +19,8 @@ import org.springframework.util.CollectionUtils;
 
 public class DefaultNamespaceHandler implements NamespaceHandler {
 
+    private static final long serialVersionUID = 7565547967975571009L;
+
     @Override
     public AbsoluteCodingSchemeVersionReference
     getCodingSchemeForNamespace(String codingSchemeUri, String version,

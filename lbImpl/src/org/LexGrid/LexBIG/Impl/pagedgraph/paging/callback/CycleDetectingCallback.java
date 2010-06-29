@@ -18,6 +18,8 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback;
 
+import java.io.Serializable;
+
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 
 /**
@@ -25,7 +27,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface CycleDetectingCallback {
+public interface CycleDetectingCallback extends Serializable {
 
     /**
      * Gets the associated concept in graph.

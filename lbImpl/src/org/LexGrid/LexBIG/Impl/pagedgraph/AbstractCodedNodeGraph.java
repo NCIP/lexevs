@@ -48,7 +48,9 @@ public abstract class AbstractCodedNodeGraph implements CodedNodeGraph {
     private static final long serialVersionUID = 7955494879137282711L;
     
     /** The logger. */
-    private LgLoggerIF logger = LoggerFactory.getLogger();
+    protected LgLoggerIF getLogger() {
+        return LoggerFactory.getLogger();
+    }
     
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#resolveAsList(org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean, boolean, int, int, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType[], org.LexGrid.LexBIG.DataModel.Collections.SortOptionList, int)
@@ -184,23 +186,5 @@ public abstract class AbstractCodedNodeGraph implements CodedNodeGraph {
             }
 
             return returnList;
-    }
-
-    /**
-     * Gets the logger.
-     * 
-     * @return the logger
-     */
-    public LgLoggerIF getLogger() {
-        return logger;
-    }
-
-    /**
-     * Sets the logger.
-     * 
-     * @param logger the new logger
-     */
-    public void setLogger(LgLoggerIF logger) {
-        this.logger = logger;
     }
 }

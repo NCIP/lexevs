@@ -18,6 +18,8 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback;
 
+import java.io.Serializable;
+
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 
 /**
@@ -27,6 +29,8 @@ import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
  */
 public abstract class AbstractCycleDetectingCallback implements CycleDetectingCallback {
  
+    private static final long serialVersionUID = 969524253718668584L;
+
     /**
      * To associated concept key.
      * 
@@ -47,8 +51,10 @@ public abstract class AbstractCycleDetectingCallback implements CycleDetectingCa
      * 
      * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
      */
-    protected static class AssociatedConceptKey {
+    protected static class AssociatedConceptKey implements Serializable {
         
+        private static final long serialVersionUID = 2861958458743850735L;
+
         /** The code. */
         private String code;
         

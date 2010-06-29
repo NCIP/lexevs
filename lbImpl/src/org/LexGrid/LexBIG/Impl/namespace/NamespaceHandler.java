@@ -1,11 +1,12 @@
 package org.LexGrid.LexBIG.Impl.namespace;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 
-public interface NamespaceHandler {
+public interface NamespaceHandler extends Serializable {
 
     public AbsoluteCodingSchemeVersionReference 
         getCodingSchemeForNamespace(

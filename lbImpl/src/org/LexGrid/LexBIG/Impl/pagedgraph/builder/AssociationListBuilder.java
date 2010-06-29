@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.Impl.pagedgraph.builder;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,9 @@ import org.springframework.util.Assert;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class AssociationListBuilder {
+public class AssociationListBuilder implements Serializable{
+    
+    private static final long serialVersionUID = 2754244213732834688L;
     
     /** The associated concept page size. */
     private int associatedConceptPageSize = 100;
@@ -61,8 +64,9 @@ public class AssociationListBuilder {
         TARGET_OF}
     
     /** The database service manager. */
-    private DatabaseServiceManager databaseServiceManager =
-        LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
+    private DatabaseServiceManager getDatabaseServiceManager() {
+        return LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
+    }
     
     /**
      * Builds the source of association list.
@@ -216,7 +220,7 @@ public class AssociationListBuilder {
         Assert.notNull(graphQuery, "Must pass in a GraphQuery.");
 
         CodedNodeGraphService codedNodeGraphService =
-            databaseServiceManager.getCodedNodeGraphService();
+            getDatabaseServiceManager().getCodedNodeGraphService();
         
         AssociationList returnList = new AssociationList();
         
@@ -306,29 +310,11 @@ public class AssociationListBuilder {
             String codingSchemeVersion,
             String relationsContainerName) {
         CodedNodeGraphService codedNodeGraphService =
-            databaseServiceManager.getCodedNodeGraphService();
+            getDatabaseServiceManager().getCodedNodeGraphService();
 
         return codedNodeGraphService.getAssociationPredicateNamesForCodingScheme(
                 codingSchemeUri,
                 codingSchemeVersion,
                 relationsContainerName);
-    }
-
-    /**
-     * Gets the database service manager.
-     * 
-     * @return the database service manager
-     */
-    public DatabaseServiceManager getDatabaseServiceManager() {
-        return databaseServiceManager;
-    }
-
-    /**
-     * Sets the database service manager.
-     * 
-     * @param databaseServiceManager the new database service manager
-     */
-    public void setDatabaseServiceManager(DatabaseServiceManager databaseServiceManager) {
-        this.databaseServiceManager = databaseServiceManager;
     }
 }

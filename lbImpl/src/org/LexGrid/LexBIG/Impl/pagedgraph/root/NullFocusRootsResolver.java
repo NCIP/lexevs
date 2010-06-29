@@ -12,6 +12,8 @@ import org.lexevs.locator.LexEvsServiceLocator;
 
 public class NullFocusRootsResolver implements RootsResolver {
 
+    private static final long serialVersionUID = 9219617549685434658L;
+
     @Override
     public List<ConceptReference> resolveRoots(
             String codingSchemeUri, 

@@ -31,6 +31,8 @@ import org.springframework.beans.BeanUtils;
  */
 public class StubReturningCycleDetectingCallback extends AbstractCycleDetectingCallback {
 
+    private static final long serialVersionUID = 3055869314918129134L;
+    
     /** The associated concept set. */
     private Set<AssociatedConceptKey> associatedConceptSet = 
         new HashSet<AssociatedConceptKey>();

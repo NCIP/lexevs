@@ -54,6 +54,8 @@ import org.springframework.util.StringUtils;
  */
 public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
     
+    private static final long serialVersionUID = 3959687202074292860L;
+
     public static ConceptReference INVALID_MATCH_CONCEPT_REFERENCE = new InvalidMatchCodeNamspacePair();
     
     /** The graph query. */

@@ -31,6 +31,8 @@ import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
  */
 public class ReferenceReturningCycleDetectingCallback extends AbstractCycleDetectingCallback {
 
+    private static final long serialVersionUID = 8829097708376607580L;
+    
     /** The associated concept map. */
     private Map<AssociatedConceptKey,AssociatedConcept> associatedConceptMap = 
         Collections.synchronizedMap(new HashMap<AssociatedConceptKey,AssociatedConcept>());

@@ -41,6 +41,10 @@ public abstract class AbstractMultiGraph extends AbstractCodedNodeGraph {
     /** The graph2. */
     private CodedNodeGraph graph2;
     
+    public AbstractMultiGraph() {
+        super();
+    }
+    
     /**
      * Instantiates a new union graph.
      * 

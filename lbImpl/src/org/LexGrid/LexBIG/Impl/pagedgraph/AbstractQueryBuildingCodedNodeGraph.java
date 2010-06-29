@@ -75,6 +75,10 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
     /** The relations container name. */
     private String relationsContainerName;
     
+    public AbstractQueryBuildingCodedNodeGraph() {
+        super();
+    }
+    
     /**
      * Instantiates a new paging coded node graph impl.
      * 
