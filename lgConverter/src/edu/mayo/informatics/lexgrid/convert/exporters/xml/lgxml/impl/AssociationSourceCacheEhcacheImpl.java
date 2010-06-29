@@ -35,8 +35,16 @@ public class AssociationSourceCacheEhcacheImpl implements AssociationSourceCache
             .diskPersistent(false)
             //.diskStorePath(diskStorePath)
             .diskExpiryThreadIntervalSeconds(0));
-        
-        manager.addCache(theCache); 
+        try {
+            manager.addCache(this.theCache);
+        } catch (net.sf.ehcache.ObjectExistsException e) {
+            
+            System.out.println("AssociationSourceCacheEhcacheImpl: " + e.getMessage());
+            System.out.println("AssociationSourceCacheEhcacheImpl: remove and re-add the cache");
+            manager.removalAll();
+            manager.addCache(this.theCache);
+        }
+         
         
     }
     
