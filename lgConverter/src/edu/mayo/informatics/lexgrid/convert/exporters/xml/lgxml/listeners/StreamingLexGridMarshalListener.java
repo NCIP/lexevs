@@ -213,7 +213,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                     //load the mapping for association entity
                     try {
                         Mapping mapping = new Mapping();
-                        mapping.loadMapping("file:///c:/xml_exp/mapping.xml");
+                        mapping.loadMapping("file:///"+StreamingLexGridMarshalListener.class.getResource("./").getPath()+"mapping.xml");
                         this.marshaller.setMapping(mapping);
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
@@ -423,7 +423,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                         
                         try {
                             Mapping mapping = new Mapping();
-                            mapping.loadMapping("file:///c:/xml_exp/mapping.xml");
+                            mapping.loadMapping("file:///"+StreamingLexGridMarshalListener.class.getResource("./").getPath()+"mapping.xml");
                             this.marshaller.setMapping(mapping);
                         } catch (IOException e) {
                             // TODO Auto-generated catch block
