@@ -6,7 +6,7 @@ public class Triple {
     private String targetEntityCode;
     private String associationName;
     
-    private Triple() { super(); }
+    public Triple() { super(); }
     
     public Triple(String src, String tgt, String assocName ) { 
         super();

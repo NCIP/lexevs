@@ -38,6 +38,8 @@ import org.exolab.castor.xml.ValidationException;
 import org.lexevs.dao.database.ibatis.entity.model.IdableAssociationEntity;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
+import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.AssociationSourceCache;
+import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.util.AssociationSourceCacheFactory;
 
 public class StreamingLexGridMarshalListener implements MarshalListener {
     Marshaller marshaller;
@@ -49,7 +51,8 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     Iterator<ResolvedConceptReference> blockIterator;
     ResolvedConceptReference curConRef;
     Entity curEntity;
-    List<AssociationSource> sourceList = new ArrayList<AssociationSource>();
+    // List<AssociationSource> sourceList = new ArrayList<AssociationSource>();
+    AssociationSourceCache sourceCache = AssociationSourceCacheFactory.createCache(); 
 
     AssociationPredicate userAP = null;
     String stopToken = "$$TEST$$";
@@ -351,13 +354,18 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     }
 
     private boolean sourceExist(ResolvedConceptReference rcr) {
+        boolean rv = this.sourceCache.exists(rcr);
+        return rv;
+
+/*
         for (AssociationSource source : sourceList) {
             if (source.getSourceEntityCode().equalsIgnoreCase(rcr.getCode())
                     && source.getSourceEntityCodeNamespace().equalsIgnoreCase(rcr.getCodeNamespace())) {
                 return true;
             }
-        }
+        }        
         return false;
+*/        
     }
 
     private void processTargets(ResolvedConceptReference sRef, String asName) throws MarshalException,
@@ -425,7 +433,8 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                             e.printStackTrace();
                         }    
                         
-                        sourceList.add(aS);
+                        // sourceList.add(aS);
+                        this.sourceCache.add(aS);
                         this.marshaller.marshal(aS);
                     }
                 }

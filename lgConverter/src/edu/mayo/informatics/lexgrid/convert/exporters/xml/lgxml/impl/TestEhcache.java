@@ -1,5 +1,8 @@
 package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.impl;
 
+import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.AssociationTarget;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -9,6 +12,10 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 public class TestEhcache {
     
     public TestEhcache() {
+        super();
+    }
+    
+    public void test1() {
         //Create a CacheManager using defaults
         CacheManager manager = CacheManager.create();
 
@@ -84,13 +91,57 @@ public class TestEhcache {
         element = cache.get("key18");
         value = (String)element.getObjectValue();        
         System.out.println("TestEhcache: value of element with key18=" + value);
+    }
+    
+    public void test2() {
+        //Create a CacheManager using defaults
+        CacheManager manager = CacheManager.create();
+
+        //Create a Cache specifying its configuration.
+        int maxElementsInMemory = 2;
+        Cache testCache = new Cache(
+          new CacheConfiguration("testCache2", maxElementsInMemory)
+            .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
+            .overflowToDisk(true)
+            .eternal(true)
+            .diskPersistent(false)
+            //.diskStorePath(diskStorePath)
+            .diskExpiryThreadIntervalSeconds(0));
         
+        manager.addCache(testCache); 
         
+        Cache cache = manager.getCache("testCache2");
+        System.out.println("Test Ehcache: cache size=" + cache.getSize());
+        
+        //--------------------------------------------------------
+        // get data from cache
+        //--------------------------------------------------------
+        AssociationTarget aT = new AssociationTarget();
+        aT.setTargetEntityCode("b");
+        aT.setTargetEntityCodeNamespace("ns1");
+        AssociationSource aS = new AssociationSource();
+        aS.addTarget(aT);
+        aS.setSourceEntityCode("a");
+        aS.setSourceEntityCodeNamespace("ns1");
+        
+        String key = aS.getSourceEntityCode() + aS.getSourceEntityCodeNamespace();
+        
+        Element element = new Element(key, aS);
+        System.out.println("TestEhcache: add element with key: " + element.getKey() + " and value: " + element.getValue() + " to empty cache...");
+        cache.put(element);
+        System.out.println("TestEhcache: cache size=" + cache.getSize());
         
     }
+
+    
+    
+    
+    
     
     public static void main(String[] args) {
         TestEhcache tester = new TestEhcache();
+        // tester.test1();
+        tester.test2();
     }
 
 }
