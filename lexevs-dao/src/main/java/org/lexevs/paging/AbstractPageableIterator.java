@@ -10,7 +10,7 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 
 	private static int DEFAULT_PAGE_SIZE = 100;
 	
-	private List<T> cache = new ArrayList<T>();
+	private List<? extends T> cache = new ArrayList<T>();
 	
 	private int pageSize;
 	
@@ -80,5 +80,5 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 		currentPage++;
 	}
 	
-	protected abstract List<T> doPage(int currentPosition, int pageSize);
+	protected abstract List<? extends T> doPage(int currentPosition, int pageSize);
 }
