@@ -1,7 +1,10 @@
 package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.cache;
 
+import junit.framework.Assert;
+
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
+import org.junit.Test;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -15,6 +18,7 @@ public class TestEhcache {
         super();
     }
     
+    @Test
     public void test1() {
         //Create a CacheManager using defaults
         CacheManager manager = CacheManager.create();
@@ -33,20 +37,24 @@ public class TestEhcache {
         manager.addCache(testCache); 
         
         Cache cache = manager.getCache("testCache");
+        Assert.assertEquals(0, cache.getSize());
         System.out.println("Test Ehcache: cache size=" + cache.getSize());
+
         
         //--------------------------------------------------------
-        // get data from cache
+        // add data to cache
         //--------------------------------------------------------
         Element element = new Element("key1", "value1");
         System.out.println("TestEhcache: add element \"" + element.getKey() + "\" " + element.getValue() + " to empty cache...");
-        cache.put(element);
+        cache.put(element);        
         System.out.println("TestEhcache: cache size=" + cache.getSize());
+        Assert.assertEquals(1, cache.getSize());
         
         // add duplicate data
         System.out.println("TestEhcache: adding duplicate element...");
         cache.put(new Element("key1", "value1"));
         System.out.println("TestEhcache: cache size=" + cache.getSize());
+        Assert.assertEquals(1, cache.getSize());
         
 
         //--------------------------------------------------------
@@ -56,6 +64,7 @@ public class TestEhcache {
         element = cache.get("key1");
         String value = (String)element.getObjectValue();        
         System.out.println("TestEhcache: value of element with key1=" + value);
+        Assert.assertTrue(value.equals("value1"));
         
         // hit=false
         element = cache.get("key2");
@@ -65,6 +74,7 @@ public class TestEhcache {
             value = (String)element.getObjectValue();
             System.out.println("TestEhcache: value of element with key2=" + value);            
         }
+        Assert.assertNull(element);
         
         //--------------------------------------------------------
         // test disk
@@ -82,8 +92,9 @@ public class TestEhcache {
             System.out.println("TestEhcache: cache size=" + cache.getSize());
         }
         
-        // System.out.println(cache.toString());
+        Assert.assertEquals(20, cache.getSize());
         
+        // System.out.println(cache.toString());
         cache.flush();
         
         System.out.println("TestEhcache: DiskStorePath=" + cache.getCacheConfiguration().getDiskStorePath());
@@ -91,8 +102,10 @@ public class TestEhcache {
         element = cache.get("key18");
         value = (String)element.getObjectValue();        
         System.out.println("TestEhcache: value of element with key18=" + value);
+        Assert.assertTrue(value.equals("value18"));
     }
     
+    @Test
     public void test2() {
         //Create a CacheManager using defaults
         CacheManager manager = CacheManager.create();
@@ -112,6 +125,7 @@ public class TestEhcache {
         
         Cache cache = manager.getCache("testCache2");
         System.out.println("Test Ehcache: cache size=" + cache.getSize());
+        Assert.assertEquals(0, cache.getSize());
         
         //--------------------------------------------------------
         // get data from cache
@@ -130,7 +144,10 @@ public class TestEhcache {
         System.out.println("TestEhcache: add element with key: " + element.getKey() + " and value: " + element.getValue() + " to empty cache...");
         cache.put(element);
         System.out.println("TestEhcache: cache size=" + cache.getSize());
+        Assert.assertEquals(1, cache.getSize());
         
+        element = cache.get(key);
+        Assert.assertNotNull(element);
     }
 
     
