@@ -176,6 +176,7 @@
     </table>
     <table name="@PREFIX@h_propertyLinks">
       <column name="propertyLinksGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entityGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
       <column name="sourcePropertyGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
       <column name="link" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="targetPropertyGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
