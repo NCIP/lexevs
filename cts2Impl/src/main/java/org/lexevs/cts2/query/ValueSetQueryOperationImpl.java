@@ -45,6 +45,7 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 public class ValueSetQueryOperationImpl implements ValueSetQueryOperation {
 	private LexEVSValueSetDefinitionServices valueSetService_;
 	private DatabaseServiceManager databaseServiceManager_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
+	@SuppressWarnings("unused")
 	private LexEvsCTS2 lexEvsCts2_;
 	
 	public ValueSetQueryOperationImpl(LexEvsCTS2 lexEvsCts2) {
