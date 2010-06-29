@@ -5,11 +5,16 @@ package org.lexevs.cts2.author;
 
 import static org.junit.Assert.*;
 
+import java.net.URI;
 import java.util.Date;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
+import org.lexevs.cts2.LexEvsCTS2;
+import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.core.update.RevisionInfo;
 
 /**
@@ -44,9 +49,10 @@ public class ValueSetAuthoringOperationImplTest {
 
 	/**
 	 * Test method for {@link org.lexevs.cts2.author.ValueSetAuthoringOperationImpl#createValueSet(org.LexGrid.valueSets.ValueSetDefinition, org.lexevs.cts2.core.update.RevisionInfo, org.LexGrid.versions.EntryState)}.
+	 * @throws LBException 
 	 */
 	@Test
-	public void testCreateValueSetUsingValueSetDefinition() {
+	public void testCreateValueSetUsingValueSetDefinition() throws LBException {
 		ValueSetDefinition vsd = new ValueSetDefinition();
 		vsd.setValueSetDefinitionURI("VSD:AUTHOR:JUNIT:TEST1");
 		vsd.setValueSetDefinitionName("Authoring create junit test1");
@@ -60,7 +66,14 @@ public class ValueSetAuthoringOperationImplTest {
 		revInfo.setDescription("testDescription");
 		revInfo.setRevisionDate(new Date());
 		
-//		EntryState es
+		EntryState es = new EntryState();
+		es.setChangeType(ChangeType.NEW);
+		es.setContainingRevision("R001");
+		es.setRelativeOrder(0L);
+		
+		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
+		URI vsdURI = valueSetAuthOp.createValueSet(vsd, revInfo, es);
+		System.out.println("vsdURI : " + vsdURI);
 	}
 
 	/**

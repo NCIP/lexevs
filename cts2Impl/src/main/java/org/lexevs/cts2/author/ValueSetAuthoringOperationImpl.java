@@ -18,6 +18,7 @@ import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
+import org.lexevs.cts2.LexEvsCTS2;
 import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.dao.database.service.version.AuthoringService;
@@ -32,6 +33,12 @@ public class ValueSetAuthoringOperationImpl implements
 	
 	private ValueSetDefinitionService vsdServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 	private AuthoringService authServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
+	@SuppressWarnings("unused")
+	private LexEvsCTS2 lexEvsCts2_;
+	
+	public ValueSetAuthoringOperationImpl(LexEvsCTS2 lexEvsCts2){
+    	this.lexEvsCts2_ = lexEvsCts2;
+    }
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.cts2.author.ValueSetAuthoringOperation#addDefinitionEntry(java.net.URI, org.LexGrid.valueSets.DefinitionEntry, org.lexevs.cts2.core.update.RevisionInfo, org.LexGrid.versions.EntryState)
