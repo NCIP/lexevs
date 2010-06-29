@@ -4,21 +4,6 @@ package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.impl;
  * code based on example from: http://www.hsqldb.org/doc/guide/apb.html
  */
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
@@ -31,8 +16,6 @@ import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.AssociationSourceCache;
-import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.TripleCache;
-import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.util.Triple;
 
 public class AssociationSourceCacheEhcacheImpl implements AssociationSourceCache {
 
