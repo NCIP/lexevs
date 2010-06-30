@@ -46,42 +46,28 @@ public class XmlContentWriter {
     /** The namespace cognizant marshaller. */
     private Marshaller ns_marshaller;
     {
-        Mapping mapping = new Mapping();
-        try {
-            mapping.loadMapping("file:///c:/xml_exp/mapping.xml");            
-            
-//            XMLContext context = new XMLContext();
-//            context.addMapping(mapping);
-//            ns_marshaller = context.createMarshaller();
-            ns_marshaller = new Marshaller();
-            ns_marshaller.setMapping(mapping);
-            ns_marshaller.setProperty(XMLProperties.USE_INDENTATION, "true");
-            ns_marshaller.setMarshalAsDocument(true);
-            ns_marshaller.setMarshalExtendedType(false);
-            ns_marshaller.setSuppressNamespaces(false);
-            ns_marshaller.setSchemaLocation(LexGridConstants.lgSchemaLocation); // mct
-            ns_marshaller.setSupressXMLDeclaration(true);
-            ns_marshaller.setSuppressXSIType(false);
-            ns_marshaller.setValidation(true);
-            // ns_marshaller.setEncoding("UTF-8");
-            ns_marshaller.setProperty(XMLProperties.PROXY_INTERFACES, CastorProxy.class.getCanonicalName());
-            ns_marshaller.setNamespaceMapping("lgBuiltin", LexGridConstants.lgBuiltin);
-            ns_marshaller.setNamespaceMapping("lgCommon", LexGridConstants.lgCommon);
-            ns_marshaller.setNamespaceMapping("lgCon", LexGridConstants.lgCon);
-            ns_marshaller.setNamespaceMapping("lgCS", LexGridConstants.lgCS);
-            ns_marshaller.setNamespaceMapping("lgNaming", LexGridConstants.lgNaming);
-            ns_marshaller.setNamespaceMapping("lgRel", LexGridConstants.lgRel);
-            ns_marshaller.setNamespaceMapping("lgVD", LexGridConstants.lgVD);
-            ns_marshaller.setNamespaceMapping("lgVer", LexGridConstants.lgVer);
-            ns_marshaller.setNamespaceMapping("xsi", LexGridConstants.lgXSI); // mct
-            ns_marshaller.setInternalContext(ns_marshaller.getInternalContext());
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (MappingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        ns_marshaller = new Marshaller();
+        ns_marshaller.setProperty(XMLProperties.USE_INDENTATION, "true");
+        ns_marshaller.setMarshalAsDocument(true);
+        ns_marshaller.setMarshalExtendedType(false);
+        ns_marshaller.setSuppressNamespaces(false);
+        ns_marshaller.setSchemaLocation(LexGridConstants.lgSchemaLocation); // mct
+        ns_marshaller.setSupressXMLDeclaration(true);
+        ns_marshaller.setSuppressXSIType(false);
+        ns_marshaller.setValidation(true);
+        // ns_marshaller.setEncoding("UTF-8");
+        ns_marshaller.setProperty(XMLProperties.PROXY_INTERFACES, CastorProxy.class.getCanonicalName());
+        ns_marshaller.setNamespaceMapping("lgBuiltin", LexGridConstants.lgBuiltin);
+        ns_marshaller.setNamespaceMapping("lgCommon", LexGridConstants.lgCommon);
+        ns_marshaller.setNamespaceMapping("lgCon", LexGridConstants.lgCon);
+        ns_marshaller.setNamespaceMapping("lgCS", LexGridConstants.lgCS);
+        ns_marshaller.setNamespaceMapping("lgNaming", LexGridConstants.lgNaming);
+        ns_marshaller.setNamespaceMapping("lgRel", LexGridConstants.lgRel);
+        ns_marshaller.setNamespaceMapping("lgVD", LexGridConstants.lgVD);
+        ns_marshaller.setNamespaceMapping("lgVer", LexGridConstants.lgVer);
+        ns_marshaller.setNamespaceMapping("xsi", LexGridConstants.lgXSI); // mct
+        ns_marshaller.setInternalContext(ns_marshaller.getInternalContext());
+
     }
 
     public void marshalToXml(Object obj, CodedNodeSet cns, Writer writer, int pageSize) {
