@@ -4,10 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="/lgSharedLibraries/data/BlankAccessDB.jar"/>
 	<classpathentry exported="true" kind="lib" path="/lgSharedLibraries/eclipse/swt/windows/swt.jar"/>
-	<classpathentry exported="true" kind="lib" path="/lgSharedLibraries/apache/log4j/log4j-1.2.15.jar"/>
-	<classpathentry exported="true" kind="lib" path="/lgSharedLibraries/apache/commons/commons-collections-3.2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="/lgSharedLibraries/apache/commons/commons-pool-1.4.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/apache/commons/commons-lang-2.4.jar"/>
+	<classpathentry exported="true" kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbModel"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
 	<classpathentry kind="output" path="bin"/>
