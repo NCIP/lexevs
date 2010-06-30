@@ -11,7 +11,6 @@
 	<property name="docs"  		location="Castor/JavaDocs"/>
 	<property name="core"       location="Castor/src/org/LexGrid/LexBIG/DataModel/Core"/>
 	<property name="collections"   location="Castor/src/org/LexGrid/LexBIG/DataModel/Collections"/>
-	<property name="annotations"   location="annotations/src"/>
 	<property name="loaderXSDs"	   location="master.preferences"/>
 	<property name="lib.dir" value="build/lib"/>
 
