@@ -49,7 +49,7 @@ public class Logger implements LgLoggerIF, Serializable {
 	private static final long serialVersionUID = -4792431175428737078L;
 
 	/** The gui log_. */
-    private org.apache.log4j.Logger fatal_, error_, warn_, info_, debug_, loadLog_, apiLog_, sqlLog_, guiLog_, vsGUILog_;
+    private org.apache.log4j.Logger fatal_, error_, warn_, info_, debug_, loadLog_, exportLog_, apiLog_, sqlLog_, guiLog_, vsGUILog_;
 
     /** The log message id_. */
     private int logMessageId_ = 1;
@@ -93,6 +93,10 @@ public class Logger implements LgLoggerIF, Serializable {
         loadLog_ = LogManager.getLogger("LB_LOAD_LOGGER");
         loadLog_.setAdditivity(false);
         loadLog_.setLevel(Level.DEBUG);
+        
+        exportLog_ = LogManager.getLogger("LB_EXPORT_LOGGER");
+        exportLog_.setAdditivity(false);
+        exportLog_.setLevel(Level.DEBUG);
 
         apiLog_ = LogManager.getLogger("LB_API_LOGGER");
         apiLog_.setAdditivity(false);
@@ -144,9 +148,10 @@ public class Logger implements LgLoggerIF, Serializable {
             } else {
                 File fullLog = new File(vars.getLogLocation(), "LexBIG_full_log.txt");
                 File loadLog = new File(vars.getLogLocation(), "LexBIG_load_log.txt");
+                File exportLog = new File(vars.getLogLocation(), "LexBIG_export_log.txt");
 
                 Appender fileAppender;
-                Appender loadFileAppender;
+                Appender loadFileAppender, exportFileAppender;
                 Appender consoleAppender = new ConsoleAppender(new PatternLayout("%c %p - %d - %m%n"));
 
                 String logChange = vars.getLogChange();
@@ -181,6 +186,11 @@ public class Logger implements LgLoggerIF, Serializable {
                             .getAbsolutePath(), formatString);
                     ((DailyRollingFileAppender) loadFileAppender).setAppend(true);
                     ((DailyRollingFileAppender) loadFileAppender).activateOptions();
+                    
+                    exportFileAppender = new DailyRollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), exportLog
+                            .getAbsolutePath(), formatString);
+                    ((DailyRollingFileAppender) exportFileAppender).setAppend(true);
+                    ((DailyRollingFileAppender) exportFileAppender).activateOptions();
 
                 } else {
                     fileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), fullLog
@@ -192,6 +202,11 @@ public class Logger implements LgLoggerIF, Serializable {
                             .getAbsolutePath(), true);
                     ((RollingFileAppender) loadFileAppender).setMaxBackupIndex(Integer.parseInt(logChange));
                     ((RollingFileAppender) loadFileAppender).setMaxFileSize(vars.getEraseLogsAfter() + "MB");
+                    
+                    exportFileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), exportLog
+                            .getAbsolutePath(), true);
+                    ((RollingFileAppender) exportFileAppender).setMaxBackupIndex(Integer.parseInt(logChange));
+                    ((RollingFileAppender) exportFileAppender).setMaxFileSize(vars.getEraseLogsAfter() + "MB");
                 }
 
                 // log everything to the file.
@@ -204,6 +219,7 @@ public class Logger implements LgLoggerIF, Serializable {
                 apiLog_.addAppender(fileAppender);
 
                 loadLog_.addAppender(loadFileAppender);
+                exportLog_.addAppender(exportFileAppender);
 
                 // add the root logger to the console appender.
                 LogManager.getRootLogger().addAppender(consoleAppender);
@@ -466,6 +482,10 @@ public class Logger implements LgLoggerIF, Serializable {
     public void loadLogDebug(String message) {
         loadLog_.debug(message);
     }
+    
+    public void exportLogDebug(String message) {
+        exportLog_.debug(message);
+    }
 
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.Utility.logging.LgLoggerIF#logMethod()
@@ -502,6 +522,27 @@ public class Logger implements LgLoggerIF, Serializable {
             error("There was a problem logging a method call", e);
         }
    
+    }
+
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgLoggerIF#exportLogError(java.lang.String, java.lang.Throwable)
+     */
+    public void exportLogError(String message, Throwable e) {
+        exportLog_.error(message, e);
+    }
+
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgLoggerIF#exportLogError(java.lang.String)
+     */
+    public void exportLogError(String message) {
+        exportLog_.error(message);
+    }
+
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgLoggerIF#exportLogWarn(java.lang.String, java.lang.Throwable)
+     */
+    public void exportLogWarn(String message, Throwable e) {
+        exportLog_.warn(message, e);
     }
 
     /* (non-Javadoc)

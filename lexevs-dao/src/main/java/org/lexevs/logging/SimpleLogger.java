@@ -159,4 +159,34 @@ public class SimpleLogger implements LgLoggerIF {
         System.out.println("Warn: " + message);
         e.printStackTrace();
     }
+    
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgLoggerIF#exportLogDebug(java.lang.String)
+     */
+    public void exportLogDebug(String message) {
+        System.out.println("Debug: " + message);
+    }
+
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgLoggerIF#exportLogError(java.lang.String, java.lang.Throwable)
+     */
+    public void exportLogError(String message, Throwable e) {
+        System.out.println("Error: " + message);
+        e.printStackTrace();
+    }
+
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgLoggerIF#exportLogError(java.lang.String)
+     */
+    public void exportLogError(String message) {
+        System.out.println("Error: " + message);
+    }
+
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Utility.logging.LgLoggerIF#exportLogWarn(java.lang.String, java.lang.Throwable)
+     */
+    public void exportLogWarn(String message, Throwable e) {
+        System.out.println("Warn: " + message);
+        e.printStackTrace();
+    }
 }
