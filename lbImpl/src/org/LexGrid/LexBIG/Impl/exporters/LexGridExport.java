@@ -74,10 +74,6 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
     private CodedNodeGraph cng;
     private CodedNodeSet cns;
 
-    protected LgLoggerIF getLogger() {
-        return LoggerFactory.getLogger();
-    }
-    
     public void setCns(CodedNodeSet cns) {
         this.cns = cns;
     }
@@ -108,7 +104,7 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         ExtensionRegistryImpl.instance().registerExportExtension(temp);
     }
     
-    protected void doExport() {
+    protected void doExport(){
         if (super.getSource() != null)
             exportCodingSchemeData();
         if (super.getValueSetDefinitionURI() != null)
@@ -233,10 +229,6 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         
         XmlContentWriter xmlContentWriter = new XmlContentWriter();
         xmlContentWriter.marshalToXml(codingScheme, cng, cns, out, this.pageSize, true);
-        
-        // do post processing
-        FileFormatter ff = new FileFormatter();
-        ff.process(outFile);
         
     }
     

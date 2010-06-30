@@ -28,7 +28,8 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExportStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
-import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.lexevs.logging.LoggerFactory;
 
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
 import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
@@ -47,7 +48,7 @@ public abstract class BaseExporter {
     public String description_;
     public String provider_ = "MAYO";
 
-    private MessageDirector md_;
+    private ExporterMessageDirector md_;
     private ExportStatus status_;
     
     private URI resourceUri;
@@ -70,7 +71,7 @@ public abstract class BaseExporter {
         status_ = new ExportStatus();
         status_.setState(ProcessState.PROCESSING);
         status_.setStartTime(new Date(System.currentTimeMillis()));
-        md_ = new MessageDirector(getName(), status_);
+        md_ = new ExporterMessageDirector(getName(), status_);
 
         if (async) {
             Thread conversion = new Thread(new DoConversion());
@@ -82,7 +83,6 @@ public abstract class BaseExporter {
 
     private class DoConversion implements Runnable {
         public void run() {
-            
             try {
                 doExport();
                 status_.setState(ProcessState.COMPLETED);
@@ -100,9 +100,14 @@ public abstract class BaseExporter {
         }
     }
     
+   
     protected abstract void doExport() throws Exception;
     
     protected abstract OptionHolder declareAllowedOptions(OptionHolder holder);
+    
+    protected LgLoggerIF getLogger() {
+        return LoggerFactory.getLogger();
+    }
     
     public void export(AbsoluteCodingSchemeVersionReference source, URI destination) {
         try {
