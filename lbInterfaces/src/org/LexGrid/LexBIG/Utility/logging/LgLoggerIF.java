@@ -37,4 +37,11 @@ public interface LgLoggerIF extends LgMessageDirectorIF {
 
     public void loadLogWarn(String message, Throwable e);
 
+    public void exportLogDebug(String message);
+
+    public void exportLogError(String message, Throwable e);
+
+    public void exportLogError(String message);
+
+    public void exportLogWarn(String message, Throwable e);
 }
