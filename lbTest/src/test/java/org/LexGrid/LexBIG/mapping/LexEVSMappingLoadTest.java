@@ -1,6 +1,7 @@
 package org.LexGrid.LexBIG.mapping;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
@@ -21,6 +22,9 @@ import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
+import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.Revision;
+import org.LexGrid.versions.types.ChangeType;
 
 import junit.framework.TestCase;
 
@@ -30,6 +34,13 @@ public class LexEVSMappingLoadTest extends TestCase {
 	   LexBIGService lbs;
 		LexBIGServiceManager lbsm;
 		CodingSchemeVersionOrTag csvt;
+		public static String SOURCE_SCHEME = "GermanMadeParts";
+		public static String SOURCE_VERSION = "2.0";
+		public static String MAPPING_SCHEME = "http://default.mapping.container";
+		public static String MAPPING_VERSION = "1.0";
+		public static String TARGET_SCHEME =  "Automobiles";
+		public static String TARGET_VERSION = "1.0";
+		
 	   public void setUp(){
 
 		   authoring = new LexEVSAuthoringServiceImpl();
@@ -134,5 +145,7 @@ public class LexEVSMappingLoadTest extends TestCase {
 			codingSchemeVersion.setCodingSchemeVersion("1.0");
 		   lbsm.activateCodingSchemeVersion(codingSchemeVersion);
 	   }
+	   
+	   
 	   
 }

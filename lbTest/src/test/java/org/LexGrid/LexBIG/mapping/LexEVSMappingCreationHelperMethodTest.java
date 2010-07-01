@@ -56,4 +56,42 @@ public class LexEVSMappingCreationHelperMethodTest extends TestCase {
 	public void testSupportedAssociationQualifiersExists() {
 
 	}
+	
+	public void testAssociationExistance(){
+		assertTrue(authoring.doesAssociationExist(scheme, 
+                "relations", 
+                "uses",
+                "Ford",
+                "Automobiles",
+                "R0001",
+                "GermanMadeParts"));
+		assertFalse(authoring.doesAssociationExist(scheme, 
+                "relations", 
+                "uses",
+                "Ford",
+                "Automobiles",
+                "R0001",
+                "Automobiles"));
+		assertFalse(authoring.doesAssociationExist(scheme, 
+                "relations", 
+                "uses",
+                "Ford",
+                "GermanMadeParts",
+                "R0001",
+                "Automobiles"));
+		assertFalse(authoring.doesAssociationExist(scheme, 
+                "relations", 
+                "uses",
+                "005",
+                "Automobiles",
+                "R0001",
+                "GermanMadeParts"));
+		assertTrue(authoring.doesAssociationExist(scheme, 
+                "relations", 
+                "uses",
+                "Ford",
+                "Automobiles",
+                "R0001",
+                "GermanMadeParts"));
+	}
 }
