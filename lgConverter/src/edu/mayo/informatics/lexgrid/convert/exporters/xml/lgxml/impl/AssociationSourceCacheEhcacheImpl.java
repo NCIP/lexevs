@@ -26,7 +26,7 @@ public class AssociationSourceCacheEhcacheImpl implements AssociationSourceCache
         CacheManager manager = CacheManager.create();
 
         //Create a Cache specifying its configuration.
-        int maxElementsInMemory = 10000;
+        int maxElementsInMemory = 100;
         this.theCache = new Cache(
           new CacheConfiguration("lg60XmlExporterAssocSrcCache", maxElementsInMemory)
             .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
@@ -44,6 +44,8 @@ public class AssociationSourceCacheEhcacheImpl implements AssociationSourceCache
             manager.removalAll();
             manager.addCache(this.theCache);
         }
+        System.out.println("AssociationSourceCacheEhcacheImpl: DiskStorePath=" + this.theCache.getCacheConfiguration().getDiskStorePath());
+        System.out.println("AssociationSourceCacheEhcacheImpl: debug version 2");
          
         
     }
@@ -86,6 +88,7 @@ public class AssociationSourceCacheEhcacheImpl implements AssociationSourceCache
 
     @Override
     public boolean exists(ResolvedConceptReference rcr) {
+        
         String key = this.makeKey(rcr);
         Element element = this.theCache.get(key);
         if(element == null) {
@@ -93,6 +96,7 @@ public class AssociationSourceCacheEhcacheImpl implements AssociationSourceCache
         } else {
             return true;
         }
+        
     }
 
 }
