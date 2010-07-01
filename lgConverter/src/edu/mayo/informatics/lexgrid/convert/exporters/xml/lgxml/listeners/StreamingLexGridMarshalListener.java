@@ -28,12 +28,15 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.LexGrid.versions.EntryState;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
+
+import com.sun.org.apache.xerces.internal.impl.validation.EntityState;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.AssociationSourceCache;
@@ -237,8 +240,8 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
             return this.preMarshalAssociationSource(arg0);
         } else if ((Entity.class.equals(arg0.getClass()) == true)) {
             return this.preMarshalEntity(arg0);
-        }
-
+        } else if (EntryState.class.equals(arg0.getClass()) == true)
+            return false;
         else {
             if (Relations.class.equals(arg0.getClass()) && cng == null) {
                 return false;
