@@ -13,6 +13,18 @@
 	
 	<resultMap id="relationsResult" class="relations">
 		<result property="containerName" column="containerName" />
+		<result property="isMapping" column="isMapping" />
+		<result property="representsVersion" column="representsVersion" />
+		<result property="sourceCodingScheme" column="sourceCodingScheme" />
+		<result property="sourceCodingSchemeVersion" column="sourceCodingSchemeVersion" />
+		<result property="targetCodingScheme" column="targetCodingScheme" />
+		<result property="targetCodingSchemeVersion" column="targetCodingSchemeVersion"/>
+		<result property="entityDescription.content" column="description"/>
+		<result property="isActive" column="isActive"/>
+		<result property="owner" column="owner" />
+		<result property="status" column="status" />
+		<result property="effectiveDate" column="effectiveDate" />
+		<result property="expirationDate" column="expirationDate" />
 	</resultMap>
 	
 	<resultMap id="relationAttributes" class="insertOrUpdateRelationBean">
@@ -196,6 +208,7 @@
    		SELECT
    			containerName,
    			isMapping,
+   			representsVersion,
    			sourceCodingScheme,
    			sourceCodingSchemeVersion,
    			targetCodingScheme,
