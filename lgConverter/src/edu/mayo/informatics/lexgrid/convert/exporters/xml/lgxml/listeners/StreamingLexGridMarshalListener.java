@@ -109,7 +109,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     private boolean preMarshalAssociationSource(Object obj) {
         AssociationSource as = (AssociationSource) obj;
         if (as.getSourceEntityCode().equals(LexGridConstants.MR_FLAG)) {
-            this.marshaller.setRootElement("source");
+            this.marshaller.setRootElement("source"); //under the associationpredicate, there are a "source" list of AssociationSource.
             if (cng != null) {
                 try {
                     ResolvedConceptReferenceList rcrl = cng.resolveAsList(null, true, false, 0, -1, null, null, null,
