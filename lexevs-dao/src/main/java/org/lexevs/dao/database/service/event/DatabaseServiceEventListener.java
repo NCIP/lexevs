@@ -25,6 +25,7 @@ import org.lexevs.dao.database.service.event.entity.EntityBatchInsertEvent;
 import org.lexevs.dao.database.service.event.entity.EntityInsertOrRemoveEvent;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
+import org.lexevs.dao.database.service.event.revision.EntityReviseEvent;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 
 /**
@@ -81,4 +82,6 @@ public interface DatabaseServiceEventListener {
 	public boolean onPreEntityRemove(EntityInsertOrRemoveEvent entityRemoveEvent);
 	
 	public boolean onPostEntityRemove(EntityInsertOrRemoveEvent entityRemoveEvent);
+	
+	public boolean onEntityReviseEvent(EntityReviseEvent reviseEvent);
 }

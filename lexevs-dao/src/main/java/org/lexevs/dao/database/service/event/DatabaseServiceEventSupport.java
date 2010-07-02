@@ -27,6 +27,7 @@ import org.lexevs.dao.database.service.event.entity.EntityInsertOrRemoveEvent;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
 import org.lexevs.dao.database.service.event.registry.ListenerRegistry;
+import org.lexevs.dao.database.service.event.revision.EntityReviseEvent;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 
 /**
@@ -134,6 +135,12 @@ public class DatabaseServiceEventSupport {
 				listener.onPostEntityRemove(entityRemoveEvent);
 			}
 	}
+	
+	protected void fireEntityReviseEvent(EntityReviseEvent entityReviseEvent){
+		for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
+			listener.onEntityReviseEvent(entityReviseEvent);
+		}
+}
 
 	public void setListenerRegistry(ListenerRegistry listenerRegistry) {
 		this.listenerRegistry = listenerRegistry;
