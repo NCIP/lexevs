@@ -404,7 +404,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		
 		service.insertEntity("uri", "v1", entity);
 	}
-	
+
 	@Test
 	public void testInsertDependentChanges() throws Exception {
 		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
@@ -435,7 +435,7 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		entity.getEntryState().setContainingRevision("rid2");
 		entity.getEntryState().setRelativeOrder(0l);
 		
-		service.insertDependentChanges("csuri", "csversion", entity);
+		service.insertDependentChanges("csuri", "csversion", entity, true);
 		
 		assertEquals(0, template.queryForInt("select count(*) from h_entity"));
 	}
@@ -470,8 +470,9 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		entity.getEntryState().setContainingRevision("rid2");
 		entity.getEntryState().setRelativeOrder(0l);
 		
-		service.insertDependentChanges("csuri", "csversion", entity);
+		service.insertDependentChanges("csuri", "csversion", entity, true);
 		
 		assertEquals(0, template.queryForInt("select count(*) from h_entity"));
 	}
+
 }
