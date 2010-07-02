@@ -1,10 +1,8 @@
 package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.listeners;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
@@ -36,10 +34,10 @@ import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
 
-import com.sun.org.apache.xerces.internal.impl.validation.EntityState;
-
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
+import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.AssociationEntityCache;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.AssociationSourceCache;
+import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.util.AssociationEntityCacheFactory;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.util.AssociationSourceCacheFactory;
 
 public class StreamingLexGridMarshalListener implements MarshalListener {
@@ -48,9 +46,8 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     private CodedNodeGraph cng;
     private String curAssociationName;
     private AssociationSourceCache sourceCache = AssociationSourceCacheFactory.createCache();
+    private AssociationEntityCache associationEntityCache = AssociationEntityCacheFactory.createCache();
     
-    private Mapping specialMapping;
-
     private final int MAX_BLOCK_SIZE = 10;
     private int blockSize = 10;
     private int entitiesToReturn = -1; // limit our output to the file just to
@@ -164,8 +161,6 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                 try {
                     Iterator<ResolvedConceptReference> blockIterator;
                     ResolvedConceptReferencesIterator rcri_iterator = cns.resolve(null, null, null, null, true);
-                    List<AssociationEntity> associationEntityList = new ArrayList<AssociationEntity>();
-                    // will a LBabcException break us out?
                     while (rcri_iterator.hasNext()) {
                         ResolvedConceptReferenceList refList = rcri_iterator.next(blockSize);
                         blockIterator = (Iterator<ResolvedConceptReference>) refList.iterateResolvedConceptReference();
@@ -183,7 +178,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                                 continue;
 
                             if (curEntity instanceof AssociationEntity) {
-                                associationEntityList.add((AssociationEntity) curEntity);
+                                this.associationEntityCache.put((AssociationEntity)curEntity);
                             } else {
                                 this.marshaller.marshal(curEntity);
                             }
@@ -202,8 +197,13 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                     }
 
                     // now marshal the AssociationEntity
-                    for (AssociationEntity associationEntity : associationEntityList) {
-                        this.marshaller.marshal(associationEntity);
+                    List<String> keys = this.associationEntityCache.getKeys();
+                    String key;
+                    AssociationEntity aE;
+                    for(int i=0; i<keys.size(); ++i) {
+                        key = keys.get(i);
+                        aE = this.associationEntityCache.get(key);
+                        this.marshaller.marshal(aE);
                     }
 
                 } catch (LBInvocationException e) {
@@ -260,7 +260,6 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
             return;
         }
 
-        AssociationSource associationSource = null;
         Iterator<?> associationIterator = _asl.iterateAssociation();
 
         while (associationIterator.hasNext()) {
@@ -270,7 +269,6 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
             int associatedConcepts = association.getAssociatedConcepts().getAssociatedConceptCount();
 
             if (associatedConcepts > 0) {
-                Vector<AssociationSource> associationSourceV = new Vector<AssociationSource>();
 
                 Iterator associatedConceptsIterator = association.getAssociatedConcepts().iterateAssociatedConcept();
                 while (associatedConceptsIterator.hasNext()) {
@@ -283,10 +281,8 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                     try {
                         localRcrl = cng.resolveAsList(focus, true, false, 0, -1, null, null, null, null, -1);
                     } catch (LBInvocationException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     } catch (LBParameterException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     ResolvedConceptReference sourceRef = null;
