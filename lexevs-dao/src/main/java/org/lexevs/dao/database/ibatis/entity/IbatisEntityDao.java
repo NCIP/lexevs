@@ -31,12 +31,10 @@ import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.types.ChangeType;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
-import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
 import org.lexevs.dao.database.ibatis.codingscheme.IbatisCodingSchemeDao;
@@ -131,7 +129,11 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	
 	private static String GET_ENTITY_TYPE_BY_ENTITYUID_SQL = ENTITY_NAMESPACE + "getEntityTypeByEntityUId";
 	
-	private EntryStateTypeClassifier entryStateClassifier = new EntryStateTypeClassifier();
+	private static String GET_PREVIOUS_ENTRY_STATE_UID_SQL = ENTITY_NAMESPACE + "getPreviousEntryStateUid";
+	
+	private static String GET_ENTITY_BY_ENTRY_STATE_UID_SQL = ENTITY_NAMESPACE + "getEntityByEntryStateUid";
+	
+	public static String GET_ENTRY_STATE = VERSIONS_NAMESPACE + "getEntryState";
 	
 	/** The ENTITY. */
 	public static String ENTITY = "entity";
@@ -251,6 +253,18 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 
 	}
 	
+	protected Entity getEntityByEntryStateUid(
+			String codingSchemeUid, 
+			String entityUid,
+			String entryStateUid) {
+		SequentialMappedParameterBean bean = 
+			new SequentialMappedParameterBean(entityUid, entryStateUid);
+		bean.setPrefix(this.getPrefixResolver().resolveHistoryPrefix());
+		
+		return (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_ID_AND_REVISION_ID_SQL, 
+				bean);
+	}
+	
 	public Entity getEntityByUId(
 			String codingSchemeId, 
 			String entityId) {
@@ -279,16 +293,20 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	
 	@Override
 	public Entity getHistoryEntityByRevision(String codingSchemeUid, String entityUid, String revisionId) {
+		String REVISION_ID_PARAMETER = "revisionId";
+		
 		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
 		String actualTableSetPrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
-		PrefixedParameterTuple tuple = 
-			new PrefixedParameterTuple(prefix, entityUid, revisionId);
-		
-		tuple.setActualTableSetPrefix(actualTableSetPrefix);
+		SequentialMappedParameterBean bean = 
+			new SequentialMappedParameterBean(entityUid);
+		bean.put(REVISION_ID_PARAMETER, revisionId);
+
+		bean.setPrefix(prefix);
+		bean.setActualTableSetPrefix(actualTableSetPrefix);
 		
 		return (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_ID_AND_REVISION_ID_SQL, 
-				tuple);
+				bean);
 	}
 	
 	protected <T extends Entity> T addEntityAttributes(
@@ -501,25 +519,11 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		
 		Assert.notNull(entityData);
 		
+		Assert.notNull(entityData.getEntryStateUId());
+		
 		entityData.setPrefix(historyPrefix);
 		
 		inserter.insert(INSERT_ENTITY_SQL, entityData);
-		
-		if (!super.entryStateExists(prefix, entityData.getEntryStateUId())) {
-
-			EntryState entryState = new EntryState();
-
-			entryState.setChangeType(ChangeType.NEW);
-			entryState.setRelativeOrder(0L);
-
-			ibatisVersionsDao.insertEntryState(
-					codingSchemeUId,
-					entityData.getEntryStateUId(),
-					entityData.getUId(), 
-					EntryStateType.ENTITY, 
-					null, 
-					entryState);
-		}
 		
 		return entityData.getEntryStateUId();
 	}
@@ -762,27 +766,24 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		
 		this.getSqlMapClientTemplate().update(
 				UPDATE_ENTITY_ENTRYSTATE_UID, 
-				new PrefixedParameterTuple(prefix, entityUId, entryStateUId));
+				new PrefixedParameterTuple(prefix, entityUId, entryStateUId),1);
 		
 	}
-
-	@Override
-	public boolean entryStateExists(String codingSchemeUId, String entryStateUId) {
-
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
-				codingSchemeUId);
-
-		if (super.entryStateExists(prefix, entryStateUId))
-			return true;
-		else
-			return false;
+	
+	public String getEntryState(
+			String codingSchemeUid, 
+			String entityGuid, 
+			String revisionGuid) {
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		return (String) this.getSqlMapClientTemplate().queryForObject(
+				GET_ENTRY_STATE,
+				new PrefixedParameterTuple(prefix, entityGuid, revisionGuid));
 	}
+
 	
 	@Override
 	public Entity resolveEntityByRevision(
 			String codingSchemeUId, String entityCode, String entityCodeNamespace, String revisionId) throws LBRevisionException {
-		
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
 		String entityUId = this.getEntityUId(codingSchemeUId, entityCode, entityCodeNamespace);
 		
@@ -796,38 +797,59 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		}
 		
 		String entityLatestRevisionId = this.getLatestRevision(codingSchemeUId, entityUId);
-		
-		// 1. If 'revisionId' is null or 'revisionId' is the latest revision of the entity
-		// then use getEntityByUId to get the PLEntry object and return.
-		
-		if (revisionId == null || 
-				entityLatestRevisionId == null || 
-				revisionId.equals(entityLatestRevisionId)) {
+
+		if(StringUtils.equals(revisionId, entityLatestRevisionId)) {
 			return getEntityByUId(codingSchemeUId, entityUId);
 		} else {
-			String adjustedRevisionId = 
-				this.getPreviousRevisionIdFromGivenRevisionIdForEntity(prefix, revisionId, entityUId);
-			
-			if(adjustedRevisionId != null &&
-					entityLatestRevisionId.equals(adjustedRevisionId)) {
-				return getEntityByUId(codingSchemeUId, entityUId);
-			} else {
-				Entity entity = this.getHistoryEntityByRevision(
+
+			Entity entity = this.getHistoryEntityByRevision(
+					codingSchemeUId, 
+					entityUId, 
+					revisionId);
+
+			if(entity == null) {
+				String adjustedRevisionId = 
+					this.getPreviousRevisionIdFromGivenRevisionIdForEntity(codingSchemeUId, revisionId, entityUId);
+				
+				entity = this.getHistoryEntityByRevision(
 						codingSchemeUId, 
 						entityUId, 
 						adjustedRevisionId);
-				if(entity == null) {
-					entity = getEntityByUId(codingSchemeUId, entityUId);
+				
+				if(entity != null) {
+					entity.setEntryState(this.ibatisVersionsDao.
+							getEntryStateByEntryUidAndRevisionId(
+									codingSchemeUId, 
+									entityUId, 
+									revisionId));
 				}
-				return entity;
 			}
+
+			if(entity == null) {
+				entity = getEntityByUId(codingSchemeUId, entityUId);
+			}
+			return entity;
 		}
 	}
 	
+	@Override
+	public boolean entryStateExists(String codingSchemeUId, String entryStateUId) {
+
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUId);
+
+		if (super.entryStateExists(prefix, entryStateUId))
+			return true;
+		else
+			return false;
+	}
+
 	protected String getPreviousRevisionIdFromGivenRevisionIdForEntity(
-			String prefix, 
+			String codingSchemeUid, 
 			String revisionId, 
 			String entityUid) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUid);
 		
 		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(entityUid, revisionId);
 		
