@@ -23,6 +23,7 @@ import java.io.Writer;
 
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.proxy.CastorProxy;
 import org.castor.xml.XMLProperties;
 import org.exolab.castor.mapping.Mapping;
@@ -104,11 +105,11 @@ public class XmlContentWriter {
      * RuntimeException(e); } }
      */
     public void marshalToXml(Object obj, CodedNodeGraph cng, CodedNodeSet cns, Writer writer, int pageSize,
-            boolean useStreaming) {
+            boolean useStreaming, LgMessageDirectorIF messager) {
         Marshaller marshaller = ns_marshaller;
         MarshalListener listener = null;
         if (useStreaming == true) {
-            listener = new StreamingLexGridMarshalListener(marshaller, cng, cns, pageSize);
+            listener = new StreamingLexGridMarshalListener(marshaller, cng, cns, pageSize, messager);
         } else {
             listener = new LexGridMarshalListener(marshaller, cng, cns, pageSize);
         }
