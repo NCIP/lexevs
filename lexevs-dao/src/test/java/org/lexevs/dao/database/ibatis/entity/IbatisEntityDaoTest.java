@@ -288,6 +288,8 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals(1, template.queryForInt("select count(*) from h_entity"));
 	}
 	
+	/*
+	
 	@Test
 	public void testGetPreviousRevisionIdFromGivenRevisionIdForEntity() throws InterruptedException {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
@@ -395,6 +397,84 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		
 		assertEquals("rid1",revision);
 	}
+	
+	@Test
+	public void testGetPreviousRevisionIdFromGivenRevisionIdForEntityInHistoryWithDependentChange() throws InterruptedException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+			"values ('rguid1', 'rid1', NOW() )");
+
+		Thread.sleep(1000);
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+			"values ('rguid2', 'rid2', NOW() )");
+		
+		Thread.sleep(1000);
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+			"values ('rguid3', 'rid3', NOW() )");
+
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+			"values ('esguid1', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
+
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+			"values ('esguid2', 'eguid', 'entity', 'DEPENDENT', '0', 'rguid2')");
+		
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+			"values ('esguid3', 'csguid', 'codingScheme', 'MODIFY', '0', 'rguid3')");
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid2')");
+		
+		template.execute("Insert into h_entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid1')");
+		
+		String revision = this.ibatisEntityDao.getPreviousRevisionIdFromGivenRevisionIdForEntity("", "rid2", "eguid");
+		
+		assertEquals("rid1",revision);
+	}
+	
+	@Test
+	public void testGetPreviousRevisionIdFromGivenRevisionIdForEntityInHistoryWithDependentChangeAfter() throws InterruptedException {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+			"values ('rguid1', 'rid1', NOW() )");
+
+		Thread.sleep(1000);
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+			"values ('rguid2', 'rid2', NOW() )");
+		
+		Thread.sleep(1000);
+		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
+			"values ('rguid3', 'rid3', NOW() )");
+
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+			"values ('esguid1', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
+
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+			"values ('esguid2', 'eguid', 'entity', 'MODIFY', '0', 'rguid2')");
+		
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+			"values ('esguid3', 'csguid', 'codingScheme', 'DEPENDENT', '0', 'rguid3')");
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('csguid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid2')");
+		
+		template.execute("Insert into h_entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
+			"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid1')");
+		
+		String revision = this.ibatisEntityDao.getPreviousRevisionIdFromGivenRevisionIdForEntity("", "rid3", "eguid");
+		
+		assertEquals("rid2",revision);
+	}
+	*/
+	
 	
 	/**
 	 * Insert entity.
