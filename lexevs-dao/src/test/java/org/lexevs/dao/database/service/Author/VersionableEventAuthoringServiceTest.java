@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 
 import org.LexGrid.versions.SystemRelease;
 import org.junit.Test;
+import org.lexevs.dao.database.service.event.registry.ExtensionLoadingListenerRegistry;
 import org.lexevs.dao.database.service.property.VersionableEventPropertyService;
 import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
@@ -16,9 +17,13 @@ public class VersionableEventAuthoringServiceTest extends LexEvsDbUnitTestBase {
 
 	@Resource(name = "authoringService")
 	private VersionableEventAuthoringService service;
+	
+	@Resource
+	private ExtensionLoadingListenerRegistry extensionLoadingListenerRegistry;
 
 	@Test
 	public void testCodingSchemeRevisions() throws Exception {
+		extensionLoadingListenerRegistry.setEnableListeners(true);
 
 		URI sourceURI = new File(
 				"src/test/resources/csRevision/Automobiles2010_Test_CS.xml").toURI();

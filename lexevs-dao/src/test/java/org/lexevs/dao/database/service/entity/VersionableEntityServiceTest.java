@@ -34,8 +34,10 @@ import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.VersionableEventCodingSchemeService;
+import org.lexevs.dao.database.service.event.registry.ExtensionLoadingListenerRegistry;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.service.Registry;
@@ -62,8 +64,14 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 	
 	@Resource
 	private Registry registry;
-
 	
+	@Resource
+	private ExtensionLoadingListenerRegistry extensionLoadingListenerRegistry;
+
+	@Before
+	public void enableListeners() {
+		extensionLoadingListenerRegistry.setEnableListeners(true);
+	}
 	/**
 	 * Insert entity.
 	 * 
