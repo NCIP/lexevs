@@ -108,6 +108,8 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
         AssociationSource as = (AssociationSource) obj;
         if (as.getSourceEntityCode().equals(LexGridConstants.MR_FLAG)) {
             this.marshaller.setRootElement("source"); //under the associationpredicate, there are a "source" list of AssociationSource.
+            this.marshaller.setSchemaLocation(null);
+            this.marshaller.setNoNamespaceSchemaLocation(null);
             if (cng != null) {
                 try {
                     ResolvedConceptReferenceList rcrl = cng.resolveAsList(null, true, false, 0, -1, null, null, null,
@@ -155,7 +157,8 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     }
 
     private boolean preMarshalEntity(Object obj) {
-
+        this.marshaller.setSchemaLocation(null);
+        this.marshaller.setNoNamespaceSchemaLocation(null);
         if (((Entity) obj).getEntityCode().equals(LexGridConstants.MR_FLAG)) {
             // get groups of Entity objects using CNS.
             if (cns != null) {
@@ -292,7 +295,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                         e.printStackTrace();
                     }
                     ResolvedConceptReference sourceRef = null;
-                    if (localRcrl != null) {
+                    if (localRcrl != null && localRcrl.getResolvedConceptReferenceCount() > 0) {
                         Iterator<ResolvedConceptReference> innterIterator = (Iterator<ResolvedConceptReference>) localRcrl
                                 .iterateResolvedConceptReference();
                         sourceRef = (ResolvedConceptReference) innterIterator.next();
