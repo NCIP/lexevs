@@ -4,9 +4,10 @@
 <!--	<class name="org.LexGrid.codingSchemes.CodingScheme" auto-complete="true">-->
 <!--		<map-to xml="scheme" ns-prefix="test"/>-->
 <!--	</class>-->
-	<class name="org.LexGrid.relations.AssociationSource" auto-complete="true">
+<!-- <class name="org.LexGrid.relations.AssociationSource" auto-complete="true">
 		<map-to xml="source" ns-prefix="lgRel" />
 	</class>
+-->	
 	<class name="org.LexGrid.relations.AssociationEntity" auto-complete="true">
 		<map-to xml="associationEntity" ns-prefix="lgCon" />
 	</class>

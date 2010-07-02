@@ -47,7 +47,9 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     private CodedNodeSet cns;
     private CodedNodeGraph cng;
     private String curAssociationName;
-    private AssociationSourceCache sourceCache = AssociationSourceCacheFactory.createCache(); 
+    private AssociationSourceCache sourceCache = AssociationSourceCacheFactory.createCache();
+    
+    private Mapping specialMapping;
 
     private final int MAX_BLOCK_SIZE = 10;
     private int blockSize = 10;
@@ -107,6 +109,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     private boolean preMarshalAssociationSource(Object obj) {
         AssociationSource as = (AssociationSource) obj;
         if (as.getSourceEntityCode().equals(LexGridConstants.MR_FLAG)) {
+            this.marshaller.setRootElement("source");
             if (cng != null) {
                 try {
                     ResolvedConceptReferenceList rcrl = cng.resolveAsList(null, true, false, 0, -1, null, null, null,
@@ -139,16 +142,12 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                         }
                     }
                 } catch (LBInvocationException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 } catch (LBParameterException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 } catch (MarshalException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 } catch (ValidationException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 return false;
@@ -197,12 +196,11 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                         mapping.loadMapping("file:///"+StreamingLexGridMarshalListener.class.getResource("./").getPath()+"mapping.xml");
                         this.marshaller.setMapping(mapping);
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     } catch (MappingException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
-                    }    
+                    }
+
                     // now marshal the AssociationEntity
                     for (AssociationEntity associationEntity : associationEntityList) {
                         this.marshaller.marshal(associationEntity);
@@ -357,18 +355,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                                 associationTarget.addAssociationQualification(qlf);
                             }
                         }
-                        
-                        try {
-                            Mapping mapping = new Mapping();
-                            mapping.loadMapping("file:///"+StreamingLexGridMarshalListener.class.getResource("./").getPath()+"mapping.xml");
-                            this.marshaller.setMapping(mapping);
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        } catch (MappingException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }    
+
                         this.sourceCache.add(aS);
                         this.marshaller.marshal(aS);
                     }
@@ -377,5 +364,5 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
 
         }
 
-    }
+    }    
 }

@@ -7,8 +7,8 @@ import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.Assoc
 public class AssociationSourceCacheFactory {
     
     public static AssociationSourceCache createCache() {
-        // return new AssociationSourceCacheEhcacheImpl();
-        return new AssociationSourceCacheNoopImpl();
+        return new AssociationSourceCacheEhcacheImpl();
+        // return new AssociationSourceCacheNoopImpl();
     }
 
 }
