@@ -19,10 +19,11 @@ import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.Assoc
 public class AssociationEntityCacheEhcacheImpl implements AssociationEntityCache {
 
     private Cache theCache;
+    private CacheManager theCacheManager;
     
     public AssociationEntityCacheEhcacheImpl() {
         //Create a CacheManager using defaults
-        CacheManager manager = CacheManager.create();
+        this.theCacheManager = CacheManager.create();
 
         //Create a Cache specifying its configuration.
         int maxElementsInMemory = 100;
@@ -35,13 +36,13 @@ public class AssociationEntityCacheEhcacheImpl implements AssociationEntityCache
             //.diskStorePath(diskStorePath)
             .diskExpiryThreadIntervalSeconds(0));
         try {
-            manager.addCache(this.theCache);
+            this.theCacheManager .addCache(this.theCache);
         } catch (net.sf.ehcache.ObjectExistsException e) {
             
             System.out.println("AssociationEntityCacheEhcacheImpl: " + e.getMessage());
             System.out.println("AssociationEntityCacheEhcacheImpl: remove and re-add the cache");
-            manager.removalAll();
-            manager.addCache(this.theCache);
+            this.theCacheManager .removalAll();
+            this.theCacheManager .addCache(this.theCache);
         }
         System.out.println("AssociationEntityCacheEhcacheImpl: DiskStorePath=" + this.theCache.getCacheConfiguration().getDiskStorePath());
         System.out.println("AssociationEntityCacheEhcacheImpl: debug version 2");
@@ -91,6 +92,11 @@ public class AssociationEntityCacheEhcacheImpl implements AssociationEntityCache
     public List<String> getKeys() {
         List<String> keyList = this.theCache.getKeys();
         return keyList;
+    }
+
+    @Override
+    public void destroy() {
+        this.theCacheManager.shutdown();
     }
 
 }

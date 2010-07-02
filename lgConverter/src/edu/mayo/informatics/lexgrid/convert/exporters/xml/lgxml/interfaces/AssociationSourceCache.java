@@ -9,5 +9,6 @@ public interface AssociationSourceCache {
     boolean exists(ResolvedConceptReference rcr);
     void clear();
     public void dumpCacheContentsToStdOut();
+    void destroy();
 
 }

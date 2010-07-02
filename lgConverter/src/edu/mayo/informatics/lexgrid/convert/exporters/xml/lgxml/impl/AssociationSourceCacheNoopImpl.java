@@ -36,4 +36,10 @@ public class AssociationSourceCacheNoopImpl implements AssociationSourceCache {
         return false;
     }
 
+    @Override
+    public void destroy() {
+        // 
+        
+    }
+
 }

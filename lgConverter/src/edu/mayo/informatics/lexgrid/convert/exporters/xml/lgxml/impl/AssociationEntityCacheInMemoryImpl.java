@@ -9,18 +9,9 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.relations.AssociationEntity;
-import org.LexGrid.relations.AssociationSource;
-
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.AssociationEntityCache;
-import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.AssociationSourceCache;
 
 public class AssociationEntityCacheInMemoryImpl implements AssociationEntityCache {
 
@@ -86,6 +77,12 @@ public class AssociationEntityCacheInMemoryImpl implements AssociationEntityCach
         AssociationEntity rv;
         rv = this.theCache.get(key);
         return rv;
+    }
+
+    @Override
+    public void destroy() {
+        theCache = null;
+        
     }
 
 }

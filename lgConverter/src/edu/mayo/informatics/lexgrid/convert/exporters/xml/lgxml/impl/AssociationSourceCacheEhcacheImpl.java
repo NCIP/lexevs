@@ -20,10 +20,11 @@ import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.Assoc
 public class AssociationSourceCacheEhcacheImpl implements AssociationSourceCache {
 
     private Cache theCache;
+    private CacheManager theCacheManager;
     
     public AssociationSourceCacheEhcacheImpl() {
         //Create a CacheManager using defaults
-        CacheManager manager = CacheManager.create();
+        this.theCacheManager = CacheManager.create();
 
         //Create a Cache specifying its configuration.
         int maxElementsInMemory = 100;
@@ -36,13 +37,13 @@ public class AssociationSourceCacheEhcacheImpl implements AssociationSourceCache
             //.diskStorePath(diskStorePath)
             .diskExpiryThreadIntervalSeconds(0));
         try {
-            manager.addCache(this.theCache);
+            this.theCacheManager.addCache(this.theCache);
         } catch (net.sf.ehcache.ObjectExistsException e) {
             
             System.out.println("AssociationSourceCacheEhcacheImpl: " + e.getMessage());
             System.out.println("AssociationSourceCacheEhcacheImpl: remove and re-add the cache");
-            manager.removalAll();
-            manager.addCache(this.theCache);
+            this.theCacheManager.removalAll();
+            this.theCacheManager.addCache(this.theCache);
         }
         System.out.println("AssociationSourceCacheEhcacheImpl: DiskStorePath=" + this.theCache.getCacheConfiguration().getDiskStorePath());
         System.out.println("AssociationSourceCacheEhcacheImpl: debug version 2");
@@ -97,6 +98,11 @@ public class AssociationSourceCacheEhcacheImpl implements AssociationSourceCache
             return true;
         }
         
+    }
+
+    @Override
+    public void destroy() {
+        this.theCacheManager.shutdown();
     }
 
 }

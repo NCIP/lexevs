@@ -11,5 +11,6 @@ public interface AssociationEntityCache {
     List<String> getKeys();
     void clear();
     public void dumpCacheContentsToStdOut();
+    void destroy();
 
 }
