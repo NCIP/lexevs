@@ -2077,7 +2077,7 @@ public class ProtegeOwl2LG {
             if (StringUtils.isNotEmpty(prefix)) {
                 lgSupportedMappings_.registerSupportedSource(prefix, nm.getNamespaceForPrefix(prefix), prefix, null,
                         false);
-                lgSupportedMappings_.registerSupportedNamespace(prefix, nm.getNamespaceForPrefix(prefix), prefix, "",
+                lgSupportedMappings_.registerSupportedNamespace(prefix, nm.getNamespaceForPrefix(prefix), prefix, null,
                         false);
             }
         }
