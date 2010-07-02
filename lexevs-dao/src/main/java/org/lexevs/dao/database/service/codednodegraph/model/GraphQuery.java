@@ -1,13 +1,16 @@
 package org.lexevs.dao.database.service.codednodegraph.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 
-public class GraphQuery implements Cloneable {
+public class GraphQuery implements Cloneable, Serializable {
 
-    private List<ConceptReference> restrictToSourceCodes = new ArrayList<ConceptReference>();
+	private static final long serialVersionUID = 7682901213668779899L;
+	
+	private List<ConceptReference> restrictToSourceCodes = new ArrayList<ConceptReference>();
     private List<ConceptReference> restrictToTargetCodes = new ArrayList<ConceptReference>();
     private List<String> restrictToAssociations = new ArrayList<String>();
     private List<QualifierNameValuePair> restrictToAssociationsQualifiers = new ArrayList<QualifierNameValuePair>();
@@ -81,8 +84,11 @@ public class GraphQuery implements Cloneable {
 		return restrictToAssociationsQualifiers;
 	}
 
-	public static class QualifierNameValuePair {
-    	private String qualifierName;
+	public static class QualifierNameValuePair implements Serializable{
+  
+		private static final long serialVersionUID = -3222676374299687322L;
+		
+		private String qualifierName;
     	private String qualifierValue;
     	
 		public QualifierNameValuePair(String qualifierName,
@@ -138,8 +144,11 @@ public class GraphQuery implements Cloneable {
 		}
     }
 
-    public static class CodeNamespacePair {
-        private String code;
+    public static class CodeNamespacePair implements Serializable{
+    
+		private static final long serialVersionUID = -239301238480326835L;
+		
+		private String code;
         private String namespace;
         
         public CodeNamespacePair(String code, String namespace) {
