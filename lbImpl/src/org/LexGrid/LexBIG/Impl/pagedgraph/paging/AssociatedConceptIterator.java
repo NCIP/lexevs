@@ -33,6 +33,7 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.NullFocusRootsResolver;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
+import org.LexGrid.annotations.LgProxyClass;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
@@ -46,6 +47,7 @@ import org.lexevs.paging.codednodegraph.TripleUidIterator;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@LgProxyClass
 public class AssociatedConceptIterator extends AbstractPageableIterator<AssociatedConcept> {
     
     /** The association list builder. */

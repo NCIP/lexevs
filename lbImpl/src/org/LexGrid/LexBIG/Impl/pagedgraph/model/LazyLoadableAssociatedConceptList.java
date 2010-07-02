@@ -31,6 +31,7 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder.Associa
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.AssociatedConceptIterator;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.annotations.LgProxyClass;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 
 /**
@@ -38,6 +39,7 @@ import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@LgProxyClass
 public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
 
     /** The Constant serialVersionUID. */
@@ -101,6 +103,9 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
 
     private AssociatedConcept[] cache;
     
+    public LazyLoadableAssociatedConceptList() {
+        super();
+    }
     /**
      * Instantiates a new lazy loadable associated concept list.
      * 
