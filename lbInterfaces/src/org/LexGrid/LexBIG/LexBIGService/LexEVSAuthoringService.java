@@ -20,6 +20,7 @@ import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
 
 public interface LexEVSAuthoringService {
@@ -93,6 +94,7 @@ public interface LexEVSAuthoringService {
 	
 	public void createAssociationMapping(
 			EntryState entryState, 
+		    AbsoluteCodingSchemeVersionReference mappingCoding,
 			AbsoluteCodingSchemeVersionReference sourceCodingScheme, 
 			AbsoluteCodingSchemeVersionReference targetCodingScheme,
 			AssociationSource[] associationSource,
@@ -100,7 +102,7 @@ public interface LexEVSAuthoringService {
 			String relationsContainerName,
 			Date effectiveDate,
 			AssociationQualification[] associationQualifiers,
-			String revisionId,
+			Revision revision,
 	        long relativeOrder
 			)throws LBException;
 }
