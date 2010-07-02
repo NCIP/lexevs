@@ -84,7 +84,6 @@ import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.connection.SQLInterface;
-import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
@@ -111,11 +110,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     private final static String version_ = "1.0";
     private final static String provider_ = "MAYO";
     
-    private LexEvsServiceLocator locator_ = null;
-    private DatabaseServiceManager dbManager_ = null;
-    private CodingSchemeService codingSchemeService_ = null;
-    private SystemResourceService systemService_ = null;
-
     public LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
@@ -132,13 +126,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     private Map cache_hPathToRootExists_ = null;
     
     private enum DirectionalName {FORWARD,REVERSE}
-
-    public LexBIGServiceConvenienceMethodsImpl() {
-        locator_ = LexEvsServiceLocator.getInstance();
-        dbManager_ = locator_.getDatabaseServiceManager();
-        codingSchemeService_ = dbManager_.getCodingSchemeService();
-        systemService_ = locator_.getSystemResourceService();
-    }
 
     public static void register() throws LBParameterException, LBException {
         ExtensionDescription temp = new ExtensionDescription();
@@ -2012,15 +1999,15 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         String internalCodingSchemeName = null;
         String version = null;
         if (versionOrTag == null) {
-            version = systemService_.getInternalVersionStringForTag(codingScheme, null);
+            version = getSystemResourceService().getInternalVersionStringForTag(codingScheme, null);
         } else {
             version = versionOrTag.getVersion();
         }
 
-        internalCodingSchemeName = systemService_.getInternalCodingSchemeNameForUserCodingSchemeName(
+        internalCodingSchemeName = getSystemResourceService().getInternalCodingSchemeNameForUserCodingSchemeName(
                 codingScheme, version);
         
-        return (List<SupportedProperty>) codingSchemeService_.getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.COMMENT);
+        return (List<SupportedProperty>) getCodingSchemeService().getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.COMMENT);
     }
 
     @SuppressWarnings("unchecked")
@@ -2029,15 +2016,15 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         String internalCodingSchemeName = null;
         String version = null;
         if (versionOrTag == null) {
-            version = systemService_.getInternalVersionStringForTag(codingScheme, null);
+            version = getSystemResourceService().getInternalVersionStringForTag(codingScheme, null);
         } else {
             version = versionOrTag.getVersion();
         }
 
-        internalCodingSchemeName = systemService_.getInternalCodingSchemeNameForUserCodingSchemeName(
+        internalCodingSchemeName = getSystemResourceService().getInternalCodingSchemeNameForUserCodingSchemeName(
                 codingScheme, version);
         
-        return (List<SupportedProperty>) codingSchemeService_.getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.DEFINITION);
+        return (List<SupportedProperty>) getCodingSchemeService().getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.DEFINITION);
     }
 
     @SuppressWarnings("unchecked")
@@ -2046,14 +2033,14 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         String internalCodingSchemeName = null;
         String version = null;
         if (versionOrTag == null) {
-            version = systemService_.getInternalVersionStringForTag(codingScheme, null);
+            version = getSystemResourceService().getInternalVersionStringForTag(codingScheme, null);
         } else {
             version = versionOrTag.getVersion();
         }
 
-        internalCodingSchemeName = systemService_.getUriForUserCodingSchemeName(codingScheme);
+        internalCodingSchemeName = getSystemResourceService().getUriForUserCodingSchemeName(codingScheme);
         
-        return (List<SupportedProperty>) codingSchemeService_.getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.PRESENTATION);
+        return (List<SupportedProperty>) getCodingSchemeService().getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.PRESENTATION);
     }
 
     @SuppressWarnings("unchecked")
@@ -2062,15 +2049,23 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         String internalCodingSchemeName = null;
         String version = null;
         if (versionOrTag == null) {
-            version = systemService_.getInternalVersionStringForTag(codingScheme, null);
+            version = getSystemResourceService().getInternalVersionStringForTag(codingScheme, null);
         } else {
             version = versionOrTag.getVersion();
         }
 
-        internalCodingSchemeName = systemService_.getInternalCodingSchemeNameForUserCodingSchemeName(
+        internalCodingSchemeName = getSystemResourceService().getInternalCodingSchemeNameForUserCodingSchemeName(
                 codingScheme, version);
         
-        return (List<SupportedProperty>) codingSchemeService_.getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.PROPERTY);
+        return (List<SupportedProperty>) getCodingSchemeService().getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.PROPERTY);
+    }
+    
+    private CodingSchemeService getCodingSchemeService() {
+        return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
+    }
+    
+    private SystemResourceService getSystemResourceService() {
+        return LexEvsServiceLocator.getInstance().getSystemResourceService();
     }
     
     
