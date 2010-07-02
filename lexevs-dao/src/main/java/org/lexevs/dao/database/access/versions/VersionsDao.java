@@ -54,30 +54,14 @@ public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 		PICKLISTENTRYNODE
 	}
 
-	/**
-	 * Insert entry state.
-	 * 
-	 * @param entryUId the entry id
-	 * @param entryType the entry type
-	 * @param previousEntryStateUId the previous entry state id
-	 * @param entryState the entry state
-	 */
+
 	public String insertEntryState(
 			String codingSchemeUId,
 			String entryUId,
 			EntryStateType entryType,
 			String previousEntryStateUId,
 			EntryState entryState);
-	
-	/**
-	 * Insert entry state.
-	 * 
-	 * @param entryStateUId
-	 * @param entryUId the entry id
-	 * @param entryType the entry type
-	 * @param previousEntryStateUId the previous entry state id
-	 * @param entryState the entry state
-	 */
+
 	public void insertEntryState( 
 			String codingSchemeUId,
 			String entryStateUId,
@@ -94,6 +78,9 @@ public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 			String previousEntryStateUId,
 			EntryState entryState,
 			Inserter inserter);
+	
+	public void updatePreviousEntryStateUIds(String codingSchemeUId,
+			String entityUId, String prevEntryStateUId, String newEntryStateUId);
 	
 	/**
 	 * Insert revision.
@@ -116,6 +103,7 @@ public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @return the system release id by uri
 	 */
+	
 	public String getSystemReleaseIdByUri(String systemReleaseUri);
 
 	public void deleteAllEntryStateOfCodingScheme(String codingSchemeUId);

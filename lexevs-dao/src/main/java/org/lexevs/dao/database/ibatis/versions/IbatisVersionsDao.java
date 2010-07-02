@@ -27,6 +27,7 @@ import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.revision.IbatisRevisionDao;
 import org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean;
@@ -49,15 +50,9 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 
 	private Classifier<EntryStateType, String> entryStateTypeClassifier = new EntryStateTypeClassifier();
 
-	/** The VERSION s_ namespace. */
 	public static String VERSIONS_NAMESPACE = "Versions.";
 
-	/** The INSER t_ entr y_ stat e_ sql. */
 	public static String INSERT_ENTRY_STATE_SQL = VERSIONS_NAMESPACE
-			+ "insertEntryState";
-
-	/** The GE t_ entr y_ stat e_ b y_ i d_ sql. */
-	public static String GET_ENTRY_STATE_BY_ID_SQL = VERSIONS_NAMESPACE
 			+ "insertEntryState";
 
 	/** The GE t_ syste m_ releas e_ i d_ b y_ uri. */
@@ -103,8 +98,26 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	private static String DELETE_ALL_RELATION_PROPERTY_ENTRYSTATE_OF_RELATION_SQL = VERSIONS_NAMESPACE
 			+ "deletaAllRelationPropertyEntryStateOfRelation";
 	
+	private static String UPDATE_PREVIOUS_ENTRY_STATE_UIDS_SQL = VERSIONS_NAMESPACE
+			+ "updatePreviousEntryStateUIds";
+	
+	private static String GET_ENTRY_STATE_BY_ENTRY_UID_AND_REVISION_ID_SQL = VERSIONS_NAMESPACE + "getEntryStateByEntryUidAndRevisionId";
+	
 	/** ibatis revision dao */
 	private IbatisRevisionDao ibatisRevisionDao = null;
+	
+	public EntryState getEntryStateByEntryUidAndRevisionId(
+			String codingSchemeUId,
+			String entryUId, 
+			String revisionId) {
+		PrefixedParameterTriple bean = new PrefixedParameterTriple();
+		bean.setPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId));
+		bean.setParam1(entryUId);
+		bean.setParam2(revisionId);
+		
+		return (EntryState)this.getSqlMapClientTemplate().
+			queryForObject(GET_ENTRY_STATE_BY_ENTRY_UID_AND_REVISION_ID_SQL, bean);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -118,20 +131,6 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 		
 		return (String) this.getSqlMapClientTemplate().queryForObject(
 				GET_SYSTEM_RELEASE_ID_BY_URI, systemReleaseUri);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.lexevs.dao.database.access.versions.VersionsDao#getEntryStateById
-	 * (java.lang.String, java.lang.String, java.lang.String)
-	 */
-	public EntryState getEntryStateById(String entryStateId) {
-		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
-		return (EntryState) this.getSqlMapClientTemplate().queryForObject(
-				GET_ENTRY_STATE_BY_ID_SQL,
-				new PrefixedParameter(prefix, entryStateId));
 	}
 
 	/*
@@ -157,7 +156,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 		if (entryState == null) {
 			return;
 		}
-		
+
 		Assert.state(entryType != null);
 		Assert.state(
 				!entryType.equals(EntryStateType.VALUESETDEFINITION)
@@ -209,6 +208,19 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public void updatePreviousEntryStateUIds(String codingSchemeUId,
+			String entryUId, String prevEntryStateUId, String newEntryStateUId) {
+		PrefixedParameterTriple bean = new PrefixedParameterTriple();
+		bean.setPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId));
+		bean.setParam1(entryUId);
+		bean.setParam2(prevEntryStateUId);
+		bean.setParam3(newEntryStateUId);
+		
+		this.getSqlMapClientTemplate().update(
+				UPDATE_PREVIOUS_ENTRY_STATE_UIDS_SQL, bean);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -232,7 +244,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 				entryUId, 
 				entryType, 
 				previousEntryStateUId,
-				entryState, 
+				entryState,
 				this.getNonBatchTemplateInserter());
 
 		return entryStateUId;
@@ -255,11 +267,11 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 			EntryState entryState) {
 
 		this.insertEntryState(
-				codingSchemeUId,
+				codingSchemeUId, 
 				entryStateUId, 
 				entryUId, 
 				entryType, 
-				previousEntryStateUId,
+				previousEntryStateUId, 
 				entryState, 
 				this.getNonBatchTemplateInserter());
 	}
@@ -282,9 +294,13 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	 * 
 	 * @return the insert entry state bean
 	 */
-	protected InsertEntryStateBean buildInsertEntryStateBean(String prefix,
-			String entryStateUId, String entryUId, String entryType,
-			String previousEntryStateUId, EntryState entryState) {
+	protected InsertEntryStateBean buildInsertEntryStateBean(
+			String prefix,
+			String entryStateUId, 
+			String entryUId, 
+			String entryType,
+			String previousEntryStateUId, 
+			EntryState entryState) {
 
 		String revisionUId = null;
 		String prevRevisionUId = null;
