@@ -18,6 +18,7 @@ import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationEntity;
@@ -34,7 +35,6 @@ import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
 
-import edu.mayo.informatics.lexgrid.convert.directConversions.TextCommon.CodingScheme;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.AssociationEntityCache;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.AssociationSourceCache;
@@ -48,6 +48,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     private String curAssociationName;
     private AssociationSourceCache sourceCache = AssociationSourceCacheFactory.createCache();
     private AssociationEntityCache associationEntityCache = AssociationEntityCacheFactory.createCache();
+    private LgMessageDirectorIF messager;
     
     private final int MAX_BLOCK_SIZE = 10;
     private int blockSize = 10;
@@ -74,11 +75,12 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
         this.cng = cng;
     }
 
-    public StreamingLexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng, CodedNodeSet cns, int pageSize) {
+    public StreamingLexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng, CodedNodeSet cns, int pageSize, LgMessageDirectorIF messager) {
         this.setBlockSize(pageSize);
         this.marshaller = marshaller;
         this.cng = cng;
         this.cns = cns;
+        this.messager = messager;
     }
 
     public StreamingLexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng, CodedNodeSet cns, int pageSize,
@@ -105,11 +107,12 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     }
 
     private boolean preMarshalAssociationSource(Object obj) {
+        messager.info("starting process association source ...");
         AssociationSource as = (AssociationSource) obj;
         if (as.getSourceEntityCode().equals(LexGridConstants.MR_FLAG)) {
             this.marshaller.setRootElement("source"); //under the associationpredicate, there are a "source" list of AssociationSource.
-            this.marshaller.setSchemaLocation(null);
-            this.marshaller.setNoNamespaceSchemaLocation(null);
+//            this.marshaller.setSchemaLocation(null);
+//            this.marshaller.setNoNamespaceSchemaLocation(null);
             if (cng != null) {
                 try {
                     ResolvedConceptReferenceList rcrl = cng.resolveAsList(null, true, false, 0, -1, null, null, null,
@@ -157,8 +160,9 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     }
 
     private boolean preMarshalEntity(Object obj) {
-        this.marshaller.setSchemaLocation(null);
-        this.marshaller.setNoNamespaceSchemaLocation(null);
+        messager.info("start processing entities...");
+//        this.marshaller.setSchemaLocation(null);
+//        this.marshaller.setNoNamespaceSchemaLocation(null);
         if (((Entity) obj).getEntityCode().equals(LexGridConstants.MR_FLAG)) {
             // get groups of Entity objects using CNS.
             if (cns != null) {
@@ -201,6 +205,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                     }
 
                     // now marshal the AssociationEntity
+                    messager.info("start processing association entities...");
                     List<String> keys = this.associationEntityCache.getKeys();
                     String key;
                     AssociationEntity aE;
