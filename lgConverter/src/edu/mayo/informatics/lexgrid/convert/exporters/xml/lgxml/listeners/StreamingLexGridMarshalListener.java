@@ -34,6 +34,7 @@ import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
 
+import edu.mayo.informatics.lexgrid.convert.directConversions.TextCommon.CodingScheme;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.AssociationEntityCache;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.AssociationSourceCache;
@@ -227,6 +228,11 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
 
     @Override
     public void postMarshal(Object arg0) {
+        if(org.LexGrid.codingSchemes.CodingScheme.class.equals(arg0.getClass())) {
+            System.out.println("Done marshalling CodingScheme. Clean up caches.");
+            this.sourceCache.destroy();
+            this.associationEntityCache.destroy();
+        }
      //do nothing
     }
 
