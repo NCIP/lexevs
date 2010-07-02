@@ -18,19 +18,55 @@
 		WHERE
 			sysRel.releaseURI = #param1#	
      </select>
-
-	<select id="getEntryStateById" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Versions.entryStateResult">
+     
+  	<select id="getEntryStateByEntryUidAndRevisionId" 
+  		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+  		resultMap="Versions.entryStateResult">
 		SELECT
-			changeType,
-			relativeOrder,
-			revisionGuid,
-			prevRevisionGuid
+			es.changeType changeType,
+			es.relativeOrder relativeOrder,
+			cr.revisionId currentRevisionId,
+			pr.revisionId previousRevisionId
 		FROM
-			$prefix$entryState
+			$prefix$entryState es
+		LEFT JOIN ${defaultPrefix}revision cr ON
+			es.revisionGuid = cr.revisionGuid
+		LEFT JOIN ${defaultPrefix}revision pr ON
+			es.prevRevisionGuid = pr.revisionGuid
 		WHERE
-			entryStateGuid = #param1#
-		
+			es.entryGuid = #param1#
+		AND
+			cr.revisionId = #param2#		
      </select>
+
+	<select id="getPreviousRevisionIdForEntryUid" 
+	parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultClass="string">
+		SELECT
+			rev2.revisionId
+		FROM
+			${defaultPrefix}revision rev
+		INNER JOIN
+			$prefix$entryState es
+			ON es.revisionGuid = rev.revisionGuid
+		INNER JOIN
+			${defaultPrefix}revision rev2
+			ON es.prevRevisionGuid = rev2.revisionGuid
+		WHERE
+			es.entryGuid = #param2#
+		AND
+			rev.revisionId = #param1#	
+     </select>
+     
+     <update id="updatePreviousEntryStateUIds" 
+     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
+     	UPDATE $prefix$entryState
+		SET 
+			prevEntryStateGuid = #param3#
+		WHERE
+			prevEntryStateGuid = #param2#
+		AND
+			entryGuid = #param1#
+     </update>
      
 	<update id="updateEntryStateById" parameterClass="map">
 		UPDATE entryState
