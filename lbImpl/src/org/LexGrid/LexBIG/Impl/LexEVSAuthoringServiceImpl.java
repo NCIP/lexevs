@@ -44,6 +44,7 @@ import org.LexGrid.naming.SupportedAssociationQualifier;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedContainerName;
 import org.LexGrid.naming.SupportedNamespace;
+import org.LexGrid.naming.SupportedStatus;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
@@ -158,17 +159,15 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         //Ensure RevisionId consistency
         revision.setRevisionId(entryState.getContainingRevision());
         
-        //Ensure Previous revision id is correct in the entry state.       
-    if(entryState.getPrevRevision() == null || !entryState.getPrevRevision().equals(revisedScheme.getEntryState().getContainingRevision()))
-    {  getLogger().warn("Current scheme revision does not match entry state previous revision.  Forcing previous revision change");
-        entryState.setPrevRevision(revisedScheme.getEntryState().getContainingRevision());   } 
+        //Ensure Previous revision id is correct in the entry state. 
+        enforcePreviousRevisionId(revisedScheme, entryState);
+//    if(entryState.getPrevRevision() == null || !entryState.getPrevRevision().equals(revisedScheme.getEntryState().getContainingRevision()))
+//    {  getLogger().warn("Current scheme revision does not match entry state previous revision.  Forcing previous revision change");
+//        entryState.setPrevRevision(revisedScheme.getEntryState().getContainingRevision());   } 
     
-        EntryState dependentEntryState = cloneEntryState(entryState);
-        dependentEntryState.setChangeType(ChangeType.DEPENDENT);
-        EntryState modifyEntryState = cloneEntryState(entryState);
-        modifyEntryState.setChangeType(ChangeType.MODIFY);
-        EntryState newEntryState = cloneEntryState(entryState);
-        newEntryState.setChangeType(ChangeType.NEW);
+        EntryState dependentEntryState = cloneEntryState(entryState,ChangeType.DEPENDENT);
+        EntryState modifyEntryState = cloneEntryState(entryState, ChangeType.MODIFY);
+        EntryState newEntryState = cloneEntryState(entryState, ChangeType.NEW);
         newEntryState.setPrevRevision(null);
 
         //if this relations container does not exist in the mapping scheme ... create one.
@@ -263,10 +262,169 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         indexService.getEntityIndexService().createIndex(reference); 
     }
     
-    private EntryState cloneEntryState(EntryState entryState) {
+    private void enforcePreviousRevisionId(CodingScheme revisedScheme, EntryState entryState) {
+        if(entryState.getPrevRevision() == null || !entryState.getPrevRevision().equals(revisedScheme.getEntryState().getContainingRevision()))
+        {  getLogger().warn("Current scheme revision does not match entry state previous revision.  Forcing previous revision change");
+            entryState.setPrevRevision(revisedScheme.getEntryState().getContainingRevision());   } 
+        
+    }
+
+    public boolean setAssociationStatus(Revision revision, EntryState entryState,
+            AbsoluteCodingSchemeVersionReference scheme, String relationsContainer, String associationName,
+            String sourceCode, String sourceNamespace, String targetCode, String targetNamespace, String status,
+            boolean isActive) throws LBException {
+
+        CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+        versionOrTag.setVersion(scheme.getCodingSchemeVersion());
+        CodingScheme revisedScheme = null;
+        
+        //The supplied scheme doesn't exist returning false.
+        try {
+            revisedScheme = lbs.resolveCodingScheme(scheme.getCodingSchemeURN(), versionOrTag);
+        } catch (LBException e) {
+            getLogger().warn(
+                    "CodingScheme " + scheme.getCodingSchemeURN() + " version " + scheme.getCodingSchemeVersion()
+                            + " does not exist");
+            return false;
+        }
+
+        // enforcing continuity in previous revisionId's
+        enforcePreviousRevisionId(revisedScheme, entryState);
+
+        // enforcing continuity in current revisionId's
+        revision.setRevisionId(entryState.getContainingRevision());
+        EntryState versionState = cloneEntryState(entryState, ChangeType.VERSIONABLE);
+        EntryState dependentEntryState = cloneEntryState(entryState, ChangeType.DEPENDENT);
+        
+        //return false if the association does not exist
+        if (!doesAssociationExist(revisedScheme, relationsContainer, associationName, sourceCode, sourceNamespace,
+                targetCode, targetNamespace)) {
+            getLogger().warn(
+                    "Association with source " + sourceCode + " and namespace " + sourceNamespace + " and target "
+                            + targetCode + " and targetNamespace " + targetNamespace + "does not exist");
+            return false;
+        }
+        //Checking for supported status and creating a new one if necessary
+        if (!doesStatusExist(revisedScheme, status)) {
+            getLogger().info("Creating association status " + status);
+            SupportedStatus supportedStatus = createSupportedStatus(status);
+            revisedScheme.getMappings().setSupportedStatus(Arrays.asList(supportedStatus));
+        }
+
+        AssociationSource source = createSingleSourceTargetPair(status, isActive, sourceCode, sourceNamespace,
+                targetCode, targetNamespace, versionState);
+        setRelationsEntryState(revisedScheme, relationsContainer, dependentEntryState);
+        Relations relation = getRelations(revisedScheme, relationsContainer);
+        relation.setEntryState(dependentEntryState);
+        AssociationPredicate predicate = getAssociationPredicate(relation, associationName);
+        predicate.addSource(source);
+        revisedScheme.setEntryState(dependentEntryState);
+        ChangedEntry changedEntry = new ChangedEntry();
+        changedEntry.setChangedCodingSchemeEntry(revisedScheme);
+        revision.setChangedEntry(Arrays.asList(changedEntry));
+        service.loadRevision(revision, null);
+        return true;
+    }
+
+    private AssociationPredicate getAssociationPredicate(Relations relation, String associationName) throws LBException {
+        AssociationPredicate[] predicates = relation.getAssociationPredicate();
+        for (AssociationPredicate p : predicates) {
+            if (p.getAssociationName().equals(associationName)) {
+                return p;
+            }
+        }
+
+        throw new LBException("Association type does not exist in this relations container "
+                + relation.getContainerName());
+    }
+
+//    private CodingScheme createMinimalSchemeForRevision(CodingScheme revisedScheme, String relationsContainer,
+//            String associationName) {
+//        CodingScheme scheme = new CodingScheme();
+//        scheme.setCodingSchemeName(revisedScheme.getCodingSchemeName());
+//        scheme.setCodingSchemeURI(revisedScheme.getCodingSchemeURI());
+//        scheme.setRepresentsVersion(revisedScheme.getRepresentsVersion());
+//        Relations relation = new Relations();
+//        relation.setContainerName(relationsContainer);
+//        AssociationPredicate predicate = new AssociationPredicate();
+//        predicate.setAssociationName(associationName);
+//        relation.addAssociationPredicate(predicate);
+//        scheme.addRelations(relation);
+//        
+//        
+//        
+//        
+//        
+//        return scheme;
+//        
+//    }
+
+    private AssociationSource createSingleSourceTargetPair(
+            String status, 
+            boolean isActive, 
+            String sourceCode, 
+            String sourceNamespace, 
+            String targetCode, 
+            String targetNamespace, 
+            EntryState entryState){
+        
+        AssociationSource source = new AssociationSource();
+        source.setSourceEntityCode(sourceCode);
+        source.setSourceEntityCodeNamespace(sourceNamespace);
+        AssociationTarget target = new AssociationTarget();
+        target.setTargetEntityCode(targetCode);
+        target.setTargetEntityCodeNamespace(targetNamespace);
+        target.setIsActive(isActive);
+        target.setStatus(status);
+        if(entryState != null){
+        target.setEntryState(entryState);
+        }
+        AssociationTarget[] targets = new AssociationTarget[]{target};
+        source.setTarget(targets);
+
+        return source;
+        
+    }
+    private void setRelationsEntryState(CodingScheme scheme, String relationsContainer, EntryState entryState) throws LBException {
+
+       Relations[] relations = scheme.getRelations();
+       for(Relations r : relations){
+           if(r.getContainerName().equals(relationsContainer)){
+               r.setEntryState(entryState);
+               return;
+           }
+       }
+       
+       throw new LBException("Problems setting entry state for relations container " + relationsContainer);
+        
+    }
+
+    private SupportedStatus createSupportedStatus(String status) {
+    SupportedStatus newStatus = new SupportedStatus();
+    newStatus.setLocalId(status);
+    newStatus.setContent(status);
+        return newStatus;
+    }
+
+    private boolean doesStatusExist(CodingScheme scheme, String status) {
+       SupportedStatus[] supportedStatus = scheme.getMappings().getSupportedStatus();
+       if(supportedStatus != null){
+       for(SupportedStatus s : supportedStatus){
+           if(s.getLocalId().equals(status)){
+               return true;
+           }
+       }
+       }
+        return false;
+    }
+
+    private EntryState cloneEntryState(EntryState entryState, ChangeType changeType) {
        EntryState es = new EntryState();
        if(entryState.getChangeType()!= null)
-       es.setChangeType(entryState.getChangeType());
+       {es.setChangeType(entryState.getChangeType());}
+       else if (changeType != null){
+           entryState.setChangeType(changeType);
+       }
        if(entryState.getContainingRevision()!= null)
        es.setContainingRevision(entryState.getContainingRevision());
        if(entryState.getPrevRevision()!= null)
@@ -304,6 +462,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         }
         return false;
     }
+    
     public Relations getRelations(CodingScheme scheme, String relationsContainerName) {
         Relations[] relations = scheme.getRelations();
         Relations revisedRelations = new Relations();
@@ -330,60 +489,6 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
        return pair;
     }
    
-//        
-//        if (!codingSchemeExists(codingSchemes, sourceCodingScheme)) {
-//            throw new LBResourceUnavailableException("Association source code system not found");
-//        }
-//
-//        if (!codingSchemeExists(codingSchemes, targetCodingScheme)) {
-//            throw new LBResourceUnavailableException("Association target code system not found");
-//        }
-//
-//        // We have a target and source for this mapping. Now we'll resolve the source
-//        CodingSchemeVersionOrTag csvt = new CodingSchemeVersionOrTag();
-//        csvt.setVersion(sourceCodingScheme.getCodingSchemeVersion());
-//        CodingScheme scheme = lbs.resolveCodingScheme(sourceCodingScheme.getCodingSchemeURN(), csvt);
-//
-//        Relations relations = createRelationsContainer(
-//                entryState,
-//                scheme,
-//                relationsContainerName,
-//                effectiveDate,
-//                sourceCodingScheme,
-//                targetCodingScheme, 
-//                true, 
-//                associationType,
-//                null);
-//        AssociationPredicate predicate = createAssociationPredicate(associationType, associationSource);
-//        for(AssociationSource source: associationSource){
-//            
-//        //Here it should "createSource -- checking for source in existing coding scheme each time.
-//        predicate.addSource(source);
-//        }
-//        relations.addAssociationPredicate(predicate);
-//        scheme.addRelations(relations);
-////        if(associationQualifiers != null && !supportedAssociationQualifiersExist(scheme, associationQualifiers)){
-////            throw new LBException("This association qualifier does not exist in " + scheme.getCodingSchemeName()
-////                    + " vocabulary");
-////        }  
-//        service.loadRevision(scheme, "MappingRelease");
-//       
-//    }
-
-//    @Override
-//    public AssociationPredicate createAssociationPredicate(CodingScheme scheme,  String associationName) throws LBException {
-//        
-//       //Creating a new coding scheme.  Should we reserve the right to create an association type?
-//        // probably should make this a message.
-//        if (!supportedAssociationExists(scheme, associationName)) {
-//            throw new LBException("This association type does not exist in " + scheme.getCodingSchemeName()
-//                    + " vocabulary");
-//        }
-//        
-//        AssociationPredicate predicate = new AssociationPredicate();
-//        predicate.setAssociationName(associationName);
-//        return predicate;
-//    }
     
     @Override
     public AssociationPredicate createAssociationPredicate(  
@@ -1052,6 +1157,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         
         return scheme;
     }
+    
     public CodingScheme populateCodingScheme(String codingSchemeName, String codingSchemeURI, String formalName,
             String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
             List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
@@ -1091,6 +1197,8 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         scheme.setEntities(entities);
         return scheme;
     }
+    
+    
     public boolean codingSchemeExists(CodingSchemeRendering[] codingSchemes,
             AbsoluteCodingSchemeVersionReference codingScheme) {
         for (CodingSchemeRendering cr : codingSchemes) {
