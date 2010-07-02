@@ -105,6 +105,10 @@ public abstract class BaseExporter {
     
     protected abstract OptionHolder declareAllowedOptions(OptionHolder holder);
     
+    public ExporterMessageDirector getMessageDirector() {
+        return md_;
+    }
+    
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
