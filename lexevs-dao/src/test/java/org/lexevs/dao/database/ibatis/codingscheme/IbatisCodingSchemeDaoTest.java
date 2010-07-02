@@ -725,6 +725,29 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
+	public void testGetSupportedNamespaceUriMapNullEquivalentCodingScheme() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, idValue, uri) " +
+		"values ('cssa-guid', 'cs-guid', 'Namespace', 'test-ns', 'test-ns', 'a-uri')");
+		
+		Mappings mappings = ibatisCodingSchemeDao.getMappings("cs-guid");
+		
+		assertNotNull(mappings);
+		assertEquals(1, mappings.getSupportedNamespaceCount());
+		
+		SupportedNamespace ns = mappings.getSupportedNamespace()[0];
+		
+		assertEquals("test-ns", ns.getContent());
+		assertEquals("test-ns", ns.getLocalId());
+		assertEquals("a-uri", ns.getUri());
+		assertNull(ns.getEquivalentCodingScheme());
+	}
+	
+	@Test
 	public void testGetSupportedHierarchyUriMap() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
