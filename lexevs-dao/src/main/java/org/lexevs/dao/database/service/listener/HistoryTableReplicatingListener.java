@@ -18,13 +18,7 @@
  */
 package org.lexevs.dao.database.service.listener;
 
-import org.lexevs.dao.database.access.DaoManager;
-import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
-import org.lexevs.dao.database.access.entity.EntityDao;
-import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
-import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
-import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
  * The listener interface for receiving historyTableReplicating events.
@@ -45,33 +39,7 @@ public class HistoryTableReplicatingListener extends DefaultServiceEventListener
 	 */
 	@Override
 	public boolean onEntityUpdate(final EntityUpdateEvent event) {
-		DaoCallbackService callbackService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getDaoCallbackService();
-		callbackService.executeInDaoLayer(new DaoCallback<Object>(){
-
-			@Override
-			public Object execute(DaoManager daoManager) {
-				String uri = event.getCodingSchemeUri();
-				String version = event.getCodingSchemeVersion();
-				
-				CodingSchemeDao codingSchemeDao = daoManager.getCodingSchemeDao(uri, version);
-				String codingSchemeId = codingSchemeDao.getCodingSchemeUIdByUriAndVersion(uri, version);
-					
-				EntityDao entityDao = daoManager.getEntityDao(uri, version);
-				String entityId = entityDao.getEntityUId(
-						codingSchemeId, 
-						event.getOriginalEntity().getEntityCode(),
-						event.getOriginalEntity().getEntityCodeNamespace());
-				
-				
-				entityDao.insertHistoryEntity(codingSchemeId, entityId, event.getOriginalEntity());
-				return null;
-			}
-			
-		});
-		
-		
+		// Do this explicitly in the Services
 		return true;
 	}
-
-	
 }
