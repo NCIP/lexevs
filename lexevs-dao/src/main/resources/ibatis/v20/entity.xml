@@ -24,7 +24,7 @@
 		<result property="codingSchemeName" column="codingSchemeName" />
 	</resultMap>
 
-	<resultMap id="entityResult" class="entity" groupBy="entityCode,entityCodeNamespace">
+	<resultMap id="entityResult" class="entity" groupBy="entityCode,entityCodeNamespace,entryState">
 		<result property="id" column="entityGuid" />
 		<result property="entityCode" column="entityCode" />
 		<result property="entityCodeNamespace" column="entityCodeNamespace" />
@@ -174,13 +174,13 @@
 		ON
 			entity.entityGuid =
 			entityType.entityGuid	
-			 
+			
 		LEFT JOIN
 			$actualTableSetPrefix$entryState entryState
 		ON
 			entity.entryStateGuid =
 			entryState.entryStateGuid	
-			
+		
 		LEFT JOIN
 			$actualTableSetPrefix$propertyLinks propertyLinks
 		ON
@@ -251,7 +251,7 @@
 		AND
 			entity.entityGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
      </select>
-     
+        
      <select id="getEntityById" 
      	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
      	resultMap="Entity.entityResult"
@@ -261,6 +261,17 @@
 			entity.entityGuid = #param1#
 		AND
 			entity.codingSchemeGuid = #param2#
+     </select>
+     
+     <select id="getEntityByEntryStateUid" 
+     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+     	resultMap="Entity.entityResult"
+     	remapResults="true">
+		<include refid="getEntityFragment"/>
+		WHERE
+			entity.entityGuid = #param1#
+		AND
+			entity.entryStateGuid = #param2#
      </select>
      
 	<select id="getEntityByCodeAndNamespace" 
@@ -292,20 +303,22 @@
      </select>
      
     <select id="getEntityByIdAndRevisionId" 
-    	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+    	parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" 
     	resultMap="Entity.entityResult"
     	remapResults="true">
+ 
 		<include refid="getEntityFragment"/>
+		
 		WHERE
 			entity.entityGuid = #param1#
-			
-		<isNotNull property="param2">
+
+		<isNotNull property="revisionId">
 		AND
-			currentRevision.revisionId = #param2#
+			currentRevision.revisionId = #revisionId#
 		</isNotNull>
-		<isNull property="param2">
+		<isNull property="revisionId">
 		AND
-			currentRevision.revisionId IS NULL
+			entryState.revisionGuid IS NULL
 		</isNull>
      </select>
      
@@ -540,13 +553,24 @@
 			entityGuid = #param1#
  	</update>
  	
+ 	<select id="getPreviousEntryStateId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultClass="string">
+		SELECT 
+			prevEntryStateGuid
+		FROM
+			$prefix$entryState es
+		WHERE
+			es.entryStateGuid = #param1#
+	</select>
+ 	
 	<select id="getPrevRevIdFromGivenRevIdForEntity" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
 		resultClass="string">
 	<![CDATA[
 	
 			SELECT
-				r0.revisionId
+				DISTINCT(r0.revisionId)
 			FROM
 				$prefix$entryState es0
 			INNER JOIN
@@ -568,7 +592,9 @@
 				ON
 					es1.revisionGuid = r1.revisionGuid
 				WHERE
-					es1.entryGuid = #param1#  
+					es1.entryGuid = #param1#
+				AND
+					es1.changeType!= 'DEPENDENT'	
 				AND 
 	        		r1.revAppliedDate <=
 			      		( 
@@ -579,7 +605,6 @@
 			      		WHERE
 			        		r2.revisionId = #param2#
 			     		)
-
 		     	)
 	     	)
 	]]>	
