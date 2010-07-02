@@ -429,5 +429,31 @@
                 </changedCodingSchemeEntry>
             </changedEntry>
         </revision>
+        
+         <!-- Test:ADD a Definition-->
+        <revision revisionId="testRelease2010June_testEntity">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="Automobiles"
+                    codingSchemeURI="urn:oid:22.22.0.2" representsVersion="2.0">
+                    <lgCommon:entryState containingRevision="testRelease2010June_testEntity"
+                        prevRevision="testRelease2010May_testEntity" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:entities>
+                        <lgCon:entity entityCode="midas002" entityCodeNamespace="Automobiles">
+                            <lgCommon:entryState 
+                            	containingRevision="testRelease2010June_testEntity" 
+                            	prevRevision="testRelease2010Mar_testEntity"
+                                relativeOrder="0" changeType="DEPENDENT"/>     
+                                <lgCon:definition propertyName="test-def" propertyId="testDef">
+                                	<lgCommon:entryState changeType="NEW" relativeOrder="0" 
+                                		containingRevision="testRelease2010June_testEntity"/>
+                                		<lgCommon:value>Test Definition</lgCommon:value>
+                                </lgCon:definition>                      
+                        </lgCon:entity>
+                    </lgCS:entities>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
     </editHistory>
 </systemRelease>
