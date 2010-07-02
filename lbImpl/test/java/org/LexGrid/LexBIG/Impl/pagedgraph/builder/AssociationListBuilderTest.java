@@ -26,7 +26,6 @@ import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
 import org.junit.Test;
-import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
@@ -35,10 +34,7 @@ import org.lexevs.registry.utility.RegistryUtility;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
-    
-    @Resource
-    private DatabaseServiceManager manager;
-    
+
     @Resource
     private Registry registry;
     
@@ -79,7 +75,6 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
         " 'ai-id', null, null, null, null, null, null, null, null)");
     
         AssociationListBuilder builder = new AssociationListBuilder();
-        builder.setDatabaseServiceManager(manager);
         
         GraphQuery query = new GraphQuery();
         
@@ -144,7 +139,6 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
         " 'ai-id', null, null, null, null, null, null, null, null)");
     
         AssociationListBuilder builder = new AssociationListBuilder();
-        builder.setDatabaseServiceManager(manager);
         
         GraphQuery query = new GraphQuery();
         query.getRestrictToAssociations().add("assocName2");
@@ -224,7 +218,6 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                 "'1' )");
     
         AssociationListBuilder builder = new AssociationListBuilder();
-        builder.setDatabaseServiceManager(manager);
         
         GraphQuery query = new GraphQuery();
         query.getRestrictToAssociations().add("assocName2");
@@ -305,7 +298,6 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                 "'1' )");
     
         AssociationListBuilder builder = new AssociationListBuilder();
-        builder.setDatabaseServiceManager(manager);
         
         GraphQuery query = new GraphQuery();
         query.getRestrictToAssociations().add("assocName2");
@@ -386,7 +378,6 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                 "'1' )");
     
         AssociationListBuilder builder = new AssociationListBuilder();
-        builder.setDatabaseServiceManager(manager);
         
         GraphQuery query = new GraphQuery();
         query.getRestrictToAssociations().add("assocName2");
@@ -465,7 +456,6 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
                 "'1' )");
     
         AssociationListBuilder builder = new AssociationListBuilder();
-        builder.setDatabaseServiceManager(manager);
         
         GraphQuery query = new GraphQuery();
         query.getRestrictToAssociations().add("assocName2");
@@ -522,7 +512,6 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
         " 'ai-id', null, null, null, null, null, null, null, null)");
     
         AssociationListBuilder builder = new AssociationListBuilder();
-        builder.setDatabaseServiceManager(manager);
         
         AssociationList list =
             builder.buildSourceOfAssociationList(
@@ -606,7 +595,6 @@ public class AssociationListBuilderTest extends LexEvsDbUnitTestBase{
         " 'ai-id3', null, null, null, null, null, null, null, null)");
     
         AssociationListBuilder builder = new AssociationListBuilder();
-        builder.setDatabaseServiceManager(manager);
         
         AssociationList list =
             builder.buildSourceOfAssociationList(
