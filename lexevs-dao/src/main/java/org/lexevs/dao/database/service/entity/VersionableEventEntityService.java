@@ -31,6 +31,7 @@ import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
@@ -107,10 +108,12 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 			String version,
 			Entity entity) throws LBException {
 		
+		String currentEntryStateUid = this.getCurrentEntryStateUid(codingSchemeUri, version, entity);
+		
 		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, version);
 		
 		EntityDao entityDao = getDaoManager().getEntityDao(codingSchemeUri, version);
-		
+
 		VersionsDao versionsDao = getDaoManager().getVersionsDao(codingSchemeUri, version);
 		
 		String codingSchemeUId = codingSchemeDao.
@@ -121,23 +124,22 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		Entity currentEntity = this.getEntity(codingSchemeUri, version, entity
 				.getEntityCode(), entity.getEntityCodeNamespace());
 		
-		/* 1. insert current entity data into history.*/	
-		String prevEntryStateUId = entityDao.insertHistoryEntity(codingSchemeUId, entityUId, entity);
+		this.insertIntoHistoryIfNecessary(entityDao, currentEntity, codingSchemeUId, entityUId);
 		
 		/* 2. update the attributes of the entity. */
 		String entryStateUId = entityDao.updateEntity(codingSchemeUId, entityUId, entity);
 	
-		/* 4. register entrystate details for the entity.*/
+		/* 4. register entrystate details for the entity.*/		
 		versionsDao.insertEntryState(
 				codingSchemeUId,
 				entryStateUId, 
 				entityUId,
 				EntryStateType.ENTITY,
-				prevEntryStateUId, 
+				currentEntryStateUid, 
 				entity.getEntryState());
 
 		/* 5. apply dependent changes for the entity.*/
-		this.insertDependentChanges(codingSchemeUri, version, entity);
+		this.insertDependentChanges(codingSchemeUri, version, entity, false);
 		
 		this.fireEntityUpdateEvent(new EntityUpdateEvent(
 				codingSchemeUri,
@@ -222,10 +224,12 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 		
 		String entityUId = entityDao.getEntityUId(codingSchemeUId, revisedEntity.getEntityCode(), revisedEntity.getEntityCodeNamespace());
 		
-		/* 1. insert current entity data into history.*/	
-		String prevEntryStateUId = entityDao.insertHistoryEntity(codingSchemeUId, entityUId, revisedEntity);
+		Entity currentEntity = entityDao.getEntityByUId(codingSchemeUId, entityUId);
 		
-		/* 2. update the versionable attributes of the entity. */
+		String currentEntryStateUid = this.getCurrentEntryStateUid(codingSchemeUri, version, currentEntity);
+		
+		this.insertIntoHistoryIfNecessary(entityDao, currentEntity, codingSchemeUId, entityUId);
+		
 		String entryStateUId = entityDao.
 			updateEntityVersionableAttrib(codingSchemeUId, entityUId, revisedEntity);	
 		
@@ -235,68 +239,56 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 				entryStateUId, 
 				entityUId,
 				EntryStateType.ENTITY,
-				prevEntryStateUId, 
+				currentEntryStateUid, 
 				revisedEntity.getEntryState());
 		
 		/* 4. apply dependent changes for the entity.*/
-		this.insertDependentChanges(codingSchemeUri, version, revisedEntity);
+		this.insertDependentChanges(codingSchemeUri, version, revisedEntity, false);
 	}
 	
 	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_DEPENDENT_CHANGES_ERROR)
-	protected void insertDependentChanges(String codingSchemeUri, String version,
-			Entity revisedEntity) throws LBException {
+	protected void insertDependentChanges(
+			String codingSchemeUri, String version,
+			Entity revisedEntity, 
+			boolean insertIntoHistory) throws LBException {
 
 		Property[] entityProperties = revisedEntity.getAllProperties();
-		
+
 		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, version);
-		
+
 		VersionsDao versionsDao = getDaoManager().getVersionsDao(codingSchemeUri, version);
-		
+
 		EntityDao entityDao = getDaoManager().getEntityDao(codingSchemeUri, version);
+
+		String codingSchemeUId = codingSchemeDao
+			.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+
+		String entityUId = entityDao.getEntityUId(codingSchemeUId,
+				revisedEntity.getEntityCode(), revisedEntity
+				.getEntityCodeNamespace());
+
+		Entity currentEntity = entityDao.getEntityByUId(codingSchemeUId, entityUId);
 		
-		if (revisedEntity.getEntryState().getChangeType() == ChangeType.DEPENDENT) {
-			
-			String codingSchemeUId = codingSchemeDao
-					.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
-
-			String entityUId = entityDao.getEntityUId(codingSchemeUId,
-					revisedEntity.getEntityCode(), revisedEntity
-							.getEntityCodeNamespace());
-
-			String prevEntryStateUId = entityDao.getEntryStateUId(
-					codingSchemeUId, entityUId);
-
-			if (!entityDao.entryStateExists(codingSchemeUId, prevEntryStateUId)) {
-				EntryState entryState = new EntryState();
-
-				entryState.setChangeType(ChangeType.NEW);
-				entryState.setRelativeOrder(0L);
-
-				versionsDao.insertEntryState(
-						codingSchemeUId,
-						prevEntryStateUId, 
-						entityUId,
-						EntryStateType.ENTITY, 
-						null,
-						entryState);
-			}
-
-			String entryStateUId = versionsDao.insertEntryState(
-					codingSchemeUId,
-					codingSchemeUId, 
-					EntryStateType.ENTITY,
-					prevEntryStateUId, 
-					revisedEntity.getEntryState());
-
-			entityDao.updateEntryStateUId(codingSchemeUId, entityUId,
-					entryStateUId);
-
+		if(insertIntoHistory) {
+			this.insertIntoHistoryIfNecessary(entityDao, currentEntity, codingSchemeUId, entityUId);
 		}
-		
+
+		String currentEntryStateUid = this.getCurrentEntryStateUid(codingSchemeUri, version, revisedEntity);
+
+		String entryStateUId = versionsDao.insertEntryState(
+				codingSchemeUId,
+				entityUId,
+				EntryStateType.ENTITY,
+				currentEntryStateUid, 
+				revisedEntity.getEntryState());
+
+		entityDao.updateEntryStateUId(codingSchemeUId, entityUId,
+				entryStateUId);
+
 		for (int i = 0; i < entityProperties.length; i++) {
 			propertyService.reviseEntityProperty(codingSchemeUri, version,
 					revisedEntity.getEntityCode(), revisedEntity
-							.getEntityCodeNamespace(), entityProperties[i]);
+					.getEntityCodeNamespace(), entityProperties[i]);
 		}
 	}
 	
@@ -411,7 +403,6 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	public void revise(String codingSchemeUri, String version, Entity entity) throws LBException {
 
 		if (validRevision(codingSchemeUri, version, entity)) {
-
 			ChangeType changeType = entity.getEntryState().getChangeType();
 			
 			if (changeType == ChangeType.NEW) {
@@ -425,11 +416,55 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 				this.updateEntity(codingSchemeUri, version, entity);
 			} else if (changeType == ChangeType.DEPENDENT) {
 				
-				this.insertDependentChanges(codingSchemeUri, version, entity);
+				this.insertDependentChanges(codingSchemeUri, version, entity, true);
 			} else if (changeType == ChangeType.VERSIONABLE) {
 
 				this.insertVersionableChanges(codingSchemeUri, version, entity);
 			}
+		}
+	}
+	
+	private String getCurrentEntryStateUid(String codingSchemeUri, String version, Entity entity) {
+		EntityDao entityDao = this.getDaoManager().getEntityDao(codingSchemeUri, version);
+		
+		String codingSchemeUid = this.getDaoManager()
+			.getCodingSchemeDao(codingSchemeUri, version).
+				getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+		
+		String entityUid = entityDao.getEntityUId(
+				codingSchemeUid, entity.getEntityCode(), entity.getEntityCodeNamespace());
+		
+		String entryStateUid = entityDao.getEntryStateUId(
+				codingSchemeUid, entityUid);
+
+		if(StringUtils.isBlank(entryStateUid) || !entityDao.entryStateExists(codingSchemeUid, entryStateUid)) {
+			EntryState entryState = new EntryState();
+
+			entryState.setChangeType(ChangeType.NEW);
+			entryState.setRelativeOrder(0L);
+
+			if(StringUtils.isBlank(entryStateUid)){
+				return this.getDaoManager().getVersionsDao(codingSchemeUri, version).
+					insertEntryState(
+						codingSchemeUid,
+						entityUid,
+						EntryStateType.ENTITY, 
+						null,
+						entryState);
+			} else {
+				this.getDaoManager().getVersionsDao(codingSchemeUri, version).
+				insertEntryState(
+						codingSchemeUid,
+						entryStateUid,
+						entityUid,
+						EntryStateType.ENTITY, 
+						null,
+						entryState);
+				
+				return entryStateUid; 
+			}
+		} else {
+			return entryStateUid;
 		}
 	}
 
@@ -440,7 +475,23 @@ public class VersionableEventEntityService extends AbstractDatabaseService imple
 	public void setPropertyService(PropertyService propertyService) {
 		this.propertyService = propertyService;
 	}
+	
+	private boolean isEntityChangeTypeDependent(Entity entity) {
+		return entity.getEntryState() != null 
+				&&
+			   entity.getEntryState().getChangeType().equals(ChangeType.DEPENDENT);
+	}
 
+	private void insertIntoHistoryIfNecessary(
+			EntityDao entityDao, 
+			Entity currentEntity, 
+			String codingSchemeUid, 
+			String entityUid) {
+		
+		if(!this.isEntityChangeTypeDependent(currentEntity)) {
+			entityDao.insertHistoryEntity(codingSchemeUid, entityUid, currentEntity);
+		}
+	}
 	private boolean validRevision(String codingSchemeUri, String version, Entity entity) throws LBException {
 		
 		String csUId = null;
