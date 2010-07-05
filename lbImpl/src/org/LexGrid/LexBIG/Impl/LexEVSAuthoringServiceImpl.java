@@ -46,10 +46,7 @@ import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
-import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.lexevs.dao.database.service.association.AssociationService;
-import org.lexevs.dao.database.service.association.AssociationTargetService;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -402,19 +399,19 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
     }
     
     
-    private void setRelationsEntryState(CodingScheme scheme, String relationsContainer, EntryState entryState) throws LBException {
-
-       Relations[] relations = scheme.getRelations();
-       for(Relations r : relations){
-           if(r.getContainerName().equals(relationsContainer)){
-               r.setEntryState(entryState);
-               return;
-           }
-       }
-       
-       throw new LBException("Problems setting entry state for relations container " + relationsContainer);
-        
-    }
+//    private void setRelationsEntryState(CodingScheme scheme, String relationsContainer, EntryState entryState) throws LBException {
+//
+//       Relations[] relations = scheme.getRelations();
+//       for(Relations r : relations){
+//           if(r.getContainerName().equals(relationsContainer)){
+//               r.setEntryState(entryState);
+//               return;
+//           }
+//       }
+//       
+//       throw new LBException("Problems setting entry state for relations container " + relationsContainer);
+//        
+//    }
 
     private SupportedStatus createSupportedStatus(String status) {
     SupportedStatus newStatus = new SupportedStatus();
