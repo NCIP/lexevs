@@ -17,9 +17,42 @@
  */
 package org.lexevs.cts2.author;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.relations.AssociationQualification;
+import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.Revision;
+
 public interface AssociationAuthoringOperation {
-	public void createAssociation();
-	public void updateAssociationStatus();
+	public AssociationSource createAssociation(
+			Revision revision,
+			EntryState entryState,
+			AbsoluteCodingSchemeVersionReference baseScheme,
+			AbsoluteCodingSchemeVersionReference  sourceCodeSystemIdentifier,
+			AbsoluteCodingSchemeVersionReference targetCodeSystemIdentifier,
+			String sourceConceptCodeIdentifier,
+			String targetConceptCodeIdentifier, 
+			String relationsContainerName, 
+			String associationType,
+			AssociationQualification[] associationQualifiers)
+			throws LBException;
+
+	public boolean updateAssociationStatus(
+			Revision revision, 
+			EntryState entryState, 
+			AbsoluteCodingSchemeVersionReference scheme, 
+			String relationsContainer, 
+			String associationName, 
+			String sourcCode, 
+			String sourceNamespace, 
+			String targetCode, 
+			String targetNamespace, 
+			String instanceId, 
+			String status, 
+			boolean isActive) throws LBException;
+
 	public void createLexicalAssociation();
+
 	public void createRuleBasedAssociation();
 }
