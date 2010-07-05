@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
-import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
@@ -19,25 +17,18 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexEVSAuthoringService;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
-import org.LexGrid.LexBIG.Utility.ObjectToString;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
-import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
-import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedAssociationQualifier;
@@ -45,6 +36,7 @@ import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedContainerName;
 import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedStatus;
+import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
@@ -54,12 +46,14 @@ import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
+import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.association.AssociationService;
+import org.lexevs.dao.database.service.association.AssociationTargetService;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.system.ResourceManager;
 
 
 
@@ -143,7 +137,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
             long relativeOrder
             )
             throws LBException {
-        boolean newContainer = false;
+
 
         //See if this is a mapping scheme
         CodingScheme revisedScheme = getCodingSchemeMetaData(mappingCodingScheme);
@@ -271,16 +265,16 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
 
     public boolean setAssociationStatus(Revision revision, EntryState entryState,
             AbsoluteCodingSchemeVersionReference scheme, String relationsContainer, String associationName,
-            String sourceCode, String sourceNamespace, String targetCode, String targetNamespace, String status,
+            String sourceCode, String sourceNamespace, String targetCode, String targetNamespace, String instanceId, String status,
             boolean isActive) throws LBException {
 
         CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
         versionOrTag.setVersion(scheme.getCodingSchemeVersion());
-        CodingScheme revisedScheme = null;
+        CodingScheme baseScheme = null;
         
         //The supplied scheme doesn't exist returning false.
         try {
-            revisedScheme = lbs.resolveCodingScheme(scheme.getCodingSchemeURN(), versionOrTag);
+            baseScheme = lbs.resolveCodingScheme(scheme.getCodingSchemeURN(), versionOrTag);
         } catch (LBException e) {
             getLogger().warn(
                     "CodingScheme " + scheme.getCodingSchemeURN() + " version " + scheme.getCodingSchemeVersion()
@@ -288,16 +282,21 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
             return false;
         }
 
-        // enforcing continuity in previous revisionId's
-        enforcePreviousRevisionId(revisedScheme, entryState);
-
+        // enforcing continuity in this entry state for a previous revision id
+        enforcePreviousRevisionId(baseScheme, entryState);
+        
+        //Creating a version of this scheme with a smaller footprint.
+        CodingScheme newScheme = createMinimalSchemeForRevision(baseScheme, relationsContainer, associationName, null, null);
+        
         // enforcing continuity in current revisionId's
         revision.setRevisionId(entryState.getContainingRevision());
         EntryState versionState = cloneEntryState(entryState, ChangeType.VERSIONABLE);
         EntryState dependentEntryState = cloneEntryState(entryState, ChangeType.DEPENDENT);
         
+        //TODO complete method for creating minimal scheme.
+
         //return false if the association does not exist
-        if (!doesAssociationExist(revisedScheme, relationsContainer, associationName, sourceCode, sourceNamespace,
+        if (!doesAssociationExist(baseScheme, relationsContainer, associationName, sourceCode, sourceNamespace,
                 targetCode, targetNamespace)) {
             getLogger().warn(
                     "Association with source " + sourceCode + " and namespace " + sourceNamespace + " and target "
@@ -305,22 +304,22 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
             return false;
         }
         //Checking for supported status and creating a new one if necessary
-        if (!doesStatusExist(revisedScheme, status)) {
+        if (!doesStatusExist(baseScheme, status)) {
             getLogger().info("Creating association status " + status);
             SupportedStatus supportedStatus = createSupportedStatus(status);
-            revisedScheme.getMappings().setSupportedStatus(Arrays.asList(supportedStatus));
+           newScheme.getMappings().setSupportedStatus(Arrays.asList(supportedStatus));
         }
 
         AssociationSource source = createSingleSourceTargetPair(status, isActive, sourceCode, sourceNamespace,
-                targetCode, targetNamespace, versionState);
-        setRelationsEntryState(revisedScheme, relationsContainer, dependentEntryState);
-        Relations relation = getRelations(revisedScheme, relationsContainer);
+                targetCode, targetNamespace, instanceId, versionState);
+     
+        Relations relation = getRelations(newScheme, relationsContainer);
         relation.setEntryState(dependentEntryState);
         AssociationPredicate predicate = getAssociationPredicate(relation, associationName);
         predicate.addSource(source);
-        revisedScheme.setEntryState(dependentEntryState);
+        newScheme.setEntryState(dependentEntryState);
         ChangedEntry changedEntry = new ChangedEntry();
-        changedEntry.setChangedCodingSchemeEntry(revisedScheme);
+        changedEntry.setChangedCodingSchemeEntry(newScheme);
         revision.setChangedEntry(Arrays.asList(changedEntry));
         service.loadRevision(revision, null);
         return true;
@@ -338,26 +337,40 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
                 + relation.getContainerName());
     }
 
-//    private CodingScheme createMinimalSchemeForRevision(CodingScheme revisedScheme, String relationsContainer,
-//            String associationName) {
-//        CodingScheme scheme = new CodingScheme();
-//        scheme.setCodingSchemeName(revisedScheme.getCodingSchemeName());
-//        scheme.setCodingSchemeURI(revisedScheme.getCodingSchemeURI());
-//        scheme.setRepresentsVersion(revisedScheme.getRepresentsVersion());
-//        Relations relation = new Relations();
-//        relation.setContainerName(relationsContainer);
-//        AssociationPredicate predicate = new AssociationPredicate();
-//        predicate.setAssociationName(associationName);
-//        relation.addAssociationPredicate(predicate);
-//        scheme.addRelations(relation);
-//        
-//        
-//        
-//        
-//        
-//        return scheme;
-//        
-//    }
+    //TODO create properties param and function for coding scheme and relations
+    private CodingScheme createMinimalSchemeForRevision(CodingScheme revisedScheme, String relationsContainer,
+            String associationName, Entity entity, AssociationEntity assocEntity) throws LBException {
+
+        Relations relation = new Relations();
+        relation.setContainerName(relationsContainer);
+        AssociationPredicate predicate = new AssociationPredicate();
+        predicate.setAssociationName(associationName);
+        relation.addAssociationPredicate(predicate);
+        Mappings mappings = new Mappings();
+        Entities entities = null;
+        if(entity != null || assocEntity != null){
+            entities = new Entities();
+            if(entity != null)
+            entities.addEntity(entity);
+            if(assocEntity != null){
+                entities.addAssociationEntity(assocEntity);
+            }
+        }
+        CodingScheme scheme = populateCodingScheme(revisedScheme.getCodingSchemeName(),
+                revisedScheme.getCodingSchemeURI(), 
+                null, 
+                null, 
+                0, 
+                revisedScheme.getRepresentsVersion(), 
+                null, null, null, 
+                mappings,
+                null, 
+                entities, 
+                Arrays.asList(relation));
+        
+        return scheme;
+        
+    }
 
     private AssociationSource createSingleSourceTargetPair(
             String status, 
@@ -366,6 +379,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
             String sourceNamespace, 
             String targetCode, 
             String targetNamespace, 
+            String instanceId, 
             EntryState entryState){
         
         AssociationSource source = new AssociationSource();
@@ -376,6 +390,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         target.setTargetEntityCodeNamespace(targetNamespace);
         target.setIsActive(isActive);
         target.setStatus(status);
+        target.setAssociationInstanceId(instanceId);
         if(entryState != null){
         target.setEntryState(entryState);
         }
@@ -385,6 +400,8 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         return source;
         
     }
+    
+    
     private void setRelationsEntryState(CodingScheme scheme, String relationsContainer, EntryState entryState) throws LBException {
 
        Relations[] relations = scheme.getRelations();
@@ -423,7 +440,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
        if(entryState.getChangeType()!= null)
        {es.setChangeType(entryState.getChangeType());}
        else if (changeType != null){
-           entryState.setChangeType(changeType);
+          es.setChangeType(changeType);
        }
        if(entryState.getContainingRevision()!= null)
        es.setContainingRevision(entryState.getContainingRevision());
@@ -1189,12 +1206,13 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         scheme.setSource(sourceList);
         if(copyright != null)
         scheme.setCopyright(copyright);
-        
         scheme.setMappings(mappings);
         if(properties != null)
         scheme.setProperties(properties);
         if(entities != null)
         scheme.setEntities(entities);
+        if(relationsList != null)
+        scheme.setRelations(relationsList);
         return scheme;
     }
     
