@@ -284,7 +284,7 @@
       <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="005">
         <lgRel:target targetEntityCodeNamespace="Automobiles" targetEntityCode="Ford"/>
         <lgRel:target targetEntityCodeNamespace="Automobiles" targetEntityCode="GM"/>
-        <lgRel:target targetEntityCodeNamespace="Automobiles" targetEntityCode="A"/>
+        <lgRel:target targetEntityCodeNamespace="Automobiles" targetEntityCode="A" associationInstanceId="instance001"/>
       </lgRel:source>
       <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="@">        
         <lgRel:target targetEntityCodeNamespace="Automobiles" targetEntityCode="005"/>
