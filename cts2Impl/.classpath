@@ -8,5 +8,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgValueSets"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbModel"/>
+	<classpathentry kind="lib" path="/lbModel/lib/lbModel.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
