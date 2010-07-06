@@ -372,6 +372,16 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 			vsEntryStateDao.insertEntryState(prevEntryStateUId, valueSetDefUId,
 					ReferenceType.VALUESETDEFINITION.name(), null, entryState);
 		}
+		else
+		{
+			EntryState currentVSDEntryState = vsEntryStateDao.getEntryStateByUId(prevEntryStateUId);
+			// if the exiting VSD entry change type is non-dependent, move to history table
+			if (!currentVSDEntryState.getChangeType().equals(ChangeType.DEPENDENT))
+			{
+				prevEntryStateUId = valueSetDefDao
+						.insertHistoryValueSetDefinition(valueSetDefUId);
+			}
+		}
 	
 		String entryStateUId = vsEntryStateDao.insertEntryState(valueSetDefUId,
 				ReferenceType.VALUESETDEFINITION.name(), prevEntryStateUId,
