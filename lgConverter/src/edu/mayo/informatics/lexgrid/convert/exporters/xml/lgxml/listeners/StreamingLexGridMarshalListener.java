@@ -1,6 +1,6 @@
 package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.listeners;
 
-import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,6 +34,7 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
+import org.xml.sax.InputSource;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.AssociationEntityCache;
@@ -167,8 +168,11 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
 
     private boolean preMarshalEntity(Object obj) {
         messager.info("start processing entities...");
-        // this.marshaller.setSchemaLocation(null);
-        // this.marshaller.setNoNamespaceSchemaLocation(null);
+        
+        String mappingFileName = "mapping.xml";
+        
+//        this.marshaller.setSchemaLocation(null);
+//        this.marshaller.setNoNamespaceSchemaLocation(null);
         if (((Entity) obj).getEntityCode().equals(LexGridConstants.MR_FLAG)) {
             // get groups of Entity objects using CNS.
             if (cns != null) {
@@ -202,14 +206,15 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                     // load the mapping for association entity
                     try {
                         Mapping mapping = new Mapping();
-                        mapping.loadMapping("file:///"
-                                + StreamingLexGridMarshalListener.class.getResource("./").getPath() + "mapping.xml");
+                        messager.info("attempting to load " + mappingFileName + "...");
+                        InputStream inputStream = StreamingLexGridMarshalListener.class.getResourceAsStream("/edu/mayo/informatics/lexgrid/convert/exporters/xml/lgxml/listeners/" + mappingFileName);
+                        InputSource inputSource = new InputSource(inputStream);
+                        mapping.loadMapping(inputSource);
                         this.marshaller.setMapping(mapping);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        messager.info(mappingFileName + " loaded successfully");
                     } catch (MappingException e) {
                         e.printStackTrace();
-                    }
+                    }  
 
                     // now marshal the AssociationEntity
                     messager.info("start processing association entities...");
@@ -243,8 +248,8 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
 
     @Override
     public void postMarshal(Object arg0) {
-        if (org.LexGrid.codingSchemes.CodingScheme.class.equals(arg0.getClass())) {
-            System.out.println("Done marshalling CodingScheme. Clean up caches.");
+        if(org.LexGrid.codingSchemes.CodingScheme.class.equals(arg0.getClass())) {
+            messager.info("Done marshalling CodingScheme. Clean up caches.");
             this.sourceCache.destroy();
             this.associationEntityCache.destroy();
         }
