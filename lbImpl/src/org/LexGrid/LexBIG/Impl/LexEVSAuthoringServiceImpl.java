@@ -96,7 +96,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
     
     //TODO return void and persist the coding scheme as a revision
     @Override
-    public CodingScheme createCodingScheme(String codingSchemeName, String codingSchemeURI, String formalName,
+    public CodingScheme createCodingScheme(Revision revision, String codingSchemeName, String codingSchemeURI, String formalName,
             String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
             List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
             List<Relations>  relationsList, EntryState entryState) throws LBException {
