@@ -41,6 +41,19 @@ public interface LexEVSAuthoringService {
 			List<Relations> relationsList,
 			EntryState entryState) throws LBException;
 	
+	public void createAssociationMapping(
+			EntryState entryState, 
+		    AbsoluteCodingSchemeVersionReference mappingCoding,
+			AbsoluteCodingSchemeVersionReference sourceCodingScheme, 
+			AbsoluteCodingSchemeVersionReference targetCodingScheme,
+			AssociationSource[] associationSource,
+			String associationType,
+			String relationsContainerName,
+			Date effectiveDate,
+			AssociationQualification[] associationQualifiers,
+			Revision revision
+			)throws LBException;
+	
 	public void createMappingWithDefaultValues(
 			AssociationSource[] sourcesAndTargets, String sourceCodingScheme,
 			String sourceCodingSchemeVersion, String targetCodingScheme,
@@ -67,7 +80,8 @@ public interface LexEVSAuthoringService {
 	
 	public Properties createCodingSchemeProperties(CodingScheme scheme)throws LBException;
 	
-	public AssociationSource createAssociationSource( 
+	public AssociationSource createAssociationSource(
+			Revision revision,
 			EntryState entryState,
 			AbsoluteCodingSchemeVersionReference sourceCodeSystemIdentifier,
 			String sourceConceptCodeIdentifier,
@@ -82,9 +96,14 @@ public interface LexEVSAuthoringService {
 			AbsoluteCodingSchemeVersionReference targetCodeSystemIdentifier,
             String targetConceptCodeIdentifier)throws LBException;
 	
-	public Association createAssociation()throws LBException;
-	 public EntryState createDefaultMappingsEntryState(
+	public boolean setAssociationStatus(Revision revision, EntryState entryState,
+	            AbsoluteCodingSchemeVersionReference scheme, String relationsContainer, String associationName,
+	            String sourceCode, String sourceNamespace, String targetCode, String targetNamespace, String instanceId, String status,
+	            boolean isActive) throws LBException ;
+	   
+	public EntryState createDefaultMappingsEntryState(
 			 String prevRevisionId );
+	
 	public AssociationSource mapTargetsToSource(
 			EntryState entryState,
 			CodingScheme scheme, 
@@ -92,17 +111,5 @@ public interface LexEVSAuthoringService {
 	        AbsoluteCodingSchemeVersionReference codingSchemeIdentifier,
 	        AssociationTarget[] associationTargets)throws LBException;
 	
-	public void createAssociationMapping(
-			EntryState entryState, 
-		    AbsoluteCodingSchemeVersionReference mappingCoding,
-			AbsoluteCodingSchemeVersionReference sourceCodingScheme, 
-			AbsoluteCodingSchemeVersionReference targetCodingScheme,
-			AssociationSource[] associationSource,
-			String associationType,
-			String relationsContainerName,
-			Date effectiveDate,
-			AssociationQualification[] associationQualifiers,
-			Revision revision,
-	        long relativeOrder
-			)throws LBException;
+
 }
