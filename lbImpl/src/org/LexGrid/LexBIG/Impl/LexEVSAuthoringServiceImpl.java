@@ -94,29 +94,48 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         setCodingSchemes();
     }
     
-    private LgLoggerIF getLogger() {
-        return LoggerFactory.getLogger();
-    }
-    
+    //TODO return void and persist the coding scheme as a revision
     @Override
-    public Association createAssociation() throws LBException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    //basic information set created for the coding schemes in this terminology service
-    private void setCodingSchemes(){
-        try {
-            codingSchemes = lbs.getSupportedCodingSchemes().getCodingSchemeRendering();
-        } catch (LBInvocationException e) {
-            getLogger().error("Problem retrieving coding schemes from this service.");
-            e.printStackTrace();
+    public CodingScheme createCodingScheme(String codingSchemeName, String codingSchemeURI, String formalName,
+            String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
+            List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
+            List<Relations>  relationsList, EntryState entryState) throws LBException {
+        if(codingSchemeName == null){
+            throw new LBException("Coding scheme name cannot be null");
         }
+        if(codingSchemeURI == null){
+            throw new LBException("Coding scheme URI cannot be null");
+        }
+        if(representsVersion == null){
+            throw new LBException("Coding scheme version cannot be null");
+        }
+        if(mappings == null){
+            throw new LBException("Coding scheme mappings cannot be null");
+        }
+        CodingScheme scheme = new CodingScheme();
+        scheme.setCodingSchemeName(codingSchemeName);
+        scheme.setCodingSchemeURI(codingSchemeURI);
+ 
+        scheme.setFormalName(formalName);
+
+        scheme.setDefaultLanguage(defaultLanguage);
+        scheme.setApproxNumConcepts(approxNumConcepts);
+        scheme.setRepresentsVersion(representsVersion);
+
+        scheme.setLocalName(localNameList);
+
+        scheme.setSource(sourceList);
+
+        scheme.setCopyright(copyright);
+
+        scheme.setMappings(mappings);
+
+        scheme.setProperties(properties);
+        scheme.setEntities(entities);
+        
+        return scheme;
     }
     
-    public CodingSchemeRendering[] getCodingSchemes(){
-        return codingSchemes;
-    }
     
     //Creating a mapping to persist to an existing set of maps in a specified coding scheme
     @Override
@@ -130,8 +149,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
             String relationsContainerName,
             Date effectiveDate,
             AssociationQualification[] associationQualifiers,
-            Revision revision,
-            long relativeOrder
+            Revision revision
             )
             throws LBException {
 
@@ -152,9 +170,6 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         
         //Ensure Previous revision id is correct in the entry state. 
         enforcePreviousRevisionId(revisedScheme, entryState);
-//    if(entryState.getPrevRevision() == null || !entryState.getPrevRevision().equals(revisedScheme.getEntryState().getContainingRevision()))
-//    {  getLogger().warn("Current scheme revision does not match entry state previous revision.  Forcing previous revision change");
-//        entryState.setPrevRevision(revisedScheme.getEntryState().getContainingRevision());   } 
     
         EntryState dependentEntryState = cloneEntryState(entryState,ChangeType.DEPENDENT);
         EntryState modifyEntryState = cloneEntryState(entryState, ChangeType.MODIFY);
@@ -211,9 +226,6 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         //Set the association target entry states
         setAssociationEntryStates(associationSources, newEntryState);
   
-        //already added to the relations container, but we still have a reference to it.
-        //predicate = createAssociationPredicate(associationType, associationSources);
-        // relation.setAssociationPredicate(Arrays.asList(predicate));
         //Set up a codingScheme with some default meta data
           revisedScheme.setRelations(relations);
         
@@ -253,257 +265,90 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         indexService.getEntityIndexService().createIndex(reference); 
     }
     
-    private void enforcePreviousRevisionId(CodingScheme revisedScheme, EntryState entryState) {
-        if(entryState.getPrevRevision() == null || !entryState.getPrevRevision().equals(revisedScheme.getEntryState().getContainingRevision()))
-        {  getLogger().warn("Current scheme revision does not match entry state previous revision.  Forcing previous revision change");
-            entryState.setPrevRevision(revisedScheme.getEntryState().getContainingRevision());   } 
+    
+    @Override
+    public void createMappingWithDefaultValues(AssociationSource[] sourcesAndTargets, String sourceCodingScheme,
+            String sourceCodingSchemeVersion, String targetCodingScheme, String targetCodingSchemeVersion,
+            String associationName) throws LBException {
         
-    }
-
-    public boolean setAssociationStatus(Revision revision, EntryState entryState,
-            AbsoluteCodingSchemeVersionReference scheme, String relationsContainer, String associationName,
-            String sourceCode, String sourceNamespace, String targetCode, String targetNamespace, String instanceId, String status,
-            boolean isActive) throws LBException {
-
-        CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-        versionOrTag.setVersion(scheme.getCodingSchemeVersion());
-        CodingScheme baseScheme = null;
+        CodingScheme newScheme;
+        //Create an entry state to attach to all version-able elements
+        EntryState entryState = createDefaultMappingsEntryState(null);
+        //Creating a mappings enabled relations container
+        Relations relationsContainer = createDefaultRelationsContainer(sourceCodingScheme, sourceCodingSchemeVersion,
+                targetCodingScheme, targetCodingSchemeVersion, associationName);
+        //Set the association target entry states
+        setAssociationEntryStates(sourcesAndTargets, entryState);
+        //set up the association predicate.  We create just one for a mappings container.
+        AssociationPredicate predicate = createAssociationPredicate(associationName, sourcesAndTargets);
+        relationsContainer.setAssociationPredicate(Arrays.asList(predicate));
+        //Set up a codingScheme with some default meta data
+        newScheme = createDefaultMappingCodingScheme();
+        newScheme.setRelations(Arrays.asList(relationsContainer));
         
-        //The supplied scheme doesn't exist returning false.
-        try {
-            baseScheme = lbs.resolveCodingScheme(scheme.getCodingSchemeURN(), versionOrTag);
-        } catch (LBException e) {
-            getLogger().warn(
-                    "CodingScheme " + scheme.getCodingSchemeURN() + " version " + scheme.getCodingSchemeVersion()
-                            + " does not exist");
-            return false;
-        }
-
-        // enforcing continuity in this entry state for a previous revision id
-        enforcePreviousRevisionId(baseScheme, entryState);
+        //process the entities for the mappings coding scheme.
+        Entities entities = processMappingEntities(sourcesAndTargets,sourceCodingScheme,
+        sourceCodingSchemeVersion, targetCodingScheme, targetCodingSchemeVersion, entryState);
+        newScheme.setApproxNumConcepts(new Long(entities.getEntityCount()));
+        newScheme.setEntities(entities);
         
-        //Creating a version of this scheme with a smaller footprint.
-        CodingScheme newScheme = createMinimalSchemeForRevision(baseScheme, relationsContainer, associationName, null, null);
+        //Set up the supported entitities necessary for this coding scheme.
+        newScheme.setMappings(processMappingsForAssociationMappings(sourceCodingScheme,
+            sourceCodingSchemeVersion, targetCodingScheme,targetCodingSchemeVersion,
+            associationName, null, null));
         
-        // enforcing continuity in current revisionId's
-        revision.setRevisionId(entryState.getContainingRevision());
-        EntryState versionState = cloneEntryState(entryState, ChangeType.VERSIONABLE);
-        EntryState dependentEntryState = cloneEntryState(entryState, ChangeType.DEPENDENT);
-        
-        //TODO complete method for creating minimal scheme.
-
-        //return false if the association does not exist
-        if (!doesAssociationExist(baseScheme, relationsContainer, associationName, sourceCode, sourceNamespace,
-                targetCode, targetNamespace)) {
-            getLogger().warn(
-                    "Association with source " + sourceCode + " and namespace " + sourceNamespace + " and target "
-                            + targetCode + " and targetNamespace " + targetNamespace + "does not exist");
-            return false;
-        }
-        //Checking for supported status and creating a new one if necessary
-        if (!doesStatusExist(baseScheme, status)) {
-            getLogger().info("Creating association status " + status);
-            SupportedStatus supportedStatus = createSupportedStatus(status);
-           newScheme.getMappings().setSupportedStatus(Arrays.asList(supportedStatus));
-        }
-
-        AssociationSource source = createSingleSourceTargetPair(status, isActive, sourceCode, sourceNamespace,
-                targetCode, targetNamespace, instanceId, versionState);
-     
-        Relations relation = getRelations(newScheme, relationsContainer);
-        relation.setEntryState(dependentEntryState);
-        AssociationPredicate predicate = getAssociationPredicate(relation, associationName);
-        predicate.addSource(source);
-        newScheme.setEntryState(dependentEntryState);
+        //Set some entry states
+        newScheme.setEntryState(entryState);
+        relationsContainer.setEntryState(entryState);
+        Revision revision = new Revision();
+        revision.setRevisionId(REVISIONID);
         ChangedEntry changedEntry = new ChangedEntry();
         changedEntry.setChangedCodingSchemeEntry(newScheme);
-        revision.setChangedEntry(Arrays.asList(changedEntry));
-        service.loadRevision(revision, null);
-        return true;
-    }
-
-    private AssociationPredicate getAssociationPredicate(Relations relation, String associationName) throws LBException {
-        AssociationPredicate[] predicates = relation.getAssociationPredicate();
-        for (AssociationPredicate p : predicates) {
-            if (p.getAssociationName().equals(associationName)) {
-                return p;
-            }
-        }
-
-        throw new LBException("Association type does not exist in this relations container "
-                + relation.getContainerName());
-    }
-
-    //TODO create properties param and function for coding scheme and relations
-    private CodingScheme createMinimalSchemeForRevision(CodingScheme revisedScheme, String relationsContainer,
-            String associationName, Entity entity, AssociationEntity assocEntity) throws LBException {
-
-        Relations relation = new Relations();
-        relation.setContainerName(relationsContainer);
-        AssociationPredicate predicate = new AssociationPredicate();
-        predicate.setAssociationName(associationName);
-        relation.addAssociationPredicate(predicate);
-        Mappings mappings = new Mappings();
-        Entities entities = null;
-        if(entity != null || assocEntity != null){
-            entities = new Entities();
-            if(entity != null)
-            entities.addEntity(entity);
-            if(assocEntity != null){
-                entities.addAssociationEntity(assocEntity);
-            }
-        }
-        CodingScheme scheme = populateCodingScheme(revisedScheme.getCodingSchemeName(),
-                revisedScheme.getCodingSchemeURI(), 
-                null, 
-                null, 
-                0, 
-                revisedScheme.getRepresentsVersion(), 
-                null, null, null, 
-                mappings,
-                null, 
-                entities, 
-                Arrays.asList(relation));
+        revision.addChangedEntry(changedEntry);
+        //load as revision
+        service.loadRevision(revision, "MappingRelease");
+        AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
+        reference.setCodingSchemeURN(newScheme.getCodingSchemeURI());
+        reference.setCodingSchemeVersion(newScheme.getRepresentsVersion());
         
-        return scheme;
-        
+        //index the loaded mapping coding scheme
+        indexService.getEntityIndexService().createIndex(reference);
     }
 
-    private AssociationSource createSingleSourceTargetPair(
-            String status, 
-            boolean isActive, 
-            String sourceCode, 
-            String sourceNamespace, 
-            String targetCode, 
-            String targetNamespace, 
-            String instanceId, 
-            EntryState entryState){
-        
-        AssociationSource source = new AssociationSource();
-        source.setSourceEntityCode(sourceCode);
-        source.setSourceEntityCodeNamespace(sourceNamespace);
-        AssociationTarget target = new AssociationTarget();
-        target.setTargetEntityCode(targetCode);
-        target.setTargetEntityCodeNamespace(targetNamespace);
-        target.setIsActive(isActive);
-        target.setStatus(status);
-        target.setAssociationInstanceId(instanceId);
-        if(entryState != null){
-        target.setEntryState(entryState);
-        }
-        AssociationTarget[] targets = new AssociationTarget[]{target};
-        source.setTarget(targets);
-
-        return source;
-        
-    }
-    
-    
-//    private void setRelationsEntryState(CodingScheme scheme, String relationsContainer, EntryState entryState) throws LBException {
-//
-//       Relations[] relations = scheme.getRelations();
-//       for(Relations r : relations){
-//           if(r.getContainerName().equals(relationsContainer)){
-//               r.setEntryState(entryState);
-//               return;
-//           }
-//       }
-//       
-//       throw new LBException("Problems setting entry state for relations container " + relationsContainer);
-//        
-//    }
-
-    private SupportedStatus createSupportedStatus(String status) {
-    SupportedStatus newStatus = new SupportedStatus();
-    newStatus.setLocalId(status);
-    newStatus.setContent(status);
-        return newStatus;
-    }
-
-    private boolean doesStatusExist(CodingScheme scheme, String status) {
-       SupportedStatus[] supportedStatus = scheme.getMappings().getSupportedStatus();
-       if(supportedStatus != null){
-       for(SupportedStatus s : supportedStatus){
-           if(s.getLocalId().equals(status)){
-               return true;
-           }
-       }
-       }
-        return false;
-    }
-
-    private EntryState cloneEntryState(EntryState entryState, ChangeType changeType) {
-       EntryState es = new EntryState();
-       if(entryState.getChangeType()!= null)
-       {es.setChangeType(entryState.getChangeType());}
-       else if (changeType != null){
-          es.setChangeType(changeType);
-       }
-       if(entryState.getContainingRevision()!= null)
-       es.setContainingRevision(entryState.getContainingRevision());
-       if(entryState.getPrevRevision()!= null)
-       es.setPrevRevision(entryState.getPrevRevision());
-       if(entryState.getRelativeOrder()!= null)
-       es.setRelativeOrder(entryState.getRelativeOrder());
-       return es;
-    }
-
-    public boolean doesAssociationExist(CodingScheme scheme, 
-            String relationContainerName, 
-            String associationName,
-            String sourceCode,
-           String sourceNamespace,
-            String targetCode,
-           String targetNamespace){
-        CodingSchemeVersionOrTag csvt = new CodingSchemeVersionOrTag();
-        csvt.setVersion(scheme.getRepresentsVersion());
-        
-        try {
-
-           Mappings mappings =  scheme.getMappings();
-           NameAndValue pair = getAssociationPairFromMappings(mappings, associationName);
-           pair.setContent(null);
-            CodedNodeGraph cng = lbs.getNodeGraph(scheme.getCodingSchemeName(), csvt, relationContainerName);
-            cng.restrictToSourceCodeSystem(sourceNamespace);
-            cng.restrictToTargetCodeSystem(targetNamespace);
-            return cng.areCodesRelated(pair, 
-                    ConvenienceMethods.createConceptReference(sourceCode, null), 
-                    ConvenienceMethods.createConceptReference(targetCode, null), 
-                    false);
-        } catch (LBException e) {
-            getLogger().error("Problem getting association information for source" + sourceCode + ":" + scheme.getCodingSchemeName());
-            e.printStackTrace();
-        }
-        return false;
-    }
-    
-    public Relations getRelations(CodingScheme scheme, String relationsContainerName) {
-        Relations[] relations = scheme.getRelations();
-        Relations revisedRelations = new Relations();
-        for (Relations rel : relations) {
-            if (rel.getContainerName().equals(relationsContainerName)) {
-                revisedRelations.setContainerName(rel.getContainerName());
-                return rel;
-            } 
-
-        }
-        
+    @Override
+    public Entities createEntities(CodingScheme scheme) throws LBException {
+        // TODO Auto-generated method stub
         return null;
     }
-    public NameAndValue getAssociationPairFromMappings(Mappings mappings, String associationName){
-       SupportedAssociation[] associations = mappings.getSupportedAssociation();
-       NameAndValue pair = new NameAndValue();
-       for(SupportedAssociation association: associations){
-          if(association.getLocalId().equals(associationName)){
-              pair.setName(associationName);
-              pair.setContent(association.getUri());
-          }
-            
-        }
-       return pair;
+
+    @Override
+    public Entity createEntity(Entities entities) throws LBException {
+        // TODO Auto-generated method stub
+        return null;
     }
-   
     
+    //TODO Create a method that creates a revision of a coding scheme before 
+    //returning this version-able element.
+    @Override
+    public Relations createRelationsContainer(
+            EntryState entryState,
+            CodingScheme scheme,
+            String containerName,
+            Date effectiveDate,
+            AbsoluteCodingSchemeVersionReference sourceCodeSystemIdentifier,
+            AbsoluteCodingSchemeVersionReference targetCodeSystemIdentifier, 
+            boolean isMapping, 
+            String associationType,
+            Properties relationProperties) throws LBException {
+      Relations relations = new Relations();
+      relations.setContainerName(containerName);
+      relations.setEffectiveDate(effectiveDate);
+      return relations;
+    }
+    
+    
+    //TODO Create a method that persists the predicate that adds a modification of the
+    // relations container and persists a revision
     @Override
     public AssociationPredicate createAssociationPredicate(  
             String associationName, 
@@ -515,12 +360,21 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
     }
     
     @Override
-    public AssociationSource createAssociationSource(EntryState entryState,
+    public Properties createCodingSchemeProperties(CodingScheme scheme) throws LBException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    //creates an association on an existing coding scheme
+    @Override
+    public AssociationSource createAssociationSource(Revision revision, EntryState entryState,
             AbsoluteCodingSchemeVersionReference sourceCodeSystemIdentifier, String sourceConceptCodeIdentifier,
             String relationsContainerName, String associationName, AssociationTarget[] targetList) throws LBException {
 
         // Initializing some objects we'll need to populate
-        Revision revision = new Revision();
+        if(revision == null)
+        {revision = new Revision();}
+        
         CodingScheme scheme = getCodingSchemeMetaData(sourceCodeSystemIdentifier);
         Mappings mappings = new Mappings();
         AssociationPredicate predicate = new AssociationPredicate();
@@ -593,30 +447,9 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         service.loadRevision(revision, null);
         return source;
     }
-
-    private Entity getEntity(String code, String codingSchemeURI, String representsVersion) throws LBException {
-        CodingSchemeVersionOrTag csvt = new CodingSchemeVersionOrTag();
-        csvt.setVersion(representsVersion);
-        CodedNodeSet cns = lbs.getCodingSchemeConcepts(codingSchemeURI, csvt);
-        cns = cns.restrictToCodes(ConvenienceMethods.createConceptReferenceList(code));
-        ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, 1);
-        return rcrl.getResolvedConceptReference(0).getEntity();
-    }
-
-    private boolean associationPredicateExists(String associationName, Relations[] relations) {
-        for(Relations rel : relations){
-
-            AssociationPredicate[] predicates = rel.getAssociationPredicate();
-            for( AssociationPredicate predicate: predicates){
-               if(predicate.getAssociationName().equals(associationName)){
-                   return true;
-               }
-            }
-        }
-        return false;
     
-    }
-
+    //Nothing persisted here.  Must be created with a source --
+    //Used as a method for creating targets when creating the source.
     @Override
     public AssociationTarget createAssociationTarget(
             EntryState entryState,
@@ -643,52 +476,67 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         target.setEntryState(entryState);
         return target;
     }
+    
+    public boolean setAssociationStatus(Revision revision, EntryState entryState,
+            AbsoluteCodingSchemeVersionReference scheme, String relationsContainer, String associationName,
+            String sourceCode, String sourceNamespace, String targetCode, String targetNamespace, String instanceId, String status,
+            boolean isActive) throws LBException {
 
+        CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+        versionOrTag.setVersion(scheme.getCodingSchemeVersion());
+        CodingScheme baseScheme = null;
+        
+        //The supplied scheme doesn't exist - returning false.
+        try {
+            baseScheme = lbs.resolveCodingScheme(scheme.getCodingSchemeURN(), versionOrTag);
+        } catch (LBException e) {
+            getLogger().warn(
+                    "CodingScheme " + scheme.getCodingSchemeURN() + " version " + scheme.getCodingSchemeVersion()
+                            + " does not exist");
+            return false;
+        }
 
-    public CodingScheme getCodingSchemeMetaData(AbsoluteCodingSchemeVersionReference reference) throws LBException{
-       
-      CodingSchemeVersionOrTag csvt = new CodingSchemeVersionOrTag();
-      csvt.setVersion(reference.getCodingSchemeVersion());
-      try {
-        return lbs.resolveCodingScheme(reference.getCodingSchemeURN(), csvt);
-    } catch (LBException e) {
-       throw new LBException("CodingScheme does not exist in this terminology service");
-    }
-    }
-    @Override
-    public Properties createCodingSchemeProperties(CodingScheme scheme) throws LBException {
-        // TODO Auto-generated method stub
-        return null;
-    }
+        // enforcing continuity in this entry state for a previous revision id
+        enforcePreviousRevisionId(baseScheme, entryState);
+        
+        //Creating a version of this scheme with a smaller footprint.
+        CodingScheme newScheme = createMinimalSchemeForRevision(baseScheme, relationsContainer, associationName, null, null);
+        
+        // enforcing continuity in current revisionId's
+        revision.setRevisionId(entryState.getContainingRevision());
+        EntryState versionState = cloneEntryState(entryState, ChangeType.VERSIONABLE);
+        EntryState dependentEntryState = cloneEntryState(entryState, ChangeType.DEPENDENT);
 
-    @Override
-    public Entities createEntities(CodingScheme scheme) throws LBException {
-        // TODO Auto-generated method stub
-        return null;
-    }
+        //return false if the association does not exist
+        if (!doesAssociationExist(baseScheme, relationsContainer, associationName, sourceCode, sourceNamespace,
+                targetCode, targetNamespace)) {
+            getLogger().warn(
+                    "Association with source " + sourceCode + " and namespace " + sourceNamespace + " and target "
+                            + targetCode + " and targetNamespace " + targetNamespace + "does not exist");
+            return false;
+        }
+        //Checking for supported status and creating a new one if necessary
+        if (!doesStatusExist(baseScheme, status)) {
+            getLogger().info("Creating association status " + status);
+            SupportedStatus supportedStatus = createSupportedStatus(status);
+           newScheme.getMappings().setSupportedStatus(Arrays.asList(supportedStatus));
+        }
 
-    @Override
-    public Entity createEntity(Entities entities) throws LBException {
-        // TODO Auto-generated method stub
-        return null;
+        AssociationSource source = createSingleSourceTargetPair(status, isActive, sourceCode, sourceNamespace,
+                targetCode, targetNamespace, instanceId, versionState);
+     
+        Relations relation = getRelations(newScheme, relationsContainer);
+        relation.setEntryState(dependentEntryState);
+        AssociationPredicate predicate = getAssociationPredicate(relation, associationName);
+        predicate.addSource(source);
+        newScheme.setEntryState(dependentEntryState);
+        ChangedEntry changedEntry = new ChangedEntry();
+        changedEntry.setChangedCodingSchemeEntry(newScheme);
+        revision.setChangedEntry(Arrays.asList(changedEntry));
+        service.loadRevision(revision, null);
+        return true;
     }
-
-    @Override
-    public Relations createRelationsContainer(
-            EntryState entryState,
-            CodingScheme scheme,
-            String containerName,
-            Date effectiveDate,
-            AbsoluteCodingSchemeVersionReference sourceCodeSystemIdentifier,
-            AbsoluteCodingSchemeVersionReference targetCodeSystemIdentifier, 
-            boolean isMapping, 
-            String associationType,
-            Properties relationProperties) throws LBException {
-      Relations relations = new Relations();
-      relations.setContainerName(containerName);
-      relations.setEffectiveDate(effectiveDate);
-      return relations;
-    }
+    
     @Override
     public EntryState createDefaultMappingsEntryState(String prevRevisionId){
         EntryState entryState = new EntryState();
@@ -698,7 +546,6 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         entryState.setRelativeOrder(RELATIVE_ORDER);
         return entryState;
     }
-    
     @Override
     public AssociationSource mapTargetsToSource(
             EntryState entryState,
@@ -724,56 +571,255 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         return source;
     }
     
-    @Override
-    public void createMappingWithDefaultValues(AssociationSource[] sourcesAndTargets, String sourceCodingScheme,
-            String sourceCodingSchemeVersion, String targetCodingScheme, String targetCodingSchemeVersion,
-            String associationName) throws LBException {
+    protected AssociationPredicate getAssociationPredicate(Relations relation, String associationName) throws LBException {
+        AssociationPredicate[] predicates = relation.getAssociationPredicate();
+        for (AssociationPredicate p : predicates) {
+            if (p.getAssociationName().equals(associationName)) {
+                return p;
+            }
+        }
+
+        throw new LBException("Association type does not exist in this relations container "
+                + relation.getContainerName());
+    }
+
+    //TODO create properties param and function for coding scheme and relations
+    protected CodingScheme createMinimalSchemeForRevision(CodingScheme revisedScheme, String relationsContainer,
+            String associationName, Entity entity, AssociationEntity assocEntity) throws LBException {
+
+        Relations relation = new Relations();
+        relation.setContainerName(relationsContainer);
+        AssociationPredicate predicate = new AssociationPredicate();
+        predicate.setAssociationName(associationName);
+        relation.addAssociationPredicate(predicate);
+        Mappings mappings = new Mappings();
+        Entities entities = null;
+        if(entity != null || assocEntity != null){
+            entities = new Entities();
+            if(entity != null)
+            entities.addEntity(entity);
+            if(assocEntity != null){
+                entities.addAssociationEntity(assocEntity);
+            }
+        }
+        CodingScheme scheme = populateCodingScheme(revisedScheme.getCodingSchemeName(),
+                revisedScheme.getCodingSchemeURI(), 
+                null, 
+                null, 
+                0, 
+                revisedScheme.getRepresentsVersion(), 
+                null, null, null, 
+                mappings,
+                null, 
+                entities, 
+                Arrays.asList(relation));
         
-        CodingScheme newScheme;
-        //Create an entry state to attach to all version-able elements
-        EntryState entryState = createDefaultMappingsEntryState(null);
-        //Creating a mappings enabled relations container
-        Relations relationsContainer = createDefaultRelationsContainer(sourceCodingScheme, sourceCodingSchemeVersion,
-                targetCodingScheme, targetCodingSchemeVersion, associationName);
-        //Set the association target entry states
-        setAssociationEntryStates(sourcesAndTargets, entryState);
-        //set up the association predicate.  We create just one for a mappings container.
-        AssociationPredicate predicate = createAssociationPredicate(associationName, sourcesAndTargets);
-        relationsContainer.setAssociationPredicate(Arrays.asList(predicate));
-        //Set up a codingScheme with some default meta data
-        newScheme = createDefaultMappingCodingScheme();
-        newScheme.setRelations(Arrays.asList(relationsContainer));
+        return scheme;
         
-        //process the entities for the mappings coding scheme.
-        Entities entities = processMappingEntities(sourcesAndTargets,sourceCodingScheme,
-        sourceCodingSchemeVersion, targetCodingScheme, targetCodingSchemeVersion, entryState);
-        newScheme.setApproxNumConcepts(new Long(entities.getEntityCount()));
-        newScheme.setEntities(entities);
+    }
+
+    protected AssociationSource createSingleSourceTargetPair(
+            String status, 
+            boolean isActive, 
+            String sourceCode, 
+            String sourceNamespace, 
+            String targetCode, 
+            String targetNamespace, 
+            String instanceId, 
+            EntryState entryState){
         
-        //Set up the supported entitities necessary for this coding scheme.
-        newScheme.setMappings(processMappingsForAssociationMappings(sourceCodingScheme,
-            sourceCodingSchemeVersion, targetCodingScheme,targetCodingSchemeVersion,
-            associationName, null, null));
+        AssociationSource source = new AssociationSource();
+        source.setSourceEntityCode(sourceCode);
+        source.setSourceEntityCodeNamespace(sourceNamespace);
+        AssociationTarget target = new AssociationTarget();
+        target.setTargetEntityCode(targetCode);
+        target.setTargetEntityCodeNamespace(targetNamespace);
+        target.setIsActive(isActive);
+        target.setStatus(status);
+        target.setAssociationInstanceId(instanceId);
+        if(entryState != null){
+        target.setEntryState(entryState);
+        }
+        AssociationTarget[] targets = new AssociationTarget[]{target};
+        source.setTarget(targets);
+
+        return source;
         
-        //Set some entry states
-        newScheme.setEntryState(entryState);
-        relationsContainer.setEntryState(entryState);
-        Revision revision = new Revision();
-        revision.setRevisionId(REVISIONID);
-        ChangedEntry changedEntry = new ChangedEntry();
-        changedEntry.setChangedCodingSchemeEntry(newScheme);
-        revision.addChangedEntry(changedEntry);
-        //load as revision
-        service.loadRevision(revision, "MappingRelease");
-        AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
-        reference.setCodingSchemeURN(newScheme.getCodingSchemeURI());
-        reference.setCodingSchemeVersion(newScheme.getRepresentsVersion());
-        
-        //index the loaded mapping coding scheme
-        indexService.getEntityIndexService().createIndex(reference);
     }
     
-    private void setAssociationEntryStates(AssociationSource[] sourcesAndTargets, EntryState entryState) {
+    
+//    protected void setRelationsEntryState(CodingScheme scheme, String relationsContainer, EntryState entryState) throws LBException {
+//
+//       Relations[] relations = scheme.getRelations();
+//       for(Relations r : relations){
+//           if(r.getContainerName().equals(relationsContainer)){
+//               r.setEntryState(entryState);
+//               return;
+//           }
+//       }
+//       
+//       throw new LBException("Problems setting entry state for relations container " + relationsContainer);
+//        
+//    }
+
+    protected SupportedStatus createSupportedStatus(String status) {
+    SupportedStatus newStatus = new SupportedStatus();
+    newStatus.setLocalId(status);
+    newStatus.setContent(status);
+        return newStatus;
+    }
+
+    protected boolean doesStatusExist(CodingScheme scheme, String status) {
+       SupportedStatus[] supportedStatus = scheme.getMappings().getSupportedStatus();
+       if(supportedStatus != null){
+       for(SupportedStatus s : supportedStatus){
+           if(s.getLocalId().equals(status)){
+               return true;
+           }
+       }
+       }
+        return false;
+    }
+
+    protected EntryState cloneEntryState(EntryState entryState, ChangeType changeType) {
+       EntryState es = new EntryState();
+       if(entryState.getChangeType()!= null)
+       {es.setChangeType(entryState.getChangeType());}
+       else if (changeType != null){
+          es.setChangeType(changeType);
+       }
+       if(entryState.getContainingRevision()!= null)
+       es.setContainingRevision(entryState.getContainingRevision());
+       if(entryState.getPrevRevision()!= null)
+       es.setPrevRevision(entryState.getPrevRevision());
+       if(entryState.getRelativeOrder()!= null)
+       es.setRelativeOrder(entryState.getRelativeOrder());
+       return es;
+    }
+
+    public boolean doesAssociationExist(CodingScheme scheme, 
+            String relationContainerName, 
+            String associationName,
+            String sourceCode,
+           String sourceNamespace,
+            String targetCode,
+           String targetNamespace){
+        CodingSchemeVersionOrTag csvt = new CodingSchemeVersionOrTag();
+        csvt.setVersion(scheme.getRepresentsVersion());
+        
+        try {
+
+           Mappings mappings =  scheme.getMappings();
+           NameAndValue pair = getAssociationPairFromMappings(mappings, associationName);
+           pair.setContent(null);
+            CodedNodeGraph cng = lbs.getNodeGraph(scheme.getCodingSchemeName(), csvt, relationContainerName);
+            cng.restrictToSourceCodeSystem(sourceNamespace);
+            cng.restrictToTargetCodeSystem(targetNamespace);
+            return cng.areCodesRelated(pair, 
+                    ConvenienceMethods.createConceptReference(sourceCode, null), 
+                    ConvenienceMethods.createConceptReference(targetCode, null), 
+                    false);
+        } catch (LBException e) {
+            getLogger().error("Problem getting association information for source" + sourceCode + ":" + scheme.getCodingSchemeName());
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public Relations getRelations(CodingScheme scheme, String relationsContainerName) {
+        Relations[] relations = scheme.getRelations();
+        Relations revisedRelations = new Relations();
+        for (Relations rel : relations) {
+            if (rel.getContainerName().equals(relationsContainerName)) {
+                revisedRelations.setContainerName(rel.getContainerName());
+                return rel;
+            } 
+
+        }
+        
+        return null;
+    }
+    public NameAndValue getAssociationPairFromMappings(Mappings mappings, String associationName){
+       SupportedAssociation[] associations = mappings.getSupportedAssociation();
+       NameAndValue pair = new NameAndValue();
+       for(SupportedAssociation association: associations){
+          if(association.getLocalId().equals(associationName)){
+              pair.setName(associationName);
+              pair.setContent(association.getUri());
+          }
+            
+        }
+       return pair;
+    }
+   
+
+
+    
+    protected LgLoggerIF getLogger() {
+        return LoggerFactory.getLogger();
+    }
+    
+    
+    //basic information set created for the coding schemes in this terminology service
+    private void setCodingSchemes(){
+        try {
+            codingSchemes = lbs.getSupportedCodingSchemes().getCodingSchemeRendering();
+        } catch (LBInvocationException e) {
+            getLogger().error("Problem retrieving coding schemes from this service.");
+            e.printStackTrace();
+        }
+    }
+    
+    public CodingSchemeRendering[] getCodingSchemes(){
+        return codingSchemes;
+    }
+    protected void enforcePreviousRevisionId(CodingScheme revisedScheme, EntryState entryState) {
+        if(entryState.getPrevRevision() == null || !entryState.getPrevRevision().equals(revisedScheme.getEntryState().getContainingRevision()))
+        {  getLogger().warn("Current scheme revision does not match entry state previous revision.  Forcing previous revision change");
+            entryState.setPrevRevision(revisedScheme.getEntryState().getContainingRevision());   } 
+        
+    }
+    protected Entity getEntity(String code, String codingSchemeURI, String representsVersion) throws LBException {
+        CodingSchemeVersionOrTag csvt = new CodingSchemeVersionOrTag();
+        csvt.setVersion(representsVersion);
+        CodedNodeSet cns = lbs.getCodingSchemeConcepts(codingSchemeURI, csvt);
+        cns = cns.restrictToCodes(ConvenienceMethods.createConceptReferenceList(code));
+        ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, 1);
+        return rcrl.getResolvedConceptReference(0).getEntity();
+    }
+
+    protected boolean associationPredicateExists(String associationName, Relations[] relations) {
+        for(Relations rel : relations){
+
+            AssociationPredicate[] predicates = rel.getAssociationPredicate();
+            for( AssociationPredicate predicate: predicates){
+               if(predicate.getAssociationName().equals(associationName)){
+                   return true;
+               }
+            }
+        }
+        return false;
+    
+    }
+
+
+    public CodingScheme getCodingSchemeMetaData(AbsoluteCodingSchemeVersionReference reference) throws LBException{
+       
+      CodingSchemeVersionOrTag csvt = new CodingSchemeVersionOrTag();
+      csvt.setVersion(reference.getCodingSchemeVersion());
+      try {
+        return lbs.resolveCodingScheme(reference.getCodingSchemeURN(), csvt);
+    } catch (LBException e) {
+       throw new LBException("CodingScheme does not exist in this terminology service");
+    }
+    }
+
+
+
+
+
+    
+    protected void setAssociationEntryStates(AssociationSource[] sourcesAndTargets, EntryState entryState) {
 
         for (AssociationSource as : sourcesAndTargets) {
 
@@ -791,7 +837,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
 
     }
     
-    private boolean isMappingScheme(CodingScheme scheme){
+    protected boolean isMappingScheme(CodingScheme scheme){
         Relations[] relations = scheme.getRelations();
         for(Relations relation : relations){
             if(relation.isIsMapping() != null && relation.isIsMapping()){
@@ -800,7 +846,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         }
         return false;
     }
-    private Mappings processMappingsForExistingCodingScheme(CodingScheme existingScheme, String sourceCodingScheme,
+    protected Mappings processMappingsForExistingCodingScheme(CodingScheme existingScheme, String sourceCodingScheme,
             String sourceCodingSchemeVersion, String targetCodingScheme, String targetCodingSchemeVersion,
             String associationName,  String relationsContainerName) throws IndexOutOfBoundsException, LBException{
         
@@ -838,7 +884,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         }
         return mappings;
     }
-    private SupportedAssociation getSupportedAssociationFromMappings(Mappings mappings, String associationName) {
+    protected SupportedAssociation getSupportedAssociationFromMappings(Mappings mappings, String associationName) {
         SupportedAssociation[] associations = mappings.getSupportedAssociation();
         for(SupportedAssociation association: associations){
             if(association.getLocalId().equals(associationName)){
@@ -849,7 +895,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         return null;
     }
 
-    private SupportedContainerName getSupportedContainerNameFromMappings(Mappings mappings, String relationsContainerName) {
+    protected SupportedContainerName getSupportedContainerNameFromMappings(Mappings mappings, String relationsContainerName) {
         SupportedContainerName[] containers = mappings.getSupportedContainerName ();
         for(SupportedContainerName  contianerName : containers){
             if(contianerName.getLocalId().equals(relationsContainerName)){
@@ -860,7 +906,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         return null;
     }
 
-    private Mappings processMappingsForAssociationMappings(String sourceCodingScheme,
+    protected Mappings processMappingsForAssociationMappings(String sourceCodingScheme,
             String sourceCodingSchemeVersion, String targetCodingScheme, String targetCodingSchemeVersion,
             String associationName, String CodingSchemeURI, String relationsContainerName) throws IndexOutOfBoundsException, LBException{
         
@@ -903,7 +949,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         
     }
     
-    private SupportedNamespace getSupportedNameSpaceFromMappings(Mappings mappings, String codingScheme) throws LBException{
+    protected SupportedNamespace getSupportedNameSpaceFromMappings(Mappings mappings, String codingScheme) throws LBException{
 
         SupportedNamespace[] nameSpaces = mappings.getSupportedNamespace();
         for (SupportedNamespace nspace : nameSpaces){
@@ -913,7 +959,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         }
         throw new LBException("No supportedNameSpace found for this coding scheme mapping: " + codingScheme);
     }
-    private SupportedCodingScheme getSupportedCodingSchemeFromMappings(Mappings mappings, String scheme) throws LBException{
+    protected SupportedCodingScheme getSupportedCodingSchemeFromMappings(Mappings mappings, String scheme) throws LBException{
         SupportedCodingScheme[] schemes = mappings.getSupportedCodingScheme();
         for (SupportedCodingScheme s : schemes){
             if(s.getLocalId().equals(scheme)){
@@ -923,7 +969,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         
         throw new LBException("Supported Scheme not found for this mapping");
     }
-   private Mappings getMappingsFromScheme(String codingScheme, String version){
+   protected Mappings getMappingsFromScheme(String codingScheme, String version){
        CodingScheme scheme = null;;
        Mappings mappings = null;
        CodingSchemeVersionOrTag csvt = new CodingSchemeVersionOrTag();
@@ -938,7 +984,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
        return mappings;
    }
     
-    private Entities processMappingEntities(
+    protected Entities processMappingEntities(
             AssociationSource[] sourcesAndTargets, 
             String sourceScheme, String sourceVersion, 
             String targetScheme, 
@@ -989,7 +1035,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
 
         return entities;
     }
-    private Entities processEntitiesForExistingMappingScheme(  CodingScheme existingMap,          
+    protected Entities processEntitiesForExistingMappingScheme(  CodingScheme existingMap,          
             AssociationSource[] sourcesAndTargets, 
             String sourceScheme, String sourceVersion, 
             String targetScheme, 
@@ -1049,7 +1095,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
                 return entities;
     }
 
-    private Entity retrieveEntityForExistingMappingScheme(CodingScheme mappingScheme,
+    protected Entity retrieveEntityForExistingMappingScheme(CodingScheme mappingScheme,
             String mappedCode, String namespace , String mappedScheme,
             String mappedVersion, EntryState entryState)throws LBException {
         
@@ -1079,7 +1125,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         return entity;
     }
 
-    private Entity retrieveEntityForMappingScheme(String code, 
+    protected Entity retrieveEntityForMappingScheme(String code, 
             String codingScheme, 
             String version, 
             EntryState entryState) throws LBException{
@@ -1094,7 +1140,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         entity.setEntryState(entryState);
         return entity;
     }
-    private CodingScheme createDefaultMappingCodingScheme() {
+    protected CodingScheme createDefaultMappingCodingScheme() {
         CodingScheme newScheme = new CodingScheme();
         Source source = new Source();
         source.setContent("source");
@@ -1109,7 +1155,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         return newScheme;
     }
     
-    private Relations createDefaultRelationsContainer(
+    protected Relations createDefaultRelationsContainer(
             String sourceCodingScheme,
             String sourceCodingSchemeVersion,
             String targetCodingScheme,
@@ -1130,48 +1176,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
        return relations;
     }
     
-    //TODO return void and persist the coding scheme as a revision
-    @Override
-    public CodingScheme createCodingScheme(String codingSchemeName, String codingSchemeURI, String formalName,
-            String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
-            List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
-            List<Relations>  relationsList, EntryState entryState) throws LBException {
-        if(codingSchemeName == null){
-            throw new LBException("Coding scheme name cannot be null");
-        }
-        if(codingSchemeURI == null){
-            throw new LBException("Coding scheme URI cannot be null");
-        }
-        if(representsVersion == null){
-            throw new LBException("Coding scheme version cannot be null");
-        }
-        if(mappings == null){
-            throw new LBException("Coding scheme mappings cannot be null");
-        }
-        CodingScheme scheme = new CodingScheme();
-        scheme.setCodingSchemeName(codingSchemeName);
-        scheme.setCodingSchemeURI(codingSchemeURI);
- 
-        scheme.setFormalName(formalName);
 
-        scheme.setDefaultLanguage(defaultLanguage);
-        scheme.setApproxNumConcepts(approxNumConcepts);
-        scheme.setRepresentsVersion(representsVersion);
-
-        scheme.setLocalName(localNameList);
-
-        scheme.setSource(sourceList);
-
-        scheme.setCopyright(copyright);
-
-        scheme.setMappings(mappings);
-
-        scheme.setProperties(properties);
-        scheme.setEntities(entities);
-        
-        return scheme;
-    }
-    
     public CodingScheme populateCodingScheme(String codingSchemeName, String codingSchemeURI, String formalName,
             String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
             List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
