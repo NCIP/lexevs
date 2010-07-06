@@ -46,14 +46,15 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     private CodedNodeSet cns;
     private CodedNodeGraph cng;
     private String curAssociationName;
-    private AssociationSourceCache sourceCache = AssociationSourceCacheFactory.createCache();
+    private AssociationSourceCache sourceCache;
     private AssociationEntityCache associationEntityCache = AssociationEntityCacheFactory.createCache();
     private LgMessageDirectorIF messager;
-    
+
     private final int MAX_BLOCK_SIZE = 10;
     private int blockSize = 10;
     private int entitiesToReturn = -1; // limit our output to the file just to
-                                       // keep it small
+
+    // keep it small
 
     public int getMaxEntitiesToReturn() {
         return entitiesToReturn;
@@ -75,7 +76,8 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
         this.cng = cng;
     }
 
-    public StreamingLexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng, CodedNodeSet cns, int pageSize, LgMessageDirectorIF messager) {
+    public StreamingLexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng, CodedNodeSet cns, int pageSize,
+            LgMessageDirectorIF messager) {
         this.setBlockSize(pageSize);
         this.marshaller = marshaller;
         this.cng = cng;
@@ -103,6 +105,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     private boolean preMarshalAssociationPredicate(Object obj) {
         AssociationPredicate ap = (AssociationPredicate) obj;
         curAssociationName = ap.getAssociationName();
+        sourceCache = AssociationSourceCacheFactory.createCache();
         return true;
     }
 
@@ -110,9 +113,13 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
         messager.info("starting process association source ...");
         AssociationSource as = (AssociationSource) obj;
         if (as.getSourceEntityCode().equals(LexGridConstants.MR_FLAG)) {
-            this.marshaller.setRootElement("source"); //under the associationpredicate, there are a "source" list of AssociationSource.
-//            this.marshaller.setSchemaLocation(null);
-//            this.marshaller.setNoNamespaceSchemaLocation(null);
+            this.marshaller.setRootElement("source"); // under the
+                                                      // associationpredicate,
+                                                      // there are a "source"
+                                                      // list of
+                                                      // AssociationSource.
+            // this.marshaller.setSchemaLocation(null);
+            // this.marshaller.setNoNamespaceSchemaLocation(null);
             if (cng != null) {
                 try {
                     ResolvedConceptReferenceList rcrl = cng.resolveAsList(null, true, false, 0, -1, null, null, null,
@@ -127,13 +134,12 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                             processTargets(curConRef, curAssociationName);
                             processAssociationList(asl);
                         }
-                    }
-                    else{ 
-                        // if there is a loop, there is no association can be found. try to find the association source 
+                    } else {
+                        // if there is a loop, there is no association can be
+                        // found. try to find the association source
                         CodedNodeGraph restrictCng = cng.restrictToSourceCodes(cns);
-                        rcrl = restrictCng.resolveAsList(null, true, false, 0, -1, null, null, null,
-                                null, -1);
-                        
+                        rcrl = restrictCng.resolveAsList(null, true, false, 0, -1, null, null, null, null, -1);
+
                         blockIterator = (Iterator<ResolvedConceptReference>) rcrl.iterateResolvedConceptReference();
                         while (blockIterator.hasNext()) {
                             curConRef = (ResolvedConceptReference) blockIterator.next();
@@ -161,8 +167,8 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
 
     private boolean preMarshalEntity(Object obj) {
         messager.info("start processing entities...");
-//        this.marshaller.setSchemaLocation(null);
-//        this.marshaller.setNoNamespaceSchemaLocation(null);
+        // this.marshaller.setSchemaLocation(null);
+        // this.marshaller.setNoNamespaceSchemaLocation(null);
         if (((Entity) obj).getEntityCode().equals(LexGridConstants.MR_FLAG)) {
             // get groups of Entity objects using CNS.
             if (cns != null) {
@@ -176,7 +182,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                             ResolvedConceptReference curConRef = (ResolvedConceptReference) blockIterator.next();
                             Entity curEntity = (Entity) curConRef.getEntity();
 
-                            if (curEntity == null) 
+                            if (curEntity == null)
                                 continue;
 
                             if ((curEntity.getIsAnonymous() != null) && (curEntity.getIsAnonymous().booleanValue()))
@@ -186,17 +192,18 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                                 continue;
 
                             if (curEntity instanceof AssociationEntity) {
-                                this.associationEntityCache.put((AssociationEntity)curEntity);
+                                this.associationEntityCache.put((AssociationEntity) curEntity);
                             } else {
                                 this.marshaller.marshal(curEntity);
                             }
                         }
                     }
 
-                    //load the mapping for association entity
+                    // load the mapping for association entity
                     try {
                         Mapping mapping = new Mapping();
-                        mapping.loadMapping("file:///"+StreamingLexGridMarshalListener.class.getResource("./").getPath()+"mapping.xml");
+                        mapping.loadMapping("file:///"
+                                + StreamingLexGridMarshalListener.class.getResource("./").getPath() + "mapping.xml");
                         this.marshaller.setMapping(mapping);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -209,7 +216,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                     List<String> keys = this.associationEntityCache.getKeys();
                     String key;
                     AssociationEntity aE;
-                    for(int i=0; i<keys.size(); ++i) {
+                    for (int i = 0; i < keys.size(); ++i) {
                         key = keys.get(i);
                         aE = this.associationEntityCache.get(key);
                         this.marshaller.marshal(aE);
@@ -236,12 +243,12 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
 
     @Override
     public void postMarshal(Object arg0) {
-        if(org.LexGrid.codingSchemes.CodingScheme.class.equals(arg0.getClass())) {
+        if (org.LexGrid.codingSchemes.CodingScheme.class.equals(arg0.getClass())) {
             System.out.println("Done marshalling CodingScheme. Clean up caches.");
             this.sourceCache.destroy();
             this.associationEntityCache.destroy();
         }
-     //do nothing
+        // do nothing
     }
 
     @Override
@@ -280,9 +287,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
             Association association = (Association) associationIterator.next();
 
             // get the source
-            int associatedConcepts = association.getAssociatedConcepts().getAssociatedConceptCount();
-
-            if (associatedConcepts > 0) {
+            if (association.getAssociatedConcepts().getAssociatedConceptCount() > 0) {
 
                 Iterator associatedConceptsIterator = association.getAssociatedConcepts().iterateAssociatedConcept();
                 while (associatedConceptsIterator.hasNext()) {
@@ -314,7 +319,11 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                     processTargets(sourceRef, localCurAssociationName);
 
                     if ((targets != null) && (targets.getAssociationCount() > 0)) {
-                        processAssociationList(targets);
+                        try {
+                            processAssociationList(targets);
+                        } catch (Exception e) {
+                            System.out.println(e.toString());
+                        }
                     }
                 }
             }
@@ -334,45 +343,52 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
             Iterator<?> targetsIterator = targets.iterateAssociation();
             while (targetsIterator.hasNext()) {
                 Association targetAssociation = (Association) targetsIterator.next();
-                Iterator<?> associatedTargetsIterator = targetAssociation.getAssociatedConcepts()
-                        .iterateAssociatedConcept();
-                while (associatedTargetsIterator.hasNext()) {
-                    AssociatedConcept target = (AssociatedConcept) associatedTargetsIterator.next();
+                if (targetAssociation.getAssociationName().equals(asName)) {
+                    Iterator<?> associatedTargetsIterator = targetAssociation.getAssociatedConcepts()
+                            .iterateAssociatedConcept();
+                    while (associatedTargetsIterator.hasNext()) {
+                        AssociatedConcept target = (AssociatedConcept) associatedTargetsIterator.next();
 
-                    if (target == null)
-                        continue;
+                        if (target == null)
+                            continue;
 
-                    AssociationTarget associationTarget = new AssociationTarget();
-                    associationTarget.setTargetEntityCodeNamespace(target.getCodeNamespace());
-                    associationTarget.setTargetEntityCode(target.getConceptCode());
-                    if (targetAssociation.getAssociationName().equals(asName)) {
-                        AssociationSource aS = new AssociationSource();
-                        aS.setSourceEntityCodeNamespace(sRef.getCodeNamespace());
-                        aS.setSourceEntityCode(sRef.getConceptCode());
+                        AssociationTarget associationTarget = new AssociationTarget();
+                        associationTarget.setTargetEntityCodeNamespace(target.getCodeNamespace());
+                        associationTarget.setTargetEntityCode(target.getConceptCode());
+                        System.out.print("target: " + target.getConceptCode() + " ");
+                        if (targetAssociation.getAssociationName().equals(asName)) {
+                            AssociationSource aS = new AssociationSource();
+                            aS.setSourceEntityCodeNamespace(sRef.getCodeNamespace());
+                            aS.setSourceEntityCode(sRef.getConceptCode());
+                            System.out.println("source: " + sRef.getConceptCode());
 
-                        aS.addTarget(associationTarget);
-                        NameAndValueList assocQuals = target.getAssociationQualifiers();
-                        if ((assocQuals != null) && (assocQuals.getNameAndValueCount() > 0)) {
-                            Iterator<?> associatedQualItr = assocQuals.iterateNameAndValue();
-                            while (associatedQualItr.hasNext()) {
-                                NameAndValue nv = (NameAndValue) associatedQualItr.next();
+                            aS.addTarget(associationTarget);
+                            NameAndValueList assocQuals = target.getAssociationQualifiers();
+                            if ((assocQuals != null) && (assocQuals.getNameAndValueCount() > 0)) {
+                                Iterator<?> associatedQualItr = assocQuals.iterateNameAndValue();
+                                while (associatedQualItr.hasNext()) {
+                                    NameAndValue nv = (NameAndValue) associatedQualItr.next();
 
-                                AssociationQualification qlf = new AssociationQualification();
-                                qlf.setAssociationQualifier(nv.getName());
-                                Text v = new Text();
-                                v.setContent(nv.getContent());
-                                qlf.setQualifierText(v);
-                                associationTarget.addAssociationQualification(qlf);
+                                    AssociationQualification qlf = new AssociationQualification();
+                                    qlf.setAssociationQualifier(nv.getName());
+                                    Text v = new Text();
+                                    v.setContent(nv.getContent());
+                                    qlf.setQualifierText(v);
+                                    associationTarget.addAssociationQualification(qlf);
+                                }
                             }
-                        }
 
-                        this.sourceCache.add(aS);
-                        this.marshaller.marshal(aS);
+                            this.sourceCache.add(aS);
+                            this.marshaller.marshal(aS);
+                        } else {
+                            System.out.println();
+                        }
                     }
                 }
+
             }
 
         }
 
-    }    
+    }
 }
