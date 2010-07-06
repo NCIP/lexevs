@@ -8,7 +8,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
@@ -19,9 +18,9 @@ import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
+import org.lexevs.cts2.BaseService;
 import org.lexevs.cts2.LexEvsCTS2;
 import org.lexevs.cts2.core.update.RevisionInfo;
-import org.lexevs.dao.database.service.valuesets.VSPropertyService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -30,12 +29,11 @@ import org.lexevs.locator.LexEvsServiceLocator;
  * @author m004181
  *
  */
-public class ValueSetAuthoringOperationImpl implements
+public class ValueSetAuthoringOperationImpl extends BaseService implements
 		ValueSetAuthoringOperation {
 	
 	private ValueSetDefinitionService vsdServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 	private AuthoringService authServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
-	private VSPropertyService vsPropServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getVsPropertyService();
 	@SuppressWarnings("unused")
 	private LexEvsCTS2 lexEvsCts2_;
 	
@@ -267,22 +265,4 @@ public class ValueSetAuthoringOperationImpl implements
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
-	private Revision getLexGridRevisionObject(RevisionInfo revisionInfo)
-	{
-		Revision lgRevision = new Revision();
-		lgRevision.setChangeAgent(revisionInfo.getChangeAgent());
-		lgRevision.setEditOrder(revisionInfo.getEditOrder());
-		if (revisionInfo.getDescription() != null)
-		{
-			EntityDescription ed= new EntityDescription();
-			ed.setContent(revisionInfo.getDescription());
-			lgRevision.setEntityDescription(ed);
-		}
-		lgRevision.setRevisionDate(revisionInfo.getRevisionDate());
-		lgRevision.setRevisionId(revisionInfo.getRevisionId());
-		
-		return lgRevision;
-	}
-
 }
