@@ -582,7 +582,21 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         throw new LBException("Association type does not exist in this relations container "
                 + relation.getContainerName());
     }
+    public String getCodingSchemeNameForMininumReference(AbsoluteCodingSchemeVersionReference reference) throws LBException{
+        
+        CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+        versionOrTag.setVersion(reference.getCodingSchemeVersion());
+        CodingScheme scheme = null;
+        try {
+            scheme = lbs.resolveCodingScheme(reference.getCodingSchemeURN(), versionOrTag);
+        } catch (LBException e) {
+            throw new LBException("CodingScheme does not exist for URI " 
+                    + reference.getCodingSchemeURN() +  " and version " 
+                    + reference.getCodingSchemeVersion());
 
+        }
+        return scheme.getCodingSchemeName();
+    }
     //TODO create properties param and function for coding scheme and relations
     protected CodingScheme createMinimalSchemeForRevision(CodingScheme revisedScheme, String relationsContainer,
             String associationName, Entity entity, AssociationEntity assocEntity) throws LBException {
