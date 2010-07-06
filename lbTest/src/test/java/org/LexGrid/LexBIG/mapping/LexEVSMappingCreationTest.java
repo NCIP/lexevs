@@ -81,8 +81,7 @@ public class LexEVSMappingCreationTest extends TestCase {
 					   relationsContainerName, 
 					   effectiveDate, 
 					   null, 
-					   revision, 
-					   new Long(0));
+					   revision);
 	
 	   }
 	
@@ -123,8 +122,7 @@ public class LexEVSMappingCreationTest extends TestCase {
 					   relationsContainerName, 
 					   effectiveDate, 
 					   null, 
-					   revision, 
-					   new Long(0));
+					   revision);
 	}
 	public void testCreateNewMappingWithNewAssociationPredicate()throws LBException{
 			   EntryState entryState = new EntryState();
@@ -163,7 +161,6 @@ public class LexEVSMappingCreationTest extends TestCase {
 						   relationsContainerName, 
 						   effectiveDate, 
 						   null, 
-						   revision, 
-						   new Long(0));
+						   revision);
 	}
 }

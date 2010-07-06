@@ -94,4 +94,8 @@ public class LexEVSMappingCreationHelperMethodTest extends TestCase {
                 "R0001",
                 "GermanMadeParts"));
 	}
+	
+	public void testEntryStateClone(){
+		
+	}
 }
