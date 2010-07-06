@@ -111,7 +111,6 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     }
 
     private boolean preMarshalAssociationSource(Object obj) {
-        messager.info("starting process association source ...");
         AssociationSource as = (AssociationSource) obj;
         if (as.getSourceEntityCode().equals(LexGridConstants.MR_FLAG)) {
             this.marshaller.setRootElement("source"); // under the
@@ -122,6 +121,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
             // this.marshaller.setSchemaLocation(null);
             // this.marshaller.setNoNamespaceSchemaLocation(null);
             if (cng != null) {
+                messager.info("starting process association source ..." + this.curAssociationName + "...");
                 try {
                     NameAndValueList list = new NameAndValueList();
                     NameAndValue nv = new NameAndValue();
@@ -144,7 +144,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                         }
                     } else {
                         // if there is a loop, there is no association can be
-                        // found. try to find the association source
+                        // found. try to find the association source using restrictsourcecodes method
                         CodedNodeGraph restrictCng = associationCng.restrictToSourceCodes(cns);
                         rcrl = restrictCng.resolveAsList(null, true, false, 0, -1, null, null, null, null, -1);
 
@@ -167,6 +167,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                 } catch (ValidationException e) {
                     e.printStackTrace();
                 }
+                messager.info("..... done");
                 return false;
             }
         }
@@ -334,7 +335,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                         try {
                             processAssociationList(targets);
                         } catch (Exception e) {
-                            System.out.println(e.toString());
+                            messager.info(e.toString());
                         }
                     }
                 }
@@ -367,12 +368,12 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                         AssociationTarget associationTarget = new AssociationTarget();
                         associationTarget.setTargetEntityCodeNamespace(target.getCodeNamespace());
                         associationTarget.setTargetEntityCode(target.getConceptCode());
-                        System.out.print("target: " + target.getConceptCode() + " ");
+//                        System.out.print("target: " + target.getConceptCode() + " ");
                         if (targetAssociation.getAssociationName().equals(asName)) {
                             AssociationSource aS = new AssociationSource();
                             aS.setSourceEntityCodeNamespace(sRef.getCodeNamespace());
                             aS.setSourceEntityCode(sRef.getConceptCode());
-                            System.out.println("source: " + sRef.getConceptCode());
+//                            System.out.println("source: " + sRef.getConceptCode());
 
                             aS.addTarget(associationTarget);
                             NameAndValueList assocQuals = target.getAssociationQualifiers();
@@ -393,7 +394,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                             this.sourceCache.add(aS);
                             this.marshaller.marshal(aS);
                         } else {
-                            System.out.println();
+//                            System.out.println();
                         }
                     }
                 }
