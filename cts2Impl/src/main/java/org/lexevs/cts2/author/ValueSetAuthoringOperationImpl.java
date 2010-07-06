@@ -18,8 +18,10 @@ import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
+import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.cts2.LexEvsCTS2;
 import org.lexevs.cts2.core.update.RevisionInfo;
+import org.lexevs.dao.database.service.valuesets.VSPropertyService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -33,6 +35,7 @@ public class ValueSetAuthoringOperationImpl implements
 	
 	private ValueSetDefinitionService vsdServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 	private AuthoringService authServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
+	private VSPropertyService vsPropServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getVsPropertyService();
 	@SuppressWarnings("unused")
 	private LexEvsCTS2 lexEvsCts2_;
 	
@@ -53,14 +56,44 @@ public class ValueSetAuthoringOperationImpl implements
 		if (definitionEntryState == null)
 			throw new LBException("Entry state information can not be empty");
 		
-		Revision lexEVSrevision = getLexGridRevisionObject(revision);
-		
 		ValueSetDefinition vsd = vsdServ_.getValueSetDefinitionByUri(valueSetURI);
 		
-		//TODO
+		if (vsd == null)
+		{
+			throw new LBException("No Value set definition found with uri : " + valueSetURI);
+		}
 		
-		// TODO Auto-generated method stub
-		return false;
+		Revision lgRevision = getLexGridRevisionObject(revision);
+		newDefinitionEntry.setEntryState(definitionEntryState);
+		
+		EntryState vsdEntryState = vsd.getEntryState();
+		
+		if (vsdEntryState == null)
+		{
+			vsdEntryState = new EntryState();
+		}
+		
+		String vsdPrevRevisionId = vsdEntryState.getContainingRevision();
+		
+		vsdEntryState.setChangeType(ChangeType.DEPENDENT);
+		vsdEntryState.setContainingRevision(definitionEntryState.getContainingRevision());
+		vsdEntryState.setRelativeOrder(definitionEntryState.getRelativeOrder());
+		vsdEntryState.setPrevRevision(vsdPrevRevisionId);
+		
+		vsd.setEntryState(vsdEntryState);
+		
+		// remove any existing definition entry from the vsd object
+		vsd.removeAllDefinitionEntry();		
+		vsd.addDefinitionEntry(newDefinitionEntry);
+		
+		ChangedEntry ce = new ChangedEntry();
+		ce.setChangedValueSetDefinitionEntry(vsd);
+		
+		lgRevision.addChangedEntry(ce);
+		
+		authServ_.loadRevision(lgRevision, null);
+		
+		return true;
 	}
 
 	/* (non-Javadoc)
@@ -70,6 +103,42 @@ public class ValueSetAuthoringOperationImpl implements
 	public boolean addValueSetProperty(URI valueSetURI, Property newProperty,
 			RevisionInfo revision, EntryState propertyEntryState)
 			throws LBException {
+		if (valueSetURI == null)
+			throw new LBException("Value Set Definition URI can not be empty");
+		if (newProperty == null)
+			throw new LBException("New property can not be empty");
+		if (propertyEntryState == null)
+			throw new LBException("Entry state object for new property can not be empty");
+		if (revision == null)
+			throw new LBException("Revision information can not be empty");
+		if (!propertyEntryState.getChangeType().equals(ChangeType.NEW))
+			throw new LBException("Change type for new property should be 'NEW'");
+		
+		Revision lgRevision = getLexGridRevisionObject(revision);
+		ChangedEntry ce = new ChangedEntry();
+		
+		ValueSetDefinition vsd = vsdServ_.getValueSetDefinitionByUri(valueSetURI);
+		String prevRevisionId = vsd.getEntryState() != null?vsd.getEntryState().getContainingRevision():null;
+		vsd.removeAllDefinitionEntry();
+		vsd.removeAllRepresentsRealmOrContext();
+		vsd.removeAllSource();
+		
+		EntryState vsdEntryState = new EntryState();
+		vsdEntryState.setChangeType(ChangeType.DEPENDENT);
+		vsdEntryState.setContainingRevision(propertyEntryState.getContainingRevision());
+		vsdEntryState.setPrevRevision(prevRevisionId);
+		vsdEntryState.setRelativeOrder(0L);
+		vsd.setEntryState(vsdEntryState);
+		
+		newProperty.setEntryState(propertyEntryState);
+		Properties props = new Properties();
+		props.addProperty(newProperty);
+		vsd.setProperties(props);
+		
+		ce.setChangedValueSetDefinitionEntry(vsd);
+		lgRevision.addChangedEntry(ce);
+		
+		authServ_.loadRevision(lgRevision, null);
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -84,8 +153,31 @@ public class ValueSetAuthoringOperationImpl implements
 			Properties properties, DefinitionEntry ruleSet,
 			Versionable versionable, RevisionInfo revision,
 			EntryState entryState) throws LBException {
-		// TODO Auto-generated method stub
-		return null;
+		if (valueSetURI == null)
+			throw new LBException("Value Set Definition URI can not be empty");
+		
+		ValueSetDefinition vsd = new ValueSetDefinition();
+		vsd.setValueSetDefinitionURI(valueSetURI.toString());
+		vsd.setValueSetDefinitionName(valueSetName);
+		vsd.setDefaultCodingScheme(defaultCodeSystem);
+		vsd.setConceptDomain(conceptDomainId);
+		if (sourceList != null)
+			vsd.setSource(sourceList);
+		if (usageContext != null)
+			vsd.setRepresentsRealmOrContext(usageContext);
+		if (properties != null)
+			vsd.setProperties(properties);
+		
+		if (versionable != null)
+		{
+			vsd.setEffectiveDate(versionable.getEffectiveDate());
+			vsd.setExpirationDate(versionable.getExpirationDate());
+			vsd.setIsActive(versionable.getIsActive());
+			vsd.setOwner(versionable.getOwner());
+			vsd.setStatus(versionable.getStatus());
+		}
+		
+		return createValueSet(vsd, revision, entryState);
 	}
 
 	/* (non-Javadoc)
@@ -115,8 +207,7 @@ public class ValueSetAuthoringOperationImpl implements
 		try {
 			vsdURI = new URI(valueSetDefininition.getValueSetDefinitionURI());
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new LBException("Problem resolving value set definition URI",e);
 		}
 		return vsdURI;
 	}

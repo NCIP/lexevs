@@ -3,17 +3,25 @@
  */
 package org.lexevs.cts2.author;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Date;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Text;
+import org.LexGrid.commonTypes.types.PropertyTypes;
+import org.LexGrid.valueSets.CodingSchemeReference;
+import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.LexGrid.valueSets.ValueSetDefinitionReference;
+import org.LexGrid.valueSets.types.DefinitionOperator;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
-import org.lexevs.cts2.LexEvsCTS2;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.core.update.RevisionInfo;
 
@@ -25,26 +33,143 @@ public class ValueSetAuthoringOperationImplTest {
 
 	/**
 	 * Test method for {@link org.lexevs.cts2.author.ValueSetAuthoringOperationImpl#addDefinitionEntry(java.net.URI, org.LexGrid.valueSets.DefinitionEntry, org.lexevs.cts2.core.update.RevisionInfo, org.LexGrid.versions.EntryState)}.
+	 * @throws URISyntaxException 
+	 * @throws LBException 
 	 */
 	@Test
-	public void testAddDefinitionEntry() {
-		fail("Not yet implemented"); // TODO
+	public void testAddDefinitionEntry() throws LBException, URISyntaxException {
+		RevisionInfo revInfo = new RevisionInfo();
+		revInfo.setRevisionId("R002");
+		revInfo.setChangeAgent("testChangeAgent");
+		revInfo.setChangeInstruction("Adding new definition entry");
+		revInfo.setEditOrder(0L);
+		revInfo.setDescription("adding new def entry");
+		revInfo.setRevisionDate(new Date());
+		
+		EntryState es = new EntryState();
+		es.setChangeType(ChangeType.NEW);
+		es.setContainingRevision("R002");
+		es.setRelativeOrder(0L);
+		
+		DefinitionEntry newDefEntry = new DefinitionEntry();
+		newDefEntry.setOperator(DefinitionOperator.OR);
+		newDefEntry.setRuleOrder(0L);
+		
+		CodingSchemeReference csRef = new CodingSchemeReference();
+		csRef.setCodingScheme("Automobiles");
+		
+		newDefEntry.setCodingSchemeReference(csRef);
+		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
+		
+		valueSetAuthOp.addDefinitionEntry(new URI("VSD:AUTHOR:JUNIT:TEST1"), newDefEntry, revInfo, es);
+	}
+	
+	@Test
+	public void testAddDefinitionEntry2() throws LBException, URISyntaxException {
+		RevisionInfo revInfo = new RevisionInfo();
+		revInfo.setRevisionId("R007");
+		revInfo.setChangeAgent("testChangeAgent");
+		revInfo.setChangeInstruction("Adding new definition entry");
+		revInfo.setEditOrder(0L);
+		revInfo.setDescription("adding new def entry");
+		revInfo.setRevisionDate(new Date());
+		
+		EntryState es = new EntryState();
+		es.setChangeType(ChangeType.NEW);
+		es.setContainingRevision("R007");
+		es.setRelativeOrder(0L);
+		
+		DefinitionEntry newDefEntry = new DefinitionEntry();
+		newDefEntry.setOperator(DefinitionOperator.OR);
+		newDefEntry.setRuleOrder(0L);
+		
+		ValueSetDefinitionReference vsdRef = new ValueSetDefinitionReference();
+		vsdRef.setValueSetDefinitionURI("somevaluesetref");
+		
+		newDefEntry.setValueSetDefinitionReference(vsdRef);
+		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
+		
+		valueSetAuthOp.addDefinitionEntry(new URI("VSD:AUTHOR:JUNIT:TEST1"), newDefEntry, revInfo, es);
 	}
 
 	/**
 	 * Test method for {@link org.lexevs.cts2.author.ValueSetAuthoringOperationImpl#addValueSetProperty(java.net.URI, org.LexGrid.commonTypes.Property, org.lexevs.cts2.core.update.RevisionInfo, org.LexGrid.versions.EntryState)}.
+	 * @throws URISyntaxException 
+	 * @throws LBException 
 	 */
 	@Test
-	public void testAddValueSetProperty() {
-		fail("Not yet implemented"); // TODO
+	public void testAddValueSetProperty() throws LBException, URISyntaxException {
+		Property prop = new Property();
+		prop.setPropertyId("propertyId1");
+		prop.setPropertyName("propertyName");
+		prop.setIsActive(true);
+		prop.setLanguage("en");
+		prop.setOwner("owner");
+		prop.setPropertyType(PropertyTypes.PROPERTY.name());
+		Text text = new Text();
+		text.setContent("content");
+		prop.setValue(text);
+		
+		RevisionInfo revInfo = new RevisionInfo();
+		revInfo.setChangeAgent("changeAgent");
+		revInfo.setChangeInstruction("changeInstruction");
+		revInfo.setDescription("description");
+		revInfo.setEditOrder(1L);
+		revInfo.setRevisionDate(new Date());
+		revInfo.setRevisionId("R102");
+		
+		EntryState es = new EntryState();
+		es.setChangeType(ChangeType.NEW);
+		es.setContainingRevision("R102");
+		es.setPrevRevision(null);
+		es.setRelativeOrder(0L);
+		
+		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
+		valueSetAuthOp.addValueSetProperty(new URI("VSD:AUTHOR:JUNIT:TEST1"), 
+				prop, revInfo, es);
 	}
 
 	/**
 	 * Test method for {@link org.lexevs.cts2.author.ValueSetAuthoringOperationImpl#createValueSet(java.net.URI, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.List, org.LexGrid.commonTypes.Properties, org.LexGrid.valueSets.DefinitionEntry, org.LexGrid.commonTypes.Versionable, org.lexevs.cts2.core.update.RevisionInfo, org.LexGrid.versions.EntryState)}.
+	 * @throws URISyntaxException 
+	 * @throws LBException 
 	 */
 	@Test
-	public void testCreateValueSetUsingURI() {
-		fail("Not yet implemented"); // TODO
+	public void testCreateValueSetUsingURI() throws LBException, URISyntaxException {
+		Properties props = new Properties();
+		Property prop = new Property();
+		prop.setPropertyId("p1");
+		prop.setIsActive(true);
+		prop.setLanguage("en");
+		prop.setOwner("owner");
+		prop.setPropertyName("propertyName");
+		prop.setPropertyType(PropertyTypes.PROPERTY.name());
+		Text text = new Text();
+		text.setContent("prop value");
+		prop.setValue(text);
+		
+		props.addProperty(prop);
+		
+		RevisionInfo revInfo = new RevisionInfo();
+		revInfo.setChangeAgent("changeAgent");
+		revInfo.setChangeInstruction("changeInstruction");
+		revInfo.setDescription("description");
+		revInfo.setEditOrder(1L);
+		revInfo.setRevisionDate(new Date());
+		revInfo.setRevisionId("R101");
+		
+		EntryState es = new EntryState();
+		es.setChangeType(ChangeType.NEW);
+		es.setContainingRevision("R101");
+		es.setPrevRevision(null);
+		es.setRelativeOrder(0L);
+		
+		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
+		URI vsdURI = valueSetAuthOp.createValueSet(new URI("VSD:AUTHORING:JUNIT:TEST2"), 
+				"Authoring create vsd junit test2",
+				"Automobiles", "Autos", null, null, 
+				props, null, null, revInfo, es);
+		System.out.println("vsdURI : " + vsdURI);
 	}
 
 	/**
