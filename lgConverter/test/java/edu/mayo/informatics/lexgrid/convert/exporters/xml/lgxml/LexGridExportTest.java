@@ -291,6 +291,6 @@ public class LexGridExportTest {
         cs.setEntities(entities);
         
         XmlContentWriter xmlContentWriter = new XmlContentWriter();
-        xmlContentWriter.marshalToXml(cs, cng, cns, out, Constants.VALUE_PAGE_SIZE, false);
+        xmlContentWriter.marshalToXml(cs, cng, cns, out, Constants.VALUE_PAGE_SIZE, false, null);  // TODO: need to pass in a LgMessageDirectorIF instead of null.
     }
 }
