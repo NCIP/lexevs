@@ -38,7 +38,7 @@ public class AssociationAuthoringOperationImpl implements
 					entryState, targetCodeSystemIdentifier,
 					targetConceptCodeIdentifier);
 			AssociationTarget[] targets = new AssociationTarget[] { target };
-			source = authoring.createAssociationSource(entryState,
+			source = authoring.createAssociationSource(revision, entryState,
 					sourceCodeSystemIdentifier, sourceConceptCodeIdentifier,
 					associationType, associationType, targets);
 		} else {
