@@ -32,7 +32,7 @@ import org.lexevs.cts2.core.update.RevisionInfo;
 
 public interface ValueSetAuthoringOperation {
 	public URI createValueSet(URI valueSetURI, String valueSetName, String defaultCodeSystem, String conceptDomainId, 
-			List<Source> sourceList, List<String> usageContext, Properties properties, DefinitionEntry ruleSet,
+			List<Source> sourceList, List<String> usageContext, Properties properties, List<DefinitionEntry> ruleSetList,
 			Versionable versionable, RevisionInfo revision, EntryState entryState) throws LBException;
 	
 	public URI createValueSet(ValueSetDefinition valueSetDefininition, RevisionInfo revision, EntryState valueSetEntryState) throws LBException;

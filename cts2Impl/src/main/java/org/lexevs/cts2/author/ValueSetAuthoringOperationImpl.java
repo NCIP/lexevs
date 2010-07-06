@@ -141,14 +141,15 @@ public class ValueSetAuthoringOperationImpl extends BaseService implements
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.author.ValueSetAuthoringOperation#createValueSet(java.net.URI, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.List, org.LexGrid.commonTypes.Properties, org.LexGrid.valueSets.DefinitionEntry, org.LexGrid.commonTypes.Versionable, org.lexevs.cts2.core.update.RevisionInfo, org.LexGrid.versions.EntryState)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.ValueSetAuthoringOperation#createValueSet(java.net.URI, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.List, org.LexGrid.commonTypes.Properties, java.util.List, org.LexGrid.commonTypes.Versionable, org.lexevs.cts2.core.update.RevisionInfo, org.LexGrid.versions.EntryState)
 	 */
 	@Override
 	public URI createValueSet(URI valueSetURI, String valueSetName,
 			String defaultCodeSystem, String conceptDomainId,
 			List<Source> sourceList, List<String> usageContext,
-			Properties properties, DefinitionEntry ruleSet,
+			Properties properties, List<DefinitionEntry> ruleSetList,
 			Versionable versionable, RevisionInfo revision,
 			EntryState entryState) throws LBException {
 		if (valueSetURI == null)
@@ -165,7 +166,8 @@ public class ValueSetAuthoringOperationImpl extends BaseService implements
 			vsd.setRepresentsRealmOrContext(usageContext);
 		if (properties != null)
 			vsd.setProperties(properties);
-		
+		if (ruleSetList != null)
+			vsd.setDefinitionEntry(ruleSetList);
 		if (versionable != null)
 		{
 			vsd.setEffectiveDate(versionable.getEffectiveDate());
@@ -193,6 +195,9 @@ public class ValueSetAuthoringOperationImpl extends BaseService implements
 		
 		if (valueSetEntryState == null)
 			throw new LBException("valueSet entry state information can not be empty");
+		
+		if (!valueSetEntryState.getChangeType().equals(ChangeType.NEW))
+			throw new LBException("Change type for new value set definition should be 'NEW'");
 		
 		Revision lgRevision = getLexGridRevisionObject(revision);
 		valueSetDefininition.setEntryState(valueSetEntryState);
