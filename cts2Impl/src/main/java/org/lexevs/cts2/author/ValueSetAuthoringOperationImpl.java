@@ -137,8 +137,7 @@ public class ValueSetAuthoringOperationImpl extends BaseService implements
 		lgRevision.addChangedEntry(ce);
 		
 		authServ_.loadRevision(lgRevision, null);
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	/*
@@ -222,8 +221,42 @@ public class ValueSetAuthoringOperationImpl extends BaseService implements
 	public boolean updateDefinitionEntry(URI valueSetURI,
 			DefinitionEntry changedDefinitionEntry, RevisionInfo revision,
 			EntryState definitionEntryState) throws LBException {
-		// TODO Auto-generated method stub
-		return false;
+		if (valueSetURI == null)
+			throw new LBException("ValueSetDefinitionURI can not be empty");
+		
+		if (revision == null)
+			throw new LBException("Revision information can not be empty");
+		
+		if (definitionEntryState == null)
+			throw new LBException("valueSet entry state information can not be empty");
+		
+		if (!definitionEntryState.getChangeType().equals(ChangeType.MODIFY))
+			throw new LBException("Change type for modified definition entry should be 'MODIFY'");
+		
+		Revision lgRevision = getLexGridRevisionObject(revision);
+		ChangedEntry ce = new ChangedEntry();
+		
+		ValueSetDefinition vsd = vsdServ_.getValueSetDefinitionByUri(valueSetURI);
+		String prevRevisionId = vsd.getEntryState() != null?vsd.getEntryState().getContainingRevision():null;
+		vsd.removeAllDefinitionEntry();
+		vsd.removeAllRepresentsRealmOrContext();
+		vsd.removeAllSource();
+		
+		EntryState vsdEntryState = new EntryState();
+		vsdEntryState.setChangeType(ChangeType.DEPENDENT);
+		vsdEntryState.setContainingRevision(definitionEntryState.getContainingRevision());
+		vsdEntryState.setPrevRevision(prevRevisionId);
+		vsdEntryState.setRelativeOrder(0L);
+		vsd.setEntryState(vsdEntryState);
+		
+		changedDefinitionEntry.setEntryState(definitionEntryState);
+		vsd.addDefinitionEntry(changedDefinitionEntry);
+		
+		ce.setChangedValueSetDefinitionEntry(vsd);
+		lgRevision.addChangedEntry(ce);
+		
+		authServ_.loadRevision(lgRevision, null);
+		return true;
 	}
 
 	/* (non-Javadoc)
