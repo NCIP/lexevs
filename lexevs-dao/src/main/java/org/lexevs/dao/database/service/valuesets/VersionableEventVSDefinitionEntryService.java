@@ -134,10 +134,10 @@ public class VersionableEventVSDefinitionEntryService extends AbstractDatabaseSe
 						"Changes of type NEW are not allowed to have previous revisions.");
 			}
 			
-//			if (vsDefEntryUId != null) {
-//				throw new LBRevisionException(
-//						"The vsDefinitionEntry being added already exist.");
-//			}
+			if (vsDefEntryUId != null) {
+				throw new LBRevisionException(
+						"The vsDefinitionEntry being added already exist. Change the rule order (increment) and try again.");
+			}
 			
 		} else {
 
