@@ -210,6 +210,8 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 						super.getLogger().error(
 								"Error occured while revising the codingScheme: " 
 										+ e.getMessage());
+						throw new LBRevisionException("Error occured while revising the codingScheme: " 
+										+ e.getMessage());
 					}
 
 					// Process ValueDomain Definition revisions
@@ -224,6 +226,8 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 					} catch (LBException e) {
 						super.getLogger().error(
 								"Error occured while revising the valueSetDefinition : "
+										+ e.getMessage());
+						throw new LBRevisionException("Error occured while revising the valueSetDefinition : "
 										+ e.getMessage());
 					}
 
@@ -241,6 +245,8 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 						super.getLogger().error(
 								"Error occured while revising the pickListDefinition : "
 										+ e.getMessage());
+						throw new LBRevisionException("Error occured while revising the pickListDefinition : "
+								+ e.getMessage());
 					}
 				}
 			}
