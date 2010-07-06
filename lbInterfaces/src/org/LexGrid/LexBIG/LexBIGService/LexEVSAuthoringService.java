@@ -26,6 +26,7 @@ import org.LexGrid.versions.types.ChangeType;
 public interface LexEVSAuthoringService {
 	
 	public CodingScheme createCodingScheme(
+			Revision revision,
 			String codingSchemeName,
 			String codingSchemeURI, 
 			String formalName, 
