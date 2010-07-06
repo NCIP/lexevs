@@ -123,7 +123,14 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
             // this.marshaller.setNoNamespaceSchemaLocation(null);
             if (cng != null) {
                 try {
-                    ResolvedConceptReferenceList rcrl = cng.resolveAsList(null, true, false, 0, -1, null, null, null,
+                    NameAndValueList list = new NameAndValueList();
+                    NameAndValue nv = new NameAndValue();
+                    nv.setContent(null);
+                    nv.setName(curAssociationName);
+                    list.addNameAndValue(nv);
+                    
+                    CodedNodeGraph associationCng = cng.restrictToAssociations(list, null);
+                    ResolvedConceptReferenceList rcrl = associationCng.resolveAsList(null, true, false, 0, -1, null, null, null,
                             null, -1);
                     Iterator<ResolvedConceptReference> blockIterator;
                     ResolvedConceptReference curConRef;
@@ -138,7 +145,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                     } else {
                         // if there is a loop, there is no association can be
                         // found. try to find the association source
-                        CodedNodeGraph restrictCng = cng.restrictToSourceCodes(cns);
+                        CodedNodeGraph restrictCng = associationCng.restrictToSourceCodes(cns);
                         rcrl = restrictCng.resolveAsList(null, true, false, 0, -1, null, null, null, null, -1);
 
                         blockIterator = (Iterator<ResolvedConceptReference>) rcrl.iterateResolvedConceptReference();
