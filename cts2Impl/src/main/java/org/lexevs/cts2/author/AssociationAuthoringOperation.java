@@ -24,11 +24,37 @@ import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 
+/**
+ * @author m029206
+ *
+ */
+/**
+ * @author m029206
+ *
+ */
 public interface AssociationAuthoringOperation {
+	
+	
+	/**
+	 * @param createMappingScheme - create a mapping coding scheme if one does not exist
+	 * @param revision - revision data
+	 * @param entryState - revision data container granular to the versionable class.
+	 * @param mappingScheme - existing mapping scheme, required if adding mapped association
+	 * @param sourceCodeSystemIdentifier - minimum code system identification
+	 * @param targetCodeSystemIdentifier - minimum code system identification
+	 * @param sourceConceptCodeIdentifier - source concept code	
+	 * @param targetConceptCodeIdentifier - target concept code
+	 * @param relationsContainerName - relations container identifier
+	 * @param associationType - association type identifier
+	 * @param associationQualifiers - qualifications to add to this association
+	 * @return - returns a representation of this association as a LexGrid object.
+	 * @throws LBException
+	 */
 	public AssociationSource createAssociation(
+			boolean createMappingScheme,
 			Revision revision,
 			EntryState entryState,
-			AbsoluteCodingSchemeVersionReference baseScheme,
+			AbsoluteCodingSchemeVersionReference mappingScheme,
 			AbsoluteCodingSchemeVersionReference  sourceCodeSystemIdentifier,
 			AbsoluteCodingSchemeVersionReference targetCodeSystemIdentifier,
 			String sourceConceptCodeIdentifier,
@@ -38,6 +64,22 @@ public interface AssociationAuthoringOperation {
 			AssociationQualification[] associationQualifiers)
 			throws LBException;
 
+	/**
+	 * @param revision
+	 * @param entryState
+	 * @param scheme
+	 * @param relationsContainer
+	 * @param associationName
+	 * @param sourcCode
+	 * @param sourceNamespace
+	 * @param targetCode
+	 * @param targetNamespace
+	 * @param instanceId
+	 * @param status
+	 * @param isActive
+	 * @return
+	 * @throws LBException
+	 */
 	public boolean updateAssociationStatus(
 			Revision revision, 
 			EntryState entryState, 

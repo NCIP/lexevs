@@ -22,9 +22,11 @@ public class AssociationAuthoringOperationImpl implements
 		authoring = new LexEVSAuthoringServiceImpl();
 	}
 	@Override
-	public AssociationSource createAssociation(Revision revision,
+	public AssociationSource createAssociation(
+			boolean createMappingScheme,
+			Revision revision,
 			EntryState entryState,
-			AbsoluteCodingSchemeVersionReference baseScheme,
+			AbsoluteCodingSchemeVersionReference mappingScheme,
 			AbsoluteCodingSchemeVersionReference sourceCodeSystemIdentifier,
 			AbsoluteCodingSchemeVersionReference targetCodeSystemIdentifier,
 			String sourceConceptCodeIdentifier,
@@ -33,7 +35,47 @@ public class AssociationAuthoringOperationImpl implements
 			AssociationQualification[] associationQualifiers)
 			throws LBException {
 		AssociationSource source = null;
-		if (baseScheme == null) {
+		if (createMappingScheme == true) 
+		{
+			CodingScheme scheme = authoring.getCodingSchemeMetaData(sourceCodeSystemIdentifier);
+			AssociationTarget target = authoring.createAssociationTarget(
+					entryState, targetCodeSystemIdentifier,
+					targetConceptCodeIdentifier);
+			String namespace = authoring.getCodingSchemeNamespace(scheme,
+					sourceCodeSystemIdentifier.getCodingSchemeURN());
+			source = new AssociationSource();
+			source.setSourceEntityCode(sourceConceptCodeIdentifier);
+			source.setSourceEntityCodeNamespace(namespace);
+			source.setTarget(Arrays.asList(target));
+			AssociationSource[] sources = new AssociationSource[] { source };
+			String sourceCodingSchemeName = authoring.getCodingSchemeNameForMininumReference(sourceCodeSystemIdentifier);
+			String targetCodingSchemeName = authoring.getCodingSchemeNameForMininumReference(targetCodeSystemIdentifier);
+			authoring.createMappingWithDefaultValues(sources,
+					sourceCodingSchemeName,
+					sourceCodeSystemIdentifier.getCodingSchemeVersion(),
+					targetCodingSchemeName,
+					targetCodeSystemIdentifier.getCodingSchemeVersion(),
+					associationType);
+		}
+		if (createMappingScheme == false && mappingScheme != null){
+			CodingScheme scheme = authoring.getCodingSchemeMetaData(mappingScheme);
+			AssociationTarget target = authoring.createAssociationTarget(
+					entryState, targetCodeSystemIdentifier,
+					targetConceptCodeIdentifier);
+			String namespace = authoring.getCodingSchemeNamespace(scheme,
+					mappingScheme.getCodingSchemeURN());
+			source = new AssociationSource();
+			source.setSourceEntityCode(sourceConceptCodeIdentifier);
+			source.setSourceEntityCodeNamespace(namespace);
+			source.setTarget(Arrays.asList(target));
+			AssociationSource[] sources = new AssociationSource[] { source };
+			Date effectiveDate = new Date();
+			authoring.createAssociationMapping(entryState, mappingScheme,
+					sourceCodeSystemIdentifier, targetCodeSystemIdentifier,
+					sources, associationType, relationsContainerName,
+					effectiveDate, associationQualifiers, revision);
+		}
+		if (createMappingScheme == false && mappingScheme == null){
 			AssociationTarget target = authoring.createAssociationTarget(
 					entryState, targetCodeSystemIdentifier,
 					targetConceptCodeIdentifier);
@@ -41,45 +83,9 @@ public class AssociationAuthoringOperationImpl implements
 			source = authoring.createAssociationSource(revision, entryState,
 					sourceCodeSystemIdentifier, sourceConceptCodeIdentifier,
 					associationType, associationType, targets);
-		} else {
-
-			CodingScheme scheme = authoring.getCodingSchemeMetaData(baseScheme);
-			if (scheme == null) {
-
-				AssociationTarget target = authoring.createAssociationTarget(
-						entryState, targetCodeSystemIdentifier,
-						targetConceptCodeIdentifier);
-				String namespace = authoring.getCodingSchemeNamespace(scheme,
-						baseScheme.getCodingSchemeURN());
-				source = new AssociationSource();
-				source.setSourceEntityCode(sourceConceptCodeIdentifier);
-				source.setSourceEntityCodeNamespace(namespace);
-				source.setTarget(Arrays.asList(target));
-				AssociationSource[] sources = new AssociationSource[] { source };
-				authoring.createMappingWithDefaultValues(sources,
-						sourceCodeSystemIdentifier.getCodingSchemeURN(),
-						sourceCodeSystemIdentifier.getCodingSchemeVersion(),
-						targetCodeSystemIdentifier.getCodingSchemeURN(),
-						targetCodeSystemIdentifier.getCodingSchemeVersion(),
-						associationType);
-			} else {
-
-				AssociationTarget target = authoring.createAssociationTarget(
-						entryState, targetCodeSystemIdentifier,
-						targetConceptCodeIdentifier);
-				String namespace = authoring.getCodingSchemeNamespace(scheme,
-						baseScheme.getCodingSchemeURN());
-				source = new AssociationSource();
-				source.setSourceEntityCode(sourceConceptCodeIdentifier);
-				source.setSourceEntityCodeNamespace(namespace);
-				source.setTarget(Arrays.asList(target));
-				AssociationSource[] sources = new AssociationSource[] { source };
-				Date effectiveDate = new Date();
-				authoring.createAssociationMapping(entryState, baseScheme,
-						sourceCodeSystemIdentifier, targetCodeSystemIdentifier,
-						sources, associationType, relationsContainerName,
-						effectiveDate, associationQualifiers, revision);
-			}
+		}
+		if (createMappingScheme == false && mappingScheme != null){
+			throw new LBException("You cannot provide a reference mapping scheme if you are creating a new mapping scheme");
 		}
 		return source;
 	}
