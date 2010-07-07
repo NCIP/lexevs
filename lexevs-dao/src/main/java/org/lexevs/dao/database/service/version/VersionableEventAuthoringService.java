@@ -344,4 +344,22 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 		entryState.setRelativeOrder(0L);
 		return entryState;
 	}
+
+	@Override
+	public SystemRelease getSystemReleaseMetadataById(String systemReleaseId) {
+		SystemReleaseDao sysReleaseDao = this.getDaoManager().getSystemReleaseDao();
+		return sysReleaseDao.getSystemReleaseMetadataById(systemReleaseId);
+	}
+
+	@Override
+	public SystemRelease getSystemReleaseMetadataByUri(String systemReleaseUri) {
+		SystemReleaseDao sysReleaseDao = this.getDaoManager().getSystemReleaseDao();
+		return sysReleaseDao.getSystemReleaseMetadataByUri(systemReleaseUri);
+	}
+
+	@Override
+	public String insertSystemReleaseMetadata(SystemRelease systemRelease) {
+		SystemReleaseDao sysReleaseDao = this.getDaoManager().getSystemReleaseDao();
+		return sysReleaseDao.insertSystemReleaseEntry(systemRelease);
+	}
 }

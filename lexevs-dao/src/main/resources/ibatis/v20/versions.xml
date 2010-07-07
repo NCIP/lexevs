@@ -10,6 +10,15 @@
 		<result property="prevRevision" column="previousRevisionId" />
 	</resultMap>
 	
+	<resultMap id="systemReleaseMetadataResult" class="org.LexGrid.versions.SystemRelease">
+		<result property="releaseId" column="releaseId" />
+		<result property="releaseURI" column="releaseURI" />
+		<result property="releaseDate" column="releaseDate" />
+		<result property="releaseAgency" column="releaseAgency" />
+		<result property="basedOnRelease" column="basedOnRelease" />
+		<result property="entityDescription.content" column="description" />
+	</resultMap>
+	
 	<select id="getSystemReleaseGuidByUri" parameterClass="string" resultClass="string" remapResults="true" >
 		SELECT
 			sysRel.releaseGuid
@@ -17,6 +26,38 @@
 			${defaultPrefix}systemRelease sysRel
 		WHERE
 			sysRel.releaseURI = #param1#	
+     </select>
+     
+     <select id="getSystemReleaseMetaDataByUri" 
+     	parameterClass="string" 
+     	resultMap="Versions.systemReleaseMetadataResult">
+		SELECT
+			sysRel.releaseURI,
+			sysRel.releaseId,
+			sysRel.releaseDate,
+			sysRel.releaseAgency,
+			sysRel.basedOnRelease,
+			sysRel.description
+		FROM
+			${defaultPrefix}systemRelease sysRel
+		WHERE
+			sysRel.releaseURI = #param1#	
+     </select>
+     
+     <select id="getSystemReleaseMetaDataById" 
+     	parameterClass="string" 
+     	resultMap="Versions.systemReleaseMetadataResult">
+		SELECT
+			sysRel.releaseURI,
+			sysRel.releaseId,
+			sysRel.releaseDate,
+			sysRel.releaseAgency,
+			sysRel.basedOnRelease,
+			sysRel.description
+		FROM
+			${defaultPrefix}systemRelease sysRel
+		WHERE
+			sysRel.releaseId = #param1#	
      </select>
      
   	<select id="getEntryStateByEntryUidAndRevisionId" 
@@ -76,7 +117,8 @@
 			entryStateId = #id#
  	</update>
  	
- 	<insert id="insertSystemRelease" parameterClass="org.lexevs.dao.database.ibatis.versions.parameter.InsertSystemReleaseBean">
+ 	<insert id="insertSystemRelease" 
+		parameterClass="org.lexevs.dao.database.ibatis.versions.parameter.InsertSystemReleaseBean">
 		INSERT INTO ${defaultPrefix}systemRelease (
 			releaseGuid,
 			releaseURI,
@@ -97,7 +139,8 @@
 			)
  	</insert>
  	
- 	<insert id="insertRevision" parameterClass="org.lexevs.dao.database.ibatis.versions.parameter.InsertRevisionBean">
+ 	<insert id="insertRevision" 
+ 		parameterClass="org.lexevs.dao.database.ibatis.versions.parameter.InsertRevisionBean">
 		INSERT INTO ${defaultPrefix}revision (
 			revisionGuid,
 			releaseGuid,			

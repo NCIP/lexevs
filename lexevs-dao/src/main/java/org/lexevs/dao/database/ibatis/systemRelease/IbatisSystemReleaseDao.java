@@ -20,6 +20,10 @@ public class IbatisSystemReleaseDao extends AbstractIbatisDao implements SystemR
 
 	private String INSERT_INTO_SYSTEM_RELEASE = VERSIONS_NAMESPACE + "insertSystemRelease"; 
 	
+	private String GET_SYSTEM_RELEASE_METADATA_BY_URI = VERSIONS_NAMESPACE + "getSystemReleaseMetaDataByUri";
+	
+	private String GET_SYSTEM_RELEASE_METADATA_BY_ID = VERSIONS_NAMESPACE + "getSystemReleaseMetaDataById";
+	
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
 		// TODO Auto-generated method stub
@@ -40,15 +44,15 @@ public class IbatisSystemReleaseDao extends AbstractIbatisDao implements SystemR
 	}
 
 	@Override
-	public SystemRelease getSystemReleaseById(String systemReleaseId) {
-		// TODO Auto-generated method stub
-		return null;
+	public SystemRelease getSystemReleaseMetadataById(String systemReleaseId) {
+		return (SystemRelease) this.getSqlMapClientTemplate().queryForObject(GET_SYSTEM_RELEASE_METADATA_BY_ID, 
+				systemReleaseId);
 	}
 
 	@Override
-	public SystemRelease getSystemReleaseByUri(String systemReleaseUri) {
-		// TODO Auto-generated method stub
-		return null;
+	public SystemRelease getSystemReleaseMetadataByUri(String systemReleaseUri) {
+		return (SystemRelease) this.getSqlMapClientTemplate().queryForObject(GET_SYSTEM_RELEASE_METADATA_BY_URI, 
+				systemReleaseUri);
 	}
 
 	@Override

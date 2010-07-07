@@ -48,5 +48,26 @@ public interface AuthoringService {
 	public void loadRevision(Revision revision, String systemReleaseURI) throws LBRevisionException;
 	
 	public void loadRevision(Versionable versionable, String releaseURI) throws LBRevisionException;
+	
+	/**
+	 * insert system release entry.
+	 * 
+	 * @param systemRelease
+	 */
+	public String insertSystemReleaseMetadata(SystemRelease systemRelease);
+	
+	/**
+	 * get system release entry for a given uri.
+	 * @param systemReleaseUri
+	 * @return
+	 */
+	public SystemRelease getSystemReleaseMetadataByUri(String systemReleaseUri);
+	
+	/**
+	 * get system release entry for a given unique id.
+	 * @param systemReleaseId
+	 * @return
+	 */
+	public SystemRelease getSystemReleaseMetadataById(String systemReleaseId);
 }
 

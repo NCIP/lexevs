@@ -42,14 +42,14 @@ public interface SystemReleaseDao extends LexGridSchemaVersionAwareDao {
 	 * @param systemReleaseUri
 	 * @return
 	 */
-	public SystemRelease getSystemReleaseByUri(String systemReleaseUri);
+	public SystemRelease getSystemReleaseMetadataByUri(String systemReleaseUri);
 	
 	/**
 	 * get system release entry for a given unique id.
 	 * @param systemReleaseId
 	 * @return
 	 */
-	public SystemRelease getSystemReleaseById(String systemReleaseId);
+	public SystemRelease getSystemReleaseMetadataById(String systemReleaseId);
 	
 	/**
 	 * get all system release entries.
