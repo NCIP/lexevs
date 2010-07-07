@@ -107,6 +107,8 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	@After
 	public void tearDown() throws Exception {
 		super.tearDown();
+		extensionLoadingListenerRegistry.setEnableListeners(false);
+		
 		if(this.databaseType.equals(DatabaseType.HSQL)) {
 			new SimpleJdbcTemplate(dataSource).getJdbcOperations().execute("SHUTDOWN");
 		} else {

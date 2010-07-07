@@ -9,7 +9,6 @@ import javax.annotation.Resource;
 
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.versions.SystemRelease;
-import org.junit.After;
 import org.junit.Test;
 import org.lexevs.dao.database.service.valuesets.VersionableEventPickListDefinitionService;
 import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;

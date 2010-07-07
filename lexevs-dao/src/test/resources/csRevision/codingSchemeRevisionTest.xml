@@ -17,9 +17,7 @@
         <lgCS:codingScheme approxNumConcepts="5" codingSchemeName="Automobiles" defaultLanguage="en"
             formalName="test2" codingSchemeURI="urn:oid:11.11.0.1" representsVersion="1.1">
             <lgCommon:entityDescription>Automobiles</lgCommon:entityDescription>
-            <lgCS:localName>11.11.0.1</lgCS:localName>
-            <lgCS:localName>Automobiles</lgCS:localName>
-            <lgCS:localName>SomeOtherValue</lgCS:localName>
+            <lgCS:localName>initialLocalName</lgCS:localName>
             <lgCS:source>lexgrid.org</lgCS:source>
             <lgCS:copyright>Copyright by Mayo Clinic.</lgCS:copyright>
             <lgCS:mappings>
@@ -276,147 +274,89 @@
 
     <!--Test : NEW coding scheme-->
     <editHistory>
-        <revision revisionId="testRelease2010Jan">
-            <lgCommon:entityDescription>test Description</lgCommon:entityDescription>
+    
+        <!--Test : MODIFY coding scheme-->
+        <revision revisionId="1">
+            <changeAgent>Mayo</changeAgent>
             <changedEntry>
                 <changedCodingSchemeEntry codingSchemeName="Automobiles"
-                    codingSchemeURI="urn:oid:11.11.0.1" representsVersion="1.2">
-                    <lgCommon:entryState containingRevision="testRelease2010Jan" relativeOrder="0"
-                        changeType="NEW"/>
-                    <lgCS:localName>MidasAuto</lgCS:localName>
-                    <lgCS:source> Midas</lgCS:source>
-                    <lgCS:copyright>asdf</lgCS:copyright>
+                    codingSchemeURI="urn:oid:11.11.0.1" 
+                    representsVersion="1.1"
+                    effectiveDate="2010-01-01T01:20:30"
+                    expirationDate="2010-12-31T01:30:50">
+                    <lgCommon:entryState 
+                    	containingRevision="1" 
+                    	relativeOrder="0"
+                        changeType="MODIFY"/>
+                    <lgCS:localName>revisionLocalName1</lgCS:localName>
                     <lgCS:mappings/>
-                    <lgCS:properties>
-                        <lgCommon:property propertyName="textualProperty" propertyId="p1"
-                            propertyType="property">
-                            <lgCommon:entryState containingRevision="testRelease2010"
-                                relativeOrder="0" changeType="NEW"/>
-                            <lgCommon:source>mayo</lgCommon:source>
-                            <lgCommon:usageContext>testEnvironment</lgCommon:usageContext>
-                            <lgCommon:propertyQualifier propertyQualifierName="loneProperty"
-                                propertyQualifierType="String"/>
-                            <lgCommon:value>propertyValue</lgCommon:value>
-                        </lgCommon:property>
-                    </lgCS:properties>
-                    <lgCS:entities>
-                        <lgCon:entity entityCode="midas002" entityCodeNamespace="Automobiles"
-                            isActive="true">
-                            <lgCommon:entryState containingRevision="testRelease2010"
-                                relativeOrder="0" changeType="NEW"/>
-                                <lgCon:entityType>concept</lgCon:entityType>
-                            <lgCon:presentation propertyName="autoPart" propertyId="p2"
-                                propertyType="presentation" status="active">
-                                <lgCommon:entryState containingRevision="testRelease2010"
-                                    relativeOrder="0" changeType="NEW"/>
-                                <lgCommon:value>Test Presentation2</lgCommon:value>
-                            </lgCon:presentation>
-                        </lgCon:entity>
-                        <lgCon:entity entityCode="midas001" entityCodeNamespace="Automobiles"
-                            isActive="true">
-                            <lgCommon:entryState containingRevision="testRelease2010"
-                                relativeOrder="0" changeType="NEW"/>
-                            <lgCon:entityType>concept</lgCon:entityType>    
-                            <lgCon:presentation propertyName="autoPart" propertyId="p1"
-                                propertyType="presentation" status="active">
-                                <lgCommon:entryState containingRevision="testRelease2010"
-                                    relativeOrder="0" changeType="NEW"/>
-                                <lgCommon:value>Test Presentation</lgCommon:value>
-                            </lgCon:presentation>
-                        </lgCon:entity>
-                    </lgCS:entities>
-                    <lgCS:relations containerName="association">
-                        <lgRel:associationPredicate associationName="isA">
-                            <lgRel:source sourceEntityCode="midas001"
-                                sourceEntityCodeNamespace="Automobiles">
-                                <lgRel:target targetEntityCode="midas002"
-                                    targetEntityCodeNamespace="Automobiles">
-                                    <lgCommon:entryState containingRevision="testRelease2010"
-                                    relativeOrder="0" changeType="NEW"/>
-                                    <lgRel:associationQualification associationQualifier="testQual"></lgRel:associationQualification>
-                                </lgRel:target>
-                            </lgRel:source>
-                            <lgRel:source sourceEntityCode="midas002" sourceEntityCodeNamespace="Automobiles">
-                                <lgRel:targetData associationInstanceId="assocInstanceId1">
-                                    <lgCommon:entryState containingRevision="testRelease2010"
-                                    relativeOrder="0" changeType="NEW"/>
-                                    <lgRel:associationQualification associationQualifier="assocQual">
-                                        <lgRel:qualifierText>assocQualValue</lgRel:qualifierText>
-                                    </lgRel:associationQualification>
-                                    <lgRel:associationDataText>100</lgRel:associationDataText>
-                                </lgRel:targetData>
-                            </lgRel:source>
-                        </lgRel:associationPredicate>
-                        <lgRel:properties>
-                            <lgCommon:property propertyName="relProp" propertyId="p3"
-                                propertyType="property">
-                                <lgCommon:entryState containingRevision="testRelease2010"
-                                    relativeOrder="0" changeType="NEW"/>
-                                <lgCommon:value>relationProperty</lgCommon:value>
-                            </lgCommon:property>
-                        </lgRel:properties>
-                    </lgCS:relations>
                 </changedCodingSchemeEntry>
             </changedEntry>
         </revision>
 
         <!--Test : MODIFY coding scheme-->
-        <revision revisionId="testRelease2010Feb">
+        <revision revisionId="2">
             <changeAgent>Mayo</changeAgent>
             <changedEntry>
                 <changedCodingSchemeEntry codingSchemeName="Automobiles"
-                    codingSchemeURI="urn:oid:11.11.0.1" representsVersion="1.1"
-                    approxNumConcepts="1" defaultLanguage="en" effectiveDate="2010-01-01T01:20:30"
-                    expirationDate="2010-12-31T01:30:50" formalName="Automobiles in United States"
-                    isActive="true" status="active">
-                    <lgCommon:entryState containingRevision="testRelease2010Feb" relativeOrder="0"
+                    codingSchemeURI="urn:oid:11.11.0.1" 
+                    representsVersion="1.1"
+                    effectiveDate="2010-01-01T01:20:30"
+                    expirationDate="2010-12-31T01:30:50">
+                    <lgCommon:entryState 
+                    	containingRevision="2" 
+                    	prevRevision="1"
+                    	relativeOrder="0"
                         changeType="MODIFY"/>
-                    <lgCS:localName>11.11.0.1</lgCS:localName>
-                    <lgCS:localName>Automobiles</lgCS:localName>
-                    <lgCS:localName>fourWheeledVehicle</lgCS:localName>
-                    <lgCS:source role="temp" subRef="milkeyway">testAuto</lgCS:source>
+                    <lgCS:localName>revisionLocalName2</lgCS:localName>
                     <lgCS:mappings/>
                 </changedCodingSchemeEntry>
             </changedEntry>
         </revision>
-
-        <!-- Test: VERSIONABLE coding scheme -->
-        <revision revisionId="testRelease2010Mar">
+        
+       <revision revisionId="3">
+            <changeAgent>Mayo</changeAgent>
             <changedEntry>
                 <changedCodingSchemeEntry codingSchemeName="Automobiles"
-                    codingSchemeURI="urn:oid:11.11.0.1" representsVersion="1.2"
-                    effectiveDate="2010-01-01T10:10:10" expirationDate="2010-12-31T01:01:01"
-                    isActive="true" status="active">
-                    <lgCommon:owner>Mayo</lgCommon:owner>
-                    <lgCommon:entryState containingRevision="testRelease2010Mar" relativeOrder="0"
-                        prevRevision="testRelease2010Jan" changeType="VERSIONABLE"/>
+                    codingSchemeURI="urn:oid:11.11.0.1" 
+                    representsVersion="1.1"
+                    effectiveDate="2010-01-01T01:20:30"
+                    expirationDate="2010-12-31T01:30:50">
+                    <lgCommon:entryState 
+                    	containingRevision="3" 
+                    	prevRevision="2"
+                    	relativeOrder="0"
+                        changeType="DEPENDENT"/>
                     <lgCS:mappings/>
+                    <lgCS:properties>
+                    	<lgCommon:property propertyName="testProp">
+                    		<lgCommon:entryState changeType="NEW" relativeOrder="0" containingRevision="3"/>
+                    		<lgCommon:value>test prop</lgCommon:value>	
+                    	</lgCommon:property>
+                    </lgCS:properties>
                 </changedCodingSchemeEntry>
             </changedEntry>
         </revision>
-
-        <!-- Test:REMOVE coding scheme -->
-<!--        <revision revisionId="testRelease2010April">-->
-<!--            <changedEntry>-->
-<!--                <changedCodingSchemeEntry codingSchemeName="Automobiles"-->
-<!--                    codingSchemeURI="urn:oid:11.11.0.1" representsVersion="1.2">-->
-<!--                    <lgCommon:entryState containingRevision="testRelease2010April"-->
-<!--                        prevRevision="testRelease2010Mar" relativeOrder="0" changeType="REMOVE"/>-->
-<!--                    <lgCS:mappings/>-->
-<!--                </changedCodingSchemeEntry>-->
-<!--            </changedEntry>-->
-<!--        </revision>-->
         
-		<!-- Test:REMOVE coding scheme -->
-<!--        <revision revisionId="testRelease2010May">-->
-<!--            <changedEntry>-->
-<!--                <changedCodingSchemeEntry codingSchemeName="Automobiles"-->
-<!--                    codingSchemeURI="urn:oid:11.11.0.1" representsVersion="1.1">-->
-<!--                    <lgCommon:entryState containingRevision="testRelease2010May"-->
-<!--                        prevRevision="testRelease2010Feb" relativeOrder="0" changeType="REMOVE"/>-->
-<!--                    <lgCS:mappings/>-->
-<!--                </changedCodingSchemeEntry>-->
-<!--            </changedEntry>-->
-<!--        </revision>-->
+         <revision revisionId="4">
+            <changeAgent>Mayo</changeAgent>
+            <changedEntry>
+                <changedCodingSchemeEntry 
+                	codingSchemeName="Automobiles"
+                    codingSchemeURI="urn:oid:11.11.0.1" 
+                    representsVersion="1.1"
+                    effectiveDate="2010-01-01T01:20:30"
+                    expirationDate="2010-12-31T01:30:50">
+                    <lgCommon:entryState 
+                    	containingRevision="4" 
+                    	prevRevision="3"
+                    	relativeOrder="0"
+                        changeType="MODIFY"/>
+                    <lgCS:localName>revisionLocalName4</lgCS:localName>
+                    <lgCS:mappings/>  
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+        
     </editHistory>
 </systemRelease>

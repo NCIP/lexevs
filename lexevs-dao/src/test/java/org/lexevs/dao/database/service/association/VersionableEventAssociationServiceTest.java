@@ -25,8 +25,10 @@ import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.database.service.event.registry.ExtensionLoadingListenerRegistry;
 import org.lexevs.dao.database.service.relation.VersionableEventRelationService;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
@@ -48,12 +50,17 @@ public class VersionableEventAssociationServiceTest extends LexEvsDbUnitTestBase
 	@Resource
 	private VersionableEventRelationService versionableEventRelationService;
 	
-	/** The coding scheme service. */
-	@Resource 
-	private CodingSchemeService codingSchemeService;
+	@Resource
+	private ExtensionLoadingListenerRegistry extensionLoadingListenerRegistry;
 	
     @Resource
     private AuthoringService authoringService;
+    
+    @Before
+	public void enableListeners() {
+		extensionLoadingListenerRegistry.setEnableListeners(true);
+	}
+
 	
 	/**
 	 * Test insert relations.

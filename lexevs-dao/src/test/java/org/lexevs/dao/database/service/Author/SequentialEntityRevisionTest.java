@@ -14,8 +14,6 @@ import org.lexevs.dao.database.service.entity.VersionableEventEntityService;
 import org.lexevs.dao.database.service.event.registry.ExtensionLoadingListenerRegistry;
 import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
-import org.springframework.test.annotation.Repeat;
-import org.springframework.transaction.annotation.Transactional;
 
 public class SequentialEntityRevisionTest extends LexEvsDbUnitTestBase {
 

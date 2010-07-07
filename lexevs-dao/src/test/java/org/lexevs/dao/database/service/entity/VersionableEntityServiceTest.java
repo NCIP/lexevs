@@ -428,8 +428,8 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
 			"values ('rguid1', 'rid1', NOW() )");
 
-		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid, entryStateGuidInHistory) " +
-			"values ('esguid1', 'eguid', 'entity', 'NEW', '0', 'rguid1', 'esguid1')");
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+			"values ('esguid1', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
 			"values ('rguid2', 'rid2', NOW() )");
@@ -442,10 +442,11 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		entity.getEntryState().setChangeType(ChangeType.DEPENDENT);
 		entity.getEntryState().setContainingRevision("rid2");
 		entity.getEntryState().setRelativeOrder(0l);
+		entity.getEntryState().setPrevRevision("rid1");
 		
-		service.insertDependentChanges("csuri", "csversion", entity, true);
+		service.revise("csuri", "csversion", entity);
 		
-		assertEquals(0, template.queryForInt("select count(*) from h_entity"));
+		assertEquals(1, template.queryForInt("select count(*) from h_entity"));
 	}
 	
 	@Test
@@ -463,8 +464,8 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
 			"values ('rguid1', 'rid1', NOW() )");
 
-		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid, entryStateGuidInHistory) " +
-			"values ('esguid1', 'eguid', 'entity', 'NEW', '0', 'rguid1', 'esguid1')");
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+			"values ('esguid1', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
 			"values ('rguid2', 'rid2', NOW() )");
@@ -477,10 +478,10 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		entity.getEntryState().setChangeType(ChangeType.DEPENDENT);
 		entity.getEntryState().setContainingRevision("rid2");
 		entity.getEntryState().setRelativeOrder(0l);
+		entity.getEntryState().setPrevRevision("rid1");
 		
-		service.insertDependentChanges("csuri", "csversion", entity, true);
+		service.revise("csuri", "csversion", entity);
 		
-		assertEquals(0, template.queryForInt("select count(*) from h_entity"));
+		assertEquals(1, template.queryForInt("select count(*) from h_entity"));
 	}
-
 }
