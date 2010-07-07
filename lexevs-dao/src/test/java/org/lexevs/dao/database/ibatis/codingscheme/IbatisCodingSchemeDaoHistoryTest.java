@@ -18,29 +18,12 @@
  */
 package org.lexevs.dao.database.ibatis.codingscheme;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.List;
-
 import javax.annotation.Resource;
 
-import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.commonTypes.EntityDescription;
-import org.LexGrid.commonTypes.Source;
-import org.LexGrid.commonTypes.Text;
-import org.LexGrid.naming.Mappings;
-import org.LexGrid.naming.SupportedCodingScheme;
-import org.LexGrid.naming.SupportedSource;
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.types.ChangeType;
-import org.apache.commons.lang.ArrayUtils;
 import org.junit.Test;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -54,65 +37,6 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 	/** The ibatis coding scheme dao. */
 	@Resource
 	private IbatisCodingSchemeDao ibatisCodingSchemeDao;
-
-	/**
-	 * Test insert coding scheme.
-	 * 
-	 * @throws SQLException the SQL exception
-	 */
-/*	@Test
-	@Transactional
-	public void testInsertHistoryCodingScheme() throws SQLException{
-	CodingScheme cs = new CodingScheme();
-		
-		final Timestamp effectiveDate = new Timestamp(1l);
-		final Timestamp expirationDate = new Timestamp(2l);
-		
-		cs.setCodingSchemeName("csName");
-		cs.setCodingSchemeURI("uri");
-		cs.setRepresentsVersion("1.2");
-		cs.setFormalName("csFormalName");
-		cs.setDefaultLanguage("lang");
-		cs.setApproxNumConcepts(22l);
-		
-		EntityDescription ed = new EntityDescription();
-		ed.setContent("cs Description");
-		cs.setEntityDescription(ed);
-		
-		Text copyright = new Text();
-		copyright.setContent("cs Copyright");
-		cs.setCopyright(copyright);
-		
-		cs.setIsActive(false);
-		
-		cs.setOwner("cs owner");
-		
-		cs.setStatus("testing");
-		
-		cs.setEffectiveDate(effectiveDate);
-		cs.setExpirationDate(expirationDate);
-		
-		cs.addLocalName("testHistoryLocalName");
-		
-		Source source = new Source();
-		source.setContent("someSource");
-		cs.addSource(source);
-
-		EntryState es = new EntryState();
-		es.setChangeType(ChangeType.REMOVE);
-		es.setRelativeOrder(22l);
-		cs.setEntryState(es);
-		
-		ibatisCodingSchemeDao.insertHistoryCodingScheme("csguid", null, null, cs);
-
-		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		
-		int csCount = template.queryForInt("Select count(*) from h_codingScheme");
-		assertEquals(1, csCount);
-		
-		int csMultiAttribCount = template.queryForInt("Select count(*) from h_csMultiAttrib");
-		assertEquals(2, csMultiAttribCount);
-	}*/
 	
 	@Test
 	public void getHistoryCodingSchemeByRevisionWithHistoryFromHistoryWithMultiple() {
