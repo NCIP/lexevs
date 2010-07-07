@@ -15,6 +15,9 @@
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" default="CURRENT_TIMESTAMP" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <unique name="@PREFIX@UQ_vsd_valueSetDefURI">
+        <unique-column name="valueSetDefURI"/>
+      </unique>
       <index name="@PREFIX@idx_vs_releaseGuid">
         <index-column name="releaseGuid"/>
       </index>
@@ -53,8 +56,8 @@
         <reference local="valueSetDefGuid" foreign="valueSetDefGuid"/>
       </foreign-key>
       <unique name="@PREFIX@UQ_vsdEntry_valueSetDefGuid">
-        <unique-column name="vsdEntryGuid"/>
         <unique-column name="valueSetDefGuid"/>
+        <unique-column name="ruleOrder"/>
       </unique>
       <index name="@PREFIX@idx_valueSetDefGuid">
         <index-column name="valueSetDefGuid"/>
@@ -94,6 +97,13 @@
       <column name="subRef" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="role" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <index name="@PREFIX@idx_vsma_vsGuid">
+        <index-column name="referenceGuid"/>
+      </index>
+      <index name="@PREFIX@idx_vsma_vsG_at">
+        <index-column name="referenceGuid"/>
+        <index-column name="attributeType"/>
+      </index>
     </table>
     <table name="@PREFIX@vsPickList">
       <column name="vsPickListGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
@@ -111,6 +121,9 @@
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" default="CURRENT_TIMESTAMP" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <unique name="@PREFIX@UQ_pl_plid">
+        <unique-column name="pickListId"/>
+      </unique>
       <index name="@PREFIX@idx_pl_releaseGuid">
         <index-column name="releaseGuid"/>
       </index>
@@ -144,8 +157,8 @@
         <reference local="vsPickListGuid" foreign="vsPickListGuid"/>
       </foreign-key>
       <unique name="@PREFIX@UQ_vsPLEntry_vsPickListGuid">
-        <unique-column name="plEntryId"/>
         <unique-column name="vsPickListGuid"/>
+        <unique-column name="plEntryId"/>
       </unique>
       <index name="@PREFIX@idx_vsPickListGuid">
         <index-column name="vsPickListGuid"/>
