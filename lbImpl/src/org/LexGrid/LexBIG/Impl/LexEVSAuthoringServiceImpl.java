@@ -296,7 +296,13 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         newScheme.setMappings(processMappingsForAssociationMappings(sourceCodingScheme,
             sourceCodingSchemeVersion, targetCodingScheme,targetCodingSchemeVersion,
             associationName, null, null));
+        //Create a mapping for the mapping scheme
         
+        SupportedCodingScheme supportedScheme = new SupportedCodingScheme();
+        supportedScheme.setUri(CODING_SCHEME_URI);
+        supportedScheme.setContent(CODING_SCHEME_NAME);
+        supportedScheme.setLocalId(CODING_SCHEME_NAME);
+        newScheme.getMappings().getSupportedCodingSchemeAsReference().add(supportedScheme);
         //Set some entry states
         newScheme.setEntryState(entryState);
         relationsContainer.setEntryState(entryState);
@@ -727,14 +733,16 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
            NameAndValue pair = getAssociationPairFromMappings(mappings, associationName);
            pair.setContent(null);
             CodedNodeGraph cng = lbs.getNodeGraph(scheme.getCodingSchemeName(), csvt, relationContainerName);
-            cng.restrictToSourceCodeSystem(sourceNamespace);
-            cng.restrictToTargetCodeSystem(targetNamespace);
+            String sourceSchemeName = getCodingSchemeNameForNamespace(sourceNamespace, mappings);
+            String targetSchemeName = getCodingSchemeNameForNamespace(targetNamespace, mappings);
+            cng.restrictToSourceCodeSystem(sourceSchemeName);
+            cng.restrictToTargetCodeSystem(targetSchemeName);
             return cng.areCodesRelated(pair, 
                     ConvenienceMethods.createConceptReference(sourceCode, null), 
                     ConvenienceMethods.createConceptReference(targetCode, null), 
                     false);
         } catch (LBException e) {
-            getLogger().error("Problem getting association information for source" + sourceCode + ":" + scheme.getCodingSchemeName());
+            getLogger().error("Problem getting association information for source " + sourceCode + ": " + scheme.getCodingSchemeName());
             e.printStackTrace();
         }
         return false;
@@ -1275,9 +1283,19 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
       while(mappings.hasNext()){
           SupportedNamespace nameSpace = mappings.next();
           if(nameSpace.getUri().equals(URI)){
-              return nameSpace.getContent();
+              return nameSpace.getLocalId();
           }
       }
+        return null;
+    }
+    
+    public String getCodingSchemeNameForNamespace(String namespace, Mappings mappings){
+        SupportedNamespace[] namespaces = mappings.getSupportedNamespace();
+        for(SupportedNamespace ns: namespaces){
+            if(ns.getLocalId().equals(namespace)){
+                return ns.getEquivalentCodingScheme();
+            }
+        }
         return null;
     }
     
