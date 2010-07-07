@@ -1,17 +1,17 @@
 package org.lexevs.cts2.author;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.versions.SystemRelease;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.cts2.BaseService;
 import org.lexevs.cts2.core.update.SystemReleaseInfo;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
-public class AuthoringCore {
+public class AuthoringCore extends BaseService{
 	private AuthoringService authServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
 	public String createSystemRelease(SystemReleaseInfo systemReleaseInfo) throws LBException{
 		if (systemReleaseInfo == null)

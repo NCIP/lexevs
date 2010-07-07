@@ -27,29 +27,28 @@ import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Versionable;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
-import org.LexGrid.versions.EntryState;
 import org.lexevs.cts2.core.update.RevisionInfo;
 
 public interface ValueSetAuthoringOperation {
 	public URI createValueSet(URI valueSetURI, String valueSetName, String defaultCodeSystem, String conceptDomainId, 
 			List<Source> sourceList, List<String> usageContext, Properties properties, List<DefinitionEntry> ruleSetList,
-			Versionable versionable, RevisionInfo revision, EntryState entryState) throws LBException;
+			Versionable versionable, RevisionInfo revision) throws LBException;
 	
-	public URI createValueSet(ValueSetDefinition valueSetDefininition, RevisionInfo revision, EntryState valueSetEntryState) throws LBException;
+	public URI createValueSet(ValueSetDefinition valueSetDefininition, RevisionInfo revision) throws LBException;
 	
 	public boolean updateValueSetMetaData(URI valueSetURI, String valueSetName, String defaultCodeSystem, 
 			String conceptDomainId, List<Source> sourceList, List<String> usageContext, RevisionInfo revision) throws LBException;
 
 	public boolean updateValueSetVersionable(URI valueSetURI, Versionable changedVersionable, 
-			RevisionInfo revision, EntryState valueSetEntryState) throws LBException;	
+			RevisionInfo revision) throws LBException;	
 	
-	public boolean addValueSetProperty(URI valueSetURI, Property newProperty, RevisionInfo revision, EntryState propertyEntryState) throws LBException;
+	public boolean addValueSetProperty(URI valueSetURI, Property newProperty, RevisionInfo revision) throws LBException;
 	
-	public boolean updateValueSetProperty(URI valueSetURI, Property changedProperty, RevisionInfo revision, EntryState propertyEntryState) throws LBException;
+	public boolean updateValueSetProperty(URI valueSetURI, Property changedProperty, RevisionInfo revision) throws LBException;
 	
-	public boolean addDefinitionEntry(URI valueSetURI, DefinitionEntry newDefinitionEntry, RevisionInfo revision, EntryState definitionEntryState) throws LBException;
+	public boolean addDefinitionEntry(URI valueSetURI, DefinitionEntry newDefinitionEntry, RevisionInfo revision) throws LBException;
 	
-	public boolean updateDefinitionEntry(URI valueSetURI, DefinitionEntry changedDefinitionEntry, RevisionInfo revision, EntryState definitionEntryState) throws LBException;
+	public boolean updateDefinitionEntry(URI valueSetURI, DefinitionEntry changedDefinitionEntry, RevisionInfo revision) throws LBException;
 	
-	public boolean updateValueSetStatus(URI valueSetURI, String status, RevisionInfo revision, EntryState valueSetEntryState) throws LBException;
+	public boolean updateValueSetStatus(URI valueSetURI, String status, RevisionInfo revision) throws LBException;
 }

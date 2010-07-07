@@ -49,11 +49,6 @@ public class ValueSetAuthoringOperationImplTest {
 		revInfo.setDescription("adding new def entry");
 		revInfo.setRevisionDate(new Date());
 		
-		EntryState es = new EntryState();
-		es.setChangeType(ChangeType.NEW);
-		es.setContainingRevision("R002");
-		es.setRelativeOrder(0L);
-		
 		DefinitionEntry newDefEntry = new DefinitionEntry();
 		newDefEntry.setOperator(DefinitionOperator.OR);
 		newDefEntry.setRuleOrder(0L);
@@ -64,7 +59,7 @@ public class ValueSetAuthoringOperationImplTest {
 		newDefEntry.setCodingSchemeReference(csRef);
 		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
 		
-		valueSetAuthOp.addDefinitionEntry(new URI("VSD:AUTHOR:JUNIT:TEST1"), newDefEntry, revInfo, es);
+		valueSetAuthOp.addDefinitionEntry(new URI("VSD:AUTHOR:JUNIT:TEST1"), newDefEntry, revInfo);
 	}
 	
 	@Test
@@ -77,11 +72,6 @@ public class ValueSetAuthoringOperationImplTest {
 		revInfo.setDescription("adding new def entry");
 		revInfo.setRevisionDate(new Date());
 		
-		EntryState es = new EntryState();
-		es.setChangeType(ChangeType.NEW);
-		es.setContainingRevision("R007");
-		es.setRelativeOrder(0L);
-		
 		DefinitionEntry newDefEntry = new DefinitionEntry();
 		newDefEntry.setOperator(DefinitionOperator.OR);
 		newDefEntry.setRuleOrder(0L);
@@ -92,7 +82,7 @@ public class ValueSetAuthoringOperationImplTest {
 		newDefEntry.setValueSetDefinitionReference(vsdRef);
 		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
 		
-		valueSetAuthOp.addDefinitionEntry(new URI("VSD:AUTHOR:JUNIT:TEST1"), newDefEntry, revInfo, es);
+		valueSetAuthOp.addDefinitionEntry(new URI("VSD:AUTHOR:JUNIT:TEST1"), newDefEntry, revInfo);
 	}
 
 	/**
@@ -121,15 +111,9 @@ public class ValueSetAuthoringOperationImplTest {
 		revInfo.setRevisionDate(new Date());
 		revInfo.setRevisionId("R102");
 		
-		EntryState es = new EntryState();
-		es.setChangeType(ChangeType.NEW);
-		es.setContainingRevision("R102");
-		es.setPrevRevision(null);
-		es.setRelativeOrder(0L);
-		
 		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
 		valueSetAuthOp.addValueSetProperty(new URI("VSD:AUTHOR:JUNIT:TEST1"), 
-				prop, revInfo, es);
+				prop, revInfo);
 	}
 
 	/**
@@ -161,17 +145,11 @@ public class ValueSetAuthoringOperationImplTest {
 		revInfo.setRevisionDate(new Date());
 		revInfo.setRevisionId("R101");
 		
-		EntryState es = new EntryState();
-		es.setChangeType(ChangeType.NEW);
-		es.setContainingRevision("R101");
-		es.setPrevRevision(null);
-		es.setRelativeOrder(0L);
-		
 		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
 		URI vsdURI = valueSetAuthOp.createValueSet(new URI("VSD:AUTHORING:JUNIT:TEST2"), 
 				"Authoring create vsd junit test2",
 				"Automobiles", "Autos", null, null, 
-				props, null, null, revInfo, es);
+				props, null, null, revInfo);
 		System.out.println("vsdURI : " + vsdURI);
 	}
 
@@ -194,13 +172,8 @@ public class ValueSetAuthoringOperationImplTest {
 		revInfo.setDescription("testDescription");
 		revInfo.setRevisionDate(new Date());
 		
-		EntryState es = new EntryState();
-		es.setChangeType(ChangeType.NEW);
-		es.setContainingRevision("R001");
-		es.setRelativeOrder(0L);
-		
 		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
-		URI vsdURI = valueSetAuthOp.createValueSet(vsd, revInfo, es);
+		URI vsdURI = valueSetAuthOp.createValueSet(vsd, revInfo);
 		System.out.println("vsdURI : " + vsdURI);
 	}
 
