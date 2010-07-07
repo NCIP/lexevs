@@ -46,36 +46,15 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     private Marshaller marshaller;
     private CodedNodeSet cns;
     private CodedNodeGraph cng;
+    private CodedNodeGraph associationCng;
     private String curAssociationName;
     private AssociationSourceCache sourceCache;
     private AssociationEntityCache associationEntityCache = AssociationEntityCacheFactory.createCache();
     private LgMessageDirectorIF messager;
+    
 
     private final int MAX_BLOCK_SIZE = 10;
     private int blockSize = 10;
-    private int entitiesToReturn = -1; // limit our output to the file just to
-
-    // keep it small
-
-    public int getMaxEntitiesToReturn() {
-        return entitiesToReturn;
-    }
-
-    public void setMaxEntitiesToReturn(int limit) {
-        this.entitiesToReturn = limit;
-    }
-
-    public StreamingLexGridMarshalListener(Marshaller marshaller, CodedNodeSet cns, int pageSize) {
-        this.setBlockSize(pageSize);
-        this.marshaller = marshaller;
-        this.cns = cns;
-    }
-
-    public StreamingLexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng, int pageSize) {
-        this.setBlockSize(pageSize);
-        this.marshaller = marshaller;
-        this.cng = cng;
-    }
 
     public StreamingLexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng, CodedNodeSet cns, int pageSize,
             LgMessageDirectorIF messager) {
@@ -84,15 +63,6 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
         this.cng = cng;
         this.cns = cns;
         this.messager = messager;
-    }
-
-    public StreamingLexGridMarshalListener(Marshaller marshaller, CodedNodeGraph cng, CodedNodeSet cns, int pageSize,
-            int limit) {
-        this.setBlockSize(pageSize);
-        this.entitiesToReturn = limit;
-        this.marshaller = marshaller;
-        this.cng = cng;
-        this.cns = cns;
     }
 
     private void setBlockSize(int size) {
@@ -129,7 +99,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                     nv.setName(curAssociationName);
                     list.addNameAndValue(nv);
                     
-                    CodedNodeGraph associationCng = cng.restrictToAssociations(list, null);
+                    associationCng = cng.restrictToAssociations(list, null);
                     ResolvedConceptReferenceList rcrl = associationCng.resolveAsList(null, true, false, 0, -1, null, null, null,
                             null, -1);
                     Iterator<ResolvedConceptReference> blockIterator;
@@ -311,7 +281,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                     focus.setCodingSchemeName(source.getCodingSchemeName());
                     ResolvedConceptReferenceList localRcrl = null;
                     try {
-                        localRcrl = cng.resolveAsList(focus, true, false, 0, -1, null, null, null, null, -1);
+                        localRcrl = this.associationCng.resolveAsList(focus, true, false, 0, -1, null, null, null, null, -1);
                     } catch (LBInvocationException e) {
                         e.printStackTrace();
                     } catch (LBParameterException e) {
