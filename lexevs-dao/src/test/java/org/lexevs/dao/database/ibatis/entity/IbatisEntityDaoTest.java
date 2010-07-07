@@ -722,7 +722,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 	
 	@Test
 	@Transactional
-	public void testGetHistoryEntityWithTwoInHistory() {
+	public void testGetHistoryEntityWithTwoInHistory() throws InterruptedException {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
 			"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
@@ -744,6 +744,8 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
 				"values ('rguid1', 'rid1', NOW() )");
+		
+		Thread.sleep(10);
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
 				"values ('rguid2', 'rid2', NOW() )");
