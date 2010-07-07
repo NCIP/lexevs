@@ -37,9 +37,6 @@
       <column name="subRef" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="role" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@csMultiAttrib" name="@PREFIX@FK_h_csMultiAttr_csMultiAttrib">
-        <reference local="csMultiAttribGuid" foreign="csMultiAttribGuid"/>
-      </foreign-key>
       <index name="@PREFIX@idx_h_csMultiAttrib">
         <index-column name="codingSchemeGuid"/>
         <index-column name="attributeType"/>
