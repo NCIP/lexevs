@@ -101,6 +101,8 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
         throws LBInvocationException, LBParameterException {
 
         if(association != null) {
+            graphQuery.getRestrictToAssociations().clear();
+            graphQuery.getRestrictToAssociationsQualifiers().clear();
             for(NameAndValue nameAndValue : association.getNameAndValue()) {
                 //TODO: resolve URIs
                 if(StringUtils.hasText(nameAndValue.getContent())){
