@@ -188,30 +188,34 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                     }
                     messager.info("Entity processing complete. " + this.entityCount + " entity objects marshalled");
 
-                    // load the mapping for association entity
-                    try {
-                        Mapping mapping = new Mapping();
-                        messager.info("attempting to load " + mappingFileName + "...");
-                        InputStream inputStream = StreamingLexGridMarshalListener.class.getResourceAsStream("/edu/mayo/informatics/lexgrid/convert/exporters/xml/lgxml/listeners/" + mappingFileName);
-                        InputSource inputSource = new InputSource(inputStream);
-                        mapping.loadMapping(inputSource);
-                        this.marshaller.setMapping(mapping);
-                        messager.info(mappingFileName + " loaded successfully");
-                    } catch (MappingException e) {
-                        e.printStackTrace();
-                    }  
+                    
 
                     // now marshal the AssociationEntity
                     messager.info("start processing association entities...");
                     List<String> keys = this.associationEntityCache.getKeys();
-                    String key;
-                    AssociationEntity aE;
-                    for (int i = 0; i < keys.size(); ++i) {
-                        key = keys.get(i);
-                        aE = this.associationEntityCache.get(key);
-                        this.marshaller.marshal(aE);
+                    if (keys.size() > 0) {
+                     // load the mapping for association entity
+                        try {
+                            Mapping mapping = new Mapping();
+                            messager.info("attempting to load " + mappingFileName + "...");
+                            InputStream inputStream = StreamingLexGridMarshalListener.class.getResourceAsStream("/edu/mayo/informatics/lexgrid/convert/exporters/xml/lgxml/listeners/" + mappingFileName);
+                            InputSource inputSource = new InputSource(inputStream);
+                            mapping.loadMapping(inputSource);
+                            this.marshaller.setMapping(mapping);
+                            messager.info(mappingFileName + " loaded successfully");
+                        } catch (MappingException e) {
+                            e.printStackTrace();
+                        }
+                        String key;
+                        AssociationEntity aE;
+                        for (int i = 0; i < keys.size(); ++i) {
+                            key = keys.get(i);
+                            aE = this.associationEntityCache.get(key);
+                            this.marshaller.marshal(aE);
+                        }
+                        messager.info("AssociationEntity object processing complete.");
                     }
-                    messager.info("AssociationEntity object processing complete.");
+                    
 
                 } catch (LBInvocationException e) {
                     e.printStackTrace();
