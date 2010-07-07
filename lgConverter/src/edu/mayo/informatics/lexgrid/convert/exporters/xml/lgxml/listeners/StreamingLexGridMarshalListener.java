@@ -52,6 +52,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     private AssociationEntityCache associationEntityCache = AssociationEntityCacheFactory.createCache();
     private LgMessageDirectorIF messager;
     private long entityCount;
+    private long associationCount;
     
 
     private final int MAX_BLOCK_SIZE = 10;
@@ -65,6 +66,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
         this.cns = cns;
         this.messager = messager;
         this.entityCount = 0;
+        this.associationCount = 0;
     }
 
     private void setBlockSize(int size) {
@@ -130,6 +132,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                             }
                         }
                     }
+                    messager.info("association processing complete. marshalled " + this.associationCount + " association objects");
                 } catch (LBInvocationException e) {
                     e.printStackTrace();
                 } catch (LBParameterException e) {
@@ -373,6 +376,11 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
 
                             this.sourceCache.add(aS);
                             this.marshaller.marshal(aS);
+                            ++this.associationCount;
+                            if(this.associationCount % 1000 == 0) {
+                                messager.info("processed " + this.associationCount + " association objects");
+                            }
+                            
                         } 
                     }
                 }
