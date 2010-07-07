@@ -18,6 +18,8 @@
  */
 package org.lexevs.dao.database.service;
 
+import org.LexGrid.commonTypes.Versionable;
+import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.event.DatabaseServiceEventSupport;
 import org.lexevs.logging.Logger;
@@ -46,6 +48,13 @@ public class AbstractDatabaseService extends DatabaseServiceEventSupport {
 		return daoManager.
 			getCodingSchemeDao(codingSchemeUri, codingSchemeVersion).
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
+	}
+	
+	
+	protected boolean isChangeTypeDependent(Versionable versionable) {
+		return versionable.getEntryState() != null 
+				&&
+				versionable.getEntryState().getChangeType().equals(ChangeType.DEPENDENT);
 	}
 	
 	/**

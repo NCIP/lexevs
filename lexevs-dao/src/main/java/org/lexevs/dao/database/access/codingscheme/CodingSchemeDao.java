@@ -22,9 +22,11 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.types.PropertyTypes;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.URIMap;

@@ -22,11 +22,11 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.URIMap;
-import org.LexGrid.versions.EntryState;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 
 /**
@@ -115,16 +115,6 @@ public interface CodingSchemeService {
 			URIMap uriMap);
 	
 	/**
-	 * Update coding scheme entry state.
-	 * 
-	 * @param codingScheme the coding scheme
-	 * @param entryState the entry state
-	 */
-	public void updateCodingSchemeEntryState( 
-			CodingScheme codingScheme,
-			EntryState entryState);
-	
-	/**
 	 * Validated supported attribute.
 	 * 
 	 * @param codingSchemeUri the coding scheme uri
@@ -156,9 +146,8 @@ public interface CodingSchemeService {
 	 */
 	public void revise(CodingScheme revisedCodingScheme, String releaseURI) throws LBException;
 
-	public void insertVersionableChanges(CodingScheme revisedCodingScheme) throws LBException;
-
-	public void insertDependentChanges(CodingScheme revisedCodingScheme) throws LBException;
-
 	public void removeCodingScheme(CodingScheme revisedCodingScheme);
+	
+	public CodingScheme resolveCodingSchemeByRevision(String codingSchemeURI,
+			String version, String revisionId) throws LBRevisionException;
 }
