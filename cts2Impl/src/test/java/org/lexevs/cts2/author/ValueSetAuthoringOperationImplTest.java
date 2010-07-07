@@ -7,11 +7,14 @@ import static org.junit.Assert.fail;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.valueSets.CodingSchemeReference;
@@ -211,10 +214,37 @@ public class ValueSetAuthoringOperationImplTest {
 
 	/**
 	 * Test method for {@link org.lexevs.cts2.author.ValueSetAuthoringOperationImpl#updateValueSetMetaData(java.net.URI, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.List, org.lexevs.cts2.core.update.RevisionInfo)}.
+	 * @throws URISyntaxException 
+	 * @throws LBException 
 	 */
 	@Test
-	public void testUpdateValueSetMetaData() {
-		fail("Not yet implemented"); // TODO
+	public void testUpdateValueSetMetaData() throws LBException, URISyntaxException {
+		RevisionInfo revInfo = new RevisionInfo();
+		revInfo.setRevisionId("R201");
+		revInfo.setChangeAgent("testUpdateChangeAgent");
+		revInfo.setChangeInstruction("testUpdateChangeInstruction");
+		revInfo.setEditOrder(0L);
+		revInfo.setDescription("testUpdateDescription");
+		revInfo.setRevisionDate(new Date());
+		
+		List<Source> srcList = new ArrayList<Source>();
+		Source src = new Source();
+		src.setContent("LexEVS as src");
+		srcList.add(src);
+		src = new Source();
+		src.setContent("Mayo as src");
+		srcList.add(src);
+		
+		List<String> contextList = new ArrayList<String>();
+		contextList.add("Autos as context");
+		contextList.add("lexevs as context");
+		
+		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
+		boolean success = valueSetAuthOp.updateValueSetMetaData(new URI("VSD:AUTHORING:JUNIT:TEST2"), 
+				"Authoring create vsd junit test2 updated",
+				"Automobiles updated", "Autos updated", srcList, contextList, 
+				revInfo);
+		System.out.println("success : " + success);
 	}
 
 	/**
