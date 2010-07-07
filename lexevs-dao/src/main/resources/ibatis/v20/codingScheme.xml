@@ -236,7 +236,7 @@
 		WHERE
 			cs.codingSchemeGuid = #param1#
 		AND
-			currentRevision.revisionGuid = #param2#	
+			currentRevision.revisionId = #param2#	
      </select>
      
      <select id="getCodingSchemeIdByNameAndVersion" 
