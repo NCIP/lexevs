@@ -346,12 +346,10 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                         AssociationTarget associationTarget = new AssociationTarget();
                         associationTarget.setTargetEntityCodeNamespace(target.getCodeNamespace());
                         associationTarget.setTargetEntityCode(target.getConceptCode());
-//                        System.out.print("target: " + target.getConceptCode() + " ");
                         if (targetAssociation.getAssociationName().equals(asName)) {
                             AssociationSource aS = new AssociationSource();
                             aS.setSourceEntityCodeNamespace(sRef.getCodeNamespace());
                             aS.setSourceEntityCode(sRef.getConceptCode());
-//                            System.out.println("source: " + sRef.getConceptCode());
 
                             aS.addTarget(associationTarget);
                             NameAndValueList assocQuals = target.getAssociationQualifiers();
@@ -371,9 +369,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
 
                             this.sourceCache.add(aS);
                             this.marshaller.marshal(aS);
-                        } else {
-//                            System.out.println();
-                        }
+                        } 
                     }
                 }
 
