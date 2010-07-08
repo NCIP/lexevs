@@ -5,8 +5,10 @@ import java.net.URI;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Text;
+import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
+import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cts2.BaseService;
 import org.lexevs.cts2.core.update.RevisionInfo;
@@ -102,5 +104,14 @@ public class AuthoringCore extends BaseService{
 		lgRevision.setRevisionId(revisionInfo.getRevisionId());
 		
 		return lgRevision;
+	}
+	
+	public EntryState populateEntryState(ChangeType changeType, String revisionId, String prevRevisionId, Long relativeOrder){
+		EntryState entryState = new EntryState();
+		entryState.setChangeType(changeType);
+		entryState.setContainingRevision(revisionId);
+		entryState.setPrevRevision(prevRevisionId);
+		entryState.setRelativeOrder(0L);
+		return entryState;
 	}
 }

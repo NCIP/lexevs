@@ -15,7 +15,6 @@ import org.LexGrid.commonTypes.Versionable;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.ChangedEntry;
-import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
@@ -69,20 +68,12 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		Revision lgRevision = getLexGridRevisionObject(revision);
 		
 		// setup entrystate for vsd
-		EntryState entryState = new EntryState();
-		entryState.setChangeType(ChangeType.DEPENDENT);
-		entryState.setContainingRevision(lgRevision.getRevisionId());
-		entryState.setRelativeOrder(0L);
-		entryState.setPrevRevision(prevRevisionId);		
-		vsd.setEntryState(entryState);
+		vsd.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
+				lgRevision.getRevisionId(), prevRevisionId, 0L));
 		
 		// setup entrystate for new definition entry
-		entryState = new EntryState();
-		entryState.setChangeType(ChangeType.NEW);
-		entryState.setContainingRevision(lgRevision.getRevisionId());
-		entryState.setRelativeOrder(0L);
-		entryState.setPrevRevision(null);		
-		newDefinitionEntry.setEntryState(entryState);
+		newDefinitionEntry.setEntryState(populateEntryState(ChangeType.NEW,
+				lgRevision.getRevisionId(), null, 0L));
 		
 		// add new definition entry to vsd
 		vsd.addDefinitionEntry(newDefinitionEntry);
@@ -126,20 +117,12 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		vsd.removeAllSource();
 		
 		// setup entry state for vsd
-		EntryState entryState = new EntryState();
-		entryState.setChangeType(ChangeType.DEPENDENT);
-		entryState.setContainingRevision(lgRevision.getRevisionId());
-		entryState.setPrevRevision(prevRevisionId);
-		entryState.setRelativeOrder(0L);
-		vsd.setEntryState(entryState);
+		vsd.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
+				lgRevision.getRevisionId(), prevRevisionId, 0L));
 		
 		// setup entry state for new property
-		entryState = new EntryState();
-		entryState.setChangeType(ChangeType.NEW);
-		entryState.setContainingRevision(lgRevision.getRevisionId());
-		entryState.setPrevRevision(prevRevisionId);
-		entryState.setRelativeOrder(0L);
-		newProperty.setEntryState(entryState);
+		newProperty.setEntryState(populateEntryState(ChangeType.NEW, 
+				lgRevision.getRevisionId(), null, 0L));
 		
 		Properties props = new Properties();
 		props.addProperty(newProperty);
@@ -205,12 +188,8 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		
 		Revision lgRevision = getLexGridRevisionObject(revision);
 		// setup entry state for new vsd
-		EntryState entryState = new EntryState();
-		entryState.setChangeType(ChangeType.NEW);
-		entryState.setContainingRevision(lgRevision.getRevisionId());
-		entryState.setPrevRevision(null);
-		entryState.setRelativeOrder(0L);
-		valueSetDefininition.setEntryState(entryState);
+		valueSetDefininition.setEntryState(populateEntryState(ChangeType.NEW, 
+				lgRevision.getRevisionId(), null, 0L));
 		
 		ChangedEntry ce = new ChangedEntry();
 		ce.setChangedValueSetDefinitionEntry(valueSetDefininition);
@@ -268,21 +247,13 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		vsd.removeAllSource();
 		
 		// setup entry state for vsd
-		EntryState entryState = new EntryState();
-		entryState.setChangeType(ChangeType.DEPENDENT);
-		entryState.setContainingRevision(lgRevision.getRevisionId());
-		entryState.setPrevRevision(prevRevisionId);
-		entryState.setRelativeOrder(0L);
-		vsd.setEntryState(entryState);
+		vsd.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
+				lgRevision.getRevisionId(), prevRevisionId, 0L));
 		
 		// setup entry state for update definition entry
 		String defEntryPrecRevId = currentDefEntry.getEntryState() != null?currentDefEntry.getEntryState().getContainingRevision():null;
-		entryState = new EntryState();
-		entryState.setChangeType(ChangeType.MODIFY);
-		entryState.setContainingRevision(lgRevision.getRevisionId());
-		entryState.setPrevRevision(defEntryPrecRevId);
-		entryState.setRelativeOrder(0L);
-		changedDefinitionEntry.setEntryState(entryState);
+		changedDefinitionEntry.setEntryState(populateEntryState(ChangeType.MODIFY, 
+				lgRevision.getRevisionId(), defEntryPrecRevId, 0L));
 		
 		vsd.addDefinitionEntry(changedDefinitionEntry);
 		
@@ -334,12 +305,8 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		
 		Revision lgRevision = getLexGridRevisionObject(revision);
 		ChangedEntry ce = new ChangedEntry();
-		EntryState vsdEntryState = new EntryState();
-		vsdEntryState.setChangeType(ChangeType.MODIFY);
-		vsdEntryState.setContainingRevision(lgRevision.getRevisionId());
-		vsdEntryState.setPrevRevision(prevRevisionId);
-		vsdEntryState.setRelativeOrder(0L);
-		vsd.setEntryState(vsdEntryState);
+		vsd.setEntryState(populateEntryState(ChangeType.MODIFY, 
+				lgRevision.getRevisionId(), prevRevisionId, 0L));
 		
 		ce.setChangedValueSetDefinitionEntry(vsd);
 		lgRevision.addChangedEntry(ce);
@@ -355,10 +322,64 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 	public boolean updateValueSetProperty(URI valueSetURI,
 			Property changedProperty, RevisionInfo revision) throws LBException {
 		
+		if (valueSetURI == null)
+			throw new LBException("ValueSetDefinitionURI can not be empty");
+		
+		if (changedProperty == null)
+			throw new LBException("property can not be empty");
+		
+		if (StringUtils.isEmpty(changedProperty.getPropertyId()))
+			throw new LBException("property ID can not be empty");
+		
 		validateRevisionInfo(revision);
 		
-		// TODO Auto-generated method stub
-		return false;
+		Revision lgRevision = getLexGridRevisionObject(revision);
+		ChangedEntry ce = new ChangedEntry();
+		
+		ValueSetDefinition vsd = vsdServ_.getValueSetDefinitionByUri(valueSetURI);
+		
+		if (vsd == null)
+			throw new LBException("No Value Set Definition found with URI : " + valueSetURI.toString());
+		
+		if (vsd.getProperties() == null)
+			throw new LBException("No properties found in value set definition : " + valueSetURI);
+		
+		Property currentProperty = null;
+		
+		for (Property prop : vsd.getProperties().getPropertyAsReference())
+		{
+			if (prop.getPropertyId().equalsIgnoreCase(changedProperty.getPropertyId()))
+				currentProperty = prop;
+		}
+		
+		if (currentProperty == null)
+			throw new LBException("No property found with id : " + changedProperty.getPropertyId());
+		
+		vsd.removeAllDefinitionEntry();
+		vsd.removeAllRepresentsRealmOrContext();
+		vsd.removeAllSource();
+		
+		// remove all other properties but the one that needs to be changed
+		vsd.setProperties(null);		
+		Properties props = new Properties();
+		props.addProperty(currentProperty);
+		vsd.setProperties(props);
+		
+		// setup entry state for vsd
+		String prevRevisionId = vsd.getEntryState() != null?vsd.getEntryState().getContainingRevision():null;
+		vsd.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
+				lgRevision.getRevisionId(), prevRevisionId, 0L));
+		
+		// setup entry state for property to be removed
+		String propPrevRevId = currentProperty.getEntryState() != null?currentProperty.getEntryState().getContainingRevision():null;
+		currentProperty.setEntryState(populateEntryState(ChangeType.MODIFY, 
+				lgRevision.getRevisionId(), propPrevRevId, 0L));
+		
+		ce.setChangedValueSetDefinitionEntry(vsd);
+		lgRevision.addChangedEntry(ce);
+		
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
+		return true;
 	}
 
 	/*
@@ -400,7 +421,6 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		if (vsd == null)
 			throw new LBException("No Value Set Definition found with URI : " + valueSetURI.toString());
 		
-		String prevRevisionId = vsd.getEntryState() != null?vsd.getEntryState().getContainingRevision():null;
 		vsd.removeAllDefinitionEntry();
 		vsd.removeAllRepresentsRealmOrContext();
 		vsd.removeAllSource();
@@ -434,13 +454,10 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		Revision lgRevision = getLexGridRevisionObject(revision);
 		ChangedEntry ce = new ChangedEntry();
 		
-		EntryState vsdEntryState = new EntryState();
-		vsdEntryState.setChangeType(ChangeType.VERSIONABLE);
-		vsdEntryState.setContainingRevision(lgRevision.getRevisionId());
-		vsdEntryState.setPrevRevision(prevRevisionId);
-		vsdEntryState.setRelativeOrder(0L);
+		String prevRevisionId = vsd.getEntryState() != null?vsd.getEntryState().getContainingRevision():null;
 		
-		vsd.setEntryState(vsdEntryState);
+		vsd.setEntryState(populateEntryState(ChangeType.VERSIONABLE, 
+				lgRevision.getRevisionId(), prevRevisionId, 0L));
 		
 		ce.setChangedValueSetDefinitionEntry(vsd);
 		lgRevision.addChangedEntry(ce);
@@ -479,27 +496,19 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		if (currentDefEntry == null)
 			throw new LBException("No Definition Entry found with Rule Order : " + ruleOrder);
 		
-		String prevRevisionId = vsd.getEntryState() != null?vsd.getEntryState().getContainingRevision():null;
 		vsd.removeAllDefinitionEntry();
 		vsd.removeAllRepresentsRealmOrContext();
 		vsd.removeAllSource();
 		
 		// setup entry state for vsd
-		EntryState entryState = new EntryState();
-		entryState.setChangeType(ChangeType.DEPENDENT);
-		entryState.setContainingRevision(lgRevision.getRevisionId());
-		entryState.setPrevRevision(prevRevisionId);
-		entryState.setRelativeOrder(0L);
-		vsd.setEntryState(entryState);
+		String prevRevisionId = vsd.getEntryState() != null?vsd.getEntryState().getContainingRevision():null;
+		vsd.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
+				lgRevision.getRevisionId(), prevRevisionId, 0L));
 		
 		// setup entry state for update definition entry
 		String defEntryPrevRevId = currentDefEntry.getEntryState() != null?currentDefEntry.getEntryState().getContainingRevision():null;
-		entryState = new EntryState();
-		entryState.setChangeType(ChangeType.REMOVE);
-		entryState.setContainingRevision(lgRevision.getRevisionId());
-		entryState.setPrevRevision(defEntryPrevRevId);
-		entryState.setRelativeOrder(0L);
-		currentDefEntry.setEntryState(entryState);
+		currentDefEntry.setEntryState(populateEntryState(ChangeType.REMOVE, 
+				lgRevision.getRevisionId(), defEntryPrevRevId, 0L));
 		
 		vsd.addDefinitionEntry(currentDefEntry);
 		
@@ -526,18 +535,14 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		if (vsd == null)
 			throw new LBException("No Value Set Definition found with URI : " + valueSetURI.toString());
 		
-		String prevRevisionId = vsd.getEntryState() != null?vsd.getEntryState().getContainingRevision():null;
 		vsd.removeAllDefinitionEntry();
 		vsd.removeAllRepresentsRealmOrContext();
 		vsd.removeAllSource();
 		
 		// setup entry state for vsd
-		EntryState entryState = new EntryState();
-		entryState.setChangeType(ChangeType.REMOVE);
-		entryState.setContainingRevision(lgRevision.getRevisionId());
-		entryState.setPrevRevision(prevRevisionId);
-		entryState.setRelativeOrder(0L);
-		vsd.setEntryState(entryState);
+		String prevRevisionId = vsd.getEntryState() != null?vsd.getEntryState().getContainingRevision():null;
+		vsd.setEntryState(populateEntryState(ChangeType.REMOVE, 
+				lgRevision.getRevisionId(), prevRevisionId, 0L));
 		
 		ce.setChangedValueSetDefinitionEntry(vsd);
 		lgRevision.addChangedEntry(ce);
@@ -549,8 +554,60 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 	@Override
 	public boolean removeValueSetProperty(URI valueSetURI, String propertyId,
 			RevisionInfo revision) throws LBException {
+		if (valueSetURI == null)
+			throw new LBException("ValueSetDefinitionURI can not be empty");
+		
+		if (StringUtils.isEmpty(propertyId))
+			throw new LBException("propertyId can not be empty");
+		
 		validateRevisionInfo(revision);
-		// TODO Auto-generated method stub
-		return false;
+		
+		Revision lgRevision = getLexGridRevisionObject(revision);
+		ChangedEntry ce = new ChangedEntry();
+		
+		ValueSetDefinition vsd = vsdServ_.getValueSetDefinitionByUri(valueSetURI);
+		
+		if (vsd == null)
+			throw new LBException("No Value Set Definition found with URI : " + valueSetURI.toString());
+		
+		if (vsd.getProperties() == null)
+			throw new LBException("No property found with id : " + propertyId);
+		
+		Property currentProperty = null;
+		
+		for (Property prop : vsd.getProperties().getPropertyAsReference())
+		{
+			if (prop.getPropertyId().equalsIgnoreCase(propertyId))
+				currentProperty = prop;
+		}
+		
+		if (currentProperty == null)
+			throw new LBException("No property found with id : " + propertyId);
+		
+		vsd.removeAllDefinitionEntry();
+		vsd.removeAllRepresentsRealmOrContext();
+		vsd.removeAllSource();
+		
+		// remove all other properties but the one that needs to be removed
+		vsd.setProperties(null);		
+		Properties props = new Properties();
+		props.addProperty(currentProperty);
+		vsd.setProperties(props);
+		
+		// setup entry state for vsd
+		String prevRevisionId = vsd.getEntryState() != null?vsd.getEntryState().getContainingRevision():null;
+		vsd.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
+				lgRevision.getRevisionId(), prevRevisionId, 0L));
+		
+		// setup entry state for property to be removed
+		String propPrevRevId = currentProperty.getEntryState() != null?currentProperty.getEntryState().getContainingRevision():null;
+		currentProperty.setEntryState(populateEntryState(ChangeType.REMOVE, 
+				lgRevision.getRevisionId(), propPrevRevId, 0L));
+		
+		ce.setChangedValueSetDefinitionEntry(vsd);
+		lgRevision.addChangedEntry(ce);
+		
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
+		return true;
 	}
 }
