@@ -239,12 +239,14 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         newEntryState);
         //TODO Recalculate concept count? revisedScheme.setApproxNumConcepts(new Long(entities.getEntityCount()));
         revisedScheme.setEntities(entities);
-     
+        String sourceSchemeName = getCodingSchemeNameForMininumReference(sourceCodingScheme);
+        String targetSchemeName = getCodingSchemeNameForMininumReference(targetCodingScheme);
+        
         //Set up the supported entities necessary for this coding scheme.
         revisedScheme.setMappings(processMappingsForExistingCodingScheme(revisedScheme,
-            sourceCodingScheme.getCodingSchemeURN(), 
+                sourceSchemeName, 
             sourceCodingScheme.getCodingSchemeVersion(), 
-            targetCodingScheme.getCodingSchemeURN(),
+            targetSchemeName,
             targetCodingScheme.getCodingSchemeVersion(),
             associationType, relationsContainerName));
         
@@ -438,10 +440,11 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         //Source.
         EntryState newEntry = new EntryState();
         newEntry.setContainingRevision(entryState.getContainingRevision());
-        newEntry.setPrevRevision(entryState.getPrevRevision());
+        //newEntry.setPrevRevision(entryState.getPrevRevision());
         newEntry.setRelativeOrder(entryState.getRelativeOrder());
         newEntry.setChangeType(ChangeType.NEW);
-        mapTargetsToSource(newEntry, revisedScheme, source, sourceCodeSystemIdentifier, targetList);
+        mapTargetsToSource(newEntry, scheme, source, sourceCodeSystemIdentifier, 
+                relationsContainerName,associationName, targetList);
         predicate.addSource(source);
         revisedRelations.addAssociationPredicate(predicate);
         revisedScheme.addRelations(revisedRelations);
@@ -456,6 +459,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
     
     //Nothing persisted here.  Must be created with a source --
     //Used as a method for creating targets when creating the source.
+    //TODO provide all values for populating the association target.
     @Override
     public AssociationTarget createAssociationTarget(
             EntryState entryState,
@@ -558,6 +562,8 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
             CodingScheme scheme, 
             AssociationSource source,
             AbsoluteCodingSchemeVersionReference codingSchemeIdentifier,
+            String relationsContainerName, 
+            String associationName, 
             AssociationTarget[] associationTargets)
             throws LBException {
         //This should be the new element(s) we'll mark them as "NEW" revisions and add them to the
@@ -569,8 +575,23 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
             Entity targetEntity = getEntity(at.getTargetEntityCode(), scheme.getCodingSchemeURI(), scheme
                     .getRepresentsVersion());
             if(targetEntity != null){
+                if(!doesAssociationExist(scheme, relationsContainerName, associationName, 
+                        source.getSourceEntityCode(), source.getSourceEntityCodeNamespace(), 
+                        at.getTargetEntityCode(), at.getTargetEntityCodeNamespace())){
             at.setEntryState(entryState);
-            source.addTarget(at);
+            source.addTarget(at);}
+                else{
+                   throw new LBException("Association with source code " +
+                   		source.getSourceEntityCode() +
+                   		" and source namespace " +
+                   		source.getSourceEntityCodeNamespace() +
+                   		" and target code " +
+                   		at.getTargetEntityCode() +
+                   		" and target namespace " +
+                   		at.getTargetEntityCodeNamespace()
+                   		+ " already exists in scheme " +
+                   			scheme.getCodingSchemeName());
+                }
             }
             
         }
@@ -705,12 +726,12 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
        EntryState es = new EntryState();
        if(entryState.getChangeType()!= null)
        {es.setChangeType(entryState.getChangeType());}
-       else if (changeType != null){
+       if (changeType != null){
           es.setChangeType(changeType);
        }
        if(entryState.getContainingRevision()!= null)
        es.setContainingRevision(entryState.getContainingRevision());
-       if(entryState.getPrevRevision()!= null)
+       if(entryState.getPrevRevision()!= null && changeType != ChangeType.NEW)
        es.setPrevRevision(entryState.getPrevRevision());
        if(entryState.getRelativeOrder()!= null)
        es.setRelativeOrder(entryState.getRelativeOrder());
