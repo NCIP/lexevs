@@ -598,6 +598,44 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         return source;
     }
     
+    @Override
+    public String createAssociationPredicate(Revision revision, EntryState entryState,
+            AbsoluteCodingSchemeVersionReference scheme, String relationsContainerName, String associationName)
+            throws LBException {
+        
+        CodingScheme newScheme = null;
+        CodingScheme baseScheme = null;
+        baseScheme = getCodingSchemeMetaData(scheme);
+        
+       entryState.setPrevRevision(baseScheme.getEntryState().getContainingRevision());
+        EntryState modifiedState = cloneEntryState(entryState, ChangeType.MODIFY);
+        EntryState dependentState = cloneEntryState(entryState, ChangeType.DEPENDENT);
+        EntryState newState = cloneEntryState(entryState, ChangeType.NEW);
+        
+        //method will check for existence of scheme.
+   
+        
+        
+        newScheme = createMinimalSchemeForRevision(baseScheme, relationsContainerName, associationName, null, null);
+        newScheme.setEntryState(dependentState);
+        
+        Relations relationsExist = getRelations(baseScheme, relationsContainerName);
+        if (relationsExist == null) {
+            //New container was required. Entry state is "NEW"
+            newScheme.getRelations(0).setEntryState(newState);
+        } else {
+            //Existing relations container. Entry state is "MODIFY"
+            newScheme.getRelations(0).setEntryState(modifiedState);
+        }
+        ChangedEntry entry = new ChangedEntry();
+        entry.setChangedCodingSchemeEntry(newScheme);
+        ChangedEntry[] changes = new ChangedEntry[] { entry };
+
+        revision.setChangedEntry(changes);
+        service.loadRevision(revision, null);
+        return associationName;
+    }
+
     protected AssociationPredicate getAssociationPredicate(Relations relation, String associationName) throws LBException {
         AssociationPredicate[] predicates = relation.getAssociationPredicate();
         for (AssociationPredicate p : predicates) {
@@ -1412,6 +1450,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
 //        }
 //               
     }
+
 
 
 
