@@ -31,6 +31,7 @@ public class RevisionInfo {
 	private Long editOrder;
 	private Date revisionDate;
 	private String description;
+	private String systemReleaseURI;
 	
 	/**
 	 * @return the revisionId
@@ -103,5 +104,17 @@ public class RevisionInfo {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	/**
+	 * @return the systemReleaseURI
+	 */
+	public String getSystemReleaseURI() {
+		return systemReleaseURI;
+	}
+	/**
+	 * @param systemReleaseURI the systemReleaseURI to set
+	 */
+	public void setSystemReleaseURI(String systemReleaseURI) {
+		this.systemReleaseURI = systemReleaseURI;
 	}
 }

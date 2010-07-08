@@ -30,8 +30,25 @@ import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.cts2.core.update.RevisionInfo;
 
 public interface ValueSetAuthoringOperation {
+	
+	/**
+	 * Create a new value set definition.
+	 * 
+	 * @param valueSetURI URI of value set definition 
+	 * @param valueSetName Name of value set definition
+	 * @param defaultCodeSystem local name of default code system
+	 * @param conceptDomainId local name of concept domain
+	 * @param sourceList list of source
+	 * @param usageContextList list of usage context
+	 * @param properties collection of properties
+	 * @param ruleSetList list of definition entries (rule sets)
+	 * @param versionable versionable entries (status, isActive, effective date etc)
+	 * @param revision revision information
+	 * @return value set definition URI
+	 * @throws LBException
+	 */
 	public URI createValueSet(URI valueSetURI, String valueSetName, String defaultCodeSystem, String conceptDomainId, 
-			List<Source> sourceList, List<String> usageContext, Properties properties, List<DefinitionEntry> ruleSetList,
+			List<Source> sourceList, List<String> usageContextList, Properties properties, List<DefinitionEntry> ruleSetList,
 			Versionable versionable, RevisionInfo revision) throws LBException;
 	
 	public URI createValueSet(ValueSetDefinition valueSetDefininition, RevisionInfo revision) throws LBException;
@@ -51,4 +68,10 @@ public interface ValueSetAuthoringOperation {
 	public boolean updateDefinitionEntry(URI valueSetURI, DefinitionEntry changedDefinitionEntry, RevisionInfo revision) throws LBException;
 	
 	public boolean updateValueSetStatus(URI valueSetURI, String status, RevisionInfo revision) throws LBException;
+	
+	public boolean removeValueSet(URI valueSetURI, RevisionInfo revision) throws LBException;
+	
+	public boolean removeDefinitionEntry(URI valueSetURI, Long ruleOrder, RevisionInfo revision) throws LBException;
+	
+	public boolean removeValueSetProperty(URI valueSetURI, String propertyId, RevisionInfo revision) throws LBException;
 }

@@ -10,9 +10,6 @@ import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
-import org.LexGrid.commonTypes.EntityDescription;
-import org.LexGrid.versions.Revision;
-import org.lexevs.cts2.core.update.RevisionInfo;
 
 
 public abstract class BaseService {
@@ -106,22 +103,6 @@ public abstract class BaseService {
 			lbs_ = LexBIGServiceImpl.defaultInstance();
 		
 		return lbs_;
-	}
+	}   
     
-    public Revision getLexGridRevisionObject(RevisionInfo revisionInfo)
-	{
-		Revision lgRevision = new Revision();
-		lgRevision.setChangeAgent(revisionInfo.getChangeAgent());
-		lgRevision.setEditOrder(revisionInfo.getEditOrder());
-		if (revisionInfo.getDescription() != null)
-		{
-			EntityDescription ed= new EntityDescription();
-			ed.setContent(revisionInfo.getDescription());
-			lgRevision.setEntityDescription(ed);
-		}
-		lgRevision.setRevisionDate(revisionInfo.getRevisionDate());
-		lgRevision.setRevisionId(revisionInfo.getRevisionId());
-		
-		return lgRevision;
-	}
 }

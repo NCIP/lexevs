@@ -16,14 +16,13 @@ import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
+import org.LexGrid.commonTypes.Versionable;
 import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.valueSets.CodingSchemeReference;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitionReference;
 import org.LexGrid.valueSets.types.DefinitionOperator;
-import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.core.update.RevisionInfo;
@@ -65,7 +64,7 @@ public class ValueSetAuthoringOperationImplTest {
 	@Test
 	public void testAddDefinitionEntry2() throws LBException, URISyntaxException {
 		RevisionInfo revInfo = new RevisionInfo();
-		revInfo.setRevisionId("R007");
+		revInfo.setRevisionId("R008");
 		revInfo.setChangeAgent("testChangeAgent");
 		revInfo.setChangeInstruction("Adding new definition entry");
 		revInfo.setEditOrder(0L);
@@ -74,7 +73,7 @@ public class ValueSetAuthoringOperationImplTest {
 		
 		DefinitionEntry newDefEntry = new DefinitionEntry();
 		newDefEntry.setOperator(DefinitionOperator.OR);
-		newDefEntry.setRuleOrder(0L);
+		newDefEntry.setRuleOrder(2L);
 		
 		ValueSetDefinitionReference vsdRef = new ValueSetDefinitionReference();
 		vsdRef.setValueSetDefinitionURI("somevaluesetref");
@@ -193,7 +192,7 @@ public class ValueSetAuthoringOperationImplTest {
 	@Test
 	public void testUpdateValueSetMetaData() throws LBException, URISyntaxException {
 		RevisionInfo revInfo = new RevisionInfo();
-		revInfo.setRevisionId("R201");
+		revInfo.setRevisionId("R202");
 		revInfo.setChangeAgent("testUpdateChangeAgent");
 		revInfo.setChangeInstruction("testUpdateChangeInstruction");
 		revInfo.setEditOrder(0L);
@@ -213,9 +212,9 @@ public class ValueSetAuthoringOperationImplTest {
 		contextList.add("lexevs as context");
 		
 		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
-		boolean success = valueSetAuthOp.updateValueSetMetaData(new URI("VSD:AUTHORING:JUNIT:TEST2"), 
-				"Authoring create vsd junit test2 updated",
-				"Automobiles updated", "Autos updated", srcList, contextList, 
+		boolean success = valueSetAuthOp.updateValueSetMetaData(new URI("VSD:AUTHORING:JUNIT:TEST1"), 
+				"Authoring create vsd junit test1 updated",
+				"Automobiles updated 1", "Autos updated 1", srcList, contextList, 
 				revInfo);
 		System.out.println("success : " + success);
 	}
@@ -229,11 +228,27 @@ public class ValueSetAuthoringOperationImplTest {
 	}
 
 	/**
-	 * Test method for {@link org.lexevs.cts2.author.ValueSetAuthoringOperationImpl#updateValueSetStatus(java.net.URI, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo, org.LexGrid.versions.EntryState)}.
+	 * Test method for {@link org.lexevs.cts2.author.ValueSetAuthoringOperationImpl#updateValueSetStatus(java.net.URI, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo, org.LexGrid.versions.EntryState)}.	 
 	 */
 	@Test
 	public void testUpdateValueSetStatus() {
-		fail("Not yet implemented"); // TODO
+		RevisionInfo revInfo = new RevisionInfo();
+		revInfo.setRevisionId("R205");
+		revInfo.setChangeAgent("testUpdateStatusChangeAgent");
+		revInfo.setChangeInstruction("testUpdateStautsChangeInstruction");
+		revInfo.setEditOrder(0L);
+		revInfo.setDescription("testUpdateStatusDescription");
+		revInfo.setRevisionDate(new Date());
+		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
+		try {
+			valueSetAuthOp.updateValueSetStatus(new URI("VSD:AUTHORING:JUNIT:TEST2"), "new status 2", revInfo);
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -241,7 +256,70 @@ public class ValueSetAuthoringOperationImplTest {
 	 */
 	@Test
 	public void testUpdateValueSetVersionable() {
-		fail("Not yet implemented"); // TODO
+		RevisionInfo revInfo = new RevisionInfo();
+		revInfo.setRevisionId("R206");
+		revInfo.setChangeAgent("testUpdateStatusChangeAgent");
+		revInfo.setChangeInstruction("testUpdateStautsChangeInstruction");
+		revInfo.setEditOrder(0L);
+		revInfo.setDescription("testUpdateStatusDescription");
+		revInfo.setRevisionDate(new Date());
+		
+		Versionable ver = new Versionable();
+		ver.setIsActive(true);
+		ver.setOwner("new owner");
+		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
+		try {
+			valueSetAuthOp.updateValueSetVersionable(new URI("VSD:AUTHORING:JUNIT:TEST2"), ver, revInfo);
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-
+	
+	@Test
+	public void testRemoveDefinitionEntry(){
+		RevisionInfo revInfo = new RevisionInfo();
+		revInfo.setRevisionId("R210");
+		revInfo.setChangeAgent("testDeleteDEChangeAgent");
+		revInfo.setChangeInstruction("testDeleteDEChangeInstruction");
+		revInfo.setEditOrder(0L);
+		revInfo.setDescription("testDeleteDEDescription");
+		revInfo.setRevisionDate(new Date());
+		
+		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
+		try {
+			valueSetAuthOp.removeDefinitionEntry(new URI("VSD:AUTHOR:JUNIT:TEST1"), 2L, revInfo);
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testRemoveValueSet(){
+		RevisionInfo revInfo = new RevisionInfo();
+		revInfo.setRevisionId("R212");
+		revInfo.setChangeAgent("testDeleteVSDChangeAgent");
+		revInfo.setChangeInstruction("testDeleteVSDChangeInstruction");
+		revInfo.setEditOrder(0L);
+		revInfo.setDescription("testDeleteVSDDescription");
+		revInfo.setRevisionDate(new Date());
+		
+		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
+		try {
+			valueSetAuthOp.removeValueSet(new URI("VSD:AUTHORING:JUNIT:TEST2"), revInfo);
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

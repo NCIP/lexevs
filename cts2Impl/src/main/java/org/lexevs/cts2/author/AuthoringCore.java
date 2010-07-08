@@ -4,9 +4,11 @@ import java.net.URI;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cts2.BaseService;
+import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.core.update.SystemReleaseInfo;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -66,5 +68,32 @@ public class AuthoringCore extends BaseService{
 			sr.setEntityDescription(ed);
 		}
 		return sr;
+	}
+	
+	public boolean validateRevisionInfo(RevisionInfo revisionInfo) throws LBException{
+		if (revisionInfo == null)
+			throw new LBException("Revision information can not be empty");
+		
+		if (revisionInfo.getRevisionId() == null)
+			throw new LBException("Revision ID can not be empty");
+		
+		return true;
+	}
+	
+	public Revision getLexGridRevisionObject(RevisionInfo revisionInfo)
+	{
+		Revision lgRevision = new Revision();
+		lgRevision.setChangeAgent(revisionInfo.getChangeAgent());
+		lgRevision.setEditOrder(revisionInfo.getEditOrder());
+		if (revisionInfo.getDescription() != null)
+		{
+			EntityDescription ed= new EntityDescription();
+			ed.setContent(revisionInfo.getDescription());
+			lgRevision.setEntityDescription(ed);
+		}
+		lgRevision.setRevisionDate(revisionInfo.getRevisionDate());
+		lgRevision.setRevisionId(revisionInfo.getRevisionId());
+		
+		return lgRevision;
 	}
 }

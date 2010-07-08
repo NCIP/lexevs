@@ -48,11 +48,10 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 	@Override
 	public boolean addDefinitionEntry(URI valueSetURI,
 			DefinitionEntry newDefinitionEntry, RevisionInfo revision) throws LBException {
-		if (revision == null)
-			throw new LBException("Revision information can not be empty");
+		validateRevisionInfo(revision);
 		
-		if (revision.getRevisionId() == null)
-			throw new LBException("Revision ID can not be empty");
+		if (newDefinitionEntry == null)
+			throw new LBException("New Definition Entry can not be empty");
 		
 		ValueSetDefinition vsd = vsdServ_.getValueSetDefinitionByUri(valueSetURI);
 		
@@ -93,7 +92,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		
 		lgRevision.addChangedEntry(ce);
 		
-		authServ_.loadRevision(lgRevision, null);
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
 		
 		return true;
 	}
@@ -110,10 +109,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 			throw new LBException("Value Set Definition URI can not be empty");
 		if (newProperty == null)
 			throw new LBException("New property can not be empty");
-		if (revision == null)
-			throw new LBException("Revision information can not be empty");
-		if (revision.getRevisionId() == null)
-			throw new LBException("Revision ID can not be empty");
+		validateRevisionInfo(revision);
 		
 		Revision lgRevision = getLexGridRevisionObject(revision);
 		ChangedEntry ce = new ChangedEntry();
@@ -152,7 +148,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		ce.setChangedValueSetDefinitionEntry(vsd);
 		lgRevision.addChangedEntry(ce);
 		
-		authServ_.loadRevision(lgRevision, null);
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
 		return true;
 	}
 
@@ -168,10 +164,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 			Versionable versionable, RevisionInfo revision) throws LBException {
 		if (valueSetURI == null)
 			throw new LBException("Value Set Definition URI can not be empty");
-		if (revision == null)
-			throw new LBException("Revision information can not be empty");
-		if (revision.getRevisionId() == null)
-			throw new LBException("Revision ID can not be empty");
+		validateRevisionInfo(revision);
 		
 		ValueSetDefinition vsd = new ValueSetDefinition();
 		vsd.setValueSetDefinitionURI(valueSetURI.toString());
@@ -208,11 +201,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		if (valueSetDefininition == null)
 			throw new LBException("ValueSetDefinition object can not be empty");
 		
-		if (revision == null)
-			throw new LBException("Revision information can not be empty");
-		
-		if (revision.getRevisionId() == null)
-			throw new LBException("Revision ID can not be empty");
+		validateRevisionInfo(revision);
 		
 		Revision lgRevision = getLexGridRevisionObject(revision);
 		// setup entry state for new vsd
@@ -227,7 +216,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		ce.setChangedValueSetDefinitionEntry(valueSetDefininition);
 		lgRevision.addChangedEntry(ce);
 		
-		authServ_.loadRevision(lgRevision, null);
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
 		URI vsdURI = null;
 		try {
 			vsdURI = new URI(valueSetDefininition.getValueSetDefinitionURI());
@@ -252,11 +241,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		if (changedDefinitionEntry.getRuleOrder() == null)
 			throw new LBException("changedDefinitionEntry RuleOrder can not be empty. It is unique id to identify definition entry.");
 		
-		if (revision == null)
-			throw new LBException("Revision information can not be empty");
-		
-		if (revision.getRevisionId() == null)
-			throw new LBException("Revision ID can not be empty");
+		validateRevisionInfo(revision);
 		
 		Revision lgRevision = getLexGridRevisionObject(revision);
 		ChangedEntry ce = new ChangedEntry();
@@ -275,7 +260,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		}
 		
 		if (currentDefEntry == null)
-			throw new LBException("No Definition Entry found with Rule Order : " + valueSetURI.toString());
+			throw new LBException("No Definition Entry found with Rule Order : " + changedDefinitionEntry.getRuleOrder());
 		
 		String prevRevisionId = vsd.getEntryState() != null?vsd.getEntryState().getContainingRevision():null;
 		vsd.removeAllDefinitionEntry();
@@ -304,7 +289,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		ce.setChangedValueSetDefinitionEntry(vsd);
 		lgRevision.addChangedEntry(ce);
 		
-		authServ_.loadRevision(lgRevision, null);
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
 		return true;
 	}
 
@@ -320,11 +305,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		if (valueSetURI == null)
 			throw new LBException("ValueSetDefinitionURI can not be empty");
 		
-		if (revision == null)
-			throw new LBException("Revision information can not be empty");
-		
-		if (revision.getRevisionId() == null)
-			throw new LBException("Revision ID can not be empty");
+		validateRevisionInfo(revision);
 		
 		ValueSetDefinition vsd = vsdServ_.getValueSetDefinitionByUri(valueSetURI);
 		if (vsd == null)
@@ -363,7 +344,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		ce.setChangedValueSetDefinitionEntry(vsd);
 		lgRevision.addChangedEntry(ce);
 		
-		authServ_.loadRevision(lgRevision, null);
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
 		return true;
 	}
 
@@ -373,6 +354,9 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 	@Override
 	public boolean updateValueSetProperty(URI valueSetURI,
 			Property changedProperty, RevisionInfo revision) throws LBException {
+		
+		validateRevisionInfo(revision);
+		
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -388,8 +372,8 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 			throw new LBException("ValueSetDefinitionURI can not be empty");
 		if (status == null)
 			throw new LBException("Status can not be empty");
-		if (revision == null)
-			throw new LBException("Revision information can not be empty");
+		
+		validateRevisionInfo(revision);
 		
 		Versionable ver = new Versionable();
 		ver.setStatus(status);
@@ -407,11 +391,10 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		if (valueSetURI == null)
 			throw new LBException("ValueSetDefinitionURI can not be empty");
 		
-		if (revision == null)
-			throw new LBException("Revision information can not be empty");
-		
 		if (changedVersionable == null)
 			throw new LBException("Changed Versionable information can not be empty");
+		
+		validateRevisionInfo(revision);
 		
 		ValueSetDefinition vsd = vsdServ_.getValueSetDefinitionByUri(valueSetURI);
 		if (vsd == null)
@@ -462,7 +445,112 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		ce.setChangedValueSetDefinitionEntry(vsd);
 		lgRevision.addChangedEntry(ce);
 		
-		authServ_.loadRevision(lgRevision, null);
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
 		return true;
+	}
+
+	@Override
+	public boolean removeDefinitionEntry(URI valueSetURI, Long ruleOrder,
+			RevisionInfo revision) throws LBException {
+		if (valueSetURI == null)
+			throw new LBException("ValueSetDefinitionURI can not be empty");
+		
+		if (ruleOrder == null)
+			throw new LBException("ruleOrder can not be empty");
+		
+		validateRevisionInfo(revision);
+		
+		Revision lgRevision = getLexGridRevisionObject(revision);
+		ChangedEntry ce = new ChangedEntry();
+		
+		ValueSetDefinition vsd = vsdServ_.getValueSetDefinitionByUri(valueSetURI);
+		
+		if (vsd == null)
+			throw new LBException("No Value Set Definition found with URI : " + valueSetURI.toString());
+		
+		DefinitionEntry currentDefEntry = null;
+		
+		for (DefinitionEntry de : vsd.getDefinitionEntryAsReference())
+		{
+			if (de.getRuleOrder().equals(ruleOrder))
+				currentDefEntry = de;
+		}
+		
+		if (currentDefEntry == null)
+			throw new LBException("No Definition Entry found with Rule Order : " + ruleOrder);
+		
+		String prevRevisionId = vsd.getEntryState() != null?vsd.getEntryState().getContainingRevision():null;
+		vsd.removeAllDefinitionEntry();
+		vsd.removeAllRepresentsRealmOrContext();
+		vsd.removeAllSource();
+		
+		// setup entry state for vsd
+		EntryState entryState = new EntryState();
+		entryState.setChangeType(ChangeType.DEPENDENT);
+		entryState.setContainingRevision(lgRevision.getRevisionId());
+		entryState.setPrevRevision(prevRevisionId);
+		entryState.setRelativeOrder(0L);
+		vsd.setEntryState(entryState);
+		
+		// setup entry state for update definition entry
+		String defEntryPrevRevId = currentDefEntry.getEntryState() != null?currentDefEntry.getEntryState().getContainingRevision():null;
+		entryState = new EntryState();
+		entryState.setChangeType(ChangeType.REMOVE);
+		entryState.setContainingRevision(lgRevision.getRevisionId());
+		entryState.setPrevRevision(defEntryPrevRevId);
+		entryState.setRelativeOrder(0L);
+		currentDefEntry.setEntryState(entryState);
+		
+		vsd.addDefinitionEntry(currentDefEntry);
+		
+		ce.setChangedValueSetDefinitionEntry(vsd);
+		lgRevision.addChangedEntry(ce);
+		
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
+		return true;
+	}
+
+	@Override
+	public boolean removeValueSet(URI valueSetURI, RevisionInfo revision)
+			throws LBException {
+		if (valueSetURI == null)
+			throw new LBException("ValueSetDefinitionURI can not be empty");
+		
+		validateRevisionInfo(revision);
+		
+		Revision lgRevision = getLexGridRevisionObject(revision);
+		ChangedEntry ce = new ChangedEntry();
+		
+		ValueSetDefinition vsd = vsdServ_.getValueSetDefinitionByUri(valueSetURI);
+		
+		if (vsd == null)
+			throw new LBException("No Value Set Definition found with URI : " + valueSetURI.toString());
+		
+		String prevRevisionId = vsd.getEntryState() != null?vsd.getEntryState().getContainingRevision():null;
+		vsd.removeAllDefinitionEntry();
+		vsd.removeAllRepresentsRealmOrContext();
+		vsd.removeAllSource();
+		
+		// setup entry state for vsd
+		EntryState entryState = new EntryState();
+		entryState.setChangeType(ChangeType.REMOVE);
+		entryState.setContainingRevision(lgRevision.getRevisionId());
+		entryState.setPrevRevision(prevRevisionId);
+		entryState.setRelativeOrder(0L);
+		vsd.setEntryState(entryState);
+		
+		ce.setChangedValueSetDefinitionEntry(vsd);
+		lgRevision.addChangedEntry(ce);
+		
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
+		return true;
+	}
+
+	@Override
+	public boolean removeValueSetProperty(URI valueSetURI, String propertyId,
+			RevisionInfo revision) throws LBException {
+		validateRevisionInfo(revision);
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
