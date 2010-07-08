@@ -113,6 +113,10 @@ public interface LexEVSAuthoringService {
             String relationsContainerName, 
             String associationName, 
             AssociationTarget[] associationTargets)throws LBException;
-	
+	public String createAssociationPredicate(Revision revision, 
+			EntryState entryState, 
+			AbsoluteCodingSchemeVersionReference scheme,
+			String relationsContainerName,
+			String associationName)throws LBException;
 
 }
