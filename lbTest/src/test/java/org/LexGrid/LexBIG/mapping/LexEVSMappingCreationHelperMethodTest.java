@@ -60,11 +60,11 @@ public class LexEVSMappingCreationHelperMethodTest extends TestCase {
 	public void testAssociationExistance(){
 		assertTrue(authoring.doesAssociationExist(scheme, 
                 "relations", 
-                "uses",
-                "Ford",
+                "hasSubtype",
+                "005",
                 "Automobiles",
-                "R0001",
-                "GermanMadeParts"));
+                "GM",
+                "Automobiles"));
 		assertFalse(authoring.doesAssociationExist(scheme, 
                 "relations", 
                 "uses",
@@ -76,7 +76,7 @@ public class LexEVSMappingCreationHelperMethodTest extends TestCase {
                 "relations", 
                 "uses",
                 "Ford",
-                "GermanMadeParts",
+                "GermanMadePartsNamespace",
                 "R0001",
                 "Automobiles"));
 		assertFalse(authoring.doesAssociationExist(scheme, 
@@ -85,14 +85,14 @@ public class LexEVSMappingCreationHelperMethodTest extends TestCase {
                 "005",
                 "Automobiles",
                 "R0001",
-                "GermanMadeParts"));
+                "GermanMadePartsNamespace"));
 		assertTrue(authoring.doesAssociationExist(scheme, 
                 "relations", 
                 "uses",
                 "Ford",
                 "Automobiles",
                 "R0001",
-                "GermanMadeParts"));
+                "GermanMadePartsNamespace"));
 	}
 	
 	public void testEntryStateClone(){
