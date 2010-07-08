@@ -24,6 +24,7 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.concepts.Entities;
@@ -82,6 +83,7 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 		List<Property> properties = 
 			propertyService.resolvePropertiesOfCodingSchemeByRevision(uri, version, entry.getEntryState().getContainingRevision());
 		
+		entry.setProperties(new Properties());
 		entry.getProperties().setProperty(properties);
 		
 		return entry;	
