@@ -422,10 +422,14 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 				String adjustedRevisionId = 
 					versionsDao.getPreviousRevisionIdFromGivenRevisionIdForEntry(codingSchemeUId, entryUid, revisionId);
 				
-				entry = this.getHistoryEntryByRevisionId(
-						id, 
-						entryUid, 
-						adjustedRevisionId);
+				if(StringUtils.equals(adjustedRevisionId, entryLatestRevisionId)) {
+					entry = this.getCurrentEntry(id, entryUid);
+				} else {
+					entry = this.getHistoryEntryByRevisionId(
+							id, 
+							entryUid, 
+							adjustedRevisionId);
+				}
 				
 				if(entry != null) {
 					entry.setEntryState(versionsDao.
