@@ -4,6 +4,7 @@ import java.net.URI;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.commonTypes.Text;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 import org.apache.commons.lang.StringUtils;
@@ -90,6 +91,12 @@ public class AuthoringCore extends BaseService{
 			EntityDescription ed= new EntityDescription();
 			ed.setContent(revisionInfo.getDescription());
 			lgRevision.setEntityDescription(ed);
+		}
+		if (StringUtils.isNotEmpty(revisionInfo.getChangeInstruction()))
+		{
+			Text text = new Text();
+			text.setContent(revisionInfo.getChangeInstruction());
+			lgRevision.setChangeInstructions(text);
 		}
 		lgRevision.setRevisionDate(revisionInfo.getRevisionDate());
 		lgRevision.setRevisionId(revisionInfo.getRevisionId());
