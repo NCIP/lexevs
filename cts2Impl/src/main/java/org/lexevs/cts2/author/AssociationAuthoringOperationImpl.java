@@ -58,12 +58,12 @@ public class AssociationAuthoringOperationImpl implements
 					associationType);
 		}
 		if (createMappingScheme == false && mappingScheme != null){
-			CodingScheme scheme = authoring.getCodingSchemeMetaData(mappingScheme);
+			CodingScheme sourceScheme = authoring.getCodingSchemeMetaData(sourceCodeSystemIdentifier);
 			AssociationTarget target = authoring.createAssociationTarget(
 					entryState, targetCodeSystemIdentifier,
 					targetConceptCodeIdentifier);
-			String namespace = authoring.getCodingSchemeNamespace(scheme,
-					mappingScheme.getCodingSchemeURN());
+			String namespace = authoring.getCodingSchemeNamespace(sourceScheme,
+					sourceScheme.getCodingSchemeURI());
 			source = new AssociationSource();
 			source.setSourceEntityCode(sourceConceptCodeIdentifier);
 			source.setSourceEntityCodeNamespace(namespace);
@@ -82,10 +82,7 @@ public class AssociationAuthoringOperationImpl implements
 			AssociationTarget[] targets = new AssociationTarget[] { target };
 			source = authoring.createAssociationSource(revision, entryState,
 					sourceCodeSystemIdentifier, sourceConceptCodeIdentifier,
-					associationType, associationType, targets);
-		}
-		if (createMappingScheme == false && mappingScheme != null){
-			throw new LBException("You cannot provide a reference mapping scheme if you are creating a new mapping scheme");
+					relationsContainerName, associationType, targets);
 		}
 		return source;
 	}
