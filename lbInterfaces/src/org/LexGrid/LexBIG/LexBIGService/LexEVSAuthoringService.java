@@ -106,11 +106,13 @@ public interface LexEVSAuthoringService {
 			 String prevRevisionId );
 	
 	public AssociationSource mapTargetsToSource(
-			EntryState entryState,
-			CodingScheme scheme, 
-	        AssociationSource source,
-	        AbsoluteCodingSchemeVersionReference codingSchemeIdentifier,
-	        AssociationTarget[] associationTargets)throws LBException;
+            EntryState entryState,
+            CodingScheme scheme, 
+            AssociationSource source,
+            AbsoluteCodingSchemeVersionReference codingSchemeIdentifier,
+            String relationsContainerName, 
+            String associationName, 
+            AssociationTarget[] associationTargets)throws LBException;
 	
 
 }
