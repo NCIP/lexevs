@@ -18,11 +18,18 @@
 package org.lexevs.cts2.author;
 
 import java.net.URI;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.Text;
+import org.LexGrid.concepts.Entities;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.relations.Relations;
+import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 
 public interface CodeSystemAuthoringOperation {
@@ -33,9 +40,12 @@ public interface CodeSystemAuthoringOperation {
 	 * @return
 	 * @throws LBException
 	 */
-	public CodingScheme createCodeSystem(AbsoluteCodingSchemeVersionReference csURIAndVersion, Properties codeSystemProperties) throws LBException;
+	public CodingScheme createCodeSystem(Revision revision, String codingSchemeName, String codingSchemeURI, String formalName,
+            String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
+            List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
+            List<Relations>  relationsList, EntryState entryState) throws LBException;
 	
-	public int commitCodeSystem(CodingScheme codeSystem, URI metaMata, Boolean stopOnErrors, Boolean async) throws LBException;
+	public int commitCodeSystem(CodingScheme codeSystem, Revision revision, EntryState entryState) throws LBException;
 	
 	public Revision createCodeSystemChangeSet(String agent, String changeInstruction);
 	
