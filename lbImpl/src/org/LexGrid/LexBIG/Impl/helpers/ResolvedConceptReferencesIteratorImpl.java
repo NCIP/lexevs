@@ -453,6 +453,7 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
         List<CodeToReturn> returnList = new ArrayList<CodeToReturn>();
         for(int i=start;i<end;i++){
             returnList.add(codesToReturn_.getAllCodes().get(i));
+            codesToReturn_.getAllCodes().set(i, null);
         }
         return returnList;
     }
