@@ -168,6 +168,8 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 
 	private static String GET_CODING_SCHEME_LATEST_REVISION_ID_BY_UID = CODING_SCHEME_NAMESPACE + "getCodingSchemeLatestRevisionIdByUId";
 	
+	private static String GET_CODING_SCHEME_REVISION_ID_WHEN_NEW_BY_UID = CODING_SCHEME_NAMESPACE + "getCodingSchemeRevisionIdWhenNewByUId";
+	
 	private static String DELETE_ALL_CODINGSCHEME_SOURCE_BY_CSID_SQL = CODING_SCHEME_NAMESPACE + "deleteAllCodingSchemeSourceByCodingSchemeUId";
 	
 	private static String DELETE_ALL_CODINGSCHEME_LOCALNAMES_BY_CSID_SQL = CODING_SCHEME_NAMESPACE + "deleteAllCodingSchemeLocalNamesByCodingSchemeUId";
@@ -1119,6 +1121,16 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		
 		return (String) this.getSqlMapClientTemplate().queryForObject(
 				GET_CODING_SCHEME_LATEST_REVISION_ID_BY_UID, 
+				new PrefixedParameter(prefix, codingSchemeUId));
+	}
+	
+	@Override
+	public String getRevisionWhenNew(String codingSchemeUId) {
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		return (String) this.getSqlMapClientTemplate().queryForObject(
+				GET_CODING_SCHEME_REVISION_ID_WHEN_NEW_BY_UID, 
 				new PrefixedParameter(prefix, codingSchemeUId));
 	}
 

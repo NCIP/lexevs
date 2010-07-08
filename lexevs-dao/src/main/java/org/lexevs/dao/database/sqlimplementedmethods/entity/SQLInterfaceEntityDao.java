@@ -263,12 +263,4 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 			// TODO Auto-generated method stub (IMPLEMENT!)
 			throw new UnsupportedOperationException();
 		}
-
-		@Override
-		public Entity resolveEntityByRevision(String codingSchemeUId,
-				String entityCode, String entityCodeNamespace, String revisionId)
-				throws LBRevisionException {
-			// TODO Auto-generated method stub
-			return null;
-		}
 }

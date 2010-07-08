@@ -406,7 +406,7 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
 				"values ('esguid', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
 		
-		List<Property> props = ibatisPropertyDao.getAllHistoryPropertiesOfParentByRevisionId("csguid", "eguid", "rguid1", PropertyType.ENTITY);
+		List<String> props = ibatisPropertyDao.getAllHistoryPropertyUidsOfParentByRevisionId("csguid", "eguid", "rguid1");
 		
 		assertEquals(1, props.size());
 	}
@@ -442,11 +442,9 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
 				"values ('esguid', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
 		
-		List<Property> props = ibatisPropertyDao.getAllHistoryPropertiesOfParentByRevisionId("csguid", "eguid", "rguid1", PropertyType.ENTITY);
+		List<String> props = ibatisPropertyDao.getAllHistoryPropertyUidsOfParentByRevisionId("csguid", "eguid", "rguid1");
 		
 		assertEquals(1, props.size());
-		
-		assertEquals(1, props.get(0).getPropertyQualifierCount());
 	}
 	
 	@Transactional
@@ -495,21 +493,13 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
 				"values ('esguid2', 'eguid', 'entity', 'MODIFY', '0', 'rguid2')");
 
-		List<Property> props = ibatisPropertyDao.getAllHistoryPropertiesOfParentByRevisionId("csguid", "eguid", "rguid1", PropertyType.ENTITY);
+		List<String> props = ibatisPropertyDao.getAllHistoryPropertyUidsOfParentByRevisionId("csguid", "eguid", "rguid1");
 		
 		assertEquals(1, props.size());
-		
-		assertEquals(1, props.get(0).getPropertyQualifierCount());
-	
-		assertEquals("some_qual1", props.get(0).getPropertyQualifier(0).getValue().getContent());
-	
-		props = ibatisPropertyDao.getAllHistoryPropertiesOfParentByRevisionId("csguid", "eguid", "rguid2", PropertyType.ENTITY);
+
+		props = ibatisPropertyDao.getAllHistoryPropertyUidsOfParentByRevisionId("csguid", "eguid", "rguid2");
 		
 		assertEquals(1, props.size());
-		
-		assertEquals(1, props.get(0).getPropertyQualifierCount());
-	
-		assertEquals("some_qual2", props.get(0).getPropertyQualifier(0).getValue().getContent());
 
 	}
 	
@@ -548,11 +538,9 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
 				"values ('esguid2', 'pguid', 'property', 'MODIFY', '0', 'rguid2')");
 		
-		List<Property> props = ibatisPropertyDao.getAllHistoryPropertiesOfParentByRevisionId("csguid", "eguid", "rguid2", PropertyType.ENTITY);
+		List<String> props = ibatisPropertyDao.getAllHistoryPropertyUidsOfParentByRevisionId("csguid", "eguid", "rguid2");
 		
 		assertEquals(1, props.size());
-		
-		assertEquals(props.get(0).getValue().getContent(), "pvalue2");
 	}
 	
 	/**

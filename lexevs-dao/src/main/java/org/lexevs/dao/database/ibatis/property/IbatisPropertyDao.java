@@ -19,10 +19,8 @@
 package org.lexevs.dao.database.ibatis.property;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 
-import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
@@ -55,7 +53,6 @@ import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.batch.classify.Classifier;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
@@ -108,7 +105,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	
 	public static String GET_PROPERTIES_OF_PARENT_UIDS_SQL = PROPERTY_NAMESPACE +  "getPropertiesByParentUids";
 
-	public static String GET_ALL_PROPERTIES_OF_PARENT_BY_REVISION_SQL = PROPERTY_NAMESPACE + "getPropertiesByParentAndRevisionId";
+	public static String GET_ALL_HISTORY_PROPERTY_UIDS_OF_PARENT_SQL = PROPERTY_NAMESPACE + "getAllHistoryPropertyIdsByParentUId";
 	
 	/** The GE t_ propert y_ i d_ sql. */
 	public static String GET_PROPERTY_ID_SQL = PROPERTY_NAMESPACE + "getPropertyId";
@@ -133,10 +130,26 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	
 	private static String GET_PROPERTY_MULTIATTRIB_FROM_HISTORY_BY_ENTRYSTATEUID_SQL = PROPERTY_NAMESPACE + "getPropertyMultiAttribFromHistoryByEntryStateUId";
 	
+	private static String  GET_PROPERTY_BY_UID_SQL = PROPERTY_NAMESPACE + "getPropertyByUid";
+	
+	private static String GET_ENTRYSTATE_UID_BY_PROPERTY_UID_SQL = PROPERTY_NAMESPACE + "getEntryStateUIdByPropertyUId";
+	
+	private static String GET_PROPERY_BY_PROPERTY_UID_AND_REVISION_ID_SQL = PROPERTY_NAMESPACE + "getPropertyByUidAndRevisionId";
+
 	PropertyMultiAttributeClassifier propertyMultiAttributeClassifier = new PropertyMultiAttributeClassifier();
 	
 	/** The ibatis versions dao. */
 	private IbatisVersionsDao ibatisVersionsDao;
+	
+	@Override
+	public String getEntryStateUId(String codingSchemeUId, String propertyUId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUId);
+
+		return (String) this.getSqlMapClientTemplate().queryForObject(
+				GET_ENTRYSTATE_UID_BY_PROPERTY_UID_SQL,
+				new PrefixedParameter(prefix, propertyUId));
+	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#insertBatchProperties(java.lang.String, org.lexevs.dao.database.access.property.PropertyDao.PropertyType, java.util.List)
@@ -218,7 +231,6 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				this.getNonBatchTemplateInserter());	
 	}
 	
-	@Transactional
 	public String insertHistoryProperty(String codingSchemeUId,
 			String propertyUId, Property property) {
 		
@@ -243,6 +255,15 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						propertyTypes,
 						parentUids));
 	}
+	
+	public Property getPropertyByUid(
+			String codingSchemeId, 
+			String propertyUid) {
+		return (Property)this.getSqlMapClientTemplate().queryForObject(GET_PROPERTY_BY_UID_SQL, 
+				new PrefixedParameter(
+						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+						propertyUid));
+	}
 
 	@Override
 	public List<Property> getPropertiesOfParents(String codingSchemeId,
@@ -264,23 +285,41 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Property> getAllHistoryPropertiesOfParentByRevisionId(String codingSchemeId,
-			String parentId, String revisionId, PropertyType type) {
+	public List<String> getAllHistoryPropertyUidsOfParentByRevisionId(
+			String codingSchemeId,
+			String parentId, 
+			String revisionId) {
 		
-		PrefixedParameterTriple param = new PrefixedParameterTriple(
-				this.getPrefixResolver().resolveHistoryPrefix(),
-				this.propertyTypeClassifier.classify(type),
+		PrefixedParameterTuple param = new PrefixedParameterTuple(
+				this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
 				parentId,
+				revisionId);
+		
+		return this.getSqlMapClientTemplate().queryForList(GET_ALL_HISTORY_PROPERTY_UIDS_OF_PARENT_SQL, 
+				param);
+	}
+	
+	@Override
+	public Property getHistoryPropertyByRevisionId(
+			String codingSchemeId,
+			String propertyUid, 
+			String revisionId) {
+		
+		PrefixedParameterTuple param = new PrefixedParameterTuple(
+				this.getPrefixResolver().resolveHistoryPrefix(),
+				propertyUid,
 				revisionId);
 		
 		String actualTablePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		param.setActualTableSetPrefix(actualTablePrefix);
 		
-		return this.getSqlMapClientTemplate().queryForList(GET_ALL_PROPERTIES_OF_PARENT_BY_REVISION_SQL, 
-				param);
+		return (Property)this.getSqlMapClientTemplate().
+			queryForObject(
+					GET_PROPERY_BY_PROPERTY_UID_AND_REVISION_ID_SQL, 
+					param);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected <T> List<T> doGetPropertyMultiAttrib(String prefix, String propertyId, Class<T> multiAttrib){
 		return this.getSqlMapClientTemplate().queryForList(GET_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL, 
@@ -420,12 +459,14 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#updateProperty(java.lang.String, java.lang.String, java.lang.String, org.lexevs.dao.database.access.property.PropertyDao.PropertyType, org.LexGrid.commonTypes.Property)
 	 */
-	public void updateProperty(String codingSchemeUId, String parentUId,
+	public String updateProperty(String codingSchemeUId, String parentUId,
 			String propertyUId, PropertyType type, Property property) {
 		Assert.hasText(
 				property.getPropertyId(),
 				"Property must have a populated PropertyId " +
 				"in order to be updated.");
+		
+		String entryStateUId = this.createUniqueId();
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 
@@ -435,40 +476,35 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						prefix, 
 						parentUId, 
 						propertyUId, 
-						null, 
+						entryStateUId, 
 						type, 
 						property),
 						1);	
+		
+		return entryStateUId;
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#updateProperty(java.lang.String, java.lang.String, java.lang.String, org.lexevs.dao.database.access.property.PropertyDao.PropertyType, org.LexGrid.commonTypes.Property)
 	 */
-	public void updatePropertyVersionableAttrib(String codingSchemeUId, String parentUId,
-			String propertyUId, PropertyType type, Property property) {
-		Assert.hasText(
-				property.getPropertyId(),
-				"Property must have a populated PropertyId " +
-				"in order to be updated.");
-		
+	public String updatePropertyVersionableAttrib(String codingSchemeUId,
+			String propertyUId, Property property) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		/*String propertyGuid = this.getPropertyUIdFromParentUIdAndPropId(
-				codingSchemeUId, 
-				parentUId, 
-				property.getPropertyId());*/
 		String entryStateUId = this.createUniqueId();
 		
 		this.getSqlMapClientTemplate().update(
 				UPDATE_PROPERTY_VERSIONABLE_ATTRIB_BY_UID_SQL, 
 				this.buildInsertPropertyBean(
 						prefix, 
-						parentUId, 
+						null, 
 						propertyUId, 
 						entryStateUId, 
-						type, 
+						null, 
 						property),
 						1);	
+		
+		return entryStateUId;
 	}
 	
 	/* (non-Javadoc)
@@ -881,88 +917,6 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		this.ibatisVersionsDao = ibatisVersionsDao;
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Property resolvePropertyByRevision(String codingSchemeUId, String parentGuid,
-			String propertyId, String revisionId) throws LBRevisionException {
-
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
-
-		String propertyUId = this.getPropertyUIdFromParentUIdAndPropId(codingSchemeUId,
-				parentGuid, propertyId);
-
-		String tempRevId = revisionId;
-
-		if (propertyUId == null) {
-			throw new LBRevisionException(
-					"Property "
-							+ propertyUId
-							+ " doesn't exist in lexEVS. "
-							+ "Please check the propertyId and its parent Id. Its possible that the given property "
-							+ "has been REMOVEd from the lexEVS system in the past.");
-		}
-
-		String propertyRevisionId = this.getLatestRevision(codingSchemeUId, propertyUId);
-
-		// 1. If 'revisionId' is null or 'revisionId' is the latest revision of
-		// the property
-		// then use getPropertyByUId to get the Property object and return.
-
-		if (revisionId == null || propertyRevisionId == null ) {
-			return getPropertyByUId(propertyUId);
-		}
-
-		// 2. Get the earliest revisionId on which change was applied on given
-		// property with reference to given revisionId.
-
-		HashMap revisionIdMap = (HashMap) this.getSqlMapClientTemplate()
-				.queryForMap(
-						GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_PROPERTY_SQL,
-						new PrefixedParameterTuple(prefix, propertyUId,
-								revisionId), "revId", "revAppliedDate");
-
-		if (revisionIdMap.isEmpty()) {
-			revisionId = null;
-		} else {
-			
-			revisionId = (String) revisionIdMap.keySet().toArray()[0];
-			
-			if( revisionId.equals(propertyRevisionId)) {
-				return getPropertyByUId(propertyUId);
-			}
-		}
-
-		// 3. Get property data from history.
-		Property property = null;
-		InsertOrUpdatePropertyBean propertyBean = null;
-
-		propertyBean = (InsertOrUpdatePropertyBean) this
-				.getSqlMapClientTemplate().queryForObject(
-						GET_PROPERTY_FROM_HISTORY_BY_REVISION_SQL,
-						new PrefixedParameterTuple(prefix, propertyUId,
-								revisionId));
-
-		if (propertyBean != null) {
-
-			List multiAttribList = this.getSqlMapClientTemplate().queryForList(
-					GET_PROPERTY_MULTIATTRIB_FROM_HISTORY_BY_ENTRYSTATEUID_SQL,
-					new PrefixedParameterTuple(prefix, propertyBean.getUId(),
-							propertyBean.getEntryStateUId()));
-
-			propertyBean.setPropertyMultiAttribList(multiAttribList);
-
-			property = getProperty(propertyBean);
-		}
-
-		// 4. If property is not in history, get it from base table.
-		if (property == null) {
-
-			property = getPropertyByUId(propertyUId);
-		}
-
-		return property;
-	}
-	
 	public Property getPropertyByUId(String vsPropertyUId) {
 		
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
@@ -1056,5 +1010,14 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		}
 		
 		return prop;
+	}	
+	
+	@Override
+	public boolean entryStateExists(String codingSchemeUId, String entryStateUId) {
+
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUId);
+
+		return super.entryStateExists(prefix, entryStateUId);
 	}
 }

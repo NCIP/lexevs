@@ -18,7 +18,11 @@
  */
 package org.lexevs.dao.database.service;
 
+import java.util.UUID;
+
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Versionable;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
@@ -26,8 +30,9 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
-import org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId;
 import org.springframework.util.Assert;
+import org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId;
+import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 
 /**
  * The Class RevisableAbstractDatabaseService.
@@ -35,6 +40,26 @@ import org.springframework.util.Assert;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public abstract class RevisableAbstractDatabaseService<T extends Versionable, I extends CodingSchemeUriVersionBasedEntryId> extends AbstractDatabaseService {
+	
+	
+	public static class ParentUidReferencingId extends CodingSchemeUriVersionBasedEntryId {
+
+		private String parentUid;
+		
+		public ParentUidReferencingId(String codingSchemeUri,
+				String codingSchemeVersion, String parentUid) {
+			super(codingSchemeUri, codingSchemeVersion);
+			this.parentUid = parentUid;
+		}
+
+		public String getParentUid() {
+			return parentUid;
+		}
+
+		public void setParentUid(String parentUid) {
+			this.parentUid = parentUid;
+		}
+	}
 	
 	/**
 	 * The Class CodingSchemeUriVersionBasedEntryId.
@@ -112,9 +137,13 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 		String codingSchemeUri = id.getCodingSchemeUri();
 		String version = id.getCodingSchemeVersion();
 		
-		String codingSchemeUid = this.getDaoManager()
-			.getCodingSchemeDao(codingSchemeUri, version).
+		CodingSchemeDao codingSchemeDao = this.getDaoManager()
+			.getCodingSchemeDao(codingSchemeUri, version);
+		
+		codingSchemeDao.
 				getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+		
+		String codingSchemeUid = codingSchemeDao.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 		
 		String entryStateUid = getCurrentEntryStateUid(
 				id, entryUid);
@@ -124,6 +153,10 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 
 			entryState.setChangeType(ChangeType.NEW);
 			entryState.setRelativeOrder(0L);
+			
+			String containingRevision = codingSchemeDao.getRevisionWhenNew(codingSchemeUid);
+			
+			entryState.setContainingRevision(containingRevision);
 
 			if(StringUtils.isBlank(entryStateUid)){
 				return this.getDaoManager().getVersionsDao(codingSchemeUri, version).
@@ -212,8 +245,12 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 		String currentEntryStateUid = this.resolveCurrentEntryStateUid(id, entryUId, type);
 		Assert.notNull(currentEntryStateUid);
 		
-		if(!this.isChangeTypeDependent(currentEntry)) {
+		if(!this.isChangeTypeDependent(currentEntry) || this.isChangeTypeRemove(revisedEntry)) {
 			this.insertIntoHistory(id, currentEntry, entryUId);
+		} 
+		
+		if(this.isChangeTypeRemove(revisedEntry)) {
+			currentEntryStateUid = null;
 		}
 		
 		String entryStateUId = template.doChange(
@@ -273,6 +310,16 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 		public String update();
 	}
 	
+	public static interface DeleteTemplate {
+		
+		/**
+		 * Update.
+		 * 
+		 * @return the string
+		 */
+		public void delete();
+	}
+	
 	/**
 	 * Update entry.
 	 * 
@@ -294,7 +341,22 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 		});
 	}
 	
+	protected void removeEntry(I id, T entryToRemove, EntryStateType type, final DeleteTemplate deleteTemplate) throws LBException {
+		
+		this.makeChange(id, entryToRemove, type, new ChangeDatabaseStateTemplate<I,T>() {
+
+			@Override
+			public String doChange(I id, String entryUid, T entryToRemove, EntryStateType type) {
+				deleteTemplate.delete();	
+				return createUid();
+			}
+		});
+		
+	}
 	
+	private String createUid() {
+		return UUID.randomUUID().toString();
+	}
 
 	
 	/**
@@ -317,6 +379,131 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 		});
 	}
 	
+	public T resolveEntryByRevision(
+			I id, String entryUid, String revisionId) throws LBRevisionException {
+		
+		if (entryUid == null) {
+			throw new LBRevisionException(
+					"Entry "
+							+ entryUid
+							+ " doesn't exist in lexEVS. "
+							+ "Please check the identifying attributes of this entry. Its possible that the given entry "
+							+ "has been REMOVEd from the lexEVS system in the past.");
+		}
+		
+		String entryLatestRevisionId = this.getLatestRevisionId(id, entryUid);
+
+		if(StringUtils.equals(revisionId, entryLatestRevisionId)) {
+			return this.getCurrentEntry(id, entryUid);
+		} else {
+			
+			CodingSchemeDao codingSchemeDao = 
+				getDaoManager().getCodingSchemeDao(
+						id.getCodingSchemeUri(), 
+						id.getCodingSchemeVersion());
+			
+			VersionsDao versionsDao = 
+				getDaoManager().getVersionsDao(
+						id.getCodingSchemeUri(), 
+						id.getCodingSchemeVersion());
+
+			
+			String codingSchemeUId = codingSchemeDao.
+				getCodingSchemeUIdByUriAndVersion(
+						id.getCodingSchemeUri(), 
+						id.getCodingSchemeVersion());
+
+			T entry = this.getHistoryEntryByRevisionId(
+					id, 
+					entryUid, 
+					revisionId);
+
+			if(entry == null) {
+				String adjustedRevisionId = 
+					versionsDao.getPreviousRevisionIdFromGivenRevisionIdForEntry(codingSchemeUId, entryUid, revisionId);
+				
+				entry = this.getHistoryEntryByRevisionId(
+						id, 
+						entryUid, 
+						adjustedRevisionId);
+				
+				if(entry != null) {
+					entry.setEntryState(versionsDao.
+							getEntryStateByEntryUidAndRevisionId(
+									codingSchemeUId, 
+									entryUid, 
+									revisionId));
+				}
+			}
+			
+			return addDependentAttributesByRevisionId(id, entryUid, entry);
+		}
+	}
+	
+	protected boolean validRevision(I id, T entry) throws LBException {
+		
+		String invalid = "Invalid Revision. ";
+		
+		if (entry == null)
+			throw new LBParameterException(invalid + "Entry is null.");
+		
+		EntryState entryState = entry.getEntryState();
+
+		if (entryState == null) {
+			throw new LBRevisionException(invalid + "EntryState is null.");
+		}
+		
+		if (entryState.getContainingRevision() == null) {
+			throw new LBRevisionException(invalid
+					+ "Revision identifier is null for the versionable object.");
+		}
+
+		ChangeType changeType = entryState.getChangeType();
+
+		if (changeType == ChangeType.NEW) {
+			if (entryState.getPrevRevision() != null) {
+				throw new LBRevisionException(
+						invalid + "Changes of type NEW are not allowed to have previous revisions.");
+			}
+		} else {
+			String entryUid = this.getEntryUid(id, entry);
+			
+			if (entryUid == null) {
+				throw new LBRevisionException(invalid +
+						"The entry being revised doesn't exist.");
+			} 
+			
+			String latestRevId = this.getLatestRevisionId(id, entryUid);
+			
+			String currentRevision = entryState.getContainingRevision();
+			String prevRevision = entryState.getPrevRevision();
+			
+			if (entryState.getPrevRevision() == null
+					&& latestRevId != null
+					&& !latestRevId.equals(currentRevision)
+					&& !latestRevId
+							.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
+				throw new LBRevisionException(
+						invalid
+								+ "All changes of type other than NEW should have previous revisions.");
+			} else if (latestRevId != null
+					&& !latestRevId.equals(currentRevision)
+					&& !latestRevId.equals(prevRevision)
+					&& !latestRevId
+							.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
+				throw new LBRevisionException(
+						invalid
+								+ "Revision source is not in sync with the database revisions. "
+								+ "Previous revision id does not match with the latest revision id of the coding scheme. "
+								+ "Please update the authoring instance with all the revisions and regenerate the source.");
+			}
+		}
+		
+		return true;
+	}
+	
+	protected abstract T addDependentAttributesByRevisionId(I id, String entryUid, T entry);
+
 	/**
 	 * Insert into history.
 	 * 
@@ -356,6 +543,10 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 	 * @return the current entry
 	 */
 	protected abstract T getCurrentEntry(I id, String entryUId);
+	
+	protected abstract T getHistoryEntryByRevisionId(I id, String entryUid, String revisionId);
+	
+	protected abstract String getLatestRevisionId(I id, String entryUId);
 
 	/**
 	 * Gets the entry uid.

@@ -22,18 +22,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Property;
-import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
+import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
-import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.dao.database.service.RevisableAbstractDatabaseService;
+import org.lexevs.dao.database.service.RevisableAbstractDatabaseService.ParentUidReferencingId;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,9 +45,132 @@ import org.springframework.util.Assert;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  * @author <a href="mailto:rao.ramachandra@mayo.edu">Ramachandra Rao (satya)</a>
  */
-public class VersionableEventPropertyService extends AbstractDatabaseService
+public class VersionableEventPropertyService extends RevisableAbstractDatabaseService<Property,ParentUidReferencingId>
 		implements PropertyService {
 	
+	@Override
+	protected void doInsertDependentChanges(
+			ParentUidReferencingId id, Property revisedEntry)
+			throws LBException {
+		//
+	}
+
+	@Override
+	protected boolean entryStateExists(ParentUidReferencingId id,
+			String entryStateUid) {
+		String codingSchemeUri = id.getCodingSchemeUri();
+		String version = id.getCodingSchemeVersion();
+		
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri,
+				version);
+		
+		PropertyDao propertyDao = getDaoManager().getPropertyDao(codingSchemeUri, version);
+	
+		return propertyDao.entryStateExists(codingSchemeUid, entryStateUid);
+	}
+
+	@Override
+	protected Property getCurrentEntry(ParentUidReferencingId id,
+			String entryUId) {
+		String codingSchemeUri = id.getCodingSchemeUri();
+		String version = id.getCodingSchemeVersion();
+	
+		PropertyDao propertyDao = getDaoManager().getPropertyDao(codingSchemeUri, version);
+	
+		String codingSchemeId = this.getCodingSchemeUId(codingSchemeUri,
+				version);
+		
+		return propertyDao.getPropertyByUid(codingSchemeId, entryUId);
+	}
+
+	@Override
+	protected String getCurrentEntryStateUid(
+			ParentUidReferencingId id, String entryUid) {
+		String codingSchemeUri = id.getCodingSchemeUri();
+		String version = id.getCodingSchemeVersion();
+		
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri,
+				version);
+		
+		return this.getDaoManager().getPropertyDao(codingSchemeUri, version).
+			getEntryStateUId(codingSchemeUid, entryUid);
+	}
+
+	@Override
+	protected String getEntryUid(ParentUidReferencingId id,
+			Property entry) {
+		String codingSchemeUri = id.getCodingSchemeUri();
+		String version = id.getCodingSchemeVersion();
+		
+		PropertyDao propertyDao = getDaoManager().getPropertyDao(codingSchemeUri, version);
+		
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri,
+				version);
+		
+		return propertyDao.getPropertyUIdByPropertyIdAndName(
+				codingSchemeUid, 
+				id.getParentUid(), 
+				entry.getPropertyId(), 
+				entry.getPropertyName());
+	}
+
+	@Override
+	protected void insertIntoHistory(ParentUidReferencingId id,
+			Property currentEntry, String entryUId) {
+		String codingSchemeUri = id.getCodingSchemeUri();
+		String version = id.getCodingSchemeVersion();
+		
+		PropertyDao propertyDao = getDaoManager().getPropertyDao(codingSchemeUri, version);
+		
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri,
+				version);
+		
+		propertyDao.insertHistoryProperty(codingSchemeUid, entryUId, currentEntry);
+	}
+	
+	@Override
+	protected Property addDependentAttributesByRevisionId(
+			ParentUidReferencingId id, String entryUid, Property entry) {
+		//no dependent attributes on a Property
+		return entry;
+	}
+
+	@Override
+	protected Property getHistoryEntryByRevisionId(ParentUidReferencingId id,
+			String entryUid, String revisionId) {
+		String codingSchemeUid = this.getCodingSchemeUId(
+				id.getCodingSchemeUri(),
+				id.getCodingSchemeVersion()
+				);
+		return this.getPropertyDao(id).getHistoryPropertyByRevisionId(codingSchemeUid, entryUid, revisionId);
+	}
+
+	@Override
+	protected String getLatestRevisionId(ParentUidReferencingId id,
+			String entryUId) {
+		String codingSchemeUid = this.getCodingSchemeUId(
+				id.getCodingSchemeUri(),
+				id.getCodingSchemeVersion()
+				);
+		
+		return this.getPropertyDao(id).getLatestRevision(codingSchemeUid, entryUId);
+	}
+
+	@Override
+	protected String updateEntityVersionableAttributes(
+			ParentUidReferencingId id, String entryUId,
+			Property revisedEntity) {
+		String codingSchemeUri = id.getCodingSchemeUri();
+		String version = id.getCodingSchemeVersion();
+		
+		PropertyDao propertyDao = getDaoManager().getPropertyDao(codingSchemeUri, version);
+		
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri,
+				version);
+		
+		return propertyDao.updatePropertyVersionableAttrib(codingSchemeUid, entryUId, revisedEntity);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -86,48 +209,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 		String codingSchemeUId = this.getCodingSchemeUId(codingSchemeUri,
 				version);
 
-		this.getDaoManager().getPropertyDao(codingSchemeUri, version)
-				.insertProperty(codingSchemeUId, codingSchemeUId,
-						PropertyType.CODINGSCHEME, property);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.lexevs.dao.database.service.property.PropertyService#
-	 * insertCodingSchemePropertyVersionableChanges(java.lang.String,
-	 * java.lang.String, org.LexGrid.commonTypes.Property)
-	 */
-	@Override
-	@DatabaseErrorIdentifier(errorCode=INSERT_CODINGSCHEME_PROPERTY_VERSIONABLE_CHANGES_ERROR)
-	public void insertCodingSchemePropertyVersionableChanges(
-			String codingSchemeUri, String version, Property property) {
-
-		String codingSchemeUId = this.getCodingSchemeUId(codingSchemeUri,
-				version);
-
-		PropertyDao propertyDao = this.getDaoManager().getPropertyDao(
-				codingSchemeUri, version);
-
-		String propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(codingSchemeUId,
-				codingSchemeUId, property.getPropertyId(), property
-						.getPropertyName());
-
-		String prevEntryStateUId = propertyDao.insertHistoryProperty(
-				codingSchemeUId, propertyUId, property);
-
-		this.getDaoManager().getPropertyDao(codingSchemeUri, version)
-				.updatePropertyVersionableAttrib(codingSchemeUId,
-						codingSchemeUId, propertyUId,
-						PropertyType.CODINGSCHEME, property);
-
-		this.getDaoManager().getVersionsDao(codingSchemeUri, version)
-				.insertEntryState(
-						codingSchemeUId,
-						propertyUId, 
-						EntryStateType.PROPERTY, 
-						prevEntryStateUId,
-						property.getEntryState());
+		this.doInsertProperty(codingSchemeUri, version, codingSchemeUId, property, PropertyType.CODINGSCHEME);
 	}
 
 	/*
@@ -148,9 +230,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 				version).getEntityUId(codingSchemeUId, entityCode,
 				entityCodeNamespace);
 
-		this.getDaoManager().getPropertyDao(codingSchemeUri, version)
-				.insertProperty(codingSchemeUId, entityUId,
-						PropertyType.ENTITY, property);
+		this.doInsertProperty(codingSchemeUri, version, entityUId, property, PropertyType.ENTITY);
 		
 		this.firePropertyUpdateEvent(new PropertyUpdateEvent(
 				codingSchemeUri,
@@ -158,47 +238,6 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 				entityCode,
 				entityCodeNamespace, 
 				property));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.lexevs.dao.database.service.property.PropertyService#
-	 * insertEntityVersionableChanges(java.lang.String, java.lang.String,
-	 * java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property)
-	 */
-	@Override
-	@DatabaseErrorIdentifier(errorCode=INSERT_ENTITY_PROPERTY_VERSIONABLE_CHANGES_ERROR)
-	public void insertEntityPropertyVersionableChanges(String codingSchemeUri,
-			String version, String entityCode, String entityCodeNamespace,
-			Property property) {
-
-		String codingSchemeUId = this.getCodingSchemeUId(codingSchemeUri,
-				version);
-
-		String entityUId = this.getDaoManager().getEntityDao(codingSchemeUri,
-				version).getEntityUId(codingSchemeUId, entityCode,
-				entityCodeNamespace);
-
-		PropertyDao propertyDao = this.getDaoManager().getPropertyDao(
-				codingSchemeUri, version);
-
-		String propertyUId = propertyDao
-				.getPropertyUIdByPropertyIdAndName(codingSchemeUId, entityUId, property
-						.getPropertyId(), property.getPropertyName());
-
-		String prevEntryStateUId = propertyDao.insertHistoryProperty(
-				codingSchemeUId, propertyUId, property);
-
-		propertyDao.updatePropertyVersionableAttrib(codingSchemeUId, entityUId,
-				propertyUId, PropertyType.ENTITY, property);
-
-		this.getDaoManager().getVersionsDao(codingSchemeUri, version)
-				.insertEntryState(
-						codingSchemeUId,
-						propertyUId,
-						EntryStateType.PROPERTY,
-						prevEntryStateUId, property.getEntryState());
 	}
 
 	/*
@@ -219,51 +258,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 				codingSchemeUri, version).getRelationUId(codingSchemeUId,
 				relationContainerName);
 
-		this.getDaoManager().getPropertyDao(codingSchemeUri, version)
-				.insertProperty(codingSchemeUId, relationUId,
-						PropertyType.RELATION, property);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.lexevs.dao.database.service.property.PropertyService#
-	 * insertRelationPropertyVersionableChanges(java.lang.String,
-	 * java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property)
-	 */
-	@Override
-	@DatabaseErrorIdentifier(errorCode=INSERT_RELATION_PROPERTY_VERSIONABLE_CHANGES_ERROR)
-	public void insertRelationPropertyVersionableChanges(
-			String codingSchemeUri, String version,
-			String relationContainerName, Property property) {
-
-		String codingSchemeUId = this.getCodingSchemeUId(codingSchemeUri,
-				version);
-
-		String relationUId = this.getDaoManager().getAssociationDao(
-				codingSchemeUri, version).getRelationUId(codingSchemeUId,
-				relationContainerName);
-
-		PropertyDao propertyDao = this.getDaoManager().getPropertyDao(
-				codingSchemeUri, version);
-
-		String propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(codingSchemeUId, 
-				relationUId, property.getPropertyId(), property
-						.getPropertyName());
-
-		String prevEntryStateUId = propertyDao.insertHistoryProperty(
-				codingSchemeUId, propertyUId, property);
-
-		propertyDao.updatePropertyVersionableAttrib(codingSchemeUId,
-				relationUId, propertyUId, PropertyType.RELATION, property);
-
-		this.getDaoManager().getVersionsDao(codingSchemeUri, version)
-				.insertEntryState(
-						codingSchemeUId,
-						propertyUId,
-						EntryStateType.PROPERTY, 
-						prevEntryStateUId,
-						property.getEntryState());
+		this.doInsertProperty(codingSchemeUri, version, relationUId, property, PropertyType.RELATION);
 	}
 
 	/*
@@ -278,30 +273,10 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	public void removeCodingSchemeProperty(String codingSchemeUri,
 			String version, Property property) {
 
-		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(
-				codingSchemeUri, version);
+		String codingSchemeUId = 
+			this.getCodingSchemeUId(codingSchemeUri, version);
 
-		PropertyDao propertyDao = getDaoManager().getPropertyDao(
-				codingSchemeUri, version);
-
-		VersionsDao versionsDao = getDaoManager().getVersionsDao(
-				codingSchemeUri, version);
-
-		String codingSchemeUId = codingSchemeDao
-				.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
-
-		String propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(codingSchemeUId,
-				codingSchemeUId, property.getPropertyId(), property
-						.getPropertyName());
-
-		/* 1. Remove all entry state entries of property. */
-		versionsDao.deleteAllEntryStateEntriesByEntryUId(codingSchemeUId,
-				propertyUId);
-
-		/* 2. Remove property. */
-		propertyDao.removePropertyByUId(codingSchemeUId, propertyUId);
-
-		/* 3. Remove search (lucene) indexes. */
+		this.doRemoveProperty(codingSchemeUri, version, codingSchemeUId, property, PropertyType.CODINGSCHEME);
 
 	}
 
@@ -325,22 +300,7 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 				version).getEntityUId(codingSchemeUId, entityCode,
 				entityCodeNamespace);
 
-		PropertyDao propertyDao = getDaoManager().getPropertyDao(
-				codingSchemeUri, version);
-
-		VersionsDao versionsDao = getDaoManager().getVersionsDao(
-				codingSchemeUri, version);
-
-		String propertyUId = propertyDao
-				.getPropertyUIdByPropertyIdAndName(codingSchemeUId, entityUId, property
-						.getPropertyId(), property.getPropertyName());
-
-		/* 1. Remove all entry state entries of property. */
-		versionsDao.deleteAllEntryStateEntriesByEntryUId(codingSchemeUId,
-				propertyUId);
-
-		/* 2. Remove property. */
-		propertyDao.removePropertyByUId(codingSchemeUId, propertyUId);
+		this.doRemoveProperty(codingSchemeUri, version, entityUId, property, PropertyType.ENTITY);
 
 		this.firePropertyUpdateEvent(new PropertyUpdateEvent(
 				codingSchemeUri,
@@ -369,26 +329,148 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 				codingSchemeUri, version).getRelationUId(codingSchemeUId,
 				relationContainerName);
 
+		this.doRemoveProperty(codingSchemeUri, version, relationUId, property, PropertyType.RELATION);
+	}
+	
+	protected void doInsertProperty(
+			String codingSchemeUri, 
+			String version,
+			final String parentUid,
+			final Property property, 
+			final PropertyType propertyType) {
+		
+		String codingSchemeUId = this.getCodingSchemeUId(codingSchemeUri,
+				version);
+
+		this.getDaoManager().getPropertyDao(codingSchemeUri, version)
+			.insertProperty(codingSchemeUId, parentUid,
+					propertyType, property);
+	}
+	
+	protected void doRemoveProperty(
+			String codingSchemeUri, 
+			String version,
+			final String parentUid,
+			final Property property, 
+			final PropertyType propertyType) {
+
+		final String codingSchemeUId = this.getCodingSchemeUId(codingSchemeUri,
+				version);
+
+		final PropertyDao propertyDao = getDaoManager().getPropertyDao(
+				codingSchemeUri, version);
+
+		final VersionsDao versionsDao = getDaoManager().getVersionsDao(
+				codingSchemeUri, version);
+
+		final String propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(codingSchemeUId,
+				parentUid, property.getPropertyId(), property
+						.getPropertyName());
+		
+		try {
+			this.removeEntry(new ParentUidReferencingId(codingSchemeUri,version,parentUid), 
+					property, EntryStateType.PROPERTY, new DeleteTemplate() {
+
+				@Override
+				public void delete() {
+					/*
+					versionsDao.deleteAllEntryStateEntriesByEntryUId(codingSchemeUId,
+							propertyUId);
+					*/
+					/* 2. Remove property. */
+					propertyDao.removePropertyByUId(codingSchemeUId, propertyUId);
+				}
+			});
+		} catch (LBException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected void doReviseProperty(
+			String codingSchemeUri, 
+			String version,
+			final String parentUid,
+			final Property property, 
+			final PropertyType propertyType) throws LBException {
+		
+		if (validRevision(new ParentUidReferencingId(codingSchemeUri, version, parentUid), property)) {
+
+			ChangeType changeType = property.getEntryState().getChangeType();
+
+			if (changeType == ChangeType.NEW) {
+
+				this.doInsertProperty(codingSchemeUri, version, parentUid, property, propertyType);
+			} else if (changeType == ChangeType.REMOVE) {
+
+				this.doRemoveProperty(codingSchemeUri, version, parentUid, property, propertyType);
+			} else if (changeType == ChangeType.MODIFY) {
+
+				this.doUpdateProperty(codingSchemeUri, version, parentUid, property, propertyType);
+			} else if (changeType == ChangeType.VERSIONABLE) {
+				this.doInsertDependentChanges(
+						new ParentUidReferencingId(codingSchemeUri, version, parentUid), property);
+			}
+		}
+	}
+	
+	public List<Property> resolvePropertiesOfCodingSchemeByRevision(
+			String codingSchemeURI,
+			String version,
+			String revisionId){
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeURI,
+				version);
+		return this.doResolvePropertiesOfParentByRevision(codingSchemeURI, version, codingSchemeUid, revisionId);	
+	}
+	
+	public List<Property> resolvePropertiesOfEntityByRevision(
+			String codingSchemeURI,
+			String version, 
+			String entityCode, 
+			String entityCodeNamespace,
+			String revisionId){
+		EntityDao entityDao = this.getDaoManager().getEntityDao(codingSchemeURI, version);
+		
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeURI,
+				version);
+		
+		String entityUid = entityDao.getEntityUId(codingSchemeUid, entityCode, entityCodeNamespace);
+
+		return this.doResolvePropertiesOfParentByRevision(codingSchemeURI, version, entityUid, revisionId);		
+	}
+	
+	protected List<Property> doResolvePropertiesOfParentByRevision(
+			String codingSchemeUri, 
+			String version,
+			String parentUid,
+			String revisionId) {
+		
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri,
+				version);
+
 		PropertyDao propertyDao = getDaoManager().getPropertyDao(
 				codingSchemeUri, version);
 
-		VersionsDao versionsDao = getDaoManager().getVersionsDao(
-				codingSchemeUri, version);
-
-		String propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(codingSchemeUId,
-				relationUId, property.getPropertyId(), property
-						.getPropertyName());
-
-		/* 1. Remove all entry state entries of property. */
-		versionsDao.deleteAllEntryStateEntriesByEntryUId(codingSchemeUId,
-				propertyUId);
-
-		/* 2. Remove property. */
-		propertyDao.removePropertyByUId(codingSchemeUId, propertyUId);
-
-		/* 3. Remove search (lucene) indexes. */
+		List<String> propertyUids = 
+			propertyDao.getAllHistoryPropertyUidsOfParentByRevisionId(
+				codingSchemeUid, parentUid, revisionId);
+		
+		List<Property> returnList = new ArrayList<Property>();
+		
+		for(String propertyUid : propertyUids) {
+			Property prop;
+			try {
+				prop = this.resolveEntryByRevision(new ParentUidReferencingId(codingSchemeUri,version,parentUid), propertyUid, revisionId);
+			} catch (LBRevisionException e) {
+				throw new RuntimeException(e);
+			}
+			if(prop != null) {
+				returnList.add(prop);
+			}
+		}
+		
+		return returnList;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -400,29 +482,9 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	public void reviseCodingSchemeProperty(String codingSchemeUri,
 			String version, Property property) throws LBException {
 		
-		if (validCodingSchemeRevision(codingSchemeUri, version, property)) {
-
-			ChangeType changeType = property.getEntryState().getChangeType();
-
-			if (changeType == ChangeType.NEW) {
-
-				this.insertCodingSchemeProperty(codingSchemeUri, version,
-						property);
-			} else if (changeType == ChangeType.REMOVE) {
-
-				this.removeCodingSchemeProperty(codingSchemeUri, version,
-						property);
-			} else if (changeType == ChangeType.MODIFY) {
-
-				this.updateCodingSchemeProperty(codingSchemeUri, version,
-						property);
-			} else if (changeType == ChangeType.VERSIONABLE) {
-
-				this.insertCodingSchemePropertyVersionableChanges(
-						codingSchemeUri, version, property);
-			}
-		}
-
+		String parentUid = this.getCodingSchemeUId(codingSchemeUri, version);
+		
+		this.doReviseProperty(codingSchemeUri, version, parentUid, property, PropertyType.CODINGSCHEME);
 	}
 
 	/*
@@ -437,29 +499,13 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	public void reviseEntityProperty(String codingSchemeUri, String version,
 			String entityCode, String entityCodeNamespace, Property property)
 			throws LBException {
+		
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, version);
+		
+		String parentUid = this.getDaoManager().getEntityDao(codingSchemeUri, version).
+			getEntityUId(codingSchemeUid, entityCode, entityCodeNamespace);
 
-		if( validEntityRevision(codingSchemeUri, version, entityCode, entityCodeNamespace, property)) {
-			
-			ChangeType changeType = property.getEntryState().getChangeType();
-
-			if (changeType == ChangeType.NEW) {
-
-				this.insertEntityProperty(codingSchemeUri, version, entityCode,
-						entityCodeNamespace, property);
-			} else if (changeType == ChangeType.REMOVE) {
-
-				this.removeEntityProperty(codingSchemeUri, version, entityCode,
-						entityCodeNamespace, property);
-			} else if (changeType == ChangeType.MODIFY) {
-
-				this.updateEntityProperty(codingSchemeUri, version, entityCode,
-						entityCodeNamespace, property);
-			} else if (changeType == ChangeType.VERSIONABLE) {
-
-				this.insertEntityPropertyVersionableChanges(codingSchemeUri,
-						version, entityCode, entityCodeNamespace, property);
-			}
-		}
+		this.doReviseProperty(codingSchemeUri, version, parentUid, property, PropertyType.ENTITY);
 	}
 
 	/*
@@ -473,28 +519,15 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	public void reviseRelationProperty(String codingSchemeUri, String version,
 			String relationContainerName, Property property) throws LBException {
 
-		if( validRelationRevision(codingSchemeUri, version, relationContainerName, property)) {
-			
-			ChangeType changeType = property.getEntryState().getChangeType();
-			
-			if (changeType == ChangeType.NEW) {
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, version);
+		
+		String parentUid = this.getDaoManager().getAssociationDao(
+				codingSchemeUri, version).
+					getRelationUId(
+						codingSchemeUid,
+						relationContainerName);
 
-				this.insertRelationProperty(codingSchemeUri, version,
-						relationContainerName, property);
-			} else if (changeType == ChangeType.REMOVE) {
-
-				this.removeRelationProperty(codingSchemeUri, version,
-						relationContainerName, property);
-			} else if (changeType == ChangeType.MODIFY) {
-
-				this.updateRelationProperty(codingSchemeUri, version,
-						relationContainerName, property);
-			} else if (changeType == ChangeType.VERSIONABLE) {
-
-				this.insertRelationPropertyVersionableChanges(codingSchemeUri,
-						version, relationContainerName, property);
-			}
-		}
+		this.doReviseProperty(codingSchemeUri, version, parentUid, property, PropertyType.RELATION);
 	}
 
 	/*
@@ -508,36 +541,13 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	@DatabaseErrorIdentifier(errorCode=UPDATE_CODINGSCHEME_PROPERTY_ERROR)
 	public void updateCodingSchemeProperty(String codingSchemeUri,
 			String version, Property property) {
-		String codingSchemeUId = this.getDaoManager().getCodingSchemeDao(
-				codingSchemeUri, version).getCodingSchemeUIdByUriAndVersion(
-				codingSchemeUri, version);
+		String codingSchemeUId = this.getCodingSchemeUId(codingSchemeUri, version);
 
-		String propertyUId = this.getDaoManager().getPropertyDao(
-				codingSchemeUri, version).getPropertyUIdByPropertyIdAndName(codingSchemeUId,
-				codingSchemeUId, property.getPropertyId(),
-				property.getPropertyName());
-
-		PropertyDao propertyDao = this.getDaoManager().getPropertyDao(
-				codingSchemeUri, version);
-
-		/* 1. Insert current property data into history. */
-		String prevEntryStateUId = propertyDao.insertHistoryProperty(
-				codingSchemeUId, propertyUId, property);
-
-		/* 2. Update the property data */
-		propertyDao.updateProperty(codingSchemeUId, codingSchemeUId,
-				propertyUId, PropertyType.CODINGSCHEME, property);
-
-		/* 3. Insert entryState details. */
-		this.getDaoManager().getVersionsDao(codingSchemeUri, version)
-				.insertEntryState(
-						codingSchemeUId,
-						propertyUId, 
-						EntryStateType.PROPERTY, 
-						prevEntryStateUId,
-						property.getEntryState());
-
-		/* 4. Update search (Lucene) indexes. */
+		try {
+			this.doUpdateProperty(codingSchemeUri, version, codingSchemeUId, property, PropertyType.CODINGSCHEME);
+		} catch (LBException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/*
@@ -553,41 +563,13 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	@DatabaseErrorIdentifier(errorCode=UPDATE_ENTITY_PROPERTY_ERROR)
 	public void updateEntityProperty(String codingSchemeUri, String version,
 			String entityCode, String entityCodeNamespace, Property property) {
-		
-		Assert.notNull(property);
-		Assert.notNull(property.getPropertyId());
-		Assert.notNull(property.getPropertyName());
+		String codingSchemeUId = this.getCodingSchemeUId(codingSchemeUri, version);
 
-		PropertyDao propertyDao = this.getDaoManager().getPropertyDao(
-				codingSchemeUri, version);
-
-		String codingSchemeUId = this.getCodingSchemeUId(codingSchemeUri,
-				version);
-
-		String entityUId = this.getDaoManager().getEntityDao(codingSchemeUri,
-				version).getEntityUId(codingSchemeUId, entityCode,
-				entityCodeNamespace);
-
-		String propertyUId = propertyDao
-				.getPropertyUIdByPropertyIdAndName(codingSchemeUId, entityUId, property
-						.getPropertyId(), property.getPropertyName());
-
-		/* 1. Insert current property data into history. */
-		String prevEntryStateUId = propertyDao.insertHistoryProperty(
-				codingSchemeUId, propertyUId, property);
-
-		/* 2. Update the property data */
-		propertyDao.updateProperty(codingSchemeUId, entityUId, propertyUId,
-				PropertyType.ENTITY, property);
-
-		/* 3. Insert entryState details. */
-		this.getDaoManager().getVersionsDao(codingSchemeUri, version)
-				.insertEntryState(
-						codingSchemeUId,
-						propertyUId, 
-						EntryStateType.PROPERTY, 
-						prevEntryStateUId,
-						property.getEntryState());
+		try {
+			this.doUpdateProperty(codingSchemeUri, version, codingSchemeUId, property, PropertyType.ENTITY);
+		} catch (LBException e) {
+			throw new RuntimeException(e);
+		}
 
 		this.firePropertyUpdateEvent(new PropertyUpdateEvent(
 				codingSchemeUri,
@@ -609,37 +591,45 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 	public void updateRelationProperty(String codingSchemeUri, String version,
 			String relationContainerName, Property property) {
 
-		PropertyDao propertyDao = this.getDaoManager().getPropertyDao(
-				codingSchemeUri, version);
+		String codingSchemeUId = this.getCodingSchemeUId(codingSchemeUri, version);
 
-		String codingSchemeUId = this.getCodingSchemeUId(codingSchemeUri,
-				version);
+		try {
+			this.doUpdateProperty(codingSchemeUri, version, codingSchemeUId, property, PropertyType.RELATION);
+		} catch (LBException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	protected void doUpdateProperty(
+			String codingSchemeUri, 
+			String version,
+			final String parentUid,
+			final Property property, 
+			final PropertyType propertyType) throws LBException {
+		Assert.notNull(property);
+		Assert.notNull(property.getPropertyId());
+		Assert.notNull(property.getPropertyName());
+		
+		final ParentUidReferencingId id = 
+			new ParentUidReferencingId(codingSchemeUri, version, parentUid);
+		
+		final PropertyDao propertyDao = getDaoManager().getPropertyDao(codingSchemeUri, version);
+		final CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, version);
+		
+		final String codingSchemeUId = codingSchemeDao.
+			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+	
+		final String propertyUid = getEntryUid(id, property);
+		
+		this.updateEntry(id, property, EntryStateType.PROPERTY, new UpdateTemplate() {
 
-		String relationUId = this.getDaoManager().getAssociationDao(
-				codingSchemeUri, version).getRelationUId(codingSchemeUId,
-				relationContainerName);
-
-		String propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(codingSchemeUId,
-				relationUId, property.getPropertyId(), property
-						.getPropertyName());
-
-		/* 1. Insert current property data into history. */
-		String prevEntryStateUId = propertyDao.insertHistoryProperty(
-				codingSchemeUId, propertyUId, property);
-
-		/* 2. Update the property data */
-		propertyDao.updateProperty(codingSchemeUId, relationUId, propertyUId,
-				PropertyType.RELATION, property);
-
-		/* 3. Insert entryState details. */
-		this.getDaoManager().getVersionsDao(codingSchemeUri, version)
-				.insertEntryState(
-						codingSchemeUId,
-						propertyUId,
-						EntryStateType.PROPERTY,
-						prevEntryStateUId, property.getEntryState());
-
-		/* 4. Update search (Lucene) indexes. */
+			@Override
+			public String update() {
+				
+				return propertyDao.updateProperty(codingSchemeUId, parentUid, propertyUid, propertyType, property);
+				
+			}
+		});
 	}
 
 	/**
@@ -660,236 +650,8 @@ public class VersionableEventPropertyService extends AbstractDatabaseService
 		}
 		return returnList;
 	}
-
-	private boolean validCodingSchemeRevision(String codingSchemeUri,
-			String version,Property property) throws LBException {
-		
-		String csUId = null;
-		PropertyDao propertyDao = null; 
-		String propertyUId = null;
-		
-		if (property == null)
-			throw new LBParameterException("property is null.");
-
-		EntryState entryState = property.getEntryState();
-
-		if (entryState == null) {
-			throw new LBRevisionException("EntryState can't be null.");
-		}
-
-		try {
-			csUId = this.getDaoManager().getCodingSchemeDao(
-					codingSchemeUri, version)
-					.getCodingSchemeUIdByUriAndVersion(codingSchemeUri,
-							version);
-		} catch (Exception e) {
-			throw new LBRevisionException(
-					"The coding scheme to which the property belongs to doesnt exist.");
-		}
-
-		propertyDao = this.getDaoManager().getPropertyDao(codingSchemeUri, version);
-
-		propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(csUId,csUId,
-				property.getPropertyId(), property.getPropertyName());
-
-
-		ChangeType changeType = property.getEntryState().getChangeType();
-
-		if (changeType == ChangeType.NEW) {
-			if (entryState.getPrevRevision() != null) {
-				throw new LBRevisionException(
-						"Changes of type NEW are not allowed to have previous revisions.");
-			}
-			
-			if (propertyUId != null) {
-				throw new LBRevisionException(
-						"The property being added already exist.");
-			}
-		} else {
-			
-			if (propertyUId == null) {
-				throw new LBRevisionException(
-						"The property being revised doesn't exist.");
-			} 
-			
-			String propLatestRevisionId = propertyDao.getLatestRevision(csUId, propertyUId);
-			
-			String currentRevision = entryState.getContainingRevision();
-			String prevRevision = entryState.getPrevRevision();
-			
-			if (entryState.getPrevRevision() == null 
-					&& propLatestRevisionId != null
-					&& !propLatestRevisionId.equals(currentRevision)) {
-				throw new LBRevisionException(
-						"All changes of type other than NEW should have previous revisions.");
-			} else if (propLatestRevisionId != null
-					&& !propLatestRevisionId.equals(currentRevision)
-					&& !propLatestRevisionId.equals(prevRevision)) {
-				throw new LBRevisionException(
-						"Revision source is not in sync with the database revisions. Previous revision id does not match with the latest revision id of the codingScheme property."
-								+ "Please update the authoring instance with all the revisions and regenerate the source.");
-			}
-		}
-			
-		return true;
-	}
 	
-	private boolean validEntityRevision(String codingSchemeUri,
-			String version, String entityCode, String entityCodeNamespace, Property property) throws LBException {
-		
-		String csUId = null;
-		PropertyDao propertyDao = null;
-		String entityUId = null;
-		String propertyUId = null;
-		
-		if (property == null)
-			throw new LBParameterException("property is null.");
-
-		EntryState entryState = property.getEntryState();
-
-		if (entryState == null) {
-			throw new LBRevisionException("EntryState can't be null.");
-		}
-
-		try {
-			csUId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri,
-					version).getCodingSchemeUIdByUriAndVersion(codingSchemeUri,
-					version);
-		} catch (Exception e) {
-			throw new LBRevisionException(
-			"The coding scheme to which the property belongs to doesn't exist.");
-		}
-
-		propertyDao = this.getDaoManager().getPropertyDao(codingSchemeUri,
-				version);
-
-		entityUId = this.getDaoManager().getEntityDao(codingSchemeUri,
-				version).getEntityUId(csUId, entityCode,
-						entityCodeNamespace);
-
-		propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(csUId,
-				entityUId, property.getPropertyId(), property
-				.getPropertyName());
-		
-		ChangeType changeType = property.getEntryState().getChangeType();
-		
-		if (changeType == ChangeType.NEW) {
-			if (entryState.getPrevRevision() != null) {
-				throw new LBRevisionException(
-						"Changes of type NEW are not allowed to have previous revisions.");
-			}
-			
-			if( propertyUId != null ) {
-				throw new LBRevisionException(
-						"The property being revised already exist.");
-			}
-		} else {
-			
-			if (propertyUId == null) {
-				throw new LBRevisionException(
-						"The property being revised doesn't exist.");
-			} 
-			
-			String propLatestRevisionId = propertyDao.getLatestRevision(csUId, propertyUId);
-			
-			String currentRevision = entryState.getContainingRevision();
-			String prevRevision = entryState.getPrevRevision();
-			
-			if (entryState.getPrevRevision() == null
-					&& propLatestRevisionId != null
-					&& !propLatestRevisionId.equals(currentRevision)) {
-				throw new LBRevisionException(
-						"All changes of type other than NEW should have previous revisions.");
-			} else if (propLatestRevisionId != null
-					&& !propLatestRevisionId.equals(currentRevision)
-					&& !propLatestRevisionId.equals(prevRevision)) {
-				throw new LBRevisionException(
-						"Revision source is not in sync with the database revisions. "
-								+ "Previous revision id does not match with the latest revision id of the codingScheme property."
-								+ "Please update the authoring instance with all the revisions and regenerate the source.");
-			}
-		}
-			
-		return true;
-		
-	}
-	
-	private boolean validRelationRevision(String codingSchemeUri,
-			String version, String containerRelationName, Property property) throws LBException {
-		
-		String csUId = null;
-		String relationUId = null;
-		PropertyDao propertyDao = null;
-		String propertyUId = null;
-		
-		if (property == null)
-			throw new LBParameterException("property is null.");
-
-		EntryState entryState = property.getEntryState();
-
-		if (entryState == null) {
-			throw new LBRevisionException("EntryState can't be null.");
-		}
-
-		try { 
-			csUId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri,
-					version).getCodingSchemeUIdByUriAndVersion(codingSchemeUri,
-					version);
-		} catch (Exception e) {
-			throw new LBRevisionException(
-					"The coding scheme to which the property belongs to doesn't exist.");
-		}
-
-		relationUId = this.getDaoManager().getAssociationDao(
-				codingSchemeUri, version).getRelationUId(csUId,
-						containerRelationName);
-
-		propertyDao = this.getDaoManager().getPropertyDao(
-				codingSchemeUri, version);
-
-		propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(
-				csUId, relationUId, property.getPropertyId(), property
-				.getPropertyName());
-
-		ChangeType changeType = property.getEntryState().getChangeType();
-
-		if (changeType == ChangeType.NEW) {
-			if (entryState.getPrevRevision() != null) {
-				throw new LBRevisionException(
-						"Changes of type NEW are not allowed to have previous revisions.");
-			}
-			
-			if( propertyUId != null ) {
-				throw new LBRevisionException(
-						"The property being revised already exist.");
-			}
-		} else {
-			
-			if (propertyUId == null) {
-				throw new LBRevisionException(
-						"The property being revised doesn't exist.");
-			}
-			
-			String propLatestRevisionId = propertyDao.getLatestRevision(csUId, propertyUId);
-			
-			String currentRevision = entryState.getContainingRevision();
-			String prevRevision = entryState.getPrevRevision();
-			
-			if (entryState.getPrevRevision() == null
-					&& propLatestRevisionId != null
-					&& !propLatestRevisionId.equals(currentRevision)) {
-				throw new LBRevisionException(
-						"All changes of type other than NEW should have previous revisions.");
-			} else if (propLatestRevisionId != null
-					&& !propLatestRevisionId.equals(currentRevision)
-					&& !propLatestRevisionId.equals(prevRevision)) {
-				throw new LBRevisionException(
-						"Revision source is not in sync with the database revisions. "
-								+ "Previous revision id does not match with the latest revision id of the codingScheme property."
-								+ "Please update the authoring instance with all the revisions and regenerate the source.");
-			}
-		}
-		
-		return true;
+	private PropertyDao getPropertyDao(ParentUidReferencingId id) {
+		return this.getDaoManager().getPropertyDao(id.getCodingSchemeUri(), id.getCodingSchemeVersion());
 	}
 }

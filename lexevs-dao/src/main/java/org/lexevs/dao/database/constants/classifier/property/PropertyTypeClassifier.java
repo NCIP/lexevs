@@ -34,6 +34,8 @@ public class PropertyTypeClassifier implements Classifier<PropertyType,String>{
 	 * @see org.springframework.batch.classify.Classifier#classify(java.lang.Object)
 	 */
 	public String classify(PropertyType type) {
+		if(type == null) {return null;}
+		
 		if(type.equals(PropertyType.CODINGSCHEME)){
 			return "codingScheme";
 		}

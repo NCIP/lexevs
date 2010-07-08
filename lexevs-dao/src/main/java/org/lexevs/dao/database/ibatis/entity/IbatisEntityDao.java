@@ -25,13 +25,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
-import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
@@ -120,8 +118,6 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	private static String GET_ENTRYSTATE_UID_BY_ENTITY_UID_SQL = ENTITY_NAMESPACE + "getEntryStateUIdByEntityUId";
 	
 	private static String UPDATE_ENTITY_ENTRYSTATE_UID = ENTITY_NAMESPACE + "updateEntityEntryStateUId";
-	
-	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_ENTITY_SQL = ENTITY_NAMESPACE + "getPrevRevIdFromGivenRevIdForEntity";
 	
 	private static String GET_ENTITY_METADATA_FROM_HISTORY_BY_REVISION_SQL = ENTITY_NAMESPACE + "getEntityMetaDataByRevision";
 	
@@ -780,58 +776,6 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				new PrefixedParameterTuple(prefix, entityGuid, revisionGuid));
 	}
 
-	
-	@Override
-	public Entity resolveEntityByRevision(
-			String codingSchemeUId, String entityCode, String entityCodeNamespace, String revisionId) throws LBRevisionException {
-		
-		String entityUId = this.getEntityUId(codingSchemeUId, entityCode, entityCodeNamespace);
-		
-		if (entityUId == null) {
-			throw new LBRevisionException(
-					"Entity "
-							+ entityCode
-							+ " doesn't exist in lexEVS. "
-							+ "Please check the entityCode and namespace. Its possible that the given entity "
-							+ "has been REMOVEd from the lexEVS system in the past.");
-		}
-		
-		String entityLatestRevisionId = this.getLatestRevision(codingSchemeUId, entityUId);
-
-		if(StringUtils.equals(revisionId, entityLatestRevisionId)) {
-			return getEntityByUId(codingSchemeUId, entityUId);
-		} else {
-
-			Entity entity = this.getHistoryEntityByRevision(
-					codingSchemeUId, 
-					entityUId, 
-					revisionId);
-
-			if(entity == null) {
-				String adjustedRevisionId = 
-					this.getPreviousRevisionIdFromGivenRevisionIdForEntity(codingSchemeUId, revisionId, entityUId);
-				
-				entity = this.getHistoryEntityByRevision(
-						codingSchemeUId, 
-						entityUId, 
-						adjustedRevisionId);
-				
-				if(entity != null) {
-					entity.setEntryState(this.ibatisVersionsDao.
-							getEntryStateByEntryUidAndRevisionId(
-									codingSchemeUId, 
-									entityUId, 
-									revisionId));
-				}
-			}
-
-			if(entity == null) {
-				entity = getEntityByUId(codingSchemeUId, entityUId);
-			}
-			return entity;
-		}
-	}
-	
 	@Override
 	public boolean entryStateExists(String codingSchemeUId, String entryStateUId) {
 
@@ -842,20 +786,5 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			return true;
 		else
 			return false;
-	}
-
-	protected String getPreviousRevisionIdFromGivenRevisionIdForEntity(
-			String codingSchemeUid, 
-			String revisionId, 
-			String entityUid) {
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
-				codingSchemeUid);
-		
-		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(entityUid, revisionId);
-		
-		bean.setPrefix(prefix);
-
-		return (String) this.getSqlMapClientTemplate().
-			queryForObject(GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_ENTITY_SQL, bean);
 	}
 }

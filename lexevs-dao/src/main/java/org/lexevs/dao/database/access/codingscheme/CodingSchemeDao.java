@@ -355,6 +355,8 @@ public interface CodingSchemeDao extends LexGridSchemaVersionAwareDao {
 	public void updateEntryStateUId(String codingSchemeUId, String entryStateUId);
 
 	public String getLatestRevision(String codingSchemeUId);
+	
+	public String getRevisionWhenNew(String codingSchemeUId);
 
 	public List<String> getAllCodingSchemeRevisions(String csUId);	
 }

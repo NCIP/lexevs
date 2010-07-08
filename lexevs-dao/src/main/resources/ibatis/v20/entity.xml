@@ -563,52 +563,6 @@
 		WHERE
 			es.entryStateGuid = #param1#
 	</select>
- 	
-	<select id="getPrevRevIdFromGivenRevIdForEntity" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultClass="string">
-	<![CDATA[
-	
-			SELECT
-				DISTINCT(r0.revisionId)
-			FROM
-				$prefix$entryState es0
-			INNER JOIN
-				${defaultPrefix}revision r0		
-			ON
-				es0.revisionGuid = r0.revisionGuid
-			WHERE
-				es0.entryGuid = #param1#  
-			AND
-				(
-				r0.revAppliedDate = (
-	
-				SELECT
-					MAX(r1.revAppliedDate)
-				FROM
-					$prefix$entryState es1
-				LEFT JOIN
-					${defaultPrefix}revision r1		
-				ON
-					es1.revisionGuid = r1.revisionGuid
-				WHERE
-					es1.entryGuid = #param1#
-				AND
-					es1.changeType!= 'DEPENDENT'	
-				AND 
-	        		r1.revAppliedDate <=
-			      		( 
-			      		SELECT
-				      		r2.revAppliedDate
-						FROM
-							$prefix$revision r2
-			      		WHERE
-			        		r2.revisionId = #param2#
-			     		)
-		     	)
-	     	)
-	]]>	
-	</select>	
 	
 	<select id="getEntityMetaDataByRevision" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"

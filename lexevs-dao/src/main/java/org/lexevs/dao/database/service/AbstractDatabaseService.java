@@ -57,6 +57,12 @@ public class AbstractDatabaseService extends DatabaseServiceEventSupport {
 				versionable.getEntryState().getChangeType().equals(ChangeType.DEPENDENT);
 	}
 	
+	protected boolean isChangeTypeRemove(Versionable versionable) {
+		return versionable.getEntryState() != null 
+				&&
+				versionable.getEntryState().getChangeType().equals(ChangeType.REMOVE);
+	}
+	
 	/**
 	 * Gets the dao manager.
 	 * 

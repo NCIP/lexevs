@@ -29,6 +29,7 @@ import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
+import org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean;
 import org.lexevs.dao.database.ibatis.revision.IbatisRevisionDao;
 import org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean;
 import org.lexevs.dao.database.inserter.Inserter;
@@ -101,11 +102,30 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	private static String UPDATE_PREVIOUS_ENTRY_STATE_UIDS_SQL = VERSIONS_NAMESPACE
 			+ "updatePreviousEntryStateUIds";
 	
+	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_ENTRY_SQL = VERSIONS_NAMESPACE + "getPrevRevIdFromGivenRevIdForEntry";
+
 	private static String GET_ENTRY_STATE_BY_ENTRY_UID_AND_REVISION_ID_SQL = VERSIONS_NAMESPACE + "getEntryStateByEntryUidAndRevisionId";
 	
 	/** ibatis revision dao */
 	private IbatisRevisionDao ibatisRevisionDao = null;
 	
+	@Override
+	public String getPreviousRevisionIdFromGivenRevisionIdForEntry(
+			String codingSchemeUid, 
+			String entityUid,
+			String revisionId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUid);
+		
+		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(entityUid, revisionId);
+		
+		bean.setPrefix(prefix);
+
+		return (String) this.getSqlMapClientTemplate().
+			queryForObject(GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_ENTRY_SQL, bean);
+	}
+	
+	@Override
 	public EntryState getEntryStateByEntryUidAndRevisionId(
 			String codingSchemeUId,
 			String entryUId, 

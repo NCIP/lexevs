@@ -169,6 +169,38 @@ public class VersionableEventEntityService extends RevisableAbstractDatabaseServ
 		return entityDao.
 			updateEntityVersionableAttrib(codingSchemeUid, entryUId, revisedEntity);	
 	}
+	
+	
+
+	@Override
+	protected Entity getHistoryEntryByRevisionId(
+			CodingSchemeUriVersionBasedEntryId id, 
+			String entryUid,
+			String revisionId) {
+		String uri = id.getCodingSchemeUri();
+		String version = id.getCodingSchemeVersion();
+
+		String codingSchemeUid = this.getCodingSchemeUId(uri, version);
+		
+		EntityDao entityDao = getDaoManager().getEntityDao(uri,
+				version);
+		
+		return entityDao.getHistoryEntityByRevision(codingSchemeUid, entryUid, revisionId);
+	}
+
+	@Override
+	protected String getLatestRevisionId(CodingSchemeUriVersionBasedEntryId id,
+			String entryUId) {
+		String uri = id.getCodingSchemeUri();
+		String version = id.getCodingSchemeVersion();
+		
+		String codingSchemeUid = this.getCodingSchemeUId(uri, version);
+		
+		EntityDao entityDao = getDaoManager().getEntityDao(uri,
+				version);
+		
+		return entityDao.getLatestRevision(codingSchemeUid, entryUId);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.entity.EntityService#insertEntity(java.lang.String, java.lang.String, org.LexGrid.concepts.Entity)
@@ -424,7 +456,7 @@ public class VersionableEventEntityService extends RevisableAbstractDatabaseServ
 	@Override
 	public void revise(String codingSchemeUri, String version, Entity entity) throws LBException {
 
-		if (validRevision(codingSchemeUri, version, entity)) {
+		if (this.validRevision(new CodingSchemeUriVersionBasedEntryId(codingSchemeUri, version), entity)) {
 			ChangeType changeType = entity.getEntryState().getChangeType();
 			
 			if (changeType == ChangeType.NEW) {
@@ -454,80 +486,6 @@ public class VersionableEventEntityService extends RevisableAbstractDatabaseServ
 		this.propertyService = propertyService;
 	}
 
-	private boolean validRevision(String codingSchemeUri, String version, Entity entity) throws LBException {
-		
-		String csUId = null;
-		EntityDao entityDao = null;
-		String entityUId = null;
-		
-		if( entity == null) 
-			throw new LBParameterException("Entity object is not supplied.");
-		
-		EntryState entryState = entity.getEntryState();
-		
-		if (entryState == null) {
-			throw new LBRevisionException("EntryState can't be null.");
-		}
-		
-		try {
-			csUId = this.getDaoManager().getCodingSchemeDao(codingSchemeUri,
-					version).getCodingSchemeUIdByUriAndVersion(codingSchemeUri,
-					version);
-		} catch (Exception e) {
-			throw new LBRevisionException(
-			"The coding scheme to which the entity belongs to doesn't exist.");
-		}
-
-		entityDao = this.getDaoManager().getEntityDao(
-				codingSchemeUri, version);
-
-		entityUId = entityDao.getEntityUId(csUId, entity
-				.getEntityCode(), entity.getEntityCodeNamespace());
-
-
-		ChangeType changeType = entryState.getChangeType();
-	
-		if (changeType == ChangeType.NEW) {
-			if (entryState.getPrevRevision() != null) {
-				throw new LBRevisionException(
-						"Changes of type NEW are not allowed to have previous revisions.");
-			}
-			
-			if (entityUId != null) {
-				throw new LBRevisionException(
-						"The entity being added already exist.");
-			}
-		} else {
-			
-			if (entityUId == null) {
-				throw new LBRevisionException(
-						"The entity being revised doesn't exist.");
-			} 
-			
-			String entityLatestRevisionId = entityDao.getLatestRevision(csUId,
-					entityUId);
-
-			String currentRevision = entryState.getContainingRevision();
-			String prevRevision = entryState.getPrevRevision();
-			
-			if (entryState.getPrevRevision() == null
-					&& entityLatestRevisionId != null
-					&& !entityLatestRevisionId.equals(currentRevision)) {
-				throw new LBRevisionException(
-						"All changes of type other than NEW should have previous revisions.");
-			} else if (entityLatestRevisionId != null 
-					&& !entityLatestRevisionId.equals(currentRevision)
-					&& !entityLatestRevisionId.equals(prevRevision)) {
-				throw new LBRevisionException(
-						"Revision source is not in sync with the database revisions. "
-								+ "Previous revision id does not match with the latest revision id of the entity. "
-								+ "Please update the authoring instance with all the revisions and regenerate the source.");
-			}
-		} 
-		
-		return true;
-	}
-
 	@Override 
 	@Transactional(rollbackFor=Exception.class)
 	public Entity resolveEntityByRevision(String codingSchemeURI,
@@ -542,32 +500,49 @@ public class VersionableEventEntityService extends RevisableAbstractDatabaseServ
 
 		String codingSchemeUId = codingSchemeDao
 				.getCodingSchemeUIdByUriAndVersion(codingSchemeURI, version);
+		
+		String entityUid = entityDao.getEntityUId(codingSchemeUId, entityCode, entityCodeNamespace);
 
-		return entityDao.resolveEntityByRevision(codingSchemeUId, entityCode,
-				entityCodeNamespace, revisionId);
+		return super.resolveEntryByRevision(
+				new CodingSchemeUriVersionBasedEntryId(codingSchemeURI, version), entityUid, revisionId);
 	}
 	
+	@Override
+	protected Entity addDependentAttributesByRevisionId(
+			CodingSchemeUriVersionBasedEntryId id, String entryUid, Entity entry) {
+		String codingSchemeUri = id.getCodingSchemeUri();
+		String version = id.getCodingSchemeVersion();
+
+		List<Property> properties = this.propertyService.resolvePropertiesOfEntityByRevision(
+				codingSchemeUri, 
+				version, 
+				entry.getEntityCode(), 
+				entry.getEntityCodeNamespace(), 
+				entry.getEntryState().getContainingRevision());
+		
+		entry.addAnyProperties(properties);
+		
+		return entry;
+	}
+
 	@Override 
 	@Transactional(rollbackFor=Exception.class)
 	public Entity resolveEntityByDate(String codingSchemeURI,
 			String version, String entityCode, String entityCodeNamespace,
 			Date date) throws LBRevisionException {
 		
-		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(
-				codingSchemeURI, version);
-
 		EntityDao entityDao = getDaoManager().getEntityDao(codingSchemeURI,
 				version);
 		
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeURI, version);
+		
+		String entityUid = entityDao.getEntityUId(codingSchemeUid, entityCode, entityCodeNamespace);
+		
 		RevisionDao revisionDao = getDaoManager().getRevisionDao();
 
-		
 		String revisionId = revisionDao.getRevisionIdForDate(new Timestamp(date.getTime()));
-		
-		String codingSchemeUId = codingSchemeDao
-				.getCodingSchemeUIdByUriAndVersion(codingSchemeURI, version);
-		
-		return entityDao.resolveEntityByRevision(codingSchemeUId, entityCode,
-				entityCodeNamespace, revisionId);
+	
+		return super.resolveEntryByRevision(
+				new CodingSchemeUriVersionBasedEntryId(codingSchemeURI, version), entityUid, revisionId);
 	}
 }

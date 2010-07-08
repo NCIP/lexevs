@@ -53,7 +53,16 @@ public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 		/** PICKLISTENTRYNODE */
 		PICKLISTENTRYNODE
 	}
+	
+	public String getPreviousRevisionIdFromGivenRevisionIdForEntry(
+			String codingSchemeUid, 
+			String entityUid,
+			String currentRevisionId) ;
 
+	public EntryState getEntryStateByEntryUidAndRevisionId(
+			String codingSchemeUId,
+			String entryUId, 
+			String revisionId);
 
 	public String insertEntryState(
 			String codingSchemeUId,

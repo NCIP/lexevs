@@ -584,6 +584,23 @@
 		AND
 			es.revisionGuid = rev.revisionGuid	
 	</select>
+	
+	<select id="getCodingSchemeRevisionIdWhenNewByUId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultClass="string">
+		SELECT 
+			rev.revisionId
+		FROM
+			$prefix$entryState es
+		INNER JOIN
+			${defaultPrefix}revision rev
+		ON
+			es.revisionGuid = rev.revisionGuid
+		WHERE
+			es.entryGuid = #param1#	
+		AND
+			es.changeType = 'NEW'
+	</select>
 
 	<delete id="deleteAllCodingSchemeSourceByCodingSchemeUId"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">

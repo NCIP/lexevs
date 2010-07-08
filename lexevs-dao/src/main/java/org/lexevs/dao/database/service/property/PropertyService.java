@@ -86,19 +86,6 @@ public interface PropertyService {
 			String version, Property property);
 
 	/**
-	 * insert versionable changes to coding schme property.
-	 * 
-	 * @param codingSchemeUri
-	 *            the coding scheme uri.
-	 * @param version
-	 *            the coding scheme version.
-	 * @param property
-	 *            the coding scheme property.
-	 */
-	public void insertCodingSchemePropertyVersionableChanges(
-			String codingSchemeUri, String version, Property property);
-
-	/**
 	 * Insert entity property.
 	 * 
 	 * @param codingSchemeUri
@@ -148,24 +135,6 @@ public interface PropertyService {
 	 */
 	public void removeEntityProperty(String codingSchemeUri, String version,
 			String entityCode, String entityCodeNamespace, Property property);
-
-	/**
-	 * Insert versionable changes to entity property.
-	 * 
-	 * @param codingSchemeUri
-	 *            the coding scheme uri
-	 * @param version
-	 *            the version
-	 * @param entityCode
-	 *            the entity code
-	 * @param entityCodeNamespace
-	 *            the entity code namespace
-	 * @param property
-	 *            the property
-	 */
-	public void insertEntityPropertyVersionableChanges(String codingSchemeUri,
-			String version, String entityCode, String entityCodeNamespace,
-			Property property);
 
 	/**
 	 * Insert batch entity properties.
@@ -234,22 +203,6 @@ public interface PropertyService {
 			String relationContainerName, Property property);
 
 	/**
-	 * Insert relation property versionable changes.
-	 * 
-	 * @param codingSchemeUri
-	 *            the coding scheme uri.
-	 * @param version
-	 *            the coding scheme version.
-	 * @param relationContainerName
-	 *            the relations container name.
-	 * @param property
-	 *            the relation property object.
-	 */
-	public void insertRelationPropertyVersionableChanges(
-			String codingSchemeUri, String version,
-			String relationContainerName, Property property);
-
-	/**
 	 * Revise a coding scheme property.
 	 * 
 	 * @param codingSchemeUri
@@ -297,4 +250,16 @@ public interface PropertyService {
 	 */
 	public void reviseRelationProperty(String codingSchemeUri, String version,
 			String relationContainerName, Property property) throws LBException;
+	
+	public List<Property> resolvePropertiesOfCodingSchemeByRevision(
+			String codingSchemeURI,
+			String version,
+			String revisionId);
+	
+	public List<Property> resolvePropertiesOfEntityByRevision(
+			String codingSchemeURI,
+			String version, 
+			String entityCode, 
+			String entityCodeNamespace,
+			String revisionId);
 }

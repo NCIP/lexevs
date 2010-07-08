@@ -89,7 +89,7 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 			List<String> propertyNames, List<String> propertyTypes,
 			List<String> entityUids);
 	
-	public Entity getHistoryEntityByRevision(String codingSchemeUId, String entityUId, String revisionUId);
+	public Entity getHistoryEntityByRevision(String codingSchemeUId, String entityUId, String revisionId);
 	
 	/**
 	 * Gets the entity id.
@@ -168,8 +168,4 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 			String entryStateUId);
 
 	public boolean entryStateExists(String codingSchemeUId, String entryStateUId);
-	
-	public Entity resolveEntityByRevision(String codingSchemeUId,
-			String entityCode, String entityCodeNamespace, String revisionId)
-			throws LBRevisionException;
 }

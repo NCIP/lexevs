@@ -20,7 +20,6 @@ package org.lexevs.dao.database.access.property;
 
 import java.util.List;
 
-import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
@@ -62,8 +61,13 @@ public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 	public List<Property> getAllPropertiesOfParent(String codingSchemeId,
 			String parentId, PropertyType type);
 	
-	public List<Property> getAllHistoryPropertiesOfParentByRevisionId(String codingSchemeId,
-			String parentId, String revisionId, PropertyType type);
+	public List<String> getAllHistoryPropertyUidsOfParentByRevisionId(String codingSchemeId,
+			String parentId, String revisionId);
+	
+	public Property getHistoryPropertyByRevisionId(
+			String codingSchemeId,
+			String propertyUid, 
+			String revisionId);
 
 	public List<Property> getPropertiesOfParents(String codingSchemeId, List<String> parentUids);
 
@@ -72,6 +76,10 @@ public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 			List<String> propertyNames, 
 			List<String> propertyTypes,
 			List<String> parentUids);
+	
+	public Property getPropertyByUid(
+			String codingSchemeId, 
+			String propertyUid);
 	/**
 	 * Insert property qualifier.
 	 * 
@@ -198,15 +206,19 @@ public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 	 * @param type the type
 	 * @param property the property
 	 */
-	public void updateProperty(
+	public String updateProperty(
 			String codingSchemeUId, 
 			String parentUId,
 			String propertyUId,
 			PropertyType type,
 			Property property);
 
-	public void updatePropertyVersionableAttrib(String codingSchemeUId, String parentUId,
-			String propertyUId, PropertyType type, Property property);
+	public String updatePropertyVersionableAttrib(
+			String codingSchemeUId,
+			String propertyUId, 
+			Property property);
+	
+	public boolean entryStateExists(String codingSchemeUId, String entryStateUId);
 	
 	public String getPropertyUIdByPropertyIdAndName(String codingSchemeUId, String referenceUId, String propertyId,
 			String propertyName);
@@ -215,7 +227,6 @@ public interface PropertyDao extends LexGridSchemaVersionAwareDao {
 
 	public String getLatestRevision(String csUId, String propertyUId);
 	
-	public Property resolvePropertyByRevision(String codingSchemeUId, String parentGuid,
-			String propertyId, String revisionId) throws LBRevisionException;
+	public String getEntryStateUId(String codingSchemeUId, String propertyUId);
 }
 

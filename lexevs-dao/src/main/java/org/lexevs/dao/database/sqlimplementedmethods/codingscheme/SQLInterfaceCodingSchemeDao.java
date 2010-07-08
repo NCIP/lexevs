@@ -500,13 +500,19 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 
 	@Override
 	public List<String> getAllCodingSchemeRevisions(String csUId) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<NameAndValue> getDistinctPropertyNameAndType(
 			String codingSchemeId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String getRevisionWhenNew(String codingSchemeUId) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
 }

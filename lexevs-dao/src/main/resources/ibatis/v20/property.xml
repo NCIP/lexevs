@@ -297,7 +297,54 @@
 		AND 
 			property.referenceGuid = #param2#
 		AND 
-			entryState.revisionGuid = #param3#
+			currentRevision.revisionId = #param3#
+  	</select>
+  	
+    <select id="getAllHistoryPropertyIdsByParentUId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="string">
+			SELECT DISTINCT
+				propertyGuid
+			FROM
+				$prefix$property
+			WHERE
+				referenceGuid = #param1#
+			
+			UNION
+			
+			SELECT DISTINCT
+				propertyGuid
+			FROM
+				${defaultPrefix}h_property
+			WHERE
+				referenceGuid = #param1#	
+	</select>
+  	
+  	<select id="getPropertyByUidAndRevisionId" remapResults="true"
+  		resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		<include refid="getHistoryPropertyFragment"/>
+  		WHERE
+			property.propertyGuid = #param1#
+		AND 
+			currentRevision.revisionId = #param2#
+  	</select>
+  	
+  	<select id="getEntryStateUIdByPropertyUId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultClass="string">
+		SELECT 
+			entryStateGuid
+		FROM
+			$prefix$property prop
+		WHERE
+			prop.propertyGuid = #param1#	
+	</select>
+  	
+  	<select id="getPropertyByUid" remapResults="true"
+  		resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		<include refid="getPropertyFragment"/>
+  		WHERE
+			property.propertyGuid = #param1#
   	</select>
 
 	<delete id="deleteCodingSchemePropertiesByCodingSchemeUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<systemRelease xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/versions http://LexGrid.org/schema/2010/01/LexGrid/versions.xsd"
+    xmlns="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+    xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins"
+    xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+    xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts"
+    xmlns:lgRel="http://LexGrid.org/schema/2010/01/LexGrid/relations"
+    xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
+    xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
+    xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueDomains"
+    xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory"
+    releaseURI="testRelease" releaseDate="2010-04-01T00:00:00">
+
+    <codingSchemes>
+        <lgCS:codingScheme approxNumConcepts="1" codingSchemeName="test" defaultLanguage="en"
+            formalName="test" codingSchemeURI="testUri" representsVersion="1.0">
+           <lgCS:mappings/>
+            <lgCS:entities>
+                <lgCon:entity entityCode="testEntity" entityCodeNamespace="test" isActive="true">
+                    <lgCommon:entityDescription>Initial Entity</lgCommon:entityDescription>
+                    <lgCon:entityType>concept</lgCon:entityType>
+                </lgCon:entity>
+            </lgCS:entities>
+        </lgCS:codingScheme>
+    </codingSchemes>
+
+      <editHistory>
+        <revision revisionId="1">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="test"
+                    codingSchemeURI="testUri" representsVersion="1.0">
+                    <lgCommon:entryState containingRevision="1" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:entities>
+                        <lgCon:entity entityCode="testEntity" entityCodeNamespace="test">
+                            <lgCommon:entryState containingRevision="1"
+                                relativeOrder="0" changeType="DEPENDENT"/>
+                                <lgCon:property propertyName="test-prop1" propertyId="1">
+                                	<lgCommon:entryState changeType="NEW" relativeOrder="0" containingRevision="1"/>
+                                	<lgCommon:value>revision1Value</lgCommon:value>
+                                </lgCon:property>
+                        </lgCon:entity>
+                    </lgCS:entities>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+ 
+        <revision revisionId="2">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="test"
+                    codingSchemeURI="testUri" representsVersion="1.0">
+                    <lgCommon:entryState containingRevision="2" prevRevision="1" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:entities>
+                        <lgCon:entity entityCode="testEntity" entityCodeNamespace="test">
+                            <lgCommon:entryState containingRevision="2" prevRevision="1"
+                                relativeOrder="0" changeType="DEPENDENT"/>
+                            	<lgCon:property propertyName="test-prop1" propertyId="1">
+                                	<lgCommon:entryState 
+                                	changeType="MODIFY" 
+                                	relativeOrder="0" 
+                                	containingRevision="2"
+                                	prevRevision="1"/>
+                                	<lgCommon:value>revision2Value</lgCommon:value>
+                                </lgCon:property>
+                        </lgCon:entity>
+                    </lgCS:entities>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+        
+        <revision revisionId="3">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="test"
+                    codingSchemeURI="testUri" representsVersion="1.0">
+                    <lgCommon:entryState containingRevision="3" prevRevision="2" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:entities>
+                        <lgCon:entity entityCode="testEntity" entityCodeNamespace="test">
+                            <lgCommon:entryState containingRevision="3" prevRevision="2"
+                                relativeOrder="0" changeType="DEPENDENT"/>    
+                                <lgCon:property propertyName="test-prop2" propertyId="2">
+                                	<lgCommon:entryState changeType="NEW" relativeOrder="0" containingRevision="3"/>
+                                	<lgCommon:value>revision3Value</lgCommon:value>
+                                </lgCon:property> 
+                        </lgCon:entity>
+                    </lgCS:entities>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+        
+        <revision revisionId="4">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="test"
+                    codingSchemeURI="testUri" representsVersion="1.0">
+                    <lgCommon:entryState containingRevision="4" prevRevision="3" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:entities>
+                        <lgCon:entity entityCode="testEntity" entityCodeNamespace="test">
+                            <lgCommon:entryState containingRevision="4" prevRevision="3"
+                                relativeOrder="0" changeType="DEPENDENT"/>    
+                                <lgCon:property propertyName="test-prop1" propertyId="1">
+                                	<lgCommon:entryState changeType="REMOVE" 
+                                	relativeOrder="0" 
+                                	containingRevision="4"
+                                	prevRevision="2"/>
+                                </lgCon:property> 
+                        </lgCon:entity>
+                    </lgCS:entities>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+        
+         <revision revisionId="5">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="test"
+                    codingSchemeURI="testUri" representsVersion="1.0">
+                    <lgCommon:entryState containingRevision="5" prevRevision="4" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:entities>
+                        <lgCon:entity entityCode="testEntity" entityCodeNamespace="test">
+                            <lgCommon:entryState containingRevision="5" prevRevision="4"
+                                relativeOrder="0" changeType="DEPENDENT"/>    
+                                <lgCon:property propertyName="test-prop5" propertyId="5">
+                                	<lgCommon:entryState changeType="NEW" relativeOrder="0" containingRevision="5"/>
+                                	<lgCommon:value>revision5Value</lgCommon:value>
+                                </lgCon:property> 
+                        </lgCon:entity>
+                    </lgCS:entities>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+    </editHistory>
+
+</systemRelease>
