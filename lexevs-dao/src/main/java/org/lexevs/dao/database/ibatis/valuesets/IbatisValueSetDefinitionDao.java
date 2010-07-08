@@ -19,7 +19,6 @@
 package org.lexevs.dao.database.ibatis.valuesets;
 
 import java.lang.reflect.Field;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +51,6 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
-import org.lexevs.dao.database.access.revision.RevisionDao;
 import org.lexevs.dao.database.access.valuesets.VSDefinitionEntryDao;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
