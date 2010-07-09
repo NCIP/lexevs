@@ -351,7 +351,6 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 				return createUid();
 			}
 		});
-		
 	}
 	
 	private String createUid() {

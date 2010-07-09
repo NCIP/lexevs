@@ -1,6 +1,7 @@
 package org.lexevs.dao.database.service.relation;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.relations.Relations;
 
 public interface RelationService {
@@ -23,10 +24,6 @@ public interface RelationService {
 	
 	public void removeRelation(String codingSchemeUri, String version, Relations relation);
 	
-	public void insertRelationDependentChanges(String codingSchemeUri, String version, Relations relation) throws LBException;
-	
-	public void insertRelationVersionableChanges(String codingSchemeUri, String version, Relations relation) throws LBException;
-
 	/**
 	 * version API to revise relations.
 	 * 
@@ -37,4 +34,11 @@ public interface RelationService {
 	 */
 	public void revise(String codingSchemeUri, String version,
 			Relations relation) throws LBException;
+
+	public Relations resolveRelationsByRevision(
+			String codingSchemeURI,
+			String version, 
+			String relationsName, 
+			String revisionId)
+			throws LBRevisionException;
 }

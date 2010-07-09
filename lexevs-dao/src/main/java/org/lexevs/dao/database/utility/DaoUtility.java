@@ -23,7 +23,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -339,6 +341,15 @@ public class DaoUtility {
 		}
 		return returnList;
 	}
+	
+	public static <T> Iterable<T> emptyIterableIfNull(Iterable<T> iterable) {
+	    return iterable == null ? Collections.<T>emptyList() : iterable;
+	}
+	
+	public static <T> Iterable<T> emptyIterableIfNull(T[] iterable) {
+	    return iterable == null ? Collections.<T>emptyList() : Arrays.asList(iterable);
+	}
+
 
 	//Ignore this -- just some helpers for generating Ibatis Mapping code. Will go away...
 	/**

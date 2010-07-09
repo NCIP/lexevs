@@ -262,4 +262,10 @@ public interface PropertyService {
 			String entityCode, 
 			String entityCodeNamespace,
 			String revisionId);
+	
+	public List<Property> resolvePropertiesOfRelationByRevision(
+			String codingSchemeURI,
+			String version, 
+			String relationsName,
+			String revisionId);
 }

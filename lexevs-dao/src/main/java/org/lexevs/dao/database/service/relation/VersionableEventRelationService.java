@@ -1,19 +1,19 @@
 package org.lexevs.dao.database.service.relation;
 
+import java.util.List;
+
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
+import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
-import org.lexevs.dao.database.access.property.PropertyDao;
-import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
-import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
 import org.lexevs.dao.database.service.RevisableAbstractDatabaseService;
 import org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId;
@@ -21,6 +21,7 @@ import org.lexevs.dao.database.service.association.AssociationDataService;
 import org.lexevs.dao.database.service.association.AssociationTargetService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.lexevs.dao.database.service.property.PropertyService;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.transaction.annotation.Transactional;
 
 public class VersionableEventRelationService extends RevisableAbstractDatabaseService<Relations,CodingSchemeUriVersionBasedEntryId> implements RelationService {
@@ -33,16 +34,62 @@ public class VersionableEventRelationService extends RevisableAbstractDatabaseSe
 	protected Relations addDependentAttributesByRevisionId(
 			CodingSchemeUriVersionBasedEntryId id, String entryUid,
 			Relations entry) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+		entry.setProperties(new Properties());
+		
+		List<Property> properties = 
+			propertyService.resolvePropertiesOfRelationByRevision(
+					id.getCodingSchemeUri(), 
+					id.getCodingSchemeVersion(), 
+					entry.getContainerName(), 
+					entry.getEntryState().getContainingRevision());
+		
+		//TODO: Get dependent association source/targets
+		
+		entry.getProperties().setProperty(properties);
+		
+		return entry;
+	
 	}
 
 	@Override
 	protected void doInsertDependentChanges(
 			CodingSchemeUriVersionBasedEntryId id, Relations revisedEntry)
-			throws LBException {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+		throws LBException {
+		
+		if(revisedEntry.getProperties() != null && revisedEntry.getProperties().getProperty() != null) {
+			for(Property property : revisedEntry.getProperties().getProperty()) {
+				propertyService.reviseRelationProperty(
+						id.getCodingSchemeUri(), 
+						id.getCodingSchemeVersion(), 
+						revisedEntry.getContainerName(), 
+						property);
+			}
+		}
+
+		for(AssociationPredicate predicate : DaoUtility.emptyIterableIfNull(revisedEntry.getAssociationPredicate())) {
+			for(AssociationSource source : DaoUtility.emptyIterableIfNull(predicate.getSource())) {
+				for(AssociationData data : DaoUtility.emptyIterableIfNull(source.getTargetData())) {
+					assocDataService.revise(
+							id.getCodingSchemeUri(), 
+							id.getCodingSchemeVersion(), 
+							revisedEntry.getContainerName(), 
+							predicate.getAssociationName(), 
+							source, 
+							data);
+				}
+				
+				for(AssociationTarget target : DaoUtility.emptyIterableIfNull(source.getTarget())) {
+					assocTargetService.
+					revise(
+							id.getCodingSchemeUri(), 
+							id.getCodingSchemeVersion(), 
+							revisedEntry.getContainerName(), 
+							predicate.getAssociationName(), 
+							source, 
+							target);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -103,16 +150,42 @@ public class VersionableEventRelationService extends RevisableAbstractDatabaseSe
 	@Override
 	protected void insertIntoHistory(CodingSchemeUriVersionBasedEntryId id,
 			Relations currentEntry, String entryUId) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+		String codingSchemeUid = this.getCodingSchemeUid(id);
+		
+		this.getAssociationDao(id).insertHistoryRelation(codingSchemeUid, entryUId, currentEntry);
 	}
 
 	@Override
 	protected String updateEntityVersionableAttributes(
 			CodingSchemeUriVersionBasedEntryId id, String entryUId,
 			Relations revisedEntity) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+		String codingSchemeUid = this.getCodingSchemeUid(id);
+		
+		return 
+			this.getAssociationDao(id).updateRelationVersionableChanges(codingSchemeUid, entryUId, revisedEntity);
+	}
+	
+	@Override 
+	@Transactional(rollbackFor=Exception.class)
+	public Relations resolveRelationsByRevision(
+			String codingSchemeURI,
+			String version, 
+			String relationsName,
+			String revisionId) throws LBRevisionException {
+		CodingSchemeUriVersionBasedEntryId id = 
+			new CodingSchemeUriVersionBasedEntryId(
+					codingSchemeURI, version);
+		
+		AssociationDao associationDao = this.getAssociationDao(id);
+		
+		String codingSchemeUId = this.getCodingSchemeUid(id);
+		
+		String relationsUid = associationDao.getRelationUId(codingSchemeUId, relationsName);
+		
+		return this.resolveEntryByRevision(
+						id,	 
+						relationsUid, 
+						revisionId);
 	}
 
 	/* (non-Javadoc)
@@ -136,37 +209,27 @@ public class VersionableEventRelationService extends RevisableAbstractDatabaseSe
 	@Transactional(rollbackFor=Exception.class)
 	@DatabaseErrorIdentifier(errorCode=UPDATE_RELATION_ERROR)
 	public void updateRelation(String codingSchemeUri, String version,
-			Relations relation) throws LBException {
+			final Relations relation) throws LBException {
 
-		AssociationDao associationDao = this.getDaoManager().getAssociationDao(
+		final AssociationDao associationDao = this.getDaoManager().getAssociationDao(
 				codingSchemeUri, version);
-		
-		VersionsDao versionsDao = getDaoManager().getVersionsDao(codingSchemeUri, version);
-		
-		String codingSchemeUId = this.getDaoManager().getCodingSchemeDao(
+			
+		final String codingSchemeUId = this.getDaoManager().getCodingSchemeDao(
 				codingSchemeUri, version).getCodingSchemeUIdByUriAndVersion(
 				codingSchemeUri, version);
 
-		String relationUId = associationDao.getRelationUId(codingSchemeUId,
+		final String relationUId = associationDao.getRelationUId(codingSchemeUId,
 				relation.getContainerName());
 
-		/* 1. insert current relation data into history. */
-		String prevEntryStateUId = associationDao.insertHistoryRelation(
-				codingSchemeUId, relationUId, relation);		
-		
-		/* 2. update the attributes of the relation. */
-		String entryStateUId = associationDao.updateRelation(codingSchemeUId, relationUId, relation);
-		
-		/* 3. register entrystate details for the entity.*/
-		versionsDao.insertEntryState(
-				codingSchemeUId,
-				entryStateUId, relationUId,
-				EntryStateType.RELATION,
-				prevEntryStateUId, 
-				relation.getEntryState());
-		
-		/* 4. apply dependent changes for the entity.*/			
-		this.insertRelationDependentChanges(codingSchemeUri, version, relation);
+		this.updateEntry(
+				new CodingSchemeUriVersionBasedEntryId(codingSchemeUri, version), 
+				relation, EntryStateType.RELATION, new UpdateTemplate() {
+
+					@Override
+					public String update() {
+						return associationDao.updateRelation(codingSchemeUId, relationUId, relation);
+					}
+				});
 	}
 	
 	@Override
@@ -177,155 +240,27 @@ public class VersionableEventRelationService extends RevisableAbstractDatabaseSe
 
 		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, version);
 		
-		AssociationDao associationDao = this.getDaoManager().getAssociationDao(
+		final AssociationDao associationDao = this.getDaoManager().getAssociationDao(
 				codingSchemeUri, version);
 		
-		PropertyDao propertyDao = getDaoManager().getPropertyDao(codingSchemeUri, version);
-		
-		VersionsDao versionsDao = getDaoManager().getVersionsDao(codingSchemeUri, version);
-		
-		String codingSchemeUId = codingSchemeDao.
+		final String codingSchemeUId = codingSchemeDao.
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 		
-		String relationUId = associationDao.getRelationUId(codingSchemeUId, relation.getContainerName());
+		final String relationUId = associationDao.getRelationUId(codingSchemeUId, relation.getContainerName());
 		
-		/* 1. Delete all entry state entries of relation. */
-		versionsDao.deleteAllEntryStateOfRelation(codingSchemeUId, relationUId);
-		
-		/* 2. Delete all entity association qualifications for the relation. */
-		associationDao.deleteAssociationQualificationsByRelationUId(codingSchemeUId, relationUId);
-		
-		/* 3. Delete all relation properties. */
-		propertyDao.deleteAllPropertiesOfParent(codingSchemeUId, relationUId, PropertyType.RELATION);
-		
-		/* 4. Delete the relation. */
-		associationDao.removeRelationByUId(codingSchemeUId, relationUId);
-	}
-	
-	@Override
-	@DatabaseErrorIdentifier(errorCode=INSERT_RELATION_DEPENDENT_CHANGES_ERROR)
-	@Transactional(rollbackFor=Exception.class)
-	public void insertRelationDependentChanges(String codingSchemeUri,
-			String version, Relations relation) throws LBException {
+		try {
+			this.removeEntry(
+					new CodingSchemeUriVersionBasedEntryId(codingSchemeUri, version), 
+					relation, EntryStateType.RELATION, new DeleteTemplate() {
 
-		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, version);
-		
-		AssociationDao associationDao = this.getDaoManager().getAssociationDao(
-				codingSchemeUri, version);
-		
-		VersionsDao versionsDao = getDaoManager().getVersionsDao(codingSchemeUri, version);
-
-		String codingSchemeUId = codingSchemeDao
-				.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
-
-		String relationUId = associationDao.getRelationUId(codingSchemeUId,
-				relation.getContainerName());
-		
-		if (relation.getEntryState().getChangeType() == ChangeType.DEPENDENT) {
-			doAddRelationDependentEntry(relation, associationDao, versionsDao,
-					codingSchemeUId, relationUId);
+						@Override
+						public void delete() {
+							associationDao.removeRelationByUId(codingSchemeUId, relationUId);
+						}
+					});
+		} catch (LBException e) {
+			throw new RuntimeException(e);
 		}
-		
-		if (relation.getProperties() != null) {
-			Property[] propertyList = relation.getProperties().getProperty();
-
-			for (int i = 0; i < propertyList.length; i++) {
-				
-				propertyService.reviseRelationProperty(codingSchemeUri,
-						version, relation.getContainerName(), propertyList[i]);
-			}
-		}
-		
-		AssociationPredicate[] assocPredicateList = relation.getAssociationPredicate();
-		
-		for (int i = 0; i < assocPredicateList.length; i++) {
-
-			AssociationSource[] assocSourceList = assocPredicateList[i]
-					.getSource();
-
-			for (int j = 0; j < assocSourceList.length; j++) {
-
-				AssociationTarget[] assocTarget = assocSourceList[j]
-						.getTarget();
-
-				for (int k = 0; k < assocTarget.length; k++) {
-
-					if (associationDao
-							.getAssociationPredicateUIdByContainerUId(
-									codingSchemeUId, relationUId,
-									assocPredicateList[i].getAssociationName()) == null) {
-						
-						associationDao.insertAssociationPredicate(
-								codingSchemeUId, relationUId,
-								assocPredicateList[i], false);
-					}
-					
-					assocTargetService.revise(codingSchemeUri, version,
-							relation.getContainerName(), assocPredicateList[i]
-									.getAssociationName(), assocSourceList[j],
-							assocTarget[k]);
-				}
-
-				AssociationData[] assocData = assocSourceList[j]
-						.getTargetData();
-
-				for (int k = 0; k < assocData.length; k++) {
-
-					if (associationDao
-							.getAssociationPredicateUIdByContainerUId(
-									codingSchemeUId, relationUId,
-									assocPredicateList[i].getAssociationName()) == null) {
-
-						associationDao.insertAssociationPredicate(codingSchemeUId,
-								relationUId, assocPredicateList[i], false);
-					}
-					
-					assocDataService.revise(codingSchemeUri, version, relation
-							.getContainerName(), assocPredicateList[i]
-							.getAssociationName(), assocSourceList[j],
-							assocData[k]);
-				}
-			}
-		}
-	}
-
-	@Override
-	@DatabaseErrorIdentifier(errorCode=INSERT_RELATION_VERSIONABLE_CHANGES_ERROR)
-	@Transactional(rollbackFor=Exception.class)
-	public void insertRelationVersionableChanges(String codingSchemeUri,
-			String version, Relations relation) throws LBException {
-
-		AssociationDao associationDao = this.getDaoManager().getAssociationDao(
-				codingSchemeUri, version);
-		
-		VersionsDao versionsDao = getDaoManager().getVersionsDao(codingSchemeUri, version);
-		
-		String codingSchemeUId = this.getDaoManager().getCodingSchemeDao(
-				codingSchemeUri, version).getCodingSchemeUIdByUriAndVersion(
-				codingSchemeUri, version);
-
-		String relationUId = associationDao.getRelationUId(codingSchemeUId,
-				relation.getContainerName());
-
-		/* 1. insert current relation data into history. */
-		String prevEntryStateUId = associationDao.insertHistoryRelation(
-				codingSchemeUId, relationUId, relation);		
-		
-		/* 2. update the versionable attributes of the relation. */
-		String entryStateUId = associationDao.updateRelationVersionableChanges(codingSchemeUId, relationUId, relation);
-		
-		/* 3. register entrystate details for the entity.*/
-		versionsDao.insertEntryState(
-				codingSchemeUId,
-				entryStateUId, 
-				relationUId,
-				EntryStateType.RELATION, 
-				prevEntryStateUId, 
-				relation
-				.getEntryState());
-		
-		/* 4. apply dependent changes for the entity.*/
-		this.insertRelationDependentChanges(codingSchemeUri, version, relation);
 	}
 
 	@Override
@@ -347,12 +282,16 @@ public class VersionableEventRelationService extends RevisableAbstractDatabaseSe
 				this.updateRelation(codingSchemeUri, version, relation);
 			} else if (changeType == ChangeType.DEPENDENT) {
 
-				this.insertRelationDependentChanges(codingSchemeUri, version,
-						relation);
+				this.insertDependentChanges(
+						new CodingSchemeUriVersionBasedEntryId(codingSchemeUri, version),
+						relation,
+						EntryStateType.RELATION);
 			} else if (changeType == ChangeType.VERSIONABLE) {
 
-				this.insertRelationVersionableChanges(codingSchemeUri, version,
-						relation);
+				this.insertVersionableChanges(
+						new CodingSchemeUriVersionBasedEntryId(codingSchemeUri, version),
+						relation,
+						EntryStateType.RELATION);
 			}
 		}
 	}
@@ -397,38 +336,6 @@ public class VersionableEventRelationService extends RevisableAbstractDatabaseSe
 	 */
 	public void setAssocDataService(AssociationDataService assocDataService) {
 		this.assocDataService = assocDataService;
-	}
-
-	private boolean doAddRelationDependentEntry(Relations relation,
-			AssociationDao associationDao, VersionsDao versionsDao,
-			String codingSchemeUId, String relationUId) {
-		String prevEntryStateUId = associationDao.getRelationEntryStateUId(codingSchemeUId, relationUId);
-	
-		if( !associationDao.entryStateExists(codingSchemeUId, prevEntryStateUId)) {
-			EntryState entryState = new EntryState();
-	
-			entryState.setChangeType(ChangeType.NEW);
-			entryState.setRelativeOrder(0L);
-	
-			versionsDao.insertEntryState(
-					codingSchemeUId,
-					prevEntryStateUId,
-					relationUId, 
-					EntryStateType.RELATION, 
-					null, 
-					entryState);	
-		}
-		
-		String entryStateUId = versionsDao.insertEntryState(
-				codingSchemeUId,
-				relationUId,
-				EntryStateType.RELATION,
-				prevEntryStateUId, 
-				relation.getEntryState());
-		
-		associationDao.updateRelationEntryStateUId(codingSchemeUId, relationUId, entryStateUId);
-		
-		return true;
 	}
 	
 	private AssociationDao getAssociationDao(CodingSchemeUriVersionBasedEntryId id) {

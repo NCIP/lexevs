@@ -25,6 +25,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.versions.types.ChangeType;
+import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao;
@@ -438,6 +439,23 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		return this.doResolvePropertiesOfParentByRevision(codingSchemeURI, version, entityUid, revisionId);		
 	}
 	
+	
+	
+	@Override
+	public List<Property> resolvePropertiesOfRelationByRevision(
+			String codingSchemeURI, String version, String relationsName,
+			String revisionId) {
+		AssociationDao associationDao = 
+			this.getDaoManager().getAssociationDao(codingSchemeURI, version);
+		
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeURI,
+				version);
+		
+		String relationsUid = associationDao.getRelationUId(codingSchemeUid, relationsName);
+		
+		return this.doResolvePropertiesOfParentByRevision(codingSchemeURI, version, relationsUid, revisionId);		
+	}
+
 	protected List<Property> doResolvePropertiesOfParentByRevision(
 			String codingSchemeUri, 
 			String version,

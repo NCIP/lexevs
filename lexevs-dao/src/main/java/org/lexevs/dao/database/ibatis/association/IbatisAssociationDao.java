@@ -30,8 +30,6 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.AssociationDataDao;
@@ -120,7 +118,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	private static String GET_ASSOCIATION_PREDICATE_UID_FOR_DIRECTIONAL_NAME_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateUidForDirectionalName";
 	
-	private static String GET_RELATIONS_FOR__ID_SQL = ASSOCIATION_NAMESPACE + "getRelationsForId";
+	private static String GET_RELATIONS_FOR_UID_AND_REVISION_ID_SQL = ASSOCIATION_NAMESPACE + "getRelationsForUidAndRevisionId";
+	
+	private static String GET_RELATIONS_FOR_UID_SQL = ASSOCIATION_NAMESPACE + "getRelationsForUid";
 	
 	private static String GET_RELATION_ATTRIBUTES_BY_UID_SQL = ASSOCIATION_NAMESPACE + "getRelationAttributeForRelationUId";
 	
@@ -151,9 +151,19 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 
 	@Override
 	public Relations getHistoryRelationByRevisionId(String codingSchemeUid,
-			String entryUid, String revisionId) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+			String relationUid, String revisionId) {
+		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
+		String actualTablePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
+		
+		PrefixedParameterTriple bean = new PrefixedParameterTriple();
+		bean.setPrefix(prefix);
+		bean.setActualTableSetPrefix(actualTablePrefix);
+		bean.setParam1(codingSchemeUid);
+		bean.setParam2(relationUid);
+		bean.setParam3(revisionId);
+		
+		return (Relations) this.getSqlMapClientTemplate().queryForObject(
+				GET_RELATIONS_FOR_UID_AND_REVISION_ID_SQL, bean);	
 	}
 
 	@SuppressWarnings("unchecked")
@@ -317,7 +327,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				cascade);
 		return relationsUId;
 	}
-	
+
 	protected String doInsertRelations(
 			String prefix,
 			String codingSchemeUId,
@@ -672,7 +682,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setParam1(codingSchemeId);
 		bean.setParam2(relationsUid);
 		
-		Relations relations = (Relations) this.getSqlMapClientTemplate().queryForObject(GET_RELATIONS_FOR__ID_SQL, bean);
+		Relations relations = (Relations) this.getSqlMapClientTemplate().queryForObject(GET_RELATIONS_FOR_UID_SQL, bean);
 	
 		for(String predicateId : this.getAssociationPredicateUIdsForRelationsUId(codingSchemeId, relationsUid)) {
 			relations.addAssociationPredicate(getAssociationPredicateByUId(codingSchemeId, predicateId));
@@ -731,14 +741,13 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String relationUId, Relations relation) {
 
 		return this.doInsertHistoryRelation(codingSchemeUId, relationUId, relation,
-				this.getNonBatchTemplateInserter(), true);
+				this.getNonBatchTemplateInserter());
 	}
 	
 	protected String doInsertHistoryRelation(String codingSchemeUId, 
 			String relationUId,
 			Relations relation, 
-			Inserter inserter,
-			boolean cascade) {
+			Inserter inserter) {
 		
 		String historyPrefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
@@ -750,23 +759,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		relationData.setPrefix(historyPrefix);
 		
 		inserter.insert(INSERT_RELATIONS_SQL, relationData);
-		
-		if (!super.entryStateExists(prefix, relationData.getEntryStateUId())) {
 
-			EntryState entryState = new EntryState();
-
-			entryState.setChangeType(ChangeType.NEW);
-			entryState.setRelativeOrder(0L);
-
-			ibatisVersionsDao.insertEntryState(
-					codingSchemeUId, 
-					relationData.getEntryStateUId(),
-					relationData.getUId(), 
-					EntryStateType.RELATION, 
-					null,
-					entryState);
-		}
-		
 		return relationData.getEntryStateUId();
 	}
 

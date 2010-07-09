@@ -25,8 +25,11 @@ public interface AssociationTargetService {
 			String codingSchemeUri, String version, AssociationSource source,
 			AssociationTarget target);
 
-	public void revise(String codingSchemeUri, String relationContainerName,
-			String associationPredicateName, String version,
-			AssociationSource source, AssociationTarget target)
+	public void revise(String codingSchemeUri, 
+			String version, 
+			String relationContainerName,
+			String associationPredicateName, 
+			AssociationSource source, 
+			AssociationTarget target)
 			throws LBException;
 }

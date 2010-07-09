@@ -210,6 +210,7 @@
       <column name="codingSchemeGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
       <column name="containerName" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="isMapping" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
+      <column name="representsVersion" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="sourceCodingScheme" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="sourceCodingSchemeVersion" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="targetCodingScheme" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
