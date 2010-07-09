@@ -32,6 +32,7 @@ import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparator;
 import org.LexGrid.LexBIG.Impl.pagedgraph.model.LazyLoadableAssociatedConceptList;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
@@ -221,61 +222,69 @@ public class AssociationListBuilder implements Serializable{
 
         CodedNodeGraphService codedNodeGraphService =
             getDatabaseServiceManager().getCodedNodeGraphService();
-        
+
         AssociationList returnList = new AssociationList();
-        
-        Map<String,Integer> tripleUidsAndCount;
-        if(direction.equals(AssociationDirection.SOURCE_OF)) {
-            tripleUidsAndCount = codedNodeGraphService.getTripleUidsContainingSubjectCount(
-                    codingSchemeUri, 
-                    version, 
-                    relationsContainerName, 
-                    entityCode, 
-                    entityCodeNamespace, 
-                    graphQuery);
-        } else {
-            tripleUidsAndCount = codedNodeGraphService.getTripleUidsContainingObjectCount(
-                    codingSchemeUri, 
-                    version, 
-                    relationsContainerName, 
-                    entityCode, 
-                    entityCodeNamespace, 
-                    graphQuery);
-        }
 
-        for(String associationPredicateName : tripleUidsAndCount.keySet()) {
-            int tripleUidsCount = tripleUidsAndCount.get(associationPredicateName);
-            if(tripleUidsCount > 0) {
-                Association association = new Association();
+        for(String currentRelationContainer : this.getRelationContainers(
+                codingSchemeUri,
+                version,
+                relationsContainerName)) {
 
-                association.setAssociationName(associationPredicateName);
+            Map<String,Integer> tripleUidsAndCount;
+            if(direction.equals(AssociationDirection.SOURCE_OF)) {
+                tripleUidsAndCount = codedNodeGraphService.getTripleUidsContainingSubjectCount(
+                        codingSchemeUri, 
+                        version, 
+                        currentRelationContainer, 
+                        entityCode, 
+                        entityCodeNamespace, 
+                        graphQuery);
+            } else {
+                tripleUidsAndCount = codedNodeGraphService.getTripleUidsContainingObjectCount(
+                        codingSchemeUri, 
+                        version, 
+                        currentRelationContainer, 
+                        entityCode, 
+                        entityCodeNamespace, 
+                        graphQuery);
+            }
 
-                AssociatedConceptList associatedConceptList =
-                    new LazyLoadableAssociatedConceptList(
-                            tripleUidsCount,
-                            codingSchemeUri,
-                            version,
-                            relationsContainerName,
-                            associationPredicateName, 
-                            entityCode, 
-                            entityCodeNamespace, 
-                            resolveForward,
-                            resolveBackward,
-                            resolveForwardAssociationDepth,
-                            resolveBackwardAssociationDepth,
-                            resolveCodedEntryDepth,
-                            graphQuery,
-                            propertyNames, 
-                            propertyTypes, 
-                            sortAlgorithms,
-                            filterOptions,
-                            cycleDetectingCallback,
-                            direction,
-                            associatedConceptPageSize);
+            for(String associationPredicateName : tripleUidsAndCount.keySet()) {
+                int tripleUidsCount = tripleUidsAndCount.get(associationPredicateName);
+                if(tripleUidsCount > 0) {
+                    Association association = new Association();
 
-                association.setAssociatedConcepts(associatedConceptList);
+                    association.setAssociationName(associationPredicateName);
+                    association.setRelationsContainerName(currentRelationContainer);
 
-                returnList.addAssociation(association);
+                    AssociatedConceptList associatedConceptList =
+                        new LazyLoadableAssociatedConceptList(
+                                tripleUidsCount,
+                                codingSchemeUri,
+                                version,
+                                currentRelationContainer,
+                                associationPredicateName, 
+                                entityCode, 
+                                entityCodeNamespace, 
+                                resolveForward,
+                                resolveBackward,
+                                resolveForwardAssociationDepth,
+                                resolveBackwardAssociationDepth,
+                                resolveCodedEntryDepth,
+                                graphQuery,
+                                propertyNames, 
+                                propertyTypes, 
+                                sortAlgorithms,
+                                filterOptions,
+                                cycleDetectingCallback,
+                                direction,
+                                associatedConceptPageSize);
+
+                    association.setAssociatedConcepts(associatedConceptList);
+
+                    returnList.addAssociation(association);
+                }
+
             }
 
         }
@@ -295,6 +304,18 @@ public class AssociationListBuilder implements Serializable{
         } else {
             return returnList;
         }
+    }
+    
+    protected List<String> getRelationContainers(
+            String codingSchemeUri, 
+            String codingSchemeVersion,
+            String relationContainer){
+        
+        if(StringUtils.isNotBlank(relationContainer)) {
+            return Arrays.asList(relationContainer);
+        }
+        return
+            getDatabaseServiceManager().getCodedNodeGraphService().getRelationNamesForCodingScheme(codingSchemeUri, codingSchemeVersion);
     }
 
     /**
