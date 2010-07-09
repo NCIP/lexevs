@@ -179,6 +179,17 @@
 			#param1#	
    </select>
    
+   <select id="getRelationsNamesForCodingSchemeId" remapResults="true"
+    	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+   		SELECT
+   			containerName
+   		FROM
+   			$prefix$relation
+		WHERE
+			codingSchemeGuid = 
+			#param1#	
+   </select>
+   
    <select id="getAssociationPredicateNameForId" remapResults="true"
    	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
    		SELECT

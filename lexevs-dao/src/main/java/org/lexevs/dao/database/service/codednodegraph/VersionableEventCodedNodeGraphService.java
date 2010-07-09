@@ -46,6 +46,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class VersionableEventCodedNodeGraphService extends AbstractDatabaseService implements CodedNodeGraphService {
 
 	@Override
+	public List<String> getRelationNamesForCodingScheme(
+			String codingSchemeUri,
+			String codingSchemeVersion) {
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		AssociationDao associationDao = 
+			this.getDaoManager().getAssociationDao(codingSchemeUri, codingSchemeVersion);
+		
+		return associationDao.getRelationsNamesForCodingSchemeUId(codingSchemeUid);
+	}
+	
+	@Override
 	@Transactional
 	public List<String> listCodeRelationships(
 			String codingSchemeUri,

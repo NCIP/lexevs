@@ -153,6 +153,9 @@ public interface CodedNodeGraphService {
 			String codingSchemeVersion,
 			String relationsContainerName,
 			List<String> associationNames);
+
+	public List<String> getRelationNamesForCodingScheme(String codingSchemeUri,
+			String codingSchemeVersion);
 }
 
 

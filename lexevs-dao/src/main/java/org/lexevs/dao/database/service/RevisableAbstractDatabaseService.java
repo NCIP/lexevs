@@ -581,4 +581,12 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 	 * @return the current entry state uid
 	 */
 	protected abstract String getCurrentEntryStateUid(I id, String entryUid);
+	
+	protected String getCodingSchemeUid(CodingSchemeUriVersionBasedEntryId id) {
+		String uri = id.getCodingSchemeUri();
+		String version = id.getCodingSchemeVersion();
+		
+		return this.getDaoManager().
+			getCodingSchemeDao(uri, version).getCodingSchemeUIdByUriAndVersion(uri, version);
+	}
 }

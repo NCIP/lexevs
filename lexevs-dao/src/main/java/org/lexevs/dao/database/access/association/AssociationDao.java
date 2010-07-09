@@ -167,6 +167,9 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 
 	public List<String> getRelationsUIdsForCodingSchemeUId(
 			String codingSchemeUId);
+	
+	public List<String> getRelationsNamesForCodingSchemeUId(
+			String codingSchemeUId);
 
 	public List<String> getAssociationPredicateUIdsForRelationsUId(
 			String codingSchemeUId, String relationsUId);
@@ -220,5 +223,8 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 			final List<TransitiveClosureBatchInsertItem> batch);
 
 	public boolean entryStateExists(String codingSchemeUId, String entryStateUId);
+
+	public Relations getHistoryRelationByRevisionId(String codingSchemeUid,
+			String entryUid, String revisionId);
 
 }

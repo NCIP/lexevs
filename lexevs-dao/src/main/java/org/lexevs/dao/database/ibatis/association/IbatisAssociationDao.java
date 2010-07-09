@@ -42,7 +42,6 @@ import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
-import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationPredicateBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
@@ -107,6 +106,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	private static String GET_RELATIONS_IDS_FOR_CODINGSCHEME_ID_SQL = ASSOCIATION_NAMESPACE + "getRelationsKeysForCodingSchemeId";
 	
+	private static String GET_RELATIONS_NAMES_FOR_CODINGSCHEME_ID_SQL = ASSOCIATION_NAMESPACE + "getRelationsNamesForCodingSchemeId";
+	
 	private static String GET_ASSOCIATION_PREDICATE_IDS_FOR_RELATIONS_ID_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateKeysForRelationsId";
 	
 	private static String GET_ALL_TRIPLES_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getAllTriplesOfCodingScheme";
@@ -139,8 +140,6 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	private static String GET_ASSOCIATION_PREDICATE_UIDS_FOR_NAME_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateUidsForName";
 	
-	private EntryStateTypeClassifier entryStateClassifier = new EntryStateTypeClassifier();
-	
 	/** The ibatis versions dao. */
 	private IbatisVersionsDao ibatisVersionsDao;
 	
@@ -149,6 +148,13 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private AssociationDataDao associationDataDao = null;
 	
 	private PropertyDao propertyDao = null;
+
+	@Override
+	public Relations getHistoryRelationByRevisionId(String codingSchemeUid,
+			String entryUid, String revisionId) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -264,6 +270,16 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 		return this.getSqlMapClientTemplate().queryForList(
 				GET_RELATIONS_IDS_FOR_CODINGSCHEME_ID_SQL,
+				new PrefixedParameter(prefix, codingSchemeId));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getRelationsNamesForCodingSchemeUId(String codingSchemeId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_RELATIONS_NAMES_FOR_CODINGSCHEME_ID_SQL,
 				new PrefixedParameter(prefix, codingSchemeId));
 	}
 
