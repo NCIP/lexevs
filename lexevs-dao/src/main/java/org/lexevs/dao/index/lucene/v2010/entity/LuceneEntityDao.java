@@ -35,12 +35,11 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermsFilter;
 import org.lexevs.dao.database.utility.DaoUtility;
-import org.lexevs.dao.index.access.AbstractBaseIndexDao;
 import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
+import org.lexevs.dao.index.lucene.AbstractBaseLuceneIndexTemplateDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
-import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
 import edu.mayo.informatics.indexer.lucene.hitcollector.BitSetBestScoreOfEntityHitCollector;
@@ -52,13 +51,10 @@ import edu.mayo.informatics.indexer.lucene.hitcollector.HitCollectorMerger;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
+public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implements EntityDao {
 	
 	/** The supported index version2010. */
 	public static LexEvsIndexFormatVersion supportedIndexVersion2010 = LexEvsIndexFormatVersion.parseStringToVersion("2010");
-	
-	/** The system resource service. */
-	private SystemResourceService systemResourceService;
 	
 	private LuceneIndexTemplate luceneIndexTemplate;
 	
@@ -68,30 +64,30 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 	@Override
 	public void addDocuments(String codingSchemeUri, String version,
 			List<Document> documents, Analyzer analyzer) {
-		luceneIndexTemplate.addDocuments(documents, analyzer);
+		getLuceneIndexTemplate(codingSchemeUri, version).addDocuments(documents, analyzer);
 	}
 
 	@Override
 	public void deleteDocuments(String codingSchemeUri, String version,
 			Query query) {
-		luceneIndexTemplate.removeDocuments(query);
+		getLuceneIndexTemplate(codingSchemeUri, version).removeDocuments(query);
 	}
 
 	@Override
 	public void deleteDocuments(String codingSchemeUri, String version,
 			Term term) {
-		luceneIndexTemplate.removeDocuments(term);
+		getLuceneIndexTemplate(codingSchemeUri, version).removeDocuments(term);
 	}
 
 	
 	@Override
 	public String getIndexName(String codingSchemeUri, String version) {
-		return luceneIndexTemplate.getIndexName();
+		return getLuceneIndexTemplate(codingSchemeUri, version).getIndexName();
 	}
 
 	@Override
 	public void optimizeIndex(String codingSchemeUri, String version) {
-		luceneIndexTemplate.optimize();
+		getLuceneIndexTemplate(codingSchemeUri, version).optimize();
 	}
 
 
@@ -105,7 +101,9 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 			Filter codingSchemeFilter = getCodingSchemeFilterForCodingScheme(codingSchemeUri, version);
 			Filter boundaryDocSchemeFilter = getBoundaryDocFilterForCodingScheme(codingSchemeUri, version);
 			
-			return this.buildScoreDocs(boundaryDocSchemeFilter, codingSchemeFilter, combinedQuery, bitSetQueries);
+			return this.buildScoreDocs(
+					getLuceneIndexTemplate(codingSchemeUri, version),
+					boundaryDocSchemeFilter, codingSchemeFilter, combinedQuery, bitSetQueries);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -124,16 +122,17 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 	 * @throws Exception the exception
 	 */
 	protected List<ScoreDoc> buildScoreDocs(
+			LuceneIndexTemplate template,
 			Filter boundaryDocFilter,
 			Filter codingSchemeFilter,
 			List<? extends Query> combinedQuery, 
             List<? extends Query> bitSetQueries) throws Exception {
 
-        int maxDoc = luceneIndexTemplate.getMaxDoc();
+        int maxDoc = template.getMaxDoc();
 
         List<ScoreDoc> scoreDocs = null;
         
-        DocIdSet boundaryDocIds = this.luceneIndexTemplate.getDocIdSet(boundaryDocFilter);
+        DocIdSet boundaryDocIds = template.getDocIdSet(boundaryDocFilter);
 
         List<BitSet> bitSets = new ArrayList<BitSet>();
         
@@ -143,7 +142,7 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
                     new BitSetBestScoreOfEntityHitCollector(
                     		boundaryDocIds.iterator(), 
                                     maxDoc);
-                luceneIndexTemplate.search(query, codingSchemeFilter, bitSetCollector);
+                template.search(query, codingSchemeFilter, bitSetCollector);
                 bitSets.add(bitSetCollector.getResult());
             }
         }
@@ -155,7 +154,7 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
                         boundaryDocIds.iterator(), 
                                 maxDoc);
             
-            luceneIndexTemplate.search(combinedQuery.get(0), codingSchemeFilter, collector);
+            template.search(combinedQuery.get(0), codingSchemeFilter, collector);
             scoreDocs = collector.getResult();
         } else {
             HitCollectorMerger merger = new HitCollectorMerger(
@@ -168,7 +167,7 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
                             boundaryDocIds.iterator(), 
                                     maxDoc); 
 
-                luceneIndexTemplate.search(query, codingSchemeFilter, collector);
+                template.search(query, codingSchemeFilter, collector);
                 merger.addHitCollector(collector);
             }
             scoreDocs = merger.getMergedScoreDocs();
@@ -209,7 +208,7 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 	@Override
 	public Document getDocumentById(String codingSchemeUri, String version,
 			int id) {
-		return luceneIndexTemplate.getDocumentById(id);
+		return getLuceneIndexTemplate(codingSchemeUri, version).getDocumentById(id);
 	}
 
 	/* (non-Javadoc)
@@ -241,6 +240,8 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 		}
 		return totalBitSet;
 	}
+	
+	
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.access.AbstractBaseIndexDao#doGetSupportedLexEvsIndexFormatVersions()
@@ -250,22 +251,10 @@ public class LuceneEntityDao extends AbstractBaseIndexDao implements EntityDao {
 		return DaoUtility.createList(LexEvsIndexFormatVersion.class, supportedIndexVersion2010);
 	}
 	
-	/**
-	 * Sets the system resource service.
-	 * 
-	 * @param systemResourceService the new system resource service
-	 */
-	public void setSystemResourceService(SystemResourceService systemResourceService) {
-		this.systemResourceService = systemResourceService;
-	}
-
-	/**
-	 * Gets the system resource service.
-	 * 
-	 * @return the system resource service
-	 */
-	public SystemResourceService getSystemResourceService() {
-		return systemResourceService;
+	@Override
+	protected LuceneIndexTemplate getLuceneIndexTemplate(
+			String codingSchemeUri, String version) {
+		return this.luceneIndexTemplate;
 	}
 
 	public void setLuceneIndexTemplate(LuceneIndexTemplate luceneIndexTemplate) {

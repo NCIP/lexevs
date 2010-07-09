@@ -28,10 +28,32 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	
 	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
 	
+	public BaseLuceneIndexTemplate(){
+		super();
+	}
+	
+	public BaseLuceneIndexTemplate(NamedDirectory namedDirectory){
+		super();
+		try {
+			indexSearcher = this.createIndexSearcher(namedDirectory);
+			indexReader = this.createIndexReader(namedDirectory);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		indexSearcher = new IndexSearcher(namedDirectory.getDirectory());
-		indexReader = IndexReader.open(namedDirectory.getDirectory(), true);
+		indexSearcher = this.createIndexSearcher(namedDirectory);
+		indexReader = this.createIndexReader(namedDirectory);
+	}
+	
+	protected IndexSearcher createIndexSearcher(NamedDirectory namedDirectory) throws Exception {
+		return new IndexSearcher(namedDirectory.getDirectory());
+	}
+	
+	protected IndexReader createIndexReader(NamedDirectory namedDirectory) throws Exception {
+		return IndexReader.open(namedDirectory.getDirectory(), true);
 	}
 
 	@Override

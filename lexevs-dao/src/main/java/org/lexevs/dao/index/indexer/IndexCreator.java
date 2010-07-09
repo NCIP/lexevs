@@ -33,11 +33,11 @@ public interface IndexCreator {
 	 * 
 	 * @param reference the reference
 	 */
-	public void index(AbsoluteCodingSchemeVersionReference reference);
+	public String index(AbsoluteCodingSchemeVersionReference reference);
 	
-	public void index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback);
+	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback);
 	
-	public void index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, boolean onlyRegister);
+	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, boolean onlyRegister);
 	
 	public interface EntityIndexerProgressCallback {
 		public void onEntityIndex(Entity entity);

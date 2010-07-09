@@ -33,6 +33,7 @@ import org.lexevs.dao.index.indexer.EntityIndexer;
 import org.lexevs.dao.index.indexer.IndexCreator;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.indexer.IndexCreator.EntityIndexerProgressCallback;
+import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 
@@ -58,6 +59,8 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	private SystemResourceService systemResourceService;
 	
 	private MetaData metaData;
+	
+	private IndexRegistry indexRegistry;
 	
 	@Override
 	public String getIndexName(String codingSchemeUri,
@@ -88,7 +91,12 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	}
 	
 	public void createIndex(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback) {
-		indexCreator.index(reference, callback);
+		String indexName = indexCreator.index(reference, callback);
+		
+		indexRegistry.registerCodingSchemeIndex(
+				reference.getCodingSchemeURN(), 
+				reference.getCodingSchemeVersion(), 
+				indexName);
 	}
 	
 	public void deleteEntityFromIndex(
@@ -185,25 +193,38 @@ public class LuceneEntityIndexService implements EntityIndexService {
 		indexDaoManager.getEntityDao(
 				codingSchemeUri, 
 				codingSchemeVersion).deleteDocuments(codingSchemeUri, codingSchemeVersion, term);
+		
+		this.indexRegistry.unRegisterCodingSchemeIndex(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+	
+		try {
+			metaData.removeIndexMetaDataValue(this.getCodingSchemeKey(reference));
+		} catch (InternalErrorException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 
 	@Override
 	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference reference) {
-		String codingSchemeUri = reference.getCodingSchemeURN();
-		String codingSchemeVersion = reference.getCodingSchemeVersion();
-		
-		String codingSchemeName;
+		String key = this.getCodingSchemeKey(reference);
 		try {
-			codingSchemeName = systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, codingSchemeVersion);
-		} catch (LBParameterException e) {
+			return StringUtils.isNotBlank(metaData.getIndexMetaDataValue(key));
+		} catch (InternalErrorException e) {
 			throw new RuntimeException(e);
 		}
-		
-		LocalCodingScheme lcs = LocalCodingScheme.getLocalCodingScheme(codingSchemeName, codingSchemeVersion);
+	}
+	
+	protected String getCodingSchemeKey(AbsoluteCodingSchemeVersionReference reference) {
 		try {
-			return StringUtils.isNotBlank(metaData.getIndexMetaDataValue(lcs.getKey()));
-		} catch (InternalErrorException e) {
+			String codingSchemeName =
+				systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(
+						reference.getCodingSchemeURN(), 
+						reference.getCodingSchemeVersion());
+			
+			LocalCodingScheme lcs = LocalCodingScheme.getLocalCodingScheme(codingSchemeName, reference.getCodingSchemeVersion());
+			
+			return lcs.getKey();
+		} catch (LBParameterException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -248,5 +269,13 @@ public class LuceneEntityIndexService implements EntityIndexService {
 
 	public EntityIndexer getEntityIndexer() {
 		return entityIndexer;
+	}
+
+	public IndexRegistry getIndexRegistry() {
+		return indexRegistry;
+	}
+
+	public void setIndexRegistry(IndexRegistry indexRegistry) {
+		this.indexRegistry = indexRegistry;
 	}
 }
