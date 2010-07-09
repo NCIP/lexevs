@@ -146,9 +146,12 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 		
 		for (InsertPropertyMultiAttribBean propMultiAttrib : propertyData.getPropertyMultiAttribList())
 		{
-			propMultiAttrib.setPrefix(histPrefix);
-			
-			this.getSqlMapClientTemplate().insert(INSERT_PROPERTY_MULTIATTRIB_SQL, propMultiAttrib);
+			if (StringUtils.isNotEmpty(propMultiAttrib.getUId()))
+			{
+				propMultiAttrib.setPrefix(histPrefix);
+				
+				this.getSqlMapClientTemplate().insert(INSERT_PROPERTY_MULTIATTRIB_SQL, propMultiAttrib);
+			}
 		}
 		
 		if (!vsEntryStateExists(prefix, propertyData.getEntryStateUId())) {
