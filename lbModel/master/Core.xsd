@@ -311,6 +311,11 @@
 				<xs:documentation>The local name of the association</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="relationsContainerName" type="lgBuiltin:tsLocalId">
+			<xs:annotation>
+				<xs:documentation>The local name of the relations container</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:attribute name="directionalName" type="lgBuiltin:tsCaseIgnoreIA5String">
 			<xs:annotation>
 				<xs:documentation>The name assigned to the association so that it can be read
