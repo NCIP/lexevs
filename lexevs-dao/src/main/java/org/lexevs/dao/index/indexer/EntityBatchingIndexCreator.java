@@ -29,7 +29,7 @@ import org.apache.lucene.document.Document;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.access.entity.EntityDao;
-import org.lexevs.dao.index.indexregistry.IndexRegistry;
+import org.lexevs.dao.index.indexregistry.SingleIndexRegistry;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
 
@@ -65,25 +65,20 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	
 	private LgLoggerIF logger;
 	
-	private IndexRegistry indexRegistry;
-	
-	public void index(AbsoluteCodingSchemeVersionReference reference) {
-		this.index(reference, null, false);
+	public String index(AbsoluteCodingSchemeVersionReference reference) {
+		return this.index(reference, null, false);
 	}
 	
-	public void index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback) {	
-		this.index(reference, callback, false);
+	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback) {	
+		return this.index(reference, callback, false);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.indexer.IndexCreator#index(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
-	public void index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, boolean onlyRegister) {	
-		String indexName = indexRegistry.
-		registerCodingSchemeIndex(
-				reference.getCodingSchemeURN(),
-				reference.getCodingSchemeVersion());
-
+	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, boolean onlyRegister) {	
+		String indexName = this.getIndexName(reference);
+		
 		addIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
 
 		if(!onlyRegister) {
@@ -129,6 +124,8 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 
 			this.getLogger().info("Indexing Complete. Indexed: " + totalIndexedEntities + " Entities.");
 		}
+		
+		return indexName;
 	}
 
 	/**
@@ -156,6 +153,10 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	protected String getIndexName(AbsoluteCodingSchemeVersionReference reference) {
+		return SingleIndexRegistry.DEFAULT_SINGLE_INDEX_NAME;
 	}
 
 	/**
@@ -270,13 +271,5 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 
 	public IndexDaoManager getIndexDaoManager() {
 		return indexDaoManager;
-	}
-
-	public void setIndexRegistry(IndexRegistry indexRegistry) {
-		this.indexRegistry = indexRegistry;
-	}
-
-	public IndexRegistry getIndexRegistry() {
-		return indexRegistry;
 	}
 }

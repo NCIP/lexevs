@@ -60,7 +60,7 @@ public class SystemResourceRefreshingListener extends DefaultServiceEventListene
 		
 		if(indexService.doesIndexExist(ref)){
 
-			LoggerFactory.getLogger().warn("Detected an existing Lucene indes for URI: " + uri + " Version: " + version +
+			LoggerFactory.getLogger().warn("Detected an existing Lucene index for URI: " + uri + " Version: " + version +
 					" -- the old index will be overwritten.");
 			
 			indexService.dropIndex(ref);	
