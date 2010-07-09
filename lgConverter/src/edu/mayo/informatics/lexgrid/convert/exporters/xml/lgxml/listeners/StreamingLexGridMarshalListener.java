@@ -83,6 +83,13 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
         sourceCache = AssociationSourceCacheFactory.createCache();
         return true;
     }
+    
+//    private boolean preMarshalRelation(Object obj) {
+//        Relations relations = (Relations)obj;
+//        curRelation = relations.getContainerName();
+//        
+//        return true;
+//    }
 
     private boolean preMarshalAssociationSource(Object obj) {
         AssociationSource as = (AssociationSource) obj;
@@ -218,8 +225,6 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                         }
                         messager.info("AssociationEntity object processing complete.");
                     }
-                    
-
                 } catch (LBInvocationException e) {
                     e.printStackTrace();
                 } catch (LBParameterException e) {
@@ -257,8 +262,11 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
             return this.preMarshalAssociationSource(arg0);
         } else if ((Entity.class.equals(arg0.getClass()) == true)) {
             return this.preMarshalEntity(arg0);
-        } else if (EntryState.class.equals(arg0.getClass()) == true)
+        } else if (EntryState.class.equals(arg0.getClass()) == true) { // remove entry state for now. it needs to be considered in revisions
             return false;
+        } /*else if (Relations.class.equals(arg0.getClass()) == true) {
+            this.preMarshalRelation(arg0);
+//        }*/
         else {
             if (Relations.class.equals(arg0.getClass()) && cng == null) {
                 return false;
