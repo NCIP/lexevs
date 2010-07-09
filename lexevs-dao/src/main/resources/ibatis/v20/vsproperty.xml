@@ -370,6 +370,22 @@
 				propertyValue = #property.value.content#
 			</isNotNull>
 			
+			<isNotNull prepend="," property="property.isActive">
+				isActive = #property.isActive#
+			</isNotNull>
+			<isNotNull prepend="," property="property.owner">
+				owner = #property.owner#
+			</isNotNull>
+			<isNotNull prepend="," property="property.status">
+				status = #property.status#
+			</isNotNull>
+			<isNotNull prepend="," property="property.effectiveDate">
+				effectiveDate = #property.effectiveDate#
+			</isNotNull>
+			<isNotNull prepend="," property="property.expirationDate">
+				expirationDate = #property.expirationDate#
+			</isNotNull>
+			
 			<isNotNull prepend="," property="entryStateUId">
 				entryStateGuid = #entryStateUId#
 			</isNotNull>
