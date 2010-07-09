@@ -362,7 +362,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		// remove all other properties but the one that needs to be changed
 		vsd.setProperties(null);		
 		Properties props = new Properties();
-		props.addProperty(currentProperty);
+		props.addProperty(changedProperty);
 		vsd.setProperties(props);
 		
 		// setup entry state for vsd
@@ -370,9 +370,9 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		vsd.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
 				lgRevision.getRevisionId(), prevRevisionId, 0L));
 		
-		// setup entry state for property to be removed
+		// setup entry state for property to be changed
 		String propPrevRevId = currentProperty.getEntryState() != null?currentProperty.getEntryState().getContainingRevision():null;
-		currentProperty.setEntryState(populateEntryState(ChangeType.MODIFY, 
+		changedProperty.setEntryState(populateEntryState(ChangeType.MODIFY, 
 				lgRevision.getRevisionId(), propPrevRevId, 0L));
 		
 		ce.setChangedValueSetDefinitionEntry(vsd);

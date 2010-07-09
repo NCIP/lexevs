@@ -18,6 +18,7 @@ import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.commonTypes.Versionable;
 import org.LexGrid.commonTypes.types.PropertyTypes;
+import org.LexGrid.concepts.Presentation;
 import org.LexGrid.valueSets.CodingSchemeReference;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
@@ -224,7 +225,40 @@ public class ValueSetAuthoringOperationImplTest {
 	 */
 	@Test
 	public void testUpdateValueSetProperty() {
-		fail("Not yet implemented"); // TODO
+		Presentation prop = new Presentation();
+		prop.setPropertyId("propertyId1");
+		prop.setPropertyName("propertyName");
+		prop.setIsActive(false);
+//		prop.setLanguage("english updated 3");
+//		prop.setOwner("owner updated 3");
+		prop.setPropertyType(PropertyTypes.PROPERTY.name());
+//		prop.setStatus("status 3");
+		Text text = new Text();
+		text.setContent("content updated 4");
+		text.setDataType("Text datatype 4");
+		prop.setValue(text);
+		prop.setDegreeOfFidelity("degreeOfFidelity 4");
+		prop.setMatchIfNoContext(true);
+		prop.setRepresentationalForm("representationalForm 4");
+		
+		RevisionInfo revInfo = new RevisionInfo();
+		revInfo.setChangeAgent("changeAgent");
+		revInfo.setChangeInstruction("changeInstruction");
+		revInfo.setDescription("description");
+		revInfo.setEditOrder(1L);
+		revInfo.setRevisionDate(new Date());
+		revInfo.setRevisionId("R113");
+		
+		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
+		try {
+			valueSetAuthOp.updateValueSetProperty(new URI("VSD:AUTHOR:JUNIT:TEST1"), prop, revInfo);
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -314,6 +348,29 @@ public class ValueSetAuthoringOperationImplTest {
 		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
 		try {
 			valueSetAuthOp.removeValueSet(new URI("VSD:AUTHORING:JUNIT:TEST2"), revInfo);
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testRemoveValueSetProperty() {
+		
+		RevisionInfo revInfo = new RevisionInfo();
+		revInfo.setChangeAgent("changeAgent");
+		revInfo.setChangeInstruction("changeInstruction");
+		revInfo.setDescription("description");
+		revInfo.setEditOrder(1L);
+		revInfo.setRevisionDate(new Date());
+		revInfo.setRevisionId("R114");
+		
+		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
+		try {
+			valueSetAuthOp.removeValueSetProperty(new URI("VSD:AUTHOR:JUNIT:TEST1"), "propertyId1", revInfo);
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
