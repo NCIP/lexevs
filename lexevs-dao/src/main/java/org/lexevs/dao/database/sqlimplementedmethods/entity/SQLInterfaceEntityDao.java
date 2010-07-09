@@ -21,16 +21,23 @@ package org.lexevs.dao.database.sqlimplementedmethods.entity;
 import java.util.List;
 import java.util.Map;
 
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationEntity;
+import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.access.entity.EntityDao;
+import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.sqlimplementedmethods.AbstraceSqlImplementedMethodsDao;
 import org.lexevs.dao.database.sqlimplementedmethods.codingscheme.SQLInterfaceCodingSchemeDao;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.exceptions.MissingResourceException;
+import org.lexevs.exceptions.UnexpectedInternalError;
 
 /**
  * The Class SQLInterfaceEntityDao.
@@ -245,8 +252,25 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 		public Entity getEntityByCodeAndNamespace(String codingSchemeUId,
 				String entityCode, String entityCodeNamespace,
 				List<String> propertyNames, List<String> propertyTypes) {
-			// TODO Auto-generated method stub (IMPLEMENT!)
-			throw new UnsupportedOperationException();
+			try {
+			AbsoluteCodingSchemeVersionReference reference = 
+				SQLInterfaceCodingSchemeDao.resolveCodingSchemeKey(codingSchemeUId);
+			
+			String codingSchemeName = 
+				this.getResourceManager().getInternalCodingSchemeNameForUserCodingSchemeName(
+					reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+			
+				return this.getSqlImplementedMethodsDao().
+					buildCodedEntry(
+							codingSchemeName, 
+							reference.getCodingSchemeVersion(), 
+							entityCode, 
+							entityCodeNamespace, 
+							toLocalNameList(propertyNames), 
+							toPropertyType(propertyTypes));
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 
 		@Override
@@ -263,4 +287,45 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 			// TODO Auto-generated method stub (IMPLEMENT!)
 			throw new UnsupportedOperationException();
 		}
+		
+		private LocalNameList toLocalNameList(List<String> list) {
+			if(CollectionUtils.isEmpty(list)) {
+				return null;
+			}
+			LocalNameList returnList = new LocalNameList();
+			
+			for(String item : list) {
+				returnList.addEntry(item);
+			}
+			
+			return returnList;
+		}
+		
+		private org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType[] toPropertyType(List<String> list) {
+			if(CollectionUtils.isEmpty(list)) {
+				return null;
+			}
+			org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType[] returnList = 
+				new org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType[list.size()];
+			
+			for(int i=0;i<list.size();i++){
+				returnList[i] = mapPropertyType(list.get(i));
+			}
+			
+			return returnList;
+		}
+		
+		 private org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType mapPropertyType(String propertyType){
+		        if (propertyType.equals(SQLTableConstants.TBLCOLVAL_COMMENT)) {
+		            return org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType.COMMENT;
+		        } else if (propertyType.equals(SQLTableConstants.TBLCOLVAL_DEFINITION)) {
+		            return org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType.DEFINITION;
+		        } else if (propertyType.equals(SQLTableConstants.TBLCOLVAL_PROPERTY)) {
+		            return org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType.GENERIC;
+		        } else if (propertyType.equals(SQLTableConstants.TBLCOLVAL_PRESENTATION)) {
+		            return org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType.PRESENTATION;
+		        } else {
+		            throw new RuntimeException("Unexpected PropertyType");
+		        }
+		    }
 }
