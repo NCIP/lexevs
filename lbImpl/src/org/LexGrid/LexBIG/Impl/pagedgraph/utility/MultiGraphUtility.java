@@ -65,6 +65,7 @@ public class MultiGraphUtility {
     
     public static Association intersectAssociation(Association assoc1, Association assoc2) {
         AssociatedConceptList list = new AssociatedConceptList();
+        Association assoc = new Association();
         
         AssociatedConcept[] associatedConcepts1 = assoc1.getAssociatedConcepts().getAssociatedConcept();
         AssociatedConcept[] associatedConcepts2 = assoc2.getAssociatedConcepts().getAssociatedConcept();
@@ -78,9 +79,12 @@ public class MultiGraphUtility {
             }
         }
 
-        assoc1.setAssociatedConcepts(list);
+        assoc.setAssociationName(errorThrowingCompare(assoc1.getAssociationName(), assoc2.getAssociationName()));
+        assoc.setDirectionalName(nullReturningCompare(assoc1.getDirectionalName(), assoc2.getDirectionalName()));
+        assoc.setRelationsContainerName(nullReturningCompare(assoc1.getRelationsContainerName(), assoc2.getRelationsContainerName()));
+        assoc.setAssociatedConcepts(list);
         
-        return assoc1;
+        return assoc;
     }
     
     public static ResolvedConceptReferenceList unionReferenceList(
@@ -160,6 +164,7 @@ public class MultiGraphUtility {
     
     public static Association unionAssociation(Association assoc1, Association assoc2) {
         AssociatedConceptList list = new AssociatedConceptList();
+        Association assoc = new Association();
         
         AssociatedConcept[] associatedConcepts1 = assoc1.getAssociatedConcepts().getAssociatedConcept();
         AssociatedConcept[] associatedConcepts2 = assoc2.getAssociatedConcepts().getAssociatedConcept();
@@ -181,9 +186,13 @@ public class MultiGraphUtility {
             } 
         }  
         
-        assoc1.setAssociatedConcepts(list);
+        assoc.setAssociationName(errorThrowingCompare(assoc1.getAssociationName(), assoc2.getAssociationName()));
+        assoc.setDirectionalName(nullReturningCompare(assoc1.getDirectionalName(), assoc2.getDirectionalName()));
+        assoc.setRelationsContainerName(nullReturningCompare(assoc1.getRelationsContainerName(), assoc2.getRelationsContainerName()));
+
+        assoc.setAssociatedConcepts(list);
         
-        return assoc1;
+        return assoc;
     }
     
     private static <T extends ConceptReference> T getAssociatedConcept(T searchConcept, T[] list) {
@@ -205,5 +214,24 @@ public class MultiGraphUtility {
             }
         }
         return null;
+    }
+    
+    private static <T> T nullReturningCompare(T one, T two) {
+        if(one == null || two == null) {return null;}
+        
+        if(one.equals(two)) {
+            return one;
+        } else {
+            return null;
+        }
+    }
+    
+    private static <T> T errorThrowingCompare(T one, T two) {
+       T t = nullReturningCompare(one, two);
+       if(t == null) { 
+           throw new RuntimeException();
+       } else {
+           return t;
+       }
     }
 }
