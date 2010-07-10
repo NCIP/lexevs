@@ -53,6 +53,8 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     private LgMessageDirectorIF messager;
     private long entityCount;
     private long associationCount;
+    private long associationEntityCount;
+    
 
     private final int MAX_BLOCK_SIZE = 10;
     private int blockSize = 10;
@@ -66,6 +68,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
         this.messager = messager;
         this.entityCount = 0;
         this.associationCount = 0;
+        this.associationEntityCount = 0;
     }
 
     private void setBlockSize(int size) {
@@ -166,38 +169,37 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
         // this.marshaller.setSchemaLocation(null);
         // this.marshaller.setNoNamespaceSchemaLocation(null);
         if (((Entity) obj).getEntityCode().equals(LexGridConstants.MR_FLAG)) {
-            // get groups of Entity objects using CNS.
             if (cns != null) {
                 try {
-                    Iterator<ResolvedConceptReference> blockIterator;
                     ResolvedConceptReferencesIterator rcri_iterator = cns.resolve(null, null, null, null, true);
                     while (rcri_iterator.hasNext()) {
-                        ResolvedConceptReferenceList refList = rcri_iterator.next(blockSize);
-                        blockIterator = (Iterator<ResolvedConceptReference>) refList.iterateResolvedConceptReference();
-                        while (blockIterator.hasNext()) {
-                            ResolvedConceptReference curConRef = (ResolvedConceptReference) blockIterator.next();
-                            Entity curEntity = (Entity) curConRef.getEntity();
+                        ResolvedConceptReference curConRef = rcri_iterator.next();
+                        Entity curEntity = (Entity) curConRef.getEntity();
 
-                            if (curEntity == null)
-                                continue;
+                        if (curEntity == null)
+                            continue;
 
-                            if ((curEntity.getIsAnonymous() != null) && (curEntity.getIsAnonymous().booleanValue()))
-                                continue;
+                        if ((curEntity.getIsAnonymous() != null) && (curEntity.getIsAnonymous().booleanValue()))
+                            continue;
 
-                            if (curEntity.getEntityCode().startsWith("@"))
-                                continue;
+                        if (curEntity.getEntityCode().startsWith("@"))
+                            continue;
 
-                            if (curEntity instanceof AssociationEntity) {
-                                this.associationEntityCache.put((AssociationEntity) curEntity);
-                            } else {
-                                this.marshaller.marshal(curEntity);
-                                ++this.entityCount;
-                                if (this.entityCount % 1000 == 0) {
-                                    messager.info("processed " + this.entityCount + " entity objects");
-                                }
+                        if (curEntity instanceof AssociationEntity) {
+                            this.associationEntityCache.put((AssociationEntity) curEntity);
+                            ++this.associationEntityCount;
+                            messager.info("adding association entity to cache.  total of " + this.associationEntityCache + " objects added to cache so far");
+                            
+                        } else {
+                            this.marshaller.marshal(curEntity);
+                            ++this.entityCount;
+                            if (this.entityCount % 1000 == 0) {
+                                messager.info("processed " + this.entityCount + " entity objects");
                             }
                         }
                     }
+                    
+                    rcri_iterator.release();
                     messager.info("Entity processing complete. " + this.entityCount + " entity objects marshalled");
 
                     // now marshal the AssociationEntity
