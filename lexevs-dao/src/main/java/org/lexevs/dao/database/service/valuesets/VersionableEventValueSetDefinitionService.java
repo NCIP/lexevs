@@ -392,16 +392,16 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	}
 	
 	@Override
-	public ValueSetDefinition resolveValueSetDefinitionByRevision(String valueSetDefURI,
+	public ValueSetDefinition getValueSetDefinitionByRevision(String valueSetDefURI,
 			String revisionId) throws LBRevisionException {
 		ValueSetDefinitionDao valueSetDefDao = this.getDaoManager()
 				.getCurrentValueSetDefinitionDao();
 
-		return valueSetDefDao.resolveValueSetDefinitionByRevision(valueSetDefURI, revisionId);
+		return valueSetDefDao.getValueSetDefinitionByRevision(valueSetDefURI, revisionId);
 	}
 	
 	@Override
-	public ValueSetDefinition resolveValueSetDefinitionByDate(String valueSetDefURI,
+	public ValueSetDefinition getValueSetDefinitionByDate(String valueSetDefURI,
 			Date date) throws LBRevisionException {
 		
 		RevisionDao revisionDao = getDaoManager().getRevisionDao();
@@ -411,6 +411,6 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 		ValueSetDefinitionDao valueSetDefDao = this.getDaoManager()
 				.getCurrentValueSetDefinitionDao();
 
-		return valueSetDefDao.resolveValueSetDefinitionByRevision(valueSetDefURI, revisionId);
+		return valueSetDefDao.getValueSetDefinitionByRevision(valueSetDefURI, revisionId);
 	}
 }

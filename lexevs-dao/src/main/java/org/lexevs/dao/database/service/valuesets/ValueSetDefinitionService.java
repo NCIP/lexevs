@@ -120,9 +120,9 @@ public interface ValueSetDefinitionService {
 	
 	public void revise(ValueSetDefinition valueSetDefinition, Mappings mapping, String releaseURI) throws LBException;
 	
-	public ValueSetDefinition resolveValueSetDefinitionByRevision(String valueSetDefURI,
+	public ValueSetDefinition getValueSetDefinitionByRevision(String valueSetDefURI,
 			String revisionId) throws LBRevisionException;
 	
-	public ValueSetDefinition resolveValueSetDefinitionByDate(String valueSetDefURI,
+	public ValueSetDefinition getValueSetDefinitionByDate(String valueSetDefURI,
 			Date date) throws LBRevisionException;
 }
