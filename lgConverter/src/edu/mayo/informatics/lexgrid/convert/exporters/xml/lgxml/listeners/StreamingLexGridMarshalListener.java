@@ -118,7 +118,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                         blockIterator = (Iterator<ResolvedConceptReference>) rcrl.iterateResolvedConceptReference();
                         while (blockIterator.hasNext()) {
                             curConRef = (ResolvedConceptReference) blockIterator.next();
-                            processTargets(curConRef, curAssociationName);
+                            processTargets(curConRef);
                             processAssociationList(curConRef.getSourceOf());
                         }
                     }
@@ -332,7 +332,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                     }
 
                     AssociationList targets = sourceRef.getSourceOf();
-                    processTargets(sourceRef, this.curAssociationName);
+                    processTargets(sourceRef);
 
                     if ((targets != null) && (targets.getAssociationCount() > 0)) {
                         try {
@@ -351,7 +351,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
         return rv;
     }
 
-    private void processTargets(ResolvedConceptReference sRef, String asName) throws MarshalException,
+    private void processTargets(ResolvedConceptReference sRef) throws MarshalException,
             ValidationException {
         AssociationList targets = sRef.getSourceOf();
         if ((targets != null) && (targets.getAssociationCount() > 0)) {
@@ -359,8 +359,8 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
             Iterator<?> targetsIterator = targets.iterateAssociation();
             while (targetsIterator.hasNext()) {
                 Association targetAssociation = (Association) targetsIterator.next();
-                if (targetAssociation.getAssociationName().equals(asName)
-                        || targetAssociation.getAssociationName().equals(curRelations)) {
+                if (targetAssociation.getAssociationName().equals(curAssociationName)
+                        && targetAssociation.getRelationsContainerName().equals(curRelations)) {
                     Iterator<?> associatedTargetsIterator = targetAssociation.getAssociatedConcepts()
                             .iterateAssociatedConcept();
                     while (associatedTargetsIterator.hasNext()) {
