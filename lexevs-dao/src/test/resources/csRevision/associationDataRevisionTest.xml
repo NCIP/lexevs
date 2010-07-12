@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<systemRelease xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/versions http://LexGrid.org/schema/2010/01/LexGrid/versions.xsd"
+    xmlns="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+    xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins"
+    xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+    xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts"
+    xmlns:lgRel="http://LexGrid.org/schema/2010/01/LexGrid/relations"
+    xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
+    xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
+    xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueDomains"
+    xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory"
+    releaseURI="testRelease" releaseDate="2010-04-01T00:00:00">
+
+    <codingSchemes>
+        <lgCS:codingScheme approxNumConcepts="1" codingSchemeName="test" defaultLanguage="en"
+            formalName="test" codingSchemeURI="testUri" representsVersion="1.0">
+           <lgCS:mappings/>
+           <lgCS:relations containerName="testRelationsName">
+           		<lgRel:associationPredicate associationName="testAssocPredicate">
+           			<lgRel:source sourceEntityCode="initialSourceCode" sourceEntityCodeNamespace="initialSourceCodeNamespace">
+           				<lgRel:targetData
+           					associationInstanceId="a1">
+           					<lgRel:associationDataText>Initial Data Value</lgRel:associationDataText>
+           				</lgRel:targetData>
+           			</lgRel:source>
+           		</lgRel:associationPredicate>
+           </lgCS:relations>
+        </lgCS:codingScheme>
+    </codingSchemes>
+
+	<editHistory>
+		<revision revisionId="1">
+			<changedEntry>
+				<changedCodingSchemeEntry codingSchemeName="test"
+					codingSchemeURI="testUri" representsVersion="1.0">
+					<lgCommon:entryState containingRevision="1"
+						relativeOrder="0" changeType="DEPENDENT" />
+					<lgCS:mappings />
+					<lgCS:relations containerName="testRelationsName">
+						<lgCommon:entryState containingRevision="1"
+							relativeOrder="0" changeType="DEPENDENT" />
+						<lgRel:associationPredicate
+							associationName="testAssocPredicate">
+							<lgRel:source sourceEntityCode="initialSourceCode"
+								sourceEntityCodeNamespace="initialSourceCodeNamespace">
+								<lgRel:targetData associationInstanceId="a1">
+									<lgCommon:entryState 
+										changeType="MODIFY" 
+										relativeOrder="0" 
+										containingRevision="1"/>
+									<lgRel:associationDataText>revision1Value</lgRel:associationDataText>
+								</lgRel:targetData>
+							</lgRel:source>
+						</lgRel:associationPredicate>
+					</lgCS:relations>
+				</changedCodingSchemeEntry>
+			</changedEntry>
+		</revision>
+ 
+ 	<revision revisionId="2">
+			<changedEntry>
+				<changedCodingSchemeEntry codingSchemeName="test"
+					codingSchemeURI="testUri" representsVersion="1.0">
+					<lgCommon:entryState containingRevision="1"
+						relativeOrder="0" changeType="DEPENDENT" />
+					<lgCS:mappings />
+					<lgCS:relations containerName="testRelationsName">
+						<lgCommon:entryState containingRevision="1"
+							relativeOrder="0" changeType="DEPENDENT" />
+						<lgRel:associationPredicate
+							associationName="testAssocPredicate">
+							<lgRel:source sourceEntityCode="initialSourceCode"
+								sourceEntityCodeNamespace="initialSourceCodeNamespace">
+								<lgRel:targetData associationInstanceId="a1">
+									<lgCommon:entryState 
+										changeType="MODIFY" relativeOrder="0" 
+										prevRevision="1"
+										containingRevision="2"/>
+									<lgRel:associationDataText>revision2Value</lgRel:associationDataText>
+								</lgRel:targetData>
+							</lgRel:source>
+						</lgRel:associationPredicate>
+					</lgCS:relations>
+				</changedCodingSchemeEntry>
+			</changedEntry>
+		</revision>
+ 
+ 		<revision revisionId="3">
+			<changedEntry>
+				<changedCodingSchemeEntry codingSchemeName="test"
+					codingSchemeURI="testUri" representsVersion="1.0">
+					<lgCommon:entryState containingRevision="1"
+						relativeOrder="0" changeType="DEPENDENT" />
+					<lgCS:mappings />
+					<lgCS:relations containerName="testRelationsName">
+						<lgCommon:entryState containingRevision="1"
+							relativeOrder="0" changeType="DEPENDENT" />
+						<lgRel:associationPredicate
+							associationName="testAssocPredicate">
+							<lgRel:source sourceEntityCode="initialSourceCode"
+								sourceEntityCodeNamespace="initialSourceCodeNamespace">
+								<lgRel:targetData associationInstanceId="a3">
+									<lgCommon:entryState 
+										changeType="NEW" relativeOrder="0" 
+										containingRevision="3"/>
+									<lgRel:associationDataText>revision3Value</lgRel:associationDataText>
+								</lgRel:targetData>
+							</lgRel:source>
+						</lgRel:associationPredicate>
+					</lgCS:relations>
+				</changedCodingSchemeEntry>
+			</changedEntry>
+		</revision>
+		
+    </editHistory>
+
+</systemRelease>
