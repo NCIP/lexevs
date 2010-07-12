@@ -156,7 +156,6 @@
 			
 			entryState.changeType,
   			entryState.relativeOrder,
-  			entryState.relativeOrder,
   			
   			propertyLinks.link,
   			
@@ -223,7 +222,7 @@
      </select>
 
 
-	<select id="getEntityIdByCodeAndNamespace" 
+	<select id="getEntityUidByCodeAndNamespace" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" 
 		resultClass="string" remapResults="true">
 		SELECT
