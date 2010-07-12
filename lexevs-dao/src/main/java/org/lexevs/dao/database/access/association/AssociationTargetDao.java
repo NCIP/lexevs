@@ -9,11 +9,20 @@ public interface AssociationTargetDao extends LexGridSchemaVersionAwareDao {
 
 	public String insertAssociationTarget(String codingSchemeUId, String associationPredicateUId, AssociationSource source, AssociationTarget target);
 
-	public String updateAssociationTarget(String codingSchemeUId, String associationTargetUId, AssociationSource source, AssociationTarget target);
+	public String insertAssociationTarget(
+			String codingSchemeUId, 
+			String associationPredicateUId, 
+			String sourceEntityCode, 
+			String sourceEntityCodeNamespace,
+			AssociationTarget target);
 
-	public String updateVersionableChanges(String codingSchemeUId, String associationTargetUId, AssociationSource source, AssociationTarget target);
+	public String updateAssociationTarget(String codingSchemeUId, String associationTargetUId, AssociationTarget target);
+
+	public String updateVersionableChanges(String codingSchemeUId, String associationTargetUId, AssociationTarget target);
 
 	public String getAssociationTargetUId(String codingSchemeUId, String associationInstanceId);
+	
+	public AssociationSource getTripleByUid(String codingSchemeUId, String tripleUid);
 
 	public String insertHistoryAssociationTarget(String codingSchemeUId,
 			String assnEntityTripleUId, Boolean assnQualExists, Boolean contextExists);
@@ -30,4 +39,12 @@ public interface AssociationTargetDao extends LexGridSchemaVersionAwareDao {
 			String associationPredicateUId, AssociationSource source,
 			AssociationTarget target, Inserter inserter);
 
+	public boolean entryStateExists(String codingSchemeUId, String entryStateUId);
+	
+	public String getEntryStateUId(String codingSchemeUId, String associationTargetUid);
+	
+	public AssociationSource getHistoryTripleByRevision(
+			String codingSchemeUId, 
+			String tripleUid, 
+			String revisionId);
 }

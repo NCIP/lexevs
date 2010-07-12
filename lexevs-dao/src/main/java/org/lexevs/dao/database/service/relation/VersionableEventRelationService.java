@@ -14,6 +14,9 @@ import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
+import org.lexevs.dao.database.access.property.PropertyDao;
+import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
+import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
 import org.lexevs.dao.database.service.RevisableAbstractDatabaseService;
 import org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId;
@@ -74,7 +77,8 @@ public class VersionableEventRelationService extends RevisableAbstractDatabaseSe
 							id.getCodingSchemeVersion(), 
 							revisedEntry.getContainerName(), 
 							predicate.getAssociationName(), 
-							source, 
+							source.getSourceEntityCode(),
+							source.getSourceEntityCodeNamespace(),
 							data);
 				}
 				
@@ -85,7 +89,8 @@ public class VersionableEventRelationService extends RevisableAbstractDatabaseSe
 							id.getCodingSchemeVersion(), 
 							revisedEntry.getContainerName(), 
 							predicate.getAssociationName(), 
-							source, 
+							source.getSourceEntityCode(),
+							source.getSourceEntityCodeNamespace(),
 							target);
 				}
 			}
@@ -156,7 +161,7 @@ public class VersionableEventRelationService extends RevisableAbstractDatabaseSe
 	}
 
 	@Override
-	protected String updateEntityVersionableAttributes(
+	protected String updateEntryVersionableAttributes(
 			CodingSchemeUriVersionBasedEntryId id, String entryUId,
 			Relations revisedEntity) {
 		String codingSchemeUid = this.getCodingSchemeUid(id);
@@ -240,27 +245,29 @@ public class VersionableEventRelationService extends RevisableAbstractDatabaseSe
 
 		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, version);
 		
-		final AssociationDao associationDao = this.getDaoManager().getAssociationDao(
+		AssociationDao associationDao = this.getDaoManager().getAssociationDao(
 				codingSchemeUri, version);
 		
-		final String codingSchemeUId = codingSchemeDao.
+		PropertyDao propertyDao = getDaoManager().getPropertyDao(codingSchemeUri, version);
+		
+		VersionsDao versionsDao = getDaoManager().getVersionsDao(codingSchemeUri, version);
+		
+		String codingSchemeUId = codingSchemeDao.
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 		
-		final String relationUId = associationDao.getRelationUId(codingSchemeUId, relation.getContainerName());
+		String relationUId = associationDao.getRelationUId(codingSchemeUId, relation.getContainerName());
 		
-		try {
-			this.removeEntry(
-					new CodingSchemeUriVersionBasedEntryId(codingSchemeUri, version), 
-					relation, EntryStateType.RELATION, new DeleteTemplate() {
-
-						@Override
-						public void delete() {
-							associationDao.removeRelationByUId(codingSchemeUId, relationUId);
-						}
-					});
-		} catch (LBException e) {
-			throw new RuntimeException(e);
-		}
+		/* 1. Delete all entry state entries of relation. */
+		versionsDao.deleteAllEntryStateOfRelation(codingSchemeUId, relationUId);
+		
+		/* 2. Delete all entity association qualifications for the relation. */
+		associationDao.deleteAssociationQualificationsByRelationUId(codingSchemeUId, relationUId);
+		
+		/* 3. Delete all relation properties. */
+		propertyDao.deleteAllPropertiesOfParent(codingSchemeUId, relationUId, PropertyType.RELATION);
+		
+		/* 4. Delete the relation. */
+		associationDao.removeRelationByUId(codingSchemeUId, relationUId);
 	}
 
 	@Override

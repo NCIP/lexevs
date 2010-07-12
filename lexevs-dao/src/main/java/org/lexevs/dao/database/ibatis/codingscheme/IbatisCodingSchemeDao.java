@@ -366,21 +366,16 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	protected String doInsertCodingScheme(
 			String codingSchemeUId, 
 			String prefix, 
-			CodingScheme codingScheme, String releaseUId, String entryStateUId,
+			CodingScheme codingScheme, 
+			String releaseUId, 
+			String entryStateUId,
 			boolean cascade) {
 
 		this.getSqlMapClientTemplate().insert(INSERT_CODING_SCHEME_SQL, 
 				this.buildInsertCodingSchemeBean(
 						prefix,
 						codingSchemeUId, releaseUId, entryStateUId, codingScheme));	
-		
-		/*String previousRevisionId = null;
-		if(codingScheme.getEntryState() != null && 
-				codingScheme.getEntryState().getPrevRevision() != null &&
-				!codingScheme.getEntryState().getPrevRevision().isEmpty()) {
-			previousRevisionId = codingScheme.getEntryState().getPrevRevision();
-		}*/
-		
+
 		versionsDao.insertEntryState(
 				codingSchemeUId,
 				entryStateUId, 

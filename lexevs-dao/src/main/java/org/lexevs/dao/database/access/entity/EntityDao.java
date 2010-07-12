@@ -101,7 +101,7 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	 * @return the entity id
 	 */
 	public String getEntityUId(String codingSchemeUId, String entityCode, String entityCodeNamespace);
-	
+		
 	/**
 	 * Insert entity.
 	 * 

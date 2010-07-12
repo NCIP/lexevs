@@ -69,6 +69,26 @@
 		<result property="entryStateUId" column="entryStateGuid" />
 		<result property="assnQualsAndUsageContextList" resultMap="Association.qualContextResult"/>
 	</resultMap>
+	
+	<resultMap id="associationSourceTripleEntry" class="org.LexGrid.relations.AssociationSource" 
+		groupBy="sourceEntityCode,sourceEntityCodeNamespace">
+		<result property="sourceEntityCode" column="sourceEntityCode" />
+		<result property="sourceEntityCodeNamespace" column="sourceEntityCodeNamespace" />
+		<result property="_targetList" resultMap="Association.associationTargetTripleEntry"/>
+	</resultMap>
+	
+	<resultMap id="associationTargetTripleEntry" class="org.LexGrid.relations.AssociationTarget" groupBy="associationInstanceId">
+		<result property="targetEntityCode" column="targetEntityCode" />
+		<result property="targetEntityCodeNamespace" column="targetEntityCodeNamespace" />
+		<result property="associationInstanceId" column="associationInstanceId" />
+		<result property="isDefining" column="isDefining" />
+		<result property="isInferred" column="isInferred" />
+		<result property="isActive" column="isActive" />
+		<result property="owner" column="owner" />
+		<result property="status" column="status" />
+		<result property="effectiveDate" column="effectiveDate" />
+		<result property="expirationDate" column="expirationDate" />
+	</resultMap>
 
 	<select id="getConceptReferenceFromEntityAssnsToEntityUid" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
@@ -790,6 +810,17 @@
 		AND
 			sourceEntityCodeNamespace = #param3#		
 	</select>
+	
+	<select id="getEntryStateUidByAssociationTarget"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		remapResults="true" resultClass="string">
+		SELECT 
+			eate.entryStateGuid
+		FROM
+			$prefix$entityAssnsToEntity eate
+		WHERE
+			eate.entityAssnsGuid = #param1# 
+	</select>
     
 	<select id="getAssnTargetAttributesByUId"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
@@ -824,6 +855,65 @@
 		WHERE
 			entAssn.entityAssnsGuid = #param1# 
 			
+	</select>
+	
+	<sql id="getTripleFragment">
+		SELECT 
+			entAssn.sourceEntityCode,
+			entAssn.sourceEntityCodeNamespace,
+			entAssn.targetEntityCode,
+			entAssn.targetEntityCodeNamespace,
+			entAssn.associationInstanceId,
+			entAssn.isDefining,
+			entAssn.isInferred,
+			entAssn.isActive,
+			entAssn.owner,
+			entAssn.status,
+			entAssn.effectiveDate,
+			entAssn.expirationDate,
+			
+			entryState.changeType,
+  			entryState.relativeOrder,
+  			
+  			currentRevision.revisionId AS currentRevisionId,
+  			previousRevision.revisionId AS previousRevisionId
+
+		FROM
+			$prefix$entityAssnsToEntity entAssn
+			
+		LEFT JOIN
+			$actualTableSetPrefix$entryState entryState
+		ON
+			entAssn.entryStateGuid =
+			entryState.entryStateGuid	
+			
+		LEFT JOIN
+			${defaultPrefix}revision currentRevision
+		ON 
+			entryState.revisionGuid = currentRevision.revisionGuid
+			
+		LEFT JOIN
+			${defaultPrefix}revision previousRevision
+		ON 
+			entryState.prevRevisionGuid = previousRevision.revisionGuid	
+	</sql>
+	
+	<select id="getTripleByUid"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		remapResults="true" resultMap="associationSourceTripleEntry">
+		<include refid="getTripleFragment"/>
+		WHERE
+			entAssn.entityAssnsGuid = #param1# 	
+	</select>
+	
+	<select id="getHistoryTripleByUidAndRevisionId"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		remapResults="true" resultMap="associationSourceTripleEntry">
+		<include refid="getTripleFragment"/>
+		WHERE
+			entAssn.entityAssnsGuid = #param1# 	
+		AND
+			currentRevision.revisionId = #param2#		
 	</select>
 
 	<update id="updateEntityAssnToEntityByUId"

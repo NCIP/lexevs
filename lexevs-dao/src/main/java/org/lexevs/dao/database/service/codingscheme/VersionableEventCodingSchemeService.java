@@ -454,7 +454,7 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 	}
 
 	@Override
-	protected String updateEntityVersionableAttributes(CodingSchemeUriVersionBasedEntryId id, String entryUId, CodingScheme revisedEntity) {
+	protected String updateEntryVersionableAttributes(CodingSchemeUriVersionBasedEntryId id, String entryUId, CodingScheme revisedEntity) {
 		String codingSchemeUri = id.getCodingSchemeUri();
 		String version = id.getCodingSchemeVersion();
 		

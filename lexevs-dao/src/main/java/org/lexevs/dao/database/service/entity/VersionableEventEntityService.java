@@ -131,12 +131,15 @@ public class VersionableEventEntityService extends RevisableAbstractDatabaseServ
 		String codingSchemeUid = this.getDaoManager().
 			getCodingSchemeDao(codingSchemeUri, version).
 				getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+		
+		EntityDao entityDao = this.getDaoManager().
+			getEntityDao(codingSchemeUri, version);
 	
-		return this.getDaoManager().
-			getEntityDao(codingSchemeUri, version).getEntityUId(codingSchemeUid, entry.getEntityCode(), entry.getEntityCodeNamespace());
+		String entryUid = 
+			entityDao.getEntityUId(codingSchemeUid, entry.getEntityCode(), entry.getEntityCodeNamespace());
+	
+		return entryUid;
 	}
-
-
 
 	@Override
 	protected void insertIntoHistory(CodingSchemeUriVersionBasedEntryId id,
@@ -154,7 +157,7 @@ public class VersionableEventEntityService extends RevisableAbstractDatabaseServ
 	}
 
 	@Override
-	protected String updateEntityVersionableAttributes(
+	protected String updateEntryVersionableAttributes(
 			CodingSchemeUriVersionBasedEntryId id, String entryUId,
 			Entity revisedEntity) {
 		String codingSchemeUri = id.getCodingSchemeUri();
@@ -464,7 +467,7 @@ public class VersionableEventEntityService extends RevisableAbstractDatabaseServ
 				this.insertEntity(codingSchemeUri, version, entity);
 			} else if (changeType == ChangeType.REMOVE) {
 
-				this.removeEntity(codingSchemeUri, version, entity);
+				//this.removeEntity(codingSchemeUri, version, entity);
 			} else if (changeType == ChangeType.MODIFY) {
 
 				this.updateEntity(codingSchemeUri, version, entity);

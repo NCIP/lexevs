@@ -19,23 +19,43 @@ public interface AssociationDataDao extends LexGridSchemaVersionAwareDao {
 			Boolean contextExist);
 
 	public String updateAssociationData(String codingSchemeUId,
-			String associationDataUId, AssociationSource source,
+			String associationDataUId,
 			AssociationData data);
 
 	public void deleteAssociationData(String codingSchemeUId,
 			String associationDataUId);
 
 	public String updateVersionableChanges(String codingSchemeUId,
-			String associationDataUId, AssociationSource source,
+			String associationDataUId,
 			AssociationData data);
 
 	public void deleteAllAssocQualsByAssocDataUId(String codingSchemeUId,
 			String associationDataUId);
 
 	public String getLatestRevision(String csUId, String assocDataUId);
+	
+	public boolean entryStateExists(String codingSchemeUId, String entryStateUId);
 
 	public String insertAssociationData(String codingSchemeUId,
 			String associationPredicateUId, AssociationSource source,
 			AssociationData data, Inserter inserter);
+
+	public AssociationData getAssociationDataByUid(
+			String codingSchemeUId,
+			String associationDataUid);
+
+	public String getEntryStateUId(String codingSchemeUId, String associationDataUid);
+
+	public AssociationData getHistoryAssociationDataByRevision(
+			String codingSchemeUId, 
+			String associationDataUid, 
+			String revisionId);
+
+	public void insertAssociationData(
+			String codingSchemeUId,
+			String associationPredicateUId, 
+			String sourceEntityCode,
+			String sourceEntityCodeNamespace, 
+			AssociationData data);
 
 }

@@ -158,7 +158,7 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 	}
 
 	@Override
-	protected String updateEntityVersionableAttributes(
+	protected String updateEntryVersionableAttributes(
 			ParentUidReferencingId id, String entryUId,
 			Property revisedEntity) {
 		String codingSchemeUri = id.getCodingSchemeUri();
@@ -355,36 +355,25 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 			final Property property, 
 			final PropertyType propertyType) {
 
-		final String codingSchemeUId = this.getCodingSchemeUId(codingSchemeUri,
+		String codingSchemeUId = this.getCodingSchemeUId(codingSchemeUri,
 				version);
 
-		final PropertyDao propertyDao = getDaoManager().getPropertyDao(
+		PropertyDao propertyDao = getDaoManager().getPropertyDao(
 				codingSchemeUri, version);
 
-		final VersionsDao versionsDao = getDaoManager().getVersionsDao(
+		VersionsDao versionsDao = getDaoManager().getVersionsDao(
 				codingSchemeUri, version);
 
-		final String propertyUId = propertyDao.getPropertyUIdByPropertyIdAndName(codingSchemeUId,
-				parentUid, property.getPropertyId(), property
-						.getPropertyName());
-		
-		try {
-			this.removeEntry(new ParentUidReferencingId(codingSchemeUri,version,parentUid), 
-					property, EntryStateType.PROPERTY, new DeleteTemplate() {
+		String propertyUId = propertyDao
+				.getPropertyUIdByPropertyIdAndName(codingSchemeUId, parentUid, property
+						.getPropertyId(), property.getPropertyName());
 
-				@Override
-				public void delete() {
-					/*
-					versionsDao.deleteAllEntryStateEntriesByEntryUId(codingSchemeUId,
-							propertyUId);
-					*/
-					/* 2. Remove property. */
-					propertyDao.removePropertyByUId(codingSchemeUId, propertyUId);
-				}
-			});
-		} catch (LBException e) {
-			throw new RuntimeException(e);
-		}
+		/* 1. Remove all entry state entries of property. */
+		versionsDao.deleteAllEntryStateEntriesByEntryUId(codingSchemeUId,
+				propertyUId);
+
+		/* 2. Remove property. */
+		propertyDao.removePropertyByUId(codingSchemeUId, propertyUId);
 	}
 
 	protected void doReviseProperty(

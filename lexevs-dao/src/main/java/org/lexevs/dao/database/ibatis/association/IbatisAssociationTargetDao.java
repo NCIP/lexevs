@@ -73,6 +73,15 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 	
 	private static String GET_ASSOC_TARGET_LATEST_REVISION_ID_BY_UID = ASSOCIATION_NAMESPACE
 			+ "getAssociationTargetLatestRevisionIdByUId";
+	
+	private static String GET_TRIPLE_BY_UID = ASSOCIATION_NAMESPACE 
+			+ "getTripleByUid";
+	
+	private static String GET_HISTORY_TRIPLE_BY_UID_AND_REVISION_ID = ASSOCIATION_NAMESPACE 
+			+ "getHistoryTripleByUidAndRevisionId";
+	
+	private static String GET_ENTRYSTATE_UID_BY_ASSOCIATION_TARGET_UID_SQL = ASSOCIATION_NAMESPACE
+			+ "getEntryStateUidByAssociationTarget";
 
 	private EntryStateTypeClassifier entryStateClassifier = new EntryStateTypeClassifier();
 	
@@ -94,6 +103,44 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 	}
 
 	@Override
+	public AssociationSource getTripleByUid(String codingSchemeUId, String tripleUid) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		return 
+			(AssociationSource) this.getSqlMapClientTemplate().queryForObject(
+					GET_TRIPLE_BY_UID, 
+					new PrefixedParameter(prefix, tripleUid));
+	}
+
+	@Override
+	public AssociationSource getHistoryTripleByRevision(String codingSchemeUId,
+			String tripleUid, String revisionId) {
+		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
+		String actualTablePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		PrefixedParameterTuple bean = new PrefixedParameterTuple();
+		bean.setPrefix(prefix);
+		bean.setActualTableSetPrefix(actualTablePrefix);
+		bean.setParam1(tripleUid);
+		bean.setParam2(revisionId);
+		
+		return 
+			(AssociationSource) this.getSqlMapClientTemplate().queryForObject(
+					GET_HISTORY_TRIPLE_BY_UID_AND_REVISION_ID, 
+					bean);
+	}
+
+	@Override
+	public String getEntryStateUId(String codingSchemeUId, String associationTargetUid) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUId);
+
+		return (String) this.getSqlMapClientTemplate().queryForObject(
+				GET_ENTRYSTATE_UID_BY_ASSOCIATION_TARGET_UID_SQL,
+				new PrefixedParameter(prefix, associationTargetUid));
+	}
+
+	@Override
 	public String insertAssociationTarget(String codingSchemeUId, String associationPredicateUId,
 			AssociationSource source, AssociationTarget target) {
 
@@ -103,11 +150,26 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 				source, 
 				target, 
 				this.getNonBatchTemplateInserter());
+	} 
+
+	@Override
+	public String insertAssociationTarget(
+			String codingSchemeUId,
+			String associationPredicateUId, 
+			String sourceEntityCode,
+			String sourceEntityCodeNamespace, 
+			AssociationTarget target) {
+		AssociationSource source = new AssociationSource();
+		source.setSourceEntityCode(sourceEntityCode);
+		source.setSourceEntityCodeNamespace(sourceEntityCodeNamespace);
+	
+		return 
+			this.insertAssociationTarget(codingSchemeUId, associationPredicateUId, source, target);
 	}
 
 	@Override
 	public String updateAssociationTarget(String codingSchemeUId, 
-			String associationTargetUId, AssociationSource source,
+			String associationTargetUId,
 			AssociationTarget target) {
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
@@ -117,7 +179,6 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 
 		InsertOrUpdateAssociationTargetBean bean = new InsertOrUpdateAssociationTargetBean();
 		bean.setPrefix(prefix);
-		bean.setAssociationSource(source);
 		bean.setAssociationTarget(target);
 		bean.setUId(associationTargetUId);
 		bean.setEntryStateUId(entryStateUId);
@@ -373,7 +434,7 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 
 	@Override
 	public String updateVersionableChanges(String codingSchemeUId,
-			String associationTargetUId, AssociationSource source,
+			String associationTargetUId,
 			AssociationTarget target) {
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
@@ -383,7 +444,6 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 
 		InsertOrUpdateAssociationTargetBean bean = new InsertOrUpdateAssociationTargetBean();
 		bean.setPrefix(prefix);
-		bean.setAssociationSource(source);
 		bean.setAssociationTarget(target);
 		bean.setUId(associationTargetUId);
 		bean.setEntryStateUId(entryStateUId);
@@ -424,5 +484,14 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 		this.getSqlMapClientTemplate().delete(
 				DELETE_ALL_ASSOC_MULTI_ATTRIBS_BY_ASSOC_UID_SQL,
 				new PrefixedParameter(prefix, associationTargetUId));
+	}
+	
+	@Override
+	public boolean entryStateExists(String codingSchemeUId, String entryStateUId) {
+
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUId);
+
+		return super.entryStateExists(prefix, entryStateUId);
 	}
 }

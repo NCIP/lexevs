@@ -6,12 +6,9 @@ import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.association.AssociationDataDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
-import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationDataBean;
@@ -45,8 +42,13 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 	/** */
 	private static String GET_ENTITY_ASSN_TO_DATA_UID_BY_INSTANCE_ID_SQL = ASSOCIATION_NAMESPACE
 			+ "getEntityAssnDataUIDByAssocInstanceId";
+	
+	private static String GET_ENTITY_ASSN_TO_DATA_BY_UID_SQL = ASSOCIATION_NAMESPACE
+			+ "getEntityAssnDataByUid";
+	
+	private static String GET_ENTITY_ASSN_TO_DATA_BY_UID_AND_REVISION_ID_SQL = ASSOCIATION_NAMESPACE
+			+ "getEntityAssnDataByUidAndRevisionId";
 
-	/** */
 	private static String GET_ASSN_DATA_ATTRIBUTES_BY_UID_SQL = ASSOCIATION_NAMESPACE
 			+ "getAssnDataAttributesByUId";
 
@@ -74,6 +76,9 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 
 	private static String GET_ASSOC_DATA_LATEST_REVISION_ID_BY_UID = ASSOCIATION_NAMESPACE
 			+ "getAssociationDataLatestRevisionIdByUId";
+	
+	private static String GET_ENTRYSTATE_UID_BY_ASSOCIATION_DATA_UID_SQL = ASSOCIATION_NAMESPACE
+			+ "getEntryStateUidByAssociationData";
 
 	/*
 	 * (non-Javadoc)
@@ -99,6 +104,20 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 				this.getNonBatchTemplateInserter());
 	}
 	
+	@Override
+	public void insertAssociationData(
+			String codingSchemeUId,
+			String associationPredicateUId, 
+			String sourceEntityCode,
+			String sourceEntityCodeNamespace, 
+			AssociationData data) {
+		AssociationSource source = new AssociationSource();
+		source.setSourceEntityCode(sourceEntityCode);
+		source.setSourceEntityCodeNamespace(sourceEntityCodeNamespace);
+		
+		this.insertAssociationData(codingSchemeUId, associationPredicateUId, source, data);
+	}
+
 	@Override
 	public String insertAssociationData(
 			String codingSchemeUId,
@@ -204,6 +223,41 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 	public void setVersionsDao(VersionsDao versionsDao) {
 		this.versionsDao = versionsDao;
 	}
+	
+	@Override
+	public AssociationData getAssociationDataByUid(
+			String codingSchemeUId,
+			String associationDataUid) {
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUId);
+
+		return (AssociationData) this.getSqlMapClientTemplate().queryForObject(
+				GET_ENTITY_ASSN_TO_DATA_BY_UID_SQL,
+				new PrefixedParameter(prefix,
+						associationDataUid));
+	}
+
+	@Override
+	public AssociationData getHistoryAssociationDataByRevision(
+			String codingSchemeUId, 
+			String associationDataUid, 
+			String revisionId) {
+		
+		String actualTableSetPrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUId);
+		
+		PrefixedParameterTuple bean = new PrefixedParameterTuple();
+		bean.setPrefix(this.getPrefixResolver().resolveHistoryPrefix());
+		bean.setActualTableSetPrefix(actualTableSetPrefix);
+		bean.setParam1(associationDataUid);
+		bean.setParam2(revisionId);
+
+		return (AssociationData) this.getSqlMapClientTemplate().queryForObject(
+				GET_ENTITY_ASSN_TO_DATA_BY_UID_AND_REVISION_ID_SQL,
+				bean
+				);
+	}
 
 	@Override
 	public String getAssociationDataUId(String codingSchemeUId,
@@ -252,28 +306,12 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 			}
 		}
 
-		if (!entryStateExists(prefix, assnDataBean.getEntryStateUId())) {
-
-			EntryState entryState = new EntryState();
-
-			entryState.setChangeType(ChangeType.NEW);
-			entryState.setRelativeOrder(0L);
-
-			this.versionsDao.insertEntryState(
-					codingSchemeUId,
-					assnDataBean.getEntryStateUId(), 
-					assnDataBean.getUId(),
-					EntryStateType.ENTITYASSNSTODATA, 
-					null,
-					entryState);
-		}
-
 		return assnDataBean.getEntryStateUId();
 	}
 
 	@Override
 	public String updateAssociationData(String codingSchemeUId,
-			String associationDataUId, AssociationSource source,
+			String associationDataUId,
 			AssociationData data) {
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
@@ -283,7 +321,6 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 
 		InsertOrUpdateAssociationDataBean bean = new InsertOrUpdateAssociationDataBean();
 		bean.setPrefix(prefix);
-		bean.setAssociationSource(source);
 		bean.setAssociationData(data);
 		bean.setUId(associationDataUId);
 		bean.setEntryStateUId(entryStateUId);
@@ -374,8 +411,9 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 	}
 	
 	@Override
-	public String updateVersionableChanges(String codingSchemeUId,
-			String associationDataUId, AssociationSource source,
+	public String updateVersionableChanges(
+			String codingSchemeUId,
+			String associationDataUId, 
 			AssociationData data) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
@@ -384,7 +422,6 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 
 		InsertOrUpdateAssociationDataBean bean = new InsertOrUpdateAssociationDataBean();
 		bean.setPrefix(prefix);
-		bean.setAssociationSource(source);
 		bean.setAssociationData(data);
 		bean.setUId(associationDataUId);
 		bean.setEntryStateUId(entryStateUId);
@@ -402,5 +439,24 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 		return (String) this.getSqlMapClientTemplate().queryForObject(
 				GET_ASSOC_DATA_LATEST_REVISION_ID_BY_UID, 
 				new PrefixedParameter(prefix, assocDataUId));		
+	}
+
+	@Override
+	public boolean entryStateExists(String codingSchemeUid, String entryStateUId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
+		
+		return super.entryStateExists(prefix, entryStateUId);
+	}
+	
+	@Override
+	public String getEntryStateUId(
+			String codingSchemeUId, 
+			String associationDataUId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUId);
+
+		return (String) this.getSqlMapClientTemplate().queryForObject(
+				GET_ENTRYSTATE_UID_BY_ASSOCIATION_DATA_UID_SQL,
+				new PrefixedParameter(prefix, associationDataUId));
 	}
 }

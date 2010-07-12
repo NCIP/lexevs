@@ -18,8 +18,6 @@
  */
 package org.lexevs.dao.database.service;
 
-import java.util.UUID;
-
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
@@ -30,9 +28,9 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
+import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 import org.springframework.util.Assert;
 import org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId;
-import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 
 /**
  * The Class RevisableAbstractDatabaseService.
@@ -290,7 +288,7 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 
 			@Override
 			public String doChange(I id, String entryUid, T revisedEntry, EntryStateType type) {
-				return updateEntityVersionableAttributes(id, entryUid, revisedEntry);	
+				return updateEntryVersionableAttributes(id, entryUid, revisedEntry);	
 			}
 		});
 	}
@@ -308,16 +306,6 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 		 * @return the string
 		 */
 		public String update();
-	}
-	
-	public static interface DeleteTemplate {
-		
-		/**
-		 * Update.
-		 * 
-		 * @return the string
-		 */
-		public void delete();
 	}
 	
 	/**
@@ -340,24 +328,7 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 			}
 		});
 	}
-	
-	protected void removeEntry(I id, T entryToRemove, EntryStateType type, final DeleteTemplate deleteTemplate) throws LBException {
-		
-		this.makeChange(id, entryToRemove, type, new ChangeDatabaseStateTemplate<I,T>() {
 
-			@Override
-			public String doChange(I id, String entryUid, T entryToRemove, EntryStateType type) {
-				deleteTemplate.delete();	
-				return createUid();
-			}
-		});
-	}
-	
-	private String createUid() {
-		return UUID.randomUUID().toString();
-	}
-
-	
 	/**
 	 * Insert dependent changes.
 	 * 
@@ -373,7 +344,7 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 
 			@Override
 			public String doChange(I id, String entryUid, T revisedEntry, EntryStateType type) {
-				return updateEntityVersionableAttributes(id, entryUid, revisedEntry);	
+				return updateEntryVersionableAttributes(id, entryUid, revisedEntry);	
 			}
 		});
 	}
@@ -439,7 +410,11 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 				}
 			}
 			
-			return addDependentAttributesByRevisionId(id, entryUid, entry);
+			if(entry != null) {
+				return addDependentAttributesByRevisionId(id, entryUid, entry);
+			} else {
+				return null;
+			}
 		}
 	}
 	
@@ -535,7 +510,7 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 	 * 
 	 * @return the string
 	 */
-	protected abstract String updateEntityVersionableAttributes(I id, String entryUId, T revisedEntity);
+	protected abstract String updateEntryVersionableAttributes(I id, String entryUId, T revisedEntity);
 	
 	/**
 	 * Gets the current entry.
