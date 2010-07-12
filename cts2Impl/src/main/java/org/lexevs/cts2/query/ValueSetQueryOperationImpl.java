@@ -32,6 +32,7 @@ import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cts2.LexEvsCTS2;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
@@ -43,7 +44,8 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
 public class ValueSetQueryOperationImpl implements ValueSetQueryOperation {
-	private LexEVSValueSetDefinitionServices valueSetService_;
+	private LexEVSValueSetDefinitionServices lexEVSValueSetService_;
+	private ValueSetDefinitionService vsdDBService_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 	private DatabaseServiceManager databaseServiceManager_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
 	@SuppressWarnings("unused")
 	private LexEvsCTS2 lexEvsCts2_;
@@ -81,7 +83,7 @@ public class ValueSetQueryOperationImpl implements ValueSetQueryOperation {
 		csVersionList.addAbsoluteCodingSchemeVersionReference(codeSystemAndVersion);
 		
 		try {
-			AbsoluteCodingSchemeVersionReference csVersion = getValueSetService().isEntityInValueSet(conceptCode, entityCodeNamespace, new URI(valueSetId), csVersionList, versionTag);
+			AbsoluteCodingSchemeVersionReference csVersion = getValueSetService().isEntityInValueSet(conceptCode, entityCodeNamespace, new URI(valueSetId), valueSetVersion, csVersionList, versionTag);
 			if (csVersion != null && csVersion.getCodingSchemeURN() != null)
 				return true;
 		} catch (URISyntaxException e) {
@@ -236,9 +238,9 @@ public class ValueSetQueryOperationImpl implements ValueSetQueryOperation {
 	}
 	
 	private LexEVSValueSetDefinitionServices getValueSetService(){
-		if (valueSetService_ == null)
-			valueSetService_ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
+		if (lexEVSValueSetService_ == null)
+			lexEVSValueSetService_ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
 		
-		return valueSetService_;
+		return lexEVSValueSetService_;
 	}	
 }
