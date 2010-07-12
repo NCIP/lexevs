@@ -88,7 +88,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	/** The GE t_ entitie s_ o f_ codin g_ schem e_ sql. */
 	public static String GET_ENTITY_UIDS_OF_CODING_SCHEME_SQL = ENTITY_NAMESPACE + "getAllEntityUidsOfCodingScheme";
 	
-	public static String GET_ENTITY_ID_BY_CODE_AND_NAMESPACE = ENTITY_NAMESPACE + "getEntityIdByCodeAndNamespace";
+	public static String GET_ENTITY_UID_BY_CODE_AND_NAMESPACE = ENTITY_NAMESPACE + "getEntityUidByCodeAndNamespace";
 	
 	/** The ENTIT y_ cod e_ param. */
 	public static String ENTITY_CODE_PARAM = SQLTableConstants.TBLCOL_ENTITYCODE;
@@ -597,7 +597,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		return (String) this.getSqlMapClientTemplate().queryForObject(
-				GET_ENTITY_ID_BY_CODE_AND_NAMESPACE, 
+				GET_ENTITY_UID_BY_CODE_AND_NAMESPACE, 
 					new PrefixedParameterTriple(prefix, codingSchemeId, entityCode, entityCodeNamespace));
 	}
 	
