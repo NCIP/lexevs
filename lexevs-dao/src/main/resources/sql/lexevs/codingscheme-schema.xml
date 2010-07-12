@@ -172,10 +172,10 @@
       <foreign-key foreignTable="@PREFIX@associationPredicate" name="@PREFIX@FK_entAsToData_assnGuid" onDelete="cascade">
         <reference local="associationPredicateGuid" foreign="associationPredicateGuid"/>
       </foreign-key>
-      <unique name="@PREFIX@UQ_entAsToData_source">
-        <unique-column name="sourceEntityCode"/>
-        <unique-column name="sourceEntityCodeNamespace"/>
-      </unique>
+      <index name="@PREFIX@idx_entAsToData_sourceNS">
+        <index-column name="sourceEntityCode"/>
+        <index-column name="sourceEntityCodeNamespace"/>
+      </index>
       <index name="@PREFIX@idx_entAsToData_apGuid">
         <index-column name="associationPredicateGuid"/>
       </index>
@@ -215,7 +215,7 @@
         <index-column name="sourceEntityCode"/>
         <index-column name="associationPredicateGuid"/>
       </index>
-      <index name="idx_entAsToEnt_target">
+      <index name="@PREFIX@idx_entAsToEnt_target">
         <index-column name="targetEntityCode"/>
         <index-column name="associationPredicateGuid"/>
       </index>
