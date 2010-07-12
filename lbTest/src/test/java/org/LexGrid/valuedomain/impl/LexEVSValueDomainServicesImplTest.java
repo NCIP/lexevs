@@ -361,49 +361,49 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 
 	@Test
 	public void testIsEntityInDomainStringURI() throws LBException, URISyntaxException {
-		AbsoluteCodingSchemeVersionReference csvr = getValueSetDefinitionService().isEntityInValueSet("Chevy", new URI("SRITEST:AUTO:EveryThing"), null);
+		AbsoluteCodingSchemeVersionReference csvr = getValueSetDefinitionService().isEntityInValueSet("Chevy", new URI("SRITEST:AUTO:EveryThing"), null, null);
 		assertTrue(csvr != null);
 		
-		csvr = getValueSetDefinitionService().isEntityInValueSet("Jaguar", new URI("SRITEST:AUTO:GM"), null);
+		csvr = getValueSetDefinitionService().isEntityInValueSet("Jaguar", new URI("SRITEST:AUTO:GM"), null, null);
 		assertTrue(csvr == null);
 		
-		csvr = getValueSetDefinitionService().isEntityInValueSet("GM", new URI("SRITEST:AUTO:AllDomesticButGM"), null);
+		csvr = getValueSetDefinitionService().isEntityInValueSet("GM", new URI("SRITEST:AUTO:AllDomesticButGM"), null, null);
 		assertTrue(csvr == null);
 		
-		csvr = getValueSetDefinitionService().isEntityInValueSet("Ford", new URI("SRITEST:AUTO:AllDomesticButGM"), null);
+		csvr = getValueSetDefinitionService().isEntityInValueSet("Ford", new URI("SRITEST:AUTO:AllDomesticButGM"), null, null);
 		assertTrue(csvr != null);
 		
-		csvr = getValueSetDefinitionService().isEntityInValueSet("Ford", new URI("SRITEST:AUTO:AllDomesticANDGM1"), null);
+		csvr = getValueSetDefinitionService().isEntityInValueSet("Ford", new URI("SRITEST:AUTO:AllDomesticANDGM1"), null, null);
 		assertTrue(csvr == null);
 		
-		csvr = getValueSetDefinitionService().isEntityInValueSet("Chevy", new URI("SRITEST:AUTO:AllDomesticANDGM1"), null);
+		csvr = getValueSetDefinitionService().isEntityInValueSet("Chevy", new URI("SRITEST:AUTO:AllDomesticANDGM1"),null,  null);
 		assertTrue(csvr != null);
 		
-		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0001013", new URI("SRITEST:FA:MicrobialStructureOntologyLeafOnly"), null);
+		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0001013", new URI("SRITEST:FA:MicrobialStructureOntologyLeafOnly"), null, null);
 		assertTrue(csvr != null);
 		
-		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0001004", new URI("SRITEST:FA:MicrobialStructureOntologyLeafOnly"), null);
+		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0001004", new URI("SRITEST:FA:MicrobialStructureOntologyLeafOnly"), null, null);
 		assertTrue(csvr == null);
 		
-		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0000001", new URI("SRITEST:FA:MicrobialStructureOntologyLeafOnly"), null);
+		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0000001", new URI("SRITEST:FA:MicrobialStructureOntologyLeafOnly"), null, null);
 		assertTrue(csvr == null);
 		
-		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0001003", new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null);
+		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0001003", new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null, null);
 		assertTrue(csvr != null);
 		
-		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0000001", new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null);
+		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0000001", new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null, null);
 		assertTrue(csvr == null);
 		
-		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0001004", new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null);
+		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0001004", new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null, null);
 		assertTrue(csvr != null);
 		
-		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0001013", new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null);
+		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0001013", new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null, null);
 		assertTrue(csvr != null);
 		
-		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0001001", new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null);
+		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0001001", new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null, null);
 		assertTrue(csvr == null);
 		
-		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0001010", new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null);
+		csvr = getValueSetDefinitionService().isEntityInValueSet("FAO:0001010", new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null, null);
 		assertTrue(csvr == null);
 	}
 
@@ -411,17 +411,17 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	public void testIsEntityInDomainStringURICodingSchemeVersionOrTagURI() throws LBException, URISyntaxException {
 	    AbsoluteCodingSchemeVersionReferenceList incsvrl = new AbsoluteCodingSchemeVersionReferenceList();
 	    incsvrl.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0"));	    
-		AbsoluteCodingSchemeVersionReference csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("urn:oid:11.11.0.1"), new URI("SRITEST:AUTO:AllDomesticButGM"), incsvrl, null);
+		AbsoluteCodingSchemeVersionReference csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("urn:oid:11.11.0.1"), new URI("SRITEST:AUTO:AllDomesticButGM"), null, incsvrl, null);
 		assertTrue(csvr == null);
 		
 		incsvrl.setAbsoluteCodingSchemeVersionReference(0, Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.1"));
-        csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("urn:oid:11.11.0.1"), new URI("SRITEST:AUTO:AllDomesticButGM"), incsvrl, null);
+        csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("urn:oid:11.11.0.1"), new URI("SRITEST:AUTO:AllDomesticButGM"), null, incsvrl, null);
 		assertTrue(csvr != null);
 		
-		csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("urn:oid:11.11.0.1"), new URI("SRITEST:AUTO:AllDomesticButGM"), null, "devel");
+		csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("urn:oid:11.11.0.1"), new URI("SRITEST:AUTO:AllDomesticButGM"), null, null, "devel");
         assertTrue(csvr == null);
         
-        csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("urn:oid:11.11.0.1"), new URI("SRITEST:AUTO:AllDomesticButGM"), null, LBConstants.KnownTags.PRODUCTION.toString());
+        csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("urn:oid:11.11.0.1"), new URI("SRITEST:AUTO:AllDomesticButGM"), null, null, LBConstants.KnownTags.PRODUCTION.toString());
         assertTrue(csvr == null);
 	}
 
