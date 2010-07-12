@@ -36,7 +36,7 @@ public class ValueSetRevisionTest extends LexEvsDbUnitTestBase {
 		service.loadSystemRelease(systemRelease);
 
 		ValueSetDefinition valueSetDef = valueSetDefinitionService
-				.resolveValueSetDefinitionByRevision(
+				.getValueSetDefinitionByRevision(
 						"SRITEST:AUTO:DomesticAutoMakers",
 						"vdTestRelease2010Mar");
 
@@ -45,7 +45,7 @@ public class ValueSetRevisionTest extends LexEvsDbUnitTestBase {
 		assertTrue("Autos".equals(valueSetDef.getConceptDomain()));
 
 		ValueSetDefinition valueSetDef1 = valueSetDefinitionService
-				.resolveValueSetDefinitionByRevision(
+				.getValueSetDefinitionByRevision(
 						"SRITEST:AUTO:Automobiles", "vdTestRelease2010Jan");
 
 		assertNotNull(valueSetDef1);
@@ -55,7 +55,7 @@ public class ValueSetRevisionTest extends LexEvsDbUnitTestBase {
 		assertTrue(valueSetDef1.getRepresentsRealmOrContextCount() == 2);
 		
 		ValueSetDefinition valueSetDef2 = valueSetDefinitionService
-				.resolveValueSetDefinitionByRevision(
+				.getValueSetDefinitionByRevision(
 						"SRITEST:AUTO:Automobiles", "vdTestRelease2010Feb");
 
 		assertNotNull(valueSetDef2);
