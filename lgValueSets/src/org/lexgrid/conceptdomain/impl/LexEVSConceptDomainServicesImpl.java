@@ -335,7 +335,7 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 			try {
 				AbsoluteCodingSchemeVersionReference csvr = getValueSetDefinitionService().isEntityInValueSet(entityCode, 
 						new URI(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME), 
-						new URI(vsdURI), codingSchemeVersionList, null);
+						new URI(vsdURI), null, codingSchemeVersionList, null);
 				
 				if (csvr != null)
 					vsdURIs.add(vsdURI);

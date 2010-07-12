@@ -90,6 +90,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	private static final String version_ = "2.0";
 	
 	private static LexEVSValueSetDefinitionServices valueSetService_ = null;
+	private ValueSetDefinitionService vsdDBService_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 
 	private static final long serialVersionUID = 4995582014921448463L;
 	
@@ -208,30 +209,42 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#isEntityInValueSet(java.lang.String, java.net.URI, java.lang.String)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#isEntityInValueSet(java.lang.String, java.net.URI, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public AbsoluteCodingSchemeVersionReference isEntityInValueSet(
-			String entityCode, URI valueSetDefinitionURI, String versionTag)
+			String entityCode, URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, String versionTag)
 			throws LBException {
 		getLogger().logMethod(new Object[] { entityCode, valueSetDefinitionURI, versionTag });
-        return isEntityInValueSet(entityCode, null, valueSetDefinitionURI, null, versionTag);
+        return isEntityInValueSet(entityCode, null, valueSetDefinitionURI, valueSetDefinitionRevisionId, null, versionTag);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#isEntityInValueSet(java.lang.String, java.net.URI, java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#isEntityInValueSet(java.lang.String, java.net.URI, java.net.URI, java.lang.String, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
 	 */
 	@Override
 	public AbsoluteCodingSchemeVersionReference isEntityInValueSet(
 			String entityCode, URI entityCodeNamespace,
-			URI valueSetDefinitionURI,
+			URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, 
 			AbsoluteCodingSchemeVersionReferenceList csVersionList,
 			String versionTag) throws LBException {
 		getLogger().logMethod(new Object[] { entityCode, entityCodeNamespace, valueSetDefinitionURI, csVersionList, versionTag });
+		
+		if (valueSetDefinitionURI == null)
+			throw new LBException("Value Set Definition URI is empty");
+		
         String entityCodeNamespaceString = entityCodeNamespace != null && !StringUtils.isEmpty(entityCodeNamespace.toString())? entityCodeNamespace.toString() : null;
+        ValueSetDefinition vdDef = null;
         
-        ValueSetDefinition vdDef = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);
+        if (StringUtils.isNotEmpty(valueSetDefinitionRevisionId))
+        {
+        	vdDef = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);
+        }
+        else
+        {
+        	vdDef = this.vsdDBService_.getValueSetDefinitionByRevision(valueSetDefinitionURI.toString(), valueSetDefinitionRevisionId);
+        }
         
         if (vdDef != null) {
             ResolvedValueSetCodedNodeSet rvdcns = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vdDef, csVersionList, versionTag);            

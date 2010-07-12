@@ -79,12 +79,13 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * 							 this will become the namespace
 	 *                           for the entity code.  If not, any matching entity code will pass.
 	 * @param valueSetDefinitionURI   - the URI of the value set definition to search
+	 * @param valueSetDefintionRevisionId - the version of the value set definition
 	 * @param versionTag       - the version or tag (e.g. "devel", "production", etc.) to be used for <i>all</i> of the coding schemes searched.
 	 * @return coding scheme and version if the entityCode is valid, null otherwise
 	 * @throws LBException
 	 */
 	public AbsoluteCodingSchemeVersionReference isEntityInValueSet(
-	        String entityCode, URI valueSetDefinitionURI, String versionTag)  throws LBException;
+	        String entityCode, URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, String versionTag)  throws LBException;
 
 	/**
      * Determine whether the supplied entity code is valid in the suppled value set definition, when reconciled against the supplied
@@ -93,7 +94,8 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * @param entityCode           - the entity code to validate.
 	 * @param entityCodeNamespace  - the URI of the entity code namespace.  If omitted, the default coding scheme namespace for the value domain
 	 *                               will be used, if it is present.  Otherwise the first matching entity code, if any, will pass
-	 * @param valueSetDefinitionURI            - the URI of the value set definitionn
+	 * @param valueSetDefinitionURI - the URI of the value set definitionn
+	 * @param valueSetDefintionRevisionId - the version of the value set definition
 	 * @param csVersionList        - a list of coding scheme URI's and versions to be used.  These will be used only if they are present in
 	 *                               the service.  If absent, the most recent version will be used instead.
      * @param versionTag           - the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
@@ -102,22 +104,24 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * @throws LBException
 	 */
 	public AbsoluteCodingSchemeVersionReference isEntityInValueSet(
-	        String entityCode, URI entityCodeNamespace, URI valueSetDefinitionURI, AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) 
+	        String entityCode, URI entityCodeNamespace, URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) 
 	        throws LBException;
 	
 	/**
 	 * Returns unresolved CodedNodeSet populated using definition entries in the value set definition.
 	 *   
-	 * @param valueSetDefinitionURI
-	 * @param csVersionList
-	 * @param versionTag
+	 * @param valueSetDefinitionURI - the URI of the value set definition
+	 * @param csVersionList - a list of coding scheme URI's and versions to be used.  These will be used only if they are present in
+	 *                               the service.  If absent, the most recent version will be used instead.
+	 * @param csVersionTag - the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
+     *                               Note that non-tagged versions will be used if the tagged version is missing.
 	 * @return 
 	 * @throws LBException
 	 */
 	public ResolvedValueSetCodedNodeSet getCodedNodeSetForValueSetDefinition(
             URI valueSetDefinitionURI,
             AbsoluteCodingSchemeVersionReferenceList csVersionList,
-            String versionTag) throws LBException;
+            String csVersionTag) throws LBException;
 	/**
 	 * Resolve a value set definition using the supplied set of coding scheme versions.
 	 * 
