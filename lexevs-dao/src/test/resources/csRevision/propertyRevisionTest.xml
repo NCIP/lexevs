@@ -105,8 +105,8 @@
                         <lgCon:entity entityCode="testEntity" entityCodeNamespace="test">
                             <lgCommon:entryState containingRevision="4" prevRevision="3"
                                 relativeOrder="0" changeType="DEPENDENT"/>    
-                                <lgCon:property propertyName="test-prop1" propertyId="1">
-                                	<lgCommon:entryState changeType="REMOVE" 
+                                <lgCon:property propertyName="test-prop1" propertyId="1" isActive="false">
+                                	<lgCommon:entryState changeType="VERSIONABLE" 
                                 	relativeOrder="0" 
                                 	containingRevision="4"
                                 	prevRevision="2"/>
