@@ -44,19 +44,6 @@ public class SequentialCodingSchemeRevisionTest extends LexEvsDbUnitTestBase {
 		
 		System.out.println();
 	}
-	
-	@Test
-	public void testFirstCodingScheme() throws Exception {
-
-		CodingScheme cs = codingSchemeService.resolveCodingSchemeByRevision(
-				"urn:oid:11.11.0.1", "1.1", null);
-
-		assertNotNull(cs);
-		
-		assertEquals(1,cs.getLocalNameCount());
-		
-		assertEquals("initialLocalName", cs.getLocalName(0));
-	}
 
 	@Test
 	public void testGetRevision1CodingScheme() throws Exception {

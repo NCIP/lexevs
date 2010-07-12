@@ -44,7 +44,7 @@ public class SequentialRelationsRevisionTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
-	public void testGetRevision1Entity() throws Exception {
+	public void testGetRevision1Relations() throws Exception {
 
 		Relations relations = relationsService.resolveRelationsByRevision(
 				"testUri", "1.0", "testRelations",
@@ -58,7 +58,7 @@ public class SequentialRelationsRevisionTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
-	public void testGetRevision2Entity() throws Exception {
+	public void testGetRevision2Relations() throws Exception {
 
 		Relations relations = relationsService.resolveRelationsByRevision(
 				"testUri", "1.0", "testRelations",
@@ -72,7 +72,7 @@ public class SequentialRelationsRevisionTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
-	public void testGetRevision3Entity() throws Exception {
+	public void testGetRevision3Relations() throws Exception {
 
 		Relations relations = relationsService.resolveRelationsByRevision(
 				"testUri", "1.0", "testRelations",
@@ -86,7 +86,7 @@ public class SequentialRelationsRevisionTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
-	public void testGetRevision4Entity() throws Exception {
+	public void testGetRevision4Relations() throws Exception {
 
 		Relations relations = relationsService.resolveRelationsByRevision(
 				"testUri", "1.0", "testRelations",

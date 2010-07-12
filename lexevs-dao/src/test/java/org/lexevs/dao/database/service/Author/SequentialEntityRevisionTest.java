@@ -44,20 +44,6 @@ public class SequentialEntityRevisionTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
-	public void testFirstEntity() throws Exception {
-
-		Entity entity = entityService.resolveEntityByRevision(
-				"testUri", "1.0", "testEntity", "test",
-				null);
-
-		assertNotNull(entity);
-		
-		assertEquals("Initial Entity", entity.getEntityDescription().getContent());
-		
-		assertNull(entity.getEntryState().getContainingRevision());
-	}
-	
-	@Test
 	public void testGetRevision1Entity() throws Exception {
 
 		Entity entity = entityService.resolveEntityByRevision(

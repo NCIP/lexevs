@@ -45,17 +45,6 @@ public class SequentialPropertyRevisionTest extends LexEvsDbUnitTestBase {
 		service.loadSystemRelease(systemRelease);
 	}
 	
-	@Test
-	public void testFirstEntity() throws Exception {
-
-		Entity entity = entityService.resolveEntityByRevision(
-				"testUri", "1.0", "testEntity", "test",
-				null);
-
-		assertNotNull(entity);
-		
-		assertEquals(0,entity.getPropertyCount());
-	}
 	
 	@Test
 	public void testGetRevision1Entity() throws Exception {
