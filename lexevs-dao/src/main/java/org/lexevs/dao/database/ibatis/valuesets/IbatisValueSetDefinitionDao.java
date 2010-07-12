@@ -954,7 +954,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public ValueSetDefinition resolveValueSetDefinitionByRevision(String valueSetDefURI,
+	public ValueSetDefinition getValueSetDefinitionByRevision(String valueSetDefURI,
 			String revisionId) throws LBRevisionException {
 		
 		String prefix = this.getPrefix();

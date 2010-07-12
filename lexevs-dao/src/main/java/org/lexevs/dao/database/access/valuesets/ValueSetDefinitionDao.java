@@ -155,6 +155,6 @@ public interface ValueSetDefinitionDao extends LexGridSchemaVersionAwareDao {
 
 	public boolean entryStateExists(String entryStateUId);
 	
-	public ValueSetDefinition resolveValueSetDefinitionByRevision(String valueSetDefURI,
+	public ValueSetDefinition getValueSetDefinitionByRevision(String valueSetDefURI,
 			String revisionId) throws LBRevisionException;
 }
