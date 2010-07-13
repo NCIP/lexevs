@@ -66,7 +66,8 @@ public class TestCleaner {
 			returnValue = true;
 		} catch (LBException e) {
 			returnValue = false;
-			e.printStackTrace();
+			// e.printStackTrace();
+			Logger.log("TestCleaner: removeCodingScheme: WARNING: caught exception: " + e.getMessage());
 		}
 		Logger.log("TestCleaner: removeCodingScheme: exit");
 		return returnValue;

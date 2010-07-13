@@ -97,10 +97,10 @@ public class ExportAutomobiles2 extends TestCase {
 			String fullyQualifiedOutputFile = ExportHelper.getExportedFileName(this.outputDir.getOutputDirAsString());
 			
 			rv = ExportDataVerifier.verifyOutFileHasContent(fullyQualifiedOutputFile, this.SEARCH_STRING_ENTITY_CODE_AUTOMOBILE);
-			Assert.assertTrue("search string " + this.SEARCH_STRING_ENTITY_CODE_AUTOMOBILE + " exists", rv);
+			Assert.assertTrue("search string " + this.SEARCH_STRING_ENTITY_CODE_AUTOMOBILE + " should exist in file", rv);
 			
 			rv = ExportDataVerifier.verifyOutFileHasContent(fullyQualifiedOutputFile, this.assoc1);
-			Assert.assertTrue("search string assoc1 exists", rv);
+			Assert.assertTrue("search string assoc1 should exist in file", rv);
 			
 			
 			// cleanup 
@@ -116,7 +116,12 @@ public class ExportAutomobiles2 extends TestCase {
     
     public void init() {
     	Logger.log("ExportAutomobiles2: init: entry");
+    	
+		// cleanup 
+    	Logger.log("ExportAutomobiles2: init: clean up any failed test artifacts");
     	this.outputDir = new OutputDir();
+		TestCleaner.cleanUp(this.outputDir.getOutputDirAsString(), this.CS_AUTO2_URI, this.CS_AUTO2_VERSION);
+    	
     	Logger.log("ExportAutomobiles2: init: exit");
     }    
 }
