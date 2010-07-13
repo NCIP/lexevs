@@ -27,7 +27,7 @@ public class ExportHelper {
     		String exportDir,
     		boolean overwrite,
     		CodedNodeSet cns, 
-    		CodedNodeGraph cng) 
+    		CodedNodeGraph cng ) 
     throws LBException {
     	Logger.log("ExportHelper: export: entry");
     	Logger.log("ExportHelper: export: codingSchemeUri: " + codingSchemeUri);
@@ -66,7 +66,7 @@ public class ExportHelper {
         		Constructors.createAbsoluteCodingSchemeVersionReference(css), 
         		destination, 
         		overwrite,
-                false, true);
+                false, false);
         
         ExportStatus status = exporter.getStatus();
         String s = status.getMessage();
@@ -79,8 +79,8 @@ public class ExportHelper {
         } else {
         	Logger.log("ExportHelper: export: errors were logged or export status was not complete.");
         }
-        
         Logger.log("ExportHelper: export: exit");
+        
         return rv;
 
 

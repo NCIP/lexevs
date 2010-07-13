@@ -4,7 +4,9 @@ import java.io.File;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 
@@ -18,23 +20,35 @@ public class TestCleaner {
     public static void cleanUp(String outFile, String csUri, String csVersion) {
     	Logger.log("TestCleaner: cleanUp: entry");
     	// delete generated export file
-    	TestCleaner.deleteExportFile(outFile);
+    	TestCleaner.deleteExportedData(outFile);
     	
     	// remove imported coding scheme
     	TestCleaner.removeCodingScheme(csUri, csVersion);
     	Logger.log("TestCleaner: cleanUp: exit");
     }
     
-    private static void deleteExportFile(String fileName) {
+    private static void deleteExportedData(String fileName) {
     	Logger.log("TestCleaner: deleteExportFile: entry");
     	Logger.log("TestCleaner: deleteExportFile: fileName: " + fileName);
     	File exportFile = new File(fileName);
-    	boolean deleteResult = exportFile.delete();
-        if(deleteResult == false) {
-        	
-        	Logger.log("TestCleaner: deleteExportFile: WARNING: file: " + exportFile.getName() + " could not be deleted.");
-        	Logger.log("TestCleaner: deleteExportFile: Please delete " + exportFile.getName() + " manually.");
-        }    	
+    	
+    	if(exportFile.isDirectory() == true) {
+    		File file = null;
+    		String[] fileNames = exportFile.list();
+    		boolean rv;
+    		
+    		for(int i=0; i<fileNames.length; ++i) {
+    			file = new File(exportFile.getAbsoluteFile(), fileNames[i]);
+    			rv = file.delete();
+    			if(rv == false) {
+    				Logger.log("TestCleaner: deleteExportFile: WARNING: file: " + file.getName() + " could not be deleted.");
+    				file.deleteOnExit();
+    			} else {
+    				Logger.log("TestCleaner: deleteExportFile: file: " + file.getAbsolutePath() + " deleted successfully.");
+    			}
+    		}
+    	}
+    	            	
         Logger.log("TestCleaner: deleteExportFile: exit");
     }
     
@@ -44,10 +58,10 @@ public class TestCleaner {
 		Logger.log("TestCleaner: removeCodingScheme: csUri: " + csUri);
 		Logger.log("TestCleaner: removeCodingScheme: csVersion: " + csVersion);
 		boolean returnValue;		
-		LexBIGServiceManager lbsm;
 		try {
 			AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(csUri, csVersion);
-			lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+	        LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+	        LexBIGServiceManager lbsm = lbs.getServiceManager(null);
 			lbsm.deactivateCodingSchemeVersion(a,null);
 			lbsm.removeCodingSchemeVersion(a);
 			returnValue = true;

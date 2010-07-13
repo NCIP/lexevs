@@ -14,7 +14,9 @@ public class ImportHelper {
     /*
      * runs the XML Importer 
      */
-    public static void importLgXml(String fileName) throws LBException {
+    public static boolean importLgXml(String fileName) throws LBException {
+    	
+    	boolean rv = false;
     	
     	Logger.log("ImportHelper: importLgXml: exit");
     	Logger.log("ImportHelper: importLgXml: source file: " + fileName);
@@ -28,7 +30,7 @@ public class ImportHelper {
                 .getLoader(org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl.name);
 
         // do the load
-    	loader.load(source, false, true);
+    	loader.load(source, false, false);
     	
     	// activate the coding scheme
         AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
@@ -39,5 +41,7 @@ public class ImportHelper {
                     + ref.getCodingSchemeVersion());
         }
         Logger.log("ImportHelper: importLgXml: exit");
+        rv = true;
+        return rv;
     }    
 }
