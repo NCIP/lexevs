@@ -608,14 +608,13 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         baseScheme = getCodingSchemeMetaData(scheme);
         
        entryState.setPrevRevision(baseScheme.getEntryState().getContainingRevision());
+       revision.setRevisionId(entryState.getContainingRevision());
         EntryState modifiedState = cloneEntryState(entryState, ChangeType.MODIFY);
         EntryState dependentState = cloneEntryState(entryState, ChangeType.DEPENDENT);
         EntryState newState = cloneEntryState(entryState, ChangeType.NEW);
         
         //method will check for existence of scheme.
    
-        
-        
         newScheme = createMinimalSchemeForRevision(baseScheme, relationsContainerName, associationName, null, null);
         newScheme.setEntryState(dependentState);
         
