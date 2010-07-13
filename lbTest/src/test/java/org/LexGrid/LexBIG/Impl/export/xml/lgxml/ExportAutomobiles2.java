@@ -62,6 +62,26 @@ public class ExportAutomobiles2 extends TestCase {
                 "<lgRel:target targetEntityCode=\"Tires\" targetEntityCodeNamespace=\"ExpendableParts\"/>",
             "</lgRel:source>"};
     
+    private final String[] entity1 = {    
+    		"<lgCon:entity",
+    		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
+    		"xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
+    		"isActive=\"true\" status=\"asfd\" entityCode=\"A0001\" entityCodeNamespace=\"Automobiles\">",
+    		"<lgCommon:entityDescription>Automobile</lgCommon:entityDescription>",
+    		"<lgCon:entityType>concept</lgCon:entityType>",
+    		"<lgCon:presentation propertyName=\"textualPresentation\"",
+    		"propertyId=\"t1\" propertyType=\"presentation\"", 
+    		"language=\"en\" isPreferred=\"true\" matchIfNoContext=\"true\">",
+    		"<lgCommon:source>A0001</lgCommon:source>",
+    		"<lgCommon:value dataType=\"textplain\">Automobile</lgCommon:value>",
+    		"</lgCon:presentation>",
+    		"<lgCon:definition propertyName=\"definition\" propertyId=\"p1\"",
+    		"propertyType=\"definition\" language=\"en\" isPreferred=\"true\">",
+    		"<lgCommon:source>A0001</lgCommon:source>",
+    		"<lgCommon:value dataType=\"textplain\">An automobile</lgCommon:value>",
+    		"</lgCon:definition>",
+    		"</lgCon:entity>"
+    };
     
     public void testLexGridExportAutomibiles2() {
     	Logger.log("ExportAutomobiles2: testLexGridExportAutomibiles2: entry");
@@ -96,8 +116,12 @@ public class ExportAutomobiles2 extends TestCase {
 			//-----------------------------------------------------------------
 			String fullyQualifiedOutputFile = ExportHelper.getExportedFileName(this.outputDir.getOutputDirAsString());
 			
-			rv = ExportDataVerifier.verifyOutFileHasContent(fullyQualifiedOutputFile, this.SEARCH_STRING_ENTITY_CODE_AUTOMOBILE);
-			Assert.assertTrue("search string " + this.SEARCH_STRING_ENTITY_CODE_AUTOMOBILE + " should exist in file", rv);
+//			rv = ExportDataVerifier.verifyOutFileHasContent(fullyQualifiedOutputFile, this.SEARCH_STRING_ENTITY_CODE_AUTOMOBILE);
+//			Assert.assertTrue("search string " + this.SEARCH_STRING_ENTITY_CODE_AUTOMOBILE + " should exist in file", rv);
+			
+			rv = ExportDataVerifier.verifyOutFileHasContent(fullyQualifiedOutputFile, this.entity1);
+			Assert.assertTrue("search string entity1 should exist in file", rv);
+
 			
 			rv = ExportDataVerifier.verifyOutFileHasContent(fullyQualifiedOutputFile, this.assoc1);
 			Assert.assertTrue("search string assoc1 should exist in file", rv);
