@@ -55,6 +55,14 @@ public class ExportAutomobiles2 extends TestCase {
     private final String SEARCH_STRING_TRG_ENTITY_CODE_TIRES = "targetEntityCode=\"Tires\"";
     
 
+    private final String[] assoc1 = {"<lgRel:source",
+                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
+                "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
+                "sourceEntityCodeNamespace=\"Automobiles\" sourceEntityCode=\"A0001\">",
+                "<lgRel:target targetEntityCode=\"Tires\" targetEntityCodeNamespace=\"ExpendableParts\"/>",
+            "</lgRel:source>"};
+    
+    
     public void testLexGridExportAutomibiles2() {
     	Logger.log("ExportAutomobiles2: testLexGridExportAutomibiles2: entry");
     	boolean rv = false;
@@ -87,8 +95,12 @@ public class ExportAutomobiles2 extends TestCase {
 			// verify verify verify verify verify verify verify verify
 			//-----------------------------------------------------------------
 			String fullyQualifiedOutputFile = ExportHelper.getExportedFileName(this.outputDir.getOutputDirAsString());
+			
 			rv = ExportDataVerifier.verifyOutFileHasContent(fullyQualifiedOutputFile, this.SEARCH_STRING_ENTITY_CODE_AUTOMOBILE);
 			Assert.assertTrue("search string " + this.SEARCH_STRING_ENTITY_CODE_AUTOMOBILE + " exists", rv);
+			
+			rv = ExportDataVerifier.verifyOutFileHasContent(fullyQualifiedOutputFile, this.assoc1);
+			Assert.assertTrue("search string assoc1 exists", rv);
 			
 			
 			// cleanup 
