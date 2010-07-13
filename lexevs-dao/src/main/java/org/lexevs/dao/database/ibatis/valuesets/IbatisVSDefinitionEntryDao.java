@@ -48,7 +48,9 @@ public class IbatisVSDefinitionEntryDao extends AbstractIbatisDao implements
 	
 	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_DEFINITIONENTRY_SQL = VSDEFINITIONENTRY_NAMESPACE + "getPrevRevIdFromGivenRevIdForDefinitionEntry";
 
-	private static String GET_DEFINITION_ENTRY_FROM_HISTORY_BY_REVISION_SQL = VSDEFINITIONENTRY_NAMESPACE + "getDefinitionEntryByRevision";
+	private static String GET_DEFINITION_ENTRY_FROM_HISTORY_BY_REVISION_SQL = VSDEFINITIONENTRY_NAMESPACE + "getDefinitionEntryHistoryByRevision";
+	
+	private static String GET_DEFINITION_ENTRY_FROM_BASE_BY_REVISION_SQL = VSDEFINITIONENTRY_NAMESPACE + "getDefinitionEntryByRevision";
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.AbstractBaseDao#doGetSupportedLgSchemaVersions()
@@ -274,12 +276,15 @@ public class IbatisVSDefinitionEntryDao extends AbstractIbatisDao implements
 		// then use getVSDefinitionEntryByUId to get the DefinitionEntry object
 		// and return.
 
-		if (revisionId == null || definitionEntryRevisionId == null ) {
+//		if (revisionId == null || definitionEntryRevisionId == null ) {
+//			return getVSDefinitionEntryByUId(vsdEntryUId);
+//		}
+		if (definitionEntryRevisionId == null ) {
 			return getVSDefinitionEntryByUId(vsdEntryUId);
 		}
 
 		// 2. Get the earliest revisionId on which change was applied on given
-		// PLEntry with reference given revisionId.
+		// definition entry with reference given revisionId.
 
 		HashMap revisionIdMap = (HashMap) this
 				.getSqlMapClientTemplate()
@@ -288,29 +293,50 @@ public class IbatisVSDefinitionEntryDao extends AbstractIbatisDao implements
 						new PrefixedParameterTuple(prefix, vsdEntryUId,
 								revisionId), "revId", "revAppliedDate");
 
-		if (revisionIdMap.isEmpty()) {
-			revisionId = null;
-		} else {
-			revisionId = (String) revisionIdMap.keySet().toArray()[0];
-			
-			if( definitionEntryRevisionId.equals(revisionId) ) {
-				this.getVSDefinitionEntryByUId(vsdEntryUId);
-			}
-		}
+//		if (revisionIdMap.isEmpty()) {
+//			revisionId = null;
+//		} else {
+//			revisionId = (String) revisionIdMap.keySet().toArray()[0];
+//			
+//			if( definitionEntryRevisionId.equals(revisionId) ) {
+//				this.getVSDefinitionEntryByUId(vsdEntryUId);
+//			}
+//		}
 
-		// 3. Get the definition entry data from history.
+//		// 3. Get the definition entry data from history.
+//		DefinitionEntry definitionEntry = null;
+//
+//		definitionEntry = (DefinitionEntry) this.getSqlMapClientTemplate()
+//				.queryForObject(
+//						GET_DEFINITION_ENTRY_FROM_HISTORY_BY_REVISION_SQL,
+//						new PrefixedParameterTuple(prefix, vsdEntryUId,
+//								revisionId));
+//
+//		// 4. If pick list entry is not in history, get it from base table.
+//		if (definitionEntry == null) {
+//
+//			definitionEntry = getVSDefinitionEntryByUId(vsdEntryUId);
+//		}
+
 		DefinitionEntry definitionEntry = null;
 
+		// 3. Check if the definition entry in base table is latest compared to the input revisionId
+		// if we get it in the base, we can just return it. Else will have to get it from history
+		
 		definitionEntry = (DefinitionEntry) this.getSqlMapClientTemplate()
 				.queryForObject(
-						GET_DEFINITION_ENTRY_FROM_HISTORY_BY_REVISION_SQL,
+						GET_DEFINITION_ENTRY_FROM_BASE_BY_REVISION_SQL,
 						new PrefixedParameterTuple(prefix, vsdEntryUId,
 								revisionId));
 
-		// 4. If pick list entry is not in history, get it from base table.
+		// 4. If the definition entry in base is applied after the revision in question, lets get it from history
 		if (definitionEntry == null) {
 
-			definitionEntry = getVSDefinitionEntryByUId(vsdEntryUId);
+			definitionEntry = (DefinitionEntry) this.getSqlMapClientTemplate()
+			.queryForObject(
+					GET_DEFINITION_ENTRY_FROM_HISTORY_BY_REVISION_SQL,
+					new PrefixedParameterTuple(prefix, vsdEntryUId,
+							revisionId));
 		}
 
 		return definitionEntry;

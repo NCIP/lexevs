@@ -1087,8 +1087,9 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			} catch (LBRevisionException e) {
 				continue;
 			}
-
-			valueSetDefinition.addDefinitionEntry(definitionEntry);
+			
+			if (definitionEntry != null)
+				valueSetDefinition.addDefinitionEntry(definitionEntry);
 		}
 		
 		// 6. Get all value set definition properties.
