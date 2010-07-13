@@ -129,6 +129,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                 messager.info("..... done");
                 return false;
             }
+            return false; // prevent the MR_FLAG from being marshaled when no CNG is present 
         }
         return true;
     }
