@@ -103,13 +103,6 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
             if (cng != null) {
                 messager.info("starting process association source ..." + this.curAssociationName + "...");
                 try {
-                    // NameAndValueList list = new NameAndValueList();
-                    // NameAndValue nv = new NameAndValue();
-                    // nv.setContent(null);
-                    // nv.setName(curAssociationName);
-                    // list.addNameAndValue(nv);
-
-                    // associationCng = cng.restrictToAssociations(list, null);
                     ResolvedConceptReferenceList rcrl = cng.resolveAsList(null, true, false, 0, -1, null, null, null,
                             null, -1);
                     Iterator<ResolvedConceptReference> blockIterator;
@@ -122,27 +115,6 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                             processAssociationList(curConRef.getSourceOf());
                         }
                     }
-                    // else {
-                    // // if there is a loop, there is no association can be
-                    // // found. try to find the association source using
-                    // restrictsourcecodes method
-                    // CodedNodeGraph restrictCng =
-                    // associationCng.restrictToSourceCodes(cns);
-                    // rcrl = restrictCng.resolveAsList(null, true, false, 0,
-                    // -1, null, null, null, null, -1);
-                    //
-                    // blockIterator = (Iterator<ResolvedConceptReference>)
-                    // rcrl.iterateResolvedConceptReference();
-                    // while (blockIterator.hasNext()) {
-                    // curConRef = (ResolvedConceptReference)
-                    // blockIterator.next();
-                    // if (this.sourceExist(curConRef) == false) {
-                    // AssociationList asl = curConRef.getSourceOf();
-                    // processTargets(curConRef, curAssociationName);
-                    // processAssociationList(asl);
-                    // }
-                    // }
-                    // }
                     messager.info("association processing complete. marshalled " + this.associationCount
                             + " association objects");
                 } catch (LBInvocationException e) {
@@ -166,8 +138,6 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
 
         String mappingFileName = "mapping.xml";
 
-        // this.marshaller.setSchemaLocation(null);
-        // this.marshaller.setNoNamespaceSchemaLocation(null);
         if (((Entity) obj).getEntityCode().equals(LexGridConstants.MR_FLAG)) {
             if (cns != null) {
                 try {
@@ -255,7 +225,6 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
             this.sourceCache.destroy();
             this.associationEntityCache.destroy();
         }
-        // do nothing
     }
 
     @Override
