@@ -106,7 +106,7 @@ public class AssociationAuthoringOperationImpl implements
 			String sourceCode, String sourceNamespace, String targetCode,
 			String targetNamespace, String instanceId, String status,
 			boolean isActive) throws LBException {
-
+		
 		return authoring.setAssociationStatus(revision, entryState, scheme,
 				relationsContainer, associationName, sourceCode,
 				sourceNamespace, targetCode, targetNamespace, instanceId,
