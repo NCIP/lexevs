@@ -413,6 +413,47 @@
 				plEntry.entryStateGuid,
 				r1.revAppliedDate revAppliedDate
 			FROM
+				$prefix$vsPLEntry plEntry,
+				$prefix$vsEntryState es,
+				${defaultPrefix}revision r1,			
+				${defaultPrefix}revision r2		
+			WHERE
+				plEntry.vsPLEntryGuid = #param1# AND
+				plEntry.entryStateGuid = es.entryStateGuid AND
+				es.revisionGuid = r1.revisionGuid AND
+				r1.revAppliedDate <= r2.revAppliedDate AND
+				r2.revisionID = #param2#
+			ORDER BY
+				revAppliedDate DESC		
+			LIMIT 1	
+		]]>			
+	</select>
+	
+	<select id="getPickListEntryMetaDataHistoryByRevision" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultMap="pickListEntryNodeMetaData">
+		<![CDATA[
+			SELECT 
+				plEntry.vsPLEntryGuid,
+				plEntry.vsPickListGuid,
+				plEntry.plEntryId,
+				plEntry.entityCodeNamespace,
+				plEntry.entityCode,
+				plEntry.entryOrder,
+				plEntry.isDefault,
+				plEntry.matchIfNoContext,
+				plEntry.propertyId,
+				plEntry.language,
+				plEntry.include,
+				plEntry.pickText,
+				plEntry.isActive,
+				plEntry.owner,
+				plEntry.status,
+				plEntry.effectiveDate,
+				plEntry.expirationDate,
+				plEntry.entryStateGuid,
+				r1.revAppliedDate revAppliedDate
+			FROM
 				$prefix$h_vsPLEntry plEntry,
 				$prefix$vsEntryState es,
 				${defaultPrefix}revision r1,			
@@ -421,7 +462,7 @@
 				plEntry.vsPLEntryGuid = #param1# AND
 				plEntry.entryStateGuid = es.entryStateGuid AND
 				es.revisionGuid = r1.revisionGuid AND
-				r1.revAppliedDate >= r2.revAppliedDate AND
+				r1.revAppliedDate <= r2.revAppliedDate AND
 				r2.revisionID = #param2#
 			ORDER BY
 				revAppliedDate DESC		

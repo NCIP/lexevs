@@ -415,6 +415,52 @@
 				pl.entryStateGuid,
 				r1.revAppliedDate as revAppliedDate
 			FROM
+				$prefix$vsPickList pl,
+				$prefix$vsEntryState es,
+				${defaultPrefix}revision r1,			
+				${defaultPrefix}revision r2		
+			WHERE
+				pl.pickListId = #param1# AND
+				pl.entryStateGuid = es.entryStateGuid AND
+				(
+					(
+						es.revisionGuid = r1.revisionGuid AND
+						r1.revAppliedDate <= r2.revAppliedDate AND
+						r2.revisionID = #param2#
+					)
+					OR
+					(
+						es.revisionGuid IS NULL
+					)
+				)
+			Order BY
+				revAppliedDate DESC		
+			LIMIT 1	
+		]]>			
+	</select>
+	
+	<select id="getPickListDefinitionMetaDataHistoryByRevision" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultMap="pickListDefinitionMetaData">
+		<![CDATA[
+			SELECT 
+				pl.vsPickListGuid,
+				pl.pickListId,
+				pl.representsValueSetDefinition,
+				pl.completeSet,
+				pl.defaultEntityCodeNamespace,
+				pl.defaultLanguage,
+				pl.defaultSortOrder,
+				pl.description,
+				pl.releaseGuid,
+				pl.isActive,
+				pl.owner,
+				pl.status,
+				pl.effectiveDate,
+				pl.expirationDate,
+				pl.entryStateGuid,
+				r1.revAppliedDate as revAppliedDate
+			FROM
 				$prefix$h_vsPickList pl,
 				$prefix$vsEntryState es,
 				${defaultPrefix}revision r1,			
@@ -425,7 +471,7 @@
 				(
 					(
 						es.revisionGuid = r1.revisionGuid AND
-						r1.revAppliedDate >= r2.revAppliedDate AND
+						r1.revAppliedDate <= r2.revAppliedDate AND
 						r2.revisionID = #param2#
 					)
 					OR

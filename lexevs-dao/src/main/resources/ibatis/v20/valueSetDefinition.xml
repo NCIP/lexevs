@@ -449,6 +449,50 @@
 				vs.entryStateGuid,
 				r1.revAppliedDate as revAppliedDate
 			FROM
+				$prefix$valueSetDefinition vs,
+				$prefix$vsEntryState es,
+				${defaultPrefix}revision r1,			
+				${defaultPrefix}revision r2		
+			WHERE
+				vs.valueSetDefURI = #param1# AND
+				vs.entryStateGuid = es.entryStateGuid AND
+				(
+					(						
+						es.revisionGuid = r1.revisionGuid AND
+						r1.revAppliedDate <= r2.revAppliedDate AND
+						r2.revisionID = #param2#
+					)
+					OR
+					(
+						es.revisionGuid IS NULL
+					)
+				)
+			Order BY
+				revAppliedDate DESC		
+			LIMIT 1	
+		]]>			
+	</select>
+	
+	<select id="getValueSetDefinitionMetaDataHistoryByRevision" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultMap="valueSetDefinitionMetaDataResult">
+		<![CDATA[
+			SELECT 
+				vs.valueSetDefGuid,
+				vs.valueSetDefURI,
+				vs.valueSetDefName,
+				vs.defaultCodingScheme,
+				vs.conceptDomain,
+				vs.description,
+				vs.releaseGuid,
+				vs.isActive,
+				vs.owner,
+				vs.status,
+				vs.effectiveDate,
+				vs.expirationDate,
+				vs.entryStateGuid,
+				r1.revAppliedDate as revAppliedDate
+			FROM
 				$prefix$h_valueSetDefinition vs,
 				$prefix$vsEntryState es,
 				${defaultPrefix}revision r1,			
@@ -459,7 +503,7 @@
 				(
 					(						
 						es.revisionGuid = r1.revisionGuid AND
-						r1.revAppliedDate >= r2.revAppliedDate AND
+						r1.revAppliedDate <= r2.revAppliedDate AND
 						r2.revisionID = #param2#
 					)
 					OR

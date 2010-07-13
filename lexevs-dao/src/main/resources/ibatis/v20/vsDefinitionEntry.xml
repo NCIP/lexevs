@@ -18,7 +18,7 @@
 		<result property="valueSetDefinitionReference" resultMap="ValueSetDefinition.valueSetDefinitionReferenceResult" />
 		<result property="entityReference" resultMap="ValueSetDefinition.entityReferenceResult" />
 		<result property="propertyReference" resultMap="ValueSetDefinition.propertyReferenceResult" />
-		<result property="entryState" resultMap="Versions.entryStateResult" />
+<!--		<result property="entryState" resultMap="Versions.entryStateResult" />-->
 	</resultMap>
 		
 	<resultMap id="definitionEntry" class="insertOrUpdateDefinitionEntryBean">
@@ -366,7 +366,59 @@
 				vsdEntry.status,
 				vsdEntry.effectiveDate,
 				vsdEntry.expirationDate,
-				vsdEntry.entryStateGuid
+				vsdEntry.entryStateGuid,
+				r1.revAppliedDate revAppliedDate
+			FROM
+				$prefix$vsdEntry vsdEntry,
+				$prefix$vsEntryState es,
+				${defaultPrefix}revision r1,			
+				${defaultPrefix}revision r2		
+			WHERE
+				vsdEntry.vsdEntryGuid = #param1# AND
+				vsdEntry.entryStateGuid = es.entryStateGuid AND
+				(
+					(
+						es.revisionGuid = r1.revisionGuid AND
+						r1.revAppliedDate <= r2.revAppliedDate AND
+						r2.revisionID = #param2#
+					)
+					OR
+					(
+						es.revisionGuid IS NULL
+					)
+				)
+				
+			ORDER BY
+				revAppliedDate DESC		
+			LIMIT 1	
+		]]>			
+	</select>	
+	<select id="getDefinitionEntryHistoryByRevision" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultMap="definitionEntryResult">
+		<![CDATA[
+			SELECT 
+				vsdEntry.ruleOrder,
+				vsdEntry.operator,
+				vsdEntry.codingSchemeReference,
+				vsdEntry.valueSetDefReference,
+				vsdEntry.entityCode,
+				vsdEntry.entityCodeNamespace,
+				vsdEntry.leafOnly,
+				vsdEntry.referenceAssociation,
+				vsdEntry.targetToSource,
+				vsdEntry.transitiveClosure,
+				vsdEntry.propertyRefCodingScheme,
+				vsdEntry.propertyName,
+				vsdEntry.propertyMatchValue,
+				vsdEntry.matchAlgorithm,
+				vsdEntry.format,
+				vsdEntry.isActive,
+				vsdEntry.owner,
+				vsdEntry.status,
+				vsdEntry.effectiveDate,
+				vsdEntry.expirationDate,
+				vsdEntry.entryStateGuid,
 				r1.revAppliedDate revAppliedDate
 			FROM
 				$prefix$h_vsdEntry vsdEntry,
@@ -379,7 +431,7 @@
 				(
 					(
 						es.revisionGuid = r1.revisionGuid AND
-						r1.revAppliedDate >= r2.revAppliedDate AND
+						r1.revAppliedDate <= r2.revAppliedDate AND
 						r2.revisionID = #param2#
 					)
 					OR
