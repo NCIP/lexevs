@@ -19,6 +19,7 @@ import org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader;
 import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.CngFactory;
 import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.CnsFactory;
 import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.CodingSchemeChecker;
+import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.ExportDataVerifier;
 import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.ExportHelper;
 import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.ImportHelper;
 import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.Logger;
@@ -43,15 +44,15 @@ public class ExportAutomobiles2 extends TestCase {
     
     private OutputDir outputDir;
     
-    private static final String SEARCH_STRING_ENTITY_CODE_AUTOMOBILE = "entityCode=\"A0001\"";
-    private static final String SEARCH_STRING_ENTITY_CODE_CAR = "entityCode=\"C0001\"";
-    private static final String SEARCH_STRING_ENTITY_CODE_DOMESTIC_AUTO_MAKERS = "entityCode=\"005\"";
-    private static final String SEARCH_STRING_ENTITY_CODE_FORD = "entityCode=\"Ford\"";
-    private static final String SEARCH_STRING_ENTITY_CODE_TRUCK = "entityCode=\"T0001\"";
+    private final String SEARCH_STRING_ENTITY_CODE_AUTOMOBILE = "entityCode=\"A0001\"";
+    private final String SEARCH_STRING_ENTITY_CODE_CAR = "entityCode=\"C0001\"";
+    private final String SEARCH_STRING_ENTITY_CODE_DOMESTIC_AUTO_MAKERS = "entityCode=\"005\"";
+    private final String SEARCH_STRING_ENTITY_CODE_FORD = "entityCode=\"Ford\"";
+    private final String SEARCH_STRING_ENTITY_CODE_TRUCK = "entityCode=\"T0001\"";
     
-    private static final String SEARCH_STRING_SRC_ENTITY_CODE_DOMESTIC_AUTO_MAKERS = "sourceEntityCode=\"005\"";
-    private static final String SEARCH_STRING_TRG_ENTITY_CODE_FORD = "targetEntityCode=\"Ford\"";
-    private static final String SEARCH_STRING_TRG_ENTITY_CODE_TIRES = "targetEntityCode=\"Tires\"";
+    private final String SEARCH_STRING_SRC_ENTITY_CODE_DOMESTIC_AUTO_MAKERS = "sourceEntityCode=\"005\"";
+    private final String SEARCH_STRING_TRG_ENTITY_CODE_FORD = "targetEntityCode=\"Ford\"";
+    private final String SEARCH_STRING_TRG_ENTITY_CODE_TIRES = "targetEntityCode=\"Tires\"";
     
 
     public void testLexGridExportAutomibiles2() {
@@ -82,7 +83,13 @@ public class ExportAutomobiles2 extends TestCase {
 					cng);
 			Assert.assertTrue("loaded LexGrid data from " + this.INPUT_FILE_NAME_AUTO2, rv);
 			
-			// verify
+			//-----------------------------------------------------------------
+			// verify verify verify verify verify verify verify verify
+			//-----------------------------------------------------------------
+			String fullyQualifiedOutputFile = ExportHelper.getExportedFileName(this.outputDir.getOutputDirAsString());
+			rv = ExportDataVerifier.verifyOutFileHasContent(fullyQualifiedOutputFile, this.SEARCH_STRING_ENTITY_CODE_AUTOMOBILE);
+			Assert.assertTrue("search string " + this.SEARCH_STRING_ENTITY_CODE_AUTOMOBILE + " exists", rv);
+			
 			
 			// cleanup 
 			TestCleaner.cleanUp(this.outputDir.getOutputDirAsString(), this.CS_AUTO2_URI, this.CS_AUTO2_VERSION);

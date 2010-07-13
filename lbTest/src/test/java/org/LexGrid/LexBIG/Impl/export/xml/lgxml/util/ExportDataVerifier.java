@@ -8,7 +8,13 @@ import java.io.Reader;
 
 public class ExportDataVerifier {
 
-    public static boolean verifyOutFileHasContent(File outFile, String searchTarget) {
+    public static boolean verifyOutFileHasContent(String fullyQualifiedFileName, String searchTarget) {
+    	
+    	Logger.log("ExportDataVerifier: verifyOutFileHasContent: file: " + fullyQualifiedFileName);
+    	Logger.log("ExportDataVerifier: verifyOutFileHasContent: search string: " + searchTarget);
+    	
+    	File outFile = new File(fullyQualifiedFileName);
+    	
         boolean verifyTrue = false;
         //final String searchTarget = "blah";
         Reader r = null;

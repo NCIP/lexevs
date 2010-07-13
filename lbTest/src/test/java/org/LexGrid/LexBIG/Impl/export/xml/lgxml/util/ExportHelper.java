@@ -1,5 +1,6 @@
 package org.LexGrid.LexBIG.Impl.export.xml.lgxml.util;
 
+import java.io.File;
 import java.net.URI;
 import java.util.Enumeration;
 
@@ -76,14 +77,43 @@ public class ExportHelper {
         boolean rv = false;
         if(status.getErrorsLogged() == false && status.getState().equals(ProcessState.COMPLETED) == true) {
         	rv = true;
+        	
         } else {
         	Logger.log("ExportHelper: export: errors were logged or export status was not complete.");
         }
+        
         Logger.log("ExportHelper: export: exit");
         
         return rv;
 
 
+    }
+    
+    /*
+     * assumption: there will zero or one file in the export directory
+     */
+    public static String getExportedFileName(String exportDir) {
+    	Logger.log("ExportHelper: getExportedFileName: entry");
+    	Logger.log("ExportHelper: getExportedFileName: exportDir: " + exportDir);
+    	File exportFile = new File(exportDir);
+    	String outputFileName = null;
+    	
+    	if(exportFile.isDirectory() == true) {
+    		String[] fileNames = exportFile.list();
+    		if(fileNames == null || fileNames.length == 0) {
+    			Logger.log("ExportHelper: getExportedFileName: WARNING: error getting file list");
+    			return null;
+    		}
+    		File file = new File(exportFile.getAbsoluteFile(), fileNames[0]);
+    		outputFileName = file.getAbsolutePath();
+    		Logger.log("ExportHelper: getExportedFileName: found file: " + outputFileName);
+    	} else {
+    		Logger.log("ExportHelper: getExportedFileName: WARNING: path: " + exportDir + " is not a directory.");
+    	}    	
+    	            	
+        Logger.log("ExportHelper: getExportedFileName: exit");
+        return outputFileName;
+    	
     }
 
 }
