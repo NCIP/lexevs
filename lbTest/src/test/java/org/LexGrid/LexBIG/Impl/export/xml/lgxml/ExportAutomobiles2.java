@@ -53,6 +53,19 @@ public class ExportAutomobiles2 extends TestCase {
     		"</lgCon:entity>"
     };
     
+    private final String[] entity2 = {
+    	"<lgCon:associationEntity", 
+    		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
+    	    "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
+    	    "entityCode=\"uses\" entityCodeNamespace=\"Automobiles\"",
+    	    "forwardName=\"uses\" isNavigable=\"true\">",
+    	    "<lgCommon:entityDescription>uses</lgCommon:entityDescription>",
+    	    "<lgCon:entityType>association</lgCon:entityType>",
+    	"</lgCon:associationEntity>"
+    };
+    
+
+    
     public void testLexGridExportAutomibiles2() {
     	Logger.log("ExportAutomobiles2: testLexGridExportAutomibiles2: entry");
     	boolean rv = false;
@@ -93,13 +106,15 @@ public class ExportAutomobiles2 extends TestCase {
 			Assert.assertTrue("search string entity1 should exist in file", rv);
 
 			
+			rv = ExportDataVerifier.verifyOutFileHasContent(fullyQualifiedOutputFile, this.entity2);
+			Assert.assertTrue("search string entity2 should exist in file", rv);
+			
 			rv = ExportDataVerifier.verifyOutFileHasContent(fullyQualifiedOutputFile, this.assoc1);
 			Assert.assertTrue("search string assoc1 should exist in file", rv);
 			
-			
 			// cleanup 
-			TestCleaner.cleanUp(this.outputDir.getOutputDirAsString(), this.CS_AUTO2_URI, this.CS_AUTO2_VERSION);
-			this.outputDir.deleteOutputDir();
+			// TestCleaner.cleanUp(this.outputDir.getOutputDirAsString(), this.CS_AUTO2_URI, this.CS_AUTO2_VERSION);
+			// this.outputDir.deleteOutputDir();
 			
 		} catch (LBException e) {
 			e.printStackTrace();
