@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.Impl.loaders;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -37,7 +38,10 @@ import org.lexevs.logging.LoggerFactory;
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-public class MessageDirector implements LgMessageDirectorIF {
+public class MessageDirector implements LgMessageDirectorIF, Serializable {
+
+    private static final long serialVersionUID = 7007229726522323692L;
+    
     protected List<LogEntry> messages_ = Collections.synchronizedList(new ArrayList<LogEntry>());
     protected int count_ = 1;
     protected String programName_;
