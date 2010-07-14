@@ -109,7 +109,7 @@ public class ExportAutomobiles2 extends TestCase {
 					true, 
 					cns, 
 					cng);
-			Assert.assertTrue("loaded LexGrid data from " + this.INPUT_FILE_NAME_AUTO2, rv);
+			Assert.assertTrue("exported data to " + this.outputDir.getOutputDirAsString(), rv);
 			
 			//-----------------------------------------------------------------
 			// verify verify verify verify verify verify verify verify
@@ -137,6 +137,74 @@ public class ExportAutomobiles2 extends TestCase {
 		}
 		Logger.log("ExportAutomobiles2: testLexGridExportAutomibiles2: exit");
     }
+    
+    public void testVerifyEntity() {
+    	Logger.log("ExportAutomobiles2: testVerifyEntity: entry");
+    	boolean rv = false;
+		String fullyQualifiedOutputFile = ExportHelper.getExportedFileName(this.outputDir.getOutputDirAsString());
+		rv = ExportDataVerifier.verifyOutFileHasContent(fullyQualifiedOutputFile, this.entity1);
+		Assert.assertTrue("search string entity1 should exist in file", rv);
+		Logger.log("ExportAutomobiles2: testVerifyEntity: exit");
+    }
+    
+    public void testVerifyAssociation() {
+    	Logger.log("ExportAutomobiles2: testVerifyAssociation: entry");
+    	boolean rv = false;
+		String fullyQualifiedOutputFile = ExportHelper.getExportedFileName(this.outputDir.getOutputDirAsString());
+		rv = ExportDataVerifier.verifyOutFileHasContent(fullyQualifiedOutputFile, this.assoc1);
+		Assert.assertTrue("search string assoc1 should exist in file", rv);
+		Logger.log("ExportAutomobiles2: testVerifyAssociation: exit");
+    }
+    
+    public void testDoExport() {
+    	Logger.log("ExportAutomobiles2: testDoExport: entry");
+    	boolean rv = false;
+		try {
+			// create CNS and CNG objects
+			CodedNodeGraph cng = CngFactory.createCngExportAll(this.CS_AUTO2_URI, this.CS_AUTO2_VERSION);
+			CodedNodeSet cns = CnsFactory.createCnsExportAll(this.CS_AUTO2_URI, this.CS_AUTO2_VERSION);
+			
+			// export 
+			rv = ExportHelper.export(
+					this.CS_AUTO2_URI, 
+					this.CS_AUTO2_VERSION, 
+					this.outputDir.getOutputDirAsString(), 
+					true, 
+					cns, 
+					cng);
+			Assert.assertTrue("exported data to " + this.outputDir.getOutputDirAsString(), rv);
+			
+		} catch (LBException e) {
+			e.printStackTrace();
+			Assert.fail("ExportAutomobiles2: testDoExport: caught exception: " + e.getMessage());
+		}
+		Logger.log("ExportAutomobiles2: testDoExport: exit");
+    	
+    }
+    
+    public void testSetup() {
+    	Logger.log("ExportAutomobiles2: testSetup: entry");
+    	boolean rv = false;
+		this.init();
+		try {
+			
+			// check if coding scheme already exists
+			rv = CodingSchemeChecker.exists(this.CS_AUTO2_URI, this.CS_AUTO2_VERSION);
+			assertFalse("coding scheme " + this.CS_AUTO2_URI + "/" + this.CS_AUTO2_VERSION + " should not exist", rv);
+			
+			// import coding scheme
+			rv = ImportHelper.importLgXml(this.INPUT_FILE_NAME_AUTO2);
+			Assert.assertTrue("loaded LexGrid data from " + this.INPUT_FILE_NAME_AUTO2, rv);
+			
+			
+		} catch (LBException e) {
+			e.printStackTrace();
+			Assert.fail("ExportAutomobiles2: testSetup: caught exception: " + e.getMessage());
+		}
+		Logger.log("ExportAutomobiles2: testSetup: exit");
+    	
+    }
+    
     
     public void init() {
     	Logger.log("ExportAutomobiles2: init: entry");

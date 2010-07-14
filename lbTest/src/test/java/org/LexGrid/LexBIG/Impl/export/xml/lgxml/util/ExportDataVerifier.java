@@ -39,16 +39,15 @@ public class ExportDataVerifier {
                     	i = 0;
                     	stayInBlock = true;
                     	while(!done && stayInBlock==true) {
-                    		Logger.log("ExportDataVerifier: verifyOutFileHasContent: comparing: ");
-                    		Logger.log("line: " + line);
-                    		Logger.log("searchTargetAr[ " + i + "] " + searchTargetAr[i]);
+                    		Logger.log("\tline:             " + line);
+                    		Logger.log("\tsearchTargetAr[ " + i + "]:" + searchTargetAr[i]);
                     		if(line.contains(searchTargetAr[i]) == false){
                     			stayInBlock = false;
                     		} else {
                     			if(i+1 == searchTargetAr.length) {  // end of targetArray -- item found 
                     				done = true;
                     				rv = true;
-                    				Logger.log("ExportDataVerifier: verifyOutFileHasContent: search item found!");
+                    				Logger.log("      verifyOutFileHasContent: search item found!");
                     			} else {
                         			line = in.readLine();
                         			if(line == null) {
