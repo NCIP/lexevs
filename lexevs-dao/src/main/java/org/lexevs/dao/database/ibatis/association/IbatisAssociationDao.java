@@ -19,6 +19,7 @@
 package org.lexevs.dao.database.ibatis.association;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -439,6 +440,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		}
 		return id;
 	}
+
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertBatchAssociationSources(java.lang.String, java.util.List)
@@ -759,8 +761,10 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		relationData.setPrefix(historyPrefix);
 		
 		inserter.insert(INSERT_RELATIONS_SQL, relationData);
+	
+		String historyRelationEntryStateUid = relationData.getEntryStateUId();
 
-		return relationData.getEntryStateUId();
+		return historyRelationEntryStateUid;
 	}
 
 	@Override
@@ -785,6 +789,24 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setEntryStateUId(entryStateUId);
 		
 		this.getSqlMapClientTemplate().update(UPDATE_RELATION_BY_UID_SQL, bean);
+		
+		List<String> associationPredicateUids = this.getAssociationPredicateUIdsForRelationsUId(codingSchemeUId, relationUId);
+		
+		List<String> alreadyLoadedAssociationPredicateNames = new ArrayList<String>();
+		
+		for(String associationPredicateUid : associationPredicateUids) {
+			String associationPredicateName = this.getAssociationPredicateNameForUId(codingSchemeUId, associationPredicateUid);
+			alreadyLoadedAssociationPredicateNames.add(associationPredicateName);
+		}
+		
+		if(relation.getAssociationPredicateCount() > 0) {
+
+			for(AssociationPredicate associationPredicateToAdd : relation.getAssociationPredicate()) {
+				if(! alreadyLoadedAssociationPredicateNames.contains(associationPredicateToAdd.getAssociationName())) {
+					this.insertAssociationPredicate(codingSchemeUId, relationUId, associationPredicateToAdd, false);
+				}
+			}
+		}
 		
 		return entryStateUId;
 	}
@@ -901,4 +923,5 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		else
 			return false;
 	}
+
 }

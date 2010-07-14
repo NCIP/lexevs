@@ -52,6 +52,7 @@ import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort
 import org.lexevs.dao.database.service.codednodegraph.model.ColumnSortType;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
 import org.springframework.util.ReflectionUtils.MethodCallback;
@@ -349,7 +350,43 @@ public class DaoUtility {
 	public static <T> Iterable<T> emptyIterableIfNull(T[] iterable) {
 	    return iterable == null ? Collections.<T>emptyList() : Arrays.asList(iterable);
 	}
+	
+	public static interface Equality<T> {
+		
+		public boolean equals(T one, T two);
+	}
+	
+	public static class EqualsEquality<T> implements Equality<T> {
+		
+		public boolean equals(T one, T two) {
+			return one.equals(two);
+		}
+	}
 
+	public static <T> List<T> getDelta(List<T> base, List<T> changeSet, Equality<T> equality) {
+	    Assert.isTrue(base.size() <= changeSet.size(), "Only Additions are permitted.");
+	    List<T> returnList = new ArrayList<T>();
+	    
+	    for(T t : changeSet) {
+	    	if(! contains(base,t,equality)) {
+	    		returnList.add(t);
+	    	}
+	    }
+	    return returnList;
+	}
+	
+	public static <T> boolean contains(List<T> list, T item, Equality<T> equality) {
+		for(T t : list) {
+	    	if(equality.equals(item, t)) {
+	    		return true;
+	    	}
+	    }
+		return false;
+	}
+	
+	public static <T> boolean equals(T one, T two, Equality<T> equality) {
+		return equality.equals(one, two);
+	}
 
 	//Ignore this -- just some helpers for generating Ibatis Mapping code. Will go away...
 	/**
