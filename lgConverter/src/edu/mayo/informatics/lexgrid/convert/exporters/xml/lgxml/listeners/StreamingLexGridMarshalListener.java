@@ -159,7 +159,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                         if (curEntity instanceof AssociationEntity) {
                             this.associationEntityCache.put((AssociationEntity) curEntity);
                             ++this.associationEntityCount;
-                            messager.info("adding association entity to cache.  total of " + this.associationEntityCache + " objects added to cache so far");
+                            messager.info("adding association entity to cache.  total of " + this.associationEntityCount + " objects added to cache so far");
                             
                         } else {
                             this.marshaller.marshal(curEntity);
