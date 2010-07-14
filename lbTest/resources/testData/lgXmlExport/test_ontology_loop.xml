@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<codingScheme xmlns="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
+	codingSchemeName="colors" codingSchemeURI="1.2.3" formalName="colors coding scheme"
+	defaultLanguage="en" representsVersion="1.0">
+	<ns1:entityDescription
+		xmlns:ns1="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes">a simple example coding scheme using colors
+	</ns1:entityDescription>
+	<source role="1.2.3">Dans Head</source>
+	<copyright>This isn't worth copyrighting :)</copyright>
+	<mappings />
+	<entities>
+		<ns2:entity xmlns:ns2="http://LexGrid.org/schema/2010/01/LexGrid/concepts"
+			entityCode="0" entityCodeNamespace="colors" isAnonymous="false"
+			isDefined="true">
+			<ns3:entityDescription
+				xmlns:ns3="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes">Holder of colors</ns3:entityDescription>
+			<ns2:entityType>concept</ns2:entityType>
+			<ns2:presentation propertyName="textPresentation"
+				propertyType="presentation" isPreferred="true">
+				<ns4:value xmlns:ns4="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes">Holder of colors</ns4:value>
+			</ns2:presentation>
+		</ns2:entity>
+		<ns2:entity xmlns:ns2="http://LexGrid.org/schema/2010/01/LexGrid/concepts"
+			entityCode="1" entityCodeNamespace="colors" isAnonymous="false"
+			isDefined="true">
+			<ns3:entityDescription
+				xmlns:ns3="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes">Holder of colors</ns3:entityDescription>
+			<ns2:entityType>concept</ns2:entityType>
+			<ns2:presentation propertyName="textPresentation"
+				propertyType="presentation" isPreferred="true">
+				<ns4:value xmlns:ns4="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes">Holder of colors</ns4:value>
+			</ns2:presentation>
+		</ns2:entity>
+		<ns2:entity xmlns:ns2="http://LexGrid.org/schema/2010/01/LexGrid/concepts"
+			entityCode="2" entityCodeNamespace="colors" isAnonymous="false"
+			isDefined="true">
+			<ns3:entityDescription
+				xmlns:ns3="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes">Holder of colors</ns3:entityDescription>
+			<ns2:entityType>concept</ns2:entityType>
+			<ns2:presentation propertyName="textPresentation"
+				propertyType="presentation" isPreferred="true">
+				<ns4:value xmlns:ns4="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes">Holder of colors</ns4:value>
+			</ns2:presentation>
+		</ns2:entity>
+		<ns2:entity xmlns:ns2="http://LexGrid.org/schema/2010/01/LexGrid/concepts"
+			entityCode="3" entityCodeNamespace="colors" isAnonymous="false"
+			isDefined="true">
+			<ns3:entityDescription
+				xmlns:ns3="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes">Holder of colors</ns3:entityDescription>
+			<ns2:entityType>concept</ns2:entityType>
+			<ns2:presentation propertyName="textPresentation"
+				propertyType="presentation" isPreferred="true">
+				<ns4:value xmlns:ns4="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes">Holder of colors</ns4:value>
+			</ns2:presentation>
+		</ns2:entity>
+		<ns2:entity xmlns:ns2="http://LexGrid.org/schema/2010/01/LexGrid/concepts"
+			entityCode="4" entityCodeNamespace="colors" isAnonymous="false"
+			isDefined="true">
+			<ns3:entityDescription
+				xmlns:ns3="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes">Holder of colors</ns3:entityDescription>
+			<ns2:entityType>concept</ns2:entityType>
+			<ns2:presentation propertyName="textPresentation"
+				propertyType="presentation" isPreferred="true">
+				<ns4:value xmlns:ns4="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes">Holder of colors</ns4:value>
+			</ns2:presentation>
+		</ns2:entity>
+		
+		<ns52:associationEntity xmlns:ns52="http://LexGrid.org/schema/2010/01/LexGrid/concepts"
+			entityCode="5" entityCodeNamespace="colors" 
+			 forwardName="forwardName" reverseName="reverseName" isNavigable="true" isTransitive="true">
+		</ns52:associationEntity>
+	</entities>
+	<relations containerName="colorsRelation">
+		<ns26:associationPredicate
+			xmlns:ns26="http://LexGrid.org/schema/2010/01/LexGrid/relations"
+			associationName="PAR">
+			<ns26:source sourceEntityCodeNamespace="colors"
+				sourceEntityCode="0">
+				<ns26:target targetEntityCode="1"
+					targetEntityCodeNamespace="colors" />
+			</ns26:source>
+			<ns26:source sourceEntityCodeNamespace="colors"
+				sourceEntityCode="1">
+				<ns26:target targetEntityCode="2"
+					targetEntityCodeNamespace="colors" />
+			</ns26:source>
+			<ns26:source sourceEntityCodeNamespace="colors"
+				sourceEntityCode="2">
+				<ns26:target targetEntityCode="3"
+					targetEntityCodeNamespace="colors" />
+			</ns26:source>
+			<ns26:source sourceEntityCodeNamespace="colors"
+				sourceEntityCode="3">
+				<ns26:target targetEntityCode="4"
+					targetEntityCodeNamespace="colors" />
+			</ns26:source>
+			<ns26:source sourceEntityCodeNamespace="colors"
+				sourceEntityCode="4">
+				<ns26:target targetEntityCode="1"
+					targetEntityCodeNamespace="colors" />
+			</ns26:source>
+		</ns26:associationPredicate>
+	</relations>
+</codingScheme>
