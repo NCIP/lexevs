@@ -15,4 +15,13 @@ public class CngFactory {
         org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph cng = lbs.getNodeGraph(urn, csVerOrTag ,null);
         return cng;
     }
+    
+    public static CodedNodeGraph createCngAssociationsOnly(String urn, String ver) throws LBException {
+    	LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+        CodingSchemeVersionOrTag csVerOrTag = new CodingSchemeVersionOrTag();
+        csVerOrTag.setVersion(ver);
+        org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph cng = lbs.getNodeGraph(urn, csVerOrTag ,null);
+        return cng;
+    }
+    
 }

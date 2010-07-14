@@ -9,17 +9,14 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 public class CnsFactory {
 	
     public static CodedNodeSet createCnsExportAll(String urn, String ver) throws LBException {
-        
     	LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-    	
         CodingSchemeVersionOrTag csVerOrTag = new CodingSchemeVersionOrTag();
         csVerOrTag.setVersion(ver);
-        
         org.LexGrid.LexBIG.LexBIGService.CodedNodeSet cns = lbs.getNodeSet(urn, csVerOrTag, null);
-        
         return cns;
-
     }
-	
-
+    
+    public static CodedNodeSet createCnsAssociationsOnly(String urn, String ver) throws LBException {
+        return null;
+    }
 }
