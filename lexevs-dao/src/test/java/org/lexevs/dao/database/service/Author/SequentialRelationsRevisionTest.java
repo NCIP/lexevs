@@ -3,9 +3,12 @@ package org.lexevs.dao.database.service.Author;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.SystemRelease;
 import org.junit.Before;
@@ -55,6 +58,7 @@ public class SequentialRelationsRevisionTest extends LexEvsDbUnitTestBase {
 		assertEquals("Revision 1 Description", relations.getEntityDescription().getContent());
 		
 		assertEquals("1", relations.getEntryState().getContainingRevision());
+		assertEquals(1, relations.getAssociationPredicateCount());
 	}
 	
 	@Test
@@ -69,6 +73,7 @@ public class SequentialRelationsRevisionTest extends LexEvsDbUnitTestBase {
 		assertEquals("Revision 2 Description", relations.getEntityDescription().getContent());
 		
 		assertEquals("2", relations.getEntryState().getContainingRevision());
+		assertEquals(1, relations.getAssociationPredicateCount());
 	}
 	
 	@Test
@@ -83,6 +88,7 @@ public class SequentialRelationsRevisionTest extends LexEvsDbUnitTestBase {
 		assertEquals("Revision 2 Description", relations.getEntityDescription().getContent());
 		
 		assertEquals("3", relations.getEntryState().getContainingRevision());
+		assertEquals(1, relations.getAssociationPredicateCount());
 	}
 	
 	@Test
@@ -97,5 +103,27 @@ public class SequentialRelationsRevisionTest extends LexEvsDbUnitTestBase {
 		assertEquals("Revision 4 Description", relations.getEntityDescription().getContent());
 		
 		assertEquals("4", relations.getEntryState().getContainingRevision());
+		
+		assertEquals(1, relations.getAssociationPredicateCount());
+	}
+	
+	@Test
+	public void testGetRevision5Relations() throws Exception {
+
+		Relations relations = relationsService.resolveRelationsByRevision(
+				"testUri", "1.0", "testRelations",
+				"5");
+
+		assertNotNull(relations);
+		
+		assertEquals(2, relations.getAssociationPredicateCount());
+		
+		List<String> predicateNames = new ArrayList<String>();
+		for(AssociationPredicate pred : relations.getAssociationPredicate()) {
+			predicateNames.add(pred.getAssociationName());
+		}
+		
+		assertTrue(predicateNames.contains("testPredicate"));
+		assertTrue(predicateNames.contains("testPredicate2"));
 	}
 }
