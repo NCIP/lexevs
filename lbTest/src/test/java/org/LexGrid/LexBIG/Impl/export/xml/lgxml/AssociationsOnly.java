@@ -93,8 +93,8 @@ public class AssociationsOnly extends TestCase {
 			Assert.assertTrue("search string assoc1 should exist in file", rv);
 			
 			// cleanup 
-//			TestCleaner.cleanUp(this.outputDir.getOutputDirAsString(), this.CS_AUTO2_URI, this.CS_AUTO2_VERSION);
-//			this.outputDir.deleteOutputDir();
+			TestCleaner.cleanUp(this.outputDir.getOutputDirAsString(), this.CS_AUTO2_URI, this.CS_AUTO2_VERSION);
+			this.outputDir.deleteOutputDir();
 			
 		} catch (LBException e) {
 			e.printStackTrace();
