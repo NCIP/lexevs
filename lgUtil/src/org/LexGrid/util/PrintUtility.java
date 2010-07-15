@@ -1,0 +1,292 @@
+/*******************************************************************************
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ * 
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ *   
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ *   
+ *  		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ *  		
+ *******************************************************************************/
+package org.LexGrid.util;
+
+import java.lang.reflect.Method;
+
+import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
+import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
+import org.LexGrid.LexBIG.DataModel.Collections.ExtensionDescriptionList;
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.Association;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
+import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.concepts.Entity;
+
+/**
+ * The Class PrintUtility.
+ * 
+ * @author <a href="https://cabig-kc.nci.nih.gov/Vocab/KC/index.php/LexBig_and_LexEVS">The LexEVS Team</a>
+ */
+public class PrintUtility {
+	
+	/**
+	 * Prints the.
+	 * 
+	 * @param assocs the assocs
+	 */
+	public static void print(AssociationList assocs){
+		print(assocs, 0);
+	}
+
+	/**
+	 * Prints the.
+	 * 
+	 * @param assocs the assocs
+	 * @param depth the depth
+	 */
+	public static void print(AssociationList assocs, int depth){
+		for(Association assoc : assocs.getAssociation()){
+			System.out.println(buildPrefix(depth) + "Association: " + assoc.getAssociationName() + " Container: " + assoc.getRelationsContainerName());
+			for(AssociatedConcept concept : assoc.getAssociatedConcepts().getAssociatedConcept()){
+				print(concept, depth+1);
+			}
+		}	
+	}
+	
+	/**
+	 * Prints the.
+	 * 
+	 * @param ref the ref
+	 */
+	public static void print(ResolvedConceptReference ref){
+		print(ref, 0);
+	}
+	
+	/**
+	 * Prints the.
+	 * 
+	 * @param ref the ref
+	 * @param depth the depth
+	 */
+	private static void print(ResolvedConceptReference ref, int depth){
+		String description;
+		if(ref.getEntityDescription() == null) {
+			description = "NOT AVAILABLE";
+		} else {
+			description = ref.getEntityDescription().getContent();
+		}
+		System.out.println(buildPrefix(depth) + "Code: " + ref.getCode() + ", Description: " + description + " Hash: " + ref.hashCode());
+
+		if(ref.getSourceOf() != null){
+			print(ref.getSourceOf(), depth+1);
+		}
+		if(ref.getTargetOf() != null){
+			print(ref.getTargetOf(), depth+1);
+		}
+	}
+	
+	/**
+	 * Prints the.
+	 * 
+	 * @param list the list
+	 */
+	public static void print(ResolvedConceptReferenceList list){
+		for(ResolvedConceptReference ref : list.getResolvedConceptReference()){
+			print(ref);
+		}
+	}
+	
+	/**
+	 * Prints the.
+	 * 
+	 * @param summary the summary
+	 */
+	public static void print(CodingSchemeSummary summary){
+		System.out.println("CodingScheme: " + summary.getLocalName());
+		System.out.println(" - Formal Name: " + summary.getFormalName());
+		System.out.println(" - Version: " + summary.getRepresentsVersion());
+	}
+	
+	/**
+	 * Prints the.
+	 * 
+	 * @param csrl the csrl
+	 */
+	public static void print(CodingSchemeRenderingList csrl){
+		for(CodingSchemeRendering rendering : csrl.getCodingSchemeRendering()){
+			print(rendering.getCodingSchemeSummary());
+		}
+	}
+	
+	/**
+	 * Prints the.
+	 * 
+	 * @param ed the ed
+	 */
+	public static void print(ExtensionDescription ed){
+		System.out.println("Extension Name: " + ed.getName());
+		System.out.println(" - Description: " + ed.getDescription());
+		System.out.println(" - Extension Base Class: " + ed.getExtensionBaseClass());
+		System.out.println(" - Extension Implementing Class: " + ed.getExtensionClass());
+	}
+	
+	/**
+	 * Prints the.
+	 * 
+	 * @param edl the edl
+	 */
+	public static void print(ExtensionDescriptionList edl){
+		for(ExtensionDescription description : edl.getExtensionDescription()){
+			print(description);
+		}
+	}
+	
+	/**
+	 * Prints the.
+	 * 
+	 * @param cs the cs
+	 */
+	public static void print(CodingScheme cs){
+		System.out.println("CodingScheme: " + cs.getLocalName());
+		System.out.println(" - Formal Name: " + cs.getFormalName());
+		System.out.println(" - Version: " + cs.getRepresentsVersion());
+		
+		if(cs.getEntities() != null) {
+			System.out.println("Entities:");
+			for(Entity entity : cs.getEntities().getEntity()) {
+				print(entity);
+			}
+		}
+	}
+	
+	/**
+	 * Prints the.
+	 * 
+	 * @param entity the entity
+	 */
+	public static void print(Entity entity){
+		System.out.println("Code: " + entity.getEntityCode());
+		
+		if(entity.getEntityDescription() != null) {
+			System.out.println(" - Description: " + entity.getEntityDescription().getContent());
+		}
+	}
+	
+	/**
+	 * Prints the.
+	 * 
+	 * @param obj the obj
+	 */
+	public static void print(Object obj){
+		System.out.println("Result is: " + obj.toString());
+	}
+	
+	/**
+	 * Prints the.
+	 * 
+	 * @param cns the cns
+	 */
+	public static void print(CodedNodeSet cns){
+		try {
+			ResolvedConceptReferenceList rcrl = cns.resolveToList(null,null,null, -1);
+			ResolvedConceptReference[] rcrArray = rcrl.getResolvedConceptReference();
+			for(ResolvedConceptReference rcr: rcrArray){
+				print(rcr);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Prints the.
+	 * 
+	 * @param cng the cng
+	 */
+	public static void print(CodedNodeGraph cng) {
+
+		ResolvedConceptReferenceList rcrl;
+		System.out.println("-----------------");
+		System.out.println("Resolving Forward");
+		System.out.println("-----------------");
+		try {
+			rcrl = cng.resolveAsList(null, true, false, 0, -1, null, null, null,
+					-1);
+			ResolvedConceptReference[] rcrArray = rcrl
+			.getResolvedConceptReference();
+			for (ResolvedConceptReference rcr : rcrArray) {
+				print(rcr);
+			}
+
+			System.out.println("------------------");
+			System.out.println("Resolving Backward");
+			System.out.println("------------------");
+				rcrl = cng.resolveAsList(null, false, true, 0, -1, null, null, null,
+						-1);
+				rcrArray = rcrl
+				.getResolvedConceptReference();
+				for (ResolvedConceptReference rcr : rcrArray) {
+					print(rcr);
+				}
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			} 
+		}
+	
+	/**
+	 * Prints the.
+	 * 
+	 * @param lbsm the lbsm
+	 */
+	public static void print(LexBIGServiceConvenienceMethods lbsm) {
+
+		Method[] methods = lbsm.getClass().getDeclaredMethods();
+		for (Method m : methods) {
+			System.out.println(m.getName());
+		}
+	}
+	
+	/**
+	 * Prints the.
+	 * 
+	 * @param lbsm the lbsm
+	 */
+	public static void print(LexBIGServiceManager lbsm) {
+
+		Method[] methods = lbsm.getClass().getDeclaredMethods();
+		for (Method m : methods) {
+			System.out.println(m.getName());
+		}
+	}
+	
+	/**
+	 * Builds the prefix.
+	 * 
+	 * @param depth the depth
+	 * 
+	 * @return the string
+	 */
+	private static String buildPrefix(int depth){
+		String prefix = "";
+		for(int i=0;i<depth;i++){
+			prefix = prefix + " -> ";
+		}
+		return prefix;
+	}
+}
