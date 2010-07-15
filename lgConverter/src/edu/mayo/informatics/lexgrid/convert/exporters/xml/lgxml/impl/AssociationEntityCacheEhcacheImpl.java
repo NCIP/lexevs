@@ -39,13 +39,13 @@ public class AssociationEntityCacheEhcacheImpl implements AssociationEntityCache
             this.theCacheManager .addCache(this.theCache);
         } catch (net.sf.ehcache.ObjectExistsException e) {
             
-            System.out.println("AssociationEntityCacheEhcacheImpl: " + e.getMessage());
-            System.out.println("AssociationEntityCacheEhcacheImpl: remove and re-add the cache");
+//            System.out.println("AssociationEntityCacheEhcacheImpl: " + e.getMessage());
+//            System.out.println("AssociationEntityCacheEhcacheImpl: remove and re-add the cache");
             this.theCacheManager .removalAll();
             this.theCacheManager .addCache(this.theCache);
         }
-        System.out.println("AssociationEntityCacheEhcacheImpl: DiskStorePath=" + this.theCache.getCacheConfiguration().getDiskStorePath());
-        System.out.println("AssociationEntityCacheEhcacheImpl: debug version 2");
+//        System.out.println("AssociationEntityCacheEhcacheImpl: DiskStorePath=" + this.theCache.getCacheConfiguration().getDiskStorePath());
+//        System.out.println("AssociationEntityCacheEhcacheImpl: debug version 2");
          
         
     }
