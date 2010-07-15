@@ -57,6 +57,28 @@
 		<result property="propertyMultiAttribList" resultMap="VSProperty.propertyMultiAttribResultBean"/>
 	</resultMap>
 	
+	<resultMap id="propertyAttributeResultWithNoMultiAttrib" class="insertOrUpdatePropertyBean" groupBy="uid">
+		<result property="uid" column="vsPropertyGuid" />
+		<result property="parentUId" column="referenceGuid" />
+		<result property="parentType" column="referenceType" />	
+		<result property="property.propertyId" column="propertyId" />
+		<result property="property.propertyType" column="propertyType" />
+		<result property="property.propertyName" column="propertyName" />	
+		<result property="property.language" column="language" />
+		<result property="property.value.dataType" column="format" />
+		<result property="isPreferred" column="isPreferred" />
+		<result property="matchIfNoContext" column="matchIfNoContext" />
+		<result property="degreeOfFidelity" column="degreeOfFidelity" />
+		<result property="representationalForm" column="representationalForm" />		
+		<result property="property.value.content" column="propertyValue" />		
+		<result property="property.isActive" column="isActive" />
+		<result property="property.owner" column="owner" />
+		<result property="property.status" column="status" />
+		<result property="property.effectiveDate" column="effectiveDate" />
+		<result property="property.expirationDate" column="expirationDate" />
+		<result property="entryStateUId" column="entryStateGuid" />
+	</resultMap>
+	
 	<resultMap id="presentationResult" class="presentation" extends="propertyResult" >
 		<result property="isPreferred" column="isPreferred" />
 		<result property="degreeOfFidelity" column="degreeOfFidelity"/>
@@ -501,7 +523,7 @@
 				${defaultPrefix}revision r1, 
 				${defaultPrefix}revision r2			
 			WHERE
-				property.propertyGuid = #param1# AND
+				property.vsPropertyGuid = #param1# AND
 				(
 					NOT EXISTS 
 					(
@@ -526,9 +548,59 @@
 		]]>			
 	</select>	
 	
+	<select id="getVSPropertyFromBaseByRevision" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultMap="propertyAttributeResultWithNoMultiAttrib">
+		<![CDATA[
+			SELECT 
+				prop.vsPropertyGuid,
+				prop.referenceGuid,
+				prop.referenceType,
+				prop.propertyId,
+				prop.propertyType,
+				prop.propertyName,
+				prop.language,
+				prop.format,
+				prop.isPreferred,
+				prop.matchIfNoContext,
+				prop.degreeOfFidelity,
+				prop.representationalForm,
+				prop.propertyValue,
+				prop.isActive,
+				prop.owner,
+				prop.status,
+				prop.effectiveDate,
+				prop.expirationDate,
+				prop.entryStateGuid,
+				r1.revAppliedDate revAppliedDate
+			FROM 
+				$prefix$vsProperty prop,
+				$prefix$vsEntryState es,
+				${defaultPrefix}revision r1, 
+				${defaultPrefix}revision r2		
+			WHERE
+				prop.vsPropertyGuid = #param1# AND
+				prop.entryStateGuid = es.entryStateGuid AND
+				(
+					(
+						es.revisionGuid = r1.revisionGuid AND
+						r1.revAppliedDate <= r2.revAppliedDate AND
+						r2.revisionID = #param2#
+					)
+					OR
+        			(
+            			es.revisionGuid IS NULL
+        			)
+				)
+			ORDER BY
+				revAppliedDate DESC		
+			LIMIT 1	
+		]]>			
+	</select>	
+	
 	<select id="getVSPropertyFromHistoryByRevision" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultMap="propertyAttributeResult">
+		resultMap="propertyAttributeResultWithNoMultiAttrib">
 		<![CDATA[
 			SELECT 
 				prop.vsPropertyGuid,
@@ -554,14 +626,16 @@
 			FROM 
 				$prefix$h_vsProperty prop,
 				$prefix$vsEntryState es,
-				${defaultPrefix}revision rev		
+				${defaultPrefix}revision rev,
+				${defaultPrefix}revision rev2	
 			WHERE
 				prop.vsPropertyGuid = #param1# AND
 				prop.entryStateGuid = es.entryStateGuid AND
 				(
 					(
 						es.revisionGuid = rev.revisionGuid AND
-						rev.revisionID = #param2#
+						rev.revAppliedDate <= rev2.revAppliedDate AND
+						rev2.revisionID = #param2#
 					)
 					OR
 					(

@@ -27,9 +27,13 @@
 		<result property="definitionEntry.ruleOrder" column="ruleOrder" />
 		<result property="definitionEntry.operator" column="operator" />
 		<result property="definitionEntry.codingSchemeReference.codingScheme" column="codingSchemeReference" />
+		<result property="codingSchemeReference" column="codingSchemeReference" />
 		<result property="definitionEntry.valueSetDefinitionReference.valueSetDefinitionURI" column="valueSetDefReference" />
+		<result property="valueSetDefReference" column="valueSetDefReference" />
 		<result property="definitionEntry.entityReference.entityCode" column="entityCode" />
+		<result property="entityCode" column="entityCode" />
 		<result property="definitionEntry.entityReference.entityCodeNamespace" column="entityCodeNamespace" />
+		<result property="entityCodeNamespace" column="entityCodeNamespace" />
 		<result property="leafOnly" column="leafOnly" />
 		<result property="referenceAssociation" column="referenceAssociation" />
 		<result property="targetToSource" column="targetToSource" />

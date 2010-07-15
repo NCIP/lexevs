@@ -105,8 +105,8 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
 		resultMap="propertyMultiAttribResultBean">
 			SELECT 
-				multiAttrib.propMultiAttribGuid,
-				multiAttrib.propertyGuid,
+				multiAttrib.vsPropMultiAttribGuid,
+				multiAttrib.vsPropertyGuid,
 				multiAttrib.attributeType,
 				multiAttrib.attributeId,
 				multiAttrib.attributeValue,
