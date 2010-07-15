@@ -6,6 +6,7 @@
   		<conf name="runtime" description="Run Time dependencies"/>
 	</configurations>
 	<publications>
+		<artifact name="lexevs-dao" type="pom" ext="pom" />
 		<artifact name="lexevs-dao" type="jar" ext="jar" />
 		<artifact name="lexevs-dao" type="source" ext="jar"
 			 m:classifier="sources" />
@@ -56,7 +57,7 @@
 		<dependency org="org.apache.lucene" name="lucene-queries"
 			rev="2.4.1" force="true"/>
 		<dependency org="javax.annotation" name="jsr250-api" rev="1.0" />
-		<dependency org="log4j" name="log4j" rev="1.2.15" />
+		<dependency org="log4j" name="log4j" rev="1.2.14" />
 		<dependency org="mysql" name="mysql-connector-java" rev="5.1.10" />
 		<dependency org="dom4j" name="dom4j" rev="1.6.1" transitive="false"/>
 		<dependency org="org.slf4j" name="slf4j-api" rev="1.5.6" />
