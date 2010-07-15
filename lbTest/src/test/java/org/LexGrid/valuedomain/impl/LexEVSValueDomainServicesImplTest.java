@@ -467,7 +467,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	public void testResolveValueDomain() throws LBException, URISyntaxException {
 		AbsoluteCodingSchemeVersionReferenceList csvList = new AbsoluteCodingSchemeVersionReferenceList();
 		csvList.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.1"));
-		ResolvedValueSetDefinition rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:Ford"), csvList, null, null);
+		ResolvedValueSetDefinition rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:Ford"), null, csvList, null, null);
 		
 		assertTrue(rvdDef.getDefaultCodingScheme().equals("Automobiles"));
 		assertTrue(rvdDef.getValueDomainURI().equals(new URI("SRITEST:AUTO:Ford")));
@@ -491,7 +491,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		
 		csvList = new AbsoluteCodingSchemeVersionReferenceList();
 		csvList.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.0"));
-		rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:Ford"), csvList, null, null);
+		rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:Ford"), null, csvList, null, null);
 		
 		assertTrue(rvdDef.getDefaultCodingScheme().equals("Automobiles"));
 		assertTrue(rvdDef.getCodingSchemeVersionRefList().getAbsoluteCodingSchemeVersionReference()[0].getCodingSchemeURN().equals("urn:oid:11.11.0.1"));
@@ -510,7 +510,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		assertTrue(codes.contains("Ford"));
 		
 		//***************------------------*****************************
-		rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:FA:hyphaLeafOnly"), null, null, null);
+		rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:FA:hyphaLeafOnly"), null, null, null, null);
         
         codes = new HashSet<String>();
         while (rvdDef.getResolvedConceptReferenceIterator().hasNext())
@@ -524,7 +524,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
         assertTrue(codes.contains("FAO:0001013"));
         codes.clear();
         
-		rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:DomasticLeafOnly"), null, LBConstants.KnownTags.PRODUCTION.name(), null);
+		rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:DomasticLeafOnly"), null, null, LBConstants.KnownTags.PRODUCTION.name(), null);
 		
 		codes = new HashSet<String>();
 		while (rvdDef.getResolvedConceptReferenceIterator().hasNext())
@@ -542,7 +542,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		assertTrue(codes.contains("GMC"));
 		codes.clear();
 		
-        rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:AllDomesticANDGM1"), null, null, null);
+        rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:AllDomesticANDGM1"), null, null, null, null);
         
         codes = new HashSet<String>();
         while (rvdDef.getResolvedConceptReferenceIterator().hasNext())
@@ -570,7 +570,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		// version 1.0 does not contain Focus, so only General Motors should be returned
 		acsvrList.addAbsoluteCodingSchemeVersionReference(autoVersion_10);
 		ResolvedValueSetDefinition rvdDef = getValueSetDefinitionService().
-				resolveValueSetDefinition(new URI("SRITEST:AUTO:PropRefGeneralOrFocus"), acsvrList, null, null);
+				resolveValueSetDefinition(new URI("SRITEST:AUTO:PropRefGeneralOrFocus"), null, acsvrList, null, null);
 		
 		assertTrue(rvdDef != null);
 		assertTrue(rvdDef.getDefaultCodingScheme().equals("Automobiles"));
@@ -587,7 +587,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		// version 1.1 does contain both General and Focus terms, so both General Motors and Focus should be returned
 		acsvrList.addAbsoluteCodingSchemeVersionReference(autoVersion_11);
 		rvdDef = getValueSetDefinitionService().
-				resolveValueSetDefinition(new URI("SRITEST:AUTO:PropRefGeneralOrFocus"), acsvrList, null, null);
+				resolveValueSetDefinition(new URI("SRITEST:AUTO:PropRefGeneralOrFocus"), null, acsvrList, null, null);
 		
 		assertTrue(rvdDef != null);
 		assertTrue(rvdDef.getDefaultCodingScheme().equals("Automobiles"));
@@ -705,7 +705,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	
 	protected void dumpValueSetDefinitionResolution(URI vdURI, AbsoluteCodingSchemeVersionReferenceList csvs) {
 	    try {     
-            ResolvedValueSetDefinition resDef = getValueSetDefinitionService().resolveValueSetDefinition(vdURI, csvs, null, null);
+            ResolvedValueSetDefinition resDef = getValueSetDefinitionService().resolveValueSetDefinition(vdURI, null, csvs, null, null);
             Iterator<? extends AbsoluteCodingSchemeVersionReference> csList = resDef.getCodingSchemeVersionRefList().iterateAbsoluteCodingSchemeVersionReference();
             System.out.println("Value domain: " + vdURI.toString() + " used: ");
             while(csList.hasNext()) {
