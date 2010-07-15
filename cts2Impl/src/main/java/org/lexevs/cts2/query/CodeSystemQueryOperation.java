@@ -17,6 +17,9 @@
  */
 package org.lexevs.cts2.query;
 
+
+import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,7 +32,9 @@ import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.relations.AssociationEntity;
 
+
 public interface CodeSystemQueryOperation {
+
 	public CodingSchemeRenderingList listCodeSystems(CodingSchemeSummary queryByExample);
 	
 	public void getCodeSystemDetails(String codingSchemeUri, CodingSchemeVersionOrTag versionOrTag);
@@ -41,4 +46,5 @@ public interface CodeSystemQueryOperation {
 	public List<SupportedAssociation> listAssociationTypes();
 	
 	public AssociationEntity getAssociationTypeDetails(String codingSchemeUri, CodingSchemeVersionOrTag versionOrTag, String associationName);
+
 }
