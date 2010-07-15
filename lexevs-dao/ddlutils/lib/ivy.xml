@@ -1,0 +1,12 @@
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+    <info organisation="lexevs" module="ddlUtils-1.0-PATCHED" revision="6.0.0-SNAPSHOT"/>
+    <configurations>
+  		<conf name="compile" description="Build Time dependencies"/>
+  		<conf name="test" description="Test Time dependencies"/>
+  		<conf name="runtime" description="Run Time dependencies"/>
+	</configurations>
+	<publications>
+		<artifact name="ddlUtils-1.0-PATCHED" type="jar" ext="jar" />
+		<artifact name="ddlUtils-1.0-PATCHED" type="pom" ext="pom" />
+	</publications>
+</ivy-module>
