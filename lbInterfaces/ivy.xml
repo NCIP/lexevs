@@ -9,6 +9,7 @@
 	
 	<publications>
 	    <artifact name="lbInterfaces" type="jar"/>
+	    <artifact name="lbInterfaces" type="pom"/>
 		<artifact name="lbInterfaces-sources" type="jar" conf="sources" ext="jar"/>
 	</publications>
     <dependencies>
